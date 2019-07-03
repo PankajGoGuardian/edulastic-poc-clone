@@ -62,7 +62,7 @@ class SummaryTest extends Component {
   };
 
   render() {
-    const { questionList, t, test, bookmarks } = this.props;
+    const { questionList, t, test } = this.props;
     const questions = Object.keys(questionList);
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
@@ -114,7 +114,7 @@ class SummaryTest extends Component {
                         {t("default:all")}
                       </StyledButton>
                       <StyledButton onClick={() => this.handlerButton(2)} enabled={buttonIdx === 2}>
-                        {t("default:flagged")}
+                        {t("default:bookmarked")}
                       </StyledButton>
                       <StyledButton onClick={() => this.handlerButton(0)} enabled={buttonIdx === 0}>
                         {t("default:skipped")}
@@ -129,7 +129,6 @@ class SummaryTest extends Component {
                       isVisible={buttonIdx === null || buttonIdx === questionList[q]}
                       onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
                     >
-                      {bookmarks[index] ? <i className="fa fa-flag" style={{ color: "green" }} /> : ""}
                       <span> {index + 1} </span>
                     </QuestionColorBlock>
                   ))}

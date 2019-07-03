@@ -37,12 +37,13 @@ const TestButton = ({
         {t("common.test.hint")}
       </ButtonLink>
     </StyledButton>
-    <StyledButton>
+    <StyledButton style={{ background: isBookmarked ? "white" : "" }}>
       <ButtonLink
         color={isBookmarked ? "success" : "primary"}
+        isBookmarked={isBookmarked}
         onClick={toggleBookmark}
-        icon={<IconBookmark color={white} width={10} height={16} />}
-        style={{ color: isBookmarked ? "yellow" : "white" }}
+        icon={<IconBookmark color={isBookmarked ? "#f8c165" : "white"} width={10} height={16} />}
+        style={{ color: isBookmarked ? "#f8c165" : "white" }}
       >
         {t("common.test.bookmark")}
       </ButtonLink>

@@ -45,3 +45,21 @@ export const getEvaluationByIdSelector = createSelector(
   [getEvaluationSelector, getQuestionIdFromPropsSelector],
   (evaluation, questionId) => evaluation[getQuestionId(questionId)]
 );
+
+// selectors
+const itemsSelector = state => state.test.items;
+const answersSelector = state => state.answers;
+
+export const getSkippedAnswerSelector = createSelector(
+  [itemsSelector, answersSelector],
+  (items, answers) => {
+    const skippedItems = [];
+    const answeredQids = Object.keys(answers).filter(ans => !!answers[ans]);
+    items.forEach((item, index) => {
+      const qIds = item.data.questions.map(q => q.id);
+      const isAnswered = qIds.some(id => answeredQids.includes(id));
+      skippedItems[index] = !isAnswered;
+    });
+    return skippedItems;
+  }
+);

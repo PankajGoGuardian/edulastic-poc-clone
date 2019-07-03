@@ -18,6 +18,7 @@ import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { nonAutoGradableTypes } from "@edulastic/constants";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
+import { getSkippedAnswerSelector } from "../../selectors/answers";
 import {
   ControlBtn,
   ToolButton,
@@ -247,7 +248,8 @@ class AssessmentPlayerDefault extends React.Component {
       toggleBookmark,
       isBookmarked,
       answerChecksUsedForItem,
-      bookmarksInOrder
+      bookmarksInOrder,
+      skippedInOrder
     } = this.props;
 
     const {
@@ -282,6 +284,7 @@ class AssessmentPlayerDefault extends React.Component {
       });
 
     console.log("bookmarks in order", bookmarksInOrder);
+    console.log("skipped in order", skippedInOrder);
     const scratchPadMode = tool === 5;
     return (
       <ThemeProvider theme={theme}>
@@ -342,6 +345,7 @@ class AssessmentPlayerDefault extends React.Component {
                     gotoQuestion={gotoQuestion}
                     options={dropdownOptions}
                     bookmarks={bookmarksInOrder}
+                    skipped={skippedInOrder}
                   />
 
                   <FlexContainer
@@ -439,7 +443,8 @@ const enhance = compose(
       settings: state.test.settings,
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
       isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
-      bookmarksInOrder: bookmarksByIndexSelector(state)
+      bookmarksInOrder: bookmarksByIndexSelector(state),
+      skippedInOrder: getSkippedAnswerSelector(state)
     }),
     {
       checkAnswer: checkAnswerAction,

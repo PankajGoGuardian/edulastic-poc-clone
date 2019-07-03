@@ -10,10 +10,9 @@ import SummaryHeader from "./Header";
 import SummaryTest from "./Content";
 
 import { finishTestAcitivityAction } from "../../../assessment/actions/test";
-import { bookmarksByIndexSelector } from "../../sharedDucks/bookmarks";
 import SubmitConfirmation from "../../../assessment/themes/common/SubmitConfirmation";
 
-const SummaryContainer = ({ finishTest, history, bookmarks }) => {
+const SummaryContainer = ({ finishTest, history }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const handlerConfirmationModal = () => {
     setShowConfirmationModal(true);
@@ -32,7 +31,7 @@ const SummaryContainer = ({ finishTest, history, bookmarks }) => {
       <MainContainer>
         <SubmitConfirmation isVisible={showConfirmationModal} onClose={closeConfirmationModal} finishTest={closeTest} />
         <SummaryHeader showConfirmationModal={handlerConfirmationModal} />
-        <SummaryTest finishTest={finishTest} bookmarks={bookmarks} />
+        <SummaryTest finishTest={finishTest} />
       </MainContainer>
     </ThemeProvider>
   );
@@ -41,9 +40,7 @@ const SummaryContainer = ({ finishTest, history, bookmarks }) => {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
-      bookmarks: bookmarksByIndexSelector(state)
-    }),
+    null,
     {
       finishTest: finishTestAcitivityAction
     }

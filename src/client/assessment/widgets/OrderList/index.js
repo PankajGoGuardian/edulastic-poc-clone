@@ -200,6 +200,23 @@ const OrderList = ({
     });
   }
   const initialAnswers = disableResponse ? correctAnswers : userAnswer;
+
+  const evaluationFromAnswers = userAnswer.map((answer, index) => {
+    if (answer === correctAnswers[index]) {
+      return true;
+    }
+
+    if (hasAltAnswers) {
+      for (const altAnswers of itemForPreview.validation.alt_responses) {
+        if (altAnswers.value[index] === answer) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  });
+
   return (
     <Fragment>
       {view === EDIT && (
@@ -255,7 +272,7 @@ const OrderList = ({
                 onSortEnd={onSortPreviewEnd}
                 questionsList={itemForPreview.list}
                 previewIndexesList={userAnswer}
-                evaluation={evaluation || (item && item.activity ? item.activity.evaluation : evaluation)}
+                evaluation={evaluationFromAnswers}
                 validation={itemForPreview.validation}
                 list={itemForPreview.list}
                 listStyle={{ fontSize }}

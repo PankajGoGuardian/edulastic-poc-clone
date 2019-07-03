@@ -167,7 +167,8 @@ const BackgroundStyleWrapper = styled.div.attrs({
   position: relative;
   width: 100%;
   display: block;
-  font-size: ${props => getFontSize(props.theme.fontSize || "normal", true)} .fr-box.fr-basic .fr-wrapper {
+  font-size: ${props => getFontSize(props.theme.fontSize || "normal", true)};
+  .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
   }
 

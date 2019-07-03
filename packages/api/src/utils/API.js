@@ -10,6 +10,7 @@ const getCurrentPath = () => {
 };
 
 const getWordsInURLPathName = pathname => {
+  // When u try to change this function change the duplicate function in "src/client/common/utils/helpers.js" also
   let path = pathname;
   path = path + "";
   path = path.split("/");
@@ -18,6 +19,7 @@ const getWordsInURLPathName = pathname => {
 };
 
 const getLoggedOutUrl = () => {
+  // When u try to change this function change the duplicate function in "src/client/student/Login/ducks.js" also
   const path = getWordsInURLPathName(window.location.pathname);
   if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
     return "/getStarted";

@@ -277,6 +277,7 @@ function* signup({ payload }) {
 }
 
 const getLoggedOutUrl = () => {
+  // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   const path = getWordsInURLPathName(window.location.pathname);
   if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
     return "/getStarted";

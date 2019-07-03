@@ -103,7 +103,13 @@ class TableList extends Component {
         dataIndex: "testType",
         width: "11%",
         render: (_, row) =>
-          row && row.testType === test.type.PRACTICE ? <TypeIcon type="practice">P</TypeIcon> : <TypeIcon>A</TypeIcon>
+          row && row.testType === test.type.PRACTICE ? (
+            <TypeIcon type="practice">P</TypeIcon>
+          ) : row.testType === test.type.ASSESSMENT ? (
+            <TypeIcon>A</TypeIcon>
+          ) : (
+            <TypeIcon>C</TypeIcon>
+          )
       },
       {
         dataIndex: "assigned",

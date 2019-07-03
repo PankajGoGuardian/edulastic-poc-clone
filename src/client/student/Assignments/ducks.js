@@ -161,7 +161,11 @@ function* startAssignment({ payload }) {
       testId
     });
     // set Activity id
-    yield put(push(`/student/${testType}/${testId}/uta/${testActivityId}/qid/0`));
+    yield put(
+      push(
+        `/student/${testType === "common assessment" ? "assessment" : testType}/${testId}/uta/${testActivityId}/qid/0`
+      )
+    );
 
     // TODO:load previous responses if resume!!
   } catch (e) {
@@ -180,7 +184,11 @@ function* resumeAssignment({ payload }) {
     }
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));
-    yield put(push(`/student/${testType}/${testId}/uta/${testActivityId}/qid/0`));
+    yield put(
+      push(
+        `/student/${testType === "common assessment" ? "assessment" : testType}/${testId}/uta/${testActivityId}/qid/0`
+      )
+    );
   } catch (e) {
     console.log(e);
   }

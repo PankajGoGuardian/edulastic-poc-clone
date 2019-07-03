@@ -44,6 +44,7 @@ const initAssignment = {
   openPolicy: "Automatically on Start Date",
   closePolicy: "Automatically on Due Date",
   class: [],
+  testType: "assessment",
   specificStudents: false
 };
 
@@ -115,6 +116,7 @@ class AssignTest extends React.Component {
         this.setState(prevState => ({
           assignment: {
             ...prevState.assignment,
+            testType: "common assessment",
             openPolicy: "Open Manually by Teacher"
           }
         }));

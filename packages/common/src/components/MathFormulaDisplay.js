@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { previewFontSize, previewFontWeight } from "@edulastic/fonts";
+import { desktopWidth } from "@edulastic/colors";
+import { previewFontSize, previewFontSizeMobile, previewFontWeight } from "@edulastic/fonts";
 
 import { withMathFormula } from "../HOC/withMathFormula";
 
@@ -9,6 +10,10 @@ const MathFormulaDisplay = withMathFormula(styled.div.attrs({
   width: 100%;
   font-size: ${previewFontSize};
   font-weight: ${previewFontWeight};
+
+  @media (max-width: ${desktopWidth}) {
+    font-size: ${previewFontSizeMobile};
+  }
 
   img {
     max-width: ${({ stem, choice }) => (!stem ? (!choice ? null : "165px !important") : "200px !important")};

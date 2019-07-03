@@ -90,7 +90,9 @@ const ClassificationPreview = ({
 
   const itemValidation = item.validation || {};
   let validArray = itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
+  let altArrays = itemValidation && itemValidation.alt_responses;
   validArray = validArray || [];
+  altArrays = altArrays ? altArrays.map(arr => arr.value || []) : [];
   let groupArrays = [];
 
   possible_response_groups.forEach(o => {
@@ -201,6 +203,7 @@ const ClassificationPreview = ({
   );
 
   const arrayOfCols = transformArray(validArray);
+  const arrayOfAltCols = altArrays.map(altArray => transformArray(altArray));
 
   const listPosition = get(item, "ui_style.possibility_list_position", "bottom");
   const rowHeader = get(item, "ui_style.row_header", null);
@@ -402,6 +405,35 @@ const ClassificationPreview = ({
                 </div>
               ))}
             </FlexContainer>
+          ))}
+          {arrayOfAltCols.map((arrays, ind) => (
+            <Fragment key={ind}>
+              <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>{`${t(
+                "component.classification.alternateAnswer"
+              )} ${ind + 1}`}</Subtitle>
+              {arrays.map((arr, i) => (
+                <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+                  <Subtitle style={styles.correctAnswersMargins}>
+                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+                  </Subtitle>
+                  {arr.map(index => (
+                    <div style={styles.itemContainerStyle} key={index}>
+                      <IndexBox preview={preview}>{index + 1}</IndexBox>
+                      <MathFormulaDisplay
+                        style={getStyles(
+                          false,
+                          false,
+                          theme.widgets.classification.boxBgColor,
+                          theme.widgets.classification.boxBorderColor,
+                          styles.previewItemStyle
+                        )}
+                        dangerouslySetInnerHTML={{ __html: posResp[index] }}
+                      />
+                    </div>
+                  ))}
+                </FlexContainer>
+              ))}
+            </Fragment>
           ))}
         </CorrectAnswersContainer>
       )}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { maxBy, isEmpty } from "lodash";
+import { isEmpty, flatten } from "lodash";
 
 import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 
@@ -40,8 +40,7 @@ const Option = props => {
       validAnswers = [validation.valid_response, ...validation.alt_responses];
     }
 
-    const correctAnswer = maxBy(validAnswers, "score").value;
-    if (correctAnswer.includes(item.value)) {
+    if (flatten(validAnswers.map(v => v.value)).includes(item.value)) {
       className = "right";
     } else if (isSelected) {
       if (validAnswers.some(ans => ans.value.includes(item.value))) {

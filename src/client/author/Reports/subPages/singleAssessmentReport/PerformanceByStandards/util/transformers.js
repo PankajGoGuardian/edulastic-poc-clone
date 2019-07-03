@@ -24,35 +24,49 @@ export const compareByMode = {
   IEP_STATUS: "iepStatus"
 };
 
+const lexicSort = field => (a, b) => (a[field] >= b[field] ? (a[field] === b[field] ? 0 : 1) : -1);
+
 export const compareByColumns = {
   [compareByMode.SCHOOL]: {
     title: "School",
     dataIndex: "schoolId",
     key: "schoolId",
+    sorter: lexicSort("schoolName"),
     render: (schoolId, school) => school.schoolName
   },
   [compareByMode.TEACHER]: {
     title: "Teacher",
     dataIndex: "teacherId",
     key: "teacherId",
+    sorter: lexicSort("teacherName"),
     render: (teacherId, teacher) => teacher.teacherName
   },
   [compareByMode.CLASS]: {
     title: "Class",
     dataIndex: "groupId",
     key: "groupId",
+    sorter: lexicSort("className"),
     render: (groupId, studentClass) => studentClass.className
   },
   [compareByMode.STUDENTS]: {
     title: "Student",
     dataIndex: "studentId",
     key: "studentId",
+    sorter: (a, b) => {
+      const aName = `${a.firstName} ${b.lastName}`;
+      const bName = `${b.firstName} ${b.lastName}`;
+
+      if (aName > bName) return 1;
+      else if (aName < bName) return -1;
+      return 0;
+    },
     render: (studentId, student) => `${student.firstName} ${student.lastName}`
   },
   [compareByMode.RACE]: {
     title: "Race",
     dataIndex: "race",
     key: "race",
+    sorter: lexicSort("race"),
     render: capitalize
   },
   [compareByMode.GENDER]: {
@@ -247,10 +261,9 @@ const groupAnalysisByCompare = (data, viewBy, compareBy) => {
 };
 
 const analysisDataSource = (compareBy, studInfo, teacherInfo) => ({
-  dataSource:
-    compareBy === compareByMode.CLASS || compareBy === compareByMode.SCHOOL || compareBy === compareByMode.TEACHER
-      ? teacherInfo
-      : studInfo,
+  dataSource: [compareByMode.SCHOOL, compareByMode.TEACHER, compareByMode.CLASS].includes(compareBy)
+    ? teacherInfo
+    : studInfo,
   dataField: compareByColumns[compareBy].key
 });
 
@@ -405,4 +418,21 @@ export const analysisParseData = (report, viewBy, compareBy) => {
     default:
       return [];
   }
+};
+
+export const reduceAverageStandardScore = (data, field) => {
+  if (!data.length) {
+    return {};
+  }
+
+  const standards = Object.keys(data[0].standardMetrics);
+
+  return standards.reduce((pointsByStandards, standardId) => {
+    const averagePoints = data.reduce((total, item) => total + item.standardMetrics[standardId][field], 0);
+
+    return {
+      ...pointsByStandards,
+      [standardId]: averagePoints / data.length
+    };
+  }, {});
 };

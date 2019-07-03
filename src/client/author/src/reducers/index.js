@@ -97,7 +97,7 @@ const authorReducers = {
   performanceBandReducer,
   standardsProficiencyReducer,
   schoolsReducer,
-  reportPerformanceByStandards: reportPerformanceByStandardsReducer,
+  reportPerformanceByStandardsReducer,
   studentReducer,
   teacherReducer,
   districtAdminReducer,

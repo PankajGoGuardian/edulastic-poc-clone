@@ -74,7 +74,7 @@ class DragScroll extends Component {
     const { context } = this.props;
     const { getScrollElement } = context;
     const scrollContainer = getScrollElement();
-
+    console.log(scrollContainer);
     scrollContainer.addEventListener("mousedown", this.handleMouseDown);
     scrollContainer.addEventListener("mouseup", this.handleMouseUp);
     scrollContainer.addEventListener("dragstart", this.handleIsDragging);

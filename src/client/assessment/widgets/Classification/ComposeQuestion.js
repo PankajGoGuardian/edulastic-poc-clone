@@ -53,7 +53,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.classification.enterQuestion")}
           onChange={stim => handleItemChangeChange("stimulus", stim)}
           value={stimulus}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

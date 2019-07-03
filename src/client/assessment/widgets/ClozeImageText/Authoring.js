@@ -447,7 +447,7 @@ class Authoring extends Component {
               placeholder={t("component.cloze.imageText.thisisstem")}
               onChange={this.onChangeQuestion}
               value={item.stimulus}
-              theme="border"
+              border="border"
             />
             <PaddingDiv />
             <FormContainer data-cy="top-toolbar-area">

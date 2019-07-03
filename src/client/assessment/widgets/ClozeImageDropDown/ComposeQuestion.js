@@ -419,7 +419,7 @@ class ComposeQuestion extends Component {
               placeholder={t("component.cloze.imageDropDown.thisisstem")}
               onChange={this.onChangeQuestion}
               value={item.stimulus}
-              theme="border"
+              border="border"
             />
             <PaddingDiv />
             <FormContainer>

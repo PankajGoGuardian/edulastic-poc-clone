@@ -150,7 +150,7 @@ class TemplateMarkup extends Component {
           value={item.template}
           toolbarId="cloze-text-template"
           additionalToolbarOptions={["textinput"]}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

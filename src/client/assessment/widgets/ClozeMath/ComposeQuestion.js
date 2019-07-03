@@ -43,7 +43,7 @@ class ComposeQuestion extends Component {
           placeholder="Enter question"
           onChange={stimulus => _itemChange("stimulus", stimulus)}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

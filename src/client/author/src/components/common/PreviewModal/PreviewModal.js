@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { get, keyBy } from "lodash";
+import { get, keyBy, intersection } from "lodash";
 import { Spin, Button } from "antd";
 import styled from "styled-components";
 import { FlexContainer, EduButton } from "@edulastic/common";
@@ -30,7 +30,8 @@ class PreviewModal extends React.Component {
     super(props);
 
     this.state = {
-      flag: false
+      flag: false,
+      manuallyGradableQn: ["formulaessay", "highlightImage", "essayRichText", "essayPlainText"]
     };
   }
 
@@ -94,8 +95,14 @@ class PreviewModal extends React.Component {
       preview,
       showEvaluationButtons
     } = this.props;
+    const { manuallyGradableQn } = this.state;
     const questions = keyBy(get(item, "data.questions", []), "id");
-    const { authors = [], rows } = item;
+    const { authors = [], rows, data } = item;
+    const questionsType = data.questions && data.questions.map(question => question.type);
+    const intersectionCount = intersection(questionsType, manuallyGradableQn).length;
+    const isShowAnswerVisible =
+      questionsType && !(intersectionCount < 0) && !(intersectionCount === questionsType.length);
+
     const getAuthorsId = authors.map(item => item._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     const { allowDuplicate } = collections.find(o => o._id === item.collectionName) || { allowDuplicate: true };
@@ -131,7 +138,7 @@ class PreviewModal extends React.Component {
               </ButtonsWrapper>
               <ButtonsWrapper>
                 <Button onClick={checkAnswer}> Check Answer </Button>
-                <Button onClick={showAnswer}> Show Answer </Button>
+                {isShowAnswerVisible && <Button onClick={showAnswer}> Show Answer </Button>}
                 <Button onClick={this.clearView}> Clear </Button>
               </ButtonsWrapper>
             </FlexContainer>

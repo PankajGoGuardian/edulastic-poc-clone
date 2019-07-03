@@ -19,7 +19,8 @@ class ButtonAction extends Component {
 
     this.state = {
       attempts: 0,
-      option: false
+      option: false,
+      manuallyGradableQn: ["formulaessay", "highlightImage", "essayRichText", "essayPlainText"]
     };
   }
 
@@ -39,7 +40,7 @@ class ButtonAction extends Component {
   };
 
   render() {
-    const { option, attempts } = this.state;
+    const { option, attempts, manuallyGradableQn } = this.state;
     const {
       t,
       view,
@@ -51,7 +52,8 @@ class ButtonAction extends Component {
       showCheckButton,
       allowedAttempts,
       showPublishButton,
-      showSettingsButton
+      showSettingsButton,
+      authorQuestions
     } = this.props;
 
     return (
@@ -101,16 +103,18 @@ class ButtonAction extends Component {
                   </ButtonLink>
                 </Button>
               )}
-              <Button
-                style={{ height: "25px" }}
-                htmlType="button"
-                onClick={() => changePreviewTab("show")}
-                data-cy="show-answers-btn"
-              >
-                <ButtonLink color="primary" style={{ color: "#00AD50" }}>
-                  <LabelText>SHOW ANSWER</LabelText>
-                </ButtonLink>
-              </Button>
+              {!manuallyGradableQn.includes(authorQuestions.type) && (
+                <Button
+                  style={{ height: "25px" }}
+                  htmlType="button"
+                  onClick={() => changePreviewTab("show")}
+                  data-cy="show-answers-btn"
+                >
+                  <ButtonLink color="primary" style={{ color: "#00AD50" }}>
+                    <LabelText>SHOW ANSWER</LabelText>
+                  </ButtonLink>
+                </Button>
+              )}
               <Button
                 style={{ height: "25px" }}
                 htmlType="button"
@@ -143,7 +147,8 @@ ButtonAction.propTypes = {
   showCheckButton: PropTypes.bool,
   allowedAttempts: PropTypes.number,
   showPublishButton: PropTypes.bool,
-  showSettingsButton: PropTypes.bool
+  showSettingsButton: PropTypes.bool,
+  authorQuestions: PropTypes.object.isRequired
 };
 
 ButtonAction.defaultProps = {

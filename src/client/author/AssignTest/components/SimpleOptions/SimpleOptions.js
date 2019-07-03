@@ -21,7 +21,7 @@ import { getListOfStudents } from "../../utils";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
 import * as moment from "moment";
-import TestTypeSelector from "../../../TestPage/components/Assign/components/EditModal/TestTypeSelector";
+import TestTypeSelector from "./TestTypeSelector";
 
 class SimpleOptions extends React.Component {
   static propTypes = {

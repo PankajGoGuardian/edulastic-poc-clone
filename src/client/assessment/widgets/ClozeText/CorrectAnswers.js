@@ -96,7 +96,8 @@ class CorrectAnswers extends Component {
     newData.ui_style.responsecontainerindividuals = newData.ui_style.responsecontainerindividuals || [];
     const index = findIndex(newData.ui_style.responsecontainerindividuals, container => container.id === id);
     if (index === -1) {
-      newData.ui_style.responsecontainerindividuals.push({ id, widthpx });
+      const newIndex = findIndex(newData.response_ids, resp => resp.id === id);
+      newData.ui_style.responsecontainerindividuals.push({ id, widthpx, index: newIndex });
     } else {
       newData.ui_style.responsecontainerindividuals[index] = {
         ...newData.ui_style.responsecontainerindividuals[index],
@@ -148,7 +149,9 @@ class CorrectAnswers extends Component {
       hasGroupResponses,
       configureOptions,
       uiStyle,
-      responseIds
+      responseIds,
+      view,
+      previewTab
     } = this.props;
     const { value } = this.state;
     return (
@@ -177,6 +180,8 @@ class CorrectAnswers extends Component {
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 responseIds={responseIds}
+                view={view}
+                previewTab={previewTab}
               />
             </TabContainer>
           )}
@@ -198,6 +203,8 @@ class CorrectAnswers extends Component {
                       uiStyle={uiStyle}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                      view={view}
+                      previewTab={previewTab}
                     />
                   </TabContainer>
                 );

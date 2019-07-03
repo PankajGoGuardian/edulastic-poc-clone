@@ -70,8 +70,12 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = btnStyle.heightpx;
   }
 
+  const response = find(responsecontainerindividuals, resp => resp.index === index);
+
   btnStyle.width =
-    (responsecontainerindividuals[index] && responsecontainerindividuals[index].widthpx) || uiStyle.widthpx;
+    userSelections[index] && userSelections[index].value
+      ? (response && response.previewWidth) || uiStyle.widthpx
+      : uiStyle.widthpx;
 
   return (
     <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>

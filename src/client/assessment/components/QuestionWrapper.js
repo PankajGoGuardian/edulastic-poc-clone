@@ -393,7 +393,8 @@ QuestionWrapper.propTypes = {
   advancedAreOpen: PropTypes.bool,
   handleAdvancedOpen: PropTypes.func,
   userRole: PropTypes.string.isRequired,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  clearAnswers: PropTypes.func.isRequired
 };
 
 QuestionWrapper.defaultProps = {

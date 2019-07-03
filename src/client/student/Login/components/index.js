@@ -1,60 +1,23 @@
 import React from "react";
+import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import { Layout } from "antd";
 
 // components
 import Header from "./Header";
 import LoginContainer from "./Container";
-
-import loginBg from "../../assets/bg-login.png";
-import greatMindLogo from "../../assets/GM_Horizontal.png";
-const readicheckBg = "//cdn.edulastic.com/default/readicheck_home-page-bg-1.png";
-const greatMindkBg = "//cdn.edulastic.com/default/Affirm_Background_Image.jpg";
+import { Partners } from "../../../common/utils/static/partnerData";
+import { validatePartnerUrl, getPartnerKeyFromUrl } from "../../../common/utils/helpers";
 
 const Wrapper = styled(Layout)`
   width: 100%;
 `;
 
-const urlParams = location.pathname.split("/");
-const Partners = {
-  login: {
-    name: "login",
-    headerLogo: "//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png",
-    boxTitle: "Login",
-    background: loginBg,
-    position: "start",
-    opacity: 0.5
-  },
-  readicheck: {
-    name: "readicheck",
-    headerLogo: "//cdn.edulastic.com/default/ReadiCheckItemBank.png",
-    boxTitle: "//cdn.edulastic.com/default/readicheck_logo.png",
-    background: readicheckBg,
-    colorFilter: "brightness(100)",
-    position: "center",
-    opacity: 0.5
-  },
-  greatminds: {
-    name: "greatMind",
-    headerLogo: greatMindLogo,
-    boxTitle: "Login",
-    background: greatMindkBg,
-    colorFilter: "brightness(1)",
-    position: "center",
-    opacity: 0.2
-  }
-};
-
 const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
-  let partnerCheck = "login";
-  Object.keys(Partners).map(key => {
-    if (key === urlParams[urlParams.length - 1]) {
-      partnerCheck = key;
-    }
-  });
-
+  let partnerCheck = getPartnerKeyFromUrl(location.pathname);
   return (
     <Wrapper>
+      {!isSignupUsingDaURL && !validatePartnerUrl(Partners[partnerCheck]) ? <Redirect exact to="/login" /> : null}
       <LoginWrapper
         Partners={Partners[partnerCheck]}
         image={

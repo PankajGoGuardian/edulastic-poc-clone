@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -18,6 +18,14 @@ import {
 } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { signupAction } from "../../../Login/ducks";
+import {
+  getPartnerKeyFromUrl,
+  validatePartnerUrl,
+  getPartnerLoginUrl,
+  getPartnerStudentSignupUrl,
+  getPartnerTeacherSignupUrl
+} from "../../../../common/utils/helpers";
+import { Partners } from "../../../../common/utils/static/partnerData";
 
 import adminBg from "../../../assets/bg-adm.png";
 import userIcon from "../../../assets/user-icon.svg";
@@ -85,16 +93,20 @@ class AdminSignup extends React.Component {
       }
     };
 
+    const partnerKey = getPartnerKeyFromUrl(location.pathname);
+    const partner = Partners[partnerKey];
+
     return (
       <div>
-        <RegistrationWrapper>
+        {!validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
+        <RegistrationWrapper image={partner.partnerKey === "login" ? adminBg : partner.background}>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
               <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
             </Col>
             <Col span={12} align="right">
               <span>{t("component.signup.alreadyhaveanaccount")}</span>
-              <Link to="/login">{t("common.signinbtn")}</Link>
+              <Link to={getPartnerLoginUrl(partner)}>{t("common.signinbtn")}</Link>
             </Col>
           </RegistrationHeader>
           <RegistrationBody type="flex" align="middle">
@@ -105,10 +117,10 @@ class AdminSignup extends React.Component {
                     {t("common.edulastictext")} <br /> {t("component.signup.admin.foradmin")}
                   </h1>
                   <LinkDiv>
-                    <Link to="/signup">{t("component.signup.signupasteacher")}</Link>
+                    <Link to={getPartnerTeacherSignupUrl(partner)}>{t("component.signup.signupasteacher")}</Link>
                   </LinkDiv>
                   <LinkDiv>
-                    <Link to="/studentsignup">{t("component.signup.signupasstudent")}</Link>
+                    <Link to={getPartnerStudentSignupUrl(partner)}>{t("component.signup.signupasstudent")}</Link>
                   </LinkDiv>
                 </BannerText>
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
@@ -206,7 +218,7 @@ const enhance = compose(
 export default enhance(SignupForm);
 
 const RegistrationWrapper = styled.div`
-  background: ${greyGraphstroke} url(${adminBg});
+  background: ${greyGraphstroke} url(${props => props.image});
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;

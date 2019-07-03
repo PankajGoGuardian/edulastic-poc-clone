@@ -36,7 +36,9 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
 
   const getPolylinePoints = () =>
     localData
-      .map((dot, index) => `${step * index + margin / 2 + padding + step / 2},${convertUnitToPx(dot.y, gridParams)}`)
+      .map(
+        (dot, index) => `${step * index + margin / 2 + padding + step / 2},${convertUnitToPx(dot.y, gridParams) + 20}`
+      )
       .join(" ");
 
   const getActivePoint = index =>
@@ -89,7 +91,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
     <svg
       style={{ userSelect: "none" }}
       width={width}
-      height={height + heightAddition}
+      height={height + heightAddition + 20}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
@@ -102,7 +104,11 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
         displayGridlines={displayVerticalLines(showGridlines)}
       />
 
-      <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
+      <HorizontalLines
+        paddingTop={20}
+        gridParams={gridParams}
+        displayGridlines={displayHorizontalLines(showGridlines)}
+      />
 
       <Bars
         activeIndex={activeIndex}

@@ -38,7 +38,8 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
   const getPolylinePoints = () =>
     localData
       .map(
-        (dot, index) => `${step * index + margin / 2 + padding + (step - 2) / 2},${convertUnitToPx(dot.y, gridParams)}`
+        (dot, index) =>
+          `${step * index + margin / 2 + padding + (step - 2) / 2},${convertUnitToPx(dot.y, gridParams) + 20}`
       )
       .join(" ");
 
@@ -90,7 +91,7 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     <svg
       style={{ userSelect: "none" }}
       width={width}
-      height={height}
+      height={height + 40}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
@@ -102,7 +103,11 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
         displayGridlines={displayVerticalLines(showGridlines)}
       />
 
-      <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
+      <HorizontalLines
+        paddingTop={20}
+        gridParams={gridParams}
+        displayGridlines={displayHorizontalLines(showGridlines)}
+      />
 
       <Hists
         activeIndex={activeIndex}

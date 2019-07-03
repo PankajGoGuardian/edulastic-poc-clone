@@ -30,7 +30,8 @@ const EssayPlainTextPreview = ({
   showQuestionNumber,
   location,
   testItem,
-  qIndex
+  qIndex,
+  disableResponse
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
 
@@ -122,12 +123,6 @@ const EssayPlainTextPreview = ({
   const isV1Multipart = get(col, "isV1Multipart", false);
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
 
-  const isNotItemDetailPreview = qIndex === null && testItem && !location.pathname.includes("item-detail");
-
-  const isTestReview = qIndex !== null && testItem;
-
-  const isReadOnly = (isTestReview || isNotItemDetailPreview) && !location.pathname.includes("student");
-
   return (
     <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
@@ -177,7 +172,7 @@ const EssayPlainTextPreview = ({
         onChange={handleTextChange}
         size="large"
         onPaste={preventEvent}
-        readOnly={isReadOnly}
+        readOnly={disableResponse}
         onCopy={preventEvent}
         onCut={preventEvent}
         placeholder={item.placeholder || ""}

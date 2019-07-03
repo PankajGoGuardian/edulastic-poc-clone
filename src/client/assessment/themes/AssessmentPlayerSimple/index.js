@@ -4,10 +4,10 @@ import { connect } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 
-//actions
+// actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
-//components
+// components
 
 import { Container } from "../common";
 import PlayerHeader from "./PlayerHeader";

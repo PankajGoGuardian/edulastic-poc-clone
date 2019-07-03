@@ -120,19 +120,19 @@ class App extends Component {
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (
-        this.props.location.pathname.toLocaleLowerCase() === "/getstarted" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/signup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/studentsignup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/adminsignup" ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/getstarted") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/signup") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
         (path[0] && path[0].toLocaleLowerCase() === "district") ||
-        this.props.location.pathname.includes("/fwd")
+        this.props.location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/fwd")
       ) {
       } else if (
-        this.props.location.pathname === "/auth/mso" ||
-        this.props.location.pathname === "/auth/clever" ||
-        this.props.location.pathname === "/auth/google"
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
       ) {
-      } else if (this.props.location.pathname === `/partnerLogin/${path[1]}`) {
       } else {
         redirectRoute = "/login";
       }
@@ -158,13 +158,35 @@ class App extends Component {
               redirectPath={defaultRoute}
             />
             <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/Signup"
+              component={TeacherSignup}
+              redirectPath={defaultRoute}
+            />
             <LoggedOutRoute path="/login" component={Auth} redirectPath={defaultRoute} />
-            <LoggedOutRoute path="/partnerLogin/greatminds" component={Auth} redirectPath={defaultRoute} />
-            <LoggedOutRoute path="/partnerLogin/readicheck" component={Auth} redirectPath={defaultRoute} />
+            <LoggedOutRoute exact path="/partnerLogin/:partner" component={Auth} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/GetStarted" component={GetStarted} redirectPath={defaultRoute} />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/GetStarted"
+              component={GetStarted}
+              redirectPath={defaultRoute}
+            />
             <LoggedOutRoute path="/AdminSignup" component={AdminSignup} redirectPath={defaultRoute} />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/AdminSignup"
+              component={AdminSignup}
+              redirectPath={defaultRoute}
+            />
             <LoggedOutRoute path="/StudentSignup" component={StudentSignup} redirectPath={defaultRoute} />
-
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/StudentSignup"
+              component={StudentSignup}
+              redirectPath={defaultRoute}
+            />
             <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
             <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />

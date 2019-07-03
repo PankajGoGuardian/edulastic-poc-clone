@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useRef } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 
 import TestItemPreview from "../../components/TestItemPreview";
 import SidebarQuestionList from "./PlayerSideBar";
 import PlayerFooter from "./PlayerFooter";
+import DragScrollContainer from "../../components/DragScrollContainer";
 
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
@@ -23,10 +25,12 @@ const PlayerContentArea = ({
   settings,
   t
 }) => {
+  const scrollElementRef = useRef(null);
   return (
     <Main skinB="true">
       <MainWrapper>
-        <MainContent>
+        {scrollElementRef.current && <DragScrollContainer scrollWrraper={scrollElementRef.current} />}
+        <MainContent innerRef={scrollElementRef}>
           <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} />
         </MainContent>
         <PlayerFooter
@@ -45,6 +49,28 @@ const PlayerContentArea = ({
       </Sidebar>
     </Main>
   );
+};
+
+PlayerContentArea.propTypes = {
+  itemRows: PropTypes.array,
+  previewTab: PropTypes.string.isRequired,
+  dropdownOptions: PropTypes.array,
+  currentItem: PropTypes.number.isRequired,
+  gotoQuestion: PropTypes.func.isRequired,
+  onCheckAnswer: PropTypes.func.isRequired,
+  isFirst: PropTypes.func.isRequired,
+  isLast: PropTypes.func.isRequired,
+  moveToPrev: PropTypes.func.isRequired,
+  moveToNext: PropTypes.func.isRequired,
+  questions: PropTypes.object.isRequired,
+  answerChecksUsedForItem: PropTypes.number.isRequired,
+  settings: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired
+};
+
+PlayerContentArea.defaultProps = {
+  itemRows: [],
+  dropdownOptions: []
 };
 
 export default PlayerContentArea;

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -7,15 +7,14 @@ import { ThemeProvider } from "styled-components";
 import { Affix } from "antd";
 import { ActionCreators } from "redux-undo";
 import { withWindowSizes } from "@edulastic/common";
+import { nonAutoGradableTypes } from "@edulastic/constants";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
-import HeaderLeftMenu from "../common/HeaderLeftMenu";
 import HeaderMainMenu from "../common/HeaderMainMenu";
 import HeaderRightMenu from "../common/HeaderRightMenu";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import { nonAutoGradableTypes } from "@edulastic/constants";
 import { playersTheme } from "../assessmentPlayersTheme";
 
 import {
@@ -25,14 +24,13 @@ import {
   Header,
   Container,
   FlexContainer,
-  LogoCompact,
   TestButton,
   ToolBar,
   SaveAndExit,
-  SavePauseMobile,
   CalculatorContainer
 } from "../common";
 import TestItemPreview from "../../components/TestItemPreview";
+import DragScrollContainer from "../../components/DragScrollContainer";
 import {
   LARGE_DESKTOP_WIDTH,
   MEDIUM_DESKTOP_WIDTH,
@@ -49,12 +47,12 @@ import { currentItemAnswerChecksSelector } from "../../selectors/test";
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
     super(props);
+    const { settings } = props;
     this.state = {
       currentColor: "#ff0000",
       fillColor: "#ff0000",
       activeMode: "",
       lineWidth: 6,
-      scratchPadMode: false,
       cloneCurrentItem: props.currentItem,
       deleteMode: false,
       testItemState: "",
@@ -62,19 +60,18 @@ class AssessmentPlayerDefault extends React.Component {
       isSubmitConfirmationVisible: false,
       isSavePauseModalVisible: false,
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
-      currentTab: 0,
-      calculateMode: `${this.props.settings.calcType}_DESMOS`,
+      calculateMode: `${settings.calcType}_DESMOS`,
       changeMode: 0,
-      tool: 0,
-      history: 0
+      tool: 0
     };
+
+    this.scrollElementRef = React.createRef();
   }
 
   static propTypes = {
     theme: PropTypes.object,
     scratchPad: PropTypes.any.isRequired,
     isFirst: PropTypes.func.isRequired,
-    isLast: PropTypes.func.isRequired,
     moveToNext: PropTypes.func.isRequired,
     moveToPrev: PropTypes.func.isRequired,
     currentItem: PropTypes.any.isRequired,
@@ -88,7 +85,11 @@ class AssessmentPlayerDefault extends React.Component {
     windowWidth: PropTypes.number.isRequired,
     questions: PropTypes.object.isRequired,
     undoScratchPad: PropTypes.func.isRequired,
-    redoScratchPad: PropTypes.func.isRequired
+    redoScratchPad: PropTypes.func.isRequired,
+    settings: PropTypes.object.isRequired,
+    answerChecksUsedForItem: PropTypes.number.isRequired,
+    previewPlayer: PropTypes.bool.isRequired,
+    saveScratchPad: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -116,7 +117,8 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   openSubmitConfirmation = () => {
-    if (this.props.previewPlayer) {
+    const { previewPlayer } = this.props;
+    if (previewPlayer) {
       return;
     }
     this.setState({ isSubmitConfirmationVisible: true });
@@ -152,15 +154,13 @@ class AssessmentPlayerDefault extends React.Component {
 
   handleModeChange = (flag, value) => {
     this.setState({
-      scratchPadMode: flag,
       changeMode: value
     });
   };
 
   handleModeCaculate = calculateMode => {
     this.setState({
-      calculateMode,
-      scratchPadMode: false
+      calculateMode
     });
   };
 
@@ -232,7 +232,6 @@ class AssessmentPlayerDefault extends React.Component {
       theme,
       items,
       isFirst,
-      isLast,
       currentItem,
       itemRows,
       evaluation,
@@ -270,13 +269,14 @@ class AssessmentPlayerDefault extends React.Component {
       return <div />;
     }
     let isNonAutoGradable = false;
-    item.data &&
-      item.data.questions &&
+
+    if (item.data && item.data.questions) {
       item.data.questions.forEach(question => {
         if (nonAutoGradableTypes.includes(question.type)) {
           isNonAutoGradable = true;
         }
       });
+    }
 
     const scratchPadMode = tool === 5;
     return (
@@ -354,7 +354,7 @@ class AssessmentPlayerDefault extends React.Component {
                       disabled={isFirst()}
                       onClick={moveToPrev}
                     />
-                    <ControlBtn next skin type="primary" data-cy="next" icon={"right"} onClick={moveToNext} />
+                    <ControlBtn next skin type="primary" data-cy="next" icon="right" onClick={moveToNext} />
                     {windowWidth < LARGE_DESKTOP_WIDTH && (
                       <ToolButton
                         next
@@ -394,6 +394,7 @@ class AssessmentPlayerDefault extends React.Component {
                 <FlexContainer />
               </HeaderMainMenu>
               <HeaderRightMenu skin />
+              <DragScrollContainer />
             </Header>
           </Affix>
           <Main skin>

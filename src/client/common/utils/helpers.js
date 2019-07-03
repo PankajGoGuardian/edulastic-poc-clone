@@ -1,5 +1,6 @@
 import { signUpState } from "@edulastic/constants";
 import { isUndefined, isEmpty } from "lodash";
+import { Partners } from "./static/partnerData";
 
 export const getWordsInURLPathName = pathname => {
   let path = pathname;
@@ -43,6 +44,46 @@ export const isLoggedInForLoggedOutRoute = user => {
     }
   }
   return false;
+};
+
+export const validatePartnerUrl = partner => {
+  const pathname = location.pathname;
+  if (
+    partner.keyName !== "login" &&
+    pathname.toLocaleLowerCase().includes("partnerlogin") &&
+    pathname.toLocaleLowerCase().includes(partner.keyName.toLocaleLowerCase())
+  ) {
+    return true;
+  } else if (partner.keyName === "login" && !pathname.toLocaleLowerCase().includes("partnerlogin")) {
+    return true;
+  }
+  return false;
+};
+
+export const getPartnerLoginUrl = partner =>
+  partner.keyName === "login" ? `/login` : `/partnerLogin/${partner.keyName}/`;
+
+export const getPartnerTeacherSignupUrl = partner =>
+  partner.keyName === "login" ? `/signup` : `/partnerLogin/${partner.keyName}/signup`;
+
+export const getPartnerStudentSignupUrl = partner =>
+  partner.keyName === "login" ? `/studentsignup` : `/partnerLogin/${partner.keyName}/studentsignup`;
+
+export const getPartnerDASignupUrl = partner =>
+  partner.keyName === "login" ? `/adminsignup` : `/partnerLogin/${partner.keyName}/adminsignup`;
+
+export const getPartnerGetStartedUrl = partner =>
+  partner.keyName === "login" ? `/getStarted` : `/partnerLogin/${partner.keyName}/getStarted/`;
+
+export const getPartnerKeyFromUrl = pathname => {
+  const pathArr = pathname.split("/");
+  let partnersArr = Object.keys(Partners);
+  let tempPartner = pathArr[partnersArr.length - 1];
+  const foundPartner = partnersArr.find(item => item === tempPartner);
+  if (foundPartner) {
+    return foundPartner;
+  }
+  return "login";
 };
 
 export const getDistrictLoginUrl = districtShortName => {

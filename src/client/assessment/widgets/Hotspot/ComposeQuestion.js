@@ -142,7 +142,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.hotspot.enterQuestion")}
           onChange={stimulus => stimulus && handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
 
         <DropZoneToolbar

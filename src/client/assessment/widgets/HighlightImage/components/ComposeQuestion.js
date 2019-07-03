@@ -136,7 +136,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.highlightImage.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
 
         <DropZoneToolbar

@@ -60,7 +60,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.matrix.enterQuestion")}
           onChange={this.onChangeQuestion}
           value={item.stimulus ? item.stimulus : ""}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

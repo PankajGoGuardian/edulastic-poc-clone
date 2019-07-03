@@ -88,10 +88,10 @@ const ClozeTextInput = ({ resprops, id }) => {
     cAnswers,
     view,
     previewTab,
-    responsecontainerindividuals
+    responsecontainerindividuals,
+    uiStyle
   } = resprops;
   const ref = useRef();
-
   const MInput = item.multiple_line ? TextArea : Input;
   const { index } = find(responseIds, response => response.id === id);
   let { value } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
@@ -134,10 +134,14 @@ const ClozeTextInput = ({ resprops, id }) => {
   if (view === "edit") {
     width = (responseStyle && responseStyle.widthpx) || (style.widthpx || "auto");
   } else {
-    if (!value.length) {
-      width = style.widthpx || "auto";
+    if (uiStyle.globalSettings) {
+      if (!value.length) {
+        width = style.widthpx || "auto";
+      } else {
+        width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+      }
     } else {
-      width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+      width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
     }
   }
   return (

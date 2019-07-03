@@ -221,6 +221,14 @@ class Layout extends Component {
             </Col>
           </Row>
           <SpecialCharacters />
+          <Row>
+            <Checkbox
+              checked={!!uiStyle.globalSettings}
+              onChange={e => changeUiStyle("globalSettings", e.target.checked)}
+            >
+              {t("component.options.globalSettings")}
+            </Checkbox>
+          </Row>
           <Row gutter={20}>
             <Col md={24}>
               <Label>{t("component.options.responsecontainerglobal")}</Label>

@@ -188,6 +188,7 @@ class ClozeTextDisplay extends Component {
             isReviewTab,
             view,
             previewTab,
+            uiStyle,
             cAnswers: get(item, "validation.valid_response.value", [])
           };
 

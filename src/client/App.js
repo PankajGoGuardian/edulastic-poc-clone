@@ -137,9 +137,7 @@ class App extends Component {
         redirectRoute = "/login";
       }
     }
-    console.log("this.props.location.pathname", this.props.location.pathname);
-    console.log("redirectRoute", redirectRoute);
-    console.log("defaultRoute", defaultRoute);
+
     // signup routes hidden till org reference is not done
     return (
       <div>
@@ -168,7 +166,6 @@ class App extends Component {
             />
             <LoggedOutRoute path="/login" component={Auth} redirectPath={defaultRoute} />
             <LoggedOutRoute exact path="/partnerLogin/:partner" component={Auth} redirectPath={defaultRoute} />
-            {/* <LoggedOutRoute path="/partnerLogin/readicheck" component={Auth} redirectPath={defaultRoute} /> */}
             <LoggedOutRoute path="/GetStarted" component={GetStarted} redirectPath={defaultRoute} />
             <LoggedOutRoute
               exact

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { trim, debounce } from "lodash";
 import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
@@ -125,6 +125,7 @@ class Signup extends React.Component {
 
     return (
       <div>
+        {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
         <RegistrationWrapper image={image}>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>

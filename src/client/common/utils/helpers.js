@@ -48,9 +48,17 @@ export const isLoggedInForLoggedOutRoute = user => {
 
 export const validatePartnerUrl = partner => {
   const pathname = location.pathname;
-  if (partner.keyName !== "login" && pathname.includes("partnerLogin") && pathname.includes(partner.keyName)) {
+  if (
+    partner.keyName !== "login" &&
+    pathname.toLocaleLowerCase().includes("partnerlogin") &&
+    pathname.toLocaleLowerCase().includes(partner.keyName.toLocaleLowerCase())
+  ) {
     return true;
-  } else if (partner.keyName === "login" && !pathname.includes("partnerLogin") && pathname.includes(partner.keyName)) {
+  } else if (
+    partner.keyName === "login" &&
+    !pathname.toLocaleLowerCase().includes("partnerlogin") &&
+    pathname.toLocaleLowerCase().includes(partner.keyName.toLocaleLowerCase())
+  ) {
     return true;
   }
   return false;

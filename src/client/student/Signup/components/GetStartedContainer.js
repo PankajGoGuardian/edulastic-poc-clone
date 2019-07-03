@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Form } from "antd";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { springGreen, mainTextColor, greyGraphstroke, greenDark3, grey } from "@edulastic/colors";

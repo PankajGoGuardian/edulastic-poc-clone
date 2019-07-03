@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import {

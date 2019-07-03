@@ -1,4 +1,4 @@
-import QuillInput from "./QuillInput";
+import FroalaEditorInput from "./FroalaEditorInput";
 
 const elWeight = {
   point: 1,
@@ -29,7 +29,7 @@ function onHandler() {
       return;
     }
 
-    QuillInput(currentElement, board).setFocus();
+    FroalaEditorInput(currentElement, board).setFocus();
   };
 }
 

@@ -13,7 +13,7 @@ import {
   Secant,
   Sin,
   Tangent,
-  QuillInput
+  FroalaEditorInput
 } from ".";
 
 function onHandler(board, event) {
@@ -54,7 +54,7 @@ function onHandler(board, event) {
         y = coords.usrCoords[2] - (i - 2) * deltaY;
       }
       const point = Point.create(board, [x, y]);
-      QuillInput(point, this).setLabel(label, true);
+      FroalaEditorInput(point, this).setLabel(label, true);
       points.push(point);
     });
 
@@ -103,7 +103,7 @@ function onHandler(board, event) {
     }
   }
 
-  QuillInput(newElement, this).setLabel(drawingObject.label, true);
+  FroalaEditorInput(newElement, this).setLabel(drawingObject.label, true);
   return newElement;
 }
 

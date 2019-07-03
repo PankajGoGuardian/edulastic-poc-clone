@@ -3,6 +3,7 @@ import { isUndefined, isEmpty } from "lodash";
 import { Partners } from "./static/partnerData";
 
 export const getWordsInURLPathName = pathname => {
+  // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   let path = pathname;
   path = path + "";
   path = path.split("/");

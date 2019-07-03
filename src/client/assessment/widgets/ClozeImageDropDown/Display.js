@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { shuffle, isUndefined, isEmpty } from "lodash";
+import { shuffle, isUndefined, isEmpty, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
 import { Stimulus } from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
@@ -80,6 +80,13 @@ class Display extends Component {
     return maxHeight;
   };
 
+  getResponseBoxMaxValues = () => {
+    const { responseContainers } = this.props;
+    const maxTop = maxBy(responseContainers, res => res.top);
+    const maxLeft = maxBy(responseContainers, res => res.left);
+    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+  };
+
   render() {
     const {
       smallSize,
@@ -104,7 +111,8 @@ class Display extends Component {
       theme,
       showQuestionNumber,
       disableResponse,
-      imageOptions
+      imageOptions,
+      isReviewTab
     } = this.props;
 
     const { shuffleOptions } = configureOptions;
@@ -125,8 +133,22 @@ class Display extends Component {
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
+    const cAnswers = get(item, "validation.valid_response.value", []);
+
     const imageHeight = this.getHeight();
-    const canvasHeight = imageHeight + (imageOptions.y || 0);
+    const imageWidth = this.getWidth();
+    let canvasHeight = imageHeight + (imageOptions.y || 0);
+    let canvasWidth = imageWidth + +(imageOptions.x || 0);
+
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+
+    if (canvasHeight < responseBoxMaxTop) {
+      canvasHeight = responseBoxMaxTop + 20;
+    }
+
+    if (canvasWidth < responseBoxMaxLeft) {
+      canvasWidth = responseBoxMaxLeft;
+    }
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
@@ -134,7 +156,11 @@ class Display extends Component {
         fontSize={fontSize}
         height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
       >
-        <StyledPreviewContainer smallSize={smallSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+        <StyledPreviewContainer
+          smallSize={smallSize}
+          width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
+          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+        >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
@@ -222,7 +248,7 @@ class Display extends Component {
                       backgroundColor={backgroundColor}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
-                      defaultValue={userSelections[dropTargetIndex]}
+                      defaultValue={isReviewTab ? cAnswers[dropTargetIndex] : userSelections[dropTargetIndex]}
                     />
                   )}
                 </div>
@@ -240,6 +266,8 @@ class Display extends Component {
         imageUrl={imageUrl || ""}
         imageWidth={this.getWidth()}
         imageHeight={this.getHeight()}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
         imageAlterText={imageAlterText}
         imagescale={imagescale}
         stemnumeration={stemnumeration}
@@ -319,7 +347,8 @@ Display.propTypes = {
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  imageOptions: PropTypes.object
+  imageOptions: PropTypes.object,
+  isReviewTab: PropTypes.bool
 };
 
 Display.defaultProps = {
@@ -347,7 +376,8 @@ Display.defaultProps = {
     responsecontainerindividuals: []
   },
   showQuestionNumber: false,
-  imageOptions: {}
+  imageOptions: {},
+  isReviewTab: false
 };
 
 export default withTheme(Display);

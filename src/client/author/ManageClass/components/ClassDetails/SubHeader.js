@@ -14,9 +14,11 @@ const SubHeader = ({ name, districtName, institutionName, code }) => {
         </Link>
         <TitleWarapper>
           <div>{name}</div>
+
           <p>
             {districtName},{institutionName}
           </p>
+
         </TitleWarapper>
       </LeftContent>
       <RightContent>

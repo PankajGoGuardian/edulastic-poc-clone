@@ -25,7 +25,7 @@ class Photo extends React.Component {
         this.setState({ loading: false });
         return;
       }
-      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       const { onChangeField } = this.props;
       this.setState(
         {
@@ -40,7 +40,7 @@ class Photo extends React.Component {
   };
 
   render() {
-    const { height, windowWidth, url, owner, readOnlyMode = false } = this.props;
+    const { height, windowWidth, url, owner, isEditable = false } = this.props;
 
     const uploadButton = (
       <Container height={height}>
@@ -65,7 +65,7 @@ class Photo extends React.Component {
 
     return (
       <UploadWrapper>
-        <Upload disabled={!owner || readOnlyMode} {...props}>
+        <Upload disabled={!owner || !isEditable} {...props}>
           <Container height={height}>
             <ImageContainer height={height}>
               {loading ? (
@@ -92,7 +92,7 @@ Photo.propTypes = {
   url: PropTypes.string,
   owner: PropTypes.bool,
   height: PropTypes.number,
-  readOnlyMode: PropTypes.bool,
+  isEditable: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired,
   onChangeField: PropTypes.func
 };

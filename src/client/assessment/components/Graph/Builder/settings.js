@@ -123,7 +123,7 @@ export const getLabelPositionParameters = elementType => {
       return {
         position: "top",
         offset: [0, 10],
-        anchorX: "middle",
+        anchorX: "left",
         anchorY: "bottom"
       };
     case 96:

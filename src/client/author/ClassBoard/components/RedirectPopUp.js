@@ -1,6 +1,6 @@
 //@ts-check
-import React, { useState, useCallback } from "react";
-import { Modal, Button, Row, Col, Input, Radio, Select, DatePicker } from "antd";
+import React, { useState, useCallback, useEffect } from "react";
+import { Modal, Button, Row, Col, Input, Radio, Select, DatePicker, message } from "antd";
 import moment from "moment";
 import { assignmentApi } from "@edulastic/api";
 
@@ -9,12 +9,14 @@ const Option = Select.Option;
 
 /**
  * @typedef {Object} RedirectPopUpProps
- * @property {{_id: string, firstName: string}[]} allStudents
- * @property {string[]} selectedStudents
+ * @property {{_id: string, firstName: string, status:string}[]} allStudents
+ * @property {Object} selectedStudents
  * @property {Object} additionalData
  * @property {boolean} open
  * @property {Function} closePopup
  * @property {Function} setSelected
+ * @property {string[]} disabledList
+ * @property {string[]} absentList
  * @property {string} assignmentId
  * @property {string} groupId
  */
@@ -30,22 +32,63 @@ const RedirectPopUp = ({
   closePopup,
   setSelected,
   assignmentId,
+  absentList = [],
+  disabledList = [],
   groupId
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
   const [loading, setLoading] = useState(false);
+  const [type, setType] = useState("specificStudents");
+  const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
+  useEffect(() => {
+    let setRedirectStudents = {};
+    if (type === "absentStudents") {
+      absentList.forEach(st => {
+        setRedirectStudents[st] = true;
+      });
+      setStudentsToRedirect(setRedirectStudents);
+    } else if (type === "entire") {
+      const isNotRedirectable = disabledList.length > 0;
+      !isNotRedirectable &&
+        allStudents.forEach(st => {
+          setRedirectStudents[st._id] = true;
+        });
+      setStudentsToRedirect(isNotRedirectable ? {} : setRedirectStudents);
+    } else {
+      setStudentsToRedirect(selectedStudents);
+    }
+  }, [type, selectedStudents]);
+
   const submitAction = useCallback(async () => {
+    if (dueDate < moment()) {
+      return message.error("Select a Future end Date");
+    }
     setLoading(true);
-    const selected = Object.keys(selectedStudents);
-    await assignmentApi.redirect(assignmentId, {
-      _id: groupId,
-      specificStudents: true,
-      students: selected,
-      endDate: +dueDate
-    });
+    const selected = Object.keys(studentsToRedirect);
+    if (selected.length === 0) {
+      message.error(
+        type === "entire"
+          ? "You can redirect an assessment only after the assessment has been submitted by the student(s)."
+          : "At least one student should be selected to redirect assessment."
+      );
+    } else {
+      await assignmentApi.redirect(assignmentId, {
+        _id: groupId,
+        specificStudents: type === "entire" ? false : true,
+        students: type === "entire" ? [] : selected,
+        endDate: +dueDate
+      });
+      closePopup();
+    }
     setLoading(false);
-    closePopup();
-  }, [selectedStudents, assignmentId, dueDate, groupId]);
+  }, [studentsToRedirect, assignmentId, dueDate, groupId]);
+
+  const disabledEndDate = endDate => {
+    if (!endDate) {
+      return false;
+    }
+    return endDate < moment().startOf("day");
+  };
 
   return (
     <Modal
@@ -67,7 +110,12 @@ const RedirectPopUp = ({
         {/* 
             TODO: handle the change
         */}
-        <RadioGroup value="specificStudents">
+        <RadioGroup
+          value={type}
+          onChange={e => {
+            setType(e.target.value);
+          }}
+        >
           <Radio value="entire">Entire Class</Radio>
           <Radio value="absentStudents">Absent Students</Radio>
           <Radio value="specificStudents">Specific Students</Radio>
@@ -76,29 +124,44 @@ const RedirectPopUp = ({
 
       <Row> Students </Row>
       <Row>
-        <Select
-          mode="multiple"
-          placeholder="Select the students"
-          value={Object.keys(selectedStudents)}
-          onChange={v => {
-            setSelected(v);
-          }}
-        >
-          {allStudents.map(x => (
-            <Option key={x._id} value={x._id}>
-              {x.firstName}
-            </Option>
-          ))}
-        </Select>
+        <Col span={24}>
+          <Row>
+            <Select
+              mode="multiple"
+              disabled={type !== "specificStudents"}
+              style={{ width: "100%" }}
+              placeholder="Select the students"
+              value={Object.keys(selectedStudents)}
+              onChange={v => {
+                setSelected(v);
+              }}
+            >
+              {allStudents.map(x => (
+                <Option key={x._id} value={x._id} disabled={disabledList.includes(x._id)}>
+                  {x.firstName}
+                </Option>
+              ))}
+            </Select>
+          </Row>
+        </Col>
       </Row>
       <Row>
+        <Row>Close Date</Row>
         <Col span={12}>
-          <Row>Close Date</Row>
           <Row>
             <DatePicker
+              allowClear={false}
+              disabledDate={disabledEndDate}
+              style={{ width: "100%", cursor: "pointer" }}
               value={dueDate}
+              showTime
+              showToday={false}
               onChange={v => {
-                setDueDate(v);
+                if (!v) {
+                  setDueDate(moment().add(1, "day"));
+                } else {
+                  setDueDate(v);
+                }
               }}
             />
           </Row>

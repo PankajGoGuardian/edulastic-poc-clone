@@ -242,3 +242,7 @@ export const MenuItem = styled(Menu.Item)`
     fill: ${lightBlue3};
   }
 `;
+
+export const TableDataSpan = styled.span`
+  margin-left: 2rem;
+`;

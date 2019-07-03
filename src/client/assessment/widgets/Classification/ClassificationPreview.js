@@ -40,7 +40,8 @@ const ClassificationPreview = ({
   theme,
   qIndex,
   showQuestionNumber,
-  disableResponse
+  disableResponse,
+  changePreviewTab
 }) => {
   const styles = {
     itemContainerStyle: {
@@ -64,7 +65,7 @@ const ClassificationPreview = ({
       minHeight: 140,
       borderRadius: 4
     },
-    correctAnswersMargins: { marginBottom: 0, marginRight: 30 }
+    correctAnswersMargins: { marginBottom: 0, marginRight: 30, width: "100%" }
   };
 
   const {
@@ -238,51 +239,33 @@ const ClassificationPreview = ({
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
         <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl} isBgImageMaximized={isBgImageMaximized}>
-          <table style={{ width: "100%", flexGrow: 2 }}>
-            <thead>
-              {rowHeader && (
-                <tr>
-                  <th data-cy="rowHeader" colSpan={2} dangerouslySetInnerHTML={{ __html: rowHeader }} />
-                </tr>
-              )}
-              <tr>
-                {rowTitles.length > 0 && <th />}
-                {colTitles.slice(0, colCount).map((ite, ind) => (
-                  <th key={ind}>
-                    <CenteredText dangerouslySetInnerHTML={{ __html: ite }} />
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {boxes.map(
-                (n, ind) =>
-                  arrayOfRows.has(ind) && (
-                    <TableRow
-                      key={ind}
-                      isBackgroundImageTransparent={transparent_background_image}
-                      isTransparent={transparent_possible_responses}
-                      startIndex={ind}
-                      width={get(item, "ui_style.row_titles_width", "100%")}
-                      height={get(item, "ui_style.row_min_height", "150px")}
-                      colCount={colCount}
-                      arrayOfRows={arrayOfRows}
-                      rowTitles={rowTitles}
-                      drop={drop}
-                      dragHandle={show_drag_handle}
-                      answers={answers}
-                      validArray={evaluation}
-                      preview={preview}
-                      possible_responses={possible_responses}
-                      onDrop={onDrop}
-                      isResizable={view === EDIT}
-                      item={item}
-                      disableResponse={disableResponse}
-                    />
-                  )
-              )}
-            </tbody>
-          </table>
+          {boxes.map(
+            (n, ind) =>
+              arrayOfRows.has(ind) && (
+                <TableRow
+                  colTitles={colTitles}
+                  key={ind}
+                  isBackgroundImageTransparent={transparent_background_image}
+                  isTransparent={transparent_possible_responses}
+                  startIndex={ind}
+                  width={get(item, "ui_style.row_titles_width", "100%")}
+                  height={get(item, "ui_style.row_min_height", "150px")}
+                  colCount={colCount}
+                  arrayOfRows={arrayOfRows}
+                  rowTitles={rowTitles}
+                  drop={drop}
+                  dragHandle={show_drag_handle}
+                  answers={answers}
+                  validArray={evaluation}
+                  preview={preview}
+                  possible_responses={possible_responses}
+                  onDrop={onDrop}
+                  isResizable={view === EDIT}
+                  item={item}
+                  disableResponse={disableResponse}
+                />
+              )
+          )}
         </TableWrapper>
         {!disableResponse && (
           <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
@@ -316,6 +299,7 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
+                                changePreviewTab={changePreviewTab}
                               />
                             ) : (
                               dragItems.includes(ite) && (
@@ -328,6 +312,7 @@ const ClassificationPreview = ({
                                   onDrop={onDrop}
                                   item={ite}
                                   disableResponse={disableResponse}
+                                  changePreviewTab={changePreviewTab}
                                 />
                               )
                             )
@@ -366,6 +351,7 @@ const ClassificationPreview = ({
                               onDrop={onDrop}
                               item={ite}
                               disableResponse={disableResponse}
+                              changePreviewTab={changePreviewTab}
                             />
                           ) : (
                             dragItems.includes(ite) && (
@@ -378,6 +364,7 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
+                                changePreviewTab={changePreviewTab}
                               />
                             )
                           )
@@ -435,7 +422,8 @@ ClassificationPreview.propTypes = {
   theme: PropTypes.object.isRequired,
   qIndex: PropTypes.number,
   showQuestionNumber: PropTypes.bool,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 ClassificationPreview.defaultProps = {

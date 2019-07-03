@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { dashBorderColor, mainBlueColor, darkBlue } from "@edulastic/colors";
+import { dashBorderColor, themeColorLight, darkBlue } from "@edulastic/colors";
 import { IconTrash as Icon } from "@edulastic/icons";
 
 export const Line = styled.line`
@@ -13,19 +13,19 @@ export const Circle = styled.circle`
   cursor: pointer;
   position: relative;
   z-index: 10;
-  stroke: ${mainBlueColor};
-  fill: ${mainBlueColor};
+  stroke: ${themeColorLight};
+  fill: ${themeColorLight};
 `;
 
 export const Bar = styled.rect`
   cursor: pointer;
   z-index: 0;
-  stroke: ${({ color }) => color || mainBlueColor};
-  fill: ${({ color }) => color || mainBlueColor};
+  stroke: ${({ color }) => color || themeColorLight};
+  fill: ${({ color }) => color || themeColorLight};
   transition: fill 0.25s linear;
 `;
 
-const getRightColor = (hoverState, color) => (hoverState ? darkBlue : color || mainBlueColor);
+const getRightColor = (hoverState, color) => (hoverState ? darkBlue : color || themeColorLight);
 
 export const ActiveBar = styled.rect`
   cursor: pointer;
@@ -71,7 +71,11 @@ export const IconTrash = styled(Icon)`
 `;
 
 export const Cross = styled.path`
-  stroke: ${mainBlueColor};
-  fill: ${mainBlueColor};
+  stroke: ${themeColorLight};
+  fill: ${themeColorLight};
   stroke-width: 4;
+`;
+
+export const CorrectAnswerWrapper = styled.div`
+  margin-top: 50px;
 `;

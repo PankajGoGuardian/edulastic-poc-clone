@@ -74,7 +74,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.cloze.text.thisisstem")}
           onChange={this.onChangeQuestion}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

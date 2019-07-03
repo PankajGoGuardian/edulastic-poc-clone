@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, Subtitle } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 import { charts as checkAnswerMethod } from "@edulastic/evaluators";
@@ -16,6 +16,7 @@ import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
+import { CorrectAnswerWrapper } from "./styled";
 
 const ChartPreview = ({
   item,
@@ -27,7 +28,7 @@ const ChartPreview = ({
   showQuestionNumber,
   disableResponse,
   evaluation,
-  location,
+  t,
   metaData,
   changePreviewTab
 }) => {
@@ -72,11 +73,13 @@ const ChartPreview = ({
   const passData = {
     ...chart_data
   };
-  if (previewTab === SHOW || (location && location.pathname.includes("author") && disableResponse)) {
-    passData.data = validation.valid_response.value;
-  } else if (answerIsActual() || view === EDIT) {
+
+  if (answerIsActual() || view === EDIT) {
     passData.data = [...userAnswer];
   }
+
+  const answerData = validation.valid_response.value;
+  const answerCorrect = Array(answerData.length).fill(true);
 
   const correct =
     evaluation && evaluation.length && previewTab === CHECK
@@ -118,6 +121,21 @@ const ChartPreview = ({
         saveAnswer={saveAnswerHandler}
         correct={correct}
       />
+      {view === PREVIEW && previewTab === SHOW && (
+        <CorrectAnswerWrapper>
+          <Subtitle>{t("component.chart.correctAnswer")}</Subtitle>
+          <CurrentChart
+            {...passData}
+            data={answerData}
+            gridParams={calculatedParams}
+            view={view}
+            disableResponse
+            previewTab={previewTab}
+            saveAnswer={saveAnswerHandler}
+            correct={answerCorrect}
+          />
+        </CorrectAnswerWrapper>
+      )}
     </Paper>
   );
 };
@@ -135,7 +153,8 @@ ChartPreview.propTypes = {
   metaData: PropTypes.string.isRequired,
   qIndex: PropTypes.number,
   evaluation: PropTypes.any,
-  changePreviewTab: PropTypes.func
+  changePreviewTab: PropTypes.func,
+  t: PropTypes.func.isRequired
 };
 
 ChartPreview.defaultProps = {

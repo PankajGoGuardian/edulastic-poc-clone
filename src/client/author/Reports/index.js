@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { compose } from "redux";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Row, Col } from "antd";
@@ -8,7 +7,7 @@ import next from "immer";
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { StandardsMasteryReportContainer } from "./subPages/standardsMasteryReport";
 
-import { StyledContainer, StyledCard } from "./common/styled";
+import { StyledContainer, StyledCard, PrintableScreen } from "./common/styled";
 
 import { SingleAssessmentReport } from "./components/singleAssessmentReport";
 import { StudentProfileReport } from "./components/studentProfileReport";
@@ -18,6 +17,8 @@ import { CustomizedHeaderWrapper } from "./common/components/header";
 
 import navigation from "./common/static/json/navigation.json";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
+
+import { getPrintingState, setPrintingStateAction } from "./ducks";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
@@ -29,7 +30,7 @@ const Container = props => {
   };
 
   const onPrintClickCB = () => {
-    console.log("not implemented yet");
+    props.setPrintingStateAction(true);
   };
 
   const onDownloadCSVClickCB = () => {
@@ -39,6 +40,13 @@ const Container = props => {
   const onRefineResultsCB = (event, status) => {
     setShowFilter(status);
   };
+
+  useEffect(() => {
+    if (props.isPrinting) {
+      window.print();
+      props.setPrintingStateAction(false);
+    }
+  }, [props.isPrinting]);
 
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS ENDED |-----|-----|-----|-----|----- //
 
@@ -60,8 +68,10 @@ const Container = props => {
     }
   });
 
+  const expandFilter = showFilter || props.isPrinting;
+
   return (
-    <div>
+    <PrintableScreen>
       <CustomizedHeaderWrapper
         breadcrumbsData={headerSettings.breadcrumbData}
         title={headerSettings.title}
@@ -74,11 +84,17 @@ const Container = props => {
       <Route
         path={`/author/reports/assessment-summary/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/peer-performance/test/`}
+        render={_props => (
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
+        )}
+      />
+      <Route
+        path={`/author/reports/question-analysis/test/`}
         render={_props => (
           <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
         )}
@@ -86,28 +102,28 @@ const Container = props => {
       <Route
         path={`/author/reports/response-frequency/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/performance-by-standards/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/performance-by-students/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/standards-gradebook`}
         render={_props => (
-          <StandardsMasteryReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <StandardsMasteryReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
-    </div>
+    </PrintableScreen>
   );
 };
 
@@ -148,4 +164,13 @@ const Reports = props => {
   );
 };
 
-export default Container;
+const enhance = connect(
+  state => ({
+    isPrinting: getPrintingState(state)
+  }),
+  {
+    setPrintingStateAction
+  }
+)(Container);
+
+export default enhance;

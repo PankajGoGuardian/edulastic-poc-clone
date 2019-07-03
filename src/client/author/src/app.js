@@ -6,10 +6,11 @@ import { Layout } from "antd";
 import { connect } from "react-redux";
 import { Progress } from "@edulastic/common";
 import { tabletWidth, mainBgColor } from "@edulastic/colors";
-import DragScroll, { DOWNWARDS } from "@edulastic/common/src/components/DragScroll";
+import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { themes } from "../../assessment/themes";
 import Sidebar from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
+import { MainContainer } from "./MainStyle";
 /* lazy load routes */
 
 const Dashboard = lazy(() => import("../Dashboard"));
@@ -68,19 +69,21 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
   const isPrintPreview = history.location.pathname.includes("printpreview");
   return (
     <ThemeProvider theme={themes.default}>
-      <StyledLayout>
-        <MainContainer isCollapsed={isCollapsed} isPrintPreview={isPrintPreview}>
-          <SidebarCompnent isPrintPreview={isPrintPreview} />
-          <Wrapper>
-            <Suspense fallback={<Progress />}>
-              <Switch>
-                <Route exact path={`${match.url}/assignments`} component={Assignments} />
+      <ScrollContext.Provider value={{ getScrollElement: () => window }}>
+        <StyledLayout>
+          <MainContainer isCollapsed={isCollapsed} isPrintPreview={isPrintPreview}>
+            <SidebarCompnent isPrintPreview={isPrintPreview} />
+            <Wrapper>
+              <Suspense fallback={<Progress />}>
+                <Switch>
+                  <Route exact path={`${match.url}/assignments`} component={Assignments} />
 
-                <Route exact path={`${match.url}/tests/select`} component={AssessmentCreate} />
-                <Route exact path={`${match.url}/tests/snapquiz`} component={AssessmentCreate} />
-                <Route exact path={`${match.url}/assignments/select`} component={AssignmentCreate} />
+                  <Route exact path={`${match.url}/tests/select`} component={AssessmentCreate} />
+                  <Route exact path={`${match.url}/tests/snapquiz`} component={AssessmentCreate} />
+                  <Route exact path={`${match.url}/assignments/select`} component={AssignmentCreate} />
 
-                <Route exact path={`/author/dashboard`} component={Dashboard} />
+                  <Route exact path={`/author/dashboard`} component={Dashboard} />
+
 
                 <Route
                   exact
@@ -225,135 +228,161 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   )}
                 />
 
-                <Route
-                  exact
-                  path="/author/playlists/limit/:limit/page/:page/:filter?"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <PlayList {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route exact path="/author/add-item" component={ItemAdd} />
-                <Route
-                  exact
-                  path={`${match.url}/tests`}
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <TestList {...props} />
-                    </Suspense>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/author/playlists/limit/:limit/page/:page/:filter?"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <PlayList {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route exact path="/author/add-item" component={ItemAdd} />
+                  <Route
+                    exact
+                    path={`${match.url}/tests`}
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <TestList {...props} />
+                      </Suspense>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path={`${match.url}/tests/filter/:filterType`}
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <TestList {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exacts
-                  path="/author/tests/create"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <TestPage {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/author/tests/:id"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <TestPage {...props} />
-                    </Suspense>
-                  )}
-                />
+                  <Route
+                    exact
+                    path={`${match.url}/tests/filter/:filterType`}
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <TestList {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exacts
+                    path="/author/tests/create"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <TestPage {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:id"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <TestPage {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/createItem/:itemId"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <ItemDetail isTestFlow {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:id/editAssigned"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <TestPage {...props} editAssigned />
+                      </Suspense>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/author/tests/:id/editAssigned"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <TestPage {...props} editAssigned />
-                    </Suspense>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/author/tests/:id/publish"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <SuccessPage {...props} published />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:id/assign"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <SuccessPage {...props} isAssignSuccess />
+                      </Suspense>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/author/tests/:id/publish"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <SuccessPage {...props} published />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/author/tests/:id/assign"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <SuccessPage {...props} isAssignSuccess />
-                    </Suspense>
-                  )}
-                />
+                  <Route
+                    exact
+                    path="/author/tests/:id/versioned/old/:oldId"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <TestPage {...props} versioned />
+                      </Suspense>
+                    )}
+                  />
 
-                <Route
-                  exact
-                  path="/author/tests/:id/versioned/old/:oldId"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <TestPage {...props} versioned />
-                    </Suspense>
-                  )}
-                />
-
-                <Route
-                  exact
-                  path="/author/tests/limit/:limit/page/:page/:filter?"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <TestList {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
-                <Route exact path="/author/questions/create" component={QuestionEditor} />
-                <Route exact path="/author/questions/edit" component={QuestionEditor} />
-                <Route path="/author/reports/:reportType?" component={Reports} />
-                <Route exact path="/author/districtprofile" component={DistrictProfile} />
-                <Route exact path="/author/settings/testsettings" component={TestSetting} />
-                <Route exact path="/author/settings/term" component={Term} />
-                <Route exact path="/author/settings/districtpolicies" component={DistrictPolicy} />
-                <Route exact path="/author/settings/performance-bands" component={PerformanceBand} />
-                <Route exact path="/author/settings/standards-proficiency" component={StandardsProficiency} />
-                <Route exact path="/author/schools" component={Schools} />
-                <Route exact path="/author/users/student" component={Student} />
-                <Route exact path="/author/users/teacher" component={Teacher} />
-                <Route exact path="/author/users/district-admin" component={DistrictAdmin} />
-                <Route exact path="/author/users/school-admin" component={SchoolAdmin} />
-                <Route exact path="/author/courses" component={Courses} />
-                <Route exact path="/author/classes" component={Classes} />
-                <Route exact path="/author/settings/interested-standards" component={InterestedStandards} />
-              </Switch>
-            </Suspense>
-            <DragScroll
-              style={{
-                position: "fixed",
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: 50
-              }}
-              direction={DOWNWARDS}
-            />
-          </Wrapper>
-        </MainContainer>
-      </StyledLayout>
+                  <Route
+                    exact
+                    path="/author/tests/limit/:limit/page/:page/:filter?"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <TestList {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/createItem/:itemId/pickup-questiontype"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <PickUpQuestionType isTestFlow {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/createItem/:itemId/questions/create"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <QuestionEditor isTestFlow {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/tests/:testId/createItem/:itemId/questions/edit"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <QuestionEditor isTestFlow isEditFlow {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
+                  <Route exact path="/author/questions/create" component={QuestionEditor} />
+                  <Route exact path="/author/questions/edit" component={QuestionEditor} />
+                  <Route path="/author/reports/:reportType?" component={Reports} />
+                  <Route exact path="/author/districtprofile" component={DistrictProfile} />
+                  <Route exact path="/author/settings/testsettings" component={TestSetting} />
+                  <Route exact path="/author/settings/term" component={Term} />
+                  <Route exact path="/author/settings/districtpolicies" component={DistrictPolicy} />
+                  <Route exact path="/author/settings/performance-bands" component={PerformanceBand} />
+                  <Route exact path="/author/settings/standards-proficiency" component={StandardsProficiency} />
+                  <Route exact path="/author/schools" component={Schools} />
+                  <Route exact path="/author/users/student" component={Student} />
+                  <Route exact path="/author/users/teacher" component={Teacher} />
+                  <Route exact path="/author/users/district-admin" component={DistrictAdmin} />
+                  <Route exact path="/author/users/school-admin" component={SchoolAdmin} />
+                  <Route exact path="/author/courses" component={Courses} />
+                  <Route exact path="/author/classes" component={Classes} />
+                  <Route exact path="/author/settings/interested-standards" component={InterestedStandards} />
+                </Switch>
+              </Suspense>
+            </Wrapper>
+          </MainContainer>
+        </StyledLayout>
+      </ScrollContext.Provider>
     </ThemeProvider>
   );
 };
@@ -366,29 +395,6 @@ Author.propTypes = {
   match: PropTypes.object.isRequired
 };
 
-const MainContainer = styled.div`
-  padding-left: ${props => {
-    if (props.isPrintPreview) {
-      return "0";
-    }
-    return "100px";
-  }};
-  width: 100%;
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 100px;
-    z-index: 999;
-  }
-  @media (max-width: ${tabletWidth}) {
-    padding-left: 0px;
-    .fixed-header {
-      left: 0;
-      background: #00ad50;
-    }
-  }
-`;
 const SidebarCompnent = styled(Sidebar)`
   display: ${props => (props.isPrintPreview ? "none" : "block")};
   @media (max-width: ${tabletWidth}) {

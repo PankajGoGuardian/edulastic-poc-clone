@@ -93,6 +93,21 @@ const msoSSOLogin = data =>
     })
     .then(result => result.data.result);
 
+const V1Redirect = id =>
+  api
+    .callApi({
+      url: `${prefix}/fwd?id=${id}`
+    })
+    .then(result => result.data);
+
+const validateClassCode = params =>
+  api
+    .callApi({
+      url: `${prefix}/class-code/validate/`,
+      params
+    })
+    .then(result => result.data.result);
+
 export default {
   login,
   signup,
@@ -104,5 +119,7 @@ export default {
   msoLogin,
   msoSSOLogin,
   checkUserExist,
-  signupWithGoogle
+  signupWithGoogle,
+  V1Redirect,
+  validateClassCode
 };

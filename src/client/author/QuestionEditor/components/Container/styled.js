@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 
 export const BackLink = styled.span`
   background: #fff;
@@ -9,7 +9,7 @@ export const BackLink = styled.span`
   font-weight: 600;
   line-height: 28px;
   padding: 0 20px;
-  color: ${newBlue};
+  color: ${themeColor};
   text-transform: uppercase;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   cursor: pointer;

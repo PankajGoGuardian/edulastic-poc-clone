@@ -1,21 +1,21 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
-import { Table } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
+import { ReviewTableWrapper } from "./styled";
 
 import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 
-const ItemsTable = ({ items, types, standards, selected, setSelected }) => {
+const ItemsTable = ({ items, types, standards, selected, setSelected, handlePreview, isEditable }) => {
   const columns = [
     {
       title: "Main info",
       dataIndex: "main",
       key: "main",
-      render: data => <MainInfoCell data={data} />
+      render: data => <MainInfoCell data={data} handlePreview={handlePreview} />
     },
     {
       title: "Meta info",
@@ -36,12 +36,13 @@ const ItemsTable = ({ items, types, standards, selected, setSelected }) => {
   };
   const data = items.map((item, i) => {
     const main = {
-      title: item._id,
-      id: item._id
+      id: item._id,
+      title: item._id
     };
+
     const meta = {
       id: item._id,
-      by: "Kevin Hart",
+      by: get(item, ["createdBy", "name"], ""),
       shared: "9578 (1)",
       likes: 9,
       types: types[item._id],
@@ -67,13 +68,21 @@ const ItemsTable = ({ items, types, standards, selected, setSelected }) => {
     selectedRowKeys: selected
   };
   return (
-    <Table rowSelection={rowSelection} columns={columns} dataSource={data} showHeader={false} pagination={false} />
+    <ReviewTableWrapper
+      rowSelection={isEditable ? rowSelection : ""}
+      columns={columns}
+      dataSource={data}
+      showHeader={false}
+      pagination={false}
+    />
   );
 };
 
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
   types: PropTypes.object.isRequired,
+  isEditable: PropTypes.bool,
+  handlePreview: PropTypes.func,
   standards: PropTypes.object.isRequired
 };
 

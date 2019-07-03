@@ -62,7 +62,9 @@ class TestItemPreview extends Component {
       student,
       metaData,
       disableResponse,
-      evaluation
+      evaluation,
+      previewTab,
+      ...restProps
     } = this.props;
     let questionCount = 0;
     cols
@@ -81,6 +83,7 @@ class TestItemPreview extends Component {
             cols.length &&
             cols.map((col, i) => (
               <TestItemCol
+                {...restProps}
                 evaluation={evaluation}
                 key={i}
                 col={col}

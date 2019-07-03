@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { values } from "lodash";
+import { values, get } from "lodash";
 
 export const getAnswersListSelector = state => state.answers;
 export const getAnswersArraySelector = createSelector(
@@ -11,6 +11,7 @@ export const getAnswerByQuestionIdSelector = questionId => answers => (questionI
 
 const getActivityFromPropsSelector = (state, props) => props.activity;
 
+const isReviewTabSelector = (state, props) => !!props.isReviewTab;
 const getQuestionIdFromPropsSelector = (state, props) => {
   const {
     data: { id },
@@ -18,16 +19,29 @@ const getQuestionIdFromPropsSelector = (state, props) => {
   } = props;
   return questionId || id;
 };
+const getQuestionSelector = (state, props) => {
+  const { data } = props;
+  return data;
+};
 
 const getQuestionId = questionId => questionId || "tmp";
 
 export const getUserAnswerSelector = createSelector(
-  [getActivityFromPropsSelector, getQuestionIdFromPropsSelector, getAnswersListSelector],
-  (activity, questionId, answers) => {
+  [
+    getActivityFromPropsSelector,
+    getQuestionIdFromPropsSelector,
+    getAnswersListSelector,
+    isReviewTabSelector,
+    getQuestionSelector
+  ],
+  (activity, questionId, answers, isReviewTab, question) => {
     if (!questionId) return undefined;
 
-    let userAnswer;
+    if (isReviewTab) {
+      return get(question, ["validation", "valid_response", "value"]);
+    }
 
+    let userAnswer;
     if (activity && activity.userResponse) {
       userAnswer = activity.userResponse;
     } else {

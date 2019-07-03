@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Col, Icon } from "antd";
+import { greenThird, red, white } from "@edulastic/colors";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
 import { formatTime } from "../utils";
 
@@ -65,7 +66,7 @@ const AssessmentDetails = ({
         ) : (
           <StatusButton isSubmitted={started} graded={graded} absent={absent}>
             <span data-cy="status">
-              {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.missed")}
+              {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.absent")}
             </span>
           </StatusButton>
         )}
@@ -110,7 +111,7 @@ const getStatusBgColor = (props, type) => {
           return props.theme.assignment[`cardSubmitedLabel${type}Color`];
       }
     } else {
-      return props.theme.assignment[`cardMissedLabel${type}Color`];
+      return props.theme.assignment[`cardAbsentLabel${type}Color`];
     }
   }
 };
@@ -231,19 +232,17 @@ const SafeExamIcon = styled.img`
 `;
 
 const TestType = styled.span`
-  border: 1.5px solid
-    ${props =>
-      props.type === ASSESSMENT
-        ? props.theme.assignment.cardTimeIconColor
-        : props.theme.sideMenu.menuSelectedItemLinkColor};
-  border-radius: 50%;
-  color: ${props =>
-    props.type === ASSESSMENT
-      ? props.theme.assignment.cardTimeIconColor
-      : props.theme.sideMenu.menuSelectedItemLinkColor};
-  font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
-  padding: 3px 6px;
-  margin: 0px 10px;
-  vertical-align: middle;
   font-family: ${props => props.theme.assignment.cardTitleFontFamily};
+  width: 20px;
+  height: 20px;
+  background: ${props => (props.type === ASSESSMENT ? greenThird : red)};
+  text-align: center;
+  color: ${white};
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 19px;
+  margin: 0px 10px;
+  display: inline-block;
+  vertical-align: top;
 `;

@@ -50,8 +50,9 @@ class Item extends Component {
     isOpenModal: false
   };
 
-  moveToItem = () => {
-    const { history, item, isPlaylist, owner } = this.props;
+  moveToItem = e => {
+    e && e.stopPropagation();
+    const { history, item, isPlaylist } = this.props;
     if (isPlaylist) {
       history.push(`/author/playlists/${item._id}#review`);
     } else {
@@ -59,13 +60,15 @@ class Item extends Component {
     }
   };
 
-  duplicate = async () => {
+  duplicate = async e => {
+    e && e.stopPropagation();
     const { history, item } = this.props;
     const duplicateTest = await assignmentApi.duplicateAssignment(item._id);
     history.push(`/author/tests/${duplicateTest._id}`);
   };
 
-  assignTest = () => {
+  assignTest = e => {
+    e && e.stopPropagation();
     const { history, item } = this.props;
     history.push(`/author/assignments/${item._id}`);
   };
@@ -82,7 +85,8 @@ class Item extends Component {
     this.setState({ isPreviewModalVisible: false });
   };
 
-  showPreviewModal = testId => {
+  showPreviewModal = (testId, e) => {
+    e && e.stopPropagation();
     this.setState({ isPreviewModalVisible: true, currentTestId: testId });
   };
 
@@ -113,6 +117,7 @@ class Item extends Component {
           onDuplicate={this.duplicate}
           onEdit={this.moveToItem}
           item={item}
+          status={status}
           owner={owner}
           assign={this.assignTest}
           isPlaylist={isPlaylist}
@@ -123,6 +128,7 @@ class Item extends Component {
           hideModal={this.hidePreviewModal}
         />
         <Container
+          onClick={isPlaylist ? this.moveToItem : this.openModal}
           title={
             <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
               <Stars />
@@ -139,7 +145,7 @@ class Item extends Component {
                   </Button>
                 )}
                 {status === "published" && (
-                  <Button type="primary" onClick={() => this.showPreviewModal(testId)}>
+                  <Button type="primary" onClick={e => this.showPreviewModal(testId, e)}>
                     Preview
                   </Button>
                 )}
@@ -154,14 +160,9 @@ class Item extends Component {
         >
           <Inner>
             <Question>
-              <StyledLink title={title} onClick={isPlaylist ? this.moveToItem : this.openModal}>
-                {isPlaylist ? _source.title : title}
-              </StyledLink>
+              <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
             </Question>
-            <CardDescription
-              title={isPlaylist ? _source.description : description}
-              onClick={isPlaylist ? this.moveToItem : ""}
-            >
+            <CardDescription title={isPlaylist ? _source.description : description}>
               <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
             </CardDescription>
             {!isPlaylist && <Tags tags={tags} />}

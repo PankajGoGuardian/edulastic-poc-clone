@@ -4,7 +4,7 @@ import { cloneDeep, get } from "lodash";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
 
-import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
@@ -165,7 +165,7 @@ const TokenHighlightPreview = ({
       resultStyle = {};
     }
 
-    return { ...resultStyle, ...smallSizeStyles };
+    return resultStyle;
   };
 
   return (
@@ -184,7 +184,7 @@ const TokenHighlightPreview = ({
 
       {item.templeWithTokens.map((el, i) =>
         el.active ? (
-          <span
+          <MathSpan
             onClick={!disableResponse ? handleSelect(i) : () => {}}
             dangerouslySetInnerHTML={{ __html: el.value }}
             style={preview || disableResponse ? getStyles(i) : {}}
@@ -192,12 +192,7 @@ const TokenHighlightPreview = ({
             className={getClass(i)}
           />
         ) : (
-          <span
-            style={smallSizeStyles}
-            className="token without-cursor"
-            dangerouslySetInnerHTML={{ __html: el.value }}
-            key={i}
-          />
+          <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
         )
       )}
     </Paper>

@@ -12,7 +12,7 @@ import QuestionTextArea from "../../QuestionTextArea";
 
 // TODO: rOnly is in use?
 const QuillSortableItem = SortableElement(
-  ({ value, toolbarId, onRemove, rOnly, onChange, columns, indx, label, fontSize, canDelete }) => (
+  ({ value, toolbarId, onRemove, rOnly, onChange, columns, indx, label, fontSize, canDelete, placeholder }) => (
     <SortableItemContainer fontSize={fontSize} columns={columns}>
       {label && <Label>{label}</Label>}
       <FlexContainer style={{ flex: 1 }}>
@@ -21,6 +21,7 @@ const QuillSortableItem = SortableElement(
 
           <QuestionTextArea
             value={value}
+            placeholder={placeholder}
             toolbarId={`${toolbarId}${indx}`}
             onChange={onChange}
             style={{ width: "100%" }}
@@ -36,6 +37,7 @@ const QuillSortableItem = SortableElement(
 );
 
 QuillSortableItem.propTypes = {
+  t: PropTypes.func.isRequired,
   toolbarId: PropTypes.string,
   columns: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,

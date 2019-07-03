@@ -63,7 +63,8 @@ const MatchListPreview = ({
   qIndex,
   showBorder,
   setQuestionData,
-  disableResponse
+  disableResponse,
+  changePreviewTab
 }) => {
   const {
     possible_responses: posResponses,
@@ -268,9 +269,10 @@ const MatchListPreview = ({
                   flag="ans"
                   renderIndex={i}
                   onDrop={onDrop}
-                  item={disableResponse ? validArray[i] : ans[i]}
+                  item={ans[i]}
                   getStyles={getStyles}
                   disableResponse={disableResponse}
+                  changePreviewTab={changePreviewTab}
                 />
               </DropContainer>
             </AnswerItem>
@@ -345,6 +347,7 @@ const MatchListPreview = ({
                                 item={ite}
                                 getStyles={getStyles}
                                 disableResponse={disableResponse}
+                                changePreviewTab={changePreviewTab}
                               />
                             )
                         )}
@@ -370,7 +373,7 @@ const MatchListPreview = ({
         <Fragment>
           <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
             {list.map((ite, i) => (
-              <FlexContainer key={i} alignItems="center">
+              <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
                   <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
@@ -413,7 +416,8 @@ MatchListPreview.propTypes = {
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 MatchListPreview.defaultProps = {

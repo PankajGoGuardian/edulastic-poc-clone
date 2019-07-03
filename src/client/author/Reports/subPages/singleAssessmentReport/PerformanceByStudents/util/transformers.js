@@ -100,7 +100,7 @@ export const getProficiency = (item, bandInfo) => {
 };
 
 export const normaliseTableData = (rawData, data) => {
-  const { bandInfo = {}, metaInfo = [], schoolMetricInfo = [], studentMetricInfo = [], districtAvg = 0 } = rawData;
+  const { bandInfo = {}, metaInfo = [], schoolMetricInfo = [], studentMetricInfo = [], districtAvgPerf = 0 } = rawData;
 
   const classes = groupBy(studentMetricInfo, "groupId");
 
@@ -126,8 +126,8 @@ export const normaliseTableData = (rawData, data) => {
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
       className: relatedGroup.className,
-      schoolAvg: (relatedSchool.schoolAvg || 0).toFixed(2),
-      districtAvg: (districtAvg || 0).toFixed(2),
+      schoolAvg: ceil(relatedSchool.schoolAvgPerf || 0),
+      districtAvg: ceil(districtAvgPerf || 0),
       studentScore: ceil((studentMetric.totalScore / studentMetric.maxScore) * 100),
       classAvg: classAvg,
       assessmentScore: `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`,

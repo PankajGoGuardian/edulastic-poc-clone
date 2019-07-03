@@ -45,7 +45,7 @@ var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
         return ans.index;
       });
 
-    if ((0, _isEqual2["default"])(currentAnswer, userAnswer)) {
+    if (currentAnswer.length && (0, _isEqual2["default"])(currentAnswer, userAnswer)) {
       score = Math.max(score, totalScore);
     }
 

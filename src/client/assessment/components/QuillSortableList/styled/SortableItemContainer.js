@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { newBlue, inputBorder } from "@edulastic/colors";
+import { themeColor, inputBorder, dashBorderColor, white } from "@edulastic/colors";
 
 export const SortableItemContainer = styled.div`
   width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
@@ -8,6 +8,10 @@ export const SortableItemContainer = styled.div`
   margin: 0 0 17px 0;
   display: inline-flex;
   flex-direction: column;
+  background: ${white};
+  border: 1px solid ${dashBorderColor};
+  border-radius: 4px;
+  padding-right: 12px;
 
   .ql-container {
     font-size: ${props => props.fontSize || "14px"};
@@ -28,6 +32,7 @@ export const SortableItemContainer = styled.div`
     align-items: center;
     background: #fff;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+    margin-right: 0;
   }
   & div.main i.fa-align-justify {
     color: ${props => props.theme.sortableList.dragIconColor};
@@ -51,7 +56,7 @@ export const DragIcon = styled.div`
 export const DragLine = styled.div`
   width: 19px;
   height: 3px;
-  background: ${newBlue};
+  background: ${themeColor};
 
   &:not(:last-child) {
     margin-bottom: 4px;

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { round, shuffle } from "lodash";
-import { Col, Row } from "antd";
+import { round, shuffle, get } from "lodash";
+import { Col, Row, Spin } from "antd";
 import { greenSecondary, yellow, red } from "@edulastic/colors";
+import { connect } from "react-redux";
 
 import CardCheckbox from "./CardCheckbox/CardCheckbox";
 
@@ -32,14 +33,16 @@ import {
   StyledParaSSS,
   RightAlignedCol
 } from "./styled";
+import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName, getFirstName } from "../../Transformer";
-export default class DisneyCardContainer extends Component {
+class DisneyCardContainer extends Component {
   static propTypes = {
     selectedStudents: PropTypes.object.isRequired,
     studentSelect: PropTypes.func.isRequired,
     studentUnselect: PropTypes.func.isRequired,
     viewResponses: PropTypes.func.isRequired,
-    isPresentationMode: PropTypes.bool
+    isPresentationMode: PropTypes.bool,
+    isLoading: PropTypes.bool
   };
 
   constructor(props) {
@@ -59,7 +62,31 @@ export default class DisneyCardContainer extends Component {
 
   render() {
     const { testActivity } = this.state;
-    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode, endDate } = this.props;
+    const {
+      selectedStudents,
+      studentSelect,
+      studentUnselect,
+      viewResponses,
+      isPresentationMode,
+      endDate,
+      updateDisabledList,
+      isLoading
+    } = this.props;
+
+    const noDataNotification = () => {
+      return (
+        <NoDataWrapper height="300px" margin="20px auto">
+          <NoDataBox width="300px" height="200px" descSize="14px">
+            <img src={NoDataIcon} svgWidth="40px" alt="noData" />
+            <h4>No Data</h4>
+            <p>Students have not yet been assigned</p>
+          </NoDataBox>
+        </NoDataWrapper>
+      );
+    };
+
+    const showLoader = () => <Spin size="small" />;
+
     let styledCard = [];
 
     if (testActivity.length > 0) {
@@ -94,7 +121,7 @@ export default class DisneyCardContainer extends Component {
         }
 
         let correctAnswers = 0;
-
+        updateDisabledList(student.studentId, status.status);
         const questions = student.questionActivities.length;
         student.questionActivities.map(questionAct => {
           if (questionAct.correct) {
@@ -169,7 +196,7 @@ export default class DisneyCardContainer extends Component {
                     {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                   </StyledParaSSS>
                 </StyledFlexDiv>
-                {student.testActivityId && (
+                {student.testActivityId && status.status !== "ABSENT" && (
                   <PagInfo data-cy="viewResponse" onClick={e => viewResponses(e, student.studentId)}>
                     {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
                     VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
@@ -208,11 +235,14 @@ export default class DisneyCardContainer extends Component {
     if (isPresentationMode) {
       styledCard = shuffle(styledCard);
     }
-
-    return testActivity.length > 0 ? (
-      <StyledCardContiner>{styledCard}</StyledCardContiner>
-    ) : (
-      <h2 style={{ textAlign: "center" }}>There is no students attending this assignment at the moment</h2>
+    return (
+      <StyledCardContiner>
+        {!isLoading ? (testActivity && testActivity.length > 0 ? styledCard : noDataNotification()) : showLoader()}
+      </StyledCardContiner>
     );
   }
 }
+
+export default connect(state => ({
+  isLoading: get(state, "classResponse.loading")
+}))(DisneyCardContainer);

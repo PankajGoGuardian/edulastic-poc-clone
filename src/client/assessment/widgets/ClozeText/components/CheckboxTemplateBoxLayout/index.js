@@ -47,7 +47,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   }
 
   const btnStyle = {
-    width: uiStyle[id] ? `${uiStyle[id].widthpx}px` : 140,
     height: 0,
     widthpx: showAnswer ? "auto" : 140,
     heightpx: 0,
@@ -71,6 +70,16 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = btnStyle.heightpx;
   }
 
+  const response = find(responsecontainerindividuals, resp => resp.index === index);
+  if (uiStyle.globalSettings) {
+    btnStyle.width =
+      userSelections[index] && userSelections[index].value
+        ? (response && response.previewWidth) || uiStyle.widthpx
+        : uiStyle.widthpx;
+  } else {
+    btnStyle.width = (response && response.widthpx) || uiStyle.widthpx || "auto";
+  }
+
   return (
     <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>
       {showAnswer && (
@@ -81,18 +90,20 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
           style={btnStyle}
+          title={userSelections[index] && userSelections[index].value}
         >
           <span className="index">{index + 1}</span>
           <span
             className="text"
             style={{
               width: "100%",
+              display: "block",
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
               overflow: "hidden"
             }}
           >
-            {userSelections[index] && userSelections[index].value}
+            {userSelections[index] && userSelections[index].value}&nbsp;
           </span>
           <IconWrapper>
             {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
@@ -104,9 +115,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         <span
           className={`response-btn 
                 ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
-                ${status}
-                `}
+                ${status}`}
           style={btnStyle}
+          title={userSelections[index] && userSelections[index].value}
         >
           {showIndex && (
             <Fragment>
@@ -119,12 +130,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               display: "block",
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
-              overflow: "hidden",
-              lineHeight: 2.5
+              overflow: "hidden"
             }}
             className="text"
           >
-            {userSelections[index] && userSelections[index].value}
+            {userSelections[index] && userSelections[index].value}&nbsp;
           </span>
           <IconWrapper>
             {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}

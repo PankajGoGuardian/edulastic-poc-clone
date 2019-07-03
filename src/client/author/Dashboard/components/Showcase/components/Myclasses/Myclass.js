@@ -6,7 +6,7 @@ import { CardsContainer, CardBox } from "./styled";
 import CardImage from "./components/CardImage/cardImage";
 import CardTextContent from "./components/CardTextContent/cardTextContent";
 import { receiveTeacherDashboardAction } from "../../../../duck";
-
+import CreateClassPage from "./components/CreateClassPage/createClassPage";
 const Card = ({ data }) => {
   return (
     <CardBox>
@@ -20,43 +20,50 @@ const Card = ({ data }) => {
   );
 };
 
-const MyClasses = ({ getTeacherDashboard, classData }) => {
+const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   useEffect(() => {
     getTeacherDashboard();
   }, []);
+  const [showAllCards, setShowAllCards] = useState(false);
 
-  const [count, setCount] = useState(3);
+  const sortableCards = classData
+    .filter(d => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
+    .sort((a, b) => b.asgnStartDate - a.asgnStartDate);
+  const unSortablecards = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
 
-  const showCards = classData.slice(0, count);
-  const ClassCards =
-    showCards.length > 0
-      ? showCards.map(item => (
-          <Col span={8} key={item._id}>
-            <Card data={item} />
-          </Col>
-        ))
-      : null;
+  const allCards = [...sortableCards, ...unSortablecards];
+  const latestAssingments = allCards.slice(0, 3);
+  let ClassCards = null;
+
+  if (!showAllCards) {
+    ClassCards = latestAssingments.map(item => (
+      <Col span={8} key={item._id}>
+        <Card data={item} />
+      </Col>
+    ));
+  } else {
+    ClassCards = allCards.map(item => (
+      <Col span={8} key={item._id}>
+        <Card data={item} />
+      </Col>
+    ));
+  }
 
   return (
     <CardsContainer>
       <TextWrapper size="20px" color="#434B5D">
         My classes
       </TextWrapper>
-      <Row gutter={15}>{classData.length == 0 ? <Spin /> : ClassCards}</Row>
-
-      {count > 3 ? (
-        <LinkWrapper size="11px" color="#00AD50" display="block" textalign="end" onClick={() => setCount(3)}>
+      <Row gutter={15}>{loading === true ? <Spin /> : ClassCards}</Row>
+      {!loading && classData.length == 0 && <CreateClassPage />}
+      {showAllCards && classData.length > 0 && (
+        <LinkWrapper size="11px" color="#00AD50" display="block" textalign="end" onClick={() => setShowAllCards(false)}>
           SEE LESS CLASSES »
         </LinkWrapper>
-      ) : (
-        <LinkWrapper
-          size="11px"
-          color="#00AD50"
-          display="block"
-          textalign="end"
-          onClick={() => setCount(classData.length)}
-        >
-          {classData.length && "SEE ALL MY CLASSES »"}
+      )}
+      {!showAllCards && classData.length > 0 && (
+        <LinkWrapper size="11px" color="#00AD50" display="block" textalign="end" onClick={() => setShowAllCards(true)}>
+          SEE ALL MY CLASSES »
         </LinkWrapper>
       )}
     </CardsContainer>
@@ -65,7 +72,8 @@ const MyClasses = ({ getTeacherDashboard, classData }) => {
 
 export default connect(
   state => ({
-    classData: state.dashboardTeacher.data
+    classData: state.dashboardTeacher.data,
+    loading: state.dashboardTeacher.loading
   }),
   {
     getTeacherDashboard: receiveTeacherDashboardAction

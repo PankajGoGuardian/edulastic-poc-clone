@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Pagination } from "antd";
 
-import { white, lightBlueSecondary } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -37,7 +37,7 @@ export const MobilePagination = styled(Pagination)`
     }
 
     &-active {
-      background: ${lightBlueSecondary};
+      background: ${themeColor};
       box-shadow: none;
 
       a {

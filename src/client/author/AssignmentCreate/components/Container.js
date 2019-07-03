@@ -59,7 +59,7 @@ class Container extends Component {
                 <TitleWrapper>Choose From Play List</TitleWrapper>
                 <TextWrapper> Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>
                 <Link to={toLinkForPlaylist}>
-                  <ButtonComponent type={"primary"}>Play List</ButtonComponent>
+                  <ButtonComponent type="primary">Play List</ButtonComponent>
                 </Link>
                 <Divider />
                 <CountWrapper>191</CountWrapper>
@@ -72,7 +72,7 @@ class Container extends Component {
                 <TitleWrapper>Choose From Library</TitleWrapper>
                 <TextWrapper> Select pre built assessment from the Edulastic Library</TextWrapper>
                 <Link to="/author/tests">
-                  <ButtonComponent type={"primary"}>Browse All</ButtonComponent>
+                  <ButtonComponent type="primary">Browse All</ButtonComponent>
                 </Link>
                 <Divider />
                 <CountWrapper>191211</CountWrapper>

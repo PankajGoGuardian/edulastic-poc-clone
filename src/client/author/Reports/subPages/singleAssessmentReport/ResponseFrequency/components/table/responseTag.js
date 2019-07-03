@@ -1,8 +1,9 @@
 import React from "react";
+import next from "immer";
 import { Component } from "react";
 import styled from "styled-components";
 import { get } from "lodash";
-import { Row, Col } from "antd";
+import { Row, Col, Tag } from "antd";
 
 import { getHSLFromRange1, getHSLFromRange2 } from "../../../../../common/util";
 import { StyledResponseTagContainer } from "../styled";
@@ -55,19 +56,40 @@ export class ResponseTag extends Component {
     );
   };
 
+  getPrintableTag = (exisitingStyle, name, value) => {
+    let modifiedStyle = next(exisitingStyle, styleDraft => {
+      if (this.props.data.isCorrect) {
+        styleDraft.color = getHSLFromRange1(100, 60);
+      } else if (value > this.props.incorrectFrequencyThreshold) {
+        styleDraft.color = getHSLFromRange2(100 - value, 30);
+      }
+
+      styleDraft.backgroundColor = "transparent";
+    });
+
+    return (
+      <Tag style={modifiedStyle}>
+        {name} - {value}%
+      </Tag>
+    );
+  };
+
   getCellContents = () => {
     let name = get(this.props, "data.name", "");
     let value = Number(get(this.props, "data.value", 0));
+
+    let style = this.props.data.isCorrect
+      ? { borderColor: getHSLFromRange1(100) }
+      : value > this.props.incorrectFrequencyThreshold
+      ? { borderColor: getHSLFromRange2(100 - value) }
+      : { borderColor: "#cccccc" };
+
+    if (this.props.isPrinting) {
+      return this.getPrintableTag(style, name, value);
+    }
+
     return (
-      <StyledTag
-        style={
-          this.props.data.isCorrect
-            ? { borderColor: getHSLFromRange1(100) }
-            : value > this.props.incorrectFrequencyThreshold
-            ? { borderColor: getHSLFromRange2(100 - value) }
-            : { borderColor: "#cccccc" }
-        }
-      >
+      <StyledTag style={style}>
         {<p>{name}</p>}
         <p>{value}%</p>
       </StyledTag>

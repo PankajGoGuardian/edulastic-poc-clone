@@ -1,5 +1,5 @@
-import { mainBlueColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
-import { math, questionType } from "@edulastic/constants";
+import { themeColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
+import { math, questionType, canvasDimensions } from "@edulastic/constants";
 
 import uuid from "uuid/v4";
 import {
@@ -64,9 +64,19 @@ import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant.s
 import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.svg";
 import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
 
+// Charts
+import LinePlot from "../../../src/assets/charts/line-plot.svg";
+import DotPlot from "../../../src/assets/charts/dot-plot.svg";
+import Histogram from "../../../src/assets/charts/histogram.svg";
+import BarChart from "../../../src/assets/charts/bar-chart.svg";
+import LineChart from "../../../src/assets/charts/line-chart.svg";
+
 // Video&Passages
 import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
 import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
+
+// Rulers & Calculators
+import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
 
 export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
@@ -79,7 +89,7 @@ export const getCards = onSelectQuestionType => {
   return [
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: LinePlot,
       data: {
         title: "Line plot",
         firstMount: true,
@@ -168,7 +178,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: DotPlot,
       data: {
         title: "Dot plot",
         firstMount: true,
@@ -257,7 +267,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: Histogram,
       data: {
         title: "Histogram",
         firstMount: true,
@@ -348,7 +358,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: BarChart,
       data: {
         title: "Bar chart",
         firstMount: true,
@@ -438,7 +448,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: LineChart,
       data: {
         title: "Line chart",
         firstMount: true,
@@ -534,11 +544,11 @@ export const getCards = onSelectQuestionType => {
         title: "Highlight Image",
         image: {
           source: "",
-          width: 700,
-          height: 600,
+          width: canvasDimensions.maxWidth,
+          height: canvasDimensions.maxHeight,
           altText: ""
         },
-        line_color: [mainBlueColor],
+        line_color: [themeColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
         validation: {},
@@ -1015,9 +1025,9 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
-        templateMarkUp: `<p>Sample Template markup<response contenteditable="false">Response</response>&nbsp;</p>`,
+        template: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
-        stimulus: "[This is stem.]",
+        stimulus: "Drag and Drop the right answer in the answers below",
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
@@ -1028,9 +1038,9 @@ export const getCards = onSelectQuestionType => {
           responsecontainerindividuals: []
         },
         options: [
-          { value: uuidsForFill[0], label: "WHISPERED" },
-          { value: uuidsForFill[1], label: "HOLMES" },
-          { value: uuidsForFill[2], label: "INTRUDER" }
+          { value: uuidsForFill[0], label: "Option 1" },
+          { value: uuidsForFill[1], label: "Option 2" },
+          { value: uuidsForFill[2], label: "Option 3" }
         ],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1047,14 +1057,17 @@ export const getCards = onSelectQuestionType => {
     {
       type: "fill-blanks",
       cardImage: FBClozeDropDown,
-      stimulus: "",
+      stimulus: "Pick the right options in the dropdown below",
       data: {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
-        templateMarkUp:
-          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false">Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false">Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
+        template: `<p>Pick the right options in the dropdown below.</p><p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${
+          uuids[0]
+        } contenteditable="false"></textdropdown>&nbsp;and&nbsp;<textdropdown responseindex="2" id=${
+          uuids[1]
+        } contenteditable="false"></textdropdown>&nbsp;</p>`,
         stimulus: "",
-        response_ids: [],
+        response_ids: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
@@ -1064,7 +1077,10 @@ export const getCards = onSelectQuestionType => {
           wordwrap: false,
           responsecontainerindividuals: []
         },
-        options: {},
+        options: {
+          [uuids[0]]: ["Option 1", "Option 2"],
+          [uuids[1]]: ["Option 2", "Option 3"]
+        },
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1080,12 +1096,15 @@ export const getCards = onSelectQuestionType => {
     {
       type: "fill-blanks",
       cardImage: FBClozeText,
-      stimulus: "",
+      stimulus: "Fill blank boxes with the right answer.",
       data: {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
-        templateMarkUp:
-          '<p>Sample template <textinput contenteditable="false">Text Input</textinput>, <textinput contenteditable="false">Text Input</textinput></p>',
+        template: `<p>Fill blank boxes with the right answer.</p><p>Sample question text with <textinput responseindex="1" id=${
+          uuids[0]
+        } contenteditable="false" /></textinput>&nbsp;and<textinput responseindex="2" contenteditable="false" id=${
+          uuids[1]
+        }/></textinput>&nbsp;</p>`,
         stimulus: "",
         ui_style: {
           fontsize: "normal",
@@ -1096,11 +1115,12 @@ export const getCards = onSelectQuestionType => {
           stemnumeration: "",
           widthpx: 140
         },
+        response_ids: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
             score: 1,
-            value: []
+            value: [{ id: uuids[0], index: 0, value: "Answer 1" }, { id: uuids[1], index: 1, value: "Answer 2" }]
           },
           alt_responses: []
         },
@@ -1116,12 +1136,12 @@ export const getCards = onSelectQuestionType => {
         title: "Label Image with Drag & Drop",
         type: questionType.CLOZE_IMAGE_DRAG_DROP,
         firstMount: true,
-        stimulus: "",
+        stimulus: "Sample image background with an overlaid drop area(s)",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
         maxRespCount: 1,
-        options: ["Country A", "Country B", "Country C"],
+        options: ["Option 1", "Option 2", "Option 3"],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1150,11 +1170,11 @@ export const getCards = onSelectQuestionType => {
         title: "Label Image with Drop Down",
         type: questionType.CLOZE_IMAGE_DROP_DOWN,
         firstMount: true,
-        stimulus: "",
+        stimulus: "Sample image background with overlaid drop downs",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
-        options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
+        options: [["Option 1", "Option 2"], ["Option 3", "Option 4"]],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1165,8 +1185,7 @@ export const getCards = onSelectQuestionType => {
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
-          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
+          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] }
         ],
         ui_style: {
           widthpx: 140,
@@ -1189,7 +1208,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Label Image with Text",
         type: questionType.CLOZE_IMAGE_TEXT,
-        stimulus: "",
+        stimulus: "Sample image background with overlaid text fields",
         options: [],
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
@@ -1500,6 +1519,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "rulers-calculators",
+      cardImage: Protractor,
       data: {
         title: "Protractor",
         type: questionType.PROTRACTOR,
@@ -2042,7 +2062,7 @@ export const getCards = onSelectQuestionType => {
         title: "Expression Multipart",
         stimulus: "",
         template:
-          '<p>sample template markup -&nbsp;<textinput contenteditable="false">Text Input</textinput>,&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>,<mathinput contenteditable="false">Math Input</mathinput></p>',
+          '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
         templateDisplay: true,
         type: questionType.EXPRESSION_MULTIPART,
         response_ids: {

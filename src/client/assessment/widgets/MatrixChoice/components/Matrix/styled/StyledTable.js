@@ -10,6 +10,11 @@ export const StyledTable = styled(Table)`
     tbody {
       border-collapse: collapse;
     }
+    thead {
+      tr:not(:last-child) > th[colspan] {
+        display: none;
+      }
+    }
     tr {
       th {
         text-align: center;

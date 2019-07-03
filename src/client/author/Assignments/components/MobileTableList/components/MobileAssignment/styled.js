@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
 import { Card } from "@edulastic/common";
-import { green, secondaryTextColor, lightGreySecondary, lightBlueSecondary, white } from "@edulastic/colors";
+import { themeColor, secondaryTextColor, lightGreySecondary, white } from "@edulastic/colors";
 
 import { BtnAction } from "../../../TableList/styled";
 
 export const AssignmentThumbnail = styled.div`
   width: calc(100vw - 42px - 82px);
   height: 48px;
-  background: ${green};
+  background: ${themeColor};
   border-radius: 5px;
   margin-bottom: 19px;
   text-align: center;
@@ -94,7 +94,7 @@ export const ExpandButton = styled.p`
   text-align: center;
   margin: 0;
   text-transform: uppercase;
-  color: ${lightBlueSecondary};
+  color: ${themeColor};
   font-weight: 600;
   font-size: 11px;
 

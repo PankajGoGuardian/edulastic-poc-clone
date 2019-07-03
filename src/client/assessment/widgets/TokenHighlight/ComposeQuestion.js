@@ -79,7 +79,7 @@ class ComposeQuestion extends Component {
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
           toolbarId="compose-question"
-          theme="border"
+          border="border"
         />
       </Widget>
     );

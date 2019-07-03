@@ -1,7 +1,5 @@
-/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import _, { cloneDeep } from "lodash";
@@ -22,13 +20,19 @@ class CorrectAnswers extends Component {
     this.state = {
       value: 0
     };
+    this.wrapperRef = React.createRef();
   }
 
   componentDidMount = () => {
     const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
+    if (this.wrapperRef.current) {
+      fillSections(
+        "main",
+        t("component.correctanswers.setcorrectanswers"),
+        this.wrapperRef.current.offsetTop,
+        this.wrapperRef.current.scrollHeight
+      );
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -165,7 +169,7 @@ class CorrectAnswers extends Component {
       stimulus,
       options,
       t,
-      templateMarkUp,
+      template,
       hasGroupResponses,
       configureOptions,
       uiStyle,
@@ -173,7 +177,7 @@ class CorrectAnswers extends Component {
     } = this.props;
     const { value } = this.state;
     return (
-      <div>
+      <div ref={this.wrapperRef}>
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
@@ -192,7 +196,7 @@ class CorrectAnswers extends Component {
                 stimulus={stimulus}
                 options={options}
                 uiStyle={uiStyle}
-                templateMarkUp={templateMarkUp}
+                template={template}
                 configureOptions={configureOptions}
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
@@ -214,7 +218,7 @@ class CorrectAnswers extends Component {
                       options={options}
                       configureOptions={configureOptions}
                       hasGroupResponses={hasGroupResponses}
-                      templateMarkUp={templateMarkUp}
+                      template={template}
                       uiStyle={uiStyle}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
@@ -239,7 +243,7 @@ CorrectAnswers.propTypes = {
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
   options: PropTypes.array,
-  templateMarkUp: PropTypes.string,
+  template: PropTypes.string,
   question: PropTypes.object.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object.isRequired,
@@ -255,7 +259,7 @@ CorrectAnswers.defaultProps = {
   responseIDs: [],
   validation: {},
   hasGroupResponses: false,
-  templateMarkUp: "",
+  template: "",
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",

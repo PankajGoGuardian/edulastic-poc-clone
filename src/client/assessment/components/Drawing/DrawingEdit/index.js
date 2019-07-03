@@ -5,13 +5,14 @@ import Dropzone from "react-dropzone";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Paper, Image } from "@edulastic/common";
-import { fileApi } from "@edulastic/api";
+import { aws } from "@edulastic/constants";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import QuestionTextArea from "../../QuestionTextArea";
 import DropZoneToolbar from "../../DropZoneToolbar";
 import StyledDropZone from "../../StyledDropZone";
 import { SOURCE } from "../../../constants/constantsForQuestions";
+import { uploadToS3 } from "@edulastic/common/src/helpers";
 
 const DrawingEdit = ({ item, setQuestionData, t }) => {
   const { image } = item;
@@ -40,9 +41,8 @@ const DrawingEdit = ({ item, setQuestionData, t }) => {
   const onDrop = ([files]) => {
     if (files) {
       setLoading(true);
-      fileApi
-        .upload({ file: files })
-        .then(({ fileUri }) => {
+      uploadToS3(files, aws.s3Folders.DEFAULT)
+        .then(fileUri => {
           handleImageToolbarChange(SOURCE)(fileUri);
           setLoading(false);
         })

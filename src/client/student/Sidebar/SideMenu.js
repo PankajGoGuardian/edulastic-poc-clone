@@ -42,11 +42,6 @@ const menuItems = [
     path: "home/dashboard"
   },
   {
-    label: "Assignments",
-    icon: IconAssignment,
-    path: "home/assignments"
-  },
-  {
     label: "Reports",
     icon: IconReport,
     path: "home/reports"

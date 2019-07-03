@@ -36,7 +36,8 @@ class Template extends Component {
     // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
 
-    if (item.templateDisplay) fillSections("main", t("component.math.template"), node.offsetTop, node.scrollHeight);
+    if (item.templateDisplay)
+      fillSections("main", t("component.math.composequestion"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {
@@ -311,7 +312,7 @@ class Template extends Component {
 
     return (
       <Widget>
-        <Subtitle data-cy="template">{t("component.math.template")}</Subtitle>
+        <Subtitle data-cy="template">{t("component.math.composequestion")}</Subtitle>
 
         <FroalaEditor
           data-cy="templateBox"
@@ -319,7 +320,7 @@ class Template extends Component {
           value={item.template}
           additionalToolbarOptions={["responseBoxes"]}
           toolbarId="template-markup-area"
-          theme="border"
+          border="border"
         />
       </Widget>
     );

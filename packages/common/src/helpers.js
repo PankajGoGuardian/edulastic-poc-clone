@@ -2,6 +2,7 @@
 import uuid from "uuid/v4";
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
+import { message } from "antd";
 
 export const ALPHABET = [
   "A",
@@ -75,7 +76,6 @@ export const uploadToS3 = async (file, folder) => {
   if (!folder || !s3Folders.includes(folder)) {
     throw new Error("folder is invalid");
   }
-
   const result = await fileApi.getSignedUrl(file.name, folder);
   const formData = new FormData();
   const { fields, url } = result;
@@ -159,10 +159,10 @@ export const reIndexResponses = htmlStr => {
         $(this).attr("id", uuid());
       }
 
-      let text = $(this).text();
-      $(this).html(`<span class="index">${index + 1}</span>${text}`);
+      $(this).attr("responseIndex", index + 1);
+      $(this).attr("contenteditable", false);
 
-      text = $("<div>")
+      const text = $("<div>")
         .append($(this).clone())
         .html();
 
@@ -172,7 +172,7 @@ export const reIndexResponses = htmlStr => {
   return $(parsedHTML).html();
 };
 
-export const removeSpanFromTemplate = tmpl => {
+export const removeIndexFromTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
     return temp;
@@ -181,11 +181,24 @@ export const removeSpanFromTemplate = tmpl => {
   $(parsedHTML)
     .find("textinput, mathinput, textdropdown, response")
     .each(function() {
-      $(this)
-        .find("span")
-        .remove("span");
+      $(this).removeAttr("responseindex");
+      $(this).removeAttr("contenteditable");
     });
   return $(parsedHTML).html();
+};
+
+export const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+export const beforeUpload = file => {
+  const isAllowedType = allowedFileTypes.includes(file.type);
+  if (!isAllowedType) {
+    message.error("Image type not supported");
+  }
+  const withinSizeLimit = file.size / 1024 / 1024 < 2;
+  if (!withinSizeLimit) {
+    message.error("Image size should be less than 2MB");
+  }
+  return isAllowedType && withinSizeLimit;
 };
 
 export const canInsert = element => element.contentEditable !== "false";
@@ -199,5 +212,5 @@ export default {
   parseTemplate,
   reIndexResponses,
   canInsert,
-  removeSpanFromTemplate
+  removeIndexFromTemplate
 };

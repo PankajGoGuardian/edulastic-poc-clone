@@ -30,6 +30,7 @@ const Link = styled.a`
   text-decoration: none;
   color: #00ad50;
   cursor: pointer;
+  word-break: break-all;
 
   :hover {
     color: #00ad50;
@@ -46,6 +47,7 @@ const Link = styled.a`
   }
   img {
     display: block;
-    max-width: 300px;
+    width: 200px;
+    max-width: 100%;
   }
 `;

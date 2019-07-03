@@ -18,7 +18,7 @@ import { IconShare, IconHeart } from "@edulastic/icons";
 import { renderAnalytics } from "../Sidebar/Sidebar";
 
 const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analytics, owner }) => {
-  const avatar = createdBy && createdBy.firstName ? createdBy.firstName[0] : "E";
+  const avatar = createdBy && createdBy.name ? createdBy.name[0] : "E";
   return (
     <Container>
       <ContainerLeft>
@@ -37,7 +37,7 @@ const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analy
             <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-start">
               <CreatedByTitle style={{ marginRight: 0 }}>Created by:</CreatedByTitle>
               <CreatedByValue>
-                {createdBy && createdBy.firstName} {createdBy && createdBy.lastName}
+                {createdBy && (createdBy.name || `${createdBy.firstName} ${createdBy.lastName}`)}
               </CreatedByValue>
             </FlexContainer>
           </FlexContainer>
@@ -55,7 +55,7 @@ const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analy
 
 SummaryHeader.propTypes = {
   createdBy: PropTypes.shape({
-    firstName: PropTypes.string
+    name: PropTypes.string
   }).isRequired,
   owner: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired,

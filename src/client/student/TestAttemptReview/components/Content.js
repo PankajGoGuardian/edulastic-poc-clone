@@ -5,11 +5,14 @@ import styled, { ThemeProvider } from "styled-components";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Row, Col, Button } from "antd";
+import { withRouter } from "react-router-dom";
+import { get, isEmpty } from "lodash";
 import { themes } from "../../themes";
 
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
-import { withRouter } from "react-router-dom";
+import { getAssignmentsSelector } from "../../Assignments/ducks";
+import { receiveTestActivitydAction } from "../../../author/src/actions/classBoard";
 
 class SummaryTest extends Component {
   constructor(props) {
@@ -18,6 +21,18 @@ class SummaryTest extends Component {
       buttonIdx: null,
       isShowConfirmationModal: false
     };
+  }
+
+  componentDidMount() {
+    const {
+      loadTestActivity,
+      assignments,
+      test: { testId }
+    } = this.props;
+    if (!testId || isEmpty(assignments)) return;
+    const [assignment] = assignments.filter(item => item.testId === testId);
+
+    loadTestActivity(assignment._id, assignment.class[0]._id);
   }
 
   handlerButton = buttonIdx => {
@@ -34,9 +49,16 @@ class SummaryTest extends Component {
     this.setState({ isShowConfirmationModal: false });
   };
 
-  goToQuestion = (testId, testActivityId, index) => () => {
-    const { history } = this.props;
-    history.push(`/student/assessment/${testId}/uta/${testActivityId}/qid/${index}`);
+  goToQuestion = (testId, testActivityId, q) => () => {
+    const { history, assignments, items, assignmentId } = this.props;
+
+    const [assignmentItem] = assignments.filter(item => item._id === assignmentId);
+    const targetItemIndex = items.reduce((acc, item, index) => {
+      if (item.data.questions.some(({ id }) => id === q)) acc = index;
+      return acc;
+    }, null);
+
+    history.push(`/student/${assignmentItem.testType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`);
   };
 
   render() {
@@ -61,20 +83,19 @@ class SummaryTest extends Component {
               <ColorDescription>
                 <ColorDescriptionRow gutter={32}>
                   <FlexCol lg={8} md={24}>
-                    <GreenMark />
+                    <MarkedAnswered />
                     <SpaceLeft>
                       <Description>{t("common.markedQuestionLineOne")}</Description>
-                      <Description style={{ marginTop: -2 }}>{t("common.markedQuestionLineTwo")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
-                    <GrayMark />
+                    <MarkedSkipped />
                     <SpaceLeft>
                       <Description>{t("common.skippedQues")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
-                    <RedMark />
+                    <MarkedForReview />
                     <SpaceLeft>
                       <Description>{t("common.markedForReview")}</Description>
                       <Description style={{ marginTop: -2 }}>{t("common.markedQuestionLineTwo")}</Description>
@@ -106,7 +127,7 @@ class SummaryTest extends Component {
                     <QuestionColorBlock
                       type={questionList[q]}
                       isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                      onClick={this.goToQuestion(test.testId, test.testActivityId, index)}
+                      onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
                     >
                       <span> {index + 1} </span>
                     </QuestionColorBlock>
@@ -130,8 +151,14 @@ class SummaryTest extends Component {
 SummaryTest.propTypes = {
   finishTest: PropTypes.func.isRequired,
   questionList: PropTypes.array,
+  assignments: PropTypes.array.isRequired,
+  items: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  loadTestActivity: PropTypes.func.isRequired,
+  assignmentId: PropTypes.string,
+  classId: PropTypes.string,
+  test: PropTypes.object
 };
 
 SummaryTest.defaultProps = {
@@ -141,10 +168,19 @@ SummaryTest.defaultProps = {
 const enhance = compose(
   withNamespaces(["summary", "default"]),
   withRouter,
-  connect(state => ({
-    questionList: attemptSummarySelector(state),
-    test: state.test
-  }))
+  connect(
+    state => ({
+      questionList: attemptSummarySelector(state),
+      assignments: getAssignmentsSelector(state),
+      test: state.test,
+      items: state.test.items,
+      assignmentId: get(state, "author_classboard_testActivity.assignmentId", ""),
+      classId: get(state, "author_classboard_testActivity.classId", "")
+    }),
+    {
+      loadTestActivity: receiveTestActivitydAction
+    }
+  )
 );
 
 export default enhance(SummaryTest);
@@ -218,16 +254,16 @@ const Markers = styled.div`
   border-radius: 2px;
   flex-shrink: 0;
 `;
-const GreenMark = styled(Markers)`
-  background-color: ${props => props.theme.attemptReview.greenMarkBgColor};
+const MarkedAnswered = styled(Markers)`
+  background-color: ${props => props.theme.attemptReview.markedAnswerBoxColor};
 `;
 
-const GrayMark = styled(Markers)`
-  background-color: ${props => props.theme.attemptReview.grayMarkBgColor};
+const MarkedSkipped = styled(Markers)`
+  background-color: ${props => props.theme.attemptReview.markedSkippedBoxColor};
 `;
 
-const RedMark = styled(Markers)`
-  background-color: ${props => props.theme.attemptReview.redMarkBgColor};
+const MarkedForReview = styled(Markers)`
+  background-color: ${props => props.theme.attemptReview.markedForReviewBoxColor};
 `;
 
 const Description = styled.div`
@@ -317,7 +353,12 @@ const QuestionColorBlock = styled.div`
   width: 60px;
   height: 40px;
   border-radius: 4px;
-  background-color: ${props => (props.type === 2 ? "#ee1658" : props.type === 1 ? "#1fe3a1" : "#b1b1b1")};
+  background-color: ${props =>
+    props.type === 2
+      ? props.theme.attemptReview.markedForReviewBoxColor
+      : props.type === 1
+      ? props.theme.attemptReview.markedAnswerBoxColor
+      : props.theme.attemptReview.markedSkippedBoxColor};
   margin-right: 23px;
   display: ${props => (props.isVisible ? "flex" : "none")};
   align-items: center;

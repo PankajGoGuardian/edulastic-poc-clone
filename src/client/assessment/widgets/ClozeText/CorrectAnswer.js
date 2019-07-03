@@ -17,7 +17,7 @@ class CorrectAnswer extends Component {
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
     hasGroupResponses: PropTypes.bool.isRequired,
-    templateMarkUp: PropTypes.string.isRequired,
+    template: PropTypes.string.isRequired,
     configureOptions: PropTypes.object.isRequired,
     responseIds: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired
@@ -54,11 +54,13 @@ class CorrectAnswer extends Component {
       options,
       stimulus,
       response,
-      templateMarkUp,
+      template,
       hasGroupResponses,
       configureOptions,
       uiStyle,
-      responseIds
+      responseIds,
+      view,
+      previewTab
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -78,19 +80,21 @@ class CorrectAnswer extends Component {
           </CorrectAnswerHeader>
         )}
         <Display
-          preview
+          preview={false}
           setAnswers
           dragHandler
           options={options}
           uiStyle={uiStyle}
           question={stimulus}
-          templateMarkUp={templateMarkUp}
+          template={template}
           userSelections={response.value}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
           hasGroupResponses={hasGroupResponses}
           responseIds={responseIds}
           showIndex
+          view={view}
+          previewTab={previewTab}
         />
       </div>
     );

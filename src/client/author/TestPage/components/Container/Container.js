@@ -8,7 +8,7 @@ import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq,
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
-import { get } from "lodash";
+import { get, without } from "lodash";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
   createTestAction,
@@ -92,8 +92,7 @@ class Container extends PureComponent {
     if (location.hash === "#review") {
       this.handleNavChange("review")();
     }
-
-    if (match.params.id) {
+    if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id);
     } else {
       this.setState({ current: "description" });
@@ -190,7 +189,7 @@ class Container extends PureComponent {
     const { current, editEnable } = this.state;
     const { authors } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    const readOnlyMode = (testStatus && testStatus !== statusConstants.PUBLISHED && params.id) || editEnable;
+    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
     // TODO: fix this shit!!
     const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
@@ -201,6 +200,7 @@ class Container extends PureComponent {
             onAddItems={this.handleAddItems}
             selectedItems={selectedItems}
             current={current}
+            isEditable={isEditable}
             onSaveTestId={this.handleSaveTestId}
             test={test}
             gotoSummary={this.handleNavChange("description")}
@@ -227,7 +227,7 @@ class Container extends PureComponent {
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             owner={owner}
-            readOnlyMode={!readOnlyMode}
+            isEditable={isEditable}
             current={current}
           />
         );
@@ -235,7 +235,7 @@ class Container extends PureComponent {
         return (
           <Setting
             current={current}
-            readOnlyMode={!readOnlyMode}
+            isEditable={isEditable}
             onShowSource={this.handleNavChange("source")}
             owner={owner}
           />
@@ -254,12 +254,10 @@ class Container extends PureComponent {
 
     newTest.subjects = _uniq([...newTest.subjects, ...itemsSubjectAndGrade.subjects]);
     newTest.grades = _uniq([...newTest.grades, ...itemsSubjectAndGrade.grades]);
-
+    const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
     newTest.createdBy = {
       id: user._id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName
+      name
     };
 
     newTest.testItems = testItems || [];
@@ -378,8 +376,15 @@ class Container extends PureComponent {
     const { showShareModal, current, editEnable } = this.state;
     const { _id: testId, status, authors } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
-    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
+    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
+    const showEditButton =
+      authors &&
+      authors.some(x => x._id === userId) &&
+      testStatus &&
+      testStatus === statusConstants.PUBLISHED &&
+      !editEnable;
+
     return (
       <>
         {this.renderModal()}
@@ -397,6 +402,7 @@ class Container extends PureComponent {
           onPublish={this.handlePublishTest}
           title={test.title}
           creating={creating}
+          showEditButton={showEditButton}
           owner={owner}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}

@@ -3,7 +3,7 @@
 /* global $ */
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { cloneDeep, debounce } from "lodash";
 import { message } from "antd";
 import Editor from "react-froala-wysiwyg";
@@ -20,6 +20,7 @@ import headings from "./FroalaPlugins/headings";
 import MathModal from "./MathModal";
 
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
+import { getFontSize } from "../../../../src/client/assessment/utils/helpers";
 
 // register custom math buttton
 FroalaEditor.DefineIconTemplate(
@@ -58,7 +59,7 @@ FroalaEditor.DEFAULTS.specialCharacterSets = [
   }
 ];
 
-FroalaEditor.DefineIconTemplate("response", `<span class="custom-toolbar-btn">Response</span>`);
+FroalaEditor.DefineIconTemplate("response", `<span class="custom-toolbar-btn">Drop Area</span>`);
 FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="custom-toolbar-btn">Response Boxes</span>`);
 FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">Text Input</span>`);
 FroalaEditor.DefineIconTemplate("textdropdown", `<span class="custom-toolbar-btn">Text Dropdown</span>`);
@@ -166,8 +167,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
   position: relative;
   width: 100%;
   display: block;
-
-  .fr-box.fr-basic .fr-wrapper {
+  font-size: ${props => getFontSize(props.theme.fontSize || "normal", true)} .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
   }
 
@@ -176,8 +176,8 @@ const BackgroundStyleWrapper = styled.div.attrs({
     padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
   }
 
-  ${({ theme }) => {
-    if (theme === "border") {
+  ${({ border }) => {
+    if (border === "border") {
       return `
         .fr {
           &-box {
@@ -223,6 +223,18 @@ export const ToolbarContainer = styled.div.attrs({
   }
 `;
 
+// if (border === "border") {
+export const Placeholder = styled.div.attrs({
+  className: "froala-placeholder"
+})`
+  position: absolute;
+  top: ${props => (props.border === "border" ? 20 : 0) + (props.toolbarExpanded ? 50 : 0) + "px"};
+  left: ${props => (props.border === "border" ? "23px" : 0)};
+  right: 0;
+  opacity: 0.7;
+  color: #cccccc;
+`;
+
 //adds h1 & h2 buttons commands to froala editor.
 headings(FroalaEditor);
 
@@ -263,11 +275,11 @@ const CustomEditor = ({
   additionalToolbarOptions,
   initOnClick,
   theme,
+  border,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
   const toolbarContainerRef = useRef(null);
-
   const [showMathModal, setMathModal] = useState(false);
   const [mathModalIsEditable, setMathModalIsEditable] = useState(true);
   const [currentLatex, setCurrentLatex] = useState("");
@@ -309,7 +321,6 @@ const CustomEditor = ({
         "script",
         ".fa",
         "span",
-        "p",
         "path",
         "line",
         "textinput",
@@ -434,6 +445,11 @@ const CustomEditor = ({
                 cursorEl.remove();
                 return;
               }
+              return;
+            }
+            if (cursorEl.tagName === "SPAN" && $(cursorEl).hasClass("input__math") && $(cursorEl).attr("data-latex")) {
+              cursorEl.remove();
+              return;
             }
           }
         },
@@ -441,7 +457,7 @@ const CustomEditor = ({
           if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
           this.image.showProgressBar();
           // TODO: pass folder as props
-          uploadToS3(image[0], aws.s3Folders.COURSE)
+          uploadToS3(image[0], aws.s3Folders.DEFAULT)
             .then(result => {
               this.image.insert(result);
             })
@@ -585,13 +601,13 @@ const CustomEditor = ({
     // Register response commnad for Response Button
     FroalaEditor.DefineIcon("response", { NAME: "response", template: "response" });
     FroalaEditor.RegisterCommand("response", {
-      title: "Response",
+      title: "Drop Area",
       focus: true,
       undo: true,
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<Response id="${uuid()}" contentEditable="false">Response</Response>&nbsp;`);
+        this.html.insert(`&nbsp;<Response id="${uuid()}" contentEditable="false"></Response>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -605,7 +621,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<TextInput id="${uuid()}" contentEditable="false">Text Input</TextInput>`);
+        this.html.insert(`&nbsp;<TextInput id="${uuid()}" contentEditable="false"></TextInput>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -619,7 +635,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<TextDropdown id="${uuid()}" contentEditable="false">Text Dropdown</TextDropdown>`);
+        this.html.insert(`&nbsp;<TextDropdown id="${uuid()}" contentEditable="false"></TextDropdown>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -633,7 +649,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<MathInput id="${uuid()}" contentEditable="false">Math Input</MathInput>`);
+        this.html.insert(`&nbsp;<MathInput id="${uuid()}" contentEditable="false"></MathInput>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -706,6 +722,7 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
+  const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>
       <MathModal
@@ -718,8 +735,18 @@ const CustomEditor = ({
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded} theme={theme}>
+      <BackgroundStyleWrapper
+        backgroundColor={config.backgroundColor}
+        toolbarExpanded={toolbarExpanded}
+        border={border}
+        theme={theme}
+      >
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
+        {showPlaceholder && (
+          <Placeholder toolbarExpanded={toolbarExpanded} border={border} showMargin={!tag}>
+            {config.placeholder}
+          </Placeholder>
+        )}
         <Editor
           tag={tag}
           model={content}
@@ -744,7 +771,7 @@ CustomEditor.propTypes = {
   additionalToolbarOptions: PropTypes.array,
   readOnly: PropTypes.bool,
   initOnClick: PropTypes.bool,
-  theme: PropTypes.string
+  border: PropTypes.string
 };
 
 CustomEditor.defaultProps = {
@@ -754,7 +781,7 @@ CustomEditor.defaultProps = {
   toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false,
-  theme: "default"
+  border: "none"
 };
 
-export default withMathFormula(CustomEditor);
+export default withTheme(withMathFormula(CustomEditor));

@@ -14,7 +14,7 @@ const Wrapper = styled(Layout)`
 const Assignments = () => {
   return (
     <Wrapper>
-      <Header titleText="common.assignmentsTitle" />
+      <Header titleText="common.dashboardTitle" />
       <SubHeader />
       <AssignmentContainer />
     </Wrapper>

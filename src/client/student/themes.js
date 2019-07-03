@@ -1,10 +1,13 @@
+import { themeColor, themeColorLight } from "@edulastic/colors";
 import edulasticDefaultLogo from "./assets/logo.svg";
 
 export const themes = {
   default: {
+    themeColor,
+    themeColorLight,
     logo: edulasticDefaultLogo,
     logoBorderBottomColor: "#d9d6d6",
-    headerBgColor: "#00AD50",
+    headerBgColor: themeColor,
     headerClassTitleColor: "white",
     headerClassTitleFontSize: "13px",
     headerTitleTextColor: "white",
@@ -12,19 +15,25 @@ export const themes = {
     headerDropdownBgColor: "white",
     headerDropdownTextColor: "#444444",
     headerDropdownFontSize: "14px",
-    filterButtonColor: "#00AD50",
+    filterButtonColor: themeColor,
     filterButtonActiveColor: "#ffffff",
     filterButtonBgColor: "#ffffff",
-    filterButtonBgActiveColor: "#00AD50",
-    filterButtonBorderColor: "#00AD50",
-    filterButtonBorderActiveColor: "#00AD50",
+    filterButtonBgActiveColor: themeColor,
+    filterButtonBorderColor: themeColor,
+    filterButtonBorderActiveColor: themeColor,
+    default: {
+      confirmationPopupButtonBgColor: themeColor,
+      confirmationPopupButtonBgHoverColor: "#ffffff",
+      confirmationPopupButtonTextColor: themeColor,
+      confirmationPopupButtonTextHoverColor: "#ffffff"
+    },
     sideMenu: {
       logo: edulasticDefaultLogo,
       logoBorderBottomColor: "#d9d6d6",
       sidebarBgColor: "#fbfafc",
       sidebarTextColor: "#434b5d",
       helpButtonBgColor: "#ffffff",
-      helpButtonBgHoverColor: "#00AD50",
+      helpButtonBgHoverColor: themeColor,
       helpButtonFontSize: "14px",
       helpButtonTextColor: "#5EB500",
       helpButtonTextHoverColor: "white",
@@ -40,19 +49,19 @@ export const themes = {
       userInfoDropdownItemBgColor: "#ffffff",
       userInfoDropdownItemBgHoverColor: "#f0f0f0",
       userInfoDropdownItemTextColor: "#444444",
-      userInfoDropdownItemTextHoverColor: "#00AD50",
+      userInfoDropdownItemTextHoverColor: themeColor,
       itemIconColor: "#425066",
       userInfoDropdownItemFontSize: "14px",
       userInfoDropdownItemIconSize: "20px",
       menuItemBgColor: "transparent",
-      menuSelectedItemBgColor: "#00AD50",
+      menuSelectedItemBgColor: themeColor,
       menuItemLinkColor: "#434b5d",
       menuSelectedItemLinkColor: "white",
-      menuItemLinkHoverColor: "#00AD50"
+      menuItemLinkHoverColor: themeColor
     },
     assignment: {
       cardContainerBgColor: "white",
-      cardTitleColor: "#00AD50",
+      cardTitleColor: themeColor,
       cardTitleFontSize: "16px",
       cardTitleFontFamily: "Open Sans",
       cardTimeIconType: "clock-circle",
@@ -90,8 +99,8 @@ export const themes = {
 
       cardDefaultBtnFontSize: "11px",
       cardDefaultBtnBgColor: "white",
-      cardDefaultBtnBgHoverColor: "#00AD50",
-      cardDefaultBtnTextColor: "#00AD50",
+      cardDefaultBtnBgHoverColor: themeColor,
+      cardDefaultBtnTextColor: themeColor,
       cardDefaultBtnTextHoverColor: "white",
       cardAttemptLinkTextColor: "#12a6e8",
       cardAttemptLinkFontSize: "12px",
@@ -103,14 +112,14 @@ export const themes = {
       attemptsReviewRowTextColor: "#9ca0a9",
       attemptsReviewRowFontSize: "12px",
       attemptsRowReviewLinkSize: "12px",
-      attemptsRowReviewLinkColor: "#00b0ff"
+      attemptsRowReviewLinkColor: themeColorLight
     },
     classboard: {
-      headerContainerColor: "#00b0ff",
-      headerAnchorLink: "#00b0ff",
+      headerContainerColor: themeColorLight,
+      headerAnchorLink: themeColorLight,
       headerBarbgcolor: "lightgray",
       headerCheckboxColor: "#1890ffd9",
-      headerButtonColor: "#00b0ff",
+      headerButtonColor: themeColorLight,
       SwitchColorheaderListColor: "#037fc2",
       SortBarSelectionColor: "#434b5d",
       ScoreCardColor: "#565e6d",
@@ -130,26 +139,26 @@ export const themes = {
       headerFilterTextSize: "10px",
       headerFilterTextColor: "#7C848E",
       headerFilterBgColor: "#ffffff",
-      headerFilterBgBorderColor: "#00AD50",
+      headerFilterBgBorderColor: themeColor,
       headerFilterTextHoverColor: "#ffffff",
-      headerFilterBgHoverColor: "#00AD50",
-      headerFilterBgBorderHoverColor: "#00AD50",
+      headerFilterBgHoverColor: themeColor,
+      headerFilterBgBorderHoverColor: themeColor,
       headerSelectedFilterTextColor: "white",
-      headerSelectedFilterBgColor: "#00AD50",
-      headerSelectedFilterBgBorderColor: "#00AD50"
+      headerSelectedFilterBgColor: themeColor,
+      headerSelectedFilterBgBorderColor: themeColor
     },
     breadcrumbs: {
-      breadcrumbTextColor: "#00b0ff",
+      breadcrumbTextColor: themeColorLight,
       breadcrumbTextSize: "10px",
-      breadcrumbLinkColor: "#00b0ff"
+      breadcrumbLinkColor: themeColorLight
     },
     reportList: {
       reportListTitleColor: "#12a6e8",
       reportListTitleTextSize: "16px",
       reportListBackButtonBgColor: "transparent",
-      reportListBackButtonBgBorderColor: "#00b0ff",
-      reportListBackButtonTextColor: "#00b0ff",
-      reportListBackButtonBgHoverColor: "#00b0ff",
+      reportListBackButtonBgBorderColor: themeColorLight,
+      reportListBackButtonTextColor: themeColorLight,
+      reportListBackButtonBgHoverColor: themeColorLight,
       reportListBackButtonBgBorderHoverColor: "white",
       reportListBackButtonTextHoverColor: "white",
       reportListBackButtonTextSize: "0.7rem",
@@ -212,10 +221,10 @@ export const themes = {
       cardTitleColor: "#434b5d",
       cardTitleTextSize: "16px",
       cardVisitClassBtnBgColor: "white",
-      cardVisitClassBtnBgHoverColor: "#00AD50",
-      cardVisitClassBtnTextColor: "#00AD50",
+      cardVisitClassBtnBgHoverColor: themeColor,
+      cardVisitClassBtnTextColor: themeColor,
       cardVisitClassBtnTextHoverColor: "white",
-      cardVisitClassBtnBorderColor: "#00AD50",
+      cardVisitClassBtnBorderColor: themeColor,
       cardVisitClassBtnTextSize: "10px",
       cardUserInfoLabelColor: "#434b5d",
       cardUserInfoLabelTextSize: "13px",
@@ -249,10 +258,10 @@ export const themes = {
       descriptionTextSize: "13px",
       descriptionTextColor: "#434b5d",
       buttonTextSize: "11px",
-      buttonBorderColor: "#00AD50",
+      buttonBorderColor: themeColor,
       submitButtonTextColor: "#ffffff",
-      submitButtonBgColor: "#00AD50",
-      cancelButtonTextColor: "#00AD50",
+      submitButtonBgColor: themeColor,
+      cancelButtonTextColor: themeColor,
       cancelButtonBgColor: "#ffffff"
     },
     attemptReview: {
@@ -262,9 +271,9 @@ export const themes = {
       headingColor: "#434b5d",
       titleDescriptionTextSize: "13px",
       titleDescriptionTextColor: "#434b5d",
-      greenMarkBgColor: "#1fe3a1",
-      grayMarkBgColor: "#b1b1b1",
-      redMarkBgColor: "#ee1658",
+      markedAnswerBoxColor: "#59abeb", // BlueColor
+      markedSkippedBoxColor: "#b1b1b1", // GrayColor
+      markedForReviewBoxColor: "#f8c165", // YellowColor
       descriptionTextSize: "12px",
       descriptionTextColor: "#878282",
       questiontextSize: "16px",
@@ -272,7 +281,7 @@ export const themes = {
       shortDescriptionTextSize: "12px",
       shortDescriptionTextColor: "#1e1e1e",
       submitButtonTextSize: "11px",
-      submitButtonBgColor: "#00AD50",
+      submitButtonBgColor: themeColor,
       submitButtonTextColor: "#ffffff"
     }
   }

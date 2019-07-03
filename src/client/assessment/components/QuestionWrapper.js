@@ -290,7 +290,7 @@ class QuestionWrapper extends Component {
         ]}
         fallBack={<span />}
       >
-        <ThemeProvider theme={themes.default}>
+        <ThemeProvider theme={{ ...themes.default, fontSize: get(data, "ui_style.fontsize", "normal") }}>
           <>
             {canShowPlayer ? (
               <AudioControls key={data.id} item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} />
@@ -374,7 +374,7 @@ class QuestionWrapper extends Component {
 
 QuestionWrapper.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
-  isPresentationMode: PropTypes.func.isRequired,
+  isPresentationMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
   showFeedback: PropTypes.bool,
@@ -393,7 +393,8 @@ QuestionWrapper.propTypes = {
   advancedAreOpen: PropTypes.bool,
   handleAdvancedOpen: PropTypes.func,
   userRole: PropTypes.string.isRequired,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  clearAnswers: PropTypes.func.isRequired
 };
 
 QuestionWrapper.defaultProps = {
@@ -412,7 +413,8 @@ QuestionWrapper.defaultProps = {
   flowLayout: false,
   advancedAreOpen: false,
   handleAdvancedOpen: () => {},
-  disableResponse: false
+  disableResponse: false,
+  isPresentationMode: false
 };
 
 const enhance = compose(

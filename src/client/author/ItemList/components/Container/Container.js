@@ -68,7 +68,7 @@ export const getClearSearchState = () => ({
   collectionName: "",
   status: "",
   grades: [],
-  filter: filterMenuItems[0].filter
+  filter: ""
 });
 
 // container the main entry point to the component

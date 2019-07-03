@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
-  BarChart,
+  ComposedChart,
   Bar,
+  Line,
   Cell,
   XAxis,
   YAxis,
@@ -36,6 +37,7 @@ const LabelText = props => {
 };
 
 export const SimpleStackedBarChart = ({
+  margin = { top: 0, right: 0, left: 0, bottom: 0 },
   pageSize,
   data = [],
   yDomain = [0, 110],
@@ -51,7 +53,13 @@ export const SimpleStackedBarChart = ({
   yTickFormatter = _yTickFormatter,
   barsLabelFormatter = _yTickFormatter,
   filter = {},
-  referenceLineY = null
+  referenceLineY = null,
+  lineYDomain = [0, 110],
+  lineChartDataKey = false,
+  lineProps = {},
+  lineTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+  lineYTickFormatter = _yTickFormatter,
+  lineYAxisLabel = ""
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
@@ -61,7 +69,8 @@ export const SimpleStackedBarChart = ({
   const constants = {
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "normal" },
-    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -25 }
+    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -25 },
+    LINE_Y_AXIS_LABEL: { value: lineYAxisLabel, angle: -90, dx: 25 }
   };
 
   if (data !== copyData) {
@@ -153,7 +162,7 @@ export const SimpleStackedBarChart = ({
         }}
       />
       <ResponsiveContainer width={"100%"} height={400}>
-        <BarChart width={730} height={400} data={chartData}>
+        <ComposedChart width={730} height={400} data={chartData} margin={margin}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis
             dataKey={xAxisDataKey}
@@ -162,6 +171,7 @@ export const SimpleStackedBarChart = ({
           />
           <YAxis
             type={"number"}
+            yAxisId="barChart"
             domain={yDomain}
             tick={constants.TICK_FILL}
             ticks={ticks}
@@ -178,6 +188,7 @@ export const SimpleStackedBarChart = ({
           />
           <Bar
             dataKey={bottomStackDataKey}
+            yAxisId="barChart"
             stackId="a"
             unit={"%"}
             onClick={onBarClick}
@@ -187,6 +198,7 @@ export const SimpleStackedBarChart = ({
           />
           <Bar
             dataKey={topStackDataKey}
+            yAxisId="barChart"
             stackId="a"
             onClick={onBarClick}
             barSize={70}
@@ -212,8 +224,21 @@ export const SimpleStackedBarChart = ({
               return <Cell key={entry[xAxisDataKey]} fill={"#c0c0c0"} />;
             })}
           </Bar>
-          {referenceLineY > 0 ? <ReferenceLine y={referenceLineY} stroke="#010101" /> : null}
-        </BarChart>
+          {lineChartDataKey ? (
+            <YAxis
+              yAxisId="lineChart"
+              domain={lineYDomain ? lineYDomain : null}
+              label={constants.LINE_Y_AXIS_LABEL}
+              ticks={lineTicks}
+              orientation="right"
+              tickFormatter={lineYTickFormatter}
+            />
+          ) : null}
+          {lineChartDataKey ? (
+            <Line yAxisId="lineChart" type="monotone" dataKey={lineChartDataKey} {...lineProps} />
+          ) : null}
+          {referenceLineY > 0 ? <ReferenceLine yAxisId={"barChart"} y={referenceLineY} stroke="#010101" /> : null}
+        </ComposedChart>
       </ResponsiveContainer>
     </StyledStackedBarChartContainer>
   );

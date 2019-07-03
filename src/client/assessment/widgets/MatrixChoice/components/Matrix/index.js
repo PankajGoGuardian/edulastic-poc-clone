@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
@@ -9,6 +9,12 @@ import MatrixCell from "../MatrixCell";
 import { StyledTable } from "./styled/StyledTable";
 import { getFontSize } from "../../../../utils/helpers";
 import StyledHeader from "./styled/StyledHeader";
+import { IconWrapper } from "./styled/IconWrapper";
+import { IconCheck } from "./styled/IconCheck";
+import { IconClose } from "./styled/IconClose";
+import { CHECK_ANSWER } from "../../../../constants/actions";
+import { SHOW_ANSWER } from "../../../../../author/src/constants/actions";
+import { CHECK, SHOW } from "../../../../constants/constantsForQuestions";
 
 const getResponses = validation => {
   const altResponses =
@@ -63,7 +69,19 @@ const validatedAnswers = (answers, responses, matrix, type) => {
 
 const MathSpan = WithMathFormula(styled.div``);
 
-const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, validation, type, smallSize, theme }) => {
+const Matrix = ({
+  stems,
+  options,
+  response,
+  isMultiple,
+  onCheck,
+  uiStyle,
+  validation,
+  type,
+  smallSize,
+  theme,
+  previewTab
+}) => {
   let correctAnswersMatrix;
 
   // We expect stems to be an array, otherwise don't render
@@ -117,7 +135,14 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
         label={options[columnIndex]}
         isMultiple={isMultiple}
         smallSize={smallSize}
-      />
+      >
+        {previewTab === CHECK || previewTab === SHOW ? (
+          <IconWrapper>
+            {correct === true && <IconCheck />}
+            {correct === "incorrect" && <IconClose />}
+          </IconWrapper>
+        ) : null}
+      </MatrixCell>
     );
   };
 
@@ -205,7 +230,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
     <StyledTable
       data-cy="matrixTable"
       fontSize={fontSize}
-      horizontalLines={uiStyle.horizontal_lines && !helpers.isEmpty(uiStyle.option_row_title)}
+      horizontalLines={uiStyle.horizontal_lines}
       columns={getColumns()}
       dataSource={data}
       pagination={false}

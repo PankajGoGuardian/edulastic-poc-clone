@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import { white, green, greenDark, fadedGrey, blueButton, boxShadowDefault } from "@edulastic/colors";
-import { Button } from "antd";
+import { Button, Table } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
 
 export const Title = styled.div`
@@ -80,4 +80,9 @@ export const ClassSelect = styled.div`
 `;
 export const LabelMyClasses = styled.span`
   margin-right: 10px;
+`;
+export const ClassListTable = styled(Table)`
+  .ant-table-tbody > tr {
+    cursor: pointer;
+  }
 `;

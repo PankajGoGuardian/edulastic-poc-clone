@@ -12,7 +12,7 @@ const FlexContainer = styled.div`
   & > *:last-child {
     margin-right: 0;
   }
-  p {
+  div:not(.fr-element.fr-view) p {
     padding: 6px 0px;
   }
 `;

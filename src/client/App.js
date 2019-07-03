@@ -21,6 +21,7 @@ import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
 import { getWordsInURLPathName, isLoggedIn } from "./common/utils/helpers";
 import LoggedOutRoute from "./common/components/loggedOutRoute";
 import PrivateRoute from "./common/components/privateRoute";
+import V1Redirect from "./author/V1Redirect";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -77,7 +78,8 @@ class App extends Component {
     const publicPath = location.pathname.split("/").includes("public");
     const ssoPath = location.pathname.split("/").includes("auth");
     const partnerPath = location.pathname.split("/").includes("partnerLogin");
-    if (!publicPath && !ssoPath && !partnerPath) {
+    const isV1Redirect = location.pathname.includes("/fwd");
+    if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect) {
       fetchUser();
     }
   }
@@ -89,7 +91,7 @@ class App extends Component {
       history.push(`/d/ap?eAId=${v1Id}`);
     }
 
-    const publicPath = location.pathname.split("/").includes("public");
+    const publicPath = location.pathname.split("/").includes("public") || location.pathname.includes("/fwd");
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
@@ -118,18 +120,19 @@ class App extends Component {
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (
-        this.props.location.pathname.toLocaleLowerCase() === "/getstarted" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/signup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/studentsignup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/adminsignup" ||
-        (path[0] && path[0].toLocaleLowerCase() === "district")
+        this.props.location.pathname.toLocaleLowerCase().includes("/getstarted") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/signup") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
+        (path[0] && path[0].toLocaleLowerCase() === "district") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/fwd")
       ) {
       } else if (
-        this.props.location.pathname === "/auth/mso" ||
-        this.props.location.pathname === "/auth/clever" ||
-        this.props.location.pathname === "/auth/google"
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
       ) {
-      } else if (this.props.location.pathname === `/partnerLogin/${path[1]}`) {
       } else {
         redirectRoute = "/login";
       }
@@ -155,13 +158,35 @@ class App extends Component {
               redirectPath={defaultRoute}
             />
             <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/Signup"
+              component={TeacherSignup}
+              redirectPath={defaultRoute}
+            />
             <LoggedOutRoute path="/login" component={Auth} redirectPath={defaultRoute} />
-            <LoggedOutRoute path="/partnerLogin/greatminds" component={Auth} redirectPath={defaultRoute} />
-            <LoggedOutRoute path="/partnerLogin/readicheck" component={Auth} redirectPath={defaultRoute} />
+            <LoggedOutRoute exact path="/partnerLogin/:partner" component={Auth} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/GetStarted" component={GetStarted} redirectPath={defaultRoute} />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/GetStarted"
+              component={GetStarted}
+              redirectPath={defaultRoute}
+            />
             <LoggedOutRoute path="/AdminSignup" component={AdminSignup} redirectPath={defaultRoute} />
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/AdminSignup"
+              component={AdminSignup}
+              redirectPath={defaultRoute}
+            />
             <LoggedOutRoute path="/StudentSignup" component={StudentSignup} redirectPath={defaultRoute} />
-
+            <LoggedOutRoute
+              exact
+              path="/partnerLogin/:partner/StudentSignup"
+              component={StudentSignup}
+              redirectPath={defaultRoute}
+            />
             <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
             <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />
@@ -170,6 +195,7 @@ class App extends Component {
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
+            <Route exact path="/fwd" render={() => <V1Redirect />} />
             <Route path="/auth" render={() => <Auth />} />
             {testRedirectRoutes.map(route => (
               <Route path={route} component={RedirectToTest} key={route} />

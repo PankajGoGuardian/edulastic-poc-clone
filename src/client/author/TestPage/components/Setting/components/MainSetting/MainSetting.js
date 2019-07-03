@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox, Form } from "antd";
 
 import { test } from "@edulastic/constants";
-import { lightBlueSecondary, red, green, blueBorder } from "@edulastic/colors";
+import { red, green, blueBorder } from "@edulastic/colors";
 import { IconCaretDown } from "@edulastic/icons";
 
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
@@ -175,7 +175,7 @@ class MainSetting extends Component {
 
   render() {
     const { enable, showAdvancedOption, showPassword } = this.state;
-    const { history, windowWidth, entity, owner, userRole, readOnlyMode = false } = this.props;
+    const { history, windowWidth, entity, owner, userRole, isEditable = false } = this.props;
 
     const {
       releaseScore,
@@ -233,7 +233,7 @@ class MainSetting extends Component {
             {/* Hiding temporarly for deploying */}
             {/* <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
               {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
-              <IconCaretDown color={lightBlueSecondary} width={11} height={6} />
+              <IconCaretDown color={themeColor} width={11} height={6} />
             </AdvancedButton>
             {showAdvancedOption && (
               <StyledAnchor affix={false} offsetTop={125}>
@@ -254,7 +254,7 @@ class MainSetting extends Component {
                 <Body smallSize={isSmallSize}>
                   <TestTypeSelect
                     defaultValue={testType}
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     onChange={this.updateTestData("testType")}
                   >
                     {Object.keys(testTypes).map(key => (
@@ -275,7 +275,7 @@ class MainSetting extends Component {
               <Body>
                 <MaxAttempts
                   type="number"
-                  disabled={!owner || readOnlyMode}
+                  disabled={!owner || !isEditable}
                   size="large"
                   value={maxAttempts}
                   onChange={this.updateAttempt}
@@ -289,7 +289,7 @@ class MainSetting extends Component {
                 <Title>Mark as Done</Title>
                 <Body smallSize={isSmallSize}>
                   <StyledRadioGroup
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     onChange={this.updateFeatures("markAsDone")}
                     value={markAsDone}
                   >
@@ -313,7 +313,7 @@ class MainSetting extends Component {
               <Title>Release Scores</Title>
               <Body smallSize={isSmallSize}>
                 <StyledRadioGroup
-                  disabled={!owner || readOnlyMode}
+                  disabled={!owner || !isEditable}
                   onChange={this.updateFeatures("releaseScore")}
                   value={releaseScore}
                 >
@@ -339,13 +339,13 @@ class MainSetting extends Component {
                 <Title>Require Safe Exam Browser</Title>
                 <Body smallSize={isSmallSize}>
                   <Switch
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     defaultChecked={safeBrowser}
                     onChange={this.updateTestData("safeBrowser")}
                   />
                   {safeBrowser && (
                     <InputPassword
-                      disabled={!owner || readOnlyMode}
+                      disabled={!owner || !isEditable}
                       prefix={
                         <i className={`fa fa-eye${showPassword ? "-slash" : ""}`} onClick={this.handleShowPassword} />
                       }
@@ -369,7 +369,7 @@ class MainSetting extends Component {
                 <Title>Shuffle Questions</Title>
                 <Body smallSize={isSmallSize}>
                   <Switch
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     defaultChecked={shuffleQuestions}
                     onChange={this.updateTestData("shuffleQuestions")}
                   />
@@ -386,7 +386,7 @@ class MainSetting extends Component {
                 <Title>Shuffle Answer Choice</Title>
                 <Body smallSize={isSmallSize}>
                   <Switch
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     defaultChecked={shuffleAnswers}
                     onChange={this.updateTestData("shuffleAnswers")}
                   />
@@ -407,7 +407,7 @@ class MainSetting extends Component {
                 <Title>Show Calculator</Title>
                 <Body smallSize={isSmallSize}>
                   <StyledRadioGroup
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     onChange={this.updateFeatures("calcType")}
                     value={calcType}
                   >
@@ -430,7 +430,7 @@ class MainSetting extends Component {
                 <Title>Answer on Paper</Title>
                 <Body smallSize={isSmallSize}>
                   <Switch
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     defaultChecked={answerOnPaper}
                     onChange={this.updateTestData("answerOnPaper")}
                   />
@@ -447,7 +447,7 @@ class MainSetting extends Component {
                 <Title>Require Password</Title>
                 <Body smallSize={isSmallSize}>
                   <Switch
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     defaultChecked={requirePassword}
                     onChange={this.updateTestData("requirePassword")}
                   />
@@ -479,7 +479,7 @@ class MainSetting extends Component {
                 <Title>Check Answer Tries Per Question</Title>
                 <Body smallSize={isSmallSize}>
                   <MaxAnswerChecksInput
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     onChange={e => this.updateTestData("maxAnswerChecks")(e.target.value)}
                     size="large"
                     value={maxAnswerChecks}
@@ -495,7 +495,7 @@ class MainSetting extends Component {
                 <Title>Evaluation Method</Title>
                 <Body smallSize={isSmallSize}>
                   <StyledRadioGroup
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     onChange={e => this.updateTestData("scoringType")(e.target.value)}
                     value={scoringType}
                   >
@@ -508,7 +508,7 @@ class MainSetting extends Component {
                   {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
                     <p>
                       <Checkbox
-                        disabled={!owner || readOnlyMode}
+                        disabled={!owner || !isEditable}
                         checked={penalty === false}
                         onChange={e => this.updateTestData("penalty")(!e.target.checked)}
                       >
@@ -548,7 +548,7 @@ class MainSetting extends Component {
                       <ListCard
                         item={performanceBandsData[item]}
                         owner={owner}
-                        readOnlyMode={readOnlyMode}
+                        isEditable={isEditable}
                         onPerformanceBandUpdate={() => this.onPerformanceBandUpdate(item)}
                       />
                     </List.Item>
@@ -560,7 +560,7 @@ class MainSetting extends Component {
               <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>
                 <Body smallSize={isSmallSize}>
-                  <RadioGroup disabled={!owner || readOnlyMode} onChange={this.enableHandler} defaultValue={enable}>
+                  <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
                     <Radio style={{ display: "block", marginBottom: "24px" }} value={true}>
                       Enable
                     </Radio>
@@ -571,7 +571,7 @@ class MainSetting extends Component {
                   <Row gutter={28}>
                     <Col span={12}>
                       <InputTitle>Activity Title</InputTitle>
-                      <ActivityInput disabled={!owner || readOnlyMode} placeholder="Title of activity" />
+                      <ActivityInput disabled={!owner || !isEditable} placeholder="Title of activity" />
                     </Col>
                   </Row>
                 </Body>
@@ -587,7 +587,7 @@ class MainSetting extends Component {
                       </Col>
                       <Col span={16}>
                         <RadioGroup
-                          disabled={!owner || readOnlyMode}
+                          disabled={!owner || !isEditable}
                           onChange={this.enableHandler}
                           defaultValue={enable}
                         >
@@ -618,7 +618,7 @@ class MainSetting extends Component {
 
               <Block id="accessibility" smallSize={isSmallSize}>
                 <Title>Accessibility</Title>
-                <RadioWrapper disabled={!owner || readOnlyMode} style={{ marginTop: "29px", marginBottom: 0 }}>
+                <RadioWrapper disabled={!owner || !isEditable} style={{ marginTop: "29px", marginBottom: 0 }}>
                   {Object.keys(accessibilities).map(item => (
                     <Row key={accessibilities[item]} style={{ width: "100%" }}>
                       <Col span={8}>
@@ -626,7 +626,7 @@ class MainSetting extends Component {
                       </Col>
                       <Col span={16}>
                         <RadioGroup
-                          disabled={!owner || readOnlyMode}
+                          disabled={!owner || !isEditable}
                           onChange={this.enableHandler}
                           defaultValue={enable}
                         >
@@ -649,7 +649,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup disabled={!owner || readOnlyMode} onChange={this.enableHandler} defaultValue={enable}>
+                      <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -660,7 +660,7 @@ class MainSetting extends Component {
                   <Row gutter={28}>
                     <Col span={12}>
                       <InputTitle>Password</InputTitle>
-                      <Input disabled={!owner || readOnlyMode} placeholder="Your Password" />
+                      <Input disabled={!owner || !isEditable} placeholder="Your Password" />
                     </Col>
                   </Row>
                 </Body>
@@ -670,7 +670,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup disabled={!owner || readOnlyMode} onChange={this.enableHandler} defaultValue={enable}>
+                      <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -684,7 +684,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup disabled={!owner || readOnlyMode} onChange={this.enableHandler} defaultValue={enable}>
+                      <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -698,7 +698,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup disabled={!owner || readOnlyMode} onChange={this.enableHandler} defaultValue={enable}>
+                      <RadioGroup disabled={!owner || !isEditable} onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>

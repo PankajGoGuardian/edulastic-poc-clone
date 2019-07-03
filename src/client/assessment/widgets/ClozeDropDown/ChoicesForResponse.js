@@ -141,13 +141,13 @@ class ChoicesForResponse extends Component {
 
   render() {
     const { t, item, response } = this.props;
-    const { options, templateMarkUp } = item;
+    const { options, template } = item;
     return (
       <Widget data-cy={`choice-response-${response.index}`}>
         <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
         <SortableList
           items={options[response.id] || []}
-          dirty={templateMarkUp}
+          dirty={template}
           onSortEnd={params => this.onSortEnd(response.id, params)}
           useDragHandle
           onRemove={itemIndex => this.remove(response.id, itemIndex)}

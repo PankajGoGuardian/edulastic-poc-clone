@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { blue, white, darkBlue, textColor, grey, green, greenDark, black, newBlue } from "@edulastic/colors";
+import { themeColor, white, textColor, grey, green, greenDark, black } from "@edulastic/colors";
 
 const getRadius = variant => {
   switch (variant) {
@@ -32,8 +32,8 @@ const getTextTransparentColor = color => {
   switch (color) {
     case "primary":
       return {
-        color: blue,
-        hoverColor: darkBlue
+        color: themeColor,
+        hoverColor: themeColor
       };
     case "default":
       return {
@@ -47,8 +47,8 @@ const getTextTransparentColor = color => {
       };
     default:
       return {
-        color: blue,
-        hoverColor: darkBlue
+        color: themeColor,
+        hoverColor: themeColor
       };
   }
 };
@@ -58,16 +58,16 @@ const getColors = ({ color, variant, outlined }) => {
 
   switch (color) {
     case "primary":
-      colors.backgroundColor = blue;
+      colors.backgroundColor = themeColor;
       colors.color = white;
       colors.hoverColor = white;
-      colors.backgroundColorHover = darkBlue;
+      colors.backgroundColorHover = themeColor;
       if (outlined) {
         colors.backgroundColor = white;
-        colors.color = blue;
+        colors.color = themeColor;
         colors.hoverColor = white;
-        colors.backgroundColorHover = darkBlue;
-        colors.borderColor = darkBlue;
+        colors.backgroundColorHover = themeColor;
+        colors.borderColor = themeColor;
       }
       break;
     case "default":
@@ -84,8 +84,8 @@ const getColors = ({ color, variant, outlined }) => {
       break;
     case "secondary":
       colors.backgroundColor = white;
-      colors.color = newBlue;
-      colors.hoverColor = newBlue;
+      colors.color = themeColor;
+      colors.hoverColor = themeColor;
       colors.borderColor = white;
       colors.backgroundColorHover = white;
       break;
@@ -187,9 +187,15 @@ const Container = styled.button`
   background: ${({ backgroundColor, disabled }) => (disabled ? grey : backgroundColor)};
   box-shadow: ${({ shadow }) => getShadow(shadow)};
 
-  :hover {
+  &:hover {
     background: ${({ backgroundColorHover }) => backgroundColorHover};
     color: ${({ hoverColor }) => hoverColor};
     cursor: pointer;
+    border-color: ${props => props.theme.themeColor};
+  }
+
+  &:focus {
+    border-color: ${props => props.theme.themeColor};
+    outline-color: ${props => props.theme.themeColor};
   }
 `;

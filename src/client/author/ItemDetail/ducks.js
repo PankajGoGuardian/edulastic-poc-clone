@@ -17,7 +17,12 @@ import {
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
-import { getTestEntitySelector, setTestDataAndUpdateAction, setTestDataAction } from "../TestPage/ducks";
+import {
+  getTestEntitySelector,
+  setTestDataAndUpdateAction,
+  setTestDataAction,
+  setCreatedItemToTestAction
+} from "../TestPage/ducks";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
 
@@ -83,9 +88,9 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data, testId, addToTest = false) => ({
+export const updateItemDetailByIdAction = (id, data, testId, addToTest = false, redirect = true) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, testId, addToTest }
+  payload: { id, data, testId, addToTest, redirect }
 });
 
 export const updateItemDetailSuccess = item => ({
@@ -546,8 +551,8 @@ export function* updateItemSaga({ payload }) {
     data.data.questions = get(payload, "data.data.questions", questions);
 
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
-
-    if (payload.redirect && item._id !== payload.id) {
+    const { redirect = true } = payload; // added for doc based assesment, where redirection is not required.
+    if (redirect && item._id !== payload.id) {
       yield put(
         replace(
           payload.testId
@@ -577,10 +582,11 @@ export function* updateItemSaga({ payload }) {
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
-      if (!testEntity._id) {
+      if (!payload.testId) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
-        yield put(setTestDataAction(updatedTestEntity));
+        yield put(setCreatedItemToTestAction(item));
+        yield put(push(`/author/tests/${payload.testId}#review`));
       }
       yield put(toggleCreateItemModalAction(false));
       yield put(changeViewAction("edit"));

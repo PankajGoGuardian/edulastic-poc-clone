@@ -19,6 +19,7 @@ import Attempt from "./Attempt";
 
 // actions
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
+import { getClassIds } from "../Reports/ducks";
 
 const isSEB = () => window.navigator.userAgent.includes("SEB");
 
@@ -58,9 +59,8 @@ const SafeBrowserButton = ({
   return <SafeStartAssignButton href={url}>{startButtonText}</SafeStartAssignButton>;
 };
 
-const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup }) => {
+const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
   const [showAttempts, setShowAttempts] = useState(false);
-
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
 
@@ -70,24 +70,28 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     endDate,
     testId,
     startDate,
+    open = false,
+    close = false,
     _id: assignmentId,
     safeBrowser,
     testType,
     class: clazz = [],
-    maxAttempts,
+    maxAttempts = 1,
     title,
     thumbnail
   } = data;
 
   if (!startDate && !endDate) {
     const currentClass = maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "endDate") || {};
+    open = currentClass.open;
+    close = currentClass.close;
     startDate = currentClass.startDate;
     endDate = currentClass.endDate;
   }
-  if (!startDate) {
+  if (!startDate && open) {
     startDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "openDate") || {}).openDate;
   }
-  if (!endDate) {
+  if (!endDate && close) {
     endDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "closedDate") || {})
       .closedDate;
   }
@@ -95,6 +99,8 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
   const absent = lastAttempt.status == 2;
+  const graded =
+    lastAttempt.graded && lastAttempt.graded.toLowerCase() === "in grading" ? "submitted" : lastAttempt.graded;
   let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
   const { correct = 0, wrong = 0, maxScore = 0, score = 0, skipped = 0 } = last(newReports) || {};
@@ -119,9 +125,15 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
       startAssignment({ testId, assignmentId, testType });
     }
   };
+  if (!currentGroup) {
+    //Find current group from assignment classes object
+    const getClass = data.class.find(({ _id }) => userGroups.includes(_id)) || {};
+    currentGroup = getClass._id;
+  }
 
   const { releaseScore = releaseGradeLabels.DONT_RELEASE, activityReview = true } = data;
-  const showReviewButton = releaseScore !== releaseGradeLabels.DONT_RELEASE;
+  const showReviewButton =
+    releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
   const ScoreDetail = (
     <React.Fragment>
       {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
@@ -153,12 +165,12 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         dueDate={endDate}
         startDate={startDate}
         safeBrowser={safeBrowser}
-        graded={lastAttempt.graded}
+        graded={graded}
         absent={absent}
       />
       <ButtonAndDetail>
         <DetailContainer>
-          {attempted && (
+          {attempted && !absent && (
             <AttemptDetails>
               <Attempts onClick={toggleAttemptsView}>
                 <span data-cy="attemptsCount">
@@ -172,7 +184,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
             </AttemptDetails>
           )}
           {type === "assignment" ? (
-            safeBrowser && !(new Date(startDate) > new Date()) && !isSEB() ? (
+            safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
               <SafeBrowserButton
                 data-cy="start"
                 testId={testId}
@@ -198,7 +210,8 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
               />
             )
           ) : (
-            showReviewButton && (
+            showReviewButton &&
+            !absent && (
               <ReviewButton
                 data-cy="review"
                 testActivityId={lastAttempt._id}
@@ -206,6 +219,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
                 activityReview={activityReview}
                 t={t}
                 attempted={attempted}
+                classId={currentGroup}
               />
             )
           )}
@@ -220,6 +234,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
               releaseScore={releaseScore}
               showReviewButton={showReviewButton}
               releaseGradeLabels={releaseGradeLabels}
+              classId={attempt.groupId}
             />
           ))}
       </ButtonAndDetail>
@@ -232,7 +247,9 @@ const enhance = compose(
   withRouter,
   withNamespaces("assignmentCard"),
   connect(
-    null,
+    state => ({
+      userGroups: getClassIds(state)
+    }),
     {
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction

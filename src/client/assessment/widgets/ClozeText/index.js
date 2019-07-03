@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, isEqual, get } from "lodash";
+import { cloneDeep, isEqual, get, findIndex } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { Paper, Checkbox, WithResources } from "@edulastic/common";
@@ -126,9 +126,35 @@ class ClozeText extends Component {
   };
 
   handleAddAnswer = userAnswer => {
-    const { saveAnswer } = this.props;
-    const newAnswer = cloneDeep(userAnswer);
+    const { saveAnswer, setQuestionData, item } = this.props;
+    const { ui_style: uiStyle } = item;
+    let newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
+    if (uiStyle.globalSettings) {
+      setQuestionData(
+        produce(item, draft => {
+          newAnswer = newAnswer.filter(ans => !!ans);
+          newAnswer.forEach(ans => {
+            const { id, value, index } = ans;
+            const splitWidth = Math.max(value.split("").length * 9, 100);
+            const width = Math.min(splitWidth, 400);
+            const ind = findIndex(draft.ui_style.responsecontainerindividuals, container => container.id === id);
+            if (ind === -1) {
+              draft.ui_style.responsecontainerindividuals.push({
+                id,
+                index,
+                previewWidth: width
+              });
+            } else {
+              draft.ui_style.responsecontainerindividuals[ind] = {
+                ...draft.ui_style.responsecontainerindividuals[ind],
+                previewWidth: width
+              };
+            }
+          });
+        })
+      );
+    }
   };
 
   render() {
@@ -180,12 +206,14 @@ class ClozeText extends Component {
                     options={previewDisplayOptions}
                     question={previewStimulus}
                     uiStyle={uiStyle}
-                    templateMarkUp={itemForEdit.templateMarkUp}
+                    template={itemForEdit.template}
                     responseIds={item.response_ids}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                     cleanSections={cleanSections}
                     fillSections={fillSections}
+                    view={view}
+                    previewTab={previewTab}
                   />
                   <div style={{ marginTop: 40 }}>
                     <Checkbox
@@ -240,7 +268,7 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
+                template={itemForPreview.template}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
@@ -248,6 +276,8 @@ class ClozeText extends Component {
                 item={itemForPreview}
                 responseIds={item.response_ids}
                 showIndex
+                view={view}
+                previewTab={previewTab}
               />
             )}
             {previewTab === "show" && (
@@ -260,7 +290,7 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
+                template={itemForPreview.template}
                 userSelections={userAnswer}
                 validation={itemForPreview.validation}
                 evaluation={evaluation}
@@ -269,11 +299,13 @@ class ClozeText extends Component {
                 responseIds={item.response_ids}
                 showIndex
                 {...restProps}
+                view={view}
+                previewTab={previewTab}
               />
             )}
             {previewTab === "clear" && (
               <Display
-                preview
+                preview={false}
                 configureOptions={{
                   shuffleOptions
                 }}
@@ -282,13 +314,15 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
+                template={itemForPreview.template}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
                 responseIds={item.response_ids}
                 showIndex={false}
+                view={view}
+                previewTab={previewTab}
                 {...restProps}
               />
             )}

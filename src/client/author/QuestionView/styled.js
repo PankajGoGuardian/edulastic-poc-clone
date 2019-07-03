@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, themeColor } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { Card } from "antd";
 
@@ -70,7 +70,7 @@ export const CircularDiv = styled.div`
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  color: #1774f0;
+  color: ${themeColor};
   font-weight: 600;
   margin-right: 20px;
   align-items: center;

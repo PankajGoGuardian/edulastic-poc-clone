@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
-import { isUndefined } from "lodash";
+import { isUndefined, get, maxBy } from "lodash";
 import { helpers, Stimulus } from "@edulastic/common";
 
-import { clozeImage, canvasDimensions } from "@edulastic/constants";
+import { clozeImage } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
 
-import { FaSellcast } from "react-icons/fa";
+// import { FaSellcast } from "react-icons/fa";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -117,6 +117,13 @@ class Display extends Component {
     return maxHeight;
   };
 
+  getResponseBoxMaxValues = () => {
+    const { responseContainers } = this.props;
+    const maxTop = maxBy(responseContainers, response => response.top);
+    const maxLeft = maxBy(responseContainers, response => response.left);
+    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+  };
+
   render() {
     const {
       question,
@@ -134,11 +141,14 @@ class Display extends Component {
       theme,
       item,
       showQuestionNumber,
-      qIndex,
       disableResponse,
-      imageOptions
+      imageOptions,
+      isReviewTab
     } = this.props;
-    const { userAnswers } = this.state;
+    const cAnswers = get(item, "validation.valid_response.value", []);
+    const { userAnswers: _uAnswers } = this.state;
+
+    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { height, wordwrap, stemnumeration } = uiStyle;
@@ -149,17 +159,30 @@ class Display extends Component {
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
+    const imageWidth = this.getWidth();
     const imageHeight = this.getHeight();
-    const canvasHeight = imageHeight + (imageOptions.y || 0);
+    let canvasHeight = imageHeight + (imageOptions.y || 0);
+    let canvasWidth = imageWidth + (imageOptions.x || 0);
+
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+
+    if (canvasHeight < responseBoxMaxTop) {
+      canvasHeight = responseBoxMaxTop + 20;
+    }
+
+    if (canvasWidth < responseBoxMaxLeft) {
+      canvasWidth = responseBoxMaxLeft;
+    }
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         fontSize={fontSize}
-        height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
+        height={canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight}
       >
         <StyledPreviewContainer
           data-cy="image-text-answer-board"
-          height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
+          width={canvasWidth > clozeImage.maxWidth ? canvasWidth : clozeImage.maxWidth}
+          height={canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight}
         >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
@@ -302,6 +325,7 @@ Display.propTypes = {
   theme: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
+  isReviewTab: PropTypes.bool,
   imageOptions: PropTypes.object
 };
 
@@ -328,7 +352,8 @@ Display.defaultProps = {
     wordwrap: false
   },
   showQuestionNumber: false,
-  imageOptions: {}
+  imageOptions: {},
+  isReviewTab: false
 };
 
 export default withTheme(Display);

@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import { clozeImage } from "@edulastic/constants";
 import { Pointer } from "../../../../styled/Pointer";
 import { Point } from "../../../../styled/Point";
 import { Triangle } from "../../../../styled/Triangle";
@@ -10,7 +10,7 @@ import { StyledTemplateBox } from "./styled/StyledTemplateBox";
 import { TemplateCover } from "./styled/TemplateCover";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
-import { calculateRatio } from "../../../../utils/helpers";
+// import { calculateRatio } from "../../../../utils/helpers";
 import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -27,16 +27,21 @@ const CheckboxTemplateBoxLayout = ({
   fontSize,
   userSelections,
   stemnumeration,
-  uiStyle,
-  imagescale,
+  // uiStyle,
+  // imagescale,
   evaluation,
   maxHeight,
   minWidth,
   minHeight,
-  imageOptions
+  imageOptions,
+  canvasHeight,
+  canvasWidth
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover height={maxHeight}>
+    <TemplateCover
+      width={canvasWidth > clozeImage.maxWidth ? canvasWidth : clozeImage.maxWidth}
+      height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+    >
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
         width={imageWidth}
@@ -82,7 +87,10 @@ const CheckboxTemplateBoxLayout = ({
           default:
             indexStr = dropTargetIndex + 1;
         }
-        const status = evaluation[dropTargetIndex] ? "right" : "wrong";
+        let status = "";
+        if (userSelections[dropTargetIndex]) {
+          status = evaluation[dropTargetIndex] ? "right" : "wrong";
+        }
         return (
           <React.Fragment key={index}>
             {!showAnswer && (
@@ -97,13 +105,13 @@ const CheckboxTemplateBoxLayout = ({
                 className={`
                 imagelabeldragdrop-droppable 
                 active 
-                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
+                check-answer
                 ${status}`}
               >
                 <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
+                  {status === "right" && <RightIcon />}
+                  {status === "wrong" && <WrongIcon />}
                 </IconWrapper>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
@@ -123,15 +131,15 @@ const CheckboxTemplateBoxLayout = ({
                 className={`
                 imagelabeldragdrop-droppable 
                 active
-                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
+                ${userSelections.length > 0 ? "check-answer" : "noAnswer"} 
                 ${status} 
                 show-answer`}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
+                  {userSelections.length > 0 && status === "right" && <RightIcon />}
+                  {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
                 </IconWrapper>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
@@ -154,19 +162,27 @@ CheckboxTemplateBoxLayout.propTypes = {
   userSelections: PropTypes.array.isRequired,
   stemnumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
-  uiStyle: PropTypes.any,
-  imagescale: PropTypes.bool,
+  // uiStyle: PropTypes.any,
+  // imagescale: PropTypes.bool,
   showAnswer: PropTypes.bool.isRequired,
   imageUrl: PropTypes.string.isRequired,
   imageAlterText: PropTypes.string.isRequired,
-  imageWidth: PropTypes.number.isRequired
+  imageHeight: PropTypes.number.isRequired,
+  imageWidth: PropTypes.number.isRequired,
+  maxHeight: PropTypes.number.isRequired,
+  minWidth: PropTypes.number.isRequired,
+  minHeight: PropTypes.number.isRequired,
+  imageOptions: PropTypes.object,
+  canvasWidth: PropTypes.number.isRequired,
+  canvasHeight: PropTypes.number.isRequired
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
-  uiStyle: {
-    fontsize: "normal"
-  },
-  imagescale: false
+  // uiStyle: {
+  //   fontsize: "normal"
+  // },
+  // imagescale: false
+  imageOptions: {}
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

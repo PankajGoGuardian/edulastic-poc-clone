@@ -1,45 +1,55 @@
-import "react-quill/dist/quill.bubble.css";
-import { Quill } from "react-quill";
+import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
+import striptags from "striptags";
 import { CONSTANT } from "../config";
 
-function init(element, board, readOnly = false) {
-  if (element.quillInput) {
+function init(element, board, cb, readOnly = false) {
+  if (element.editor) {
+    cb();
     return;
   }
 
   element.setLabel("");
+
   const selector = `[id*=${element.label.id}]`;
-  element.quillInput = new Quill(selector, {
-    theme: "bubble",
-    readOnly,
-    modules: {
-      toolbar: {
-        container: [
-          [{ size: ["small", false, "large", "huge"] }],
-          // ['bold', 'italic', 'underline'],
-          [{ color: [] }]
-        ]
+  element.editor = new FroalaEditor(
+    selector,
+    {
+      toolbarInline: true,
+      placeholderText: "",
+      events: {
+        click: () => {
+          FroalaEditorInput(element, board).setFocus();
+        },
+        mousedown: () => {
+          element.prepareToFocus = true;
+        }
+      }
+    },
+    () => {
+      cb();
+      if (readOnly) {
+        element.editor.edit.off();
       }
     }
-  });
-
-  element.quillInput.root.addEventListener("mousedown", () => {
-    element.prepareToFocus = true;
-  });
-
-  element.quillInput.root.addEventListener("click", () => {
-    QuillInput(element, board).setFocus();
-  });
+  );
 }
 
-const QuillInput = (element, board) => ({
+const FroalaEditorInput = (element, board) => ({
   setLabel(label, readOnly = false) {
     if (!label || element.latexIsBroken) {
       return;
     }
 
-    init(element, board, readOnly);
-    element.quillInput.clipboard.dangerouslyPasteHTML(0, label);
+    init(
+      element,
+      board,
+      () => {
+        if (label) {
+          element.editor.html.set(label);
+        }
+      },
+      readOnly
+    );
     element.labelHTML = label;
   },
 
@@ -48,15 +58,12 @@ const QuillInput = (element, board) => ({
       return;
     }
 
-    init(element, board);
+    init(element, board, () => {
+      element.editor.events.focus();
+    });
 
     board.setElementsFixedAttribute(true);
     element.label.setAttribute({ visible: true });
-    element.quillInput.theme.tooltip.root.style.display = "block";
-    element.quillInput.container.style.zIndex = 2000;
-    element.quillInput.theme.tooltip.show();
-    element.quillInput.focus();
-    element.quillInput.setSelection(0, 1000);
     element.hasFocus = true;
 
     // add overlay
@@ -64,7 +71,7 @@ const QuillInput = (element, board) => ({
     div.classList.add("toolbar-overlay");
     div.addEventListener("click", e => {
       e.stopPropagation();
-      QuillInput(element, board).save();
+      FroalaEditorInput(element, board).save();
       document.body.removeChild(div);
     });
     document.body.appendChild(div);
@@ -76,20 +83,11 @@ const QuillInput = (element, board) => ({
     }
 
     board.setElementsFixedAttribute(false);
-    element.quillInput.theme.tooltip.root.style.display = "none";
-    element.quillInput.container.style.zIndex = 9;
     element.hasFocus = false;
     element.prepareToFocus = false;
 
-    const html = element.quillInput
-      .getLines()
-      .map(l => l.domNode.outerHTML)
-      .join("");
-    const text = element.quillInput
-      .getLines()
-      .map(l => l.domNode.innerText)
-      .join("")
-      .trim();
+    const html = element.editor.html.get();
+    const text = striptags(html);
 
     if (element.labelHTML === html) {
       return;
@@ -123,4 +121,4 @@ const QuillInput = (element, board) => ({
   }
 });
 
-export default QuillInput;
+export default FroalaEditorInput;

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
-import { find } from "lodash";
+import { find, isUndefined } from "lodash";
 
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
@@ -14,7 +14,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
 
   let checkBoxClass = "";
 
-  if (evaluation[id] !== undefined) {
+  if (userAnswer && evaluation[id] !== undefined) {
     checkBoxClass = evaluation[id] ? "right" : "wrong";
   }
 
@@ -37,7 +37,9 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
       <span className="value" ref={filedRef}>
         {userAnswer.value}
       </span>
-      {evaluation[index] && <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>}
+      {userAnswer && !isUndefined(evaluation[id]) && (
+        <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>
+      )}
     </CheckBox>
   );
 };

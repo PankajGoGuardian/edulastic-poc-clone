@@ -1,13 +1,13 @@
 /* eslint-disable no-undef */
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, isEmpty } from "lodash";
+import { cloneDeep, isEmpty, get } from "lodash";
 import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, PreWrapper, helpers, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, PreWrapper, helpers } from "@edulastic/common"; // , Stimulus
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
@@ -16,18 +16,15 @@ import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import TemplateBox from "./components/TemplateBox";
 import { AnswerContainer } from "./styled/AnswerContainer";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+// import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
-
-const defaultTemplateMarkup =
-  '<p>Sample Template markup&nbsp;<span class="input__math" data-latex="xy^2"></span> &nbsp;<response contenteditable="false" index="{{0}}">Response</response> <response contenteditable="false" index="{{1}}">Response</response></p>';
 
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
     super(props);
-    const { templateMarkUp } = props;
-    const respLength = this.getResponsesCount(templateMarkUp);
+    const { template } = props;
+    const respLength = this.getResponsesCount(template);
     const userAnswers = new Array(respLength).fill(false);
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -42,14 +39,14 @@ class ClozeDragDropDisplay extends Component {
   }
 
   componentDidMount() {
-    const { templateMarkUp } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(templateMarkUp || defaultTemplateMarkup) });
+    const { template } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(template) });
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       const possibleResponses = this.getInitialResponses(nextProps);
-      const parsedTemplate = helpers.parseTemplate(nextProps.templateMarkUp);
+      const parsedTemplate = helpers.parseTemplate(nextProps.template);
       this.setState({
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses,
@@ -58,16 +55,24 @@ class ClozeDragDropDisplay extends Component {
     }
   }
 
-  getResponsesCount = templateMarkUp => {
+  getResponsesCount = template => {
     if (!window.$) {
       return 0;
     }
-    return $($("<div />").html(templateMarkUp)).find("response").length;
+    return $($("<div />").html(template)).find("response").length;
   };
 
   onDrop = (data, index) => {
     const { userAnswers: newAnswers, possibleResponses } = this.state;
-    const { onChange: changeAnswers, hasGroupResponses, userSelections, configureOptions, options } = this.props;
+    const {
+      onChange: changeAnswers,
+      hasGroupResponses,
+      userSelections,
+      configureOptions,
+      options,
+      changePreviewTab
+    } = this.props;
+
     const { duplicatedResponses: isDuplicated } = configureOptions;
     const newResponses = cloneDeep(possibleResponses);
 
@@ -149,6 +154,7 @@ class ClozeDragDropDisplay extends Component {
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     changeAnswers(newAnswers);
+    changePreviewTab("clear");
   };
 
   shuffle = arr => {
@@ -250,7 +256,7 @@ class ClozeDragDropDisplay extends Component {
   render() {
     const {
       smallSize,
-      question,
+      // question,
       configureOptions,
       hasGroupResponses,
       preview,
@@ -262,10 +268,10 @@ class ClozeDragDropDisplay extends Component {
       evaluation,
       item,
       theme,
-      showQuestionNumber,
+      // showQuestionNumber,
       responseIDs,
       disableResponse,
-      qIndex
+      isReviewTab
     } = this.props;
 
     const { userAnswers, possibleResponses, parsedTemplate } = this.state;
@@ -301,7 +307,9 @@ class ClozeDragDropDisplay extends Component {
             userSelections: userAnswers,
             evaluation,
             onDropHandler: !disableResponse ? this.onDrop : () => {},
-            responseIDs
+            responseIDs,
+            isReviewTab,
+            cAnswers: get(item, "validation.valid_response.value", [])
           }
         : {
             hasGroupResponses,
@@ -310,7 +318,9 @@ class ClozeDragDropDisplay extends Component {
             options,
             userAnswers,
             onDrop: !disableResponse ? this.onDrop : () => {},
-            responseIDs
+            responseIDs,
+            isReviewTab,
+            cAnswers: get(item, "validation.valid_response.value", [])
           };
 
     const templateBoxLayoutContainer = (
@@ -364,15 +374,15 @@ class ClozeDragDropDisplay extends Component {
     ) : (
       <div />
     );
-    const responseBoxLayout = showAnswer ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     return (
       <div style={{ fontSize }}>
-        <QuestionTitleWrapper>
+        {/* <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper>
+        </QuestionTitleWrapper> */}
         <div>
           {responsecontainerposition === "top" && (
             <React.Fragment>
@@ -451,13 +461,14 @@ ClozeDragDropDisplay.propTypes = {
   options: PropTypes.array,
   item: PropTypes.object,
   onChange: PropTypes.func,
+  changePreviewTab: PropTypes.func,
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  templateMarkUp: PropTypes.string,
-  question: PropTypes.string.isRequired,
+  template: PropTypes.string,
+  // question: PropTypes.string.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object,
   validation: PropTypes.object,
@@ -465,7 +476,8 @@ ClozeDragDropDisplay.propTypes = {
   uiStyle: PropTypes.object,
   disableResponse: PropTypes.bool,
   theme: PropTypes.object.isRequired,
-  showQuestionNumber: PropTypes.bool,
+  // showQuestionNumber: PropTypes.bool,
+  isReviewTab: PropTypes.bool,
   responseIDs: PropTypes.array.isRequired
   // qIndex: PropTypes.number
 };
@@ -473,6 +485,7 @@ ClozeDragDropDisplay.propTypes = {
 ClozeDragDropDisplay.defaultProps = {
   options: [],
   onChange: () => {},
+  changePreviewTab: () => {},
   preview: true,
   item: {},
   disableResponse: false,
@@ -480,7 +493,7 @@ ClozeDragDropDisplay.defaultProps = {
   userSelections: [],
   evaluation: [],
   checkAnswer: false,
-  templateMarkUp: defaultTemplateMarkup,
+  template: "",
   smallSize: false,
   hasGroupResponses: false,
   validation: {},
@@ -498,7 +511,8 @@ ClozeDragDropDisplay.defaultProps = {
     wordwrap: false,
     responsecontainerindividuals: []
   },
-  showQuestionNumber: false
+  // showQuestionNumber: false,
+  isReviewTab: false
   // qIndex: null
 };
 

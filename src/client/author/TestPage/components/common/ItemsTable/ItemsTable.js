@@ -22,6 +22,7 @@ const ItemsTable = ({
   standards,
   windowWidth,
   showModal = false,
+  isEditable = false,
   addDuplicate,
   testId,
   search,
@@ -43,7 +44,15 @@ const ItemsTable = ({
       dataIndex: "main",
       key: "main",
       width: "30%",
-      render: data => <MainInfoCell addDuplicate={addDuplicate} showModal={showModal} testId={testId} data={data} />
+      render: data => (
+        <MainInfoCell
+          addDuplicate={addDuplicate}
+          showModal={showModal}
+          isEditable={isEditable}
+          testId={testId}
+          data={data}
+        />
+      )
     },
     {
       title: "Meta info",
@@ -116,6 +125,7 @@ ItemsTable.propTypes = {
   setSelectedTests: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
+  isEditable: PropTypes.bool,
   showModal: PropTypes.bool,
   addDuplicate: PropTypes.func,
   standards: PropTypes.object.isRequired,
@@ -135,7 +145,9 @@ export default enhance(ItemsTable);
 
 const TableWrapper = styled(Table)`
   .ant-table-tbody > tr > td {
-    padding: 38px 6px 28px 26px;
+    padding: 25px;
+    width: 250px;
+    max-width: 250px;
   }
 
   table tr tr img {

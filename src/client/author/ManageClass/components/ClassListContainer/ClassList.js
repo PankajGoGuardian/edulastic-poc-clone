@@ -4,12 +4,14 @@ import { get } from "lodash";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Table } from "antd";
+import { Tooltip } from "antd";
 import { find } from "lodash";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
-import { TableWrapper } from "./styled";
+
+import { TableWrapper,ClassListTable } from "./styled";
 import { fetchStudentsByIdAction } from "../../ducks";
+
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -25,15 +27,33 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
   const columns = [
     {
       title: "Class Name",
-      dataIndex: "name"
+      dataIndex: "name",
+      render: classname => (
+        <Tooltip title={classname} placement="bottom">
+          {classname}
+        </Tooltip>
+      )
     },
-    { title: "Class Code", dataIndex: "code" },
+    {
+      title: "Class Code",
+      dataIndex: "code",
+      render: classcode => (
+        <Tooltip title={classcode} placement="bottom">
+          {classcode}
+        </Tooltip>
+      )
+    },
     {
       title: "Grades",
       dataIndex: "grade",
       render: (_, row) => {
         const grade = findGrade(row.grade);
-        return <div>{grade.text}</div>;
+        const gradeValue = grade.value || grade.text;
+        return (
+          <Tooltip title={gradeValue} placement="bottom">
+            {gradeValue}
+          </Tooltip>
+        );
       }
     },
     {
@@ -41,26 +61,30 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
       dataIndex: "subject",
       render: (_, row) => {
         const subject = findSubject(row.subject);
-        return <div>{subject.text}</div>;
-      }
-    },
-    {
-      title: "Tags",
-      dataIndex: "tags",
-      render: (_, row) => {
-        const { tags = [] } = row;
-        return tags.map((tag, index) => <span key={index}>{tag}, </span>);
+        return (
+          <Tooltip title={subject.text} placement="bottom">
+            {subject.text}
+          </Tooltip>
+        );
       }
     },
     {
       title: "Students",
       dataIndex: "studentCount",
-      render: (studentCount = 0) => studentCount
+      render: (studentCount = 0) => (
+        <Tooltip title={studentCount} placement="bottom">
+          {studentCount}
+        </Tooltip>
+      )
     },
     {
       title: "Assignments",
       dataIndex: "assignmentCount",
-      render: (assignmentCount = 0) => assignmentCount
+      render: (assignmentCount = 0) => (
+        <Tooltip title={assignmentCount} placement="bottom">
+          {assignmentCount}
+        </Tooltip>
+      )
     }
   ];
 
@@ -79,7 +103,7 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
   return (
     <TableWrapper>
       <ClassSelector groups={groups} archiveGroups={archiveGroups} setClassGroups={setClassGroups} />
-      <Table columns={columns} dataSource={classGroups} rowKey={rowKey} onRow={onRow} />
+      <ClassListTable columns={columns} dataSource={classGroups} rowKey={rowKey} onRow={onRow} />
     </TableWrapper>
   );
 };

@@ -50,7 +50,7 @@ export default class ViewModal extends React.Component {
   };
 
   render() {
-    const { isShow, close, item, assign, isPlaylist, onDuplicate, onEdit } = this.props;
+    const { isShow, close, item, assign, isPlaylist, onDuplicate, onEdit, status } = this.props;
     const {
       title = "",
       description = "",
@@ -129,8 +129,8 @@ export default class ViewModal extends React.Component {
               </ButtonComponent>
             </ButtonContainer>
             <ButtonContainer>
-              <ButtonComponent size={"large"} bgColor={blue} onClick={assign}>
-                ASSIGN
+              <ButtonComponent size={"large"} bgColor={blue} onClick={status === "published" ? assign : onEdit}>
+                {status === "published" ? "ASSIGN" : "EDIT"}
               </ButtonComponent>
             </ButtonContainer>
             <SummaryContainer>
@@ -155,15 +155,18 @@ export default class ViewModal extends React.Component {
                 </ListHeader>
                 {summary &&
                   summary.standards &&
-                  summary.standards.map(data => (
-                    <ListRow>
-                      <ListCell>
-                        <SammaryMark>{data.identifier}</SammaryMark>
-                      </ListCell>
-                      <ListCell>{data.totalQuestions}</ListCell>
-                      <ListCell>{data.totalPoints}</ListCell>
-                    </ListRow>
-                  ))}
+                  summary.standards.map(
+                    data =>
+                      !data.isEquivalentStandard && (
+                        <ListRow>
+                          <ListCell>
+                            <SammaryMark>{data.identifier}</SammaryMark>
+                          </ListCell>
+                          <ListCell>{data.totalQuestions}</ListCell>
+                          <ListCell>{data.totalPoints}</ListCell>
+                        </ListRow>
+                      )
+                  )}
               </SummaryList>
             </SummaryContainer>
           </ModalColumn>

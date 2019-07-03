@@ -34,7 +34,9 @@ import RowColumn from "./RowColumn";
 import { DropContainer } from "./styled/DropContainer";
 
 import { uploadToS3 } from "../../../../client/author/src/utils/upload";
-import { aws } from "@edulastic/constants";
+import { aws, clozeImage } from "@edulastic/constants";
+
+import { beforeUpload } from "@edulastic/common/src/helpers";
 
 const OptionsList = withPoints(ClassificationPreview);
 
@@ -98,11 +100,37 @@ const EditClassification = ({
     );
   }, [dragItemWidth, dragItemHeight]);
 
-  const getImageWidth = url => {
+  const setImageDimensions = (url, isNew) => {
     const img = new Image();
+    const { maxWidth, maxHeight } = clozeImage;
     img.addEventListener("load", function() {
-      const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
-      const height = this.naturalHeight >= 600 ? 600 : this.naturalHeight;
+      let height, width;
+      if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
+        const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
+        const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));
+        if (fitWidth > maxWidth) {
+          width = maxWidth;
+          height = fitHeight;
+        } else {
+          height = maxHeight;
+          width = fitWidth;
+        }
+      } else {
+        width = this.naturalWidth;
+        height = this.naturalHeight;
+      }
+      setQuestionData(
+        produce(item, draft => {
+          if (isNew) {
+            draft.imageHeight = undefined;
+            draft.imageWidth = undefined;
+          }
+          draft.imageUrl = url;
+          draft.imageOriginalHeight = height;
+          draft.imageOriginalWidth = width;
+          updateVariables(draft);
+        })
+      );
       setDragItem({ ...dragItem, width, height });
     });
     img.src = url;
@@ -413,15 +441,20 @@ const EditClassification = ({
         message.error("Please upload files in image format");
         return;
       }
-      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
-      getImageWidth(imageUrl);
-      handleItemChangeChange("imageUrl", imageUrl);
+      const canUpload = beforeUpload(file);
+      if (!canUpload) {
+        throw new Error("file upload failed");
+      }
+      const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
+      setImageDimensions(imageUrl, true);
+      // handleItemChangeChange("imageUrl", imageUrl);
       message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
     } catch (e) {
       console.log(e);
       message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
     }
   };
+
   const uploadProps = {
     beforeUpload: () => false,
     onChange: handleChange,
@@ -441,15 +474,18 @@ const EditClassification = ({
                 <Rnd
                   size={{ width: dragItem.width || "100%", height: dragItem.height || "100%" }}
                   enableResizing={Enable}
-                  style={{ zIndex: 10 }}
+                  style={{
+                    zIndex: 10,
+                    backgroundImage: `url(${item.imageUrl})`,
+                    backgroundRepeat: "no-repeat",
+                    backgroundSize: "contain"
+                  }}
                   position={{ x: dragItem.x, y: dragItem.y }}
                   onDragStop={handleDrag}
                   onResize={handleResize}
                   onResizeStop={handleDragAndResizeStop}
                   bounds="parent"
-                >
-                  <img src={item.imageUrl} alt="backgroundImage" />
-                </Rnd>
+                />
               </DropContainer>
               <EduButton onClick={deleteBgImg} style={{ marginTop: 20 }} type="primary">
                 {t("component.classification.deleteBackImage")}

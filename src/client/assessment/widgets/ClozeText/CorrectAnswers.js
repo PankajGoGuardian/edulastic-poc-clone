@@ -83,7 +83,7 @@ class CorrectAnswers extends Component {
   };
 
   updateCorrectValidationAnswers = (answers, id, widthpx) => {
-    const { question, setQuestionData } = this.props;
+    const { question, setQuestionData, uiStyle } = this.props;
     const newData = cloneDeep(question);
     const updatedValidation = {
       ...question.data,
@@ -92,16 +92,19 @@ class CorrectAnswers extends Component {
         value: answers
       }
     };
-    newData.validation.valid_response = updatedValidation.valid_response;
-    newData.ui_style.responsecontainerindividuals = newData.ui_style.responsecontainerindividuals || [];
-    const index = findIndex(newData.ui_style.responsecontainerindividuals, container => container.id === id);
-    if (index === -1) {
-      newData.ui_style.responsecontainerindividuals.push({ id, widthpx });
-    } else {
-      newData.ui_style.responsecontainerindividuals[index] = {
-        ...newData.ui_style.responsecontainerindividuals[index],
-        widthpx
-      };
+    if (uiStyle.globalSettings) {
+      newData.validation.valid_response = updatedValidation.valid_response;
+      newData.ui_style.responsecontainerindividuals = newData.ui_style.responsecontainerindividuals || [];
+      const index = findIndex(newData.ui_style.responsecontainerindividuals, container => container.id === id);
+      if (index === -1) {
+        const newIndex = findIndex(newData.response_ids, resp => resp.id === id);
+        newData.ui_style.responsecontainerindividuals.push({ id, widthpx, index: newIndex });
+      } else {
+        newData.ui_style.responsecontainerindividuals[index] = {
+          ...newData.ui_style.responsecontainerindividuals[index],
+          widthpx
+        };
+      }
     }
     setQuestionData(newData);
   };
@@ -144,11 +147,13 @@ class CorrectAnswers extends Component {
       stimulus,
       options,
       t,
-      templateMarkUp,
+      template,
       hasGroupResponses,
       configureOptions,
       uiStyle,
-      responseIds
+      responseIds,
+      view,
+      previewTab
     } = this.props;
     const { value } = this.state;
     return (
@@ -171,12 +176,14 @@ class CorrectAnswers extends Component {
                 stimulus={stimulus}
                 options={options}
                 uiStyle={uiStyle}
-                templateMarkUp={templateMarkUp}
+                template={template}
                 configureOptions={configureOptions}
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 responseIds={responseIds}
+                view={view}
+                previewTab={previewTab}
               />
             </TabContainer>
           )}
@@ -194,10 +201,12 @@ class CorrectAnswers extends Component {
                       configureOptions={configureOptions}
                       responseIds={responseIds}
                       hasGroupResponses={hasGroupResponses}
-                      templateMarkUp={templateMarkUp}
+                      template={template}
                       uiStyle={uiStyle}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                      view={view}
+                      previewTab={previewTab}
                     />
                   </TabContainer>
                 );
@@ -217,7 +226,7 @@ CorrectAnswers.propTypes = {
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
   options: PropTypes.array,
-  templateMarkUp: PropTypes.string,
+  template: PropTypes.string,
   question: PropTypes.object.isRequired,
   hasGroupResponses: PropTypes.bool,
   onRemoveAltResponses: PropTypes.func,
@@ -235,7 +244,7 @@ CorrectAnswers.defaultProps = {
   validation: {},
   onRemoveAltResponses: () => {},
   hasGroupResponses: false,
-  templateMarkUp: "",
+  template: "",
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",

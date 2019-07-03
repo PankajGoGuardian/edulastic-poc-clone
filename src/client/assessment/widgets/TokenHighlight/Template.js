@@ -98,7 +98,7 @@ class Template extends Component {
             onChange={val => handleItemChangeChange("template", val)}
             value={item.template}
             toolbarId="tokens-template"
-            theme="border"
+            border="border"
           />
         )}
 

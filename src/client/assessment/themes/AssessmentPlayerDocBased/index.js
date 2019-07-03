@@ -10,14 +10,14 @@ import { withNamespaces } from "@edulastic/localization";
 import { Container } from "../common";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import PlayerHeader from "../AssessmentPlayerSimple/PlayerHeader";
-import defaultTheme from "../defaultThemeStyle";
+import { playersTheme } from "../assessmentPlayersTheme";
 import assessmentPlayerTheme from "../AssessmentPlayerSimple/themeStyle";
 import Worksheet from "../../../author/AssessmentPage/components/Worksheet/Worksheet";
 import { changeViewAction } from "../../../author/src/actions/view";
 import { testLoadingSelector } from "../../selectors/test";
 
 const Theme = {
-  ...defaultTheme,
+  ...playersTheme,
   ...assessmentPlayerTheme
 };
 

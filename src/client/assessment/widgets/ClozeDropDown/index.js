@@ -147,7 +147,7 @@ class ClozeDropDown extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
-                <Widget>
+                <Widget position="unset">
                   <CorrectAnswers
                     key="shuffleOptions"
                     validation={item.validation}
@@ -158,7 +158,7 @@ class ClozeDropDown extends Component {
                     item={itemForPreview}
                     question={previewStimulus}
                     uiStyle={uiStyle}
-                    templateMarkUp={itemForEdit.templateMarkUp}
+                    template={itemForEdit.template}
                     onAddAltResponses={this.handleAddAltResponses}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
@@ -214,7 +214,7 @@ class ClozeDropDown extends Component {
               options={previewDisplayOptions}
               question={previewStimulus}
               uiStyle={uiStyle}
-              templateMarkUp={itemForPreview.templateMarkUp}
+              template={itemForPreview.template}
               userAnswer={userAnswer}
               userSelections={userAnswer}
               onChange={this.handleAddAnswer}

@@ -7,11 +7,12 @@ import {
   ADD_ITEM_EVALUATION
 } from "../constants/actions";
 
-export const createTestItemAction = (data, showModal = false) => ({
+export const createTestItemAction = (data, testFlow = false, testId) => ({
   type: CREATE_TEST_ITEM_REQUEST,
   payload: {
     data,
-    showModal
+    testFlow,
+    testId
   }
 });
 

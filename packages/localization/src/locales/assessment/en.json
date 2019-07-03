@@ -237,6 +237,7 @@
       "value": "Value",
       "label": "Label",
       "chartTitle": "Chart Title",
+      "correctAnswer": "Correct Answer",
       "fractionFormat": "Fraction Format",
       "gridlines": "Gridlines",
       "showGridlinesOptions": {

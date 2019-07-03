@@ -45,7 +45,7 @@ const SortListPreview = ({
 
   const getItemsFromUserAnswer = () =>
     source.map((sourceItem, i) => {
-      if (!userAnswer.includes(i)) {
+      if (disableResponse || !userAnswer.includes(i)) {
         return sourceItem;
       }
       return null;

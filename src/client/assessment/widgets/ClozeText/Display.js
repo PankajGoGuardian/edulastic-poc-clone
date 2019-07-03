@@ -140,8 +140,11 @@ class ClozeTextDisplay extends Component {
       qIndex,
       userSelections,
       responseIds,
-      isReviewTab
+      isReviewTab,
+      view,
+      previewTab
     } = this.props;
+
     const { parsedTemplate } = this.state;
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
@@ -166,6 +169,8 @@ class ClozeTextDisplay extends Component {
             uiStyle,
             responseIds,
             isReviewTab,
+            view,
+            previewTab,
             cAnswers: get(item, "validation.valid_response.value", [])
           }
         : {
@@ -181,6 +186,8 @@ class ClozeTextDisplay extends Component {
             responseIds,
             responsecontainerindividuals,
             isReviewTab,
+            view,
+            previewTab,
             cAnswers: get(item, "validation.valid_response.value", [])
           };
 

@@ -1,6 +1,6 @@
 import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
-import { AUTO_VALUE, AUTO_HEIGHT_VALUE, LOST_HEIGHT_PIXELS } from "./config/constants";
+import { AUTO_VALUE, AUTO_HEIGHT_VALUE } from "./config/constants";
 import {
   Point,
   Line,
@@ -11,7 +11,7 @@ import {
   Parabola,
   Hyperbola,
   Label,
-  QuillInput,
+  FroalaEditorInput,
   Mark,
   Numberline,
   NumberlinePoint,
@@ -44,12 +44,14 @@ import {
   flat2nestedConfig,
   calcUnitX,
   handleSnap,
-  isInPolygon
+  isInPolygon,
+  objectLabelComparator,
+  nameGenerator
 } from "./utils";
 import _events from "./events";
 
 import "jsxgraph/distrib/jsxgraph.css";
-import "../common/QuillInput.css";
+import "../common/FroalaEditorInput.css";
 import "../common/Mark.css";
 
 /**
@@ -118,6 +120,8 @@ class Board {
 
     this.creatingHandler = () => {};
     this.setCreatingHandler();
+
+    this.objectNameGenerator = nameGenerator();
   }
 
   isAnyElementsHasFocus(withPrepare = false) {
@@ -507,6 +511,7 @@ class Board {
     this.abortTool();
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
+    this.objectNameGenerator.next(true);
   }
 
   resetAnswers() {
@@ -798,7 +803,7 @@ class Board {
           ...objectOptions[type],
           ...colors
         });
-        QuillInput(newElement, this).setLabel(el.label, true);
+        FroalaEditorInput(newElement, this).setLabel(el.label, true);
         return newElement;
       })
     );
@@ -840,6 +845,13 @@ class Board {
 
   loadFromConfig(flatCfg, labelIsReadOnly, elementsAreEvaluated) {
     this.elementsAreEvaluated = elementsAreEvaluated;
+
+    // get name of the last object by label and reset objectNameGenerator with it
+    flatCfg.sort(objectLabelComparator);
+    if (typeof flatCfg[0] === "object") {
+      this.objectNameGenerator.next(flatCfg[0].label);
+    }
+
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {
@@ -859,7 +871,7 @@ class Board {
           ],
           ...el.colors
         });
-        QuillInput(newElement, this).setLabel(el.label, labelIsReadOnly);
+        FroalaEditorInput(newElement, this).setLabel(el.label, labelIsReadOnly);
         return newElement;
       })
     );
@@ -885,7 +897,7 @@ class Board {
           ],
           ...el.colors
         });
-        QuillInput(newElement, this).setLabel(el.label, true);
+        FroalaEditorInput(newElement, this).setLabel(el.label, true);
         return newElement;
       })
     );

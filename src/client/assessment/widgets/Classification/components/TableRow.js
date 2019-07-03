@@ -7,7 +7,7 @@ import { CenteredText } from "@edulastic/common";
 import DropContainer from "../../../components/DropContainer";
 
 import DragItem from "./DragItem";
-import { Column } from "../styled/Column";
+import { Column, ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 
@@ -16,6 +16,7 @@ const TableRow = ({
   colCount,
   arrayOfRows,
   rowTitles,
+  colTitles,
   drop,
   answers,
   preview,
@@ -52,10 +53,9 @@ const TableRow = ({
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
         <RowTitleCol key={index + startIndex + colCount} colCount={colCount}>
-          <CenteredText
-            style={{ wordWrap: "break-word", textAlign: "left" }}
-            dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] || "" }}
-          />
+          <CenteredText style={{ wordWrap: "break-word", textAlign: "left" }}>
+            {rowTitles[index / colCount]}
+          </CenteredText>
         </RowTitleCol>
       );
     }
@@ -68,6 +68,9 @@ const TableRow = ({
         colCount={colCount}
       >
         <ResponseRnd question={item} height={height} index={index} isResizable={isResizable}>
+          {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
+            <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
+          ) : null}
           <DropContainer
             style={{
               ...styles.columnContainerStyle,
@@ -105,7 +108,7 @@ const TableRow = ({
     );
   }
 
-  return <tr>{cols}</tr>;
+  return <div style={{ display: "flex" }}>{cols}</div>;
 };
 
 TableRow.propTypes = {

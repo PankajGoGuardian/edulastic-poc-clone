@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { Rnd } from "react-rnd";
 import produce from "immer";
 import { get } from "lodash";
+import { lightGrey } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const ResponseRnd = props => {
@@ -77,7 +78,13 @@ const ResponseRnd = props => {
   return (
     <div style={{ position: "relative", minHeight: height }}>
       <Rnd
-        style={{ overflow: "hidden" }}
+        style={{
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          padding: "2px",
+          border: `1px solid ${lightGrey}`
+        }}
         default={{
           x: rndX,
           y: rndY,
@@ -100,10 +107,7 @@ const ResponseRnd = props => {
         {...props}
       >
         {React.Children.map(children, child => {
-          if (rndHeight > 0) {
-            child.props.style.height = rndHeight;
-          }
-          return React.cloneElement(child);
+          return child ? React.cloneElement(child) : null;
         })}
       </Rnd>
     </div>

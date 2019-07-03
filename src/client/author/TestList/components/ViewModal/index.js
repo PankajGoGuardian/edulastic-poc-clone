@@ -155,15 +155,18 @@ export default class ViewModal extends React.Component {
                 </ListHeader>
                 {summary &&
                   summary.standards &&
-                  summary.standards.map(data => (
-                    <ListRow>
-                      <ListCell>
-                        <SammaryMark>{data.identifier}</SammaryMark>
-                      </ListCell>
-                      <ListCell>{data.totalQuestions}</ListCell>
-                      <ListCell>{data.totalPoints}</ListCell>
-                    </ListRow>
-                  ))}
+                  summary.standards.map(
+                    data =>
+                      !data.isEquivalentStandard && (
+                        <ListRow>
+                          <ListCell>
+                            <SammaryMark>{data.identifier}</SammaryMark>
+                          </ListCell>
+                          <ListCell>{data.totalQuestions}</ListCell>
+                          <ListCell>{data.totalPoints}</ListCell>
+                        </ListRow>
+                      )
+                  )}
               </SummaryList>
             </SummaryContainer>
           </ModalColumn>

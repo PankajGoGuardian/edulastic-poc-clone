@@ -1,20 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Modal } from "antd";
 import AssessmentPlayer from "../../../../assessment";
 
 const TestPreviewModal = ({ isModalVisible, hideModal, testId, test }) => {
   return (
-    <Modal
+    <StyledModal
       visible={isModalVisible}
       title="Test Preview"
       onCancel={hideModal}
       onOk={hideModal}
       width={"80%"}
-      style={{ top: 50 }}
+      destroyOnClose={true}
+      footer={false}
+      centered
     >
       <AssessmentPlayer testId={testId} test={test} preview />
-    </Modal>
+    </StyledModal>
   );
 };
 
@@ -29,3 +32,12 @@ TestPreviewModal.defaultProps = {
 };
 
 export default TestPreviewModal;
+
+const StyledModal = styled(Modal)`
+  .ant-modal-body > div {
+    height: 76vh;
+  }
+  .ant-modal-close-x {
+    color: #fff;
+  }
+`;

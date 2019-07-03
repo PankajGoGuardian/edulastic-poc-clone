@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import * as moment from "moment";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { isEmpty, find, get, pickBy, identity } from "lodash";
 import { Form, Divider, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -49,14 +50,12 @@ class ClassCreate extends React.Component {
     creating: PropTypes.bool.isRequired,
     isSearching: PropTypes.bool.isRequired,
     error: PropTypes.any,
-    courseList: PropTypes.array.isRequired,
-    changeView: PropTypes.func
+    courseList: PropTypes.array.isRequired
   };
 
   state = {};
 
   static defaultProps = {
-    changeView: () => null,
     error: null
   };
 
@@ -133,23 +132,25 @@ class ClassCreate extends React.Component {
       form,
       courseList,
       userOrgData,
-      changeView,
       isSearching,
       creating,
       error,
       filteredCurriculums,
       setSubject,
-      selectedSubject
+      selectedSubject,
+      entity,
+      history
     } = this.props;
+    const { _id: classId } = entity;
     const { getFieldDecorator, getFieldValue } = form;
     const { defaultSchool, schools } = userOrgData;
     const { submitted } = this.state;
     if (!creating && submitted && isEmpty(error)) {
-      changeView("details");
+      history.push(`/author/manageClass/${classId}`);
     }
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Header onCancel={() => changeView("listView")} />
+        <Header />
         <Spin spinning={creating}>
           <Container>
             <Divider orientation="left">
@@ -186,6 +187,7 @@ const ClassCreateForm = Form.create()(ClassCreate);
 
 const enhance = compose(
   withNamespaces("classCreate"),
+  withRouter,
   connect(
     state => {
       const selectedSubject = getSelectedSubject(state);
@@ -197,6 +199,7 @@ const enhance = compose(
         userId: get(state, "user.user._id"),
         creating: get(state, "manageClass.creating"),
         error: get(state, "manageClass.error"),
+        entity: get(state, "manageClass.entity"),
         filteredCurriculums: getFormattedCurriculumsSelector(state, {
           subject: selectedSubject
         }),

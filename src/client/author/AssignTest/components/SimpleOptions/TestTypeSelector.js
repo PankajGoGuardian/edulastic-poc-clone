@@ -3,7 +3,7 @@ import { Select } from "antd";
 import { Col, Row } from "antd";
 import { test } from "@edulastic/constants";
 import { StyledRow, StyledRowLabel, TestTypeDropDown } from "./styled";
-import { StyledSelect } from "../../../../../AssignTest/components/SimpleOptions/styled";
+import { StyledSelect } from "./styled";
 const { type } = test;
 const { ASSESSMENT, PRACTICE } = type;
 const testTypes = {
@@ -53,13 +53,13 @@ const TestTypeSelector = ({
             </StyledRowLabel>
             <StyledRow>
               <Col span={24}>
-                <TestTypeDropDown defaultValue={generateReport} onChange={onGenerateReportFieldChange}>
+                <StyledSelect defaultValue={generateReport} onChange={onGenerateReportFieldChange}>
                   {Object.keys(generateReportTypes).map(key => (
                     <Select.Option key={key} value={generateReportTypes[key].type}>
                       {generateReportTypes[key].val}
                     </Select.Option>
                   ))}
-                </TestTypeDropDown>
+                </StyledSelect>
               </Col>
             </StyledRow>
           </React.Fragment>

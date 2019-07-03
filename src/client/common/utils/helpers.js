@@ -54,11 +54,7 @@ export const validatePartnerUrl = partner => {
     pathname.toLocaleLowerCase().includes(partner.keyName.toLocaleLowerCase())
   ) {
     return true;
-  } else if (
-    partner.keyName === "login" &&
-    !pathname.toLocaleLowerCase().includes("partnerlogin") &&
-    pathname.toLocaleLowerCase().includes(partner.keyName.toLocaleLowerCase())
-  ) {
+  } else if (partner.keyName === "login" && !pathname.toLocaleLowerCase().includes("partnerlogin")) {
     return true;
   }
   return false;

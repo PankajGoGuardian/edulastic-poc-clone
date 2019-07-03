@@ -69,7 +69,7 @@ const characterMapButtons = [
   "ü"
 ];
 
-const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent }) => {
+const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent, lessPadding }) => {
   const { btnStyle, item, onChange, style, placeholder, type, showIndex = true, userAnswers } = resprops;
   const value = userAnswers[dropTargetIndex];
   const ref = useRef();
@@ -131,7 +131,8 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent }
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           fontSize: style.fontSize,
-          background: item.background
+          background: item.background,
+          padding: lessPadding ? "3px" : null
         }}
         placeholder={placeholder}
       />

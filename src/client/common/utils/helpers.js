@@ -60,45 +60,20 @@ export const validatePartnerUrl = partner => {
   return false;
 };
 
-export const getPartnerLoginUrl = partner => {
-  if (partner.keyName === "login") {
-    return `/login`;
-  } else {
-    return `/partnerLogin/${partner.keyName}/`;
-  }
-};
+export const getPartnerLoginUrl = partner =>
+  partner.keyName === "login" ? `/login` : `/partnerLogin/${partner.keyName}/`;
 
-export const getPartnerTeacherSignupUrl = partner => {
-  if (partner.keyName === "login") {
-    return `/signup`;
-  } else {
-    return `/partnerLogin/${partner.keyName}/signup`;
-  }
-};
+export const getPartnerTeacherSignupUrl = partner =>
+  partner.keyName === "login" ? `/signup` : `/partnerLogin/${partner.keyName}/signup`;
 
-export const getPartnerStudentSignupUrl = partner => {
-  if (partner.keyName === "login") {
-    return `/studentsignup`;
-  } else {
-    return `/partnerLogin/${partner.keyName}/studentsignup`;
-  }
-};
+export const getPartnerStudentSignupUrl = partner =>
+  partner.keyName === "login" ? `/studentsignup` : `/partnerLogin/${partner.keyName}/studentsignup`;
 
-export const getPartnerDASignupUrl = partner => {
-  if (partner.keyName === "login") {
-    return `/adminsignup`;
-  } else {
-    return `/partnerLogin/${partner.keyName}/adminsignup`;
-  }
-};
+export const getPartnerDASignupUrl = partner =>
+  partner.keyName === "login" ? `/adminsignup` : `/partnerLogin/${partner.keyName}/adminsignup`;
 
-export const getPartnerGetStartedUrl = partner => {
-  if (partner.keyName === "login") {
-    return `/getStarted`;
-  } else {
-    return `/partnerLogin/${partner.keyName}/getStarted/`;
-  }
-};
+export const getPartnerGetStartedUrl = partner =>
+  partner.keyName === "login" ? `/getStarted` : `/partnerLogin/${partner.keyName}/getStarted/`;
 
 export const getPartnerKeyFromUrl = pathname => {
   const pathArr = pathname.split("/");

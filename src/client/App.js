@@ -120,19 +120,19 @@ class App extends Component {
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (
-        this.props.location.pathname.toLocaleLowerCase() === "/getstarted" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/signup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/studentsignup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/adminsignup" ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/getstarted") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/signup") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/studentsignup") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/adminsignup") ||
         (path[0] && path[0].toLocaleLowerCase() === "district") ||
-        this.props.location.pathname.includes("/fwd")
+        this.props.location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/fwd")
       ) {
       } else if (
-        this.props.location.pathname === "/auth/mso" ||
-        this.props.location.pathname === "/auth/clever" ||
-        this.props.location.pathname === "/auth/google"
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
       ) {
-      } else if (this.props.location.pathname.includes(`/partnerLogin/${path[1]}`)) {
       } else {
         redirectRoute = "/login";
       }

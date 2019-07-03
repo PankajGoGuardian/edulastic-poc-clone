@@ -88,6 +88,9 @@ const QuestionMetadata = ({
       ...questionData,
       [fieldName]: value
     };
+    if ((fieldName === "authorDifficulty" || fieldName === "depthOfKnowledge") && value === "") {
+      delete newQuestionData[fieldName];
+    }
     setQuestionData(newQuestionData);
   };
 

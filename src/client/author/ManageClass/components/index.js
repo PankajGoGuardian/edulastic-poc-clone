@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-
+import { get } from "lodash";
 // actions
 import {
   fetchGroupsAction,
@@ -11,19 +11,34 @@ import {
   getGroupsSelector,
   getArchiveGroupsSelector
 } from "../../sharedDucks/groups";
-import { setModalAction, syncClassAction, setClassAction } from "../ducks";
+import { setModalAction, syncClassAction, setClassAction, updateGoogleCourseListAction } from "../ducks";
 
 // components
 
 import ClassListContainer from "./ClassListContainer";
+import { getDictCurriculumsAction } from "../../src/actions/dictionaries";
+import { receiveSearchCourseAction } from "../../Courses/ducks";
 
-const ManageClass = ({ fetchGroups, fetchArchiveGroups, groups, archiveGroups, setClass, history, ...restProps }) => {
+const ManageClass = ({
+  fetchGroups,
+  receiveSearchCourse,
+  getDictCurriculums,
+  districtId,
+  fetchArchiveGroups,
+  groups,
+  state,
+  archiveGroups,
+  setClass,
+  ...restProps
+}) => {
   useEffect(() => {
     fetchGroups();
     fetchArchiveGroups();
+    getDictCurriculums();
+    receiveSearchCourse({ districtId });
   }, []);
 
-  return <ClassListContainer {...restProps} groups={groups} archiveGroups={archiveGroups} />;
+  return <ClassListContainer {...restProps} state={state} groups={groups} archiveGroups={archiveGroups} />;
 };
 
 ManageClass.propTypes = {
@@ -43,6 +58,9 @@ const enhance = compose(
       groups: getGroupsSelector(state),
       archiveGroups: getArchiveGroupsSelector(state),
       isModalVisible: state.manageClass.showModal,
+      state: state,
+      courseList: get(state, "coursesReducer.searchResult"),
+      districtId: get(state, "user.user.orgData.districtId"),
       googleCourseList: state.manageClass.googleCourseList
     }),
     {
@@ -50,6 +68,9 @@ const enhance = compose(
       fetchArchiveGroups: fetchArchiveGroupsAction,
       setModal: setModalAction,
       syncClass: syncClassAction,
+      receiveSearchCourse: receiveSearchCourseAction,
+      getDictCurriculums: getDictCurriculumsAction,
+      updateGoogleCourseList: updateGoogleCourseListAction,
       setClass: setClassAction
     }
   )

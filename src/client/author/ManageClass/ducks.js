@@ -7,6 +7,7 @@ import { get, findIndex, keyBy } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi } from "@edulastic/api";
 
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
+import produce from "immer";
 
 // selectors
 const manageClassSelector = state => state.manageClass;
@@ -62,6 +63,8 @@ export const UPDATE_STUDENT_REQUEST = "[manageClass] update student request";
 export const UPDATE_STUDENT_FAILDED = "[manageClass] update student failed";
 export const UPDATE_STUDENT_SUCCESS = "[manageClass] update student success";
 
+export const UPDATE_GOOGLE_COURSE_LIST = "[manageClass] update google course list";
+
 export const SET_SUBJECT = "[manageClass] set subject";
 
 // action creators
@@ -106,6 +109,8 @@ export const removeStudentsSuccessAction = createAction(REMOVE_STUDENTS_SUCCESS)
 export const updateStudentRequestAction = createAction(UPDATE_STUDENT_REQUEST);
 export const updateStudentFaildedAction = createAction(UPDATE_STUDENT_FAILDED);
 export const updateStudentSuccessAction = createAction(UPDATE_STUDENT_SUCCESS);
+
+export const updateGoogleCourseListAction = createAction(UPDATE_GOOGLE_COURSE_LIST);
 
 export const setSubjectAction = createAction(SET_SUBJECT);
 // initial State
@@ -395,12 +400,31 @@ function* updateStudentRequest({ payload }) {
 // sync google class
 function* syncClass({ payload }) {
   try {
-    yield call(googleApi.syncClass, { codes: payload });
+    yield call(googleApi.syncClass, { classList: payload });
     yield put(setModalAction(false));
     yield put(fetchGroupsAction());
   } catch (e) {
     yield call(message.error, "class sync failed");
     console.log(e);
+  }
+}
+
+function* updateGoogleCourseList({ payload }) {
+  try {
+    const { index, key, value } = payload;
+    const googleCourseList = yield select(state => get(state, "manageClass.googleCourseList"));
+    const newGoogleCourseList = produce(googleCourseList, draft => {
+      draft =
+        draft &&
+        draft.map((googleCourse, ind) => {
+          if (ind === index) {
+            googleCourse[key] = value;
+          }
+        });
+    });
+    yield put(setGoogleCourseListAction(newGoogleCourseList));
+  } catch (e) {
+    console.log("err", e);
   }
 }
 // watcher saga
@@ -415,6 +439,7 @@ export function* watcherSaga() {
     yield takeEvery(CHANGE_USER_TTS_REQUEST, changeUserTTSRequest),
     yield takeEvery(REMOVE_STUDENTS_REQUEST, removeStudentsRequest),
     yield takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
+    yield takeEvery(UPDATE_GOOGLE_COURSE_LIST, updateGoogleCourseList),
     yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest)
   ]);
 }

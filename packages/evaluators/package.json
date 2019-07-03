@@ -2,7 +2,7 @@
   "name": "@edulastic/evaluators",
   "version": "0.1.0",
   "description": "question evaluators for edulastic-poc",
-  "main": "lib/index.js",
+  "main": "src/index.js",
   "keywords": [],
   "author": "",
   "license": "MIT",

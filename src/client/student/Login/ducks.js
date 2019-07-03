@@ -320,8 +320,8 @@ export function* fetchUser() {
       yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
     }
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     yield call(message.error, "failed loading user data");
     if (!(error.response && error.response.status === 501)) {
       window.localStorage.setItem("loginRedirectUrl", getCurrentPath());

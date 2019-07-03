@@ -32,6 +32,7 @@ export default class API {
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {
             window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
+            localStorage.clear();
             window.location.href = "/login";
           }
         }

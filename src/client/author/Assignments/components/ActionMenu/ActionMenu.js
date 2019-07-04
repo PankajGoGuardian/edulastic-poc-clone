@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-expressions */
-/* eslint-disable no-lone-blocks */
-/* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 import { Menu } from "antd";
 import { test } from "@edulastic/constants";
@@ -19,12 +16,9 @@ import googleIcon from "../../assets/Google Classroom.svg";
 
 import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, ActionButton } from "./styled";
 
-const { releaseGradeLabels } = test;
 const { duplicateAssignment } = assignmentApi;
 
 const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, showPreviewModal) => {
-  const showRleaseGrade =
-    currentAssignment.releaseScore === releaseGradeLabels.DONT_RELEASE || !currentAssignment.releaseScore;
   const currentTestId = currentAssignment.testId;
   const currentAssignmentId = currentAssignment._id;
   const MenuItems = [];
@@ -71,18 +65,15 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
       </Link>
     </Menu.Item>
   );
-  {
-    showRleaseGrade &&
-      MenuItems.push(
-        <Menu.Item key="release-grades" onClick={() => onOpenReleaseScoreSettings(currentTestId, currentAssignmentId)}>
-          <StyledLink target="_blank" rel="noopener noreferrer">
-            <img alt="icon" src={responsiveIcon} />
-            <SpaceElement />
-            Release Grades
-          </StyledLink>
-        </Menu.Item>
-      );
-  }
+  MenuItems.push(
+    <Menu.Item key="release-grades" onClick={() => onOpenReleaseScoreSettings(currentTestId, currentAssignmentId)}>
+      <StyledLink target="_blank" rel="noopener noreferrer">
+        <img alt="icon" src={responsiveIcon} />
+        <SpaceElement />
+        Release Grades
+      </StyledLink>
+    </Menu.Item>
+  );
   MenuItems.push(
     <Menu.Item key="assign">
       <Link to={`/author/assignments/${currentTestId}`} rel="noopener noreferrer">

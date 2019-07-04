@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import { connect } from "react-redux";
 import { Modal, Button, Radio, Row } from "antd";
 
@@ -10,9 +10,13 @@ const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_A
 const ReleaseGradeSettingsModal = ({
   showReleaseGradeSettings,
   onCloseReleaseScoreSettings,
-  updateReleaseScoreSettings
+  updateReleaseScoreSettings,
+  releaseScore
 }) => {
-  const [releaseScore, updateReleaseScoreType] = useState(releaseGradeLabels.DONT_RELEASE);
+  const [releaseScoreVal, updateReleaseScoreType] = useState(releaseGradeLabels.DONT_RELEASE);
+  useEffect(() => {
+    updateReleaseScoreType(releaseScore);
+  }, [releaseScore]);
   return (
     <Modal
       visible={showReleaseGradeSettings}
@@ -23,12 +27,12 @@ const ReleaseGradeSettingsModal = ({
         <Button key="back" onClick={onCloseReleaseScoreSettings}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={() => updateReleaseScoreSettings(releaseScore)}>
+        <Button key="submit" type="primary" onClick={() => updateReleaseScoreSettings(releaseScoreVal)}>
           Apply
         </Button>
       ]}
     >
-      <Radio.Group defaultValue={releaseScore} onChange={e => updateReleaseScoreType(e.target.value)}>
+      <Radio.Group value={releaseScoreVal} onChange={e => updateReleaseScoreType(e.target.value)}>
         {releaseGradeKeys.map((item, index) => (
           <Row key={index}>
             <Radio value={item} key={item}>

@@ -187,11 +187,12 @@ class Assignments extends Component {
       toggleReleaseGradePopUp,
       assignmentsSummary,
       districtId,
-      isAdvancedView
+      isAdvancedView,
+      currentEditableAssignment
     } = this.props;
     const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId } = this.state;
     const tabletWidth = 768;
-
+    const { releaseScore } = currentEditableAssignment;
     return (
       <div>
         <TestPreviewModal
@@ -244,7 +245,6 @@ class Assignments extends Component {
                           tests={tests}
                           onSelectRow={this.onSelectRow}
                           selectedRows={selectedRows}
-                          // renderFilter={this.renderFilter}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           showPreviewModal={this.showPreviewModal}
                         />
@@ -263,13 +263,12 @@ class Assignments extends Component {
             </Main>
           </FlexContainer>
         </Container>
-        {isShowReleaseSettingsPopup && (
-          <ReleaseGradeSettingsModal
-            showReleaseGradeSettings={isShowReleaseSettingsPopup}
-            onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
-            updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}
-          />
-        )}
+        <ReleaseGradeSettingsModal
+          showReleaseGradeSettings={isShowReleaseSettingsPopup}
+          onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
+          updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}
+          releaseScore={releaseScore}
+        />
       </div>
     );
   }

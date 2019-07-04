@@ -174,7 +174,7 @@ export const SET_ASSIGNMENT_FILTER = "[assignments] set assignment filter";
 export const FETCH_CURRENT_EDITING_ASSIGNMENT = "[assignments] fetch assignment data";
 export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current assignment";
 export const UPDATE_RELEASE_SCORE_SETTINGS = "[assignments] update assignment settings";
-export const TOGGLE_RELEASE_GRADE_SETTINGS = "[assignments show release grade settings]";
+export const TOGGLE_RELEASE_GRADE_SETTINGS = "[assignments] show release grade settings";
 
 export const ADVANCED_ASSIGNMENT_VIEW = "[assignments] change view";
 

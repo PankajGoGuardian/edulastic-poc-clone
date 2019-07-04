@@ -5,12 +5,14 @@ import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox, Form } 
 
 import { test } from "@edulastic/constants";
 import { red, green, blueBorder } from "@edulastic/colors";
-import { IconCaretDown } from "@edulastic/icons";
 
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
 import ListCard from "../Card/Card";
 import UiTime from "../UiTime/UiTime";
+
+import TestType from "./blocks/TestType";
+import MaximumAttemptsAllowed from "./blocks/MaximumAttemptsAllowed";
 
 import {
   StyledAnchor,
@@ -248,42 +250,14 @@ class MainSetting extends Component {
             )} */}
           </Col>
           <Col span={isSmallSize ? 24 : 18}>
-            <Block id="test-type" smallSize={isSmallSize}>
-              <Row>
-                <Title>Test Type</Title>
-                <Body smallSize={isSmallSize}>
-                  <TestTypeSelect
-                    defaultValue={testType}
-                    disabled={!owner || !isEditable}
-                    onChange={this.updateTestData("testType")}
-                  >
-                    {Object.keys(testTypes).map(key => (
-                      <Option key={key} value={key}>
-                        {key === ASSESSMENT
-                          ? userRole === "teacher"
-                            ? "Class Assessment "
-                            : "Common Assessment "
-                          : testTypes[key]}
-                      </Option>
-                    ))}
-                  </TestTypeSelect>
-                </Body>
-              </Row>
-            </Block>
-            <Block id="maximum-attempts-allowed">
-              <Title>Maximum Attempts Allowed </Title>
-              <Body>
-                <MaxAttempts
-                  type="number"
-                  disabled={!owner || !isEditable}
-                  size="large"
-                  value={maxAttempts}
-                  onChange={this.updateAttempt}
-                  min={1}
-                  step={1}
-                />
-              </Body>
-            </Block>
+            <TestType
+              windowWidth={windowWidth}
+              entity={entity}
+              owner={owner}
+              userRole={userRole}
+              isEditable={isEditable}
+            />
+            <MaximumAttemptsAllowed owner={owner} isEditable={isEditable} maxAttempts={maxAttempts} />
             <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
               <Block id="mark-as-done" smallSize={isSmallSize}>
                 <Title>Mark as Done</Title>

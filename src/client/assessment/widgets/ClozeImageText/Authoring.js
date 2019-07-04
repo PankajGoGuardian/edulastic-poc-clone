@@ -641,6 +641,7 @@ class Authoring extends Component {
                           topLeft: false,
                           topRight: false
                         }}
+                        lockAspectRatio={item.keepAspectRatio}
                         onDragStop={(evt, d) => handleDragStop(d)}
                         onDrag={(evt, d) => this.handleDragging(d)}
                         onResizeStop={(e, direction, ref) => this.handleResizeStop(ref)}

@@ -54,16 +54,7 @@ export const getItemSelector = createSelector(
   (items, current) => items[current]
 );
 
-export const getQuestionWithFeedbackSelector = createSelector(
-  getItemSelector,
+export const FeedbackByQIdSelector = createSelector(
   getTestFeedbackSelector,
-  (item, testFeedback) => {
-    const feedbackIndex = keyBy(testFeedback, "qid");
-    const questions = getTestItemQuestions(item);
-    const questionsWithFeedback = questions.map(data => ({
-      ...data,
-      feedback: feedbackIndex[data.id] ? feedbackIndex[data.id] : null
-    }));
-    return questionsWithFeedback;
-  }
+  testFeedback => keyBy(testFeedback, "qid")
 );

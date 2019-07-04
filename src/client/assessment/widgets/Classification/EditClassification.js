@@ -14,6 +14,8 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { message, Upload } from "antd";
 import { TokenStorage, API_CONFIG } from "@edulastic/api";
+import { aws, clozeImage } from "@edulastic/constants";
+import { beforeUpload } from "@edulastic/common/src/helpers";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
 import withPoints from "../../components/HOC/withPoints";
@@ -33,10 +35,7 @@ import ComposeQuestion from "./ComposeQuestion";
 import RowColumn from "./RowColumn";
 import { DropContainer } from "./styled/DropContainer";
 
-import { uploadToS3 } from "../../../../client/author/src/utils/upload";
-import { aws, clozeImage } from "@edulastic/constants";
-
-import { beforeUpload } from "@edulastic/common/src/helpers";
+import { uploadToS3 } from "../../../author/src/utils/upload";
 
 const OptionsList = withPoints(ClassificationPreview);
 
@@ -104,7 +103,7 @@ const EditClassification = ({
     const img = new Image();
     const { maxWidth, maxHeight } = clozeImage;
     img.addEventListener("load", function() {
-      let height, width;
+      let height; let width;
       if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
         const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
         const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));
@@ -502,7 +501,13 @@ const EditClassification = ({
             </Dragger>
           )}
         </Widget>
-        <RowColumn item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
+        <RowColumn
+          item={item}
+          theme={theme}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          toolbarSize="MD"
+        />
         <Widget>
           <GroupPossibleResponses
             checkboxChange={onGroupPossibleResp}

@@ -63,6 +63,7 @@ export default Header;
 const HeaderWrapper = styled(Row)`
   padding: 16px 24px;
   border-bottom: 1px ${lightGrey4} solid;
+  background: ${white};
   span {
     font-size: 12px;
     margin-right: 20px;

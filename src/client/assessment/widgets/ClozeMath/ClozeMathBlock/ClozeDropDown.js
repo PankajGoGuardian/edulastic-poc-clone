@@ -8,7 +8,17 @@ import CheckedBlock from "./CheckedBlock";
 const { Option } = Select;
 
 const ClozeDropDown = ({ resprops = {}, id }) => {
-  const { save, options, answers = {}, evaluation = [], checked, item, onInnerClick, uiStyles = {} } = resprops;
+  const {
+    response_containers,
+    save,
+    options,
+    answers = {},
+    evaluation = [],
+    checked,
+    item,
+    onInnerClick,
+    uiStyles = {}
+  } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
 
   const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
@@ -16,7 +26,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     response_ids: { dropDowns }
   } = item;
   const { index } = find(dropDowns, res => res.id === id) || {};
-  const width = item.ui_style[id] && item.ui_style[id].widthpx;
+  const response = find(response_containers, cont => cont.id === id);
+  const width = !!response ? response.widthpx : item.ui_style.min_width || "auto";
 
   return checked ? (
     <CheckedBlock

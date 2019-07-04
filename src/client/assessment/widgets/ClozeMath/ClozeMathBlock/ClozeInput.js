@@ -6,14 +6,24 @@ import { Input } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
 const ClozeInput = ({ id, resprops = {} }) => {
-  const { save, answers = {}, evaluation = [], checked, item, onInnerClick, uiStyles = {} } = resprops;
+  const {
+    response_containers,
+    save,
+    answers = {},
+    evaluation = [],
+    checked,
+    item,
+    onInnerClick,
+    uiStyles = {}
+  } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
   const val = _inputsAnwers[id] ? _inputsAnwers[id].value : "";
   const {
     response_ids: { inputs }
   } = item;
   const { index } = find(inputs, res => res.id === id) || {};
-  const width = item.ui_style[id] && `${item.ui_style[id].widthpx}`;
+  const response = find(response_containers, cont => cont.id === id);
+  const width = !!response ? response.widthpx : item.ui_style.min_width || "auto";
   return checked ? (
     <CheckedBlock
       width={width}
@@ -29,7 +39,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
       <Input
         onChange={e => save({ value: e.target.value, index }, "inputs", id)}
         value={val}
-        style={{ ...uiStyles, width: `${!width ? "auto" : width}px` }}
+        style={{ ...uiStyles, width: !width ? "auto" : `${width}px` }}
       />
     </InputDiv>
   );

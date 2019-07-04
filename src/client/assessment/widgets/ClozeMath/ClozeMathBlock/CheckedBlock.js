@@ -30,7 +30,6 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
   useEffect(() => {
     replaceWithMathQuill();
   }, [userAnswer, evaluation, isMath]);
-
   return (
     <CheckBox width={width} className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick}>
       <span className="index">{index + 1}</span>

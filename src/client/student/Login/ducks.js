@@ -32,6 +32,7 @@ export const LOGOUT = "[auth] logout";
 export const CHANGE_CLASS = "[student] change class";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
 export const UPDATE_USER_ROLE_REQUEST = "[auth] update user role request";
+export const SET_USER_GOOGLE_LOGGED_IN = "[auth] set user google logged in";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -49,10 +50,12 @@ export const fetchUserAction = createAction(FETCH_USER);
 export const fetchV1RedirectAction = createAction(FETCH_V1_REDIRECT);
 export const logoutAction = createAction(LOGOUT);
 export const changeClassAction = createAction(CHANGE_CLASS);
+export const setUserGoogleLoggedInAction = createAction(SET_USER_GOOGLE_LOGGED_IN);
 export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
+  isUserGoogleLoggedIn: false,
   authenticating: true,
   signupStatus: 0
 };
@@ -97,6 +100,9 @@ export default createReducer(initialState, {
   [FETCH_V1_REDIRECT]: state => {
     state.isAuthenticated = false;
     state.authenticating = true;
+  },
+  [SET_USER_GOOGLE_LOGGED_IN]: (state, { payload }) => {
+    state.user.isUserGoogleLoggedIn = payload;
   },
   [SINGUP_SUCCESS]: setUser
 });

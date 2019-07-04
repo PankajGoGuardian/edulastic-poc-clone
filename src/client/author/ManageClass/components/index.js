@@ -61,6 +61,7 @@ const enhance = compose(
       state: state,
       courseList: get(state, "coursesReducer.searchResult"),
       districtId: get(state, "user.user.orgData.districtId"),
+      isGoogleLoggedIn: get(state, "user.user.isGoogleLoggedIn"),
       googleCourseList: state.manageClass.googleCourseList
     }),
     {

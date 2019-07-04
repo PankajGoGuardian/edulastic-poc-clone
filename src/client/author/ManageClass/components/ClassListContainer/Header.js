@@ -26,7 +26,7 @@ const scopes = [
 
 const Header = ({ fetchClassList, history }) => {
   const handleLoginSucess = data => {
-    fetchClassList(data);
+    fetchClassList({ data, showModal: true });
   };
 
   const handleError = err => {

@@ -26,6 +26,15 @@ const SelectContainer = styled.div`
     &:hover {
       border-color: ${props => props.theme.default.dropdownHoverBorderColor};
     }
+    .ant-select-selection__rendered,
+    .ant-select-selection-selected-value {
+      width: 100%;
+      svg,
+      i {
+        float: right;
+        margin-top: 6px;
+      }
+    }
   }
   .ant-select-selection-selected-value {
     font-size: 13px;

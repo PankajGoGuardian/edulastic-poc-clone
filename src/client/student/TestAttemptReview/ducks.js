@@ -4,11 +4,13 @@ import { questionType } from "@edulastic/constants";
 // selectors
 export const answersSelector = state => state.answers;
 export const itemsSelector = state => state.test.items || [];
+export const bookmarksSelector = state => state.assessmentBookmarks || {};
 
 export const attemptSummarySelector = createSelector(
   itemsSelector,
   answersSelector,
-  (items, answers) => {
+  bookmarksSelector,
+  (items, answers, bookmarks) => {
     const questions = {};
     // eslint-disable
     for (const item of items) {
@@ -18,7 +20,7 @@ export const attemptSummarySelector = createSelector(
             continue;
           }
 
-          if (item.reviewLater) {
+          if (bookmarks[item._id]) {
             questions[qId] = 2;
           } else {
             questions[qId] = answers[qId] ? 1 : 0;

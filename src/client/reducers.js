@@ -5,7 +5,6 @@ import authorReducers from "./author/src/reducers";
 import studentReducers from "./student/reducers";
 import curriculumSequenceReducers from "./author/CurriculumSequence/ducks";
 import tutorial from "./tutorials/tutorialReducer";
-import { LOGOUT } from "./student/Login/ducks";
 import adminReducers from "./admin/reducers";
 
 const rootReducer = combineReducers({
@@ -17,5 +16,4 @@ const rootReducer = combineReducers({
   curriculumSequence: curriculumSequenceReducers
 });
 
-export default (state, action) =>
-  action.type === LOGOUT ? rootReducer(undefined, action) : rootReducer(state, action);
+export default rootReducer;

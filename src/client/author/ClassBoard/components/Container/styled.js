@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, Checkbox, Button, Menu } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, themeColor, white, linkColor, tabGrey } from "@edulastic/colors";
+import { mobileWidth, themeColor, white, linkColor, tabGrey, mainTextColor } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
@@ -123,6 +123,22 @@ export const RedirectButton = styled(StyledTabButton)`
   margin-right: ${props => (!props.last ? "3px" : "")};
   position: relative;
   justify-content: center;
+  &:hover {
+    svg {
+      fill: ${white};
+      path,
+      circle {
+        fill: ${white};
+      }
+    }
+  }
+  svg {
+    fill: ${themeColor};
+    path,
+    circle {
+      fill: ${themeColor};
+    }
+  }
 `;
 
 export const DropMenu = styled(Menu)`
@@ -130,6 +146,24 @@ export const DropMenu = styled(Menu)`
 `;
 
 export const MenuItems = styled(Menu.Item)`
+  display: flex;
+  align-items: center;
+  &:hover {
+    svg {
+      fill: ${white};
+      path {
+        fill: ${white};
+      }
+    }
+  }
+  svg {
+    fill: ${mainTextColor};
+    width: 15px;
+    margin-right: 10px;
+    path {
+      fill: ${mainTextColor};
+    }
+  }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
     background-color: ${themeColor};

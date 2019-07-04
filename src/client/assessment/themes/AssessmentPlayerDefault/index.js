@@ -152,7 +152,7 @@ class AssessmentPlayerDefault extends React.Component {
     });
   };
 
-  handleModeChange = (flag, value) => {
+  handleModeChange = value => {
     this.setState({
       changeMode: value
     });
@@ -412,7 +412,14 @@ class AssessmentPlayerDefault extends React.Component {
               )}
             </MainWrapper>
           </Main>
-          {changeMode === 2 && <CalculatorContainer calculateMode={calculateMode} calcBrands={calcBrands} />}
+          {changeMode === 2 && (
+            <CalculatorContainer
+              changeMode={this.handleModeChange}
+              changeTool={this.changeTool}
+              calculateMode={calculateMode}
+              calcBrands={calcBrands}
+            />
+          )}
         </Container>
       </ThemeProvider>
     );

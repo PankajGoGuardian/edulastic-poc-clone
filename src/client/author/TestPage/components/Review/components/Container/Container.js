@@ -13,6 +13,7 @@ import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 import { setTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../../ducks";
+import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
@@ -187,7 +188,8 @@ class Review extends PureComponent {
   };
 
   hidePreviewModal = () => {
-    this.setState({ isTestPreviewModalVisible: false });
+    const { clearAnswer } = this.props;
+    this.setState({ isTestPreviewModalVisible: false }, () => clearAnswer());
   };
 
   showTestPreviewModal = () => {
@@ -382,7 +384,8 @@ const enhance = compose(
       setData: setTestDataAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
-      showAnswer: previewShowAnswerAction
+      showAnswer: previewShowAnswerAction,
+      clearAnswer: clearAnswersAction
     }
   )
 );

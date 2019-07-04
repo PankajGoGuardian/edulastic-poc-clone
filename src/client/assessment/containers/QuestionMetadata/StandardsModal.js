@@ -1,16 +1,12 @@
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
-import { Button, Row, Col, Select, Checkbox, Spin } from "antd";
+import { Button, Row, Col, Checkbox, Spin } from "antd";
 import { Paper, FlexContainer } from "@edulastic/common";
-import { connect } from "react-redux";
-import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
-import { clearDictStandardsAction } from "../../../author/src/actions/dictionaries";
 import { StyledModal } from "./styled/StyledModal";
-import selectsData from "../../../author/TestPage/components/common/selectsData";
-import { ItemBody } from "./styled/ItemBody";
 import { Container } from "./styled/Container";
 import { TLOList, TLOListItem } from "./styled/TLOList";
 import { ELOList } from "./styled/ELOList";
+import PopupRowSelect from "./PopupRowSelect";
 
 const StandardsModal = ({
   visible,
@@ -24,11 +20,7 @@ const StandardsModal = ({
   curriculumStandardsELO,
   curriculumStandardsTLO,
   getCurriculumStandards,
-  curriculumStandardsLoading,
-  formattedCuriculums,
-  editAlignment,
-  alignmentIndex,
-  clearStandards
+  curriculumStandardsLoading
 }) => {
   const [state, setState] = useState({
     standard,
@@ -59,7 +51,6 @@ const StandardsModal = ({
       eloStandards: [],
       standard: { ...prevState.standard, curriculum: "" }
     }));
-    editAlignment(alignmentIndex, { subject: val });
     getCurriculumStandards({ id: "", grades: state.grades, searchStr: "" });
   };
 
@@ -83,60 +74,15 @@ const StandardsModal = ({
   return (
     <StyledModal title="Select Standards for This Question" visible={visible} onCancel={onCancel} footer={footer}>
       <Paper>
-        <Row gutter={24}>
-          <Col md={8}>
-            <ItemBody>
-              <div className="select-label">{t("component.options.subject")}</div>
-              <Select style={{ width: "100%" }} value={state.subject} onChange={handleChangeSubject}>
-                {selectsData.allSubjects.map(({ text, value }) =>
-                  value ? (
-                    <Select.Option key={value} value={value}>
-                      {text}
-                    </Select.Option>
-                  ) : (
-                    ""
-                  )
-                )}
-              </Select>
-            </ItemBody>
-          </Col>
-          <Col md={8}>
-            <ItemBody>
-              <div className="select-label">{t("component.options.standardSet")}</div>
-              <Select
-                style={{ width: "100%" }}
-                showSearch
-                filterOption
-                value={state.standard.curriculum}
-                onChange={handleChangeStandard}
-              >
-                {formattedCuriculums.map(({ value, text, disabled }) => (
-                  <Select.Option key={value} value={text} disabled={disabled}>
-                    {text}
-                  </Select.Option>
-                ))}
-              </Select>
-            </ItemBody>
-          </Col>
-          <Col md={8}>
-            <ItemBody>
-              <div className="select-label">{t("component.options.grade")}</div>
-              <Select
-                mode="multiple"
-                showSearch
-                style={{ width: "100%" }}
-                value={state.grades}
-                onChange={handleChangeGrades}
-              >
-                {selectsData.allGrades.map(({ text, value }) => (
-                  <Select.Option key={text} value={value}>
-                    {text}
-                  </Select.Option>
-                ))}
-              </Select>
-            </ItemBody>
-          </Col>
-        </Row>
+        <PopupRowSelect
+          handleChangeStandard={handleChangeStandard}
+          handleChangeGrades={handleChangeGrades}
+          handleChangeSubject={handleChangeSubject}
+          standard={state.standard}
+          subject={state.subject}
+          grades={state.grades}
+          t={t}
+        />
         <br />
         <Row type="flex" gutter={24}>
           <Spin spinning={curriculumStandardsLoading} size="large">
@@ -193,8 +139,7 @@ StandardsModal.propTypes = {
   subject: PropTypes.string,
   curriculumStandardsELO: PropTypes.array,
   curriculumStandardsTLO: PropTypes.array,
-  grades: PropTypes.array,
-  formattedCuriculums: PropTypes.array
+  grades: PropTypes.array
 };
 
 StandardsModal.defaultProps = {
@@ -204,11 +149,4 @@ StandardsModal.defaultProps = {
   grades: []
 };
 
-export default connect(
-  (state, props) => ({
-    formattedCuriculums: getFormattedCurriculumsSelector(state, props)
-  }),
-  {
-    clearStandards: clearDictStandardsAction
-  }
-)(StandardsModal);
+export default StandardsModal;

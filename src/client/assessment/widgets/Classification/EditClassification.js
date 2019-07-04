@@ -103,6 +103,7 @@ const EditClassification = ({
   const setImageDimensions = (url, isNew) => {
     const img = new Image();
     const { maxWidth, maxHeight } = clozeImage;
+    // eslint-disable-next-line func-names
     img.addEventListener("load", function() {
       let height, width;
       if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {

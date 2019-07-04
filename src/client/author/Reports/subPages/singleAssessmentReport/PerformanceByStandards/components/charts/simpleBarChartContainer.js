@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { orderBy } from "lodash";
 import { Cell } from "recharts";
 
 import SimpleBarChart from "../../../../../common/components/charts/simpleBarChart";
@@ -61,7 +62,9 @@ const SimpleBarChartContainer = ({
   analyzeBy,
   onBarClick,
   selectedDomains,
-  selectedStandards
+  selectedStandards,
+  shouldShowReset,
+  onResetClick
 }) => {
   const data = chartParseData(report, viewBy, filter);
   const xDataKey = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
@@ -91,7 +94,7 @@ const SimpleBarChartContainer = ({
     const badScoreColor = "#ffc6c6";
 
     const itemInSelected = item => {
-      if (selectedData.includes(item[field])) {
+      if (selectedData.includes(item[field]) || !selectedData.length) {
         switch (analyzeBy) {
           case analyzeByMode.MASTERY_SCORE:
             return getMasteryScore(item.masteryScore);
@@ -190,7 +193,7 @@ const SimpleBarChartContainer = ({
     );
   };
 
-  const formattedData = data.map(item => {
+  let formattedData = data.map(item => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
         return {
@@ -209,6 +212,8 @@ const SimpleBarChartContainer = ({
     }
   });
 
+  formattedData = formattedData.sort((a, b) => tickFormatter(a[xDataKey]).localeCompare(tickFormatter(b[xDataKey])));
+
   return (
     <SimpleBarChart
       data={formattedData}
@@ -222,6 +227,8 @@ const SimpleBarChartContainer = ({
       renderBarCells={renderBarCells}
       ticks={ticks}
       renderTooltip={renderTooltip}
+      showReset={shouldShowReset}
+      onResetClick={onResetClick}
     />
   );
 };

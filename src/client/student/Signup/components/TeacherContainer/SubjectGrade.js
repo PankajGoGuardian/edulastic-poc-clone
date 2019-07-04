@@ -18,6 +18,7 @@ import { getCurriculumsListSelector } from "../../../../author/src/selectors/dic
 const { allGrades, allSubjects, defaultStandards } = selectsData;
 
 const { Option } = Select;
+const schoolIcon = "//cdn.edulastic.com/JS/webresources/images/as/signup-join-school-icon.png";
 
 class SubjectGrade extends React.Component {
   state = {
@@ -114,11 +115,11 @@ class SubjectGrade extends React.Component {
 
     return (
       <>
-        <SubjectGradeBody type="flex" align="middle">
+        <SubjectGradeBody>
           <Col xs={18} offset={3}>
             <Row type="flex" align="middle">
               <BannerText md={12}>
-                <SchoolIcon />
+                <SchoolIcon src={schoolIcon} alt="" />
                 <h3>
                   Choose your subject <br /> and grade
                 </h3>
@@ -224,13 +225,15 @@ const enhance = compose(
 export default enhance(SubjectGradeForm);
 
 const SubjectGradeBody = styled(Row)`
-  margin-top: 80px;
+  padding-top: 50px;
+  background: ${white};
+  height: calc(100vh - 93px);
 `;
 
 const BannerText = styled(Col)`
   text-align: center;
   h3 {
-    font-size: 46px;
+    font-size: 38px;
     line-height: 1.3;
     letter-spacing: -2px;
     font-weight: 700;
@@ -270,9 +273,9 @@ const SelectForm = styled(Form)`
   }
 `;
 
-const SchoolIcon = styled(IconHeader)`
-  width: 119px;
-  height: 21px;
+const SchoolIcon = styled.img`
+  width: 80px;
+  margin-bottom: 10px;
 `;
 
 const GradeSelect = styled(Select)`

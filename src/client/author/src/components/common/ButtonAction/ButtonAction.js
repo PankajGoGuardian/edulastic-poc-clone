@@ -56,6 +56,8 @@ class ButtonAction extends Component {
       authorQuestions
     } = this.props;
 
+    const isAnswerBtnVisible = !questionType.manuallyGradableQn.includes(authorQuestions.type);
+
     return (
       <Container showPublishButton={showPublishButton}>
         <DisplayBlock>
@@ -91,7 +93,7 @@ class ButtonAction extends Component {
                 justifyContent: "flex-end"
               }}
             >
-              {(showCheckButton || window.location.pathname.includes("author")) && (
+              {(showCheckButton || window.location.pathname.includes("author") || isAnswerBtnVisible) && (
                 <Button
                   style={{ height: "25px" }}
                   htmlType="button"
@@ -103,7 +105,7 @@ class ButtonAction extends Component {
                   </ButtonLink>
                 </Button>
               )}
-              {!questionType.manuallyGradableQn.includes(authorQuestions.type) && (
+              {isAnswerBtnVisible && (
                 <Button
                   style={{ height: "25px" }}
                   htmlType="button"

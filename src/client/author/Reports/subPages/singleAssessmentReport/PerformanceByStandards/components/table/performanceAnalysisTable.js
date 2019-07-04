@@ -142,8 +142,6 @@ const PerformanceAnalysisTable = ({
       };
     };
 
-    console.log(standardColumnsData, "standardColumnsData");
-
     return standardColumnsData.filter(selectedItems).map(makeStandardColumn);
   };
 

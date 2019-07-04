@@ -84,149 +84,150 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
 
                   <Route exact path={`/author/dashboard`} component={Dashboard} />
 
+                  <Route
+                    exact
+                    path={`${match.url}/assignments/:districtId/:testId`}
+                    component={props => <AssignmentAdvanced {...props} />}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
+                    component={Regrade}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/assignments/:testId`}
+                    component={props => <AssignTest {...props} />}
+                  />
+                  <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
+                  <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
+                  <Route
+                    exact
+                    path={`${
+                      match.url
+                    }/classboard-student-report-card-print-preview/printpreview/:assignmentId/:classId`}
+                    component={StudentReportCardPrintPreviewContainer}
+                  />
+                  <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
+                  <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
+                  <Route exact path={`${match.url}/printpreview/:testActivityId`} component={PrintPreview} />
 
-                <Route
-                  exact
-                  path={`${match.url}/assignments/:districtId/:testId`}
-                  component={props => <AssignmentAdvanced {...props} />}
-                />
-                <Route
-                  exact
-                  path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
-                  component={Regrade}
-                />
-                <Route exact path={`${match.url}/assignments/:testId`} component={props => <AssignTest {...props} />} />
-                <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
-                <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
-                <Route
-                  exact
-                  path={`${match.url}/classboard-student-report-card-print-preview/printpreview/:assignmentId/:classId`}
-                  component={StudentReportCardPrintPreviewContainer}
-                />
-                <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
-                <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
-                <Route exact path={`${match.url}/printpreview/:testActivityId`} component={PrintPreview} />
+                  <Route exact path={`${match.url}/manageClass/createClass`} component={ClassCreate} />
+                  <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
+                  <Route exact path={`${match.url}/manageClass/:classId`} component={ClassDetails} />
+                  <Route exact path={`${match.url}/manageClass/:classId/Edit`} component={ClassEdit} />
 
-                <Route exact path={`${match.url}/manageClass/createClass`} component={ClassCreate} />
-                <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
-                <Route exact path={`${match.url}/manageClass/:classId`} component={ClassDetails} />
-                <Route exact path={`${match.url}/manageClass/:classId/Edit`} component={ClassEdit} />
-
-                <Route
-                  exact
-                  path={`${match.url}/expressgrader/:assignmentId/:classId/:testActivityId`}
-                  component={ExpressGrader}
-                />
-                <Route
-                  exact
-                  path={`${match.url}/standardsBasedReport/:assignmentId/:classId`}
-                  component={StandardsBasedReport}
-                />
-                <Route exact path={`${match.url}/items`} component={ItemList} />
-                <Route exact path={`${match.url}/items/filter/:filterType`} component={ItemList} />
-                <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
-                <Route exact path={`${match.url}/items/:id/item-detail/test/:testId`} component={ItemDetail} />
-                <Route
-                  exact
-                  path={`${match.url}/playlists`}
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <PlayList {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route exact path={`${match.url}/playlists/view`} component={CurriculumContainer} />
-                <Route
-                  exact
-                  path={`${match.url}/playlists/filter/:filterType`}
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <PlayList {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exacts
-                  path="/author/playlists/create"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <PlaylistPage {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/author/playlists/:id/edit"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <PlaylistPage {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/author/playlists/:id"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <CurriculumContainer {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/author/playlists/:id/customize"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <CurriculumContainer {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/author/playlists/:id/use-this"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <CurriculumContainer {...props} />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
-                  component={props => <AssignTest {...props} isPlaylist={true} />}
-                />
-                <Route
-                  exact
-                  path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
-                  component={props => <AssignTest {...props} isPlaylist={true} />}
-                />
-                <Route
-                  exact
-                  path="/author/playlists/:id/editAssigned"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <PlayList {...props} editAssigned />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/author/playlists/:id/publish"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <SuccessPage {...props} isPlaylist published />
-                    </Suspense>
-                  )}
-                />
-                <Route
-                  exact
-                  path="/author/playlists/:id/assign"
-                  render={props => (
-                    <Suspense fallback={<Progress />}>
-                      <SuccessPage {...props} isPlaylist isAssignSuccess />
-                    </Suspense>
-                  )}
-                />
+                  <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
+                  <Route
+                    exact
+                    path={`${match.url}/standardsBasedReport/:assignmentId/:classId`}
+                    component={StandardsBasedReport}
+                  />
+                  <Route exact path={`${match.url}/items`} component={ItemList} />
+                  <Route exact path={`${match.url}/items/filter/:filterType`} component={ItemList} />
+                  <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
+                  <Route exact path={`${match.url}/items/:id/item-detail/test/:testId`} component={ItemDetail} />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists`}
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <PlayList {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route exact path={`${match.url}/playlists/view`} component={CurriculumContainer} />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/filter/:filterType`}
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <PlayList {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exacts
+                    path="/author/playlists/create"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <PlaylistPage {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/edit"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <PlaylistPage {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <CurriculumContainer {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/customize"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <CurriculumContainer {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/use-this"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <CurriculumContainer {...props} />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
+                    component={props => <AssignTest {...props} isPlaylist={true} />}
+                  />
+                  <Route
+                    exact
+                    path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
+                    component={props => <AssignTest {...props} isPlaylist={true} />}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/editAssigned"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <PlayList {...props} editAssigned />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/publish"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <SuccessPage {...props} isPlaylist published />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
+                    path="/author/playlists/:id/assign"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <SuccessPage {...props} isPlaylist isAssignSuccess />
+                      </Suspense>
+                    )}
+                  />
 
                   <Route
                     exact

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { uniq, xor, isEmpty, get } from "lodash";
+import { uniq, indexOf, intersection, isEmpty, get } from "lodash";
 import { Card, Form, Select, Radio, Popover, Button, Icon } from "antd";
 import next from "immer";
 
@@ -12,7 +12,6 @@ import PerformanceAnalysisTable from "./components/table/performanceAnalysisTabl
 import CardHeader, {
   CardTitle,
   CardDropdownWrapper,
-  ResetButton,
   MasteryLevelWrapper,
   MasteryLevel,
   MasteryLevelIndicator,
@@ -52,6 +51,7 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
   const [totalStandards, setTotalStandards] = useState(0);
   const [totalDomains, setTotalDomains] = useState(0);
   const [page, setPage] = useState(0);
+  const [allData, setAllData] = useState({});
 
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
     if (o.allowedRoles) {
@@ -100,11 +100,13 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
 
     selectedData.selectedDomains = uniq(selectedData.selectedDomains);
 
+    setAllData(selectedData);
+
     setStandardId(standardsMap[defaultStandardId]);
-    setSelectedStandards(selectedData.selectedStandards);
-    setSelectedDomains(selectedData.selectedDomains);
     setTotalStandards(selectedData.selectedStandards.length);
     setTotalDomains(selectedData.selectedDomains.length);
+    setSelectedStandards([]);
+    setSelectedDomains([]);
   };
 
   useEffect(() => {
@@ -124,10 +126,20 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
 
   const handleToggleSelectedData = item => {
     const dataField = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
-    const stateField = viewBy === viewByMode.STANDARDS ? selectedStandards : selectedDomains;
     const stateHandler = viewBy === viewByMode.STANDARDS ? setSelectedStandards : setSelectedDomains;
 
-    stateHandler(xor(stateField, [item[dataField]]));
+    stateHandler(prevState => {
+      const newState = next(prevState, draftState => {
+        let index = indexOf(prevState, item[dataField]);
+        if (-1 < index) {
+          draftState.splice(index, 1);
+        } else {
+          draftState.push(item[dataField]);
+        }
+      });
+
+      return newState;
+    });
   };
 
   const handleViewByChange = (event, selected) => {
@@ -211,8 +223,7 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
     name: standardsMap[id]
   }));
 
-  const shouldShowReset =
-    viewBy === viewByMode.STANDARDS ? totalStandards > selectedStandards.length : totalDomains > selectedDomains.length;
+  const shouldShowReset = viewBy === viewByMode.STANDARDS ? selectedStandards.length : selectedDomains.length;
 
   const tableData = analysisParseData(report, viewBy, compareBy);
 
@@ -271,11 +282,6 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
           </CardDropdownWrapper>
         </CardHeader>
         <div>
-          {shouldShowReset && (
-            <ResetButton type="dashed" size="small" onClick={handleResetSelection}>
-              Reset
-            </ResetButton>
-          )}
           {(analyzeBy === analyzeByMode.MASTERY_LEVEL || analyzeBy === analyzeByMode.MASTERY_SCORE) && (
             <MasteryLevels scaleInfo={scaleInfo} />
           )}
@@ -288,6 +294,8 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
           onBarClick={handleToggleSelectedData}
           selectedDomains={selectedDomains}
           selectedStandards={selectedStandards}
+          shouldShowReset={shouldShowReset}
+          onResetClick={handleResetSelection}
         />
       </Card>
       <Card style={{ marginTop: "20px" }}>

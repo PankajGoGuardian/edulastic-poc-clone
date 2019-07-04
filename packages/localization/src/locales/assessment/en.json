@@ -296,6 +296,7 @@
     },
     "classification": {
       "addBackImage": "Add Background Image",
+      "alternateAnswer": "Alternate Answer",
       "deleteBackImage": "Delete Background Image",
       "composeQuestion": "Question",
       "enterQuestion": "Enter question",
@@ -363,6 +364,7 @@
       "containerSourcePreview": "Source",
       "containerTargetPreview": "Target",
       "correctAnswers": "Correct Answers",
+      "alternateAnswer": "Alternate Answer",
       "list": "List",
       "composeQuestion": "Question",
       "enterQuestion": "Enter question"

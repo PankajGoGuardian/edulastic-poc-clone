@@ -78,7 +78,7 @@ const ChartPreview = ({
     passData.data = [...userAnswer];
   }
 
-  const answerData = validation.valid_response.value;
+  const answerData = validation ? validation.valid_response.value : [];
   const answerCorrect = Array(answerData.length).fill(true);
 
   const correct =

@@ -59,6 +59,7 @@ import {
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
 import {
   getInterestedCurriculumsSelector,
   getInterestedSubjectsSelector,
@@ -500,6 +501,11 @@ class TestList extends Component {
 
     if (loading) {
       return <Spin size="large" />;
+    }
+    if (tests.length < 1) {
+      return (
+        <NoDataNotification heading={"Tests not available"} description={"There are no tests found for this filter."} />
+      );
     }
 
     if (blockStyle === "tile") {

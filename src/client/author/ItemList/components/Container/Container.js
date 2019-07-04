@@ -49,6 +49,7 @@ import {
   updateDefaultGradesAction
 } from "../../../ItemDetail/ducks";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -304,6 +305,16 @@ class Contaier extends Component {
       interestedCurriculums
     } = this.props;
     const { search } = this.state;
+    if (items.length < 1) {
+      return (
+        <NoDataNotification
+          heading={"Items Not Available"}
+          description={
+            'There are currently no items available for this filter. You can create new item by clicking the "CREATE ITEM" button.'
+          }
+        />
+      );
+    }
     return items.map(item => (
       <Item
         key={`Item_${item._id}`}

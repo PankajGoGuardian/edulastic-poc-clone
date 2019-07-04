@@ -240,6 +240,7 @@ class Display extends Component {
                   index={dropTargetIndex}
                   disabled={disableResponse}
                   noIndent={responseWidth < 30}
+                  lessPadding={responseWidth <= 35}
                   resprops={{
                     btnStyle: {},
                     item,

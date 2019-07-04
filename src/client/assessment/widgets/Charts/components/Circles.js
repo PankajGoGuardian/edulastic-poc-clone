@@ -24,7 +24,7 @@ const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
 
   const getCenterX = index => step * index + 2;
 
-  const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
+  const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + 20;
 
   const renderValidationIcons = index => (
     <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
@@ -52,7 +52,7 @@ const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
               cx={getCenterX(index) + step / 2}
-              cy={height - margin - ind * yAxisStep - yAxisStep / 2}
+              cy={height - margin - ind * yAxisStep - yAxisStep / 2 + 20}
               r={yAxisStep / 2 - 5}
             />
           ))}
@@ -87,7 +87,7 @@ const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
               />
             </Fragment>
           )}
-          <Text textAnchor="middle" x={getCenterX(index) + step / 2} y={height}>
+          <Text textAnchor="middle" x={getCenterX(index) + step / 2} y={height + 20}>
             {dot.x}
           </Text>
         </Fragment>

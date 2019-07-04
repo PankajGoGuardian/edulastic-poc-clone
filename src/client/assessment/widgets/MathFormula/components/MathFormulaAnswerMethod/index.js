@@ -76,7 +76,6 @@ const MathFormulaAnswerMethod = ({
     if (!val) {
       delete newOptions[prop];
     }
-
     onChange("options", newOptions);
   };
 
@@ -201,7 +200,7 @@ const MathFormulaAnswerMethod = ({
           return (
             <CheckOption
               dataCy="answer-ignore-text"
-              optionKey="treatMultipleSpacesAsOne"
+              optionKey="ignoreAlphabeticCharacters"
               options={options}
               onChange={changeOptions}
               label={t("component.math.ignoreText")}

@@ -277,6 +277,7 @@ function* signup({ payload }) {
 }
 
 const getLoggedOutUrl = () => {
+  // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   const path = getWordsInURLPathName(window.location.pathname);
   if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
     return "/getStarted";
@@ -300,7 +301,9 @@ export function* fetchUser() {
   try {
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
-      localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+        localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      }
       yield put(push(getLoggedOutUrl()));
       return;
     }
@@ -320,11 +323,13 @@ export function* fetchUser() {
       yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
     }
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    console.log(error);
     yield call(message.error, "failed loading user data");
     if (!(error.response && error.response.status === 501)) {
-      window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+        localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      }
       yield put(push(getLoggedOutUrl()));
     }
   }

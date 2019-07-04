@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { Link } from "react-router-dom";
 import { white } from "@edulastic/colors";
 import { GoogleLogin } from "react-google-login";
 // components
@@ -22,7 +24,7 @@ const scopes = [
   "https://www.googleapis.com/auth/userinfo.profile"
 ].join(" ");
 
-const Header = ({ fetchClassList, onCreate }) => {
+const Header = ({ fetchClassList, history }) => {
   const handleLoginSucess = data => {
     fetchClassList(data);
   };
@@ -30,7 +32,6 @@ const Header = ({ fetchClassList, onCreate }) => {
   const handleError = err => {
     console.log("error", err);
   };
-
   return (
     <HeaderWrapper>
       <Title>
@@ -47,24 +48,25 @@ const Header = ({ fetchClassList, onCreate }) => {
           prompt="consent"
           responseType="code"
         />
-        <CreateClassButton onClick={onCreate}>
-          <CreateIcon color={white} /> Create Class{" "}
-        </CreateClassButton>
+        <Link to={`/author/manageClass/createClass`}>
+          <CreateClassButton>
+            <CreateIcon color={white} /> Create Class{" "}
+          </CreateClassButton>
+        </Link>
       </ButtonsWrapper>
     </HeaderWrapper>
   );
 };
 
 Header.propTypes = {
-  fetchClassList: PropTypes.func.isRequired,
-  onCreate: PropTypes.func
+  fetchClassList: PropTypes.func.isRequired
 };
 
-Header.defaultProps = {
-  onCreate: () => null
-};
+const enhance = compose(
+  connect(
+    null,
+    { fetchClassList: fetchClassListAction }
+  )
+);
 
-export default connect(
-  null,
-  { fetchClassList: fetchClassListAction }
-)(Header);
+export default enhance(Header);

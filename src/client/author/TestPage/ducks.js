@@ -59,10 +59,12 @@ export const SET_CREATED_ITEM_TO_TEST = "[test] set created item to test";
 export const CLEAR_CREATED_ITEMS_FROM_TEST = "[test] clear createdItems from test";
 export const PREVIEW_CHECK_ANSWER = "[test] check answer for preview modal";
 export const PREVIEW_SHOW_ANSWER = "[test] show answer for preview modal";
+export const REPLACE_TEST_ITEMS = "[test] replace test items";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER);
+export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS);
 
 export const receiveTestByIdAction = id => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -317,6 +319,14 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         createdItems: []
+      };
+    case REPLACE_TEST_ITEMS:
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          testItems: payload
+        }
       };
     default:
       return state;
@@ -582,7 +592,7 @@ function* showAnswerSaga({ payload }) {
   try {
     const testItems = yield select(state => get(state, ["tests", "entity", "testItems"], []));
     const testItem = testItems.find(x => x._id === payload.id) || {};
-    const questions = _keyBy(testItem.data.questions, "id");
+    const questions = _keyBy(testItem.data && testItem.data.questions, "id");
     const answers = yield select(state => get(state, "answers", {}));
     const { evaluation } = yield createShowAnswerData(questions, answers);
     yield put({

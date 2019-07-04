@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get } from "lodash";
-
+import { get, isEmpty } from "lodash";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { fetchStudentsByIdAction } from "../../ducks";
+import { Spin } from "antd";
 
 import Header from "./Header";
 import SubHeader from "./SubHeader";
@@ -12,56 +14,54 @@ import StudentsList from "./StudentsList";
 import MainInfo from "./MainInfo";
 import { Container, StyledDivider } from "./styled";
 
-const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
-  if (loadStudents) {
-    const { _id: classId } = selctedClass;
-    loadStudents({ classId });
-  }
+const ClassDetails = ({ selectedClass, dataLoaded, loadStudents, history, match }) => {
+  useEffect(() => {
+    if (isEmpty(selectedClass)) {
+      const { classId } = match.params;
+      loadStudents({ classId });
+    }
+  }, []);
 
   const handleEditClick = () => {
-    if (updateView) {
-      updateView("update");
-    }
-  };
-
-  const printPreview = () => {
-    if (updateView) {
-      updateView("printview");
-    }
+    const classId = selectedClass._id || match.params.classId;
+    history.push(`/author/manageClass/${classId}/edit`);
   };
 
   const viewAssessmentHandler = () => {};
+  if (!dataLoaded) return <Spin />;
   return (
     <>
       <Header onEdit={handleEditClick} />
       <Container>
-        <SubHeader
-          {...selctedClass}
-          viewAssessmentHandler={viewAssessmentHandler}
-          backToView={() => updateView("listView")}
-        />
+        <SubHeader {...selectedClass} viewAssessmentHandler={viewAssessmentHandler} />
         <StyledDivider orientation="left" />
-        <MainInfo entity={selctedClass} />
+        <MainInfo entity={selectedClass} />
 
-        <ActionContainer printPreview={printPreview} loadStudents={loadStudents} />
+        <ActionContainer loadStudents={loadStudents} />
 
-        <StudentsList selectStudent />
+        <StudentsList />
       </Container>
     </>
   );
 };
 
 ClassDetails.propTypes = {
-  selctedClass: PropTypes.object.isRequired,
-  updateView: PropTypes.func.isRequired,
-  loadStudents: PropTypes.func.isRequired
+  selectedClass: PropTypes.object.isRequired,
+  loadStudents: PropTypes.func.isRequired,
+  dataLoaded: PropTypes.bool.isRequired
 };
 
-export default connect(
-  state => ({
-    selctedClass: get(state, "manageClass.entity")
-  }),
-  {
-    loadStudents: fetchStudentsByIdAction
-  }
-)(ClassDetails);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      selectedClass: get(state, "manageClass.entity"),
+      dataLoaded: get(state, "manageClass.dataLoaded")
+    }),
+    {
+      loadStudents: fetchStudentsByIdAction
+    }
+  )
+);
+
+export default enhance(ClassDetails);

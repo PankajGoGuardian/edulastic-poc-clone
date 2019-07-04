@@ -185,7 +185,6 @@ const HighlightImagePreview = ({
   return (
     <Paper
       style={{
-        width: "max-content",
         padding: 0
       }}
       padding={smallSize}

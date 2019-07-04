@@ -21,7 +21,7 @@ import {
   getClassListSelector
 } from "../../duck";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-
+import { test as testConst } from "@edulastic/constants";
 import ListHeader from "../../../src/components/common/ListHeader";
 import SimpleOptions from "../SimpleOptions/SimpleOptions";
 import AdvancedOptons from "../AdvancedOptons/AdvancedOptons";
@@ -39,11 +39,14 @@ import {
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { receiveClassListAction } from "../../../Classes/ducks";
 
+const { ASSESSMENT, COMMON } = testConst;
+
 const initAssignment = {
   startDate: moment(),
   openPolicy: "Automatically on Start Date",
   closePolicy: "Automatically on Due Date",
   class: [],
+  testType: ASSESSMENT,
   specificStudents: false
 };
 
@@ -115,6 +118,7 @@ class AssignTest extends React.Component {
         this.setState(prevState => ({
           assignment: {
             ...prevState.assignment,
+            testType: COMMON,
             openPolicy: "Open Manually by Teacher"
           }
         }));

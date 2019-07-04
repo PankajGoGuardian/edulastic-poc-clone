@@ -15,6 +15,7 @@ const Header = ({ onEdit, selectedClass }) => (
       <IconManageClass color={white} width={20} height={20} />
       Manage Class / <span>{selectedClass}</span>
     </Title>
+
     <ButtonsWrapper>
       <EditButton onClick={onEdit}>Edit Class</EditButton>
     </ButtonsWrapper>

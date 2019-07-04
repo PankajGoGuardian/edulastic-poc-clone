@@ -9,7 +9,7 @@ import { formatTime } from "../utils";
 const {
   studentAssignmentConstants: { assignmentStatus }
 } = testActivityConstants;
-const { ASSESSMENT } = test.type;
+const { ASSESSMENT, PRACTICE } = test.type;
 
 const AssessmentDetails = ({
   title,
@@ -35,7 +35,13 @@ const AssessmentDetails = ({
     <CardDetails>
       <CardTitle>
         {title}
-        <TestType type={testType}>{testType === ASSESSMENT ? t("common.assessment") : t("common.practice")}</TestType>
+        <TestType type={testType}>
+          {testType === PRACTICE
+            ? t("common.practice")
+            : testType === ASSESSMENT
+            ? t("common.assessment")
+            : t("common.common")}
+        </TestType>
       </CardTitle>
       <CardDate>
         <Icon type={theme.assignment.cardTimeIconType} />
@@ -235,7 +241,7 @@ const TestType = styled.span`
   font-family: ${props => props.theme.assignment.cardTitleFontFamily};
   width: 20px;
   height: 20px;
-  background: ${props => (props.type === ASSESSMENT ? greenThird : red)};
+  background: ${props => (props.type === PRACTICE ? red : greenThird)};
   text-align: center;
   color: ${white};
   border-radius: 50%;

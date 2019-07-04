@@ -121,7 +121,8 @@ const initialState = {
   entity: {},
   submitted: false,
   added: false,
-  selectedSubject: ""
+  selectedSubject: "",
+  dataLoaded: false
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -152,6 +153,7 @@ const createClassFailed = (state, { payload }) => {
 const setClass = (state, { payload }) => {
   state.entity = payload;
   state.selectedStudent = [];
+  state.dataLoaded = true;
 };
 
 const setFetchStudents = state => {
@@ -275,7 +277,9 @@ function* fetchStudentsByClassId({ payload }) {
   try {
     const { classId } = payload;
     const result = yield call(enrollmentApi.fetch, classId);
-    yield put(fetchStudentsByIdSuccessAction(result));
+    const { group, students } = result;
+    yield put(fetchStudentsByIdSuccessAction(students));
+    yield put(setClassAction(group));
   } catch (error) {
     yield put(fetchStudentsByIdErrorAction(error));
   }

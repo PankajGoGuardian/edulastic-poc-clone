@@ -155,7 +155,7 @@ export const MainContainer = styled.div`
   }
   .ant-table-thead > tr > th.ant-table-selection-column,
   .ant-table-tbody > tr > td.ant-table-selection-column {
-    width: 25px;
-    max-width: 25px;
+    width: 50px;
+    max-width: 50px;
   }
 `;

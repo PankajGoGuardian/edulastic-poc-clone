@@ -7,6 +7,7 @@ import author_assignments from "./assignments";
 import { reportAssignmentsReducer } from "../../Reports/assignmentsDucks";
 import { reportSARFilterDataReducer } from "../../Reports/subPages/singleAssessmentReport/common/filterDataDucks";
 import { reportAssessmentSummaryReducer } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
+import { reportReducer } from "../../Reports/ducks";
 import { reportResponseFrequencyReducer } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
 import { reportPeerPerformanceReducer } from "../../Reports/subPages/singleAssessmentReport/PeerPerformance/ducks";
 import { reportQuestionAnalysisReducer } from "../../Reports/subPages/singleAssessmentReport/QuestionAnalysis/ducks";
@@ -69,6 +70,7 @@ const authorReducers = {
   reportAssignmentsReducer,
   reportSARFilterDataReducer,
   reportAssessmentSummaryReducer,
+  reportReducer,
   reportResponseFrequencyReducer,
   reportPeerPerformanceReducer,
   reportPerformanceByStudentsReducer,
@@ -95,7 +97,7 @@ const authorReducers = {
   performanceBandReducer,
   standardsProficiencyReducer,
   schoolsReducer,
-  reportPerformanceByStandards: reportPerformanceByStandardsReducer,
+  reportPerformanceByStandardsReducer,
   studentReducer,
   teacherReducer,
   districtAdminReducer,

@@ -8,6 +8,7 @@ import { StyledTable } from "../styled";
 import { getStandardDeviation, getVariance } from "../../../../../common/util";
 import { StyledH3 } from "../../../../../common/styled";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
+import PrintableTable from "../../../../../common/components/tables/PrintableTable";
 
 import columnData from "../../static/json/tableColumns.json";
 
@@ -177,7 +178,13 @@ export const AssessmentStatisticTable = props => {
           ""
         )}
       </Row>
-      <StyledTable columns={table.columns} dataSource={table.tableData} rowKey={"groupId"} />
+      <PrintableTable
+        isPrinting={props.isPrinting}
+        component={StyledTable}
+        columns={table.columns}
+        dataSource={table.tableData}
+        rowKey={"groupId"}
+      />
     </div>
   );
 };

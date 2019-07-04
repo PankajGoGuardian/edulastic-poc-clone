@@ -299,7 +299,6 @@ const ActionContainer = ({
 
 ActionContainer.propTypes = {
   addStudentRequest: PropTypes.func.isRequired,
-  printPreview: PropTypes.func.isRequired,
   selectedClass: PropTypes.object.isRequired,
   orgData: PropTypes.object.isRequired,
   submitted: PropTypes.bool.isRequired,

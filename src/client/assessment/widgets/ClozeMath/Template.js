@@ -320,7 +320,7 @@ class Template extends Component {
           value={item.template}
           additionalToolbarOptions={["responseBoxes"]}
           toolbarId="template-markup-area"
-          theme="border"
+          border="border"
         />
       </Widget>
     );

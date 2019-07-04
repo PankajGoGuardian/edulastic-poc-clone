@@ -21,6 +21,7 @@ import { getListOfStudents } from "../../utils";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
 import * as moment from "moment";
+import TestTypeSelector from "./TestTypeSelector";
 
 class SimpleOptions extends React.Component {
   static propTypes = {
@@ -176,6 +177,15 @@ class SimpleOptions extends React.Component {
               </StyledSelect>
             </Col>
           </Row>
+
+          <TestTypeSelector
+            isAssignTest
+            userRole={userRole}
+            testType={testSettings.testType}
+            generateReport={testSettings.generateReport}
+            onAssignmentTypeChange={changeField("testType")}
+            onGenerateReportFieldChange={changeField("generateReport")}
+          />
 
           <StyledRowButton gutter={16}>
             <Col>

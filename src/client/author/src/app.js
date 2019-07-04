@@ -39,7 +39,12 @@ const PickUpQuestionType = lazy(() => import("../PickUpQuestionType"));
 const CurriculumContainer = lazy(() => import("../CurriculumSequence"));
 const Reports = lazy(() => import("../Reports"));
 const StandardsBasedReport = lazy(() => import("../StandardsBasedReport"));
+
 const ManageClass = lazy(() => import("../ManageClass"));
+const ClassDetails = lazy(() => import("../ManageClass/components/ClassDetails"));
+const ClassEdit = lazy(() => import("../ManageClass/components/ClassEdit"));
+const ClassCreate = lazy(() => import("../ManageClass/components/ClassCreate"));
+
 const DistrictProfile = lazy(() => import("../DistrictProfile"));
 const TestSetting = lazy(() => import("../TestSetting"));
 const Term = lazy(() => import("../Term"));
@@ -106,7 +111,12 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   <Route exact path={`${match.url}/summary/:assignmentId/:classId`} component={SummaryBoard} />
                   <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
                   <Route exact path={`${match.url}/printpreview/:testActivityId`} component={PrintPreview} />
+
+                  <Route exact path={`${match.url}/manageClass/createClass`} component={ClassCreate} />
                   <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
+                  <Route exact path={`${match.url}/manageClass/:classId`} component={ClassDetails} />
+                  <Route exact path={`${match.url}/manageClass/:classId/Edit`} component={ClassEdit} />
+
                   <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
                   <Route
                     exact

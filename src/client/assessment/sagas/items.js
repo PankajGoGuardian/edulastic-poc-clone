@@ -86,6 +86,8 @@ function* saveUserResponse({ payload }) {
     const currentItem = items.length && items[itemIndex];
 
     const questions = getQuestionIds(currentItem);
+    const bookmarked = !!(yield select(state => state.assessmentBookmarks[currentItem._id]));
+
     const itemAnswers = {};
     const shuffles = {};
     let timesSpent = {};
@@ -107,7 +109,8 @@ function* saveUserResponse({ payload }) {
       testActivityId: userTestActivityId,
       groupId,
       timesSpent,
-      shuffledOptions: shuffles
+      shuffledOptions: shuffles,
+      bookmarked
     };
     if (userWork) activity.userWork = userWork;
 
@@ -124,6 +127,7 @@ function* loadUserResponse({ payload }) {
     const items = yield select(state => state.test && state.test.items);
     const item = items[itemIndex];
     const { answers } = yield call(itemsApi.getUserResponse, item._id);
+    console.log("answers are", answers);
     yield put({
       type: LOAD_ANSWERS,
       payload: {

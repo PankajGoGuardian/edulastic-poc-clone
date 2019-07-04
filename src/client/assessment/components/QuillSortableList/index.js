@@ -12,6 +12,7 @@ const QuillSortableList = SortableContainer(
     firstFocus,
     onRemove,
     onChange,
+    toolbarSize,
     fontSize = 14,
     prefix = "prefix",
     columns = 1,
@@ -35,6 +36,7 @@ const QuillSortableList = SortableContainer(
           columns={columns}
           onRemove={() => onRemove(index)}
           onChange={val => (typeof onChange === "function" ? onChange(index, val) : () => {})}
+          toolbarSize={toolbarSize}
         />
       ))}
     </div>

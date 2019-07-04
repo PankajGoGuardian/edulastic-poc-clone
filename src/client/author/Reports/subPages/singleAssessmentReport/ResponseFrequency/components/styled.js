@@ -8,6 +8,26 @@ export const StyledCard = Card;
 export const StyledContainer = styled(Row)`
   flex-flow: column nowrap;
 
+  @media print {
+    .recharts-wrapper {
+      transform: translate(-150px);
+    }
+
+    .recharts-responsive-container {
+      transform: scale(0.8);
+    }
+
+    .ant-card-body {
+      padding: 0px;
+      box-shadow: none;
+    }
+
+    .ant-card {
+      box-shadow: none !important;
+      margin: 0px !important;
+    }
+  }
+
   .question-area {
     min-height: 110px;
     padding: 10px;
@@ -45,6 +65,22 @@ export const StyledContainer = styled(Row)`
 `;
 
 export const StyledTable = styled(Table)`
+  @media print {
+    table,
+    th,
+    td {
+      border: 1px solid #e6e6e6;
+      font-size: 9px;
+    }
+
+    th.ant-table-column-has-sorters {
+      padding-top: 13px !important;
+    }
+
+    .ant-table-column-sorter {
+      display: none !important;
+    }
+  }
   .ant-table-body {
     table {
       thead {
@@ -72,6 +108,7 @@ export const StyledTable = styled(Table)`
               justify-content: flex-end;
               align-items: center;
               padding: 10px;
+              -webkit-print-color-adjust: exact;
             }
           }
 
@@ -81,11 +118,21 @@ export const StyledTable = styled(Table)`
         }
       }
     }
+
+    @media print {
+      .ant-row-flex {
+        justify-content: flex-end;
+      }
+    }
   }
 `;
 
 export const StyledResponseTagContainer = styled(Col)`
   flex: 1 1 100px;
+  @media print {
+    margin-bottom: 10px;
+    flex: none;
+  }
 `;
 
 export const StyledSimpleBarChartContainer = styled(StyledCard)`

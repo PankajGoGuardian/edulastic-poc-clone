@@ -11,7 +11,7 @@ import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, InputNumber, Select, Upload, message, Dropdown } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
-import { cloneDeep, isUndefined } from "lodash";
+import { cloneDeep, isUndefined, maxBy } from "lodash";
 
 import { PaddingDiv, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -411,6 +411,15 @@ class ComposeQuestion extends Component {
     return isUndefined(imageOptions.x) ? x : imageOptions.x || 0;
   };
 
+  getResponseBoxMaxValues = () => {
+    const {
+      item: { responses }
+    } = this.props;
+    const maxTop = maxBy(responses, res => res.top);
+    const maxLeft = maxBy(responses, res => res.left);
+    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+  };
+
   render() {
     const { t, item, setQuestionData } = this.props;
     const { isEditableResizeMove, isAnnotationBelow } = this.state;
@@ -468,7 +477,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.cloze.imageDragDrop.thisisstem")}
           onChange={this.onChangeQuestion}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
         <PaddingDiv top={30} />
         <FormContainer>

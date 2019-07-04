@@ -120,7 +120,7 @@ class GraphQuadrants extends Component {
             value={graphData.stimulus}
             firstFocus={graphData.firstMount}
             placeholder={t("component.graphing.question.enteryourquestion")}
-            theme="border"
+            border="border"
           />
         </QuestionSection>
         <QuestionSection

@@ -45,6 +45,9 @@ import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
+import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
+import { clearAnswersAction } from "../../../src/actions/answers";
+import { changePreviewTabAction } from "../../../ItemAdd/ducks";
 
 const InputGroup = Input.Group;
 const testItemStatusConstants = {
@@ -62,7 +65,17 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    const { getItemDetailById, match, modalItemId, setRedirectTest, isTestFlow, history, t } = this.props;
+    const {
+      getItemDetailById,
+      match,
+      modalItemId,
+      setRedirectTest,
+      isTestFlow,
+      history,
+      t,
+      clearAnswers,
+      changePreviewTab
+    } = this.props;
     const { itemId, testId } = match.params;
 
     getItemDetailById(modalItemId || match.params.id || match.params.itemId, { data: true, validation: true });
@@ -71,21 +84,8 @@ class Container extends Component {
       setRedirectTest(match.params.testId);
     }
 
-    if (isTestFlow) {
-      getItemDetailById(itemId, { data: true, validation: true });
-      history.replace({
-        pathname: isTestFlow
-          ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
-          : `/author/items/${match.params.id}/pickup-questiontype`,
-        state: {
-          backText: t("component.itemDetail.backText"),
-          backUrl: isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : "/author/items",
-          rowIndex: 0,
-          tabIndex: 0,
-          testItemId: isTestFlow ? itemId : match.params._id
-        }
-      });
-    }
+    clearAnswers();
+    changePreviewTab(CLEAR);
   }
 
   componentDidUpdate(prevProps) {
@@ -99,7 +99,6 @@ class Container extends Component {
     }
 
     if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
-      getItemDetailById(itemId, { data: true, validation: true });
       history.replace({
         pathname: isTestFlow
           ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
@@ -564,7 +563,9 @@ Container.propTypes = {
   redirectOnEmptyItem: PropTypes.bool,
   setItemLevelScore: PropTypes.func,
   setItemLevelScoring: PropTypes.func,
-  isTestFlow: PropTypes.bool
+  isTestFlow: PropTypes.bool,
+  clearAnswers: PropTypes.func.isRequired,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 Container.defaultProps = {
@@ -618,7 +619,9 @@ const enhance = compose(
       toggleCreateItemModal: toggleCreateItemModalAction,
       toggleSideBar: toggleSideBarAction,
       setItemLevelScoring: setItemLevelScoringAction,
-      setItemLevelScore: setItemLevelScoreAction
+      setItemLevelScore: setItemLevelScoreAction,
+      clearAnswers: clearAnswersAction,
+      changePreviewTab: changePreviewTabAction
     }
   )
 );

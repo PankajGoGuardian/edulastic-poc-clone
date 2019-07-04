@@ -6,7 +6,7 @@ import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { cloneDeep, isUndefined } from "lodash";
+import { cloneDeep, isUndefined, maxBy } from "lodash";
 import produce from "immer";
 import { themeColor } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
@@ -407,6 +407,15 @@ class ComposeQuestion extends Component {
     return isUndefined(imageOptions.x) ? x : imageOptions.x || 0;
   };
 
+  getResponseBoxMaxValues = () => {
+    const {
+      item: { responses }
+    } = this.props;
+    const maxTop = maxBy(responses, res => res.top);
+    const maxLeft = maxBy(responses, res => res.left);
+    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+  };
+
   render() {
     const { t, item, theme, setQuestionData } = this.props;
     const { background, imageAlterText, isEditAriaLabels, responses, keepAspectRatio } = item;
@@ -459,7 +468,7 @@ class ComposeQuestion extends Component {
               placeholder={t("component.cloze.imageDropDown.thisisstem")}
               onChange={this.onChangeQuestion}
               value={item.stimulus}
-              theme="border"
+              border="border"
             />
             <PaddingDiv />
             <FormContainer>

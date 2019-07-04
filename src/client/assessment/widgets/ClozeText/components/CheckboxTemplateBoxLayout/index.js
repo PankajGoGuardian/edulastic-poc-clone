@@ -70,8 +70,15 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = btnStyle.heightpx;
   }
 
-  btnStyle.width =
-    (responsecontainerindividuals[index] && responsecontainerindividuals[index].widthpx) || uiStyle.widthpx;
+  const response = find(responsecontainerindividuals, resp => resp.index === index);
+  if (uiStyle.globalSettings) {
+    btnStyle.width =
+      userSelections[index] && userSelections[index].value
+        ? (response && response.previewWidth) || uiStyle.widthpx
+        : uiStyle.widthpx;
+  } else {
+    btnStyle.width = (response && response.widthpx) || uiStyle.widthpx || "auto";
+  }
 
   return (
     <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>

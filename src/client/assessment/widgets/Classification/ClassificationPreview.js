@@ -90,7 +90,9 @@ const ClassificationPreview = ({
 
   const itemValidation = item.validation || {};
   let validArray = itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
+  let altArrays = itemValidation && itemValidation.alt_responses;
   validArray = validArray || [];
+  altArrays = altArrays ? altArrays.map(arr => arr.value || []) : [];
   let groupArrays = [];
 
   possible_response_groups.forEach(o => {
@@ -201,6 +203,7 @@ const ClassificationPreview = ({
   );
 
   const arrayOfCols = transformArray(validArray);
+  const arrayOfAltCols = altArrays.map(altArray => transformArray(altArray));
 
   const listPosition = get(item, "ui_style.possibility_list_position", "bottom");
   const rowHeader = get(item, "ui_style.row_header", null);
@@ -239,52 +242,33 @@ const ClassificationPreview = ({
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
         <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl} isBgImageMaximized={isBgImageMaximized}>
-          <table style={{ width: "100%", flexGrow: 2 }}>
-            <thead>
-              {rowHeader && (
-                <tr>
-                  <th data-cy="rowHeader" colSpan={2} dangerouslySetInnerHTML={{ __html: rowHeader }} />
-                </tr>
-              )}
-              <tr>
-                {rowTitles.length > 0 && <th />}
-                {colTitles.slice(0, colCount).map((ite, ind) => (
-                  <th key={ind}>
-                    <CenteredText dangerouslySetInnerHTML={{ __html: ite }} />
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {boxes.map(
-                (n, ind) =>
-                  arrayOfRows.has(ind) && (
-                    <TableRow
-                      key={ind}
-                      isBackgroundImageTransparent={transparent_background_image}
-                      isTransparent={transparent_possible_responses}
-                      startIndex={ind}
-                      width={get(item, "ui_style.row_titles_width", "100%")}
-                      height={get(item, "ui_style.row_min_height", "150px")}
-                      colCount={colCount}
-                      arrayOfRows={arrayOfRows}
-                      rowTitles={rowTitles}
-                      drop={drop}
-                      dragHandle={show_drag_handle}
-                      answers={answers}
-                      validArray={evaluation}
-                      preview={preview}
-                      possible_responses={possible_responses}
-                      onDrop={onDrop}
-                      isResizable={view === EDIT}
-                      item={item}
-                      disableResponse={disableResponse}
-                      changePreviewTab={changePreviewTab}
-                    />
-                  )
-              )}
-            </tbody>
-          </table>
+          {boxes.map(
+            (n, ind) =>
+              arrayOfRows.has(ind) && (
+                <TableRow
+                  colTitles={colTitles}
+                  key={ind}
+                  isBackgroundImageTransparent={transparent_background_image}
+                  isTransparent={transparent_possible_responses}
+                  startIndex={ind}
+                  width={get(item, "ui_style.row_titles_width", "100%")}
+                  height={get(item, "ui_style.row_min_height", "150px")}
+                  colCount={colCount}
+                  arrayOfRows={arrayOfRows}
+                  rowTitles={rowTitles}
+                  drop={drop}
+                  dragHandle={show_drag_handle}
+                  answers={answers}
+                  validArray={evaluation}
+                  preview={preview}
+                  possible_responses={possible_responses}
+                  onDrop={onDrop}
+                  isResizable={view === EDIT}
+                  item={item}
+                  disableResponse={disableResponse}
+                />
+              )
+          )}
         </TableWrapper>
         {!disableResponse && (
           <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
@@ -421,6 +405,35 @@ const ClassificationPreview = ({
                 </div>
               ))}
             </FlexContainer>
+          ))}
+          {arrayOfAltCols.map((arrays, ind) => (
+            <Fragment key={ind}>
+              <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>{`${t(
+                "component.classification.alternateAnswer"
+              )} ${ind + 1}`}</Subtitle>
+              {arrays.map((arr, i) => (
+                <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+                  <Subtitle style={styles.correctAnswersMargins}>
+                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+                  </Subtitle>
+                  {arr.map(index => (
+                    <div style={styles.itemContainerStyle} key={index}>
+                      <IndexBox preview={preview}>{index + 1}</IndexBox>
+                      <MathFormulaDisplay
+                        style={getStyles(
+                          false,
+                          false,
+                          theme.widgets.classification.boxBgColor,
+                          theme.widgets.classification.boxBorderColor,
+                          styles.previewItemStyle
+                        )}
+                        dangerouslySetInnerHTML={{ __html: posResp[index] }}
+                      />
+                    </div>
+                  ))}
+                </FlexContainer>
+              ))}
+            </Fragment>
           ))}
         </CorrectAnswersContainer>
       )}

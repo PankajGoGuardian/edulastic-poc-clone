@@ -1,5 +1,5 @@
 import { CONSTANT } from "../config";
-import QuillInput from "./QuillInput";
+import FroalaEditorInput from "./FroalaEditorInput";
 import { getLabelPositionParameters } from "../settings";
 
 const jxgType = 99;
@@ -48,7 +48,7 @@ function onHandler() {
       y: coords.usrCoords[2]
     });
 
-    QuillInput(newElement, board).setFocus();
+    FroalaEditorInput(newElement, board).setFocus();
   };
 }
 

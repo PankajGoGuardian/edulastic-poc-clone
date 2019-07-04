@@ -4,6 +4,8 @@ import { reportsApi, testsApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { getReportByIdSelector } from "../sharedDucks/ReportsModule/ducks";
 import { push } from "react-router-redux";
+import { SET_ANSWER, LOAD_ANSWERS } from "../../assessment/constants/actions";
+import { replaceTestItemsAction } from "../../author/TestPage/ducks";
 // types
 export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
 
@@ -27,12 +29,26 @@ function* loadTestActivityReport({ payload }) {
     }
 
     const [test, reports] = yield all([
-      call(testsApi.getById, data.testId, { data: true }),
+      call(testsApi.getById, data.testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
-
+    yield put(replaceTestItemsAction(test.testItems));
     yield put(setFeedbackReportAction(reports.questionActivities));
     yield put(setTestItemsAction(test.testItems));
+
+    const { questionActivities = [] } = reports || {};
+    let allAnswers = {};
+    questionActivities.forEach(item => {
+      allAnswers = {
+        ...allAnswers,
+        [item.qid]: item.userResponse
+      };
+    });
+    // load previous responses
+    yield put({
+      type: LOAD_ANSWERS,
+      payload: allAnswers
+    });
   } catch (e) {
     console.log(e);
   }

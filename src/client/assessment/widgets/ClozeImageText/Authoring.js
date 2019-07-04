@@ -13,7 +13,7 @@ import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message, Dropdown } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
-import { cloneDeep, isUndefined } from "lodash";
+import { cloneDeep, isUndefined, maxBy } from "lodash";
 
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { PaddingDiv, EduButton } from "@edulastic/common";
@@ -437,6 +437,15 @@ class Authoring extends Component {
     this.canvasRef.current.style.height = `${maxHeight < _imageH + y ? _imageH + y : maxHeight}px`;
   };
 
+  getResponseBoxMaxValues = () => {
+    const {
+      item: { responses }
+    } = this.props;
+    const maxTop = maxBy(responses, res => res.top);
+    const maxLeft = maxBy(responses, res => res.left);
+    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+  };
+
   render() {
     const { t, item, theme, setQuestionData } = this.props;
     const { background, imageAlterText, isEditAriaLabels, responses, imageOptions = {}, keepAspectRatio } = item;
@@ -470,6 +479,16 @@ class Authoring extends Component {
       canvasHeight = imageTop + imageHeight;
     }
 
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+
+    if (canvasHeight < responseBoxMaxTop) {
+      canvasHeight = responseBoxMaxTop + 20;
+    }
+
+    if (canvasWidth < responseBoxMaxLeft) {
+      canvasWidth = responseBoxMaxLeft;
+    }
+
     if (this.imageRndRef.current) {
       this.imageRndRef.current.updateSize({ width: imageWidth, height: imageHeight });
     }
@@ -486,7 +505,7 @@ class Authoring extends Component {
               placeholder={t("component.cloze.imageText.thisisstem")}
               onChange={this.onChangeQuestion}
               value={item.stimulus}
-              theme="border"
+              border="border"
             />
             <PaddingDiv />
             <FormContainer data-cy="top-toolbar-area">

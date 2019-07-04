@@ -6,6 +6,7 @@ import userWork from "./userWork";
 import questions from "./questions";
 import shuffledOptions from "./shuffledOptions";
 import graphTools from "./graphTools";
+import bookmarks from "../sharedDucks/bookmark";
 
 const assessmentReducers = {
   userWork,
@@ -15,7 +16,8 @@ const assessmentReducers = {
   evaluation,
   assessmentplayerQuestions: questions,
   shuffledOptions,
-  graphTools
+  graphTools,
+  assessmentBookmarks: bookmarks
 };
 
 export default assessmentReducers;

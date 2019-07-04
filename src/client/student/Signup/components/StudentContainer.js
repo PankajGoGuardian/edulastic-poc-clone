@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -19,10 +19,16 @@ import {
 import { connect } from "react-redux";
 import { signupAction, googleLoginAction, msoLoginAction } from "../../Login/ducks";
 import {
+  getPartnerKeyFromUrl,
+  validatePartnerUrl,
+  getPartnerLoginUrl,
+  getPartnerTeacherSignupUrl,
+  getPartnerDASignupUrl,
   getDistrictLoginUrl,
   getDistrictTeacherSignupUrl,
   isDistrictPolicyAllowed
 } from "../../../common/utils/helpers";
+import { Partners } from "../../../common/utils/static/partnerData";
 
 import studentBg from "../../assets/bg-student.png";
 import hashIcon from "../../assets/hashtag-icon.svg";
@@ -206,11 +212,21 @@ class StudentSignup extends React.Component {
     const { t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName } = this.props;
     const { method } = this.state;
 
+    const partnerKey = getPartnerKeyFromUrl(location.pathname);
+    const partner = Partners[partnerKey];
+
     return (
       <div>
+        {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
         <RegistrationWrapper
           image={
-            generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : isSignupUsingDaURL ? "" : studentBg
+            generalSettings && isSignupUsingDaURL
+              ? generalSettings.pageBackground
+              : isSignupUsingDaURL
+              ? ""
+              : partner.keyName === "login"
+              ? studentBg
+              : partner.background
           }
         >
           <RegistrationHeader type="flex" align="middle">
@@ -219,7 +235,7 @@ class StudentSignup extends React.Component {
             </Col>
             <Col span={12} align="right">
               <span>{t("component.signup.alreadyhaveanaccount")}</span>
-              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : "/login"}>
+              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
                 {t("common.signinbtn")}
               </Link>
             </Col>
@@ -234,7 +250,13 @@ class StudentSignup extends React.Component {
                   {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
                   !isSignupUsingDaURL ? (
                     <LinkDiv>
-                      <Link to={isSignupUsingDaURL ? getDistrictTeacherSignupUrl(districtShortName) : "/signup"}>
+                      <Link
+                        to={
+                          isSignupUsingDaURL
+                            ? getDistrictTeacherSignupUrl(districtShortName)
+                            : getPartnerTeacherSignupUrl(partner)
+                        }
+                      >
                         {t("component.signup.signupasteacher")}
                       </Link>
                     </LinkDiv>
@@ -242,7 +264,7 @@ class StudentSignup extends React.Component {
 
                   {!isSignupUsingDaURL ? (
                     <LinkDiv>
-                      <Link to="/adminsignup">{t("component.signup.signupasadmin")}</Link>
+                      <Link to={getPartnerDASignupUrl(partner)}>{t("component.signup.signupasadmin")}</Link>
                     </LinkDiv>
                   ) : null}
                 </BannerText>

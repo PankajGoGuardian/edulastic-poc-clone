@@ -66,6 +66,10 @@ const HeaderContainer = styled.div`
     padding-top: ${props => (props.type === "standard" ? "121px" : "62px")};
     margin-bottom: ${props => (props.type === "standard" ? "26px" : "33px")};
   }
+
+  @media print {
+    padding-top: 0px;
+  }
 `;
 
 const Container = styled.div`

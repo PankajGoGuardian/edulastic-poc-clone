@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { get } from "lodash";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Tooltip } from "antd";
 import { find } from "lodash";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
+
 import { TableWrapper, ClassListTable } from "./styled";
+import { fetchStudentsByIdAction } from "../../ducks";
 
 const { allGrades, allSubjects } = selectsData;
 
-const ClassList = ({ groups, archiveGroups, setEntity }) => {
+const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
   const findGrade = _grade => find(allGrades, item => item.value === _grade) || { text: _grade };
   // eslint-disable-next-line max-len
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
@@ -85,9 +91,11 @@ const ClassList = ({ groups, archiveGroups, setEntity }) => {
 
   const onRow = record => ({
     onClick: () => {
+      const { _id: classId } = record;
       if (window.getSelection().toString() === "") {
-        setEntity(record);
+        loadStudents({ classId });
       }
+      history.push(`/author/manageClass/${classId}`);
     }
   });
 
@@ -100,7 +108,19 @@ const ClassList = ({ groups, archiveGroups, setEntity }) => {
 };
 
 ClassList.propTypes = {
-  setEntity: PropTypes.func.isRequired,
-  groups: PropTypes.array.isRequired
+  groups: PropTypes.array.isRequired,
+  archiveGroups: PropTypes.array.isRequired,
+  loadStudents: PropTypes.func.isRequired
 };
-export default ClassList;
+
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({}),
+    {
+      loadStudents: fetchStudentsByIdAction
+    }
+  )
+);
+
+export default enhance(ClassList);

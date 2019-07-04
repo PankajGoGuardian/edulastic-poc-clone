@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
-import { isUndefined, get } from "lodash";
+import { isUndefined, get, maxBy } from "lodash";
 import { helpers, Stimulus } from "@edulastic/common";
 
 import { clozeImage } from "@edulastic/constants";
@@ -117,6 +117,13 @@ class Display extends Component {
     return maxHeight;
   };
 
+  getResponseBoxMaxValues = () => {
+    const { responseContainers } = this.props;
+    const maxTop = maxBy(responseContainers, response => response.top);
+    const maxLeft = maxBy(responseContainers, response => response.left);
+    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+  };
+
   render() {
     const {
       question,
@@ -154,8 +161,18 @@ class Display extends Component {
 
     const imageWidth = this.getWidth();
     const imageHeight = this.getHeight();
-    const canvasHeight = imageHeight + (imageOptions.y || 0);
-    const canvasWidth = imageWidth + (imageOptions.x || 0);
+    let canvasHeight = imageHeight + (imageOptions.y || 0);
+    let canvasWidth = imageWidth + (imageOptions.x || 0);
+
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+
+    if (canvasHeight < responseBoxMaxTop) {
+      canvasHeight = responseBoxMaxTop + 20;
+    }
+
+    if (canvasWidth < responseBoxMaxLeft) {
+      canvasWidth = responseBoxMaxLeft;
+    }
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
@@ -223,6 +240,7 @@ class Display extends Component {
                   index={dropTargetIndex}
                   disabled={disableResponse}
                   noIndent={responseWidth < 30}
+                  lessPadding={responseWidth <= 35}
                   resprops={{
                     btnStyle: {},
                     item,

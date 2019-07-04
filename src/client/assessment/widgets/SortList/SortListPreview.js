@@ -45,7 +45,7 @@ const SortListPreview = ({
 
   const getItemsFromUserAnswer = () =>
     source.map((sourceItem, i) => {
-      if (!userAnswer.includes(i)) {
+      if (disableResponse || !userAnswer.includes(i)) {
         return sourceItem;
       }
       return null;
@@ -247,7 +247,7 @@ const SortListPreview = ({
       </FlexContainer>
 
       {previewTab === SHOW && inCorrectList.length > 0 && (
-        <ShowCorrect source={source} list={inCorrectList} correctList={valid_response} />
+        <ShowCorrect source={source} list={inCorrectList} altResponses={alt_responses} correctList={valid_response} />
       )}
     </Paper>
   );

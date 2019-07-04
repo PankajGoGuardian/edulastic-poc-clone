@@ -42,8 +42,10 @@ export const getChecks = answer => {
         acc += `${key}=[${fieldVal}]`;
       } else if (key === "syntax") {
         acc += options.argument === undefined ? fieldVal : `${fieldVal}=${options.argument}`;
-      } else {
+      } else if (key === "field") {
         acc += `${fieldVal}`;
+      } else {
+        acc += `${key}`;
       }
       return `${acc},`;
     }, val.method);

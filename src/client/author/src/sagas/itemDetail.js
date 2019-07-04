@@ -1,7 +1,7 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { testItemsApi } from "@edulastic/api";
 import { message } from "antd";
-import { keyBy as _keyBy, omit as _omit } from "lodash";
+import { keyBy as _keyBy, omit as _omit, get } from "lodash";
 
 import {
   RECEIVE_ITEM_DETAIL_REQUEST,
@@ -16,12 +16,11 @@ import { loadQuestionsAction } from "../../sharedDucks/questions";
 function* receiveItemSaga({ payload }) {
   try {
     const data = yield call(testItemsApi.getById, payload.id, payload.params);
-    let questions = (data.data && data.data.questions) || [];
+    let questions = [...get(data, "data.questions", []), ...get(data, "data.resources", [])] || [];
     questions = _keyBy(questions, "id");
-    const item = _omit(data, "data");
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
-      payload: item
+      payload: data
     });
     yield put(loadQuestionsAction(questions));
   } catch (err) {

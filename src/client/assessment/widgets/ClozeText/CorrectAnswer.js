@@ -58,7 +58,9 @@ class CorrectAnswer extends Component {
       hasGroupResponses,
       configureOptions,
       uiStyle,
-      responseIds
+      responseIds,
+      view,
+      previewTab
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -78,7 +80,7 @@ class CorrectAnswer extends Component {
           </CorrectAnswerHeader>
         )}
         <Display
-          preview
+          preview={false}
           setAnswers
           dragHandler
           options={options}
@@ -91,6 +93,8 @@ class CorrectAnswer extends Component {
           hasGroupResponses={hasGroupResponses}
           responseIds={responseIds}
           showIndex
+          view={view}
+          previewTab={previewTab}
         />
       </div>
     );

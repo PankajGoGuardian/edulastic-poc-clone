@@ -34,7 +34,7 @@ const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines, set
       {lines.map((dot, index) => (
         <Fragment>
           {displayAxisLabel && (
-            <Text textAnchor="middle" x={getConstantX(index)} y={height}>
+            <Text textAnchor="middle" x={getConstantX(index)} y={height + 10}>
               {getParts(index).map((text, ind) => (
                 <tspan dy="1.2em" x={getConstantX(index)} key={ind}>
                   {text}
@@ -45,9 +45,9 @@ const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines, set
           {displayGridlines && (
             <Line
               x1={getConstantX(index)}
-              y1={margin / 4}
+              y1={margin / 4 + 15}
               x2={getConstantX(index)}
-              y2={height - margin / 2}
+              y2={height - margin / 2 + 15}
               strokeWidth={1}
             />
           )}

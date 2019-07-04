@@ -1009,7 +1009,7 @@ textinput::before {
   display: flex;
   align-items: center;
   border-radius: 5px;
-  z-index: 100;
+  z-index: 9;
 }
 
 .imagelabeldragdrop-droppable .index-box {
@@ -1305,6 +1305,7 @@ span.token.active-word {
   display: flex;
   align-items: center;
   white-space: normal;
+  justify-content: space-between;
 }
 
 .ant-select-dropdown {

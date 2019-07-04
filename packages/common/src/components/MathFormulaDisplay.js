@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { desktopWidth } from "@edulastic/colors";
-import { previewFontSize, previewFontSizeMobile, previewFontWeight } from "@edulastic/fonts";
+import { fonts } from "@edulastic/constants";
 
 import { withMathFormula } from "../HOC/withMathFormula";
 
@@ -8,11 +8,11 @@ const MathFormulaDisplay = withMathFormula(styled.div.attrs({
   className: "math-formula-display"
 })`
   width: 100%;
-  font-size: ${previewFontSize};
-  font-weight: ${previewFontWeight};
+  font-size: ${fonts.previewFontSize};
+  font-weight: ${fonts.previewFontWeight};
 
   @media (max-width: ${desktopWidth}) {
-    font-size: ${previewFontSizeMobile};
+    font-size: ${fonts.previewFontSizeMobile};
   }
 
   img {

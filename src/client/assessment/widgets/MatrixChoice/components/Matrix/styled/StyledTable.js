@@ -1,22 +1,25 @@
 import styled from "styled-components";
 import { Table } from "antd";
-import { mobileWidth } from "@edulastic/colors";
-import { previewFontSize, previewFontWeight } from "@edulastic/fonts";
+import { mobileWidth, desktopWidth } from "@edulastic/colors";
+import { fonts } from "@edulastic/constants";
 
 export const StyledTable = styled(Table)`
   table {
     width: 100%;
-    font-size: ${previewFontSize || (props => props.fontSize)};
-    font-weight: ${previewFontWeight};
+    font-size: ${fonts.previewFontSize || (props => props.fontSize)};
+    font-weight: ${fonts.previewFontWeight};
     border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
+
     tbody {
       border-collapse: collapse;
     }
+
     thead {
       tr:not(:last-child) > th[colspan] {
         display: none;
       }
     }
+
     tr {
       th {
         text-align: center;
@@ -39,6 +42,10 @@ export const StyledTable = styled(Table)`
       td:nth-of-type(1) div {
         min-width: 50px;
       }
+    }
+
+    @media (max-width: ${desktopWidth}) {
+      font-size: ${fonts.previewFontSizeMobile};
     }
   }
   @media (max-width: ${mobileWidth}) {

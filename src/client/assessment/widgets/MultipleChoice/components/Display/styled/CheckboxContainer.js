@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { secondaryTextColor, desktopWidth } from "@edulastic/colors";
-import { previewFontSize, previewFontSizeMobile, previewFontWeight } from "@edulastic/fonts";
+import { fonts } from "@edulastic/constants";
 
 const params = {
   width: 0,
@@ -45,12 +45,12 @@ export const CheckboxContainer = styled.div`
       align-self: flex-start;
       
       + div {
-        font-size: ${previewFontSize};
-        font-weight: ${previewFontWeight || params.fontWeight};
+        font-size: ${fonts.previewFontSize};
+        font-weight: ${fonts.previewFontWeight || params.fontWeight};
         color: ${secondaryTextColor};
 
         @media (max-width: ${desktopWidth}) {
-          font-size: ${previewFontSizeMobile};
+          font-size: ${fonts.previewFontSizeMobile};
         }
       }
       & input {

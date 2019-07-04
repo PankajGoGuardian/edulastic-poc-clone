@@ -121,9 +121,20 @@ class ChoicesForDropDown extends Component {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
         const prevOption = draft.options[dropDownId][itemIndex];
         draft.options[dropDownId][itemIndex] = e.target.value;
-        draft.ui_style[dropDownId] = draft.ui_style[dropDownId] || {};
-        draft.ui_style[dropDownId].widthpx = Math.min(e.target.value.split("").length * 14, response.maxWidth);
-
+        const splitWidth = Math.max(e.target.value.split("").length * 9, 100);
+        const width = Math.min(splitWidth, 400);
+        const drpdwnIndex = findIndex(draft.response_ids["dropDowns"], drpdwn => drpdwn.id === dropDownId);
+        const ind = findIndex(draft.response_containers, cont => cont.id === dropDownId);
+        if (ind === -1) {
+          draft.response_containers.push({
+            index: draft.response_ids["dropDowns"][drpdwnIndex].index,
+            id: dropDownId,
+            widthpx: width,
+            type: "dropDowns"
+          });
+        } else {
+          draft.response_containers[ind].widthpx = width;
+        }
         if (prevAnswerIndex !== -1) {
           const prevAnswer = prevDropDownAnswers[prevAnswerIndex].value;
           if (prevAnswer && prevAnswer === prevOption) {

@@ -97,6 +97,7 @@ const HighlightImagePreview = ({
   useLayoutEffect(() => {
     if (canvasContainerRef.current) {
       canvas.current.height = canvasContainerRef.current.clientHeight;
+      canvas.current.width = canvasContainerRef.current.clientWidth;
       const context = canvas.current.getContext("2d");
       context.lineWidth = item.line_width || 5;
     }
@@ -175,27 +176,34 @@ const HighlightImagePreview = ({
 
   const renderImage = () =>
     file ? (
-      <div style={{ width: "100%", height: "100%", paddingLeft: width > 650 ? "0px" : "20px" }}>
+      <div style={{ width: "100%", height: "100%" }}>
         <img src={file} alt={altText} style={{ width, height }} />
       </div>
     ) : (
       <div style={{ width, height }} />
     );
   return (
-    <Paper style={{ width: "max-content" }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <div ref={canvasContainerRef}>
-        <CanvasContainer
-          height={"max-content"}
-          width={canvasDimensions.maxWidth}
-          minHeight={canvasDimensions.maxHeight}
-        >
+    <Paper
+      style={{
+        padding: 0
+      }}
+      padding={smallSize}
+      boxShadow={smallSize ? "none" : ""}
+    >
+      <div
+        ref={canvasContainerRef}
+        style={{
+          minHeight: `${canvasDimensions.maxHeight}px`,
+          minWidth: `${canvasDimensions.maxWidth}px`
+        }}
+      >
+        <CanvasContainer>
           <InstructorStimulus width={"100%"}>{item.instructor_stimulus}</InstructorStimulus>
-
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
-          {renderImage()}
+          {item.image && item.image.source && renderImage()}
           <canvas
             onMouseDown={!disableResponse ? onCanvasMouseDown : () => {}}
             onMouseUp={!disableResponse ? onCanvasMouseUp : () => {}}

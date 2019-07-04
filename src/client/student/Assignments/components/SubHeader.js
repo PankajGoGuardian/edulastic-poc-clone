@@ -15,7 +15,7 @@ import { filterSelector, FILTERS } from "../ducks";
 // components
 import Breadcrumb from "../../sharedComponents/Breadcrumb";
 
-const breadcrumbData = [{ title: "ASSIGNMENTS", to: "" }];
+const breadcrumbData = [{ title: "ACTIVE ASSIGNMENTS", to: "" }];
 
 const AssignmentSubHeader = ({ t, setFilter, filter }) => {
   const filterItems = Object.keys(FILTERS);

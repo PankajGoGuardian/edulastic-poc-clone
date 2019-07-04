@@ -38,14 +38,14 @@ const SortListPreview = ({
   userAnswer,
   saveAnswer,
   showQuestionNumber,
-  qIndex,
-  disableResponse
+  disableResponse,
+  changePreviewTab
 }) => {
   const { source = [], instructor_stimulus, stimulus } = item;
 
   const getItemsFromUserAnswer = () =>
     source.map((sourceItem, i) => {
-      if (!userAnswer.includes(i)) {
+      if (disableResponse || !userAnswer.includes(i)) {
         return sourceItem;
       }
       return null;
@@ -200,6 +200,7 @@ const SortListPreview = ({
                 onDrop={onDrop}
                 obj={draggableItem}
                 disableResponse={disableResponse}
+                changePreviewTab={changePreviewTab}
               />
             </DropContainer>
           ))}
@@ -233,6 +234,7 @@ const SortListPreview = ({
                 onDrop={onDrop}
                 obj={disableResponse ? inCorrectList[valid_response[i]] : selectedItem}
                 disableResponse={disableResponse}
+                changePreviewTab={changePreviewTab}
               />
             </DropContainer>
           ))}
@@ -245,7 +247,7 @@ const SortListPreview = ({
       </FlexContainer>
 
       {previewTab === SHOW && inCorrectList.length > 0 && (
-        <ShowCorrect source={source} list={inCorrectList} correctList={valid_response} />
+        <ShowCorrect source={source} list={inCorrectList} altResponses={alt_responses} correctList={valid_response} />
       )}
     </Paper>
   );
@@ -260,7 +262,8 @@ SortListPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 SortListPreview.defaultProps = {

@@ -41,6 +41,7 @@ import ItemsTable from "../common/ItemsTable/ItemsTable";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
 import { getClearSearchState, filterMenuItems } from "../../../ItemList";
 import ModalCreateTestItem from "../ModalCreateTestItem/ModalCreateTestItem";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -49,7 +50,7 @@ class AddItems extends PureComponent {
     receiveTestItems: PropTypes.func.isRequired,
     onAddItems: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    readOnlyMode: PropTypes.bool,
+    isEditable: PropTypes.bool,
     selectedItems: PropTypes.array.isRequired,
     windowWidth: PropTypes.number.isRequired,
     page: PropTypes.number.isRequired,
@@ -121,9 +122,12 @@ class AddItems extends PureComponent {
   };
 
   handleClearSearch = () => {
-    this.setState({
-      search: getClearSearchState()
-    });
+    this.setState(
+      {
+        search: getClearSearchState()
+      },
+      this.handleSearch
+    );
   };
 
   handleCreateNewItem = () => {
@@ -260,7 +264,7 @@ class AddItems extends PureComponent {
       curriculumStandards,
       loading,
       items,
-      readOnlyMode,
+      isEditable,
       onAddItems,
       t,
       createTestItemModalVisible,
@@ -285,34 +289,42 @@ class AddItems extends PureComponent {
             items={filterMenuItems}
             t={t}
           />
+
           <ListItems id="item-list">
-            <ItemsTableContainer>
-              <ItemsMenu>
-                <QuestionsFound>{count} questions found</QuestionsFound>
-                <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={this.handleCreateNewItem}>
-                  <IconPlusCircle color="#00AD50" width={15} height={15} />
-                  <span>Create new Item</span>
-                </StyledButton>
-              </ItemsMenu>
-              <ListWrapper borderRadius="0px" boxShadow="none" padding="0px">
-                {loading && <Spin size="large" />}
-                {!loading && (
-                  <ItemsTable
-                    items={items}
-                    setSelectedTests={this.setSelectedTestItems}
-                    selectedTests={selectedTestItems}
-                    onAddItems={onAddItems}
-                    testId={this.props.match.params.id}
-                    search={search}
-                    showModal={true}
-                    readOnlyMode={readOnlyMode}
-                    addDuplicate={this.handleDuplicateItem}
-                    gotoSummary={gotoSummary}
-                  />
-                )}
-                {!loading && this.renderPagination()}
-              </ListWrapper>
-            </ItemsTableContainer>
+            <PerfectScrollbar>
+              <ItemsTableContainer>
+                <ItemsMenu>
+                  <QuestionsFound>{count} questions found</QuestionsFound>
+                  <StyledButton
+                    data-cy="createNewItem"
+                    type="secondary"
+                    size="large"
+                    onClick={this.handleCreateNewItem}
+                  >
+                    <IconPlusCircle color="#00AD50" width={15} height={15} />
+                    <span>Create new Item</span>
+                  </StyledButton>
+                </ItemsMenu>
+                <ListWrapper borderRadius="0px" boxShadow="none" padding="0px">
+                  {loading && <Spin size="large" />}
+                  {!loading && (
+                    <ItemsTable
+                      items={items}
+                      setSelectedTests={this.setSelectedTestItems}
+                      selectedTests={selectedTestItems}
+                      onAddItems={onAddItems}
+                      testId={this.props.match.params.id}
+                      search={search}
+                      showModal={true}
+                      isEditable={isEditable}
+                      addDuplicate={this.handleDuplicateItem}
+                      gotoSummary={gotoSummary}
+                    />
+                  )}
+                  {!loading && this.renderPagination()}
+                </ListWrapper>
+              </ItemsTableContainer>
+            </PerfectScrollbar>
           </ListItems>
         </MainList>
         {createTestItemModalVisible && (

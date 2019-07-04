@@ -27,6 +27,7 @@ export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
 export const SINGUP_SUCCESS = "[auth] signup success";
 export const FETCH_USER = "[auth] fetch user";
+export const FETCH_V1_REDIRECT = "[v1 redirect] fetch";
 export const LOGOUT = "[auth] logout";
 export const CHANGE_CLASS = "[student] change class";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
@@ -45,6 +46,7 @@ export const setUserAction = createAction(SET_USER);
 export const signupAction = createAction(SIGNUP);
 export const signupSuccessAction = createAction(SINGUP_SUCCESS);
 export const fetchUserAction = createAction(FETCH_USER);
+export const fetchV1RedirectAction = createAction(FETCH_V1_REDIRECT);
 export const logoutAction = createAction(LOGOUT);
 export const changeClassAction = createAction(CHANGE_CLASS);
 export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
@@ -89,6 +91,10 @@ export default createReducer(initialState, {
     state.user.orgData.defaultClass = payload;
   },
   [FETCH_USER]: state => {
+    state.isAuthenticated = false;
+    state.authenticating = true;
+  },
+  [FETCH_V1_REDIRECT]: state => {
     state.isAuthenticated = false;
     state.authenticating = true;
   },
@@ -263,11 +269,15 @@ function* signup({ payload }) {
     }
   } catch (err) {
     const errorMessage = "Email already exist";
-    yield call(message.error, err && err.message ? err.message : errorMessage);
+    const msg1 = get(err, "data.message", "");
+    const msg2 = get(err, "message", "");
+    const msg = msg1 || msg2 || errorMessage;
+    yield call(message.error, msg);
   }
 }
 
 const getLoggedOutUrl = () => {
+  // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   const path = getWordsInURLPathName(window.location.pathname);
   if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
     return "/getStarted";
@@ -291,7 +301,9 @@ export function* fetchUser() {
   try {
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
-      localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+        localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      }
       yield put(push(getLoggedOutUrl()));
       return;
     }
@@ -311,11 +323,41 @@ export function* fetchUser() {
       yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
     }
+  } catch (error) {
+    console.log(error);
+    yield call(message.error, "failed loading user data");
+    if (!(error.response && error.response.status === 501)) {
+      if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+        localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      }
+      yield put(push(getLoggedOutUrl()));
+    }
+  }
+}
+
+export function* fetchV1Redirect({ payload: id }) {
+  try {
+    // TODO: handle the case of invalid token
+    const { authToken, _id, role } = yield call(authApi.V1Redirect, id);
+    if (authToken) {
+      TokenStorage.storeAccessToken(authToken, _id, role);
+      TokenStorage.selectAccessToken(_id, role);
+    } else {
+      yield call(message.error, "authtoken invalid on redirection");
+      return;
+    }
+
+    const user = yield call(userApi.getUser);
+
+    yield put({
+      type: SET_USER,
+      payload: user
+    });
+    let redirectUrl = role === "student" ? "/home/assignments" : "/author/assignments";
+    yield put(push(redirectUrl));
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");
-    window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
-    yield put(push(getLoggedOutUrl()));
   }
 }
 
@@ -344,18 +386,39 @@ function* changeClass({ payload }) {
 
 function* googleLogin({ payload }) {
   try {
+    let classCode = "";
+    let role = "";
     if (payload) {
-      localStorage.setItem("thirdPartySignOnRole", payload);
+      if (payload.role === "teacher") {
+        localStorage.setItem("thirdPartySignOnRole", payload.role);
+        role = "teacher";
+      } else if (payload.role === "student") {
+        localStorage.setItem("thirdPartySignOnRole", payload.role);
+        localStorage.setItem("thirdPartySignOnClassCode", payload.classCode);
+        classCode = payload.classCode;
+        role = "student";
+      }
     }
+
+    if (classCode) {
+      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "googleSignOn", role });
+    }
+
     const res = yield call(authApi.googleLogin);
     window.location.href = res;
   } catch (e) {
-    yield call(message.error, "Google Login failed");
+    yield call(message.error, e.data && e.data.message ? e.data.message : "Google Login failed");
   }
 }
 
 function* googleSSOLogin({ payload }) {
   try {
+    if (payload.edulasticRole === "student") {
+      let classCode = localStorage.getItem("thirdPartySignOnClassCode");
+      if (classCode) {
+        payload.classCode = classCode;
+      }
+    }
     const res = yield call(authApi.googleSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
@@ -366,18 +429,37 @@ function* googleSSOLogin({ payload }) {
 
 function* msoLogin({ payload }) {
   try {
+    let classCode = "";
+    let role = "";
     if (payload) {
-      localStorage.setItem("thirdPartySignOnRole", payload);
+      if (payload.role === "teacher") {
+        localStorage.setItem("thirdPartySignOnRole", payload.role);
+        role = "teacher";
+      } else if (payload.role === "student") {
+        localStorage.setItem("thirdPartySignOnRole", payload.role);
+        localStorage.setItem("thirdPartySignOnClassCode", payload.classCode);
+        classCode = payload.classCode;
+        role = "student";
+      }
+    }
+    if (classCode) {
+      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "office365SignOn", role });
     }
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
   } catch (e) {
-    yield call(message.error, "MSO Login failed");
+    yield call(message.error, e.data && e.data.message ? e.data.message : "MSO Login failed");
   }
 }
 
 function* msoSSOLogin({ payload }) {
   try {
+    if (payload.edulasticRole === "student") {
+      let classCode = localStorage.getItem("thirdPartySignOnClassCode");
+      if (classCode) {
+        payload.classCode = classCode;
+      }
+    }
     const res = yield call(authApi.msoSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
@@ -400,6 +482,12 @@ function* cleverLogin({ payload }) {
 
 function* cleverSSOLogin({ payload }) {
   try {
+    if (payload.role === "student") {
+      classCode = localStorage.getItem("thirdPartySignOnClassCode");
+      if (classCode) {
+        payload.classCode = classCode;
+      }
+    }
     const res = yield call(authApi.cleverSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
@@ -458,6 +546,7 @@ export function* watcherSaga() {
   yield takeLatest(SIGNUP, signup);
   yield takeLatest(LOGOUT, logout);
   yield takeLatest(FETCH_USER, fetchUser);
+  yield takeLatest(FETCH_V1_REDIRECT, fetchV1Redirect);
   yield takeLatest(CHANGE_CLASS, changeClass);
   yield takeLatest(GOOGLE_LOGIN, googleLogin);
   yield takeLatest(CLEVER_LOGIN, cleverLogin);

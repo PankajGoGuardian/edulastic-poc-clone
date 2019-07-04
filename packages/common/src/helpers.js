@@ -2,6 +2,7 @@
 import uuid from "uuid/v4";
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
+import { message } from "antd";
 
 export const ALPHABET = [
   "A",
@@ -75,7 +76,6 @@ export const uploadToS3 = async (file, folder) => {
   if (!folder || !s3Folders.includes(folder)) {
     throw new Error("folder is invalid");
   }
-
   const result = await fileApi.getSignedUrl(file.name, folder);
   const formData = new FormData();
   const { fields, url } = result;
@@ -185,6 +185,20 @@ export const removeIndexFromTemplate = tmpl => {
       $(this).removeAttr("contenteditable");
     });
   return $(parsedHTML).html();
+};
+
+export const allowedFileTypes = ["image/jpeg", "image/jpg", "image/png"];
+
+export const beforeUpload = file => {
+  const isAllowedType = allowedFileTypes.includes(file.type);
+  if (!isAllowedType) {
+    message.error("Image type not supported");
+  }
+  const withinSizeLimit = file.size / 1024 / 1024 < 2;
+  if (!withinSizeLimit) {
+    message.error("Image size should be less than 2MB");
+  }
+  return isAllowedType && withinSizeLimit;
 };
 
 export const canInsert = element => element.contentEditable !== "false";

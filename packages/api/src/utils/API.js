@@ -9,6 +9,36 @@ const getCurrentPath = () => {
   return `${location.pathname}${location.search}${location.hash}`;
 };
 
+const getWordsInURLPathName = pathname => {
+  // When u try to change this function change the duplicate function in "src/client/common/utils/helpers.js" also
+  let path = pathname;
+  path = path + "";
+  path = path.split("/");
+  path = path.filter(item => (item && item.trim() ? true : false));
+  return path;
+};
+
+const getLoggedOutUrl = () => {
+  // When u try to change this function change the duplicate function in "src/client/student/Login/ducks.js" also
+  const path = getWordsInURLPathName(window.location.pathname);
+  if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
+    return "/getStarted";
+  } else if (window.location.pathname.toLocaleLowerCase() === "/signup") {
+    return "/signup";
+  } else if (window.location.pathname.toLocaleLowerCase() === "/studentsignup") {
+    return "/studentsignup";
+  } else if (window.location.pathname.toLocaleLowerCase() === "/adminsignup") {
+    return "/adminsignup";
+  } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+    let arr = [...path];
+    arr.shift();
+    let restOfPath = arr.join("/");
+    return "/district/" + restOfPath;
+  } else {
+    return "/login";
+  }
+};
+
 export default class API {
   constructor(baseURL = config.api) {
     this.baseURL = baseURL;
@@ -31,7 +61,10 @@ export default class API {
       data => {
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {
-            window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
+            localStorage.clear();
+            if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+              localStorage.setItem("loginRedirectUrl", getCurrentPath());
+            }
             window.location.href = "/login";
           }
         }

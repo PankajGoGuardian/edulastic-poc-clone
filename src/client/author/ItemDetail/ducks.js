@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
 import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "lodash";
 import { testItemsApi } from "@edulastic/api";
+import { questionType } from "@edulastic/constants";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -88,9 +89,9 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data, testId, addToTest = false) => ({
+export const updateItemDetailByIdAction = (id, data, testId, addToTest = false, redirect = true) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, testId, addToTest }
+  payload: { id, data, testId, addToTest, redirect }
 });
 
 export const updateItemDetailSuccess = item => ({
@@ -498,13 +499,13 @@ function* receiveItemSaga({ payload }) {
     } else {
       yield put(loadQuestionsAction(questions));
     }
-    const item = _omit(data, "data");
+
     const qids = questionsArr.map(x => x.id);
 
     const { itemLevelScore, itemLevelScoring } = data;
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
-      payload: item
+      payload: data
     });
     yield put({
       type: SET_ITEM_QIDS,
@@ -545,14 +546,22 @@ export function* updateItemSaga({ payload }) {
     if (payload.testId) {
       data.testId = testId;
     }
-    data.data = {};
 
-    const questions = yield select(getQuestionsSelector);
-    data.data.questions = get(payload, "data.data.questions", questions);
+    // const questions = yield select(getQuestionsSelector);
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+    const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
+    const questions = widgets.filter(item => !resourceTypes.includes(item.type));
+    const resources = widgets.filter(item => resourceTypes.includes(item.type));
 
+    data.data = {
+      questions,
+      resources
+    };
+
+    // return;
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
-
-    if (payload.redirect && item._id !== payload.id) {
+    const { redirect = true } = payload; // added for doc based assesment, where redirection is not required.
+    if (redirect && item._id !== payload.id) {
       yield put(
         replace(
           payload.testId

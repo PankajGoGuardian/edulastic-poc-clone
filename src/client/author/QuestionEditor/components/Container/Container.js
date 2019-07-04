@@ -74,7 +74,7 @@ class Container extends Component {
     const { checkAnswer, showAnswer, changePreview } = this.props;
 
     if (previewTab === "check") {
-      checkAnswer("edit");
+      checkAnswer("question");
     }
     if (previewTab === "show") {
       showAnswer("edit");

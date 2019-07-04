@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue, white } from "@edulastic/colors";
+import { blue, white, dashBorderColor } from "@edulastic/colors";
 import { CheckboxContainer } from "./CheckboxContainer";
 import { MultiChoiceContent } from "./MultiChoiceContent";
 
@@ -52,9 +52,13 @@ export const Label = styled.label`
   padding-left: ${props => (props.styleType === "primary" ? "17px" : "25px")};
   /* padding-left: ${props => (props.smallSize ? 5 : 20)}px; */
   border: ${props =>
-    props.styleType === "primary" ? "0" : `dotted 1px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
+    props.styleType === "primary"
+      ? `1px solid ${dashBorderColor}`
+      : `dotted 1px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
   border-left: ${props =>
-    props.styleType === "primary" ? "0" : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
+    props.styleType === "primary"
+      ? `1px solid ${dashBorderColor}`
+      : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
   background-color: ${({ styleType, color, selected, uiStyle }) => {
     if (styleType === "primary" && uiStyle.type !== "block") {
       return white;
@@ -71,8 +75,7 @@ export const Label = styled.label`
   border-radius: ${props =>
     props.styleType === "primary" || props.uiStyle.type === "block" ? "4px" : "0px 10px 10px 0px"};
   min-height: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "40px" : "auto")};
-  box-shadow: ${props =>
-    props.styleType === "primary" || props.uiStyle.type === "block" ? "0 2px 5px 0 rgba(0, 0, 0, 0.07)" : "none"};
+  box-shadow: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "none" : "none")};
   display: flex;
   align-items: center;
   /* margin: ${props => (props.setAnswers ? "5px 0" : "10px 0")}; */

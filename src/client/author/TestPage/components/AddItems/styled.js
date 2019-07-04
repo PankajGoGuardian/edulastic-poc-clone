@@ -57,6 +57,7 @@ export const MainList = styled.div`
 export const ListItems = styled.div`
   flex: 1;
   margin: 0px 0px -50px;
+  overflow: auto;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   background: ${white};
 

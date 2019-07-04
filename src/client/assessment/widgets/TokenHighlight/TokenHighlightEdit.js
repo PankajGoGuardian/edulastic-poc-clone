@@ -26,7 +26,11 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
 
   const mode = item.tokenization;
 
-  const initialArray = item.template.replace(/(<p>|<\/p>)*/g, "").split('<p class="newline_section"><br>');
+  const initialArray = item.template
+    .replace(/<p .*?>(.*?)<\/p>/g, "")
+    .replace(/(<p>|<\/p>)*/g, "")
+    .replace(/<br\/>/g, "<br/> ")
+    .split('<p class="newline_section"><br>');
 
   const paragraphsArray = initialArray.map(el => ({
     value: `${el}<br/>`,

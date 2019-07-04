@@ -498,3 +498,80 @@ export function isInPolygon(testPoint, vertices) {
 
   return result;
 }
+
+/**
+ * usage:
+ *    let gen = nameGenerator();
+ *    gen.next().value  => 'A'
+ *    gen.next().value  => 'B'
+ *    ...
+ *    gen.next().value  => 'AA'
+ *    gen.next().value  => 'AB'
+ * reset
+ *    gen.next(true).value  => 'A'
+ *    gen.next().value  => 'B'
+ */
+export function* nameGenerator() {
+  const charCodes = [];
+  const firstChar = "A";
+  const lastChar = "Z";
+  const firstCharCode = firstChar.charCodeAt(0);
+  const lastCharCode = lastChar.charCodeAt(0);
+  let reset = false;
+  let tmpReset = false;
+
+  while (true) {
+    let index = charCodes.length - 1;
+    let overflow = false;
+
+    while (index >= -1) {
+      if (index + 1 === charCodes.length || overflow) {
+        overflow = false;
+        if (charCodes[index] >= firstCharCode && charCodes[index] < lastCharCode) {
+          charCodes[index]++;
+        } else if (charCodes[index] === lastCharCode) {
+          charCodes[index] = firstCharCode;
+          overflow = true;
+          if (index === 0) {
+            charCodes.unshift(firstCharCode);
+          }
+        } else if (charCodes.length === 0) {
+          charCodes.push(firstCharCode);
+        }
+      }
+
+      --index;
+    }
+    reset = tmpReset;
+    tmpReset = yield String.fromCharCode(...charCodes);
+    if (reset) {
+      charCodes.splice(0, charCodes.length);
+      if (typeof reset === "string") {
+        const code = reset.charCodeAt(0);
+        if (code >= firstCharCode && code < lastCharCode) {
+          charCodes.push(code);
+        }
+      }
+      reset = false;
+      tmpReset = false;
+    }
+  }
+}
+
+export function objectLabelComparator(a, b) {
+  if (typeof a.label === "string" && typeof b.label === "string") {
+    if (a.label.length > b.label.length) {
+      return -1;
+    }
+    if (a.label.length < b.label.length) {
+      return 1;
+    }
+  }
+  if (a.label > b.label) {
+    return -1;
+  }
+  if (a.label < b.label) {
+    return 1;
+  }
+  return 0;
+}

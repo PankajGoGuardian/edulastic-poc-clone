@@ -1,20 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { greyDarken, greenDark } from "@edulastic/colors";
 
 import { ContainerHeader, LeftContent, RightContent, TitleWarapper, StyledIcon, AnchorLink, ClassCode } from "./styled";
 
-const SubHeader = ({ name, institutionName, owners, code, viewAssessmentHandler, backToView }) => {
-  const ownerName = owners[0].name;
+const SubHeader = ({ name, districtName, institutionName, code }) => {
   return (
     <ContainerHeader>
       <LeftContent>
-        <StyledIcon type="left" size={30} onClick={backToView} />
+        <Link to={`/author/manageClass`}>
+          <StyledIcon type="left" size={30} />
+        </Link>
         <TitleWarapper>
           <div>{name}</div>
+
           <p>
-            {institutionName}, {ownerName}
+            {districtName},{institutionName}
           </p>
+
         </TitleWarapper>
       </LeftContent>
       <RightContent>
@@ -32,18 +36,15 @@ const SubHeader = ({ name, institutionName, owners, code, viewAssessmentHandler,
 SubHeader.propTypes = {
   name: PropTypes.string,
   institutionName: PropTypes.string,
-  owners: PropTypes.array,
-  code: PropTypes.string,
-  viewAssessmentHandler: PropTypes.func,
-  backToView: PropTypes.func.isRequired
+  districtName: PropTypes.string,
+  code: PropTypes.string
 };
 
 SubHeader.defaultProps = {
   name: "",
   institutionName: "",
-  owners: [],
-  code: "",
-  viewAssessmentHandler: () => null
+  districtName: "",
+  code: ""
 };
 
 export default SubHeader;

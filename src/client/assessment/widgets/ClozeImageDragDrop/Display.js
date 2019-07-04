@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep, isUndefined, get } from "lodash";
+import { cloneDeep, flattenDeep, isUndefined, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
 
 import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
@@ -166,6 +166,13 @@ class Display extends Component {
     return maxHeight;
   };
 
+  getResponseBoxMaxValues = () => {
+    const { responseContainers } = this.props;
+    const maxTop = maxBy(responseContainers, res => res.top);
+    const maxLeft = maxBy(responseContainers, res => res.left);
+    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+  };
+
   render() {
     const {
       smallSize,
@@ -229,8 +236,18 @@ class Display extends Component {
     const { maxHeight, maxWidth } = clozeImage;
     const imageWidth = this.getWidth();
     const imageHeight = this.getHeight();
-    const canvasHeight = imageHeight + (imageOptions.y || 0);
-    const canvasWidth = imageWidth + +(imageOptions.x || 0);
+    let canvasHeight = imageHeight + (imageOptions.y || 0);
+    let canvasWidth = imageWidth + +(imageOptions.x || 0);
+
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+
+    if (canvasHeight < responseBoxMaxTop) {
+      canvasHeight = responseBoxMaxTop + 20;
+    }
+
+    if (canvasWidth < responseBoxMaxLeft) {
+      canvasWidth = responseBoxMaxLeft;
+    }
 
     const renderImage = () => (
       <StyledPreviewImage
@@ -384,6 +401,7 @@ class Display extends Component {
         stemnumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}
+        checkAnswer={checkAnswer}
         userSelections={userAnswers}
         evaluation={evaluation}
         drop={drop}

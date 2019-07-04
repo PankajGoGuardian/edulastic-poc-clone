@@ -22,7 +22,7 @@ import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
 
 import { canvasDimensions, aws } from "@edulastic/constants";
-import { uploadToS3 } from "@edulastic/common/src/helpers";
+import { uploadToS3, beforeUpload } from "@edulastic/common/src/helpers";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -68,9 +68,9 @@ class ComposeQuestion extends Component {
           let value = val;
 
           if (prop === "height") {
-            value = value < 600 ? value : 600;
+            value = value < maxHeight ? value : maxHeight;
           } else if (prop === "width") {
-            value = value < 700 ? value : 700;
+            value = value < maxWidth ? value : maxWidth;
           }
 
           draft.image[prop] = value;
@@ -110,6 +110,11 @@ class ComposeQuestion extends Component {
     const onDrop = ([files]) => {
       if (files) {
         setLoading(true);
+        const canUpload = beforeUpload(files);
+        if (!canUpload) {
+          setLoading(false);
+          return false;
+        }
         uploadToS3(files, aws.s3Folders.DEFAULT)
           .then(fileUri => {
             getImageDimensions(fileUri);
@@ -131,25 +136,18 @@ class ComposeQuestion extends Component {
           placeholder={t("component.highlightImage.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
 
         <DropZoneToolbar
           width={+width}
           height={+height}
-          maxWidth={700}
+          maxWidth={maxWidth}
           altText={altText}
           handleChange={handleImageToolbarChange}
         />
 
-        <Dropzone
-          onDrop={onDrop}
-          maxSize={2097152}
-          accept="image/*"
-          className="dropzone"
-          activeClassName="active-dropzone"
-          multiple={false}
-        >
+        <Dropzone onDrop={onDrop} className="dropzone" activeClassName="active-dropzone" multiple={false}>
           {({ getRootProps, getInputProps, isDragActive }) => (
             <div
               style={{
@@ -166,7 +164,10 @@ class ComposeQuestion extends Component {
               <StyledDropZone
                 style={{
                   justifyContent: "flex-start !important",
-                  alignItems: "flex-start !important"
+                  alignItems: "flex-start !important",
+                  minHeight: maxHeight,
+                  minWidth: maxWidth,
+                  height: "unset"
                 }}
                 loading={loading}
                 isDragActive={isDragActive}

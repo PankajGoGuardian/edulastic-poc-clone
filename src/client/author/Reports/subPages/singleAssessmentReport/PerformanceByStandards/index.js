@@ -1,36 +1,33 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { uniq, xor, isEmpty, get } from "lodash";
-import { Spin, Card, Form, Select, Radio, Popover, Button, Icon } from "antd";
+import { Card, Form, Select, Radio, Popover, Button, Icon } from "antd";
 import next from "immer";
 
 import { getNavigationTabLinks, getDropDownTestIds } from "../../../common/util";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import { NavigatorTabs } from "../../../common/components/navigatorTabs";
 import SimpleBarChartContainer from "./components/charts/simpleBarChartContainer";
 import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
 import CardHeader, {
   CardTitle,
   CardDropdownWrapper,
-  GroupingTitle,
-  GroupingSelect,
   ResetButton,
   MasteryLevelWrapper,
   MasteryLevel,
   MasteryLevelIndicator,
   MasteryLevelTitle
 } from "./common/CardHeader/CardHeader";
-import { viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
+import { analysisParseData, viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
+import { Placeholder } from "../../../common/components/loader";
 import {
   getPerformanceByStandardsAction,
   getPerformanceByStandardsLoadingSelector,
-  getPerformanceByStandardsReportSelector,
-  defaultReport
+  getPerformanceByStandardsReportSelector
 } from "./ducks";
-import { getAssignmentsRequestAction, getReportsAssignments } from "../../../assignmentsDucks";
+
 import dropDownFormat from "./static/json/dropDownFormat.json";
-import chartNavigatorLinks from "../../../common/static/json/singleAssessmentSummaryChartNavigator.json";
+import { getUserRole } from "../../../../src/selectors/user";
 
 const MasteryLevels = ({ scaleInfo }) => (
   <MasteryLevelWrapper>
@@ -43,24 +40,25 @@ const MasteryLevels = ({ scaleInfo }) => (
   </MasteryLevelWrapper>
 );
 
-const PerformanceByStandards = ({
-  loading,
-  report,
-  getPerformanceByStandards,
-  getAssignmentsRequestAction,
-  match,
-  assignments,
-  history,
-  location,
-  settings
-}) => {
+const PAGE_SIZE = 15;
+
+const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, match, settings, role }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
-  const [compareBy, setCompareBy] = useState(compareByMode.SCHOOL);
+  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.CLASS : compareByMode.SCHOOL);
   const [standardId, setStandardId] = useState(0);
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
-  const [selectedTest, setSelectedTest] = useState({});
+  const [totalStandards, setTotalStandards] = useState(0);
+  const [totalDomains, setTotalDomains] = useState(0);
+  const [page, setPage] = useState(0);
+
+  const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
+    if (o.allowedRoles) {
+      return o.allowedRoles.includes(role);
+    }
+    return true;
+  });
 
   const [filter, setFilter] = useState(
     dropDownFormat.filterDropDownData.reduce(
@@ -72,39 +70,21 @@ const PerformanceByStandards = ({
     )
   );
 
-  const getTitleByTestId = testId => {
-    const arr = get(assignments, "data.result.tests", []);
-    const item = arr.find(o => o._id === testId);
-
-    if (item) {
-      return item.title;
-    }
-    return "";
+  const getTitleByTestId = () => {
+    const {
+      selectedTest: { title: testTitle = "" }
+    } = settings;
+    return testTitle;
   };
 
   useEffect(() => {
-    if (!isEmpty(assignments)) {
-      if (match.params.testId) {
-        const q = {
-          testId: match.params.testId
-        };
-        q.requestFilters = { ...settings.requestFilters };
-        getPerformanceByStandards(q);
-        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
-      } else {
-        const tests = [...get(assignments, "data.result.tests", [])];
-        tests.sort((a, b) => b.updatedDate - a.updatedDate);
-
-        const q = { testId: tests[0]._id };
-        q.requestFilters = { ...settings.requestFilters };
-        history.push(location.pathname + q.testId);
-        getPerformanceByStandards(q);
-        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
-      }
-    } else {
-      getAssignmentsRequestAction();
+    if (settings.selectedTest && settings.selectedTest.key) {
+      let q = {};
+      q.testId = settings.selectedTest.key;
+      q.requestFilters = { ...settings.requestFilters };
+      getPerformanceByStandards(q);
     }
-  }, [assignments, settings]);
+  }, [settings]);
 
   const setSelectedData = ({ skillInfo, defaultStandardId, standardsMap }) => {
     const selectedData = skillInfo.reduce(
@@ -123,6 +103,8 @@ const PerformanceByStandards = ({
     setStandardId(standardsMap[defaultStandardId]);
     setSelectedStandards(selectedData.selectedStandards);
     setSelectedDomains(selectedData.selectedDomains);
+    setTotalStandards(selectedData.selectedStandards.length);
+    setTotalDomains(selectedData.selectedDomains.length);
   };
 
   useEffect(() => {
@@ -160,12 +142,8 @@ const PerformanceByStandards = ({
     setCompareBy(selected.key);
   };
 
-  const handleUpdateTestId = (event, selected) => {
-    const url = match.path.substring(0, match.path.length - 8);
-    history.push(url + selected.key);
-    const q = { testId: selected.key };
-    getPerformanceByStandards(q);
-    setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
+  const handleStandardIdChange = (event, selected) => {
+    setStandardId(selected.key);
   };
 
   const renderSimpleFilter = ({ key: filterKey, title: filterTitle, data }) => {
@@ -218,7 +196,12 @@ const PerformanceByStandards = ({
   };
 
   if (loading) {
-    return <Spin />;
+    return (
+      <>
+        <Placeholder />
+        <Placeholder />
+      </>
+    );
   }
 
   const { standardsMap, scaleInfo } = report;
@@ -228,24 +211,43 @@ const PerformanceByStandards = ({
     name: standardsMap[id]
   }));
 
-  const filterOption = (input, option) => option.props.children.toLowerCase().includes(input.toLowerCase());
+  const shouldShowReset =
+    viewBy === viewByMode.STANDARDS ? totalStandards > selectedStandards.length : totalDomains > selectedDomains.length;
 
-  const computedChartNavigatorLinks = (() => {
-    return next(chartNavigatorLinks, arr => {
-      getNavigationTabLinks(arr, match.params.testId);
-    });
-  })();
+  const tableData = analysisParseData(report, viewBy, compareBy);
 
-  const testIds = (() => {
-    const _testsArr = get(assignments, "data.result.tests", []);
-    return getDropDownTestIds(_testsArr);
-  })();
+  const paginationOffset = page * PAGE_SIZE;
+  const paginatedData = tableData.slice(paginationOffset, paginationOffset + PAGE_SIZE);
+
+  const handlePrevPage = () => {
+    if (page === 0) return;
+
+    setPage(page - 1);
+  };
+
+  const handleNextPage = () => {
+    if (tableData.length <= paginationOffset) {
+      return;
+    }
+
+    setPage(page + 1);
+  };
+
+  const prevButtonDisabled = page === 0;
+  const nextButtonDisabled = (page + 1) * PAGE_SIZE >= tableData.length || tableData.length < PAGE_SIZE;
+
+  const { testId } = match.params;
+  const testName = getTitleByTestId(testId);
+  const assignmentInfo = `${testName} (ID: ${testId})`;
+
+  const standardsDropdownData = standardsList.map(s => ({ key: s.id, title: s.name }));
+  const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
 
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Performance by Standards</CardTitle>
+          <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="View By"
@@ -259,28 +261,24 @@ const PerformanceByStandards = ({
               selectCB={handleAnalyzeByChange}
               data={dropDownFormat.analyzeByDropDownData}
             />
-            <GroupingTitle>Standard:</GroupingTitle>
-            <GroupingSelect
-              showSearch
-              value={standardId}
-              onChange={setStandardId}
-              optionFilterProp="children"
-              filterOption={filterOption}
-            >
-              {standardsList.map((standard, key) => (
-                <Select.Option key={key + standard.id} value={standard.name}>
-                  {standard.name}
-                </Select.Option>
-              ))}
-            </GroupingSelect>
+            <ControlDropDown
+              prefix=""
+              by={selectedStandardId || { key: "", title: "" }}
+              selectCB={handleStandardIdChange}
+              data={standardsDropdownData}
+            />
             {renderFilters()}
           </CardDropdownWrapper>
         </CardHeader>
         <div>
-          <ResetButton type="dashed" size="small" onClick={handleResetSelection}>
-            Reset
-          </ResetButton>
-          {analyzeBy === analyzeByMode.MASTERY_LEVEL && <MasteryLevels scaleInfo={scaleInfo} />}
+          {shouldShowReset && (
+            <ResetButton type="dashed" size="small" onClick={handleResetSelection}>
+              Reset
+            </ResetButton>
+          )}
+          {(analyzeBy === analyzeByMode.MASTERY_LEVEL || analyzeBy === analyzeByMode.MASTERY_SCORE) && (
+            <MasteryLevels scaleInfo={scaleInfo} />
+          )}
         </div>
         <SimpleBarChartContainer
           report={report}
@@ -294,17 +292,28 @@ const PerformanceByStandards = ({
       </Card>
       <Card style={{ marginTop: "20px" }}>
         <CardHeader>
-          <CardTitle>Performance by Standards</CardTitle>
+          <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="Compare By"
-              by={dropDownFormat.compareByDropDownData[0]}
+              by={filteredDropDownData[0]}
               selectCB={handleCompareByChange}
-              data={dropDownFormat.compareByDropDownData}
+              data={filteredDropDownData}
             />
+            <Button.Group size="middle">
+              <Button onClick={handlePrevPage} disabled={prevButtonDisabled}>
+                <Icon type="left" />
+                Prev
+              </Button>
+              <Button onClick={handleNextPage} disabled={nextButtonDisabled}>
+                Next
+                <Icon type="right" />
+              </Button>
+            </Button.Group>
           </CardDropdownWrapper>
         </CardHeader>
         <PerformanceAnalysisTable
+          tableData={paginatedData}
           report={report}
           viewBy={viewBy}
           analyzeBy={analyzeBy}
@@ -328,27 +337,21 @@ const reportPropType = PropTypes.shape({
 
 PerformanceByStandards.propTypes = {
   loading: PropTypes.bool.isRequired,
+  settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   match: PropTypes.object.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
-  assignments: PropTypes.array,
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired
-};
-
-PerformanceByStandards.defaultProps = {
-  assignments: []
+  role: PropTypes.string.isRequired
 };
 
 const enhance = connect(
   state => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
-    report: getPerformanceByStandardsReportSelector(state),
-    assignments: getReportsAssignments(state)
+    role: getUserRole(state),
+    report: getPerformanceByStandardsReportSelector(state)
   }),
   {
-    getPerformanceByStandards: getPerformanceByStandardsAction,
-    getAssignmentsRequestAction: getAssignmentsRequestAction
+    getPerformanceByStandards: getPerformanceByStandardsAction
   }
 );
 

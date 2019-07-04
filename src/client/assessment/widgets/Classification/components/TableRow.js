@@ -7,7 +7,7 @@ import { CenteredText } from "@edulastic/common";
 import DropContainer from "../../../components/DropContainer";
 
 import DragItem from "./DragItem";
-import { Column } from "../styled/Column";
+import { Column, ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 
@@ -16,6 +16,7 @@ const TableRow = ({
   colCount,
   arrayOfRows,
   rowTitles,
+  colTitles,
   drop,
   answers,
   preview,
@@ -30,7 +31,8 @@ const TableRow = ({
   theme,
   isResizable,
   item,
-  disableResponse
+  disableResponse,
+  changePreviewTab
 }) => {
   const styles = {
     columnContainerStyle: {
@@ -51,10 +53,12 @@ const TableRow = ({
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
         <RowTitleCol key={index + startIndex + colCount} colCount={colCount}>
-          <CenteredText
-            style={{ wordWrap: "break-word", textAlign: "left" }}
-            dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] || "" }}
-          />
+          {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
+            <CenteredText
+              style={{ wordWrap: "break-word", textAlign: "left" }}
+              dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
+            />
+          ) : null}
         </RowTitleCol>
       );
     }
@@ -67,6 +71,9 @@ const TableRow = ({
         colCount={colCount}
       >
         <ResponseRnd question={item} height={height} index={index} isResizable={isResizable}>
+          {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
+            <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
+          ) : null}
           <DropContainer
             style={{
               ...styles.columnContainerStyle,
@@ -94,6 +101,7 @@ const TableRow = ({
                     onDrop={onDrop}
                     item={answerValue}
                     disableResponse={disableResponse}
+                    changePreviewTab={changePreviewTab}
                   />
                 );
               })}
@@ -103,7 +111,7 @@ const TableRow = ({
     );
   }
 
-  return <tr>{cols}</tr>;
+  return <div style={{ display: "flex" }}>{cols}</div>;
 };
 
 TableRow.propTypes = {
@@ -124,7 +132,8 @@ TableRow.propTypes = {
   validArray: PropTypes.array.isRequired,
   theme: PropTypes.object.isRequired,
   isResizable: PropTypes.bool.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 export default withTheme(TableRow);

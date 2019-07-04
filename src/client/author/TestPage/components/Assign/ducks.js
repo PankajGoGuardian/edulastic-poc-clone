@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import { omit, keyBy } from "lodash";
+import { omit, get, keyBy } from "lodash";
 import { message } from "antd";
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
@@ -10,6 +10,7 @@ import { SET_ASSIGNMENT, SET_TEST_DATA, getTestSelector, getTestIdSelector } fro
 import { formatAssignment } from "./utils";
 import { getUserNameSelector } from "../../../src/selectors/user";
 import { getPlaylistEntitySelector } from "../../../PlaylistPage/ducks";
+import { getUserRole } from "../../../../student/Login/ducks";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
 export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
@@ -164,6 +165,8 @@ function* saveAssignment({ payload }) {
         updateTestActivities = true;
       }
     }
+    let userRole = yield select(getUserRole);
+    const testType = get(payload, "testType", "assessment");
     let data = [];
     data = testIds.map(testId =>
       omit(
@@ -171,6 +174,7 @@ function* saveAssignment({ payload }) {
           ...payload,
           startDate,
           endDate,
+          testType: userRole !== "teacher" && testType === "assessment" ? "common assessment" : testType,
           testId
         },
         ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]

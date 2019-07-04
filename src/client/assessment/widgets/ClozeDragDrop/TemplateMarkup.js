@@ -134,7 +134,7 @@ class TemplateMarkup extends Component {
           additionalToolbarOptions={["response"]}
           toolbarId="template-markup-area"
           value={item.template}
-          theme="border"
+          border="border"
         />
       </>
     );

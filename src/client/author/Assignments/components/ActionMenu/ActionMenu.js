@@ -36,11 +36,6 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
   };
 
   MenuItems.push(
-    <ActionButtonWrapper key="action-button" onClick={e => e.stopPropagation()}>
-      <ActionButton>Actions</ActionButton>
-    </ActionButtonWrapper>
-  );
-  MenuItems.push(
     <Menu.Item key="edit-Assignment">
       <Link style={{ marginTop: 2 }} to={`/author/tests/${currentAssignment.testId}/editAssigned`}>
         <img alt="icon" src={classIcon} />

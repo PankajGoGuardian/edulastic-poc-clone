@@ -45,6 +45,9 @@ import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
+import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
+import { clearAnswersAction } from "../../../src/actions/answers";
+import { changePreviewTabAction } from "../../../ItemAdd/ducks";
 
 const InputGroup = Input.Group;
 const testItemStatusConstants = {
@@ -62,7 +65,17 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    const { getItemDetailById, match, modalItemId, setRedirectTest, isTestFlow, history, t } = this.props;
+    const {
+      getItemDetailById,
+      match,
+      modalItemId,
+      setRedirectTest,
+      isTestFlow,
+      history,
+      t,
+      clearAnswers,
+      changePreviewTab
+    } = this.props;
     const { itemId, testId } = match.params;
 
     getItemDetailById(modalItemId || match.params.id || match.params.itemId, { data: true, validation: true });
@@ -86,6 +99,9 @@ class Container extends Component {
         }
       });
     }
+
+    clearAnswers();
+    changePreviewTab(CLEAR);
   }
 
   componentDidUpdate(prevProps) {
@@ -564,7 +580,9 @@ Container.propTypes = {
   redirectOnEmptyItem: PropTypes.bool,
   setItemLevelScore: PropTypes.func,
   setItemLevelScoring: PropTypes.func,
-  isTestFlow: PropTypes.bool
+  isTestFlow: PropTypes.bool,
+  clearAnswers: PropTypes.func.isRequired,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 Container.defaultProps = {
@@ -618,7 +636,9 @@ const enhance = compose(
       toggleCreateItemModal: toggleCreateItemModalAction,
       toggleSideBar: toggleSideBarAction,
       setItemLevelScoring: setItemLevelScoringAction,
-      setItemLevelScore: setItemLevelScoreAction
+      setItemLevelScore: setItemLevelScoreAction,
+      clearAnswers: clearAnswersAction,
+      changePreviewTab: changePreviewTabAction
     }
   )
 );

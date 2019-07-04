@@ -68,7 +68,7 @@ function* updateTestItemSaga({ payload }) {
   }
 }
 
-function* evaluateAnswers() {
+function* evaluateAnswers({ payload }) {
   try {
     // clear previous evaluation
     yield put({
@@ -79,7 +79,7 @@ function* evaluateAnswers() {
     const currentPath = yield select(state => _get(state, "router.location.pathname", ""));
 
     // User is at the question level
-    if (["/author/questions/edit", "/author/questions/create"].includes(currentPath)) {
+    if (payload === "question") {
       const currentQuestionId = yield select(state => _get(state, "authorQuestions.current", ""));
 
       const answers = yield select(state => _get(state, "answers", []));

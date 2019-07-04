@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
+
 import CheckedBlock from "./CheckedBlock";
 
 class ClozeMathInput extends React.Component {
@@ -123,14 +124,28 @@ class ClozeMathInput extends React.Component {
     }
   };
 
+  getStyles = uiStyles => {
+    const btnStyle = {};
+    if (uiStyles.fontSize) {
+      btnStyle.fontSize = uiStyles.fontSize;
+    }
+    if (uiStyles.width) {
+      btnStyle.width = uiStyles.width;
+    }
+    return uiStyles;
+  };
+
   render() {
-    const { resprops = {} } = this.props;
-    const { item } = resprops;
+    const { resprops = {}, id } = this.props;
+    const { response_containers, item, uiStyles = {} } = resprops;
     const { showKeyboard } = this.state;
+    const response = find(response_containers, cont => cont.id === id);
+    const width = !!response ? response.widthpx : item.ui_style.min_width || "auto";
+    const btnStyle = this.getStyles(uiStyles);
 
     return (
-      <span ref={this.wrappedRef}>
-        <span ref={this.mathRef} onClick={this.showKeyboardModal} />
+      <span ref={this.wrappedRef} style={{ ...btnStyle, width: `${width}px` || "auto" }}>
+        <span ref={this.mathRef} onClick={this.showKeyboardModal} style={btnStyle} />
         {showKeyboard && (
           <KeyboardWrapper>
             <MathKeyboard
@@ -148,10 +163,14 @@ class ClozeMathInput extends React.Component {
 }
 
 const MathInput = ({ resprops = {}, id }) => {
-  const { item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { response_containers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
   const { maths: _mathAnswers = [] } = answers;
+  const response = find(response_containers, cont => cont.id === id);
+  const width = !!response ? response.widthpx : item.ui_style.min_width || "auto";
+
   return checked ? (
     <CheckedBlock
+      width={width}
       evaluation={evaluation}
       userAnswer={_mathAnswers[id]}
       item={item}

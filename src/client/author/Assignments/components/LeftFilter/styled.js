@@ -142,7 +142,7 @@ export const FolderListItemTitle = styled.div`
     margin-right: 15px;
   }
   span {
-    width: 100%;
+    max-width: ${props => (props.ellipsis ? "125px" : "100%")};
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -220,4 +220,8 @@ export const StyledMenu = styled(Menu)`
 export const StyledIconPencilEdit = styled(IconPencilEdit)`
   margin-right: 8px;
   fill: ${title};
+`;
+
+export const ModalBody = styled.div`
+  font-size: 14px;
 `;

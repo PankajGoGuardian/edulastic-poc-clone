@@ -142,7 +142,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.chart.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
 
         <div style={{ margin: "20px 0" }}>

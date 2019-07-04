@@ -201,7 +201,6 @@ export const transformGradeBookResponse = ({
   const testItemIds = test.testItems;
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
-
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
 
   const studentTestActivities = keyBy(testActivities, "userId");
@@ -239,7 +238,7 @@ export const transformGradeBookResponse = ({
         };
       }
       const testActivity = studentTestActivities[studentId];
-      if (testActivity.redirected) {
+      if (testActivity.redirect) {
         return {
           studentId,
           studentName: fullName,

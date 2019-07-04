@@ -13,6 +13,7 @@ import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 import { setTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../../ducks";
+import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
@@ -187,7 +188,8 @@ class Review extends PureComponent {
   };
 
   hidePreviewModal = () => {
-    this.setState({ isTestPreviewModalVisible: false });
+    const { clearAnswer } = this.props;
+    this.setState({ isTestPreviewModalVisible: false }, () => clearAnswer());
   };
 
   showTestPreviewModal = () => {
@@ -207,7 +209,7 @@ class Review extends PureComponent {
       onChangeSubjects,
       questions,
       owner,
-      readOnlyMode = false,
+      isEditable = false,
       createTestItemModalVisible,
       itemsSubjectAndGrade,
       checkAnswer,
@@ -222,7 +224,14 @@ class Review extends PureComponent {
       currentTestId
     } = this.state;
     const totalPoints = test.scoring.total;
+
     const questionsCount = test.testItems.length;
+
+    // when redirected from other pages, sometimes, test will only be having
+    // ids in its testitems, which could create issues.
+    if (test.testItem && test.testItems.some(i => typeof i === "string")) {
+      return <div />;
+    }
 
     const selected = test.testItems.reduce((acc, element, i) => {
       if (element.selected) {
@@ -252,26 +261,27 @@ class Review extends PureComponent {
           <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
             <SecondHeader isMobileSize={isMobileSize}>
               <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-              {owner && !readOnlyMode && (
-                <HeaderBar
-                  onSelectAll={this.handleSelectAll}
-                  itemTotal={test.testItems.length}
-                  selectedItems={selected}
-                  onRemoveSelected={this.handleRemoveSelected}
-                  onCollapse={this.handleCollapse}
-                  onMoveTo={this.handleMoveTo}
-                  windowWidth={windowWidth}
-                  setCollapse={isCollapse}
-                  onShowTestPreview={this.showTestPreviewModal}
-                />
-              )}
+              <HeaderBar
+                onSelectAll={this.handleSelectAll}
+                itemTotal={test.testItems.length}
+                selectedItems={selected}
+                onRemoveSelected={this.handleRemoveSelected}
+                onCollapse={this.handleCollapse}
+                onMoveTo={this.handleMoveTo}
+                owner={owner}
+                isEditable={isEditable}
+                windowWidth={windowWidth}
+                setCollapse={isCollapse}
+                onShowTestPreview={this.showTestPreviewModal}
+              />
             </SecondHeader>
-            <Paper>
+            <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable
                   items={test.testItems}
                   setSelected={this.setSelected}
                   selected={selected}
+                  isEditable={isEditable}
                   handlePreview={this.handlePreviewTestItem}
                 />
               ) : (
@@ -286,7 +296,7 @@ class Review extends PureComponent {
                   onSortEnd={this.moveTestItems}
                   types={types}
                   owner={owner}
-                  readOnlyMode={readOnlyMode}
+                  isEditable={isEditable}
                   scoring={test.scoring}
                   questions={questions}
                   mobile={!isSmallSize}
@@ -307,7 +317,7 @@ class Review extends PureComponent {
               grades={grades}
               subjects={subjects}
               owner={owner}
-              readOnlyMode={readOnlyMode}
+              isEditable={isEditable}
               summary={test.summary || {}}
               onChangeField={this.handleChangeField}
               thumbnail={test.thumbnail}
@@ -322,7 +332,7 @@ class Review extends PureComponent {
           isVisible={isModalVisible}
           onClose={this.closeModal}
           showModal={true}
-          readOnlyMode={readOnlyMode}
+          isEditable={isEditable}
           owner={owner}
           addDuplicate={this.handleDuplicateItem}
           page="review"
@@ -374,7 +384,8 @@ const enhance = compose(
       setData: setTestDataAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
-      showAnswer: previewShowAnswerAction
+      showAnswer: previewShowAnswerAction,
+      clearAnswer: clearAnswersAction
     }
   )
 );

@@ -42,6 +42,14 @@ export const StyledCard = styled(Card)`
       padding: 18px;
     }
   }
+
+  @media print {
+    box-shadow: none !important;
+
+    .ant-card-body {
+      padding: 0px !important;
+    }
+  }
 `;
 
 export const StyledContainer = styled.div`
@@ -178,12 +186,14 @@ export const StyledSlider = styled(Slider)`
     height: 12px;
     border-radius: 6px;
     background-color: #e1e1e1;
+    -webkit-print-color-adjust: exact;
   }
 
   .ant-slider-track {
     height: 12px;
     border-radius: 6px;
     background-color: #69c0ff;
+    -webkit-print-color-adjust: exact;
   }
 
   .ant-slider-step {
@@ -212,4 +222,18 @@ export const StyledAxisTickText = styled(Text)`
 
 export const StyledText = styled.text`
   font-size: 12px;
+`;
+
+export const PrintableScreen = styled.div`
+  @media print {
+    width: 1024px;
+
+    .fixed-header,
+    .navigator-tabs-container,
+    .ant-pagination,
+    .single-assessment-report-go-button-container,
+    .anticon-caret-down {
+      display: none;
+    }
+  }
 `;

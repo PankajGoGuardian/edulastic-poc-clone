@@ -60,12 +60,14 @@ function* receiveCreateFolderRequest({ payload }) {
 function* receiveAddMoveFolderRequest({ payload }) {
   try {
     const { folderId, params = [] } = payload;
-    const showNamesInMsg = params[0].assignmentsNameList.join(", ");
+    const assignmentNamesCount = params[0].assignmentsNameList.length || 0;
+    const showNamesInMsg =
+      assignmentNamesCount > 1 ? `${assignmentNamesCount} assignments were` : `${params[0].assignmentsNameList} was`;
     const moveFolderName = params[0].folderName;
     const folderDetails = params.map(i => omit(i, ["assignmentsNameList", "folderName"]));
 
     const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });
-    const successMsg = `${showNamesInMsg} was successfully moved to ${moveFolderName} folder`;
+    const successMsg = `${showNamesInMsg} successfully moved to ${moveFolderName} folder`;
     yield call(message.success, successMsg);
     yield put({
       type: ADD_MOVE_FOLDER_SUCCESS,
@@ -105,7 +107,7 @@ function* receiveRenameFolderRequest({ payload }) {
   try {
     const { folderId, folderName } = payload;
     const success = yield call(folderApi.renameFolder, { folderId, data: { folderName } });
-    const successMsg = `Folder name successfully updated to ${folderName}`;
+    const successMsg = `Folder name successfully updated to "${folderName}"`;
     yield call(message.success, successMsg);
     yield put({
       type: RENAME_FOLDER_SUCCESS,

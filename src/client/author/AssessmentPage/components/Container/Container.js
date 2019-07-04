@@ -8,7 +8,7 @@ import { isEmpty, get } from "lodash";
 
 import { white } from "@edulastic/colors";
 import { IconSelected, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
-
+import { questionType } from "@edulastic/constants";
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -121,9 +121,10 @@ class Container extends React.Component {
 
     const [testItem] = assessment.testItems;
     const testItemId = typeof testItem === "object" ? testItem._id : testItem;
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
 
-    const resources = assessmentQuestions.filter(q => q.type === "sectionLabel");
-    const questions = assessmentQuestions.filter(q => q.type !== "sectionLabel");
+    const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
+    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
 
     const updatedTestItem = {
       ...currentTestItem,

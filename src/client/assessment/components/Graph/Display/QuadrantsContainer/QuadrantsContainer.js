@@ -110,6 +110,16 @@ const getColoredAnswer = answerArr => {
   return answerArr;
 };
 
+const getCorrectAnswer = answerArr => {
+  if (Array.isArray(answerArr)) {
+    return answerArr.map(el => ({
+      colors: Colors.green[el.type],
+      ...el
+    }));
+  }
+  return answerArr;
+};
+
 const getCompareResult = evaluation => {
   if (!evaluation) {
     return null;
@@ -433,7 +443,7 @@ class GraphContainer extends PureComponent {
 
     if (showAnswer) {
       this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(getColoredAnswer(elements));
+      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements));
       return;
     }
 

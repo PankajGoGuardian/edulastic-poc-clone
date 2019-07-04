@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { BarChart, XAxis, YAxis, Bar, CartesianGrid, LabelList, ResponsiveContainer } from "recharts";
+import { BarChart, XAxis, YAxis, Bar, CartesianGrid, LabelList, ResponsiveContainer, Tooltip } from "recharts";
 
 import { secondaryTextColor } from "@edulastic/colors";
 
@@ -14,7 +14,8 @@ const SimpleBarChart = ({
   onBarClick,
   renderBarCells,
   formatScore,
-  ticks
+  ticks,
+  renderTooltip
 }) => {
   const renderLabel = ({ x, y, width, value }) => (
     <text x={x + width / 2} y={y - 10} textAnchor="middle" fill={secondaryTextColor}>
@@ -28,6 +29,7 @@ const SimpleBarChart = ({
         <CartesianGrid vertical={false} />
         <XAxis dataKey={xDataKey} tickFormatter={xTickFormatter} />
         <YAxis label={yLabel} tickFormatter={yTickFormatter} ticks={ticks} interval={0} />
+        <Tooltip content={renderTooltip} cursor={false} />
         <Bar dataKey={barDataKey} barSize={60} onClick={onBarClick}>
           <LabelList dataKey={barDataKey} position="top" content={renderLabel} />
           {renderBarCells(data)}
@@ -47,11 +49,13 @@ SimpleBarChart.propTypes = {
   onBarClick: PropTypes.func.isRequired,
   renderBarCells: PropTypes.func.isRequired,
   formatScore: PropTypes.func.isRequired,
-  ticks: PropTypes.array
+  ticks: PropTypes.array,
+  renderTooltip: PropTypes.func
 };
 
 SimpleBarChart.defaultProps = {
-  ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+  ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+  tooltip: () => null
 };
 
 export default SimpleBarChart;

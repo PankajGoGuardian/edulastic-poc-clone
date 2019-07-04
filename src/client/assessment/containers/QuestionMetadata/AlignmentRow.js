@@ -37,7 +37,7 @@ const AlignmentRow = ({
   recentStandardsList = [],
   clearStandards
 }) => {
-  const { subject, curriculumId, curriculum, grades, standards = [] } = alignment;
+  const { subject, curriculumId, curriculum, grades = [], standards = [] } = alignment;
   const [showModal, setShowModal] = useState(false);
   const setSubject = val => {
     storeInLocalStorage("defaultSubject", val);
@@ -52,6 +52,8 @@ const AlignmentRow = ({
 
   const handleChangeStandard = (curriculum, event) => {
     const curriculumId = event.key;
+    storeInLocalStorage("defaultCurriculumSelected", curriculum);
+    storeInLocalStorage("defaultCurriculumIdSelected", curriculumId);
     editAlignment(alignmentIndex, { curriculumId, curriculum, standards: [] });
   };
 
@@ -65,7 +67,7 @@ const AlignmentRow = ({
     recentStandardsList = recentStandardsList.filter(recentStandard => recentStandard._id !== newStandard._id);
     recentStandardsList.unshift(newStandard);
     if (recentStandardsList.length > 10) {
-      recentStandardsList.splice(0, 10);
+      recentStandardsList = recentStandardsList.splice(0, 10);
     }
     updateRecentStandardsList({ recentStandards: recentStandardsList });
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
@@ -185,7 +187,9 @@ const AlignmentRow = ({
             <Col md={7}>
               <CustomTreeSelect
                 data-cy="subjectStandardSet"
-                title={`${curriculum}${curriculum ? "-" : ""}Grades-${grades}`}
+                title={`${curriculum}${curriculum && grades.length ? " - " : ""}${grades.length ? "Grade - " : ""}${
+                  grades.length ? grades : ""
+                }`}
                 style={{ marginTop: 11 }}
               >
                 <Fragment>
@@ -287,19 +291,21 @@ const AlignmentRow = ({
                     ))}
                 </Select>
               </ItemBody>
-              <StandardsWrapper>
-                Recently Used:
-                {recentStandardsList &&
-                  recentStandardsList.map(recentStandard => (
-                    <StandardTags
-                      onClick={() => {
-                        handleAddStandard(recentStandard);
-                      }}
-                    >
-                      {recentStandard.identifier}
-                    </StandardTags>
-                  ))}
-              </StandardsWrapper>
+              {recentStandardsList && recentStandardsList.length > 0 && (
+                <StandardsWrapper>
+                  Recently Used:
+                  {recentStandardsList &&
+                    recentStandardsList.map(recentStandard => (
+                      <StandardTags
+                        onClick={() => {
+                          handleAddStandard(recentStandard);
+                        }}
+                      >
+                        {recentStandard.identifier}
+                      </StandardTags>
+                    ))}
+                </StandardsWrapper>
+              )}
             </Col>
           </Row>
         </Col>

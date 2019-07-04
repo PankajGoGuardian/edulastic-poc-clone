@@ -124,7 +124,7 @@ class ComposeQuestion extends Component {
           value={item.stimulus}
           toolbarId={toolbarId}
           onChange={this.onChangeQuestion}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

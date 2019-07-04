@@ -95,7 +95,7 @@ class ComposeQuestion extends Component {
           onChange={this.onChangeQuestion}
           toolbarId="stimulus-input"
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

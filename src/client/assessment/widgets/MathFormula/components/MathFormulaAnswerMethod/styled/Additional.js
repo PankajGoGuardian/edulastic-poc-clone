@@ -36,7 +36,7 @@ export const AdditionalCompareUsing = styled.div`
     display: flex;
     align-items: center;
   }
-
+  flex: 3;
   label {
     margin: 0 auto 0 6px;
   }

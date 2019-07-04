@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
-import { assignmentPolicyOptions } from "@edulastic/constants";
+import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
 import { getCurrentSchool, fetchUser, getUserRole } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
@@ -19,6 +19,7 @@ import {
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 
+const { COMMON, ASSESSMENT } = testConst.type;
 const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
 // constants
 export const FILTERS = {
@@ -161,7 +162,7 @@ function* startAssignment({ payload }) {
       testId
     });
     // set Activity id
-    yield put(push(`/student/${testType}/${testId}/uta/${testActivityId}/qid/0`));
+    yield put(push(`/student/${testType === COMMON ? ASSESSMENT : testType}/${testId}/uta/${testActivityId}/qid/0`));
 
     // TODO:load previous responses if resume!!
   } catch (e) {
@@ -180,7 +181,7 @@ function* resumeAssignment({ payload }) {
     }
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));
-    yield put(push(`/student/${testType}/${testId}/uta/${testActivityId}/qid/0`));
+    yield put(push(`/student/${testType === COMMON ? ASSESSMENT : testType}/${testId}/uta/${testActivityId}/qid/0`));
   } catch (e) {
     console.log(e);
   }
@@ -254,7 +255,7 @@ export function* watcherSaga() {
 }
 
 // selectors
-const assignmentsSelector = state => state.studentAssignment.byId;
+export const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 
 export const filterSelector = state => state.studentAssignment.filter;
@@ -280,7 +281,7 @@ export const isLiveAssignment = (assignment, currentGroup, classIds) => {
   let lastAttempt = last(assignment.reports) || {};
   let { endDate, class: groups = [] } = assignment;
   //when attempts over no need to check for any other condition to hide assignment from assignments page
-  if ((maxAttempts <= attempts && lastAttempt.status !== 0) || lastAttempt.status === 2) return false;
+  if (maxAttempts <= attempts && (lastAttempt.status !== 0 || lastAttempt.status === 2)) return false;
   if (!endDate) {
     endDate = (_maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
       .endDate;

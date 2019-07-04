@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 const Main = styled.main`
   background-color: ${props => props.theme.mainBgColor};
-  padding: ${props => (props.skin ? "90px 0 0" : "110px 0 0 140px")};
+  padding: ${props => (props.skin ? "102px 40px 40px" : "110px 0 0 140px")};
   display: ${props => (props.skin ? "block" : "flex")};
   flex-direction: ${props => (props.skin ? "initial" : "row")};
   min-height: ${props => (props.skin ? "0" : "100vh")};

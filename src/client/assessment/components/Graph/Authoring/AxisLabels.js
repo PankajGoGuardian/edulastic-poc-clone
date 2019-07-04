@@ -100,7 +100,7 @@ class GraphAxisLabels extends Component {
             onChange={this.onChangeQuestion}
             value={stimulus}
             firstFocus={firstMount}
-            theme="border"
+            border="border"
           />
         </QuestionSection>
 

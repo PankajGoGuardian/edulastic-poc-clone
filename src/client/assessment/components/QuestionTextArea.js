@@ -10,8 +10,8 @@ const QuestionTextArea = ({
   placeholder,
   toolbarSize,
   additionalToolbarOptions,
-  readOnly,
-  theme
+  border,
+  readOnly
 }) => (
   <FroalaEditor
     placeholder={placeholder}
@@ -21,8 +21,8 @@ const QuestionTextArea = ({
     toolbarSize={toolbarSize}
     additionalToolbarOptions={additionalToolbarOptions}
     data-cy="compose-question-quill-component"
+    border={border}
     readOnly={readOnly}
-    theme={theme}
   />
 );
 
@@ -34,7 +34,7 @@ QuestionTextArea.propTypes = {
   additionalToolbarOptions: PropTypes.array,
   placeholder: PropTypes.string,
   readOnly: PropTypes.bool,
-  theme: PropTypes.string
+  border: PropTypes.string
 };
 
 QuestionTextArea.defaultProps = {
@@ -43,7 +43,7 @@ QuestionTextArea.defaultProps = {
   additionalToolbarOptions: [],
   placeholder: "Enter a question",
   readOnly: false,
-  theme: "default"
+  border: "none"
 };
 
 export default memo(QuestionTextArea);

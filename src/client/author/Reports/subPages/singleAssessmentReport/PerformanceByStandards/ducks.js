@@ -25,36 +25,27 @@ export const defaultReport = {
 };
 
 const initialState = {
-  report: defaultReport,
+  performanceByStandards: defaultReport,
   loading: true,
   error: undefined
 };
 
-const getPerformanceByStandardsRequest = state => ({
-  ...state,
-  loading: true
-});
-
-const getPerformanceByStandardsSuccess = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  error: undefined,
-  report: payload
-});
-
-const getPerformanceByStandardsError = (state, { payload: { error } }) => ({
-  ...state,
-  loading: false,
-  error
-});
-
 export const reportPerformanceByStandardsReducer = createReducer(initialState, {
-  [GET_PERFORMANCE_BY_STANDARDS_REQUEST]: getPerformanceByStandardsRequest,
-  [GET_PERFORMANCE_BY_STANDARDS_SUCCESS]: getPerformanceByStandardsSuccess,
-  [GET_PERFORMANCE_BY_STANDARDS_ERROR]: getPerformanceByStandardsError
+  [GET_PERFORMANCE_BY_STANDARDS_REQUEST]: (state, { payload }) => {
+    state.loading = true;
+  },
+  [GET_PERFORMANCE_BY_STANDARDS_SUCCESS]: (state, { payload }) => {
+    state.loading = false;
+    state.error = undefined;
+    state.performanceByStandards = payload.report;
+  },
+  [GET_PERFORMANCE_BY_STANDARDS_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    state.error = payload.error;
+  }
 });
 
-const stateSelector = state => state.reportPerformanceByStandards;
+const stateSelector = state => state.reportPerformanceByStandardsReducer;
 
 export const getPerformanceByStandardsLoadingSelector = createSelector(
   stateSelector,
@@ -68,7 +59,7 @@ export const getPerformanceByStandardsErrorSelector = createSelector(
 
 export const getPerformanceByStandardsReportSelector = createSelector(
   stateSelector,
-  state => state.report
+  state => state.performanceByStandards
 );
 
 function* getPerformanceByStandardsSaga({ payload }) {
@@ -81,7 +72,7 @@ function* getPerformanceByStandardsSaga({ payload }) {
 
     const report = isEmpty(result) ? defaultReport : result;
 
-    yield put(getPerformanceByStandardsSuccessAction(report));
+    yield put(getPerformanceByStandardsSuccessAction({ report }));
   } catch (error) {
     yield call(message.error, errorMessage);
     yield put(getPerformanceByStandardsErrorAction({ error: errorMessage }));

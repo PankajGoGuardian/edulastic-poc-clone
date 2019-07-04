@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
-import { isUndefined, get } from "lodash";
+import { isUndefined, get, maxBy } from "lodash";
 import { helpers, Stimulus } from "@edulastic/common";
 
-import { clozeImage, canvasDimensions } from "@edulastic/constants";
+import { clozeImage } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
 
 // import { FaSellcast } from "react-icons/fa";
@@ -117,6 +117,13 @@ class Display extends Component {
     return maxHeight;
   };
 
+  getResponseBoxMaxValues = () => {
+    const { responseContainers } = this.props;
+    const maxTop = maxBy(responseContainers, response => response.top);
+    const maxLeft = maxBy(responseContainers, response => response.left);
+    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+  };
+
   render() {
     const {
       question,
@@ -154,18 +161,28 @@ class Display extends Component {
 
     const imageWidth = this.getWidth();
     const imageHeight = this.getHeight();
-    const canvasHeight = imageHeight + (imageOptions.y || 0);
-    const canvasWidth = imageWidth + +(imageOptions.x || 0);
+    let canvasHeight = imageHeight + (imageOptions.y || 0);
+    let canvasWidth = imageWidth + (imageOptions.x || 0);
+
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+
+    if (canvasHeight < responseBoxMaxTop) {
+      canvasHeight = responseBoxMaxTop + 20;
+    }
+
+    if (canvasWidth < responseBoxMaxLeft) {
+      canvasWidth = responseBoxMaxLeft;
+    }
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         fontSize={fontSize}
-        height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
+        height={canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight}
       >
         <StyledPreviewContainer
           data-cy="image-text-answer-board"
-          width={canvasWidth > canvasDimensions.maxWidth ? canvasWidth : canvasDimensions.maxWidth}
-          height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
+          width={canvasWidth > clozeImage.maxWidth ? canvasWidth : clozeImage.maxWidth}
+          height={canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight}
         >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
@@ -223,6 +240,7 @@ class Display extends Component {
                   index={dropTargetIndex}
                   disabled={disableResponse}
                   noIndent={responseWidth < 30}
+                  lessPadding={responseWidth <= 35}
                   resprops={{
                     btnStyle: {},
                     item,

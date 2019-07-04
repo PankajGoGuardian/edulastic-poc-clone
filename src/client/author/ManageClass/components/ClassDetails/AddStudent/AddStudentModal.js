@@ -20,7 +20,6 @@ class AddStudentModal extends React.Component {
     foundUserId: ""
   };
 
-
   setIsUpdate = payload => {
     this.setState({
       ...this.state,
@@ -33,7 +32,6 @@ class AddStudentModal extends React.Component {
       foundUserId: payload
     });
   };
-
 
   enrollStudent = async () => {
     const { selectedClass, orgData, loadStudents, handleCancel } = this.props;

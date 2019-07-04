@@ -1,13 +1,12 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
-
-import { FlexContainer } from "@edulastic/common";
+import { get } from "lodash";
+import { FlexContainer, AnswerContext } from "@edulastic/common";
 
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
 import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionIndex, QuestionCheckbox } from "./styled";
-import { get } from "lodash";
 
 const transformItemRow = ([row], qid) => [
   {
@@ -23,10 +22,13 @@ const transformItemRow = ([row], qid) => [
 ];
 
 const splitItems = (item, testItem) => {
-  return testItem.data.questions.map(({ id: qid, ...qRest }) => ({
-    item: transformItemRow(item, qid),
-    question: { id: qid, ...qRest }
-  }));
+  return (
+    testItem.data &&
+    testItem.data.questions.map(({ id: qid, ...qRest }) => ({
+      item: transformItemRow(item, qid),
+      question: { id: qid, ...qRest }
+    }))
+  );
 };
 
 const SortableItem = SortableElement(
@@ -36,7 +38,7 @@ const SortableItem = SortableElement(
     item,
     testItem,
     onCheck,
-    readOnlyMode = false,
+    isEditable = false,
     points,
     onChangePoints,
     owner,
@@ -51,17 +53,20 @@ const SortableItem = SortableElement(
      * @type {{item:Object,question:Object}[]}
      */
     const items = testItem.itemLevelScoring
-      ? [{ item, question: testItem.data.questions[0] }]
+      ? [{ item, question: (testItem.data && testItem.data.questions[0]) || {} }]
       : splitItems(item, testItem);
+
     return (
       <TestItemWrapper data-cy={metaInfoData.id}>
         {mobile ? (
           <FlexContainer flexDirection="column" alignItems="flex-start">
             <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
-              <FlexContainer flexDirection="column" justifyContent="center">
-                <DragHandle />
-                <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
-              </FlexContainer>
+              {isEditable && (
+                <FlexContainer flexDirection="column" justifyContent="center">
+                  <DragHandle />
+                  <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
+                </FlexContainer>
+              )}
 
               <FlexContainer>
                 <PreviewButton data-cy="previewButton" onClick={() => onPreview(metaInfoData.id)}>
@@ -73,7 +78,7 @@ const SortableItem = SortableElement(
                     data-cy="points"
                     size="large"
                     type="number"
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     value={points}
                     onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                   />
@@ -81,18 +86,20 @@ const SortableItem = SortableElement(
               </FlexContainer>
             </FlexContainer>
             <FlexContainer>
-              <TestItemPreview
-                style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
-                cols={item}
-                metaData={metaInfoData.id}
-                previewTab="clear"
-                verticalDivider={item.verticalDivider}
-                disableResponse
-                scrolling={item.scrolling}
-                questions={questions}
-                windowWidth="100%"
-                isReviewTab
-              />
+              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                <TestItemPreview
+                  style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex" }}
+                  cols={item}
+                  metaData={metaInfoData.id}
+                  previewTab="clear"
+                  verticalDivider={item.verticalDivider}
+                  disableResponse
+                  scrolling={item.scrolling}
+                  questions={questions}
+                  windowWidth="100%"
+                  isReviewTab
+                />
+              </AnswerContext.Provider>
             </FlexContainer>
           </FlexContainer>
         ) : (
@@ -101,26 +108,27 @@ const SortableItem = SortableElement(
               <FlexContainer justifyContent="space-between" alignItems="flex-start">
                 <FlexContainer alignItems="flex-start" style={{ flex: 3 }}>
                   <FlexContainer
-                    style={{ visibility: index === 0 ? "visible" : "hidden", flex: 1 }}
+                    style={{ marginTop: 30, visibility: index === 0 ? "visible" : "hidden", flex: 1 }}
                     flexDirection="column"
                     justifyContent="center"
                   >
                     {index === 0 && <DragHandle />}
-                    <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
+                    {isEditable && <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />}
                   </FlexContainer>
-
-                  <TestItemPreview
-                    style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
-                    cols={_item}
-                    previewTab="clear"
-                    metaData={metaInfoData.id}
-                    disableResponse
-                    verticalDivider={item.verticalDivider}
-                    scrolling={item.scrolling}
-                    questions={questions}
-                    windowWidth="100%"
-                    isReviewTab
-                  />
+                  <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                    <TestItemPreview
+                      style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
+                      cols={_item}
+                      previewTab="clear"
+                      metaData={metaInfoData.id}
+                      disableResponse
+                      verticalDivider={item.verticalDivider}
+                      scrolling={item.scrolling}
+                      questions={questions}
+                      windowWidth="100%"
+                      isReviewTab
+                    />
+                  </AnswerContext.Provider>
                 </FlexContainer>
                 <FlexContainer style={{ flex: 1 }}>
                   {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
@@ -129,7 +137,7 @@ const SortableItem = SortableElement(
                     <PointsInput
                       size="large"
                       type="number"
-                      disabled={!owner || readOnlyMode}
+                      disabled={!owner || !isEditable}
                       value={
                         testItem.itemLevelScoring
                           ? testItem.itemLevelScore
@@ -159,7 +167,7 @@ const List = SortableContainer(
     testItems,
     onChangePoints,
     types,
-    readOnlyMode = false,
+    isEditable = false,
     standards,
     scoring,
     onPreview,
@@ -206,7 +214,7 @@ const List = SortableContainer(
             key={i}
             metaInfoData={{
               id: testItems[i]._id,
-              by: testItems[i].authors[0].name,
+              by: testItems[i].createdBy.name,
               shared: "0",
               likes: "0",
               types: types[testItems[i]._id],
@@ -216,7 +224,7 @@ const List = SortableContainer(
             index={i}
             owner={owner}
             indx={i}
-            readOnlyMode={readOnlyMode}
+            isEditable={isEditable}
             item={item}
             testItem={testItems[i]}
             points={getPoints(i)}
@@ -241,7 +249,7 @@ List.propTypes = {
   onPreview: PropTypes.func.isRequired,
   testItems: PropTypes.array.isRequired,
   types: PropTypes.any.isRequired,
-  readOnlyMode: PropTypes.bool,
+  isEditable: PropTypes.bool,
   standards: PropTypes.object.isRequired,
   scoring: PropTypes.object.isRequired,
   owner: PropTypes.bool,

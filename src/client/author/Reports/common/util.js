@@ -17,13 +17,13 @@ export const getStandardDeviation = variance => {
   return Number(Math.sqrt(variance, 2).toFixed(2));
 };
 
-export const getHSLFromRange1 = val => {
-  return `hsla(${val}, 100%, 79%, 1)`;
+export const getHSLFromRange1 = (val, light = 79) => {
+  return `hsla(${val}, 100%, ${light}%, 1)`;
 };
 
-export const getHSLFromRange2 = val => {
+export const getHSLFromRange2 = (val, light = 48) => {
   let tmp = val / 2;
-  return `hsla(${tmp}, 100%, 48%, 1)`;
+  return getHSLFromRange1(tmp, light);
 };
 
 export const isMobileScreen = () => {

@@ -257,7 +257,6 @@ class InviteMultipleStudentModal extends Component {
     }
 
     return (
-
       <>
         <Modal
           visible={modalVisible}
@@ -267,7 +266,7 @@ class InviteMultipleStudentModal extends Component {
           footer={null}
         >
           <Tabs defaultActiveKey="1">
-            <TabPane tab="Add students" key="1">
+            <TabPane tab="Add Multiple Students" key="1">
               <Row>
                 <Col span={24}>
                   Add Students by typing or paste one or more student(s) names. User separate lines or semi-colon to add
@@ -312,7 +311,7 @@ class InviteMultipleStudentModal extends Component {
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab="Seach existing students and add" key="2">
+            <TabPane tab="Search Existing Students and Add" key="2">
               <Row>Search and select existing students from your district and add</Row>
               <Row>
                 <Search
@@ -370,7 +369,6 @@ class InviteMultipleStudentModal extends Component {
           ,
         </Modal>
       </>
-
     );
   }
 }

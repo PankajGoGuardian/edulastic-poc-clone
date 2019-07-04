@@ -24,7 +24,7 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
 
   const getCenterX = index => step * index + margin / 2 + padding;
 
-  const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
+  const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + 20;
 
   const handleMouse = index => () => {
     handleMouseAction(index)();
@@ -105,7 +105,7 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
               height={isHovered(index) ? 5 : 1}
             />
           )}
-          <Text textAnchor="middle" x={getCenterX(index) + (step - 2) / 2} y={height}>
+          <Text textAnchor="middle" x={getCenterX(index) + (step - 2) / 2} y={height + 20}>
             {dot.x}
           </Text>
         </Fragment>

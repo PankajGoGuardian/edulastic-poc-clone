@@ -6,6 +6,7 @@ import { Row, Col } from "antd";
 import { find } from "lodash";
 import { ResponseTag } from "./responseTag";
 import { getHSLFromRange1 } from "../../../../../common/util";
+import PrintableTable from "../../../../../common/components/tables/PrintableTable";
 
 export class ResponseFrequencyTable extends Component {
   constructor(props) {
@@ -217,7 +218,12 @@ export class ResponseFrequencyTable extends Component {
         <Row type="flex" justify="start" className="table-tag-container">
           {arr.map((data, i) => {
             return (
-              <ResponseTag key={i} data={data} incorrectFrequencyThreshold={this.props.incorrectFrequencyThreshold} />
+              <ResponseTag
+                isPrinting={this.props.isPrinting}
+                key={i}
+                data={data}
+                incorrectFrequencyThreshold={this.props.incorrectFrequencyThreshold}
+              />
             );
           })}
         </Row>
@@ -241,7 +247,13 @@ export class ResponseFrequencyTable extends Component {
   render() {
     return (
       <StyledCard className="response-frequency-table">
-        <StyledTable columns={this.columns} dataSource={this.props.data} rowKey="uid" />
+        <PrintableTable
+          isPrinting={this.props.isPrinting}
+          component={StyledTable}
+          columns={this.columns}
+          dataSource={this.props.data}
+          rowKey="uid"
+        />
       </StyledCard>
     );
   }

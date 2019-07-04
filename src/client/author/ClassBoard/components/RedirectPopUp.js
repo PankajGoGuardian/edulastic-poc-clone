@@ -127,6 +127,9 @@ const RedirectPopUp = ({
         <Col span={24}>
           <Row>
             <Select
+              showSearch
+              optionFilterProp="children"
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               mode="multiple"
               disabled={type !== "specificStudents"}
               style={{ width: "100%" }}

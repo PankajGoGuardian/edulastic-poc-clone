@@ -69,7 +69,8 @@ const OrderList = ({
   cleanSections,
   theme,
   disableResponse,
-  t
+  t,
+  changePreviewTab
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
@@ -103,6 +104,7 @@ const OrderList = ({
 
   const onSortPreviewEnd = ({ oldIndex, newIndex }) => {
     const newPreviewList = arrayMove(userAnswer, oldIndex, newIndex);
+    changePreviewTab();
 
     saveAnswer(newPreviewList);
   };
@@ -184,7 +186,7 @@ const OrderList = ({
     itemForPreview.validation.alt_responses &&
     itemForPreview.validation.alt_responses.length > 0;
 
-  let alternateAnswers = {};
+  const alternateAnswers = {};
 
   if (hasAltAnswers) {
     const altAnswers = itemForPreview.validation.alt_responses;
@@ -198,6 +200,23 @@ const OrderList = ({
     });
   }
   const initialAnswers = disableResponse ? correctAnswers : userAnswer;
+
+  const evaluationFromAnswers = userAnswer.map((answer, index) => {
+    if (answer === correctAnswers[index]) {
+      return true;
+    }
+
+    if (hasAltAnswers) {
+      for (const altAnswers of itemForPreview.validation.alt_responses) {
+        if (altAnswers.value[index] === answer) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  });
+
   return (
     <Fragment>
       {view === EDIT && (
@@ -253,7 +272,7 @@ const OrderList = ({
                 onSortEnd={onSortPreviewEnd}
                 questionsList={itemForPreview.list}
                 previewIndexesList={userAnswer}
-                evaluation={evaluation || (item && item.activity ? item.activity.evaluation : evaluation)}
+                evaluation={evaluationFromAnswers}
                 validation={itemForPreview.validation}
                 list={itemForPreview.list}
                 listStyle={{ fontSize }}

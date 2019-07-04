@@ -14,7 +14,7 @@ import Modal from "react-responsive-modal";
 export const Container = styled.div`
   width: 280px;
   height: 100%;
-
+  overflow: auto;
   @media (max-width: ${desktopWidth}) {
     width: 100%;
   }

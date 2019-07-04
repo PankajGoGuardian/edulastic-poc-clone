@@ -28,7 +28,7 @@ const { Option } = Select;
 
 const SchoolDropDownItemTemplate = ({ itemData: school }) => {
   const { address, location } = school;
-  const schoolLocation = address || location;
+  const schoolLocation = address || location || {};
 
   return (
     <OptionBody>
@@ -36,7 +36,7 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
         <span>{school.schoolName || school.name}</span>
         {`${schoolLocation.city ? schoolLocation.city + ", " : ""} ${
           schoolLocation.state ? schoolLocation.state + ", " : ""
-        } ${schoolLocation.zip}`}
+        } ${schoolLocation.zip ? schoolLocation.zip : ""}`}
       </SchoolInfo>
       <DistrictInfo>
         <span>District:</span>
@@ -74,6 +74,8 @@ const JoinSchool = ({
   const autoCompleteRef = useRef(null);
 
   const toggleModal = () => setShowModal(!showModal);
+
+  const schoolIcon = "//cdn.edulastic.com/JS/webresources/images/as/signup-join-school-icon.png";
 
   const changeSchool = value => {
     const _school = find(schools, item => item.schoolId === value.key);
@@ -155,25 +157,23 @@ const JoinSchool = ({
         ...item,
         title: item.schoolName,
         key: item.schoolId,
-        zip: item.address.zip,
-        city: item.address.city
+        zip: get(item, "address.zip", ""),
+        city: get(item, "address.city", "")
       };
     });
   }, [schools]);
 
   return (
     <>
-      <JoinSchoolBody type="flex" align="middle">
+      <JoinSchoolBody>
         <Col xs={18} offset={3}>
           <Row type="flex" align="middle">
             <BannerText md={12}>
-              <SchoolIcon />
+              <SchoolIcon src={schoolIcon} alt="" />
               <h3>
                 Join your school <br /> community
               </h3>
-              <div>
-                Collaborate with your colleagues <br /> and more
-              </div>
+              <div>Collaborate with your colleagues and more</div>
             </BannerText>
             <Col md={12}>
               <SelectForm>
@@ -254,13 +254,15 @@ const enhance = compose(
 export default enhance(JoinSchool);
 
 const JoinSchoolBody = styled(Row)`
-  margin-top: 80px;
+  padding-top: 80px;
+  background: white;
+  height: calc(100vh - 93px);
 `;
 
 const BannerText = styled(Col)`
   text-align: center;
   h3 {
-    font-size: 46px;
+    font-size: 36px;
     line-height: 1.3;
     letter-spacing: -2px;
     font-weight: 700;
@@ -310,9 +312,9 @@ const AnchorBtn = styled.div`
   cursor: pointer;
 `;
 
-const SchoolIcon = styled(IconHeader)`
-  width: 119px;
-  height: 21px;
+const SchoolIcon = styled.img`
+  width: 80px;
+  margin-bottom: 10px;
 `;
 
 const SchoolSelect = styled(Select)`

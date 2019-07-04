@@ -14,7 +14,7 @@ const exactMatchEvaluator = ({ userResponse = [], answers }) => {
 
   answers.forEach(({ score: totalScore, value: answer }) => {
     const currentAnswer = answer.filter(ans => ans.selected).map(ans => ans.index);
-    if (isEqual(currentAnswer, userAnswer)) {
+    if (currentAnswer.length && isEqual(currentAnswer, userAnswer)) {
       score = Math.max(score, totalScore);
     }
 

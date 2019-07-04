@@ -22,6 +22,7 @@ import {
   FlexShareWithBox,
   IconWrapper,
   TitleCopy,
+  ShareUrlDiv,
   ImageWrapper
 } from "./styled";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
@@ -168,7 +169,11 @@ class SuccessPage extends React.Component {
                 <b>{title}</b>&nbsp; has been added to your &nbsp;<b> Private Library</b>.
               </FlexTextWrapper>
               <FlexText>
-                Click on &nbsp;<span style={{ color: blue }}>Edit</span>&nbsp; icon to share it with your colleagues.
+                Click on &nbsp;
+                <span onClick={this.onShareModalChange} style={{ color: blue, cursor: "pointer" }}>
+                  Edit
+                </span>
+                &nbsp; icon to share it with your colleagues.
               </FlexText>
               <FlexShareContainer>
                 <FlexShareTitle>Shared With</FlexShareTitle>
@@ -183,7 +188,9 @@ class SuccessPage extends React.Component {
                 </FlexShareWithBox>
                 <FlexShareTitle>Share</FlexShareTitle>
                 <FlexShareBox>
-                  <TitleCopy copyable>{shareUrl}</TitleCopy>
+                  <TitleCopy copyable={{ text: shareUrl }}>
+                    <ShareUrlDiv title={shareUrl}>{shareUrl}</ShareUrlDiv>
+                  </TitleCopy>
                 </FlexShareBox>
               </FlexShareContainer>
             </FlexContainerWrapperRight>

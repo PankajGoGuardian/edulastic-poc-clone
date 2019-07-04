@@ -12,6 +12,7 @@ import { withRouter } from "react-router-dom";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi } from "@edulastic/api";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
+import { addTestItemAction } from "../../../../TestPage/ducks";
 import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
@@ -50,19 +51,12 @@ class PreviewModal extends React.Component {
     clearAnswers();
   };
 
-  handleDuplicateTestItem = () => {
-    const { data, history, match, addDuplicate } = this.props;
+  handleDuplicateTestItem = async () => {
+    const { data, addTestItemToList } = this.props;
     const itemId = data.id;
-    const { path } = match;
-    duplicateTestItem(itemId).then(duplicateId => {
-      const duplicateTestItemId = duplicateId._id;
-      if (path.includes("tests")) {
-        this.closeModal();
-        addDuplicate(duplicateTestItemId);
-      } else {
-        history.push(`/author/items/${duplicateTestItemId}/item-detail`);
-      }
-    });
+    this.closeModal();
+    const duplicatedItem = await duplicateTestItem(itemId);
+    addTestItemToList(duplicatedItem);
   };
 
   editTestItem = () => {
@@ -88,7 +82,7 @@ class PreviewModal extends React.Component {
       loading,
       item = { rows: [], data: {}, authors: [] },
       currentAuthorId,
-      readOnlyMode = false,
+      isEditable = false,
       checkAnswer,
       showAnswer,
       preview,
@@ -108,7 +102,7 @@ class PreviewModal extends React.Component {
           {showEvaluationButtons && (
             <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
               <ButtonsWrapper>
-                {allowDuplicate && !readOnlyMode && (
+                {allowDuplicate && isEditable && (
                   <EduButton
                     title="Duplicate"
                     style={{ width: 42, padding: 0 }}
@@ -118,7 +112,7 @@ class PreviewModal extends React.Component {
                     <IconDuplicate color="#00AD50" />
                   </EduButton>
                 )}
-                {authorHasPermission && !readOnlyMode && (
+                {authorHasPermission && isEditable && (
                   <EduButton
                     title="Edit Test"
                     style={{ width: 42, padding: 0 }}
@@ -161,7 +155,7 @@ PreviewModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
-  readOnlyMode: PropTypes.bool,
+  isEditable: PropTypes.bool,
   owner: PropTypes.bool,
   addDuplicate: PropTypes.func,
   showModal: PropTypes.bool,
@@ -189,7 +183,8 @@ const enhance = compose(
     }),
     {
       changeView: changePreviewAction,
-      clearAnswers: clearAnswersAction
+      clearAnswers: clearAnswersAction,
+      addTestItemToList: addTestItemAction
     }
   )
 );

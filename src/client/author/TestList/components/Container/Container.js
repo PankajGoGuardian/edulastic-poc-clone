@@ -10,7 +10,6 @@ import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
 import { grey, white } from "@edulastic/colors";
-import { uniq } from "lodash";
 import {
   ScrollBox,
   Container,
@@ -40,7 +39,7 @@ import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction
 } from "../../ducks";
-import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
+import { getTestsCreatingSelector, clearTestDataAction, clearCreatedItemsAction } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
@@ -60,6 +59,7 @@ import {
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
 import {
   getInterestedCurriculumsSelector,
   getInterestedSubjectsSelector,
@@ -117,6 +117,7 @@ class TestList extends Component {
     clearDictStandards: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired,
     clearTestData: PropTypes.func,
+    clearCreatedItems: PropTypes.func,
     clearSelectedItems: PropTypes.func
   };
 
@@ -151,6 +152,8 @@ class TestList extends Component {
       interestedSubjects = [],
       match: { params = {} },
       getCurriculumStandards,
+      clearCreatedItems,
+      clearSelectedItems,
       clearDictStandards
     } = this.props;
     const { search } = this.state;
@@ -248,6 +251,8 @@ class TestList extends Component {
       clearDictStandards();
       getCurriculumStandards(curriculumId, gradeArray, "");
     }
+    clearCreatedItems();
+    clearSelectedItems();
   }
 
   searchTest = debounce(() => {
@@ -325,11 +330,12 @@ class TestList extends Component {
   };
 
   handleCreate = () => {
-    const { history, clearSelectedItems, clearTestData, mode } = this.props;
+    const { history, clearCreatedItems, clearSelectedItems, clearTestData, mode } = this.props;
     if (mode !== "embedded") {
       history.push("/author/tests/select");
     }
     clearTestData();
+    clearCreatedItems();
     clearSelectedItems();
   };
 
@@ -495,6 +501,11 @@ class TestList extends Component {
 
     if (loading) {
       return <Spin size="large" />;
+    }
+    if (tests.length < 1) {
+      return (
+        <NoDataNotification heading={"Tests not available"} description={"There are no tests found for this filter."} />
+      );
     }
 
     if (blockStyle === "tile") {
@@ -755,6 +766,7 @@ const enhance = compose(
       addTestToModule: createTestInModuleAction,
       clearDictStandards: clearDictStandardsAction,
       clearSelectedItems: clearSelectedItemsAction,
+      clearCreatedItems: clearCreatedItemsAction,
       updateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
       removeTestFromPlaylistAction: removeTestFromPlaylistAction,

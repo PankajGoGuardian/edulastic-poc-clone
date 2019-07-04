@@ -4,6 +4,8 @@ import { Cell } from "recharts";
 
 import SimpleBarChart from "../../../../../common/components/charts/simpleBarChart";
 import { chartParseData, viewByMode, analyzeByMode } from "../../util/transformers";
+import { TooltipWrapper, TooltipLabel } from "./styled";
+import { getHSLFromRange1 } from "../../../../../common/util";
 
 const getBarDataKey = analyzeBy => {
   switch (analyzeBy) {
@@ -19,11 +21,22 @@ const getBarDataKey = analyzeBy => {
 };
 
 const getYLabel = analyzeBy => {
-  const proportion = analyzeBy === analyzeByMode.SCORE ? "(%)" : "";
-  return { value: `Avg. score ${proportion}`, angle: -90, position: "insideLeft" };
+  let label;
+  switch (analyzeBy) {
+    case analyzeByMode.RAW_SCORE:
+      label = "Avg. score";
+      break;
+    case analyzeByMode.MASTERY_LEVEL:
+    case analyzeByMode.MASTERY_SCORE:
+      label = "Student (%)";
+      break;
+    default:
+      label = "Avg. score (%)";
+  }
+  return { value: label, angle: -90, position: "insideLeft", dy: 35 };
 };
 
-const makeMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
+const getMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
 
 const defaultSkillInfo = { standard: "", domain: "" };
 
@@ -58,7 +71,7 @@ const SimpleBarChartContainer = ({
 
   const { skillInfo, scaleInfo } = report;
 
-  const getMasteryScore = makeMasteryColorByScore(scaleInfo);
+  const getMasteryScore = getMasteryColorByScore(scaleInfo);
 
   const tickFormatter = id => {
     const dataField = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
@@ -73,19 +86,44 @@ const SimpleBarChartContainer = ({
     const selectedData = viewBy === viewByMode.STANDARDS ? selectedStandards : selectedDomains;
     const field = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
 
-    const selectedColor = "#99ca7a";
+    const selectedColor = "#c7e8b2";
     const unselectedColor = "#bbbbbb";
+    const badScoreColor = "#ffc6c6";
 
-    const itemInSelected = item =>
-      selectedData.includes(item[field])
-        ? analyzeBy === analyzeByMode.MASTERY_LEVEL
-          ? getMasteryScore(item.masteryScoreRaw)
-          : selectedColor
-        : unselectedColor;
+    const itemInSelected = item => {
+      if (selectedData.includes(item[field])) {
+        switch (analyzeBy) {
+          case analyzeByMode.MASTERY_SCORE:
+            return getMasteryScore(item.masteryScore);
+          case analyzeByMode.MASTERY_LEVEL:
+            return getMasteryScore(item.masteryScoreRaw);
+          case analyzeByMode.RAW_SCORE:
+            return getHSLFromRange1(item.totalScore * 100);
+          case analyzeByMode.SCORE:
+            return getHSLFromRange1(item.totalScore);
+          default:
+            return unselectedColor;
+        }
+      }
+      return unselectedColor;
+    };
 
     return chartData.map((item, key) => (
       <Cell key={`bar-cell-${key}`} style={{ cursor: "pointer" }} fill={itemInSelected(item)} />
     ));
+  };
+
+  const getTooltipPayloadRawField = () => {
+    switch (analyzeBy) {
+      case analyzeByMode.SCORE:
+      case analyzeByMode.RAW_SCORE:
+        return "totalScoreRaw";
+      case analyzeByMode.MASTERY_LEVEL:
+      case analyzeByMode.MASTERY_SCORE:
+        return "masteryScoreRaw";
+      default:
+        return {};
+    }
   };
 
   const formatLabel = score => {
@@ -93,11 +131,63 @@ const SimpleBarChartContainer = ({
 
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
-      case analyzeByMode.MASTERY_LEVEL:
         return `${Math.round(Number(formattedScore))}%`;
       default:
         return formattedScore;
     }
+  };
+
+  const yTickformatLabel = score => {
+    const formattedScore = Number(score).toFixed(2);
+
+    switch (analyzeBy) {
+      case analyzeByMode.SCORE:
+        return `${Math.round(Number(formattedScore))}%`;
+      default:
+        return "";
+    }
+  };
+
+  const standardById = skillInfo.reduce(
+    (result, skill) => ({
+      ...result,
+      [skill.standardId]: skill.standard
+    }),
+    {}
+  );
+
+  const domainById = skillInfo.reduce(
+    (result, skill) => ({
+      ...result,
+      [skill.domainId]: skill.domain
+    }),
+    {}
+  );
+
+  const renderTooltip = ({ payload }) => {
+    if (!payload || !payload.length) {
+      return;
+    }
+
+    const [data] = payload;
+
+    const skillById = viewBy === viewByMode.STANDARDS ? standardById : domainById;
+    const field = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
+    const title = viewBy === viewByMode.STANDARDS ? "Standard" : "Domain";
+    const skillId = data.payload[field];
+    const skillTitle = skillById[skillId];
+
+    const rawValue = getTooltipPayloadRawField();
+
+    return (
+      <TooltipWrapper>
+        <TooltipLabel>
+          {title}: {skillTitle}
+        </TooltipLabel>
+        <TooltipLabel>Total Points: {(data.payload[rawValue] || data.value).toFixed(2)}</TooltipLabel>
+        <TooltipLabel>Avg.Score(%): {formatLabel(data.value)}</TooltipLabel>
+      </TooltipWrapper>
+    );
   };
 
   const formattedData = data.map(item => {
@@ -105,7 +195,8 @@ const SimpleBarChartContainer = ({
       case analyzeByMode.SCORE:
         return {
           ...item,
-          totalScore: item.totalScore * 100
+          totalScore: item.totalScore * 100,
+          totalScoreRaw: item.totalScore
         };
       case analyzeByMode.MASTERY_LEVEL:
         return {
@@ -125,11 +216,12 @@ const SimpleBarChartContainer = ({
       barDataKey={barDataKey}
       yLabel={yLabel}
       xTickFormatter={tickFormatter}
-      yTickFormatter={formatLabel}
+      yTickFormatter={yTickformatLabel}
       onBarClick={onBarClick}
       formatScore={formatLabel}
       renderBarCells={renderBarCells}
       ticks={ticks}
+      renderTooltip={renderTooltip}
     />
   );
 };

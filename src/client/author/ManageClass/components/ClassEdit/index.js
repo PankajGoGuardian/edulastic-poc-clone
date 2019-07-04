@@ -3,13 +3,15 @@ import PropTypes from "prop-types";
 import * as moment from "moment";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { isEmpty, find, get } from "lodash";
 import { Form, Divider, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
-import { updateClassAction } from "../../ducks";
+import { updateClassAction, fetchStudentsByIdAction } from "../../ducks";
+
 // selectors
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
@@ -40,24 +42,24 @@ class ClassEdit extends React.Component {
     searchCourseList: PropTypes.func.isRequired,
     isSearching: PropTypes.bool.isRequired,
     courseList: PropTypes.array.isRequired,
-    changeView: PropTypes.func,
     updating: PropTypes.bool.isRequired
   };
 
   state = {};
 
-  static defaultProps = {
-    changeView: () => null
-  };
-
-  componentDidUpdate({ updating, changeView }, { submitted }) {
+  componentDidUpdate({ updating, history, selctedClass }, { submitted }) {
     if (updating && submitted) {
-      changeView("details");
+      const { _id: classId } = selctedClass;
+      history.push(`/author/manageClass/${classId}`);
     }
   }
 
   componentDidMount() {
-    const { curriculums, getCurriculums } = this.props;
+    const { curriculums, getCurriculums, selctedClass, loadStudents, match } = this.props;
+    if (isEmpty(selctedClass)) {
+      const { classId } = match.params;
+      loadStudents({ classId });
+    }
 
     if (isEmpty(curriculums)) {
       getCurriculums();
@@ -104,28 +106,29 @@ class ClassEdit extends React.Component {
   };
 
   searchCourse = keyword => {
-    if (keyword) {
-      const { searchCourseList, userOrgData } = this.props;
-      const { districtId } = userOrgData;
-      const serachTerms = {
-        districtId,
-        search: {
-          name: { type: "cont", value: keyword },
-          number: { type: "cont", value: keyword }
-        },
-        status: 1,
-        page: 0,
-        limit: 50
+    const { searchCourseList, userOrgData } = this.props;
+    const { districtId } = userOrgData;
+    const key = keyword.trim();
+    const searchTerms = {
+      districtId
+    };
+    if (key) {
+      searchTerms["search"] = {
+        name: { type: "cont", value: key },
+        number: { type: "eq", value: key },
+        operator: "or"
       };
-      searchCourseList(serachTerms);
     }
+
+    searchCourseList(searchTerms);
   };
 
   render() {
-    const { curriculums, form, courseList, changeView, isSearching, selctedClass, updating } = this.props;
+    const { curriculums, form, courseList, isSearching, selctedClass, updating, loaded } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
 
     const {
+      _id: classId,
       thumbnail = "",
       tags = [],
       name,
@@ -137,10 +140,10 @@ class ClassEdit extends React.Component {
       course,
       institutionId
     } = selctedClass;
-
+    if (!loaded) return <Spin />;
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Header onCancel={() => changeView("details")} />
+        <Header classId={classId} />
         <Spin spinning={updating}>
           <Container>
             <Divider orientation="left">
@@ -185,6 +188,7 @@ const ClassEditForm = Form.create()(ClassEdit);
 
 const enhance = compose(
   withNamespaces("classEdit"),
+  withRouter,
   connect(
     state => ({
       curriculums: getCurriculumsListSelector(state),
@@ -193,12 +197,14 @@ const enhance = compose(
       userOrgData: getUserOrgData(state),
       userId: get(state, "user.user._id"),
       updating: get(state, "manageClass.updating"),
-      selctedClass: get(state, "manageClass.entity", {})
+      selctedClass: get(state, "manageClass.entity", {}),
+      loaded: get(state, "manageClass.loaded")
     }),
     {
       getCurriculums: getDictCurriculumsAction,
       updateClass: updateClassAction,
-      searchCourseList: receiveSearchCourseAction
+      searchCourseList: receiveSearchCourseAction,
+      loadStudents: fetchStudentsByIdAction
     }
   )
 );

@@ -22,7 +22,7 @@ const ItemsTable = ({
   standards,
   windowWidth,
   showModal = false,
-  readOnlyMode = false,
+  isEditable = false,
   addDuplicate,
   testId,
   search,
@@ -48,7 +48,7 @@ const ItemsTable = ({
         <MainInfoCell
           addDuplicate={addDuplicate}
           showModal={showModal}
-          readOnlyMode={readOnlyMode}
+          isEditable={isEditable}
           testId={testId}
           data={data}
         />
@@ -125,7 +125,7 @@ ItemsTable.propTypes = {
   setSelectedTests: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
-  readOnlyMode: PropTypes.bool,
+  isEditable: PropTypes.bool,
   showModal: PropTypes.bool,
   addDuplicate: PropTypes.func,
   standards: PropTypes.object.isRequired,
@@ -145,7 +145,9 @@ export default enhance(ItemsTable);
 
 const TableWrapper = styled(Table)`
   .ant-table-tbody > tr > td {
-    padding: 30px;
+    padding: 25px;
+    width: 250px;
+    max-width: 250px;
   }
 
   table tr tr img {

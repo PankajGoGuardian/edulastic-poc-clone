@@ -40,7 +40,8 @@ import {
   FolderListItemTitle,
   MoreButton,
   StyledMenu,
-  StyledIconPencilEdit
+  StyledIconPencilEdit,
+  ModalBody
 } from "./styled";
 import { getUserRole } from "../../../src/selectors/user";
 
@@ -116,7 +117,8 @@ class LeftFilter extends React.Component {
       folderData: { _id: folderId },
       folders,
       loadFolders,
-      clearSelectedRow
+      clearSelectedRow,
+      isAdvancedView
     } = this.props;
     const { moveFolderId } = this.state;
 
@@ -131,13 +133,15 @@ class LeftFilter extends React.Component {
     }, {});
     selectedRows.forEach(item => {
       if (currentFolderMap[item.testId]) {
-        itemsExistInFolder.push(item.name);
+        itemsExistInFolder.push(isAdvancedView ? item.title : item.name);
       } else {
-        itemsNotExistInFolder.push(item.name);
+        itemsNotExistInFolder.push(isAdvancedView ? item.title : item.name);
       }
     });
-    if (itemsExistInFolder.length > 0) {
-      message.info(`${itemsExistInFolder.join(", ")} already exist in ${folderName} folder`);
+    if (itemsExistInFolder && itemsExistInFolder.length > 0) {
+      const showAlreadyExistMsg =
+        itemsExistInFolder.length > 1 ? `${itemsExistInFolder.length} assignments` : itemsExistInFolder;
+      message.info(`${showAlreadyExistMsg} already exist in ${folderName} folder`);
     }
     if (itemsNotExistInFolder.length === 0) {
       return;
@@ -163,24 +167,26 @@ class LeftFilter extends React.Component {
     this.hideModal("moveFolder");
   };
 
-  showDeleteConfirm = id => {
-    const { folders, deleteFolder } = this.props;
-    const folderContent = folders.filter(folder => id === folder._id);
-    const delFolderName = folders.find(folder => id === folder._id).folderName;
+  showDeleteConfirm = folderId => {
+    const { folders } = this.props;
+    const folderContent = folders.filter(folder => folderId === folder._id);
     if (folderContent[0] && folderContent[0].content && folderContent[0].content.length > 0) {
       return message.info("Only empty folders can be deleted");
     }
-    Modal.confirm({
-      title: `Are you sure you want to delete ${delFolderName} folder?`,
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
-      onOk() {
-        if (deleteFolder) {
-          deleteFolder({ folderId: id, delFolderName });
-        }
-      },
-      onCancel() {}
+    this.setState({ selectedFolder: folderId }, () => this.showModal("delFolder"));
+  };
+
+  deleteSelectedFolder = () => {
+    const { folders, deleteFolder } = this.props;
+    const { selectedFolder } = this.state;
+    const delFolderName = folders.find(folder => selectedFolder === folder._id).folderName;
+    if (deleteFolder) {
+      deleteFolder({ folderId: selectedFolder, delFolderName });
+    }
+    this.setState({
+      visibleModal: false,
+      folderName: "",
+      selectedFolder: ""
     });
   };
 
@@ -232,7 +238,7 @@ class LeftFilter extends React.Component {
 
   handleChangeNewFolderName = e => this.setState({ folderName: e.target.value });
 
-  renderFolders = () => {
+  renderFolders = ellipsis => {
     const {
       folders,
       folderData: { _id: folderId }
@@ -270,7 +276,11 @@ class LeftFilter extends React.Component {
           const isActive = visibleModal.moveFolder ? folder._id === moveFolderId : folder._id === folderId;
           return (
             <FolderListItem key={index} active={isActive}>
-              <FolderListItemTitle onClick={() => this.handleSelectFolder(folder)}>
+              <FolderListItemTitle
+                ellipsis={ellipsis}
+                title={folder.folderName}
+                onClick={() => this.handleSelectFolder(folder)}
+              >
                 {isActive ? <IconFolderActive /> : <IconFolderDeactive />}
                 <span>{folder.folderName}</span>
               </FolderListItemTitle>
@@ -323,7 +333,25 @@ class LeftFilter extends React.Component {
         </FolderActionModal>
 
         <FolderActionModal
-          title={<ModalTitle>{`Move ${selectedRows.length} items to…`}</ModalTitle>}
+          title={<ModalTitle>Delete Folder</ModalTitle>}
+          visible={visibleModal.delFolder}
+          onCancel={() => this.hideModal("delFolder")}
+          footer={[
+            <ModalFooterButton key="back" onClick={() => this.hideModal("delFolder")}>
+              No
+            </ModalFooterButton>,
+            <ModalFooterButton key="submit" color="primary" onClick={this.deleteSelectedFolder}>
+              Yes
+            </ModalFooterButton>
+          ]}
+        >
+          <ModalBody>
+            Are you sure you want to delete <b>{oldFolderName}</b> folder?
+          </ModalBody>
+        </FolderActionModal>
+
+        <FolderActionModal
+          title={<ModalTitle>{`Move ${selectedRows.length} item(s) to…`}</ModalTitle>}
           visible={visibleModal.moveFolder}
           onCancel={() => this.hideModal("moveFolder")}
           footer={[
@@ -340,7 +368,7 @@ class LeftFilter extends React.Component {
 
         {selectedRows.length ? (
           <>
-            <StyledBoldText>{`${selectedRows.length} item selected`}</StyledBoldText>
+            <StyledBoldText>{`${selectedRows.length} item(s) selected`}</StyledBoldText>
             <FolderActionButton onClick={() => this.showModal("moveFolder")} color="primary" icon={<IconFolderMove />}>
               Move
             </FolderActionButton>
@@ -397,7 +425,7 @@ class LeftFilter extends React.Component {
             >
               NEW FOLDER
             </NewFolderButton>
-            {this.renderFolders()}
+            {this.renderFolders(true)}
           </>
         )}
       </FilterContainer>

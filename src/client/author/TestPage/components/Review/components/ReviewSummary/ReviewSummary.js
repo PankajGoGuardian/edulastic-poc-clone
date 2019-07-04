@@ -22,7 +22,7 @@ const ReviewSummary = ({
   totalPoints,
   questionsCount,
   tableData,
-  readOnlyMode = false,
+  isEditable = false,
   onChangeGrade,
   owner,
   summary,
@@ -36,7 +36,7 @@ const ReviewSummary = ({
   subjectsList.splice(0, 1);
   return (
     <Container>
-      <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} readOnlyMode={readOnlyMode} height={120} />
+      <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} isEditable={isEditable} height={120} />
 
       <MainTitle>Grade</MainTitle>
       <SummarySelect
@@ -44,7 +44,7 @@ const ReviewSummary = ({
         mode="multiple"
         size="large"
         style={{ width: "100%" }}
-        disabled={!owner || readOnlyMode}
+        disabled={!owner || !isEditable}
         placeholder="Please select"
         defaultValue={grades}
         onChange={onChangeGrade}
@@ -61,7 +61,7 @@ const ReviewSummary = ({
         data-cy="subjectSelect"
         mode="multiple"
         size="large"
-        disabled={!owner || readOnlyMode}
+        disabled={!owner || !isEditable}
         style={{ width: "100%" }}
         placeholder="Please select"
         defaultValue={subjects}
@@ -91,15 +91,18 @@ const ReviewSummary = ({
         <TableHeaderCol span={8}>Points</TableHeaderCol>
       </Row>
       {summary.standards &&
-        summary.standards.map(data => (
-          <TableBodyRow key={data.key}>
-            <TableBodyCol span={8}>
-              <Standard>{data.identifier}</Standard>
-            </TableBodyCol>
-            <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
-            <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
-          </TableBodyRow>
-        ))}
+        summary.standards.map(
+          data =>
+            !data.isEquivalentStandard && (
+              <TableBodyRow key={data.key}>
+                <TableBodyCol span={8}>
+                  <Standard>{data.identifier}</Standard>
+                </TableBodyCol>
+                <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
+                <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
+              </TableBodyRow>
+            )
+        )}
     </Container>
   );
 };
@@ -114,7 +117,7 @@ ReviewSummary.propTypes = {
   thumbnail: PropTypes.string,
   summary: PropTypes.object,
   owner: PropTypes.bool,
-  readOnlyMode: PropTypes.bool,
+  isEditable: PropTypes.bool,
   onChangeField: PropTypes.func,
   subjects: PropTypes.array.isRequired
 };

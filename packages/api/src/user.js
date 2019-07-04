@@ -150,6 +150,8 @@ const validateClassCode = classCode =>
 const validateDistrictPolicy = params =>
   api.callApi({ url: `${prefix}/domain`, params }).then(result => result.data.result);
 
+const checkClassCode = params => api.callApi({ url: `/auth/class-code/`, params }).then(result.data.data);
+
 export default {
   getUser,
   fetchUsers,
@@ -163,12 +165,10 @@ export default {
   changeUserTTS,
   resetPassword,
   addMultipleStudents,
-
   checkUser,
-
   SearchAddEnrolMultiStudents,
-
   addStudentsToOtherClass,
   validateClassCode,
-  validateDistrictPolicy
+  validateDistrictPolicy,
+  checkClassCode
 };

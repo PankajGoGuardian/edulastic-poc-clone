@@ -17,10 +17,11 @@ import {
   fetchAssignmentsAction,
   saveAssignmentAction,
   getAssignmentsSelector,
-  getTestEntitySelector
+  getTestEntitySelector,
+  getClassListSelector
 } from "../../duck";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
-
+import { test as testConst } from "@edulastic/constants";
 import ListHeader from "../../../src/components/common/ListHeader";
 import SimpleOptions from "../SimpleOptions/SimpleOptions";
 import AdvancedOptons from "../AdvancedOptons/AdvancedOptons";
@@ -36,12 +37,16 @@ import {
   AssignButton
 } from "./styled";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
+import { receiveClassListAction } from "../../../Classes/ducks";
+
+const { ASSESSMENT, COMMON } = testConst;
 
 const initAssignment = {
   startDate: moment(),
   openPolicy: "Automatically on Start Date",
   closePolicy: "Automatically on Due Date",
   class: [],
+  testType: ASSESSMENT,
   specificStudents: false
 };
 
@@ -67,9 +72,9 @@ class AssignTest extends React.Component {
   componentDidMount() {
     const {
       fetchTestByID,
-      fetchGroups,
+      loadClassList,
       fetchAssignments,
-      group,
+
       assignments,
       match,
       fetchPerformanceBand,
@@ -80,9 +85,19 @@ class AssignTest extends React.Component {
       userRole
     } = this.props;
     const { testId } = match.params;
-    if (isEmpty(group)) {
-      fetchGroups();
-    }
+
+    loadClassList({
+      districtId: userOrgId,
+      search: {
+        institutionIds: [],
+        codes: [],
+        subjects: [],
+        grades: [],
+        active: 1
+      },
+      page: 1,
+      limit: 1000
+    });
     if (isEmpty(performanceBandData)) {
       fetchPerformanceBand({ orgId: userOrgId });
     }
@@ -103,6 +118,7 @@ class AssignTest extends React.Component {
         this.setState(prevState => ({
           assignment: {
             ...prevState.assignment,
+            testType: COMMON,
             openPolicy: "Open Manually by Teacher"
           }
         }));
@@ -171,9 +187,8 @@ class AssignTest extends React.Component {
 
   render() {
     const { isAdvancedView, assignment } = this.state;
-    const { group, fetchStudents, students, testSettings, testItem, isPlaylist, playlist } = this.props;
-    const { title } = isPlaylist ? playlist : testItem;
-
+    const { classList, fetchStudents, students, testSettings, testItem, isPlaylist, playlist } = this.props;
+    const { title, _id } = isPlaylist ? playlist : testItem;
     return (
       <div>
         <ListHeader
@@ -189,8 +204,11 @@ class AssignTest extends React.Component {
               &lt;{" "}
               <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}`}>
                 {isPlaylist ? "PLAYLIST LIBRARY" : "TEST LIBRARY"}
-              </AnchorLink>{" "}
-              / <Anchor>{title}</Anchor>
+              </AnchorLink>
+              &nbsp;/&nbsp;
+              <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}/${_id}#review`}>{title}</AnchorLink>
+              &nbsp;/&nbsp;
+              <Anchor>Assign</Anchor>
             </PaginationInfo>
             <SwitchWrapper>
               <SwitchLabel>SIMPLE</SwitchLabel>
@@ -208,7 +226,7 @@ class AssignTest extends React.Component {
             />
           ) : (
             <SimpleOptions
-              group={group}
+              group={classList}
               students={students}
               assignment={assignment}
               fetchStudents={fetchStudents}
@@ -225,7 +243,7 @@ class AssignTest extends React.Component {
 
 export default connect(
   state => ({
-    group: getGroupsSelector(state),
+    classList: getClassListSelector(state),
     assignments: getAssignmentsSelector(state),
     students: getStudentsSelector(state),
     testSettings: getTestEntitySelector(state),
@@ -236,7 +254,7 @@ export default connect(
     userRole: getUserRole(state)
   }),
   {
-    fetchGroups: fetchGroupsAction,
+    loadClassList: receiveClassListAction,
     fetchStudents: fetchGroupMembersAction,
     fetchAssignments: fetchAssignmentsAction,
     saveAssignment: saveAssignmentAction,
@@ -251,7 +269,7 @@ AssignTest.propTypes = {
   fetchStudents: PropTypes.func.isRequired,
   fetchGroups: PropTypes.func.isRequired,
   fetchAssignments: PropTypes.func.isRequired,
-  group: PropTypes.array.isRequired,
+  classList: PropTypes.array.isRequired,
   students: PropTypes.array.isRequired,
   testSettings: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,

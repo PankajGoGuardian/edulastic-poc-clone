@@ -731,6 +731,7 @@ const CustomEditor = ({
         show={showMathModal}
         symbols={symbols}
         numberPad={numberPad}
+        showDropdown
         showResposnse={false}
         value={currentLatex}
         onSave={saveMathModal}

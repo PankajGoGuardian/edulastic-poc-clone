@@ -53,9 +53,9 @@ import Group1030v2 from "../keyboardButtons/1030v2.svg";
 import Group2357 from "../keyboardButtons/2357.svg";
 import Group1043 from "../keyboardButtons/1043.svg";
 
-const CustomImage = styled.img`
-  width: 25px;
-  height: 25px;
+export const CustomImage = styled.img`
+  width: ${({ width }) => (width ? `${width}px` : "25px")};
+  height: ${({ height }) => (height ? `${height}px` : "25px")};
   object-fit: contain;
 `;
 

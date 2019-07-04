@@ -137,6 +137,7 @@ class MathInput extends React.PureComponent {
     const {
       alwaysShowKeyboard,
       showResponse,
+      showDropdown,
       style,
       onFocus,
       onKeyDown,
@@ -169,6 +170,7 @@ class MathInput extends React.PureComponent {
                 symbols={symbols}
                 numberPad={numberPad}
                 showResponse={showResponse}
+                showDropdown={showDropdown}
                 onInput={(key, command) => this.onInput(key, command)}
               />
             )}
@@ -185,6 +187,7 @@ MathInput.propTypes = {
   onInput: PropTypes.func.isRequired,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
+  showDropdown: PropTypes.bool,
   showResponse: PropTypes.bool,
   value: PropTypes.string,
   style: PropTypes.object,
@@ -199,6 +202,7 @@ MathInput.defaultProps = {
   alwaysShowKeyboard: false,
   defaultFocus: false,
   value: "",
+  showDropdown: false,
   showResponse: false,
   style: {},
   onFocus: () => {},

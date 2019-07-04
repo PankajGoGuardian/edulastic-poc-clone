@@ -107,11 +107,11 @@ export const themes = {
       containerBgColor: "#f9f9f9" // lightGrey
     },
     keyboard: {
-      buttonBgColor: "#dfdfdf", // grey
+      buttonBgColor: "#91D8FF", // grey
       buttonBgActiveClassColor: "#b6bac1",
       buttonBgHoverColor: "#e6e6e6", // dashBorderColor
       buttonBgActiveColor: "#fff", // white
-      buttonColor: "#444444", // mainTextColor
+      buttonColor: "#738C9F", // mainTextColor
       buttonFontSize: "16px",
       buttonFontWeight: "700",
       buttonBorderColor: "#fff" // white
@@ -157,12 +157,16 @@ export const themes = {
       numType1BgColor: "#e5e5e5",
       numType2BgColor: "#d1d1d1",
       numType3BgColor: "#d0edfd",
-      numType3Color: "#808080"
+      numType3Color: "#808080",
+      numType4BgColor: "#91D8FF",
+      numType4Color: "#738C9F",
+      numType5BgColor: "#0EB08D",
+      numType5Color: "#fff"
     },
     numberPad: {
       itemBorderColor: "#dfdfdf", // grey
-      itemColor: "#878282", // textColor
-      itemBgColor: "#f9f9f9", // lightGrey
+      itemColor: "#fff", // textColor
+      itemBgColor: "#0EB08D", // lightGrey
       itemBgHoverColor: "#dfdfdf", // grey
       itemBgActiveColor: "#fff", // white
       itemFontWeight: "700"

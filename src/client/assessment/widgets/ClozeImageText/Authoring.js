@@ -415,8 +415,20 @@ class Authoring extends Component {
     const _imageW = Math.round(parseInt(width, 10));
     const _imageH = Math.round(parseInt(height, 10));
 
-    this.canvasRef.current.style.width = `${maxWidth < _imageW + x ? _imageW + x : maxWidth}px`;
-    this.canvasRef.current.style.height = `${maxHeight < _imageH + y ? _imageH + y : maxHeight}px`;
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+    let canvasW = maxWidth < _imageW + x ? _imageW + x : maxWidth;
+    let canvasH = maxHeight < _imageH + y ? _imageH + y : maxHeight;
+
+    if (canvasH < responseBoxMaxTop) {
+      canvasH = responseBoxMaxTop + 20;
+    }
+
+    if (canvasW < responseBoxMaxLeft) {
+      canvasW = responseBoxMaxLeft;
+    }
+
+    this.canvasRef.current.style.width = `${canvasW}px`;
+    this.canvasRef.current.style.height = `${canvasH}px`;
 
     this.imagePreviewRef.current.style.width = `${_imageW}px`;
     this.imagePreviewRef.current.style.height = `${_imageH}px`;
@@ -433,8 +445,20 @@ class Authoring extends Component {
     const _imageW = imageWidth || imageOriginalWidth;
     const _imageH = imageHeight || imageOriginalHeight;
 
-    this.canvasRef.current.style.width = `${maxWidth < _imageW + x ? _imageW + x : maxWidth}px`;
-    this.canvasRef.current.style.height = `${maxHeight < _imageH + y ? _imageH + y : maxHeight}px`;
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+    let canvasW = maxWidth < _imageW + x ? _imageW + x : maxWidth;
+    let canvasH = maxHeight < _imageH + y ? _imageH + y : maxHeight;
+
+    if (canvasH < responseBoxMaxTop) {
+      canvasH = responseBoxMaxTop + 20;
+    }
+
+    if (canvasW < responseBoxMaxLeft) {
+      canvasW = responseBoxMaxLeft;
+    }
+
+    this.canvasRef.current.style.width = `${canvasW}px`;
+    this.canvasRef.current.style.height = `${canvasH}px`;
   };
 
   getResponseBoxMaxValues = () => {
@@ -487,10 +511,6 @@ class Authoring extends Component {
 
     if (canvasWidth < responseBoxMaxLeft) {
       canvasWidth = responseBoxMaxLeft;
-    }
-
-    if (this.imageRndRef.current) {
-      this.imageRndRef.current.updateSize({ width: imageWidth, height: imageHeight });
     }
 
     return (

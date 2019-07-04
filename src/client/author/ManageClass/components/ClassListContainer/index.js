@@ -17,7 +17,7 @@ const ClassListContainer = ({
   state
 }) => {
   const closeModal = () => setModal(false);
-  const selectedGroups = groups.filter(i => !!i.code).map(i => i.code);
+  const selectedGroups = groups.filter(i => !!i.googleCode).map(i => i.googleCode);
 
   return (
     <React.Fragment>

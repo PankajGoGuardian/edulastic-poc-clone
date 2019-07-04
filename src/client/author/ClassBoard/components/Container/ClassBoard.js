@@ -7,6 +7,7 @@ import moment from "moment";
 import { message, Dropdown, Menu } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { IconMarkAsAbsent, IconStudentReportCard, IconMoreHorizontal, IconRedirect, IconPrint } from "@edulastic/icons";
 // actions
 import {
   receiveTestActivitydAction,
@@ -52,11 +53,6 @@ import { StudentReportCardModal } from "../../../Shared/Components/ClassHeader/c
 
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-// icon images
-// import Stats from "../../assets/stats.svg";
-// import Ghat from "../../assets/graduation-hat.svg";
-import Ptools from "../../assets/printing-tool.svg";
-import Elinks from "../../assets/external-link.svg";
 // styled wrappers
 import {
   Anchor,
@@ -553,13 +549,13 @@ class ClassBoard extends Component {
                     onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
                   >
                     <ButtonIconWrap>
-                      <img src={Ptools} alt="" />
+                      <IconPrint />
                     </ButtonIconWrap>
                     PRINT
                   </RedirectButton>
                   <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
                     <ButtonIconWrap>
-                      <img src={Elinks} alt="" />
+                      <IconRedirect />
                     </ButtonIconWrap>
                     REDIRECT
                   </RedirectButton>
@@ -573,16 +569,20 @@ class ClassBoard extends Component {
                         <DropMenu>
                           <CaretUp className="fa fa-caret-up" />
                           <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
-                            Mark as Absent
+                            <IconMarkAsAbsent />
+                            <span>Mark as Absent</span>
                           </MenuItems>
-                          <MenuItems onClick={this.onStudentReportCardsClick}>Student Report Cards</MenuItems>
+                          <MenuItems onClick={this.onStudentReportCardsClick}>
+                            <IconStudentReportCard />
+                            <span>Student Report Cards</span>
+                          </MenuItems>
                         </DropMenu>
                       }
                       placement="bottomRight"
                     >
                       <RedirectButton last={true}>
                         <ButtonIconWrap>
-                          <i class="fa fa-ellipsis-h" />{" "}
+                          <IconMoreHorizontal />
                         </ButtonIconWrap>
                         MORE
                       </RedirectButton>

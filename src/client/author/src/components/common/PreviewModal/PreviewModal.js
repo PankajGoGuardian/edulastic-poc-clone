@@ -114,7 +114,7 @@ class PreviewModal extends React.Component {
                 )}
                 {authorHasPermission && isEditable && (
                   <EduButton
-                    title="Edit Test"
+                    title="Edit item"
                     style={{ width: 42, padding: 0 }}
                     size="large"
                     onClick={this.editTestItem}

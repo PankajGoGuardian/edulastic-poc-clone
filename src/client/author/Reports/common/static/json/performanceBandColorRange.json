@@ -1,0 +1,13 @@
+{
+  "0": [],
+  "1": ["#d4f4b5", "#d4f4b5"],
+  "2": ["#f9acac", "#d4f4b5"],
+  "3": ["#f9acac", "#f7f296", "#d4f4b5"],
+  "4": ["#f9acac", "#FDFAC4", "#f7f296", "#d4f4b5"],
+  "5": ["#f9acac", "#FDE5BA", "#f9ffaa", "#EDFCCF", "#d4f4b5"],
+  "6": ["#f9acac", "#FDE2B3", "#FDFAC4", "#f9ffaa", "#EDFCCF", "#d4f4b5"],
+  "7": ["#f9acac", "#FDEABE", "#FDFAC4", "#f9ffaa", "#EDFCCF", "#d4f4b5", "#c8e5ac"],
+  "8": ["#f9acac", "#FDEABE", "#FDFAC4", "#f9ffaa", "#f0ffaa", "#EDFCCF", "#d4f4b5", "#c8e5ac"],
+  "9": ["#f9acac", "#FDCCB3", "#FDEABE", "#FDFAC4", "#f9ffaa", "#f0ffaa", "#EDFCCF", "#d4f4b5", "#c8e5ac"],
+  "10": ["#f9acac", "#FDCCB3", "#FDEABE", "#FDFAC4", "#f9ffaa", "#f0ffaa", "#EDFCCF", "#d4f4b5", "#c8e5ac", "#9fcd99"]
+}

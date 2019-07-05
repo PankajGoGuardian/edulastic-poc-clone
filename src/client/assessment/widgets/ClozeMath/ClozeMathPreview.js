@@ -101,7 +101,6 @@ const ClozeMathPreview = ({
   }, [template]);
 
   const uiStyles = getStyles();
-
   return (
     <div>
       <QuestionTitleWrapper>

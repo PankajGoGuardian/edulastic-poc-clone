@@ -40,12 +40,11 @@ class ResponseContainers extends Component {
 
   render() {
     const { containers, onChange, onAdd, onDelete, advancedAreOpen, t } = this.props;
-
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Subtitle>{t("component.options.responseContainer")}</Subtitle>
 
-        {containers.map(({ width = 0, height = 0 }, index) => (
+        {containers.map((container, index) => (
           <Fragment>
             <Row>
               <Col md={12}>
@@ -65,8 +64,8 @@ class ResponseContainers extends Component {
                   type="number"
                   size="large"
                   style={{ width: "80%" }}
-                  value={width}
-                  onChange={e => onChange({ index, prop: "width", value: +e.target.value })}
+                  value={container.widthpx || 0}
+                  onChange={e => onChange({ index, prop: "widthpx", value: +e.target.value })}
                 />
               </Col>
               <Col md={6}>
@@ -75,8 +74,8 @@ class ResponseContainers extends Component {
                   type="number"
                   size="large"
                   style={{ width: "80%" }}
-                  value={height}
-                  onChange={e => onChange({ index, prop: "height", value: +e.target.value })}
+                  value={container.heightpx || 0}
+                  onChange={e => onChange({ index, prop: "heightpx  ", value: +e.target.value })}
                 />
               </Col>
             </Row>

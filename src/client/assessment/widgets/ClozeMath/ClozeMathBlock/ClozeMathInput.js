@@ -144,8 +144,12 @@ class ClozeMathInput extends React.Component {
     const btnStyle = this.getStyles(uiStyles);
 
     return (
-      <span ref={this.wrappedRef} style={{ ...btnStyle, width: `${width}px` || "auto" }}>
-        <span ref={this.mathRef} onClick={this.showKeyboardModal} style={btnStyle} />
+      <span ref={this.wrappedRef} style={btnStyle}>
+        <span
+          ref={this.mathRef}
+          onClick={this.showKeyboardModal}
+          style={{ ...btnStyle, width: `${width}px` || "auto" }}
+        />
         {showKeyboard && (
           <KeyboardWrapper>
             <MathKeyboard

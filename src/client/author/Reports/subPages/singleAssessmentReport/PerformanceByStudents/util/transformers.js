@@ -118,19 +118,27 @@ export const normaliseTableData = (rawData, data) => {
     const classAvg = ceil(
       (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
     );
+    let studentScore = 0;
+    let assessmentScore = "Absent";
+    let proficiencyBand = "Absent";
+    if (studentMetric.progressStatus === 1) {
+      studentScore = ceil((studentMetric.totalScore / studentMetric.maxScore) * 100);
+      assessmentScore = `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`;
+      proficiencyBand = getProficiency(studentMetric, bandInfo);
+    }
 
     return {
       ...studentMetric,
       student: `${studentMetric.firstName} ${studentMetric.lastName}`,
-      proficiencyBand: getProficiency(studentMetric, bandInfo),
+      proficiencyBand,
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
       className: relatedGroup.className,
       schoolAvg: ceil(relatedSchool.schoolAvgPerf || 0),
       districtAvg: ceil(districtAvgPerf || 0),
-      studentScore: ceil((studentMetric.totalScore / studentMetric.maxScore) * 100),
+      studentScore,
       classAvg: classAvg,
-      assessmentScore: `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`,
+      assessmentScore,
       assessmentDate: moment(parseInt(studentMetric.timestamp)).format("MMMM DD, YYYY")
     };
   });

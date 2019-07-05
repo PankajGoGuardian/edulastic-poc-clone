@@ -1,6 +1,6 @@
 import { delay } from "redux-saga";
 import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
-import { classResponseApi } from "@edulastic/api";
+import { classResponseApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 
 import {
@@ -89,11 +89,23 @@ function* receiveClassStudentResponseSaga({ payload }) {
 function* receiveFeedbackResponseSaga({ payload }) {
   yield delay(1000);
   try {
-    const feedbackResponse = yield call(classResponseApi.feedbackResponse, payload);
+    
     const {
       testActivityId,
-      body: { groupId }
+      itemId,
+      questionId,
+      body: { groupId, score, feedback }
     } = payload;
+
+    const [scoreRes, feedbackResponse] = yield all([
+      call(testActivityApi.updateResponseEntryAndScore, {
+        testActivityId,
+        itemId,
+        groupId,
+        scores: { [questionId]: score }
+      }),
+      call(testActivityApi.updateQuestionFeedBack, { testActivityId, questionId, feedback, groupId })
+    ]);
 
     yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId } });
 

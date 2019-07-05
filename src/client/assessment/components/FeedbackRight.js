@@ -86,7 +86,7 @@ class FeedbackRight extends Component {
       widget: { id, activity = {} }
     } = this.props;
 
-    const { testActivityId, groupId } = activity;
+    const { testActivityId, groupId, testItemId } = activity;
     if (!id || !user || !user.user || !testActivityId) {
       return;
     }
@@ -101,7 +101,8 @@ class FeedbackRight extends Component {
         groupId
       },
       testActivityId,
-      questionId: id
+      questionId: id,
+      itemId: testItemId
     });
   }
 

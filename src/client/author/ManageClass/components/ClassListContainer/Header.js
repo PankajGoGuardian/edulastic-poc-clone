@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { Link } from "react-router-dom";
 import { white } from "@edulastic/colors";
 import { GoogleLogin } from "react-google-login";
+import { get } from "lodash";
 // components
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import { Title, IconManageClass, CreateClassButton, SyncButtons, CreateIcon, ButtonsWrapper } from "./styled";
@@ -24,7 +25,7 @@ const scopes = [
   "https://www.googleapis.com/auth/userinfo.profile"
 ].join(" ");
 
-const Header = ({ fetchClassList, history, allowGoogleLogin }) => {
+const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
   const handleLoginSucess = data => {
     fetchClassList({ data, showModal: true });
   };
@@ -46,7 +47,7 @@ const Header = ({ fetchClassList, history, allowGoogleLogin }) => {
             scope={scopes}
             onSuccess={handleLoginSucess}
             onFailure={handleError}
-            prompt="consent"
+            prompt={isUserGoogleLoggedIn ? "" : "consent"}
             responseType="code"
           />
         )}
@@ -66,7 +67,9 @@ Header.propTypes = {
 
 const enhance = compose(
   connect(
-    null,
+    state => ({
+      isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn")
+    }),
     { fetchClassList: fetchClassListAction }
   )
 );

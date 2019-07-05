@@ -4,6 +4,7 @@ import { Modal, Table, Select, Input } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledSelect } from "./styled";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
+import { themeColorLight } from "@edulastic/colors";
 
 const ClassListModal = ({
   visible,
@@ -195,9 +196,26 @@ const ClassListModal = ({
   };
 
   return (
-    <Modal visible={visible} onCancel={close} onOk={addGroups} width={"70vw"}>
+    <Modal
+      visible={visible}
+      onCancel={close}
+      onOk={addGroups}
+      width={"70vw"}
+      okText="Sync"
+      okButtonProps={{
+        style: { "background-color": themeColorLight, "border-color": themeColorLight },
+        shape: "round"
+      }}
+      cancelButtonProps={{ style: { "border-color": themeColorLight }, shape: "round" }}
+    >
       {selectedRows}
-      <Table columns={columns} dataSource={groups} bordered rowSelection={rowSelection} />
+      <Table
+        columns={columns}
+        dataSource={groups}
+        bordered
+        rowSelection={rowSelection}
+        pagination={(groups && groups.length > 10) || false}
+      />
     </Modal>
   );
 };

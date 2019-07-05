@@ -55,7 +55,6 @@ export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
-  isUserGoogleLoggedIn: false,
   authenticating: true,
   signupStatus: 0
 };

@@ -17,7 +17,8 @@ import SubHeader from "./SubHeader";
 import ActionContainer from "./ActionContainer";
 import StudentsList from "./StudentsList";
 import MainInfo from "./MainInfo";
-import { Container, StyledDivider } from "./styled";
+import { Container, StyledDivider, ButtonWrapper, ButtonRightWrapper, StyledButton } from "./styled";
+import { themeColorLight } from "@edulastic/colors";
 
 const ClassDetails = ({
   selectedClass,
@@ -68,20 +69,27 @@ const ClassDetails = ({
         onCancel={() => syncByCodeModal(false)}
         title="Enter Google Classroom Code"
         footer={
-          <div>
-            <Button shape={"round"} onClick={() => setDisabled(false)}>
+          <ButtonWrapper>
+            <StyledButton shape={"round"} onClick={() => setDisabled(false)}>
               {" "}
               Change Classroom
-            </Button>
-            <Button shape={"round"} onClick={() => syncByCodeModal(false)}>
-              {" "}
-              Cancel
-            </Button>
-            <Button shape={"round"} onClick={handleSyncGC} type={"primary"}>
-              {" "}
-              Sync
-            </Button>
-          </div>
+            </StyledButton>
+            <ButtonRightWrapper>
+              <StyledButton shape={"round"} onClick={() => syncByCodeModal(false)}>
+                {" "}
+                Cancel
+              </StyledButton>
+              <StyledButton
+                style={{ "background-color": themeColorLight, "border-color": themeColorLight }}
+                shape={"round"}
+                onClick={handleSyncGC}
+                type={"primary"}
+              >
+                {" "}
+                Sync
+              </StyledButton>
+            </ButtonRightWrapper>
+          </ButtonWrapper>
         }
       >
         <Input value={googleCode} disabled={disabled} onChange={e => setGoogleCode(e.target.value)} />

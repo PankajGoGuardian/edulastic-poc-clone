@@ -59,6 +59,12 @@ const ClassListModal = ({
 
   const columns = [
     {
+      title: "Class Code",
+      key: "enrollmentCode",
+      width: "5%",
+      dataIndex: "enrollmentCode"
+    },
+    {
       title: "Class Name",
       key: "name",
       width: "20%",
@@ -70,12 +76,6 @@ const ClassListModal = ({
           onChange={e => handleChange(ind, "name", e.target.value)}
         />
       )
-    },
-    {
-      title: "Class Code",
-      key: "enrollmentCode",
-      width: "5%",
-      dataIndex: "enrollmentCode"
     },
     {
       title: "Grade",

@@ -5,7 +5,7 @@ import { get } from "lodash";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { togglePresentationModeAction } from "../../src/actions/testActivity";
 
-const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode }) => {
+const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode, groupId }) => {
   const toggleCurrentMode = () => {
     togglePresentationMode();
     if (!isPresentationMode)
@@ -16,7 +16,7 @@ const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode }
     ? "Presentation Mode will anonymize the names of students"
     : " Presentation Mode will get OFF";
   return (
-    <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden">
+    <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden" groupId={groupId}>
       <span>
         {isPresentationMode ? "RESET" : "PRESENT"}{" "}
         <Switch checked={isPresentationMode} title={title} onClick={toggleCurrentMode} />

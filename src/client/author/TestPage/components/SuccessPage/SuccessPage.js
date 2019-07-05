@@ -118,8 +118,9 @@ class SuccessPage extends React.Component {
   render() {
     const { test, isPlaylist, playlist, isAssignSuccess } = this.props;
     const { isShareModalVisible } = this.state;
-    const { title, _id, status, thumbnail, scoring = {} } = isPlaylist ? playlist : test;
+    const { title, _id, status, thumbnail, scoring = {}, grades, subjects } = isPlaylist ? playlist : test;
     const shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
+
     const playlistBreadCrumbData = [
       {
         title: "PLAY LIST",
@@ -149,6 +150,7 @@ class SuccessPage extends React.Component {
         to: ""
       }
     ];
+    const gradeSubject = { grades, subjects };
     return (
       <div>
         <ShareModal
@@ -156,6 +158,7 @@ class SuccessPage extends React.Component {
           testId={_id}
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
+          gradeSubject={gradeSubject}
         />
         <ListHeader title={title} renderButton={this.renderHeaderButton} />
 

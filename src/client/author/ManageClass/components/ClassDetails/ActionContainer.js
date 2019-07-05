@@ -13,6 +13,7 @@ import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import { addStudentRequestAction, changeTTSRequestAction } from "../../ducks";
 import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 
 import {
@@ -43,7 +44,8 @@ const ActionContainer = ({
   studentLoaded,
   selectedStudent,
   changeTTS,
-  loadStudents
+  loadStudents,
+  features
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -184,13 +186,13 @@ const ActionContainer = ({
 
   const actionMenu = (
     <Menu onClick={handleActionMenuClick}>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="enableSpeech">
+      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="enableSpeech" groupId={classId}>
         <MenuItem key="enableSpeech">
           <Icon type="caret-right" />
           Enable Text To Speech
         </MenuItem>
       </FeaturesSwitch>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="disableSpeech">
+      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="disableSpeech" groupId={classId}>
         <MenuItem key="disableSpeech">
           <Icon type="sound" />
           Disable Text To Speech
@@ -208,7 +210,7 @@ const ActionContainer = ({
         <Icon type="edit" />
         Edit Student
       </MenuItem>
-      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden" key="addCoTeacher">
+      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden" key="addCoTeacher" groupId={classId}>
         <MenuItem key="addCoTeacher">
           <Icon type="switcher" />
           Add a Co-Teacher
@@ -296,6 +298,7 @@ const ActionContainer = ({
               selectedClass={selectedClass}
               setIsAddMultipleStudentsModal={setIsAddMultipleStudentsModal}
               loadStudents={loadStudents}
+              features={features}
             />
           )}
         </ButtonsWrapper>
@@ -326,7 +329,8 @@ export default connect(
     added: get(state, "manageClass.added"),
     studentLoaded: get(state, "manageClass.loaded"),
     selectedStudent: get(state, "manageClass.selectedStudent", []),
-    studentsList: get(state, "manageClass.studentsList", [])
+    studentsList: get(state, "manageClass.studentsList", []),
+    features: getUserFeatures(state)
   }),
   {
     addStudentRequest: addStudentRequestAction,

@@ -2,13 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Icon } from "antd";
-import { get, isEmpty, size } from "lodash";
+import { get, isEmpty, size, pullAt } from "lodash";
 import { Table, Spin } from "antd";
 import { lightBlue3 } from "@edulastic/colors";
 import { StudentContent, NoStudents, NoConentDesc, StyledIcon, TableDataSpan } from "./styled";
 import { selectStudentAction } from "../../ducks";
+import { getUserFeatures } from "../../../../student/Login/ducks";
+import { getGroupList } from "../../../src/selectors/user";
+import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
-const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => {
+const StudentsList = ({ loaded, students, selectStudents, selectedStudent, features, groupList, groupId }) => {
   const rowSelection = {
     onChange: (_, selectedRows) => {
       selectStudents(selectedRows);
@@ -36,7 +39,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
       sorter: (a, b) => a.username > b.username
     },
     {
-      title: "TTS enabled",
+      title: "TTS Enabled",
       dataIndex: "tts",
       width: "20%",
       render: tts => (
@@ -62,6 +65,15 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
     }
   ];
 
+  const isPremium = isFeatureAccessible({
+    features,
+    inputFeatures: "searchAndAddStudent",
+    groupId,
+    groupList
+  });
+  if (!isPremium) {
+    pullAt(columns, 2);
+  }
   const rowKey = recode => recode.email || recode.username;
 
   return (
@@ -102,7 +114,9 @@ export default connect(
   state => ({
     loaded: get(state, "manageClass.loaded"),
     students: get(state, "manageClass.studentsList", []),
-    selectedStudent: get(state, "manageClass.selectedStudent")
+    selectedStudent: get(state, "manageClass.selectedStudent", []),
+    features: getUserFeatures(state),
+    groupList: getGroupList(state)
   }),
   {
     selectStudents: selectStudentAction

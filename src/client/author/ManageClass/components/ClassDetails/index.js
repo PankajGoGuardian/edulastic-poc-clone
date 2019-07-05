@@ -39,7 +39,7 @@ const ClassDetails = ({ selectedClass, dataLoaded, loadStudents, history, match 
 
         <ActionContainer loadStudents={loadStudents} />
 
-        <StudentsList />
+        <StudentsList selectStudent groupId={selectedClass._id} />
       </Container>
     </>
   );

@@ -22,6 +22,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
 import * as moment from "moment";
 import TestTypeSelector from "./TestTypeSelector";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 class SimpleOptions extends React.Component {
   static propTypes = {
@@ -112,7 +113,7 @@ class SimpleOptions extends React.Component {
 
   render() {
     const { showSettings, classIds, studentList } = this.state;
-    const { group, fetchStudents, students, testSettings, assignment, updateOptions, userRole } = this.props;
+    const { group, fetchStudents, students, testSettings = {}, assignment, updateOptions, userRole } = this.props;
     const changeField = curry(this.onChange);
     let openPolicy = selectsData.openPolicy;
     let closePolicy = selectsData.closePolicy;
@@ -120,6 +121,7 @@ class SimpleOptions extends React.Component {
       openPolicy = selectsData.openPolicyForAdmin;
       closePolicy = selectsData.closePolicyForAdmin;
     }
+    const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
     const studentOfSelectedClass = getListOfStudents(students, classIds);
     return (
       <OptionConationer>
@@ -186,15 +188,21 @@ class SimpleOptions extends React.Component {
             onAssignmentTypeChange={changeField("testType")}
             onGenerateReportFieldChange={changeField("generateReport")}
           />
-
-          <StyledRowButton gutter={16}>
-            <Col>
-              <SettingsBtn onClick={this.toggleSettings}>
-                OVERRIDE TEST SETTINGS
-                {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-              </SettingsBtn>
-            </Col>
-          </StyledRowButton>
+          <FeaturesSwitch
+            inputFeatures="addCoTeacher"
+            actionOnInaccessible="hidden"
+            key="addCoTeacher"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowButton gutter={16}>
+              <Col>
+                <SettingsBtn onClick={this.toggleSettings}>
+                  OVERRIDE TEST SETTINGS
+                  {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                </SettingsBtn>
+              </Col>
+            </StyledRowButton>
+          </FeaturesSwitch>
 
           {showSettings && (
             <Settings

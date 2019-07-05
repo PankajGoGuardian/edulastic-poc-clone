@@ -4,6 +4,7 @@ import {} from "@edulastic/colors";
 export const Column = styled.div`
   word-break: break-word;
   min-width: 90px;
+  height: auto;
   img {
     max-height: 120px;
   }

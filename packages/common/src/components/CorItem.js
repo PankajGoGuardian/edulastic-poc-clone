@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { dashBorderColor, white, blue } from "@edulastic/colors";
+import { dashBorderColor, white, themeColor } from "@edulastic/colors";
 
 const CorItem = styled.div`
   display: flex;
@@ -34,7 +34,7 @@ const CorItem = styled.div`
     bottom: 0px;
     font-size: 14px;
     font-weight: 600;
-    background: ${blue};
+    background: ${themeColor};
     color: white;
   }
 `;

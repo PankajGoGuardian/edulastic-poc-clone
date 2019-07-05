@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { white, green, greenDark, fadedGrey, blueButton, boxShadowDefault } from "@edulastic/colors";
+import { white, themeColor, boxShadowDefault } from "@edulastic/colors";
 import { Button, Table } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
 
@@ -77,6 +77,12 @@ export const ClassSelect = styled.div`
   justify-content: flex-end;
   margin-bottom: 20px;
   font-weight: bold;
+  button {
+    &:hover,
+    &:focus {
+      color: ${themeColor};
+    }
+  }
 `;
 export const LabelMyClasses = styled.span`
   margin-right: 10px;

@@ -1,8 +1,8 @@
-import { textColor, white, blue } from '@edulastic/colors';
-import styled from 'styled-components';
+import { textColor, white, themeColor } from "@edulastic/colors";
+import styled from "styled-components";
 
 export const Container = styled.div`
-  background: ${({ selected }) => (selected ? blue : white)};
+  background: ${({ selected }) => (selected ? themeColor : white)};
   cursor: pointer;
   border-radius: 10px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);

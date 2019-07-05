@@ -1,15 +1,4 @@
-import {
-  blue,
-  darkBlue,
-  themeColor,
-  darkBlueSecondary,
-  mobileWidth,
-  white,
-  desktopWidth,
-  btnBg,
-  btnColor,
-  btnBgActive
-} from "@edulastic/colors";
+import { themeColor, mobileWidth, white, desktopWidth, btnBg, btnColor, btnBgActive } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -182,7 +171,7 @@ export const Back = styled(Link)`
   text-transform: uppercase;
 
   :hover {
-    color: ${blue};
+    color: ${themeColor};
   }
 `;
 

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Row, Col, Card, Button } from "antd";
 import { IconCircleCheck, IconCalculator } from "@edulastic/icons";
-import { springGreen, white, blue } from "@edulastic/colors";
+import { springGreen, white, themeColor } from "@edulastic/colors";
 import Header from "./Header";
 
 const Schedule = () => (
@@ -144,9 +144,9 @@ const ScheduleBtn = styled(commonBtn)`
 `;
 
 const TeacherBtn = styled(commonBtn)`
-  background: ${blue};
+  background: ${themeColor};
   bottom: -32px;
   &:hover {
-    background: ${blue};
+    background: ${themeColor};
   }
 `;

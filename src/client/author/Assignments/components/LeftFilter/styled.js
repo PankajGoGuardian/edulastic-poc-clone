@@ -1,7 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { Modal, Menu } from "antd";
 import {
-  blue,
+  themeColor,
   fadedBlue,
   fadedGrey,
   mainBgColor,
@@ -67,20 +67,20 @@ export const FilterContainer = styled.div`
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 0.2px;
-    color: ${blue};
+    color: ${themeColor};
     opacity: 1;
   }
 
   .ant-select-remove-icon {
     svg {
-      fill: ${blue};
+      fill: ${themeColor};
     }
   }
 
   .ant-select-arrow-icon {
     font-size: 14px;
     svg {
-      fill: ${blue};
+      fill: ${themeColor};
     }
   }
 `;

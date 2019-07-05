@@ -7,7 +7,7 @@ import { find, isEmpty } from "lodash";
 import { Dropdown } from "antd";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { cardTitleColor, orange, greenThird, blue } from "@edulastic/colors";
+import { cardTitleColor, orange, greenThird, themeColor } from "@edulastic/colors";
 import { receiveAssignmentClassList, receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 
 import { getAssignmentsSummary, getAssignmentClassList } from "../../../src/selectors/assignments";
@@ -54,7 +54,7 @@ class AssignmentAdvanced extends Component {
         <Breadcrumb color={greenThird}>
           <span>{assingment.inGrading || 0}</span>Submitted
         </Breadcrumb>
-        <Breadcrumb color={blue}>
+        <Breadcrumb color={themeColor}>
           <span>{assingment.graded || 0}</span>Graded
         </Breadcrumb>
       </Breadcrumbs>

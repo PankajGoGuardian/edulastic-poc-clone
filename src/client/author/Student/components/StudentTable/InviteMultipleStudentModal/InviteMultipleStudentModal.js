@@ -1,11 +1,20 @@
 import React, { Component } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
+import { userApi } from "@edulastic/api";
+import {
+  StyledTextArea,
+  PlaceHolderText,
+  SelUserKindDiv,
+  ItemDiv,
+  Text,
+  IconWrapper,
+  ColWrapper,
+  ActionButton
+} from "./styled";
+
 const { TabPane } = Tabs;
 const Search = Input.Search;
-import { userApi } from "@edulastic/api";
-import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv, Text, IconWrapper, ColWrapper } from "./styled";
-
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
     moveItem(item);
@@ -176,6 +185,7 @@ class InviteMultipleStudentModal extends Component {
     setinfoModelVisible(true);
     loadStudents({ classId });
   };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const {
@@ -303,11 +313,11 @@ class InviteMultipleStudentModal extends Component {
                 </Col>
               </Row>
 
-              <Row>
-                <Col span={8} offset={16}>
-                  <Button type="primary" shape="round" size="large" key="submit" onClick={this.onInviteStudents}>
+              <Row type="flex" justify="end">
+                <Col>
+                  <ActionButton type="primary" shape="round" key="submit" onClick={this.onInviteStudents}>
                     Add Student
-                  </Button>
+                  </ActionButton>
                 </Col>
               </Row>
             </TabPane>
@@ -338,15 +348,14 @@ class InviteMultipleStudentModal extends Component {
 
               <Row type="flex" justify="space-between" style={{ marginTop: "1rem" }}>
                 <Col>
-                  <Button shape="round" type="primary" size="large" key="submit" ghost onClick={this.onCloseModal}>
+                  <Button shape="round" type="primary" key="submit" ghost onClick={this.onCloseModal}>
                     No,Cancel
                   </Button>
                 </Col>
                 <Col>
-                  <Button
+                  <ActionButton
                     type="primary"
                     shape="round"
-                    size="large"
                     key="submit"
                     disabled={!studentsToEnroll.length}
                     onClick={this.onAddMultipleStudents.bind(
@@ -361,7 +370,7 @@ class InviteMultipleStudentModal extends Component {
                   >
                     Yes, Add to Class
                     <Icon type="right" />
-                  </Button>
+                  </ActionButton>
                 </Col>
               </Row>
             </TabPane>

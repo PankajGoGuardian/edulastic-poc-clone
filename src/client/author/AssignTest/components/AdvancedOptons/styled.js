@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Row, Select, DatePicker, Table } from "antd";
-import { white, secondaryTextColor, blue, fadedBlue, lightGreySecondary } from "@edulastic/colors";
+import { white, secondaryTextColor, themeColor, themeColorLight, lightGreySecondary } from "@edulastic/colors";
 
 export const OptionConationer = styled.div`
   margin-top: 20px;
@@ -33,7 +33,7 @@ export const SettingsBtn = styled.span`
 
   svg {
     margin-left: 16px;
-    fill: ${blue};
+    fill: ${themeColor};
   }
 `;
 
@@ -61,8 +61,8 @@ export const StyledSelect = styled(Select)`
 
     .ant-select-selection__choice {
       border-radius: 5px;
-      border: solid 1px ${fadedBlue};
-      background-color: ${fadedBlue};
+      border: solid 1px ${themeColorLight};
+      background-color: ${themeColorLight};
       height: 23.5px;
     }
 
@@ -70,19 +70,19 @@ export const StyledSelect = styled(Select)`
       font-size: 10px;
       font-weight: bold;
       letter-spacing: 0.2px;
-      color: ${blue};
+      color: ${themeColor};
       opacity: 1;
     }
     .ant-select-remove-icon {
       svg {
-        fill: ${blue};
+        fill: ${themeColor};
       }
     }
 
     .ant-select-arrow-icon {
       font-size: 14px;
       svg {
-        fill: ${blue};
+        fill: ${themeColor};
       }
     }
 
@@ -98,7 +98,7 @@ export const StyledDatePicker = styled(DatePicker)`
     border: 1px #e1e1e1 solid;
   }
   svg {
-    fill: ${blue};
+    fill: ${themeColor};
   }
 `;
 
@@ -200,8 +200,8 @@ export const ClassListFilter = styled.div`
 
   .ant-select-selection__choice {
     border-radius: 5px;
-    border: solid 1px ${fadedBlue};
-    background-color: ${fadedBlue};
+    border: solid 1px ${themeColorLight};
+    background-color: ${themeColorLight};
     height: 23.5px;
   }
 
@@ -209,20 +209,20 @@ export const ClassListFilter = styled.div`
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 0.2px;
-    color: ${blue};
+    color: ${themeColor};
     opacity: 1;
   }
 
   .ant-select-remove-icon {
     svg {
-      fill: ${blue};
+      fill: ${themeColor};
     }
   }
 
   .ant-select-arrow-icon {
     font-size: 14px;
     svg {
-      fill: ${blue};
+      fill: ${themeColor};
     }
   }
 `;

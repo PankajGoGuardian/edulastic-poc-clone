@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 import { Row, Switch, Radio, Col, Modal, Select, Input } from "antd";
 import { EduButton, FlexContainer } from "@edulastic/common";
-import { white, blue, lightGrey, mainTextColor } from "@edulastic/colors";
+import { white, themeColor, lightGrey, mainTextColor } from "@edulastic/colors";
 const RadioGroup = Radio.Group;
 
 // Edit Modal styled
@@ -31,7 +31,7 @@ export const SettingsBtn = styled.span`
   cursor: pointer;
   font-size: 14px;
   font-weight: bold;
-  color: ${blue};
+  color: ${themeColor};
   padding: 20px 40px;
   ${props => props.isVisible && SettingBtnOpen}
 `;

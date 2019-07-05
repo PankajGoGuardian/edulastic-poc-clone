@@ -1,15 +1,6 @@
 import styled from "styled-components";
 import { Card } from "@edulastic/common";
-import {
-  darkGrey,
-  secondaryTextColor,
-  blue,
-  lightBlue6,
-  fadedGrey,
-  lightGrey,
-  white,
-  greenDark
-} from "@edulastic/colors";
+import { darkGrey, secondaryTextColor, themeColor, fadedGrey, lightGrey, white, greenDark } from "@edulastic/colors";
 
 export const ModalTitle = styled.h2`
   font-weight: bolder;
@@ -73,8 +64,8 @@ export const TagGrade = styled.span`
   font-size: 10px;
   display: inline-block;
   margin-bottom: 5px;
-  color: ${blue};
-  background-color: ${lightBlue6};
+  color: ${themeColor};
+  background-color: rgba(66, 209, 132, 0.3);
   margin-right: 7px;
   font-weight: 700;
 
@@ -130,7 +121,7 @@ export const ButtonComponent = styled.div`
   width: ${({ size }) => (size === "large" ? "100%" : "165px")};
   float: right;
   font-size: 12px;
-  color: ${({ bgColor }) => (bgColor ? white : blue)};
+  color: ${({ bgColor }) => (bgColor ? white : themeColor)};
   background: ${({ bgColor }) => bgColor || "white"};
   padding: 8px;
   box-shadow: 0px 1px 1px 1px ${fadedGrey};
@@ -140,7 +131,7 @@ export const ButtonComponent = styled.div`
   margin-right: 10px;
   cursor: pointer;
   &:hover {
-    background: ${({ bgColor }) => (bgColor ? "#5196F3" : lightGrey)};
+    background: ${({ bgColor }) => (bgColor ? themeColor : lightGrey)};
   }
   &:last-child {
     margin-right: 0px;

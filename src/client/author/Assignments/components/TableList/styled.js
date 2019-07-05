@@ -10,7 +10,7 @@ import {
   white,
   authorAssignment,
   greenThird,
-  blue
+  themeColor
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
@@ -260,7 +260,7 @@ export const TypeIcon = styled.span`
 `;
 
 export const ExpandDivdier = styled.div`
-  color: ${blue};
+  color: ${themeColor};
   cursor: pointer;
 `;
 

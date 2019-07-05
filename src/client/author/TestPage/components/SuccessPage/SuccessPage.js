@@ -28,7 +28,7 @@ import {
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { IconPencilEdit, IconLock } from "@edulastic/icons";
-import { blue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import ShareModal from "../../../src/components/common/ShareModal";
 import { Divider } from "antd";
 
@@ -159,7 +159,7 @@ class SuccessPage extends React.Component {
                   <FlexText>
                     Your students can begin work on this assessment right away.You can monitor student progress and
                     responses by clicking on the &nbsp;
-                    <span style={{ color: blue }}>View Response</span>&nbsp; button.
+                    <span style={{ color: themeColor }}>View Response</span>&nbsp; button.
                   </FlexText>
                   <Divider />
                 </>
@@ -170,7 +170,7 @@ class SuccessPage extends React.Component {
               </FlexTextWrapper>
               <FlexText>
                 Click on &nbsp;
-                <span onClick={this.onShareModalChange} style={{ color: blue, cursor: "pointer" }}>
+                <span onClick={this.onShareModalChange} style={{ color: themeColor, cursor: "pointer" }}>
                   Edit
                 </span>
                 &nbsp; icon to share it with your colleagues.
@@ -183,7 +183,7 @@ class SuccessPage extends React.Component {
                   </IconWrapper>
                   <FlexText>{sharedWith || ""}</FlexText>
                   <IconWrapper onClick={this.onShareModalChange}>
-                    <IconPencilEdit color={blue} />
+                    <IconPencilEdit color={themeColor} />
                   </IconWrapper>
                 </FlexShareWithBox>
                 <FlexShareTitle>Share</FlexShareTitle>

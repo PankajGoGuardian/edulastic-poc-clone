@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { textColor, blue, white } from "@edulastic/colors";
+import { textColor, themeColor, white } from "@edulastic/colors";
 
 const SelectButtonItem = ({ icon, children, onClick }) => (
   <Container onClick={onClick}>
@@ -34,7 +34,7 @@ const Container = styled.div`
   color: ${textColor};
 
   :hover {
-    background: ${blue};
+    background: ${themeColor};
     color: ${white};
   }
 `;

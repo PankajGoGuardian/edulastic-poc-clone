@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { blue, white, grey, secondaryTextColor } from "@edulastic/colors";
+import { themeColor, white, grey, secondaryTextColor } from "@edulastic/colors";
 
 const Checkbox = ({ onChange, checked, label, style, className }) => (
   <Container data-cy="multi" onClick={onChange} style={style} className={className}>
@@ -49,8 +49,8 @@ const Input = styled.input`
   }
 
   &:checked + span {
-    background: ${blue};
-    border-color: ${blue};
+    background: ${themeColor};
+    border-color: ${themeColor};
   }
 
   + span:after {

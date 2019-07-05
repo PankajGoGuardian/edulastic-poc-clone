@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { Button } from "antd";
 import { IconSource } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
-import { blue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { withWindowSizes } from "@edulastic/common";
 import { SecondHeader } from "./styled";
 
@@ -31,7 +31,7 @@ const Setting = ({ t, current, history, onShowSource, windowWidth, owner, isEdit
         <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
         {owner && isEditable && (
           <Button onClick={!isEditable ? "" : onShowSource}>
-            <ButtonLink color="primary" icon={<IconSource color={blue} width={16} height={16} />}>
+            <ButtonLink color="primary" icon={<IconSource color={themeColor} width={16} height={16} />}>
               {t("component.questioneditor.buttonbar.source")}
             </ButtonLink>
           </Button>

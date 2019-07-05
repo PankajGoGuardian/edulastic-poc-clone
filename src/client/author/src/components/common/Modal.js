@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { FaTimes } from "react-icons/fa";
-import { white, blue, mobileWidth } from "@edulastic/colors";
+import { white, themeColor, mobileWidth } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button } from "@edulastic/common";
 
@@ -111,7 +111,7 @@ const Close = styled.div`
   cursor: pointer;
 
   :hover {
-    color: ${blue};
+    color: ${themeColor};
   }
 `;
 

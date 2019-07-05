@@ -1316,10 +1316,6 @@ span.token.active-word {
   border-color: #fff;
 }
 
-.template_box .ant-select-selection:hover {
-  border-color: #0e93dc;
-}
-
 .template_box .anticon svg {
   fill: #0e93dc;
 }
@@ -1995,5 +1991,30 @@ span.token.active-word {
 }
 
 .ant-radio-checked .ant-radio-inner::after {
+  background-color: #00ad50;
+}
+
+.ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
+.ant-select-focused .ant-select-selection,
+.ant-select-selection:focus,
+.ant-select-selection:hover,
+.ant-select-selection:active,
+.ant-input:hover {
+  border-color: #00ad50;
+}
+
+.ant-btn-background-ghost.ant-btn-primary,
+.ant-btn-background-ghost.ant-btn-primary:hover,
+.ant-btn-background-ghost.ant-btn-primary:focus {
+  color: #00ad50;
+  border-color: #00ad50;
+}
+
+.ant-tabs-nav .ant-tabs-tab-active,
+.ant-tabs-nav .ant-tabs-tab:hover {
+  color: #00ad50;
+}
+
+.ant-tabs-ink-bar {
   background-color: #00ad50;
 }

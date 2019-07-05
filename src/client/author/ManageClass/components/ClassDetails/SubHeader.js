@@ -55,7 +55,7 @@ const SubHeader = ({
       </LeftContent>
       <RightContent>
         <AnchorLink to="/author/assignments">View Assessments</AnchorLink>
-        {allowGoogleLogin &&
+        {(allowGoogleLogin || allowGoogleLogin === undefined) &&
           (isUserGoogleLoggedIn ? (
             <span style={{ cursor: "pointer" }} onClick={syncGCModal}>
               &nbsp; GC&nbsp;{" "}

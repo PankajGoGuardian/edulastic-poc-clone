@@ -29,6 +29,7 @@ const ClassDetails = ({
   syncByCodeModal,
   history,
   allowGoogleLogin,
+  syncClassLoading,
   openGCModal,
   match,
   syncClassUsingCode
@@ -82,6 +83,7 @@ const ClassDetails = ({
               <StyledButton
                 style={{ "background-color": themeColorLight, "border-color": themeColorLight }}
                 shape={"round"}
+                loading={syncClassLoading}
                 onClick={handleSyncGC}
                 type={"primary"}
               >
@@ -129,6 +131,7 @@ const enhance = compose(
       openGCModal: get(state, "manageClass.openGCModal", false),
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn", false),
       allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
+      syncClassLoading: get(state, "manageClass.syncClassLoading"),
       dataLoaded: get(state, "manageClass.dataLoaded")
     }),
     {

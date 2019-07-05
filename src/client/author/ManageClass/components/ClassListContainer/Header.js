@@ -39,7 +39,7 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
         <IconManageClass color={white} width={20} height={20} /> <span>Manage Class</span>
       </Title>
       <ButtonsWrapper>
-        {allowGoogleLogin && (
+        {(allowGoogleLogin || allowGoogleLogin === undefined) && (
           <GoogleLogin
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"

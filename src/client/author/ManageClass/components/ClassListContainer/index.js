@@ -13,6 +13,7 @@ const ClassListContainer = ({
   googleCourseList,
   courseList,
   allowGoogleLogin,
+  syncClassLoading = false,
   updateGoogleCourseList,
   syncClass,
   state
@@ -30,6 +31,7 @@ const ClassListContainer = ({
         groups={googleCourseList}
         state={state}
         courseList={courseList}
+        syncClassLoading={syncClassLoading}
         updateGoogleCourseList={updateGoogleCourseList}
         syncClass={syncClass}
         selectedGroups={selectedGroups}
@@ -43,6 +45,7 @@ ClassListContainer.propTypes = {
   setModal: PropTypes.func.isRequired,
   syncClass: PropTypes.func.isRequired,
   groups: PropTypes.array.isRequired,
+  syncClassLoading: PropTypes.bool,
   archiveGroups: PropTypes.array.isRequired,
   isModalVisible: PropTypes.bool.isRequired,
   googleCourseList: PropTypes.array.isRequired,

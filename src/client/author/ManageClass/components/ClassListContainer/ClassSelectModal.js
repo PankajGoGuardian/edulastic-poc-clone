@@ -13,6 +13,7 @@ const ClassListModal = ({
   courseList,
   syncClass,
   selectedGroups,
+  syncClassLoading,
   updateGoogleCourseList,
   state
 }) => {
@@ -192,6 +193,7 @@ const ClassListModal = ({
   const addGroups = () => {
     // eslint-disable-next-line max-len
     const selected = groups.filter((_, index) => selectedRows.includes(index));
+
     syncClass(selected);
   };
 
@@ -204,6 +206,7 @@ const ClassListModal = ({
       okText="Sync"
       okButtonProps={{
         style: { "background-color": themeColorLight, "border-color": themeColorLight },
+        loading: syncClassLoading,
         shape: "round"
       }}
       cancelButtonProps={{ style: { "border-color": themeColorLight }, shape: "round" }}
@@ -224,6 +227,7 @@ ClassListModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   selectedGroups: PropTypes.array.isRequired,
   groups: PropTypes.array.isRequired,
+  syncClassLoading: PropTypes.bool,
   updateGoogleCourseList: PropTypes.func,
   close: PropTypes.func.isRequired,
   syncClass: PropTypes.func.isRequired

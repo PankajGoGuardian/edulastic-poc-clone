@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { orderBy } from "lodash";
 import styled from "styled-components";
 import { Table } from "antd";
 import { uniqBy } from "lodash";
@@ -56,12 +57,14 @@ const PerformanceAnalysisTable = ({
       [viewByMode.STANDARDS]: {
         selectedData: selectedStandards,
         dataField: "standardId",
-        standardColumnsData: skillInfo
+        standardColumnsData: skillInfo.sort((a, b) => a.standard.localeCompare(b.standard))
       },
       [viewByMode.DOMAINS]: {
         selectedData: selectedDomains,
         dataField: "domainId",
         standardColumnsData: uniqBy(skillInfo, "domainId")
+          .filter(o => o.domain !== null)
+          .sort((a, b) => a.domain.localeCompare(b.domain))
       }
     };
   };
@@ -101,7 +104,7 @@ const PerformanceAnalysisTable = ({
   const makeStandardColumns = averageScoreByView => {
     const { selectedData, dataField, standardColumnsData } = makeStandardColumnData()[viewBy];
 
-    const selectedItems = skill => selectedData.includes(skill[dataField]);
+    const selectedItems = skill => selectedData.includes(skill[dataField]) || !selectedData.length;
 
     const makeStandardColumn = skill => {
       const config = makeStandardColumnConfig(skill)[viewBy];

@@ -42,7 +42,7 @@ class RowColumn extends Component {
   };
 
   render() {
-    const { item, setQuestionData, theme, t } = this.props;
+    const { item, setQuestionData, theme, t, toolbarSize } = this.props;
     const { ui_style, firstMount } = item;
 
     const handleMain = (action, prop) => restProp => {
@@ -233,6 +233,7 @@ class RowColumn extends Component {
               firstFocus={firstMount}
               useDragHandle
               columns={1}
+              toolbarSize={toolbarSize}
             />
           </Col>
         </Row>
@@ -243,6 +244,7 @@ class RowColumn extends Component {
 
 RowColumn.propTypes = {
   item: PropTypes.object.isRequired,
+  toolbarSize: PropTypes.string,
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
@@ -251,6 +253,7 @@ RowColumn.propTypes = {
 };
 
 RowColumn.defaultProps = {
+  toolbarSize: "STD",
   fillSections: () => {},
   cleanSections: () => {}
 };

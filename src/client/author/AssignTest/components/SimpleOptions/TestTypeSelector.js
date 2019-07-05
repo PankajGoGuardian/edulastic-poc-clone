@@ -2,7 +2,7 @@ import React from "react";
 import { Select } from "antd";
 import { Col, Row } from "antd";
 import { test } from "@edulastic/constants";
-import { StyledRow, StyledRowLabel, TestTypeDropDown } from "./styled";
+import { StyledRowLabel } from "./styled";
 import { StyledSelect } from "./styled";
 const { type } = test;
 const { ASSESSMENT, PRACTICE } = type;
@@ -11,24 +11,7 @@ const testTypes = {
   [PRACTICE]: "Practice"
 };
 
-const generateReportTypes = {
-  YES: {
-    val: "Yes",
-    type: true
-  },
-  NO: {
-    val: "No",
-    type: false
-  }
-};
-
-const TestTypeSelector = ({
-  testType,
-  onAssignmentTypeChange,
-  generateReport,
-  userRole,
-  onGenerateReportFieldChange
-}) => {
+const TestTypeSelector = ({ testType, onAssignmentTypeChange, userRole }) => {
   return (
     <React.Fragment>
       <StyledRowLabel gutter={16}>
@@ -45,26 +28,6 @@ const TestTypeSelector = ({
           </StyledSelect>
         </Col>
       </Row>
-      <Col span={12}>
-        {testType === PRACTICE && (
-          <React.Fragment>
-            <StyledRowLabel>
-              <Col span={24}>Generate Report</Col>
-            </StyledRowLabel>
-            <StyledRow>
-              <Col span={24}>
-                <StyledSelect defaultValue={generateReport} onChange={onGenerateReportFieldChange}>
-                  {Object.keys(generateReportTypes).map(key => (
-                    <Select.Option key={key} value={generateReportTypes[key].type}>
-                      {generateReportTypes[key].val}
-                    </Select.Option>
-                  ))}
-                </StyledSelect>
-              </Col>
-            </StyledRow>
-          </React.Fragment>
-        )}
-      </Col>
     </React.Fragment>
   );
 };

@@ -1,16 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { blue, textColor, green, greenDark, darkGrey } from "@edulastic/colors";
+import { themeColor, textColor, greenDark, darkGrey } from "@edulastic/colors";
 
 const getColors = ({ color, active }) => {
   const colors = {};
 
   switch (color) {
     case "primary":
-      colors.color = blue;
-      colors.hoverColor = blue;
-      if (active) colors.color = blue;
+      colors.color = themeColor;
+      colors.hoverColor = themeColor;
+      if (active) colors.color = themeColor;
       break;
     case "default":
       colors.color = textColor;
@@ -18,7 +18,7 @@ const getColors = ({ color, active }) => {
       if (active) colors.color = darkGrey;
       break;
     case "success":
-      colors.color = green;
+      colors.color = themeColor;
       colors.hoverColor = greenDark;
       if (active) colors.color = greenDark;
       break;

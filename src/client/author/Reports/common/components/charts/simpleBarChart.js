@@ -15,7 +15,9 @@ const SimpleBarChart = ({
   renderBarCells,
   formatScore,
   ticks,
-  renderTooltip
+  renderTooltip,
+  onResetClick,
+  showReset
 }) => {
   const renderLabel = ({ x, y, width, value }) => (
     <text x={x + width / 2} y={y - 10} textAnchor="middle" fill={secondaryTextColor}>
@@ -24,18 +26,23 @@ const SimpleBarChart = ({
   );
 
   return (
-    <ResponsiveContainer width="100%" aspect={5.0}>
-      <BarChart data={data} margin={{ top: 30 }}>
-        <CartesianGrid vertical={false} />
-        <XAxis dataKey={xDataKey} tickFormatter={xTickFormatter} />
-        <YAxis label={yLabel} tickFormatter={yTickFormatter} ticks={ticks} interval={0} />
-        <Tooltip content={renderTooltip} cursor={false} />
-        <Bar dataKey={barDataKey} barSize={60} onClick={onBarClick}>
-          <LabelList dataKey={barDataKey} position="top" content={renderLabel} />
-          {renderBarCells(data)}
-        </Bar>
-      </BarChart>
-    </ResponsiveContainer>
+    <div>
+      <a onClick={onResetClick} style={showReset ? { visibility: "visible" } : { visibility: "hidden" }}>
+        Reset
+      </a>
+      <ResponsiveContainer width="100%" aspect={5.0}>
+        <BarChart data={data} margin={{ top: 30 }}>
+          <CartesianGrid vertical={false} />
+          <XAxis dataKey={xDataKey} tickFormatter={xTickFormatter} />
+          <YAxis label={yLabel} tickFormatter={yTickFormatter} ticks={ticks} interval={0} />
+          <Tooltip content={renderTooltip} cursor={false} />
+          <Bar dataKey={barDataKey} barSize={60} onClick={onBarClick}>
+            <LabelList dataKey={barDataKey} position="top" content={renderLabel} />
+            {renderBarCells(data)}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 

@@ -124,7 +124,7 @@ class ClassEdit extends React.Component {
   };
 
   render() {
-    const { curriculums, form, courseList, isSearching, selctedClass, updating, loaded } = this.props;
+    const { curriculums, form, courseList, isSearching, selctedClass, updating, classLoaded } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
 
     const {
@@ -140,7 +140,7 @@ class ClassEdit extends React.Component {
       course,
       institutionId
     } = selctedClass;
-    if (!loaded) return <Spin />;
+    if (!classLoaded) return <Spin />;
     return (
       <Form onSubmit={this.handleSubmit}>
         <Header classId={classId} />
@@ -198,7 +198,7 @@ const enhance = compose(
       userId: get(state, "user.user._id"),
       updating: get(state, "manageClass.updating"),
       selctedClass: get(state, "manageClass.entity", {}),
-      loaded: get(state, "manageClass.loaded")
+      classLoaded: get(state, "manageClass.classLoaded")
     }),
     {
       getCurriculums: getDictCurriculumsAction,

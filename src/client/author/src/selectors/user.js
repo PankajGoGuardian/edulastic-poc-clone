@@ -29,6 +29,11 @@ export const getCurrentGroup = createSelector(
   state => state.user && state.user.orgData && state.user.orgData.defaultClass
 );
 
+export const getGroupList = createSelector(
+  stateSelector,
+  state => state.user && state.user.orgData && state.user.orgData.classList
+);
+
 export const getUserRole = createSelector(
   stateSelector,
   state => state.user.role

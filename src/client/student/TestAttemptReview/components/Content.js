@@ -114,7 +114,7 @@ class SummaryTest extends Component {
                         {t("default:all")}
                       </StyledButton>
                       <StyledButton onClick={() => this.handlerButton(2)} enabled={buttonIdx === 2}>
-                        {t("default:flagged")}
+                        {t("default:bookmarked")}
                       </StyledButton>
                       <StyledButton onClick={() => this.handlerButton(0)} enabled={buttonIdx === 0}>
                         {t("default:skipped")}

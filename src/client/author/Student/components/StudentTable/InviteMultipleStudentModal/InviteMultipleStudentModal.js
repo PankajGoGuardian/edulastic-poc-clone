@@ -5,6 +5,8 @@ const { TabPane } = Tabs;
 const Search = Input.Search;
 import { userApi } from "@edulastic/api";
 import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv, Text, IconWrapper, ColWrapper } from "./styled";
+import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
+import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
 
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
@@ -186,10 +188,16 @@ class InviteMultipleStudentModal extends Component {
       orgData,
       studentsList,
       selectedClass,
-      loadStudents
+      loadStudents,
+      features
     } = this.props;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll } = this.state;
-
+    const isPremium = isFeatureAccessible({
+      features,
+      inputFeatures: "searchAndAddStudent",
+      groupId: selectedClass ? selectedClass._id : "",
+      groupList: orgData ? orgData.classList : []
+    });
     const allLists =
       allStudents.length > 0
         ? allStudents.map(item => {
@@ -311,62 +319,65 @@ class InviteMultipleStudentModal extends Component {
                 </Col>
               </Row>
             </TabPane>
-            <TabPane tab="Search Existing Students and Add" key="2">
-              <Row>Search and select existing students from your district and add</Row>
-              <Row>
-                <Search
-                  placeholder="type student name or email"
-                  style={{ width: 300, marginTop: "1rem", marginBottom: "1.5rem" }}
-                  onSearch={this.handleSearch}
-                  onChange={this.handleSearch}
-                  enterButton
-                />
-              </Row>
-              {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
-                <Row type="flex" justify="space-between" align="middle">
-                  <ColWrapper span={11}>
-                    <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
-                  </ColWrapper>
-                  <Col span={2}>
-                    <Icon type="swap" style={{ padding: "1rem" }} />
-                  </Col>
-                  <ColWrapper span={11}>
-                    <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
-                  </ColWrapper>
+            {isPremium ? (
+              <TabPane tab="Search Existing Students and Add" key="2">
+                <Row>Search and select existing students from your district and add</Row>
+                <Row>
+                  <Search
+                    placeholder="type student name or email"
+                    style={{ width: 300, marginTop: "1rem", marginBottom: "1.5rem" }}
+                    onSearch={this.handleSearch}
+                    onChange={this.handleSearch}
+                    enterButton
+                  />
                 </Row>
-              )}
+                {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
+                  <Row type="flex" justify="space-between" align="middle">
+                    <ColWrapper span={11}>
+                      <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
+                    </ColWrapper>
+                    <Col span={2}>
+                      <Icon type="swap" style={{ padding: "1rem" }} />
+                    </Col>
+                    <ColWrapper span={11}>
+                      <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
+                    </ColWrapper>
+                  </Row>
+                )}
 
-              <Row type="flex" justify="space-between" style={{ marginTop: "1rem" }}>
-                <Col>
-                  <Button shape="round" type="primary" size="large" key="submit" ghost onClick={this.onCloseModal}>
-                    No,Cancel
-                  </Button>
-                </Col>
-                <Col>
-                  <Button
-                    type="primary"
-                    shape="round"
-                    size="large"
-                    key="submit"
-                    disabled={!studentsToEnroll.length}
-                    onClick={this.onAddMultipleStudents.bind(
-                      this,
-                      setinfoModelVisible,
-                      setInfoModalData,
-                      studentsToEnroll,
-                      selectedClass,
-                      setIsAddMultipleStudentsModal,
-                      loadStudents
-                    )}
-                  >
-                    Yes, Add to Class
-                    <Icon type="right" />
-                  </Button>
-                </Col>
-              </Row>
-            </TabPane>
+                <Row type="flex" justify="space-between" style={{ marginTop: "1rem" }}>
+                  <Col>
+                    <Button shape="round" type="primary" size="large" key="submit" ghost onClick={this.onCloseModal}>
+                      No,Cancel
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      type="primary"
+                      shape="round"
+                      size="large"
+                      key="submit"
+                      disabled={!studentsToEnroll.length}
+                      onClick={this.onAddMultipleStudents.bind(
+                        this,
+                        setinfoModelVisible,
+                        setInfoModalData,
+                        studentsToEnroll,
+                        selectedClass,
+                        setIsAddMultipleStudentsModal,
+                        loadStudents
+                      )}
+                    >
+                      Yes, Add to Class
+                      <Icon type="right" />
+                    </Button>
+                  </Col>
+                </Row>
+              </TabPane>
+            ) : (
+              ""
+            )}
           </Tabs>
-          ,
         </Modal>
       </>
     );

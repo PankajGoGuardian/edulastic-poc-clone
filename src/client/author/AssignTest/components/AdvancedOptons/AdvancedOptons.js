@@ -8,6 +8,7 @@ import DatePolicySelector from "./DatePolicySelector";
 import Settings from "../SimpleOptions/Settings";
 import { OptionConationer, InitOptions, StyledRowLabel, SettingsBtn, ClassSelectorLabel } from "./styled";
 import * as moment from "moment";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 class AdvancedOptons extends React.Component {
   static propTypes = {
@@ -68,10 +69,11 @@ class AdvancedOptons extends React.Component {
   updateStudents = studentList => this.onChange("students", studentList);
 
   render() {
-    const { testSettings, assignment, updateOptions } = this.props;
+    const { testSettings = {}, assignment, updateOptions } = this.props;
     const { showSettings, classIds } = this.state;
     const changeField = curry(this.onChange);
 
+    const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
     return (
       <OptionConationer>
         <InitOptions>
@@ -83,13 +85,20 @@ class AdvancedOptons extends React.Component {
             changeField={changeField}
           />
 
-          <StyledRowLabel gutter={16}>
-            <Col>
-              <SettingsBtn onClick={this.toggleSettings} isVisible={showSettings}>
-                OVERRIDE TEST SETTINGS {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-              </SettingsBtn>
-            </Col>
-          </StyledRowLabel>
+          <FeaturesSwitch
+            inputFeatures="addCoTeacher"
+            actionOnInaccessible="hidden"
+            key="addCoTeacher"
+            gradeSubject={gradeSubject}
+          >
+            <StyledRowLabel gutter={16}>
+              <Col>
+                <SettingsBtn onClick={this.toggleSettings} isVisible={showSettings}>
+                  OVERRIDE TEST SETTINGS {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+                </SettingsBtn>
+              </Col>
+            </StyledRowLabel>
+          </FeaturesSwitch>
 
           {showSettings && (
             <Settings

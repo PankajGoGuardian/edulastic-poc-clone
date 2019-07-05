@@ -1,3 +1,12 @@
+import { partialRight, ceil, groupBy } from "lodash";
+
+export const percentage = (numerator, denominator, ceilCalculation = false) => {
+  const calculatedPercentage = (numerator / denominator) * 100;
+  return ceilCalculation ? ceil(calculatedPercentage) : calculatedPercentage;
+};
+
+export const ceilingPercentage = partialRight(percentage, true);
+
 export const getVariance = arr => {
   let sum = 0;
   for (let i = 0; i < arr.length; i++) {
@@ -63,4 +72,52 @@ export const filterData = (data, filter) => {
     return false;
   });
   return filteredData;
+};
+
+export const processGroupIds = orgDataArr => {
+  let byGroupId = groupBy(orgDataArr.filter((item, index) => (item.groupId ? true : false)), "groupId");
+  let groupIdArr = Object.keys(byGroupId).map((item, index) => {
+    return {
+      key: byGroupId[item][0].groupId,
+      title: byGroupId[item][0].groupName
+    };
+  });
+  groupIdArr.unshift({
+    key: "All",
+    title: "All Classes"
+  });
+
+  return groupIdArr;
+};
+
+export const processSchoolIds = orgDataArr => {
+  let bySchoolId = groupBy(orgDataArr.filter((item, index) => (item.schoolId ? true : false)), "schoolId");
+  let schoolIdArr = Object.keys(bySchoolId).map((item, index) => {
+    return {
+      key: bySchoolId[item][0].schoolId,
+      title: bySchoolId[item][0].schoolName
+    };
+  });
+  schoolIdArr.unshift({
+    key: "All",
+    title: "All Schools"
+  });
+
+  return schoolIdArr;
+};
+
+export const processTeacherIds = orgDataArr => {
+  let byTeacherId = groupBy(orgDataArr.filter((item, index) => (item.teacherId ? true : false)), "teacherId");
+  let teacherIdArr = Object.keys(byTeacherId).map((item, index) => {
+    return {
+      key: byTeacherId[item][0].teacherId,
+      title: byTeacherId[item][0].teacherName
+    };
+  });
+  teacherIdArr.unshift({
+    key: "All",
+    title: "All Teachers"
+  });
+
+  return teacherIdArr;
 };

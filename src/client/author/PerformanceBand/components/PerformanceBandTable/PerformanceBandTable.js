@@ -275,7 +275,8 @@ class PerformanceBandTable extends React.Component {
 
   componentDidMount() {
     const { loadPerformanceBand, userOrgId } = this.props;
-    loadPerformanceBand({ orgId: userOrgId });
+    //TODO this api return permission Denied with 403 status until this getting adressed hiding from front-end
+    // fetchPerformanceBand({ orgId: userOrgId });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {

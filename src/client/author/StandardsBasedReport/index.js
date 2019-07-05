@@ -49,13 +49,9 @@ class StandardsBasedReport extends Component {
       classResponse = {}
     } = this.props;
     const testActivityId = this.getTestActivity(testActivity);
-    const gradeSubject = {
-      grade: classResponse.metadata ? classResponse.metadata.grades : [],
-      subject: classResponse.metadata ? classResponse.metadata.subjects : []
-    };
 
     return (
-      <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
+      <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
         <React.Fragment>
           <ClassHeader
             classId={classId}
@@ -72,7 +68,7 @@ class StandardsBasedReport extends Component {
               &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
               <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
             </PaginationInfo>
-            <PresentationToggleSwitch />
+            <PresentationToggleSwitch groupId={classId} />
           </StyledFlexContainer>
 
           <DivWrapper>

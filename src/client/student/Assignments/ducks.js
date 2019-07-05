@@ -19,7 +19,7 @@ import {
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 
-const { COMMON, ASSESSMENT } = testConst;
+const { COMMON, ASSESSMENT } = testConst.type;
 const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
 // constants
 export const FILTERS = {

@@ -174,16 +174,12 @@ class Display extends Component {
       canvasWidth = responseBoxMaxLeft;
     }
 
+    canvasHeight = canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight;
+    canvasWidth = canvasWidth > clozeImage.maxWidth ? canvasWidth : clozeImage.maxWidth;
+
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox
-        fontSize={fontSize}
-        height={canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight}
-      >
-        <StyledPreviewContainer
-          data-cy="image-text-answer-board"
-          width={canvasWidth > clozeImage.maxWidth ? canvasWidth : clozeImage.maxWidth}
-          height={canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight}
-        >
+      <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
+        <StyledPreviewContainer data-cy="image-text-answer-board" width={canvasWidth} height={canvasHeight}>
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
@@ -268,13 +264,13 @@ class Display extends Component {
         imageUrl={imageUrl || ""}
         imageWidth={this.getWidth()}
         imageHeight={this.getHeight()}
-        maxHeight={canvasHeight}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
         imageAlterText={imageAlterText}
         stemnumeration={stemnumeration}
         fontSize={fontSize}
         imageOptions={imageOptions}
         showAnswer={showAnswer}
-        options={options}
         userSelections={userAnswers}
         evaluation={evaluation}
         uiStyle={uiStyle}

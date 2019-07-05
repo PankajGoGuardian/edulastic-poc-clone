@@ -19,7 +19,7 @@ import {
 } from "lodash";
 import { filterData, getHSLFromRange1 } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
-import TooltipRow from "../components/tooltip/tooltipRow";
+import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
 
 const filterColumnsAccordingToRole = (columns, role) =>
   filter(columns, column => !includes(column.hiddenFromRole, role));
@@ -118,19 +118,27 @@ export const normaliseTableData = (rawData, data) => {
     const classAvg = ceil(
       (sumBy(classes[studentMetric.groupId], "totalScore") / sumBy(classes[studentMetric.groupId], "maxScore")) * 100
     );
+    let studentScore = 0;
+    let assessmentScore = "Absent";
+    let proficiencyBand = "Absent";
+    if (studentMetric.progressStatus === 1) {
+      studentScore = ceil((studentMetric.totalScore / studentMetric.maxScore) * 100);
+      assessmentScore = `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`;
+      proficiencyBand = getProficiency(studentMetric, bandInfo);
+    }
 
     return {
       ...studentMetric,
       student: `${studentMetric.firstName} ${studentMetric.lastName}`,
-      proficiencyBand: getProficiency(studentMetric, bandInfo),
+      proficiencyBand,
       school: relatedGroup.schoolName,
       teacher: relatedGroup.teacherName,
       className: relatedGroup.className,
       schoolAvg: ceil(relatedSchool.schoolAvgPerf || 0),
       districtAvg: ceil(districtAvgPerf || 0),
-      studentScore: ceil((studentMetric.totalScore / studentMetric.maxScore) * 100),
+      studentScore,
       classAvg: classAvg,
-      assessmentScore: `${studentMetric.totalScore.toFixed(2)} / ${studentMetric.maxScore.toFixed(2)}`,
+      assessmentScore,
       assessmentDate: moment(parseInt(studentMetric.timestamp)).format("MMMM DD, YYYY")
     };
   });
@@ -222,12 +230,12 @@ const getColorCell = (columnKey, columnType, assessmentName) => (text, record) =
 
     return (
       <div>
-        <TooltipRow title={"Assessment Name: "} value={assessmentName} />
-        <TooltipRow title={"Performance: "} value={record.assessmentScore} />
-        <TooltipRow title={"Performance Band: "} value={record.proficiencyBand} />
-        <TooltipRow title={"Student Name: "} value={record.student} />
-        <TooltipRow title={"Class Name: "} value={record.className} />
-        <TooltipRow {...lastItem} />
+        <TableTooltipRow title={"Assessment Name: "} value={assessmentName} />
+        <TableTooltipRow title={"Performance: "} value={record.assessmentScore} />
+        <TableTooltipRow title={"Performance Band: "} value={record.proficiencyBand} />
+        <TableTooltipRow title={"Student Name: "} value={record.student} />
+        <TableTooltipRow title={"Class Name: "} value={record.className} />
+        <TableTooltipRow {...lastItem} />
       </div>
     );
   };

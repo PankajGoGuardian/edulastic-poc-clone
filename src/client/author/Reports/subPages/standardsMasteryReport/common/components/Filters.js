@@ -16,24 +16,25 @@ import {
   getTestIdSelector,
   setFiltersAction,
   setTestIdAction,
-  getStandardsGradebookBrowseStandardsRequestAction,
-  getReportsStandardsGradebookBrowseStandards,
-  getStandardsGradebookFiltersRequestAction,
-  getReportsStandardsGradebookFilters
-} from "../ducks";
+  getStandardsBrowseStandardsRequestAction,
+  getReportsStandardsBrowseStandards,
+  getStandardsFiltersRequestAction,
+  getReportsStandardsFilters
+} from "../filterDataDucks";
 
 import filtersDropDownData from "../static/json/filtersDropDownData";
+import { getDomains } from "../../common/utils";
 
-const StandardsGradebookFilters = ({
+const StandardsFilters = ({
   filters,
   testId,
-  standardsGradebookFilters,
+  standardsFilters,
   browseStandards,
   user,
   role,
   interestedCurriculums,
-  getStandardsGradebookBrowseStandardsRequestAction,
-  getStandardsGradebookFiltersRequestAction,
+  getStandardsBrowseStandardsRequestAction,
+  getStandardsFiltersRequestAction,
   setFiltersAction,
   setTestIdAction,
   onGoClick: _onGoClick,
@@ -43,16 +44,16 @@ const StandardsGradebookFilters = ({
 }) => {
   const firstRender = useRef(true);
   const browseStandardsReceiveCount = useRef(0);
-  const standardsGradebookFilteresReceiveCount = useRef(0);
+  const standardsFilteresReceiveCount = useRef(0);
 
   const [prevBorwseStandards, setPrevBorwseStandards] = useState(null);
-  const [prevStandardsGradebookFilters, setPrevStandardsGradebookFilters] = useState(null);
+  const [prevStandardsFilters, setPrevStandardsFilters] = useState(null);
 
   const [domains, setDomains] = useState([{ key: "All", title: "All Domains" }]);
   const [testIds, setTestIds] = useState([{ key: "All", title: "All Assessments" }]);
 
   const getTitleByTestId = testId => {
-    let arr = get(standardsGradebookFilters, "result.testData", []);
+    let arr = get(standardsFilters, "result.testData", []);
     let item = arr.find(o => o.testId === testId);
 
     if (item) {
@@ -91,7 +92,7 @@ const StandardsGradebookFilters = ({
     let _domains = [{ key: "All", title: "All Domains" }];
     let arr = [];
     if (tempArr.length) {
-      tempArr = uniqBy(tempArr.filter(item => item.tloId), "tloId");
+      tempArr = getDomains(tempArr);
       arr = tempArr.map((item, index) => {
         return { key: item.tloId, title: item.tloIdentifier };
       });
@@ -118,19 +119,19 @@ const StandardsGradebookFilters = ({
       filters: { ..._filters },
       selectedTest: { key: testId, title: getTitleByTestId(testId) }
     };
-    if (browseStandardsReceiveCount.current === 0 && standardsGradebookFilteresReceiveCount.current > 0) {
+    if (browseStandardsReceiveCount.current === 0 && standardsFilteresReceiveCount.current > 0) {
       _onGoClick(settings);
     }
 
     browseStandardsReceiveCount.current++;
   }
 
-  if (prevStandardsGradebookFilters != standardsGradebookFilters && !isEmpty(standardsGradebookFilters)) {
+  if (prevStandardsFilters != standardsFilters && !isEmpty(standardsFilters)) {
     // testIds Received
     const search = qs.parse(location.search.substring(1));
-    setPrevStandardsGradebookFilters(standardsGradebookFilters);
+    setPrevStandardsFilters(standardsFilters);
 
-    let tempArr = get(standardsGradebookFilters, "result.testData", []);
+    let tempArr = get(standardsFilters, "result.testData", []);
     let arr = [{ key: "All", title: "All Assessments" }];
     tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
     tempArr = tempArr.map((item, index) => {
@@ -165,11 +166,11 @@ const StandardsGradebookFilters = ({
       selectedTest: { key: testId, title: getTitleByTestId(_testId) }
     };
 
-    if (standardsGradebookFilteresReceiveCount.current === 0 && browseStandardsReceiveCount.current > 0) {
+    if (standardsFilteresReceiveCount.current === 0 && browseStandardsReceiveCount.current > 0) {
       _onGoClick(settings);
     }
 
-    standardsGradebookFilteresReceiveCount.current++;
+    standardsFilteresReceiveCount.current++;
   }
 
   if (firstRender.current === true) {
@@ -199,12 +200,12 @@ const StandardsGradebookFilters = ({
       curriculumId: urlSubject.key,
       grades: urlGrade.map((item, index) => item.key)
     };
-    getStandardsGradebookBrowseStandardsRequestAction(q);
+    getStandardsBrowseStandardsRequestAction(q);
 
     let _q = {
       termId: urlSchoolYear.key
     };
-    getStandardsGradebookFiltersRequestAction(_q);
+    getStandardsFiltersRequestAction(_q);
   }
 
   // -----|-----|-----|-----| EVENT HANDLERS BEGIN |-----|-----|-----|----- //
@@ -219,7 +220,7 @@ const StandardsGradebookFilters = ({
     let q = {
       termId: selected.key
     };
-    getStandardsGradebookFiltersRequestAction(q);
+    getStandardsFiltersRequestAction(q);
   };
   const updateSubjectDropDownCB = selected => {
     let obj = {
@@ -232,7 +233,7 @@ const StandardsGradebookFilters = ({
       curriculumId: selected.key,
       grades: obj.grade
     };
-    getStandardsGradebookBrowseStandardsRequestAction(q);
+    getStandardsBrowseStandardsRequestAction(q);
   };
   const updateGradeDropDownCB = selected => {
     let obj = {
@@ -245,7 +246,7 @@ const StandardsGradebookFilters = ({
       curriculumId: obj.subject,
       grades: [selected.key]
     };
-    getStandardsGradebookBrowseStandardsRequestAction(q);
+    getStandardsBrowseStandardsRequestAction(q);
   };
   const updateDomainDropDownCB = selected => {
     if (selected.key === "All") {
@@ -377,8 +378,8 @@ const StandardsGradebookFilters = ({
 const enhance = compose(
   connect(
     state => ({
-      browseStandards: getReportsStandardsGradebookBrowseStandards(state),
-      standardsGradebookFilters: getReportsStandardsGradebookFilters(state),
+      browseStandards: getReportsStandardsBrowseStandards(state),
+      standardsFilters: getReportsStandardsFilters(state),
       filters: getFiltersSelector(state),
       testId: getTestIdSelector(state),
       role: getUserRole(state),
@@ -386,15 +387,15 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {
-      getStandardsGradebookBrowseStandardsRequestAction: getStandardsGradebookBrowseStandardsRequestAction,
-      getStandardsGradebookFiltersRequestAction: getStandardsGradebookFiltersRequestAction,
+      getStandardsBrowseStandardsRequestAction: getStandardsBrowseStandardsRequestAction,
+      getStandardsFiltersRequestAction: getStandardsFiltersRequestAction,
       setFiltersAction: setFiltersAction,
       setTestIdAction: setTestIdAction
     }
   )
 );
 
-const StyledStandardsGradebookFilters = styled(StandardsGradebookFilters)`
+const StyledStandardsFilters = styled(StandardsFilters)`
   padding: 10px;
   .standards-gradebook-top-filter {
     .control-dropdown {
@@ -437,4 +438,4 @@ const StyledStandardsGradebookFilters = styled(StandardsGradebookFilters)`
   }
 `;
 
-export default enhance(StyledStandardsGradebookFilters);
+export default enhance(StyledStandardsFilters);

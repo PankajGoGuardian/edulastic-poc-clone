@@ -48,7 +48,7 @@ export const SimpleStackedBarChart = ({
   onBarClickCB,
   onResetClickCB,
   getXTickText,
-  getTooltipJSX,
+  getTooltipJSX = () => null,
   yAxisLabel = "",
   yTickFormatter = _yTickFormatter,
   barsLabelFormatter = _yTickFormatter,

@@ -179,10 +179,6 @@ class ClassHeader extends Component {
     const { showDropdown, visible } = this.state;
     const { endDate, startDate } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
-    const gradeSubject = {
-      grade: classResponse.metadata ? classResponse.metadata.grades : [],
-      subject: classResponse.metadata ? classResponse.metadata.subjects : []
-    };
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
     const canOpen =
       canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
@@ -193,11 +189,7 @@ class ClassHeader extends Component {
     const menu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersMarkAsDone"
-          actionOnInaccessible="hidden"
-          gradeSubject={gradeSubject}
-        >
+        <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden" groupId={classId}>
           <MenuItems
             key="key1"
             onClick={this.handleMarkAsDone}
@@ -240,7 +232,7 @@ class ClassHeader extends Component {
                 </LinkLabel>
               </StyledAnchor>
             </StyledLink>
-            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
+            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
               <StyledLink to={`/author/expressgrader/${assignmentId}/${classId}`} data-cy="Expressgrader">
                 <StyledAnchor isActive={active === "expressgrader"}>
                   <IconBookMarkButton
@@ -254,11 +246,7 @@ class ClassHeader extends Component {
               </StyledLink>
             </FeaturesSwitch>
 
-            <FeaturesSwitch
-              inputFeatures="standardBasedReport"
-              actionOnInaccessible="hidden"
-              gradeSubject={gradeSubject}
-            >
+            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={classId}>
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <StyledAnchor isActive={active === "standard_report"}>
                   <IconNotes color={active === "standard_report" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"} left={0} />

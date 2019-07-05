@@ -38,8 +38,9 @@ const TableRow = ({
     columnContainerStyle: {
       display: "flex",
       flexWrap: "wrap",
+      minHeight: height,
       width: "100%",
-      height: "100%",
+      height: "auto",
       borderRadius: 4,
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
@@ -53,9 +54,12 @@ const TableRow = ({
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
         <RowTitleCol key={index + startIndex + colCount} colCount={colCount}>
-          <CenteredText style={{ wordWrap: "break-word", textAlign: "left" }}>
-            {rowTitles[index / colCount]}
-          </CenteredText>
+          {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
+            <CenteredText
+              style={{ wordWrap: "break-word", textAlign: "left" }}
+              dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
+            />
+          ) : null}
         </RowTitleCol>
       );
     }

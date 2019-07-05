@@ -10,6 +10,7 @@ import { IconCaretDown } from "@edulastic/icons";
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
 import UiTime from "../UiTime/UiTime";
+import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
 
 import TestType from "./blocks/TestType";
 import MaximumAttemptsAllowed from "./blocks/MaximumAttemptsAllowed";
@@ -70,6 +71,19 @@ class MainSetting extends Component {
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
+    const availableFeatures = settingCategories.slice(0, -5).map(category => {
+      if (
+        features[settingCategoriesFeatureMap[category.id]] ||
+        isFeatureAccessible({
+          features: this.props.features,
+          inputFeatures: settingCategoriesFeatureMap[category.id],
+          gradeSubject: { grades, subjects }
+        })
+      ) {
+        return settingCategoriesFeatureMap[category.id];
+      }
+    });
+
     return (
       <Container>
         <Row style={{ padding: 0 }}>
@@ -77,7 +91,7 @@ class MainSetting extends Component {
             <NavigationMenu fixed={windowScrollTop >= 90}>
               <StyledAnchor affix={false} offsetTop={125}>
                 {settingCategories.slice(0, -5).map(category => {
-                  if (features[settingCategoriesFeatureMap[category.id]]) {
+                  if (availableFeatures[settingCategoriesFeatureMap[category.id]]) {
                     return (
                       <Anchor.Link
                         key={category.id}
@@ -114,10 +128,16 @@ class MainSetting extends Component {
               owner={owner}
               userRole={userRole}
               isEditable={isEditable}
-              features={features}
+              features={availableFeatures}
             />
             <MaximumAttemptsAllowed owner={owner} isEditable={isEditable} maxAttempts={maxAttempts} />
-            <MarkAsDone windowWidth={windowWidth} entity={entity} owner={owner} isEditable={isEditable} />
+            <MarkAsDone
+              windowWidth={windowWidth}
+              entity={entity}
+              owner={owner}
+              isEditable={isEditable}
+              features={availableFeatures}
+            />
             <ReleaseScores windowWidth={windowWidth} entity={entity} owner={owner} isEditable={isEditable} />
             <RequireSafeExamBrowser windowWidth={windowWidth} entity={entity} owner={owner} isEditable={isEditable} />
             <ShuffleQuestions windowWidth={windowWidth} entity={entity} owner={owner} isEditable={isEditable} />

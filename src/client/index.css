@@ -1305,6 +1305,7 @@ span.token.active-word {
   display: flex;
   align-items: center;
   white-space: normal;
+  justify-content: space-between;
 }
 
 .ant-select-dropdown {
@@ -1886,6 +1887,14 @@ span.token.active-word {
   flex-wrap: wrap;
   align-items: center; */
   margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+@media (max-width: 992px) {
+  .jsx-parser p {
+    font-size: 14px;
+  }
 }
 
 #docBasedModalOverlay {

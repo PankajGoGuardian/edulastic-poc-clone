@@ -13,6 +13,7 @@ import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import { addStudentRequestAction, changeTTSRequestAction } from "../../ducks";
 import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 
 import {
@@ -43,7 +44,8 @@ const ActionContainer = ({
   studentLoaded,
   selectedStudent,
   changeTTS,
-  loadStudents
+  loadStudents,
+  features
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -130,8 +132,11 @@ const ActionContainer = ({
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to enable text to speech");
         }
-
         if (changeTTS) {
+          const isEnabled = selectedStudent.find(std => std.tts === "yes");
+          if (isEnabled) {
+            return showMessage("error", "Atleast one of the selected student(s) is already enabled");
+          }
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
         }
@@ -139,6 +144,10 @@ const ActionContainer = ({
       case "disableSpeech":
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to disable text to speech");
+        }
+        const isDisabled = selectedStudent.find(std => std.tts === "no");
+        if (isDisabled) {
+          return showMessage("error", "Atleast one of the selected student(s) is already disabled");
         }
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");
@@ -177,13 +186,13 @@ const ActionContainer = ({
 
   const actionMenu = (
     <Menu onClick={handleActionMenuClick}>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="enableSpeech">
+      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="enableSpeech" groupId={classId}>
         <MenuItem key="enableSpeech">
           <Icon type="caret-right" />
           Enable Text To Speech
         </MenuItem>
       </FeaturesSwitch>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="disableSpeech">
+      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="disableSpeech" groupId={classId}>
         <MenuItem key="disableSpeech">
           <Icon type="sound" />
           Disable Text To Speech
@@ -201,7 +210,7 @@ const ActionContainer = ({
         <Icon type="edit" />
         Edit Student
       </MenuItem>
-      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden" key="addCoTeacher">
+      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden" key="addCoTeacher" groupId={classId}>
         <MenuItem key="addCoTeacher">
           <Icon type="switcher" />
           Add a Co-Teacher
@@ -289,6 +298,7 @@ const ActionContainer = ({
               selectedClass={selectedClass}
               setIsAddMultipleStudentsModal={setIsAddMultipleStudentsModal}
               loadStudents={loadStudents}
+              features={features}
             />
           )}
         </ButtonsWrapper>
@@ -319,7 +329,8 @@ export default connect(
     added: get(state, "manageClass.added"),
     studentLoaded: get(state, "manageClass.loaded"),
     selectedStudent: get(state, "manageClass.selectedStudent", []),
-    studentsList: get(state, "manageClass.studentsList", [])
+    studentsList: get(state, "manageClass.studentsList", []),
+    features: getUserFeatures(state)
   }),
   {
     addStudentRequest: addStudentRequestAction,

@@ -84,22 +84,6 @@ class Container extends Component {
       setRedirectTest(match.params.testId);
     }
 
-    if (isTestFlow) {
-      getItemDetailById(itemId, { data: true, validation: true });
-      history.replace({
-        pathname: isTestFlow
-          ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
-          : `/author/items/${match.params.id}/pickup-questiontype`,
-        state: {
-          backText: t("component.itemDetail.backText"),
-          backUrl: isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : "/author/items",
-          rowIndex: 0,
-          tabIndex: 0,
-          testItemId: isTestFlow ? itemId : match.params._id
-        }
-      });
-    }
-
     clearAnswers();
     changePreviewTab(CLEAR);
   }
@@ -115,7 +99,6 @@ class Container extends Component {
     }
 
     if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
-      getItemDetailById(itemId, { data: true, validation: true });
       history.replace({
         pathname: isTestFlow
           ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`

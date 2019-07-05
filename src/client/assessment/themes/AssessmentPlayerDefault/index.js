@@ -6,8 +6,9 @@ import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Affix } from "antd";
 import { ActionCreators } from "redux-undo";
+import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
-import { nonAutoGradableTypes } from "@edulastic/constants";
+import { playersTheme } from "../assessmentPlayersTheme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
 import HeaderMainMenu from "../common/HeaderMainMenu";
@@ -15,7 +16,9 @@ import HeaderRightMenu from "../common/HeaderRightMenu";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import { playersTheme } from "../assessmentPlayersTheme";
+import { nonAutoGradableTypes } from "@edulastic/constants";
+import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
+import { getSkippedAnswerSelector } from "../../selectors/answers";
 
 import {
   ControlBtn,
@@ -152,7 +155,7 @@ class AssessmentPlayerDefault extends React.Component {
     });
   };
 
-  handleModeChange = (flag, value) => {
+  handleModeChange = value => {
     this.setState({
       changeMode: value
     });
@@ -243,7 +246,11 @@ class AssessmentPlayerDefault extends React.Component {
       settings,
       previewPlayer,
       scratchPad,
-      answerChecksUsedForItem
+      toggleBookmark,
+      isBookmarked,
+      answerChecksUsedForItem,
+      bookmarksInOrder,
+      skippedInOrder
     } = this.props;
 
     const {
@@ -278,6 +285,8 @@ class AssessmentPlayerDefault extends React.Component {
       });
     }
 
+    console.log("bookmarks in order", bookmarksInOrder);
+    console.log("skipped in order", skippedInOrder);
     const scratchPadMode = tool === 5;
     return (
       <ThemeProvider theme={theme}>
@@ -337,6 +346,8 @@ class AssessmentPlayerDefault extends React.Component {
                     currentItem={currentItem}
                     gotoQuestion={gotoQuestion}
                     options={dropdownOptions}
+                    bookmarks={bookmarksInOrder}
+                    skipped={skippedInOrder}
                   />
 
                   <FlexContainer
@@ -374,6 +385,8 @@ class AssessmentPlayerDefault extends React.Component {
                         settings={settings}
                         isNonAutoGradable={isNonAutoGradable}
                         checkAnwser={() => this.changeTabItemState("check")}
+                        toggleBookmark={() => toggleBookmark(item._id)}
+                        isBookmarked={isBookmarked}
                       />
                     )}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && (
@@ -412,7 +425,14 @@ class AssessmentPlayerDefault extends React.Component {
               )}
             </MainWrapper>
           </Main>
-          {changeMode === 2 && <CalculatorContainer calculateMode={calculateMode} calcBrands={calcBrands} />}
+          {changeMode === 2 && (
+            <CalculatorContainer
+              changeMode={this.handleModeChange}
+              changeTool={this.changeTool}
+              calculateMode={calculateMode}
+              calcBrands={calcBrands}
+            />
+          )}
         </Container>
       </ThemeProvider>
     );
@@ -431,14 +451,18 @@ const enhance = compose(
         ? state.userWork.present[ownProps.items[ownProps.currentItem]._id] || null
         : null,
       settings: state.test.settings,
-      answerChecksUsedForItem: currentItemAnswerChecksSelector(state)
+      answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
+      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
+      bookmarksInOrder: bookmarksByIndexSelector(state),
+      skippedInOrder: getSkippedAnswerSelector(state)
     }),
     {
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,
       saveScratchPad: saveScratchPadAction,
       undoScratchPad: ActionCreators.undo,
-      redoScratchPad: ActionCreators.redo
+      redoScratchPad: ActionCreators.redo,
+      toggleBookmark: toggleBookmarkAction
     }
   )
 );

@@ -5,7 +5,7 @@ import Modal from "react-responsive-modal";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Radio, Spin, Button, Row, Col, Select, message, Typography } from "antd";
-import { debounce, get as _get } from "lodash";
+import { debounce, get as _get, isEmpty } from "lodash";
 import { withRouter } from "react-router-dom";
 
 import { FlexContainer } from "@edulastic/common";
@@ -13,6 +13,7 @@ import { themeColor, whiteSmoke, greenDark, fadedGrey, white } from "@edulastic/
 import { IconClose, IconShare } from "@edulastic/icons";
 import { getUserFeatures } from "../../../../../student/Login/ducks";
 import { RadioInputWrapper } from "../RadioInput";
+import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
 
 import {
   getTestIdSelector,
@@ -59,15 +60,34 @@ class ShareModal extends React.Component {
     this.state = {
       sharedType: sharedKeysObj.INDIVIDUAL,
       currentUser: {},
-      permission: props.features["editPermissionOnTestSharing"] ? "EDIT" : "VIEW"
+      permission: props.features["editPermissionOnTestSharing"] ? "EDIT" : "VIEW",
+      _permissionKeys: props.features["editPermissionOnTestSharing"] ? permissionKeys : [permissionKeys[1]]
     };
     this.handleSearch = this.handleSearch.bind(this);
+  }
 
-    this._permissionKeys = [];
-    if (!props.features["editPermissionOnTestSharing"]) {
-      this._permissionKeys = [permissionKeys[1]];
-    } else {
-      this._permissionKeys = permissionKeys;
+  static getDerivedStateFromProps(nextProps, nextState) {
+    const { features, gradeSubject } = nextProps;
+    const { grades, subjects } = gradeSubject || {};
+    if (
+      features["editPermissionOnTestSharing"] === false &&
+      grades &&
+      subjects &&
+      isFeatureAccessible({
+        features: features,
+        inputFeatures: "editPermissionOnTestSharing",
+        gradeSubject
+      })
+    ) {
+      return {
+        permission: "EDIT",
+        _permissionKeys: permissionKeys
+      };
+    } else if (!features["editPermissionOnTestSharing"]) {
+      return {
+        permission: "VIEW",
+        _permissionKeys: [permissionKeys[1]]
+      };
     }
   }
 
@@ -182,8 +202,18 @@ class ShareModal extends React.Component {
     shareTest({ data, contentId: testId });
   };
 
+  getUserName(data) {
+    if (data.sharedType === "PUBLIC") {
+      return "EVERYONE";
+    } else {
+      return `${data.userName && data.userName !== "null" ? data.userName : ""}${
+        data.email && data.email !== "null" ? `, ${data.email}` : ""
+      }`;
+    }
+  }
+
   render() {
-    const { sharedType, permission } = this.state;
+    const { sharedType, permission, _permissionKeys } = this.state;
     const {
       isVisible,
       onClose,
@@ -223,10 +253,7 @@ class ShareModal extends React.Component {
                       alignItems: "center"
                     }}
                   >
-                    <Col span={12}>
-                      {data.userName && data.userName !== "null" ? data.userName : ""}
-                      {` ${data.email && data.email !== "null" ? `, ${data.email}` : ""}`}
-                    </Col>
+                    <Col span={12}>{this.getUserName(data)}</Col>
                     <Col span={11}>
                       <span>{data.permission === "EDIT" && "Can Edit, Add/Remove Items"}</span>
                       <span>{data.permission === "VIEW" && "Can View & Duplicate"}</span>
@@ -281,7 +308,7 @@ class ShareModal extends React.Component {
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 value={permission}
               >
-                {this._permissionKeys.map(item => {
+                {_permissionKeys.map(item => {
                   return (
                     <Select.Option value={item} key={permissions[item]}>
                       {permissions[item]}
@@ -305,12 +332,12 @@ ShareModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   isPlaylist: PropTypes.bool,
   isPublished: PropTypes.bool,
-  test: PropTypes.object
+  gradeSubject: PropTypes.object
 };
 
 ShareModal.defaultProps = {
   isPlaylist: false,
-  test: null
+  gradeSubject: {}
 };
 
 const enhance = compose(

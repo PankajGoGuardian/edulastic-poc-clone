@@ -23,6 +23,7 @@ const grades = require("./const/grades");
 const response = require("./const/dimensions");
 const canvasDimensions = require("./const/canvas");
 const clozeImage = require("./const/clozeImage");
+const fonts = require("./const/fonts");
 
 module.exports = {
   questionType,
@@ -49,5 +50,6 @@ module.exports = {
   grades,
   response,
   canvasDimensions,
-  clozeImage
+  clozeImage,
+  fonts
 };

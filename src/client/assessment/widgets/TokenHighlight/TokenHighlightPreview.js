@@ -4,7 +4,7 @@ import { cloneDeep, get } from "lodash";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
 
-import { Paper, Stimulus, InstructorStimulus, MathSpan } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, MathSpan, CorrectAnswersContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
@@ -30,7 +30,8 @@ const TokenHighlightPreview = ({
   theme,
   showQuestionNumber,
   qIndex,
-  disableResponse
+  disableResponse,
+  t
 }) => {
   const initialArray = (item.templeWithTokens || []).map((el, i) => ({
     value: el.value,
@@ -66,8 +67,6 @@ const TokenHighlightPreview = ({
           ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
           ...answers.filter((answer, i) => answer.selected && validArray[i].selected !== answer.selected)
         ]);
-      } else {
-        setAnswers(validArray);
       }
     } else if (previewTab === CLEAR && !isCheck) {
       if (!userAnswer.some(ans => ans.selected)) {
@@ -85,7 +84,9 @@ const TokenHighlightPreview = ({
   }, [previewTab]);
 
   useEffect(() => {
-    if (userAnswer.length === 0) {
+    if (view === EDIT && !isCheck) {
+      setAnswers(validArray);
+    } else if (userAnswer.length === 0) {
       saveAnswer(initialArray);
       setAnswers(initialArray);
     }
@@ -135,8 +136,8 @@ const TokenHighlightPreview = ({
 
   const rightAnswers = validate();
 
-  const getStyles = index => {
-    const defaultAnswers = disableResponse ? validArray : answers;
+  const getStyles = (index, disableResp = false) => {
+    const defaultAnswers = disableResp ? validArray : answers;
     const condition =
       defaultAnswers.find(elem => elem.index === index) && defaultAnswers.find(elem => elem.index === index).selected;
 
@@ -152,15 +153,6 @@ const TokenHighlightPreview = ({
         background: theme.widgets.tokenHighlight.incorrectResultBgColor,
         borderColor: theme.widgets.tokenHighlight.incorrectResultBorderColor
       };
-    } else if (previewTab === SHOW) {
-      if (rightAnswers.find(el => el.index === index && el.selected)) {
-        resultStyle = {
-          background: theme.widgets.tokenHighlight.correctResultBgColor,
-          borderColor: theme.widgets.tokenHighlight.correctResultBorderColor
-        };
-      } else {
-        resultStyle = {};
-      }
     } else {
       resultStyle = {};
     }
@@ -187,13 +179,29 @@ const TokenHighlightPreview = ({
           <MathSpan
             onClick={!disableResponse ? handleSelect(i) : () => {}}
             dangerouslySetInnerHTML={{ __html: el.value }}
-            style={preview || disableResponse ? getStyles(i) : {}}
+            style={preview || disableResponse ? getStyles(i, disableResponse) : {}}
             key={i}
             className={getClass(i)}
           />
         ) : (
           <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
         )
+      )}
+      {previewTab === SHOW && (
+        <CorrectAnswersContainer title={t("component.sortList.correctAnswers")}>
+          {item.templeWithTokens.map((el, i) =>
+            el.active ? (
+              <MathSpan
+                onClick={() => {}}
+                dangerouslySetInnerHTML={{ __html: el.value }}
+                style={getStyles(i, true)}
+                key={i}
+              />
+            ) : (
+              <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
+            )
+          )}
+        </CorrectAnswersContainer>
       )}
     </Paper>
   );

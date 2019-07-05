@@ -220,6 +220,7 @@ const updateStudent = (state, { payload }) => {
 
 const updateStudentsAfterTTSChange = (state, { payload }) => {
   state.studentsList = payload;
+  state.selectedStudent = [];
 };
 
 const removeStudentsSuccess = (state, { payload: studentIds }) => {

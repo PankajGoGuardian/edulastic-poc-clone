@@ -130,8 +130,11 @@ const ActionContainer = ({
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to enable text to speech");
         }
-
         if (changeTTS) {
+          const isEnabled = selectedStudent.find(std => std.tts === "yes");
+          if (isEnabled) {
+            return showMessage("error", "Atleast one of the selected student(s) is already enabled");
+          }
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
         }
@@ -139,6 +142,10 @@ const ActionContainer = ({
       case "disableSpeech":
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to disable text to speech");
+        }
+        const isDisabled = selectedStudent.find(std => std.tts === "no");
+        if (isDisabled) {
+          return showMessage("error", "Atleast one of the selected student(s) is already disabled");
         }
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");

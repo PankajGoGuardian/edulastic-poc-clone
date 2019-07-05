@@ -62,7 +62,9 @@ const PerformanceAnalysisTable = ({
       [viewByMode.DOMAINS]: {
         selectedData: selectedDomains,
         dataField: "domainId",
-        standardColumnsData: uniqBy(skillInfo, "domainId").sort((a, b) => a.domain.localeCompare(b.domain))
+        standardColumnsData: uniqBy(skillInfo, "domainId")
+          .filter(o => o.domain !== null)
+          .sort((a, b) => a.domain.localeCompare(b.domain))
       }
     };
   };

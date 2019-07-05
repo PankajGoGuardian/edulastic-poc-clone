@@ -93,30 +93,14 @@ class ClassHeader extends Component {
     }
   };
 
-  onUpdateReleaseScoreSettings = releaseScore => {
-    // const {
-    //   updateReleaseScoreSettings,
-    //   currentEditableAssignment = { class: [{}] },
-    //   toggleReleaseGradePopUp
-    // } = this.props;
-    // if (releaseScore !== releaseGradeLabels.DONT_RELEASE) {
-    //   const { startDate, endDate } = currentEditableAssignment.class[0];
-    //   const updateReleaseScore = { ...currentEditableAssignment, releaseScore, startDate, endDate };
-    //   updateReleaseScoreSettings(updateReleaseScore);
-    // } else {
-    //   toggleReleaseGradePopUp(false);
-    // }
-  };
-
   toggleDropdown = () => {
     this.setState(state => ({ showDropdown: !state.showDropdown }));
   };
 
-  handleReleaseScore = () => {
-    const { classId, assignmentId, setReleaseScore, showScore } = this.props;
-    const isReleaseScore = !showScore;
-    setReleaseScore(assignmentId, classId, isReleaseScore);
-    this.toggleDropdown();
+  handleReleaseScore = releaseScore => {
+    const { classId, assignmentId, setReleaseScore, toggleReleaseGradePopUp } = this.props;
+    setReleaseScore(assignmentId, classId, releaseScore);
+    toggleReleaseGradePopUp(false);
   };
 
   handleMarkAsDone = () => {
@@ -178,7 +162,6 @@ class ClassHeader extends Component {
   };
 
   render() {
-    const releaseScore = "";
     const {
       t,
       active,
@@ -186,7 +169,7 @@ class ClassHeader extends Component {
       classId,
       testActivityId,
       additionalData = {},
-      showScore,
+      releaseScore,
       selectedStudentsKeys,
       classResponse = {},
       assignmentStatus,
@@ -301,7 +284,7 @@ class ClassHeader extends Component {
           <ReleaseScoreSettingsModal
             showReleaseGradeSettings={isShowReleaseSettingsPopup}
             onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
-            updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}
+            updateReleaseScoreSettings={this.handleReleaseScore}
             releaseScore={releaseScore}
           />
         </StyledDiv>
@@ -318,19 +301,19 @@ ClassHeader.propTypes = {
   testActivityId: PropTypes.string,
   additionalData: PropTypes.object.isRequired,
   setReleaseScore: PropTypes.func.isRequired,
-  showScore: PropTypes.bool
+  releaseScore: PropTypes.bool
 };
 
 ClassHeader.defaultProps = {
   testActivityId: "",
-  showScore: false
+  releaseScore: "DONT_RELEASE"
 };
 
 const enhance = compose(
   withNamespaces("classBoard"),
   connect(
     state => ({
-      showScore: showScoreSelector(state),
+      releaseScore: showScoreSelector(state),
       classResponse: getClassResponseSelector(state),
       userRole: getUserRole(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),

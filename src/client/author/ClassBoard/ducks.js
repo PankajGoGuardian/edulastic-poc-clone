@@ -68,7 +68,6 @@ function* receiveTestActivitySaga({ payload }) {
     });
 
     const releaseScore = additionalData.showScore;
-    yield put(setShowScoreAction(releaseScore));
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive tests is failing";
@@ -82,11 +81,9 @@ function* receiveTestActivitySaga({ payload }) {
 
 function* releaseScoreSaga({ payload }) {
   try {
-    const releaseScore = payload.isReleaseScore;
     yield call(classBoardApi.releaseScore, payload);
-    yield put(setShowScoreAction(releaseScore));
   } catch (err) {
-    const errorMessage = "Update release score is failing";
+    const errorMessage = "Update release score is failed";
     yield call(message.error, errorMessage);
   }
 }

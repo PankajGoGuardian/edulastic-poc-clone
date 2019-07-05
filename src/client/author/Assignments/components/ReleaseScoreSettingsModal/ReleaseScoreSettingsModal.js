@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-// import { connect } from "react-redux";
 import { Modal, Button, Radio, Row } from "antd";
-
 import { test } from "@edulastic/constants";
-// import
 
 const { releaseGradeTypes, releaseGradeLabels } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];

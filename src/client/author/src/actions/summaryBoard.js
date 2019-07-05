@@ -40,11 +40,6 @@ export const releaseScoreAction = (assignmentId, classId, isReleaseScore) => ({
   payload: { assignmentId, classId, isReleaseScore }
 });
 
-export const setShowScoreAction = payload => ({
-  type: SET_SHOW_SCORE,
-  payload
-});
-
 export const receiveStudentQuestionAction = (assignmentId, classId, questionId, studentId) => ({
   type: RECEIVE_STUDENT_QUESTION_REQUEST,
   payload: { assignmentId, classId, questionId, studentId }

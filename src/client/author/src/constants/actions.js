@@ -142,7 +142,6 @@ export const RECEIVE_GRADEBOOK_SUCCESS = "[gradebook] receive list success";
 export const RECEIVE_GRADEBOOK_ERROR = "[gradebook] receive list error";
 export const UPDATE_RELEASE_SCORE = "[gradebook] release score";
 export const SET_MARK_AS_DONE = "[gradebook] mark as done";
-export const SET_SHOW_SCORE = "[gradebook] set show score";
 export const UPDATE_ASSIGNMENT_STATUS = "[gradebook] set assignment status";
 export const OPEN_ASSIGNMENT = "[gradebook] open assignment";
 export const CLOSE_ASSIGNMENT = "[gradebook] close assignment";

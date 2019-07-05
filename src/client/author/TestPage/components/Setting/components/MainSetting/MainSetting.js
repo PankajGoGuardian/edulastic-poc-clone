@@ -175,7 +175,7 @@ class MainSetting extends Component {
 
   render() {
     const { enable, showAdvancedOption, showPassword } = this.state;
-    const { history, windowWidth, entity, owner, userRole, isEditable = false } = this.props;
+    const { history, windowWidth, entity, owner, userRole, isEditable = false, sebPasswordRef } = this.props;
 
     const {
       releaseScore,
@@ -344,8 +344,10 @@ class MainSetting extends Component {
                     onChange={this.updateTestData("safeBrowser")}
                   />
                   {safeBrowser && (
-                    <InputPassword
+                    <Input
+                      className={`sebPassword ${sebPassword && sebPassword.length ? " good" : " dirty"}`}
                       disabled={!owner || !isEditable}
+                      ref={sebPasswordRef}
                       prefix={
                         <i className={`fa fa-eye${showPassword ? "-slash" : ""}`} onClick={this.handleShowPassword} />
                       }

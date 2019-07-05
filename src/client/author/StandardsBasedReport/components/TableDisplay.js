@@ -164,6 +164,7 @@ class TableDisplay extends Component {
       }
     ];
     const submittedLength = this.props.testActivities.filter(act => act.status === "submitted").length;
+    console.log("standards", standards, standards.filter(x => x.level === "ELO"));
     const data = standards.map((std, index) => {
       const perfomancePercentage = this.getPerfomancePercentage(std);
       return {

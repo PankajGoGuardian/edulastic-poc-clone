@@ -432,7 +432,7 @@ class ClassBoard extends Component {
 
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const firstStudentId = get(
-      entities.filter(x => x.status !== "notStarted" && x.present && x.status !== "redirected"),
+      entities.filter(x => x.testActivityId && !x.redirect && x.status != "absent" && x.present),
       [0, "studentId"],
       false
     );
@@ -629,6 +629,7 @@ class ClassBoard extends Component {
                   this.onTabChange(e, "Student", selected);
                 }}
                 isPresentationMode={isPresentationMode}
+                enrollmentStatus={this.props.enrollmentStatus}
               />
             ) : (
               <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
@@ -738,6 +739,7 @@ const enhance = compose(
       showScore: showScoreSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
+      enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       labels: getQLabelsSelector(state)
     }),

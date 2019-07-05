@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { receiveTestByIdAction, getTestSelector } from "../../../TestPage/ducks";
+import {
+  receiveTestByIdAction,
+  getTestSelector,
+  getUserListSelector as getTestSharedListSelector
+} from "../../../TestPage/ducks";
 
 import ListHeader from "../../../src/components/common/ListHeader";
 import {
@@ -25,7 +29,11 @@ import {
   ShareUrlDiv,
   ImageWrapper
 } from "./styled";
-import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
+import {
+  getPlaylistSelector,
+  receivePlaylistByIdAction,
+  getUserListSelector as getPlayListSharedListSelector
+} from "../../../PlaylistPage/ducks";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { IconPencilEdit, IconLock } from "@edulastic/icons";
 import { blue } from "@edulastic/colors";
@@ -37,6 +45,8 @@ const statusConstants = {
   ARCHIVED: "archived",
   PUBLISHED: "published"
 };
+
+const sharedWithPriorityOrder = ["Public", "District", "School"];
 
 class SuccessPage extends React.Component {
   constructor(props) {
@@ -59,8 +69,8 @@ class SuccessPage extends React.Component {
   }
 
   handleAssign = () => {
-    const { testItem, history, isAssignSuccess } = this.props;
-    const { _id } = testItem;
+    const { test, history, isAssignSuccess } = this.props;
+    const { _id } = test;
     if (isAssignSuccess) {
       history.push(`/author/assignments`);
     } else {
@@ -91,12 +101,25 @@ class SuccessPage extends React.Component {
     );
   };
 
+  get getHighPriorityShared() {
+    const { isPlaylist, playListSharedUsersList, testSharedUsersList } = this.props;
+    const sharedUserList = isPlaylist ? playListSharedUsersList : testSharedUsersList;
+    const mapSharedByType = sharedUserList.map(item => item.sharedType);
+    let sharedWith = "Private";
+    for (let level of sharedWithPriorityOrder) {
+      if (mapSharedByType.includes(level.toUpperCase())) {
+        sharedWith = level;
+        break;
+      }
+    }
+    return `${sharedWith} Library`;
+  }
+
   render() {
-    const { testItem, isPlaylist, playlist, isAssignSuccess } = this.props;
+    const { test, isPlaylist, playlist, isAssignSuccess } = this.props;
     const { isShareModalVisible } = this.state;
-    const { title, _id, sharing, status, thumbnail, scoring = {} } = isPlaylist ? playlist : testItem;
-    let sharedWith = ((sharing ? sharing[0] : {}) || {}).type;
-    let shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
+    const { title, _id, status, thumbnail, scoring = {} } = isPlaylist ? playlist : test;
+    const shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
     const playlistBreadCrumbData = [
       {
         title: "PLAY LIST",
@@ -166,14 +189,14 @@ class SuccessPage extends React.Component {
               )}
               <FlexTitle>Share With Others</FlexTitle>
               <FlexTextWrapper>
-                <b>{title}</b>&nbsp; has been added to your &nbsp;<b> Private Library</b>.
+                <b>{title}</b>&nbsp;has been added to your&nbsp;<b>{this.getHighPriorityShared}</b>.
               </FlexTextWrapper>
               <FlexText>
-                Click on &nbsp;
+                Click on&nbsp;
                 <span onClick={this.onShareModalChange} style={{ color: blue, cursor: "pointer" }}>
                   Edit
                 </span>
-                &nbsp; icon to share it with your colleagues.
+                &nbsp;icon to share it with your colleagues.
               </FlexText>
               <FlexShareContainer>
                 <FlexShareTitle>Shared With</FlexShareTitle>
@@ -181,7 +204,7 @@ class SuccessPage extends React.Component {
                   <IconWrapper>
                     <IconLock />
                   </IconWrapper>
-                  <FlexText>{sharedWith || ""}</FlexText>
+                  <FlexText>{this.getHighPriorityShared}</FlexText>
                   <IconWrapper onClick={this.onShareModalChange}>
                     <IconPencilEdit color={blue} />
                   </IconWrapper>
@@ -206,7 +229,9 @@ const enhance = compose(
   connect(
     state => ({
       playlist: getPlaylistSelector(state),
-      testItem: getTestSelector(state)
+      test: getTestSelector(state),
+      playListSharedUsersList: getPlayListSharedListSelector(state),
+      testSharedUsersList: getTestSharedListSelector(state)
     }),
     {
       fetchPlaylistById: receivePlaylistByIdAction,
@@ -219,7 +244,7 @@ export default enhance(SuccessPage);
 SuccessPage.propTypes = {
   match: PropTypes.object.isRequired,
   isAssignSuccess: PropTypes.bool,
-  testItem: PropTypes.object,
+  test: PropTypes.object,
   playlist: PropTypes.object,
   fetchPlaylistById: PropTypes.func.isRequired,
   fetchTestByID: PropTypes.func.isRequired

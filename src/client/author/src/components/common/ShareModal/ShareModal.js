@@ -182,6 +182,16 @@ class ShareModal extends React.Component {
     shareTest({ data, contentId: testId });
   };
 
+  getUserName(data) {
+    if (data.sharedType === "PUBLIC") {
+      return "EVERYONE";
+    } else {
+      return `${data.userName && data.userName !== "null" ? data.userName : ""}${
+        data.email && data.email !== "null" ? `, ${data.email}` : ""
+      }`;
+    }
+  }
+
   render() {
     const { sharedType, permission } = this.state;
     const {
@@ -223,10 +233,7 @@ class ShareModal extends React.Component {
                       alignItems: "center"
                     }}
                   >
-                    <Col span={12}>
-                      {data.userName && data.userName !== "null" ? data.userName : ""}
-                      {` ${data.email && data.email !== "null" ? `, ${data.email}` : ""}`}
-                    </Col>
+                    <Col span={12}>{this.getUserName(data)}</Col>
                     <Col span={11}>
                       <span>{data.permission === "EDIT" && "Can Edit, Add/Remove Items"}</span>
                       <span>{data.permission === "VIEW" && "Can View & Duplicate"}</span>

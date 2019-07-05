@@ -688,6 +688,7 @@ export const getUserListSelector = createSelector(
             userName: user.name,
             email: user.email || "",
             _userId: user._id,
+            sharedType,
             permission,
             sharedId
           });
@@ -695,6 +696,7 @@ export const getUserListSelector = createSelector(
       } else {
         flattenUsers.push({
           userName: sharedType,
+          sharedType,
           permission,
           sharedId
         });

@@ -23,8 +23,8 @@ import MathSpanWrapper from "../../components/MathSpanWrapper";
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
     super(props);
-    const { template } = props;
-    const respLength = this.getResponsesCount(template);
+    const { stimulus } = props;
+    const respLength = this.getResponsesCount(stimulus);
     const userAnswers = new Array(respLength).fill(false);
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -39,14 +39,14 @@ class ClozeDragDropDisplay extends Component {
   }
 
   componentDidMount() {
-    const { template } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(template) });
+    const { stimulus } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       const possibleResponses = this.getInitialResponses(nextProps);
-      const parsedTemplate = helpers.parseTemplate(nextProps.template);
+      const parsedTemplate = helpers.parseTemplate(nextProps.stimulus);
       this.setState({
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses,
@@ -55,11 +55,11 @@ class ClozeDragDropDisplay extends Component {
     }
   }
 
-  getResponsesCount = template => {
+  getResponsesCount = stimulus => {
     if (!window.$) {
       return 0;
     }
-    return $($("<div />").html(template)).find("response").length;
+    return $($("<div />").html(stimulus)).find("response").length;
   };
 
   onDrop = (data, index) => {
@@ -466,7 +466,7 @@ ClozeDragDropDisplay.propTypes = {
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  template: PropTypes.string,
+  stimulus: PropTypes.string,
   // question: PropTypes.string.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object,
@@ -492,7 +492,7 @@ ClozeDragDropDisplay.defaultProps = {
   userSelections: [],
   evaluation: [],
   checkAnswer: false,
-  template: "",
+  stimulus: "",
   smallSize: false,
   hasGroupResponses: false,
   validation: {},

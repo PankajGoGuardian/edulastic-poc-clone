@@ -55,7 +55,7 @@ class TemplateMarkup extends Component {
     cleanSections();
   }
 
-  onChangeMarkUp = template => {
+  onChangeMarkUp = stimulus => {
     const { item, setQuestionData } = this.props;
 
     const reduceResponseIds = tmpl => {
@@ -138,8 +138,8 @@ class TemplateMarkup extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        draft.template = template;
-        draft.response_ids = reduceResponseIds(template);
+        draft.stimulus = stimulus;
+        draft.response_ids = reduceResponseIds(stimulus);
         draft.validation = reudceValidations(draft.response_ids, draft.validation);
         draft.options = reduceOptions(draft.response_ids, draft.options);
         updateVariables(draft);
@@ -159,7 +159,7 @@ class TemplateMarkup extends Component {
           toolbarId="cloze-dropdown-template-box"
           placeholder={t("component.cloze.dropDown.templatemarkupplaceholder")}
           additionalToolbarOptions={["textdropdown"]}
-          value={item.template}
+          value={item.stimulus}
           onChange={this.onChangeMarkUp}
           border="border"
         />

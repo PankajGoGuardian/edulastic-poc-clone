@@ -48,17 +48,7 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const {
-      t,
-      options,
-      stimulus,
-      response,
-      template,
-      hasGroupResponses,
-      configureOptions,
-      uiStyle,
-      responseIDs
-    } = this.props;
+    const { t, options, stimulus, response, hasGroupResponses, configureOptions, uiStyle, responseIDs } = this.props;
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
     return (
@@ -84,8 +74,7 @@ class CorrectAnswer extends Component {
           dragHandler
           options={options}
           uiStyle={uiStyle}
-          question={stimulus}
-          template={template}
+          stimulus={stimulus}
           userSelections={response.value}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}

@@ -46,7 +46,7 @@ class TemplateMarkup extends Component {
       deskHeight
     );
 
-    this.onChangeMarkUp(helpers.reIndexResponses(item.template));
+    this.onChangeMarkUp(helpers.reIndexResponses(item.stimulus));
   };
 
   componentWillUnmount() {
@@ -55,7 +55,7 @@ class TemplateMarkup extends Component {
     cleanSections();
   }
 
-  onChangeMarkUp = template => {
+  onChangeMarkUp = stimulus => {
     const { item, setQuestionData } = this.props;
 
     const reduceResponse = (tmpl, preIDs, preValidation) => {
@@ -113,8 +113,8 @@ class TemplateMarkup extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        draft.template = template;
-        const { response_ids, validation } = reduceResponse(template, draft.response_ids, draft.validation);
+        draft.stimulus = stimulus;
+        const { response_ids, validation } = reduceResponse(stimulus, draft.response_ids, draft.validation);
         draft.response_ids = response_ids;
         draft.validation = validation;
         updateVariables(draft);
@@ -133,7 +133,7 @@ class TemplateMarkup extends Component {
           onChange={this.onChangeMarkUp}
           additionalToolbarOptions={["response"]}
           toolbarId="template-markup-area"
-          value={item.template}
+          value={item.stimulus}
           border="border"
         />
       </>

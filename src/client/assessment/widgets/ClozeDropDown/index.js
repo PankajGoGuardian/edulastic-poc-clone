@@ -156,9 +156,8 @@ class ClozeDropDown extends Component {
                     }}
                     options={previewDisplayOptions}
                     item={itemForPreview}
-                    question={previewStimulus}
+                    stimulus={previewStimulus}
                     uiStyle={uiStyle}
-                    template={itemForEdit.template}
                     onAddAltResponses={this.handleAddAltResponses}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
@@ -212,9 +211,8 @@ class ClozeDropDown extends Component {
               item={itemForPreview}
               smallSize={smallSize}
               options={previewDisplayOptions}
-              question={previewStimulus}
+              stimulus={previewStimulus}
               uiStyle={uiStyle}
-              template={itemForPreview.template}
               userAnswer={userAnswer}
               userSelections={userAnswer}
               onChange={this.handleAddAnswer}

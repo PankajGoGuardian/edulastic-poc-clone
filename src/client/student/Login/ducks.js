@@ -279,19 +279,22 @@ function* signup({ payload }) {
 const getLoggedOutUrl = () => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   const path = getWordsInURLPathName(window.location.pathname);
-  if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
+  const pathname = window.location.pathname.toLocaleLowerCase();
+  if (pathname === "/getstarted") {
     return "/getStarted";
-  } else if (window.location.pathname.toLocaleLowerCase() === "/signup") {
+  } else if (pathname === "/signup") {
     return "/signup";
-  } else if (window.location.pathname.toLocaleLowerCase() === "/studentsignup") {
+  } else if (pathname === "/studentsignup") {
     return "/studentsignup";
-  } else if (window.location.pathname.toLocaleLowerCase() === "/adminsignup") {
+  } else if (pathname === "/adminsignup") {
     return "/adminsignup";
   } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
     let arr = [...path];
     arr.shift();
     let restOfPath = arr.join("/");
     return "/district/" + restOfPath;
+  } else if (pathname === "/resetpassword") {
+    return window.location.href.split(window.location.origin)[1];
   } else {
     return "/login";
   }

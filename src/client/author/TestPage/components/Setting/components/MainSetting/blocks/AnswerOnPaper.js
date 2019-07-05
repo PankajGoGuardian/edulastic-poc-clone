@@ -1,27 +1,21 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Row, Select } from "antd";
+import { Switch } from "antd";
 
 import { test } from "@edulastic/constants";
 
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../../ducks";
-import { setTestDataAction } from "../../../../../ducks";
-
-import { Body, Title, Block, TestTypeSelect } from "../styled";
+import { setTestDataAction, getTestEntitySelector } from "../../../../../ducks";
+import { Body, Title, Block, Description } from "../styled";
+import FeaturesSwitch from "../../../../../../../features/components/FeaturesSwitch";
+import { getUserFeatures, getUserRole } from "../../../../../../../student/Login/ducks";
 
 const { type, releaseGradeLabels } = test;
 
-const { Option } = Select;
+const { ASSESSMENT } = type;
 
-const { ASSESSMENT, PRACTICE } = type;
-
-const testTypes = {
-  [ASSESSMENT]: "Asessment",
-  [PRACTICE]: "Practice"
-};
-
-class TestType extends Component {
+class AnswerOnPaper extends Component {
   updateTestData = key => value => {
     const { setTestData, setMaxAttempts } = this.props;
     switch (key) {
@@ -63,59 +57,57 @@ class TestType extends Component {
   };
 
   render() {
-    const { windowWidth, entity, owner, userRole, isEditable = false } = this.props;
+    const { windowWidth, entity, owner, isEditable } = this.props;
 
-    const { testType } = entity;
+    const { answerOnPaper } = entity;
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
     return (
-      <Block id="test-type" smallSize={isSmallSize}>
-        <Row>
-          <Title>Test Type</Title>
+      <FeaturesSwitch inputFeatures="assessmentSuperPowersAnswerOnPaper" actionOnInaccessible="hidden">
+        <Block id="answer-on-paper" smallSize={isSmallSize}>
+          <Title>Answer on Paper</Title>
           <Body smallSize={isSmallSize}>
-            <TestTypeSelect
-              defaultValue={testType}
+            <Switch
               disabled={!owner || !isEditable}
-              onChange={this.updateTestData("testType")}
-            >
-              {Object.keys(testTypes).map(key => (
-                <Option key={key} value={key}>
-                  {key === ASSESSMENT
-                    ? userRole === "teacher"
-                      ? "Class Assessment "
-                      : "Common Assessment "
-                    : testTypes[key]}
-                </Option>
-              ))}
-            </TestTypeSelect>
+              defaultChecked={answerOnPaper}
+              onChange={this.updateTestData("answerOnPaper")}
+            />
+            <Description>
+              {
+                "Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed."
+              }
+            </Description>
           </Body>
-        </Row>
-      </Block>
+        </Block>
+      </FeaturesSwitch>
     );
   }
 }
 
-TestType.propTypes = {
+AnswerOnPaper.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   setMaxAttempts: PropTypes.func.isRequired,
   setTestData: PropTypes.func.isRequired,
   owner: PropTypes.bool,
   isEditable: PropTypes.bool,
-  entity: PropTypes.object.isRequired,
-  userRole: PropTypes.string.isRequired
+  entity: PropTypes.object.isRequired
 };
 
-TestType.defaultProps = {
+AnswerOnPaper.defaultProps = {
   owner: false,
   isEditable: false
 };
 
 export default connect(
-  null,
+  state => ({
+    entity: getTestEntitySelector(state),
+    features: getUserFeatures(state),
+    userRole: getUserRole(state)
+  }),
   {
     setMaxAttempts: setMaxAttemptsAction,
     setSafePassword: setSafeBroswePassword,
     setTestData: setTestDataAction
   }
-)(TestType);
+)(AnswerOnPaper);

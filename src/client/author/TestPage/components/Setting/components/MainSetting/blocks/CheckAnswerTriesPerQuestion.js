@@ -1,27 +1,21 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Row, Select } from "antd";
 
 import { test } from "@edulastic/constants";
 
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../../ducks";
-import { setTestDataAction } from "../../../../../ducks";
+import { setTestDataAction, getTestEntitySelector } from "../../../../../ducks";
 
-import { Body, Title, Block, TestTypeSelect } from "../styled";
+import { Body, Title, Block, MaxAnswerChecksInput } from "../styled";
+import FeaturesSwitch from "../../../../../../../features/components/FeaturesSwitch";
+import { getUserFeatures, getUserRole } from "../../../../../../../student/Login/ducks";
 
 const { type, releaseGradeLabels } = test;
 
-const { Option } = Select;
+const { ASSESSMENT } = type;
 
-const { ASSESSMENT, PRACTICE } = type;
-
-const testTypes = {
-  [ASSESSMENT]: "Asessment",
-  [PRACTICE]: "Practice"
-};
-
-class TestType extends Component {
+class MainSetting extends Component {
   updateTestData = key => value => {
     const { setTestData, setMaxAttempts } = this.props;
     switch (key) {
@@ -62,60 +56,72 @@ class TestType extends Component {
     });
   };
 
-  render() {
-    const { windowWidth, entity, owner, userRole, isEditable = false } = this.props;
+  onPerformanceBandUpdate = item => {
+    const { setTestData, entity = {} } = this.props;
+    const { performanceBands } = entity;
+    const newPerformanceBands = {
+      ...performanceBands,
+      [item]: {
+        ...performanceBands[item],
+        isAbove: !performanceBands[item].isAbove
+      }
+    };
+    setTestData({
+      performanceBands: newPerformanceBands
+    });
+  };
 
-    const { testType } = entity;
+  render() {
+    const { windowWidth, entity, owner, isEditable } = this.props;
+
+    const { maxAnswerChecks } = entity;
 
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
     return (
-      <Block id="test-type" smallSize={isSmallSize}>
-        <Row>
-          <Title>Test Type</Title>
+      <FeaturesSwitch inputFeatures="assessmentSuperPowersCheckAnswerTries" actionOnInaccessible="hidden">
+        <Block id="check-answer-tries-per-question" smallSize={isSmallSize}>
+          <Title>Check Answer Tries Per Question</Title>
           <Body smallSize={isSmallSize}>
-            <TestTypeSelect
-              defaultValue={testType}
+            <MaxAnswerChecksInput
               disabled={!owner || !isEditable}
-              onChange={this.updateTestData("testType")}
-            >
-              {Object.keys(testTypes).map(key => (
-                <Option key={key} value={key}>
-                  {key === ASSESSMENT
-                    ? userRole === "teacher"
-                      ? "Class Assessment "
-                      : "Common Assessment "
-                    : testTypes[key]}
-                </Option>
-              ))}
-            </TestTypeSelect>
+              onChange={e => this.updateTestData("maxAnswerChecks")(e.target.value)}
+              size="large"
+              value={maxAnswerChecks}
+              type="number"
+              min={0}
+              placeholder="Number of tries"
+            />
           </Body>
-        </Row>
-      </Block>
+        </Block>
+      </FeaturesSwitch>
     );
   }
 }
 
-TestType.propTypes = {
+MainSetting.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   setMaxAttempts: PropTypes.func.isRequired,
   setTestData: PropTypes.func.isRequired,
   owner: PropTypes.bool,
   isEditable: PropTypes.bool,
-  entity: PropTypes.object.isRequired,
-  userRole: PropTypes.string.isRequired
+  entity: PropTypes.object.isRequired
 };
 
-TestType.defaultProps = {
+MainSetting.defaultProps = {
   owner: false,
   isEditable: false
 };
 
 export default connect(
-  null,
+  state => ({
+    entity: getTestEntitySelector(state),
+    features: getUserFeatures(state),
+    userRole: getUserRole(state)
+  }),
   {
     setMaxAttempts: setMaxAttemptsAction,
     setSafePassword: setSafeBroswePassword,
     setTestData: setTestDataAction
   }
-)(TestType);
+)(MainSetting);

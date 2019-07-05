@@ -27,6 +27,7 @@ export const StyledAnchor = styled(Anchor)`
 
   .ant-anchor-ink {
     padding: 25px 0;
+    left: 8px;
 
     &:before {
       background: #b9d5fa;
@@ -36,6 +37,10 @@ export const StyledAnchor = styled(Anchor)`
   .ant-anchor-link {
     position: relative;
     padding: 20px 30px;
+
+    &.ant-anchor-link-active:after {
+      opacity: 1;
+    }
 
     &:before {
       display: block;
@@ -47,6 +52,21 @@ export const StyledAnchor = styled(Anchor)`
       height: 8px;
       background: #b9d5fa;
       border-radius: 8px;
+    }
+
+    &:after {
+      content: "";
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #00ad50;
+      content: "";
+      position: absolute;
+      left: -7px;
+      top: 21px;
+      z-index: 5;
+      opacity: 0;
+      transition: all 0.3s ease;
     }
   }
 
@@ -210,6 +230,29 @@ export const MaxAnswerChecksInput = styled(Input)`
 `;
 
 export const AdvancedSettings = styled.div``;
+
+export const NavigationMenu = styled.div`
+  position: absolute;
+  max-height: calc(100vh - 230px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 0 0 10px;
+  margin-left: -20px;
+
+  .ant-anchor {
+    padding-left: 10px;
+  }
+
+  ${({ fixed }) => {
+    if (fixed) {
+      return `
+        position: fixed;
+        top: 110px;
+        max-height: calc(100vh - 170px);
+      `;
+    }
+  }}
+`;
 
 export const AdvancedButton = styled(Button)`
   padding: 0;

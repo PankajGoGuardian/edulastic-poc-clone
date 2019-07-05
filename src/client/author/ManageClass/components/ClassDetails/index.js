@@ -10,7 +10,7 @@ import {
   fetchClassListAction,
   syncByCodeModalAction
 } from "../../ducks";
-import { Spin, Modal, Input, Button } from "antd";
+import { Spin, Modal, Input, Button, message } from "antd";
 
 import Header from "./Header";
 import SubHeader from "./SubHeader";
@@ -52,8 +52,11 @@ const ClassDetails = ({
   };
 
   const handleSyncGC = () => {
-    syncClassUsingCode({ googleCode, groupId: selectedClass._id });
-    syncByCodeModal(false);
+    if (googleCode) {
+      syncClassUsingCode({ googleCode, groupId: selectedClass._id });
+    } else {
+      message.error("Enter valid google classroom code");
+    }
   };
 
   const viewAssessmentHandler = () => {};

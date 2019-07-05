@@ -429,8 +429,11 @@ function* syncClassUsingCode({ payload }) {
     const { googleCode, groupId: classId } = payload;
     yield call(googleApi.syncClass, { googleCode, groupId: classId });
     yield put(fetchStudentsByIdAction({ classId }));
+    yield put(syncByCodeModalAction(false));
   } catch (e) {
-    console.log(e);
+    if (e.status === 406) {
+      yield call(message.error(`Google Classroom ${payload.googleCode} is already synced in another group`));
+    }
   }
 }
 

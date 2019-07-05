@@ -99,7 +99,8 @@ class AssignTest extends React.Component {
       limit: 1000
     });
     if (isEmpty(performanceBandData)) {
-      fetchPerformanceBand({ orgId: userOrgId });
+      //TODO this api return permission Denied with 403 status until this getting adressed hiding from front-end
+      // fetchPerformanceBand({ orgId: userOrgId });
     }
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);

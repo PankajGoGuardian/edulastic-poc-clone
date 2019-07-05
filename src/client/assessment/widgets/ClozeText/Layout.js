@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
-import { isEqual } from "lodash";
+import { isEqual, find } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -123,7 +123,12 @@ class Layout extends Component {
 
     const addIndividual = () => {
       const { responsecontainerindividuals } = uiStyle;
+      const { responseIds } = this.props;
+      const ind = responsecontainerindividuals.length;
+      const response = find(responseIds, resp => resp.index === ind);
       responsecontainerindividuals.push({
+        id: !!response ? response.id : "",
+        index: !!response ? response.index : "",
         widthpx: 0,
         heightpx: 0,
         placeholder: ""

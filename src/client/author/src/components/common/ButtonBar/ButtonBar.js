@@ -100,7 +100,11 @@ class ButtonBar extends Component {
               <MenuItem
                 data-cy="previewButton"
                 className={view === "preview" && "active"}
-                onClick={() => this.handleMenuClick("preview")}
+                onClick={() => {
+                  this.handleMenuClick("preview");
+                  clearAnswers();
+                  changePreviewTab("clear");
+                }}
               >
                 <HeadIcon>
                   <IconEye color={white} width={18} height={16} />
@@ -155,7 +159,11 @@ class ButtonBar extends Component {
                 {withLabels ? "Edit Mode" : ""}
               </Button>
               <Button
-                onClick={() => this.optionHandler("preview")}
+                onClick={() => {
+                  this.optionHandler("preview");
+                  clearAnswers();
+                  changePreviewTab("clear");
+                }}
                 className={`btn-preview ${view === "preview" && "active"}`}
               >
                 <HeadIcon>

@@ -14,12 +14,10 @@ import StudentsList from "./StudentsList";
 import MainInfo from "./MainInfo";
 import { Container, StyledDivider } from "./styled";
 
-const ClassDetails = ({ selectedClass, dataLoaded, loadStudents, history, match }) => {
+const ClassDetails = ({ selectedClass, loadStudents, classLoaded, history, match }) => {
   useEffect(() => {
-    if (isEmpty(selectedClass)) {
-      const { classId } = match.params;
-      loadStudents({ classId });
-    }
+    const { classId } = match.params;
+    loadStudents({ classId });
   }, []);
 
   const handleEditClick = () => {
@@ -28,7 +26,7 @@ const ClassDetails = ({ selectedClass, dataLoaded, loadStudents, history, match 
   };
 
   const viewAssessmentHandler = () => {};
-  if (!dataLoaded) return <Spin />;
+  if (!classLoaded) return <Spin />;
   return (
     <>
       <Header onEdit={handleEditClick} />
@@ -48,7 +46,7 @@ const ClassDetails = ({ selectedClass, dataLoaded, loadStudents, history, match 
 ClassDetails.propTypes = {
   selectedClass: PropTypes.object.isRequired,
   loadStudents: PropTypes.func.isRequired,
-  dataLoaded: PropTypes.bool.isRequired
+  classLoaded: PropTypes.bool.isRequired
 };
 
 const enhance = compose(
@@ -56,7 +54,7 @@ const enhance = compose(
   connect(
     state => ({
       selectedClass: get(state, "manageClass.entity"),
-      dataLoaded: get(state, "manageClass.dataLoaded")
+      classLoaded: get(state, "manageClass.classLoaded")
     }),
     {
       loadStudents: fetchStudentsByIdAction

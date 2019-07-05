@@ -9,9 +9,8 @@ import { find } from "lodash";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
-import { TableWrapper,ClassListTable } from "./styled";
+import { TableWrapper, ClassListTable } from "./styled";
 import { fetchStudentsByIdAction } from "../../ducks";
-
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -94,9 +93,8 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
     onClick: () => {
       const { _id: classId } = record;
       if (window.getSelection().toString() === "") {
-        loadStudents({ classId });
+        history.push(`/author/manageClass/${classId}`);
       }
-      history.push(`/author/manageClass/${classId}`);
     }
   });
 

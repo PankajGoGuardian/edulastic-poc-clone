@@ -122,7 +122,7 @@ const initialState = {
   submitted: false,
   added: false,
   selectedSubject: "",
-  dataLoaded: false
+  classLoaded: false
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -153,7 +153,7 @@ const createClassFailed = (state, { payload }) => {
 const setClass = (state, { payload }) => {
   state.entity = payload;
   state.selectedStudent = [];
-  state.dataLoaded = true;
+  state.classLoaded = true;
 };
 
 const setFetchStudents = state => {

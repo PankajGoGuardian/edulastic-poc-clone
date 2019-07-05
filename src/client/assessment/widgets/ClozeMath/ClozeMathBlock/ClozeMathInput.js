@@ -24,23 +24,10 @@ class ClozeMathInput extends React.Component {
     this.wrappedRef = React.createRef();
   }
 
-  static getDerivedStateFromProps({ resprops = {}, id }, { userAnswers, currentMathQuill }) {
-    const { answers = {} } = resprops;
-    const { maths: _userAnswers = [] } = answers;
-
-    if (currentMathQuill && !isEqual(userAnswers, _userAnswers)) {
-      const prevLatex = currentMathQuill.latex();
-      const nextAnswer = _userAnswers[id] ? _userAnswers[id].value || "" : "";
-      if (!isEqual(prevLatex, nextAnswer)) {
-        currentMathQuill.latex(nextAnswer);
-      }
-    }
-    return { userAnswers: _userAnswers };
-  }
-
   componentDidMount() {
-    const { id } = this.props;
-    const { userAnswers } = this.state;
+    const { resprops = {}, id } = this.props;
+    const { answers = {} } = resprops;
+    const { maths: userAnswers = [] } = answers;
 
     const _this = this;
 
@@ -61,6 +48,23 @@ class ClozeMathInput extends React.Component {
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { currentMathQuill } = this.state;
+    const { resprops = {}, id } = this.props;
+    const { answers = {} } = resprops;
+    const { maths: userAnswers = [] } = answers;
+
+    const { resprops: prevResProps = {} } = prevProps;
+    const { answers: prevAnswers = {} } = prevResProps;
+    const { maths: prevUserAnswers = [] } = prevAnswers;
+
+    if (currentMathQuill) {
+      if (!isEqual(userAnswers[id], prevUserAnswers[id])) {
+        currentMathQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
+      }
+    }
   }
 
   componentWillUnmount() {

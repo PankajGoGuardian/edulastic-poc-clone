@@ -60,39 +60,12 @@ export const MathKeyboardStyles = styled.div`
     border-color: ${props => props.theme.mathKeyboard.numBorderColor};
   }
 
-  .half-box {
-    width: 50%;
-    display: flex;
-    flex-wrap: wrap;
-    height: 100%;
-    max-height: 325px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .box {
-    display: flex;
-    flex-wrap: wrap;
-    height: 100%;
-    max-height: 325px;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .keyboard-box {
-    width: 60%;
-  }
-
-  .symbols-box {
-    width: 40%;
-  }
-
-  .symbols-box .num {
-    width: calc(100% / 3);
+  .numberpad {
+    width: calc(65px * 4); /* 65px is number button width */
   }
 
   .num {
-    width: 25%;
+    width: 65px;
     height: 65px;
     border-color: ${props => props.theme.mathKeyboard.numBorderColor};
     border-radius: 0;
@@ -142,6 +115,11 @@ export const MathKeyboardStyles = styled.div`
   .num--type-5 {
     background-color: ${props => props.theme.mathKeyboard.numType5BgColor};
     color: ${props => props.theme.mathKeyboard.numType5Color};
+  }
+
+  .num--type-6 {
+    background-color: ${props => props.theme.mathKeyboard.numType6BgColor};
+    color: ${props => props.theme.mathKeyboard.numType6Color};
   }
 
   .italic {
@@ -201,4 +179,11 @@ export const MathKeyboardStyles = styled.div`
   .num__backspace {
     height: 17px;
   }
+`;
+
+export const SymbolContainer = styled.div`
+  width: ${({ cols, isAll }) => `${isAll ? cols * 65 + 20 : cols * 65}px`}; /* 20 is scrollbar width */
+  height: ${`${65 * 4}px`};
+  flex-direction: ${({ isAll }) => (isAll ? "row" : "column")};
+  overflow-y: ${({ isAll }) => (isAll ? "auto" : "hidden")};
 `;

@@ -161,7 +161,9 @@ export const themes = {
       numType4BgColor: "#91D8FF",
       numType4Color: "#738C9F",
       numType5BgColor: "#0EB08D",
-      numType5Color: "#fff"
+      numType5Color: "#fff",
+      numType6BgColor: "#50B29D",
+      numType6Color: "#fff"
     },
     numberPad: {
       itemBorderColor: "#dfdfdf", // grey

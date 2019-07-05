@@ -59,7 +59,7 @@ export const CustomImage = styled.img`
   object-fit: contain;
 `;
 
-export const KEYBOARD_BUTTONS = [
+export const KEYBOARD_BUTTONS_ALL = [
   {
     handler: "x",
     label: "x",
@@ -1019,6 +1019,298 @@ export const KEYBOARD_BUTTONS = [
     handler: "\\therefore",
     label: "∴",
     types: ["all", "general"],
+    command: "cmd"
+  }
+];
+
+export const KEYBOARD_BUTTONS = [
+  {
+    handler: "=",
+    label: "=",
+    types: ["all", "basic", "intermediate", "advanced"],
+    command: "write"
+  },
+  {
+    handler: "<",
+    label: "<",
+    types: ["all", "basic", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: ">",
+    label: ">",
+    types: ["all", "basic", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "(",
+    labelcy: "(",
+    label: <CustomImage src={Group944} role="presentation" />,
+    types: ["all", "basic", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "[",
+    label: <CustomImage src={Group944v2} role="presentation" />,
+    types: ["all", "basic", "intermediate", "advanced"],
+    command: "cmd",
+    name: "squareBrackets"
+  },
+  {
+    handler: "\\frac{}{}",
+    labelcy: "fraction",
+    label: <CustomImage src={Group941} role="presentation" />,
+    types: ["all", "basic", "intermediate", "advanced"],
+    command: "write"
+  },
+  {
+    handler: "^",
+    labelcy: "super",
+    label: <CustomImage src={Group942} role="presentation" />,
+    types: ["all", "basic", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\sqrt",
+    labelcy: "sqrt",
+    label: <CustomImage src={Sqrt} role="presentation" />,
+    types: ["all", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\sqrt[{}]{}",
+    label: <CustomImage src={Group999} role="presentation" />,
+    types: ["all", "intermediate", "advanced"],
+    command: "write"
+  },
+  {
+    handler: "\\pm",
+    label: "±",
+    types: ["all", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "≤",
+    label: "≤",
+    types: ["all", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "≥",
+    label: "≥",
+    types: ["all", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "|",
+    labelcy: "|",
+    label: <CustomImage src={Group993} role="presentation" />,
+    types: ["all", "basic", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "°",
+    label: "º",
+    labelcy: "°",
+    types: ["all", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "π",
+    label: "π",
+    types: ["all", "intermediate", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\infinity",
+    label: "∞",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "i", // handler: "\\iota"
+    label: "i",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "e", // handler: "\\iota"
+    label: "e",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\Theta",
+    label: "Θ",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\log", // handler: "\\iota"
+    label: "log",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\sin",
+    label: "sin",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\cos",
+    label: "cos",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\tan",
+    label: "tan",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\cot",
+    label: "cot",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\sin^{-1}",
+    label: <CustomImage src={Group2251} role="presentation" />,
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
+    handler: "\\cos^{-1}",
+    label: <CustomImage src={Group2247} role="presentation" />,
+    types: ["all", "advanced"],
+    command: "write"
+  },
+  {
+    handler: "\\tan^{-1}",
+    label: <CustomImage src={Group2243} role="presentation" />,
+    types: ["all", "advanced"],
+    command: "write"
+  },
+  {
+    handler: "g",
+    label: "g",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "kg",
+    label: "kg",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "mg",
+    label: "mg",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "µg",
+    label: "µg",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "m",
+    label: "m",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "km",
+    label: "km",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "cm",
+    label: "cm",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "mm",
+    label: "mm",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "L",
+    label: "L",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "mL",
+    label: "mL",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "s",
+    label: "s",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "ms",
+    label: "ms",
+    types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "oz",
+    label: "oz",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "lb",
+    label: "lb",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "in",
+    label: "in",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "ft",
+    label: "ft",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "mi",
+    label: "mi",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "fl oz",
+    label: "fl oz",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "pt",
+    label: "pt",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
+    handler: "gal",
+    label: "gal",
+    types: ["all", "units_us"],
     command: "cmd"
   }
 ];

@@ -10,7 +10,7 @@ import { NUMBER_PAD_ITEMS } from "./constants/numberPadItems";
 
 import Keyboard from "../Keyboard";
 
-import { MathKeyboardStyles } from "./styled/MathKeyboardStyles";
+import { MathKeyboardStyles, SymbolContainer } from "./styled/MathKeyboardStyles";
 
 const { EMBED_RESPONSE } = math;
 
@@ -36,17 +36,13 @@ class MathKeyboard extends React.PureComponent {
     });
   };
 
-  renderButtons = () => {
+  renderButtons = numOfBtns => {
     const { onInput } = this.props;
     const { type } = this.state;
     let btns = this.keyboardButtons;
 
-    if (btns.length < 12) {
-      btns = btns.concat(new Array(12 - btns.length).fill({ types: [type], label: "" }));
-    }
-
-    if (btns.length % 3 !== 0) {
-      btns = btns.concat(new Array(3 - (btns.length % 3)).fill({ types: [type], label: "" }));
+    if (btns.length < numOfBtns) {
+      btns = btns.concat(new Array(numOfBtns - btns.length).fill({ types: [type], label: "" }));
     }
 
     const handleClick = (handler, command) => {
@@ -88,26 +84,22 @@ class MathKeyboard extends React.PureComponent {
       });
 
       return btn;
-    }).filter(btn => btn.types.includes(type));
+    }).filter(btn => btn.types.includes(isObject(type) ? type.label : type));
   }
 
   get selectOptions() {
     const { symbols } = this.props;
 
-    return symbols.map(symbol => {
-      if (typeof symbol === "string") {
-        return math.symbols.find(opt => opt.value === symbol) || { value: "", label: "" };
-      }
-
-      if (isObject(symbol)) {
-        return {
-          value: symbol.label,
-          label: symbol.label
-        };
-      }
-
-      return symbol;
-    });
+    if (isObject(symbols[0])) {
+      return [
+        {
+          value: symbols[0].label,
+          label: symbols[0].label
+        },
+        ...math.symbols
+      ];
+    }
+    return math.symbols;
   }
 
   get numberPadItems() {
@@ -125,7 +117,15 @@ class MathKeyboard extends React.PureComponent {
 
   render() {
     const { dropdownOpened, type } = this.state;
-    const { onInput, showResponse, symbols, showDropdown } = this.props;
+    const { onInput, showResponse, showDropdown } = this.props;
+    const btns = this.keyboardButtons;
+
+    let cols = btns.length / 4;
+    cols = cols % 1 !== 0 ? Math.floor(cols) + 1 : cols;
+    if (type === "all") {
+      cols = 4;
+    }
+    const numOfBtns = cols * 4;
 
     const dropdownIcon = (
       <Icon className="keyboard__dropdown-icon" type={dropdownOpened ? "up" : "down"} theme="outlined" />
@@ -139,7 +139,7 @@ class MathKeyboard extends React.PureComponent {
               <div className="keyboard__header">
                 <div>
                   <Select
-                    defaultValue={symbols[0]}
+                    defaultValue={isObject(type) ? type.label : type}
                     data-cy="math-keyboard-dropdown"
                     className="keyboard__header__select"
                     size="large"
@@ -176,20 +176,25 @@ class MathKeyboard extends React.PureComponent {
           {type === "qwerty" && <Keyboard onInput={onInput} />}
           {type !== "qwerty" && (
             <div className="keyboard__main">
-              <div className="box keyboard-box">
-                {this.numberPadItems.map((item, index) => (
-                  <Button
-                    disabled={!item.value}
-                    key={index}
-                    className="num num--type-5"
-                    data-cy={`virtual-keyboard-${item.data_cy || item.value}`}
-                    onClick={() => this.handleClickNumPad(item)}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
+              <div className="numberpad">
+                {this.numberPadItems.map((item, index) => {
+                  const lastNum = (index + 1) % 4;
+                  return (
+                    <Button
+                      disabled={!item.value}
+                      key={index}
+                      className={`num num--type-${lastNum ? 5 : 6}`}
+                      data-cy={`virtual-keyboard-${item.data_cy || item.value}`}
+                      onClick={() => this.handleClickNumPad(item)}
+                    >
+                      {item.label}
+                    </Button>
+                  );
+                })}
               </div>
-              <div className="keyboard__types3 box symbols-box">{this.renderButtons()}</div>
+              <SymbolContainer cols={cols} isAll={type === "all"} className="keyboard__types3">
+                {this.renderButtons(numOfBtns)}
+              </SymbolContainer>
             </div>
           )}
         </div>

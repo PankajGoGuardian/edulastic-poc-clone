@@ -36,7 +36,7 @@ import {
 import FilterBar from "../FilterBar/FilterBar";
 import TableList from "../TableList/TableList";
 import AdvancedTable from "../TableList/AdvancedTable";
-import ReleaseGradeSettingsModal from "../ReleaseGradeSettings/ReleaseGradeSetting";
+import ReleaseScoreSettingsModal from "../ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
 import MobileTableList from "../MobileTableList/MobileTableList";
 import ListHeader from "../../../src/components/common/ListHeader";
 import LeftFilter from "../LeftFilter";
@@ -263,7 +263,7 @@ class Assignments extends Component {
             </Main>
           </FlexContainer>
         </Container>
-        <ReleaseGradeSettingsModal
+        <ReleaseScoreSettingsModal
           showReleaseGradeSettings={isShowReleaseSettingsPopup}
           onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
           updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}

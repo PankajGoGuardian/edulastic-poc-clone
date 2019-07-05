@@ -7,7 +7,7 @@ import { test } from "@edulastic/constants";
 
 const { releaseGradeTypes, releaseGradeLabels } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-const ReleaseGradeSettingsModal = ({
+const ReleaseScoreSettingsModal = ({
   showReleaseGradeSettings,
   onCloseReleaseScoreSettings,
   updateReleaseScoreSettings,
@@ -45,4 +45,4 @@ const ReleaseGradeSettingsModal = ({
   );
 };
 
-export default ReleaseGradeSettingsModal;
+export default ReleaseScoreSettingsModal;

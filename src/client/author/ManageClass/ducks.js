@@ -427,13 +427,15 @@ function* syncClass({ payload }) {
 function* syncClassUsingCode({ payload }) {
   try {
     const { googleCode, groupId: classId } = payload;
-    yield call(googleApi.syncClass, { googleCode, groupId: classId });
+    const resp = yield call(googleApi.syncClass, { googleCode, groupId: classId });
+    if (resp.status === 403) {
+      return yield call(message.error(`Google Classroom ${payload.googleCode} is already synced in another group`));
+    }
     yield put(fetchStudentsByIdAction({ classId }));
     yield put(syncByCodeModalAction(false));
   } catch (e) {
-    if (e.status === 406) {
-      yield call(message.error(`Google Classroom ${payload.googleCode} is already synced in another group`));
-    }
+    yield call(message.error, "class sync failed");
+    console.log(e);
   }
 }
 

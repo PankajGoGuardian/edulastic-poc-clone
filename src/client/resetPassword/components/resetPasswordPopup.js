@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
@@ -7,35 +7,61 @@ import { Modal, Button, Icon, Form, Input } from "antd";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { white, greenDark, orange } from "@edulastic/colors";
+import { resetPasswordUserAction, resetPasswordAction } from "../../student/Login/ducks";
+import qs from "qs";
 
 const ResetPasswordPopup = props => {
-  const { className, t, history } = props;
+  const { className, t, history, resetPasswordAction, resetPasswordUserAction, user } = props;
+  const { resetPasswordUser, requestingNewPassword } = user;
+  const [urlParams, setUrlParams] = useState({});
+
+  useEffect(() => {
+    const params = qs.parse(location.search.substring(1));
+    resetPasswordUserAction(params);
+    setUrlParams(params);
+  }, []);
 
   const onCancel = () => {
-    console.log("onCancel");
     history.push("/login");
   };
 
-  const onSubmit = () => {
-    console.log("onSubmit");
+  const onSubmit = password => {
+    const params = {
+      ...urlParams,
+      password
+    };
+    resetPasswordAction(params);
   };
 
   return (
-    <Modal visible={true} footer={null} className={className} width={"500px"}>
-      <div className="forgot-password-actions">
-        <p>Reset Password</p>
-        <p>
-          Hi, <Icon type="user" /> {"userName"}
-        </p>
-        <ConnectedInputPasswordForm onSubmit={onSubmit} onCancel={onCancel} t={t} />
-      </div>
-    </Modal>
+    <>
+      {resetPasswordUser ? (
+        <Modal visible={true} footer={null} className={className} width={"500px"}>
+          <div className="forgot-password-actions">
+            <p>Reset Password</p>
+            <p>
+              Hi, <Icon type="user" />{" "}
+              {resetPasswordUser.firstName +
+                " " +
+                (resetPasswordUser.middleName ? resetPasswordUser.middleName + " " : "") +
+                (resetPasswordUser.lastName ? resetPasswordUser.lastName : "")}
+            </p>
+            <ConnectedInputPasswordForm
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+              t={t}
+              requestingNewPassword={requestingNewPassword}
+            />
+          </div>
+        </Modal>
+      ) : null}
+    </>
   );
 };
 
 const InputPasswordForm = props => {
-  const { getFieldDecorator, getFieldsError, getFieldError } = props.form;
-  const { t, onCancel, onSubmit: _onSubmit } = props;
+  const { getFieldDecorator } = props.form;
+  const { t, onCancel, onSubmit: _onSubmit, requestingNewPassword } = props;
   const [passwd, setPasswd] = useState("");
 
   const checkPassword = (rule, value, callback) => {
@@ -62,9 +88,9 @@ const InputPasswordForm = props => {
   const onSubmit = event => {
     event.preventDefault();
     const { form } = props;
-    form.validateFieldsAndScroll((err, { newPassword, confirmPassword }) => {});
-    console.log("calling _onSubmit");
-    _onSubmit();
+    form.validateFieldsAndScroll((err, { newPassword, confirmPassword }) => {
+      _onSubmit(newPassword);
+    });
   };
 
   return (
@@ -116,11 +142,18 @@ const InputPasswordForm = props => {
         )}
       </Form.Item>
       <div className="model-buttons">
-        <Button className={"cancel-button"} key="cancel" onClick={onCancel}>
-          Cancel
-        </Button>
         <Form.Item>
-          <Button className={"reset-password-button"} key="resetPassword" htmlType="submit">
+          <Button className={"cancel-button"} key="cancel" onClick={onCancel}>
+            Cancel
+          </Button>
+        </Form.Item>
+        <Form.Item>
+          <Button
+            className={"reset-password-button"}
+            key="resetPassword"
+            htmlType="submit"
+            disabled={requestingNewPassword}
+          >
             Reset Password
           </Button>
         </Form.Item>
@@ -137,23 +170,6 @@ const StyledResetPasswordPopup = styled(ResetPasswordPopup)`
     color: ${white};
     .ant-modal-close {
       display: none;
-      border: solid 3px white;
-      border-radius: 20px;
-      color: white;
-      margin: -17px;
-      height: 35px;
-      width: 35px;
-      .ant-modal-close-x {
-        height: 100%;
-        width: 100%;
-        line-height: normal;
-        padding: 5px;
-        path {
-          stroke: white;
-          stroke-width: 150;
-          fill: white;
-        }
-      }
     }
     .forgot-password-actions {
       display: flex;
@@ -208,9 +224,9 @@ const enhance = compose(
   withNamespaces("login"),
   connect(
     state => ({
-      user: get(state, "user.user", null)
+      user: get(state, "user", null)
     }),
-    {}
+    { resetPasswordAction, resetPasswordUserAction }
   )
 );
 

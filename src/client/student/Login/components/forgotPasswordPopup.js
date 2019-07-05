@@ -6,20 +6,18 @@ import { Modal, Button, Input, Icon, Form } from "antd";
 import { get, trim } from "lodash";
 import { white, greenDark, orange } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
+import { requestNewPasswordAction } from "./../ducks";
 
 const ForgotPasswordPopup = props => {
-  const { visible, className, onCancel, onOk, linkSentFlag = false, t } = props;
-
-  const onChange = event => {
-    setInputVal(event.target.value);
-  };
+  const { visible, className, onCancel, onOk, t, requestNewPasswordAction, user } = props;
+  const { requestingNewPassword, requestNewPasswordSuccess } = user;
 
   const onCancelForgotPassword = () => {
     onCancel();
   };
 
-  const onSendLink = () => {
-    console.log("onSendLink");
+  const onSendLink = email => {
+    requestNewPasswordAction({ email });
   };
 
   const onClickClose = () => {
@@ -29,11 +27,16 @@ const ForgotPasswordPopup = props => {
   return (
     <Modal visible={visible} footer={null} className={className} width={"500px"} onCancel={onCancelForgotPassword}>
       <div className="third-party-signup-select-role">
-        {!linkSentFlag ? (
+        {!requestNewPasswordSuccess ? (
           <div className="link-not-sent">
             <p>Forgot Password?</p>
             <p>Username or Email</p>
-            <ConnectedForgotPasswordForm onSubmit={onSendLink} onCancel={onCancelForgotPassword} t={t} />
+            <ConnectedForgotPasswordForm
+              onSubmit={onSendLink}
+              onCancel={onCancelForgotPassword}
+              t={t}
+              requestingNewPassword={requestingNewPassword}
+            />
           </div>
         ) : (
           <div className="link-sent">
@@ -56,14 +59,15 @@ const ForgotPasswordPopup = props => {
 };
 
 const ForgotPasswordForm = props => {
-  const { getFieldDecorator, getFieldsError, getFieldError } = props.form;
-  const { t, onCancel, onSubmit: _onSubmit } = props;
+  const { getFieldDecorator } = props.form;
+  const { t, onCancel, onSubmit: _onSubmit, requestingNewPassword } = props;
 
   const onSubmit = event => {
     event.preventDefault();
     const { form } = props;
-    form.validateFieldsAndScroll((err, { email }) => {});
-    _onSubmit();
+    form.validateFieldsAndScroll((err, { email }) => {
+      _onSubmit(email);
+    });
   };
 
   return (
@@ -95,11 +99,13 @@ const ForgotPasswordForm = props => {
         )}
       </Form.Item>
       <div className="model-buttons">
-        <Button className={"cancel-button"} key="cancel" onClick={onCancel}>
-          Cancel
-        </Button>
         <Form.Item>
-          <Button className={"send-link-button"} key="sendLink" htmlType="submit">
+          <Button className={"cancel-button"} key="cancel" onClick={onCancel}>
+            Cancel
+          </Button>
+        </Form.Item>
+        <Form.Item>
+          <Button className={"send-link-button"} key="sendLink" htmlType="submit" disabled={requestingNewPassword}>
             Send Link
           </Button>
         </Form.Item>
@@ -211,9 +217,9 @@ const enhance = compose(
   withNamespaces("login"),
   connect(
     state => ({
-      user: get(state, "user.user", null)
+      user: get(state, "user", null)
     }),
-    {}
+    { requestNewPasswordAction }
   )
 );
 

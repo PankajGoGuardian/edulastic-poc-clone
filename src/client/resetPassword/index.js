@@ -5,7 +5,6 @@ import { ResetPasswordPopup } from "./components/resetPasswordPopup";
 
 const ResetPassword = props => {
   const { history } = props;
-  console.log("ResetPassword", props);
   return (
     <ResetPasswordContainer image={loginBg}>
       <ResetPasswordPopup history={history} />

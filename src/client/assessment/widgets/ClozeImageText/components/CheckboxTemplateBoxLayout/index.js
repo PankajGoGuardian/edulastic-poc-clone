@@ -2,38 +2,39 @@ import React from "react";
 import PropTypes from "prop-types";
 import { helpers } from "@edulastic/common";
 
-import { response, canvasDimensions } from "@edulastic/constants";
+import { response } from "@edulastic/constants";
 import { Pointer } from "../../../../styled/Pointer";
 import { Point } from "../../../../styled/Point";
 import { Triangle } from "../../../../styled/Triangle";
 
 import { IconWrapper } from "./styled/IconWrapper";
-import { StyledTemplateBox } from "./styled/StyledTemplateBox";
-import { TemplateCover } from "./styled/TemplateCover";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
+import { StyledPreviewTemplateBox } from "../../styled/StyledPreviewTemplateBox";
+import { StyledPreviewContainer } from "../../styled/StyledPreviewContainer";
 
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
   responseContainers,
-  imageUrl,
-  imageWidth,
   imageAlterText,
-  responsecontainerindividuals,
   responseBtnStyle,
-  fontSize,
   userSelections,
-  backgroundColor,
   stemnumeration,
-  imageOptions,
   evaluation,
+  fontSize,
+  imageUrl,
+  imageOptions,
+  imageWidth,
   imageHeight,
+  canvasHeight,
+  canvasWidth,
+  backgroundColor,
   uiStyle,
-  maxHeight
+  responsecontainerindividuals
 }) => (
-  <StyledTemplateBox fontSize={fontSize} margin="0 auto">
-    <TemplateCover height={maxHeight} width={imageWidth}>
+  <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
+    <StyledPreviewContainer data-cy="image-text-preview-board" width={canvasWidth} height={canvasHeight}>
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
         width={imageWidth}
@@ -136,13 +137,14 @@ const CheckboxTemplateBoxLayout = ({
           </React.Fragment>
         );
       })}
-    </TemplateCover>
-  </StyledTemplateBox>
+    </StyledPreviewContainer>
+  </StyledPreviewTemplateBox>
 );
 CheckboxTemplateBoxLayout.propTypes = {
   responsecontainerindividuals: PropTypes.array.isRequired,
   fontSize: PropTypes.string.isRequired,
   responseContainers: PropTypes.array.isRequired,
+  imageOptions: PropTypes.object.isRequired,
   responseBtnStyle: PropTypes.object.isRequired,
   userSelections: PropTypes.array.isRequired,
   stemnumeration: PropTypes.string.isRequired,
@@ -150,8 +152,12 @@ CheckboxTemplateBoxLayout.propTypes = {
   showAnswer: PropTypes.bool.isRequired,
   imageUrl: PropTypes.string.isRequired,
   imageAlterText: PropTypes.string.isRequired,
+  imageHeight: PropTypes.number.isRequired,
   imageWidth: PropTypes.number.isRequired,
-  uiStyle: PropTypes.object
+  canvasHeight: PropTypes.number.isRequired,
+  canvasWidth: PropTypes.number.isRequired,
+  backgroundColor: PropTypes.string.isRequired,
+  uiStyle: PropTypes.object.isRequired
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

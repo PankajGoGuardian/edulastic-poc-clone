@@ -82,7 +82,9 @@ const SortListPreview = ({
   };
 
   const setActiveItem = activeItem => {
-    setActive(typeof activeItem === "string" ? activeItem : "");
+    if (previewTab === CLEAR) {
+      setActive(typeof activeItem === "string" ? activeItem : "");
+    }
   };
 
   const onRightLeftClick = () => {

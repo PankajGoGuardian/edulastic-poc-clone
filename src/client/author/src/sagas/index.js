@@ -15,11 +15,13 @@ import { reportAssignmentsSaga } from "../../Reports/assignmentsDucks";
 import { reportSARFilterDataSaga } from "../../Reports/subPages/singleAssessmentReport/common/filterDataDucks";
 import { reportAssessmentSummarySaga } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
 import { reportResponseFrequencySaga } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
+import { reportStandardsPerformanceSummarySaga } from "../../Reports/subPages/standardsMasteryReport/standardsPerformance/ducks";
 import { reportPeerPerformanceSaga } from "../../Reports/subPages/singleAssessmentReport/PeerPerformance/ducks";
 import { reportQuestionAnalysisSaga } from "../../Reports/subPages/singleAssessmentReport/QuestionAnalysis/ducks";
 import { performanceByStandardsSaga } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStandards/ducks";
 import { reportPerformanceByStudentsSaga } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStudents/ducks";
 import { reportStandardsGradebookSaga } from "../../Reports/subPages/standardsMasteryReport/standardsGradebook/ducks";
+import { reportStandardsFilterSaga } from "../../Reports/subPages/standardsMasteryReport/common/filterDataDucks";
 import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
 import { authorRoutesWatcherSaga } from "../../sharedDucks/routes";
 import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
@@ -60,6 +62,8 @@ const authorSagas = [
   reportPerformanceByStudentsSaga(),
   reportQuestionAnalysisSaga(),
   reportStandardsGradebookSaga(),
+  reportStandardsPerformanceSummarySaga(),
+  reportStandardsFilterSaga(),
   classResponsesSaga(),
   testsListSaga(),
   testPageSaga(),

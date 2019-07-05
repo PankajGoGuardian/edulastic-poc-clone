@@ -19,7 +19,7 @@ import {
 } from "lodash";
 import { filterData, getHSLFromRange1 } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
-import TooltipRow from "../components/tooltip/tooltipRow";
+import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
 
 const filterColumnsAccordingToRole = (columns, role) =>
   filter(columns, column => !includes(column.hiddenFromRole, role));
@@ -222,12 +222,12 @@ const getColorCell = (columnKey, columnType, assessmentName) => (text, record) =
 
     return (
       <div>
-        <TooltipRow title={"Assessment Name: "} value={assessmentName} />
-        <TooltipRow title={"Performance: "} value={record.assessmentScore} />
-        <TooltipRow title={"Performance Band: "} value={record.proficiencyBand} />
-        <TooltipRow title={"Student Name: "} value={record.student} />
-        <TooltipRow title={"Class Name: "} value={record.className} />
-        <TooltipRow {...lastItem} />
+        <TableTooltipRow title={"Assessment Name: "} value={assessmentName} />
+        <TableTooltipRow title={"Performance: "} value={record.assessmentScore} />
+        <TableTooltipRow title={"Performance Band: "} value={record.proficiencyBand} />
+        <TableTooltipRow title={"Student Name: "} value={record.student} />
+        <TableTooltipRow title={"Class Name: "} value={record.className} />
+        <TableTooltipRow {...lastItem} />
       </div>
     );
   };

@@ -108,6 +108,13 @@ const fetchStandardsGradebookReport = params => {
   });
 };
 
+const fetchStandardsPerformanceSummaryReport = params => {
+  return api.callApi({
+    url: `/report/standards-summary`,
+    params: params
+  });
+};
+
 const fetchStandardMasteryFilter = params => {
   return api.callApi({
     url: `/report/filter/standard-mastery`,
@@ -143,6 +150,7 @@ export default {
   fetchPerformanceByStudentsReport,
   fetchSARFilterData,
   fetchStandardsGradebookReport,
+  fetchStandardsPerformanceSummaryReport,
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,
   fetchQuestionAnalysisReport

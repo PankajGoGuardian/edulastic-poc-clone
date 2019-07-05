@@ -8,7 +8,7 @@ const links = [
   {
     key: "standardsPerformanceSummary",
     title: "Standards Performance Summary",
-    location: "/author/reports"
+    location: "/author/reports/standards-performance-summary"
   },
   {
     key: "standardsGradebook",

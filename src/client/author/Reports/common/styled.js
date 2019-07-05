@@ -6,6 +6,15 @@ import { darkGrey, grey, fadedBlack, fadedGrey, black } from "@edulastic/colors"
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
+export const DropDownContainer = styled.div`
+  .dropdown-container {
+    text-align: left;
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+`;
+
 export const StyledCard = styled(Card)`
   margin: ${props => (props.margin ? props.margin : "8px")};
 
@@ -120,11 +129,25 @@ export const StyledTable = styled(Table)`
       tbody {
         tr {
           border-bottom: solid 1px ${fadedGrey};
+
+          td:nth-last-child(-n + ${props => props.centerAligned || 0}) {
+            text-align: center;
+          }
+
           td {
             height: 50px;
             padding: 10px;
             text-align: left;
             font-size: 12px;
+
+            &:nth-last-child(-n + ${props => props.colouredCellsNo}) {
+              padding: 0px;
+              div {
+                height: 100%;
+                width: 100%;
+                padding: 10px;
+              }
+            }
           }
         }
       }

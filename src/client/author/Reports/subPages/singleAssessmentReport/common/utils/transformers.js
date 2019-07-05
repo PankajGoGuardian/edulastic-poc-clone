@@ -1,4 +1,4 @@
-import { getDropDownTestIds } from "../../../../common/util";
+import { getDropDownTestIds, processGroupIds, processSchoolIds, processTeacherIds } from "../../../../common/util";
 import { get, groupBy } from "lodash";
 
 const processSchoolYear = user => {
@@ -10,22 +10,6 @@ const processSchoolYear = user => {
     });
   }
   return schoolYear;
-};
-
-const processGroupIds = orgDataArr => {
-  let byGroupId = groupBy(orgDataArr.filter((item, index) => (item.groupId ? true : false)), "groupId");
-  let groupIdArr = Object.keys(byGroupId).map((item, index) => {
-    return {
-      key: byGroupId[item][0].groupId,
-      title: byGroupId[item][0].groupName
-    };
-  });
-  groupIdArr.unshift({
-    key: "All",
-    title: "All Classes"
-  });
-
-  return groupIdArr;
 };
 
 const processFilteredGroupIds = (orgDataArr, currentFilter) => {
@@ -70,38 +54,6 @@ const processCourseIds = orgDataArr => {
   });
 
   return courseIdArr;
-};
-
-const processSchoolIds = orgDataArr => {
-  let bySchoolId = groupBy(orgDataArr.filter((item, index) => (item.schoolId ? true : false)), "schoolId");
-  let schoolIdArr = Object.keys(bySchoolId).map((item, index) => {
-    return {
-      key: bySchoolId[item][0].schoolId,
-      title: bySchoolId[item][0].schoolName
-    };
-  });
-  schoolIdArr.unshift({
-    key: "All",
-    title: "All Schools"
-  });
-
-  return schoolIdArr;
-};
-
-const processTeacherIds = orgDataArr => {
-  let byTeacherId = groupBy(orgDataArr.filter((item, index) => (item.teacherId ? true : false)), "teacherId");
-  let teacherIdArr = Object.keys(byTeacherId).map((item, index) => {
-    return {
-      key: byTeacherId[item][0].teacherId,
-      title: byTeacherId[item][0].teacherName
-    };
-  });
-  teacherIdArr.unshift({
-    key: "All",
-    title: "All Teachers"
-  });
-
-  return teacherIdArr;
 };
 
 export const getDropDownData = (SARFilterData, user) => {

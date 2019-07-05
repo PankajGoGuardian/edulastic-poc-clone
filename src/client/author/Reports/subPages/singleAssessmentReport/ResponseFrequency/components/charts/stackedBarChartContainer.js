@@ -3,6 +3,7 @@ import { groupBy } from "lodash";
 import { Row, Col } from "antd";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { getHSLFromRange1 } from "../../../../../common/util";
+import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
 export const StackedBarChartContainer = props => {
   const dataParser = filter => {
@@ -53,22 +54,10 @@ export const StackedBarChartContainer = props => {
       }
       return (
         <div>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">{"Avg Performance: "}</Col>
-            <Col className="tooltip-value">{payload[0].value}%</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">{"Assessment: "}</Col>
-            <Col className="tooltip-value">{payload[0].payload.assessment}</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">{"Total Questions: "}</Col>
-            <Col className="tooltip-value">{qCount}</Col>
-          </Row>
-          <Row type="flex" justify="start">
-            <Col className="tooltip-key">{"Question Type: "}</Col>
-            <Col className="tooltip-value">{payload[0].payload.name}</Col>
-          </Row>
+          <BarTooltipRow title={"Avg Performance: "} value={`${payload[0].value}%`} />
+          <BarTooltipRow title={"Assessment: "} value={payload[0].payload.assessment} />
+          <BarTooltipRow title={"Total Questions: "} value={qCount} />
+          <BarTooltipRow title={"Question Type: "} value={payload[0].payload.name} />
         </div>
       );
     }

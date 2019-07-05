@@ -11,7 +11,7 @@ class MathFormulaAnswer extends Component {
   };
 
   render() {
-    const { answer, onChange, onAdd, onDelete, item, t } = this.props;
+    const { answer, onChange, onAdd, onDelete, item } = this.props;
 
     const { showAdditionals } = this.state;
 

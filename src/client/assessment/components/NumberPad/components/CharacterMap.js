@@ -5,13 +5,13 @@ import { NumberPadContext } from "..";
 import { ButtonWrapper } from "../styled/ButtonWrapper";
 import NumberPadButton from "./NumberPadButton";
 
-const CharacterMap = ({ onClick }) => {
+const CharacterMap = ({ onClick, buttonStyle }) => {
   const items = useContext(NumberPadContext);
 
   return (
     <ButtonWrapper style={{ flexWrap: "wrap" }}>
       {items.map((item, index) => (
-        <NumberPadButton onClick={() => onClick(item.value)} key={index}>
+        <NumberPadButton buttonStyle={buttonStyle} onClick={() => onClick(item.value)} key={index}>
           {item.label}
         </NumberPadButton>
       ))}
@@ -20,11 +20,13 @@ const CharacterMap = ({ onClick }) => {
 };
 
 CharacterMap.propTypes = {
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
+  buttonStyle: PropTypes.object
 };
 
 CharacterMap.defaultProps = {
-  onClick: () => {}
+  onClick: () => {},
+  buttonStyle: {}
 };
 
 export default CharacterMap;

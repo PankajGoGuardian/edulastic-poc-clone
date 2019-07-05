@@ -27,6 +27,7 @@ const ManageClass = ({
   fetchArchiveGroups,
   groups,
   state,
+  allowGoogleLogin,
   archiveGroups,
   setClass,
   ...restProps
@@ -38,7 +39,15 @@ const ManageClass = ({
     receiveSearchCourse({ districtId });
   }, []);
 
-  return <ClassListContainer {...restProps} state={state} groups={groups} archiveGroups={archiveGroups} />;
+  return (
+    <ClassListContainer
+      {...restProps}
+      state={state}
+      allowGoogleLogin={allowGoogleLogin}
+      groups={groups}
+      archiveGroups={archiveGroups}
+    />
+  );
 };
 
 ManageClass.propTypes = {
@@ -61,6 +70,7 @@ const enhance = compose(
       state: state,
       courseList: get(state, "coursesReducer.searchResult"),
       districtId: get(state, "user.user.orgData.districtId"),
+      allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       isGoogleLoggedIn: get(state, "user.user.isGoogleLoggedIn"),
       googleCourseList: state.manageClass.googleCourseList
     }),

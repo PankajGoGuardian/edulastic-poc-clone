@@ -14,6 +14,7 @@ const SubHeader = ({
   institutionName,
   code,
   syncGCModal,
+  allowGoogleLogin,
   fetchClassList,
   isUserGoogleLoggedIn
 }) => {
@@ -54,22 +55,23 @@ const SubHeader = ({
       </LeftContent>
       <RightContent>
         <AnchorLink to="/author/assignments">View Assessments</AnchorLink>
-        {isUserGoogleLoggedIn ? (
-          <span style={{ cursor: "pointer" }} onClick={syncGCModal}>
-            &nbsp; GC&nbsp;{" "}
-          </span>
-        ) : (
-          <GoogleLogin
-            clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-            buttonText="GC"
-            render={renderProps => <SyncButtons onClick={renderProps.onClick}>&nbsp; GC &nbsp;</SyncButtons>}
-            scope={scopes}
-            onSuccess={handleLoginSuccess}
-            onFailure={handleError}
-            prompt="consent"
-            responseType="code"
-          />
-        )}
+        {allowGoogleLogin &&
+          (isUserGoogleLoggedIn ? (
+            <span style={{ cursor: "pointer" }} onClick={syncGCModal}>
+              &nbsp; GC&nbsp;{" "}
+            </span>
+          ) : (
+            <GoogleLogin
+              clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+              buttonText="GC"
+              render={renderProps => <SyncButtons onClick={renderProps.onClick}>&nbsp; GC &nbsp;</SyncButtons>}
+              scope={scopes}
+              onSuccess={handleLoginSuccess}
+              onFailure={handleError}
+              prompt="consent"
+              responseType="code"
+            />
+          ))}
         <StyledIcon type="user" fill={greenDark} />
         <StyledIcon type="delete" fill={greyDarken} />
         <ClassCode>

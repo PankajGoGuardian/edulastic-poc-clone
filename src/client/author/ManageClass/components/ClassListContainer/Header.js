@@ -24,7 +24,7 @@ const scopes = [
   "https://www.googleapis.com/auth/userinfo.profile"
 ].join(" ");
 
-const Header = ({ fetchClassList, history }) => {
+const Header = ({ fetchClassList, history, allowGoogleLogin }) => {
   const handleLoginSucess = data => {
     fetchClassList({ data, showModal: true });
   };
@@ -38,16 +38,18 @@ const Header = ({ fetchClassList, history }) => {
         <IconManageClass color={white} width={20} height={20} /> <span>Manage Class</span>
       </Title>
       <ButtonsWrapper>
-        <GoogleLogin
-          clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-          buttonText="Sync with Google Classroom"
-          render={renderProps => <SyncButtons onClick={renderProps.onClick}>Sync with Google Classroom</SyncButtons>}
-          scope={scopes}
-          onSuccess={handleLoginSucess}
-          onFailure={handleError}
-          prompt="consent"
-          responseType="code"
-        />
+        {allowGoogleLogin && (
+          <GoogleLogin
+            clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+            buttonText="Sync with Google Classroom"
+            render={renderProps => <SyncButtons onClick={renderProps.onClick}>Sync with Google Classroom</SyncButtons>}
+            scope={scopes}
+            onSuccess={handleLoginSucess}
+            onFailure={handleError}
+            prompt="consent"
+            responseType="code"
+          />
+        )}
         <Link to={`/author/manageClass/createClass`}>
           <CreateClassButton>
             <CreateIcon color={white} /> Create Class{" "}

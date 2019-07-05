@@ -12,6 +12,7 @@ const ClassListContainer = ({
   isModalVisible,
   googleCourseList,
   courseList,
+  allowGoogleLogin,
   updateGoogleCourseList,
   syncClass,
   state
@@ -21,7 +22,7 @@ const ClassListContainer = ({
 
   return (
     <React.Fragment>
-      <Header />
+      <Header allowGoogleLogin={allowGoogleLogin} />
       <ClassSelectModal
         style={{ width: "700px" }}
         visible={isModalVisible}

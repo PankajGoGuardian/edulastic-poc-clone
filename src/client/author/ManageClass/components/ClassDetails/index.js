@@ -27,6 +27,7 @@ const ClassDetails = ({
   isUserGoogleLoggedIn,
   syncByCodeModal,
   history,
+  allowGoogleLogin,
   openGCModal,
   match,
   syncClassUsingCode
@@ -89,6 +90,7 @@ const ClassDetails = ({
           fetchClassList={fetchClassList}
           viewAssessmentHandler={viewAssessmentHandler}
           isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+          allowGoogleLogin={allowGoogleLogin}
           syncGCModal={() => syncByCodeModal(true)}
         />
         <StyledDivider orientation="left" />
@@ -115,6 +117,7 @@ const enhance = compose(
       selectedClass: get(state, "manageClass.entity"),
       openGCModal: get(state, "manageClass.openGCModal", false),
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn", false),
+      allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       dataLoaded: get(state, "manageClass.dataLoaded")
     }),
     {

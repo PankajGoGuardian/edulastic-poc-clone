@@ -31,6 +31,16 @@ class CorrectAnswers extends Component {
     cleanSections();
   }
 
+  calcMaxAltLen = () => {
+    const { validation } = this.props;
+
+    return Math.max(
+      validation.alt_responses ? validation.alt_responses.length : 0,
+      validation.alt_inputs ? validation.alt_inputs.length : 0,
+      validation.alt_dropdowns ? validation.alt_dropdowns.length : 0
+    );
+  };
+
   updateCountTabs = newCount => {
     const { tabs } = this.state;
 
@@ -41,78 +51,76 @@ class CorrectAnswers extends Component {
     }
   };
 
-  render() {
-    const { t, onTabChange, children, correctTab, onAdd, validation, options, onCloseTab, marginBottom } = this.props;
+  renderLabel = index => (
+    <FlexContainer style={{ marginBottom: 0, marginTop: 0 }}>
+      <span>
+        {this.props.t("component.correctanswers.alternate")} {index + 1}
+      </span>
+      <IconClose
+        style={{
+          marginLeft: "auto"
+        }}
+        onClick={e => {
+          e.stopPropagation();
+          this.props.onCloseTab(index);
+          this.updateCountTabs(this.calcMaxAltLen());
+        }}
+        data-cy="del-alter"
+      />
+    </FlexContainer>
+  );
 
-    const { tabs } = this.state;
+  renderAltResponses = () => {
+    const { validation } = this.props;
 
     const isAlt =
       !isEmpty(validation.alt_responses) || !isEmpty(validation.alt_inputs) || !isEmpty(validation.alt_dropdowns);
-    const maxAltLen = Math.max(
-      validation.alt_responses ? validation.alt_responses.length : 0,
-      validation.alt_inputs ? validation.alt_inputs.length : 0,
-      validation.alt_dropdowns ? validation.alt_dropdowns.length : 0
-    );
 
-    const renderLabel = index => (
-      <FlexContainer style={{ marginBottom: 0, marginTop: 0 }}>
-        <span>
-          {t("component.correctanswers.alternate")} {index + 1}
-        </span>
-        <IconClose
-          style={{
-            marginLeft: "auto"
-          }}
-          onClick={e => {
-            e.stopPropagation();
-            onCloseTab(index);
-            this.updateCountTabs(maxAltLen);
-          }}
-          data-cy="del-alter"
-        />
-      </FlexContainer>
-    );
+    if (isAlt) {
+      this.updateCountTabs(this.calcMaxAltLen() + 1);
 
-    const renderAltResponses = () => {
-      if (isAlt) {
-        this.updateCountTabs(maxAltLen + 1);
+      return new Array(this.calcMaxAltLen())
+        .fill(true)
+        .map((res, i) => <Tab key={i} label={this.renderLabel(i)} type="primary" />);
+    }
 
-        return new Array(maxAltLen).fill(true).map((res, i) => <Tab key={i} label={renderLabel(i)} type="primary" />);
-      }
+    return null;
+  };
 
-      return null;
-    };
+  renderPlusButton = () => (
+    <Button
+      style={{
+        background: "transparent",
+        color: themeColor,
+        borderRadius: 0,
+        padding: 0,
+        boxShadow: "none",
+        marginLeft: "auto",
+        minHeight: 28,
+        marginBottom: this.props.marginBottom
+      }}
+      onClick={() => {
+        this.props.onTabChange();
+        this.props.onAdd();
+      }}
+      color="primary"
+      variant="extendedFab"
+      data-cy="alternate"
+    >
+      {`+ ${this.props.t("component.correctanswers.alternativeAnswer")}`}
+    </Button>
+  );
 
-    const renderPlusButton = () => (
-      <Button
-        style={{
-          background: "transparent",
-          color: themeColor,
-          borderRadius: 0,
-          padding: 0,
-          boxShadow: "none",
-          marginLeft: "auto",
-          minHeight: 28,
-          marginBottom
-        }}
-        onClick={() => {
-          onTabChange();
-          onAdd();
-        }}
-        color="primary"
-        variant="extendedFab"
-        data-cy="alternate"
-      >
-        {`+ ${t("component.correctanswers.alternativeAnswer")}`}
-      </Button>
-    );
+  render() {
+    const { t, onTabChange, children, correctTab, options } = this.props;
+    const { tabs } = this.state;
 
     return (
       <Widget>
         <Subtitle margin="0 0 6px">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
 
         <div>
-          <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()} style={{ marginBottom: 10 }}>
+          <Tabs value={correctTab} onChange={onTabChange} extra={this.renderPlusButton()} style={{ marginBottom: 10 }}>
             {tabs > 1 && (
               <Tab
                 type="primary"
@@ -122,7 +130,7 @@ class CorrectAnswers extends Component {
                 active={correctTab === 0}
               />
             )}
-            {renderAltResponses()}
+            {this.renderAltResponses()}
           </Tabs>
           {children}
         </div>

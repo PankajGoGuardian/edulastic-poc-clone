@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
 import { CorrectAnswersContainer, Paper } from "@edulastic/common";
-import { Select } from "antd";
+
 import { compose } from "redux";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
@@ -16,7 +16,7 @@ import AxisLabelsOptions from "./Authoring/AxisLabelsLayoutSettings/AxisLabelsOp
 import QuadrantsSmallSize from "./components/QuadrantsSmallSize";
 import AxisSmallSize from "./components/AxisSmallSize";
 import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from "./Authoring";
-import { CorrectAnswers } from "./CorrectAnswers";
+import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
 import { InstructorStimulus } from "./common/styled_components";
 import Annotations from "./Annotations/Annotations";
@@ -272,7 +272,7 @@ class Graph extends Component {
       disableResponse,
       ...restProps
     } = this.props;
-    const { graphType, extra_options, ui_style, validation } = item;
+    const { extra_options, ui_style, validation } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -299,55 +299,18 @@ class Graph extends Component {
                 deskHeight={ui_style.layout_height}
                 advancedAreOpen
               >
-                <React.Fragment>
-                  <CorrectAnswers
-                    graphData={item}
-                    view={view}
-                    previewTab={previewTab}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
-                    onAddAltResponses={this.handleAddAltResponses}
-                  />
-                  {(graphType === "quadrants" || graphType === "firstQuadrant") && (
-                    <React.Fragment>
-                      <Select
-                        data-cy="ignoreRepeatedShapes"
-                        style={{
-                          width: "170px",
-                          margin: "11px 10px 0 0",
-                          borderRadius: "10px"
-                        }}
-                        onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
-                        options={getIgnoreRepeatedShapesOptions()}
-                        value={item.validation.ignore_repeated_shapes || "no"}
-                      >
-                        {getIgnoreRepeatedShapesOptions().map(option => (
-                          <Select.Option data-cy={option.value} key={option.value}>
-                            {option.label}
-                          </Select.Option>
-                        ))}
-                      </Select>{" "}
-                      Ignore repeated shapes
-                      <Select
-                        data-cy="ignoreLabels"
-                        style={{
-                          width: "70px",
-                          margin: "11px 10px 0 25px",
-                          borderRadius: "10px"
-                        }}
-                        onChange={val => this.handleSelectIgnoreLabels(val)}
-                        options={getIgnoreLabelsOptions()}
-                        value={item.validation.ignore_labels || "yes"}
-                      >
-                        {getIgnoreLabelsOptions().map(option => (
-                          <Select.Option data-cy={option.value} key={option.value}>
-                            {option.label}
-                          </Select.Option>
-                        ))}
-                      </Select>{" "}
-                      Ignore labels
-                    </React.Fragment>
-                  )}
-                </React.Fragment>
+                <GraphAnswers
+                  view={view}
+                  graphData={item}
+                  previewTab={previewTab}
+                  disableResponse={disableResponse}
+                  onAddAltResponses={this.handleAddAltResponses}
+                  getIgnoreLabelsOptions={getIgnoreLabelsOptions}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
+                  handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
+                  getIgnoreRepeatedShapesOptions={getIgnoreRepeatedShapesOptions}
+                  handleSelectIgnoreRepeatedShapes={this.handleSelectIgnoreRepeatedShapes}
+                />
               </QuestionSection>
               <QuestionSection
                 section="main"

@@ -103,7 +103,8 @@ const EditClassification = ({
     const img = new Image();
     const { maxWidth, maxHeight } = clozeImage;
     img.addEventListener("load", function() {
-      let height; let width;
+      let height;
+      let width;
       if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
         const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
         const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));

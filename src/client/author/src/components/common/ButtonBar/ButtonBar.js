@@ -47,11 +47,16 @@ class ButtonBar extends Component {
     if (view !== "edit") {
       onSaveScrollTop(window.pageYOffset);
     }
+
+    if (view === "preview") {
+      this.setClearPreviewTab();
+    }
   };
 
-  optionHandler = key => {
-    const { onChangeView } = this.props;
-    onChangeView(key);
+  setClearPreviewTab = () => {
+    const { changePreviewTab, clearAnswers } = this.props;
+    clearAnswers();
+    changePreviewTab("clear");
   };
 
   render() {
@@ -65,7 +70,6 @@ class ButtonBar extends Component {
       windowWidth,
       changePreviewTab,
       onEnableEdit,
-      clearAnswers,
       showPublishButton,
       view,
       isTestFlow = false,
@@ -100,11 +104,7 @@ class ButtonBar extends Component {
               <MenuItem
                 data-cy="previewButton"
                 className={view === "preview" && "active"}
-                onClick={() => {
-                  this.handleMenuClick("preview");
-                  clearAnswers();
-                  changePreviewTab("clear");
-                }}
+                onClick={() => this.handleMenuClick("preview")}
               >
                 <HeadIcon>
                   <IconEye color={white} width={18} height={16} />
@@ -152,18 +152,17 @@ class ButtonBar extends Component {
         ) : (
           <MobileContainer>
             <MobileFirstContainer>
-              <Button onClick={() => this.optionHandler("edit")} className={`btn-edit ${view === "edit" && "active"}`}>
+              <Button
+                onClick={() => this.handleMenuClick("edit")}
+                className={`btn-edit ${view === "edit" && "active"}`}
+              >
                 <HeadIcon>
                   <IconPencilEdit color={white} width={18} height={16} />
                 </HeadIcon>
                 {withLabels ? "Edit Mode" : ""}
               </Button>
               <Button
-                onClick={() => {
-                  this.optionHandler("preview");
-                  clearAnswers();
-                  changePreviewTab("clear");
-                }}
+                onClick={() => this.handleMenuClick("preview")}
                 className={`btn-preview ${view === "preview" && "active"}`}
               >
                 <HeadIcon>
@@ -230,10 +229,7 @@ class ButtonBar extends Component {
                     border: "none",
                     padding: 0
                   }}
-                  onClick={() => {
-                    clearAnswers();
-                    changePreviewTab("clear");
-                  }}
+                  onClick={() => this.setClearPreviewTab()}
                 >
                   <ButtonLink
                     color="primary"

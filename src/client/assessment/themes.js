@@ -498,13 +498,13 @@ export const themes = {
       },
       mathFormula: {
         inputColor: "#fff",
-        inputCorrectColor: "#e1fbf2",
-        inputIncorrectColor: "#fce0e8",
+        inputCorrectColor: "#D3FEA6",
+        inputIncorrectColor: "#FCE0E8",
         iconTrashColor: themeColor,
         iconTrashHoverColor: "#ee1658", // red
         quillBorderColor: "#dfdfdf", // grey
-        iconCheckColor: "#1fe3a1", // green
-        iconCloseColor: "#ee1658", // red
+        iconCheckColor: "#63B808", // green
+        iconCloseColor: "#DF394E", // red
         iconWrapperBgColor: "transparent",
         answerMethodContainerBorderColor: "#dfdfdf", // grey
         answerWrapperBgColor: "#93d8f7", // lightBlue

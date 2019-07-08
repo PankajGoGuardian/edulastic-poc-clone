@@ -127,6 +127,11 @@ class MathInput extends React.PureComponent {
     onBlur();
   };
 
+  onClickMathField = () => {
+    const { onInnerFieldClick } = this.props;
+    this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+  };
+
   focus = () => {
     const { mathField } = this.state;
     mathField.focus();
@@ -158,11 +163,7 @@ class MathInput extends React.PureComponent {
           className="input"
         >
           <div onKeyDown={onKeyDown} className="input__math" style={style} data-cy="answer-math-input-field">
-            <span
-              className="input__math__field"
-              ref={this.mathFieldRef}
-              onClick={() => this.setState({ mathFieldFocus: true })}
-            />
+            <span className="input__math__field" ref={this.mathFieldRef} onClick={this.onClickMathField} />
           </div>
           <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
             {(alwaysShowKeyboard || mathFieldFocus) && (
@@ -187,6 +188,7 @@ MathInput.propTypes = {
   onInput: PropTypes.func.isRequired,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
+  onInnerFieldClick: PropTypes.func,
   showDropdown: PropTypes.bool,
   showResponse: PropTypes.bool,
   value: PropTypes.string,
@@ -205,6 +207,7 @@ MathInput.defaultProps = {
   showDropdown: false,
   showResponse: false,
   style: {},
+  onInnerFieldClick: () => {},
   onFocus: () => {},
   onBlur: () => {},
   onKeyDown: () => {},

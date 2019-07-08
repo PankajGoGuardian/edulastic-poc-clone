@@ -172,7 +172,7 @@ export const alignmentStandardsFromUIToMongo = alignmentRowStandards => {
     }));
 
     return {
-      name: allStandards[0].identifier,
+      name: allStandards[0].tloIdentifier,
       id: allStandards[0].tloId,
       description: allStandards[0].tloDescription,
       standards

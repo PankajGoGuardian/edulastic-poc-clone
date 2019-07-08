@@ -72,7 +72,7 @@ const PerformanceAnalysisTable = ({
   const makeOverallColumn = () => {
     const { selectedData, dataField } = makeStandardColumnData()[viewBy];
 
-    const selectedItems = metric => selectedData.includes(metric[dataField]);
+    const selectedItems = metric => selectedData.includes(metric[dataField]) || !selectedData.length;
 
     const getAverage = student => {
       const standardMetrics = Object.values(student.standardMetrics).filter(selectedItems);

@@ -6,7 +6,7 @@ import { greyDarken, greenDark } from "@edulastic/colors";
 import { ContainerHeader, LeftContent, RightContent, TitleWarapper, StyledIcon, AnchorLink, ClassCode } from "./styled";
 import { message } from "antd";
 import GoogleLogin from "react-google-login";
-import { SyncButtons } from "../ClassListContainer/styled";
+import { IconGoogleClassroom } from "@edulastic/icons";
 
 const SubHeader = ({
   name,
@@ -57,14 +57,17 @@ const SubHeader = ({
         <AnchorLink to="/author/assignments">View Assessments</AnchorLink>
         {allowGoogleLogin !== false &&
           (isUserGoogleLoggedIn ? (
-            <span style={{ cursor: "pointer" }} onClick={syncGCModal}>
-              &nbsp; GC&nbsp;{" "}
-            </span>
+            <i style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }} onClick={syncGCModal}>
+              <IconGoogleClassroom width={22} height={22} />
+            </i>
           ) : (
             <GoogleLogin
               clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-              buttonText="GC"
-              render={renderProps => <SyncButtons onClick={renderProps.onClick}>&nbsp; GC &nbsp;</SyncButtons>}
+              render={renderProps => (
+                <i style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }} onClick={renderProps.onClick}>
+                  <IconGoogleClassroom width={22} height={22} />
+                </i>
+              )}
               scope={scopes}
               onSuccess={handleLoginSuccess}
               onFailure={handleError}

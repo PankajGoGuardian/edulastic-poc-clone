@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Modal, Table, Select, Input } from "antd";
+import { Modal, Table, Select, Input, message } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledSelect } from "./styled";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
@@ -21,7 +21,11 @@ const ClassListModal = ({
 
   // clear selected class while modal changes
   useEffect(() => {
-    setSelectedRows([]);
+    const selRows = [];
+    groups.forEach((gr, index) => {
+      if (!selectedGroups.includes(gr.enrollmentCode)) selRows.push(index);
+    });
+    setSelectedRows(selRows);
   }, [visible]);
 
   const handleStandardsChange = (index, key, value, options) => {
@@ -194,7 +198,11 @@ const ClassListModal = ({
     // eslint-disable-next-line max-len
     const selected = groups.filter((_, index) => selectedRows.includes(index));
 
-    syncClass(selected);
+    if (selected && selected.length) {
+      syncClass(selected);
+    } else {
+      message.error("Please select atleast 1 class to sync.");
+    }
   };
 
   return (
@@ -211,7 +219,6 @@ const ClassListModal = ({
       }}
       cancelButtonProps={{ style: { "border-color": themeColorLight }, shape: "round" }}
     >
-      {selectedRows}
       <Table
         columns={columns}
         dataSource={groups}

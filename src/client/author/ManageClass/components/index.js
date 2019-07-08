@@ -27,6 +27,7 @@ const ManageClass = ({
   fetchArchiveGroups,
   groups,
   state,
+  syncClassLoading,
   allowGoogleLogin,
   archiveGroups,
   setClass,
@@ -38,8 +39,16 @@ const ManageClass = ({
 
   useEffect(() => {
     if (!fetchClassListLoading) setIsModalVisible(true);
+    else {
+      setIsModalVisible(false);
+    }
   }, [fetchClassListLoading]);
 
+  useEffect(() => {
+    if (!syncClassLoading && isModalVisible) {
+      setIsModalVisible(false);
+    }
+  }, [syncClassLoading]);
   useEffect(() => {
     fetchGroups();
     fetchArchiveGroups();
@@ -52,6 +61,7 @@ const ManageClass = ({
     <ClassListContainer
       {...restProps}
       state={state}
+      syncClassLoading={syncClassLoading}
       isModalVisible={isModalVisible}
       closeModal={closeModal}
       allowGoogleLogin={allowGoogleLogin}

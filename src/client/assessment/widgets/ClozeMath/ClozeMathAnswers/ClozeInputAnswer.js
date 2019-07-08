@@ -34,8 +34,10 @@ class ClozeInputAnswer extends Component {
   render() {
     const {
       answers,
-      item: { ui_style: uiStyle }
+      item: { ui_style: uiStyle },
+      item: { response_containers: responseContainers }
     } = this.props;
+
     return (
       <AnswerContainer>
         <Collapse
@@ -45,7 +47,8 @@ class ClozeInputAnswer extends Component {
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
         >
           {answers.map(answer => {
-            const width = uiStyle[answer.id] ? `${uiStyle[answer.id]["widthpx"]}px` : `${uiStyle.min_width}px`;
+            const response = responseContainers.find(respCont => respCont.id === answer.id);
+            const width = response ? `${response.widthpx}px` : `${uiStyle.min_width}px` || "auto";
             return (
               <Panel header={`Text Input ${answer.index + 1}`} key={answer.index}>
                 <Input

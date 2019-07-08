@@ -4,6 +4,7 @@ import { maxBy } from "lodash";
 import { ticks } from "d3-array";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
+import { fadedBlack } from "@edulastic/colors";
 
 import { getFormattedTimeInMins } from "../../utils/helpers";
 
@@ -46,6 +47,33 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
     return false;
   };
 
+  const getTooltipCursorJSX = props => {
+    const { right, height, width, payload, points, lineYDomain } = props;
+    const lineYPlotPoint = points[0].y + (height * (lineYDomain[1] - payload[2].value)) / lineYDomain[1];
+    return (
+      <>
+        <line
+          x1={points[0].x}
+          y1={lineYPlotPoint}
+          x2={points[1].x}
+          y2={points[1].y}
+          stroke={fadedBlack}
+          strokeWidth="2px"
+          strokeDasharray="6"
+        />
+        <line
+          x1={width + right}
+          y1={lineYPlotPoint}
+          x2={points[1].x}
+          y2={lineYPlotPoint}
+          stroke={fadedBlack}
+          strokeWidth="2px"
+          strokeDasharray="6"
+        />
+      </>
+    );
+  };
+
   const lineYDomain = useMemo(() => {
     let m = maxBy(chartData, "avgTime");
     m = m ? m.avgTime : 0;
@@ -72,6 +100,7 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
       bottomStackDataKey={"avgPerformance"}
       topStackDataKey={"avgIncorrect"}
       getTooltipJSX={getTooltipJSX}
+      getTooltipCursorJSX={getTooltipCursorJSX}
       onBarClickCB={onBarClickCB}
       onResetClickCB={onResetClickCB}
       yAxisLabel="Avg.Score (%)"

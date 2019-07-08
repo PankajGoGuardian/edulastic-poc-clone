@@ -16,6 +16,7 @@ import {
 import styled from "styled-components";
 import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
+import { CustomChartCursor } from "./chartUtils/customChartCursor";
 
 const _yTickFormatter = val => {
   if (val !== 0) {
@@ -49,6 +50,7 @@ export const SimpleStackedBarChart = ({
   onResetClickCB,
   getXTickText,
   getTooltipJSX = () => null,
+  getTooltipCursorJSX = false,
   yAxisLabel = "",
   yTickFormatter = _yTickFormatter,
   barsLabelFormatter = _yTickFormatter,
@@ -178,7 +180,6 @@ export const SimpleStackedBarChart = ({
             tickFormatter={yTickFormatter}
             label={constants.Y_AXIS_LABEL}
           />
-          <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />} />
           <Brush
             dataKey={xAxisDataKey}
             height={0}
@@ -238,6 +239,16 @@ export const SimpleStackedBarChart = ({
             <Line yAxisId="lineChart" type="monotone" dataKey={lineChartDataKey} {...lineProps} />
           ) : null}
           {referenceLineY > 0 ? <ReferenceLine yAxisId={"barChart"} y={referenceLineY} stroke="#010101" /> : null}
+          <Tooltip
+            cursor={
+              typeof getTooltipCursorJSX === "function" ? (
+                <CustomChartCursor getJSX={getTooltipCursorJSX} lineYDomain={lineYDomain} yDomain={yDomain} />
+              ) : (
+                getTooltipCursorJSX
+              )
+            }
+            content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </StyledStackedBarChartContainer>

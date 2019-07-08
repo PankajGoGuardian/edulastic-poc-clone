@@ -38,7 +38,7 @@ const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio =
       {itemTableView && (
         <FlexContainer justifyContent="flex-end">
           {renderAnalytics(by, IconUser)}
-          {renderAnalytics(id.substring(18), IconHash)}
+          {renderAnalytics(id && id.substring(18), IconHash)}
           {renderAnalytics(shared, IconShare)}
           {renderAnalytics(likes, IconHeart)}
           {audio && audio.hasOwnProperty("ttsSuccess") ? (
@@ -50,7 +50,7 @@ const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio =
       )}
       {!itemTableView && (
         <FlexContainer justifyContent="flex-end">
-          {renderAnalytics(id.substring(18), IconHash)}
+          {renderAnalytics(id && id.substring(18), IconHash)}
           <ExtraInfo> Points </ExtraInfo>
           <ExtraInfo> {points}</ExtraInfo>
         </FlexContainer>

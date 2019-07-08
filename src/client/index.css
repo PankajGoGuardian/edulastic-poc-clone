@@ -428,6 +428,7 @@ template {
 .response-btn .index {
   padding: 8px;
   background: darkgray;
+  color: white;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   min-width: 30px;
@@ -775,7 +776,6 @@ input[type="checkbox"] {
 }
 
 .check-answer .index {
-  background: #ee1658;
   color: white;
   align-items: center;
   width: 30px;
@@ -786,7 +786,6 @@ input[type="checkbox"] {
   display: inline-flex;
   flex: 1;
   text-align: center;
-  background: #fce0e8;
   color: #878282;
   align-items: center;
   padding: 8px 20px 8px 7px;

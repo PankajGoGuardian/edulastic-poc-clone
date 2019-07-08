@@ -30,11 +30,8 @@ const MainInfo = ({ entity = {} }) => {
   const coTeachers =
     owners &&
     owners
-      .map(owner => {
-        if (owner.id !== primaryTeacherId) {
-          return owner.name;
-        }
-      })
+      .filter(owner => owner.id !== primaryTeacherId)
+      .map(owner => owner.name)
       .join(",");
 
   return (

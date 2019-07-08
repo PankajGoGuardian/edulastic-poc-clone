@@ -27,7 +27,7 @@ const scopes = [
 
 const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
   const handleLoginSucess = data => {
-    fetchClassList({ data, showModal: true });
+    fetchClassList({ data });
   };
 
   const handleError = err => {
@@ -39,7 +39,7 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
         <IconManageClass color={white} width={20} height={20} /> <span>Manage Class</span>
       </Title>
       <ButtonsWrapper>
-        {(allowGoogleLogin || allowGoogleLogin === undefined) && (
+        {allowGoogleLogin !== false && (
           <GoogleLogin
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"

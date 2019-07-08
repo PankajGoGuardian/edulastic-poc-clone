@@ -26,26 +26,25 @@ const ClassDetails = ({
   loadStudents,
   fetchClassList,
   isUserGoogleLoggedIn,
-  syncByCodeModal,
   history,
   allowGoogleLogin,
   syncClassLoading,
-  openGCModal,
+  fetchClassListLoading,
   classLoaded,
   match,
   syncClassUsingCode
 }) => {
-  const [googleCode, setGoogleCode] = useState((selectedClass && selectedClass.googleCode) || "");
   const [disabled, setDisabled] = useState(selectedClass && !!selectedClass.googleCode);
+  let googleCode = React.createRef();
+  const [openGCModal, setOpenGCModal] = useState(false);
   useEffect(() => {
-    setGoogleCode((selectedClass && selectedClass.googleCode) || "");
-    setDisabled(selectedClass && !!selectedClass.googleCode);
-  }, [selectedClass]);
+    if (!fetchClassListLoading) setOpenGCModal(true);
+  }, [fetchClassListLoading]);
 
-const ClassDetails = ({ selectedClass, loadStudents,  history, match }) => {
   useEffect(() => {
     const { classId } = match.params;
     loadStudents({ classId });
+    setOpenGCModal(false);
   }, []);
 
   const handleEditClick = () => {
@@ -54,7 +53,7 @@ const ClassDetails = ({ selectedClass, loadStudents,  history, match }) => {
   };
 
   const handleSyncGC = () => {
-    if (googleCode) {
+    if (googleCode.current.state.value) {
       syncClassUsingCode({ googleCode, groupId: selectedClass._id });
     } else {
       message.error("Enter valid google classroom code");
@@ -67,7 +66,7 @@ const ClassDetails = ({ selectedClass, loadStudents,  history, match }) => {
     <>
       <Modal
         visible={openGCModal}
-        onCancel={() => syncByCodeModal(false)}
+        onCancel={() => setOpenGCModal(false)}
         title="Enter Google Classroom Code"
         footer={
           <ButtonWrapper>
@@ -76,7 +75,7 @@ const ClassDetails = ({ selectedClass, loadStudents,  history, match }) => {
               Change Classroom
             </StyledButton>
             <ButtonRightWrapper>
-              <StyledButton shape={"round"} onClick={() => syncByCodeModal(false)}>
+              <StyledButton shape={"round"} onClick={() => setOpenGCModal(false)}>
                 {" "}
                 Cancel
               </StyledButton>
@@ -94,7 +93,7 @@ const ClassDetails = ({ selectedClass, loadStudents,  history, match }) => {
           </ButtonWrapper>
         }
       >
-        <Input value={googleCode} disabled={disabled} onChange={e => setGoogleCode(e.target.value)} />
+        <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
       </Modal>
       <Header onEdit={handleEditClick} />
       <Container>
@@ -104,7 +103,7 @@ const ClassDetails = ({ selectedClass, loadStudents,  history, match }) => {
           viewAssessmentHandler={viewAssessmentHandler}
           isUserGoogleLoggedIn={isUserGoogleLoggedIn}
           allowGoogleLogin={allowGoogleLogin}
-          syncGCModal={() => syncByCodeModal(true)}
+          syncGCModal={() => setOpenGCModal(true)}
         />
         <StyledDivider orientation="left" />
         <MainInfo entity={selectedClass} />
@@ -128,7 +127,7 @@ const enhance = compose(
   connect(
     state => ({
       selectedClass: get(state, "manageClass.entity"),
-      openGCModal: get(state, "manageClass.openGCModal", false),
+      fetchClassListLoading: state.manageClass.fetchClassListLoading,
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn", false),
       allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       syncClassLoading: get(state, "manageClass.syncClassLoading"),

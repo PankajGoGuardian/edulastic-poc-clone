@@ -24,6 +24,8 @@ export const getSelectedClassName = createSelector(
 // action types
 
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";
+export const FETCH_CLASS_LIST_STATUS = "[manageClass] fetch google class status";
+
 export const SET_GOOGLE_COURSE_LIST = "[manageClass] set google classes";
 export const SET_MODAL = "[manageClass] set modal";
 export const SYNC_CLASS = "[manageClass] sync selected google classes";
@@ -73,6 +75,7 @@ export const SET_SUBJECT = "[manageClass] set subject";
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
+export const fetchClassListStatusAction = createAction(FETCH_CLASS_LIST_STATUS);
 export const setGoogleCourseListAction = createAction(SET_GOOGLE_COURSE_LIST);
 export const setModalAction = createAction(SET_MODAL);
 export const syncClassAction = createAction(SYNC_CLASS);
@@ -121,7 +124,7 @@ export const setSubjectAction = createAction(SET_SUBJECT);
 // initial State
 const initialState = {
   googleCourseList: [],
-  showModal: false,
+  fetchClassListLoading: false,
   creating: false,
   updating: false,
   error: null,
@@ -131,16 +134,29 @@ const initialState = {
   entity: {},
   submitted: false,
   added: false,
-  openGCModal: false,
   selectedSubject: "",
   classLoaded: false
 };
 
 const setGoogleCourseList = (state, { payload }) => {
   state.googleCourseList = payload;
-  state.showModal = true;
 };
 
+const updateGoogleCourseList = (state, { payload }) => {
+  const { index, key, value } = payload;
+  const googleCourseList = state.googleCourseList;
+  const newGoogleCourseList = produce(googleCourseList, draft => {
+    draft =
+      draft &&
+      draft.map((googleCourse, ind) => {
+        if (ind === index) {
+          googleCourse[key] = value;
+        }
+      });
+  });
+  state.googleCourseList = newGoogleCourseList;
+  state.showModal = true;
+};
 // toggle modal
 const setModal = (state, { payload }) => {
   state.showModal = payload;
@@ -257,9 +273,14 @@ const setSyncClassLoading = (state, { payload }) => {
   state.syncClassLoading = payload;
 };
 
+const setFetchClassRequest = (state, { payload }) => {
+  state.fetchClassListLoading = payload;
+};
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
+  [FETCH_CLASS_LIST_STATUS]: setFetchClassRequest,
+  [UPDATE_GOOGLE_COURSE_LIST]: updateGoogleCourseList,
   [SET_MODAL]: setModal,
   [SET_CLASS]: setClass,
   [SYNC_CLASS_LOADING]: setSyncClassLoading,
@@ -285,17 +306,16 @@ export default createReducer(initialState, {
 
 function* fetchClassList({ payload }) {
   try {
-    const { data, showModal } = payload;
+    const { data } = payload;
+    yield put(fetchClassListStatusAction(true));
     const result = yield call(googleApi.getCourseList, { code: data.code });
     yield put(setUserGoogleLoggedInAction(true));
-    if (showModal) {
-      yield put(setGoogleCourseListAction(result.courseDetails));
-    } else {
-      yield put(syncByCodeModalAction(true));
-    }
+    yield put(setGoogleCourseListAction(result.courseDetails));
+    yield put(fetchClassListStatusAction(false));
   } catch (e) {
     const errorMessage = "fetching classlist failed";
     yield call(message.error, errorMessage);
+    yield put(fetchClassListStatusAction(false));
     console.log(e);
   }
 }
@@ -452,24 +472,6 @@ function* syncClassUsingCode({ payload }) {
   }
 }
 
-function* updateGoogleCourseList({ payload }) {
-  try {
-    const { index, key, value } = payload;
-    const googleCourseList = yield select(state => get(state, "manageClass.googleCourseList"));
-    const newGoogleCourseList = produce(googleCourseList, draft => {
-      draft =
-        draft &&
-        draft.map((googleCourse, ind) => {
-          if (ind === index) {
-            googleCourse[key] = value;
-          }
-        });
-    });
-    yield put(setGoogleCourseListAction(newGoogleCourseList));
-  } catch (e) {
-    console.log("err", e);
-  }
-}
 // watcher saga
 export function* watcherSaga() {
   yield all([
@@ -483,7 +485,6 @@ export function* watcherSaga() {
     yield takeEvery(CHANGE_USER_TTS_REQUEST, changeUserTTSRequest),
     yield takeEvery(REMOVE_STUDENTS_REQUEST, removeStudentsRequest),
     yield takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
-    yield takeEvery(UPDATE_GOOGLE_COURSE_LIST, updateGoogleCourseList),
     yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest)
   ]);
 }

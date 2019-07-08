@@ -30,19 +30,30 @@ const ManageClass = ({
   allowGoogleLogin,
   archiveGroups,
   setClass,
+  fetchClassListLoading,
   ...restProps
 }) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const closeModal = () => setIsModalVisible(false);
+
+  useEffect(() => {
+    if (!fetchClassListLoading) setIsModalVisible(true);
+  }, [fetchClassListLoading]);
+
   useEffect(() => {
     fetchGroups();
     fetchArchiveGroups();
     getDictCurriculums();
     receiveSearchCourse({ districtId });
+    setIsModalVisible(false);
   }, []);
 
   return (
     <ClassListContainer
       {...restProps}
       state={state}
+      isModalVisible={isModalVisible}
+      closeModal={closeModal}
       allowGoogleLogin={allowGoogleLogin}
       groups={groups}
       archiveGroups={archiveGroups}
@@ -66,7 +77,7 @@ const enhance = compose(
     state => ({
       groups: getGroupsSelector(state),
       archiveGroups: getArchiveGroupsSelector(state),
-      isModalVisible: state.manageClass.showModal,
+      fetchClassListLoading: state.manageClass.fetchClassListLoading,
       state: state,
       courseList: get(state, "coursesReducer.searchResult"),
       districtId: get(state, "user.user.orgData.districtId"),

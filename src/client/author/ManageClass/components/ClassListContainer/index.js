@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import Header from "./Header";
 import ClassList from "./ClassList";
@@ -6,19 +6,18 @@ import ClassSelectModal from "./ClassSelectModal";
 
 // eslint-disable-next-line max-len
 const ClassListContainer = ({
-  setModal,
   groups,
   archiveGroups,
-  isModalVisible,
   googleCourseList,
   courseList,
   allowGoogleLogin,
+  closeModal,
+  isModalVisible,
   syncClassLoading = false,
   updateGoogleCourseList,
   syncClass,
   state
 }) => {
-  const closeModal = () => setModal(false);
   const selectedGroups = groups.filter(i => !!i.googleCode).map(i => i.googleCode);
 
   return (

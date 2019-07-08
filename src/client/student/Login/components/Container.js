@@ -8,7 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { springGreen, fadedBlack } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
-import { isDistrictPolicyAllowed } from "../../../common/utils/helpers";
+import { isDistrictPolicyAllowed, emailSpecialCharCheck } from "../../../common/utils/helpers";
 import { ForgotPasswordPopup } from "./forgotPasswordPopup";
 
 import mailIcon from "../../assets/mail-icon.svg";
@@ -154,8 +154,19 @@ class LoginContainer extends React.Component {
                           {getFieldDecorator("email", {
                             rules: [
                               {
+                                transform: value => trim(value)
+                              },
+                              {
                                 required: true,
                                 message: t("common.validation.emptyemailid")
+                              },
+                              {
+                                type: "email",
+                                message: t("common.validation.validemail")
+                              },
+                              {
+                                validator: (rule, value, callback) =>
+                                  emailSpecialCharCheck(rule, value, callback, t("common.validation.validemail"))
                               }
                             ]
                           })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}

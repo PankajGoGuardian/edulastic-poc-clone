@@ -4,6 +4,8 @@ import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
+import { trim } from "lodash";
+import { emailSpecialCharCheck } from "../../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import {
   springGreen,
@@ -160,12 +162,19 @@ class AdminSignup extends React.Component {
                             {getFieldDecorator("email", {
                               rules: [
                                 {
-                                  type: "email",
-                                  message: t("common.validation.validemail")
+                                  transform: value => trim(value)
                                 },
                                 {
                                   required: true,
                                   message: t("common.validation.emptyemailid")
+                                },
+                                {
+                                  type: "email",
+                                  message: t("common.validation.validemail")
+                                },
+                                {
+                                  validator: (rule, value, callback) =>
+                                    emailSpecialCharCheck(rule, value, callback, t("common.validation.validemail"))
                                 }
                               ]
                             })(<Input prefix={<img src={mailIcon} alt="" />} />)}

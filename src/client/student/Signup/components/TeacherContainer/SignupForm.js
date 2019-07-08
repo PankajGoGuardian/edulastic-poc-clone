@@ -5,6 +5,7 @@ import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
+import { emailSpecialCharCheck } from "../../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
 import {
@@ -118,8 +119,6 @@ class Signup extends React.Component {
       }
     };
 
-    const changeValidValue = value => trim(value);
-
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
     const partner = Partners[partnerKey];
 
@@ -231,7 +230,6 @@ class Signup extends React.Component {
                                     message: t("component.signup.teacher.validinputname")
                                   },
                                   {
-                                    type: "string",
                                     validator: this.checkName
                                   }
                                 ]
@@ -248,7 +246,7 @@ class Signup extends React.Component {
                                 validateFirst: true,
                                 rules: [
                                   {
-                                    transform: changeValidValue
+                                    transform: value => trim(value)
                                   },
                                   {
                                     required: true,
@@ -257,6 +255,15 @@ class Signup extends React.Component {
                                   {
                                     type: "email",
                                     message: t("component.signup.teacher.validemail")
+                                  },
+                                  {
+                                    validator: (rule, value, callback) =>
+                                      emailSpecialCharCheck(
+                                        rule,
+                                        value,
+                                        callback,
+                                        t("component.signup.teacher.validemail")
+                                      )
                                   }
                                 ]
                               })(

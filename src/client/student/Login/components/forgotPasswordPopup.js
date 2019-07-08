@@ -6,6 +6,7 @@ import { Modal, Button, Input, Icon, Form } from "antd";
 import { get, trim } from "lodash";
 import { white, greenDark, orange } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
+import { emailSpecialCharCheck } from "../../../common/utils/helpers";
 import { requestNewPasswordAction } from "./../ducks";
 
 const ForgotPasswordPopup = props => {
@@ -87,6 +88,10 @@ const ForgotPasswordForm = props => {
             {
               type: "email",
               message: t("component.signup.teacher.validemail")
+            },
+            {
+              validator: (rule, value, callback) =>
+                emailSpecialCharCheck(rule, value, callback, t("component.signup.teacher.validemail"))
             }
           ]
         })(

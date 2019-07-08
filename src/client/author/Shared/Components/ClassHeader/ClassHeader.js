@@ -173,7 +173,8 @@ class ClassHeader extends Component {
       assignmentStatus,
       enableMarkAsDone,
       togglePresentationMode,
-      isPresentationMode
+      isPresentationMode,
+      userRole
     } = this.props;
 
     const { showDropdown, visible } = this.state;

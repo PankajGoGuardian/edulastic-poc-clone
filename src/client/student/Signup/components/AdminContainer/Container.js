@@ -160,6 +160,8 @@ class AdminSignup extends React.Component {
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.admin.signupidlabel")}>
                             {getFieldDecorator("email", {
+                              validateFirst: true,
+                              initialValue: "",
                               rules: [
                                 {
                                   transform: value => trim(value)

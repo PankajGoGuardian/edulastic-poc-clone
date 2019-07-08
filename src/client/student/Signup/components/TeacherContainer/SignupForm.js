@@ -244,6 +244,7 @@ class Signup extends React.Component {
                             <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
                               {getFieldDecorator("email", {
                                 validateFirst: true,
+                                initialValue: "",
                                 rules: [
                                   {
                                     transform: value => trim(value)

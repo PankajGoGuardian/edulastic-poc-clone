@@ -152,6 +152,8 @@ class LoginContainer extends React.Component {
                       <Form onSubmit={this.handleSubmit}>
                         <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
                           {getFieldDecorator("email", {
+                            validateFirst: true,
+                            initialValue: "",
                             rules: [
                               {
                                 transform: value => trim(value)

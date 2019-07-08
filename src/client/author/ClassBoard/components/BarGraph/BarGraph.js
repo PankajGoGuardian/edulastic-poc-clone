@@ -265,7 +265,13 @@ export default class BarGraph extends Component {
               domain={[0, maxAttemps + Math.ceil((10 / 100) * maxAttemps)]}
               yAxisId="left"
               allowDecimals={false}
-              label={{ value: "ATTEMPTS", angle: -90, fill: dropZoneTitleColor, fontSize: "10px" }}
+              label={{
+                value: "ATTEMPTS",
+                dx: -10,
+                angle: -90,
+                fill: dropZoneTitleColor,
+                fontSize: "10px"
+              }}
             />
             <YAxis
               yAxisId="right"
@@ -274,6 +280,7 @@ export default class BarGraph extends Component {
               label={{
                 value: "AVG TIME (SECONDS)",
                 angle: -90,
+                dx: 10,
                 fill: dropZoneTitleColor,
                 fontSize: "10px"
               }}

@@ -71,7 +71,7 @@ class Container extends PureComponent {
     test: null,
     user: {}
   };
-
+  sebPasswordRef = React.createRef();
   state = {
     current: "review",
     showModal: false,
@@ -237,6 +237,7 @@ class Container extends PureComponent {
             current={current}
             isEditable={isEditable}
             onShowSource={this.handleNavChange("source")}
+            sebPasswordRef={this.sebPasswordRef}
             owner={owner}
           />
         );
@@ -274,12 +275,19 @@ class Container extends PureComponent {
     return newTest;
   };
 
-  handleSave = async () => {
+  handleSave = () => {
     const { test, updateTest, createTest, editAssigned } = this.props;
     if (!test.title) {
       return message.error("Name field is required");
     }
     const newTest = this.modifyTest();
+    if (newTest.safeBrowser && !newTest.sebPassword) {
+      if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
+        this.sebPasswordRef.current.input.focus();
+      }
+
+      return message.error("Please add a valid password");
+    }
     if (test._id) {
       if (editAssigned) {
         newTest.versioned = true;
@@ -296,7 +304,15 @@ class Container extends PureComponent {
   };
 
   validateTest = test => {
-    const { title, subjects, grades, requirePassword = false, assignmentPassword = "" } = test;
+    const {
+      title,
+      subjects,
+      grades,
+      requirePassword = false,
+      assignmentPassword = "",
+      safeBrowser,
+      sebPassword
+    } = test;
     if (!title) {
       message.error("Name field cannot be empty");
       return false;
@@ -314,6 +330,13 @@ class Container extends PureComponent {
         message.error("Please add a valid password.");
         return false;
       }
+    }
+    if (safeBrowser && !sebPassword) {
+      if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
+        this.sebPasswordRef.current.input.focus();
+      }
+      message.error("Please add a valid password.");
+      return false;
     }
 
     return true;
@@ -374,7 +397,7 @@ class Container extends PureComponent {
   render() {
     const { creating, windowWidth, test, testStatus, userId } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status, authors } = test;
+    const { _id: testId, status, authors, grades, subjects } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
@@ -385,6 +408,7 @@ class Container extends PureComponent {
       testStatus === statusConstants.PUBLISHED &&
       !editEnable;
 
+    const gradeSubject = { grades, subjects };
     return (
       <>
         {this.renderModal()}
@@ -393,6 +417,7 @@ class Container extends PureComponent {
           testId={testId}
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
+          gradeSubject={gradeSubject}
         />
         <TestPageHeader
           onChangeNav={this.handleNavChange}

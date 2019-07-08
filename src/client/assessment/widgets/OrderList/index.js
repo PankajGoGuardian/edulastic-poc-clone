@@ -276,6 +276,7 @@ const OrderList = ({
                 validation={itemForPreview.validation}
                 list={itemForPreview.list}
                 listStyle={{ fontSize }}
+                disableResponse={disableResponse}
                 axis={axis}
                 columns={columns}
               />

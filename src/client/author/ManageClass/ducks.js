@@ -133,7 +133,7 @@ const initialState = {
   added: false,
   openGCModal: false,
   selectedSubject: "",
-  dataLoaded: false
+  classLoaded: false
 };
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -164,7 +164,7 @@ const createClassFailed = (state, { payload }) => {
 const setClass = (state, { payload }) => {
   state.entity = payload;
   state.selectedStudent = [];
-  state.dataLoaded = true;
+  state.classLoaded = true;
 };
 
 const setFetchStudents = state => {
@@ -231,6 +231,7 @@ const updateStudent = (state, { payload }) => {
 
 const updateStudentsAfterTTSChange = (state, { payload }) => {
   state.studentsList = payload;
+  state.selectedStudent = [];
 };
 
 const removeStudentsSuccess = (state, { payload: studentIds }) => {

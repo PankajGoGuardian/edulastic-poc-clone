@@ -35,7 +35,8 @@ const CheckboxTemplateBoxLayout = ({
   minHeight,
   imageOptions,
   canvasHeight,
-  canvasWidth
+  canvasWidth,
+  checkAnswer
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
     <TemplateCover
@@ -93,7 +94,7 @@ const CheckboxTemplateBoxLayout = ({
         }
         return (
           <React.Fragment key={index}>
-            {!showAnswer && (
+            {!showAnswer && !checkAnswer && (
               <div
                 style={{
                   ...btnStyle,
@@ -119,7 +120,7 @@ const CheckboxTemplateBoxLayout = ({
                 </Pointer>
               </div>
             )}
-            {showAnswer && (
+            {(showAnswer || checkAnswer) && (
               <div
                 style={{
                   ...btnStyle,
@@ -165,6 +166,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   // uiStyle: PropTypes.any,
   // imagescale: PropTypes.bool,
   showAnswer: PropTypes.bool.isRequired,
+  checkAnswer: PropTypes.bool.isRequired,
   imageUrl: PropTypes.string.isRequired,
   imageAlterText: PropTypes.string.isRequired,
   imageHeight: PropTypes.number.isRequired,

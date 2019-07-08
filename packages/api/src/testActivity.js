@@ -55,11 +55,31 @@ const saveOverallFeedback = ({ testActivityId, groupId, feedback: data }) =>
     })
     .then(result => result.data.result);
 
+const updateResponseEntryAndScore = ({ testActivityId, itemId, ...data }) =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/test-item/${itemId}/response-entry-and-score`,
+      method: "put",
+      data
+    })
+    .then(result => result.data.result);
+
+const updateQuestionFeedBack = ({ testActivityId, questionId, ...data }) =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/question/${questionId}/feedback`,
+      method: "put",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   create,
   submit,
   fetchReports,
   getById,
   previousResponses,
-  saveOverallFeedback
+  saveOverallFeedback,
+  updateResponseEntryAndScore,
+  updateQuestionFeedBack
 };

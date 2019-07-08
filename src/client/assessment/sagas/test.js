@@ -1,7 +1,7 @@
 import { testActivityApi, testsApi, assignmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { push } from "react-router-redux";
-import { keyBy as _keyBy } from "lodash";
+import { keyBy as _keyBy, groupBy } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
@@ -19,6 +19,7 @@ import {
   TEST_ACTIVITY_LOADING
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
+import { loadBookmarkAction } from "../sharedDucks/bookmark";
 import { setPasswordValidateStatusAction, setPasswordStatusAction } from "../actions/test";
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
@@ -118,6 +119,15 @@ function* loadTest({ payload }) {
         const itemsByKey = _keyBy(testItems, "_id");
         testItems = (activity.shuffledTestItems || []).map(id => itemsByKey[id]).filter(item => !!item);
       }
+
+      // load bookmarks
+      const qActivitiesGroupedByTestItem = groupBy(questionActivities, "testItemId");
+      const bookmarks = {};
+      for (const _id of Object.keys(qActivitiesGroupedByTestItem)) {
+        const isBookmarked = qActivitiesGroupedByTestItem[_id].some(item => item.bookmarked);
+        bookmarks[_id] = isBookmarked;
+      }
+      yield put(loadBookmarkAction(bookmarks));
 
       let shuffles;
       if (activity.shuffleAnswers) {

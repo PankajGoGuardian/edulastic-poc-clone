@@ -12,6 +12,7 @@ import { withRouter } from "react-router-dom";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi } from "@edulastic/api";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
+import { addTestItemAction } from "../../../../TestPage/ducks";
 import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
@@ -50,19 +51,12 @@ class PreviewModal extends React.Component {
     clearAnswers();
   };
 
-  handleDuplicateTestItem = () => {
-    const { data, history, match, addDuplicate } = this.props;
+  handleDuplicateTestItem = async () => {
+    const { data, addTestItemToList } = this.props;
     const itemId = data.id;
-    const { path } = match;
-    duplicateTestItem(itemId).then(duplicateId => {
-      const duplicateTestItemId = duplicateId._id;
-      if (path.includes("tests")) {
-        this.closeModal();
-        addDuplicate(duplicateTestItemId);
-      } else {
-        history.push(`/author/items/${duplicateTestItemId}/item-detail`);
-      }
-    });
+    this.closeModal();
+    const duplicatedItem = await duplicateTestItem(itemId);
+    addTestItemToList(duplicatedItem);
   };
 
   editTestItem = () => {
@@ -120,7 +114,7 @@ class PreviewModal extends React.Component {
                 )}
                 {authorHasPermission && isEditable && (
                   <EduButton
-                    title="Edit Test"
+                    title="Edit item"
                     style={{ width: 42, padding: 0 }}
                     size="large"
                     onClick={this.editTestItem}
@@ -189,7 +183,8 @@ const enhance = compose(
     }),
     {
       changeView: changePreviewAction,
-      clearAnswers: clearAnswersAction
+      clearAnswers: clearAnswersAction,
+      addTestItemToList: addTestItemAction
     }
   )
 );

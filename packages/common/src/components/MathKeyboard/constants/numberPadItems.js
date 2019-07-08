@@ -1,8 +1,11 @@
 import React from "react";
 
+import Group940 from "../keyboardButtons/fractionwhite.svg";
 import LeftIco from "../keyboardButtons/left.svg";
 import RightIco from "../keyboardButtons/right.svg";
 import DeleteIco from "../keyboardButtons/delete.svg";
+
+import { CustomImage } from "./keyboardButtons";
 
 export const NUMBER_PAD_ITEMS = [
   { value: "7", label: "7" },
@@ -27,5 +30,13 @@ export const NUMBER_PAD_ITEMS = [
     value: "Backspace",
     label: <img src={DeleteIco} width={10} alt="delete" />
   },
-  { value: "=", label: "=" }
+  { value: "=", label: "=" },
+  {
+    handler: "/",
+    labelcy: "divide",
+    value: "divide",
+    label: <CustomImage src={Group940} width={35} height={35} role="presentation" />,
+    types: ["all", "basic", "algebra"],
+    command: "cmd"
+  }
 ];

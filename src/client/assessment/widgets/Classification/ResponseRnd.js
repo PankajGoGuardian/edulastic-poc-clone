@@ -76,7 +76,7 @@ const ResponseRnd = props => {
   const rndHeight = get(question, `responseOptions[${index}].height`, height);
 
   return (
-    <div style={{ position: "relative", minHeight: height }}>
+    <div style={{ position: "relative", minHeight: rndHeight }}>
       <Rnd
         style={{
           overflow: "hidden",
@@ -88,8 +88,7 @@ const ResponseRnd = props => {
         default={{
           x: rndX,
           y: rndY,
-          width: rndWidth,
-          height: rndHeight
+          width: rndWidth
         }}
         disableDragging={!isResizable}
         enableResizing={{
@@ -104,11 +103,9 @@ const ResponseRnd = props => {
         }}
         onDragStop={handleResponseDragStop}
         onResizeStop={handleResponseResizeStop}
-        {...props}
+        {...{ ...props, height: "auto" }}
       >
-        {React.Children.map(children, child => {
-          return child ? React.cloneElement(child) : null;
-        })}
+        {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
       </Rnd>
     </div>
   );

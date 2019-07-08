@@ -94,6 +94,14 @@ export const Body = styled.div`
   background: ${white};
   padding: ${props => (props.smallSize ? "0" : "31px 22px")};
   border-radius: 4px;
+  .sebPassword {
+    width: 40%;
+    margin-left: 30px;
+    margin-right: 10px;
+  }
+  .dirty .ant-input:focus {
+    border-color: ${red};
+  }
 `;
 
 export const FlexBody = styled.div`

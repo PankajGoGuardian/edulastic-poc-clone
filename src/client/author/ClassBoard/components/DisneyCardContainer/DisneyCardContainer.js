@@ -70,7 +70,8 @@ class DisneyCardContainer extends Component {
       isPresentationMode,
       endDate,
       updateDisabledList,
-      isLoading
+      isLoading,
+      enrollmentStatus
     } = this.props;
 
     const noDataNotification = () => {
@@ -132,7 +133,10 @@ class DisneyCardContainer extends Component {
 
         const stu_per = round((parseFloat(correctAnswers) / parseFloat(questions)) * 100, 2);
         const name = isPresentationMode ? student.fakeName : student.studentName || "-";
-
+        /**
+         * for differentiating archived students
+         */
+        const enrollMentFlag = enrollmentStatus[student.studentId] == 0 ? " ! " : "";
         const studentData = (
           <StyledCard data-cy={`student-card-${name}`} bordered={false} key={index}>
             <PaginationInfoF>
@@ -149,10 +153,11 @@ class DisneyCardContainer extends Component {
                 </StyledParaF>
                 {student.present ? (
                   <StyledParaS data-cy="studentStatus" color={status.color}>
+                    {enrollMentFlag}
                     {status.status}
                   </StyledParaS>
                 ) : (
-                  <StyledColorParaS>ABSENT</StyledColorParaS>
+                  <StyledColorParaS>{enrollMentFlag}ABSENT</StyledColorParaS>
                 )}
               </StyledName>
               <RightAlignedCol>

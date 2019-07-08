@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Draggable from "react-draggable";
 import BasicCalculator from "./BasicCalculator";
 import { WithResources } from "@edulastic/common";
+import { IconClose } from "@edulastic/icons";
 
 class CalculatorContainer extends Component {
   constructor(props) {
@@ -81,12 +82,18 @@ class CalculatorContainer extends Component {
     geogebraScientific.inject("geogebra-scientificcalculator");
   }
 
+  handleCloseCalculator = () => {
+    const { changeMode, changeTool } = this.props;
+    changeMode(0);
+    changeTool(0);
+  };
   render() {
     const { calculateMode } = this.state;
     return (
       <Container>
         <StyledDraggable>
           <StyledDiv visible={calculateMode === "GRAPHING_DESMOS"}>
+            <CloseIcon color={"#fff"} onClick={this.handleCloseCalculator} />
             <StyledTitle>Desmos Graphing Calculator</StyledTitle>
             <DesmosGraphingCalculator
               id="demos-graphiccalculator"
@@ -99,6 +106,7 @@ class CalculatorContainer extends Component {
 
         <StyledDraggable>
           <StyledDiv visible={calculateMode === "BASIC_DESMOS"}>
+            <CloseIcon color={"#fff"} onClick={this.handleCloseCalculator} />
             <StyledTitle>Desmos Basic Calculator</StyledTitle>
             <DesmosBasicCalculator
               ref={ref => {
@@ -110,6 +118,7 @@ class CalculatorContainer extends Component {
 
         <StyledDraggable>
           <StyledDiv visible={calculateMode === "SCIENTIFIC_DESMOS"}>
+            <CloseIcon color={"#fff"} onClick={this.handleCloseCalculator} />
             <StyledTitle>Desmos Scientific Calculator</StyledTitle>
             <DesmosScientificCalculator
               ref={ref => {
@@ -121,6 +130,7 @@ class CalculatorContainer extends Component {
 
         <StyledDraggableF>
           <StyledDiv visible={calculateMode === "GRAPHING_GEOGEBRASCIENTIFIC"}>
+            <CloseIcon color={"#fff"} onClick={this.handleCloseCalculator} />
             <StyledTitle>GeoGebra Graphing Calculator</StyledTitle>
             <GeoGebracalculator id="geogebra-graphingculator" />
           </StyledDiv>
@@ -128,6 +138,7 @@ class CalculatorContainer extends Component {
 
         <StyledDraggableF>
           <StyledDiv visible={calculateMode === "BASIC_GEOGEBRASCIENTIFIC"}>
+            <CloseIcon color={"#fff"} onClick={this.handleCloseCalculator} />
             <StyledTitle>Basic Calculator</StyledTitle>
             <BasicCalculator id="geogebra-basiccalculator" />
           </StyledDiv>
@@ -135,6 +146,7 @@ class CalculatorContainer extends Component {
 
         <StyledDraggableF>
           <StyledDiv visible={calculateMode === "SCIENTIFIC_GEOGEBRASCIENTIFIC"}>
+            <CloseIcon color={"#fff"} onClick={this.handleCloseCalculator} />
             <StyledTitle>GeoGebra Scientific Calculator</StyledTitle>
             <GeoGebracalculator id="geogebra-scientificcalculator" />
           </StyledDiv>
@@ -193,6 +205,13 @@ const DesmosScientificCalculator = styled.div`
 const GeoGebracalculator = styled.div`
   width: 800px !important;
   height: 600px !important;
+`;
+
+const CloseIcon = styled(IconClose)`
+  width: 30px;
+  float: right;
+  cursor: pointer;
+  margin-top: 10px;
 `;
 
 const CalculatorContainerWithResources = ({ ...props }) => (

@@ -15,9 +15,9 @@ class ToolBar extends Component {
 
     changeTool(value);
     if (value === 5) {
-      changeMode(true, value);
+      changeMode(value);
     } else {
-      changeMode(false, value);
+      changeMode(value);
     }
   };
 

@@ -51,6 +51,9 @@ const StyledDiv = styled.div`
   }
 `;
 
-const StyledNormalDropDown = styled(NormalDropDown)``;
+const StyledNormalDropDown = styled(NormalDropDown)`
+  max-height: 250px;
+  overflow-y: scroll;
+`;
 
 export { StyledNormalDropDown as NormalDropDown };

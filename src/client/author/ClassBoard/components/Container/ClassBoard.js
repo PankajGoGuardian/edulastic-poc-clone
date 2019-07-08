@@ -7,6 +7,7 @@ import moment from "moment";
 import { message, Dropdown, Menu } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { IconMarkAsAbsent, IconStudentReportCard, IconMoreHorizontal, IconRedirect, IconPrint } from "@edulastic/icons";
 // actions
 import {
   receiveTestActivitydAction,
@@ -52,11 +53,6 @@ import { StudentReportCardModal } from "../../../Shared/Components/ClassHeader/c
 
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-// icon images
-// import Stats from "../../assets/stats.svg";
-// import Ghat from "../../assets/graduation-hat.svg";
-import Ptools from "../../assets/printing-tool.svg";
-import Elinks from "../../assets/external-link.svg";
 // styled wrappers
 import {
   Anchor,
@@ -407,10 +403,6 @@ class ClassBoard extends Component {
       labels,
       assignmentStatus
     } = this.props;
-    const gradeSubject = {
-      grade: classResponse.metadata ? classResponse.metadata.grades : [],
-      subject: classResponse.metadata ? classResponse.metadata.subjects : []
-    };
     const {
       selectedTab,
       flag,
@@ -436,7 +428,7 @@ class ClassBoard extends Component {
 
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const firstStudentId = get(
-      entities.filter(x => x.status !== "notStarted" && x.present && x.status !== "redirected"),
+      entities.filter(x => x.testActivityId && !x.redirect && x.status != "absent" && x.present),
       [0, "studentId"],
       false
     );
@@ -483,7 +475,7 @@ class ClassBoard extends Component {
           </PaginationInfo>
 
           <StudentButtonDiv data-cy="studentnQuestionTab">
-            <PresentationToggleSwitch />
+            <PresentationToggleSwitch groupId={classId} />
             <BothButton
               style={{ marginLeft: "10px" }}
               active={selectedTab === "Both"}
@@ -553,36 +545,40 @@ class ClassBoard extends Component {
                     onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
                   >
                     <ButtonIconWrap>
-                      <img src={Ptools} alt="" />
+                      <IconPrint />
                     </ButtonIconWrap>
                     PRINT
                   </RedirectButton>
                   <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
                     <ButtonIconWrap>
-                      <img src={Elinks} alt="" />
+                      <IconRedirect />
                     </ButtonIconWrap>
                     REDIRECT
                   </RedirectButton>
                   <FeaturesSwitch
                     inputFeatures="assessmentSuperPowersMarkAsDone"
                     actionOnInaccessible="hidden"
-                    gradeSubject={gradeSubject}
+                    groupId={classId}
                   >
                     <Dropdown
                       overlay={
                         <DropMenu>
                           <CaretUp className="fa fa-caret-up" />
                           <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
-                            Mark as Absent
+                            <IconMarkAsAbsent />
+                            <span>Mark as Absent</span>
                           </MenuItems>
-                          <MenuItems onClick={this.onStudentReportCardsClick}>Student Report Cards</MenuItems>
+                          <MenuItems onClick={this.onStudentReportCardsClick}>
+                            <IconStudentReportCard />
+                            <span>Student Report Cards</span>
+                          </MenuItems>
                         </DropMenu>
                       }
                       placement="bottomRight"
                     >
                       <RedirectButton last={true}>
                         <ButtonIconWrap>
-                          <i class="fa fa-ellipsis-h" />{" "}
+                          <IconMoreHorizontal />
                         </ButtonIconWrap>
                         MORE
                       </RedirectButton>
@@ -629,6 +625,7 @@ class ClassBoard extends Component {
                   this.onTabChange(e, "Student", selected);
                 }}
                 isPresentationMode={isPresentationMode}
+                enrollmentStatus={this.props.enrollmentStatus}
               />
             ) : (
               <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
@@ -738,6 +735,7 @@ const enhance = compose(
       showScore: showScoreSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
+      enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       labels: getQLabelsSelector(state)
     }),

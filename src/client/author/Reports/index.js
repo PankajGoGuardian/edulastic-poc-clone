@@ -123,6 +123,12 @@ const Container = props => {
           <StandardsMasteryReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
+      <Route
+        path={`/author/reports/standards-performance-summary`}
+        render={_props => (
+          <StandardsMasteryReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+        )}
+      />
     </PrintableScreen>
   );
 };

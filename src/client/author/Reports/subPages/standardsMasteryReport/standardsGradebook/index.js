@@ -13,11 +13,11 @@ import { Placeholder } from "../../../common/components/loader";
 
 import { UpperContainer, TableContainer } from "./components/styled";
 import { SignedStackBarChartContainer } from "./components/charts/signedStackBarChartContainer";
+import { getStandardsFiltersRequestAction, getReportsStandardsFilters } from "../common/filterDataDucks";
+
 import {
   getStandardsGradebookRequestAction,
-  getStandardsGradebookFiltersRequestAction,
   getReportsStandardsGradebook,
-  getReportsStandardsGradebookFilters,
   getReportsStandardsGradebookLoader
 } from "./ducks";
 
@@ -31,7 +31,7 @@ import { StandardsGradebookTable } from "./components/table/standardsGradebookTa
 
 const StandardsGradebook = ({
   standardsGradebook,
-  standardsGradebookFilters,
+  standardsFilters,
   getStandardsGradebookRequestAction,
   role,
   user,
@@ -97,7 +97,7 @@ const StandardsGradebook = ({
     setChartFilter(_chartFilter);
   };
 
-  const masteryScale = get(standardsGradebookFilters, "data.result.bandInfo", []);
+  const masteryScale = get(standardsFilters, "data.result.bandInfo", []);
 
   return (
     <div>
@@ -152,7 +152,7 @@ const enhance = compose(
   connect(
     state => ({
       standardsGradebook: getReportsStandardsGradebook(state),
-      standardsGradebookFilters: getReportsStandardsGradebookFilters(state),
+      standardsFilters: getReportsStandardsFilters(state),
       loading: getReportsStandardsGradebookLoader(state),
       role: getUserRole(state),
       user: getUser(state),
@@ -160,7 +160,7 @@ const enhance = compose(
     }),
     {
       getStandardsGradebookRequestAction: getStandardsGradebookRequestAction,
-      getStandardsGradebookFiltersRequestAction: getStandardsGradebookFiltersRequestAction
+      getStandardsFiltersRequestAction
     }
   )
 );

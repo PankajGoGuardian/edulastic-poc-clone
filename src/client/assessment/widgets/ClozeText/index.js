@@ -248,6 +248,7 @@ class ClozeText extends Component {
                   advancedAreOpen={advancedAreOpen}
                   cleanSections={cleanSections}
                   fillSections={fillSections}
+                  responseIds={item.response_ids}
                   outerStyle={{
                     padding: "30px 0px"
                   }}

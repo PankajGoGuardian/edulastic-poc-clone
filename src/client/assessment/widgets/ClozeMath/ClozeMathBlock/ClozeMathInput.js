@@ -16,13 +16,17 @@ class ClozeMathInput extends React.Component {
   state = {
     latex: "",
     showKeyboard: false,
-    currentMathQuill: null
+    currentMathQuill: null,
+    keyboardStyles: {
+      top: -1000
+    }
   };
 
   constructor(props) {
     super(props);
     this.mathRef = React.createRef();
     this.wrappedRef = React.createRef();
+    this.mathKeyboardRef = React.createRef();
   }
 
   componentDidMount() {
@@ -71,9 +75,56 @@ class ClozeMathInput extends React.Component {
     if (!mathRef.current) {
       return;
     }
-    this.setState({ showKeyboard: true });
+    this.setState({ showKeyboard: true }, this.calcKeyPosition);
     mathRef.current.focus();
   };
+
+  calcKeyPosition() {
+    if (!this.mathKeyboardRef.current || !this.mathRef.current) {
+      this.setState({
+        keyboardStyles: {
+          top: "unset",
+          position: "absolute"
+        }
+      });
+      return;
+    }
+    const keyboardStyles = {};
+    const winH = window.innerHeight;
+    const winW = window.innerWidth;
+    const keyboardRect = this.mathKeyboardRef.current.getBoundingClientRect();
+    const mathInputRect = this.mathRef.current.getBoundingClientRect();
+
+    const keyboardH = keyboardRect.height;
+    const keyboardW = keyboardRect.width;
+
+    const mathBottom = mathInputRect.bottom;
+
+    const mathT = mathInputRect.top;
+    const mathR = mathInputRect.right;
+    const mathH = mathInputRect.height;
+    const mathW = mathInputRect.width;
+
+    const left = mathR - mathW / 2 - keyboardW / 2;
+    const hDiff = keyboardW + left - winW;
+    if (left < 100) {
+      keyboardStyles.left = 110; // 110 is left meny width
+    } else if (hDiff > 0) {
+      keyboardStyles.left = left - hDiff - 20; // 20 is scrollbar width if there is scrollbar
+    } else {
+      keyboardStyles.left = left;
+    }
+
+    const vDiff = winH - mathBottom;
+    if (vDiff < keyboardH) {
+      keyboardStyles.top = "unset";
+      keyboardStyles.bottom = vDiff + mathH;
+    } else {
+      keyboardStyles.top = mathT + mathH;
+    }
+
+    this.setState({ keyboardStyles });
+  }
 
   closeMathBoard = () => {
     this.setState({ showKeyboard: false });
@@ -138,19 +189,19 @@ class ClozeMathInput extends React.Component {
   render() {
     const { resprops = {}, id } = this.props;
     const { item, uiStyles = {} } = resprops;
-    const { showKeyboard } = this.state;
+    const { showKeyboard, keyboardStyles } = this.state;
     const width = item.ui_style[id] && item.ui_style[id].widthpx;
     const btnStyle = this.getStyles(uiStyles);
 
-    if (width) {
-      btnStyle.width = `${width}px`;
-    }
-
     return (
       <span ref={this.wrappedRef} style={btnStyle}>
-        <span ref={this.mathRef} onClick={this.showKeyboardModal} style={btnStyle} />
+        <span
+          ref={this.mathRef}
+          onClick={this.showKeyboardModal}
+          style={{ ...btnStyle, width: `${width}px` || "auto" }}
+        />
         {showKeyboard && (
-          <KeyboardWrapper>
+          <KeyboardWrapper innerRef={this.mathKeyboardRef} style={keyboardStyles}>
             <MathKeyboard
               onInput={this.onInput}
               onClose={() => {}}
@@ -166,9 +217,11 @@ class ClozeMathInput extends React.Component {
 }
 
 const MathInput = ({ resprops = {}, id }) => {
-  const { item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { response_containers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
   const { maths: _mathAnswers = [] } = answers;
-  const width = item.ui_style[id] && item.ui_style[id].widthpx;
+  const response = find(response_containers, cont => cont.id === id);
+  const width = response ? response.widthpx : item.ui_style.min_width || "auto";
+
   return checked ? (
     <CheckedBlock
       width={width}
@@ -193,7 +246,7 @@ MathInput.propTypes = {
 export default MathInput;
 
 const KeyboardWrapper = styled.div`
-  width: 50%;
-  position: absolute;
+  width: 40%;
+  position: fixed;
   z-index: 100;
 `;

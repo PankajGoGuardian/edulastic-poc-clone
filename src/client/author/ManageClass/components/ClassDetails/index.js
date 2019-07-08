@@ -31,6 +31,7 @@ const ClassDetails = ({
   allowGoogleLogin,
   syncClassLoading,
   openGCModal,
+  classLoaded,
   match,
   syncClassUsingCode
 }) => {
@@ -41,11 +42,10 @@ const ClassDetails = ({
     setDisabled(selectedClass && !!selectedClass.googleCode);
   }, [selectedClass]);
 
+const ClassDetails = ({ selectedClass, loadStudents,  history, match }) => {
   useEffect(() => {
-    if (isEmpty(selectedClass)) {
-      const { classId } = match.params;
-      loadStudents({ classId });
-    }
+    const { classId } = match.params;
+    loadStudents({ classId });
   }, []);
 
   const handleEditClick = () => {
@@ -62,7 +62,7 @@ const ClassDetails = ({
   };
 
   const viewAssessmentHandler = () => {};
-  if (!dataLoaded) return <Spin />;
+  if (!classLoaded) return <Spin />;
   return (
     <>
       <Modal
@@ -111,7 +111,7 @@ const ClassDetails = ({
 
         <ActionContainer loadStudents={loadStudents} />
 
-        <StudentsList />
+        <StudentsList selectStudent groupId={selectedClass._id} />
       </Container>
     </>
   );
@@ -120,7 +120,7 @@ const ClassDetails = ({
 ClassDetails.propTypes = {
   selectedClass: PropTypes.object.isRequired,
   loadStudents: PropTypes.func.isRequired,
-  dataLoaded: PropTypes.bool.isRequired
+  classLoaded: PropTypes.bool.isRequired
 };
 
 const enhance = compose(
@@ -132,7 +132,8 @@ const enhance = compose(
       isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn", false),
       allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       syncClassLoading: get(state, "manageClass.syncClassLoading"),
-      dataLoaded: get(state, "manageClass.dataLoaded")
+      dataLoaded: get(state, "manageClass.dataLoaded"),
+      classLoaded: get(state, "manageClass.classLoaded")
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,

@@ -48,6 +48,7 @@ import { toggleAdvancedSections } from "../actions/questions";
 import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
+import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -250,6 +251,7 @@ class QuestionWrapper extends Component {
       advancedAreOpen,
       userRole,
       disableResponse,
+      isStudentReport,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -281,7 +283,7 @@ class QuestionWrapper extends Component {
        */
       userAnswerProps.key = data.id;
     }
-    const canShowPlayer = userRole === "student" && data.tts && data.tts.taskStatus === "COMPLETED";
+    const canShowPlayer = userRole === "student" && data.tts && data.tts.taskStatus === "COMPLETED" && !isStudentReport;
     return (
       <WithResources
         resources={[
@@ -364,6 +366,8 @@ class QuestionWrapper extends Component {
                     {...presentationModeProps}
                   />
                 ))}
+              {/* STUDENT REPORT PAGE FEEDBACK */}
+              {isStudentReport && <StudentReportFeedback index={qIndex} qId={data.id} />}
             </QuestionContainer>
           </>
         </ThemeProvider>

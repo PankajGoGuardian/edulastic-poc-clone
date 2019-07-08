@@ -274,6 +274,7 @@ class Display extends Component {
         fontSize={fontSize}
         uiStyle={uiStyle}
         showAnswer={showAnswer}
+        checkAnswer={checkAnswer}
         options={newOptions}
         maxHeight={canvasHeight}
         maxWidth={maxWidth}

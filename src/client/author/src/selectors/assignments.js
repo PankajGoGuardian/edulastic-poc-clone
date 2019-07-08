@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import { groupBy } from "lodash";
+import { getUserRole } from "./user";
 
 export const stateSelector = state => state.author_assignments;
 
@@ -61,7 +62,9 @@ export const getDistrictIdSelector = createSelector(
 
 export const getAssignmentViewSelector = createSelector(
   stateSelector,
-  state => state.isAdvancedView
+  getUserRole,
+  (state, role) => (role !== "teacher" ? true : false)
+  //TODO for some sceneario we may use both advanced and simple views. We should make use of state.isAdvancedView for those cases
 );
 
 export const getAssignmentFilterSelector = createSelector(

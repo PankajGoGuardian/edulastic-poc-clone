@@ -39,7 +39,16 @@ const mathInputTypes = {
 };
 
 const symbols = [
-  { value: "all", label: "All symbols" },
+  { value: "basic", label: "Basic" },
+  { value: "intermediate", label: "Intermediate" },
+  { value: "advanced", label: "Advanced" },
+  { value: "units_si", label: "Units (SI)" },
+  { value: "units_us", label: "Units (US)" },
+  { value: "all", label: "Full" }
+];
+
+const symbolsAll = [
+  { value: "all", label: "Full" },
   { value: "qwerty", label: "Keyboard" },
   { value: "basic", label: "Basic" },
   { value: "basic_junior", label: "Basic Junior" },
@@ -134,6 +143,7 @@ module.exports = {
   syntaxes,
   mathInputTypes,
   symbols,
+  symbolsAll,
   modes,
   mathRenderOptions,
   templateFontScaleOption,

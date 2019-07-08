@@ -65,29 +65,8 @@ FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">T
 FroalaEditor.DefineIconTemplate("textdropdown", `<span class="custom-toolbar-btn">Text Dropdown</span>`);
 FroalaEditor.DefineIconTemplate("mathinput", `<span class="custom-toolbar-btn">Math Input</span>`);
 
-const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
-const numberPad = [
-  "7",
-  "8",
-  "9",
-  "\\div",
-  "4",
-  "5",
-  "6",
-  "\\times",
-  "1",
-  "2",
-  "3",
-  "-",
-  "0",
-  ".",
-  ",",
-  "+",
-  "left_move",
-  "right_move",
-  "Backspace",
-  "="
-];
+const symbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
+const numberPad = ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"];
 
 const DEFAULT_TOOLBAR_BUTTONS = {
   STD: {
@@ -731,6 +710,7 @@ const CustomEditor = ({
         show={showMathModal}
         symbols={symbols}
         numberPad={numberPad}
+        showDropdown
         showResposnse={false}
         value={currentLatex}
         onSave={saveMathModal}

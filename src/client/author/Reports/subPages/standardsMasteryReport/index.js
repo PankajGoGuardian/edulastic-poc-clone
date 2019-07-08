@@ -4,8 +4,9 @@ import next from "immer";
 import qs from "qs";
 
 import StandardsGradebook from "./standardsGradebook";
+import StandardsPerfromance from "./standardsPerformance";
 
-import StandardsGradebookFilters from "./standardsGradebook/components/filters";
+import StandardsFilters from "./common/components/Filters";
 import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
 import { getNavigationTabLinks } from "../../common/util";
 
@@ -85,21 +86,24 @@ export const StandardsMasteryReportContainer = props => {
 
   return (
     <>
-      {props.loc === "standards-gradebook" ? (
-        <StandardsGradebookFilters
-          onGoClick={onStandardsGradebookGoClick}
-          loc={props.loc}
-          history={props.history}
-          location={props.location}
-          match={props.match}
-          style={props.showFilter ? { display: "block" } : { display: "none" }}
-        />
-      ) : null}
+      <StandardsFilters
+        onGoClick={onStandardsGradebookGoClick}
+        loc={props.loc}
+        history={props.history}
+        location={props.location}
+        match={props.match}
+        style={props.showFilter ? { display: "block" } : { display: "none" }}
+      />
       <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
       <Route
         exact
         path={`/author/reports/standards-gradebook`}
         render={_props => <StandardsGradebook {..._props} settings={gradebookSettings} />}
+      />
+      <Route
+        exact
+        path={`/author/reports/standards-performance-summary`}
+        render={_props => <StandardsPerfromance {..._props} settings={gradebookSettings} />}
       />
     </>
   );

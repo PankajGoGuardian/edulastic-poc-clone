@@ -1,12 +1,13 @@
 import styled from "styled-components";
 
 export const Item = styled.div`
-  width: 25%;
-  height: 50px;
+  width: 65px;
+  height: 65px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid ${props => props.theme.numberPad.itemBorderColor};
+  border-right: 1px solid ${props => props.theme.numberPad.itemBorderColor};
+  border-bottom: 1px solid ${props => props.theme.numberPad.itemBorderColor};
   color: ${props => props.theme.numberPad.itemColor};
   font-weight: ${props => props.theme.numberPad.itemFontWeight};
   background: ${props => props.theme.numberPad.itemBgColor};

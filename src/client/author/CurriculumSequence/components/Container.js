@@ -203,9 +203,13 @@ class CurriculumContainer extends Component {
 
     const { sourceCurriculumSequence } = this.getSourceDestinationCurriculum();
 
-    const { destinationCurriculumSequence } = this.props;
+    const { destinationCurriculumSequence = {} } = this.props;
 
     const curriculumList = Object.keys(curriculumSequences.byId).map(key => curriculumSequences.byId[key]);
+    const gradeSubject = {
+      grades: destinationCurriculumSequence.grades,
+      subjects: destinationCurriculumSequence.subjects
+    };
 
     return (
       <>
@@ -215,6 +219,7 @@ class CurriculumContainer extends Component {
           testId={destinationCurriculumSequence._id}
           isPlaylist={true}
           onClose={onShareModalChange}
+          gradeSubject={gradeSubject}
         />
         <CurriculumSequence
           onPublisherSave={savePublisher}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import produce from "immer";
 import PropTypes from "prop-types";
-import { cloneDeep, set, get, forEach, find, isEmpty } from "lodash";
+import { cloneDeep, set, get, forEach, find, findIndex, isEmpty } from "lodash";
 import { math } from "@edulastic/constants";
 import { Checkbox } from "@edulastic/common";
 import CorrectAnswers from "../../../components/CorrectAnswers";
@@ -188,11 +188,25 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
         answer.value = value;
       }
     });
-    let uiStyle = get(newItem, `ui_style.${answerId}`, {});
     const splitWidth = Math.max(value.split("").length * 9, 100);
     const width = Math.min(splitWidth, 400);
-    uiStyle = { ...uiStyle, widthpx: width };
-    set(newItem, `ui_style.${answerId}`, uiStyle);
+    const ind = findIndex(newItem.response_containers, container => container.id === answerId);
+    if (ind === -1) {
+      const responseIds = newItem.response_ids;
+      const obj = {};
+      Object.keys(responseIds).forEach(key => {
+        const resp = responseIds[key].find(inp => inp.id === answerId);
+        if (resp) {
+          obj["index"] = resp.index;
+          obj["id"] = resp.id;
+          obj["type"] = key;
+          obj["widthpx"] = width;
+          newItem.response_containers.push(obj);
+        }
+      });
+    } else {
+      newItem.response_containers[ind].widthpx = width;
+    }
     set(newItem, `validation.valid_inputs.value`, validInputsAnswers);
     setQuestionData(newItem);
   };

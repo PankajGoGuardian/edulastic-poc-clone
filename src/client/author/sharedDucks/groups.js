@@ -107,7 +107,7 @@ function* fetchMembers({ payload }) {
     if (loadedGroups.includes(classId)) {
       return;
     }
-    let students = yield call(enrollmentApi.fetch, classId);
+    let { students = [] } = yield call(enrollmentApi.fetch, classId);
     students = students.map(student => {
       student.groupId = classId;
       return student;

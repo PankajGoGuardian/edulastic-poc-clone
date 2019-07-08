@@ -1,27 +1,40 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { keyBy, get } from "lodash";
 import PropTypes from "prop-types";
+import { AnswerContext } from "@edulastic/common";
+import { test as testConstants } from "@edulastic/constants";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
-import ItemReport from "./ItemReport";
-import { getQuestionWithFeedbackSelector } from "../../sharedDucks/TestItem";
+import TestItemPreview from "../../../assessment/components/TestItemPreview";
+import { getItemSelector } from "../../sharedDucks/TestItem";
 
-const ReportListContent = ({ questions, flag, testActivityById }) => {
+const { releaseGradeLabels } = testConstants;
+
+const ReportListContent = ({ item = {}, flag, testActivityById }) => {
   const { releaseScore = "" } = testActivityById;
+  const questions = keyBy(get(item, "data.questions", []), "id");
+  let showAnswerProps = { view: "preview" };
+  if (releaseScore === releaseGradeLabels.WITH_ANSWERS) {
+    showAnswerProps = { preview: "show" };
+  }
+
   return (
     <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
         <Wrapper>
-          {questions.map((question, index) => (
-            <ItemReport
-              key={index}
-              question={question}
-              index={index}
+          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <TestItemPreview
+              {...showAnswerProps}
+              cols={item.rows || []}
+              questions={questions}
+              verticalDivider={item.verticalDivider}
+              scrolling={item.scrolling}
               releaseScore={releaseScore}
-              disableResponse={true}
+              disableResponse
+              isStudentReport
             />
-          ))}
+          </AnswerContext.Provider>
         </Wrapper>
       </AssignmentContentWrapper>
     </AssignmentsContent>
@@ -29,7 +42,7 @@ const ReportListContent = ({ questions, flag, testActivityById }) => {
 };
 export default connect(
   (state, props) => ({
-    questions: getQuestionWithFeedbackSelector(state),
+    item: getItemSelector(state),
     testActivityById: get(state, `[studentReport][byId][${props.reportId}]`, {})
   }),
   null
@@ -37,11 +50,11 @@ export default connect(
 
 ReportListContent.propTypes = {
   flag: PropTypes.bool.isRequired,
-  questions: PropTypes.array
+  item: PropTypes.array
 };
 
 ReportListContent.defaultProps = {
-  questions: []
+  item: []
 };
 
 const Wrapper = styled.div`

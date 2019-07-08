@@ -53,18 +53,19 @@ export const MathKeyboardStyles = styled.div`
     flex-wrap: nowrap;
   }
 
-  .half-box {
-    width: 50%;
-    display: flex;
-    flex-wrap: wrap;
-    height: 100%;
-    max-height: 325px;
-    overflow-y: auto;
-    overflow-x: hidden;
+  .keyboard__main .ant-btn:active,
+  .keyboard__main .ant-btn:focus,
+  .keyboard__main .ant-btn:hover,
+  .keyboard__main .ant-btn {
+    border-color: ${props => props.theme.mathKeyboard.numBorderColor};
+  }
+
+  .numberpad {
+    width: calc(65px * 4); /* 65px is number button width */
   }
 
   .num {
-    width: 25%;
+    width: 65px;
     height: 65px;
     border-color: ${props => props.theme.mathKeyboard.numBorderColor};
     border-radius: 0;
@@ -104,6 +105,21 @@ export const MathKeyboardStyles = styled.div`
   .num--type-3 {
     background-color: ${props => props.theme.mathKeyboard.numType3BgColor};
     color: ${props => props.theme.mathKeyboard.numType3Color};
+  }
+
+  .num--type-4 {
+    background-color: ${props => props.theme.mathKeyboard.numType4BgColor};
+    color: ${props => props.theme.mathKeyboard.numType4Color};
+  }
+
+  .num--type-5 {
+    background-color: ${props => props.theme.mathKeyboard.numType5BgColor};
+    color: ${props => props.theme.mathKeyboard.numType5Color};
+  }
+
+  .num--type-6 {
+    background-color: ${props => props.theme.mathKeyboard.numType6BgColor};
+    color: ${props => props.theme.mathKeyboard.numType6Color};
   }
 
   .italic {
@@ -163,4 +179,11 @@ export const MathKeyboardStyles = styled.div`
   .num__backspace {
     height: 17px;
   }
+`;
+
+export const SymbolContainer = styled.div`
+  width: ${({ cols, isAll }) => `${isAll ? cols * 65 + 20 : cols * 65}px`}; /* 20 is scrollbar width */
+  height: ${`${65 * 4}px`};
+  flex-direction: ${({ isAll }) => (isAll ? "row" : "column")};
+  overflow-y: ${({ isAll }) => (isAll ? "auto" : "hidden")};
 `;

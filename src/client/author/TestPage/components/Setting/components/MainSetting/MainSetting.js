@@ -11,6 +11,7 @@ import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
 import ListCard from "../Card/Card";
 import UiTime from "../UiTime/UiTime";
+import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
 
 import {
   StyledAnchor,
@@ -175,7 +176,7 @@ class MainSetting extends Component {
 
   render() {
     const { enable, showAdvancedOption, showPassword } = this.state;
-    const { history, windowWidth, entity, owner, userRole, isEditable = false } = this.props;
+    const { history, windowWidth, entity, owner, userRole, isEditable = false, sebPasswordRef } = this.props;
 
     const {
       releaseScore,
@@ -192,7 +193,9 @@ class MainSetting extends Component {
       calcType,
       assignmentPassword,
       markAsDone,
-      maxAttempts
+      maxAttempts,
+      grades,
+      subjects
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -213,13 +216,25 @@ class MainSetting extends Component {
       }
     };
 
+    const availableFeatures = settingCategories.slice(0, -5).map(category => {
+      if (
+        this.props.features[settingCategoriesFeatureMap[category.id]] ||
+        isFeatureAccessible({
+          features: this.props.features,
+          inputFeatures: settingCategoriesFeatureMap[category.id],
+          gradeSubject: { grades, subjects }
+        })
+      ) {
+        return settingCategoriesFeatureMap[category.id];
+      }
+    });
     return (
       <Container>
         <Row style={{ padding: 0 }}>
           <Col span={isSmallSize ? 0 : 6}>
             <StyledAnchor affix={false} offsetTop={125}>
               {settingCategories.slice(0, -5).map(category => {
-                if (this.props.features[settingCategoriesFeatureMap[category.id]]) {
+                if (availableFeatures.includes(settingCategoriesFeatureMap[category.id])) {
                   return (
                     <Anchor.Link
                       key={category.id}
@@ -284,7 +299,7 @@ class MainSetting extends Component {
                 />
               </Body>
             </Block>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
+            {availableFeatures.includes("assessmentSuperPowersMarkAsDone") ? (
               <Block id="mark-as-done" smallSize={isSmallSize}>
                 <Title>Mark as Done</Title>
                 <Body smallSize={isSmallSize}>
@@ -308,7 +323,9 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeaturesSwitch>
+            ) : (
+              ""
+            )}
             <Block id="release-scores" smallSize={isSmallSize}>
               <Title>Release Scores</Title>
               <Body smallSize={isSmallSize}>
@@ -334,7 +351,7 @@ class MainSetting extends Component {
                 </Description>
               </Body>
             </Block>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersRequireSafeExamBrowser" actionOnInaccessible="hidden">
+            {availableFeatures.includes("assessmentSuperPowersRequireSafeExamBrowser") ? (
               <Block id="require-safe-exame-browser" smallSize={isSmallSize}>
                 <Title>Require Safe Exam Browser</Title>
                 <Body smallSize={isSmallSize}>
@@ -344,8 +361,10 @@ class MainSetting extends Component {
                     onChange={this.updateTestData("safeBrowser")}
                   />
                   {safeBrowser && (
-                    <InputPassword
+                    <Input
+                      className={`sebPassword ${sebPassword && sebPassword.length ? " good" : " dirty"}`}
                       disabled={!owner || !isEditable}
+                      ref={sebPasswordRef}
                       prefix={
                         <i className={`fa fa-eye${showPassword ? "-slash" : ""}`} onClick={this.handleShowPassword} />
                       }
@@ -363,8 +382,10 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersShuffleQuestions" actionOnInaccessible="hidden">
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("assessmentSuperPowersShuffleQuestions") ? (
               <Block id="suffle-question" smallSize={isSmallSize}>
                 <Title>Shuffle Questions</Title>
                 <Body smallSize={isSmallSize}>
@@ -380,8 +401,10 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersShuffleAnswerChoice" actionOnInaccessible="hidden">
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("assessmentSuperPowersShuffleAnswerChoice") ? (
               <Block id="show-answer-choice" smallSize={isSmallSize}>
                 <Title>Shuffle Answer Choice</Title>
                 <Body smallSize={isSmallSize}>
@@ -401,8 +424,10 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersShowCalculator" actionOnInaccessible="hidden">
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("assessmentSuperPowersShowCalculator") ? (
               <Block id="show-calculator" smallSize={isSmallSize}>
                 <Title>Show Calculator</Title>
                 <Body smallSize={isSmallSize}>
@@ -424,8 +449,10 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersAnswerOnPaper" actionOnInaccessible="hidden">
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("assessmentSuperPowersAnswerOnPaper") ? (
               <Block id="answer-on-paper" smallSize={isSmallSize}>
                 <Title>Answer on Paper</Title>
                 <Body smallSize={isSmallSize}>
@@ -441,8 +468,10 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersRequirePassword" actionOnInaccessible="hidden">
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("assessmentSuperPowersRequirePassword") ? (
               <Block id="require-password" smallSize={isSmallSize}>
                 <Title>Require Password</Title>
                 <Body smallSize={isSmallSize}>
@@ -473,8 +502,10 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersCheckAnswerTries" actionOnInaccessible="hidden">
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("assessmentSuperPowersCheckAnswerTries") ? (
               <Block id="check-answer-tries-per-question" smallSize={isSmallSize}>
                 <Title>Check Answer Tries Per Question</Title>
                 <Body smallSize={isSmallSize}>
@@ -489,8 +520,10 @@ class MainSetting extends Component {
                   />
                 </Body>
               </Block>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="assessmentSuperPowersEvaluationMethod" actionOnInaccessible="hidden">
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("assessmentSuperPowersEvaluationMethod") ? (
               <Block id="evaluation-method" smallSize={isSmallSize}>
                 <Title>Evaluation Method</Title>
                 <Body smallSize={isSmallSize}>
@@ -523,8 +556,10 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="performanceBands" actionOnInaccessible="hidden">
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("performanceBands") ? (
               <Block id="performance-bands" smallSize={isSmallSize}>
                 <Row style={{ marginBottom: 18, display: "flex", alignItems: "center" }}>
                   <Col span={6}>
@@ -555,7 +590,9 @@ class MainSetting extends Component {
                   )}
                 />
               </Block>
-            </FeaturesSwitch>
+            ) : (
+              ""
+            )}
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
               <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>

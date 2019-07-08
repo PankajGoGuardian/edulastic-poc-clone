@@ -58,7 +58,6 @@ export const MathInputStyles = styled.div`
     left: 0px;
     right: 0px;
     z-index: 999;
-    width: 545px;
   }
 
   .input__keyboard {

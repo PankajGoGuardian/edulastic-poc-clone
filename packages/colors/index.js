@@ -111,6 +111,9 @@ export const graded = "#7BC0DF";
 export const pointColor = "#4a4a4a";
 export const notStarted = "#bfbfbf";
 
+// numberPad button color
+export const numBtnColors = { color: "#707070", borderColor: "#D9D9D9", backgroundColor: "#fff" };
+
 // Sizes
 export const mobileWidth = "480px";
 export const middleMobileWidth = "476px";

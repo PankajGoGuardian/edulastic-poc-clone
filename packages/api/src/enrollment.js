@@ -60,7 +60,12 @@ const SearchAddEnrolMultiStudents = data => {
     data
   });
 };
-
+const fetchStudentEnrollClass = () => {
+  return api.callApi({
+    url: `${prefix}/student`,
+    method: "get"
+  });
+};
 export default {
   fetch,
   create,
@@ -68,5 +73,6 @@ export default {
   addStudent,
   removeStudents,
   addEnrolMultiStudents,
-  SearchAddEnrolMultiStudents
+  SearchAddEnrolMultiStudents,
+  fetchStudentEnrollClass
 };

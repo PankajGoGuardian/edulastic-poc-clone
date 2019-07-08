@@ -7,7 +7,7 @@ import { ItemBody } from "./styled/ItemBody";
 import { selectsData } from "../../../author/TestPage/components/common";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
 
-const SecondBlock = ({ t, onChangeTags, onQuestionDataSelect, depthOfKnowledge, authorDifficulty, tags }) => (
+const SecondBlock = ({ t, onChangeTags, onQuestionDataSelect, depthOfKnowledge = "", authorDifficulty = "", tags }) => (
   <Container>
     <Row gutter={36}>
       <Col md={8}>
@@ -22,11 +22,17 @@ const SecondBlock = ({ t, onChangeTags, onQuestionDataSelect, depthOfKnowledge, 
             value={depthOfKnowledge}
             suffixIcon={<SelectSuffixIcon type="caret-down" />}
           >
-            {selectsData.allDepthOfKnowledge.map(el => (
-              <Select.Option key={el.value} value={el.value}>
-                {el.text}
-              </Select.Option>
-            ))}
+            <Select.Option key={"Select DOK"} value={""}>
+              {"Select DOK"}
+            </Select.Option>
+            {selectsData.allDepthOfKnowledge.map(
+              el =>
+                el.value && (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
+                  </Select.Option>
+                )
+            )}
           </Select>
         </ItemBody>
       </Col>
@@ -42,11 +48,17 @@ const SecondBlock = ({ t, onChangeTags, onQuestionDataSelect, depthOfKnowledge, 
             value={authorDifficulty}
             suffixIcon={<SelectSuffixIcon type="caret-down" />}
           >
-            {selectsData.allAuthorDifficulty.map(el => (
-              <Select.Option key={el.value} value={el.value}>
-                {el.text}
-              </Select.Option>
-            ))}
+            <Select.Option key={"Select Difficulty Level"} value={""}>
+              {"Select Difficulty Level"}
+            </Select.Option>
+            {selectsData.allAuthorDifficulty.map(
+              el =>
+                el.value && (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
+                  </Select.Option>
+                )
+            )}
           </Select>
         </ItemBody>
       </Col>

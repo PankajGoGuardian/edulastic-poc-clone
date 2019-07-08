@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { cloneDeep } from "lodash";
+import { cloneDeep, findIndex } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { evaluationType, questionType } from "@edulastic/constants";
@@ -31,12 +31,29 @@ class MathFormulaOptions extends Component {
 
     const changeResponseContainers = ({ index, prop, value }) => {
       const newContainers = cloneDeep(responseContainers);
-      newContainers[index][prop] = value;
-      onChange("response_containers", newContainers);
+      const ind = findIndex(newContainers, cont => cont.index === index);
+      if (ind !== -1) {
+        newContainers[ind][prop] = value;
+        onChange("response_containers", newContainers);
+      }
     };
 
     const addResponseContainer = () => {
-      onChange("response_containers", [...responseContainers, {}]);
+      const { response_ids: responseIds } = item;
+      const ind = responseContainers.length;
+      let obj = {};
+      outerLoop: if (!!responseIds) {
+        for (const key in responseIds) {
+          const responses = responseIds[key];
+          for (const response of responses) {
+            if (response.index === ind) {
+              obj = { ...responseContainer };
+              break outerLoop;
+            }
+          }
+        }
+      }
+      onChange("response_containers", [...responseContainers, obj]);
     };
 
     const deleteResponseContainer = index => {

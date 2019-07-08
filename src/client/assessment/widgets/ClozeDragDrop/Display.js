@@ -234,11 +234,12 @@ class ClozeDragDropDisplay extends Component {
     //   btnStyle.wordwrap = wordwrap;
     // }
 
-    // if (btnStyle && btnStyle.width === 0) {
-    //   btnStyle.width = responseBtnStyle.widthpx;
-    // } else {
-    //   btnStyle.width = btnStyle.widthpx;
-    // }
+    if (btnStyle && btnStyle.width === 0) {
+      btnStyle.width = responseBtnStyle.widthpx;
+    } else {
+      btnStyle.width = btnStyle.widthpx;
+    }
+
     if (btnStyle && btnStyle.height === 0) {
       btnStyle.height = responseBtnStyle.heightpx;
     } else {
@@ -256,7 +257,6 @@ class ClozeDragDropDisplay extends Component {
   render() {
     const {
       smallSize,
-      // question,
       configureOptions,
       hasGroupResponses,
       preview,
@@ -268,7 +268,6 @@ class ClozeDragDropDisplay extends Component {
       evaluation,
       item,
       theme,
-      // showQuestionNumber,
       responseIDs,
       disableResponse,
       isReviewTab

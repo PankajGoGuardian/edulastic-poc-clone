@@ -13,6 +13,7 @@
   "graded": "GRADED",
   "submit": "SUBMIT",
   "missed": "ABSENT",
+  "bookmarked": "BOOKMARKED",
   "flagged": "FLAGGED",
   "skipped": "SKIPPED"
 }

@@ -5,6 +5,7 @@ import { get } from "lodash";
 
 import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 
 import {
   StyledTableContainer,
@@ -320,7 +321,8 @@ class StudentTable extends Component {
       addStudentsToOtherClassData,
       setAddStudentsToOtherClassVisiblity,
       putStudentsToOtherClass,
-      fetchClassDetailsUsingCode
+      fetchClassDetailsUsingCode,
+      features
     } = this.props;
 
     const actionMenu = (
@@ -345,6 +347,7 @@ class StudentTable extends Component {
               modalVisible={inviteStudentModalVisible}
               inviteStudents={this.sendInviteStudent}
               closeModal={this.closeInviteStudentModal}
+              features={features}
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
@@ -478,7 +481,8 @@ const enhance = compose(
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
-      addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state)
+      addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
+      features: getUserFeatures(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,

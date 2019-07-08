@@ -223,7 +223,12 @@ class QuestionViewContainer extends Component {
                   allowDecimals={false}
                   tick={{ strokeWidth: 0, fill: greyGraphstroke }}
                   tickSize={6}
-                  label={{ value: "Scoring points", angle: -90, fill: greyGraphstroke }}
+                  label={{
+                    value: "Scoring points",
+                    angle: -90,
+                    fill: greyGraphstroke,
+                    dx: -10
+                  }}
                   stroke={greyGraphstroke}
                 />
                 <YAxis
@@ -235,7 +240,8 @@ class QuestionViewContainer extends Component {
                   label={{
                     value: "AVG TIME (SECONDS)",
                     angle: -90,
-                    fill: greyGraphstroke
+                    fill: greyGraphstroke,
+                    dx: 10
                   }}
                   orientation="right"
                   stroke={greyGraphstroke}

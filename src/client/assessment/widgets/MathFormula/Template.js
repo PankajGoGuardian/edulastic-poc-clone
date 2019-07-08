@@ -47,6 +47,7 @@ class Template extends Component {
         <Subtitle data-cy="template-container">{t("component.math.template")}</Subtitle>
         <MathInput
           showResponse
+          showDropdown
           symbols={item.symbols}
           numberPad={item.numberPad}
           value={item.template}

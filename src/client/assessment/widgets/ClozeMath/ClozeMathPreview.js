@@ -101,7 +101,6 @@ const ClozeMathPreview = ({
   }, [template]);
 
   const uiStyles = getStyles();
-
   return (
     <div>
       <QuestionTitleWrapper>
@@ -119,7 +118,8 @@ const ClozeMathPreview = ({
             item,
             checked: type === CHECK || type === SHOW,
             onInnerClick,
-            uiStyles
+            uiStyles,
+            response_containers: item.response_containers
           }
         }}
         showWarnings

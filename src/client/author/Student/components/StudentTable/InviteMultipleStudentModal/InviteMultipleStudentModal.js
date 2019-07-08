@@ -192,11 +192,12 @@ class InviteMultipleStudentModal extends Component {
       features
     } = this.props;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll } = this.state;
+    const { classList = [], searchAndAddStudents = false } = orgData || {};
     const isPremium = isFeatureAccessible({
       features,
       inputFeatures: "searchAndAddStudent",
       groupId: selectedClass ? selectedClass._id : "",
-      groupList: orgData ? orgData.classList : []
+      groupList: classList
     });
     const allLists =
       allStudents.length > 0
@@ -311,15 +312,15 @@ class InviteMultipleStudentModal extends Component {
                 </Col>
               </Row>
 
-              <Row>
-                <Col span={8} offset={16}>
-                  <Button type="primary" shape="round" size="large" key="submit" onClick={this.onInviteStudents}>
+              <Row type="flex" justify="end">
+                <Col>
+                  <Button type="primary" shape="round" key="submit" onClick={this.onInviteStudents}>
                     Add Student
                   </Button>
                 </Col>
               </Row>
             </TabPane>
-            {isPremium ? (
+            {searchAndAddStudents && isPremium ? (
               <TabPane tab="Search Existing Students and Add" key="2">
                 <Row>Search and select existing students from your district and add</Row>
                 <Row>
@@ -347,7 +348,7 @@ class InviteMultipleStudentModal extends Component {
 
                 <Row type="flex" justify="space-between" style={{ marginTop: "1rem" }}>
                   <Col>
-                    <Button shape="round" type="primary" size="large" key="submit" ghost onClick={this.onCloseModal}>
+                    <Button shape="round" type="primary" key="submit" ghost onClick={this.onCloseModal}>
                       No,Cancel
                     </Button>
                   </Col>
@@ -355,7 +356,6 @@ class InviteMultipleStudentModal extends Component {
                     <Button
                       type="primary"
                       shape="round"
-                      size="large"
                       key="submit"
                       disabled={!studentsToEnroll.length}
                       onClick={this.onAddMultipleStudents.bind(

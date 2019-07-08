@@ -65,7 +65,15 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
 
     const { _source = {}, _id: districtId, subscription = {} } = selectedDistrict;
     const { location = {} } = _source;
-    const { subType = "free", subStartDate, subEndDate, notes } = subscription;
+    const {
+      subType = "free",
+      subStartDate,
+      subEndDate,
+      notes,
+      customerSuccessManager,
+      opportunityId,
+      licenceCount
+    } = subscription;
     const { subType: currentSubType = "free" } = getFieldsValue(["subType"]);
 
     const savedDate = useRef();
@@ -81,9 +89,12 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
         subType,
         subStartDate: moment(subStartDate || savedDate.current.currentDate),
         subEndDate: moment(subEndDate || savedDate.current.oneYearDate),
-        notes
+        notes,
+        customerSuccessManager,
+        opportunityId,
+        licenceCount
       });
-    }, [subType, subStartDate, subEndDate, notes]);
+    }, [subType, subStartDate, subEndDate, notes, customerSuccessManager, opportunityId, licenceCount]);
 
     useUpdateEffect(() => {
       if (currentSubType !== subType) {
@@ -150,7 +161,7 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
             </Select>
           )}
         </Form.Item>
-        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
+        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} showAdditionalDetails={true} />
         <Form.Item>
           <Button type="primary" htmlType="submit">
             {ctaSubscriptionState}

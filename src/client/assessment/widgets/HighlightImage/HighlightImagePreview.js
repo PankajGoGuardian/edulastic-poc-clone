@@ -90,7 +90,7 @@ const HighlightImagePreview = ({
   }, [file]);
 
   useLayoutEffect(() => {
-    if (canvasContainerRef.current && canvas.curren) {
+    if (canvasContainerRef.current && canvas.current) {
       canvas.current.height = canvasContainerRef.current.clientHeight;
       canvas.current.width = canvasContainerRef.current.clientWidth;
       const context = canvas.current.getContext("2d");

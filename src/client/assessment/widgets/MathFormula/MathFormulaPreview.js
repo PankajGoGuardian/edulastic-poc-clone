@@ -148,10 +148,10 @@ class MathFormulaPreview extends Component {
   }
 
   onUserResponse(latexv) {
-    const { type: previewType, saveAnswer } = this.props;
+    const { saveAnswer } = this.props;
     const validatedVal = this.validateVal(latexv);
 
-    if (previewType === CHECK) return;
+    // if (previewType === CHECK) return;
     if (this.isStatic()) {
       saveAnswer(validatedVal);
       return;

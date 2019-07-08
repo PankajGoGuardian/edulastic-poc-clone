@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef } from "react";
 import { Modal, Button, Radio, Row } from "antd";
 import { test } from "@edulastic/constants";
 
@@ -10,10 +10,8 @@ const ReleaseScoreSettingsModal = ({
   updateReleaseScoreSettings,
   releaseScore
 }) => {
-  const [releaseScoreVal, updateReleaseScoreType] = useState(releaseGradeLabels.DONT_RELEASE);
-  useEffect(() => {
-    updateReleaseScoreType(releaseScore);
-  }, [releaseScore]);
+  const releaseScoreRef = useRef();
+
   return (
     <Modal
       visible={showReleaseGradeSettings}
@@ -24,12 +22,16 @@ const ReleaseScoreSettingsModal = ({
         <Button key="back" onClick={onCloseReleaseScoreSettings}>
           Cancel
         </Button>,
-        <Button key="submit" type="primary" onClick={() => updateReleaseScoreSettings(releaseScoreVal)}>
+        <Button
+          key="submit"
+          type="primary"
+          onClick={() => updateReleaseScoreSettings(releaseScoreRef.current.state.value)}
+        >
           Apply
         </Button>
       ]}
     >
-      <Radio.Group value={releaseScoreVal} onChange={e => updateReleaseScoreType(e.target.value)}>
+      <Radio.Group defaultValue={releaseScore} ref={releaseScoreRef}>
         {releaseGradeKeys.map((item, index) => (
           <Row key={index}>
             <Radio value={item} key={item}>

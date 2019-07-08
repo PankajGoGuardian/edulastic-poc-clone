@@ -82,6 +82,7 @@ function* receiveTestActivitySaga({ payload }) {
 function* releaseScoreSaga({ payload }) {
   try {
     yield call(classBoardApi.releaseScore, payload);
+    yield call(message.success, "Successfully updated the release score settings");
   } catch (err) {
     const errorMessage = "Update release score is failed";
     yield call(message.error, errorMessage);

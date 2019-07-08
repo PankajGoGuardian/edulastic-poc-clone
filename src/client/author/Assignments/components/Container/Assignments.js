@@ -135,14 +135,10 @@ class Assignments extends Component {
   };
 
   onUpdateReleaseScoreSettings = releaseScore => {
-    const {
-      updateReleaseScoreSettings,
-      currentEditableAssignment = { class: [{}] },
-      toggleReleaseGradePopUp
-    } = this.props;
+    const { updateReleaseScoreSettings, currentAssignment = { class: [{}] }, toggleReleaseGradePopUp } = this.props;
     if (releaseScore !== releaseGradeLabels.DONT_RELEASE) {
-      const { startDate, endDate } = currentEditableAssignment.class[0];
-      const updateReleaseScore = { ...currentEditableAssignment, releaseScore, startDate, endDate };
+      const { startDate, endDate } = currentAssignment.class[0];
+      const updateReleaseScore = { ...currentAssignment, releaseScore, startDate, endDate };
       updateReleaseScoreSettings(updateReleaseScore);
     } else {
       toggleReleaseGradePopUp(false);
@@ -188,11 +184,11 @@ class Assignments extends Component {
       assignmentsSummary,
       districtId,
       isAdvancedView,
-      currentEditableAssignment
+      currentAssignment
     } = this.props;
     const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId } = this.state;
     const tabletWidth = 768;
-    const { releaseScore } = currentEditableAssignment;
+    const { releaseScore } = currentAssignment;
     return (
       <div>
         <TestPreviewModal
@@ -286,7 +282,7 @@ Assignments.propTypes = {
   windowHeight: PropTypes.number.isRequired,
   loadAssignmentById: PropTypes.func.isRequired,
   updateReleaseScoreSettings: PropTypes.func.isRequired,
-  currentEditableAssignment: PropTypes.object.isRequired,
+  currentAssignment: PropTypes.object.isRequired,
   toggleReleaseGradePopUp: PropTypes.func.isRequired,
   tests: PropTypes.array.isRequired,
   isShowReleaseSettingsPopup: PropTypes.bool.isRequired,
@@ -308,7 +304,7 @@ const enhance = compose(
       assignmentsSummary: getAssignmentsSummary(state),
       assignmentsByTestId: getAssignmentsByTestSelector(state),
       tests: getTestsSelector(state),
-      currentEditableAssignment: getCurrentAssignmentSelector(state),
+      currentAssignment: getCurrentAssignmentSelector(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       districtId: getDistrictIdSelector(state),
       isAdvancedView: getAssignmentViewSelector(state),

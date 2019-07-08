@@ -1,13 +1,14 @@
 import React, { Fragment, Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-
-import { TabContainer } from "@edulastic/common";
 import PropTypes from "prop-types";
 import { Select } from "antd";
-import CorrectAnswers from "../../components/CorrectAnswers";
-import withPoints from "../../components/HOC/withPoints";
+import { cloneDeep } from "lodash";
+
+import { TabContainer } from "@edulastic/common";
+
+import CorrectAnswers from "../CorrectAnswers";
+import withPoints from "../HOC/withPoints";
 import GraphDisplay from "./Display/GraphDisplay";
 
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
@@ -143,7 +144,7 @@ class GraphAnswers extends Component {
           <Select
             data-cy="ignoreLabels"
             style={{
-              width: "70px",
+              width: "76px",
               margin: "11px 10px 0 25px",
               borderRadius: "10px"
             }}
@@ -164,7 +165,7 @@ class GraphAnswers extends Component {
   };
 
   render() {
-    const { disableResponse, graphData, view, previewTab } = this.props;
+    const { graphData, view, previewTab } = this.props;
     const { tab } = this.state;
 
     return (
@@ -187,8 +188,9 @@ class GraphAnswers extends Component {
                 previewTab={previewTab}
                 altAnswerId={graphData.validation.valid_response.id}
                 elements={graphData.validation.valid_response.value}
-                disableResponse={disableResponse}
+                disableResponse={false}
                 onChange={this.updateValidationValue}
+                points={graphData.validation.valid_response.score}
               />
             </TabContainer>
           )}
@@ -207,8 +209,9 @@ class GraphAnswers extends Component {
                       previewTab={previewTab}
                       altAnswerId={alter.id}
                       elements={alter.value}
-                      disableResponse={disableResponse}
+                      disableResponse={false}
                       onChange={val => this.updateAltValidationValue(val, i)}
+                      points={alter.score}
                     />
                   </TabContainer>
                 );
@@ -225,20 +228,17 @@ GraphAnswers.propTypes = {
   graphData: PropTypes.object.isRequired,
   onAddAltResponses: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
   onRemoveAltResponses: PropTypes.func.isRequired,
   question: PropTypes.object.isRequired,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
-  disableResponse: PropTypes.bool
-};
-
-GraphAnswers.defaultProps = {
-  disableResponse: false
+  getIgnoreLabelsOptions: PropTypes.func.isRequired,
+  handleSelectIgnoreLabels: PropTypes.func.isRequired,
+  getIgnoreRepeatedShapesOptions: PropTypes.func.isRequired,
+  handleSelectIgnoreRepeatedShapes: PropTypes.func.isRequired
 };
 
 const enhance = compose(
-  withNamespaces("assessment"),
   connect(
     state => ({
       question: getQuestionDataSelector(state)

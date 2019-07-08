@@ -303,7 +303,6 @@ class Graph extends Component {
                   view={view}
                   graphData={item}
                   previewTab={previewTab}
-                  disableResponse={disableResponse}
                   onAddAltResponses={this.handleAddAltResponses}
                   getIgnoreLabelsOptions={getIgnoreLabelsOptions}
                   onRemoveAltResponses={this.handleRemoveAltResponses}

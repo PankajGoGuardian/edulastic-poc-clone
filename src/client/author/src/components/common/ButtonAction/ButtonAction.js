@@ -8,6 +8,7 @@ import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
+import { questionType } from "@edulastic/constants";
 
 import { clearAnswersAction } from "../../../actions/answers";
 import { Container, PreviewBar, DisplayBlock } from "./styled_components";
@@ -51,8 +52,11 @@ class ButtonAction extends Component {
       showCheckButton,
       allowedAttempts,
       showPublishButton,
-      showSettingsButton
+      showSettingsButton,
+      authorQuestions
     } = this.props;
+
+    const isAnswerBtnVisible = !questionType.manuallyGradableQn.includes(authorQuestions.type);
 
     return (
       <Container showPublishButton={showPublishButton}>
@@ -89,7 +93,7 @@ class ButtonAction extends Component {
                 justifyContent: "flex-end"
               }}
             >
-              {(showCheckButton || window.location.pathname.includes("author")) && (
+              {(showCheckButton || window.location.pathname.includes("author") || isAnswerBtnVisible) && (
                 <Button
                   style={{ height: "25px" }}
                   htmlType="button"
@@ -101,16 +105,18 @@ class ButtonAction extends Component {
                   </ButtonLink>
                 </Button>
               )}
-              <Button
-                style={{ height: "25px" }}
-                htmlType="button"
-                onClick={() => changePreviewTab("show")}
-                data-cy="show-answers-btn"
-              >
-                <ButtonLink color="primary" style={{ color: "#00AD50" }}>
-                  <LabelText>SHOW ANSWER</LabelText>
-                </ButtonLink>
-              </Button>
+              {isAnswerBtnVisible && (
+                <Button
+                  style={{ height: "25px" }}
+                  htmlType="button"
+                  onClick={() => changePreviewTab("show")}
+                  data-cy="show-answers-btn"
+                >
+                  <ButtonLink color="primary" style={{ color: "#00AD50" }}>
+                    <LabelText>SHOW ANSWER</LabelText>
+                  </ButtonLink>
+                </Button>
+              )}
               <Button
                 style={{ height: "25px" }}
                 htmlType="button"
@@ -143,7 +149,8 @@ ButtonAction.propTypes = {
   showCheckButton: PropTypes.bool,
   allowedAttempts: PropTypes.number,
   showPublishButton: PropTypes.bool,
-  showSettingsButton: PropTypes.bool
+  showSettingsButton: PropTypes.bool,
+  authorQuestions: PropTypes.object.isRequired
 };
 
 ButtonAction.defaultProps = {

@@ -236,12 +236,14 @@ class Layout extends Component {
         </Row>
         {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
           <Container key={index}>
-            <Delete onClick={() => removeIndividual(index)}>X</Delete>
-            <div>
-              <Col md={12}>
+            <Row>
+              <Col md={18}>
                 <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
               </Col>
-            </div>
+              <Col md={6}>
+                <Delete onClick={() => removeIndividual(index)}>X</Delete>
+              </Col>
+            </Row>
             <Row>
               <Col md={6}>
                 <Label>{t("component.options.widthpx")}</Label>

@@ -35,7 +35,7 @@ const getFontSize = size => {
 const ClozeMathPreview = ({
   type,
   item,
-  template,
+  stimulus,
   userAnswer,
   saveAnswer,
   evaluation,
@@ -96,18 +96,13 @@ const ClozeMathPreview = ({
 
   useEffect(() => {
     if (window.$) {
-      setNewHtml(helpers.parseTemplate(template));
+      setNewHtml(helpers.parseTemplate(stimulus));
     }
-  }, [template]);
+  }, [stimulus]);
 
   const uiStyles = getStyles();
   return (
     <div>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      </QuestionTitleWrapper>
-
       <JsxParser
         bindings={{
           resProps: {
@@ -150,7 +145,7 @@ const ClozeMathPreview = ({
 ClozeMathPreview.propTypes = {
   type: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
-  template: PropTypes.string.isRequired,
+  stimulus: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,

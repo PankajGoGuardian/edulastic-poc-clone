@@ -52,6 +52,7 @@ const MathFormulaAnswerMethod = ({
   onAdd,
   onAddIndex,
   windowWidth,
+  style = {},
   t
 }) => {
   useEffect(() => {
@@ -308,6 +309,7 @@ const MathFormulaAnswerMethod = ({
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
               symbols={item.symbols}
+              style={style}
               numberPad={item.numberPad}
               value={value}
               showDropdown

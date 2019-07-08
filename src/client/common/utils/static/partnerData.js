@@ -32,3 +32,5 @@ export const Partners = {
     opacity: 0.2
   }
 };
+
+export { loginBg };

@@ -39,7 +39,7 @@ const numOfCard = 6;
 
 const rowKey = ({ email }) => email;
 
-class PrintPreview extends React.Component {
+class PrintPreviewClass extends React.Component {
   static propTypes = {
     selctedClass: PropTypes.object.isRequired,
     students: PropTypes.array.isRequired,
@@ -114,4 +114,4 @@ export default connect(
     selectedStudent: get(state, "manageClass.selectedStudent", [])
   }),
   {}
-)(PrintPreview);
+)(PrintPreviewClass);

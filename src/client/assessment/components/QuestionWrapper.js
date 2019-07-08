@@ -283,7 +283,7 @@ class QuestionWrapper extends Component {
        */
       userAnswerProps.key = data.id;
     }
-    const canShowPlayer = userRole === "student" && data.tts && data.tts.taskStatus === "COMPLETED" && !isStudentReport;
+    const canShowPlayer = userRole === "student" && data.tts && data.tts.taskStatus === "COMPLETED";
     return (
       <WithResources
         resources={[

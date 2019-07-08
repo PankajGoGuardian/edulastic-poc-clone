@@ -7,12 +7,13 @@ const MainWrapper = styled.section`
   min-height: 100vh;
   margin: auto;
   box-sizing: border-box;
-  padding: 40px 40px;
+  padding: 0px;
   text-align: left;
   font-size: 18px;
   border-radius: 4px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  max-width: calc(100% - 60px);
+  max-width: 100%;
+  width: 100%;
 
   @media (max-width: 1100px) {
     width: 100%;
@@ -27,16 +28,7 @@ const MainWrapper = styled.section`
     user-select: none;
   }
 
-  @media (max-width: 1600px) {
-    padding: 40px 40px;
-  }
-
-  @media (max-width: 768px) {
-    padding: 24px;
-  }
-
   @media (max-width: 468px) {
-    padding: 0px;
     border-radius: 10px;
   }
 `;

@@ -151,9 +151,8 @@ class ClozeDragDrop extends Component {
                       shuffleOptions
                     }}
                     options={previewDisplayOptions}
-                    question={previewStimulus}
+                    stimulus={previewStimulus}
                     uiStyle={uiStyle}
-                    template={itemForEdit.template}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                     fillSections={fillSections}
@@ -223,9 +222,8 @@ class ClozeDragDrop extends Component {
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
-                question={previewStimulus}
+                stimulus={previewStimulus}
                 uiStyle={uiStyle}
-                template={itemForPreview.template}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
@@ -245,9 +243,8 @@ class ClozeDragDrop extends Component {
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
-                question={previewStimulus}
+                stimulus={previewStimulus}
                 uiStyle={uiStyle}
-                template={itemForPreview.template}
                 userSelections={userAnswer}
                 validation={item.validation}
                 evaluation={evaluation}
@@ -268,9 +265,8 @@ class ClozeDragDrop extends Component {
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
-                question={previewStimulus}
+                stimulus={previewStimulus}
                 uiStyle={uiStyle}
-                template={itemForPreview.template}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 responseIDs={item.response_ids}

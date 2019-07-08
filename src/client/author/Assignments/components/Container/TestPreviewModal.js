@@ -34,8 +34,14 @@ TestPreviewModal.defaultProps = {
 export default TestPreviewModal;
 
 const StyledModal = styled(Modal)`
-  .ant-modal-body > div {
-    height: 76vh;
+  .ant-modal-body {
+    padding: 0px;
+    & > div {
+      height: 76vh;
+    }
+    main {
+      padding: 40px 35px;
+    }
   }
   .ant-modal-close-x {
     color: #fff;

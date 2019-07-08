@@ -20,13 +20,13 @@ class ClozeDropDownDisplay extends Component {
     parsedTemplate: ""
   };
 
-  static getDerivedStateFromProps({ template }) {
-    return { parsedTemplate: helpers.parseTemplate(template) };
+  static getDerivedStateFromProps({ stimulus }) {
+    return { parsedTemplate: helpers.parseTemplate(stimulus) };
   }
 
   componentDidMount() {
-    const { template } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(template) });
+    const { stimulus } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
   }
 
   selectChange = (value, index, id) => {
@@ -219,7 +219,7 @@ ClozeDropDownDisplay.propTypes = {
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  template: PropTypes.string,
+  stimulus: PropTypes.string,
   question: PropTypes.string.isRequired,
   configureOptions: PropTypes.object,
   evaluation: PropTypes.array,
@@ -240,7 +240,7 @@ ClozeDropDownDisplay.defaultProps = {
   evaluation: [],
   checkAnswer: false,
   userSelections: [],
-  template: "",
+  stimulus: "",
   disableResponse: false,
   smallSize: false,
   configureOptions: {

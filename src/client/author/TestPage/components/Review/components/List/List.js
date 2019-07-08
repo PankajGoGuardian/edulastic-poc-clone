@@ -152,7 +152,7 @@ const SortableItem = SortableElement(
           })
         )}
         <FlexContainer style={{ margin: "20px 0" }}>
-          <MetaInfoCell data={metaInfoData} />
+          <MetaInfoCell data={metaInfoData} itemTableView={true} />
         </FlexContainer>
       </TestItemWrapper>
     );
@@ -214,7 +214,7 @@ const List = SortableContainer(
             key={i}
             metaInfoData={{
               id: testItems[i]._id,
-              by: testItems[i].createdBy.name,
+              by: (testItems[i].createdBy && testItems[i].createdBy.name) || "",
               shared: "0",
               likes: "0",
               types: types[testItems[i]._id],

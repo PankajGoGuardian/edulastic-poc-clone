@@ -27,17 +27,17 @@ const ClassCard = ({ t, classItem }) => {
 
           <Col span={24}>
             <InfoLabel span={8}>{t("common.instructor")}</InfoLabel>
-            <InfoContent span={16}>{instructorName || ""}</InfoContent>
+            <InfoContent span={16}>{instructorName}</InfoContent>
           </Col>
 
           <Col span={24}>
             <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
-            <InfoContent span={16}>{grade || ""}</InfoContent>
+            <InfoContent span={16}>{grade}</InfoContent>
           </Col>
 
           <Col span={24}>
             <InfoLabel span={8}>{t("common.subject")}</InfoLabel>
-            <InfoContent span={16}>{subject || ""}</InfoContent>
+            <InfoContent span={16}>{subject}</InfoContent>
           </Col>
 
           <Col span={24}>

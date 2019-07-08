@@ -19,8 +19,8 @@ class MathFormulaPreview extends Component {
     item: PropTypes.object.isRequired,
     studentTemplate: PropTypes.string,
     type: PropTypes.string.isRequired,
+    changePreview: PropTypes.func.isRequired,
     saveAnswer: PropTypes.func.isRequired,
-    changePreviewTab: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     userAnswer: PropTypes.any,
     theme: PropTypes.object.isRequired,
@@ -170,10 +170,10 @@ class MathFormulaPreview extends Component {
   }
 
   onInnerFieldClick() {
-    const { type: previewType, changePreviewTab } = this.props;
+    const { type: previewType, changePreview } = this.props;
 
     if (previewType === CHECK) {
-      changePreviewTab(CLEAR);
+      changePreview(CLEAR);
     }
   }
 
@@ -203,7 +203,7 @@ class MathFormulaPreview extends Component {
           />
         </QuestionTitleWrapper>
 
-        <MathInputWrapper>
+        <MathInputWrapper data-cy="mathinput">
           {this.isStatic() && (
             <StaticMath
               symbols={item.symbols}
@@ -225,6 +225,7 @@ class MathFormulaPreview extends Component {
               onInput={latexv => this.onUserResponse(latexv)}
               onBlur={latexv => this.onBlur(latexv)}
               disabled={evaluation && !evaluation.some(ie => ie)}
+              onInnerFieldClick={() => this.onInnerFieldClick()}
               style={{ background: statusColor, ...cssStyles }}
             />
           )}

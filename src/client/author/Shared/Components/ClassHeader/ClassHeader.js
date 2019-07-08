@@ -169,7 +169,7 @@ class ClassHeader extends Component {
       classId,
       testActivityId,
       additionalData = {},
-      releaseScore,
+
       selectedStudentsKeys,
       classResponse = {},
       assignmentStatus,
@@ -181,7 +181,7 @@ class ClassHeader extends Component {
     } = this.props;
 
     const { showDropdown, visible } = this.state;
-    const { endDate, startDate } = additionalData;
+    const { endDate, startDate, releaseScore } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
     const canOpen =
@@ -301,7 +301,7 @@ ClassHeader.propTypes = {
   testActivityId: PropTypes.string,
   additionalData: PropTypes.object.isRequired,
   setReleaseScore: PropTypes.func.isRequired,
-  releaseScore: PropTypes.bool
+  releaseScore: PropTypes.string
 };
 
 ClassHeader.defaultProps = {

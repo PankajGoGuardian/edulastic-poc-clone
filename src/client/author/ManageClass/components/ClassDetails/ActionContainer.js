@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
 import PropTypes from "prop-types";
 import { Menu, Dropdown, Tooltip, message, Icon, Modal, Table, Spin } from "antd";
@@ -270,14 +271,9 @@ const ActionContainer = ({
               onClick={() => toggleModal("add")}
             />
           </Tooltip>
-          <CircleIconButton
-            type="primary"
-            shape="circle"
-            icon="printer"
-            size="large"
-            disabled={!studentLoaded}
-            onClick={printPreview}
-          />
+          <Link to={"/author/manageClass/printPreview"}>
+            <CircleIconButton type="primary" shape="circle" icon="printer" size="large" disabled={!studentLoaded} />
+          </Link>
           <Dropdown overlay={actionMenu} trigger={["click"]}>
             <ActionButton type="primary" ghost>
               Actions <StyledIcon type="caret-down" theme="filled" size={16} />

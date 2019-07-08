@@ -51,7 +51,7 @@ const Sidebar = ({
 }) => {
   const subjectsList = selectsData.allSubjects.slice(1);
   return (
-    <FlexContainer flexDirection="column">
+    <FlexContainer padding="30px" flexDirection="column">
       <Block>
         <SummaryHeader
           createdBy={createdBy}

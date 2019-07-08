@@ -229,7 +229,7 @@ class MainSetting extends Component {
       }
     });
     return (
-      <Container>
+      <Container padding="30px">
         <Row style={{ padding: 0 }}>
           <Col span={isSmallSize ? 0 : 6}>
             <StyledAnchor affix={false} offsetTop={125}>

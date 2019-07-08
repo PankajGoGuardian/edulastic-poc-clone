@@ -100,7 +100,7 @@ class PreviewModal extends React.Component {
         </HeadingWrapper>
         <QuestionWrapper padding="0px">
           {showEvaluationButtons && (
-            <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
+            <FlexContainer padding="15px 15px 0px" justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
               <ButtonsWrapper>
                 {allowDuplicate && isEditable && (
                   <EduButton
@@ -204,6 +204,7 @@ const HeadingWrapper = styled.div`
   align-items: center;
   padding: 10px;
   justify-content: space-between;
+  margin-top: -25px;
 `;
 
 const Title = styled.div`

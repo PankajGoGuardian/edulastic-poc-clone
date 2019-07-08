@@ -13,12 +13,10 @@ import qs from "qs";
 const ResetPasswordPopup = props => {
   const { className, t, history, resetPasswordAction, resetPasswordUserAction, user } = props;
   const { resetPasswordUser, requestingNewPassword } = user;
-  const [urlParams, setUrlParams] = useState({});
 
   useEffect(() => {
     const params = qs.parse(location.search.substring(1));
     resetPasswordUserAction(params);
-    setUrlParams(params);
   }, []);
 
   const onCancel = () => {
@@ -26,6 +24,7 @@ const ResetPasswordPopup = props => {
   };
 
   const onSubmit = password => {
+    const urlParams = qs.parse(location.search.substring(1));
     const params = {
       ...urlParams,
       password
@@ -64,13 +63,16 @@ const InputPasswordForm = props => {
   const { t, onCancel, onSubmit: _onSubmit, requestingNewPassword } = props;
   const [passwd, setPasswd] = useState("");
 
+  const onNewPasswordChange = event => {
+    setPasswd(event.currentTarget.value);
+  };
+
   const checkPassword = (rule, value, callback) => {
     if (value.length < 4) {
       callback(t("component.signup.teacher.shortpassword"));
     } else if (value.includes(" ")) {
       callback(t("component.signup.teacher.validpassword"));
     }
-    setPasswd(value);
     callback();
   };
 
@@ -115,6 +117,7 @@ const InputPasswordForm = props => {
             placeholder="New Password"
             autoComplete="new-password"
             prefix={<Icon type="key" style={{ color: "white" }} />}
+            onChange={onNewPasswordChange}
           />
         )}
       </Form.Item>

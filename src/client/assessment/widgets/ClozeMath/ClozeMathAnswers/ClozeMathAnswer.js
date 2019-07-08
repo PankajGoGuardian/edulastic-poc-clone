@@ -32,9 +32,8 @@ class ClozeMathAnswer extends Component {
 
   render() {
     const { answers, onChange, onAdd, onDelete, item } = this.props;
-
     const { showAdditionals } = this.state;
-
+    const { response_containers: responseContainers, ui_style: uiStyle } = item;
     const _changeMethod = (methodId, methodIndex) => (prop, val) => {
       onChange({ methodId, methodIndex, prop, value: val });
     };
@@ -72,27 +71,33 @@ class ClozeMathAnswer extends Component {
           expandIconPosition="right"
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
         >
-          {answers.map(answer => (
-            <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.index}`}>
-              {answer.value.map((method, methodIndex) => (
-                <MathFormulaAnswerMethod
-                  onDelete={() => onDelete({ methodIndex, methodId: method.id })}
-                  key={methodIndex + answer.index}
-                  item={item}
-                  index={methodIndex}
-                  answer={method.value}
-                  answerIndex={methodIndex}
-                  onChange={_changeMethod(method.id, methodIndex)}
-                  showAdditionals={showAdditionals}
-                  handleChangeAdditionals={handleChangeAdditionals}
-                  clearAdditionals={clearAdditionals}
-                  onAdd={onAdd}
-                  onAddIndex={method.id}
-                  {...method}
-                />
-              ))}
-            </Panel>
-          ))}
+          {answers.map(answer => {
+            const response = responseContainers.find(cont => cont.index === answer.index);
+            const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.min_width}px` || "auto";
+            const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+            return (
+              <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.index}`}>
+                {answer.value.map((method, methodIndex) => (
+                  <MathFormulaAnswerMethod
+                    onDelete={() => onDelete({ methodIndex, methodId: method.id })}
+                    key={methodIndex + answer.index}
+                    item={item}
+                    index={methodIndex}
+                    answer={method.value}
+                    answerIndex={methodIndex}
+                    onChange={_changeMethod(method.id, methodIndex)}
+                    showAdditionals={showAdditionals}
+                    handleChangeAdditionals={handleChangeAdditionals}
+                    clearAdditionals={clearAdditionals}
+                    onAdd={onAdd}
+                    onAddIndex={method.id}
+                    style={{ width, height }}
+                    {...method}
+                  />
+                ))}
+              </Panel>
+            );
+          })}
         </Collapse>
       </AnswerContainer>
     );

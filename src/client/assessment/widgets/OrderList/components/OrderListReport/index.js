@@ -12,7 +12,7 @@ class OrderListReport extends Component {
   }
 
   render() {
-    const { validation, showAnswers, evaluation, list, listStyle, columns } = this.props;
+    const { validation, showAnswers, evaluation, list, listStyle, columns, disableResponse } = this.props;
 
     return (
       <div style={listStyle}>
@@ -20,6 +20,7 @@ class OrderListReport extends Component {
           <OrderListReportItem
             key={i}
             columns={columns}
+            disabled={disableResponse}
             listStyle={listStyle}
             correct={evaluation && evaluation[i]}
             correctText={showAnswers && list[validation.valid_response.value[i]]}
@@ -42,11 +43,13 @@ OrderListReport.propTypes = {
   listStyle: PropTypes.object.isRequired,
   validation: PropTypes.object,
   showAnswers: PropTypes.bool,
+  disableResponse: PropTypes.bool,
   evaluation: PropTypes.array,
   columns: PropTypes.number
 };
 OrderListReport.defaultProps = {
   showAnswers: false,
+  disableResponse: false,
   evaluation: [],
   validation: {},
   columns: 1

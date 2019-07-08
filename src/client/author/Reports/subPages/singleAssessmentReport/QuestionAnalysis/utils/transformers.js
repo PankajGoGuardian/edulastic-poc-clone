@@ -59,92 +59,98 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     // -----|-----|-----|-----| SCHOOL BEGIN |-----|-----|-----|----- //
     let comparedBySchool;
     const groupedBySchool = groupBy(groupedItem, "schoolId");
-    comparedBySchool = Object.keys(groupedBySchool).map(_item => {
-      let __item = groupedBySchool[_item].reduce(
-        (total, currentValue, currentIndex) => {
-          const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
-          const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
-          return {
-            totalTotalScore: totalTotalScore + totalScore,
-            totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-            totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
-          };
-        },
-        {
-          totalTotalMaxScore: 0,
-          totalTotalScore: 0,
-          totalTimeSpent: 0
-        }
-      );
-      let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
-      avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
-      return {
-        ...groupedBySchool[_item][0],
-        ...__item,
-        avgPerformance
-      };
-    });
+    comparedBySchool = Object.keys(groupedBySchool)
+      .sort()
+      .map(_item => {
+        let __item = groupedBySchool[_item].reduce(
+          (total, currentValue, currentIndex) => {
+            const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
+            const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
+            return {
+              totalTotalScore: totalTotalScore + totalScore,
+              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
+              totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
+            };
+          },
+          {
+            totalTotalMaxScore: 0,
+            totalTotalScore: 0,
+            totalTimeSpent: 0
+          }
+        );
+        let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
+        avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
+        return {
+          ...groupedBySchool[_item][0],
+          ...__item,
+          avgPerformance
+        };
+      });
 
     // -----|-----|-----|-----| SCHOOL ENDED |-----|-----|-----|----- //
 
     // -----|-----|-----|-----| TEACHER BEGIN |-----|-----|-----|----- //
     let comparedByTeacher;
     const groupedByTeacher = groupBy(groupedItem, "teacherId");
-    comparedByTeacher = Object.keys(groupedByTeacher).map(_item => {
-      let __item = groupedByTeacher[_item].reduce(
-        (total, currentValue, currentIndex) => {
-          const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
-          const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
-          return {
-            totalTotalScore: totalTotalScore + totalScore,
-            totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-            totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
-          };
-        },
-        {
-          totalTotalMaxScore: 0,
-          totalTotalScore: 0,
-          totalTimeSpent: 0
-        }
-      );
-      let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
-      avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
-      return {
-        ...groupedByTeacher[_item][0],
-        ...__item,
-        avgPerformance
-      };
-    });
+    comparedByTeacher = Object.keys(groupedByTeacher)
+      .sort()
+      .map(_item => {
+        let __item = groupedByTeacher[_item].reduce(
+          (total, currentValue, currentIndex) => {
+            const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
+            const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
+            return {
+              totalTotalScore: totalTotalScore + totalScore,
+              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
+              totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
+            };
+          },
+          {
+            totalTotalMaxScore: 0,
+            totalTotalScore: 0,
+            totalTimeSpent: 0
+          }
+        );
+        let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
+        avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
+        return {
+          ...groupedByTeacher[_item][0],
+          ...__item,
+          avgPerformance
+        };
+      });
     // -----|-----|-----|-----| TEACHER ENDED |-----|-----|-----|----- //
 
     // -----|-----|-----|-----| CLASS ENDED |-----|-----|-----|----- //
     let comparedByClass;
     const groupedByClass = groupBy(groupedItem, "groupId");
-    comparedByClass = Object.keys(groupedByClass).map(_item => {
-      let __item = groupedByClass[_item].reduce(
-        (total, currentValue, currentIndex) => {
-          const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
-          const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
-          return {
-            totalTotalScore: totalTotalScore + totalScore,
-            totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-            totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
-          };
-        },
-        {
-          totalTotalMaxScore: 0,
-          totalTotalScore: 0,
-          totalTimeSpent: 0
-        }
-      );
-      let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
-      avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
-      return {
-        ...groupedByClass[_item][0],
-        ...__item,
-        avgPerformance
-      };
-    });
+    comparedByClass = Object.keys(groupedByClass)
+      .sort()
+      .map(_item => {
+        let __item = groupedByClass[_item].reduce(
+          (total, currentValue, currentIndex) => {
+            const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
+            const { totalMaxScore = 0, totalScore = 0, timeSpent = 0 } = currentValue;
+            return {
+              totalTotalScore: totalTotalScore + totalScore,
+              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
+              totalTimeSpent: totalTimeSpent + parseInt(timeSpent)
+            };
+          },
+          {
+            totalTotalMaxScore: 0,
+            totalTotalScore: 0,
+            totalTimeSpent: 0
+          }
+        );
+        let avgPerformance = (__item.totalTotalScore / __item.totalTotalMaxScore) * 100;
+        avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0;
+        return {
+          ...groupedByClass[_item][0],
+          ...__item,
+          avgPerformance
+        };
+      });
     // -----|-----|-----|-----| CLASS ENDED |-----|-----|-----|----- //
 
     const reduced = groupedItem.reduce(

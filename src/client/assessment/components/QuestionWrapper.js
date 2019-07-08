@@ -284,6 +284,9 @@ class QuestionWrapper extends Component {
       userAnswerProps.key = data.id;
     }
     const canShowPlayer = userRole === "student" && data.tts && data.tts.taskStatus === "COMPLETED";
+
+    const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
+
     return (
       <WithResources
         resources={[
@@ -351,6 +354,7 @@ class QuestionWrapper extends Component {
                 </div>
               </PaperWrapper>
               {showFeedback &&
+                !isPassageOrVideoType &&
                 (multiple ? (
                   <FeedbackBottom
                     widget={data}
@@ -367,7 +371,7 @@ class QuestionWrapper extends Component {
                   />
                 ))}
               {/* STUDENT REPORT PAGE FEEDBACK */}
-              {isStudentReport && <StudentReportFeedback index={qIndex} qId={data.id} />}
+              {isStudentReport && !isPassageOrVideoType && <StudentReportFeedback index={qIndex} qId={data.id} />}
             </QuestionContainer>
           </>
         </ThemeProvider>

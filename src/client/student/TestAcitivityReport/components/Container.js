@@ -13,7 +13,7 @@ const { releaseGradeLabels } = testConstants;
 
 const ReportListContent = ({ item = {}, flag, testActivityById }) => {
   const { releaseScore = "" } = testActivityById;
-  const questions = keyBy(get(item, "data.questions", []), "id");
+  const questions = keyBy([...get(item, "data.questions", []), ...get(item, "data.resources", [])], "id");
   let showAnswerProps = { view: "preview" };
   if (releaseScore === releaseGradeLabels.WITH_ANSWERS) {
     showAnswerProps = { preview: "show" };

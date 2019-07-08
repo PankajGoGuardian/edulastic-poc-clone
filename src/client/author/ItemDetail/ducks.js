@@ -13,7 +13,8 @@ import {
   loadQuestionsAction,
   addItemsQuestionAction,
   deleteQuestionAction,
-  SET_QUESTION_SCORE
+  SET_QUESTION_SCORE,
+  changeCurrentQuestionAction
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
@@ -187,6 +188,14 @@ export const getDefaultSubjectSelector = createSelector(
 export const getItemDetailSelector = createSelector(
   stateSelector,
   state => state.item
+);
+
+export const isSingleQuestionViewSelector = createSelector(
+  getItemDetailSelector,
+  (item = {}) => {
+    const { resources = [], questions = [] } = item.data || {};
+    return resources.length === 0 && questions.length === 1;
+  }
 );
 
 export const getRedirectTestSelector = createSelector(
@@ -492,7 +501,15 @@ function* receiveItemSaga({ payload }) {
     let questions = (data.data && data.data.questions) || [];
     const questionsArr = (data.data && data.data.questions) || [];
     const resources = (data.data && data.data.resources) || [];
+
+    // if there is only one question, set it as currentQuestionId, since
+    // questionView will be loaded instead.
+    if (questions.length === 1) {
+      yield put(changeCurrentQuestionAction(questions[0].id));
+    }
+
     questions = [...questions, ...resources];
+
     questions = _keyBy(questions, "id");
     if (get(payload, "params.addItem", false)) {
       yield put(addItemsQuestionAction(questions));
@@ -502,7 +519,6 @@ function* receiveItemSaga({ payload }) {
 
     const qids = questionsArr.map(x => x.id);
 
-    const { itemLevelScore, itemLevelScoring } = data;
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: data
@@ -512,14 +528,8 @@ function* receiveItemSaga({ payload }) {
       payload: qids
     });
 
-    let itemLevelScore1 = data.itemLevelScore;
-    //const questionsLength = ((data.data && data.data.questions) || []).length;
-    // if (data.itemLevelScoring && !itemLevelScore1 && questionsLength) {
-    //   itemLevelScore1 = questionsLength;
-    // }
-    console.log("setItemLevel", itemLevelScore1);
-
-    yield put(setItemLevelScoreAction(itemLevelScore1));
+    const { itemLevelScore } = data;
+    yield put(setItemLevelScoreAction(itemLevelScore));
 
     yield put({
       type: CLEAR_DICT_ALIGNMENTS

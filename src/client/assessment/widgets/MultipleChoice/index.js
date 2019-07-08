@@ -28,8 +28,8 @@ const EmptyWrapper = styled.div``;
 const MutlChoiceWrapper = styled(Paper)`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
   background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
-  padding: ${props => (props.padding ? props.padding : props.isV1Multipart ? "0px 35px" : "35px")};
-  box-shadow: ${props => (props.boxShadow ? props.boxShadow : props.isV1Multipart ? "none" : boxShadowDefault)};
+  padding: ${props => (props.padding ? props.padding : "0px")};
+  box-shadow: ${props => (props.boxShadow ? props.boxShadow : "none")};
 `;
 
 const Divider = styled.div`

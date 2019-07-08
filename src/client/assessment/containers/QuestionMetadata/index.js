@@ -122,7 +122,7 @@ const QuestionMetadata = ({
   return (
     <ThemeProvider theme={themes.default}>
       <div>
-        <Container>
+        <Container padding="20px">
           <Title level={3}>{t("component.options.addSkillsForQuestion")}</Title>
 
           <ShowAlignmentRowsContainer>

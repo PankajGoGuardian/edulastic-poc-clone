@@ -434,6 +434,7 @@ template {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
 }
 
 .response-btn .text {
@@ -811,6 +812,7 @@ input[type="checkbox"] {
   background: #5eb500;
   color: white;
   padding: 8px;
+  height: 100%;
 }
 
 .check-answer.right .text {

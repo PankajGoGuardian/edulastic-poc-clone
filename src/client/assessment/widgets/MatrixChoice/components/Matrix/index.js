@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, flatten } from "lodash";
 import styled, { withTheme } from "styled-components";
 
 import { helpers, WithMathFormula } from "@edulastic/common";
@@ -31,10 +31,11 @@ const validatedAnswers = (answers, responses, matrix, type) => {
     result = [
       newMatrix.map((mat, matIndex) =>
         mat.map((row, rowIndex) => {
-          if (!responses[0] || !responses[0][matIndex]) {
-            return false;
-          }
-          return responses[0][matIndex].includes(rowIndex);
+          const isCorrect = responses.some(arr => {
+            return arr[matIndex] && arr[matIndex].includes(rowIndex);
+          });
+
+          return isCorrect;
         })
       )
     ];

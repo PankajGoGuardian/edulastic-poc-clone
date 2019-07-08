@@ -112,7 +112,7 @@ const ClozeMath = ({
           <ClozeMathPreview
             type={previewTab}
             item={itemForPreview}
-            template={item.template}
+            stimulus={item.stimulus}
             options={item.options || {}}
             responseIds={item.response_ids}
             saveAnswer={saveAnswer}

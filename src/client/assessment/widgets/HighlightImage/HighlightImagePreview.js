@@ -55,19 +55,14 @@ const HighlightImagePreview = ({
     if (!Array.isArray(userAnswer)) {
       const img = new Image();
       img.alt = altText;
+      img.src = userAnswer;
       img.onload = () => {
-        context.clearRect(0, 0, width, height);
-        context.drawImage(img, 0, 0, width, height);
-        if (canvas.current) {
-          setHistory([canvas.current.toDataURL()]);
-        }
-        setHistoryTab(0);
-        if (canvas.current) {
-          saveAnswer(canvas.current.toDataURL());
-        }
+        context.clearRect(0, 0, context.width, context.height);
+
+        context.drawImage(img, 0, 0, img.width, img.height);
+
         setCtx(context);
       };
-      img.src = userAnswer;
     } else {
       context.clearRect(0, 0, width, height);
       if (canvas.current) {
@@ -83,7 +78,7 @@ const HighlightImagePreview = ({
   };
 
   useEffect(() => {
-    if (canvas) {
+    if (canvas.current) {
       canvas.current.width = canvasDimensions.maxWidth;
       canvas.current.height = canvasHeight;
       const context = canvas.current.getContext("2d");
@@ -95,7 +90,7 @@ const HighlightImagePreview = ({
   }, [file]);
 
   useLayoutEffect(() => {
-    if (canvasContainerRef.current) {
+    if (canvasContainerRef.current && canvas.curren) {
       canvas.current.height = canvasContainerRef.current.clientHeight;
       canvas.current.width = canvasContainerRef.current.clientWidth;
       const context = canvas.current.getContext("2d");

@@ -58,7 +58,7 @@ const ItemsTable = ({
       title: "Meta info",
       dataIndex: "meta",
       key: "meta",
-      render: data => <MetaInfoCell data={data} {...columnProps} />
+      render: data => <MetaInfoCell data={data} itemTableView={true} {...columnProps} />
     }
   ];
 
@@ -67,7 +67,7 @@ const ItemsTable = ({
       title: "Meta info",
       dataIndex: "meta",
       key: "meta",
-      render: data => <MetaInfoCell data={data} {...columnProps} />
+      render: data => <MetaInfoCell data={data} itemTableView={true} {...columnProps} />
     }
   ];
 
@@ -90,7 +90,7 @@ const ItemsTable = ({
       audio.ttsSuccess = ttsSuccess;
     }
     const meta = {
-      id: item._id,
+      id: item._id && item._id.substring(18),
       title: item._id,
       by: getTestItemAuthorName(item),
       shared: "9578 (1)",

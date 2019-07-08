@@ -83,6 +83,15 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
         </Menu.Item>
       );
   }
+  MenuItems.push(
+    <Menu.Item key="assign">
+      <Link to={`/author/assignments/${currentTestId}`} rel="noopener noreferrer">
+        <img alt="icon" src={responsiveIcon} />
+        <SpaceElement />
+        Assign
+      </Link>
+    </Menu.Item>
+  );
   return (
     <Container>
       <StyledMenu>{MenuItems}</StyledMenu>

@@ -37,3 +37,8 @@ export const MetaTag = styled(Tag)`
     margin-left: 55px;
   }
 `;
+
+export const ExtraInfo = styled.span`
+  font-weight: 800;
+  color: #bbbfc4;
+`;

@@ -6,7 +6,7 @@ import { Row, Col, Button, Spin } from "antd";
 import moment from "moment";
 
 const ClassCard = ({ t, classItem }) => {
-  const { name, owners, parent, startDate, endDate, subject, grade, status, standardSets } = classItem;
+  const { name, owners, parent, startDate, endDate, subject, grade, active, standardSets } = classItem;
   const { name: instructorName } = owners.find(owner => owner.id == parent.id);
   return (
     <Col xs={24} md={12} lg={8} xxl={6}>
@@ -18,51 +18,42 @@ const ClassCard = ({ t, classItem }) => {
           </Link>
         </CardHeader>
         <CardBody>
-          {status && (
-            <Col span={24}>
-              <InfoLabel span={8}>Status</InfoLabel>
-              <InfoContent span={16}>
-                <span>{status === 1 ? "ACTIVE" : "INACTIVE"}</span>
-              </InfoContent>
-            </Col>
-          )}
+          <Col span={24}>
+            <InfoLabel span={8}>Status</InfoLabel>
+            <InfoContent span={16}>
+              <span>{active ? "ACTIVE" : "INACTIVE"}</span>
+            </InfoContent>
+          </Col>
 
-          {instructorName && (
-            <Col span={24}>
-              <InfoLabel span={8}>{t("common.instructor")}</InfoLabel>
-              <InfoContent span={16}>{instructorName}</InfoContent>
-            </Col>
-          )}
-          {grade && (
-            <Col span={24}>
-              <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
-              <InfoContent span={16}>{grade}</InfoContent>
-            </Col>
-          )}
-          {subject && (
-            <Col span={24}>
-              <InfoLabel span={8}>{t("common.subject")}</InfoLabel>
-              <InfoContent span={16}>{subject}</InfoContent>
-            </Col>
-          )}
-          {standardSets && standardSets.length > 0 && (
-            <Col span={24}>
-              <InfoLabel span={8}>{t("common.standard")}</InfoLabel>
-              <InfoContent span={16}>{standardSets.map(std => std.name).join(",")}</InfoContent>
-            </Col>
-          )}
-          {startDate && (
-            <Col span={24}>
-              <InfoLabel span={8}>{t("common.startDate")}</InfoLabel>
-              <InfoContent span={16}>{moment(startDate).format("DD MMM,YYYY")}</InfoContent>
-            </Col>
-          )}
-          {endDate && (
-            <Col span={24}>
-              <InfoLabel span={8}>{t("common.endDate")}</InfoLabel>
-              <InfoContent span={16}>{moment(endDate).format("DD MMM,YYYY")}</InfoContent>
-            </Col>
-          )}
+          <Col span={24}>
+            <InfoLabel span={8}>{t("common.instructor")}</InfoLabel>
+            <InfoContent span={16}>{instructorName || ""}</InfoContent>
+          </Col>
+
+          <Col span={24}>
+            <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
+            <InfoContent span={16}>{grade || ""}</InfoContent>
+          </Col>
+
+          <Col span={24}>
+            <InfoLabel span={8}>{t("common.subject")}</InfoLabel>
+            <InfoContent span={16}>{subject || ""}</InfoContent>
+          </Col>
+
+          <Col span={24}>
+            <InfoLabel span={8}>{t("common.standard")}</InfoLabel>
+            <InfoContent span={16}>{standardSets && standardSets.map(std => std.name).join(",")}</InfoContent>
+          </Col>
+
+          <Col span={24}>
+            <InfoLabel span={8}>{t("common.startDate")}</InfoLabel>
+            <InfoContent span={16}>{startDate && moment(startDate).format("DD MMM,YYYY")}</InfoContent>
+          </Col>
+
+          <Col span={24}>
+            <InfoLabel span={8}>{t("common.endDate")}</InfoLabel>
+            <InfoContent span={16}>{endDate && moment(endDate).format("DD MMM,YYYY")}</InfoContent>
+          </Col>
         </CardBody>
       </ManageClassCardContent>
     </Col>

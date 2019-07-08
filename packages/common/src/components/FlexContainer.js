@@ -1,6 +1,4 @@
 import styled from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
-import { fonts } from "@edulastic/constants";
 
 const FlexContainer = styled.div`
   display: flex;
@@ -14,14 +12,6 @@ const FlexContainer = styled.div`
   }
   & > *:last-child {
     margin-right: 0;
-  }
-  p {
-    font-size: ${fonts.previewFontSize};
-    font-weight: ${fonts.previewFontWeight};
-
-    @media (max-width: ${desktopWidth}) {
-      font-size: ${fonts.previewFontSizeMobile};
-    }
   }
   div:not(.fr-element.fr-view) p {
     padding: 6px 0px;

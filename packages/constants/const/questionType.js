@@ -68,8 +68,6 @@ const selectsData = [
   { value: GRAPH, text: "Graph" }
 ];
 
-const manuallyGradableQn = [FORMULA_ESSAY, HIGHLIGHT_IMAGE, ESSAY_RICH_TEXT, ESSAY_PLAIN_TEXT];
-
 module.exports = {
   SHORT_TEXT,
   DRAWING,
@@ -104,6 +102,5 @@ module.exports = {
   DOT_PLOT,
   LINE_PLOT,
   GRAPH,
-  selectsData,
-  manuallyGradableQn
+  selectsData
 };

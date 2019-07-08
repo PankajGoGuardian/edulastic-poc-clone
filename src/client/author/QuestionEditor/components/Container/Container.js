@@ -166,7 +166,7 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const { view, question, authorQuestions } = this.props;
+    const { view, question } = this.props;
     const { previewTab } = this.state;
     const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
 
@@ -182,7 +182,6 @@ class Container extends Component {
         allowedAttempts={checkAttempts}
         previewTab={previewTab}
         showSettingsButton={false}
-        authorQuestions={authorQuestions}
       />
     );
   };
@@ -270,8 +269,7 @@ Container.propTypes = {
   location: PropTypes.object.isRequired,
   testName: PropTypes.string.isRequired,
   testId: PropTypes.string.isRequired,
-  toggleModalAction: PropTypes.string.isRequired,
-  authorQuestions: PropTypes.object
+  toggleModalAction: PropTypes.string.isRequired
 };
 
 Container.defaultProps = {
@@ -280,8 +278,7 @@ Container.defaultProps = {
   navigateToPickupQuestionType: () => {},
   navigateToItemDetail: () => {},
   onCompleteItemCreation: () => {},
-  onModalClose: () => {},
-  authorQuestions: {}
+  onModalClose: () => {}
 };
 
 const enhance = compose(
@@ -295,8 +292,7 @@ const enhance = compose(
       testItemId: getItemIdSelector(state),
       itemLevelScoring: getItemLevelScoringSelector(state),
       testName: state.tests.entity.title,
-      testId: state.tests.entity._id,
-      authorQuestions: getCurrentQuestionSelector(state)
+      testId: state.tests.entity._id
     }),
     {
       changeView: changeViewAction,

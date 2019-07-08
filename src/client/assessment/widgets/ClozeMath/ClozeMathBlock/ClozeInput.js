@@ -23,7 +23,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
   } = item;
   const { index } = find(inputs, res => res.id === id) || {};
   const response = find(response_containers, cont => cont.id === id);
-  const width = !!response ? response.widthpx : item.ui_style.min_width || "auto";
+  const width = response ? response.widthpx : item.ui_style.min_width || "auto";
   return checked ? (
     <CheckedBlock
       width={width}
@@ -55,5 +55,4 @@ export default ClozeInput;
 const InputDiv = styled.div`
   display: inline-block;
   margin: 0px 4px;
-  min-height: 35px;
 `;

@@ -250,3 +250,5 @@ const KeyboardWrapper = styled.div`
   position: fixed;
   z-index: 100;
 `;
+
+const StyledSpan = styled.span``;

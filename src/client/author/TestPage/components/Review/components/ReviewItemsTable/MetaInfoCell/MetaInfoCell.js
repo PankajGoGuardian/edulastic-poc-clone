@@ -9,9 +9,9 @@ import { greenDark } from "@edulastic/colors";
 import Tags from "../../../../../../src/components/common/Tags";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
 import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
-import { MetaTag } from "./styled";
+import { MetaTag, ExtraInfo } from "./styled";
 
-const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio = {} }, itemTableView }) => {
+const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio = {}, points = 0 }, itemTableView }) => {
   return (
     <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
       <FlexContainer>
@@ -46,12 +46,13 @@ const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio =
           ) : (
             ""
           )}
-          {!itemTableView && (
-            <FlexContainer justifyContent="flex-end">
-              {renderAnalytics(by, IconUser)}
-              {renderAnalytics(id.substring(18), IconHash)}
-            </FlexContainer>
-          )}
+        </FlexContainer>
+      )}
+      {!itemTableView && (
+        <FlexContainer justifyContent="flex-end">
+          {renderAnalytics(id.substring(18), IconHash)}
+          <ExtraInfo> Points </ExtraInfo>
+          <ExtraInfo> {points}</ExtraInfo>
         </FlexContainer>
       )}
     </FlexContainer>

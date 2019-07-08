@@ -110,7 +110,7 @@ class Item extends Component {
         <CategoryName>{detail.name}</CategoryName>
         <CategoryContent>
           <Text title={detail.type === "id" ? detail.text : ""}>
-            {detail.type === "id" ? detail.text.substr(detail.text.length - 5) : detail.text}
+            {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
           </Text>
         </CategoryContent>
       </DetailCategory>

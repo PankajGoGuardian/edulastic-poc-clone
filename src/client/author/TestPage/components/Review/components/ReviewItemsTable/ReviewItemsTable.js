@@ -21,7 +21,7 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
       title: "Meta info",
       dataIndex: "meta",
       key: "meta",
-      render: data => <MetaInfoCell data={data} />
+      render: data => <MetaInfoCell data={data} itemTableView={false} />
     }
   ];
   const audioStatus = item => {

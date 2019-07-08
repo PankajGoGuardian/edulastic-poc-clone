@@ -436,11 +436,6 @@ template {
   align-items: center;
 }
 
-.response-btn:hover .index {
-  background: #12a6e8;
-  color: lightgray;
-}
-
 .response-btn .text {
   padding: 8px;
   background: lightgray;
@@ -771,6 +766,7 @@ input[type="checkbox"] {
   font-weight: 700;
   font-size: 13px;
   padding: 0 !important;
+  overflow: hidden;
 }
 
 .response-btn.wrong {
@@ -804,6 +800,11 @@ input[type="checkbox"] {
   background: #fce0e8;
   color: #878282;
   padding: 8px 20px 8px 7px;
+  width: calc(100% - 30px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .check-answer.right .index {
@@ -816,6 +817,11 @@ input[type="checkbox"] {
   background: #d3fea6;
   color: #878282;
   padding: 8px 20px 8px 7px;
+  width: calc(100% - 30px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .check-answer.showanswer .index {

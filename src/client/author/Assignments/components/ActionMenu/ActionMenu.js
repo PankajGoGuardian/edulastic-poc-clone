@@ -29,7 +29,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
   const currentAssignmentId = currentAssignment._id;
   const MenuItems = [];
   const createDuplicateAssignment = () => {
-    duplicateAssignment(currentAssignment.testId).then(testItem => {
+    duplicateAssignment({ _id: currentTestId, title: currentAssignment.title }).then(testItem => {
       const duplicateTestId = testItem._id;
       history.push(`/author/tests/${duplicateTestId}`);
     });

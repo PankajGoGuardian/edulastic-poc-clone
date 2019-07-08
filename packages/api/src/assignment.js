@@ -1,4 +1,5 @@
 import API from "./utils/API";
+import moment from "moment";
 
 const api = new API();
 const prefix = "/assignments";
@@ -82,10 +83,10 @@ const fetchTestActivities = (assignmentId, groupId) =>
     })
     .then(result => result.data.result);
 
-const duplicateAssignment = testId =>
+const duplicateAssignment = ({ _id, title }) =>
   api
     .callApi({
-      url: `test/${testId}/duplicate`,
+      url: `test/${_id}/duplicate?title=${title}-${moment().format("MM/DD/YYYY HH:mm")}`,
       method: "post"
     })
     .then(result => result.data.result);

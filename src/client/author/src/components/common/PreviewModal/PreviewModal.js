@@ -98,7 +98,7 @@ class PreviewModal extends React.Component {
         <HeadingWrapper>
           <Title>Preview</Title>
         </HeadingWrapper>
-        <QuestionWrapper>
+        <QuestionWrapper padding="0px">
           {showEvaluationButtons && (
             <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
               <ButtonsWrapper>
@@ -226,5 +226,5 @@ const QuestionWrapper = styled.div`
   border-radius: 10px;
   background: #fff;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: ${props => (props.padding ? props.padding : "20px")};
 `;

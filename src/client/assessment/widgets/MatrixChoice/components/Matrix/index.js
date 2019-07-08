@@ -96,20 +96,22 @@ const validatedAnswers = (answers, responses, matrix, type) => {
 
 const MathSpan = WithMathFormula(styled.div``);
 
-const Matrix = ({
-  stems,
-  options,
-  response,
-  isMultiple,
-  onCheck,
-  uiStyle,
-  validation,
-  type,
-  smallSize,
-  theme,
-  previewTab
-}) => {
+const Matrix = props => {
+  const {
+    stems,
+    options,
+    response,
+    isMultiple,
+    onCheck,
+    uiStyle,
+    validation,
+    type,
+    smallSize,
+    theme,
+    previewTab
+  } = props;
   let correctAnswersMatrix;
+  console.log("MATRIX", props, response, validation);
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
@@ -120,6 +122,7 @@ const Matrix = ({
     const responses = getResponses(validation);
     const matrix = stems.map(() => options.map(() => false));
     correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, type);
+    console.log("PERA MATRIX", validation, correctAnswersMatrix);
   }
 
   const getCell = (columnIndex, data) => {

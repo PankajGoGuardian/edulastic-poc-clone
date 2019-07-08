@@ -27,7 +27,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   } = item;
   const { index } = find(dropDowns, res => res.id === id) || {};
   const response = find(response_containers, cont => cont.id === id);
-  const width = !!response ? response.widthpx : item.ui_style.min_width || "auto";
+  const width = response ? response.widthpx : item.ui_style.min_width || "auto";
 
   return checked ? (
     <CheckedBlock
@@ -48,9 +48,9 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     >
       {options &&
         options[id] &&
-        options[id].map((response, respID) => (
-          <Option value={response} key={respID}>
-            {response}
+        options[id].map((option, respID) => (
+          <Option value={option} key={respID}>
+            {option}
           </Option>
         ))}
     </StyeldSelect>
@@ -67,5 +67,4 @@ export default ClozeDropDown;
 const StyeldSelect = styled(Select)`
   min-width: 120px;
   margin: 0px 4px;
-  min-height: 35px;
 `;

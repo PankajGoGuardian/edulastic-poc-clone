@@ -10,6 +10,7 @@ import { Upload } from "antd";
 import { themeColor, white } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
+import { beforeUpload } from "@edulastic/common/src/helpers";
 
 class Uploader extends React.Component {
   state = {};
@@ -17,6 +18,9 @@ class Uploader extends React.Component {
   handleChange = async info => {
     try {
       const { file } = info;
+      if (!beforeUpload(file)) {
+        return;
+      }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       const { setThumbnailUrl } = this.props;
       this.setState(

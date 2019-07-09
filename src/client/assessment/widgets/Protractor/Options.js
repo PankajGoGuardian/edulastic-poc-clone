@@ -11,6 +11,7 @@ import { uploadToS3 } from "../../../author/src/utils/upload";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { StyledRow } from "./styled/StyledRow";
 import { StyledInput } from "./styled/StyledInput";
+import { beforeUpload } from "@edulastic/common/src/helpers";
 
 function Options({ onChange, item, t }) {
   const [uploading, setUploading] = useState(false);
@@ -18,6 +19,7 @@ function Options({ onChange, item, t }) {
   const customRequest = async ({ file }) => {
     setUploading(true);
     try {
+      if (!beforeUpload(file)) return;
       const fileUri = await uploadToS3(file, aws.s3Folders.DEFAULT);
       onChange("image", fileUri);
     } catch (err) {

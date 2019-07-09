@@ -14,7 +14,7 @@ import { white, dashBorderColor } from "@edulastic/colors";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
-import { uploadToS3, reIndexResponses, canInsert } from "../helpers";
+import { uploadToS3, reIndexResponses, canInsert, beforeUpload } from "../helpers";
 import headings from "./FroalaPlugins/headings";
 
 import MathModal from "./MathModal";
@@ -434,7 +434,12 @@ const CustomEditor = ({
           }
         },
         "image.beforeUpload": function(image) {
-          if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
+          if (
+            !canInsert(this.selection.element()) ||
+            !canInsert(this.selection.endElement()) ||
+            !beforeUpload(image[0])
+          )
+            return false;
           this.image.showProgressBar();
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.DEFAULT)

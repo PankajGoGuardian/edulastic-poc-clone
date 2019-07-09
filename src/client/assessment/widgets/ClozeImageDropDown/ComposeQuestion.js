@@ -48,6 +48,7 @@ import { UploadButton } from "./styled/UploadButton";
 import { Widget } from "../../styled/Widget";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
+import { beforeUpload } from "@edulastic/common/src/helpers";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -230,6 +231,8 @@ class ComposeQuestion extends Component {
       const { file } = info;
       if (!file.type.match(/image/g)) {
         message.error("Please upload files in image format");
+        return;
+      } else if (!beforeUpload(file)) {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);

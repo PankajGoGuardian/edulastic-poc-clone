@@ -9,7 +9,7 @@ import { StyledInput } from "../styled/StyledInput";
 import { Typography, Empty } from "antd";
 import { aws } from "@edulastic/constants";
 import StyledDropZone from "../../../components/StyledDropZone";
-import { uploadToS3 } from "@edulastic/common/src/helpers";
+import { uploadToS3, beforeUpload } from "@edulastic/common/src/helpers";
 
 const FileSelectModal = ({
   onCancel,
@@ -27,6 +27,7 @@ const FileSelectModal = ({
   useMemo(() => setSourceURL(uiStyle[modalName]), [item]);
 
   const onDrop = async ([files]) => {
+    if (!beforeUpload(files)) return;
     if (files) {
       setLoading(true);
       try {
@@ -90,7 +91,6 @@ const FileSelectModal = ({
         <Dropzone
           onDrop={onDrop}
           accept={accept}
-          maxSize={6291456}
           className="dropzone"
           activeClassName="active-dropzone"
           multiple={false}

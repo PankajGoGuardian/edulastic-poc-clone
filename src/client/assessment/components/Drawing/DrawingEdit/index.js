@@ -12,7 +12,7 @@ import QuestionTextArea from "../../QuestionTextArea";
 import DropZoneToolbar from "../../DropZoneToolbar";
 import StyledDropZone from "../../StyledDropZone";
 import { SOURCE } from "../../../constants/constantsForQuestions";
-import { uploadToS3 } from "@edulastic/common/src/helpers";
+import { uploadToS3, beforeUpload } from "@edulastic/common/src/helpers";
 
 const DrawingEdit = ({ item, setQuestionData, t }) => {
   const { image } = item;
@@ -40,6 +40,7 @@ const DrawingEdit = ({ item, setQuestionData, t }) => {
 
   const onDrop = ([files]) => {
     if (files) {
+      if (!beforeUpload(files)) return;
       setLoading(true);
       uploadToS3(files, aws.s3Folders.DEFAULT)
         .then(fileUri => {
@@ -74,7 +75,6 @@ const DrawingEdit = ({ item, setQuestionData, t }) => {
 
         <Dropzone
           onDrop={onDrop}
-          maxSize={1000000}
           accept="image/*"
           className="dropzone"
           activeClassName="active-dropzone"

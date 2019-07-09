@@ -13,6 +13,7 @@ const TemplateBox = ({ resprops, id }) => {
   }
   const {
     hasGroupResponses,
+    responsecontainerindividuals = [],
     btnStyle,
     smallSize,
     options,
@@ -20,9 +21,28 @@ const TemplateBox = ({ resprops, id }) => {
     onDrop,
     responseIDs,
     isReviewTab,
-    cAnswers
+    cAnswers,
+    globalSettings
   } = resprops;
   const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
+  const { heightpx, widthpx } = responsecontainerindividuals.find(resp => resp.id === id);
+
+  const height = !globalSettings
+    ? heightpx
+      ? `${heightpx}px`
+      : `${btnStyle.height}px` || "auto"
+    : `${btnStyle.height}px` || "auto";
+  const width = !globalSettings
+    ? widthpx
+      ? `${widthpx}px`
+      : `${btnStyle.width}px` || "auto"
+    : `${btnStyle.width}px` || "auto";
+  const style = {
+    ...btnStyle,
+    height,
+    width,
+    maxWidth: globalSettings ? "400px" : "auto"
+  };
 
   const getLabel = () => {
     const answers = isReviewTab ? cAnswers : userAnswers;
@@ -52,7 +72,7 @@ const TemplateBox = ({ resprops, id }) => {
   return (
     <Droppable drop={() => ({ dropTargetIndex })}>
       {!hasGroupResponses && (
-        <ResponseContainer id={`response-container-${dropTargetIndex}`} style={btnStyle} smallSize={smallSize}>
+        <ResponseContainer id={`response-container-${dropTargetIndex}`} style={style} smallSize={smallSize}>
           <Draggable
             title={striptags(getLabel(dropTargetIndex)) || ""}
             className="content"
@@ -65,7 +85,7 @@ const TemplateBox = ({ resprops, id }) => {
         </ResponseContainer>
       )}
       {hasGroupResponses && (
-        <ResponseContainer style={btnStyle} smallSize={smallSize}>
+        <ResponseContainer style={style} smallSize={smallSize}>
           <Draggable
             title={striptags(getLabelForGroup(dropTargetIndex)) || ""}
             className="content"

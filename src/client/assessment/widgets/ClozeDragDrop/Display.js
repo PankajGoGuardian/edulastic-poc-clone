@@ -308,10 +308,12 @@ class ClozeDragDropDisplay extends Component {
             onDropHandler: !disableResponse ? this.onDrop : () => {},
             responseIDs,
             isReviewTab,
+            globalSettings: uiStyle.globalSettings,
             cAnswers: get(item, "validation.valid_response.value", [])
           }
         : {
             hasGroupResponses,
+            responsecontainerindividuals,
             btnStyle,
             smallSize,
             options,
@@ -319,6 +321,7 @@ class ClozeDragDropDisplay extends Component {
             onDrop: !disableResponse ? this.onDrop : () => {},
             responseIDs,
             isReviewTab,
+            globalSettings: uiStyle.globalSettings,
             cAnswers: get(item, "validation.valid_response.value", [])
           };
 

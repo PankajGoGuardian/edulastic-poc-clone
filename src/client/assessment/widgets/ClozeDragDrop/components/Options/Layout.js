@@ -62,14 +62,25 @@ class Layout extends Component {
     };
 
     const changeIndividualUiStyle = (prop, value, index) => {
-      const newStyles = cloneDeep(uiStyle);
-      newStyles.responsecontainerindividuals[index][prop] = value;
-      onChange("ui_style", newStyles);
+      // const newStyles = cloneDeep(uiStyle);
+      const { responsecontainerindividuals } = uiStyle;
+      const ind = responsecontainerindividuals.findIndex(cont => cont.index === index);
+      if (ind !== -1) {
+        responsecontainerindividuals[ind][prop] = value;
+        onChange("ui_style", { ...uiStyle, responsecontainerindividuals });
+      }
+      // newStyles.responsecontainerindividuals[index][prop] = value;
+      // onChange("ui_style", newStyles);
     };
 
     const addIndividual = () => {
       const { responsecontainerindividuals } = uiStyle;
+      const { responseIDs } = this.props;
+      const ind = responsecontainerindividuals.length;
+      const response = responseIDs.find(resp => resp.index === ind);
       responsecontainerindividuals.push({
+        id: !!response ? response.id : "",
+        index: !!response ? response.index : "",
         widthpx: 0,
         heightpx: 0,
         wordwrap: false
@@ -127,7 +138,6 @@ class Layout extends Component {
     const textFieldStyles = {
       maxWidth: 280
     };
-
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Subtitle>{t("component.options.display")}</Subtitle>
@@ -180,6 +190,13 @@ class Layout extends Component {
               value={uiStyle.fontsize}
             />
           </Col>
+        </Row>
+        <Row>
+          <Checkbox
+            label={t("component.options.globalSettings")}
+            checked={!!uiStyle.globalSettings}
+            onChange={e => changeUiStyle("globalSettings", !uiStyle.globalSettings)}
+          />
         </Row>
         <Row marginTop={13}>
           <Col md={12}>

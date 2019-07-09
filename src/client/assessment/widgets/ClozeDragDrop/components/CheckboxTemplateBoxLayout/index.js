@@ -23,7 +23,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     stemNumeration = "numerical",
     evaluation = [],
     onDropHandler = () => {},
-    responseIDs
+    responseIDs,
+    globalSettings
   } = resprops;
   const { index: dropTargetIndex } = (responseIDs && responseIDs.find(response => response.id === id)) || {};
   const status =
@@ -47,19 +48,21 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     }
     default:
   }
+  const btnStyle = { ...responseBtnStyle };
+  const { heightpx, widthpx } = responsecontainerindividuals.find(resp => resp.id === id);
+  btnStyle.width = !globalSettings
+    ? widthpx
+      ? `${widthpx}px`
+      : `${btnStyle.widthpx}px` || "auto"
+    : `${btnStyle.widthpx}px` || "auto";
+  btnStyle.height = !globalSettings
+    ? heightpx
+      ? `${heightpx}px`
+      : `${btnStyle.heightpx}px` || "auto"
+    : `${btnStyle.heightpx}px` || "auto";
 
-  let btnStyle = responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex];
-  if (btnStyle === undefined) {
-    btnStyle = responseBtnStyle;
-  }
-  if (btnStyle && !btnStyle.width) {
-    btnStyle.width = responseBtnStyle.widthpx;
-  }
-  if (btnStyle && !btnStyle.height) {
-    btnStyle.height = responseBtnStyle.heightpx;
-  }
-  if (btnStyle && btnStyle.whiteSpace === undefined && responseBtnStyle.whiteSpace) {
-    btnStyle.whiteSpace = responseBtnStyle.whiteSpace;
+  if (globalSettings) {
+    btnStyle.maxWidth = "400px";
   }
 
   const getLabel = () => {

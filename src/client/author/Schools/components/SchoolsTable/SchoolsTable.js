@@ -91,7 +91,7 @@ class SchoolsTable extends React.Component {
       }
     } else {
       sortedInfo.columnKey = colName;
-      sortedInfo.order = sortedInfo.columnKey === "status" ? "desc" : "asc";
+      sortedInfo.order = sortedInfo.columnKey === "isApproved" ? "desc" : "asc";
     }
     this.setState({ sortedInfo });
     this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
@@ -123,12 +123,6 @@ class SchoolsTable extends React.Component {
       const selectedSchool = selectedRowKeys.filter(row => row === item.key);
       return selectedSchool.length > 0;
     });
-    for (let i = 0; i < selectedSchools.length; i++) {
-      if (selectedSchools[i].status != 1) {
-        message.error("Please select active schools only");
-        return;
-      }
-    }
     this.setState({
       selectedDeactivateSchools: selectedSchools,
       deactivateSchoolModalVisible: true
@@ -150,7 +144,7 @@ class SchoolsTable extends React.Component {
     if (filtersData[key].filtersColumn === value) return;
 
     filtersData[key].filtersColumn = value;
-    if (value === "status") {
+    if (value === "isApproved") {
       filtersData[key].filtersValue = "eq";
       filtersData[key].filterStr = "";
       filtersData[key].prevFilterStr = "";
@@ -159,8 +153,8 @@ class SchoolsTable extends React.Component {
     this.setState({ filtersData });
 
     if (filtersData[key].filtersValue !== "" && filtersData[key].filterStr !== "") {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+      const { sortedInfo, searchByName } = this.state;
+      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName);
     }
   };
 
@@ -176,8 +170,8 @@ class SchoolsTable extends React.Component {
       filtersData[key].filtersColumn !== "" &&
       filtersData[key].filterStr !== ""
     ) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+      const { sortedInfo, searchByName } = this.state;
+      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName);
     }
   };
 
@@ -191,8 +185,8 @@ class SchoolsTable extends React.Component {
 
     this.setState({ filtersData });
 
-    const { sortedInfo, searchByName, currentPage } = this.state;
-    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+    const { sortedInfo, searchByName } = this.state;
+    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName);
   };
 
   changeFilterText = (e, key) => {
@@ -207,12 +201,12 @@ class SchoolsTable extends React.Component {
     if (filtersData[key].filterStr === value) return;
 
     filtersData[key].filterStr = value;
-    filtersData.filterAdded = true;
+    filtersData[key].filterAdded = true;
     this.setState({ filtersData });
 
     if (filtersData[key].filterAdded || key == 2) {
       const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName);
     }
   };
 
@@ -338,9 +332,9 @@ class SchoolsTable extends React.Component {
   };
 
   handleSearchName = e => {
-    const { filtersData, sortedInfo, currentPage } = this.state;
+    const { filtersData, sortedInfo } = this.state;
     this.setState({ searchByName: e });
-    this.loadFilteredSchoolList(filtersData, sortedInfo, e, currentPage);
+    this.loadFilteredSchoolList(filtersData, sortedInfo, e);
   };
 
   changePagination = pageNumber => {
@@ -365,7 +359,7 @@ class SchoolsTable extends React.Component {
     this.setState({ deactivateSchoolModalVisible: false });
   };
 
-  loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage) {
+  loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage = 1) {
     const { loadSchoolsData, userOrgId } = this.props;
     let search = {};
 
@@ -374,12 +368,9 @@ class SchoolsTable extends React.Component {
     }
 
     for (let i = 0; i < filtersData.length; i++) {
-      if (
-        filtersData[i].filtersColumn !== "" &&
-        filtersData[i].filtersValue !== "" &&
-        filtersData[i].filterStr !== ""
-      ) {
-        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
+        search[filtersColumn] = filtersColumn === "isApproved" ? filterStr : { type: filtersValue, value: filterStr };
       }
     }
 
@@ -525,28 +516,34 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "desc"}
+                colorValue={sortedInfo.columnKey === "isApproved" && sortedInfo.order === "desc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "asc"}
+                colorValue={sortedInfo.columnKey === "isApproved" && sortedInfo.order === "asc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
-        dataIndex: "status",
+        dataIndex: "isApproved",
         editable: true,
         width: "15%",
         onHeaderCell: column => {
           return {
             onClick: () => {
-              this.onHeaderCell("status");
+              this.onHeaderCell("isApproved");
             }
           };
         },
         render: (text, record) => {
           return (
-            <React.Fragment>{record.status == 1 ? <span>Approved</span> : <span>Not Approved</span>}</React.Fragment>
+            <React.Fragment>
+              {typeof record.isApproved === "boolean" && record.isApproved === false ? (
+                <span>Not Approved</span>
+              ) : (
+                <span>Approved</span>
+              )}
+            </React.Fragment>
           );
         }
       },
@@ -637,7 +634,7 @@ class SchoolsTable extends React.Component {
       }
 
       const optValues = [];
-      if (filtersData[i].filtersColumn === "status") {
+      if (filtersData[i].filtersColumn === "isApproved") {
         optValues.push(<Option value="eq">Equals</Option>);
       } else {
         optValues.push(<Option value="">Select a value</Option>);
@@ -658,7 +655,7 @@ class SchoolsTable extends React.Component {
             <Option value="city">City</Option>
             <Option value="state">State</Option>
             <Option value="zip">Zip</Option>
-            <Option value="status">Status</Option>
+            <Option value="isApproved">Status</Option>
           </StyledFilterSelect>
 
           <StyledFilterSelect
@@ -668,7 +665,7 @@ class SchoolsTable extends React.Component {
           >
             {optValues}
           </StyledFilterSelect>
-          {filtersData[i].filtersColumn !== "status" ? (
+          {filtersData[i].filtersColumn !== "isApproved" ? (
             <StyledFilterInput
               placeholder="Enter text"
               onChange={e => this.changeFilterText(e, i)}
@@ -684,8 +681,8 @@ class SchoolsTable extends React.Component {
               value={filtersData[i].filterStr}
             >
               <Option value="">Select a value</Option>
-              <Option value="1">Approved</Option>
-              <Option value="0">Not Approved</Option>
+              <Option value="true">Approved</Option>
+              <Option value="false">Not Approved</Option>
             </StyledFilterSelect>
           )}
 

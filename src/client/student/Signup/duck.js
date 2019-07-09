@@ -316,9 +316,7 @@ function* saveSubjectGradeSaga({ payload }) {
   let isSaveSubjectGradeSuccessful = false;
   try {
     const result = yield call(settingsApi.saveInterestedStandards, payload) || {};
-    yield call(message.success, SAVE_SUBJECTGRADE_SUCCESS);
     isSaveSubjectGradeSuccessful = true;
-
     const user = yield select(getUser);
     const newUser = produce(user, draft => {
       if (!draft.orgData) {

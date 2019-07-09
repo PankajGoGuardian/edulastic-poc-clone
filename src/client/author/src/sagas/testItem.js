@@ -121,7 +121,7 @@ function* evaluateAnswers({ payload }) {
       });
       const previewMode = yield select(state => _get(state, "view.preview", null));
       if (previewMode === CHECK) {
-        message.success(`score: ${score}/${maxScore}`);
+        message.success(`score: ${Math.round(score * 100) / 100}/${maxScore}`);
       }
     }
 
@@ -166,7 +166,7 @@ function* evaluateAnswers({ payload }) {
       });
       const previewMode = yield select(state => _get(state, "view.preview", null));
       if (previewMode === CHECK) {
-        message.success(`score: ${score}/${maxScore}`);
+        message.success(`score: ${Math.round(score * 100) / 100}/${maxScore}`);
       }
     }
   } catch (err) {

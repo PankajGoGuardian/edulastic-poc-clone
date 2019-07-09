@@ -144,12 +144,11 @@ const ImageWrapper = styled.div`
 `;
 
 const Thumbnail = styled.img`
-  max-width: 168.5px;
+  width: 170px;
   border-radius: 10px;
-  width: 100%;
   height: 80px;
   @media screen and (max-width: 767px) {
-    max-width: 100%;
+    width: 100%;
     height: 120px;
   }	 
  }

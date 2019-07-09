@@ -48,7 +48,7 @@ import { UploadButton } from "./styled/UploadButton";
 import { Widget } from "../../styled/Widget";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
-import { beforeUpload } from "@edulastic/common/src/helpers";
+import { beforeUpload } from "@edulastic/common";
 
 const { Option } = Select;
 const { Dragger } = Upload;

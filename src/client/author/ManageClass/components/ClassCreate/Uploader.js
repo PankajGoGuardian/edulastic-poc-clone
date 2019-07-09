@@ -10,7 +10,7 @@ import { Upload } from "antd";
 import { themeColor, white } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
-import { beforeUpload } from "@edulastic/common/src/helpers";
+import { beforeUpload } from "@edulastic/common";
 
 class Uploader extends React.Component {
   state = {};

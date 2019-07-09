@@ -11,7 +11,7 @@ import { uploadToS3 } from "../../../author/src/utils/upload";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { StyledRow } from "./styled/StyledRow";
 import { StyledInput } from "./styled/StyledInput";
-import { beforeUpload } from "@edulastic/common/src/helpers";
+import { beforeUpload } from "@edulastic/common";
 
 function Options({ onChange, item, t }) {
   const [uploading, setUploading] = useState(false);

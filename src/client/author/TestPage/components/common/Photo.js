@@ -8,7 +8,7 @@ import { Upload, Spin, message } from "antd";
 import { themeColor, white, greyishDarker2 } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
-import { beforeUpload } from "@edulastic/common/src/helpers";
+import { beforeUpload } from "@edulastic/common";
 
 const defaultImage = "https://fakeimg.pl/1000x300/";
 

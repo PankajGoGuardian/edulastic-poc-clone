@@ -12,7 +12,7 @@ import QuestionTextArea from "../../QuestionTextArea";
 import DropZoneToolbar from "../../DropZoneToolbar";
 import StyledDropZone from "../../StyledDropZone";
 import { SOURCE } from "../../../constants/constantsForQuestions";
-import { uploadToS3, beforeUpload } from "@edulastic/common/src/helpers";
+import { beforeUpload } from "@edulastic/common";
 
 const DrawingEdit = ({ item, setQuestionData, t }) => {
   const { image } = item;

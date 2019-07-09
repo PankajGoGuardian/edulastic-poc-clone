@@ -18,7 +18,7 @@ import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 import { aws } from "@edulastic/constants";
 import { SOURCE, WIDTH, HEIGHT } from "../../constants/constantsForQuestions";
-import { uploadToS3, beforeUpload } from "@edulastic/common/src/helpers";
+import { uploadToS3, beforeUpload } from "@edulastic/common";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {

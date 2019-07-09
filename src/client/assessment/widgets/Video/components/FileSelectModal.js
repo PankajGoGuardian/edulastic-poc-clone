@@ -9,7 +9,7 @@ import { StyledInput } from "../styled/StyledInput";
 import { Typography, Empty } from "antd";
 import { aws } from "@edulastic/constants";
 import StyledDropZone from "../../../components/StyledDropZone";
-import { uploadToS3, beforeUpload } from "@edulastic/common/src/helpers";
+import { uploadToS3, beforeUpload } from "@edulastic/common";
 
 const FileSelectModal = ({
   onCancel,

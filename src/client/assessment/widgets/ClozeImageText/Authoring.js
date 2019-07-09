@@ -52,7 +52,7 @@ import { UploadButton } from "./styled/UploadButton";
 import { uploadToS3 } from "../../../author/src/utils/upload";
 
 import SortableList from "../../components/SortableList";
-import { beforeUpload } from "@edulastic/common/src/helpers";
+import { beforeUpload } from "@edulastic/common";
 
 const { Option } = Select;
 const { Dragger } = Upload;

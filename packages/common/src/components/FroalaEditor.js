@@ -291,6 +291,7 @@ const CustomEditor = ({
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
+      placeholderText: null,
       htmlAllowedEmptyTags: [
         "textarea",
         "a",

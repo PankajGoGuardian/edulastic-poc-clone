@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
+import { cloneDeep } from "lodash";
 
 import { math } from "@edulastic/constants";
 
@@ -138,6 +139,17 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
+  const handleKeypadMode = keypad => {
+    setQuestionData(
+      produce(item, draft => {
+        const symbols = cloneDeep(draft.symbols);
+        symbols[0] = keypad;
+        draft.symbols = symbols;
+        updateVariables(draft, latexKeys);
+      })
+    );
+  };
+
   return (
     <CorrectAnswers
       onTabChange={setCorrectTab}
@@ -158,6 +170,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
             answer={item.validation.valid_response.value}
             points={item.validation.valid_response.score}
             onChangePoints={points => handleChangeCorrectPoints(points)}
+            onChangeKeypad={handleKeypadMode}
           />
         )}
         {item.validation.alt_responses &&
@@ -174,6 +187,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
                   answer={alter.value}
                   points={alter.score}
                   onChangePoints={points => handleChangeAltPoints(points, i)}
+                  onChangeKeypad={handleKeypadMode}
                 />
               );
             }

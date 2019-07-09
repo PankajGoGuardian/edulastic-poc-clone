@@ -31,6 +31,10 @@ class MathKeyboard extends React.PureComponent {
   };
 
   handleGroupSelect = value => {
+    const { onChangeKeypad } = this.props;
+    if (onChangeKeypad) {
+      onChangeKeypad(value);
+    }
     this.setState({
       type: value
     });
@@ -205,6 +209,7 @@ class MathKeyboard extends React.PureComponent {
 
 MathKeyboard.propTypes = {
   onClose: PropTypes.func,
+  onChangeKeypad: PropTypes.func,
   onInput: PropTypes.func.isRequired,
   showResponse: PropTypes.bool,
   symbols: PropTypes.array.isRequired,
@@ -215,7 +220,8 @@ MathKeyboard.propTypes = {
 MathKeyboard.defaultProps = {
   showResponse: false,
   showDropdown: false,
-  onClose: () => {}
+  onClose: () => {},
+  onChangeKeypad: () => {}
 };
 
 export default MathKeyboard;

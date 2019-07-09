@@ -11,7 +11,7 @@ class MathFormulaAnswer extends Component {
   };
 
   render() {
-    const { answer, onChange, onAdd, onDelete, item } = this.props;
+    const { answer, onChange, onAdd, onDelete, item, onChangeKeypad } = this.props;
 
     const { showAdditionals } = this.state;
 
@@ -56,6 +56,7 @@ class MathFormulaAnswer extends Component {
             showAdditionals={showAdditionals}
             handleChangeAdditionals={handleChangeAdditionals}
             clearAdditionals={clearAdditionals}
+            onChangeKeypad={onChangeKeypad}
             onAdd={onAdd}
             {...method}
           />
@@ -70,6 +71,7 @@ MathFormulaAnswer.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  onChangeKeypad: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired
 };

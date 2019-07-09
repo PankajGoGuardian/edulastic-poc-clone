@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Switch, Checkbox } from "antd";
+import { Checkbox } from "antd";
 import ReactOutsideEvent from "react-outside-event";
 
 import { title } from "@edulastic/colors";
@@ -9,7 +9,7 @@ import { IconClose } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 
 import SettingsBarItem from "../SettingsBarItem/SettingsBarItem";
-import SettingsBarTags from "../SettingsBarTags/SettingsBarTags";
+
 import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
 import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
 import { Content, Items, Checkboxes, Heading, SettingsButtonWrapper } from "./styled";
@@ -128,8 +128,6 @@ class Container extends Component {
       scrolling,
       onVerticalDividerChange,
       onScrollingChange,
-      itemLevelScoring,
-      setItemLevelScoring,
       isSingleQuestion = false,
       isMultipart
     } = this.props;
@@ -187,7 +185,7 @@ class Container extends Component {
     return (
       <Content>
         {isSingleQuestion ? (
-          <SettingsButtonWrapper justifyContent="flex-end">
+          <SettingsButtonWrapper justifyContent="flex-start">
             <Checkbox onChange={this.handleMultipart} value={isMultipart} /> Convert item into a multipart
           </SettingsButtonWrapper>
         ) : (

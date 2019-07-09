@@ -308,6 +308,7 @@ class Container extends Component {
 
   render() {
     const { view, question, history, windowWidth, isItem } = this.props;
+    console.log("its reaching here in quesiton", question);
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {

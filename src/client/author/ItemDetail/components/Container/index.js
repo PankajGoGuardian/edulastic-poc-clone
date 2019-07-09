@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { compose } from "redux";
+import { Spin } from "antd";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import { withRouter } from "react-router-dom";
@@ -58,7 +59,14 @@ const ItemDetailContainer = ({
   };
 
   // item is not yet loaded.
-  if (isLoading || !item._id) return <div> Loading... </div>;
+  // the store could have values from previous load, in that case
+  // makes sure its the one we intend to load.
+  if (isLoading || item._id !== itemId)
+    return (
+      <div>
+        <Spin />
+      </div>
+    );
 
   const showPublishButton = (!isTestFlow && (itemId && testItemStatus && testItemStatus !== "published")) || isEditable;
   const hasAuthorPermissions = item && item.authors.some(author => author._id === currentUserId);

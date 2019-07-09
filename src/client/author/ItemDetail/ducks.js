@@ -490,12 +490,6 @@ export function reducer(state = initialState, { type, payload }) {
 
 // saga
 
-function getQuestionsSelector(state) {
-  const authorQuestionsObj = state.authorQuestions.byId;
-  const qids = state.itemDetail.qids || [];
-  return qids.map(id => authorQuestionsObj[id]);
-}
-
 function* receiveItemSaga({ payload }) {
   try {
     const data = yield call(testItemsApi.getById, payload.id, payload.params);
@@ -571,6 +565,11 @@ export function* updateItemSaga({ payload }) {
 
     // return;
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
+    // on update, if there is only question.. set it as the questionId, since we are changing the view
+    // to singleQuestionView!
+    if (questions.length === 1) {
+      yield put(changeCurrentQuestionAction(questions[0].id));
+    }
     const { redirect = true } = payload; // added for doc based assesment, where redirection is not required.
     if (redirect && item._id !== payload.id) {
       yield put(

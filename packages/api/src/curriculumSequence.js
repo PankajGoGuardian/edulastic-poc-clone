@@ -1,4 +1,5 @@
 import API from "./utils/API";
+import moment from "moment";
 
 const api = new API();
 const prefix = "/playlists";
@@ -75,11 +76,11 @@ const publishPlaylist = id =>
     })
     .then(res => res);
 
-const duplicatePlayList = id =>
+const duplicatePlayList = ({ _id, title }) =>
   api
     .callApi({
       method: "post",
-      url: `${prefix}/${id}/duplicate`
+      url: `${prefix}/${_id}/duplicate?title=${title}-${moment().format("MM/DD/YYYY HH:mm")}`
     })
     .then(res => res.data.result);
 

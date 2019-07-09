@@ -184,12 +184,12 @@ class CurriculumSequence extends Component {
   handleCustomizeClick = async () => {
     const {
       history,
-      destinationCurriculumSequence: { status, _id }
+      destinationCurriculumSequence: { status, _id, title }
     } = this.props;
     if (status === "draft") {
       return history.push(`/author/playlists/${_id}/edit`);
     }
-    const duplicatePlayList = await curriculumSequencesApi.duplicatePlayList(_id);
+    const duplicatePlayList = await curriculumSequencesApi.duplicatePlayList({ _id, title });
     history.push(`/author/playlists/${duplicatePlayList._id}/edit`);
   };
 

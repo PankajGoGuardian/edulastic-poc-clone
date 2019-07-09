@@ -452,6 +452,10 @@ const StyledSingleAssessmentReportFilters = styled(SingleAssessmentReportFilters
       width: auto !important;
     }
 
+    .single-assessment-report-test-autocomplete {
+      display: block !important;
+    }
+
     .ant-dropdown-trigger,
     .ant-select-selection,
     .ant-input {

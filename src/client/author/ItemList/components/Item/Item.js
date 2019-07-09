@@ -33,6 +33,7 @@ import {
   Details,
   AudioIcon
 } from "./styled";
+import PremiumTag from "../PremiumTag/PremiumTag";
 
 // render single item
 class Item extends Component {
@@ -105,14 +106,19 @@ class Item extends Component {
       };
       details.push(ttsStatusSuccess);
     }
+    if (item.collectionName) {
+      details.unshift({ name: <PremiumTag />, type: "premium" });
+    }
     return details.map((detail, index) => (
       <DetailCategory key={`DetailCategory_${index}`}>
         <CategoryName>{detail.name}</CategoryName>
-        <CategoryContent>
-          <Text title={detail.type === "id" ? detail.text : ""}>
-            {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
-          </Text>
-        </CategoryContent>
+        {detail.type !== "premium" && (
+          <CategoryContent>
+            <Text title={detail.type === "id" ? detail.text : ""}>
+              {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
+            </Text>
+          </CategoryContent>
+        )}
       </DetailCategory>
     ));
   };

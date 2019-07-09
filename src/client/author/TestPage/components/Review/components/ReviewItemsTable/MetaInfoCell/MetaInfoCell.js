@@ -10,8 +10,12 @@ import Tags from "../../../../../../src/components/common/Tags";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
 import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
 import { MetaTag, ExtraInfo } from "./styled";
+import PremiumTag from "../../../../../../ItemList/components/PremiumTag/PremiumTag";
 
-const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio = {}, points = 0 }, itemTableView }) => {
+const MetaInfoCell = ({
+  data: { standards, types, by, id, shared, likes, audio = {}, isPremium = false, points = 0 },
+  itemTableView
+}) => {
   return (
     <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
       <FlexContainer>
@@ -37,6 +41,7 @@ const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio =
       </FlexContainer>
       {itemTableView && (
         <FlexContainer justifyContent="flex-end">
+          {isPremium && <PremiumTag />}
           {renderAnalytics(by, IconUser)}
           {renderAnalytics(id && id.substring(18), IconHash)}
           {renderAnalytics(shared, IconShare)}

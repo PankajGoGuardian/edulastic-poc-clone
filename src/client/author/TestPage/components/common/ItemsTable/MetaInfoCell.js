@@ -22,6 +22,7 @@ import {
 } from "../../AddItems/ducks";
 
 import { AudioIcon } from "../../../../ItemList/components/Item/styled";
+import PremiumTag from "../../../../ItemList/components/PremiumTag/PremiumTag";
 
 class MetaInfoCell extends Component {
   constructor(props) {
@@ -202,6 +203,11 @@ class MetaInfoCell extends Component {
                 <MetaWrapper>
                   <Standards item={data.item} search={search} />
                 </MetaWrapper>
+                {data.isPremium && (
+                  <MetaWrapper>
+                    <PremiumTag />
+                  </MetaWrapper>
+                )}
                 <MetaWrapper>
                   <IconUser color="#bbbfc4" width={11} height={14} />
                   <FirstText>{data.by}</FirstText>

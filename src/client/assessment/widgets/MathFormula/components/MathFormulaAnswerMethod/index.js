@@ -297,6 +297,16 @@ const MathFormulaAnswerMethod = ({
           );
         case "allowedVariables":
           return <AllowedVariables options={options} onChange={changeOptions} />;
+        case "setEvaluation":
+          return (
+            <CheckOption
+              dataCy="answer-set-evaluation"
+              optionKey="setEvaluation"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.setEvaluation")}
+            />
+          );
         default:
           return null;
       }

@@ -57,14 +57,22 @@ const SubHeader = ({
         <AnchorLink to="/author/assignments">View Assessments</AnchorLink>
         {allowGoogleLogin !== false &&
           (isUserGoogleLoggedIn ? (
-            <i style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }} onClick={syncGCModal}>
+            <i
+              style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
+              title={"Sync with Google Classroom"}
+              onClick={syncGCModal}
+            >
               <IconGoogleClassroom width={22} height={22} />
             </i>
           ) : (
             <GoogleLogin
               clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
               render={renderProps => (
-                <i style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }} onClick={renderProps.onClick}>
+                <i
+                  style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
+                  title={"Sync with Google Classroom"}
+                  onClick={renderProps.onClick}
+                >
                   <IconGoogleClassroom width={22} height={22} />
                 </i>
               )}

@@ -1,10 +1,9 @@
 import styled from "styled-components";
-import { white, themeColor } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
+import { Tag } from "antd";
 
-const StandardTags = styled.span`
-  background-color: ${themeColor};
+const StandardTags = styled(Tag)`
   color: ${white};
-  padding: 1px 4px;
   margin: 0px 3px;
   font-size: 12px;
   cursor: pointer;

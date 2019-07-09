@@ -47,16 +47,13 @@ const AdditionalDetailsFormItems = ({ getFieldDecorator }) => {
     labelAlign: "left",
     wrapperCol: { span: 5 }
   };
-  const children = [];
-  subscriptionAdditionalDetails.map(element => {
-    children.push(
-      <Form.Item label={<HeadingSpan>{element.label}</HeadingSpan>} {...formLayout}>
-        {getFieldDecorator(element.fieldName, {
-          type: element.type
-        })(<Input placeholder={element.placeholder} />)}
-      </Form.Item>
-    );
-  });
+  const children = subscriptionAdditionalDetails.map(element => (
+    <Form.Item label={<HeadingSpan>{element.label}</HeadingSpan>} {...formLayout}>
+      {getFieldDecorator(element.fieldName, {
+        type: element.type
+      })(<Input placeholder={element.placeholder} />)}
+    </Form.Item>
+  ));
   return children;
 };
 

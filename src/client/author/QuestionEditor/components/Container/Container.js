@@ -25,15 +25,37 @@ import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import { getItemIdSelector, getItemLevelScoringSelector } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
+import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
 import ItemLevelScoringContext from "./QuestionContext";
 
 class Container extends Component {
-  state = {
-    showModal: false,
-    saveClicked: false,
-    previewTab: "clear"
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showModal: false,
+      saveClicked: false,
+      previewTab: "clear"
+    };
+
+    this.innerDiv = React.createRef();
+  }
+
+  componentDidUpdate = () => {
+    const { view, savedWindowScrollTop, onSaveScrollTop } = this.props;
+
+    const { current: innerDiv } = this.innerDiv;
+
+    if (
+      savedWindowScrollTop !== 0 &&
+      view.toString() === "edit" &&
+      innerDiv.clientHeight + window.outerHeight >= savedWindowScrollTop
+    ) {
+      window.scrollTo(0, savedWindowScrollTop);
+      onSaveScrollTop(0);
+    }
   };
 
   handleChangeView = view => {
@@ -192,7 +214,16 @@ class Container extends Component {
   };
 
   render() {
-    const { view, question, history, modalItemId, onModalClose, windowWidth } = this.props;
+    const {
+      view,
+      question,
+      history,
+      modalItemId,
+      onModalClose,
+      windowWidth,
+      onSaveScrollTop,
+      savedWindowScrollTop
+    } = this.props;
 
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
@@ -210,7 +241,7 @@ class Container extends Component {
     const itemId = question === null ? "" : question._id;
 
     return (
-      <div>
+      <div ref={this.innerDiv}>
         {showModal && (
           <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(question, null, 4)}
@@ -224,6 +255,8 @@ class Container extends Component {
             onSave={this.handleSave}
             view={view}
             previewTab={previewTab}
+            onSaveScrollTop={onSaveScrollTop}
+            savedWindowScrollTop={savedWindowScrollTop}
             renderRightSide={view === "edit" ? this.renderButtons : () => {}}
             withLabels
             renderExtra={() =>
@@ -275,6 +308,8 @@ Container.propTypes = {
   testName: PropTypes.string.isRequired,
   testId: PropTypes.string.isRequired,
   toggleModalAction: PropTypes.string.isRequired,
+  savedWindowScrollTop: PropTypes.number.isRequired,
+  onSaveScrollTop: PropTypes.func.isRequired,
   authorQuestions: PropTypes.object
 };
 
@@ -300,6 +335,7 @@ const enhance = compose(
       itemLevelScoring: getItemLevelScoringSelector(state),
       testName: state.tests.entity.title,
       testId: state.tests.entity._id,
+      savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,
       authorQuestions: getCurrentQuestionSelector(state)
     }),
     {
@@ -310,7 +346,8 @@ const enhance = compose(
       showAnswer: showAnswerAction,
       changePreview: changePreviewAction,
       removeAnswers: removeUserAnswerAction,
-      toggleModalAction: toggleCreateItemModalAction
+      toggleModalAction: toggleCreateItemModalAction,
+      onSaveScrollTop: saveScrollTop
     }
   )
 );

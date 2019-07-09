@@ -240,3 +240,4 @@ export const CREATE_PLAYLISTS_SUCCESS = "[playlists] create success";
 //
 export const SET_QUESTION_CATEGORY = "[pickUpQuestion] set question category success";
 export const SET_QUESTION_TAB = "[pickUpQuestion] set question tab success";
+export const SET_SCROLL_TOP = "[pickUpQuestion] set scroll top value";

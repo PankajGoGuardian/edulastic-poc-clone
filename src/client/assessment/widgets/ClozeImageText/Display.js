@@ -124,6 +124,14 @@ class Display extends Component {
     return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
   };
 
+  onClickCheckboxHandler = () => {
+    const { changePreview, changePreviewTab } = this.props;
+    if (changePreview) {
+      changePreview("clear");
+    }
+    changePreviewTab("clear");
+  };
+
   render() {
     const {
       question,
@@ -274,6 +282,7 @@ class Display extends Component {
         userSelections={userAnswers}
         evaluation={evaluation}
         uiStyle={uiStyle}
+        onClickHandler={this.onClickCheckboxHandler}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
@@ -304,6 +313,7 @@ class Display extends Component {
 
 Display.propTypes = {
   options: PropTypes.array,
+  changePreview: PropTypes.func,
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
   responseContainers: PropTypes.array,
@@ -323,11 +333,14 @@ Display.propTypes = {
   item: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   isReviewTab: PropTypes.bool,
+  changePreviewTab: PropTypes.func,
   imageOptions: PropTypes.object
 };
 
 Display.defaultProps = {
   options: [],
+  changePreviewTab: () => {},
+  changePreview: () => {},
   onChange: () => {},
   showAnswer: false,
   evaluation: [],

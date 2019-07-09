@@ -97,7 +97,7 @@ class TableList extends Component {
     graded: data.gradedNumber,
     action: "",
     assignmentId: data.assignmentId,
-    classId: data.classId,
+    classId: data._id,
     key: index
   });
 

@@ -39,6 +39,32 @@ const validatedAnswers = (answers, responses, matrix, type) => {
         })
       )
     ];
+
+    const userResponsesResult = responses.map(res => {
+      let newMatrix = cloneDeep(matrix);
+
+      newMatrix = newMatrix.map((mat, matIndex) =>
+        mat.map((row, rowIndex) => {
+          if (!res[matIndex]) {
+            res[matIndex] = [];
+          }
+
+          if (!answers[matIndex]) {
+            answers[matIndex] = [];
+          }
+
+          if (!res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex)) {
+            return "incorrect";
+          }
+
+          return res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex);
+        })
+      );
+
+      return newMatrix;
+    });
+
+    result = [...result, ...userResponsesResult];
   } else {
     result = responses.map(res => {
       let newMatrix = cloneDeep(matrix);

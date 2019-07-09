@@ -10,7 +10,8 @@ import {
   greenDark,
   darkGrey,
   titleColor,
-  lightBlue3
+  lightBlue3,
+  themeColorLight
 } from "@edulastic/colors";
 import { Button, Icon, Divider, Menu } from "antd";
 import { IconManage } from "@edulastic/icons";
@@ -245,4 +246,21 @@ export const MenuItem = styled(Menu.Item)`
 
 export const TableDataSpan = styled.span`
   margin-left: 2rem;
+`;
+
+export const ButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+export const ButtonRightWrapper = styled.div`
+  display: inline-flex;
+`;
+
+export const StyledButton = styled(Button)`
+  &:hover,
+  &:focus,
+  &:active {
+    color: ${props => (props.type === "primary" ? white : themeColorLight)};
+    border-color: ${themeColorLight};
+  }
 `;

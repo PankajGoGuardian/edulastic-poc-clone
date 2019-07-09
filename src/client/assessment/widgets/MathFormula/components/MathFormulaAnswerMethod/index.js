@@ -48,10 +48,12 @@ const MathFormulaAnswerMethod = ({
   index,
   showAdditionals,
   handleChangeAdditionals,
+  onChangeKeypad,
   answer,
   onAdd,
   onAddIndex,
   windowWidth,
+  style = {},
   t
 }) => {
   useEffect(() => {
@@ -308,7 +310,9 @@ const MathFormulaAnswerMethod = ({
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
               symbols={item.symbols}
+              style={style}
               numberPad={item.numberPad}
+              onChangeKeypad={onChangeKeypad}
               value={value}
               showDropdown
               ALLOW
@@ -397,6 +401,7 @@ const MathFormulaAnswerMethod = ({
 
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   item: PropTypes.object.isRequired,
   options: PropTypes.object,

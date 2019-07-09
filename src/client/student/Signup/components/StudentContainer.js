@@ -4,6 +4,8 @@ import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
+import { trim } from "lodash";
+import { emailSpecialCharCheck } from "../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import {
   springGreen,
@@ -132,14 +134,23 @@ class StudentSignup extends React.Component {
         </FormItem>
         <FormItem {...formItemLayout} label={t("component.signup.student.signupidlabel")}>
           {getFieldDecorator("email", {
+            validateFirst: true,
+            initialValue: "",
             rules: [
+              {
+                transform: value => trim(value)
+              },
+              {
+                required: true,
+                message: t("common.validation.emptyemailid")
+              },
               {
                 type: "email",
                 message: t("common.validation.validemail")
               },
               {
-                required: true,
-                message: t("common.validation.emptyemailid")
+                validator: (rule, value, callback) =>
+                  emailSpecialCharCheck(rule, value, callback, t("common.validation.validemail"))
               }
             ]
           })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} placeholder="Email" />)}

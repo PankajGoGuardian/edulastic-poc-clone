@@ -40,7 +40,7 @@ const StyledModal = styled(Modal)`
       height: 76vh;
     }
     main {
-      padding: 40px 35px;
+      padding: 25px 20px;
     }
   }
   .ant-modal-close-x {

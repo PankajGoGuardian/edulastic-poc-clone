@@ -178,6 +178,7 @@ class ClassHeader extends Component {
       isPresentationMode,
       isShowReleaseSettingsPopup,
       toggleReleaseGradePopUp
+      userRole
     } = this.props;
 
     const { showDropdown, visible } = this.state;

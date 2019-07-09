@@ -9,6 +9,7 @@ import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
+import { changePreviewAction } from "../../../author/src/actions/view";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import { ContentArea } from "../../styled/ContentArea";
@@ -38,6 +39,7 @@ const MathFormula = ({
   fillSections,
   cleanSections,
   isSidebarCollapsed,
+  changePreview,
   ...restProps
 }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -104,6 +106,7 @@ const MathFormula = ({
             userAnswer={userAnswer}
             fillSections={fillSections}
             cleanSections={cleanSections}
+            changePreview={changePreview}
             {...restProps}
           />
         </Wrapper>
@@ -115,6 +118,7 @@ const MathFormula = ({
 MathFormula.propTypes = {
   view: PropTypes.string.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  changeView: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   previewTab: PropTypes.string,
   testItem: PropTypes.bool,
@@ -145,7 +149,8 @@ const enhance = compose(
     ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
     {
       setQuestionData: setQuestionDataAction,
-      checkAnswer: checkAnswerAction
+      checkAnswer: checkAnswerAction,
+      changePreview: changePreviewAction
     }
   )
 );

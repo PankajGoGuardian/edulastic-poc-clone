@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { uniqBy, groupBy } from "lodash";
+import { uniqBy, groupBy, isEmpty } from "lodash";
 import selectData from "../../TestPage/components/common/selectsData";
 import { getInterestedCurriculumsSelector } from "../selectors/user";
 const { defaultStandards } = selectData;
@@ -40,7 +40,7 @@ export const getFormattedCurriculumsSelector = (state, props) => {
     return uniqBy([
       defaultStandard,
       ...interestedCurriculumByOrgType.teacher.map(item => ({ value: item._id, text: item.name }))
-    ]);
+    ]).filter(item => item.value);
   }
   // break line only if interested curriculums are selected by admins and create uniq curriculums
   const uniqCurriculums = interestedCurriculumsBySubject.length
@@ -54,11 +54,13 @@ export const getFormattedCurriculumsSelector = (state, props) => {
         "_id"
       )
     : [defaultStandard, ...allCurriculumsBySubject];
-  const mapCurriculumsByPropertyNameId = uniqCurriculums.map(item => ({
-    value: item._id,
-    text: item.name || item.curriculum,
-    disabled: item.disabled || false
-  }));
+  const mapCurriculumsByPropertyNameId = uniqCurriculums
+    .filter(item => !isEmpty(item))
+    .map(item => ({
+      value: item._id,
+      text: item.name || item.curriculum,
+      disabled: item.disabled || false
+    }));
   return mapCurriculumsByPropertyNameId;
 };
 

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, get } from "lodash";
-import { Stimulus, helpers } from "@edulastic/common";
+import { helpers } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
@@ -39,7 +39,6 @@ const ClozeMathPreview = ({
   userAnswer,
   saveAnswer,
   evaluation,
-  showQuestionNumber,
   options,
   responseIds,
   changePreviewTab
@@ -102,7 +101,7 @@ const ClozeMathPreview = ({
 
   const uiStyles = getStyles();
   return (
-    <div>
+    <QuestionWrapper>
       <JsxParser
         bindings={{
           resProps: {
@@ -138,7 +137,7 @@ const ClozeMathPreview = ({
           altInputs={_getAltInputsAnswers()}
         />
       )}
-    </div>
+    </QuestionWrapper>
   );
 };
 
@@ -151,8 +150,7 @@ ClozeMathPreview.propTypes = {
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
-  responseIds: PropTypes.object.isRequired,
-  showQuestionNumber: PropTypes.bool
+  responseIds: PropTypes.object.isRequired
 };
 
 ClozeMathPreview.defaultProps = {
@@ -161,11 +159,8 @@ ClozeMathPreview.defaultProps = {
 
 export default withCheckAnswerButton(ClozeMathPreview);
 
-const QuestionTitleWrapper = styled.div`
-  display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
+const QuestionWrapper = styled.div`
+  li {
+    margin: 4px 0;
+  }
 `;

@@ -397,7 +397,7 @@ class Container extends PureComponent {
   render() {
     const { creating, windowWidth, test, testStatus, userId } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status, authors, grades, subjects } = test;
+    const { _id: testId, status, authors, grades, subjects, testItems } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
@@ -408,6 +408,7 @@ class Container extends PureComponent {
       testStatus === statusConstants.PUBLISHED &&
       !editEnable;
 
+    const hasPremiumQuestion = testItems.some(x => !!x.collectionName);
     const gradeSubject = { grades, subjects };
     return (
       <>
@@ -415,6 +416,7 @@ class Container extends PureComponent {
         <ShareModal
           isVisible={showShareModal}
           testId={testId}
+          hasPremiumQuestion={hasPremiumQuestion}
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}

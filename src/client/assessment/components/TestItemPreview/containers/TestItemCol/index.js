@@ -54,7 +54,7 @@ class TestItemCol extends Component {
     }
 
     return (
-      <Tabs.TabContainer padding="0px">
+      <Tabs.TabContainer>
         <QuestionWrapper
           testItem
           showFeedback={showFeedback}

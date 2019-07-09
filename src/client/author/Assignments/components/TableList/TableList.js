@@ -81,27 +81,27 @@ class TableList extends Component {
       {
         title: <Checkbox />,
         dataIndex: "checkbox",
-        width: "5%",
+        width: "3%",
         className: "select-row",
         render: () => <GreyFont style={{ display: "block" }} />
       },
       {
         dataIndex: "name",
-        width: "22%",
+        width: "20%",
         render: () => <GreyFont style={{ width: "253px", display: "block" }} />
       },
       {
         dataIndex: "class",
-        width: "11%",
+        width: "10%",
         render: text => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <GreyFont>{text}</GreyFont>
+            <GreyFont className="class-column">{text}</GreyFont>
           </Tooltip>
         )
       },
       {
         dataIndex: "testType",
-        width: "11%",
+        width: "10%",
         render: (_, row) =>
           row && row.testType === test.type.PRACTICE ? (
             <TypeIcon type="practice">P</TypeIcon>
@@ -113,23 +113,23 @@ class TableList extends Component {
       },
       {
         dataIndex: "assigned",
-        width: "15%",
+        width: "10%",
         render: text => <GreyFont>{text}</GreyFont>
       },
       {
         dataIndex: "status",
-        width: "12%",
+        width: "10%",
         render: text => (text ? <BtnStatus status={text}>{text}</BtnStatus> : "")
       },
       {
         dataIndex: "submitted",
-        width: "16%",
-        render: text => <GreyFont left={-6}>{text}</GreyFont>
+        width: "10%",
+        render: text => <GreyFont>{text}</GreyFont>
       },
       {
         dataIndex: "graded",
-        width: "14%",
-        render: text => <GreyFont left={-5}>{text}</GreyFont>
+        width: "13%",
+        render: text => <GreyFont>{text}</GreyFont>
       },
       {
         dataIndex: "action",
@@ -194,7 +194,7 @@ class TableList extends Component {
         dataIndex: "name",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.name.localeCompare(b.name, "fr", { ignorePunctuation: true }),
-        width: "22%",
+        width: "20%",
         className: "assignment-name",
         render: (text, row) => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
@@ -212,7 +212,7 @@ class TableList extends Component {
         dataIndex: "class",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.class - b.class,
-        width: "11%",
+        width: "10%",
         render: text => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
             <IconArrowDown onclick={() => false} src={arrowUpIcon} />
@@ -225,28 +225,28 @@ class TableList extends Component {
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.testType.localeCompare(b.testType),
-        width: "11%",
+        width: "10%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
       {
         title: "Assigned by",
         dataIndex: "assigned",
         sortDirections: ["descend", "ascend"],
-        width: "15%",
+        width: "10%",
         render: text => <GreyFont> {text} </GreyFont>
       },
       {
         title: "Status",
         dataIndex: "status",
         sortDirections: ["descend", "ascend"],
-        width: "12%",
+        width: "10%",
         render: () => <GreyFont>{t("common.assigned")} </GreyFont>
       },
       {
         title: "Submitted",
         dataIndex: "submitted",
         sortDirections: ["descend", "ascend"],
-        width: "16%",
+        width: "10%",
         render: text => <GreyFont> {text} </GreyFont>
       },
       {
@@ -254,7 +254,7 @@ class TableList extends Component {
         dataIndex: "graded",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.graded - b.graded,
-        width: "14%",
+        width: "13%",
         render: text => <GreyFont> {text} </GreyFont>
       },
       {

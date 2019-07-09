@@ -6,7 +6,7 @@ import { Paper, WithResources } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
-import { get } from "lodash";
+import { get, cloneDeep } from "lodash";
 
 import { withTutorial } from "../../../tutorials/withTutorial";
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
@@ -56,6 +56,17 @@ const ClozeMath = ({
     );
   };
 
+  const handleKeypadMode = keypad => {
+    setQuestionData(
+      produce(item, draft => {
+        const symbols = cloneDeep(draft.symbols);
+        symbols[0] = keypad;
+        draft.symbols = symbols;
+        updateVariables(draft);
+      })
+    );
+  };
+
   const itemForPreview = replaceVariables(item);
   const isV1Multipart = get(col, "isV1Multipart", false);
 
@@ -89,6 +100,7 @@ const ClozeMath = ({
             setQuestionData={_setQuestionData}
             fillSections={fillSections}
             cleanSections={cleanSections}
+            onChangeKeypad={handleKeypadMode}
           />
           <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 

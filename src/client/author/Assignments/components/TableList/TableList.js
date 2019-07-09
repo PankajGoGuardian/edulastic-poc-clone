@@ -16,6 +16,7 @@ import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
 import ActionMenu from "../ActionMenu/ActionMenu";
 import { getFolderSelector } from "../../../src/selectors/folder";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import {
   Container,
@@ -141,16 +142,20 @@ class TableList extends Component {
                 <Icon src={presentationIcon} alt="Images" />
               </Link>
             </Tooltip>
-            <Tooltip placement="bottom" title="Express Grader">
-              <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
-                <Icon src={additemsIcon} alt="Images" />
-              </Link>
-            </Tooltip>
-            <Tooltip placement="bottom" title="Reports">
-              <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
-                <Icon src={piechartIcon} alt="Images" />
-              </Link>
-            </Tooltip>
+            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={row.classId}>
+              <Tooltip placement="bottom" title="Express Grader">
+                <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
+                  <Icon src={additemsIcon} alt="Images" />
+                </Link>
+              </Tooltip>
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={row.classId}>
+              <Tooltip placement="bottom" title="Reports">
+                <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
+                  <Icon src={piechartIcon} alt="Images" />
+                </Link>
+              </Tooltip>
+            </FeaturesSwitch>
           </ActionsWrapper>
         )
       }

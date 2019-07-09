@@ -218,14 +218,12 @@ export const BtnAction = styled(Button)`
   color: #00ad50;
   border: none;
   box-shadow: 0px 2px 4px 0 rgba(201, 208, 219, 0.5);
-  max-width: 140px;
   height: 28px;
   font-size: 0.7em;
   font-weight: 600;
   width: 100%;
   padding: 0px 20px;
   text-align: center;
-  width: 90px;
 
   :active {
     background-color: #00ad50;
@@ -288,12 +286,12 @@ export const ActionDiv = styled.div`
 `;
 
 export const ActionsWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-right: 15px;
-  padding: 0;
-  width: 80px;
+  a {
+    margin-right: 20px;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
 `;
 
 export const GreyFont = styled.div`

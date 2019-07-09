@@ -121,6 +121,7 @@ export const TableData = styled(Table)`
       padding-left: 0 !important;
       padding-top: 0;
       padding-bottom: 0;
+      text-align: center;
     }
 
     tr {
@@ -305,6 +306,7 @@ export const GreyFont = styled.div`
   text-overflow: ellipsis;
   width: 100%;
   &.class-column {
+    display: inline-block;
     max-width: 150px;
   }
 `;

@@ -92,7 +92,7 @@ class TableList extends Component {
       },
       {
         dataIndex: "class",
-        width: "10%",
+        width: "14%",
         render: text => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
             <GreyFont className="class-column">{text}</GreyFont>
@@ -133,7 +133,7 @@ class TableList extends Component {
       },
       {
         dataIndex: "action",
-        width: "14%",
+        width: "10%",
         render: (_, row) => (
           <ActionsWrapper data-cy="PresentationIcon">
             <Tooltip placement="bottom" title="LCB">
@@ -212,7 +212,7 @@ class TableList extends Component {
         dataIndex: "class",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.class - b.class,
-        width: "10%",
+        width: "14%",
         render: text => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
             <IconArrowDown onclick={() => false} src={arrowUpIcon} />
@@ -260,7 +260,7 @@ class TableList extends Component {
       {
         title: renderFilter(),
         dataIndex: "action",
-        width: "14%",
+        width: "10%",
         render: (_, row) => (
           <ActionDiv>
             <Dropdown

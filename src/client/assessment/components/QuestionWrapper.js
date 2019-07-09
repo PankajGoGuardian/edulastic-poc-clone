@@ -287,6 +287,8 @@ class QuestionWrapper extends Component {
 
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
+    const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
+
     return (
       <WithResources
         resources={[
@@ -371,7 +373,7 @@ class QuestionWrapper extends Component {
                   />
                 ))}
               {/* STUDENT REPORT PAGE FEEDBACK */}
-              {isStudentReport && !isPassageOrVideoType && <StudentReportFeedback index={qIndex} qId={data.id} />}
+              {studentReportFeedbackVisible && <StudentReportFeedback index={qIndex} qId={data.id} />}
             </QuestionContainer>
           </>
         </ThemeProvider>

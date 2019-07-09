@@ -33,7 +33,7 @@ class ClozeMathAnswer extends Component {
   render() {
     const { answers, onChange, onAdd, onDelete, item, onChangeKeypad } = this.props;
     const { showAdditionals } = this.state;
-    const { response_containers: responseContainers, ui_style: uiStyle } = item;
+    const { response_containers: responseContainers = [], ui_style: uiStyle } = item;
     const _changeMethod = (methodId, methodIndex) => (prop, val) => {
       onChange({ methodId, methodIndex, prop, value: val });
     };

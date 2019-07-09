@@ -6,10 +6,10 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
     setInfoModalData([]);
   };
 
-  const newInfoModalData = infoModalData.map(user => {
-    user["fullName"] = user.firstName + " " + user.lastName;
-    return user;
-  });
+  const newInfoModalData = infoModalData.map(user => ({
+    ...user,
+    fullName: `${user.firstName} ${user.lastName}`
+  }));
   const columns = [
     {
       title: "Name",

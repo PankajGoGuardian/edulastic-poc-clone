@@ -168,9 +168,14 @@ class Display extends Component {
 
   getResponseBoxMaxValues = () => {
     const { responseContainers } = this.props;
-    const maxTop = maxBy(responseContainers, res => res.top);
-    const maxLeft = maxBy(responseContainers, res => res.left);
-    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+
+    if (responseContainers.length > 0) {
+      const maxTop = maxBy(responseContainers, res => res.top);
+      const maxLeft = maxBy(responseContainers, res => res.left);
+      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+    } else {
+      return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
+    }
   };
 
   render() {

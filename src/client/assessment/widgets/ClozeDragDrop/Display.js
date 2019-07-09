@@ -70,7 +70,8 @@ class ClozeDragDropDisplay extends Component {
       userSelections,
       configureOptions,
       options,
-      changePreviewTab
+      changePreviewTab,
+      changePreview
     } = this.props;
 
     const { duplicatedResponses: isDuplicated } = configureOptions;
@@ -154,7 +155,10 @@ class ClozeDragDropDisplay extends Component {
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     changeAnswers(newAnswers);
-    changePreviewTab("clear");
+    if (changePreview) {
+      changePreview("clear"); // Item level
+    }
+    changePreviewTab("clear"); // Question level
   };
 
   shuffle = arr => {
@@ -294,36 +298,25 @@ class ClozeDragDropDisplay extends Component {
 
     const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
 
-    const resProps =
-      showAnswer || checkAnswer
-        ? {
-            options,
-            responsecontainerindividuals,
-            responseBtnStyle,
-            stemnumeration,
-            hasGroupResponses,
-            showAnswer,
-            userSelections: userAnswers,
-            evaluation,
-            onDropHandler: !disableResponse ? this.onDrop : () => {},
-            responseIDs,
-            isReviewTab,
-            globalSettings: uiStyle.globalSettings,
-            cAnswers: get(item, "validation.valid_response.value", [])
-          }
-        : {
-            hasGroupResponses,
-            responsecontainerindividuals,
-            btnStyle,
-            smallSize,
-            options,
-            userAnswers,
-            onDrop: !disableResponse ? this.onDrop : () => {},
-            responseIDs,
-            isReviewTab,
-            globalSettings: uiStyle.globalSettings,
-            cAnswers: get(item, "validation.valid_response.value", [])
-          };
+    const resProps = {
+      options,
+      btnStyle,
+      smallSize,
+      evaluation,
+      showAnswer,
+      userAnswers,
+      responseIDs,
+      isReviewTab,
+      stemnumeration,
+      responseBtnStyle,
+      hasGroupResponses,
+      userSelections: userAnswers,
+      responsecontainerindividuals,
+      globalSettings: uiStyle.globalSettings,
+      onDrop: !disableResponse ? this.onDrop : () => {},
+      onDropHandler: !disableResponse ? this.onDrop : () => {},
+      cAnswers: get(item, "validation.valid_response.value", [])
+    };
 
     const templateBoxLayoutContainer = (
       <PreWrapper>
@@ -482,7 +475,8 @@ ClozeDragDropDisplay.propTypes = {
   theme: PropTypes.object.isRequired,
   // showQuestionNumber: PropTypes.bool,
   isReviewTab: PropTypes.bool,
-  responseIDs: PropTypes.array.isRequired
+  responseIDs: PropTypes.array.isRequired,
+  changePreview: PropTypes.func.isRequired
   // qIndex: PropTypes.number
 };
 

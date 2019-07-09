@@ -43,7 +43,7 @@ export const SET_ITEM_QIDS = "[itemDetail] set qids";
 export const UPDATE_ITEM_DETAIL_REQUEST = "[itemDetail] update by id request";
 export const UPDATE_ITEM_DETAIL_SUCCESS = "[itemDetail] update by id success";
 export const UPDATE_ITEM_DETAIL_ERROR = "[itemDetail] update by id error";
-
+export const CLEAR_ITEM_DETAIL = "[itemDetail] clear item detail";
 export const SET_ITEM_DETAIL_DATA = "[itemDetail] set data";
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING = "[itemDetail] set item level scoring";
 export const SET_ITEM_DETAIL_SCORE = "[itemDetail] set item score";
@@ -159,6 +159,8 @@ export const updateDefaultGradesAction = grades => ({
   type: UPDATE_DEFAULT_GRADES,
   payload: grades
 });
+
+export const clearItemDetailAction = createAction(CLEAR_ITEM_DETAIL);
 
 export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
 export const clearRedirectTestAction = createAction(ITEM_CLEAR_REDIRECT_TEST);
@@ -482,6 +484,8 @@ export function reducer(state = initialState, { type, payload }) {
         ...state,
         currentEditingTestId: payload
       };
+    case CLEAR_ITEM_DETAIL:
+      return initialState;
     default:
       return state;
   }

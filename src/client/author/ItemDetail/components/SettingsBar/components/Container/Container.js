@@ -167,27 +167,22 @@ class Container extends Component {
           checkedRight={useFlowLayoutRight}
         />
         <Checkboxes>
-          <Checkbox
-            style={{ marginBottom: 20 }}
-            label={t("author:component.settingsBar.showVerticalDivider")}
-            checked={verticalDivider}
-            onChange={onVerticalDividerChange}
-          />
-          <Checkbox
-            label={t("author:component.settingsBar.enableScrolling")}
-            checked={scrolling}
-            onChange={onScrollingChange}
-          />
-        </Checkboxes>{" "}
+          <Checkbox style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
+            {t("author:component.settingsBar.showVerticalDivider")}
+          </Checkbox>
+          <Checkbox checked={scrolling} onChange={onScrollingChange}>
+            {t("author:component.settingsBar.enableScrolling")}
+          </Checkbox>
+        </Checkboxes>
       </>
     );
 
     return (
       <Content>
         {isSingleQuestion ? (
-          <SettingsButtonWrapper justifyContent="flex-start">
+          <div>
             <Checkbox onChange={this.handleMultipart} value={isMultipart} /> Convert item into a multipart
-          </SettingsButtonWrapper>
+          </div>
         ) : (
           multipleItemsSettings()
         )}

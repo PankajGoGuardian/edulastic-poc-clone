@@ -14,8 +14,10 @@ import {
   setRedirectTestAction,
   updateItemDetailByIdAction,
   publishTestItemAction,
-  getTestItemStatusSelector
+  getTestItemStatusSelector,
+  clearItemDetailAction
 } from "../../ducks";
+import { getCurrentQuestionIdSelector } from "../../../sharedDucks/questions";
 import SettingsBar from "../SettingsBar";
 
 const ItemDetailContainer = ({
@@ -31,6 +33,8 @@ const ItemDetailContainer = ({
   testItemStatus,
   isTestFlow,
   currentUserId,
+  clearItem,
+  currentQuestionId,
   ...props
 }) => {
   const { modalItemId } = props;
@@ -60,8 +64,9 @@ const ItemDetailContainer = ({
 
   // item is not yet loaded.
   // the store could have values from previous load, in that case
-  // makes sure its the one we intend to load.
-  if (isLoading || item._id !== itemId)
+  // makes sure its the one we intend to load. also, if its the same question loaded,
+  // makes sure currentQuestionId is there in case of singleQuestionview
+  if (isLoading || item._id !== itemId || (isSingleQuestionView && !currentQuestionId))
     return (
       <div>
         <Spin />
@@ -116,13 +121,15 @@ const enhance = compose(
       testItemStatus: getTestItemStatusSelector(state),
       isSingleQuestionView: isSingleQuestionViewSelector(state),
       isLoading: getItemDetailLoadingSelector(state),
-      currentUserId: get(state, ["user", "user", "_id"])
+      currentUserId: get(state, ["user", "user", "_id"]),
+      currentQuestionId: getCurrentQuestionIdSelector(state)
     }),
     {
       getItem: getItemDetailByIdAction,
       setRedirectTest: setRedirectTestAction,
       updateItem: updateItemDetailByIdAction,
-      publishTestItem: publishTestItemAction
+      publishTestItem: publishTestItemAction,
+      clearItem: clearItemDetailAction
     }
   )
 );

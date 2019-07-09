@@ -18,6 +18,7 @@ import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
 import StandardTags from "./styled/StandardTags";
 import StandardsWrapper from "./styled/StandardsWrapper";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { themeColor } from "@edulastic/colors";
 
 const AlignmentRow = ({
   t,
@@ -294,17 +295,17 @@ const AlignmentRow = ({
               </ItemBody>
               {recentStandardsList && recentStandardsList.length > 0 && (
                 <StandardsWrapper>
-                  Recently Used:
-                  {recentStandardsList &&
-                    recentStandardsList.map(recentStandard => (
-                      <StandardTags
-                        onClick={() => {
-                          handleAddStandard(recentStandard);
-                        }}
-                      >
-                        {recentStandard.identifier}
-                      </StandardTags>
-                    ))}
+                  RECENTLY USED:
+                  {recentStandardsList.map(recentStandard => (
+                    <StandardTags
+                      color={themeColor}
+                      onClick={() => {
+                        handleAddStandard(recentStandard);
+                      }}
+                    >
+                      {recentStandard.identifier}
+                    </StandardTags>
+                  ))}
                 </StandardsWrapper>
               )}
             </Col>

@@ -40,8 +40,13 @@ class ButtonBar extends Component {
   }
 
   handleMenuClick = view => {
-    const { onChangeView } = this.props;
+    const { onChangeView, onSaveScrollTop } = this.props;
+
     onChangeView(view);
+
+    if (view !== "edit") {
+      onSaveScrollTop(window.pageYOffset);
+    }
   };
 
   optionHandler = key => {
@@ -70,6 +75,7 @@ class ButtonBar extends Component {
       renderRightSide,
       withLabels
     } = this.props;
+
     return (
       <React.Fragment>
         {windowWidth > 468 ? (
@@ -251,7 +257,9 @@ ButtonBar.propTypes = {
   clearAnswers: PropTypes.func.isRequired,
   renderExtra: PropTypes.func,
   renderRightSide: PropTypes.func,
-  withLabels: PropTypes.bool
+  withLabels: PropTypes.bool,
+  savedWindowScrollTop: PropTypes.number.isRequired,
+  onSaveScrollTop: PropTypes.func.isRequired
 };
 
 ButtonBar.defaultProps = {

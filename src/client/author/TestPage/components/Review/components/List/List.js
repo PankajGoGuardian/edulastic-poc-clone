@@ -220,7 +220,11 @@ const List = SortableContainer(
               types: types[testItems[i]._id],
               isPremium: !!testItems[i].collectionName,
               standards: standards[testItems[i]._id],
-              audio: audioStatus(testItems[i])
+              audio: audioStatus(testItems[i]),
+              dok:
+                testItems[i].data &&
+                testItems[i].data.questions &&
+                (testItems[i].data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
             }}
             index={i}
             owner={owner}

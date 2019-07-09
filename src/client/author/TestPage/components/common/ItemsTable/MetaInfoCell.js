@@ -199,6 +199,11 @@ class MetaInfoCell extends Component {
                 </div>
               )}
               <FlexContainer>
+                {data.dok && (
+                  <MetaWrapper>
+                    <FirstText>{`DOK:${data.dok}`}</FirstText>
+                  </MetaWrapper>
+                )}
                 <MetaWrapper>
                   <Standards item={data.item} search={search} />
                 </MetaWrapper>
@@ -281,7 +286,7 @@ export default enhance(MetaInfoCell);
 const MetaWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 34px;
+  margin-right: 15px;
 `;
 
 const FirstText = styled.span`

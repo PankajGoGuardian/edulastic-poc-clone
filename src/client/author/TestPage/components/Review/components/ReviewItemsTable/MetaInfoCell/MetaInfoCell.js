@@ -9,10 +9,10 @@ import { greenDark } from "@edulastic/colors";
 import Tags from "../../../../../../src/components/common/Tags";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
 import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
-import { MetaTag, ExtraInfo } from "./styled";
+import { MetaTag, ExtraInfo, DokStyled } from "./styled";
 
 const MetaInfoCell = ({
-  data: { standards, types, by, id, shared, likes, audio = {}, isPremium = false, points = 0 },
+  data: { standards, types, by, id, shared, likes, audio = {}, isPremium = false, points = 0, dok },
   itemTableView
 }) => {
   return (
@@ -41,6 +41,7 @@ const MetaInfoCell = ({
       {itemTableView && (
         <FlexContainer justifyContent="flex-end">
           {isPremium && <PremiumTag />}
+          {dok && <DokStyled>{`DOK:${dok}`}</DokStyled>}
           {renderAnalytics(by, IconUser)}
           {renderAnalytics(id && id.substring(18), IconHash)}
           {renderAnalytics(shared, IconShare)}

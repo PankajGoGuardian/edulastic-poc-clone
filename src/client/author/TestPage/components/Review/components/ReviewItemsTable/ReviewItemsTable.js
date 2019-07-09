@@ -69,7 +69,9 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
       types: getQuestionTypes(item),
       points: getPoints(item),
       standards: standards[item._id],
-      audio: audioStatus(item)
+      audio: audioStatus(item),
+      dok:
+        item.data && item.data.questions && (item.data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
     };
 
     if (item.data && item.data.questions && item.data.questions.length) {

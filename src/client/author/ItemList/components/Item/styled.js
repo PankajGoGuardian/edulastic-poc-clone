@@ -355,9 +355,7 @@ export const IdIcon = styled(IconId)`
 `;
 
 export const StandardContent = styled.div`
-  margin-right: 65px;
   display: flex;
-  flex-wrap: wrap;
 
   @media (max-width: ${tabletWidth}) {
     flex-wrap: wrap;

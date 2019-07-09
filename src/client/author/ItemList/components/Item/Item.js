@@ -81,6 +81,10 @@ class Item extends Component {
     const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
     const details = [
       {
+        name: "DOK:",
+        text: (questions.find(item => item.depthOfKnowledge) || {}).depthOfKnowledge
+      },
+      {
         name: <UserIcon />,
         text: getTestItemAuthorName(item)
       },
@@ -108,18 +112,21 @@ class Item extends Component {
     if (item.collectionName) {
       details.unshift({ name: <PremiumTag />, type: "premium" });
     }
-    return details.map((detail, index) => (
-      <DetailCategory key={`DetailCategory_${index}`}>
-        <CategoryName>{detail.name}</CategoryName>
-        {detail.type !== "premium" && (
-          <CategoryContent>
-            <Text title={detail.type === "id" ? detail.text : ""}>
-              {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
-            </Text>
-          </CategoryContent>
-        )}
-      </DetailCategory>
-    ));
+    return details.map(
+      (detail, index) =>
+        detail.text && (
+          <DetailCategory key={`DetailCategory_${index}`}>
+            <CategoryName>{detail.name}</CategoryName>
+            {detail.type !== "premium" && (
+              <CategoryContent>
+                <Text title={detail.type === "id" ? detail.text : ""}>
+                  {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
+                </Text>
+              </CategoryContent>
+            )}
+          </DetailCategory>
+        )
+    );
   };
 
   toggleDetails = () => {

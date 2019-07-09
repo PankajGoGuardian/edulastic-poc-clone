@@ -51,17 +51,21 @@ const HighlightImagePreview = ({
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
+  const renderImg = context => {
+    const img = new Image();
+    img.alt = altText;
+    img.src = userAnswer;
+    img.onload = () => {
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+      context.drawImage(img, 0, 0, img.width, img.height);
+      setCtx(context);
+    };
+  };
+
   const drawImage = context => {
     if (!Array.isArray(userAnswer)) {
-      const img = new Image();
-      img.alt = altText;
-      img.src = userAnswer;
-      img.onload = () => {
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-
-        context.drawImage(img, 0, 0, img.width, img.height);
-        setCtx(context);
-      };
+      renderImg(context);
     } else {
       context.clearRect(0, 0, width, height);
       if (canvas.current) {
@@ -93,16 +97,7 @@ const HighlightImagePreview = ({
       canvas.current.height = canvasContainerRef.current.clientHeight;
       canvas.current.width = canvasContainerRef.current.clientWidth;
       const context = canvas.current.getContext("2d");
-
-      const img = new Image();
-      img.alt = altText;
-      img.src = userAnswer;
-      img.onload = () => {
-        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-        context.drawImage(img, 0, 0, img.width, img.height);
-        setCtx(context);
-      };
-
+      renderImg(context);
       context.lineWidth = item.line_width || 5;
     }
   }, [canvasContainerRef.current && canvasContainerRef.current.clientHeight]);

@@ -361,14 +361,14 @@ function* receiveAddStudentRequest({ payload }) {
     const result = yield call(enrollmentApi.addStudent, payload);
     const student = get(result, "data.result");
     if (student) {
-      const successMsg = "User added to class successfully.";
+      const successMsg = "Student added to class successfully.";
       yield call(message.success, successMsg);
       let newStudent = Object.assign({}, student);
       newStudent._id = student.userId;
       delete newStudent.userId;
       yield put(addStudentSuccessAction(newStudent));
     } else {
-      const msg = get(result, "data.message", "User already part of this class section");
+      const msg = get(result, "data.message", "Student already part of this class section");
       message.error(msg);
       yield put(addStudentFailedAction("add student to class failed"));
     }

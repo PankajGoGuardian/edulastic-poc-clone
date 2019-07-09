@@ -240,6 +240,7 @@
       "label": "Label",
       "chartTitle": "Chart Title",
       "correctAnswer": "Correct Answer",
+      "alternateAnswer": "Alternate Answer",
       "fractionFormat": "Fraction Format",
       "gridlines": "Gridlines",
       "showGridlinesOptions": {

@@ -9,44 +9,55 @@ import { greenDark } from "@edulastic/colors";
 import Tags from "../../../../../../src/components/common/Tags";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
 import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
-import { MetaTag } from "./styled";
+import { MetaTag, ExtraInfo } from "./styled";
 
-const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio = {} } }) => (
-  <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
-    <FlexContainer>
-      {standards && !!standards.length && (
-        <FlexContainer>
-          <Tags
-            tags={standards}
-            labelStyle={{
-              color: greenDark,
-              background: "#d1f9eb",
-              border: "none"
-            }}
-          />
+const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio = {}, points = 0 }, itemTableView }) => {
+  return (
+    <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
+      <FlexContainer>
+        {standards && !!standards.length && (
+          <FlexContainer>
+            <Tags
+              tags={standards}
+              labelStyle={{
+                color: greenDark,
+                background: "#d1f9eb",
+                border: "none"
+              }}
+            />
+          </FlexContainer>
+        )}
+        {types && !!types.length && (
+          <FlexContainer>
+            {types.map(type => (
+              <MetaTag key={type}>{type}</MetaTag>
+            ))}
+          </FlexContainer>
+        )}
+      </FlexContainer>
+      {itemTableView && (
+        <FlexContainer justifyContent="flex-end">
+          {renderAnalytics(by, IconUser)}
+          {renderAnalytics(id && id.substring(18), IconHash)}
+          {renderAnalytics(shared, IconShare)}
+          {renderAnalytics(likes, IconHeart)}
+          {audio && audio.hasOwnProperty("ttsSuccess") ? (
+            <AudioIcon className="fa fa-volume-up" success={audio.ttsSuccess} />
+          ) : (
+            ""
+          )}
         </FlexContainer>
       )}
-      {types && !!types.length && (
-        <FlexContainer>
-          {types.map(type => (
-            <MetaTag key={type}>{type}</MetaTag>
-          ))}
+      {!itemTableView && (
+        <FlexContainer justifyContent="flex-end">
+          {renderAnalytics(id && id.substring(18), IconHash)}
+          <ExtraInfo> Points </ExtraInfo>
+          <ExtraInfo> {points}</ExtraInfo>
         </FlexContainer>
       )}
     </FlexContainer>
-    <FlexContainer justifyContent="flex-end">
-      {renderAnalytics(by, IconUser)}
-      {renderAnalytics(id, IconHash)}
-      {renderAnalytics(shared, IconShare)}
-      {renderAnalytics(likes, IconHeart)}
-      {audio && audio.hasOwnProperty("ttsSuccess") ? (
-        <AudioIcon className="fa fa-volume-up" success={audio.ttsSuccess} />
-      ) : (
-        ""
-      )}
-    </FlexContainer>
-  </FlexContainer>
-);
+  );
+};
 
 MetaInfoCell.propTypes = {
   data: PropTypes.object.isRequired

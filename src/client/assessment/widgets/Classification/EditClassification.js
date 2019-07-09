@@ -6,7 +6,7 @@ import { Rnd } from "react-rnd";
 
 import { withTheme } from "styled-components";
 import { compose } from "redux";
-import { uniq } from "lodash";
+import { uniq, get } from "lodash";
 import produce from "immer";
 
 import { Paper, Checkbox, EduButton, FlexContainer } from "@edulastic/common";
@@ -102,6 +102,7 @@ const EditClassification = ({
   const setImageDimensions = (url, isNew) => {
     const img = new Image();
     const { maxWidth, maxHeight } = clozeImage;
+    // eslint-disable-next-line func-names
     img.addEventListener("load", function() {
       let height;
       let width;
@@ -418,9 +419,14 @@ const EditClassification = ({
   };
 
   const handleResize = (e, direction, ref, delta, position) => {
+    const width = typeof ref.style.width === "number" ? ref.style.width : parseInt(ref.style.width.split("px")[0], 10);
+
+    const height =
+      typeof ref.style.height === "number" ? ref.style.height : parseInt(ref.style.height.split("px")[0], 10);
+
     setDragItem({
-      width: Number(ref.style.width.slice(-2)) >= 700 ? "700px" : ref.style.width,
-      height: Number(ref.style.height.slice(-2)) >= 600 ? "600px" : ref.style.height,
+      width: width >= 700 ? 700 : width,
+      height: height >= 600 ? 600 : height,
       ...position
     });
   };
@@ -463,6 +469,11 @@ const EditClassification = ({
     showUploadList: false
   };
 
+  const imageOptionWidth = get(imageOptions, "width");
+  const imageOptionHeight = get(imageOptions, "height");
+
+  const isBgImageMaximized = imageOptionWidth >= 700 || imageOptionHeight >= 600;
+
   return (
     <Fragment>
       <Paper padding="0px" boxShadow="none">
@@ -478,7 +489,9 @@ const EditClassification = ({
                     zIndex: 10,
                     backgroundImage: `url(${item.imageUrl})`,
                     backgroundRepeat: "no-repeat",
-                    backgroundSize: "contain"
+                    backgroundSize: isBgImageMaximized
+                      ? "100% 100%"
+                      : `${imageOptions.width}px ${imageOptions.height}px`
                   }}
                   position={{ x: dragItem.x, y: dragItem.y }}
                   onDragStop={handleDrag}

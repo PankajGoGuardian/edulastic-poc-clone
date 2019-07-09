@@ -8,7 +8,7 @@ import { selectsData } from "../../../author/TestPage/components/common";
 import { SelectSuffixIcon } from "./styled/SelectSuffixIcon";
 
 const SecondBlock = ({ t, onChangeTags, onQuestionDataSelect, depthOfKnowledge = "", authorDifficulty = "", tags }) => (
-  <Container>
+  <Container padding="20px">
     <Row gutter={36}>
       <Col md={8}>
         <ItemBody>

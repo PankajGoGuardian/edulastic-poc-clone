@@ -12,25 +12,27 @@ const MainInfo = ({ entity = {} }) => {
   // eslint-disable-next-line max-len
   const {
     thumbnail,
-    tags,
+    tags = [],
     grade,
     subject,
+    googleId,
+    lastSyncDate,
     standardSets = [],
     course = {},
     startDate,
     endDate,
-    owners,
+    googleCode,
+    owners = [],
     primaryTeacherId
   } = entity;
   const _grade = find(allGrades, item => item.value === grade) || { text: grade };
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
-  const coTeachers = owners
-    .map(owner => {
-      if (owner.id !== primaryTeacherId) {
-        return owner.name;
-      }
-    })
-    .join(",");
+  const coTeachers =
+    owners &&
+    owners
+      .filter(owner => owner.id !== primaryTeacherId)
+      .map(owner => owner.name)
+      .join(",");
 
   return (
     <MainContainer>
@@ -38,7 +40,7 @@ const MainInfo = ({ entity = {} }) => {
         <Image src={thumbnail || defaultImage} alt="Class" />
         <FieldValue>
           <label>Tags :</label>
-          {tags !== undefined && tags.map((tag, index) => <span key={index}>{tag}</span>)}
+          {tags && tags.map((tag, index) => <span key={index}>{tag}</span>)}
         </FieldValue>
       </LeftWrapper>
       <MidWrapper>
@@ -52,13 +54,11 @@ const MainInfo = ({ entity = {} }) => {
         </FieldValue>
         <FieldValue>
           <div>Standard :</div>
-          {standardSets.map(({ name, _id }) => (
-            <span key={_id}>{name}</span>
-          ))}
+          {standardSets && standardSets.map(({ name, _id }) => <span key={_id}>{name}</span>)}
         </FieldValue>
         <FieldValue>
           <div>Course :</div>
-          <span>{course.name}</span>
+          <span>{course && course.name}</span>
         </FieldValue>
         <FieldValue>
           <div>Co-Teachers :</div>
@@ -74,6 +74,18 @@ const MainInfo = ({ entity = {} }) => {
           <div>End Date :</div>
           <span>{moment(endDate).format("MMM DD, YYYY")}</span>
         </FieldValue>
+        {!!googleId && (
+          <>
+            <FieldValue>
+              <div>Google Class-code :</div>
+              <span>{googleCode}</span>
+            </FieldValue>
+            <FieldValue>
+              <div>Last Sync :</div>
+              <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
+            </FieldValue>
+          </>
+        )}
       </RightWrapper>
     </MainContainer>
   );

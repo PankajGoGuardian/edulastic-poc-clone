@@ -15,7 +15,7 @@ const getCourseList = code =>
 const syncClass = data =>
   api
     .callApi({
-      url: `${prefix}/syncClass`,
+      url: `${prefix}/sync-class`,
       data,
       method: "post"
     })

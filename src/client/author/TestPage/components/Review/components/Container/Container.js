@@ -337,6 +337,7 @@ class Review extends PureComponent {
           addDuplicate={this.handleDuplicateItem}
           page="review"
           data={item}
+          questions={questions}
           checkAnswer={() => checkAnswer(item)}
           showAnswer={() => showAnswer(item)}
           showEvaluationButtons

@@ -21,9 +21,22 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
       title: "Meta info",
       dataIndex: "meta",
       key: "meta",
-      render: data => <MetaInfoCell data={data} />
+      render: data => <MetaInfoCell data={data} itemTableView={false} />
     }
   ];
+  const getPoints = item => {
+    if (!item) {
+      return 0;
+    }
+    if (item.itemLevelScoring) {
+      return item.itemLevelScore;
+    }
+
+    return get(item, ["data", "questions"], []).reduce(
+      (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "valid_response", "score"], 0)),
+      0
+    );
+  };
   const audioStatus = item => {
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
@@ -34,6 +47,14 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
     }
     return audio;
   };
+
+  const getQuestionTypes = item => {
+    return get(item, ["data", "questions"], []).reduce((acc, q) => {
+      acc.push(q.title);
+      return acc;
+    }, []);
+  };
+
   const data = items.map((item, i) => {
     const main = {
       id: item._id,
@@ -45,7 +66,8 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
       by: get(item, ["createdBy", "name"], ""),
       shared: "9578 (1)",
       likes: 9,
-      types: types[item._id],
+      types: getQuestionTypes(item),
+      points: getPoints(item),
       standards: standards[item._id],
       audio: audioStatus(item)
     };

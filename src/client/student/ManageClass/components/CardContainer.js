@@ -21,7 +21,7 @@ const ClassCard = ({ t, classItem }) => {
           <Col span={24}>
             <InfoLabel span={8}>Status</InfoLabel>
             <InfoContent span={16}>
-              <span>{active ? "ACTIVE" : "INACTIVE"}</span>
+              <span>{active === 1 ? "ACTIVE" : "INACTIVE"}</span>
             </InfoContent>
           </Col>
 

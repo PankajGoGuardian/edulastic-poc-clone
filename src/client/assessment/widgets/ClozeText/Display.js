@@ -18,12 +18,12 @@ class ClozeTextDisplay extends Component {
   };
 
   componentDidMount() {
-    const { template } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(template) });
+    const { stimulus } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
   }
 
-  static getDerivedStateFromProps({ template }) {
-    return { parsedTemplate: helpers.parseTemplate(template) };
+  static getDerivedStateFromProps({ stimulus }) {
+    return { parsedTemplate: helpers.parseTemplate(stimulus) };
   }
 
   getFontSize = size => {

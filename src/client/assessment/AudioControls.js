@@ -143,14 +143,14 @@ const AudioControls = ({ item: questionData = {}, audioSrc, qId, currentPlayingD
     ? "Pause"
     : "Play";
   return (
-    <div>
+    <AudioButtonsWrapper>
       <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
         {currentPlayingDetails.qId === qId ? <IconPause /> : !loading && <IconPlay />}
       </ControlButtons>
       <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title={"Stop"}>
         <StopIcon />
       </ControlButtons>
-    </div>
+    </AudioButtonsWrapper>
   );
 };
 
@@ -162,3 +162,7 @@ export default connect(
     setCurrentPlayingDetails: setCurrentAudioDetailsAction
   }
 )(AudioControls);
+
+const AudioButtonsWrapper = styled.div`
+  padding: 20px 20px 0px;
+`;

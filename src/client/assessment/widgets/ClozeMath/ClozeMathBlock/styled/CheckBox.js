@@ -6,7 +6,7 @@ export const CheckBox = styled.div`
   min-height: 35px;
   display: inline-flex;
   position: relative;
-  min-width: ${({ width }) => (!width ? null : `${width}px`)};
+  width: ${({ width }) => (!width ? null : `${width}px`)};
   margin: 2px 4px;
   font-weight: 700;
   font-size: 13px;
@@ -49,6 +49,7 @@ export const CheckBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    align-self: stretch;
   }
 
   .value {

@@ -4,6 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 import ReactDOM from "react-dom";
+import { cloneDeep } from "lodash";
 
 import { MathInput } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -42,6 +43,17 @@ class Template extends Component {
       );
     };
 
+    const handleChangeKeypad = keypad => {
+      setQuestionData(
+        produce(item, draft => {
+          const symbols = cloneDeep(draft.symbols);
+          symbols[0] = keypad;
+          draft.symbols = symbols;
+          updateVariables(draft, latexKeys);
+        })
+      );
+    };
+
     return (
       <Widget visible={item.templateDisplay}>
         <Subtitle data-cy="template-container">{t("component.math.template")}</Subtitle>
@@ -51,6 +63,7 @@ class Template extends Component {
           symbols={item.symbols}
           numberPad={item.numberPad}
           value={item.template}
+          onChangeKeypad={handleChangeKeypad}
           onInput={latex => {
             handleUpdateTemplate(latex);
           }}

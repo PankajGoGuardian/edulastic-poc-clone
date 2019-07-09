@@ -85,7 +85,7 @@ class ClassQuestions extends Component {
             }
           }
         }
-        const questions = data.questions
+        const questions = [...data.questions, ...data.resources]
           .map(question => {
             const { id } = question;
             let qActivities = questionActivities.filter(({ qid }) => qid === id);

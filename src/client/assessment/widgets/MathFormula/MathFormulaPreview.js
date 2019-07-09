@@ -19,8 +19,9 @@ class MathFormulaPreview extends Component {
     item: PropTypes.object.isRequired,
     studentTemplate: PropTypes.string,
     type: PropTypes.string.isRequired,
-    saveAnswer: PropTypes.func.isRequired,
     changePreviewTab: PropTypes.func.isRequired,
+    changePreview: PropTypes.func.isRequired,
+    saveAnswer: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     userAnswer: PropTypes.any,
     theme: PropTypes.object.isRequired,
@@ -148,10 +149,10 @@ class MathFormulaPreview extends Component {
   }
 
   onUserResponse(latexv) {
-    const { type: previewType, saveAnswer } = this.props;
+    const { saveAnswer } = this.props;
     const validatedVal = this.validateVal(latexv);
 
-    if (previewType === CHECK) return;
+    // if (previewType === CHECK) return;
     if (this.isStatic()) {
       saveAnswer(validatedVal);
       return;
@@ -170,10 +171,11 @@ class MathFormulaPreview extends Component {
   }
 
   onInnerFieldClick() {
-    const { type: previewType, changePreviewTab } = this.props;
+    const { type: previewType, changePreview, changePreviewTab } = this.props;
 
     if (previewType === CHECK) {
-      changePreviewTab(CLEAR);
+      changePreview(CLEAR); // Item level
+      changePreviewTab(CLEAR); // Question level
     }
   }
 
@@ -192,6 +194,7 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
+
     return (
       <div>
         <QuestionTitleWrapper>
@@ -203,7 +206,7 @@ class MathFormulaPreview extends Component {
           />
         </QuestionTitleWrapper>
 
-        <MathInputWrapper>
+        <MathInputWrapper data-cy="mathinput">
           {this.isStatic() && (
             <StaticMath
               symbols={item.symbols}
@@ -225,6 +228,7 @@ class MathFormulaPreview extends Component {
               onInput={latexv => this.onUserResponse(latexv)}
               onBlur={latexv => this.onBlur(latexv)}
               disabled={evaluation && !evaluation.some(ie => ie)}
+              onInnerFieldClick={() => this.onInnerFieldClick()}
               style={{ background: statusColor, ...cssStyles }}
             />
           )}

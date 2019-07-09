@@ -359,7 +359,6 @@ function* saveSubjectGradeSaga({ payload }) {
       };
       // setting user in store to put updated currentSignupState in store
       yield put(signupSuccessAction(finalUser));
-      yield put(push("/author/manageClass"));
     }
   } catch (err) {
     console.log("_err", err);

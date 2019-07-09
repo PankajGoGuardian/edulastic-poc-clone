@@ -44,6 +44,7 @@ const ManageClass = lazy(() => import("../ManageClass"));
 const ClassDetails = lazy(() => import("../ManageClass/components/ClassDetails"));
 const ClassEdit = lazy(() => import("../ManageClass/components/ClassEdit"));
 const ClassCreate = lazy(() => import("../ManageClass/components/ClassCreate"));
+const PrintPreviewClass = lazy(() => import("../ManageClass/components/PrintPreview"));
 
 const DistrictProfile = lazy(() => import("../DistrictProfile"));
 const TestSetting = lazy(() => import("../TestSetting"));
@@ -112,6 +113,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
                   <Route exact path={`${match.url}/printpreview/:testActivityId`} component={PrintPreview} />
 
+                  <Route exact path={`${match.url}/manageClass/printPreview`} component={PrintPreviewClass} />
                   <Route exact path={`${match.url}/manageClass/createClass`} component={ClassCreate} />
                   <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
                   <Route exact path={`${match.url}/manageClass/:classId`} component={ClassDetails} />

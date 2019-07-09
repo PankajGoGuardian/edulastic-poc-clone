@@ -1440,11 +1440,6 @@ span.token.active-word {
   outline-offset: 4px;
 }
 
-.mq-math-mode .mq-root-block,
-.mq-root-block {
-  margin-bottom: 0.2em;
-}
-
 .mq-math-mode .mq-supsub.mq-sup-only {
   margin-bottom: 1em;
 }

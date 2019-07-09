@@ -54,7 +54,6 @@ class CorrectAnswer extends Component {
       options,
       stimulus,
       response,
-      template,
       hasGroupResponses,
       configureOptions,
       uiStyle,
@@ -85,8 +84,7 @@ class CorrectAnswer extends Component {
           dragHandler
           options={options}
           uiStyle={uiStyle}
-          question={stimulus}
-          template={template}
+          stimulus={stimulus}
           userSelections={response.value}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}

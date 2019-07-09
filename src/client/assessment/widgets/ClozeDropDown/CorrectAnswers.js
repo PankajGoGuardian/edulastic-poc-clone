@@ -124,17 +124,7 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const {
-      validation,
-      stimulus,
-      options,
-      t,
-      item,
-      template,
-      hasGroupResponses,
-      configureOptions,
-      uiStyle
-    } = this.props;
+    const { validation, stimulus, options, t, item, hasGroupResponses, configureOptions, uiStyle } = this.props;
     const { value } = this.state;
     return (
       <div>
@@ -157,7 +147,6 @@ class CorrectAnswers extends Component {
                 options={options}
                 uiStyle={uiStyle}
                 item={item}
-                template={template}
                 configureOptions={configureOptions}
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
@@ -179,7 +168,6 @@ class CorrectAnswers extends Component {
                       item={item}
                       configureOptions={configureOptions}
                       hasGroupResponses={hasGroupResponses}
-                      template={template}
                       uiStyle={uiStyle}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}

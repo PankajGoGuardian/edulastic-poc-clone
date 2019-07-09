@@ -20,7 +20,7 @@ const initialMethod = {
   options: {}
 };
 
-const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }) => {
+const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, onChangeKeypad }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const _addAnswer = () => {
@@ -197,10 +197,10 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
       Object.keys(responseIds).forEach(key => {
         const resp = responseIds[key].find(inp => inp.id === answerId);
         if (resp) {
-          obj["index"] = resp.index;
-          obj["id"] = resp.id;
-          obj["type"] = key;
-          obj["widthpx"] = width;
+          obj.index = resp.index;
+          obj.id = resp.id;
+          obj.type = key;
+          obj.widthpx = width;
           newItem.response_containers.push(obj);
         }
       });
@@ -327,6 +327,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
                   onAdd={_addCorrectMethod}
                   onDelete={_deleteCorrectMethod}
                   answers={[answer]}
+                  onChangeKeypad={onChangeKeypad}
                 />
               );
             }
@@ -344,6 +345,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
                       answers={[altAnswer]}
                       points={alter.score}
                       onChangePoints={_changeAltPoints(i)}
+                      onChangeKeypad={onChangeKeypad}
                     />
                   );
                 }
@@ -382,6 +384,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
 
 ClozeMathAnswers.propTypes = {
   item: PropTypes.object.isRequired,
+  onChangeKeypad: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func

@@ -213,6 +213,7 @@ export const Placeholder = styled.div.attrs({
   right: 0;
   opacity: 0.7;
   color: #cccccc;
+  z-index: 1;
 `;
 
 //adds h1 & h2 buttons commands to froala editor.
@@ -708,6 +709,7 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
+  console.log("content: ", `"${content}"`, content === "");
   const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>

@@ -1,12 +1,14 @@
 /* eslint-disable no-template-curly-in-string */
 import { createAction, createReducer } from "redux-starter-kit";
-import { all, takeEvery, call, put, select } from "redux-saga/effects";
+import { all, takeEvery, call, put, select, takeLatest } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { message } from "antd";
 import { get, findIndex, keyBy } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi } from "@edulastic/api";
 
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
+import produce from "immer";
+import { setUserGoogleLoggedInAction } from "../../student/Login/ducks";
 
 // selectors
 const manageClassSelector = state => state.manageClass;
@@ -22,9 +24,12 @@ export const getSelectedClassName = createSelector(
 // action types
 
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";
+export const FETCH_CLASS_LIST_STATUS = "[manageClass] fetch google class status";
+
 export const SET_GOOGLE_COURSE_LIST = "[manageClass] set google classes";
 export const SET_MODAL = "[manageClass] set modal";
 export const SYNC_CLASS = "[manageClass] sync selected google classes";
+export const SYNC_CLASS_USING_CODE = "[manageClass] sync google classes using code";
 
 export const CREATE_CLASS_REQUEST = "[manageClass] create a class request";
 export const CREATE_CLASS_SUCCESS = "[manageClass] create a class success";
@@ -62,14 +67,19 @@ export const UPDATE_STUDENT_REQUEST = "[manageClass] update student request";
 export const UPDATE_STUDENT_FAILDED = "[manageClass] update student failed";
 export const UPDATE_STUDENT_SUCCESS = "[manageClass] update student success";
 
+export const UPDATE_GOOGLE_COURSE_LIST = "[manageClass] update google course list";
+export const SYNC_CLASS_LOADING = "[manageClass] sync class loading";
+export const SYNC_BY_CODE_MODAL = "[manageClass] sync by code modal";
 export const SET_SUBJECT = "[manageClass] set subject";
 
 // action creators
 
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
+export const fetchClassListStatusAction = createAction(FETCH_CLASS_LIST_STATUS);
 export const setGoogleCourseListAction = createAction(SET_GOOGLE_COURSE_LIST);
 export const setModalAction = createAction(SET_MODAL);
 export const syncClassAction = createAction(SYNC_CLASS);
+export const syncClassUsingCodeAction = createAction(SYNC_CLASS_USING_CODE);
 
 export const createClassAction = createAction(CREATE_CLASS_REQUEST);
 export const createClassFailedAction = createAction(CREATE_CLASS_FAILED);
@@ -107,11 +117,14 @@ export const updateStudentRequestAction = createAction(UPDATE_STUDENT_REQUEST);
 export const updateStudentFaildedAction = createAction(UPDATE_STUDENT_FAILDED);
 export const updateStudentSuccessAction = createAction(UPDATE_STUDENT_SUCCESS);
 
+export const updateGoogleCourseListAction = createAction(UPDATE_GOOGLE_COURSE_LIST);
+export const syncByCodeModalAction = createAction(SYNC_BY_CODE_MODAL);
+export const setSyncClassLoadingAction = createAction(SYNC_CLASS_LOADING);
 export const setSubjectAction = createAction(SET_SUBJECT);
 // initial State
 const initialState = {
   googleCourseList: [],
-  showModal: false,
+  fetchClassListLoading: false,
   creating: false,
   updating: false,
   error: null,
@@ -122,14 +135,28 @@ const initialState = {
   submitted: false,
   added: false,
   selectedSubject: "",
-  dataLoaded: false
+  classLoaded: false
 };
 
 const setGoogleCourseList = (state, { payload }) => {
   state.googleCourseList = payload;
-  state.showModal = true;
 };
 
+const updateGoogleCourseList = (state, { payload }) => {
+  const { index, key, value } = payload;
+  const googleCourseList = state.googleCourseList;
+  const newGoogleCourseList = produce(googleCourseList, draft => {
+    draft =
+      draft &&
+      draft.map((googleCourse, ind) => {
+        if (ind === index) {
+          googleCourse[key] = value;
+        }
+      });
+  });
+  state.googleCourseList = newGoogleCourseList;
+  state.showModal = true;
+};
 // toggle modal
 const setModal = (state, { payload }) => {
   state.showModal = payload;
@@ -153,7 +180,7 @@ const createClassFailed = (state, { payload }) => {
 const setClass = (state, { payload }) => {
   state.entity = payload;
   state.selectedStudent = [];
-  state.dataLoaded = true;
+  state.classLoaded = true;
 };
 
 const setFetchStudents = state => {
@@ -238,11 +265,25 @@ const setSubject = (state, { payload: subject }) => {
   state.selectedSubject = subject;
 };
 
+const openOrCloseModal = (state, { payload }) => {
+  state.openGCModal = payload;
+};
+
+const setSyncClassLoading = (state, { payload }) => {
+  state.syncClassLoading = payload;
+};
+
+const setFetchClassRequest = (state, { payload }) => {
+  state.fetchClassListLoading = payload;
+};
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
+  [FETCH_CLASS_LIST_STATUS]: setFetchClassRequest,
+  [UPDATE_GOOGLE_COURSE_LIST]: updateGoogleCourseList,
   [SET_MODAL]: setModal,
   [SET_CLASS]: setClass,
+  [SYNC_CLASS_LOADING]: setSyncClassLoading,
   [CREATE_CLASS_REQUEST]: createClass,
   [CREATE_CLASS_SUCCESS]: createClassSuccess,
   [CREATE_CLASS_FAILED]: createClassFailed,
@@ -257,6 +298,7 @@ export default createReducer(initialState, {
   [ADD_STUDENT_FAILED]: addStudentFailed,
   [SELECT_STUDENTS]: selectStudent,
   [UPDATE_STUDENT_SUCCESS]: updateStudent,
+  [SYNC_BY_CODE_MODAL]: openOrCloseModal,
   [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess,
   [SET_SUBJECT]: setSubject,
   [USER_TTS_REQUEST_SUCCESS]: updateStudentsAfterTTSChange
@@ -264,12 +306,16 @@ export default createReducer(initialState, {
 
 function* fetchClassList({ payload }) {
   try {
-    const { code } = payload;
-    const result = yield call(googleApi.getCourseList, { code });
+    const { data } = payload;
+    yield put(fetchClassListStatusAction(true));
+    const result = yield call(googleApi.getCourseList, { code: data.code });
+    yield put(setUserGoogleLoggedInAction(true));
     yield put(setGoogleCourseListAction(result.courseDetails));
+    yield put(fetchClassListStatusAction(false));
   } catch (e) {
     const errorMessage = "fetching classlist failed";
     yield call(message.error, errorMessage);
+    yield put(fetchClassListStatusAction(false));
     console.log(e);
   }
 }
@@ -396,19 +442,42 @@ function* updateStudentRequest({ payload }) {
 // sync google class
 function* syncClass({ payload }) {
   try {
-    yield call(googleApi.syncClass, { codes: payload });
+    yield put(setSyncClassLoadingAction(true));
+    yield call(googleApi.syncClass, { classList: payload });
     yield put(setModalAction(false));
+    yield put(setSyncClassLoadingAction(false));
     yield put(fetchGroupsAction());
   } catch (e) {
+    yield put(setSyncClassLoadingAction(false));
     yield call(message.error, "class sync failed");
     console.log(e);
   }
 }
+
+function* syncClassUsingCode({ payload }) {
+  try {
+    const { googleCode, groupId: classId } = payload;
+    yield put(setSyncClassLoadingAction(true));
+    const resp = yield call(googleApi.syncClass, { googleCode, groupId: classId });
+    if (resp.status === 403) {
+      return yield call(message.error(`Google Classroom ${payload.googleCode} is already synced in another group`));
+    }
+    yield put(setSyncClassLoadingAction(false));
+    yield put(fetchStudentsByIdAction({ classId }));
+    yield put(syncByCodeModalAction(false));
+  } catch (e) {
+    yield put(setSyncClassLoadingAction(false));
+    yield call(message.error, "class sync failed");
+    console.log(e);
+  }
+}
+
 // watcher saga
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(FETCH_CLASS_LIST, fetchClassList),
+    yield takeLatest(FETCH_CLASS_LIST, fetchClassList),
     yield takeEvery(SYNC_CLASS, syncClass),
+    yield takeEvery(SYNC_CLASS_USING_CODE, syncClassUsingCode),
     yield takeEvery(CREATE_CLASS_REQUEST, receiveCreateClassRequest),
     yield takeEvery(FETCH_STUDENTS_BY_ID_REQUEST, fetchStudentsByClassId),
     yield takeEvery(UPDATE_CLASS_REQUEST, receiveUpdateClass),

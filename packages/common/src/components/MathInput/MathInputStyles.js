@@ -10,7 +10,7 @@ export const MathInputStyles = styled.div`
 
   .input__math {
     min-height: 42px;
-    display: inline-block;
+    display: inline-flex;
     width: 100%;
     padding-right: 40px;
     position: relative;
@@ -18,6 +18,7 @@ export const MathInputStyles = styled.div`
     background: #fff;
     border: 1px solid ${props => props.theme.common.mathInputMathBorderColor};
     padding: 5px 25px;
+    align-items: center;
 
     &.clear {
       background: ${props => props.theme.common.mathInputMathClearBgColor};
@@ -58,7 +59,6 @@ export const MathInputStyles = styled.div`
     left: 0px;
     right: 0px;
     z-index: 999;
-    width: 545px;
   }
 
   .input__keyboard {

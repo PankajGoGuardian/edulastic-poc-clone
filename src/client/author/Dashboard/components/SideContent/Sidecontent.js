@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Divider, Row, Col, Icon } from "antd";
 import { TextWrapper, LinkWrapper } from "../styledComponents";
 import {
+  SideContentContainer,
+  SliderButton,
+  ScrollbarContainer,
   SideContentWrapper,
   ColWrapper,
   ContentWrapper,
@@ -52,42 +55,56 @@ const QuestionBanks = () => {
 };
 
 const SideContent = () => {
+  const [showSideContent, toggleSideContent] = useState(false);
   return (
-    <SideContentWrapper>
-      <TextWrapper fw="600" mb="5px" color="#5EB500">
-        Introduction to Edulastic
-      </TextWrapper>
-      <VideoSection>
-        <VideoPlayer>
-          <img src={videoImg} alt="" />
-        </VideoPlayer>
-        <VideoOverlay>
-          <img src={play} alt="" />
-        </VideoOverlay>
+    <SideContentContainer show={showSideContent}>
+      <SliderButton
+        onClick={() => {
+          toggleSideContent(!showSideContent);
+        }}
+      >
+        <Icon type={showSideContent ? "right" : "left"} />
+      </SliderButton>
+      <SideContentWrapper>
+        <TextWrapper fw="600" mb="5px" color="#5EB500">
+          Introduction to Edulastic
+        </TextWrapper>
+        <VideoSection>
+          <VideoPlayer>
+            <img src={videoImg} alt="" />
+          </VideoPlayer>
+          <VideoOverlay>
+            <img src={play} alt="" />
+          </VideoOverlay>
 
-        <VideoOverlay />
-      </VideoSection>
-      <Row>
-        <Col>
-          <ContentWrapper mt="0.3rem" mb="1rem">
-            <TextWrapper fw="600" color="#5EB500">
-              Build assessments in minutes
-            </TextWrapper>
-            <TextWrapper size="14px" color="#848993">
-              Search, review and assess using content from any of the following question banks:
-            </TextWrapper>
-          </ContentWrapper>
-          <QuestionBanks />
-          <ContentWrapper margin="1rem" textalign="center">
-            <LinkWrapper color="#5EB500">VIEW ALL QUESTIONS</LinkWrapper>
-          </ContentWrapper>
+          <VideoOverlay />
+        </VideoSection>
+        <Row>
+          <Col>
+            <ContentWrapper mt="0.3rem" mb="1rem">
+              <TextWrapper fw="600" color="#5EB500">
+                Build assessments in minutes
+              </TextWrapper>
+              <TextWrapper size="14px" color="#848993">
+                Search, review and assess using content from any of the following question banks:
+              </TextWrapper>
+            </ContentWrapper>
+            <ScrollbarContainer>
+              <div>
+                <QuestionBanks />
+                <ContentWrapper margin="1rem" textalign="center">
+                  <LinkWrapper color="#5EB500">VIEW ALL QUESTIONS</LinkWrapper>
+                </ContentWrapper>
 
-          <ChatIconContainer>
-            <ChatIcon type="message" />
-          </ChatIconContainer>
-        </Col>
-      </Row>
-    </SideContentWrapper>
+                <ChatIconContainer>
+                  <ChatIcon type="message" />
+                </ChatIconContainer>
+              </div>
+            </ScrollbarContainer>
+          </Col>
+        </Row>
+      </SideContentWrapper>
+    </SideContentContainer>
   );
 };
 export default SideContent;

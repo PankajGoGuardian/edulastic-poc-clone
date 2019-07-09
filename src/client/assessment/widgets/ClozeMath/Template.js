@@ -285,9 +285,9 @@ class Template extends Component {
 
     const _updateTemplate = val => {
       const newItem = produce(item, draft => {
-        draft.template = val;
+        draft.stimulus = val;
 
-        draft.response_ids = _reduceResponseIds(draft.template);
+        draft.response_ids = _reduceResponseIds(draft.stimulus);
 
         draft.validation = _reduceValidation(draft.response_ids, draft.validation);
 
@@ -317,7 +317,7 @@ class Template extends Component {
         <FroalaEditor
           data-cy="templateBox"
           onChange={_updateTemplate}
-          value={item.template}
+          value={item.stimulus}
           additionalToolbarOptions={["responseBoxes"]}
           toolbarId="template-markup-area"
           border="border"

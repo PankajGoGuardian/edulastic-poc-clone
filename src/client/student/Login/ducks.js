@@ -32,6 +32,16 @@ export const LOGOUT = "[auth] logout";
 export const CHANGE_CLASS = "[student] change class";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
 export const UPDATE_USER_ROLE_REQUEST = "[auth] update user role request";
+export const SET_USER_GOOGLE_LOGGED_IN = "[auth] set user google logged in";
+
+export const REQUEST_NEW_PASSWORD_REQUEST = "[auth] request new password request";
+export const REQUEST_NEW_PASSWORD_FAILED = "[auth] request new password failed";
+export const REQUEST_NEW_PASSWORD_SUCCESS = "[auth] request new password success";
+export const RESET_PASSWORD_USER_REQUEST = "[auth] reset password user request";
+export const RESET_PASSWORD_USER_SUCCESS = "[auth] reset password user success";
+export const RESET_PASSWORD_REQUEST = "[auth] reset password request";
+export const RESET_PASSWORD_FAILED = "[auth] reset password failed";
+export const RESET_PASSWORD_SUCCESS = "[auth] reset password success";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -49,7 +59,11 @@ export const fetchUserAction = createAction(FETCH_USER);
 export const fetchV1RedirectAction = createAction(FETCH_V1_REDIRECT);
 export const logoutAction = createAction(LOGOUT);
 export const changeClassAction = createAction(CHANGE_CLASS);
+export const setUserGoogleLoggedInAction = createAction(SET_USER_GOOGLE_LOGGED_IN);
 export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
+export const requestNewPasswordAction = createAction(REQUEST_NEW_PASSWORD_REQUEST);
+export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
+export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -98,7 +112,34 @@ export default createReducer(initialState, {
     state.isAuthenticated = false;
     state.authenticating = true;
   },
-  [SINGUP_SUCCESS]: setUser
+  [SET_USER_GOOGLE_LOGGED_IN]: (state, { payload }) => {
+    state.user.isUserGoogleLoggedIn = payload;
+  },
+  [SINGUP_SUCCESS]: setUser,
+  [REQUEST_NEW_PASSWORD_REQUEST]: state => {
+    state.requestingNewPassword = true;
+    state.requestNewPasswordSuccess = false;
+  },
+  [REQUEST_NEW_PASSWORD_FAILED]: state => {
+    state.requestingNewPassword = false;
+  },
+  [REQUEST_NEW_PASSWORD_SUCCESS]: state => {
+    state.requestingNewPassword = false;
+    state.requestNewPasswordSuccess = true;
+  },
+  [RESET_PASSWORD_USER_SUCCESS]: (state, { payload }) => {
+    state.resetPasswordUser = payload;
+  },
+  [RESET_PASSWORD_REQUEST]: state => {
+    state.requestingNewPassword = true;
+  },
+  [RESET_PASSWORD_SUCCESS]: (state, { payload }) => {
+    delete state.resetPasswordUser;
+    state.requestingNewPassword = false;
+  },
+  [RESET_PASSWORD_FAILED]: state => {
+    state.requestingNewPassword = false;
+  }
 });
 
 export const getClasses = createSelector(
@@ -279,19 +320,22 @@ function* signup({ payload }) {
 const getLoggedOutUrl = () => {
   // When u try to change this function change the duplicate function in "packages/api/src/utils/API.js" also
   const path = getWordsInURLPathName(window.location.pathname);
-  if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
+  const pathname = window.location.pathname.toLocaleLowerCase();
+  if (pathname === "/getstarted") {
     return "/getStarted";
-  } else if (window.location.pathname.toLocaleLowerCase() === "/signup") {
+  } else if (pathname === "/signup") {
     return "/signup";
-  } else if (window.location.pathname.toLocaleLowerCase() === "/studentsignup") {
+  } else if (pathname === "/studentsignup") {
     return "/studentsignup";
-  } else if (window.location.pathname.toLocaleLowerCase() === "/adminsignup") {
+  } else if (pathname === "/adminsignup") {
     return "/adminsignup";
   } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
     let arr = [...path];
     arr.shift();
     let restOfPath = arr.join("/");
     return "/district/" + restOfPath;
+  } else if (pathname === "/resetpassword") {
+    return window.location.href.split(window.location.origin)[1];
   } else {
     return "/login";
   }
@@ -541,6 +585,47 @@ function* updateUserRoleSaga({ payload }) {
   }
 }
 
+function* requestNewPasswordSaga({ payload }) {
+  try {
+    const res = yield call(userApi.requestNewPassword, payload);
+    yield put({
+      type: REQUEST_NEW_PASSWORD_SUCCESS
+    });
+  } catch (e) {
+    console.error(e);
+    yield call(message.error, e && e.data ? e.data.message : "Failed to request new password.");
+    yield put({
+      type: REQUEST_NEW_PASSWORD_FAILED
+    });
+  }
+}
+
+function* resetPasswordUserSaga({ payload }) {
+  try {
+    const res = yield call(userApi.fetchResetPasswordUser, payload);
+    yield put({ type: RESET_PASSWORD_USER_SUCCESS, payload: res });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Failed to user data.");
+  }
+}
+
+function* resetPasswordRequestSaga({ payload }) {
+  try {
+    const result = yield call(userApi.resetUserPassword, payload);
+    yield put({ type: RESET_PASSWORD_SUCCESS });
+    const user = pick(result, userPickFields);
+    TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
+    TokenStorage.selectAccessToken(user._id, user.role);
+    yield put(signupSuccessAction(result));
+    localStorage.removeItem("loginRedirectUrl");
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Failed to reset password.");
+    yield put({
+      type: RESET_PASSWORD_FAILED
+    });
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
@@ -556,4 +641,7 @@ export function* watcherSaga() {
   yield takeLatest(GET_USER_DATA, getUserData);
   yield takeLatest(MSO_SSO_LOGIN, msoSSOLogin);
   yield takeLatest(UPDATE_USER_ROLE_REQUEST, updateUserRoleSaga);
+  yield takeLatest(REQUEST_NEW_PASSWORD_REQUEST, requestNewPasswordSaga);
+  yield takeLatest(RESET_PASSWORD_USER_REQUEST, resetPasswordUserSaga);
+  yield takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga);
 }

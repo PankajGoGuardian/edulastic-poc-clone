@@ -152,6 +152,32 @@ const validateDistrictPolicy = params =>
 
 const checkClassCode = params => api.callApi({ url: `/auth/class-code/`, params }).then(result.data.data);
 
+const requestNewPassword = params =>
+  api
+    .callApi({
+      url: `auth/forgot-password`,
+      params,
+      method: "POST"
+    })
+    .then(result => result.data.data);
+
+const fetchResetPasswordUser = params =>
+  api
+    .callApi({
+      url: `auth/reset-password`,
+      params
+    })
+    .then(result => result.data.result);
+
+const resetUserPassword = data =>
+  api
+    .callApi({
+      url: `auth/reset-password`,
+      data,
+      method: "POST"
+    })
+    .then(result => result.data.result);
+
 export default {
   getUser,
   fetchUsers,
@@ -170,5 +196,8 @@ export default {
   addStudentsToOtherClass,
   validateClassCode,
   validateDistrictPolicy,
-  checkClassCode
+  checkClassCode,
+  requestNewPassword,
+  fetchResetPasswordUser,
+  resetUserPassword
 };

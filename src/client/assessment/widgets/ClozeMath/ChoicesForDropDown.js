@@ -164,7 +164,7 @@ class ChoicesForDropDown extends Component {
     const {
       response_ids: { dropDowns = [] },
       options,
-      template
+      stimulus
     } = item;
 
     return (
@@ -174,7 +174,7 @@ class ChoicesForDropDown extends Component {
             <Subtitle>{`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}</Subtitle>
             <SortableList
               items={options[dropdown.id] || []}
-              dirty={template}
+              dirty={stimulus}
               onSortEnd={params => this.onSortEnd(dropdown.id, params)}
               useDragHandle
               onRemove={itemIndex => this.remove(dropdown.id, itemIndex)}

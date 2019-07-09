@@ -107,11 +107,11 @@ export const themes = {
       containerBgColor: "#f9f9f9" // lightGrey
     },
     keyboard: {
-      buttonBgColor: "#dfdfdf", // grey
+      buttonBgColor: "#91D8FF", // grey
       buttonBgActiveClassColor: "#b6bac1",
       buttonBgHoverColor: "#e6e6e6", // dashBorderColor
       buttonBgActiveColor: "#fff", // white
-      buttonColor: "#444444", // mainTextColor
+      buttonColor: "#738C9F", // mainTextColor
       buttonFontSize: "16px",
       buttonFontWeight: "700",
       buttonBorderColor: "#fff" // white
@@ -157,12 +157,18 @@ export const themes = {
       numType1BgColor: "#e5e5e5",
       numType2BgColor: "#d1d1d1",
       numType3BgColor: "#d0edfd",
-      numType3Color: "#808080"
+      numType3Color: "#808080",
+      numType4BgColor: "#91D8FF",
+      numType4Color: "#738C9F",
+      numType5BgColor: "#0EB08D",
+      numType5Color: "#fff",
+      numType6BgColor: "#50B29D",
+      numType6Color: "#fff"
     },
     numberPad: {
       itemBorderColor: "#dfdfdf", // grey
-      itemColor: "#878282", // textColor
-      itemBgColor: "#f9f9f9", // lightGrey
+      itemColor: "#fff", // textColor
+      itemBgColor: "#0EB08D", // lightGrey
       itemBgHoverColor: "#dfdfdf", // grey
       itemBgActiveColor: "#fff", // white
       itemFontWeight: "700"
@@ -492,13 +498,13 @@ export const themes = {
       },
       mathFormula: {
         inputColor: "#fff",
-        inputCorrectColor: "#e1fbf2",
-        inputIncorrectColor: "#fce0e8",
+        inputCorrectColor: "#D3FEA6",
+        inputIncorrectColor: "#FCE0E8",
         iconTrashColor: themeColor,
         iconTrashHoverColor: "#ee1658", // red
         quillBorderColor: "#dfdfdf", // grey
-        iconCheckColor: "#1fe3a1", // green
-        iconCloseColor: "#ee1658", // red
+        iconCheckColor: "#63B808", // green
+        iconCloseColor: "#DF394E", // red
         iconWrapperBgColor: "transparent",
         answerMethodContainerBorderColor: "#dfdfdf", // grey
         answerWrapperBgColor: "#93d8f7", // lightBlue

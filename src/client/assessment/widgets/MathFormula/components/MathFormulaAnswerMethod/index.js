@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Col, Select, Row } from "antd";
+import { Col, Select } from "antd";
 import { pick } from "lodash";
+import styled from "styled-components";
 import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
@@ -26,7 +27,6 @@ import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
 import { AllowedVariables, CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
-import styled from "styled-components";
 
 const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
 
@@ -48,10 +48,12 @@ const MathFormulaAnswerMethod = ({
   index,
   showAdditionals,
   handleChangeAdditionals,
+  onChangeKeypad,
   answer,
   onAdd,
   onAddIndex,
   windowWidth,
+  style = {},
   t
 }) => {
   useEffect(() => {
@@ -308,8 +310,11 @@ const MathFormulaAnswerMethod = ({
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
               symbols={item.symbols}
+              style={style}
               numberPad={item.numberPad}
+              onChangeKeypad={onChangeKeypad}
               value={value}
+              showDropdown
               ALLOW
               TOLERANCE
               onInput={val => {
@@ -396,6 +401,7 @@ const MathFormulaAnswerMethod = ({
 
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   item: PropTypes.object.isRequired,
   options: PropTypes.object,

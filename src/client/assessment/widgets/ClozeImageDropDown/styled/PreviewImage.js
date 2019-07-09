@@ -5,8 +5,6 @@ export const PreviewImage = styled.div`
   position: relative;
   border: 1px dotted ${black};
   border-radius: 4px;
-  height: ${({ height, maxHeight }) => (!maxHeight ? "100%" : height ? `${height}px` : "auto")};
-  width: ${({ width, maxWidth }) => (!maxWidth ? "100%" : width ? `${width}px` : maxWidth)};
   user-select: none;
   pointer-events: none;
   max-width: unset !important;

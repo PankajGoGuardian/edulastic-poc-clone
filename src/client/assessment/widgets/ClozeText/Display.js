@@ -18,12 +18,12 @@ class ClozeTextDisplay extends Component {
   };
 
   componentDidMount() {
-    const { template } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(template) });
+    const { stimulus } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
   }
 
-  static getDerivedStateFromProps({ template }) {
-    return { parsedTemplate: helpers.parseTemplate(template) };
+  static getDerivedStateFromProps({ stimulus }) {
+    return { parsedTemplate: helpers.parseTemplate(stimulus) };
   }
 
   getFontSize = size => {
@@ -141,8 +141,7 @@ class ClozeTextDisplay extends Component {
       userSelections,
       responseIds,
       isReviewTab,
-      view,
-      previewTab
+      view
     } = this.props;
 
     const { parsedTemplate } = this.state;
@@ -153,44 +152,30 @@ class ClozeTextDisplay extends Component {
 
     let maxLineHeight = smallSize ? 50 : 40;
     maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
-    const resProps =
-      showAnswer || checkAnswer
-        ? {
-            responseBtnStyle,
-            responsecontainerindividuals,
-            stemNumeration: stemnumeration,
-            fontSize,
-            showAnswer,
-            userSelections,
-            evaluation,
-            showIndex,
-            disableResponse,
-            qIndex,
-            uiStyle,
-            responseIds,
-            isReviewTab,
-            view,
-            previewTab,
-            cAnswers: get(item, "validation.valid_response.value", [])
-          }
-        : {
-            userAnswers: userSelections,
-            style: btnStyle,
-            onChange: this._changeInput,
-            placeholder: btnStyle.placeholder,
-            type: btnStyle.inputtype,
-            item,
-            qIndex,
-            disableResponse,
-            showIndex,
-            responseIds,
-            responsecontainerindividuals,
-            isReviewTab,
-            view,
-            previewTab,
-            uiStyle,
-            cAnswers: get(item, "validation.valid_response.value", [])
-          };
+    const resProps = {
+      view,
+      item,
+      qIndex,
+      uiStyle,
+      fontSize,
+      showIndex,
+      showAnswer,
+      checkAnswer,
+      evaluation,
+      responseIds,
+      isReviewTab,
+      userSelections,
+      disableResponse,
+      style: btnStyle,
+      responseBtnStyle,
+      type: btnStyle.inputtype,
+      userAnswers: userSelections,
+      onChange: this._changeInput,
+      responsecontainerindividuals,
+      stemNumeration: stemnumeration,
+      placeholder: btnStyle.placeholder,
+      cAnswers: get(item, "validation.valid_response.value", [])
+    };
 
     const answerBox = showAnswer ? (
       <>
@@ -257,7 +242,9 @@ ClozeTextDisplay.propTypes = {
   disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   isReviewTab: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  view: PropTypes.string.isRequired,
+  stimulus: PropTypes.string.isRequired
 };
 
 ClozeTextDisplay.defaultProps = {

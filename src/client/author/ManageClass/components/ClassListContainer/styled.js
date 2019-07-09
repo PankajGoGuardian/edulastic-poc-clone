@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
+
 import { white, themeColor, boxShadowDefault } from "@edulastic/colors";
-import { Button, Table } from "antd";
+import { Button, Table, Select } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
 
 export const Title = styled.div`
@@ -91,4 +92,7 @@ export const ClassListTable = styled(Table)`
   .ant-table-tbody > tr {
     cursor: pointer;
   }
+`;
+export const StyledSelect = styled(Select)`
+  width: 100%;
 `;

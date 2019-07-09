@@ -81,10 +81,6 @@ export const TableData = styled(Table)`
     }
   }
 
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters {
-    padding-right: 0 !important;
-  }
-
   .ant-table-thead th {
     border-bottom: none;
 
@@ -113,6 +109,7 @@ export const TableData = styled(Table)`
     color: ${darkGrey};
     white-space: nowrap;
     padding: 10px;
+    text-align: center;
   }
 
   .ant-table-thead > tr > th > .ant-table-column-has-actions > .ant-table-column-sorters {
@@ -301,15 +298,15 @@ export const ActionsWrapper = styled.div`
 export const GreyFont = styled.div`
   color: grey;
   font-size: 14px;
-
   position: relative;
   left: ${({ left }) => left || 0}px;
-
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
-  max-width: 150px;
+  &.class-column {
+    max-width: 150px;
+  }
 `;
 
 export const ExpandedTable = styled(Table)`

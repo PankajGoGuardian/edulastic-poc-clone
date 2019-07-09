@@ -207,8 +207,8 @@ const SortListPreview = ({
         </FullWidthContainer>
 
         <FlexWithMargins smallSize={smallSize}>
-          <IconLeft smallSize={smallSize} onClick={onRightLeftClick} />
-          <IconRight smallSize={smallSize} onClick={onRightLeftClick} />
+          <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+          <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
         </FlexWithMargins>
 
         <FullWidthContainer>
@@ -232,7 +232,7 @@ const SortListPreview = ({
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
-                obj={disableResponse ? inCorrectList[valid_response[i]] : selectedItem}
+                obj={disableResponse && userAnswer.length !== 0 ? inCorrectList[valid_response[i]] : selectedItem}
                 disableResponse={disableResponse}
                 changePreviewTab={changePreviewTab}
               />
@@ -241,8 +241,8 @@ const SortListPreview = ({
         </FullWidthContainer>
 
         <FlexCol smallSize={smallSize}>
-          <IconUp smallSize={smallSize} onClick={onUpDownClick("Up")} />
-          <IconDown smallSize={smallSize} onClick={onUpDownClick("Down")} />
+          <IconUp smallSize={smallSize} onClick={!disableResponse ? onUpDownClick("Up") : () => {}} />
+          <IconDown smallSize={smallSize} onClick={!disableResponse ? onUpDownClick("Down") : () => {}} />
         </FlexCol>
       </FlexContainer>
 

@@ -17,6 +17,7 @@ import { updateVariables } from "../../utils/variables";
 class QuillSortableHintsList extends Component {
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { item, setQuestionData } = this.props;
+
     setQuestionData(
       produce(item, draft => {
         draft.hints = arrayMove(draft.hints, oldIndex, newIndex).map(({ label }, index) => ({
@@ -24,14 +25,18 @@ class QuillSortableHintsList extends Component {
           label
         }));
 
-        let idx = item.validation.valid_response.value.findIndex(val => val === oldIndex);
-        if (idx !== -1) {
-          draft.validation.valid_response.value[idx] = newIndex;
-        }
+        let idx = -1;
 
-        idx = item.validation.valid_response.value.findIndex(val => val === newIndex);
-        if (idx !== -1) {
-          draft.validation.valid_response.value[idx] = oldIndex;
+        if (draft.validation.valid_response) {
+          idx = item.validation.valid_response.value.findIndex(val => val === oldIndex);
+          if (idx !== -1) {
+            draft.validation.valid_response.value[idx] = newIndex;
+          }
+
+          idx = item.validation.valid_response.value.findIndex(val => val === newIndex);
+          if (idx !== -1) {
+            draft.validation.valid_response.value[idx] = oldIndex;
+          }
         }
 
         if (draft.validation.alt_responses) {

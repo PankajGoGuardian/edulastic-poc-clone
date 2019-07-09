@@ -346,10 +346,11 @@ class Container extends PureComponent {
   render() {
     const { creating, windowWidth, playlist, testStatus, userId } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status, authors } = playlist || {};
+    const { _id: testId, status, authors, grades, subjects } = playlist || {};
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
+    const gradeSubject = { grades, subjects };
 
     return (
       <>
@@ -360,6 +361,7 @@ class Container extends PureComponent {
           isPlaylist={true}
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
+          gradeSubject={gradeSubject}
         />
         <TestPageHeader
           onChangeNav={this.handleNavChange}

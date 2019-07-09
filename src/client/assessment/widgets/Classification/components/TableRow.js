@@ -38,8 +38,9 @@ const TableRow = ({
     columnContainerStyle: {
       display: "flex",
       flexWrap: "wrap",
+      minHeight: height,
       width: "100%",
-      height: "100%",
+      height: "auto",
       borderRadius: 4,
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }

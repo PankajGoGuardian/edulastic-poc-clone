@@ -1,19 +1,16 @@
 import styled from "styled-components";
 export const CardsContainer = styled.div`
-  background: #ffffff;
+  margin-top: 110px;
+  margin-left: 2rem;
   padding: 1rem;
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.7);
-  margin-top: 1rem;
-  border-radius: 4px;
 `;
 
 export const CardBox = styled.div`
   background: #ffffff;
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.7);
   margin-top: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding: 0.5rem;
   border-radius: 4px;
-  width: 280px;
-  height: 270px;
+  min-height: 280px;
 `;

@@ -132,6 +132,7 @@
       "symbols": "Symbols",
       "distractor": "Distractor",
       "addCustomGroup": "Add custom group",
+      "addCustom": "Custom",
       "empty": "empty",
       "showKeypadHints": "Show keypad hints",
       "createNewLine": "Create new line",
@@ -239,6 +240,7 @@
       "label": "Label",
       "chartTitle": "Chart Title",
       "correctAnswer": "Correct Answer",
+      "alternateAnswer": "Alternate Answer",
       "fractionFormat": "Fraction Format",
       "gridlines": "Gridlines",
       "showGridlinesOptions": {

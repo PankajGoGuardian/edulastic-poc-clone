@@ -25,7 +25,7 @@ export const StyledProgressDiv = styled.div`
   position: relative;
 `;
 
-export const GraphDescription = styled.p`
+export const GraphDescription = styled.span`
   text-align: center;
   font-weight: 600;
   font-size: 11px;

@@ -36,7 +36,7 @@ import {
 import FilterBar from "../FilterBar/FilterBar";
 import TableList from "../TableList/TableList";
 import AdvancedTable from "../TableList/AdvancedTable";
-import ReleaseGradeSettingsModal from "../ReleaseGradeSettings/ReleaseGradeSetting";
+import ReleaseScoreSettingsModal from "../ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
 import MobileTableList from "../MobileTableList/MobileTableList";
 import ListHeader from "../../../src/components/common/ListHeader";
 import LeftFilter from "../LeftFilter";
@@ -135,14 +135,10 @@ class Assignments extends Component {
   };
 
   onUpdateReleaseScoreSettings = releaseScore => {
-    const {
-      updateReleaseScoreSettings,
-      currentEditableAssignment = { class: [{}] },
-      toggleReleaseGradePopUp
-    } = this.props;
+    const { updateReleaseScoreSettings, currentAssignment = { class: [{}] }, toggleReleaseGradePopUp } = this.props;
     if (releaseScore !== releaseGradeLabels.DONT_RELEASE) {
-      const { startDate, endDate } = currentEditableAssignment.class[0];
-      const updateReleaseScore = { ...currentEditableAssignment, releaseScore, startDate, endDate };
+      const { startDate, endDate } = currentAssignment.class[0];
+      const updateReleaseScore = { ...currentAssignment, releaseScore, startDate, endDate };
       updateReleaseScoreSettings(updateReleaseScore);
     } else {
       toggleReleaseGradePopUp(false);
@@ -187,11 +183,12 @@ class Assignments extends Component {
       toggleReleaseGradePopUp,
       assignmentsSummary,
       districtId,
-      isAdvancedView
+      isAdvancedView,
+      currentAssignment
     } = this.props;
     const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId } = this.state;
     const tabletWidth = 768;
-
+    const { releaseScore } = currentAssignment;
     return (
       <div>
         <TestPreviewModal
@@ -244,7 +241,6 @@ class Assignments extends Component {
                           tests={tests}
                           onSelectRow={this.onSelectRow}
                           selectedRows={selectedRows}
-                          // renderFilter={this.renderFilter}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           showPreviewModal={this.showPreviewModal}
                         />
@@ -263,13 +259,12 @@ class Assignments extends Component {
             </Main>
           </FlexContainer>
         </Container>
-        {isShowReleaseSettingsPopup && (
-          <ReleaseGradeSettingsModal
-            showReleaseGradeSettings={isShowReleaseSettingsPopup}
-            onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
-            updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}
-          />
-        )}
+        <ReleaseScoreSettingsModal
+          showReleaseGradeSettings={isShowReleaseSettingsPopup}
+          onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
+          updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}
+          releaseScore={releaseScore}
+        />
       </div>
     );
   }
@@ -287,7 +282,7 @@ Assignments.propTypes = {
   windowHeight: PropTypes.number.isRequired,
   loadAssignmentById: PropTypes.func.isRequired,
   updateReleaseScoreSettings: PropTypes.func.isRequired,
-  currentEditableAssignment: PropTypes.object.isRequired,
+  currentAssignment: PropTypes.object.isRequired,
   toggleReleaseGradePopUp: PropTypes.func.isRequired,
   tests: PropTypes.array.isRequired,
   isShowReleaseSettingsPopup: PropTypes.bool.isRequired,
@@ -309,7 +304,7 @@ const enhance = compose(
       assignmentsSummary: getAssignmentsSummary(state),
       assignmentsByTestId: getAssignmentsByTestSelector(state),
       tests: getTestsSelector(state),
-      currentEditableAssignment: getCurrentAssignmentSelector(state),
+      currentAssignment: getCurrentAssignmentSelector(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       districtId: getDistrictIdSelector(state),
       isAdvancedView: getAssignmentViewSelector(state),

@@ -1,15 +1,13 @@
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
   RECEIVE_CLASS_RESPONSE_SUCCESS,
-  RECEIVE_CLASS_RESPONSE_ERROR,
-  SET_SHOW_SCORE
+  RECEIVE_CLASS_RESPONSE_ERROR
 } from "../constants/actions";
 
 const initialState = {
   data: {},
   error: null,
-  loading: true,
-  showScore: false
+  loading: true
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -22,8 +20,6 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     case RECEIVE_CLASS_RESPONSE_ERROR:
       return { ...state, loading: false, error: payload.error };
-    case SET_SHOW_SCORE:
-      return { ...state, showScore: payload };
     default:
       return state;
   }

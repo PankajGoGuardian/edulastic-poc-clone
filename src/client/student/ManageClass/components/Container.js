@@ -4,21 +4,26 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { IconManageClass } from "@edulastic/icons";
-import { Row } from "antd";
+import { Row, Spin } from "antd";
 import ClassCard from "./CardContainer";
 
-const ManageClassContainer = ({ flag, t }) => (
-  <ManageClassContentWrapper flag={flag}>
-    <Row gutter={20}>
-      <ClassCard t={t} />
-    </Row>
-    <NoDataWrapper>
-      <IconManage />
-      <NoDataHeading>{t("common.noClassesTitle")}</NoDataHeading>
-      <NoDataSubText>{t("common.noClassesSubTitle")}</NoDataSubText>
-    </NoDataWrapper>
-  </ManageClassContentWrapper>
-);
+const ClassCards = ({ classList, t }) => {
+  const cards = classList.map(classItem => <ClassCard key={classItem._id} classItem={classItem} t={t} />);
+  return cards;
+};
+
+const ManageClassContainer = ({ flag, t, classList, loading }) => {
+  return (
+    <ManageClassContentWrapper flag={flag}>
+      <Row gutter={20}>{!loading ? <ClassCards classList={classList} t={t} loading={loading} /> : <Spin />}</Row>
+      <NoDataWrapper>
+        <IconManage />
+        <NoDataHeading>{t("common.noClassesTitle")}</NoDataHeading>
+        <NoDataSubText>{t("common.noClassesSubTitle")}</NoDataSubText>
+      </NoDataWrapper>
+    </ManageClassContentWrapper>
+  );
+};
 
 const enhance = compose(
   withNamespaces("manageClass"),

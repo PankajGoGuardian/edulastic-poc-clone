@@ -23,8 +23,8 @@ import MathSpanWrapper from "../../components/MathSpanWrapper";
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
     super(props);
-    const { template } = props;
-    const respLength = this.getResponsesCount(template);
+    const { stimulus } = props;
+    const respLength = this.getResponsesCount(stimulus);
     const userAnswers = new Array(respLength).fill(false);
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -39,14 +39,14 @@ class ClozeDragDropDisplay extends Component {
   }
 
   componentDidMount() {
-    const { template } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(template) });
+    const { stimulus } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(stimulus) });
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       const possibleResponses = this.getInitialResponses(nextProps);
-      const parsedTemplate = helpers.parseTemplate(nextProps.template);
+      const parsedTemplate = helpers.parseTemplate(nextProps.stimulus);
       this.setState({
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses,
@@ -55,11 +55,11 @@ class ClozeDragDropDisplay extends Component {
     }
   }
 
-  getResponsesCount = template => {
+  getResponsesCount = stimulus => {
     if (!window.$) {
       return 0;
     }
-    return $($("<div />").html(template)).find("response").length;
+    return $($("<div />").html(stimulus)).find("response").length;
   };
 
   onDrop = (data, index) => {
@@ -219,8 +219,8 @@ class ClozeDragDropDisplay extends Component {
     };
 
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto",
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 140,
+      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : 40,
       whiteSpace: uiStyle.wordwrap ? "inherit" : "nowrap"
     };
 
@@ -234,11 +234,12 @@ class ClozeDragDropDisplay extends Component {
     //   btnStyle.wordwrap = wordwrap;
     // }
 
-    // if (btnStyle && btnStyle.width === 0) {
-    //   btnStyle.width = responseBtnStyle.widthpx;
-    // } else {
-    //   btnStyle.width = btnStyle.widthpx;
-    // }
+    if (btnStyle && btnStyle.width === 0) {
+      btnStyle.width = responseBtnStyle.widthpx;
+    } else {
+      btnStyle.width = btnStyle.widthpx;
+    }
+
     if (btnStyle && btnStyle.height === 0) {
       btnStyle.height = responseBtnStyle.heightpx;
     } else {
@@ -256,7 +257,6 @@ class ClozeDragDropDisplay extends Component {
   render() {
     const {
       smallSize,
-      // question,
       configureOptions,
       hasGroupResponses,
       preview,
@@ -268,7 +268,6 @@ class ClozeDragDropDisplay extends Component {
       evaluation,
       item,
       theme,
-      // showQuestionNumber,
       responseIDs,
       disableResponse,
       isReviewTab
@@ -361,6 +360,7 @@ class ClozeDragDropDisplay extends Component {
           fontSize={fontSize}
           groupResponses={options}
           userAnswers={validation.valid_response && validation.valid_response.value}
+          btnStyle={btnStyle}
         />
         {!isEmpty(item.validation.alt_responses) && (
           <AlternateAnswerBoxLayout
@@ -368,6 +368,7 @@ class ClozeDragDropDisplay extends Component {
             groupResponses={options}
             hasGroupResponses={hasGroupResponses}
             altAnswers={validation.alt_responses}
+            btnStyle={btnStyle}
           />
         )}
       </>
@@ -467,7 +468,7 @@ ClozeDragDropDisplay.propTypes = {
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  template: PropTypes.string,
+  stimulus: PropTypes.string,
   // question: PropTypes.string.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object,
@@ -493,7 +494,7 @@ ClozeDragDropDisplay.defaultProps = {
   userSelections: [],
   evaluation: [],
   checkAnswer: false,
-  template: "",
+  stimulus: "",
   smallSize: false,
   hasGroupResponses: false,
   validation: {},

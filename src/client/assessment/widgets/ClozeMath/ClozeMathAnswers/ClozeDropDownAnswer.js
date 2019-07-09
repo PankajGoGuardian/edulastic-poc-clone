@@ -40,7 +40,7 @@ class ClozeDropDownAnswer extends Component {
 
   render() {
     const { answers, item } = this.props;
-    const { options, ui_style } = item;
+    const { options, ui_style: uiStyle, response_containers: responseContainers } = item;
 
     return (
       <AnswerContainer>
@@ -52,7 +52,8 @@ class ClozeDropDownAnswer extends Component {
         >
           {answers.map(answer => {
             const option = options[answer.id];
-            const width = ui_style[answer.id] ? `${ui_style[answer.id]["widthpx"]}px` : `${ui_style.min_width}px`;
+            const response = responseContainers.find(respCont => respCont.id === answer.id);
+            const width = response ? `${response.widthpx}px` : `${uiStyle.min_width}px` || "auto";
             return (
               <Panel header={`Text Dropdown ${answer.index + 1}`} key={answer.index}>
                 <AnswerSelect value={answer.value} onChange={text => this.selectChange(text, answer.id)} width={width}>

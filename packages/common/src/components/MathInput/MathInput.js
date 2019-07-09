@@ -127,6 +127,11 @@ class MathInput extends React.PureComponent {
     onBlur();
   };
 
+  onClickMathField = () => {
+    const { onInnerFieldClick } = this.props;
+    this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+  };
+
   focus = () => {
     const { mathField } = this.state;
     mathField.focus();
@@ -136,7 +141,9 @@ class MathInput extends React.PureComponent {
     const { mathFieldFocus } = this.state;
     const {
       alwaysShowKeyboard,
+      onChangeKeypad,
       showResponse,
+      showDropdown,
       style,
       onFocus,
       onKeyDown,
@@ -157,11 +164,7 @@ class MathInput extends React.PureComponent {
           className="input"
         >
           <div onKeyDown={onKeyDown} className="input__math" style={style} data-cy="answer-math-input-field">
-            <span
-              className="input__math__field"
-              ref={this.mathFieldRef}
-              onClick={() => this.setState({ mathFieldFocus: true })}
-            />
+            <span className="input__math__field" ref={this.mathFieldRef} onClick={this.onClickMathField} />
           </div>
           <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
             {(alwaysShowKeyboard || mathFieldFocus) && (
@@ -169,6 +172,8 @@ class MathInput extends React.PureComponent {
                 symbols={symbols}
                 numberPad={numberPad}
                 showResponse={showResponse}
+                showDropdown={showDropdown}
+                onChangeKeypad={onChangeKeypad}
                 onInput={(key, command) => this.onInput(key, command)}
               />
             )}
@@ -185,11 +190,14 @@ MathInput.propTypes = {
   onInput: PropTypes.func.isRequired,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
+  onInnerFieldClick: PropTypes.func,
+  showDropdown: PropTypes.bool,
   showResponse: PropTypes.bool,
   value: PropTypes.string,
   style: PropTypes.object,
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
+  onChangeKeypad: PropTypes.func,
   onKeyDown: PropTypes.func,
   fullWidth: PropTypes.bool,
   className: PropTypes.string
@@ -199,11 +207,14 @@ MathInput.defaultProps = {
   alwaysShowKeyboard: false,
   defaultFocus: false,
   value: "",
+  showDropdown: false,
   showResponse: false,
   style: {},
+  onInnerFieldClick: () => {},
   onFocus: () => {},
   onBlur: () => {},
   onKeyDown: () => {},
+  onChangeKeypad: () => {},
   fullWidth: false,
   className: ""
 };

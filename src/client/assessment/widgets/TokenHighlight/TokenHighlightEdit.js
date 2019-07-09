@@ -43,9 +43,20 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     .map(el => ({ value: `${el}.`, active: true }))
     .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
 
+  const mathArray = initialArray.join("<br/> ").match(/<span(.*?)class="input__math"(.*?)>/g);
+  let i = 0;
   const wordsArray = initialArray
     .join("<br/> ")
-    .split(" ")
+    .replace("&nbsp;", "")
+    .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
+    .split(/\s/g)
+    .map(el => {
+      if (mathArray && el.indexOf("<span></span>") !== -1) {
+        el = el.replace("<span></span>", mathArray[i]);
+        i++;
+      }
+      return el;
+    })
     .map(el => ({ value: `${el}`, active: true }));
 
   const [template, setTemplate] = useState();

@@ -87,8 +87,14 @@ class GroupResponses extends React.Component {
         // draft.options.forEach(option => {
         //   maxLength = Math.max(maxLength, option ? option.label.length : 0);
         // });
-        const finalWidth = 40 + maxLength * 7;
-        draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+
+        /**
+         * causes issues while re rendering after coming back from preview
+         * always defaulting width to 140 because of below logic
+         */
+
+        // const finalWidth = 40 + maxLength * 7;
+        // draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
         updateVariables(draft);
       })
     );

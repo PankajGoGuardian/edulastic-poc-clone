@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, flatten } from "lodash";
 import styled, { withTheme } from "styled-components";
 
 import { helpers, WithMathFormula } from "@edulastic/common";
@@ -31,13 +31,40 @@ const validatedAnswers = (answers, responses, matrix, type) => {
     result = [
       newMatrix.map((mat, matIndex) =>
         mat.map((row, rowIndex) => {
-          if (!responses[0] || !responses[0][matIndex]) {
-            return false;
-          }
-          return responses[0][matIndex].includes(rowIndex);
+          const isCorrect = responses.some(arr => {
+            return arr[matIndex] && arr[matIndex].includes(rowIndex);
+          });
+
+          return isCorrect;
         })
       )
     ];
+
+    const userResponsesResult = responses.map(res => {
+      let newMatrix = cloneDeep(matrix);
+
+      newMatrix = newMatrix.map((mat, matIndex) =>
+        mat.map((row, rowIndex) => {
+          if (!res[matIndex]) {
+            res[matIndex] = [];
+          }
+
+          if (!answers[matIndex]) {
+            answers[matIndex] = [];
+          }
+
+          if (!res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex)) {
+            return "incorrect";
+          }
+
+          return res[matIndex].includes(rowIndex) && answers[matIndex].includes(rowIndex);
+        })
+      );
+
+      return newMatrix;
+    });
+
+    result = [...result, ...userResponsesResult];
   } else {
     result = responses.map(res => {
       let newMatrix = cloneDeep(matrix);

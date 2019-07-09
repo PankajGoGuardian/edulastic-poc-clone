@@ -1,4 +1,4 @@
-import { groupBy, minBy, cloneDeep } from "lodash";
+import { groupBy, minBy, cloneDeep, countBy } from "lodash";
 import { getHSLFromRange1 } from "../../../../common/util";
 
 export const idToLabel = {
@@ -68,7 +68,7 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
     let schoolName = groupedData[data][0].schoolName;
     let teacherName = groupedData[data][0].teacherName;
     let className = groupedData[data][0].className;
-
+    const statusCounts = countBy(groupedData[data], o => o.progressStatus);
     item = {
       ...item,
       avgStudentScorePercentUnrounded: avgStudentScorePercentUnrounded,
@@ -76,8 +76,8 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       correct: avgStudentScorePercent,
       incorrect: Math.round(100 - avgStudentScorePercent),
       districtAvg: Math.round(rawData.districtAvgPerf),
-      absent: 0,
-      graded: groupedData[data].length,
+      absent: statusCounts[2] || 0,
+      graded: statusCounts[1] || 0,
       schoolName: schoolName,
       teacherName: teacherName,
       className: className,

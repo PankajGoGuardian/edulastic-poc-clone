@@ -12,17 +12,15 @@ const NumberPadItem = ({ item, onSelect, t, buttonStyle }) => {
 
   return (
     <Popover
-      content={<CharacterMap onClick={onSelect} />}
+      content={<CharacterMap onClick={onSelect} buttonStyle={buttonStyle} />}
       title={t("component.options.characterMap")}
       placement="bottom"
       trigger="click"
       visible={visible}
       onVisibleChange={() => setVisible(!visible)}
     >
-      <NumberPadButton
-        buttonStyle={buttonStyle}
-        onClick={() => setVisible(!visible)}
-      >{item.label}
+      <NumberPadButton buttonStyle={buttonStyle} onClick={() => setVisible(!visible)}>
+        {item.label}
       </NumberPadButton>
     </Popover>
   );

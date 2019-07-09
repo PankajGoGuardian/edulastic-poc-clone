@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { Link } from "react-router-dom";
 import { white } from "@edulastic/colors";
 import { GoogleLogin } from "react-google-login";
+import { get } from "lodash";
 // components
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import { Title, IconManageClass, CreateClassButton, SyncButtons, CreateIcon, ButtonsWrapper } from "./styled";
@@ -24,9 +25,9 @@ const scopes = [
   "https://www.googleapis.com/auth/userinfo.profile"
 ].join(" ");
 
-const Header = ({ fetchClassList, history }) => {
+const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
   const handleLoginSucess = data => {
-    fetchClassList(data);
+    fetchClassList({ data });
   };
 
   const handleError = err => {
@@ -38,16 +39,18 @@ const Header = ({ fetchClassList, history }) => {
         <IconManageClass color={white} width={20} height={20} /> <span>Manage Class</span>
       </Title>
       <ButtonsWrapper>
-        <GoogleLogin
-          clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
-          buttonText="Sync with Google Classroom"
-          render={renderProps => <SyncButtons onClick={renderProps.onClick}>Sync with Google Classroom</SyncButtons>}
-          scope={scopes}
-          onSuccess={handleLoginSucess}
-          onFailure={handleError}
-          prompt="consent"
-          responseType="code"
-        />
+        {allowGoogleLogin !== false && (
+          <GoogleLogin
+            clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
+            buttonText="Sync with Google Classroom"
+            render={renderProps => <SyncButtons onClick={renderProps.onClick}>Sync with Google Classroom</SyncButtons>}
+            scope={scopes}
+            onSuccess={handleLoginSucess}
+            onFailure={handleError}
+            prompt={isUserGoogleLoggedIn ? "" : "consent"}
+            responseType="code"
+          />
+        )}
         <Link to={`/author/manageClass/createClass`}>
           <CreateClassButton>
             <CreateIcon color={white} /> Create Class{" "}
@@ -64,7 +67,9 @@ Header.propTypes = {
 
 const enhance = compose(
   connect(
-    null,
+    state => ({
+      isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn")
+    }),
     { fetchClassList: fetchClassListAction }
   )
 );

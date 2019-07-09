@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { MathSpan } from "@edulastic/common";
+
 class AlternateAnswerBoxLayout extends Component {
   render() {
-    const { altAnswers, fontSize, groupResponses, hasGroupResponses } = this.props;
+    const { altAnswers, fontSize, groupResponses, hasGroupResponses, btnStyle } = this.props;
     let responses = [];
     if (hasGroupResponses) {
       groupResponses.forEach(groupResponse => {
@@ -37,7 +38,7 @@ class AlternateAnswerBoxLayout extends Component {
     ));
 
     return (
-      <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
+      <div className="correctanswer-box" style={{ padding: 16, fontSize, ...btnStyle }}>
         <h2 style={{ fontSize: 20 }}>Alternate Answer</h2>
         <div>{alternateAnswers}</div>
       </div>
@@ -48,13 +49,15 @@ class AlternateAnswerBoxLayout extends Component {
 AlternateAnswerBoxLayout.propTypes = {
   altAnswers: PropTypes.array,
   fontSize: PropTypes.string,
-  groupResponses: PropTypes.array
+  groupResponses: PropTypes.array,
+  btnStyle: PropTypes.object
 };
 
 AlternateAnswerBoxLayout.defaultProps = {
   fontSize: "13px",
   altAnswers: [],
-  groupResponses: []
+  groupResponses: [],
+  btnStyle: {}
 };
 
 export default AlternateAnswerBoxLayout;

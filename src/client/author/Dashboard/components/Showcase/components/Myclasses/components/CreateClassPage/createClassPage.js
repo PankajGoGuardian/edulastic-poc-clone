@@ -1,18 +1,17 @@
 import React from "react";
 import { Icon } from "antd";
+import { Link } from "react-router-dom";
 import GoogleClassRoomImg from "../../../../../../assets/images/google-classroom.png";
 import { CreateCardBox, CreateClassButton, SyncClassDiv, SyncImg } from "./styled";
 const CreateClassPage = () => {
-  const createClassHandler = () => {
-    console.log("Navigate to create class page after manage class routing is complete");
-  };
-
   return (
     <CreateCardBox>
-      <CreateClassButton onClick={createClassHandler}>
-        <Icon type="plus" />
-        <p>create class</p>
-      </CreateClassButton>
+      <Link to={"/author/manageClass/createClass"}>
+        <CreateClassButton>
+          <Icon type="plus" />
+          <p>create class</p>
+        </CreateClassButton>
+      </Link>
       <p>or</p>
       <SyncClassDiv>
         <SyncImg src={GoogleClassRoomImg} width={35} />

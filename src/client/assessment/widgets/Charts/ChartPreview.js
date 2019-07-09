@@ -81,6 +81,9 @@ const ChartPreview = ({
   const answerData = validation ? validation.valid_response.value : [];
   const answerCorrect = Array(answerData.length).fill(true);
 
+  const altAnswerData = validation && validation.alt_responses ? validation.alt_responses : [];
+  const altAnswerCorrect = altAnswerData.map(ans => Array(ans.value.length).fill(true));
+
   const correct =
     evaluation && evaluation.length && previewTab === CHECK
       ? evaluation
@@ -136,6 +139,25 @@ const ChartPreview = ({
           />
         </CorrectAnswerWrapper>
       )}
+
+      {view === PREVIEW &&
+        previewTab === SHOW &&
+        altAnswerData.length &&
+        altAnswerData.map((ans, index) => (
+          <CorrectAnswerWrapper key={index}>
+            <Subtitle>{`${t("component.chart.alternateAnswer")} ${index + 1}`}</Subtitle>
+            <CurrentChart
+              {...passData}
+              data={ans.value}
+              gridParams={calculatedParams}
+              view={view}
+              disableResponse
+              previewTab={previewTab}
+              saveAnswer={saveAnswerHandler}
+              correct={altAnswerCorrect[index]}
+            />
+          </CorrectAnswerWrapper>
+        ))}
     </Paper>
   );
 };

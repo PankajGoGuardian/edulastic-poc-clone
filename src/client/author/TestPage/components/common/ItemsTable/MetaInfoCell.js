@@ -60,6 +60,9 @@ class MetaInfoCell extends Component {
     }
     const newTest = cloneDeep(test);
     let keys = [];
+    if (newTest.safeBrowser && !newTest.sebPassword) {
+      return message.error("Please add a valid password");
+    }
     if (selectedRows !== undefined) {
       selectedRows.data.forEach((selectedRow, index) => {
         keys[index] = selectedRow;
@@ -142,7 +145,7 @@ class MetaInfoCell extends Component {
             <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
           </CategoryDiv>
           <CategoryDiv>
-            <CategoryTitle>ID:</CategoryTitle> <FirstText>{data._id}</FirstText>
+            <CategoryTitle>ID:</CategoryTitle> <FirstText>{data.shortId}</FirstText>
           </CategoryDiv>
           <CategoryDiv>
             <FlexContainer>
@@ -205,7 +208,7 @@ class MetaInfoCell extends Component {
                 </MetaWrapper>
                 <MetaWrapper>
                   <IconHash color="#bbbfc4" width={11} height={14} />
-                  <FirstText>{data.id}</FirstText>
+                  <FirstText>{data.shortId}</FirstText>
                 </MetaWrapper>
                 <MetaWrapper>
                   <IconShare color="#bbbfc4" width={14} height={15} />

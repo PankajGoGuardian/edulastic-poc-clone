@@ -67,7 +67,10 @@ class LayoutComponent extends Component {
         <Layout>
           <Row gutter={36}>
             <Col md={12}>
-              <LineWidthOption onChange={val => _change("line_width", +val)} value={item.line_width || 5} />
+              <LineWidthOption
+                onChange={val => _change("line_width", +val)}
+                value={item && item.line_width ? item.line_width : 5}
+              />
             </Col>
             <Col md={12}>
               <FontSizeOption

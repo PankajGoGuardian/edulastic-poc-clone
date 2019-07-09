@@ -8,7 +8,8 @@ import { withNamespaces } from "@edulastic/localization";
 import { springGreen, fadedBlack } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
-import { isDistrictPolicyAllowed } from "../../../common/utils/helpers";
+import { isDistrictPolicyAllowed, emailSpecialCharCheck } from "../../../common/utils/helpers";
+import { ForgotPasswordPopup } from "./forgotPasswordPopup";
 
 import mailIcon from "../../assets/mail-icon.svg";
 import keyIcon from "../../assets/key-icon.svg";
@@ -26,7 +27,8 @@ class LoginContainer extends React.Component {
   };
 
   state = {
-    confirmDirty: false
+    confirmDirty: false,
+    forgotPasswordVisible: false
   };
 
   handleSubmit = e => {
@@ -46,6 +48,27 @@ class LoginContainer extends React.Component {
     let { confirmDirty } = this.state;
     confirmDirty = confirmDirty || !!value;
     this.setState({ confirmDirty });
+  };
+
+  onForgotPasswordClick = () => {
+    this.setState(state => ({
+      ...state,
+      forgotPasswordVisible: true
+    }));
+  };
+
+  onForgotPasswordCancel = () => {
+    this.setState(state => ({
+      ...state,
+      forgotPasswordVisible: false
+    }));
+  };
+
+  onForgotPasswordOk = () => {
+    this.setState(state => ({
+      ...state,
+      forgotPasswordVisible: false
+    }));
   };
 
   render() {
@@ -129,10 +152,23 @@ class LoginContainer extends React.Component {
                       <Form onSubmit={this.handleSubmit}>
                         <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
                           {getFieldDecorator("email", {
+                            validateFirst: true,
+                            initialValue: "",
                             rules: [
+                              {
+                                transform: value => trim(value)
+                              },
                               {
                                 required: true,
                                 message: t("common.validation.emptyemailid")
+                              },
+                              {
+                                type: "email",
+                                message: t("common.validation.validemail")
+                              },
+                              {
+                                validator: (rule, value, callback) =>
+                                  emailSpecialCharCheck(rule, value, callback, t("common.validation.validemail"))
                               }
                             ]
                           })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}
@@ -152,7 +188,11 @@ class LoginContainer extends React.Component {
                             valuePropName: "checked",
                             initialValue: true
                           })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
-                          <ForgetPassword href="#" style={{ marginTop: 1 }}>
+                          <ForgetPassword
+                            href="javascript:void(0);"
+                            style={{ marginTop: 1 }}
+                            onClick={this.onForgotPasswordClick}
+                          >
                             {t("common.forgotpasswordtext")}
                           </ForgetPassword>
                           <LoginButton data-cy="login" type="primary" htmlType="submit">
@@ -170,6 +210,13 @@ class LoginContainer extends React.Component {
         <Copyright>
           <Col span={24}>{t("common.copyright")}</Col>
         </Copyright>
+        {this.state.forgotPasswordVisible ? (
+          <ForgotPasswordPopup
+            visible={this.state.forgotPasswordVisible}
+            onCancel={this.onForgotPasswordCancel}
+            onOk={this.onForgotPasswordOk}
+          />
+        ) : null}
       </LoginContentWrapper>
     );
   }

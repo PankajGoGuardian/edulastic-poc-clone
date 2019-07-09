@@ -2,7 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-const TabContainer = ({ children, style }) => <Container style={style}>{children}</Container>;
+const TabContainer = ({ children, style, padding }) => {
+  return (
+    <Container padding={padding} style={style}>
+      {children}
+    </Container>
+  );
+};
 
 TabContainer.propTypes = {
   children: PropTypes.any.isRequired,
@@ -16,5 +22,5 @@ TabContainer.defaultProps = {
 export default TabContainer;
 
 const Container = styled.div`
-  padding: 10px 0;
+  padding: ${props => (props.padding ? props.padding : "10px 0px")};
 `;

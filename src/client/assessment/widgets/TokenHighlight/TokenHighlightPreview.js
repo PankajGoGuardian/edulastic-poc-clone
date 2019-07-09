@@ -84,7 +84,9 @@ const TokenHighlightPreview = ({
   }, [previewTab]);
 
   useEffect(() => {
-    if (userAnswer.length === 0) {
+    if (view === EDIT && !isCheck) {
+      setAnswers(validArray);
+    } else if (userAnswer.length === 0) {
       saveAnswer(initialArray);
       setAnswers(initialArray);
     }

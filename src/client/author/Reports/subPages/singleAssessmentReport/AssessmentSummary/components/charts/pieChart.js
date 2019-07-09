@@ -5,6 +5,7 @@ import { StyledCustomChartTooltip } from "../styled";
 import { Row, Col } from "antd";
 import { sumBy } from "lodash";
 import { getHSLFromRange1 } from "../../../../../common/util";
+import performanceBandColorRange from "../../../../../common/static/json/performanceBandColorRange.json";
 
 export const SimplePieChart = props => {
   const renderCustomizedLabel = args => {
@@ -26,11 +27,12 @@ export const SimplePieChart = props => {
       const sum = sumBy(props.data, o => {
         return o.bandPerf;
       });
+      const colors = performanceBandColorRange[props.data.length];
       for (let i = 0; i < props.data.length; i++) {
         arr.push({
           bandPerf: props.data[i].bandPerf,
-          fill: props.data[i].color,
-          name: props.data[i].masteryName,
+          fill: colors[i],
+          name: props.data[i].name,
           sum: sum
         });
       }

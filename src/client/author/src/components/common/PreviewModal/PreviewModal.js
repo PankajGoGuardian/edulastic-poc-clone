@@ -86,9 +86,9 @@ class PreviewModal extends React.Component {
       checkAnswer,
       showAnswer,
       preview,
-      showEvaluationButtons
+      showEvaluationButtons,
+      questions
     } = this.props;
-    const questions = keyBy(get(item, "data.questions", []), "id");
     const { authors = [], rows } = item;
     const getAuthorsId = authors.map(item => item._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
@@ -98,9 +98,9 @@ class PreviewModal extends React.Component {
         <HeadingWrapper>
           <Title>Preview</Title>
         </HeadingWrapper>
-        <QuestionWrapper>
+        <QuestionWrapper padding="0px">
           {showEvaluationButtons && (
-            <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
+            <FlexContainer padding="15px 15px 0px" justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
               <ButtonsWrapper>
                 {allowDuplicate && isEditable && (
                   <EduButton
@@ -114,7 +114,7 @@ class PreviewModal extends React.Component {
                 )}
                 {authorHasPermission && isEditable && (
                   <EduButton
-                    title="Edit Test"
+                    title="Edit item"
                     style={{ width: 42, padding: 0 }}
                     size="large"
                     onClick={this.editTestItem}
@@ -163,7 +163,8 @@ PreviewModal.propTypes = {
   checkAnswer: PropTypes.func,
   showAnswer: PropTypes.func,
   changeView: PropTypes.func.isRequired,
-  showEvaluationButtons: PropTypes.bool
+  showEvaluationButtons: PropTypes.bool,
+  questions: PropTypes.object.isRequired
 };
 
 PreviewModal.defaultProps = {
@@ -204,6 +205,7 @@ const HeadingWrapper = styled.div`
   align-items: center;
   padding: 10px;
   justify-content: space-between;
+  margin-top: -25px;
 `;
 
 const Title = styled.div`
@@ -226,5 +228,5 @@ const QuestionWrapper = styled.div`
   border-radius: 10px;
   background: #fff;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: ${props => (props.padding ? props.padding : "20px")};
 `;

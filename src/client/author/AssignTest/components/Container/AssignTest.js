@@ -61,7 +61,7 @@ class AssignTest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isAdvancedView: false,
+      isAdvancedView: props.userRole !== "teacher" ? true : false,
       assignment: {
         ...initAssignment,
         endDate: setTime(props.userRole)
@@ -99,7 +99,8 @@ class AssignTest extends React.Component {
       limit: 1000
     });
     if (isEmpty(performanceBandData)) {
-      fetchPerformanceBand({ orgId: userOrgId });
+      //TODO this api return permission Denied with 403 status until this getting adressed hiding from front-end
+      // fetchPerformanceBand({ orgId: userOrgId });
     }
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
@@ -210,11 +211,7 @@ class AssignTest extends React.Component {
               &nbsp;/&nbsp;
               <Anchor>Assign</Anchor>
             </PaginationInfo>
-            <SwitchWrapper>
-              <SwitchLabel>SIMPLE</SwitchLabel>
-              <ViewSwitch size="small" onChange={this.SwitchView} defaultChecked={isAdvancedView} />
-              <SwitchLabel>ADVANCED</SwitchLabel>
-            </SwitchWrapper>
+            {/* TODO there are some scenarios we have both simple and advance view which is yet be decided */}
           </FullFlexContainer>
 
           {isAdvancedView ? (

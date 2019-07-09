@@ -112,13 +112,9 @@ class ExpressGrader extends Component {
     const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
     const testActivity = transformMemoized(_testActivity);
-    const gradeSubject = {
-      grade: classResponse.metadata ? classResponse.metadata.grades : [],
-      subject: classResponse.metadata ? classResponse.metadata.subjects : []
-    };
 
     return (
-      <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
+      <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
         <div>
           <ClassHeader
             classId={classId}
@@ -134,7 +130,7 @@ class ExpressGrader extends Component {
               {additionalData && <a>{additionalData.testName}</a>} /{" "}
               {additionalData && <a>{additionalData.className}</a>}
             </PaginationInfo>
-            <PresentationToggleSwitch />
+            <PresentationToggleSwitch groupId={classId} />
           </StyledFlexContainer>
           {!isMobile && (
             <ScoreTable

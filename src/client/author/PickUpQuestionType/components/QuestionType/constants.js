@@ -1025,9 +1025,8 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
-        template: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
+        stimulus: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
-        stimulus: "Drag and Drop the right answer in the answers below",
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
@@ -1061,12 +1060,11 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
-        template: `<p>Pick the right options in the dropdown below.</p><p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${
+        stimulus: `<p>Pick the right options in the dropdown below.</p><p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${
           uuids[0]
         } contenteditable="false"></textdropdown>&nbsp;and&nbsp;<textdropdown responseindex="2" id=${
           uuids[1]
         } contenteditable="false"></textdropdown>&nbsp;</p>`,
-        stimulus: "",
         response_ids: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
         ui_style: {
           responsecontainerposition: "bottom",
@@ -1100,12 +1098,11 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
-        template: `<p>Fill blank boxes with the right answer.</p><p>Sample question text with <textinput responseindex="1" id=${
+        stimulus: `<p>Fill blank boxes with the right answer.</p><p>Sample question text with <textinput responseindex="1" id=${
           uuids[0]
         } contenteditable="false" /></textinput>&nbsp;and<textinput responseindex="2" contenteditable="false" id=${
           uuids[1]
         }/></textinput>&nbsp;</p>`,
-        stimulus: "",
         ui_style: {
           fontsize: "normal",
           heightpx: 35,
@@ -1719,28 +1716,7 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "floating-keyboard"
         },
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ],
+        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["units_si", "units_us", "qwerty"],
         template: EMBED_RESPONSE,
         templateDisplay: false,
@@ -1777,28 +1753,7 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "floating-keyboard"
         },
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ],
+        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -1833,28 +1788,7 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "floating-keyboard"
         },
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ],
+        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -1894,28 +1828,7 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "floating-keyboard"
         },
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ],
+        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -1950,29 +1863,8 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "floating-keyboard"
         },
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ],
-        symbols: ["matrices", "general", "qwerty"],
+        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
+        symbols: ["intermediate", "general", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -2027,28 +1919,7 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "floating-keyboard"
         },
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ],
+        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["units_si", "units_us", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -2060,8 +1931,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Expression Multipart",
-        stimulus: "",
-        template:
+        stimulus:
           '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
         templateDisplay: true,
         type: questionType.EXPRESSION_MULTIPART,
@@ -2108,28 +1978,7 @@ export const getCards = onSelectQuestionType => {
         is_math: true,
         response_containers: [],
         symbols: ["basic", "qwerty"],
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ],
+        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -2152,28 +2001,7 @@ export const getCards = onSelectQuestionType => {
             score: 1
           }
         },
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ],
+        numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         metadata: {},
         is_math: true,
         symbols: ["basic", "qwerty"],

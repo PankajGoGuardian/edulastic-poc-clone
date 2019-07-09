@@ -18,7 +18,7 @@ import { withNamespaces } from "@edulastic/localization";
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { PaddingDiv, EduButton } from "@edulastic/common";
 
-import { clozeImage, canvasDimensions, aws } from "@edulastic/constants";
+import { clozeImage, aws } from "@edulastic/constants";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
@@ -56,11 +56,12 @@ const IMAGE_WIDTH_PROP = "imageWidth";
 const IMAGE_HEIGHT_PROP = "imageHeight";
 
 class ComposeQuestion extends Component {
-  imageRndRef = createRef();
-
   constructor(props) {
     super(props);
-    this.imageWidthEditor = React.createRef();
+    this.imageWidthEditor = createRef();
+    this.canvasRef = createRef();
+    this.imageRndRef = createRef();
+    this.imagePreviewRef = createRef();
   }
 
   static propTypes = {
@@ -304,7 +305,7 @@ class ComposeQuestion extends Component {
     this.setState(prevState => ({ isEditableResizeMove: !prevState.isEditableResizeMove }));
   };
 
-  handleImagePosition = d => {
+  handleDragStop = d => {
     const { item, setQuestionData } = this.props;
 
     setQuestionData(
@@ -314,22 +315,40 @@ class ComposeQuestion extends Component {
     );
   };
 
-  handleResize = resizeRef => {
+  handleDragging = d => {
+    if (!this.canvasRef.current) {
+      return;
+    }
+    const { item } = this.props;
+    const { imageWidth, imageHeight, imageOriginalHeight, imageOriginalWidth } = item;
+    const { maxHeight, maxWidth } = clozeImage;
+    const { x, y } = d;
+    const _imageW = imageWidth || imageOriginalWidth;
+    const _imageH = imageHeight || imageOriginalHeight;
+
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+    let canvasW = maxWidth < _imageW + x ? _imageW + x : maxWidth;
+    let canvasH = maxHeight < _imageH + y ? _imageH + y : maxHeight;
+
+    if (canvasH < responseBoxMaxTop) {
+      canvasH = responseBoxMaxTop + 20;
+    }
+
+    if (canvasW < responseBoxMaxLeft) {
+      canvasW = responseBoxMaxLeft;
+    }
+
+    this.canvasRef.current.style.width = `${canvasW}px`;
+    this.canvasRef.current.style.height = `${canvasH}px`;
+  };
+
+  handleResizeStop = resizeRef => {
     const { width } = resizeRef.style;
     const { height } = resizeRef.style;
     const { item, setQuestionData } = this.props;
 
-    let _width = Math.round(parseInt(width, 10));
-    let _height = Math.round(parseInt(height, 10));
-    const { imageWidth, imageHeight } = item;
-
-    if (_width <= imageWidth) {
-      _width += 10;
-    }
-
-    if (_height <= imageHeight) {
-      _height += 10;
-    }
+    const _width = Math.round(parseInt(width, 10));
+    const _height = Math.round(parseInt(height, 10));
 
     setQuestionData(
       produce(item, draft => {
@@ -337,6 +356,41 @@ class ComposeQuestion extends Component {
         draft.imageWidth = _width;
       })
     );
+  };
+
+  handleResizing = resizeRef => {
+    if (!this.canvasRef.current || !this.imagePreviewRef.current) {
+      return;
+    }
+
+    const {
+      item: { imageOptions = {} }
+    } = this.props;
+    const { maxHeight, maxWidth } = clozeImage;
+    const { width } = resizeRef.style;
+    const { height } = resizeRef.style;
+    const { x = 0, y = 0 } = imageOptions;
+
+    const _imageW = Math.round(parseInt(width, 10));
+    const _imageH = Math.round(parseInt(height, 10));
+
+    const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
+    let canvasW = maxWidth < _imageW + x ? _imageW + x : maxWidth;
+    let canvasH = maxHeight < _imageH + y ? _imageH + y : maxHeight;
+
+    if (canvasH < responseBoxMaxTop) {
+      canvasH = responseBoxMaxTop + 20;
+    }
+
+    if (canvasW < responseBoxMaxLeft) {
+      canvasW = responseBoxMaxLeft;
+    }
+
+    this.canvasRef.current.style.width = `${canvasW}px`;
+    this.canvasRef.current.style.height = `${canvasH}px`;
+
+    this.imagePreviewRef.current.style.width = `${_imageW}px`;
+    this.imagePreviewRef.current.style.height = `${_imageH}px`;
   };
 
   getWidth = () => {
@@ -391,12 +445,12 @@ class ComposeQuestion extends Component {
     const { background, imageAlterText, isEditAriaLabels, responses, keepAspectRatio } = item;
     const { isEditableResizeMove } = this.state;
 
-    const { toggleIsMoveResizeEditable, handleImagePosition } = this;
+    const { toggleIsMoveResizeEditable, handleDragStop } = this;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
     const { imageOptions = {} } = item;
 
-    const { maxHeight, maxWidth } = canvasDimensions;
+    const { maxHeight, maxWidth } = clozeImage;
 
     const uploadProps = {
       beforeUpload: () => false,
@@ -410,8 +464,17 @@ class ComposeQuestion extends Component {
     const imageHeight = this.getHeight();
     const imageTop = this.getTop();
     const imageLeft = this.getLeft();
-    let canvasWidth = (imageWidth < maxWidth ? maxWidth : imageWidth) + imageLeft;
-    let canvasHeight = (imageHeight < maxHeight ? maxHeight : imageHeight) + imageTop;
+
+    let canvasWidth = imageWidth < maxWidth ? maxWidth : imageWidth;
+    let canvasHeight = imageHeight < maxHeight ? maxHeight : imageHeight;
+
+    if (canvasWidth < imageLeft + imageWidth) {
+      canvasWidth = imageLeft + imageWidth;
+    }
+
+    if (canvasHeight < imageTop + imageHeight) {
+      canvasHeight = imageTop + imageHeight;
+    }
 
     const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
 
@@ -421,10 +484,6 @@ class ComposeQuestion extends Component {
 
     if (canvasWidth < responseBoxMaxLeft) {
       canvasWidth = responseBoxMaxLeft;
-    }
-
-    if (this.imageRndRef.current) {
-      this.imageRndRef.current.updateSize({ width: imageWidth, height: imageHeight });
     }
 
     return (
@@ -534,8 +593,9 @@ class ComposeQuestion extends Component {
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
-                  height={canvasHeight + 4}
-                  width={canvasWidth + 4}
+                  style={{ height: canvasHeight, width: canvasWidth }}
+                  onDragStart={e => e.preventDefault()}
+                  innerRef={this.canvasRef}
                 >
                   {item.imageUrl && (
                     <React.Fragment>
@@ -547,7 +607,6 @@ class ComposeQuestion extends Component {
                           y: imageOptions.y || 0
                         }}
                         position={{ x: imageOptions.x || 0, y: imageOptions.y || 0 }}
-                        bounds="parent"
                         enableResizing={{
                           bottom: false,
                           bottomLeft: false,
@@ -558,8 +617,11 @@ class ComposeQuestion extends Component {
                           topLeft: false,
                           topRight: false
                         }}
-                        onDragStop={(evt, d) => handleImagePosition(d)}
-                        onResize={(e, direction, ref) => this.handleResize(ref)}
+                        lockAspectRatio={item.keepAspectRatio}
+                        onDragStop={(evt, d) => handleDragStop(d)}
+                        onDrag={(evt, d) => this.handleDragging(d)}
+                        onResizeStop={(e, direction, ref) => this.handleResizeStop(ref)}
+                        onResize={(e, direction, ref) => this.handleResizing(ref)}
                       >
                         {isEditableResizeMove && (
                           <MoveControlButton
@@ -572,12 +634,12 @@ class ComposeQuestion extends Component {
                           </MoveControlButton>
                         )}
                         <PreviewImage
-                          width={imageWidth}
-                          height={imageHeight}
+                          style={{ width: imageWidth, height: imageHeight }}
                           maxWidth={maxWidth}
                           maxHeight={maxHeight}
                           onDragStart={e => e.preventDefault()}
                           imageSrc={item.imageUrl}
+                          innerRef={this.imagePreviewRef}
                         />
                       </Rnd>
                       <DropArea

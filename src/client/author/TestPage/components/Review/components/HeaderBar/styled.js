@@ -13,7 +13,7 @@ export const Item = styled(FlexContainer)`
 
 export const Container = styled(FlexContainer)`
   justify-content: space-between;
-  padding-bottom: 22px;
+  padding-bottom: 12px;
   margin-top: ${props => (props.windowWidth > 468 ? "0px" : "15px")};
 `;
 

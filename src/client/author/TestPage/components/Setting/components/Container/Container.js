@@ -13,7 +13,7 @@ import { Container, ButtonLink } from "../../../../../src/components/common";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import MainSetting from "../MainSetting/MainSetting";
 
-const Setting = ({ t, current, history, onShowSource, windowWidth, owner, isEditable = false }) => {
+const Setting = ({ t, current, history, onShowSource, windowWidth, owner, isEditable = false, sebPasswordRef }) => {
   const breadcrumbData = [
     {
       title: "TESTS LIBRARY",
@@ -37,7 +37,13 @@ const Setting = ({ t, current, history, onShowSource, windowWidth, owner, isEdit
           </Button>
         )}
       </SecondHeader>
-      <MainSetting history={history} windowWidth={windowWidth} owner={owner} isEditable={isEditable} />
+      <MainSetting
+        history={history}
+        windowWidth={windowWidth}
+        owner={owner}
+        isEditable={isEditable}
+        sebPasswordRef={sebPasswordRef}
+      />
     </Container>
   );
 };

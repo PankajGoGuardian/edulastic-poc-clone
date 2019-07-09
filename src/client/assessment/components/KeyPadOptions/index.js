@@ -1,21 +1,39 @@
+/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import { Col, Select, Input, Checkbox } from "antd";
-
-import { typedList as types, math } from "@edulastic/constants";
-import { MathKeyboard } from "@edulastic/common";
+import { Col, Select, Input } from "antd";
+import { isObject } from "lodash";
+import { math } from "@edulastic/constants";
+import { MathKeyboard, Keyboard, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { numBtnColors } from "@edulastic/colors";
 
+import NumberPad from "../NumberPad";
+import KeyPad from "../KeyPad";
 import { Widget } from "../../styled/Widget";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
-
-import TypedList from "../TypedList";
-import NumberPad from "../NumberPad";
-
 import { StyledRow } from "./styled/StyledRow";
 
+const defaultNumberPad = [
+  "1",
+  "2",
+  "3",
+  "+",
+  "4",
+  "5",
+  "6",
+  "-",
+  "7",
+  "8",
+  "9",
+  "\\times",
+  "0",
+  ".",
+  "divide",
+  "\\div"
+];
 class KeyPadOptions extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
@@ -40,65 +58,71 @@ class KeyPadOptions extends Component {
     cleanSections();
   }
 
+  getNumberPad = isCustom => {
+    const { item, onChange, t } = this.props;
+    if (!item.numberPad || !item.numberPad.length) {
+      onChange("numberPad", MathKeyboard.NUMBER_PAD_ITEMS.map(({ value }) => value));
+      return MathKeyboard.NUMBER_PAD_ITEMS;
+    }
+
+    if (item.numberPad.filter(num => num === "").length && !isCustom) {
+      onChange("numberPad", defaultNumberPad);
+      return defaultNumberPad;
+    }
+
+    return item.numberPad.map(num => {
+      const res = MathKeyboard.NUMBER_PAD_ITEMS.find(({ value }) => num === value);
+
+      return res || { value: "", label: t("component.options.empty") };
+    });
+  };
+
+  handleSymbolsChange = value => {
+    const { item, onChange } = this.props;
+    const data = [...item.symbols];
+
+    if (value === "custom") {
+      data[0] = {
+        label: "label",
+        title: "",
+        value: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+      };
+    } else {
+      data[0] = value;
+    }
+
+    onChange("symbols", data);
+  };
+
+  handleChangeNumberPad = (index, value) => {
+    const { item, onChange } = this.props;
+    const numberPad = item.numberPad ? [...item.numberPad] : [];
+
+    numberPad[index] = value;
+    onChange("numberPad", numberPad);
+  };
+
+  handleCustomSymboleLabel = label => {
+    const { item, onChange } = this.props;
+    const data = [...item.symbols];
+    data[0].label = label;
+    onChange("symbols", data);
+  };
+
   render() {
     const { item, onChange, advancedAreOpen, t } = this.props;
+    const symbol = item.symbols[0];
+    const isCustom = isObject(symbol);
 
-    const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
-        ...item.ui_style,
-        [prop]: value
-      });
-    };
+    const symbolsData = [{ value: "custom", label: t("component.options.addCustom") }, ...math.symbols];
 
-    const handleAddSymbol = () => {
-      let data = [];
-
-      if (item.symbols && item.symbols.length) {
-        data = [...item.symbols];
-      }
-      onChange("symbols", [...data, ""]);
-    };
-
-    const handleDeleteSymbol = index => {
-      const data = [...item.symbols];
-      data.splice(index, 1);
-      onChange("symbols", data);
-    };
-
-    const handleSymbolsChange = (index, value) => {
-      const data = [...item.symbols];
-
-      if (value === "custom") {
-        data[index] = {
-          label: "label",
-          title: "",
-          value: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
-        };
-      } else {
-        data[index] = value;
-      }
-
-      onChange("symbols", data);
-    };
-
-    const handleChangeNumberPad = (index, value) => {
-      const numberPad = item.numberPad ? [...item.numberPad] : [];
-
-      numberPad[index] = value;
-      onChange("numberPad", numberPad);
-    };
-
-    const getNumberPad = () => {
-      if (!item.numberPad || !item.numberPad.length) {
-        onChange("numberPad", MathKeyboard.NUMBER_PAD_ITEMS.map(({ value }) => value));
-        return MathKeyboard.NUMBER_PAD_ITEMS;
-      }
-      return item.numberPad.map(num => {
-        const res = MathKeyboard.NUMBER_PAD_ITEMS.find(({ value }) => num === value);
-
-        return res || { value: "", label: t("component.options.empty") };
-      });
-    };
+    const btnStyle = isCustom
+      ? {
+          color: numBtnColors.color,
+          borderColor: numBtnColors.borderColor,
+          backgroundColor: numBtnColors.backgroundColor
+        }
+      : {};
 
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
@@ -106,56 +130,55 @@ class KeyPadOptions extends Component {
 
         <StyledRow gutter={60}>
           <Col span={12}>
-            <Checkbox checked={item.showHints} size="large" onChange={e => onChange("showHints", e.target.checked)}>
-              {t("component.options.showKeypadHints")}
-            </Checkbox>
-          </Col>
-        </StyledRow>
-
-        <StyledRow gutter={60}>
-          <Col span={12}>
-            <Label>{t("component.options.maximumLines")}</Label>
-            <Input
-              size="large"
-              type="number"
-              value={item.ui_style.max_lines}
-              onChange={e => changeUiStyle("max_lines", +e.target.value)}
-            />
-          </Col>
-          <Col span={12}>
             <Label>{t("component.options.defaultMode")}</Label>
             <Select
               size="large"
-              value={item.ui_style.default_mode}
+              value={isCustom ? "custom" : symbol}
               style={{ width: "100%" }}
-              onChange={val => changeUiStyle("default_mode", val)}
+              onChange={this.handleSymbolsChange}
+              data-cy="text-formatting-options-select"
             >
-              {math.modes.map(({ value: val, label }) => (
-                <Select.Option key={val} value={val}>
+              {symbolsData.map(({ value: val, label }) => (
+                <Select.Option key={val} value={val} data-cy={`text-formatting-options-selected-${val}`}>
                   {label}
                 </Select.Option>
               ))}
             </Select>
           </Col>
+          <Col span={12} />
         </StyledRow>
 
+        {isCustom && (
+          <StyledRow gutter={60}>
+            <Col span={12}>
+              <div>{t("component.options.label")}</div>
+              <Input
+                style={{ width: "100%" }}
+                onChange={e => this.handleCustomSymboleLabel(e.target.value)}
+                value={symbol.label}
+                size="large"
+              />
+            </Col>
+          </StyledRow>
+        )}
+
         <StyledRow gutter={60}>
-          <Col span={12}>
-            <Label>{t("component.options.numberPad")}</Label>
-            <NumberPad onChange={handleChangeNumberPad} items={getNumberPad()} />
+          <Col span={24}>
+            <FlexContainer justifyContent="flex-start">
+              {symbol === "qwerty" && <Keyboard onInput={() => {}} />}
+              {symbol !== "qwerty" && (
+                <>
+                  <NumberPad
+                    onChange={this.handleChangeNumberPad}
+                    items={this.getNumberPad(isCustom)}
+                    buttonStyle={btnStyle}
+                  />
+                  <KeyPad symbol={symbol} onChange={onChange} item={item} buttonStyle={btnStyle} />
+                </>
+              )}
+            </FlexContainer>
           </Col>
-          <Col span={12}>
-            <Label>{t("component.options.symbols")}</Label>
-            <TypedList
-              type={types.SELECT}
-              selectData={[...math.symbols, { value: "custom", label: t("component.options.addCustomGroup") }]}
-              buttonText={t("component.options.add")}
-              onAdd={handleAddSymbol}
-              items={item.symbols}
-              onRemove={handleDeleteSymbol}
-              onChange={handleSymbolsChange}
-            />
-          </Col>
+          <Col span={12} />
         </StyledRow>
       </Widget>
     );

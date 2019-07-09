@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { filter, isArray, isEmpty, debounce } from "lodash";
-
 import * as moment from "moment";
 import { Input, Select, DatePicker } from "antd";
 import { FieldLabel } from "./components";
@@ -27,8 +26,8 @@ const RightFields = ({
 
   //@todo default term id is not coming in terms list.
   // For now below logic is implemented to set default term end date
-  const { endDate } = userOrgData.terms.filter(term => term.endDate > Date.now())[0];
-
+  const term = userOrgData.terms.length && userOrgData.terms.find(term => term.endDate > Date.now());
+  const endDate = term ? term.endDate : moment().add(1, "year");
   const updateSubject = e => {
     setSubject(e);
   };
@@ -50,10 +49,11 @@ const RightFields = ({
     }
   }
   const disabledStartDate = current => current && current < moment().subtract(1, "day");
-  const disabledEndDate = current => current && current < moment(startDate).subtract(1, "day");
+  const disabledEndDate = current => current && current < moment(startDate);
 
   const grades = filter(allGrades, el => el.isContentGrade !== true);
   const subjects = filter(allSubjects, el => el.value !== "");
+
   return (
     <>
       <StyledFlexContainer>

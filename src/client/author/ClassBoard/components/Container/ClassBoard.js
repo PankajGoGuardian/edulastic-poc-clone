@@ -403,10 +403,6 @@ class ClassBoard extends Component {
       labels,
       assignmentStatus
     } = this.props;
-    const gradeSubject = {
-      grade: classResponse.metadata ? classResponse.metadata.grades : [],
-      subject: classResponse.metadata ? classResponse.metadata.subjects : []
-    };
     const {
       selectedTab,
       flag,
@@ -479,7 +475,7 @@ class ClassBoard extends Component {
           </PaginationInfo>
 
           <StudentButtonDiv data-cy="studentnQuestionTab">
-            <PresentationToggleSwitch />
+            <PresentationToggleSwitch groupId={classId} />
             <BothButton
               style={{ marginLeft: "10px" }}
               active={selectedTab === "Both"}
@@ -562,7 +558,7 @@ class ClassBoard extends Component {
                   <FeaturesSwitch
                     inputFeatures="assessmentSuperPowersMarkAsDone"
                     actionOnInaccessible="hidden"
-                    gradeSubject={gradeSubject}
+                    groupId={classId}
                   >
                     <Dropdown
                       overlay={

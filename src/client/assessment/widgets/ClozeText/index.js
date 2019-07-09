@@ -204,9 +204,8 @@ class ClozeText extends Component {
                       shuffleOptions
                     }}
                     options={previewDisplayOptions}
-                    question={previewStimulus}
+                    stimulus={previewStimulus}
                     uiStyle={uiStyle}
-                    template={itemForEdit.template}
                     responseIds={item.response_ids}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
@@ -267,9 +266,8 @@ class ClozeText extends Component {
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
-                question={previewStimulus}
+                stimulus={previewStimulus}
                 uiStyle={uiStyle}
-                template={itemForPreview.template}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
@@ -289,11 +287,11 @@ class ClozeText extends Component {
                 }}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
-                question={previewStimulus}
+                stimulus={previewStimulus}
                 uiStyle={uiStyle}
-                template={itemForPreview.template}
                 userSelections={userAnswer}
                 validation={itemForPreview.validation}
+                onChange={this.handleAddAnswer}
                 evaluation={evaluation}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
@@ -313,9 +311,8 @@ class ClozeText extends Component {
                 key={previewDisplayOptions && previewStimulus && uiStyle}
                 smallSize={smallSize}
                 options={previewDisplayOptions}
-                question={previewStimulus}
+                stimulus={previewStimulus}
                 uiStyle={uiStyle}
-                template={itemForPreview.template}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 instructorStimulus={itemForPreview.instructor_stimulus}

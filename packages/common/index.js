@@ -16,6 +16,7 @@ export { default as ContentWrapper } from "./src/components/ContentWrapper";
 export { default as CustomQuillComponent } from "./src/components/CustomQuillComponent";
 export { default as CorrectAnswersContainer } from "./src/components/CorrectAnswersContainer";
 export { default as MathKeyboard } from "./src/components/MathKeyboard";
+export { default as Keyboard } from "./src/components/Keyboard";
 export { default as MathInput } from "./src/components/MathInput";
 export { default as StaticMath } from "./src/components/MathInput/StaticMath";
 export { default as MathFormulaDisplay } from "./src/components/MathFormulaDisplay";

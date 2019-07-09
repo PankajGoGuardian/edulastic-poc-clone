@@ -193,7 +193,6 @@ export const getItemDetailSelector = createSelector(
 export const isSingleQuestionViewSelector = createSelector(
   getItemDetailSelector,
   (item = {}) => {
-    console.log("item here is", item);
     const { resources = [], questions = [] } = item.data || {};
     return resources.length === 0 && questions.length === 1;
   }

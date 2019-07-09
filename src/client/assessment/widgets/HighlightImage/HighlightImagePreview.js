@@ -51,23 +51,21 @@ const HighlightImagePreview = ({
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
+  const renderImg = context => {
+    const img = new Image();
+    img.alt = altText;
+    img.src = userAnswer;
+    img.onload = () => {
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+
+      context.drawImage(img, 0, 0, img.width, img.height);
+      setCtx(context);
+    };
+  };
+
   const drawImage = context => {
     if (!Array.isArray(userAnswer)) {
-      const img = new Image();
-      img.alt = altText;
-      img.onload = () => {
-        context.clearRect(0, 0, width, height);
-        context.drawImage(img, 0, 0, width, height);
-        if (canvas.current) {
-          setHistory([canvas.current.toDataURL()]);
-        }
-        setHistoryTab(0);
-        if (canvas.current) {
-          saveAnswer(canvas.current.toDataURL());
-        }
-        setCtx(context);
-      };
-      img.src = userAnswer;
+      renderImg(context);
     } else {
       context.clearRect(0, 0, width, height);
       if (canvas.current) {
@@ -83,7 +81,7 @@ const HighlightImagePreview = ({
   };
 
   useEffect(() => {
-    if (canvas) {
+    if (canvas.current) {
       canvas.current.width = canvasDimensions.maxWidth;
       canvas.current.height = canvasHeight;
       const context = canvas.current.getContext("2d");
@@ -95,10 +93,11 @@ const HighlightImagePreview = ({
   }, [file]);
 
   useLayoutEffect(() => {
-    if (canvasContainerRef.current) {
+    if (canvasContainerRef.current && canvas.current) {
       canvas.current.height = canvasContainerRef.current.clientHeight;
       canvas.current.width = canvasContainerRef.current.clientWidth;
       const context = canvas.current.getContext("2d");
+      renderImg(context);
       context.lineWidth = item.line_width || 5;
     }
   }, [canvasContainerRef.current && canvasContainerRef.current.clientHeight]);

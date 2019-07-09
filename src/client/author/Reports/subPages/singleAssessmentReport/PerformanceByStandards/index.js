@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { uniq, indexOf, intersection, isEmpty, get } from "lodash";
+import { uniq, indexOf, map, groupBy, intersection, isEmpty, get } from "lodash";
 import { Card, Form, Select, Radio, Popover, Button, Icon } from "antd";
 import next from "immer";
 
-import { getNavigationTabLinks, getDropDownTestIds } from "../../../common/util";
+import { getNavigationTabLinks, getDropDownTestIds, percentage } from "../../../common/util";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/simpleBarChartContainer";
+import SignedStackedBarChartContainer from "./components/charts/SignedStackedBarChartContainer";
 import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
 import CardHeader, {
   CardTitle,
@@ -17,7 +18,16 @@ import CardHeader, {
   MasteryLevelIndicator,
   MasteryLevelTitle
 } from "./common/CardHeader/CardHeader";
-import { analysisParseData, viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
+import {
+  analysisParseData,
+  viewByMode,
+  analyzeByMode,
+  compareByMode,
+  getMasteryScore,
+  getMasteryLevel,
+  findDomainUsingStandard,
+  getParsedGroupedMetricData
+} from "./util/transformers";
 import { Placeholder } from "../../../common/components/loader";
 import {
   getPerformanceByStandardsAction,
@@ -41,7 +51,7 @@ const MasteryLevels = ({ scaleInfo }) => (
 
 const PAGE_SIZE = 15;
 
-const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, match, settings, role }) => {
+const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandards, match, settings, role }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.CLASS : compareByMode.SCHOOL);
@@ -281,22 +291,33 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
             {renderFilters()}
           </CardDropdownWrapper>
         </CardHeader>
-        <div>
-          {(analyzeBy === analyzeByMode.MASTERY_LEVEL || analyzeBy === analyzeByMode.MASTERY_SCORE) && (
-            <MasteryLevels scaleInfo={scaleInfo} />
+        <>
+          {analyzeBy === analyzeByMode.SCORE || analyzeBy === analyzeByMode.RAW_SCORE ? (
+            <SimpleBarChartContainer
+              report={report}
+              filter={filter}
+              viewBy={viewBy}
+              analyzeBy={analyzeBy}
+              onBarClick={handleToggleSelectedData}
+              selectedDomains={selectedDomains}
+              selectedStandards={selectedStandards}
+              shouldShowReset={shouldShowReset}
+              onResetClick={handleResetSelection}
+            />
+          ) : (
+            <SignedStackedBarChartContainer
+              report={report}
+              filter={filter}
+              viewBy={viewBy}
+              analyzeBy={analyzeBy}
+              onBarClick={handleToggleSelectedData}
+              selectedDomains={selectedDomains}
+              selectedStandards={selectedStandards}
+              shouldShowReset={shouldShowReset}
+              onResetClick={handleResetSelection}
+            />
           )}
-        </div>
-        <SimpleBarChartContainer
-          report={report}
-          filter={filter}
-          viewBy={viewBy}
-          analyzeBy={analyzeBy}
-          onBarClick={handleToggleSelectedData}
-          selectedDomains={selectedDomains}
-          selectedStandards={selectedStandards}
-          shouldShowReset={shouldShowReset}
-          onResetClick={handleResetSelection}
-        />
+        </>
       </Card>
       <Card style={{ marginTop: "20px" }}>
         <CardHeader>

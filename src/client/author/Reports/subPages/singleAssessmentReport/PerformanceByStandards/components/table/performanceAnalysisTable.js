@@ -18,7 +18,10 @@ const makeStandardColumnConfig = skill => ({
   }
 });
 
-const getMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
+const getMasteryColorByScore = scaleInfo => score => {
+  const foundScale = scaleInfo.find(info => info.score === Math.floor(score)) || {};
+  return foundScale.color;
+};
 
 const PerformanceAnalysisTable = ({
   report,

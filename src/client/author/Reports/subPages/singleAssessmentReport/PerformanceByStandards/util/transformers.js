@@ -1,4 +1,5 @@
-import { groupBy, head, uniqBy, capitalize, last } from "lodash";
+import { groupBy, head, uniqBy, capitalize, last, ceil, orderBy, find, map, forEach, round } from "lodash";
+import { percentage } from "../../../../common/util";
 
 export const viewByMode = {
   STANDARDS: "standards",
@@ -435,4 +436,72 @@ export const reduceAverageStandardScore = (data, field) => {
       [standardId]: averagePoints / data.length
     };
   }, {});
+};
+
+export const getLeastMasteryLevel = (scaleInfo = []) =>
+  orderBy(scaleInfo, "threshold", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "", score: 0 };
+
+export const getMasteryLevel = (percentage, scaleInfo) => {
+  return find(scaleInfo, info => ceil(percentage) >= info.threshold) || getLeastMasteryLevel(scaleInfo);
+};
+
+export const getMasteryScore = (score, scaleInfo) => getMasteryLevel(score, scaleInfo).score;
+
+export const findSkillUsingStandard = (standardId, skillInfo) =>
+  find(skillInfo, skill => skill.standardId === standardId) || {};
+
+export const getParsedGroupedMetricData = (report = {}, chartFilters, viewBy) => {
+  const { metricInfo = {}, scaleInfo = {}, skillInfo = [], studInfo, teacherInfo } = report;
+
+  const groupByKey = viewBy === viewByMode.STANDARDS ? "standard" : "domain";
+
+  // const filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, chartFilters)
+  const filteredMetrics = metricInfo;
+
+  const parsedMetricInfo = map(filteredMetrics, metric => {
+    const masteryPercentage = percentage(metric.totalScore, metric.maxScore);
+    const masteryLevel = getMasteryLevel(masteryPercentage, scaleInfo);
+    const skill = findSkillUsingStandard(metric.standardId, skillInfo);
+
+    console.log(masteryLevel, masteryPercentage, scaleInfo);
+
+    return {
+      ...metric,
+      masteryScore: masteryLevel.score,
+      masteryLabel: masteryLevel.masteryLabel,
+      domainId: skill.domainId,
+      domain: skill.domain,
+      standard: skill.standard
+    };
+  });
+
+  let metricByViewBy = groupBy(parsedMetricInfo, groupByKey);
+  let metricByViewByWithMasteryCount = {};
+
+  for (const domain in metricByViewBy) {
+    metricByViewByWithMasteryCount[domain] = {};
+
+    forEach(scaleInfo, scale => {
+      metricByViewByWithMasteryCount[domain][scale.masteryLabel] = 0;
+      metricByViewByWithMasteryCount[domain][`${scale.masteryLabel} Percentage`] = 0;
+    });
+
+    const metricByMastery = groupBy(metricByViewBy[domain], "masteryLabel");
+
+    console.log(metricByMastery, "metricByMastery");
+
+    Object.keys(metricByMastery).forEach(key => {
+      const masteryScorePercentage = round(percentage(metricByMastery[key].length, metricByViewBy[domain].length));
+      metricByViewByWithMasteryCount[domain][key] = metricByMastery[key].length;
+      metricByViewByWithMasteryCount[domain][`${key} Percentage`] =
+        key == "NM" ? -1 * masteryScorePercentage : masteryScorePercentage;
+    });
+  }
+
+  let parsedGroupedMetricData = Object.keys(metricByViewByWithMasteryCount).map(domain => ({
+    name: domain,
+    ...metricByViewByWithMasteryCount[domain]
+  }));
+
+  return parsedGroupedMetricData;
 };

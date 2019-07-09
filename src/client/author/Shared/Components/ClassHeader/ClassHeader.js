@@ -177,7 +177,7 @@ class ClassHeader extends Component {
       togglePresentationMode,
       isPresentationMode,
       isShowReleaseSettingsPopup,
-      toggleReleaseGradePopUp
+      toggleReleaseGradePopUp,
       userRole
     } = this.props;
 

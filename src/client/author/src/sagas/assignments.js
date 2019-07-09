@@ -1,4 +1,4 @@
-import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
+import { takeEvery, takeLatest, call, put, all, select } from "redux-saga/effects";
 import { assignmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { omit, get, set, unset, pickBy, identity } from "lodash";
@@ -18,6 +18,7 @@ import {
   RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
   RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR
 } from "../constants/actions";
+import { getClassIds } from "../../../student/Reports/ducks";
 
 function* receiveAssignmentClassList({ payload = {} }) {
   try {
@@ -44,14 +45,17 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       unset(filters, "subject");
     }
 
-    const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
-      districtId,
-      filters: pickBy(filters, identity)
-    });
-    yield put({
-      type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
-      payload: { entities, filtering }
-    });
+    const classList = yield select(getClassIds);
+    if (classList && classList.length) {
+      const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
+        districtId,
+        filters: pickBy(filters, identity)
+      });
+      yield put({
+        type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
+        payload: { entities, filtering }
+      });
+    }
   } catch (error) {
     const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);

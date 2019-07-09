@@ -41,14 +41,14 @@ const DatesFormItem = ({ getFieldDecorator, initialStartDate, initialEndDate }) 
   );
 };
 
-const AdditionalDetailsFormItems = ({ getFieldDecorator, customerSuccessManager, opportunityId, licenceCount }) => {
+const AdditionalDetailsFormItems = ({ getFieldDecorator }) => {
   const formLayout = {
     labelCol: { span: 3 },
     labelAlign: "left",
     wrapperCol: { span: 5 }
   };
   const children = [];
-  subscriptionAdditionalDetails.forEach(element => {
+  subscriptionAdditionalDetails.map(element => {
     children.push(
       <Form.Item label={<HeadingSpan>{element.label}</HeadingSpan>} {...formLayout}>
         {getFieldDecorator(element.fieldName, {

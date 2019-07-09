@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -13,38 +12,17 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
 import withAddButton from "../../components/HOC/withAddButton";
+import Question from "../../components/Question";
 import QuillSortableList from "../../components/QuillSortableList";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
 
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
 const List = withAddButton(QuillSortableList);
 
 class Steams extends Component {
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
-
-    fillSections(
-      "main",
-      t("component.matrix.steams"),
-      node.offsetTop,
-      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
-      deskHeight === true,
-      deskHeight
-    );
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleChangeOption = (index, value) => {
       setQuestionData(
@@ -102,7 +80,12 @@ class Steams extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.matrix.steams")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.matrix.steams")}</Subtitle>
         <List
           items={item.options}
@@ -114,7 +97,7 @@ class Steams extends Component {
           columns={1}
           prefix="list2"
         />
-      </Widget>
+      </Question>
     );
   }
 }

@@ -11,6 +11,7 @@ export const Widget = styled.div`
   padding: 30px;
   background: #f8f8fb;
   border-radius: 4px;
+  display: ${({ advancedAreOpen }) => (advancedAreOpen !== null ? (advancedAreOpen ? "block" : "none") : "block")};
   ${({ visible }) =>
     typeof visible !== "undefined" &&
     !visible &&

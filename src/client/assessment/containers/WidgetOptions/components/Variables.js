@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, get, has } from "lodash";
@@ -21,8 +20,8 @@ import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 
-import { Widget } from "../../../styled/Widget";
 import { Subtitle } from "../../../styled/Subtitle";
+import Question from "../../../components/Question";
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const numberPad = [
@@ -60,30 +59,16 @@ const CombinationInput = styled(Input)`
 `;
 
 class Variables extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.dynamicParameters"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.dynamicParameters"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { setQuestionData, calculateFormula, t, questionData, advancedAreOpen } = this.props;
+    const {
+      setQuestionData,
+      calculateFormula,
+      t,
+      questionData,
+      fillSections,
+      cleanSections,
+      advancedAreOpen
+    } = this.props;
     const mathFieldRef = React.createRef();
 
     const generateExample = variable => {
@@ -162,7 +147,13 @@ class Variables extends Component {
     }));
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.dynamicParameters")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      >
         <Subtitle>{t("component.options.dynamicParameters")}</Subtitle>
         <Row gutter={36}>
           <Col md={24}>{t("component.options.dynamicParametersDescription")}</Col>
@@ -320,7 +311,7 @@ class Variables extends Component {
             </Row>
           </Block>
         )}
-      </Widget>
+      </Question>
     );
   }
 }

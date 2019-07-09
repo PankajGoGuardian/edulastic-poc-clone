@@ -9,15 +9,15 @@ import { withWindowSizes } from "@edulastic/common";
 
 class QuestionMenu extends Component {
   state = {
-    activeTab: 0,
-    recalcedOptions: []
+    activeTab: 0
   };
 
-  handleScroll = option =>
+  handleScroll = option => {
     window.scrollTo({
       top: option.offset - 115,
       behavior: "smooth"
     });
+  };
 
   componentDidMount() {
     window.addEventListener("scroll", this.throttledFindActiveTab);
@@ -31,85 +31,41 @@ class QuestionMenu extends Component {
     this.setState({ activeTab: nextProps.activeTab });
   }
 
-  calcScrollPosition = offset => {
-    const scrollYMax =
-      Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight
-      ) - window.innerHeight;
-    if (offset < scrollYMax) {
-      return window.scrollY + 125;
-    }
-    if (offset >= scrollYMax) {
-      return window.scrollY + 650;
-    }
-  };
-
   isActive = (index, options) => {
-    if (options[index].offset <= 115) return false;
+    const { activeTab } = this.state;
+    const { advancedAreOpen } = this.props;
 
-    const scrollPosition = this.calcScrollPosition(options[index].offset);
+    if (!advancedAreOpen && options[index].section === "advanced") return false;
 
-    if (index === 0) {
-      if (scrollPosition <= options[index].offset + options[index].offsetBottom) {
-        return true;
-      }
-    } else if (index === options.length - 1) {
-      if (scrollPosition <= document.documentElement.scrollHeight && scrollPosition >= options[index].offset) {
-        return true;
-      }
-    } else if (
-      scrollPosition >= options[index].offset &&
-      scrollPosition <= options[index].offset + options[index].offsetBottom
+    // first section
+    if (window.scrollY <= 10 && activeTab !== index) return this.setState({ activeTab: 0 });
+
+    // last section
+    if (
+      window.scrollY + window.outerHeight / 1.3 >=
+        options[options.length - 1].offset + options[options.length - 1].height &&
+      window.scrollY - options[options.length - 1].offset < options[options.length - 1].height &&
+      activeTab !== index
+    )
+      return this.setState({ activeTab: options.length - 1 });
+
+    // other sections
+    if (
+      window.scrollY + window.outerHeight - window.outerHeight / (window.outerHeight / window.outerWidth + 1) >
+        options[index].offset &&
+      window.scrollY - options[index].offset < options[index].height &&
+      activeTab !== index
     ) {
-      return true;
+      return this.setState({ activeTab: index });
     }
-
-    return false;
-  };
-
-  recalcOptions = options => {
-    let additionalOffset = 0;
-
-    for (let i = 1; i < options.length; i++) {
-      if (options[i - 1].haveDesk) {
-        additionalOffset += options[i - 1].deskHeight;
-      }
-
-      options[i].offset += additionalOffset;
-    }
-
-    this.setState({ recalcedOptions: options });
   };
 
   findActiveTab = () => {
     const { main, advanced } = this.props;
-    const { activeTab, recalcedOptions } = this.state;
     const allOptions = main.concat(advanced);
 
-    if (recalcedOptions.length === 0) {
-      this.recalcOptions(allOptions);
-    }
-
-    if (recalcedOptions) {
-      for (let i = 0; i < recalcedOptions.length; i++) {
-        let activeTabs = false;
-
-        if (this.isActive(i, recalcedOptions)) {
-          activeTabs = true;
-
-          if (i !== activeTab) {
-            return this.setState({ activeTab: i });
-          }
-        }
-
-        if (activeTabs) {
-          return;
-        }
-      }
+    for (let i = 0; i < allOptions.length; i++) {
+      this.isActive(i, allOptions);
     }
   };
 
@@ -118,6 +74,7 @@ class QuestionMenu extends Component {
   render() {
     const { main, advanced, isSidebarCollapsed, advancedAreOpen, handleAdvancedOpen, windowWidth } = this.props;
     const { activeTab } = this.state;
+
     return (
       <Menu isSidebarCollapsed={isSidebarCollapsed}>
         <ScrollbarContainer>

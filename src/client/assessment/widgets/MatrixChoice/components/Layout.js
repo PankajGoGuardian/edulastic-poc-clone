@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Select, Input, Checkbox } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
@@ -12,34 +11,12 @@ import FontSizeSelect from "../../../components/FontSizeSelect";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
-import { Widget } from "../../../styled/Widget";
 import { Subtitle } from "../../../styled/Subtitle";
+import Question from "../../../components/Question";
 
 class Layout extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { onChange, uiStyle, advancedAreOpen, t } = this.props;
+    const { onChange, uiStyle, fillSections, cleanSections, advancedAreOpen, t } = this.props;
 
     const inputStyle = {
       minHeight: 35,
@@ -66,7 +43,13 @@ class Layout extends Component {
     ];
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
 
         <Row gutter={60}>
@@ -169,7 +152,7 @@ class Layout extends Component {
             </Checkbox>
           </Col>
         </Row>
-      </Widget>
+      </Question>
     );
   }
 }

@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -11,7 +10,7 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 import QuillSortableHintsList from "../../components/QuillSortableHintsList";
 
-import { Widget, WidgetFRInput } from "../../styled/Widget";
+import { WidgetFRInput } from "../../styled/Widget";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
 
@@ -21,38 +20,23 @@ import { change } from "./helpers";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 import { SectionHeading } from "../../styled/WidgetOptions/SectionHeading";
+import Question from "../../components/Question";
 
 class Extras extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.solution"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.solution"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { t, children, item, setQuestionData, isSection, advancedAreOpen } = this.props;
+    const { t, children, item, setQuestionData, isSection, fillSections, cleanSections, advancedAreOpen } = this.props;
 
     const _change = change({ item, setQuestionData });
 
     return (
       <Fragment>
-        <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Question
+          section="advanced"
+          label={t("component.options.solution")}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           {isSection && <SectionHeading>{t("component.options.solution")}</SectionHeading>}
           {!isSection && <Subtitle>{t("component.options.solution")}</Subtitle>}
 
@@ -87,7 +71,7 @@ class Extras extends Component {
           </Row>
 
           <QuillSortableHintsList />
-        </Widget>
+        </Question>
 
         {children}
       </Fragment>

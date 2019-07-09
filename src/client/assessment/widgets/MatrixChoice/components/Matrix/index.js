@@ -108,10 +108,10 @@ const Matrix = props => {
     type,
     smallSize,
     theme,
-    previewTab
+    previewTab,
+    isReviewTab
   } = props;
   let correctAnswersMatrix;
-  console.log("MATRIX", props, response, validation);
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
@@ -122,7 +122,12 @@ const Matrix = props => {
     const responses = getResponses(validation);
     const matrix = stems.map(() => options.map(() => false));
     correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, type);
-    console.log("PERA MATRIX", validation, correctAnswersMatrix);
+  }
+
+  if (isReviewTab) {
+    const responses = getResponses(validation);
+    const matrix = stems.map(() => options.map(() => false));
+    correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, "show");
   }
 
   const getCell = (columnIndex, data) => {
@@ -144,6 +149,10 @@ const Matrix = props => {
 
     if (data && data.value && data.value.length) {
       checked = data.value.includes(columnIndex);
+    }
+
+    if (isReviewTab && correct === true) {
+      checked = true;
     }
 
     const handleChange = e => {
@@ -278,14 +287,16 @@ Matrix.propTypes = {
   isMultiple: PropTypes.bool,
   validation: PropTypes.object,
   type: PropTypes.string,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  isReviewTab: PropTypes.bool
 };
 
 Matrix.defaultProps = {
   isMultiple: false,
   validation: null,
   type: "clear",
-  smallSize: false
+  smallSize: false,
+  isReviewTab: false
 };
 
 export default withTheme(Matrix);

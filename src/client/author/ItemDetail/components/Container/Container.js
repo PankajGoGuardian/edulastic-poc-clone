@@ -4,9 +4,10 @@ import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { questionType as constantsQuestionType } from "@edulastic/constants";
 import { Progress, withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
-import { cloneDeep, get } from "lodash";
+import { cloneDeep, get, uniq, intersection } from "lodash";
 import { Row, Col, Switch, Input, Layout } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
@@ -333,7 +334,7 @@ class Container extends Component {
   );
 
   renderButtons = () => {
-    const { item, updating, testItemStatus, changePreview, preview, view, isTestFlow } = this.props;
+    const { item, updating, testItemStatus, changePreview, preview, view, isTestFlow, rows } = this.props;
 
     const { enableEdit } = this.state;
 
@@ -345,6 +346,9 @@ class Container extends Component {
         isTestFlow &&
         ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit);
     }
+    const questionsType = rows && uniq(rows.flatMap(itm => itm.widgets.map(i => i.type)));
+    const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn).length;
+    const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
 
     return (
       <ButtonAction
@@ -358,6 +362,8 @@ class Container extends Component {
         view={view}
         previewTab={preview}
         showPublishButton={showPublishButton}
+        isShowAnswerVisible={isAnswerBtnVisible}
+        showCheckButton={isAnswerBtnVisible}
       />
     );
   };

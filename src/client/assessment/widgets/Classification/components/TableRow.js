@@ -80,7 +80,6 @@ const TableRow = ({
               ...styles.columnContainerStyle,
               justifyContent: "center"
             }}
-            noTopBorder={index / colCount >= 1}
             drop={drop}
             index={index}
             flag="column"

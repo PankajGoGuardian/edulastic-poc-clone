@@ -1,9 +1,9 @@
 import React from "react";
-import { Form, Button as AntdButton, Select, Input } from "antd";
+import { Form, Button as AntdButton, Select, Input, message } from "antd";
 import moment from "moment";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
 import { grades } from "@edulastic/constants";
-import { HeadingSpan } from "../Common/StyledComponents/upgradePlan";
+import { HeadingSpan, OrSeparator } from "../Common/StyledComponents/upgradePlan";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { SUBJECTS_LIST, CLEVER_DISTRICT_ID_REGEX } from "../Data";
 import { useUpdateEffect } from "../Common/Utils";
@@ -15,7 +15,7 @@ const { GRADES_LIST } = grades;
 
 const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmailIdsForm" })(
   ({
-    form: { getFieldDecorator, validateFields, setFieldsValue },
+    form: { getFieldDecorator, validateFields, setFieldsValue, setFields },
     manageUserSegmentsData: {
       partialPremiumData: { subscription = {} },
       gradeSubject
@@ -36,18 +36,56 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
       subEndDate
     } = subscription;
     const handleSubmit = evt => {
-      validateFields((err, { schoolId: schoolIdValue, subStartDate: startDate, subEndDate: endDate, ...rest }) => {
-        if (!err) {
-          upgradePartialPremiumUserAction({
-            schoolIds: [schoolIdValue],
-            subType,
-            subStartDate: startDate.valueOf(),
-            subEndDate: endDate.valueOf(),
-            ...rest,
-            gradeSubject
-          });
+      validateFields(
+        (
+          err,
+          {
+            districtId: districtIdValue,
+            schoolId: schoolIdValue,
+            subStartDate: startDate,
+            subEndDate: endDate,
+            ...rest
+          }
+        ) => {
+          if (!err) {
+            if ((districtIdValue && schoolIdValue) || (!districtIdValue && !schoolIdValue)) {
+              const errorMessage = "either district or school id is required";
+              setFields({
+                districtId: {
+                  value: districtIdValue,
+                  errors: [new Error(errorMessage)]
+                },
+                schoolId: {
+                  value: schoolIdValue,
+                  errors: [new Error(errorMessage)]
+                }
+              });
+            } else if (gradeSubject[0].grade && gradeSubject[0].subject) {
+              const subscriptionData = {
+                subType,
+                subStartDate: startDate.valueOf(),
+                subEndDate: endDate.valueOf(),
+                ...rest,
+                gradeSubject
+              };
+              if (districtIdValue) {
+                schoolIdValue = ["all"];
+                Object.assign(subscriptionData, {
+                  districtId: districtIdValue,
+                  schoolIds: ["all"]
+                });
+              } else {
+                Object.assign(subscriptionData, {
+                  schoolIds: [schoolIdValue]
+                });
+              }
+              upgradePartialPremiumUserAction(subscriptionData);
+            } else {
+              message.error("Please select grade and subject for subscription");
+            }
+          }
         }
-      });
+      );
       evt.preventDefault();
     };
 
@@ -103,12 +141,11 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
       </Select>
     );
     return (
-      <Form onSubmit={handleSubmit} labelAlign="left" labelCol={{ span: 4 }}>
+      <Form onSubmit={handleSubmit} labelAlign="left" labelCol={{ span: 3 }}>
         <Form.Item label={<HeadingSpan>District ID</HeadingSpan>}>
           {getFieldDecorator("districtId", {
             rules: [
               {
-                required: true,
                 message: "Please enter valid District ID",
                 pattern: CLEVER_DISTRICT_ID_REGEX
               }
@@ -116,11 +153,11 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
             initialValue: ""
           })(<Input placeholder="District ID" style={{ width: 300 }} />)}
         </Form.Item>
+        <OrSeparator>-Or-</OrSeparator>
         <Form.Item label={<HeadingSpan>School ID</HeadingSpan>}>
           {getFieldDecorator("schoolId", {
             rules: [
               {
-                required: true,
                 message: "Please enter valid School ID",
                 pattern: CLEVER_DISTRICT_ID_REGEX
               }

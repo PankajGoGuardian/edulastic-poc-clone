@@ -3,6 +3,7 @@ import { Form, Input, DatePicker } from "antd";
 import styled from "styled-components";
 import moment from "moment";
 import { HeadingSpan } from "../StyledComponents/upgradePlan";
+import { subscriptionAdditionalDetails } from "../../Data";
 
 const { TextArea } = Input;
 const CharacterLimitSpan = styled.span`
@@ -21,7 +22,7 @@ const OuterDiv = styled.div`
 
 const DatesFormItem = ({ getFieldDecorator, initialStartDate, initialEndDate }) => {
   const disabledDate = val => val < moment().startOf("day");
-  const formLayout = { labelCol: { span: 4 }, labelAlign: "left" };
+  const formLayout = { labelCol: { span: 3 }, labelAlign: "left" };
   return (
     <>
       <Form.Item label={<HeadingSpan>Start Date</HeadingSpan>} {...formLayout}>
@@ -38,6 +39,22 @@ const DatesFormItem = ({ getFieldDecorator, initialStartDate, initialEndDate }) 
       </Form.Item>
     </>
   );
+};
+
+const AdditionalDetailsFormItems = ({ getFieldDecorator }) => {
+  const formLayout = {
+    labelCol: { span: 3 },
+    labelAlign: "left",
+    wrapperCol: { span: 5 }
+  };
+  const children = subscriptionAdditionalDetails.map(element => (
+    <Form.Item label={<HeadingSpan>{element.label}</HeadingSpan>} {...formLayout}>
+      {getFieldDecorator(element.fieldName, {
+        type: element.type
+      })(<Input placeholder={element.placeholder} />)}
+    </Form.Item>
+  ));
+  return children;
 };
 
 DatesFormItem.defaultProps = {
@@ -72,7 +89,11 @@ const DatesNotesFormItem = ({
   initialEndDate,
   notesFieldName,
   initialValue,
-  placeholder
+  placeholder,
+  customerSuccessManager,
+  opportunityId,
+  licenceCount,
+  showAdditionalDetails = false
 }) => (
   <>
     <DatesFormItem
@@ -80,6 +101,17 @@ const DatesNotesFormItem = ({
       initialStartDate={initialStartDate}
       initialEndDate={initialEndDate}
     />
+    {showAdditionalDetails ? (
+      <AdditionalDetailsFormItems
+        getFieldDecorator={getFieldDecorator}
+        customerSuccessManager={customerSuccessManager}
+        opportunityId={opportunityId}
+        licenceCount={licenceCount}
+      />
+    ) : (
+      ""
+    )}
+
     <NotesFormItem
       getFieldDecorator={getFieldDecorator}
       notesFieldName={notesFieldName}

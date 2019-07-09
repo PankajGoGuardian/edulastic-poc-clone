@@ -44,7 +44,7 @@ const ItemDetailContainer = ({
   const [showSettings, setShowSettings] = useState(false);
   const [isMultipart, setMultipart] = useState(false);
 
-  const itemId = id || modalItemId || match.param.itemId;
+  const itemId = id || modalItemId || match.params.itemId;
 
   useEffect(() => {
     if (testId) {

@@ -19,6 +19,7 @@ class MathFormulaPreview extends Component {
     item: PropTypes.object.isRequired,
     studentTemplate: PropTypes.string,
     type: PropTypes.string.isRequired,
+    changePreviewTab: PropTypes.func.isRequired,
     changePreview: PropTypes.func.isRequired,
     saveAnswer: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
@@ -170,10 +171,11 @@ class MathFormulaPreview extends Component {
   }
 
   onInnerFieldClick() {
-    const { type: previewType, changePreview } = this.props;
+    const { type: previewType, changePreview, changePreviewTab } = this.props;
 
     if (previewType === CHECK) {
-      changePreview(CLEAR);
+      changePreview(CLEAR); // Item level
+      changePreviewTab(CLEAR); // Question level
     }
   }
 
@@ -192,6 +194,7 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
+
     return (
       <div>
         <QuestionTitleWrapper>

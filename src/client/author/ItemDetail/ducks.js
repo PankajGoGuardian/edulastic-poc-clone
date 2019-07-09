@@ -187,12 +187,13 @@ export const getDefaultSubjectSelector = createSelector(
 
 export const getItemDetailSelector = createSelector(
   stateSelector,
-  state => state.item
+  state => state.item || {}
 );
 
 export const isSingleQuestionViewSelector = createSelector(
   getItemDetailSelector,
   (item = {}) => {
+    console.log("item here is", item);
     const { resources = [], questions = [] } = item.data || {};
     return resources.length === 0 && questions.length === 1;
   }

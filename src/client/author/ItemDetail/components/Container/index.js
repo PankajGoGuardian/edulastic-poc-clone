@@ -57,7 +57,8 @@ const ItemDetailContainer = ({
     setEditable(false);
   };
 
-  if (isLoading) return <div> Loading... </div>;
+  // item is not yet loaded.
+  if (isLoading || !item._id) return <div> Loading... </div>;
 
   const showPublishButton = (!isTestFlow && (itemId && testItemStatus && testItemStatus !== "published")) || isEditable;
   const hasAuthorPermissions = item && item.authors.some(author => author._id === currentUserId);

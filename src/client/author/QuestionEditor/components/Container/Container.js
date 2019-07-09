@@ -307,7 +307,7 @@ class Container extends Component {
   };
 
   render() {
-    const { view, question, history, windowWidth } = this.props;
+    const { view, question, history, windowWidth, isItem } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -333,18 +333,20 @@ class Container extends Component {
         <ItemHeader title={question.title} reference={itemId}>
           {this.header()}
         </ItemHeader>
-        <BreadCrumbBar>
-          <Col md={12}>
-            {windowWidth > desktopWidth.replace("px", "") ? (
-              <SecondHeadBar breadcrumb={this.breadcrumb} />
-            ) : (
-              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-            )}
-          </Col>
-          <RightActionButtons md={12}>
-            <div>{view === "preview" && this.renderButtons()}</div>
-          </RightActionButtons>
-        </BreadCrumbBar>
+        {!isItem && (
+          <BreadCrumbBar>
+            <Col md={12}>
+              {windowWidth > desktopWidth.replace("px", "") ? (
+                <SecondHeadBar breadcrumb={this.breadcrumb} />
+              ) : (
+                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              )}
+            </Col>
+            <RightActionButtons md={12}>
+              <div>{view === "preview" && this.renderButtons()}</div>
+            </RightActionButtons>
+          </BreadCrumbBar>
+        )}
 
         <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
       </div>

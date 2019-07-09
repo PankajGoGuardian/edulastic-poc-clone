@@ -14,6 +14,7 @@ const CorrectAnswerBoxLayout = ({
   altResponses,
   cleanValue,
   groupResponses,
+  btnStyle,
   t
 }) => {
   let results;
@@ -68,7 +69,7 @@ const CorrectAnswerBoxLayout = ({
             <div key={index}>
               <h3>{groupResponses[key] && groupResponses[key].title}</h3>
               {results[key].map((value, itemId) => (
-                <div key={itemId} className="response-btn check-answer showanswer">
+                <div key={itemId} className="response-btn check-answer showanswer" style={btnStyle}>
                   <span className="index">{index + 1}</span>
                   <span className="text">{Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}</span>
                 </div>
@@ -77,7 +78,7 @@ const CorrectAnswerBoxLayout = ({
           ))}
         {!hasGroupResponses &&
           results.map((result, index) => (
-            <div key={index} className="response-btn check-answer showanswer">
+            <div key={index} className="response-btn check-answer showanswer" style={btnStyle}>
               <span className="index">{index + 1}</span>
               <span className="text">
                 {Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue ? getLabel(result) : result}
@@ -96,6 +97,7 @@ CorrectAnswerBoxLayout.propTypes = {
   groupResponses: PropTypes.array,
   t: PropTypes.func.isRequired,
   cleanValue: PropTypes.bool,
+  btnStyle: PropTypes.object,
   altResponses: PropTypes.object
 };
 
@@ -105,7 +107,8 @@ CorrectAnswerBoxLayout.defaultProps = {
   fontSize: "13px",
   userAnswers: [],
   cleanValue: false,
-  altResponses: null
+  altResponses: null,
+  btnStyle: {}
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));

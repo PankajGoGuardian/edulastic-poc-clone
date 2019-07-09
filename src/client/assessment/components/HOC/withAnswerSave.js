@@ -16,7 +16,9 @@ export default WrappedComponent => {
     const answerContext = useContext(AnswerContext);
 
     const saveAnswer = data => {
-      if (answerContext.isAnswerModifiable) setUserAnswer(questionId, data);
+      if (answerContext.isAnswerModifiable && questionId) {
+        setUserAnswer(questionId, data);
+      }
     };
     return <WrappedComponent saveAnswer={saveAnswer} questionId={questionId} evaluation={evaluation} {...props} />;
   };

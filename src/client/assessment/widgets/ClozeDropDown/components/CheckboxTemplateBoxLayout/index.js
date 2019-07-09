@@ -54,16 +54,16 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (btnStyle === undefined) {
     btnStyle = responseBtnStyle;
   }
-  if (btnStyle && btnStyle.widthpx === 0) {
-    btnStyle.widthpx = responseBtnStyle.widthpx;
+  if (btnStyle && btnStyle.widthpx !== 0) {
+    btnStyle.width = responseBtnStyle.widthpx;
   }
-  if (btnStyle && btnStyle.heightpx === 0) {
-    btnStyle.heightpx = responseBtnStyle.heightpx;
+  if (btnStyle && btnStyle.heightpx !== 0) {
+    btnStyle.height = responseBtnStyle.heightpx;
   }
   if (btnStyle && isUndefined(btnStyle.wordwrap) && !isUndefined(responseBtnStyle.wordwrap)) {
     btnStyle.wordwrap = responseBtnStyle.wordwrap;
   }
-
+  console.log(btnStyle);
   return (
     <span className="template_box" style={{ fontSize, padding: 20 }}>
       {showAnswer && hasGroupResponses && (

@@ -55,5 +55,8 @@ export const CheckBox = styled.div`
   .value {
     width: calc(100% - 30px);
     text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 `;

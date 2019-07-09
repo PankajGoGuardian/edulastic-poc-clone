@@ -15,7 +15,7 @@ function init(element, board, cb, readOnly = false) {
     selector,
     {
       toolbarInline: true,
-      placeholderText: "",
+      placeholder: "",
       events: {
         click: () => {
           FroalaEditorInput(element, board).setFocus();

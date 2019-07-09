@@ -731,15 +731,11 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Multiple choice - standard",
         type: questionType.MULTIPLE_CHOICE,
-        stimulus: "Which color has the smallest walvelenght?",
+        stimulus: "",
         ui_style: {
           type: "horizontal"
         },
-        options: [
-          { value: uuids[0], label: "Red" },
-          { value: uuids[1], label: "Violet" },
-          { value: uuids[2], label: "Green" }
-        ],
+        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -759,15 +755,11 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Multiple choice - multiple response",
         type: questionType.MULTIPLE_CHOICE,
-        stimulus: "Which color has the smallest walvelenght?",
+        stimulus: "",
         ui_style: {
           type: "horizontal"
         },
-        options: [
-          { value: uuids[0], label: "Red" },
-          { value: uuids[1], label: "Violet" },
-          { value: uuids[2], label: "Green" }
-        ],
+        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -787,7 +779,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "True or false",
         type: questionType.MULTIPLE_CHOICE,
-        stimulus: "The sky is blue due to gases.",
+        stimulus: "",
         ui_style: {
           type: "horizontal"
         },
@@ -811,16 +803,12 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Multiple choice - block layout",
         type: questionType.MULTIPLE_CHOICE,
-        stimulus: "What is the capital city of England?",
+        stimulus: "",
         ui_style: {
           type: "block",
           choice_label: "upper-alpha"
         },
-        options: [
-          { value: uuids[0], label: "Dublin" },
-          { value: uuids[1], label: "London" },
-          { value: uuids[2], label: "Liverpool" }
-        ],
+        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {

@@ -442,9 +442,12 @@ function* updateStudentRequest({ payload }) {
 // sync google class
 function* syncClass({ payload }) {
   try {
+    const classNames = payload.flatMap(o => o.name);
+    if (classNames.includes("")) {
+      return yield call(message.error, "Class name is missing for one of the selected class");
+    }
     yield put(setSyncClassLoadingAction(true));
     yield call(googleApi.syncClass, { classList: payload });
-    yield put(setModalAction(false));
     yield put(setSyncClassLoadingAction(false));
     yield put(fetchGroupsAction());
   } catch (e) {
@@ -459,12 +462,11 @@ function* syncClassUsingCode({ payload }) {
     const { googleCode, groupId: classId } = payload;
     yield put(setSyncClassLoadingAction(true));
     const resp = yield call(googleApi.syncClass, { googleCode, groupId: classId });
+    yield put(setSyncClassLoadingAction(false));
     if (resp.status === 403) {
       return yield call(message.error(`Google Classroom ${payload.googleCode} is already synced in another group`));
     }
-    yield put(setSyncClassLoadingAction(false));
     yield put(fetchStudentsByIdAction({ classId }));
-    yield put(syncByCodeModalAction(false));
   } catch (e) {
     yield put(setSyncClassLoadingAction(false));
     yield call(message.error, "class sync failed");

@@ -7,6 +7,9 @@ const { Text } = Typography;
 const { Header } = Layout;
 
 export const HeaderWrapper = styled(Header)`
+  position: fixed;
+  z-index: 300;
+  width: 100%;
   background: ${props => props.theme.header.headerBgColor};
   padding: 0px 20px;
   height: 96px;
@@ -21,6 +24,7 @@ export const TitleWrapper = styled.h1`
 `;
 
 export const ManageClassButton = styled(Button)`
+  margin-right: 100px;
   display: flex;
   align-items: center;
   height: 45px;

@@ -32,40 +32,22 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   const unSortablecards = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
 
   const allCards = [...sortableCards, ...unSortablecards];
-  const latestAssingments = allCards.slice(0, 3);
-  let ClassCards = null;
 
-  if (!showAllCards) {
-    ClassCards = latestAssingments.map(item => (
-      <Col span={8} key={item._id}>
-        <Card data={item} />
-      </Col>
-    ));
-  } else {
-    ClassCards = allCards.map(item => (
-      <Col span={8} key={item._id}>
-        <Card data={item} />
-      </Col>
-    ));
-  }
+  const ClassCards = allCards.map(item => (
+    <Col span={8} key={item._id}>
+      <Card data={item} />
+    </Col>
+  ));
 
   return (
-    <CardsContainer>
+    <CardsContainer gutter={10}>
       <TextWrapper size="20px" color="#434B5D">
         My classes
       </TextWrapper>
-      <Row gutter={15}>{loading === true ? <Spin /> : ClassCards}</Row>
+      <Row gutter={10} style={{ width: "1000px" }}>
+        {loading === true ? <Spin /> : ClassCards}
+      </Row>
       {!loading && classData.length == 0 && <CreateClassPage />}
-      {showAllCards && classData.length > 0 && (
-        <LinkWrapper size="11px" color="#00AD50" display="block" textalign="end" onClick={() => setShowAllCards(false)}>
-          SEE LESS CLASSES »
-        </LinkWrapper>
-      )}
-      {!showAllCards && classData.length > 0 && (
-        <LinkWrapper size="11px" color="#00AD50" display="block" textalign="end" onClick={() => setShowAllCards(true)}>
-          SEE ALL MY CLASSES »
-        </LinkWrapper>
-      )}
     </CardsContainer>
   );
 };

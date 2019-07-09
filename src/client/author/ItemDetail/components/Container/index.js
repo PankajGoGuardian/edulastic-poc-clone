@@ -80,6 +80,8 @@ const ItemDetailContainer = ({
   return (
     <>
       {showSettings && (
+        // TODO: combine this with the other settings bar in itemDetail page. or seprate it
+        // and have it in side questionView maybe !? !!Food for thought.
         <SettingsBar
           isSingleQuestion={isSingleQuestionView}
           isMultipart={isMultipart}

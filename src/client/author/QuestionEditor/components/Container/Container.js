@@ -85,19 +85,8 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const {
-      saveQuestion,
-      removeAnswers,
-      setAuthoredByMeFilter,
-      match,
-      isEditFlow,
-      isTestFlow,
-      isItem,
-      saveItem
-    } = this.props;
-    if (isItem) {
-      return saveItem();
-    }
+    const { saveQuestion, removeAnswers, setAuthoredByMeFilter, match, isEditFlow, isTestFlow } = this.props;
+
     const { testId } = match.params;
     saveQuestion(testId, isTestFlow, isEditFlow);
     removeAnswers();
@@ -272,35 +261,36 @@ class Container extends Component {
       hasAuthorPermission,
       onSaveScrollTop,
       savedWindowScrollTop,
-      setShowSettings
+      setShowSettings,
+      saveItem
     } = this.props;
     const { previewTab } = this.state;
 
+    const commonProps = {
+      changeView: this.handleChangeView,
+      onShowSource: this.handleShowSource,
+      changePreviewTab: this.handleChangePreviewTab,
+      view,
+      previewTab,
+      isTestFlow,
+      withLabels: true
+    };
+
     return isItem ? (
       <ButtonBar
-        onChangeView={this.handleChangeView}
-        onShowSource={this.handleShowSource}
-        changePreviewTab={this.handleChangePreviewTab}
-        onSave={this.handleSave}
-        view={view}
+        onSave={saveItem}
+        {...commonProps}
         showPublishButton={showPublishButton}
         onPublishTestItem={publishTestItem}
-        previewTab={previewTab}
-        isTestFlow={isTestFlow}
         onEnableEdit={() => setEditable(true)}
         hasAuthorPermission={hasAuthorPermission}
         itemStatus={item && item.status}
-        withLabels
         renderRightSide={view === "edit" ? this.renderRightSideButtons : () => {}}
       />
     ) : (
       <ButtonBar
-        onChangeView={this.handleChangeView}
-        onShowSource={this.handleShowSource}
-        changePreviewTab={this.handleChangePreviewTab}
+        {...commonProps}
         onSave={this.handleSave}
-        view={view}
-        previewTab={previewTab}
         renderRightSide={view === "edit" ? this.renderButtons : () => {}}
         withLabels
         onSaveScrollTop={onSaveScrollTop}
@@ -330,7 +320,7 @@ class Container extends Component {
       return <div />;
     }
 
-    const { previewTab, showModal } = this.state;
+    const { showModal } = this.state;
     const itemId = question === null ? "" : question._id;
 
     return (

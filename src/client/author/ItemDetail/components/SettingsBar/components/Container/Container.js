@@ -134,6 +134,56 @@ class Container extends Component {
       isMultipart
     } = this.props;
 
+    const multipleItemsSettings = () => (
+      <>
+        <SettingsButtonWrapper justifyContent="flex-end">
+          <Button
+            color="primary"
+            onClick={onCancel}
+            style={{ minWidth: 40, background: "transparent", padding: 0, boxShadow: "none" }}
+          >
+            <IconClose color={title} />
+          </Button>
+        </SettingsButtonWrapper>
+        <Heading>{t("author:component.settingsBar.layout")}</Heading>
+        <Items>
+          {layouts.map(item => (
+            <SettingsBarItem
+              onSelect={this.onApplyLayoutClick({ type: item.value })}
+              selected={type === item.value}
+              key={item.value}
+              item={item}
+            />
+          ))}
+        </Items>
+        <SettingsBarUseTabs
+          onChangeLeft={this.handleChangeLeftTab}
+          onChangeRight={this.handleChangeRightTab}
+          checkedLeft={useTabsLeft}
+          checkedRight={useTabsRight}
+        />
+        <SettingsFlowLayout
+          onChangeLeft={this.handleChangeLeftFlowLayout}
+          onChangeRight={this.handleChangeRightFlowLayout}
+          checkedLeft={useFlowLayoutLeft}
+          checkedRight={useFlowLayoutRight}
+        />
+        <Checkboxes>
+          <Checkbox
+            style={{ marginBottom: 20 }}
+            label={t("author:component.settingsBar.showVerticalDivider")}
+            checked={verticalDivider}
+            onChange={onVerticalDividerChange}
+          />
+          <Checkbox
+            label={t("author:component.settingsBar.enableScrolling")}
+            checked={scrolling}
+            onChange={onScrollingChange}
+          />
+        </Checkboxes>{" "}
+      </>
+    );
+
     return (
       <Content>
         {isSingleQuestion ? (
@@ -141,53 +191,7 @@ class Container extends Component {
             <Checkbox onChange={this.handleMultipart} value={isMultipart} /> Convert item into a multipart
           </SettingsButtonWrapper>
         ) : (
-          <>
-            <SettingsButtonWrapper justifyContent="flex-end">
-              <Button
-                color="primary"
-                onClick={onCancel}
-                style={{ minWidth: 40, background: "transparent", padding: 0, boxShadow: "none" }}
-              >
-                <IconClose color={title} />
-              </Button>
-            </SettingsButtonWrapper>
-            <Heading>{t("author:component.settingsBar.layout")}</Heading>
-            <Items>
-              {layouts.map(item => (
-                <SettingsBarItem
-                  onSelect={this.onApplyLayoutClick({ type: item.value })}
-                  selected={type === item.value}
-                  key={item.value}
-                  item={item}
-                />
-              ))}
-            </Items>
-            <SettingsBarUseTabs
-              onChangeLeft={this.handleChangeLeftTab}
-              onChangeRight={this.handleChangeRightTab}
-              checkedLeft={useTabsLeft}
-              checkedRight={useTabsRight}
-            />
-            <SettingsFlowLayout
-              onChangeLeft={this.handleChangeLeftFlowLayout}
-              onChangeRight={this.handleChangeRightFlowLayout}
-              checkedLeft={useFlowLayoutLeft}
-              checkedRight={useFlowLayoutRight}
-            />
-            <Checkboxes>
-              <Checkbox
-                style={{ marginBottom: 20 }}
-                label={t("author:component.settingsBar.showVerticalDivider")}
-                checked={verticalDivider}
-                onChange={onVerticalDividerChange}
-              />
-              <Checkbox
-                label={t("author:component.settingsBar.enableScrolling")}
-                checked={scrolling}
-                onChange={onScrollingChange}
-              />
-            </Checkboxes>{" "}
-          </>
+          multipleItemsSettings()
         )}
       </Content>
     );

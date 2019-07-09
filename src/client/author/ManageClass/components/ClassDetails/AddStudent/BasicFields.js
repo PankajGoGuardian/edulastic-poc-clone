@@ -82,8 +82,6 @@ const BasicFields = ({
                 }
               });
           }
-        } else {
-          errorMsg = "Username already exists";
         }
       }
       if (errorMsg !== "" && !enroll) {

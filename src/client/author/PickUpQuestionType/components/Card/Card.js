@@ -15,10 +15,12 @@ const Card = ({ title, cardImage, onSelectQuestionType, data, setUserAnswer }) =
   const questionId = uuidv4();
 
   useEffect(() => {
-    if (data.type === "math") {
-      setUserAnswer(questionId, data.validation.valid_response.value[0].value);
-    } else if (data.validation && data.validation.valid_response) {
-      setUserAnswer(questionId, data.validation.valid_response.value);
+    if (questionId) {
+      if (data.type === "math") {
+        setUserAnswer(questionId, data.validation.valid_response.value[0].value);
+      } else if (data.validation && data.validation.valid_response) {
+        setUserAnswer(questionId, data.validation.valid_response.value);
+      }
     }
   }, [questionId]);
 

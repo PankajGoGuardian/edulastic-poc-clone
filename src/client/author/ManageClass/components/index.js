@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-
+import { get } from "lodash";
 // actions
 import {
   fetchGroupsAction,
@@ -11,19 +11,64 @@ import {
   getGroupsSelector,
   getArchiveGroupsSelector
 } from "../../sharedDucks/groups";
-import { setModalAction, syncClassAction, setClassAction } from "../ducks";
+import { setModalAction, syncClassAction, setClassAction, updateGoogleCourseListAction } from "../ducks";
 
 // components
 
 import ClassListContainer from "./ClassListContainer";
+import { getDictCurriculumsAction } from "../../src/actions/dictionaries";
+import { receiveSearchCourseAction } from "../../Courses/ducks";
 
-const ManageClass = ({ fetchGroups, fetchArchiveGroups, groups, archiveGroups, setClass, history, ...restProps }) => {
+const ManageClass = ({
+  fetchGroups,
+  receiveSearchCourse,
+  getDictCurriculums,
+  districtId,
+  fetchArchiveGroups,
+  groups,
+  state,
+  syncClassLoading,
+  allowGoogleLogin,
+  archiveGroups,
+  setClass,
+  fetchClassListLoading,
+  ...restProps
+}) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const closeModal = () => setIsModalVisible(false);
+
+  useEffect(() => {
+    if (!fetchClassListLoading) setIsModalVisible(true);
+    else {
+      setIsModalVisible(false);
+    }
+  }, [fetchClassListLoading]);
+
+  useEffect(() => {
+    if (!syncClassLoading && isModalVisible) {
+      setIsModalVisible(false);
+    }
+  }, [syncClassLoading]);
   useEffect(() => {
     fetchGroups();
     fetchArchiveGroups();
+    getDictCurriculums();
+    receiveSearchCourse({ districtId });
+    setIsModalVisible(false);
   }, []);
 
-  return <ClassListContainer {...restProps} groups={groups} archiveGroups={archiveGroups} />;
+  return (
+    <ClassListContainer
+      {...restProps}
+      state={state}
+      syncClassLoading={syncClassLoading}
+      isModalVisible={isModalVisible}
+      closeModal={closeModal}
+      allowGoogleLogin={allowGoogleLogin}
+      groups={groups}
+      archiveGroups={archiveGroups}
+    />
+  );
 };
 
 ManageClass.propTypes = {
@@ -42,7 +87,13 @@ const enhance = compose(
     state => ({
       groups: getGroupsSelector(state),
       archiveGroups: getArchiveGroupsSelector(state),
-      isModalVisible: state.manageClass.showModal,
+      fetchClassListLoading: state.manageClass.fetchClassListLoading,
+      state: state,
+      courseList: get(state, "coursesReducer.searchResult"),
+      districtId: get(state, "user.user.orgData.districtId"),
+      allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
+      isGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
+      syncClassLoading: get(state, "manageClass.syncClassLoading", false),
       googleCourseList: state.manageClass.googleCourseList
     }),
     {
@@ -50,6 +101,9 @@ const enhance = compose(
       fetchArchiveGroups: fetchArchiveGroupsAction,
       setModal: setModalAction,
       syncClass: syncClassAction,
+      receiveSearchCourse: receiveSearchCourseAction,
+      getDictCurriculums: getDictCurriculumsAction,
+      updateGoogleCourseList: updateGoogleCourseListAction,
       setClass: setClassAction
     }
   )

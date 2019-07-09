@@ -87,7 +87,6 @@ const ClozeTextInput = ({ resprops, id }) => {
     isReviewTab,
     cAnswers,
     view,
-    previewTab,
     responsecontainerindividuals,
     uiStyle
   } = resprops;
@@ -133,17 +132,16 @@ const ClozeTextInput = ({ resprops, id }) => {
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
   if (view === "edit") {
     width = (responseStyle && responseStyle.widthpx) || (style.widthpx || "auto");
-  } else {
-    if (uiStyle.globalSettings) {
-      if (!value.length) {
-        width = style.widthpx || "auto";
-      } else {
-        width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
-      }
+  } else if (uiStyle.globalSettings) {
+    if (!value.length) {
+      width = style.widthpx || "auto";
     } else {
-      width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
+      width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
     }
+  } else {
+    width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
   }
+
   return (
     <CustomInput style={{ ...style, width: "auto" }} title={value.length ? value : null}>
       {showIndex && <IndexBox>{index + 1}</IndexBox>}

@@ -67,7 +67,7 @@ class ListItem extends Component {
   duplicate = async e => {
     e && e.stopPropagation();
     const { history, item } = this.props;
-    const duplicateTest = await assignmentApi.duplicateAssignment(item._id);
+    const duplicateTest = await assignmentApi.duplicateAssignment(item);
     history.push(`/author/tests/${duplicateTest._id}`);
   };
 

@@ -90,7 +90,8 @@ const ItemsTable = ({
       audio.ttsSuccess = ttsSuccess;
     }
     const meta = {
-      id: item._id && item._id.substring(18),
+      id: item._id,
+      shortId: item._id && item._id.substring(18),
       title: item._id,
       by: getTestItemAuthorName(item),
       shared: "9578 (1)",

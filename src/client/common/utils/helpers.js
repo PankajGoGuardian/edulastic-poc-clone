@@ -1,5 +1,5 @@
 import { signUpState } from "@edulastic/constants";
-import { isUndefined, isEmpty } from "lodash";
+import { isUndefined, isEmpty, trim } from "lodash";
 import { Partners } from "./static/partnerData";
 
 export const getWordsInURLPathName = pathname => {
@@ -112,3 +112,12 @@ export const isDistrictPolicyAllowed = (isSignupUsingDaURL, districtPolicy, name
 
 export const isDistrictPolicyAvailable = (isSignupUsingDaURL, districtPolicy) =>
   isSignupUsingDaURL && typeof districtPolicy === "object";
+
+export const emailSpecialCharCheck = (rule, value, callback, message) => {
+  const regExp = new RegExp("^[A-Za-z0-9@._ ]+$");
+  if (!regExp.test(value.trim())) {
+    callback(message);
+  } else {
+    callback();
+  }
+};

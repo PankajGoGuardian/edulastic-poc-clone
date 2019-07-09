@@ -3,12 +3,12 @@ import { get, isEmpty } from "lodash";
 export const isFeatureAccessibleToUser = props => {
   // Please do not add more logic to this
   let {
-    features,
+    features = {},
     inputFeatures = [],
     operation = "AND",
     gradeSubject = { grades: [], subjects: [] },
     groupId,
-    groupList
+    groupList = []
   } = props;
   let featureFlag = null;
   if (typeof inputFeatures === "string") {
@@ -60,7 +60,7 @@ export const isFeatureAccessibleToUser = props => {
   return featureFlag || gradeSubjectFlag;
 };
 
-const getGradeSubject = (groupId, groupList) => {
+const getGradeSubject = (groupId, groupList = []) => {
   if (groupId) {
     const currentGroup = groupList.filter(group => group._id === groupId);
     if (!isEmpty(currentGroup)) {

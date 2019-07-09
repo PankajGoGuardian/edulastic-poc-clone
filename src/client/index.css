@@ -428,17 +428,14 @@ template {
 .response-btn .index {
   padding: 8px;
   background: darkgray;
+  color: white;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   min-width: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.response-btn:hover .index {
-  background: #12a6e8;
-  color: lightgray;
+  height: 100%;
 }
 
 .response-btn .text {
@@ -771,6 +768,7 @@ input[type="checkbox"] {
   font-weight: 700;
   font-size: 13px;
   padding: 0 !important;
+  overflow: hidden;
 }
 
 .response-btn.wrong {
@@ -778,7 +776,6 @@ input[type="checkbox"] {
 }
 
 .check-answer .index {
-  background: #ee1658;
   color: white;
   align-items: center;
   width: 30px;
@@ -789,7 +786,6 @@ input[type="checkbox"] {
   display: inline-flex;
   flex: 1;
   text-align: center;
-  background: #fce0e8;
   color: #878282;
   align-items: center;
   padding: 8px 20px 8px 7px;
@@ -804,18 +800,29 @@ input[type="checkbox"] {
   background: #fce0e8;
   color: #878282;
   padding: 8px 20px 8px 7px;
+  width: calc(100% - 30px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .check-answer.right .index {
   background: #5eb500;
   color: white;
   padding: 8px;
+  height: 100%;
 }
 
 .check-answer.right .text {
   background: #d3fea6;
   color: #878282;
   padding: 8px 20px 8px 7px;
+  width: calc(100% - 30px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .check-answer.showanswer .index {
@@ -1440,11 +1447,6 @@ span.token.active-word {
   outline-offset: 4px;
 }
 
-.mq-math-mode .mq-root-block,
-.mq-root-block {
-  margin-bottom: 0.2em;
-}
-
 .mq-math-mode .mq-supsub.mq-sup-only {
   margin-bottom: 1em;
 }
@@ -1876,7 +1878,7 @@ span.token.active-word {
 
 .jsx-parser .mq-math-mode {
   padding: 2px 4px;
-  margin: 0 4px;
+  margin: 2px 4px;
   border: 1px solid #d9d9d9;
   border-radius: 4px;
   min-width: 60px;

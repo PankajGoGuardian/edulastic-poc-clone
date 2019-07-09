@@ -79,6 +79,7 @@ const AlignmentRow = ({
       "level",
       "grades",
       "identifier",
+      "tloIdentifier",
       "tloId",
       "tloDescription",
       "eloId",

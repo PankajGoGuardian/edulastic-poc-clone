@@ -4,7 +4,7 @@ import produce from "immer";
 import ReactDOM from "react-dom";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { Tabs, Tab } from "@edulastic/common";
+import { Tabs, Tab, MathSpan } from "@edulastic/common";
 
 import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
@@ -30,7 +30,6 @@ class Template extends Component {
 
   render() {
     const { item, setQuestionData, template, setTemplate, templateTab, setTemplateTab, t } = this.props;
-
     const mode = item.tokenization;
 
     const handleItemChangeChange = (prop, uiStyle) => {
@@ -44,17 +43,26 @@ class Template extends Component {
               value: `${el}<br/>`,
               active: true
             }));
-
             const sentencesArray = initialArray
               .join("<br/>")
               .split(".")
               .map(el => ({ value: `${el}.`, active: true }))
               .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
 
+            const mathArray = initialArray.join("<br/> ").match(/<span(.*?)class="input__math"(.*?)>/g);
+            let i = 0;
             const wordsArray = initialArray
               .join("<br/> ")
-              .split(" ")
-              .map(el => ({ value: `${el}`, active: true }));
+              .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
+              .split(/\s/g)
+              .map(el => {
+                if (mathArray && el.indexOf("<span></span>") !== -1) {
+                  el = el.replace("<span></span>", mathArray[i]);
+                  i++;
+                }
+                return { value: `${el}`, active: true };
+              });
+
             if (mode === WORD_MODE) {
               resultArray = cloneDeep(wordsArray);
             } else if (mode === PARAGRAPH_MODE) {
@@ -128,7 +136,7 @@ class Template extends Component {
               </ModeButton>
             </Container>
             {template.map((el, i) => (
-              <span
+              <MathSpan
                 onClick={handleTemplateClick(i)}
                 dangerouslySetInnerHTML={{ __html: el.value }}
                 key={i}

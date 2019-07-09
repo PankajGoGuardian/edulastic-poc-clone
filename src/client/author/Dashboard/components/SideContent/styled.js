@@ -1,11 +1,36 @@
-import { Row, Col, Divider, Icon } from "antd";
+import { Row, Col, Divider, Icon, Button } from "antd";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
+import { white, lightBlue3 } from "@edulastic/colors";
+
+export const SliderButton = styled(Button)`
+  width: 40px;
+  height: 40px;
+  color: ${white} !important;
+  border-radius: 50px 0 0 50px;
+  background: ${lightBlue3} !important;
+  cursor: pointer;
+`;
+export const SideContentContainer = styled.div`
+  display: flex;
+  position: fixed;
+  transform: ${props => (props.show ? `translate(0%)` : `translate(88%)`)};
+  transition: all 0.5s ease-in-out;
+  z-index: 300;
+  top: 96px;
+  right: 0;
+`;
 
 export const SideContentWrapper = styled.div`
   background: #ffffff;
   padding: 1.2rem;
   width: 275px !important;
-  height: 740px;
+  height: 120vh;
+`;
+
+export const ScrollbarContainer = styled(PerfectScrollbar)`
+  max-height: 300px;
+  overflow-x: hidden;
 `;
 
 export const ColWrapper = styled(Col)`

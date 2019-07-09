@@ -219,8 +219,8 @@ class ClozeDragDropDisplay extends Component {
     };
 
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto",
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : 140,
+      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : 40,
       whiteSpace: uiStyle.wordwrap ? "inherit" : "nowrap"
     };
 
@@ -360,6 +360,7 @@ class ClozeDragDropDisplay extends Component {
           fontSize={fontSize}
           groupResponses={options}
           userAnswers={validation.valid_response && validation.valid_response.value}
+          btnStyle={btnStyle}
         />
         {!isEmpty(item.validation.alt_responses) && (
           <AlternateAnswerBoxLayout
@@ -367,6 +368,7 @@ class ClozeDragDropDisplay extends Component {
             groupResponses={options}
             hasGroupResponses={hasGroupResponses}
             altAnswers={validation.alt_responses}
+            btnStyle={btnStyle}
           />
         )}
       </>

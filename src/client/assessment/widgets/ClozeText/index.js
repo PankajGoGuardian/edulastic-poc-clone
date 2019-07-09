@@ -291,6 +291,7 @@ class ClozeText extends Component {
                 uiStyle={uiStyle}
                 userSelections={userAnswer}
                 validation={itemForPreview.validation}
+                onChange={this.handleAddAnswer}
                 evaluation={evaluation}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}

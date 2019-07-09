@@ -47,7 +47,7 @@ class MathFormulaOptions extends Component {
           const responses = responseIds[key];
           for (const response of responses) {
             if (response.index === ind) {
-              obj = { ...responseContainer };
+              obj = { ...response };
               break outerLoop;
             }
           }

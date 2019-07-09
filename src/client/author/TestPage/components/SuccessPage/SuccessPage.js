@@ -136,6 +136,11 @@ class SuccessPage extends React.Component {
       }
     ];
 
+    let hasPremiumQuestion = false;
+    if (!isPlaylist) {
+      const { testItems = [] } = test;
+      hasPremiumQuestion = testItems.some(x => !!x.collectionName);
+    }
     const breadCrumbData = [
       {
         title: "TEST LIBRARY",
@@ -156,6 +161,7 @@ class SuccessPage extends React.Component {
         <ShareModal
           isVisible={isShareModalVisible}
           testId={_id}
+          hasPremiumQuestion={hasPremiumQuestion}
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
           gradeSubject={gradeSubject}

@@ -25,13 +25,19 @@ export const StyledTable = styled(Table)`
         text-align: center;
         padding: 0;
         background: ${props => props.theme.widgets.matrixChoice.styledTableThBgColor};
-        border-left: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
+        border-width: 1px;
+        border-style: solid;
+        border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
+        border-left: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
       }
       td {
         padding: 0;
         text-align: center;
         border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
+        border-width: 1px;
+        border-style: solid;
+        border-color: ${props => props.theme.widgets.matrixChoice.styledTableBorderColor}!important;
         border-bottom: ${props => (props.horizontalLines ? "inherits" : 0)};
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
       }

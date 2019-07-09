@@ -9,6 +9,7 @@ export const userPickFields = [
   "middleName",
   "lastName",
   "ipZipCode",
+  "isUserGoogleLoggedIn",
   "currentSignUpState",
   "districtId",
   "institutionIds",

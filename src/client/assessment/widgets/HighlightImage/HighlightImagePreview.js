@@ -57,10 +57,9 @@ const HighlightImagePreview = ({
       img.alt = altText;
       img.src = userAnswer;
       img.onload = () => {
-        context.clearRect(0, 0, context.width, context.height);
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
         context.drawImage(img, 0, 0, img.width, img.height);
-
         setCtx(context);
       };
     } else {
@@ -94,6 +93,16 @@ const HighlightImagePreview = ({
       canvas.current.height = canvasContainerRef.current.clientHeight;
       canvas.current.width = canvasContainerRef.current.clientWidth;
       const context = canvas.current.getContext("2d");
+
+      const img = new Image();
+      img.alt = altText;
+      img.src = userAnswer;
+      img.onload = () => {
+        context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+        context.drawImage(img, 0, 0, img.width, img.height);
+        setCtx(context);
+      };
+
       context.lineWidth = item.line_width || 5;
     }
   }, [canvasContainerRef.current && canvasContainerRef.current.clientHeight]);

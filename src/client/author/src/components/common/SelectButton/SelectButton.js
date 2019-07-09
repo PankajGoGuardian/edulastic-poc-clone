@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { IconCaretDown } from "@edulastic/icons";
-import { textColor, white, blue } from "@edulastic/colors";
+import { textColor, white, themeColor } from "@edulastic/colors";
 import SelectButtonItem from "./SelectButtonItem";
 
 export default class SelectButton extends Component {
@@ -31,7 +31,7 @@ export default class SelectButton extends Component {
         <Button onClick={this.toggleList} open={open}>
           <span>{icon}</span>
           <span>
-            <IconCaretDown color={blue} width={11} height={6} />
+            <IconCaretDown color={themeColor} width={11} height={6} />
           </span>
         </Button>
         {open && (

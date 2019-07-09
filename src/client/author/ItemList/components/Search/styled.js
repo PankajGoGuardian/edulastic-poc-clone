@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, blue, themeColor, secondaryTextColor, lightGrey4 } from "@edulastic/colors";
+import { white, themeColor, secondaryTextColor, lightGrey4 } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 0 0 20px;
@@ -125,6 +125,6 @@ export const ItemBody = styled.div`
   }
 
   .ant-select-arrow-icon {
-    color: ${blue};
+    color: ${themeColor};
   }
 `;

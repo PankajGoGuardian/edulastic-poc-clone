@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue, white, dashBorderColor } from "@edulastic/colors";
+import { themeColor, white, dashBorderColor } from "@edulastic/colors";
 import { CheckboxContainer } from "./CheckboxContainer";
 import { MultiChoiceContent } from "./MultiChoiceContent";
 
@@ -66,7 +66,7 @@ export const Label = styled.label`
     } else if (uiStyle.type === "block" && !selected) {
       return white;
     } else if (uiStyle.type === "block" && selected) {
-      return blue;
+      return themeColor;
     }
 
     return color;

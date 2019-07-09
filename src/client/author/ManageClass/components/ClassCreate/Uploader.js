@@ -7,7 +7,7 @@ import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
 import { withWindowSizes } from "@edulastic/common";
 import { Upload } from "antd";
-import { blue, white } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
 
@@ -114,7 +114,7 @@ const Image = styled.img`
 `;
 
 const Camera = styled.div`
-  background: ${blue};
+  background: ${themeColor};
   border-radius: 50%;
   width: 40px;
   height: 40px;

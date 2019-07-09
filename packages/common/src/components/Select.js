@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
 import styled from "styled-components";
-import { white, grey, blue, secondaryTextColor } from "@edulastic/colors";
+import { white, themeColor, secondaryTextColor } from "@edulastic/colors";
 
 const Select = ({ onChange, options, value, style, arrowColor }) => (
   <SelectContainer style={style} arrowColor={arrowColor}>
@@ -30,7 +30,7 @@ Select.propTypes = {
 
 Select.defaultProps = {
   style: {},
-  arrowColor: blue
+  arrowColor: themeColor
 };
 
 export default Select;

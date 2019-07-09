@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { blue, darkGrey } from "@edulastic/colors";
+import { themeColor, darkGrey } from "@edulastic/colors";
 
 const IndexBox = styled.span`
-  background: ${props => (props.isActive ? blue : darkGrey)};
+  background: ${props => (props.isActive ? themeColor : darkGrey)};
   padding: 0 10px;
   color: white;
   display: inline-flex;

@@ -2,10 +2,9 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import styled from "styled-components";
 import { partial } from "lodash";
+import { fadedGrey, black, themeColor } from "@edulastic/colors";
 
 import { useInternalEffect } from "../../hooks/useInternalEffect";
-
-import { black } from "@edulastic/colors";
 
 const CustomMenu = (className, data, handleMenuClick, prefix) => {
   return (
@@ -105,6 +104,14 @@ const StyledDiv = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
+    &.ant-btn.ant-dropdown-trigger {
+      border-color: ${fadedGrey};
+      &:hover,
+      &:focus {
+        border-color: ${themeColor};
+        color: ${themeColor};
+      }
+    }
 
     span {
       flex: 1;

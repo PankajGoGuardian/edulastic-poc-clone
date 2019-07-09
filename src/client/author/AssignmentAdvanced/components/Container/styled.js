@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
-import { tabletWidth, mobileWidth, linkColor, blue, white } from "@edulastic/colors";
+import { tabletWidth, mobileWidth, linkColor, themeColor, white } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled.div`
@@ -62,7 +62,7 @@ export const Anchor = styled.a`
 `;
 
 export const BtnAction = styled(Button)`
-  color: ${blue};
+  color: ${themeColor};
   border: none;
   box-shadow: 0px 2px 4px 0 rgba(201, 208, 219, 0.5);
   max-width: 140px;
@@ -78,12 +78,12 @@ export const BtnAction = styled(Button)`
   margin-right: 20px !important;
 
   :active {
-    background-color: ${blue};
+    background-color: ${themeColor};
     color: ${white};
   }
 
   :hover {
-    background-color: ${blue};
+    background-color: ${themeColor};
     color: ${white};
   }
 `;

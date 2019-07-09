@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Row, Col } from "antd";
 import styled from "styled-components";
-import { darkBlue, black, darkGrey, titleColor } from "@edulastic/colors";
+import { themeColor, black, darkGrey, titleColor } from "@edulastic/colors";
 
 const Tab = ({ className, tabData, selectedTab }) => {
   return (
@@ -79,7 +79,7 @@ const StyledTab = styled(Tab)`
 
   .navigator-tab-highlighter {
     height: 2px;
-    background-color: ${darkBlue};
+    background-color: ${themeColor};
   }
 `;
 
@@ -94,5 +94,5 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledSpan = styled.span`
-  border-bottom: ${props => (props.selectedTab === props.currentTab ? "solid 2px" + darkBlue : 0)};
+  border-bottom: ${props => (props.selectedTab === props.currentTab ? "solid 2px " + themeColor : 0)};
 `;

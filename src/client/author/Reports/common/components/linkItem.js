@@ -2,10 +2,10 @@ import React from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Icon } from "antd";
-import { grey, darkBlue, lightBlue, black } from "@edulastic/colors";
+import { themeColorLight, themeColor } from "@edulastic/colors";
 
 const Item = styled.li`
-  color: ${lightBlue};
+  color: ${themeColorLight};
   width: 100%;
   border-top: 2px solid #f7f7f7;
   a {
@@ -21,7 +21,7 @@ const Item = styled.li`
 const StyledIcon = styled(Icon)`
   font-weight: bold;
   float: right;
-  color: ${darkBlue};
+  color: ${themeColor};
 `;
 
 export const LinkItem = props => {

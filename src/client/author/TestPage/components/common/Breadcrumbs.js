@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-import { blue, darkBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { navButtonsTest } from "../TestPageHeader/TestPageHeader";
 
 const getCurrentText = current => {
@@ -35,14 +35,14 @@ export default Breadcrumbs;
 const Title = styled.div`
   font-size: 13px;
   font-weight: 600;
-  color: ${blue};
+  color: ${themeColor};
   text-transform: uppercase;
   margin-bottom: 25px;
 `;
 
 const BackLink = styled(Link)`
-  color: ${blue};
+  color: ${themeColor};
   :hover {
-    color: ${darkBlue};
+    color: ${themeColor};
   }
 `;

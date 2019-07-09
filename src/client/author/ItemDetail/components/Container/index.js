@@ -15,6 +15,7 @@ import {
   publishTestItemAction,
   getTestItemStatusSelector
 } from "../../ducks";
+import SettingsBar from "../SettingsBar";
 
 const ItemDetailContainer = ({
   isSingleQuestionView = false,
@@ -33,8 +34,11 @@ const ItemDetailContainer = ({
 }) => {
   const { modalItemId } = props;
   const { id, testId } = match.params;
-  // TODO: make it friggin editable or something. Feature is not done yet, by someone.
+  // TODO: make it friggin editable or something. Feature is not done yet!
   const [isEditable, setEditable] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  const [isMultipart, setMultipart] = useState(false);
+
   const itemId = id || modalItemId || match.param.itemId;
 
   useEffect(() => {
@@ -67,10 +71,30 @@ const ItemDetailContainer = ({
     isTestFlow,
     showPublishButton,
     hasAuthorPermissions,
-    item
+    setShowSettings,
+    item,
+    setMultipart,
+    isMultipart
   };
 
-  return isSingleQuestionView ? <QuestionView isItem {...allProps} /> : <MultipleQuestionView {...allProps} />;
+  return (
+    <>
+      {showSettings && (
+        <SettingsBar
+          isSingleQuestion={isSingleQuestionView}
+          isMultipart={isMultipart}
+          onCancel={() => setShowSettings(false)}
+          setMultipart={setMultipart}
+        />
+      )}
+      {isSingleQuestionView && !isMultipart ? (
+        <QuestionView isItem {...allProps} />
+      ) : (
+        <MultipleQuestionView {...allProps} />
+      )}
+      }{" "}
+    </>
+  );
 };
 
 const enhance = compose(

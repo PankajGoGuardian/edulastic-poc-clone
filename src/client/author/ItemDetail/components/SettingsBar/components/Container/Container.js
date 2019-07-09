@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Switch } from "antd";
+import { Switch, Checkbox } from "antd";
 import ReactOutsideEvent from "react-outside-event";
 
 import { title } from "@edulastic/colors";
-import { Button, Checkbox } from "@edulastic/common";
+import { Button } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -58,12 +58,14 @@ class Container extends Component {
     onScrollingChange: PropTypes.func.isRequired,
     useFlowLayoutRight: PropTypes.bool,
     itemLevelScoring: PropTypes.bool,
-    setItemLevelScoring: PropTypes.func.isRequired
+    setItemLevelScoring: PropTypes.func.isRequired,
+    isSingleQuestion: PropTypes.bool
   };
 
   static defaultProps = {
     useFlowLayoutRight: false,
-    itemLevelScoring: true
+    itemLevelScoring: true,
+    isSingleQuestion: false
   };
 
   handleCheckboxChange = name => () => {
@@ -107,6 +109,12 @@ class Container extends Component {
     }
   };
 
+  handleMultipart = () => {
+    const { setMultipart, onCancel } = this.props;
+    setMultipart(true);
+    onCancel();
+  };
+
   render() {
     const {
       onCancel,
@@ -121,56 +129,66 @@ class Container extends Component {
       onVerticalDividerChange,
       onScrollingChange,
       itemLevelScoring,
-      setItemLevelScoring
+      setItemLevelScoring,
+      isSingleQuestion = false,
+      isMultipart
     } = this.props;
 
     return (
       <Content>
-        <SettingsButtonWrapper justifyContent="flex-end">
-          <Button
-            color="primary"
-            onClick={onCancel}
-            style={{ minWidth: 40, background: "transparent", padding: 0, boxShadow: "none" }}
-          >
-            <IconClose color={title} />
-          </Button>
-        </SettingsButtonWrapper>
-        <Heading>{t("author:component.settingsBar.layout")}</Heading>
-        <Items>
-          {layouts.map(item => (
-            <SettingsBarItem
-              onSelect={this.onApplyLayoutClick({ type: item.value })}
-              selected={type === item.value}
-              key={item.value}
-              item={item}
+        {isSingleQuestion ? (
+          <SettingsButtonWrapper justifyContent="flex-end">
+            <Checkbox onChange={this.handleMultipart} value={isMultipart} /> Convert item into a multipart
+          </SettingsButtonWrapper>
+        ) : (
+          <>
+            <SettingsButtonWrapper justifyContent="flex-end">
+              <Button
+                color="primary"
+                onClick={onCancel}
+                style={{ minWidth: 40, background: "transparent", padding: 0, boxShadow: "none" }}
+              >
+                <IconClose color={title} />
+              </Button>
+            </SettingsButtonWrapper>
+            <Heading>{t("author:component.settingsBar.layout")}</Heading>
+            <Items>
+              {layouts.map(item => (
+                <SettingsBarItem
+                  onSelect={this.onApplyLayoutClick({ type: item.value })}
+                  selected={type === item.value}
+                  key={item.value}
+                  item={item}
+                />
+              ))}
+            </Items>
+            <SettingsBarUseTabs
+              onChangeLeft={this.handleChangeLeftTab}
+              onChangeRight={this.handleChangeRightTab}
+              checkedLeft={useTabsLeft}
+              checkedRight={useTabsRight}
             />
-          ))}
-        </Items>
-        <SettingsBarUseTabs
-          onChangeLeft={this.handleChangeLeftTab}
-          onChangeRight={this.handleChangeRightTab}
-          checkedLeft={useTabsLeft}
-          checkedRight={useTabsRight}
-        />
-        <SettingsFlowLayout
-          onChangeLeft={this.handleChangeLeftFlowLayout}
-          onChangeRight={this.handleChangeRightFlowLayout}
-          checkedLeft={useFlowLayoutLeft}
-          checkedRight={useFlowLayoutRight}
-        />
-        <Checkboxes>
-          <Checkbox
-            style={{ marginBottom: 20 }}
-            label={t("author:component.settingsBar.showVerticalDivider")}
-            checked={verticalDivider}
-            onChange={onVerticalDividerChange}
-          />
-          <Checkbox
-            label={t("author:component.settingsBar.enableScrolling")}
-            checked={scrolling}
-            onChange={onScrollingChange}
-          />
-        </Checkboxes>
+            <SettingsFlowLayout
+              onChangeLeft={this.handleChangeLeftFlowLayout}
+              onChangeRight={this.handleChangeRightFlowLayout}
+              checkedLeft={useFlowLayoutLeft}
+              checkedRight={useFlowLayoutRight}
+            />
+            <Checkboxes>
+              <Checkbox
+                style={{ marginBottom: 20 }}
+                label={t("author:component.settingsBar.showVerticalDivider")}
+                checked={verticalDivider}
+                onChange={onVerticalDividerChange}
+              />
+              <Checkbox
+                label={t("author:component.settingsBar.enableScrolling")}
+                checked={scrolling}
+                onChange={onScrollingChange}
+              />
+            </Checkboxes>{" "}
+          </>
+        )}
       </Content>
     );
   }

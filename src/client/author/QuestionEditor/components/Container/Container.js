@@ -230,7 +230,8 @@ class Container extends Component {
       view,
       isTestFlow,
       saveItem,
-      isEditable
+      isEditable,
+      setShowSettings
     } = this.props;
 
     let showPublishButton = false;
@@ -244,7 +245,7 @@ class Container extends Component {
     return (
       <ButtonAction
         onShowSource={this.handleShowSource}
-        onShowSettings={this.handleShowSettings}
+        onShowSettings={() => setShowSettings(true)}
         onChangeView={this.handleChangeView}
         changePreview={changePreview}
         changePreviewTab={this.handleChangePreviewTab}
@@ -258,7 +259,6 @@ class Container extends Component {
   };
 
   header = () => {
-    console.log("props reaching here are", this.props);
     const {
       view,
       modalItemId,
@@ -271,7 +271,8 @@ class Container extends Component {
       publishTestItem,
       hasAuthorPermission,
       onSaveScrollTop,
-      savedWindowScrollTop
+      savedWindowScrollTop,
+      setShowSettings
     } = this.props;
     const { previewTab } = this.state;
 
@@ -283,7 +284,6 @@ class Container extends Component {
         onSave={this.handleSave}
         view={view}
         showPublishButton={showPublishButton}
-        onShowSettings={() => {}}
         onPublishTestItem={publishTestItem}
         previewTab={previewTab}
         isTestFlow={isTestFlow}

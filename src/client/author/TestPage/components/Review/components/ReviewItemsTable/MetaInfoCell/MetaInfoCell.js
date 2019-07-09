@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Tag } from "antd";
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
 import { greenDark } from "@edulastic/colors";
 
@@ -10,7 +10,6 @@ import Tags from "../../../../../../src/components/common/Tags";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
 import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
 import { MetaTag, ExtraInfo } from "./styled";
-import PremiumTag from "../../../../../../ItemList/components/PremiumTag/PremiumTag";
 
 const MetaInfoCell = ({
   data: { standards, types, by, id, shared, likes, audio = {}, isPremium = false, points = 0 },

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { MoveLink, MathFormulaDisplay } from "@edulastic/common";
+import { MoveLink, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
 import { getTestItemAuthorName } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
@@ -33,7 +33,6 @@ import {
   Details,
   AudioIcon
 } from "./styled";
-import PremiumTag from "../PremiumTag/PremiumTag";
 
 // render single item
 class Item extends Component {

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Button, Tag, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { FlexContainer, MoveLink } from "@edulastic/common";
+import { FlexContainer, MoveLink, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
 import { greenDark } from "@edulastic/colors";
 import styled from "styled-components";
@@ -22,7 +22,6 @@ import {
 } from "../../AddItems/ducks";
 
 import { AudioIcon } from "../../../../ItemList/components/Item/styled";
-import PremiumTag from "../../../../ItemList/components/PremiumTag/PremiumTag";
 
 class MetaInfoCell extends Component {
   constructor(props) {

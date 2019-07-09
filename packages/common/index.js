@@ -35,6 +35,7 @@ export { default as TabContainer } from "./src/components/Tabs/TabContainer";
 export { default as MathModal } from "./src/components/MathModal";
 export { StyledComponents };
 export { default as TypeToConfirmModal } from "./src/components/TypeToConfirmModal";
+export { default as PremiumTag } from "./src/components/PremiumTag/PremiumTag";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
 export { WithResources, useResources } from "./src/HOC/withResources";

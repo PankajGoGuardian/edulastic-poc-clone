@@ -86,6 +86,7 @@ export const reducer = createReducer(initialState, {
       school.studentsCount = get(school, "studentsCount", 0);
       school.sectionsCount = get(school, "sectionsCount", 0);
       school.status = get(school, ["_source", "status"], 0);
+      school.isApproved = get(school, ["_source", "isApproved"], true);
       school.address = get(school, "address", "");
       if (school.address == null) school.address = "";
       delete school._source;
@@ -208,7 +209,9 @@ export const reducer = createReducer(initialState, {
     // this reduces the complexity from n^2 to 3n
     const schoolListHash = keyBy(state.data, "key");
     for (let i = 0; i < schoolIds.length; i++) {
-      schoolListHash[schoolIds[i]].status = 0;
+      // removing deactivated school from the school list
+      // as we are not showing deactivated school
+      delete schoolListHash[schoolIds[i]];
     }
     state.data = Object.values(schoolListHash);
   },

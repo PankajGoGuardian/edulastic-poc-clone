@@ -63,7 +63,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (btnStyle && isUndefined(btnStyle.wordwrap) && !isUndefined(responseBtnStyle.wordwrap)) {
     btnStyle.wordwrap = responseBtnStyle.wordwrap;
   }
-  console.log(btnStyle);
+
   return (
     <span className="template_box" style={{ fontSize, padding: 20 }}>
       {showAnswer && hasGroupResponses && (

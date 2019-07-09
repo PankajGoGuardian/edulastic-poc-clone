@@ -181,7 +181,8 @@ function* showAnswers() {
     yield put({ type: CHECK_ANSWER, payload: { mode: "show" } }); // validate the results first then show it
     const answers = yield select(state => state.answers);
     const validations = yield select(getQuestionsSelector);
-    const { evaluation } = createShowAnswerData(validations, answers);
+    const evaluation = yield createShowAnswerData(validations, answers);
+
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

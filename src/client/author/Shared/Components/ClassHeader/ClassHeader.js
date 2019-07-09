@@ -37,6 +37,7 @@ import {
 } from "./styled";
 import { StudentReportCardMenuModal } from "./components/studentReportCardMenuModal";
 import { StudentReportCardModal } from "./components/studentReportCardModal";
+import ReleaseScoreSettingsModal from "../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import {
@@ -48,6 +49,8 @@ import {
 import { showScoreSelector, getClassResponseSelector, getMarkAsDoneEnableSelector } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { togglePresentationModeAction } from "../../../src/actions/testActivity";
+import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
+import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
 
 class ClassHeader extends Component {
   constructor(props) {
@@ -94,11 +97,10 @@ class ClassHeader extends Component {
     this.setState(state => ({ showDropdown: !state.showDropdown }));
   };
 
-  handleReleaseScore = () => {
-    const { classId, assignmentId, setReleaseScore, showScore } = this.props;
-    const isReleaseScore = !showScore;
-    setReleaseScore(assignmentId, classId, isReleaseScore);
-    this.toggleDropdown();
+  handleReleaseScore = releaseScore => {
+    const { classId, assignmentId, setReleaseScore, toggleReleaseGradePopUp } = this.props;
+    setReleaseScore(assignmentId, classId, releaseScore);
+    toggleReleaseGradePopUp(false);
   };
 
   handleMarkAsDone = () => {
@@ -167,18 +169,20 @@ class ClassHeader extends Component {
       classId,
       testActivityId,
       additionalData = {},
-      showScore,
+
       selectedStudentsKeys,
       classResponse = {},
       assignmentStatus,
       enableMarkAsDone,
       togglePresentationMode,
       isPresentationMode,
+      isShowReleaseSettingsPopup,
+      toggleReleaseGradePopUp
       userRole
     } = this.props;
 
     const { showDropdown, visible } = this.state;
-    const { endDate, startDate } = additionalData;
+    const { endDate, startDate, releaseScore } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
     const canOpen =
@@ -199,11 +203,7 @@ class ClassHeader extends Component {
             Mark as Done
           </MenuItems>
         </FeaturesSwitch>
-        <MenuItems
-          key="key2"
-          onClick={this.handleReleaseScore}
-          style={{ textDecoration: showScore ? "line-through" : "none" }}
-        >
+        <MenuItems key="key2" onClick={() => toggleReleaseGradePopUp(true)}>
           Release Score
         </MenuItems>
         <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
@@ -282,6 +282,12 @@ class ClassHeader extends Component {
             okText="Yes"
             cancelText="No"
           />
+          <ReleaseScoreSettingsModal
+            showReleaseGradeSettings={isShowReleaseSettingsPopup}
+            onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
+            updateReleaseScoreSettings={this.handleReleaseScore}
+            releaseScore={releaseScore}
+          />
         </StyledDiv>
       </Container>
     );
@@ -296,30 +302,32 @@ ClassHeader.propTypes = {
   testActivityId: PropTypes.string,
   additionalData: PropTypes.object.isRequired,
   setReleaseScore: PropTypes.func.isRequired,
-  showScore: PropTypes.bool
+  releaseScore: PropTypes.string
 };
 
 ClassHeader.defaultProps = {
   testActivityId: "",
-  showScore: false
+  releaseScore: "DONT_RELEASE"
 };
 
 const enhance = compose(
   withNamespaces("classBoard"),
   connect(
     state => ({
-      showScore: showScoreSelector(state),
+      releaseScore: showScoreSelector(state),
       classResponse: getClassResponseSelector(state),
       userRole: getUserRole(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state)
     }),
     {
       setReleaseScore: releaseScoreAction,
       setMarkAsDone: markAsDoneAction,
       openAssignment: openAssignmentAction,
-      closeAssignment: closeAssignmentAction
+      closeAssignment: closeAssignmentAction,
+      toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction
     }
   )
 );

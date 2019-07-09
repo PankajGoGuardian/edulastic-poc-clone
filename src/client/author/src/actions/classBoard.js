@@ -56,14 +56,9 @@ export const receiveTestActivitydAction = (assignmentId, classId) => ({
   payload: { assignmentId, classId }
 });
 
-export const releaseScoreAction = (assignmentId, classId, isReleaseScore) => ({
+export const releaseScoreAction = (assignmentId, classId, releaseScore) => ({
   type: UPDATE_RELEASE_SCORE,
-  payload: { assignmentId, classId, isReleaseScore }
-});
-
-export const setShowScoreAction = payload => ({
-  type: SET_SHOW_SCORE,
-  payload
+  payload: { assignmentId, classId, releaseScore }
 });
 
 export const receiveStudentQuestionAction = (assignmentId, classId, questionId, studentId, testItemId) => ({

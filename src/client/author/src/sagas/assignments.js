@@ -115,6 +115,10 @@ function* updateAssignmetSaga({ payload }) {
       type: TOGGLE_RELEASE_GRADE_SETTINGS,
       payload: false
     });
+    yield put({
+      type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
+      payload: data
+    });
     const successMessage = "Successfully updated release score settings";
     yield call(message.success, successMessage);
   } catch (e) {

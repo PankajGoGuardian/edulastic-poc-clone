@@ -125,13 +125,21 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
       startAssignment({ testId, assignmentId, testType });
     }
   };
+
+  const { activityReview = true } = data;
+  let releaseScore = null;
   if (!currentGroup) {
     //Find current group from assignment classes object
     const getClass = data.class.find(({ _id }) => userGroups.includes(_id)) || {};
     currentGroup = getClass._id;
+    releaseScore = getClass.releaseScore;
+  } else {
+    releaseScore = (data.class.find(item => item._id === currentGroup) || {}).releaseScore;
   }
 
-  const { releaseScore = releaseGradeLabels.DONT_RELEASE, activityReview = true } = data;
+  if (!releaseScore) {
+    releaseScore = data.releaseScore;
+  }
   const showReviewButton =
     releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
   const ScoreDetail = (

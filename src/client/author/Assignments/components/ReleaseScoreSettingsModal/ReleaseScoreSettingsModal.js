@@ -1,17 +1,23 @@
 import React, { useRef } from "react";
+import { connect } from "react-redux";
 import { Modal, Button, Radio, Row } from "antd";
 import { test } from "@edulastic/constants";
+import { getUserFeatures } from "../../../../student/Login/ducks";
 
-const { releaseGradeTypes, releaseGradeLabels } = test;
+const { releaseGradeTypes } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 const ReleaseScoreSettingsModal = ({
   showReleaseGradeSettings,
   onCloseReleaseScoreSettings,
   updateReleaseScoreSettings,
-  releaseScore
+  releaseScore,
+  features
 }) => {
   const releaseScoreRef = useRef();
-
+  let _releaseGradeKeys = releaseGradeKeys;
+  if (!features.assessmentSuperPowersReleaseScorePremium) {
+    _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]];
+  }
   return (
     <Modal
       visible={showReleaseGradeSettings}
@@ -32,7 +38,7 @@ const ReleaseScoreSettingsModal = ({
       ]}
     >
       <Radio.Group defaultValue={releaseScore} ref={releaseScoreRef}>
-        {releaseGradeKeys.map((item, index) => (
+        {_releaseGradeKeys.map((item, index) => (
           <Row key={index}>
             <Radio value={item} key={item}>
               {releaseGradeTypes[item]}
@@ -44,4 +50,7 @@ const ReleaseScoreSettingsModal = ({
   );
 };
 
-export default ReleaseScoreSettingsModal;
+export default connect(
+  state => ({ features: getUserFeatures(state) }),
+  null
+)(ReleaseScoreSettingsModal);

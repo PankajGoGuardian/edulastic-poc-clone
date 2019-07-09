@@ -218,6 +218,7 @@ const List = SortableContainer(
               shared: "0",
               likes: "0",
               types: types[testItems[i]._id],
+              isPremium: !!testItems[i].collectionName,
               standards: standards[testItems[i]._id],
               audio: audioStatus(testItems[i])
             }}

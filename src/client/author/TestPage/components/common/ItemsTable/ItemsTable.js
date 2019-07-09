@@ -99,6 +99,7 @@ const ItemsTable = ({
       types: types[item._id],
       standards: standards[item._id],
       stimulus,
+      isPremium: !!item.collectionName,
       item,
       audio
     };

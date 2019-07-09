@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { MoveLink, MathFormulaDisplay } from "@edulastic/common";
+import { MoveLink, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
 import { getTestItemAuthorName } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
@@ -105,14 +105,19 @@ class Item extends Component {
       };
       details.push(ttsStatusSuccess);
     }
+    if (item.collectionName) {
+      details.unshift({ name: <PremiumTag />, type: "premium" });
+    }
     return details.map((detail, index) => (
       <DetailCategory key={`DetailCategory_${index}`}>
         <CategoryName>{detail.name}</CategoryName>
-        <CategoryContent>
-          <Text title={detail.type === "id" ? detail.text : ""}>
-            {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
-          </Text>
-        </CategoryContent>
+        {detail.type !== "premium" && (
+          <CategoryContent>
+            <Text title={detail.type === "id" ? detail.text : ""}>
+              {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
+            </Text>
+          </CategoryContent>
+        )}
       </DetailCategory>
     ));
   };

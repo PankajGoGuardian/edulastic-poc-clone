@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Button, Tag, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { FlexContainer, MoveLink } from "@edulastic/common";
+import { FlexContainer, MoveLink, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
 import { greenDark } from "@edulastic/colors";
 import styled from "styled-components";
@@ -202,6 +202,11 @@ class MetaInfoCell extends Component {
                 <MetaWrapper>
                   <Standards item={data.item} search={search} />
                 </MetaWrapper>
+                {data.isPremium && (
+                  <MetaWrapper>
+                    <PremiumTag />
+                  </MetaWrapper>
+                )}
                 <MetaWrapper>
                   <IconUser color="#bbbfc4" width={11} height={14} />
                   <FirstText>{data.by}</FirstText>

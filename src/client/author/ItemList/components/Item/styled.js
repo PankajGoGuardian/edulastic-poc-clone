@@ -317,7 +317,7 @@ export const Text = styled.span`
 
 export const Categories = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-left: auto;
 
   @media (max-width: ${tabletWidth}) {

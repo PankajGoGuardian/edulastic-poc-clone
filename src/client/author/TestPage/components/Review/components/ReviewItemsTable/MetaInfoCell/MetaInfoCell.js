@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Tag } from "antd";
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
 import { greenDark } from "@edulastic/colors";
 
@@ -11,7 +11,10 @@ import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar"
 import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
 import { MetaTag, ExtraInfo } from "./styled";
 
-const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio = {}, points = 0 }, itemTableView }) => {
+const MetaInfoCell = ({
+  data: { standards, types, by, id, shared, likes, audio = {}, isPremium = false, points = 0 },
+  itemTableView
+}) => {
   return (
     <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
       <FlexContainer>
@@ -37,6 +40,7 @@ const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio =
       </FlexContainer>
       {itemTableView && (
         <FlexContainer justifyContent="flex-end">
+          {isPremium && <PremiumTag />}
           {renderAnalytics(by, IconUser)}
           {renderAnalytics(id && id.substring(18), IconHash)}
           {renderAnalytics(shared, IconShare)}

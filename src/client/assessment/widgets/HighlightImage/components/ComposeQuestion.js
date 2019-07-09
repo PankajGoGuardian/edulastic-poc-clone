@@ -22,7 +22,7 @@ import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
 
 import { canvasDimensions, aws } from "@edulastic/constants";
-import { uploadToS3, beforeUpload } from "@edulastic/common/src/helpers";
+import { uploadToS3, beforeUpload } from "@edulastic/common";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {

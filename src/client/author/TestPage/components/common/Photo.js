@@ -8,6 +8,7 @@ import { Upload, Spin, message } from "antd";
 import { themeColor, white, greyishDarker2 } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
+import { beforeUpload } from "@edulastic/common";
 
 const defaultImage = "https://fakeimg.pl/1000x300/";
 
@@ -23,6 +24,8 @@ class Photo extends React.Component {
       if (!file.type.match(/image/g)) {
         message.error("Please upload files in image format");
         this.setState({ loading: false });
+        return;
+      } else if (!beforeUpload(file)) {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);

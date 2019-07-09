@@ -42,3 +42,10 @@ export const ExtraInfo = styled.span`
   font-weight: 800;
   color: #bbbfc4;
 `;
+
+export const DokStyled = styled.div`
+  font-size: 10px;
+  font-weight: 600;
+  color: #bbbfc4;
+  margin-right: 15px;
+`;

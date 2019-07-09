@@ -101,7 +101,9 @@ const ItemsTable = ({
       stimulus,
       isPremium: !!item.collectionName,
       item,
-      audio
+      audio,
+      dok:
+        item.data && item.data.questions && (item.data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
     };
 
     return {

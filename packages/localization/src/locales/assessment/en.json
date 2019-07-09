@@ -718,6 +718,7 @@
       "choicesfordropdown": "Choices for Text Dropdown",
       "additionalOptions": "Additional Options",
       "setThousandsSeparator": "Set Thousands Separator",
+      "setEvaluation": "Set Evaluation",
       "setDecimalSeparator": "Set Decimal Separator"
     },
     "matrix": {

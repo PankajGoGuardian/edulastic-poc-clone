@@ -98,6 +98,7 @@ const methodOptions = {
     "setDecimalSeparator",
     "setThousandsSeparator",
     "allowedVariables",
+    "setEvaluation",
     "compareSides"
   ],
   [methods.EQUIV_LITERAL]: [
@@ -124,6 +125,7 @@ const methodOptions = {
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
     "allowNumericOnly",
+    "setEvaluation",
     "compareSides"
   ],
   [methods.EQUIV_SYNTAX]: ["syntax", "ignoreText", "argument", "rule"],

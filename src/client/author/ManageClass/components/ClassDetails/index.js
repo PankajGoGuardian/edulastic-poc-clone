@@ -10,7 +10,7 @@ import {
   fetchClassListAction,
   syncByCodeModalAction
 } from "../../ducks";
-import { Spin, Modal, Input, Button, message } from "antd";
+import { Spin, Modal, Input, message } from "antd";
 
 import Header from "./Header";
 import SubHeader from "./SubHeader";
@@ -42,6 +42,12 @@ const ClassDetails = ({
   }, [fetchClassListLoading]);
 
   useEffect(() => {
+    if (!syncClassLoading && openGCModal) {
+      setOpenGCModal(false);
+    }
+  }, [syncClassLoading]);
+
+  useEffect(() => {
     const { classId } = match.params;
     loadStudents({ classId });
     setOpenGCModal(false);
@@ -54,7 +60,7 @@ const ClassDetails = ({
 
   const handleSyncGC = () => {
     if (googleCode.current.state.value) {
-      syncClassUsingCode({ googleCode, groupId: selectedClass._id });
+      syncClassUsingCode({ googleCode: googleCode.current.state.value, groupId: selectedClass._id });
     } else {
       message.error("Enter valid google classroom code");
     }

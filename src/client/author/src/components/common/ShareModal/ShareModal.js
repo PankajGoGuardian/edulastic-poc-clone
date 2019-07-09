@@ -223,6 +223,7 @@ class ShareModal extends React.Component {
       currentUserId,
       isPublished,
       testId,
+      hasPremiumQuestion,
       isPlaylist
     } = this.props;
     const filteredUserList = userList.filter(
@@ -273,7 +274,13 @@ class ShareModal extends React.Component {
             <RadioBtnWrapper>
               <Radio.Group value={sharedType} onChange={e => this.radioHandler(e)}>
                 {shareTypeKeys.map(item => (
-                  <Radio value={item} key={item} disabled={!isPublished && item !== shareTypeKeys[3]}>
+                  <Radio
+                    value={item}
+                    key={item}
+                    disabled={
+                      (!isPublished && item !== shareTypeKeys[3]) || (item === shareTypeKeys[0] && hasPremiumQuestion)
+                    }
+                  >
                     {shareTypes[item]}
                   </Radio>
                 ))}
@@ -331,6 +338,7 @@ ShareModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   isPlaylist: PropTypes.bool,
+  hasPremiumQuestion: PropTypes.bool,
   isPublished: PropTypes.bool,
   gradeSubject: PropTypes.object
 };

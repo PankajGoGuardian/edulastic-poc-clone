@@ -45,8 +45,8 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       unset(filters, "subject");
     }
 
-    const defaultClass = yield select(getClassIds);
-    if (defaultClass && defaultClass.length) {
+    const classList = yield select(getClassIds);
+    if (classList && classList.length) {
       const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
         districtId,
         filters: pickBy(filters, identity)

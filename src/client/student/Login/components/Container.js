@@ -38,7 +38,7 @@ class LoginContainer extends React.Component {
       if (!err) {
         login({
           password,
-          email: trim(email)
+          username: trim(email)
         });
       }
     });

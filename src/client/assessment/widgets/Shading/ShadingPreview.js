@@ -4,7 +4,7 @@ import { cloneDeep, get } from "lodash";
 import { Select, Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, InstructorStimulus, CorrectAnswersContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { AdaptiveSelect } from "./styled/AdaptiveSelect";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
@@ -35,9 +35,9 @@ const ShadingPreview = ({
   t,
   previewTab,
   theme,
-  qIndex,
   showQuestionNumber,
-  disableResponse
+  disableResponse,
+  evaluation
 }) => {
   const { canvas, validation } = item;
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
@@ -50,10 +50,6 @@ const ShadingPreview = ({
   const column_count = canvas ? canvas.column_count : 1;
   const shaded = canvas ? canvas.shaded : [];
   const read_only_author_cells = canvas ? canvas.read_only_author_cells : false;
-
-  const validAnswer =
-    validation && validation.valid_response && validation.valid_response.value && validation.valid_response.value.value;
-  const altAnswers = validation && validation.alt_responses;
 
   useEffect(() => {
     if (view === PREVIEW && userAnswer.length === 0) {
@@ -78,25 +74,17 @@ const ShadingPreview = ({
     }
   }, [previewTab]);
 
-  const validate = () => {
-    const collection = Array.isArray(validAnswer) ? cloneDeep(validAnswer) : [validAnswer];
+  useEffect(() => {
+    if (previewTab === CHECK) {
+      setIsCheck(true);
+    } else {
+      setIsCheck(false);
+    }
+  }, [evaluation]);
 
-    altAnswers.forEach(answer => {
-      if (Array.isArray(answer.value.value)) {
-        answer.value.value.forEach(val => {
-          if (!collection.includes(val)) {
-            collection.push(val);
-          }
-        });
-      } else if (!collection.includes(answer.value.value)) {
-        collection.push(answer.value.value);
-      }
-    });
-
-    return collection;
-  };
-
-  const correctAnswers = validation ? validate() : [];
+  useEffect(() => {
+    setIsCheck(false);
+  }, [userAnswer]);
 
   const handleCellClick = (rowNumber, colNumber) => () => {
     const newUserAnswer = cloneDeep(userAnswer);
@@ -120,9 +108,18 @@ const ShadingPreview = ({
     saveAnswer(value, true);
   };
 
-  const preview = previewTab === CHECK || previewTab === SHOW;
+  const renderProps = {
+    marginTop: smallSize ? 10 : 0,
+    cellWidth: smallSize ? 1 : cell_width,
+    cellHeight: smallSize ? 1 : cell_height,
+    rowCount: smallSize ? 3 : row_count,
+    colCount: smallSize ? 8 : column_count,
+    border: item.border,
+    hover: item.hover,
+    hidden: get(item, "canvas.hidden", [])
+  };
 
-  const hidden = get(item, "canvas.hidden", []);
+  const correctAnswers = (userAnswer || []).filter((value, i) => evaluation && evaluation[i]);
 
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -135,13 +132,13 @@ const ShadingPreview = ({
         )}
       </QuestionTitleWrapper>
 
-      <FlexContainer alignItems="flex-start" flexDirection="column">
+      <FlexContainer alignItems="flex-start" flexDirection="column" padding="15px">
         {view === EDIT && (
           <Fragment>
             <Subtitle
               fontSize={theme.widgets.shading.subtitleFontSize}
               color={theme.widgets.shading.subtitleColor}
-              padding="0 0 16px 0"
+              margin="0"
             >
               {t("component.shading.methodSubtitle")}
             </Subtitle>
@@ -149,53 +146,72 @@ const ShadingPreview = ({
               <Option value={BY_LOCATION_METHOD}>{BY_LOCATION_METHOD}</Option>
               <Option value={BY_COUNT_METHOD}>{BY_COUNT_METHOD}</Option>
             </AdaptiveSelect>
+
+            {method === BY_LOCATION_METHOD ? (
+              <ShadesView
+                {...renderProps}
+                onCellClick={handleCellClick}
+                shaded={Array.isArray(userAnswer) ? userAnswer : []}
+                lockedCells={read_only_author_cells ? shaded : undefined}
+              />
+            ) : (
+              <Input
+                size="large"
+                type="number"
+                style={{ marginTop: 40, width: 320 }}
+                value={Array.isArray(userAnswer[0]) ? 1 : userAnswer[0]}
+                onChange={e => saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
+              />
+            )}
           </Fragment>
         )}
 
         {view === PREVIEW && (
           <ShadesView
-            marginTop={smallSize ? 10 : 0}
-            cellWidth={smallSize ? 1 : cell_width}
-            cellHeight={smallSize ? 1 : cell_height}
-            rowCount={smallSize ? 3 : row_count}
-            correctAnswers={previewTab === SHOW ? validAnswer : correctAnswers}
-            showAnswers={previewTab === SHOW || disableResponse}
-            checkAnswers={previewTab === CHECK}
-            colCount={smallSize ? 8 : column_count}
+            {...renderProps}
+            checkAnswers={previewTab === CHECK && isCheck}
+            correctAnswers={correctAnswers}
             onCellClick={disableResponse ? () => {} : handleCellClick}
             shaded={Array.isArray(userAnswer) ? userAnswer : []}
-            hidden={hidden}
-            border={item.border}
-            hover={item.hover}
             lockedCells={read_only_author_cells ? shaded : undefined}
           />
         )}
 
-        {method === BY_LOCATION_METHOD ? (
-          <ShadesView
-            cellWidth={cell_width}
-            cellHeight={cell_height}
-            rowCount={row_count}
-            correctAnswers={correctAnswers}
-            showAnswers={preview}
-            colCount={column_count}
-            onCellClick={handleCellClick}
-            shaded={Array.isArray(userAnswer) ? userAnswer : []}
-            hidden={hidden}
-            border={item.border}
-            hover={item.hover}
-            lockedCells={read_only_author_cells ? shaded : undefined}
-          />
-        ) : (
-          view !== PREVIEW && (
-            <Input
-              size="large"
-              type="number"
-              style={{ marginTop: 40, width: 320 }}
-              value={Array.isArray(userAnswer[0]) ? 1 : userAnswer[0]}
-              onChange={e => saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
-            />
-          )
+        {previewTab === SHOW && (
+          <Fragment>
+            <CorrectAnswersContainer title={t("component.shading.correctAnswer")}>
+              {validation.valid_response.value.method === BY_LOCATION_METHOD ? (
+                <ShadesView
+                  {...renderProps}
+                  correctAnswers={validation.valid_response.value.value}
+                  showAnswers
+                  onCellClick={() => {}}
+                  shaded={[]}
+                  lockedCells={read_only_author_cells ? shaded : undefined}
+                />
+              ) : (
+                <Fragment>Any {validation.valid_response.value.value} cells</Fragment>
+              )}
+            </CorrectAnswersContainer>
+
+            {validation.alt_responses &&
+              validation.alt_responses.map((altAnswer, i) => (
+                <CorrectAnswersContainer title={`${t("component.shading.alternateAnswer")} ${i + 1}`}>
+                  {altAnswer.value.method === BY_LOCATION_METHOD ? (
+                    <ShadesView
+                      {...renderProps}
+                      correctAnswers={altAnswer.value.value}
+                      showAnswers
+                      onCellClick={() => {}}
+                      shaded={[]}
+                      lockedCells={read_only_author_cells ? shaded : undefined}
+                    />
+                  ) : (
+                    <Fragment>Any {altAnswer.value.value} cells</Fragment>
+                  )}
+                </CorrectAnswersContainer>
+              ))}
+          </Fragment>
         )}
       </FlexContainer>
     </Paper>
@@ -212,9 +228,9 @@ ShadingPreview.propTypes = {
   previewTab: PropTypes.string,
   t: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
-  qIndex: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  evaluation: PropTypes.any
 };
 
 ShadingPreview.defaultProps = {
@@ -222,9 +238,9 @@ ShadingPreview.defaultProps = {
   userAnswer: null,
   previewTab: CLEAR,
   method: "",
-  qIndex: null,
   showQuestionNumber: false,
-  disableResponse: false
+  disableResponse: false,
+  evaluation: null
 };
 
 const enhance = compose(

@@ -206,9 +206,10 @@ class ClassHeader extends Component {
         <MenuItems key="key2" onClick={() => toggleReleaseGradePopUp(true)}>
           Release Score
         </MenuItems>
-        <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
+        {/* TODO temp hiding for UAT */}
+        {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
           Generate Bubble Sheet
-        </MenuItems>
+        </MenuItems> */}
       </DropMenu>
     );
 

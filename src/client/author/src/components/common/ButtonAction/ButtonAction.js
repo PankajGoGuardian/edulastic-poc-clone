@@ -64,13 +64,6 @@ class ButtonAction extends Component {
                 justifyContent: "flex-end"
               }}
             >
-              <Button htmlType="button" onClick={onShowSource} data-cy="source" style={{ height: 45, width: 45 }}>
-                <ButtonLink
-                  color="primary"
-                  icon={<IconSource color="#00AD50" width={20} height={11} />}
-                  style={{ color: "#00AD50" }}
-                />
-              </Button>
               {showSettingsButton && (
                 <Button htmlType="button" onClick={onShowSettings} style={{ height: 45, width: 45 }}>
                   <ButtonLink

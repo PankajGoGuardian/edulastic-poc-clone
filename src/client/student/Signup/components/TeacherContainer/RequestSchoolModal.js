@@ -10,7 +10,7 @@ import { lightGrey3, linkColor, themeColor, white } from "@edulastic/colors";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { countryApi } from "@edulastic/api";
 import { searchDistrictsRequestAction, createAndJoinSchoolRequestAction } from "../../duck";
-
+import { states } from "./constants";
 const { Option } = Select;
 
 class RequestSchool extends React.Component {
@@ -30,14 +30,17 @@ class RequestSchool extends React.Component {
 
   state = {
     keyword: "",
-    countryList: {}
+    countryList: {},
+    defaultState: "Alaska",
+    stateList: []
   };
 
   async componentDidMount() {
     const countryList = await countryApi.getCountries();
     this.setState({
       ...this.state,
-      countryList
+      countryList,
+      stateList: states
     });
   }
 
@@ -107,7 +110,7 @@ class RequestSchool extends React.Component {
   render() {
     const { isOpen, handleCancel, form, districts, isSearching, autocompleteDistricts } = this.props;
     const { getFieldDecorator } = form;
-    const { keyword, countryList } = this.state;
+    const { keyword, countryList, stateList, defaultState } = this.state;
 
     const title = (
       <Title>
@@ -134,9 +137,30 @@ class RequestSchool extends React.Component {
       }
     };
 
+    const changeCountryHandler = value => {
+      if (value !== "US") {
+        this.setState({
+          ...this.state,
+          stateList: [],
+          defaultState: ""
+        });
+      } else {
+        this.setState({
+          ...this.state,
+          stateList: states,
+          defaultState: "Alaska"
+        });
+      }
+    };
     const countryOptions = Object.entries(countryList).map(([key, value]) => (
       <Option value={key} key={key}>
         {value}
+      </Option>
+    ));
+
+    const stateOptions = stateList.map(state => (
+      <Option value={state} key={state}>
+        {state}
       </Option>
     ));
 
@@ -203,8 +227,13 @@ class RequestSchool extends React.Component {
             </Form.Item>
             <Form.Item label="State">
               {getFieldDecorator("state", {
-                rules: [{ required: false, message: "Please provide a valid state." }]
-              })(<Input placeholder="Enter State" />)}
+                rules: [{ required: false, message: "Please provide a valid state." }],
+                initialValue: defaultState
+              })(
+                <Select showSearch placeholder="Select state">
+                  {stateOptions}
+                </Select>
+              )}
             </Form.Item>
           </FlexItems>
 
@@ -218,6 +247,7 @@ class RequestSchool extends React.Component {
                 placeholder="Select a country"
                 optionFilterProp="children"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                onChange={value => changeCountryHandler(value)}
               >
                 {countryOptions}
               </Select>

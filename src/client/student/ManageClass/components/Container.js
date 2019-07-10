@@ -15,12 +15,12 @@ const ClassCards = ({ classList, t }) => {
 const ManageClassContainer = ({ flag, t, classList, loading }) => {
   return (
     <ManageClassContentWrapper flag={flag}>
-      <Row gutter={20}>{!loading ? <ClassCards classList={classList} t={t} loading={loading} /> : <Spin />}</Row>
-      <NoDataWrapper>
+      <Row gutter={20}>{!loading ? <ClassCards classList={classList} t={t} /> : <Spin />}</Row>
+      {/* <NoDataWrapper>
         <IconManage />
         <NoDataHeading>{t("common.noClassesTitle")}</NoDataHeading>
         <NoDataSubText>{t("common.noClassesSubTitle")}</NoDataSubText>
-      </NoDataWrapper>
+      </NoDataWrapper> */}
     </ManageClassContentWrapper>
   );
 };

@@ -3,21 +3,36 @@ import { Select } from "antd";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-// TODO: remove static data
-const options = ["ARCHIVE (0)", "ACTIVE (0)"];
+const ShowActiveClasses = ({ t, classList, setClassList }) => {
+  const activeClasses = classList.filter(c => c.active === 1);
+  const archiveClasses = classList.filter(c => c.active === 0);
+  const options = [`ACTIVE (${activeClasses.length})`, `ARCHIVE (${archiveClasses.length})`];
+  const showClassHandler = val => {
+    const key = val.split(" ")[0];
+    if (key === "ACTIVE") {
+      setClassList(activeClasses);
+    } else if (key === "ARCHIVE") {
+      setClassList(archiveClasses);
+    }
+  };
 
-const ShowActiveClasses = ({ t }) => (
-  <ManageActiveClasses id="active-class-dropdown">
-    <ClassLabel>{t("common.showLabel")}</ClassLabel>
-    <Select getPopupContainer={() => document.getElementById("active-class-dropdown")} defaultValue="ACTIVE (0)">
-      {options.map((option, i) => (
-        <Select.Option key={i} value={option}>
-          {option}
-        </Select.Option>
-      ))}
-    </Select>
-  </ManageActiveClasses>
-);
+  return (
+    <ManageActiveClasses id="active-class-dropdown">
+      <ClassLabel>{t("common.showLabel")}</ClassLabel>
+      <Select
+        getPopupContainer={() => document.getElementById("active-class-dropdown")}
+        defaultValue={options[0]}
+        onChange={value => showClassHandler(value)}
+      >
+        {options.map((option, i) => (
+          <Select.Option key={i} value={option}>
+            {option}
+          </Select.Option>
+        ))}
+      </Select>
+    </ManageActiveClasses>
+  );
+};
 
 ShowActiveClasses.propTypes = {
   t: PropTypes.func.isRequired

@@ -19,11 +19,13 @@ const MetaInfoCell = ({
   return (
     <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
       <FlexContainer>
-        {item && item.data && <Standards item={item} search={{ curriculumId: "" }} />}
+        {item && item.data && <Standards item={item} search={{ curriculumId: "" }} reviewpage={true} />}
         {types && !!types.length && (
           <FlexContainer>
             {types.map(type => (
-              <MetaTag key={type}>{type}</MetaTag>
+              <MetaTag key={type} marginLeft={"0px"}>
+                {type}
+              </MetaTag>
             ))}
           </FlexContainer>
         )}

@@ -75,7 +75,7 @@ class ResponseContainers extends Component {
                   size="large"
                   style={{ width: "80%" }}
                   value={container.heightpx || 0}
-                  onChange={e => onChange({ index, prop: "heightpx  ", value: +e.target.value })}
+                  onChange={e => onChange({ index, prop: "heightpx", value: +e.target.value })}
                 />
               </Col>
             </Row>

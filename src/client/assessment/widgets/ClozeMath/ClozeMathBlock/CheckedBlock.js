@@ -7,7 +7,7 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CheckBox } from "./styled/CheckBox";
 
-const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, onInnerClick }) => {
+const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick }) => {
   const filedRef = useRef();
   const { response_ids } = item;
   const { index } = find(response_ids[type], res => res.id === id);
@@ -31,7 +31,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
     replaceWithMathQuill();
   }, [userAnswer, evaluation, isMath]);
   return (
-    <CheckBox width={width} className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick}>
+    <CheckBox width={width} height={height} className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick}>
       <span className="index">{index + 1}</span>
       <span className="value" ref={filedRef}>
         {userAnswer.value}

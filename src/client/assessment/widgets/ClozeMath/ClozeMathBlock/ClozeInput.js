@@ -23,10 +23,12 @@ const ClozeInput = ({ id, resprops = {} }) => {
   } = item;
   const { index } = find(inputs, res => res.id === id) || {};
   const response = find(response_containers, cont => cont.id === id);
-  const width = response ? response.widthpx : item.ui_style.min_width || "auto";
+  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
   return checked ? (
     <CheckedBlock
       width={width}
+      height={height}
       evaluation={evaluation}
       userAnswer={_inputsAnwers[id]}
       id={id}
@@ -39,7 +41,11 @@ const ClozeInput = ({ id, resprops = {} }) => {
       <Input
         onChange={e => save({ value: e.target.value, index }, "inputs", id)}
         value={val}
-        style={{ ...uiStyles, width: !width ? "auto" : `${width}px` }}
+        style={{
+          ...uiStyles,
+          width: !width ? "auto" : width,
+          height: !height ? "auto" : height
+        }}
       />
     </InputDiv>
   );

@@ -191,7 +191,8 @@ class ClozeMathInput extends React.Component {
     const { response_containers, item, uiStyles = {} } = resprops;
     const { showKeyboard, keyboardStyles } = this.state;
     const response = find(response_containers, cont => cont.id === id);
-    const width = response ? response.widthpx : item.ui_style.min_width || "auto";
+    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+    const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
 
     return (
@@ -199,7 +200,11 @@ class ClozeMathInput extends React.Component {
         <span
           ref={this.mathRef}
           onClick={this.showKeyboardModal}
-          style={{ ...btnStyle, width: `${width}px` || "auto" }}
+          style={{
+            ...btnStyle,
+            width: width || "auto",
+            height: height || "auto"
+          }}
         />
         {showKeyboard && (
           <KeyboardWrapper innerRef={this.mathKeyboardRef} style={keyboardStyles}>
@@ -221,11 +226,13 @@ const MathInput = ({ resprops = {}, id }) => {
   const { response_containers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(response_containers, cont => cont.id === id);
-  const width = response ? response.widthpx : item.ui_style.min_width || "auto";
+  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
 
   return checked ? (
     <CheckedBlock
       width={width}
+      height={height}
       evaluation={evaluation}
       userAnswer={_mathAnswers[id]}
       item={item}

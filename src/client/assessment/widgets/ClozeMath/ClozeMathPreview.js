@@ -72,7 +72,9 @@ const ClozeMathPreview = ({
   const onInnerClick = () => {
     if (type === CHECK || type === SHOW) {
       changePreviewTab(CLEAR);
-      changePreview(CLEAR);
+      if (changePreview) {
+        changePreview(CLEAR);
+      }
     }
   };
 
@@ -153,12 +155,10 @@ ClozeMathPreview.propTypes = {
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
   responseIds: PropTypes.object.isRequired,
-  changePreview: PropTypes.func
+  changePreview: PropTypes.func.isRequired
 };
 
-ClozeMathPreview.defaultProps = {
-  changePreview: () => {}
-};
+ClozeMathPreview.defaultProps = {};
 
 export default withCheckAnswerButton(ClozeMathPreview);
 

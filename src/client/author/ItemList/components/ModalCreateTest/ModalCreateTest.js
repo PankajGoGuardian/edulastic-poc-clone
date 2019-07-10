@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Form, Input } from "antd";
+import { Form, Input, message } from "antd";
 
 import Modal from "../../../src/components/common/Modal";
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
@@ -9,12 +9,18 @@ import { createTestFromCartAction } from "../../ducks";
 
 const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, amountOfSelectedItems }) => {
   const inputRef = useRef(null);
-  const [testName, setTestName] = useState("");
-
-  const handleChangeTestName = ({ target: { value } }) => setTestName(value);
   const handleProceed = () => {
-    createTestFromCart(testName);
+    if (!inputRef.current.state.value) {
+      return message.error("Please provide valid test name");
+    }
+    createTestFromCart(inputRef.current.state.value);
     onProceed();
+  };
+
+  const handleProceedKeyPress = e => {
+    if (e.keyCode === 13) {
+      handleProceed();
+    }
   };
 
   useEffect(() => {
@@ -26,13 +32,13 @@ const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, amountOfSele
   return (
     <Modal
       title={`Creating a new test with ${amountOfSelectedItems} items`}
-      applyLabel="Procceed"
+      applyLabel="Proceed"
       onClose={onCancel}
       onApply={handleProceed}
     >
       <Form layout="inline">
         <Form.Item label="Name">
-          <Input ref={inputRef} placeholder="Enter test name" value={testName} onChange={handleChangeTestName} />
+          <Input ref={inputRef} placeholder="Enter test name" onKeyUp={handleProceedKeyPress} />
         </Form.Item>
       </Form>
     </Modal>

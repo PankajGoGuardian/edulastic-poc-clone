@@ -1,33 +1,16 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { uniq, indexOf, map, groupBy, intersection, isEmpty, get } from "lodash";
-import { Card, Form, Select, Radio, Popover, Button, Icon } from "antd";
+import { indexOf, filter as filterArr } from "lodash";
+import { Form, Select, Radio, Popover, Button, Icon } from "antd";
 import next from "immer";
 
-import { getNavigationTabLinks, getDropDownTestIds, percentage } from "../../../common/util";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import SimpleBarChartContainer from "./components/charts/simpleBarChartContainer";
 import SignedStackedBarChartContainer from "./components/charts/SignedStackedBarChartContainer";
 import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
-import CardHeader, {
-  CardTitle,
-  CardDropdownWrapper,
-  MasteryLevelWrapper,
-  MasteryLevel,
-  MasteryLevelIndicator,
-  MasteryLevelTitle
-} from "./common/CardHeader/CardHeader";
-import {
-  analysisParseData,
-  viewByMode,
-  analyzeByMode,
-  compareByMode,
-  getMasteryScore,
-  getMasteryLevel,
-  findDomainUsingStandard,
-  getParsedGroupedMetricData
-} from "./util/transformers";
+import CardHeader, { CardTitle, CardDropdownWrapper } from "./common/CardHeader/CardHeader";
+import { analysisParseData, viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
 import { Placeholder } from "../../../common/components/loader";
 import {
   getPerformanceByStandardsAction,
@@ -39,17 +22,6 @@ import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer } from "../../../common/styled";
 
-const MasteryLevels = ({ scaleInfo }) => (
-  <MasteryLevelWrapper>
-    {scaleInfo.map((info, key) => (
-      <MasteryLevel key={key}>
-        <MasteryLevelIndicator background={info.color} />
-        <MasteryLevelTitle>{info.masteryName}</MasteryLevelTitle>
-      </MasteryLevel>
-    ))}
-  </MasteryLevelWrapper>
-);
-
 const PAGE_SIZE = 15;
 
 const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandards, match, settings, role }) => {
@@ -59,10 +31,15 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
   const [standardId, setStandardId] = useState(0);
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
-  const [totalStandards, setTotalStandards] = useState(0);
-  const [totalDomains, setTotalDomains] = useState(0);
   const [page, setPage] = useState(0);
-  const [allData, setAllData] = useState({});
+
+  const isViewByStandards = viewBy === viewByMode.STANDARDS;
+
+  const reportWithFilteredSkills = useMemo(() => {
+    return next(report, draftReport => {
+      draftReport.skillInfo = filterArr(draftReport.skillInfo, skill => skill.curriculumId === standardId);
+    });
+  }, [report, standardId]);
 
   const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
     if (o.allowedRoles) {
@@ -97,31 +74,14 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
     }
   }, [settings]);
 
-  const setSelectedData = ({ skillInfo, defaultStandardId, standardsMap }) => {
-    const selectedData = skillInfo.reduce(
-      (total, skill) => ({
-        selectedStandards: total.selectedStandards.concat(skill.standardId),
-        selectedDomains: total.selectedDomains.concat(skill.domainId)
-      }),
-      {
-        selectedStandards: [],
-        selectedDomains: []
-      }
-    );
-
-    selectedData.selectedDomains = uniq(selectedData.selectedDomains);
-
-    setAllData(selectedData);
-
-    setStandardId(standardsMap[defaultStandardId]);
-    setTotalStandards(selectedData.selectedStandards.length);
-    setTotalDomains(selectedData.selectedDomains.length);
+  const setSelectedData = ({ defaultStandardId }) => {
+    setStandardId(defaultStandardId);
     setSelectedStandards([]);
     setSelectedDomains([]);
   };
 
   useEffect(() => {
-    setSelectedData(report);
+    setSelectedData(reportWithFilteredSkills);
   }, [report]);
 
   const handleResetSelection = () => {
@@ -136,8 +96,8 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
   };
 
   const handleToggleSelectedData = item => {
-    const dataField = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
-    const stateHandler = viewBy === viewByMode.STANDARDS ? setSelectedStandards : setSelectedDomains;
+    const dataField = isViewByStandards ? "standardId" : "domainId";
+    const stateHandler = isViewByStandards ? setSelectedStandards : setSelectedDomains;
 
     stateHandler(prevState => {
       const newState = next(prevState, draftState => {
@@ -227,16 +187,16 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
     );
   }
 
-  const { standardsMap, scaleInfo } = report;
+  const { standardsMap } = reportWithFilteredSkills;
 
   const standardsList = Object.keys(standardsMap).map(id => ({
     id,
     name: standardsMap[id]
   }));
 
-  const shouldShowReset = viewBy === viewByMode.STANDARDS ? selectedStandards.length : selectedDomains.length;
+  const shouldShowReset = isViewByStandards ? selectedStandards.length : selectedDomains.length;
 
-  const tableData = analysisParseData(report, viewBy, compareBy);
+  const tableData = analysisParseData(reportWithFilteredSkills, viewBy, compareBy);
 
   const paginationOffset = page * PAGE_SIZE;
   const paginatedData = tableData.slice(paginationOffset, paginationOffset + PAGE_SIZE);
@@ -264,6 +224,8 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
 
   const standardsDropdownData = standardsList.map(s => ({ key: s.id, title: s.name }));
   const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
+
+  const selectedItems = isViewByStandards ? selectedStandards : selectedDomains;
 
   return (
     <>
@@ -295,7 +257,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
         <>
           {analyzeBy === analyzeByMode.SCORE || analyzeBy === analyzeByMode.RAW_SCORE ? (
             <SimpleBarChartContainer
-              report={report}
+              report={reportWithFilteredSkills}
               filter={filter}
               viewBy={viewBy}
               analyzeBy={analyzeBy}
@@ -307,14 +269,12 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
             />
           ) : (
             <SignedStackedBarChartContainer
-              report={report}
+              report={reportWithFilteredSkills}
               filter={filter}
               viewBy={viewBy}
               analyzeBy={analyzeBy}
               onBarClick={handleToggleSelectedData}
-              selectedDomains={selectedDomains}
-              selectedStandards={selectedStandards}
-              shouldShowReset={shouldShowReset}
+              selectedData={selectedItems}
               onResetClick={handleResetSelection}
             />
           )}
@@ -344,7 +304,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
         </CardHeader>
         <PerformanceAnalysisTable
           tableData={paginatedData}
-          report={report}
+          report={reportWithFilteredSkills}
           viewBy={viewBy}
           analyzeBy={analyzeBy}
           compareBy={compareBy}

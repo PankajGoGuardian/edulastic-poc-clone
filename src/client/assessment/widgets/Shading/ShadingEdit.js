@@ -128,7 +128,12 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
         setQuestionData={setQuestionData}
       />
 
-      <ShadesSubtitle item={item} fillSections={fillSections} cleanSections={cleanSections} />
+      <ShadesSubtitle
+        item={item}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
+      />
 
       <CorrectAnswers
         onTabChange={setCorrectTab}

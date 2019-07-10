@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
@@ -27,7 +28,6 @@ import {
   getItemDetailSelector,
   getItemDetailUpdatingSelector,
   getItemDetailDimensionTypeSelector,
-  publishTestItemAction,
   getTestItemStatusSelector,
   clearRedirectTestAction,
   setRedirectTestAction,
@@ -50,7 +50,6 @@ import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
 
-const InputGroup = Input.Group;
 const testItemStatusConstants = {
   DRAFT: "draft",
   PUBLISHED: "published",
@@ -60,30 +59,11 @@ const testItemStatusConstants = {
 class Container extends Component {
   state = {
     showModal: false,
-    showSettings: false,
-    enableEdit: false,
-    hasAuthorPermission: false
+    showSettings: false
   };
 
   componentDidMount() {
-    const {
-      getItemDetailById,
-      match,
-      modalItemId,
-      setRedirectTest,
-      isTestFlow,
-      history,
-      t,
-      clearAnswers,
-      changePreviewTab
-    } = this.props;
-    const { itemId, testId } = match.params;
-
-    getItemDetailById(modalItemId || match.params.id || match.params.itemId, { data: true, validation: true });
-
-    if (match.params.testId) {
-      setRedirectTest(match.params.testId);
-    }
+    const { clearAnswers, changePreviewTab } = this.props;
 
     clearAnswers();
     changePreviewTab(CLEAR);
@@ -117,17 +97,6 @@ class Container extends Component {
     if (this.isPassage(rows)) {
       this.handleApplySettings({ type: "50-50" });
     }
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    const authors = (props.item && props.item.authors) || [];
-    const isAuthor = authors.some(author => author._id === props.currentAuthorId);
-    if (isAuthor !== state.hasAuthorPermission) {
-      return {
-        hasAuthorPermission: true
-      };
-    }
-    return null;
   }
 
   isPassage = rows =>
@@ -243,15 +212,6 @@ class Container extends Component {
     });
   };
 
-  handleSave = () => {
-    const { updateItemDetailById, match, item, isTestFlow } = this.props;
-    if (isTestFlow) {
-      updateItemDetailById(match.params.itemId, item, match.params.testId, true);
-    } else {
-      updateItemDetailById(match.params.id, item, match.params.testId);
-    }
-  };
-
   handleEditWidget = (widget, rowIndex) => {
     const { loadQuestion, changeView } = this.props;
     changeView("edit");
@@ -293,14 +253,13 @@ class Container extends Component {
   };
 
   handlePublishTestItem = () => {
-    const { publishTestItem, item } = this.props;
-    const { _id } = item;
-    publishTestItem(_id);
-    this.setState({ enableEdit: false });
+    const { publishTestItem } = this.props;
+    publishTestItem();
   };
 
   handleEnableEdit = () => {
-    this.setState({ enableEdit: true });
+    const { setEditable } = this.props;
+    setEditable(true);
   };
 
   componentWillUnmount() {
@@ -334,9 +293,18 @@ class Container extends Component {
   );
 
   renderButtons = () => {
-    const { item, updating, testItemStatus, changePreview, preview, view, isTestFlow, rows } = this.props;
-
-    const { enableEdit } = this.state;
+    const {
+      item,
+      updating,
+      testItemStatus,
+      changePreview,
+      preview,
+      view,
+      isTestFlow,
+      saveItem,
+      isEditable,
+      rows
+    } = this.props;
 
     let showPublishButton = false;
 
@@ -344,7 +312,7 @@ class Container extends Component {
       const { _id: testItemId } = item;
       showPublishButton =
         isTestFlow &&
-        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit);
+        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || isEditable);
     }
     const questionsType = rows && uniq(rows.flatMap(itm => itm.widgets.map(i => i.type)));
     const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn).length;
@@ -357,7 +325,7 @@ class Container extends Component {
         onChangeView={this.handleChangeView}
         changePreview={changePreview}
         changePreviewTab={this.handleChangePreviewTab}
-        onSave={this.handleSave}
+        onSave={saveItem}
         saving={updating}
         view={view}
         previewTab={preview}
@@ -369,12 +337,11 @@ class Container extends Component {
   };
 
   render() {
-    const { showModal, showSettings, enableEdit, hasAuthorPermission } = this.state;
+    const { showModal, showSettings } = this.state;
     const {
       t,
       match,
       rows,
-      loading,
       item,
       updating,
       type,
@@ -383,29 +350,22 @@ class Container extends Component {
       useFlowLayout,
       changePreview,
       windowWidth,
-      testItemStatus,
       modalItemId,
       onModalClose,
       toggleSideBar,
-      currentAuthorId,
       history,
-      setItemLevelScore,
       setItemLevelScoring,
       view,
       isTestFlow,
-      preview
+      preview,
+      saveItem,
+      showPublishButton,
+      hasAuthorPermission
     } = this.props;
     const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
 
-    let showPublishButton = false;
-    if (item) {
-      const { _id: testItemId } = item;
-      showPublishButton =
-        (!isTestFlow && (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED)) ||
-        enableEdit;
-    }
     const { testId } = match.params;
-    let breadCrumb = [
+    const breadCrumb = [
       {
         title: "TEST LIBRARY",
         to: "/author/tests"
@@ -454,7 +414,7 @@ class Container extends Component {
             onChangeView={this.handleChangeView}
             changePreview={changePreview}
             changePreviewTab={this.handleChangePreviewTab}
-            onSave={this.handleSave}
+            onSave={saveItem}
             onPublishTestItem={this.handlePublishTestItem}
             saving={updating}
             view={view}
@@ -591,6 +551,7 @@ Container.defaultProps = {
 
 const enhance = compose(
   withWindowSizes,
+  withRouter,
   withNamespaces("author"),
   connect(
     state => ({
@@ -619,7 +580,6 @@ const enhance = compose(
       useTabs: useTabsAction,
       useFlowLayout: useFlowLayoutAction,
       loadQuestion: loadQuestionAction,
-      publishTestItem: publishTestItemAction,
       clearRedirectTest: clearRedirectTestAction,
       setRedirectTest: setRedirectTestAction,
       toggleCreateItemModal: toggleCreateItemModalAction,

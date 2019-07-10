@@ -593,7 +593,7 @@ function* checkAnswerSaga({ payload }) {
       }
     });
 
-    message.success(`score: ${score}/${maxScore}`);
+    message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
   } catch (e) {
     message.error("failed to check answer");
     console.log("error checking answer", e);

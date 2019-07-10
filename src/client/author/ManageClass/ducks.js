@@ -361,14 +361,14 @@ function* receiveAddStudentRequest({ payload }) {
     const result = yield call(enrollmentApi.addStudent, payload);
     const student = get(result, "data.result");
     if (student) {
-      const successMsg = "User added to class successfully.";
+      const successMsg = "Student added to class successfully.";
       yield call(message.success, successMsg);
       let newStudent = Object.assign({}, student);
       newStudent._id = student.userId;
       delete newStudent.userId;
       yield put(addStudentSuccessAction(newStudent));
     } else {
-      const msg = get(result, "data.message", "User already part of this class section");
+      const msg = get(result, "data.message", "Student already part of this class section");
       message.error(msg);
       yield put(addStudentFailedAction("add student to class failed"));
     }
@@ -450,6 +450,7 @@ function* syncClass({ payload }) {
     yield call(googleApi.syncClass, { classList: payload });
     yield put(setSyncClassLoadingAction(false));
     yield put(fetchGroupsAction());
+    yield call(message.success, "Google Class import is Complete");
   } catch (e) {
     yield put(setSyncClassLoadingAction(false));
     yield call(message.error, "class sync failed");
@@ -464,9 +465,10 @@ function* syncClassUsingCode({ payload }) {
     const resp = yield call(googleApi.syncClass, { googleCode, groupId: classId });
     yield put(setSyncClassLoadingAction(false));
     if (resp.status === 403) {
-      return yield call(message.error(`Google Classroom ${payload.googleCode} is already synced in another group`));
+      return yield call(message.error, `Google Classroom ${payload.googleCode} is already synced in another group`);
     }
     yield put(fetchStudentsByIdAction({ classId }));
+    yield call(message.success, "Google Class import is Complete");
   } catch (e) {
     yield put(setSyncClassLoadingAction(false));
     yield call(message.error, "class sync failed");

@@ -87,6 +87,7 @@ class Container extends Component {
 
   handleSave = () => {
     const { saveQuestion, removeAnswers, setAuthoredByMeFilter, match, isEditFlow, isTestFlow } = this.props;
+
     const { testId } = match.params;
     saveQuestion(testId, isTestFlow, isEditFlow);
     removeAnswers();
@@ -145,7 +146,8 @@ class Container extends Component {
       testName,
       testId,
       location,
-      toggleModalAction
+      toggleModalAction,
+      isItem
     } = this.props;
 
     if (location.pathname.includes("author/tests")) {
@@ -172,7 +174,7 @@ class Container extends Component {
       ];
     }
 
-    return [
+    const crumbs = [
       {
         title: "ITEM BANK",
         to: "/author/items"
@@ -186,6 +188,9 @@ class Container extends Component {
         to: ""
       }
     ];
+
+    if (isItem) crumbs.splice(1, 1);
+    return crumbs;
   }
 
   renderButtons = () => {
@@ -213,18 +218,105 @@ class Container extends Component {
     );
   };
 
-  render() {
+  renderRightSideButtons = () => {
     const {
+      item,
+      updating,
+      testItemStatus,
+      changePreview,
+      preview,
       view,
-      question,
-      history,
-      modalItemId,
-      onModalClose,
-      windowWidth,
-      onSaveScrollTop,
-      savedWindowScrollTop
+      isTestFlow,
+      saveItem,
+      isEditable,
+      setShowSettings
     } = this.props;
 
+    let showPublishButton = false;
+
+    if (item) {
+      const { _id: testItemId } = item;
+      showPublishButton =
+        isTestFlow && ((testItemId && testItemStatus && testItemStatus !== "published") || isEditable);
+    }
+
+    return (
+      <ButtonAction
+        onShowSource={this.handleShowSource}
+        onShowSettings={() => setShowSettings(true)}
+        onChangeView={this.handleChangeView}
+        changePreview={changePreview}
+        changePreviewTab={this.handleChangePreviewTab}
+        onSave={this.handleSave}
+        saving={updating}
+        view={view}
+        previewTab={preview}
+        showPublishButton={showPublishButton}
+      />
+    );
+  };
+
+  header = () => {
+    const {
+      view,
+      modalItemId,
+      onModalClose,
+      isItem,
+      showPublishButton,
+      isTestFlow = false,
+      item,
+      setEditable,
+      publishTestItem,
+      hasAuthorPermission,
+      onSaveScrollTop,
+      savedWindowScrollTop,
+      setShowSettings,
+      saveItem
+    } = this.props;
+    const { previewTab } = this.state;
+
+    const commonProps = {
+      onChangeView: this.handleChangeView,
+      onShowSource: this.handleShowSource,
+      changePreviewTab: this.handleChangePreviewTab,
+      view,
+      previewTab,
+      isTestFlow,
+      withLabels: true
+    };
+
+    return isItem ? (
+      <ButtonBar
+        onSave={saveItem}
+        {...commonProps}
+        showPublishButton={showPublishButton}
+        onPublishTestItem={publishTestItem}
+        onEnableEdit={() => setEditable(true)}
+        hasAuthorPermission={hasAuthorPermission}
+        itemStatus={item && item.status}
+        renderRightSide={view === "edit" ? this.renderRightSideButtons : () => {}}
+      />
+    ) : (
+      <ButtonBar
+        {...commonProps}
+        onSave={this.handleSave}
+        renderRightSide={view === "edit" ? this.renderButtons : () => {}}
+        withLabels
+        onSaveScrollTop={onSaveScrollTop}
+        savedWindowScrollTop={savedWindowScrollTop}
+        renderExtra={() =>
+          modalItemId && (
+            <ButtonClose onClick={onModalClose}>
+              <IconClose />
+            </ButtonClose>
+          )
+        }
+      />
+    );
+  };
+
+  render() {
+    const { view, question, history, windowWidth, isItem } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -237,7 +329,7 @@ class Container extends Component {
       return <div />;
     }
 
-    const { previewTab, showModal } = this.state;
+    const { showModal } = this.state;
     const itemId = question === null ? "" : question._id;
 
     return (
@@ -248,26 +340,9 @@ class Container extends Component {
           </SourceModal>
         )}
         <ItemHeader title={question.title} reference={itemId}>
-          <ButtonBar
-            onChangeView={this.handleChangeView}
-            onShowSource={this.handleShowSource}
-            changePreviewTab={this.handleChangePreviewTab}
-            onSave={this.handleSave}
-            view={view}
-            previewTab={previewTab}
-            onSaveScrollTop={onSaveScrollTop}
-            savedWindowScrollTop={savedWindowScrollTop}
-            renderRightSide={view === "edit" ? this.renderButtons : () => {}}
-            withLabels
-            renderExtra={() =>
-              modalItemId && (
-                <ButtonClose onClick={onModalClose}>
-                  <IconClose />
-                </ButtonClose>
-              )
-            }
-          />
+          {this.header()}
         </ItemHeader>
+
         <BreadCrumbBar>
           <Col md={12}>
             {windowWidth > desktopWidth.replace("px", "") ? (

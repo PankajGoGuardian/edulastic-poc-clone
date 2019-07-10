@@ -35,7 +35,7 @@ class Annotation extends Component {
               toolbarInline
               toolbarVisibleWithoutSelection
               config={{
-                placeholderText: "Edit your content"
+                placeholder: "Edit your content"
               }}
             />
           </FroalaInput>

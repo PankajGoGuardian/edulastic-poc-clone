@@ -81,7 +81,7 @@ function* evaluateAnswers() {
         itemId: testItemId
       }
     });
-    const msg = `score: ${result.score} / ${result.maxScore}`;
+    const msg = `score: ${+result.score.toFixed(2)} / ${result.maxScore}`;
     yield call(message.success, msg, 0.5);
   } catch (err) {
     if (err.status === 403) message.error("Check answer limit exceeded for the item");

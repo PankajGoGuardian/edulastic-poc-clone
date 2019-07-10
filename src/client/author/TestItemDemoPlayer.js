@@ -33,7 +33,7 @@ const ItemPlayer = ({ match, answers, addEvaluation, changePreview, evaluation, 
         testItem.itemLevelScore
       );
       addEvaluation(evals);
-      message.success(`score: ${score}/${maxScore}`);
+      message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
     } catch (e) {
       console.log(e);
       message.error("evaluation failed");

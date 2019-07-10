@@ -87,9 +87,9 @@ class PreviewModal extends React.Component {
       checkAnswer,
       showAnswer,
       preview,
-      showEvaluationButtons,
-      questions
+      showEvaluationButtons
     } = this.props;
+    const questions = keyBy(get(item, "data.questions", []), "id");
     const { authors = [], rows, data = {} } = item;
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
     const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;

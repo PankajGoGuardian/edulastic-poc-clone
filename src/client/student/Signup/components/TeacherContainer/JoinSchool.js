@@ -197,7 +197,8 @@ const JoinSchool = ({
                   {!isSignupUsingDaURL ? <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn> : null}
                   {selected && (
                     <DistrictName>
-                      <span>District:</span> {selected.districtName}
+                      <span>District: </span>
+                      {selected.districtName}
                     </DistrictName>
                   )}
                 </Actions>

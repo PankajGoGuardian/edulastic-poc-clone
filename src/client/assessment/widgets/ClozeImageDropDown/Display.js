@@ -337,7 +337,6 @@ class Display extends Component {
 Display.propTypes = {
   options: PropTypes.array,
   changePreviewTab: PropTypes.func,
-  changePreview: PropTypes.func,
   onChange: PropTypes.func,
   showAnswer: PropTypes.bool,
   responseContainers: PropTypes.array,
@@ -348,6 +347,7 @@ Display.propTypes = {
   preview: PropTypes.bool.isRequired,
   showDashedBorder: PropTypes.bool,
   question: PropTypes.string.isRequired,
+  changePreview: PropTypes.func.isRequired,
   validation: PropTypes.object,
   evaluation: PropTypes.array,
   backgroundColor: PropTypes.string,
@@ -366,7 +366,6 @@ Display.propTypes = {
 Display.defaultProps = {
   options: [],
   changePreviewTab: () => {},
-  changePreview: () => {},
   onChange: () => {},
   imagescale: false,
   showAnswer: false,

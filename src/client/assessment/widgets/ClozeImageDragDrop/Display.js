@@ -82,6 +82,12 @@ class Display extends Component {
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     onChange(newAnswers);
+
+    const { changePreview, changePreviewTab } = this.props;
+    if (changePreview) {
+      changePreview("clear");
+    }
+    changePreviewTab("clear");
   };
 
   shuffle = arr => {
@@ -531,6 +537,8 @@ class Display extends Component {
 
 Display.propTypes = {
   options: PropTypes.array,
+  changePreviewTab: PropTypes.func,
+  changePreview: PropTypes.func,
   onChange: PropTypes.func,
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
@@ -562,6 +570,8 @@ Display.propTypes = {
 
 Display.defaultProps = {
   options: [],
+  changePreviewTab: () => {},
+  changePreview: () => {},
   onChange: () => {},
   preview: true,
   disableResponse: false,

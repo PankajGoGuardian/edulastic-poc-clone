@@ -804,7 +804,7 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
 }
 
 .check-answer.right .index {
@@ -822,7 +822,7 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
 }
 
 .check-answer.showanswer .index {

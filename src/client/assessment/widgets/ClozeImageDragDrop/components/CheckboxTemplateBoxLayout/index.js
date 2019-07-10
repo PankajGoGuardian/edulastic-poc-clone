@@ -156,20 +156,21 @@ const CheckboxTemplateBoxLayout = ({
                 </DropContainer>
               )}
               {(showAnswer || checkAnswer) && (
-                <div
+                <DropContainer
+                  index={index}
                   style={{
                     ...btnStyle,
                     width: responseContainer.width || "max-content",
-                    height: responseContainer.height || "auto",
+                    height: responseContainer.height,
                     minWidth: response.minWidth,
                     maxWidth: response.maxWidth
                   }}
                   className={`
-                  imagelabeldragdrop-droppable 
-                  active 
-                  ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
-                  ${status} 
-                  show-answer`}
+              imagelabeldragdrop-droppable
+              active
+              ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}  
+              ${status} show-answer`}
+                  drop={drop}
                 >
                   <div className="text container" style={{ padding: "0px" }}>
                     <div
@@ -185,9 +186,10 @@ const CheckboxTemplateBoxLayout = ({
                       userSelections[dropTargetIndex].map((answer, user_select_index) => {
                         const title = striptags(answer) || null;
                         return (
-                          <div
-                            title={title}
+                          <DragItem
                             key={user_select_index}
+                            index={user_select_index}
+                            data={`${answer}_${dropTargetIndex}_fromResp`}
                             style={{
                               border: `${
                                 showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
@@ -202,13 +204,17 @@ const CheckboxTemplateBoxLayout = ({
                               maxWidth: response.maxWidth,
                               overflow: "hidden"
                             }}
+                            item={answer}
+                            onDrop={onDropHandler}
                           >
-                            <MathSpan
-                              dangerouslySetInnerHTML={{
-                                __html: answer.replace("<p>", "<p class='clipText'>") || ""
-                              }}
-                            />
-                          </div>
+                            <div title={title}>
+                              <MathSpan
+                                dangerouslySetInnerHTML={{
+                                  __html: answer.replace("<p>", "<p class='clipText'>") || ""
+                                }}
+                              />
+                            </div>
+                          </DragItem>
                         );
                       })}
                     <IconWrapper>
@@ -225,7 +231,7 @@ const CheckboxTemplateBoxLayout = ({
                     <Point />
                     <Triangle />
                   </Pointer>
-                </div>
+                </DropContainer>
               )}
             </React.Fragment>
           );

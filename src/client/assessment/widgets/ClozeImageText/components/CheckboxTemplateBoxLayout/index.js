@@ -31,7 +31,8 @@ const CheckboxTemplateBoxLayout = ({
   canvasWidth,
   backgroundColor,
   uiStyle,
-  responsecontainerindividuals
+  responsecontainerindividuals,
+  onClickHandler
 }) => (
   <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight}>
     <StyledPreviewContainer data-cy="image-text-preview-board" width={canvasWidth} height={canvasHeight}>
@@ -85,6 +86,7 @@ const CheckboxTemplateBoxLayout = ({
                     active 
                     check-answer
                     ${evaluation[dropTargetIndex] ? "right" : "wrong"}`}
+                onClick={onClickHandler}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container" title={userSelections[dropTargetIndex]}>
@@ -117,6 +119,7 @@ const CheckboxTemplateBoxLayout = ({
                     ${userSelections.length > 0 ? "check-answer" : "noAnswer"}
                     ${status} 
                     show-answer`}
+                onClick={onClickHandler}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container" title={userSelections[dropTargetIndex]}>
@@ -157,6 +160,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   canvasHeight: PropTypes.number.isRequired,
   canvasWidth: PropTypes.number.isRequired,
   backgroundColor: PropTypes.string.isRequired,
+  onClickHandler: PropTypes.func.isRequired,
   uiStyle: PropTypes.object.isRequired
 };
 

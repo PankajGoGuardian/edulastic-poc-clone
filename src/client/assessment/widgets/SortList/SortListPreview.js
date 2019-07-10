@@ -140,9 +140,7 @@ const SortListPreview = ({
   let alt_responses = validation && validation.alt_responses && validation.alt_responses;
   alt_responses = alt_responses || [];
 
-  const inCorrectList = selected
-    .filter((selectedItem, i) => selectedItem && selectedItem !== source[valid_response[i]])
-    .concat(items.filter(i => i !== null));
+  const inCorrectList = source.map((ans, i) => source[valid_response[i]]);
 
   const validRespCorrect = selected.filter(
     (selectedItem, i) => selectedItem && selectedItem === source[valid_response[i]]
@@ -246,7 +244,7 @@ const SortListPreview = ({
         </FlexCol>
       </FlexContainer>
 
-      {previewTab === SHOW && inCorrectList.length > 0 && (
+      {previewTab === SHOW && (
         <ShowCorrect source={source} list={inCorrectList} altResponses={alt_responses} correctList={valid_response} />
       )}
     </Paper>

@@ -127,6 +127,7 @@ const MatrixChoice = ({
               feedbackAttempts={feedbackAttempts}
               onCheckAnswer={_checkAnswer}
               previewTab={previewTab}
+              disableResponse={disableResponse}
               {...restProps}
             />
           )}
@@ -140,6 +141,7 @@ const MatrixChoice = ({
               feedbackAttempts={feedbackAttempts}
               onCheckAnswer={_checkAnswer}
               previewTab={previewTab}
+              disableResponse={disableResponse}
               {...restProps}
             />
           )}
@@ -154,6 +156,7 @@ const MatrixChoice = ({
               feedbackAttempts={feedbackAttempts}
               onCheckAnswer={_checkAnswer}
               previewTab={previewTab}
+              disableResponse={disableResponse}
               {...restProps}
             />
           )}

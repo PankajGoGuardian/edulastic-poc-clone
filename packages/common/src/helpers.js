@@ -113,6 +113,27 @@ const replaceForJsxParser = inputString =>
     .replace(/"{{lineHeight/g, "{lineHeight")
     .replace(/lineHeight}}"/g, "lineHeight}");
 
+const escapeCurlyBraces = node => {
+  if (node && (node.textContent.includes("{") || node.textContent.includes("}"))) {
+    node.textContent = node.textContent.replace(/([{}]+)/g, "{'$1'}");
+  }
+};
+
+const processCurlyBraces = nodes => {
+  if (nodes.contents().length) {
+    nodes.contents().each((index, node) => {
+      if (node.nodeType === 3) {
+        escapeCurlyBraces(node);
+      } else {
+        processCurlyBraces($(node));
+      }
+    });
+  } else {
+    escapeCurlyBraces(nodes[0]);
+  }
+  return nodes;
+};
+
 const parseTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
@@ -132,7 +153,7 @@ const parseTemplate = tmpl => {
       $(this).replaceWith(`<mathspan lineheight={{lineHeight}} latex="${latex}" />`);
     });
 
-  temp = $(parsedHTML).html();
+  temp = $(processCurlyBraces($(parsedHTML))).html();
 
   return replaceForJsxParser(sanitizeSelfClosingTags(temp));
 };

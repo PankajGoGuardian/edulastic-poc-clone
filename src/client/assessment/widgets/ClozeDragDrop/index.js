@@ -13,6 +13,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { ContentArea } from "../../styled/ContentArea";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { changePreviewAction } from "../../../author/src/actions/view";
 import { EDIT } from "../../constants/constantsForQuestions";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
@@ -319,7 +320,7 @@ const enhance = compose(
   withTheme,
   connect(
     ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
-    { setQuestionData: setQuestionDataAction }
+    { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );
 

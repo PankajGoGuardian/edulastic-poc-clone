@@ -569,10 +569,10 @@ function* getUserData({ payload: res }) {
 function* updateUserRoleSaga({ payload }) {
   try {
     const user = yield select(getUser);
-    const res = yield call(userApi.updateUserRole, { data: { role: payload }, userId: user._id });
+    const res = yield call(userApi.updateUserRole, { data: payload, userId: user._id });
     const _user = {
       ...user,
-      role: payload
+      role: payload.role
     };
 
     TokenStorage.removeAccessToken(_user._id, "undefined");

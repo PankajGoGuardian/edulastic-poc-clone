@@ -29,6 +29,7 @@ export { default as CenteredText } from "./src/components/CenteredText";
 export { default as Image } from "./src/components/Image";
 export { default as PreWrapper } from "./src/components/PreWrapper";
 export { default as FroalaEditor } from "./src/components/FroalaEditor";
+export { FroalaKey } from "./src/components/FroalaEditor";
 export { default as Tabs } from "./src/components/Tabs";
 export { default as Tab } from "./src/components/Tabs/Tab";
 export { default as TabContainer } from "./src/components/Tabs/TabContainer";

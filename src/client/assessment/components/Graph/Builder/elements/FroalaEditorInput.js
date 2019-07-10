@@ -1,5 +1,6 @@
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import striptags from "striptags";
+import { FroalaKey } from "@edulastic/common";
 import { CONSTANT } from "../config";
 
 function init(element, board, cb, readOnly = false) {
@@ -14,6 +15,7 @@ function init(element, board, cb, readOnly = false) {
   element.editor = new FroalaEditor(
     selector,
     {
+      key: FroalaKey,
       toolbarInline: true,
       placeholder: "",
       events: {

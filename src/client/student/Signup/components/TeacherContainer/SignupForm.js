@@ -254,7 +254,7 @@ class Signup extends React.Component {
                                     message: t("component.signup.teacher.validemail")
                                   },
                                   {
-                                    type: "email",
+                                    type: "string",
                                     message: t("component.signup.teacher.validemail")
                                   },
                                   {

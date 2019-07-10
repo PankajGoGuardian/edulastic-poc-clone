@@ -114,10 +114,14 @@ export const isDistrictPolicyAvailable = (isSignupUsingDaURL, districtPolicy) =>
   isSignupUsingDaURL && typeof districtPolicy === "object";
 
 export const emailSpecialCharCheck = (rule, value, callback, message) => {
-  const regExp = new RegExp("^[A-Za-z0-9@._ ]+$");
-  if (!regExp.test(value.trim())) {
-    callback(message);
-  } else {
+  const emailRegExp = new RegExp(
+    "^[_A-Za-z0-9-'\\+]+(\\.[_A-Za-z0-9-']+)*@[A-Za-z0-9]+([A-Za-z0-9\\-\\.]+)*(\\.[A-Za-z]{1,25})$"
+  );
+  const userNameRegExp = new RegExp("^[A-Za-z0-9@._ -']+$");
+
+  if (emailRegExp.test(value.trim()) || userNameRegExp.test(value.trim())) {
     callback();
+  } else {
+    callback(message);
   }
 };

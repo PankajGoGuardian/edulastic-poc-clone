@@ -163,7 +163,7 @@ class LoginContainer extends React.Component {
                                 message: t("common.validation.emptyemailid")
                               },
                               {
-                                type: "email",
+                                type: "string",
                                 message: t("common.validation.validemail")
                               },
                               {

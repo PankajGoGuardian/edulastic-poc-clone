@@ -13,7 +13,8 @@ import {
   loadQuestionsAction,
   addItemsQuestionAction,
   deleteQuestionAction,
-  SET_QUESTION_SCORE
+  SET_QUESTION_SCORE,
+  changeCurrentQuestionAction
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
@@ -42,7 +43,7 @@ export const SET_ITEM_QIDS = "[itemDetail] set qids";
 export const UPDATE_ITEM_DETAIL_REQUEST = "[itemDetail] update by id request";
 export const UPDATE_ITEM_DETAIL_SUCCESS = "[itemDetail] update by id success";
 export const UPDATE_ITEM_DETAIL_ERROR = "[itemDetail] update by id error";
-
+export const CLEAR_ITEM_DETAIL = "[itemDetail] clear item detail";
 export const SET_ITEM_DETAIL_DATA = "[itemDetail] set data";
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING = "[itemDetail] set item level scoring";
 export const SET_ITEM_DETAIL_SCORE = "[itemDetail] set item score";
@@ -159,6 +160,8 @@ export const updateDefaultGradesAction = grades => ({
   payload: grades
 });
 
+export const clearItemDetailAction = createAction(CLEAR_ITEM_DETAIL);
+
 export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
 export const clearRedirectTestAction = createAction(ITEM_CLEAR_REDIRECT_TEST);
 export const setItemLevelScoringAction = createAction(SET_ITEM_DETAIL_ITEM_LEVEL_SCORING);
@@ -186,7 +189,15 @@ export const getDefaultSubjectSelector = createSelector(
 
 export const getItemDetailSelector = createSelector(
   stateSelector,
-  state => state.item
+  state => state.item || {}
+);
+
+export const isSingleQuestionViewSelector = createSelector(
+  getItemDetailSelector,
+  (item = {}) => {
+    const { resources = [], questions = [] } = item.data || {};
+    return resources.length === 0 && questions.length === 1;
+  }
 );
 
 export const getRedirectTestSelector = createSelector(
@@ -473,6 +484,8 @@ export function reducer(state = initialState, { type, payload }) {
         ...state,
         currentEditingTestId: payload
       };
+    case CLEAR_ITEM_DETAIL:
+      return initialState;
     default:
       return state;
   }
@@ -480,19 +493,21 @@ export function reducer(state = initialState, { type, payload }) {
 
 // saga
 
-function getQuestionsSelector(state) {
-  const authorQuestionsObj = state.authorQuestions.byId;
-  const qids = state.itemDetail.qids || [];
-  return qids.map(id => authorQuestionsObj[id]);
-}
-
 function* receiveItemSaga({ payload }) {
   try {
     const data = yield call(testItemsApi.getById, payload.id, payload.params);
     let questions = (data.data && data.data.questions) || [];
     const questionsArr = (data.data && data.data.questions) || [];
     const resources = (data.data && data.data.resources) || [];
+
+    // if there is only one question, set it as currentQuestionId, since
+    // questionView will be loaded instead.
+    if (questions.length === 1) {
+      yield put(changeCurrentQuestionAction(questions[0].id));
+    }
+
     questions = [...questions, ...resources];
+
     questions = _keyBy(questions, "id");
     if (get(payload, "params.addItem", false)) {
       yield put(addItemsQuestionAction(questions));
@@ -502,7 +517,6 @@ function* receiveItemSaga({ payload }) {
 
     const qids = questionsArr.map(x => x.id);
 
-    const { itemLevelScore, itemLevelScoring } = data;
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: data
@@ -512,14 +526,8 @@ function* receiveItemSaga({ payload }) {
       payload: qids
     });
 
-    let itemLevelScore1 = data.itemLevelScore;
-    //const questionsLength = ((data.data && data.data.questions) || []).length;
-    // if (data.itemLevelScoring && !itemLevelScore1 && questionsLength) {
-    //   itemLevelScore1 = questionsLength;
-    // }
-    console.log("setItemLevel", itemLevelScore1);
-
-    yield put(setItemLevelScoreAction(itemLevelScore1));
+    const { itemLevelScore } = data;
+    yield put(setItemLevelScoreAction(itemLevelScore));
 
     yield put({
       type: CLEAR_DICT_ALIGNMENTS
@@ -560,6 +568,11 @@ export function* updateItemSaga({ payload }) {
 
     // return;
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
+    // on update, if there is only question.. set it as the questionId, since we are changing the view
+    // to singleQuestionView!
+    if (questions.length === 1) {
+      yield put(changeCurrentQuestionAction(questions[0].id));
+    }
     const { redirect = true } = payload; // added for doc based assesment, where redirection is not required.
     if (redirect && item._id !== payload.id) {
       yield put(

@@ -195,6 +195,9 @@ function* saveAssignment({ payload }) {
       )
     );
   } catch (err) {
+    if (err.status === 409) {
+      return yield call(message.error, err.data.message);
+    }
     console.error(err);
   }
 }

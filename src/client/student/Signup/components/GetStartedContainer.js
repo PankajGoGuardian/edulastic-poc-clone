@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { springGreen, mainTextColor, greyGraphstroke, greenDark3, grey } from "@edulastic/colors";
+import { themeColor, mainTextColor, greyGraphstroke, greenDark3, grey } from "@edulastic/colors";
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
@@ -161,7 +161,7 @@ const RegistrationHeader = styled(Row)`
     color: white;
     text-transform: uppercase;
     border-radius: 4px;
-    background: ${springGreen};
+    background: ${themeColor};
   }
 `;
 
@@ -230,7 +230,7 @@ const StudentSignupBox = styled(Link)`
     left: 10%;
     right: 10%;
     bottom: 10px;
-    background: ${springGreen};
+    background: ${themeColor};
     text-align: center;
     font-size: 12px;
     padding: 8px 4px;

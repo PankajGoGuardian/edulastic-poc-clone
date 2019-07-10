@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { debounce } from "lodash";
 import { Pagination, Spin, message } from "antd";
 
 import { Paper, withWindowSizes } from "@edulastic/common";
@@ -220,6 +221,23 @@ class AddItems extends PureComponent {
     );
   };
 
+  searchDebounce = debounce(this.handleSearch, 500);
+
+  handleSearchInputChange = e => {
+    const { search } = this.state;
+    const searchString = e.target.value;
+    const updatedKeys = {
+      ...search,
+      searchString
+    };
+    this.setState(
+      {
+        search: updatedKeys
+      },
+      this.searchDebounce
+    );
+  };
+
   handlePaginationChange = newPage => {
     const { receiveTestItems, limit } = this.props;
     const { search } = this.state;
@@ -278,6 +296,7 @@ class AddItems extends PureComponent {
         <MainList id="main-list">
           <ItemFilter
             onSearchFieldChange={this.handleSearchFieldChange}
+            onSearchInputChange={this.handleSearchInputChange}
             onSearch={this.handleSearch}
             onClearSearch={this.handleClearSearch}
             onLabelSearch={this.handleLabelSearch}

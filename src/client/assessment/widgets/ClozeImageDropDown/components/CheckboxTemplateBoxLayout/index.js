@@ -36,7 +36,8 @@ const CheckboxTemplateBoxLayout = ({
   imageOptions,
   canvasHeight,
   canvasWidth,
-  checkAnswer
+  checkAnswer,
+  onClickHandler
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
     <TemplateCover
@@ -108,6 +109,7 @@ const CheckboxTemplateBoxLayout = ({
                 active 
                 check-answer
                 ${status}`}
+                onClick={onClickHandler}
               >
                 <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
@@ -135,6 +137,7 @@ const CheckboxTemplateBoxLayout = ({
                 ${userSelections.length > 0 ? "check-answer" : "noAnswer"} 
                 ${status} 
                 show-answer`}
+                onClick={onClickHandler}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container">{userSelections[dropTargetIndex]}</div>
@@ -176,7 +179,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   minHeight: PropTypes.number.isRequired,
   imageOptions: PropTypes.object,
   canvasWidth: PropTypes.number.isRequired,
-  canvasHeight: PropTypes.number.isRequired
+  canvasHeight: PropTypes.number.isRequired,
+  onClickHandler: PropTypes.func.isRequired
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {

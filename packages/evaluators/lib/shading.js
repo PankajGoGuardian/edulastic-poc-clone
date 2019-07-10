@@ -36,7 +36,6 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
       return;
     }
 
-    var currentScore = 0;
     var matches = 0;
     var totalMatches = method === BY_COUNT_METHOD ? answer[0] : answer.length;
 
@@ -54,7 +53,14 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
       });
     }
 
-    currentScore = userResponse.length === answer.length && matches === totalMatches ? totalScore : 0;
+    var currentScore;
+
+    if (method === BY_COUNT_METHOD) {
+      currentScore = matches === totalMatches ? totalScore : 0;
+    } else {
+      currentScore = userResponse.length === answer.length && matches === totalMatches ? totalScore : 0;
+    }
+
     score = Math.max(score, currentScore);
     maxScore = Math.max(maxScore, totalScore);
 
@@ -63,24 +69,22 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
     }
   });
   var evaluation = [];
-  var currentIndex = 0;
 
   if (answers[rightIndex].value.method === BY_COUNT_METHOD) {
-    if (answers[rightIndex].value.value[0] === userResponse.length) {
-      evaluation = Array.from({
-        length: userResponse.length
-      }).fill(true);
-    } else {
-      evaluation = Array.from({
-        length: userResponse.length
-      }).fill(false);
-    }
+    userResponse.forEach(function(col, i) {
+      if (i < answers[rightIndex].value.value[0]) {
+        evaluation.push(true);
+      } else {
+        evaluation.push(false);
+      }
+    });
   } else {
     userResponse.forEach(function(col) {
-      evaluation[currentIndex] = answers[rightIndex].value.value.some(function(ans) {
-        return (0, _isEqual2["default"])(ans, col);
-      });
-      currentIndex++;
+      evaluation.push(
+        answers[rightIndex].value.value.some(function(ans) {
+          return (0, _isEqual2["default"])(ans, col);
+        })
+      );
     });
   }
 
@@ -108,7 +112,6 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
       return;
     }
 
-    var currentScore = 0;
     var matches = 0;
     var totalMatches = method === BY_COUNT_METHOD ? answer[0] : answer.length;
     var scorePerAnswer = totalScore / totalMatches;
@@ -127,7 +130,7 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
       });
     }
 
-    currentScore = scorePerAnswer * matches;
+    var currentScore = scorePerAnswer * matches;
     score = Math.max(score, currentScore);
     maxScore = Math.max(maxScore, totalScore);
 
@@ -136,34 +139,22 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
     }
   });
   var evaluation = [];
-  var currentIndex = 0;
 
   if (answers[rightIndex].value.method === BY_COUNT_METHOD) {
-    if (answers[rightIndex].value.value[0] === userResponse.length) {
-      evaluation = Array.from({
-        length: userResponse.length
-      }).fill(true);
-    } else if (answers[rightIndex].value.value[0] < userResponse.length) {
-      evaluation = Array.from({
-        length: answers[rightIndex].value.value[0]
-      })
-        .fill(true)
-        .concat(
-          Array.from({
-            length: userResponse.length - answers[rightIndex].value.value[0]
-          }).fill(false)
-        );
-    } else {
-      evaluation = Array.from({
-        length: userResponse.length
-      }).fill(true);
-    }
+    userResponse.forEach(function(col, i) {
+      if (i < answers[rightIndex].value.value[0]) {
+        evaluation.push(true);
+      } else {
+        evaluation.push(false);
+      }
+    });
   } else {
     userResponse.forEach(function(col) {
-      evaluation[currentIndex] = answers[rightIndex].value.value.some(function(ans) {
-        return (0, _isEqual2["default"])(ans, col);
-      });
-      currentIndex++;
+      evaluation.push(
+        answers[rightIndex].value.value.some(function(ans) {
+          return (0, _isEqual2["default"])(ans, col);
+        })
+      );
     });
   }
 

@@ -114,7 +114,7 @@ class Item extends Component {
     }
     return details.map(
       (detail, index) =>
-        detail.text && (
+        (detail.text || detail.type === "premium") && (
           <DetailCategory key={`DetailCategory_${index}`}>
             <CategoryName>{detail.name}</CategoryName>
             {detail.type !== "premium" && (

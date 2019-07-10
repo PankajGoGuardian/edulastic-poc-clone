@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { isUndefined, find } from "lodash";
 
+import ChoicesBox from "../../ChoicesBox";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
@@ -35,6 +36,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const choiceAttempted = userSelections.length > 0 ? !!userSelections[index] : null;
   let btnStyle = responsecontainerindividuals && responsecontainerindividuals[index];
 
+  const [isEdit, changeEditable] = useState(false);
+  const handleClick = () => changeEditable(true);
+
+  useEffect(() => {
+    changeEditable(false);
+  }, [evaluation[answerId]]);
+
   switch (stemNumeration) {
     case "lowercase": {
       indexStr = ALPHABET[index];
@@ -63,99 +71,107 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (btnStyle && isUndefined(btnStyle.wordwrap) && !isUndefined(responseBtnStyle.wordwrap)) {
     btnStyle.wordwrap = responseBtnStyle.wordwrap;
   }
-  console.log(btnStyle);
+
   return (
-    <span className="template_box" style={{ fontSize, padding: 20 }}>
-      {showAnswer && hasGroupResponses && (
-        <span
-          className={`
+    <Fragment>
+      {isEdit && <ChoicesBox resprops={{ ...resprops, showIndex: false }} id={id} />}
+      {!isEdit && (
+        <span className="template_box" style={{ fontSize, padding: 20 }}>
+          {showAnswer && hasGroupResponses && (
+            <span
+              className={`
             response-btn 
             ${choiceAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-          style={{
-            ...btnStyle,
-            minWidth: `${btnStyle.widthpx}px`
-          }}
-        >
-          <span className="index">{index + 1}</span>
-          <span className="text">{userSelection && userSelection.value}</span>
+              style={{
+                ...btnStyle,
+                minWidth: `${btnStyle.widthpx}px`
+              }}
+              onClick={handleClick}
+            >
+              <span className="index">{index + 1}</span>
+              <span className="text">{userSelection && userSelection.value}</span>
 
-          <IconWrapper>
-            {choiceAttempted && status === "right" && <RightIcon />}
-            {choiceAttempted && status === "wrong" && <WrongIcon />}
-          </IconWrapper>
-        </span>
-      )}
-      {showAnswer && !hasGroupResponses && (
-        <span
-          className={`
+              <IconWrapper>
+                {choiceAttempted && status === "right" && <RightIcon />}
+                {choiceAttempted && status === "wrong" && <WrongIcon />}
+              </IconWrapper>
+            </span>
+          )}
+          {showAnswer && !hasGroupResponses && (
+            <span
+              className={`
             response-btn 
             ${choiceAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-          style={{
-            ...btnStyle,
-            minWidth: `${btnStyle.widthpx}px`
-          }}
-        >
-          <span className="index">{index + 1}</span>
-          <span className="text">{userSelection && userSelection.value}</span>
+              style={{
+                ...btnStyle,
+                minWidth: `${btnStyle.widthpx}px`
+              }}
+              onClick={handleClick}
+            >
+              <span className="index">{index + 1}</span>
+              <span className="text">{userSelection && userSelection.value}</span>
 
-          <IconWrapper>
-            {choiceAttempted && status === "right" && <RightIcon />}
-            {choiceAttempted && status === "wrong" && <WrongIcon />}
-          </IconWrapper>
+              <IconWrapper>
+                {choiceAttempted && status === "right" && <RightIcon />}
+                {choiceAttempted && status === "wrong" && <WrongIcon />}
+              </IconWrapper>
+            </span>
+          )}
+          <span
+            style={{
+              top: -5,
+              display: "inline-flex"
+            }}
+            onClick={handleClick}
+          >
+            {!showAnswer && hasGroupResponses && (
+              <span
+                className={`
+                response-btn 
+                ${choiceAttempted ? "check-answer" : ""} 
+                ${status}`}
+                style={{
+                  ...btnStyle,
+                  minWidth: `${btnStyle.widthpx}px`
+                }}
+              >
+                {showIndex && <span className="index">{index + 1}</span>}
+                <span className="text">{userSelection && userSelection.value}</span>
+
+                <IconWrapper>
+                  {choiceAttempted && status === "right" && <RightIcon />}
+                  {choiceAttempted && status === "wrong" && <WrongIcon />}
+                </IconWrapper>
+              </span>
+            )}
+            {!showAnswer && !hasGroupResponses && (
+              <span
+                className={`
+                response-btn 
+                ${choiceAttempted ? "check-answer" : ""} 
+                ${status}`}
+                style={{
+                  ...btnStyle,
+                  minWidth: `${btnStyle.widthpx}px`
+                }}
+              >
+                {showIndex && <span className="index">{index + 1}</span>}
+                <span className="text">{userSelection && userSelection.value}</span>
+
+                <IconWrapper>
+                  {choiceAttempted && status === "right" && <RightIcon />}
+                  {choiceAttempted && status === "wrong" && <WrongIcon />}
+                </IconWrapper>
+              </span>
+            )}
+          </span>
         </span>
       )}
-      <span
-        style={{
-          top: -5,
-          display: "inline-flex"
-        }}
-      >
-        {!showAnswer && hasGroupResponses && (
-          <span
-            className={`
-                response-btn 
-                ${choiceAttempted ? "check-answer" : ""} 
-                ${status}`}
-            style={{
-              ...btnStyle,
-              minWidth: `${btnStyle.widthpx}px`
-            }}
-          >
-            {showIndex && <span className="index">{index + 1}</span>}
-            <span className="text">{userSelection && userSelection.value}</span>
-
-            <IconWrapper>
-              {choiceAttempted && status === "right" && <RightIcon />}
-              {choiceAttempted && status === "wrong" && <WrongIcon />}
-            </IconWrapper>
-          </span>
-        )}
-        {!showAnswer && !hasGroupResponses && (
-          <span
-            className={`
-                response-btn 
-                ${choiceAttempted ? "check-answer" : ""} 
-                ${status}`}
-            style={{
-              ...btnStyle,
-              minWidth: `${btnStyle.widthpx}px`
-            }}
-          >
-            {showIndex && <span className="index">{index + 1}</span>}
-            <span className="text">{userSelection && userSelection.value}</span>
-
-            <IconWrapper>
-              {choiceAttempted && status === "right" && <RightIcon />}
-              {choiceAttempted && status === "wrong" && <WrongIcon />}
-            </IconWrapper>
-          </span>
-        )}
-      </span>
-    </span>
+    </Fragment>
   );
 };
 

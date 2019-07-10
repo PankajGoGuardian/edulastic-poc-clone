@@ -21,7 +21,7 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
   }
 
   if (isLoggedInForPrivateRoute(user) && user.user.role === "teacher") {
-    return <Redirect exact to="/author/assignments" />;
+    return <Redirect exact to="/author/dashboard" />;
   } else if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
     return <Redirect exact to="/home/assignments" />;
   } else if (location.pathname.toLocaleLowerCase().includes("auth")) {

@@ -86,9 +86,9 @@ class PreviewModal extends React.Component {
       checkAnswer,
       showAnswer,
       preview,
-      showEvaluationButtons,
-      questions
+      showEvaluationButtons
     } = this.props;
+    const questions = keyBy(get(item, "data.questions", []), "id");
     const { authors = [], rows } = item;
     const getAuthorsId = authors.map(item => item._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);

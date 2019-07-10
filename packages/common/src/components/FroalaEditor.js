@@ -22,8 +22,6 @@ import MathModal from "./MathModal";
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
 import { getFontSize } from "../../../../src/client/assessment/utils/helpers";
 
-export const FroalaKey = "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==";
-
 // register custom math buttton
 FroalaEditor.DefineIconTemplate(
   "math",
@@ -281,7 +279,7 @@ const CustomEditor = ({
   const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
   const config = Object.assign(
     {
-      key: FroalaKey,
+      key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
       initOnClick,

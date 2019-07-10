@@ -20,49 +20,43 @@ const DecimalSeparatorPure = ({ options, onChange, t }) => {
   }, [options.setDecimalSeparator]);
 
   return (
-    <Col span={24}>
-      <FlexContainer flexDirection="column" alignItems="flex-start">
-        <Checkbox
-          data-cy="answer-allow-decimal-separator"
-          checked={allowDecimalSeparator}
-          onChange={e => {
-            setAllowDecimalSeparator(e.target.checked);
-            if (!e.target.checked) {
-              onChange("setDecimalSeparator", null);
-            } else {
-              onChange("setDecimalSeparator", ["."]);
-            }
-          }}
-        >
-          {t("component.math.decimalSeparator")}
-        </Checkbox>
-        {allowDecimalSeparator && (
-          <Row style={{ marginTop: 15, marginBottom: 15, width: "100%" }}>
-            <Col span={24}>
-              <FlexContainer>
-                <Select
-                  size="large"
-                  value={options.setDecimalSeparator || decimalSeparators[0].value}
-                  style={{ marginTop: 15, width: "100%" }}
-                  onChange={val => onChange("setDecimalSeparator", val)}
-                  data-cy="answer-set-decimal-separator-dropdown"
-                >
-                  {decimalSeparators.map(({ value: val, label }) => (
-                    <Select.Option
-                      data-cy={`answer-set-decimal-separator-dropdown-list-${label}`}
-                      key={val}
-                      value={val}
-                    >
-                      {label}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </FlexContainer>
-            </Col>
-          </Row>
-        )}
-      </FlexContainer>
-    </Col>
+    <FlexContainer flexDirection="column" alignItems="flex-start">
+      <Checkbox
+        data-cy="answer-allow-decimal-separator"
+        checked={allowDecimalSeparator}
+        onChange={e => {
+          setAllowDecimalSeparator(e.target.checked);
+          if (!e.target.checked) {
+            onChange("setDecimalSeparator", null);
+          } else {
+            onChange("setDecimalSeparator", ["."]);
+          }
+        }}
+      >
+        {t("component.math.decimalSeparator")}
+      </Checkbox>
+      {allowDecimalSeparator && (
+        <Row style={{ marginTop: 15, marginBottom: 15, width: "100%" }}>
+          <Col span={24}>
+            <FlexContainer>
+              <Select
+                size="large"
+                value={options.setDecimalSeparator || decimalSeparators[0].value}
+                style={{ marginTop: 15, width: "100%" }}
+                onChange={val => onChange("setDecimalSeparator", val)}
+                data-cy="answer-set-decimal-separator-dropdown"
+              >
+                {decimalSeparators.map(({ value: val, label }) => (
+                  <Select.Option data-cy={`answer-set-decimal-separator-dropdown-list-${label}`} key={val} value={val}>
+                    {label}
+                  </Select.Option>
+                ))}
+              </Select>
+            </FlexContainer>
+          </Col>
+        </Row>
+      )}
+    </FlexContainer>
   );
 };
 

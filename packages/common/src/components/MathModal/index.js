@@ -11,11 +11,8 @@ const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, showDr
   useEffect(() => {
     if (show) {
       setLatex(value);
-      if (mathInputRef.current) {
-        mathInputRef.current.setFocus();
-      }
     }
-  }, [show, mathInputRef.current]);
+  }, [show]);
 
   const onInput = newLatex => {
     setLatex(newLatex);

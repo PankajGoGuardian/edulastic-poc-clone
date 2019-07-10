@@ -10,6 +10,7 @@ import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { changePreviewAction } from "../../../author/src/actions/view";
 import { EDIT } from "../../constants/constantsForQuestions";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -333,7 +334,7 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
-    { setQuestionData: setQuestionDataAction }
+    { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );
 

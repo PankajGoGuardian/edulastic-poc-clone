@@ -11,7 +11,8 @@ const Wrapper = styled(Layout)`
   width: 100%;
 `;
 
-const Assignments = () => {
+const Assignments = props => {
+  console.log(props);
   return (
     <Wrapper>
       <Header titleText="common.dashboardTitle" />

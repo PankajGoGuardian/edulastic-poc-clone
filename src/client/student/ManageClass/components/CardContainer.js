@@ -6,7 +6,7 @@ import { Row, Col, Button, Spin } from "antd";
 import moment from "moment";
 
 const ClassCard = ({ t, classItem }) => {
-  const { name, owners, parent, startDate, endDate, subject, grade, active, standardSets } = classItem;
+  const { name, owners, parent, startDate, endDate, subject, grade, active, status, standardSets } = classItem;
   const { name: instructorName } = owners.find(owner => owner.id == parent.id);
   return (
     <Col xs={24} md={12} lg={8} xxl={6}>
@@ -20,8 +20,8 @@ const ClassCard = ({ t, classItem }) => {
         <CardBody>
           <Col span={24}>
             <InfoLabel span={8}>Status</InfoLabel>
-            <InfoContent span={16}>
-              <span>{active === 1 ? "ACTIVE" : "INACTIVE"}</span>
+            <InfoContent span={16} status={status}>
+              <span>{status === "1" ? "ACTIVE" : "NOT ENROLLED"}</span>
             </InfoContent>
           </Col>
 
@@ -127,7 +127,7 @@ const InfoContent = styled(InfoLabel)`
   white-space: nowrap;
   span {
     border-radius: 5px;
-    background-color: ${props => props.theme.classCard.cardActiveStatusBgColor};
+    background-color: ${props => (props.status === "0" ? "lightgrey" : props.theme.classCard.cardActiveStatusBgColor)};
     padding: 2px 25px;
     color: ${props => props.theme.classCard.cardActiveStatusTextColor};
     font-size: ${props => props.theme.classCard.cardActiveStatusTextSize};

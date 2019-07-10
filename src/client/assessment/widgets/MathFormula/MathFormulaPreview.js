@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { isEmpty, get } from "lodash";
 
-import { MathInput, StaticMath, MathFormulaDisplay } from "@edulastic/common";
+import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay } from "@edulastic/common";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
@@ -24,6 +24,7 @@ class MathFormulaPreview extends Component {
     saveAnswer: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     userAnswer: PropTypes.any,
+    testItem: PropTypes.bool,
     theme: PropTypes.object.isRequired,
     showQuestionNumber: PropTypes.bool
   };
@@ -31,6 +32,7 @@ class MathFormulaPreview extends Component {
   static defaultProps = {
     studentTemplate: "",
     userAnswer: null,
+    testItem: false,
     showQuestionNumber: false
   };
 
@@ -152,7 +154,7 @@ class MathFormulaPreview extends Component {
   }
 
   render() {
-    const { evaluation, item, type: previewType, showQuestionNumber, studentTemplate, theme } = this.props;
+    const { evaluation, item, type: previewType, showQuestionNumber, studentTemplate, testItem, theme } = this.props;
     const { latex, innerValues } = this.state;
 
     const hasAltAnswers =
@@ -167,6 +169,9 @@ class MathFormulaPreview extends Component {
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
 
+    const testItemCorrectValues = testItem
+      ? item.validation.valid_response.value.map(validResponse => validResponse.value)
+      : [];
     return (
       <div>
         <QuestionTitleWrapper>
@@ -178,43 +183,47 @@ class MathFormulaPreview extends Component {
           />
         </QuestionTitleWrapper>
 
-        <MathInputWrapper data-cy="mathinput">
-          {this.isStatic() && (
-            <StaticMath
-              symbols={item.symbols}
-              restrictKeys={this.restrictKeys}
-              numberPad={item.numberPad}
-              ref={this.studentRef}
-              onInput={latexv => this.onUserResponse(latexv)}
-              onBlur={latexv => this.onBlur(latexv)}
-              style={{ background: statusColor, ...cssStyles }}
-              latex={studentTemplate}
-              innerValues={innerValues}
-              onInnerFieldClick={() => this.onInnerFieldClick()}
-            />
-          )}
-          {!this.isStatic() && (
-            <MathInput
-              symbols={item.symbols}
-              restrictKeys={this.restrictKeys}
-              numberPad={item.numberPad}
-              value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
-              onInput={latexv => this.onUserResponse(latexv)}
-              onBlur={latexv => this.onBlur(latexv)}
-              disabled={evaluation && !evaluation.some(ie => ie)}
-              onInnerFieldClick={() => this.onInnerFieldClick()}
-              style={{ background: statusColor, ...cssStyles }}
-            />
-          )}
-          {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
-            <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
-          )}
-        </MathInputWrapper>
+        {testItem && <MathDisplay template={studentTemplate} innerValues={testItemCorrectValues} />}
 
-        {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
+        {!testItem && (
+          <MathInputWrapper>
+            {this.isStatic() && (
+              <StaticMath
+                symbols={item.symbols}
+                restrictKeys={this.restrictKeys}
+                numberPad={item.numberPad}
+                ref={this.studentRef}
+                onInput={latexv => this.onUserResponse(latexv)}
+                onBlur={latexv => this.onBlur(latexv)}
+                style={{ background: statusColor, ...cssStyles }}
+                latex={studentTemplate}
+                innerValues={innerValues}
+                onInnerFieldClick={() => this.onInnerFieldClick()}
+              />
+            )}
+            {!this.isStatic() && (
+              <MathInput
+                symbols={item.symbols}
+                restrictKeys={this.restrictKeys}
+                numberPad={item.numberPad}
+                value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+                onInput={latexv => this.onUserResponse(latexv)}
+                onBlur={latexv => this.onBlur(latexv)}
+                disabled={evaluation && !evaluation.some(ie => ie)}
+                onInnerFieldClick={() => this.onInnerFieldClick()}
+                style={{ background: statusColor, ...cssStyles }}
+              />
+            )}
+            {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+              <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+            )}
+          </MathInputWrapper>
+        )}
+
+        {!testItem && previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
           <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
         )}
-        {hasAltAnswers && previewType === SHOW && (
+        {!testItem && hasAltAnswers && previewType === SHOW && (
           <CorrectAnswerBox altAnswers>
             {item.validation.alt_responses.map(ans => ans.value[0].value).join(", ")}
           </CorrectAnswerBox>

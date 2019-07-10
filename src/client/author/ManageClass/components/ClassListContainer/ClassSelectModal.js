@@ -75,6 +75,8 @@ const ClassListModal = ({
       dataIndex: "name",
       render: (name, row, ind) => (
         <Input
+          style={{ overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", width: "100%" }}
+          title={name}
           value={name}
           disabled={selectedGroups.includes(row.enrollmentCode)}
           onChange={e => handleChange(ind, "name", e.target.value)}
@@ -201,7 +203,7 @@ const ClassListModal = ({
     if (selected && selected.length) {
       syncClass(selected);
     } else {
-      message.error("Please select atleast 1 class to sync.");
+      message.error("Please select a class to Sync.");
     }
   };
 

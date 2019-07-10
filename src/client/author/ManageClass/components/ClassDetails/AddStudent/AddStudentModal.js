@@ -12,7 +12,6 @@ import { getUserOrgData } from "../../../../src/selectors/user";
 import { enrollmentApi } from "@edulastic/api";
 
 const { Panel } = Collapse;
-// = ({ handleAdd, handleCancel, isOpen, form }) =>
 class AddStudentModal extends React.Component {
   state = {
     keys: ["basic"],
@@ -57,12 +56,12 @@ class AddStudentModal extends React.Component {
     const { form, handleCancel, handleAdd, isOpen, submitted, stds, isEdit, foundUserId } = this.props;
     const { keys, isUpdate } = this.state;
     const { getFieldDecorator, getFieldValue, setFields, setFieldsValue } = form;
-    const std = isEdit ? stds[0] : {};
+    const std = {};
 
     const title = (
       <Title>
         <IconUser />
-        <label>{isEdit ? "Update a User" : "Add Student to Class"}</label>
+        <label>{isEdit ? "Update User" : "Add Student to Class"}</label>
       </Title>
     );
 
@@ -72,11 +71,7 @@ class AddStudentModal extends React.Component {
           No, Cancel
         </ActionButton>
 
-        <ActionButton
-          onClick={isUpdate ? this.enrollStudent : handleAdd}
-          // .bind(this, districtId, classCode, classId, loadStudents, handleCancel)
-          type="primary"
-        >
+        <ActionButton onClick={isUpdate ? this.enrollStudent : handleAdd} type="primary">
           {isUpdate ? "Yes, Enroll Student" : "Yes, Add Student"}
 
           <Icon type="right" />
@@ -110,6 +105,7 @@ class AddStudentModal extends React.Component {
                   getFieldDecorator={getFieldDecorator}
                   getFieldValue={getFieldValue}
                   std={std}
+                  stds={stds}
                   isEdit={isEdit}
                   setFields={setFields}
                   setFieldsValue={setFieldsValue}

@@ -5,7 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { Row, Col } from "antd";
 import { Link } from "react-router-dom";
-import { springGreen } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import {
   getPartnerGetStartedUrl,
   getDistrictGetStartedUrl,
@@ -65,7 +65,7 @@ const RegistrationHeader = styled(Row)`
     color: white;
     text-transform: uppercase;
     border-radius: 4px;
-    background: ${springGreen};
+    background: ${themeColor};
   }
 `;
 

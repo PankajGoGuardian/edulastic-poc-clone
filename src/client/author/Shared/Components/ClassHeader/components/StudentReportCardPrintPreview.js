@@ -6,7 +6,7 @@ import { Row, Col } from "antd";
 import { get, isEmpty } from "lodash";
 
 import { StyledCard } from "../../../../Reports/common/styled";
-import { grey, springGreen, someGreyColor1 } from "@edulastic/colors";
+import { grey, themeColor, someGreyColor1 } from "@edulastic/colors";
 import { DonutChartContainer } from "./donutChartContainer";
 import { QuestionTableContainer } from "./questionTableContainer";
 import { StandardTableContainer } from "./standardTableContainer";
@@ -149,7 +149,7 @@ const StyledCard1 = styled(StyledCard)`
       width: 40%;
       .test-name {
         font-size: 22px;
-        color: ${springGreen};
+        color: ${themeColor};
         margin-bottom: 7px;
       }
       .student-report-card-key-value {

@@ -47,11 +47,13 @@ class ClozeInputAnswer extends Component {
         >
           {answers.map(answer => {
             const response = responseContainers.find(respCont => respCont.id === answer.id);
-            const width = response ? `${response.widthpx}px` : `${uiStyle.min_width}px` || "auto";
+            const width =
+              response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+            const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
             return (
               <Panel header={`Text Input ${answer.index + 1}`} key={answer.index}>
                 <Input
-                  style={{ width }}
+                  style={{ width, height }}
                   value={answer.value}
                   onChange={e => this.onChangeHandler(e.target.value, answer.id)}
                 />

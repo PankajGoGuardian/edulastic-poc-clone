@@ -158,36 +158,26 @@ class ClozeDropDownDisplay extends Component {
     ) : (
       <div />
     );
-    const resProps =
-      showAnswer || checkAnswer
-        ? {
-            showIndex: showAnswer || checkAnswer,
-            responsecontainerindividuals,
-            responseBtnStyle,
-            stemNumeration: stemnumeration,
-            fontSize,
-            disableResponse,
-            qIndex,
-            showAnswer,
-            userSelections:
-              item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
-            evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation,
-            item,
-            isReviewTab,
-            cAnswers: get(item, "validation.valid_response.value", [])
-          }
-        : {
-            userAnswers: userSelections || [],
-            btnStyle,
-            placeholder,
-            disableResponse,
-            qIndex,
-            options: responses,
-            onChange: this.selectChange,
-            item,
-            isReviewTab,
-            cAnswers: get(item, "validation.valid_response.value", [])
-          };
+    const resProps = {
+      item,
+      qIndex,
+      fontSize,
+      btnStyle,
+      showAnswer,
+      isReviewTab,
+      placeholder,
+      disableResponse,
+      responseBtnStyle,
+      options: responses,
+      onChange: this.selectChange,
+      responsecontainerindividuals,
+      stemNumeration: stemnumeration,
+      userAnswers: userSelections || [],
+      showIndex: showAnswer || checkAnswer,
+      cAnswers: get(item, "validation.valid_response.value", []),
+      userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
+      evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
+    };
 
     return (
       <div style={{ fontSize }}>

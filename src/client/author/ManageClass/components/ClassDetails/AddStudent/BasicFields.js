@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import { Input } from "antd";
 import { Form } from "antd";
 import { Field } from "./styled";
 import { userApi } from "@edulastic/api";
 const BasicFields = ({
-  std,
+  stds,
   isEdit,
   students,
   districtId,
@@ -21,7 +21,10 @@ const BasicFields = ({
   modalClose,
   ...restProps
 }) => {
-  const { email, firstName, lastName } = std;
+  if (!isEmpty(stds[0])) {
+    var { email, firstName, lastName } = stds[0];
+  }
+
   const [enroll, setEnroll] = useState(false);
   const confirmPwdCheck = (rule, value, callback) => {
     const pwd = getFieldValue("password");
@@ -92,66 +95,106 @@ const BasicFields = ({
 
   return (
     <>
-      <Field name="email" initialValue={email}>
-        <legend>Username/Email</legend>
-        {enroll && "user exists and will be enrolled"}
-        <Form.Item>
-          {getFieldDecorator("email", {
-            rules: [{ validator: checkUser }, ...commonEmailValidations]
-          })(<Input placeholder="Enter Username" />)}
-        </Form.Item>
-      </Field>
-      <Field name="fullName">
-        <legend>Name of User</legend>
-        <Form.Item>
-          {getFieldDecorator("fullName", {
-            rules: [
-              { required: true, message: "Please provide user full name" },
-              { max: 128, message: "Must less than 128 characters!" }
-            ]
-          })(<Input placeholder="Enter the name of the user" />)}
-        </Form.Item>
-      </Field>
+      {!isEdit ? (
+        <Field name="email">
+          <legend>Username/Email</legend>
+          {enroll && "user exists and will be enrolled"}
+          <Form.Item>
+            {getFieldDecorator("email", {
+              rules: [{ validator: checkUser }, ...commonEmailValidations]
+            })(<Input placeholder="Enter Username" />)}
+          </Form.Item>
+        </Field>
+      ) : (
+        <Field name="email">
+          <legend>Username/Email</legend>
+          <Form.Item>
+            {getFieldDecorator("email", {
+              rules: [...commonEmailValidations],
+              initialValue: email
+            })(<Input placeholder="Enter Username" />)}
+          </Form.Item>
+        </Field>
+      )}
+
+      {!isEdit && (
+        <Field name="fullName">
+          <legend>Name of User</legend>
+          <Form.Item>
+            {getFieldDecorator("fullName", {
+              rules: [
+                { required: true, message: "Please provide user full name" },
+                { max: 128, message: "Must less than 128 characters!" }
+              ]
+            })(<Input placeholder="Enter the name of the user" disabled={enroll} />)}
+          </Form.Item>
+        </Field>
+      )}
       {isEdit && (
         <>
-          <Field name="firstName" initialValue={firstName}>
+          <Field name="firstName">
             <legend>First Name</legend>
             <Form.Item>
-              {getFieldDecorator("firstName", {})(
-                <Input placeholder="Enter the first name of the user" disabled={enroll} />
-              )}
+              {getFieldDecorator("firstName", {
+                rules: [
+                  { required: true, message: "Please provide user first name" },
+                  { max: 128, message: "Must less than 128 characters!" }
+                ],
+                initialValue: firstName || ""
+              })(<Input placeholder="Enter the first name of the user" />)}
             </Form.Item>
           </Field>
-          <Field name="lastName" initialValue={lastName}>
+          <Field name="lastName">
             <legend>Last name</legend>
             <Form.Item>
-              {getFieldDecorator("lastName", {})(
-                <Input placeholder="Enter the last name of the user" disabled={enroll} />
-              )}
+              {getFieldDecorator("lastName", {
+                initialValue: lastName || ""
+              })(<Input placeholder="Enter the last name of the user" />)}
             </Form.Item>
           </Field>
         </>
       )}
 
-      <Field name="password" initialValue="">
-        <legend>Password</legend>
-        <Form.Item>
-          {getFieldDecorator("password", {
-            rules: [
-              { required: true, message: "Please provide a valid password" },
-              { min: 6, message: "Must larger than 6 characters!" }
-            ]
-          })(<Input type="password" placeholder="Enter Password" disabled={enroll} />)}
-        </Form.Item>
-      </Field>
-      <Field name="confirmPassword" initialValue="">
-        <legend>Confirm Password</legend>
-        <Form.Item>
-          {getFieldDecorator("confirmPassword", {
-            rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
-          })(<Input type="password" placeholder="Confirm Password" disabled={enroll} />)}
-        </Form.Item>
-      </Field>
+      {!isEdit ? (
+        <>
+          <Field name="password">
+            <legend>Password</legend>
+            <Form.Item>
+              {getFieldDecorator("password", {
+                rules: [
+                  { required: true, message: "Please provide a valid password" },
+                  { min: 6, message: "Must larger than 6 characters!" }
+                ]
+              })(<Input type="password" placeholder="Enter Password" disabled={enroll} />)}
+            </Form.Item>
+          </Field>
+          <Field name="confirmPassword">
+            <legend>Confirm Password</legend>
+            <Form.Item>
+              {getFieldDecorator("confirmPassword", {
+                rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
+              })(<Input type="password" placeholder="Confirm Password" disabled={enroll} />)}
+            </Form.Item>
+          </Field>
+        </>
+      ) : (
+        <>
+          <Field name="password">
+            <legend>Password</legend>
+            <Form.Item>
+              {getFieldDecorator("password", {})(<Input type="password" placeholder="Enter Password" />)}
+            </Form.Item>
+          </Field>
+          <Field name="confirmPassword">
+            <legend>Confirm Password</legend>
+            <Form.Item>
+              {getFieldDecorator("confirmPassword", {
+                rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
+              })(<Input type="password" placeholder="Confirm Password" />)}
+            </Form.Item>
+          </Field>
+        </>
+      )}
     </>
   );
 };

@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Switch } from "antd";
+import { Checkbox } from "antd";
 import ReactOutsideEvent from "react-outside-event";
 
 import { title } from "@edulastic/colors";
-import { Button, Checkbox } from "@edulastic/common";
+import { Button } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 
 import SettingsBarItem from "../SettingsBarItem/SettingsBarItem";
-import SettingsBarTags from "../SettingsBarTags/SettingsBarTags";
+
 import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
 import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
 import { Content, Items, Checkboxes, Heading, SettingsButtonWrapper } from "./styled";
@@ -58,12 +58,14 @@ class Container extends Component {
     onScrollingChange: PropTypes.func.isRequired,
     useFlowLayoutRight: PropTypes.bool,
     itemLevelScoring: PropTypes.bool,
-    setItemLevelScoring: PropTypes.func.isRequired
+    setItemLevelScoring: PropTypes.func.isRequired,
+    isSingleQuestion: PropTypes.bool
   };
 
   static defaultProps = {
     useFlowLayoutRight: false,
-    itemLevelScoring: true
+    itemLevelScoring: true,
+    isSingleQuestion: false
   };
 
   handleCheckboxChange = name => () => {
@@ -107,6 +109,12 @@ class Container extends Component {
     }
   };
 
+  handleMultipart = () => {
+    const { setMultipart, onCancel } = this.props;
+    setMultipart(true);
+    onCancel();
+  };
+
   render() {
     const {
       onCancel,
@@ -120,12 +128,12 @@ class Container extends Component {
       scrolling,
       onVerticalDividerChange,
       onScrollingChange,
-      itemLevelScoring,
-      setItemLevelScoring
+      isSingleQuestion = false,
+      isMultipart
     } = this.props;
 
-    return (
-      <Content>
+    const multipleItemsSettings = () => (
+      <>
         <SettingsButtonWrapper justifyContent="flex-end">
           <Button
             color="primary"
@@ -159,18 +167,25 @@ class Container extends Component {
           checkedRight={useFlowLayoutRight}
         />
         <Checkboxes>
-          <Checkbox
-            style={{ marginBottom: 20 }}
-            label={t("author:component.settingsBar.showVerticalDivider")}
-            checked={verticalDivider}
-            onChange={onVerticalDividerChange}
-          />
-          <Checkbox
-            label={t("author:component.settingsBar.enableScrolling")}
-            checked={scrolling}
-            onChange={onScrollingChange}
-          />
+          <Checkbox style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
+            {t("author:component.settingsBar.showVerticalDivider")}
+          </Checkbox>
+          <Checkbox checked={scrolling} onChange={onScrollingChange}>
+            {t("author:component.settingsBar.enableScrolling")}
+          </Checkbox>
         </Checkboxes>
+      </>
+    );
+
+    return (
+      <Content>
+        {isSingleQuestion ? (
+          <div>
+            <Checkbox onChange={this.handleMultipart} value={isMultipart} /> Convert item into a multipart
+          </div>
+        ) : (
+          multipleItemsSettings()
+        )}
       </Content>
     );
   }

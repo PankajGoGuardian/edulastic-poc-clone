@@ -27,11 +27,13 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   } = item;
   const { index } = find(dropDowns, res => res.id === id) || {};
   const response = find(response_containers, cont => cont.id === id);
-  const width = response ? response.widthpx : item.ui_style.min_width || "auto";
+  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
 
   return checked ? (
     <CheckedBlock
       width={width}
+      height={height}
       item={item}
       userAnswer={_dropDownAnswers[id]}
       id={id}
@@ -44,7 +46,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       width={width}
       onChange={text => save({ value: text, index }, "dropDowns", id)}
       value={val}
-      style={{ ...uiStyles, width: !width ? "auto" : `${width}px` }}
+      style={{ ...uiStyles, width: !width ? "auto" : width, height: !height ? "auto" : height }}
     >
       {options &&
         options[id] &&

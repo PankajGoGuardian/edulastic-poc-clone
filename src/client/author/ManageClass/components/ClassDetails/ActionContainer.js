@@ -11,7 +11,7 @@ import ResetPwd from "./ResetPwd/ResetPwd";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 
-import { addStudentRequestAction, changeTTSRequestAction } from "../../ducks";
+import { addStudentRequestAction, updateStudentRequestAction, changeTTSRequestAction } from "../../ducks";
 import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import { getUserFeatures } from "../../../../student/Login/ducks";
@@ -34,6 +34,7 @@ import { FaTruckMonster } from "react-icons/fa";
 const modalStatus = {};
 
 const ActionContainer = ({
+  updateStudentRequest,
   addStudentRequest,
   selectedClass,
   userOrgId,
@@ -89,31 +90,63 @@ const ActionContainer = ({
       const { form } = formRef.props;
       form.validateFields((err, values) => {
         if (!err) {
-          const { fullName } = values;
-          const tempName = split(fullName, " ");
-          const firstName = tempName[0];
-          const lastName = tempName[1];
-          values.classCode = selectedClass.code;
-          values.role = "student";
-          values.districtId = orgData.districtId;
-          values.institutionIds = orgData.institutionIds;
-          values.firstName = firstName;
-          values.lastName = lastName;
+          if (isEdit) {
+            if (values.dob) {
+              values.dob = moment(values.dob).format("x");
+            }
+            const std = { ...selectedStudent[0], ...values };
+            const userId = std._id || std.userId;
+            std.currentSignUpState = "DONE";
+            const stdData = pick(std, [
+              "districtId",
+              "dob",
+              "ellStatus",
+              "email",
+              "firstName",
+              "gender",
+              "institutionIds",
+              "lastName",
+              "race",
+              "sisId",
+              "studentNumber",
+              "frlStatus",
+              "iepStatus",
+              "sedStatus",
+              "username",
+              "contactEmails"
+            ]);
+            updateStudentRequest({
+              userId,
+              data: stdData
+            });
+            setModalStatus(false);
+          } else {
+            const { fullName } = values;
+            const tempName = split(fullName, " ");
+            const firstName = tempName[0];
+            const lastName = tempName[1];
+            values.classCode = selectedClass.code;
+            values.role = "student";
+            values.districtId = orgData.districtId;
+            values.institutionIds = orgData.institutionIds;
+            values.firstName = firstName;
+            values.lastName = lastName;
 
-          const contactEmails = get(values, "contactEmails");
-          if (contactEmails) {
-            values.contactEmails = [contactEmails];
+            const contactEmails = get(values, "contactEmails");
+            if (contactEmails) {
+              values.contactEmails = [contactEmails];
+            }
+
+            if (values.dob) {
+              values.dob = moment(values.dob).format("x");
+            }
+
+            unset(values, ["confirmPassword"]);
+            unset(values, ["fullName"]);
+
+            addStudentRequest(pickBy(values, identity));
+            setReqStatus(true);
           }
-
-          if (values.dob) {
-            values.dob = moment(values.dob).format("x");
-          }
-
-          unset(values, ["confirmPassword"]);
-          unset(values, ["fullName"]);
-
-          addStudentRequest(pickBy(values, identity));
-          setReqStatus(true);
         }
       });
     }
@@ -167,14 +200,14 @@ const ActionContainer = ({
         }
         toggleModal("resetPwd");
         break;
-      case "edit":
+      case "editStudent":
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Please select a student to update");
         }
         if (selectedStudent.length > 1) {
           return showMessage("error", "Please select only one student");
         }
-        toggleModal("addStudent");
+        toggleModal("add");
         setEditStudentStatues(true);
         break;
       case "addCoTeacher":
@@ -330,6 +363,7 @@ export default connect(
   }),
   {
     addStudentRequest: addStudentRequestAction,
+    updateStudentRequest: updateStudentRequestAction,
     changeTTS: changeTTSRequestAction
   }
 )(ActionContainer);

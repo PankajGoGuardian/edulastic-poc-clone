@@ -8,7 +8,7 @@ import { Row, Col, Select, message } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeader } from "@edulastic/icons";
-import { springGreen, white, title, fadedGrey } from "@edulastic/colors";
+import { themeColor, white, title, fadedGrey } from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
@@ -197,7 +197,8 @@ const JoinSchool = ({
                   {!isSignupUsingDaURL ? <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn> : null}
                   {selected && (
                     <DistrictName>
-                      <span>District:</span> {selected.districtName}
+                      <span>District: </span>
+                      {selected.districtName}
                     </DistrictName>
                   )}
                 </Actions>
@@ -303,7 +304,7 @@ const Actions = styled.div`
 
 const AnchorBtn = styled.div`
   text-transform: uppercase;
-  border-bottom: 2px ${springGreen} solid;
+  border-bottom: 2px ${themeColor} solid;
   font-weight: 600;
   padding-bottom: 2px;
   font-size: 12px;
@@ -326,7 +327,7 @@ const SchoolSelect = styled(Select)`
 `;
 
 const ProceedBtn = styled(Button)`
-  background: ${springGreen};
+  background: ${themeColor};
   min-width: 60%;
   color: ${white};
   margin-top: 32px;

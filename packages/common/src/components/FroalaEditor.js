@@ -22,6 +22,8 @@ import MathModal from "./MathModal";
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
 import { getFontSize } from "../../../../src/client/assessment/utils/helpers";
 
+export const FroalaKey = "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==";
+
 // register custom math buttton
 FroalaEditor.DefineIconTemplate(
   "math",
@@ -213,6 +215,7 @@ export const Placeholder = styled.div.attrs({
   right: 0;
   opacity: 0.7;
   color: #cccccc;
+  z-index: 1;
 `;
 
 //adds h1 & h2 buttons commands to froala editor.
@@ -278,7 +281,7 @@ const CustomEditor = ({
   const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
   const config = Object.assign(
     {
-      key: "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==",
+      key: FroalaKey,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
       initOnClick,
@@ -291,6 +294,7 @@ const CustomEditor = ({
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
+      placeholderText: null,
       htmlAllowedEmptyTags: [
         "textarea",
         "a",
@@ -707,6 +711,7 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
+  console.log("content: ", `"${content}"`, content === "");
   const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>

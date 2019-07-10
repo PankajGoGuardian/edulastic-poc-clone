@@ -2001,7 +2001,8 @@ span.token.active-word {
 .ant-select-selection:focus,
 .ant-select-selection:hover,
 .ant-select-selection:active,
-.ant-input:hover {
+.ant-input:hover,
+.ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled) {
   border-color: #00ad50;
 }
 

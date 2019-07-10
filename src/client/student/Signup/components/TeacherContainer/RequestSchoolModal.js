@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { get, debounce, find } from "lodash";
 import styled from "styled-components";
 import { Form, Modal, Button, Input, Select } from "antd";
-import { lightGrey3, linkColor, springGreen, white } from "@edulastic/colors";
+import { lightGrey3, linkColor, themeColor, white } from "@edulastic/colors";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { countryApi } from "@edulastic/api";
 import { searchDistrictsRequestAction, createAndJoinSchoolRequestAction } from "../../duck";
@@ -273,7 +273,7 @@ const StyledModal = styled(Modal)`
   .ant-select-arrow,
   .ant-modal-close-x {
     svg {
-      fill: ${springGreen};
+      fill: ${themeColor};
     }
   }
   .ant-select {
@@ -316,12 +316,12 @@ const ActionButton = styled(Button)`
   justify-content: center;
   text-transform: uppercase;
   min-width: 55%;
-  background: ${springGreen};
+  background: ${themeColor};
   color: ${white};
   border: 0px;
 
   &:hover {
-    background: ${springGreen};
+    background: ${themeColor};
   }
 `;
 

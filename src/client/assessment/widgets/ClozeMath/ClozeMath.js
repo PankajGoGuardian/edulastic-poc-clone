@@ -15,6 +15,7 @@ import ClozeMathPreview from "./ClozeMathPreview";
 import MathFormulaOptions from "../MathFormula/components/MathFormulaOptions";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
+import { changePreviewAction } from "../../../author/src/actions/view";
 import { ContentArea } from "../../styled/ContentArea";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
@@ -173,7 +174,8 @@ const enhance = compose(
     }),
     {
       setQuestionData: setQuestionDataAction,
-      checkAnswer: checkAnswerAction
+      checkAnswer: checkAnswerAction,
+      changePreview: changePreviewAction
     }
   )
 );

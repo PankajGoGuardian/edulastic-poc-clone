@@ -74,11 +74,19 @@ const getByV1Id = v1Id =>
     })
     .then(result => result.data.result);
 
+const getDefaultImage = ({ subject, standard }) =>
+  api
+    .callApi({
+      url: `${prefix}/default-thumbnail?subject=${subject}&standard=${standard}`
+    })
+    .then(result => result.data.result.image);
+
 export default {
   getAll,
   getById,
   create,
   update,
+  getDefaultImage,
   publishTest,
   getPublicTest,
   getByV1Id

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { difference, isEmpty, get } from "lodash";
+import { isEmpty, get } from "lodash";
 
 import { MathInput, StaticMath, MathFormulaDisplay } from "@edulastic/common";
 
@@ -12,7 +12,7 @@ import MathInputStatus from "./components/MathInputStatus/index";
 import MathInputWrapper from "./styled/MathInputWrapper";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
-import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
+import { getStylesFromUiStyleToCssStyle, mathValidateVariables } from "../../utils/helpers";
 
 class MathFormulaPreview extends Component {
   static propTypes = {
@@ -110,47 +110,10 @@ class MathFormulaPreview extends Component {
     }
   }
 
-  validateVal(val) {
-    const { item } = this.props;
-    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
-
-    if (!options || (!options.allowedVariables && !options.allowNumericOnly) || !val) return val;
-
-    const { allowNumericOnly, allowedVariables } = options;
-    let newVal = val;
-
-    if (allowNumericOnly) {
-      newVal = newVal.replace(/\b([a-zA-Z]+)\b/gm, "");
-      return newVal;
-    }
-
-    if (!allowedVariables) return newVal;
-
-    const validVars = allowedVariables.split(",").filter(segment => !!segment.trim());
-    if (validVars.length === 0) return newVal;
-
-    const foundVars = [];
-    const varReg = /\b([a-zA-Z]+)\b/gm;
-    let m;
-    do {
-      m = varReg.exec(newVal);
-      if (m) {
-        foundVars.push(m[0]);
-      }
-    } while (m);
-
-    const varsToExclude = difference(foundVars, validVars);
-    for (const varToExclude of varsToExclude) {
-      const excludeReg = new RegExp(`\\b${varToExclude}\\b`, "gm");
-      newVal = newVal.replace(excludeReg, "");
-    }
-
-    return newVal;
-  }
-
   onUserResponse(latexv) {
-    const { saveAnswer } = this.props;
-    const validatedVal = this.validateVal(latexv);
+    const { saveAnswer, item } = this.props;
+    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
+    const validatedVal = mathValidateVariables(latexv, options);
 
     // if (previewType === CHECK) return;
     if (this.isStatic()) {
@@ -162,8 +125,9 @@ class MathFormulaPreview extends Component {
   }
 
   onBlur(latexv) {
-    const { type: previewType, saveAnswer } = this.props;
-    const validatedVal = this.validateVal(latexv);
+    const { type: previewType, saveAnswer, item } = this.props;
+    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
+    const validatedVal = mathValidateVariables(latexv, options);
 
     if (this.isStatic() && previewType !== CHECK) {
       saveAnswer(validatedVal);
@@ -177,6 +141,14 @@ class MathFormulaPreview extends Component {
       changePreview(CLEAR); // Item level
       changePreviewTab(CLEAR); // Question level
     }
+  }
+
+  get restrictKeys() {
+    const { item } = this.props;
+    const { options = {} } = get(item, ["validation", "valid_response", "value", 0], {});
+    const { allowedVariables } = options;
+
+    return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
   render() {
@@ -210,6 +182,7 @@ class MathFormulaPreview extends Component {
           {this.isStatic() && (
             <StaticMath
               symbols={item.symbols}
+              restrictKeys={this.restrictKeys}
               numberPad={item.numberPad}
               ref={this.studentRef}
               onInput={latexv => this.onUserResponse(latexv)}
@@ -223,6 +196,7 @@ class MathFormulaPreview extends Component {
           {!this.isStatic() && (
             <MathInput
               symbols={item.symbols}
+              restrictKeys={this.restrictKeys}
               numberPad={item.numberPad}
               value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
               onInput={latexv => this.onUserResponse(latexv)}

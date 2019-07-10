@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
-import { pick } from "lodash";
+import { pick, get } from "lodash";
 import styled from "styled-components";
 import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
 
@@ -312,6 +312,11 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
+  const { options: validVariable = {} } = get(item, ["validation", "valid_response", "value", 0], {});
+  const { allowedVariables } = validVariable;
+
+  const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+
   return (
     <Container data-cy="math-formula-answer">
       <StyledRow gutter={60}>
@@ -320,6 +325,7 @@ const MathFormulaAnswerMethod = ({
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
               symbols={item.symbols}
+              restrictKeys={restrictKeys}
               style={style}
               numberPad={item.numberPad}
               onChangeKeypad={onChangeKeypad}

@@ -37,7 +37,7 @@ const ClassListModal = ({
   };
 
   const handleCourseChange = (index, option) => {
-    let course = { _id: option.props.value, name: option.props.children };
+    let course = { id: option.props.value, name: option.props.children };
     handleChange(index, "course", course);
   };
 
@@ -176,11 +176,11 @@ const ClassListModal = ({
             option.props.children && option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
           }
           disabled={selectedGroups.includes(row.enrollmentCode)}
-          value={row.courseIds || []}
+          value={row.courseId || []}
           placeholder="Please select any Course"
           onChange={(val, option) => {
             handleCourseChange(ind, option);
-            handleChange(ind, "courseIds", val);
+            handleChange(ind, "courseId", val);
           }}
         >
           {courseList &&

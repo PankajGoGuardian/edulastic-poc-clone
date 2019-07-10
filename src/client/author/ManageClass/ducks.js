@@ -21,6 +21,10 @@ export const getSelectedClassName = createSelector(
   state => state.entity.name
 );
 
+export const getGoogleCourseListSelector = createSelector(
+  manageClassSelector,
+  state => state.googleCourseList
+);
 // action types
 
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";
@@ -139,7 +143,11 @@ const initialState = {
 };
 
 const setGoogleCourseList = (state, { payload }) => {
-  state.googleCourseList = payload;
+  state.googleCourseList = payload.map(o => {
+    console.log(o.course);
+    o.courseId = o.course && o.course.id;
+    return o;
+  });
 };
 
 const updateGoogleCourseList = (state, { payload }) => {

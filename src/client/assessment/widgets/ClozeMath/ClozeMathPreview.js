@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, get } from "lodash";
-import { Stimulus, helpers } from "@edulastic/common";
+import { helpers } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
@@ -13,9 +13,6 @@ import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButto
 import ClozeDropDown from "./ClozeMathBlock/ClozeDropDown";
 import ClozeInput from "./ClozeMathBlock/ClozeInput";
 import ClozeMathInput from "./ClozeMathBlock/ClozeMathInput";
-import ClozeDropDownAnswerDisplay from "./ClozeMathDisplay/ClozeDropDownAnswerDisplay";
-import ClozeInputAnswerDisplay from "./ClozeMathDisplay/ClozeInputAnswerDisplay";
-import ClozeMathAnswerDisplay from "./ClozeMathDisplay/ClozeMathAnswerDisplay";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
 const getFontSize = size => {
@@ -42,8 +39,6 @@ const ClozeMathPreview = ({
   userAnswer,
   saveAnswer,
   evaluation,
-  testItem,
-  showQuestionNumber,
   options,
   responseIds,
   changePreviewTab, // Question level
@@ -107,88 +102,33 @@ const ClozeMathPreview = ({
   }, [stimulus]);
 
   const uiStyles = getStyles();
-  const testUserAnswer = {};
-  if (testItem) {
-    const keynameMap = {
-      valid_inputs: "inputs",
-      valid_dropdown: "dropDowns",
-      valid_response: "maths"
-    };
-
-    ["valid_inputs", "valid_dropdown", "valid_response"].forEach(propName => {
-      testUserAnswer[keynameMap[propName]] = {};
-      item.validation[propName].value.forEach(answerItem => {
-        if (propName === "valid_response") {
-          testUserAnswer[keynameMap[propName]][answerItem[0].id] = {
-            value: answerItem[0].value
-          };
-        } else {
-          testUserAnswer[keynameMap[propName]][answerItem.id] = {
-            value: answerItem.value
-          };
-        }
-      });
-    });
-  }
-
   return (
     <QuestionWrapper>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      </QuestionTitleWrapper>
+      <JsxParser
+        bindings={{
+          resProps: {
+            options,
+            evaluation,
+            save: handleAddAnswer,
+            answers: userAnswer,
+            item,
+            checked: type === CHECK || type === SHOW,
+            onInnerClick,
+            uiStyles,
+            response_containers: item.response_containers
+          }
+        }}
+        showWarnings
+        components={{
+          mathspan: MathSpanWrapper,
+          textdropdown: ClozeDropDown,
+          textinput: ClozeInput,
+          mathinput: ClozeMathInput
+        }}
+        jsx={newHtml}
+      />
 
-      {testItem && (
-        <JsxParser
-          bindings={{
-            resProps: {
-              options,
-              evaluation,
-              save: handleAddAnswer,
-              answers: testUserAnswer,
-              item,
-              uiStyles,
-              response_containers: item.response_containers
-            }
-          }}
-          showWarnings
-          components={{
-            mathspan: MathSpanWrapper,
-            textdropdown: ClozeDropDownAnswerDisplay,
-            textinput: ClozeInputAnswerDisplay,
-            mathinput: ClozeMathAnswerDisplay
-          }}
-          jsx={newHtml}
-        />
-      )}
-
-      {!testItem && (
-        <JsxParser
-          bindings={{
-            resProps: {
-              options,
-              evaluation,
-              save: handleAddAnswer,
-              answers: userAnswer,
-              item,
-              checked: type === CHECK || type === SHOW,
-              onInnerClick,
-              uiStyles,
-              response_containers: item.response_containers
-            }
-          }}
-          showWarnings
-          components={{
-            mathspan: MathSpanWrapper,
-            textdropdown: ClozeDropDown,
-            textinput: ClozeInput,
-            mathinput: ClozeMathInput
-          }}
-          jsx={newHtml}
-        />
-      )}
-
-      {!testItem && type === SHOW && (
+      {type === SHOW && (
         <AnswerBox
           mathAnswers={_getMathAnswers()}
           dropdownAnswers={_getDropDownAnswers()}
@@ -213,15 +153,11 @@ ClozeMathPreview.propTypes = {
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
   responseIds: PropTypes.object.isRequired,
-  changePreview: PropTypes.func,
-  showQuestionNumber: PropTypes.bool,
-  testItem: PropTypes.bool
+  changePreview: PropTypes.func
 };
 
 ClozeMathPreview.defaultProps = {
-  changePreview: () => {},
-  showQuestionNumber: false,
-  testItem: false
+  changePreview: () => {}
 };
 
 export default withCheckAnswerButton(ClozeMathPreview);
@@ -230,13 +166,4 @@ const QuestionWrapper = styled.div`
   li {
     margin: 4px 0;
   }
-`;
-
-const QuestionTitleWrapper = styled.div`
-  display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
 `;

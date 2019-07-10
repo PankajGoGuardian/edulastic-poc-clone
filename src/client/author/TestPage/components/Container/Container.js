@@ -4,10 +4,11 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty, get, without } from "lodash";
+import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
+import { get, without } from "lodash";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
   createTestAction,
@@ -24,6 +25,7 @@ import {
   setRegradeOldIdAction
 } from "../../ducks";
 import {
+  getSelectedItemSelector,
   clearSelectedItemsAction,
   getItemsSubjectAndGradeAction,
   getItemsSubjectAndGradeSelector
@@ -84,9 +86,7 @@ class Container extends PureComponent {
       setDefaultData,
       history: { location },
       clearSelectedItems,
-      clearTestAssignments,
-      editAssigned,
-      setRegradeOldId
+      clearTestAssignments
     } = this.props;
 
     if (location.hash === "#review") {
@@ -101,20 +101,18 @@ class Container extends PureComponent {
       setDefaultData();
     }
 
-    if (editAssigned) {
-      setRegradeOldId(match.params.id);
+    if (this.props.editAssigned) {
+      this.props.setRegradeOldId(match.params.id);
     }
   }
 
   componentDidUpdate() {
-    const { editAssigned, match, setRegradeOldId } = this.props;
-    if (editAssigned) {
-      setRegradeOldId(match.params.id);
+    if (this.props.editAssigned) {
+      this.props.setRegradeOldId(this.props.match.params.id);
     }
   }
 
   handleNavChange = value => () => {
-    const { test } = this.props;
     if (!this.props.test.title) {
       return;
     }

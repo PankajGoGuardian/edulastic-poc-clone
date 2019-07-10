@@ -31,11 +31,11 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
   return (
     <Container>
       <StyledMenu>
-        <Menu.Item key="edit-Assignment">
-          <Link style={{ marginTop: 2 }} to={`/author/tests/${currentAssignment.testId}/editAssigned`}>
-            <img alt="icon" src={classIcon} />
+        <Menu.Item key="assign">
+          <Link to={`/author/assignments/${currentTestId}`} rel="noopener noreferrer">
+            <img alt="icon" src={responsiveIcon} />
             <SpaceElement />
-            Edit Assessment
+            Assign
           </Link>
         </Menu.Item>
         <Menu.Item key="duplicate" onClick={createDuplicateAssignment}>
@@ -66,12 +66,11 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
             Release Grades
           </StyledLink>
         </Menu.Item>
-
-        <Menu.Item key="assign">
-          <Link to={`/author/assignments/${currentTestId}`} rel="noopener noreferrer">
-            <img alt="icon" src={responsiveIcon} />
+        <Menu.Item key="edit-Assignment">
+          <Link style={{ marginTop: 2 }} to={`/author/tests/${currentAssignment.testId}/editAssigned`}>
+            <img alt="icon" src={classIcon} />
             <SpaceElement />
-            Assign
+            Edit Assessment
           </Link>
         </Menu.Item>
       </StyledMenu>

@@ -82,11 +82,15 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   } = data;
 
   if (!startDate && !endDate) {
-    const currentClass = maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "endDate") || {};
-    open = currentClass.open;
-    close = currentClass.close;
-    startDate = currentClass.startDate;
-    endDate = currentClass.endDate;
+    const currentClass = clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true));
+    const maxCurrentClass =
+      currentClass && currentClass.length > 0
+        ? maxBy(currentClass, "endDate") || currentClass[currentClass.length - 1]
+        : {};
+    open = maxCurrentClass.open;
+    close = maxCurrentClass.close;
+    startDate = maxCurrentClass.startDate;
+    endDate = maxCurrentClass.endDate;
   }
   if (!startDate && open) {
     startDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "openDate") || {}).openDate;

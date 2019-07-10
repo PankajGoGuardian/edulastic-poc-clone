@@ -129,7 +129,7 @@ class ClozeDropDownDisplay extends Component {
       responses = this.shuffleGroup(responses);
     }
     // Layout Options
-    const fontSize = getFontSize(uiStyle.fontsize);
+    const fontSize = getFontSize(this.props.theme.fontSize || "normal", true);
     const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
@@ -178,23 +178,24 @@ class ClozeDropDownDisplay extends Component {
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
-
     return (
-      <div style={{ fontSize }}>
+      <div>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
-        <JsxParser
-          bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
-          showWarnings
-          components={{
-            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
-            mathspan: MathSpanWrapper
-          }}
-          jsx={parsedTemplate}
-        />
+        <ContentWrapper fontSize={fontSize}>
+          <JsxParser
+            bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
+            showWarnings
+            components={{
+              textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
+              mathspan: MathSpanWrapper
+            }}
+            jsx={parsedTemplate}
+          />
+        </ContentWrapper>
         {answerBox}
       </div>
     );
@@ -258,4 +259,10 @@ const QuestionTitleWrapper = styled.div`
 const QuestionNumber = styled.div`
   font-weight: 700;
   margin-right: 4px;
+`;
+
+const ContentWrapper = styled.div`
+  p {
+    font-size: ${({ fontSize }) => (fontSize ? fontSize : "auto")};
+  }
 `;

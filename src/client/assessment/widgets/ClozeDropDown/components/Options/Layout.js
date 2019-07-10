@@ -150,7 +150,7 @@ class Layout extends Component {
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Subtitle>{t("component.options.display")}</Subtitle>
         <Row>
-          <Col md={6}>
+          {/* <Col md={6}>
             <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
             <Select
               style={{ width: "80%" }}
@@ -168,7 +168,7 @@ class Layout extends Component {
               ]}
               value={uiStyle.stemnumeration}
             />
-          </Col>
+          </Col> */}
           <Col md={6}>
             <Label>{t("component.options.fontSize")}</Label>
             <Select
@@ -218,7 +218,7 @@ class Layout extends Component {
               value={uiStyle.heightpx}
             />
           </Col>
-          <Col md={6}>
+          {/* <Col md={6}>
             <Label>{t("component.options.placeholder")}</Label>
             <TextField
               disabled={false}
@@ -227,7 +227,7 @@ class Layout extends Component {
               onChange={e => changeUiStyle("placeholder", e.target.value)}
               value={uiStyle.placeholder}
             />
-          </Col>
+          </Col> */}
         </Row>
         <Row marginTop={13}>
           <Col md={12}>

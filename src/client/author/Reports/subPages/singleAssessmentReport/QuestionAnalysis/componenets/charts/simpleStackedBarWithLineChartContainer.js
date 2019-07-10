@@ -4,6 +4,7 @@ import { maxBy } from "lodash";
 import { ticks } from "d3-array";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
+import { CustomChartCursor } from "../../../../../common/components/charts/chartUtils/customChartCursor";
 import { fadedBlack } from "@edulastic/colors";
 
 import { getFormattedTimeInMins } from "../../utils/helpers";
@@ -100,7 +101,7 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
       bottomStackDataKey={"avgPerformance"}
       topStackDataKey={"avgIncorrect"}
       getTooltipJSX={getTooltipJSX}
-      getTooltipCursorJSX={getTooltipCursorJSX}
+      TooltipCursor={CustomChartCursor}
       onBarClickCB={onBarClickCB}
       onResetClickCB={onResetClickCB}
       yAxisLabel="Avg.Score (%)"

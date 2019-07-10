@@ -101,7 +101,13 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
   return (
     <TableWrapper>
       <ClassSelector groups={groups} archiveGroups={archiveGroups} setClassGroups={setClassGroups} />
-      <ClassListTable columns={columns} dataSource={classGroups} rowKey={rowKey} onRow={onRow} />
+      <ClassListTable
+        columns={columns}
+        dataSource={classGroups}
+        rowKey={rowKey}
+        onRow={onRow}
+        pagination={classGroups.length > 10 ? true : false}
+      />
     </TableWrapper>
   );
 };

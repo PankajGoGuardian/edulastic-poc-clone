@@ -34,19 +34,19 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   const allCards = [...sortableCards, ...unSortablecards];
 
   const ClassCards = allCards.map(item => (
-    <Col span={8} key={item._id}>
+    <Col xs={24} sm={24} md={12} lg={12} xl={8} key={item._id}>
       <Card data={item} />
     </Col>
   ));
 
   return (
-    <CardsContainer gutter={10}>
-      <TextWrapper size="20px" color="#434B5D">
-        My classes
-      </TextWrapper>
-      <Row gutter={10} style={{ width: "1000px" }}>
-        {loading === true ? <Spin /> : ClassCards}
-      </Row>
+    <CardsContainer>
+      {!loading && (
+        <TextWrapper size="20px" color="#434B5D">
+          My classes
+        </TextWrapper>
+      )}
+      <Row gutter={20}>{loading === true ? <Spin /> : ClassCards}</Row>
       {!loading && classData.length == 0 && <CreateClassPage />}
     </CardsContainer>
   );

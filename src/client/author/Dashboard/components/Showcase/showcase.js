@@ -7,14 +7,13 @@ const { Content } = Layout;
 
 const MainContent = () => (
   <MainContainer>
-    <Row>
-      <MyClasses />
-    </Row>
+    <MyClasses />
   </MainContainer>
 );
 
 const MainContainer = styled.div`
   background: #f3f3f8;
   padding: 1rem;
+  display: flex;
 `;
 export default MainContent;

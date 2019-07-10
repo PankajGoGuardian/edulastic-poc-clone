@@ -26,15 +26,10 @@ class Question extends Component {
 
     if (!node) return false;
 
-    fillSections(
-      section,
-      label,
-      node.clientHeight > 300 ? node.offsetTop - 125 : node.offsetTop - window.outerHeight / 3,
-      node.clientHeight
-    );
+    fillSections(section, label, node.offsetTop - (window.innerHeight - node.clientHeight) / 2, node.clientHeight);
 
     this.setState({
-      offsetTop: node.clientHeight > 300 ? node.offsetTop - 125 : node.offsetTop - window.outerHeight / 3,
+      offsetTop: node.offsetTop - (window.innerHeight - node.clientHeight) / 2,
       clientHeight: node.clientHeight
     });
   };
@@ -58,32 +53,14 @@ class Question extends Component {
       fillSections(
         section,
         label,
-        node.offsetTop === 0
-          ? null
-          : node.clientHeight > 300
-          ? node.offsetTop - 125
-          : node.offsetTop - window.outerHeight / 3,
+        node.offsetTop === 0 ? null : node.offsetTop - (window.innerHeight - node.clientHeight) / 2,
         node.clientHeight === 0 ? null : node.clientHeight
       );
 
       this.setState({
-        offsetTop:
-          node.offsetTop === 0
-            ? null
-            : node.clientHeight > 300
-            ? node.offsetTop - 125
-            : node.offsetTop - window.outerHeight / 3,
+        offsetTop: node.offsetTop === 0 ? null : node.offsetTop - (window.innerHeight - node.clientHeight) / 2,
         clientHeight: node.clientHeight === 0 ? null : node.clientHeight
       });
-
-      console.log(
-        node.offsetTop === 0
-          ? null
-          : node.clientHeight > 300
-          ? node.offsetTop - 125
-          : node.offsetTop - window.outerHeight / 3
-      );
-      console.log(node.clientHeight === 0 ? null : node.clientHeight);
     }
   };
 

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -12,12 +11,12 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
 import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
 
 import { ALPHABET } from "../constants/alphabet";
 import QuillSortableList from "../../../components/QuillSortableList";
 import { updateVariables } from "../../../utils/variables";
+import Question from "../../../components/Question";
 
 class MultipleChoiceOptions extends Component {
   static propTypes = {
@@ -32,19 +31,6 @@ class MultipleChoiceOptions extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.multiplechoice.multiplechoiceoptions"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -139,10 +125,15 @@ class MultipleChoiceOptions extends Component {
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, fillSections, cleanSections } = this.props;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.multiplechoice.multiplechoiceoptions")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.multiplechoice.multiplechoiceoptions")}</Subtitle>
         <QuillSortableList
           items={item.options.map(o => o.label)}
@@ -157,7 +148,7 @@ class MultipleChoiceOptions extends Component {
             {t("component.multiplechoice.addnewchoice")}
           </AddNewChoiceBtn>
         </div>
-      </Widget>
+      </Question>
     );
   }
 }

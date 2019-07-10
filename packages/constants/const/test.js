@@ -128,6 +128,6 @@ module.exports = {
     { text: "School Library", value: "SCHOOL" },
     { text: "District Library", value: "DISTRICT" },
     { text: "Public Library", value: "PUBLIC" },
-    { text: "Edulastic Certified", value: "EDULASTIC" }
+    { text: "Edulastic Certified", value: "edulastic_certified" }
   ]
 };

@@ -103,7 +103,7 @@ const ClassificationPreview = ({
 
   const possible_responses =
     editCorrectAnswers.length > 0
-      ? posResp.filter(ite => editCorrectAnswers.every(i => !i.includes(posResp.indexOf(ite))))
+      ? posResp.filter(ite => ite && editCorrectAnswers.every(i => !i.includes(posResp.indexOf(ite))))
       : posResp;
 
   const initialLength = (colCount || 2) * (rowCount || 1);

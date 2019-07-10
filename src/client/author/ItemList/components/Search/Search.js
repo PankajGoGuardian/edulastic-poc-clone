@@ -204,24 +204,6 @@ class Search extends Component {
               </ItemBody>
             </Item>
           )}
-          <Item>
-            <ItemHeader>Author</ItemHeader>
-            <ItemBody>
-              <Select size="large" defaultValue="All Authors">
-                <Select.Option value="">All Authors</Select.Option>
-                <Select.Option value="author1">Author 1</Select.Option>
-                <Select.Option value="author2">Author 2</Select.Option>
-              </Select>
-            </ItemBody>
-          </Item>
-          <Item>
-            <ItemHeader>Owner</ItemHeader>
-            <Select mode="multiple" size="large" placeholder="All Owners" defaultValue={[]}>
-              <Select.Option value="owner1">Owner 1</Select.Option>
-              <Select.Option value="owner2">Owner 2</Select.Option>
-              <Select.Option value="owner3">Owner 3</Select.Option>
-            </Select>
-          </Item>
         </Container>
       </MainFilterItems>
     );

@@ -711,7 +711,6 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
-  console.log("content: ", `"${content}"`, content === "");
   const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>

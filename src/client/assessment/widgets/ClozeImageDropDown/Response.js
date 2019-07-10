@@ -19,6 +19,7 @@ import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import SortableList from "../../components/SortableList/index";
 import { Widget } from "../../styled/Widget";
+import { defaultOptions } from "../../constants/constantsForQuestions";
 
 class Response extends Component {
   static propTypes = {
@@ -139,7 +140,7 @@ class Response extends Component {
   };
 
   render() {
-    const { t, item, index, option } = this.props;
+    const { t, index, option } = this.props;
 
     return (
       <Widget data-cy={`choice-response-${index}`}>
@@ -149,7 +150,7 @@ class Response extends Component {
         <SortableList
           items={option || []}
           onSortEnd={params => this.onSortEnd(index, params)}
-          dirty={item.firstMount}
+          defaultOptions={defaultOptions}
           useDragHandle
           onRemove={itemIndex => this.remove(index, itemIndex)}
           onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}

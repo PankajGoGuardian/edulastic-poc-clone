@@ -8,7 +8,8 @@ import {
   ON_LIMIT,
   previewAreas,
   SENTENCE_MODE,
-  templateWithTokens
+  templateWithTokens,
+  defaultOptions
 } from "../../../../assessment/constants/constantsForQuestions";
 
 // Multiple Choice
@@ -1064,8 +1065,8 @@ export const getCards = onSelectQuestionType => {
           responsecontainerindividuals: []
         },
         options: {
-          [uuids[0]]: ["Option 1", "Option 2"],
-          [uuids[1]]: ["Option 2", "Option 3"]
+          [uuids[0]]: [defaultOptions[0], defaultOptions[1]],
+          [uuids[1]]: [defaultOptions[2], defaultOptions[3]]
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1126,7 +1127,7 @@ export const getCards = onSelectQuestionType => {
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
         maxRespCount: 1,
-        options: ["Option 1", "Option 2", "Option 3"],
+        options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1159,7 +1160,7 @@ export const getCards = onSelectQuestionType => {
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
-        options: [["Option 1", "Option 2"], ["Option 3", "Option 4"]],
+        options: [[defaultOptions[0], defaultOptions[1]], [defaultOptions[2], defaultOptions[3]]],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {

@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { SortableContainer } from "react-sortable-hoc";
 import SortableItem from "./components/SortableItem";
 
-const SortableList = SortableContainer(({ items, dirty, onRemove, onChange }) => (
+const SortableList = SortableContainer(({ items, onRemove, onChange, defaultOptions = [] }) => (
   <div>
     {items.map((value, index) => (
       <SortableItem
@@ -10,7 +10,7 @@ const SortableList = SortableContainer(({ items, dirty, onRemove, onChange }) =>
         index={index}
         cyIndex={`_prefix_${index}`}
         value={value}
-        dirty={dirty}
+        dirty={!defaultOptions.includes(value)}
         onRemove={() => onRemove(index)}
         onChange={e => onChange(index, e)}
       />

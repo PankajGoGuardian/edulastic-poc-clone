@@ -8,7 +8,7 @@ import { trim } from "lodash";
 import { emailSpecialCharCheck } from "../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import {
-  springGreen,
+  themeColor,
   greyGraphstroke,
   grey,
   lightGreen2,
@@ -358,11 +358,11 @@ const RegistrationHeader = styled(Row)`
   }
   a {
     padding: 8px 48px;
-    border: 1px solid ${springGreen};
+    border: 1px solid ${themeColor};
     text-decoration: none;
     color: white;
     border-radius: 4px;
-    background: ${springGreen};
+    background: ${themeColor};
   }
 `;
 
@@ -392,7 +392,7 @@ const BannerText = styled(Col)`
 const LinkDiv = styled.div`
   a {
     padding-bottom: 2px;
-    border-bottom: 2px ${springGreen} solid;
+    border-bottom: 2px ${themeColor} solid;
   }
 `;
 
@@ -457,6 +457,7 @@ const InfoIcon = styled(Col)`
   padding-top: 4px;
   img {
     width: 14px;
+    filter: contrast(2);
   }
 `;
 
@@ -517,11 +518,16 @@ const FormBody = styled(Row)`
 
 const RegisterButton = styled(Button)`
   width: 100%;
-  background: ${springGreen};
+  background: ${themeColor};
+  border-color: ${themeColor};
   font-size: 13px;
   color: white;
-  border: 1px solid ${greenDark2};
   font-weight: 600;
+  &:hover,
+  &:focus {
+    border-color: ${themeColor};
+    background: ${themeColor};
+  }
 `;
 
 const CircleDiv = styled.div`

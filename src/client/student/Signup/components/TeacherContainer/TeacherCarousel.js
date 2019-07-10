@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Carousel, Icon, Button } from "antd";
-import { springGreen, fadedGreen } from "@edulastic/colors";
+import { themeColor, fadedGreen } from "@edulastic/colors";
 import Profile from "../../../assets/Profile.png";
 
 const PrevButton = ({ onClick }) => (
@@ -150,8 +150,8 @@ const CircleMark = styled.div`
   width: 60px;
   background: ${fadedGreen};
   border-radius: 50%;
-  border: 2px ${springGreen} solid;
-  color: ${springGreen};
+  border: 2px ${themeColor} solid;
+  color: ${themeColor};
   font-size: 32px;
   text-transform: uppercase;
   display: flex;
@@ -160,7 +160,7 @@ const CircleMark = styled.div`
 `;
 
 const ArrowBtn = styled(Button)`
-  color: ${springGreen};
+  color: ${themeColor};
   position: absolute;
   top: 50%;
   width: 20px;

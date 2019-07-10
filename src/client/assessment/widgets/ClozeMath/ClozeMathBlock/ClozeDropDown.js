@@ -26,7 +26,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     response_ids: { dropDowns }
   } = item;
   const { index } = find(dropDowns, res => res.id === id) || {};
-  const response = find(response_containers || [], cont => cont.id === id);
+  const response = find(response_containers, cont => cont.id === id);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
   const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
 

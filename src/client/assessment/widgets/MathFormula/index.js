@@ -98,7 +98,6 @@ const MathFormula = ({
         <Wrapper style={{ height: "100%", overflow: "visible" }}>
           <MathFormulaPreview
             type={previewTab}
-            testItem={testItem}
             studentTemplate={studentTemplate}
             item={itemForPreview}
             saveAnswer={saveAnswer}

@@ -1,14 +1,20 @@
 import React from "react";
-import { Button } from "antd";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
-import { Container } from "./styled";
+import { IconEdit, IconLayout, IconMath, IconNewList, IconSelection, IconTarget } from "@edulastic/icons";
+import { Container, AddNewButton, TextWrapper } from "./styled";
 
 const AddNew = ({ onClick, t }) => (
   <Container>
-    <Button icon="plus" type="primary" onClick={onClick}>
-      <span>{t("component.itemDetail.addNew")}</span>
-    </Button>
+    <AddNewButton onClick={onClick}>
+      <TextWrapper>+ {t("component.itemDetail.addNew")}</TextWrapper>
+      <IconNewList />
+      <IconSelection />
+      <IconLayout />
+      <IconEdit />
+      <IconTarget />
+      <IconMath />
+    </AddNewButton>
   </Container>
 );
 

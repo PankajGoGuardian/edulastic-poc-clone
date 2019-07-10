@@ -37,6 +37,7 @@ import {
 
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
+import { StyledSignedBarContainer } from "../../../common/styled";
 
 const MasteryLevels = ({ scaleInfo }) => (
   <MasteryLevelWrapper>
@@ -266,7 +267,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
 
   return (
     <>
-      <Card>
+      <StyledSignedBarContainer>
         <CardHeader>
           <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
           <CardDropdownWrapper>
@@ -318,8 +319,8 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
             />
           )}
         </>
-      </Card>
-      <Card style={{ marginTop: "20px" }}>
+      </StyledSignedBarContainer>
+      <StyledSignedBarContainer style={{ marginTop: "20px" }}>
         <CardHeader>
           <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
           <CardDropdownWrapper>
@@ -350,7 +351,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
           selectedStandards={selectedStandards}
           selectedDomains={selectedDomains}
         />
-      </Card>
+      </StyledSignedBarContainer>
     </>
   );
 };

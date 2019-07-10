@@ -260,3 +260,13 @@ export const PrintableScreen = styled.div`
     }
   }
 `;
+
+export const StyledSignedBarContainer = styled(StyledCard)`
+  .recharts-default-legend {
+    .recharts-legend-item {
+      &:nth-child(1) {
+        padding-left: 90px;
+      }
+    }
+  }
+`;

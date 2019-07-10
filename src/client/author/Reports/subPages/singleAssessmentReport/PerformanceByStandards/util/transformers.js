@@ -442,7 +442,8 @@ export const getLeastMasteryLevel = (scaleInfo = []) =>
   orderBy(scaleInfo, "threshold", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "", score: 0 };
 
 export const getMasteryLevel = (percentage, scaleInfo) => {
-  return find(scaleInfo, info => ceil(percentage) >= info.threshold) || getLeastMasteryLevel(scaleInfo);
+  const orderedScaleInfo = orderBy(scaleInfo, "threshold", ["desc"]);
+  return find(orderedScaleInfo, info => ceil(percentage) >= info.threshold) || getLeastMasteryLevel(scaleInfo);
 };
 
 export const getMasteryScore = (score, scaleInfo) => getMasteryLevel(score, scaleInfo).score;
@@ -462,8 +463,6 @@ export const getParsedGroupedMetricData = (report = {}, chartFilters, viewBy) =>
     const masteryPercentage = percentage(metric.totalScore, metric.maxScore);
     const masteryLevel = getMasteryLevel(masteryPercentage, scaleInfo);
     const skill = findSkillUsingStandard(metric.standardId, skillInfo);
-
-    console.log(masteryLevel, masteryPercentage, scaleInfo);
 
     return {
       ...metric,
@@ -487,8 +486,6 @@ export const getParsedGroupedMetricData = (report = {}, chartFilters, viewBy) =>
     });
 
     const metricByMastery = groupBy(metricByViewBy[domain], "masteryLabel");
-
-    console.log(metricByMastery, "metricByMastery");
 
     Object.keys(metricByMastery).forEach(key => {
       const masteryScorePercentage = round(percentage(metricByMastery[key].length, metricByViewBy[domain].length));

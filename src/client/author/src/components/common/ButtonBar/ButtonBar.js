@@ -44,7 +44,7 @@ class ButtonBar extends Component {
 
     onChangeView(view);
 
-    if (view !== "edit") {
+    if (view !== "edit" && onSaveScrollTop) {
       onSaveScrollTop(window.pageYOffset);
     }
   };
@@ -276,6 +276,7 @@ ButtonBar.defaultProps = {
   renderRightSide: () => {},
   onEnableEdit: () => {},
   renderExtra: () => null,
+
   withLabels: false
   // saving: false,
 };

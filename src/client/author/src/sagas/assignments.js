@@ -56,7 +56,7 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       });
     }
   } catch (error) {
-    const errorMessage = "Receive Assignments Summary is failing";
+    const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_ASSIGNMENTS_SUMMARY_ERROR,

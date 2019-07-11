@@ -1,6 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ClassCreateContainer, ButtonsContainer, CreateClassBtn, SyncClassDiv, SyncImg } from "./styled";
+import {
+  ClassCreateContainer,
+  ButtonsContainer,
+  CreateClassBtn,
+  SyncClassDiv,
+  SyncImg,
+  IconEdit,
+  IconQuestion
+} from "./styled";
 import GoogleClassRoomImg from "../../../Dashboard/assets/images/google-classroom.png";
 import { Icon } from "antd";
 const ClassCreatePage = () => {
@@ -8,7 +16,11 @@ const ClassCreatePage = () => {
     <>
       <ClassCreateContainer>
         <p>
-          No classes yet. You are currently a teacher in <span>Bangalore International </span>
+          No classes yet. You are currently a teacher in{" "}
+          <span>
+            Bangalore International
+            <IconEdit type="edit" />
+          </span>
         </p>
         <ButtonsContainer>
           <Link to={"/author/manageClass/createClass"}>
@@ -25,6 +37,7 @@ const ClassCreatePage = () => {
         </ButtonsContainer>
       </ClassCreateContainer>
       <div style={{ textAlign: "center", fontStyle: "italic" }}>
+        <IconQuestion type="question-circle" />
         Learn more about <Link to={"/author/manageClass"}>class creation</Link> in our Help Center
       </div>
     </>

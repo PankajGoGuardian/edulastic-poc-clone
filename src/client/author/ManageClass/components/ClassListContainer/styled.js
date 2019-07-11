@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 import { white, themeColor, boxShadowDefault, lightBlue } from "@edulastic/colors";
-import { Button, Table, Select } from "antd";
+import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
 
 export const ClassCreateContainer = styled.div`
@@ -20,6 +20,16 @@ export const ButtonsContainer = styled.div`
   justify-content: space-between;
 `;
 
+export const IconEdit = styled(Icon)`
+  color: ${themeColor};
+  margin-left: 0.3rem;
+  cursor: pointer;
+`;
+export const IconQuestion = styled(Icon)`
+  color: ${themeColor};
+  padding: 0.2rem;
+  font-size: 20px;
+`;
 export const SyncClassDiv = styled.div`
   display: flex;
   justify-content: space-between;

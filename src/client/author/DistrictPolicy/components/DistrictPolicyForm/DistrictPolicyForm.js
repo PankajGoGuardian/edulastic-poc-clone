@@ -86,7 +86,6 @@ class DistrictPolicyForm extends Component {
       allowedDomainForTeachers: "",
       allowedDomainsForDistrict: "",
 
-      googleClassroom: false,
       canvas: false
     };
     return {

@@ -63,7 +63,9 @@ export default createReducer(initialState, {
   [ADD_ASSIGNMENT_REALTIME]: (state, { payload: assignment }) => {
     const { _id: assignmentId } = assignment;
     state.byId[assignmentId] = assignment;
-    state.allIds.push(assignmentId);
+    if (!state.allIds.includes(assignmentId)) {
+      state.allIds.push(assignmentId);
+    }
   },
 
   [SET_ACTIVE_ASSIGNMENT]: (state, { payload }) => {

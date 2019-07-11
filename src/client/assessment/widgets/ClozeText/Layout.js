@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import styled from "styled-components";
-import { isEqual, find } from "lodash";
+import { isEqual, find, clamp } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -87,16 +87,37 @@ class Layout extends Component {
     const { onChange, uiStyle } = this.props;
     const { minWidth, maxWidth } = response;
     const width = uiStyle.widthpx;
-    if (width < minWidth) {
+    if (width < minWidth || width > maxWidth) {
       onChange("ui_style", {
         ...uiStyle,
-        widthpx: minWidth
+        widthpx: clamp(width, minWidth, maxWidth)
       });
     }
-    if (width > maxWidth) {
+  };
+
+  handleBlurHeightGlobal = () => {
+    const { onChange, uiStyle } = this.props;
+    const { minHeight, maxHeight } = response;
+    const { heightpx: height } = uiStyle;
+    if (height < minHeight || height > maxHeight) {
       onChange("ui_style", {
         ...uiStyle,
-        widthpx: maxWidth
+        heightpx: clamp(height, minHeight, maxHeight)
+      });
+    }
+  };
+
+  handleBlurIndividualHeight = index => {
+    const { uiStyle, onChange } = this.props;
+    const { responsecontainerindividuals: resp } = uiStyle;
+    const { minHeight, maxHeight } = response;
+    let height = resp[index].heightpx;
+    if (height && (height < minHeight || height > maxHeight)) {
+      height = clamp(height, minHeight, maxHeight);
+      resp[index].heightpx = height;
+      onChange("ui_style", {
+        ...uiStyle,
+        responsecontainerindividuals: resp
       });
     }
   };
@@ -113,8 +134,10 @@ class Layout extends Component {
 
     const changeIndividualUiStyle = (prop, value, index) => {
       const { responsecontainerindividuals: styleArr } = uiStyle;
-      if (styleArr[index] === undefined) styleArr[index] = {};
-      styleArr[index][prop] = value;
+      const ind = styleArr.findIndex(el => el.index === index);
+      if (ind !== -1) {
+        styleArr[ind][prop] = value;
+      }
       onChange("ui_style", {
         ...uiStyle,
         responsecontainerindividuals: styleArr
@@ -148,7 +171,10 @@ class Layout extends Component {
       });
     };
 
-    const calculateRightWidth = value => (value >= 140 && value <= 400 ? value : value < 140 ? 140 : 400);
+    const calculateRightWidth = value => {
+      const { minWidth, maxWidth } = response;
+      return clamp(value, minWidth, maxWidth);
+    };
 
     const onWidthInputBlur = index => () => {
       const { input } = this.state;
@@ -270,6 +296,7 @@ class Layout extends Component {
                 type="number"
                 disabled={false}
                 containerStyle={{ width: 350 }}
+                onBlur={this.handleBlurHeightGlobal}
                 onChange={e => changeUiStyle("heightpx", +e.target.value)}
                 value={uiStyle.heightpx}
               />
@@ -336,6 +363,7 @@ class Layout extends Component {
                     type="number"
                     disabled={false}
                     containerStyle={{ width: 350 }}
+                    onBlur={() => this.handleBlurIndividualHeight(index)}
                     onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
                     value={responsecontainerindividual.heightpx}
                   />

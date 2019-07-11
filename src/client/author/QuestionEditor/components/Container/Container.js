@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
+import { questionType as constantsQuestionType } from "@edulastic/constants";
 
 import styled from "styled-components";
 import SourceModal from "../SourceModal/SourceModal";
@@ -193,9 +194,12 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const { view, question } = this.props;
+    const { view, question, authorQuestions } = this.props;
     const { previewTab } = this.state;
     const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
+
+    const isShowAnswerVisible =
+      authorQuestions && !constantsQuestionType.manuallyGradableQn.includes(authorQuestions.type);
 
     return (
       <ButtonAction
@@ -205,10 +209,11 @@ class Container extends Component {
         changePreviewTab={this.handleChangePreviewTab}
         onSave={this.handleSave}
         view={view}
-        showCheckButton={checkAnswerButton}
+        showCheckButton={isShowAnswerVisible || checkAnswerButton}
         allowedAttempts={checkAttempts}
         previewTab={previewTab}
         showSettingsButton={false}
+        isShowAnswerVisible={isShowAnswerVisible}
       />
     );
   };
@@ -379,7 +384,8 @@ Container.propTypes = {
   testId: PropTypes.string.isRequired,
   toggleModalAction: PropTypes.string.isRequired,
   savedWindowScrollTop: PropTypes.number.isRequired,
-  onSaveScrollTop: PropTypes.func.isRequired
+  onSaveScrollTop: PropTypes.func.isRequired,
+  authorQuestions: PropTypes.object
 };
 
 Container.defaultProps = {
@@ -388,7 +394,8 @@ Container.defaultProps = {
   navigateToPickupQuestionType: () => {},
   navigateToItemDetail: () => {},
   onCompleteItemCreation: () => {},
-  onModalClose: () => {}
+  onModalClose: () => {},
+  authorQuestions: {}
 };
 
 const enhance = compose(
@@ -403,7 +410,8 @@ const enhance = compose(
       itemLevelScoring: getItemLevelScoringSelector(state),
       testName: state.tests.entity.title,
       testId: state.tests.entity._id,
-      savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop
+      savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,
+      authorQuestions: getCurrentQuestionSelector(state)
     }),
     {
       changeView: changeViewAction,

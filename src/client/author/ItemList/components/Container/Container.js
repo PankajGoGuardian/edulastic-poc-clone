@@ -40,7 +40,8 @@ import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
-  getInterestedSubjectsSelector
+  getInterestedSubjectsSelector,
+  getUserId
 } from "../../../src/selectors/user";
 import {
   getDefaultGradesSelector,
@@ -302,6 +303,7 @@ class Contaier extends Component {
       windowWidth,
       addItemToCart,
       selectedCartItems,
+      userId,
       interestedCurriculums
     } = this.props;
     const { search } = this.state;
@@ -321,6 +323,7 @@ class Contaier extends Component {
         item={item}
         types={itemTypes[item._id]}
         history={history}
+        userId={userId}
         windowWidth={windowWidth}
         onToggleToCart={addItemToCart}
         selectedToCart={selectedCartItems ? selectedCartItems.includes(item._id) : false}
@@ -469,6 +472,7 @@ const enhance = compose(
       defaultSubject: getDefaultSubjectSelector(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
+      userId: getUserId(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {

@@ -1085,7 +1085,7 @@ export const KEYBOARD_BUTTONS = [
     command: "cmd"
   },
   {
-    handler: "°",
+    handler: "\\degree",
     label: "º",
     labelcy: "°",
     types: ["all", "intermediate", "advanced"],

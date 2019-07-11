@@ -3,5 +3,10 @@
     { "key": "schoolId", "title": "School" },
     { "key": "teacherId", "title": "Teacher" },
     { "key": "groupId", "title": "Class" }
-  ]
+  ],
+  "dropDownKeyToLabel": {
+    "schoolId": "School",
+    "teacherId": "Teacher",
+    "groupId": "Class"
+  }
 }

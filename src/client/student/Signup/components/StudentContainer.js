@@ -4,8 +4,8 @@ import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
-import { trim } from "lodash";
-import { emailSpecialCharCheck } from "../../../common/utils/helpers";
+import { trim, get } from "lodash";
+import { isEmailValid } from "../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import {
   themeColor,
@@ -19,7 +19,13 @@ import {
   white
 } from "@edulastic/colors";
 import { connect } from "react-redux";
-import { signupAction, googleLoginAction, msoLoginAction } from "../../Login/ducks";
+import {
+  signupAction,
+  googleLoginAction,
+  msoLoginAction,
+  signupSetPolicyViolationAction,
+  studentSignupCheckClasscodeAction
+} from "../../Login/ducks";
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
@@ -65,7 +71,7 @@ class StudentSignup extends React.Component {
   };
 
   handleSubmit = e => {
-    const { form, signup } = this.props;
+    const { form, signup, t } = this.props;
     const { method } = this.state;
     e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email, name, classCode }) => {
@@ -82,7 +88,8 @@ class StudentSignup extends React.Component {
             email,
             name,
             role: "student",
-            classCode
+            classCode,
+            policyvoilation: t("common.policyvoilation")
           });
         }
       }
@@ -101,26 +108,58 @@ class StudentSignup extends React.Component {
     });
   };
 
+  onClassCodeChange = () => {
+    const { signupSetPolicyViolationAction } = this.props;
+    signupSetPolicyViolationAction("");
+  };
+
+  onClassCodeBlur = event => {
+    const { studentSignupCheckClasscodeAction } = this.props;
+    studentSignupCheckClasscodeAction({
+      classCode: event.currentTarget.value,
+      role: "student",
+      signOnMethod: "userNameAndPassword"
+    });
+  };
+
   renderGeneralFormFields = () => {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldError },
       t,
       isSignupUsingDaURL,
       generalSettings,
       districtPolicy,
       districtShortName
     } = this.props;
+
+    const classCodeError = this.props.signupPolicyViolation || getFieldError("classCode");
+
     return (
       <>
-        <FormItem {...formItemLayout} label={t("component.signup.student.signupclasslabel")}>
+        <FormItem
+          {...formItemLayout}
+          label={t("component.signup.student.signupclasslabel")}
+          validateStatus={classCodeError ? "error" : "success"}
+          help={classCodeError}
+        >
           {getFieldDecorator("classCode", {
+            validateFirst: true,
+            initialValue: "",
             rules: [
               {
                 required: true,
                 message: t("component.signup.student.validclasscode")
               }
             ]
-          })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" placeholder="Class code" />)}
+          })(
+            <Input
+              prefix={<img src={hashIcon} alt="" />}
+              data-cy="classCode"
+              placeholder="Class code"
+              onChange={this.onClassCodeChange}
+              onBlur={this.onClassCodeBlur}
+            />
+          )}
         </FormItem>
         <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
           {getFieldDecorator("name", {
@@ -150,7 +189,7 @@ class StudentSignup extends React.Component {
               },
               {
                 validator: (rule, value, callback) =>
-                  emailSpecialCharCheck(rule, value, callback, t("common.validation.validemail"))
+                  isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
               }
             ]
           })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} placeholder="Email" />)}
@@ -329,8 +368,16 @@ const SignupForm = Form.create()(StudentSignup);
 const enhance = compose(
   withNamespaces("login"),
   connect(
-    null,
-    { signup: signupAction, googleLoginAction, msoLoginAction }
+    state => ({
+      signupPolicyViolation: get(state, "user.signupPolicyViolation", false)
+    }),
+    {
+      signup: signupAction,
+      googleLoginAction,
+      msoLoginAction,
+      signupSetPolicyViolationAction,
+      studentSignupCheckClasscodeAction
+    }
   )
 );
 

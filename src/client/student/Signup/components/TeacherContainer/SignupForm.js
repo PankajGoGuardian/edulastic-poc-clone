@@ -5,7 +5,7 @@ import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
-import { emailSpecialCharCheck } from "../../../../common/utils/helpers";
+import { isEmailValid } from "../../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
 import {
@@ -259,10 +259,11 @@ class Signup extends React.Component {
                                   },
                                   {
                                     validator: (rule, value, callback) =>
-                                      emailSpecialCharCheck(
+                                      isEmailValid(
                                         rule,
                                         value,
                                         callback,
+                                        "email",
                                         t("component.signup.teacher.validemail")
                                       )
                                   }

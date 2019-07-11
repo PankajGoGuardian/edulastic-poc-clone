@@ -25,7 +25,7 @@ class MainInfoCell extends React.Component {
   };
 
   render() {
-    const { data, testId, showModal, addDuplicate, isEditable = false } = this.props;
+    const { data, testId, showModal, addDuplicate, isEditable = false, checkAnswer, showAnswer } = this.props;
     const { isShowPreviewModal } = this.state;
     return (
       <div>
@@ -38,6 +38,9 @@ class MainInfoCell extends React.Component {
           testId={testId}
           isEditable={isEditable}
           page="addItems"
+          showEvaluationButtons
+          checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
+          showAnswer={() => showAnswer(data)}
           addDuplicate={addDuplicate}
           showModal={showModal}
           onClose={this.closeModal}

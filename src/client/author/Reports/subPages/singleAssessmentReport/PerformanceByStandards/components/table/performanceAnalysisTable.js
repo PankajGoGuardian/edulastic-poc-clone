@@ -4,7 +4,13 @@ import styled from "styled-components";
 import { Table } from "antd";
 import { uniqBy } from "lodash";
 
-import { compareByColumns, analyzeByMode, viewByMode, reduceAverageStandardScore } from "../../util/transformers";
+import {
+  compareByColumns,
+  analyzeByMode,
+  viewByMode,
+  reduceAverageStandardScore,
+  getMasteryLevel
+} from "../../util/transformers";
 import { getHSLFromRange1 } from "../../../../../common/util";
 
 const makeStandardColumnConfig = skill => ({
@@ -18,7 +24,7 @@ const makeStandardColumnConfig = skill => ({
   }
 });
 
-const getMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
+const getMasteryColorByScore = (score, scaleInfo) => getMasteryLevel(score, scaleInfo, "score").color;
 
 const PerformanceAnalysisTable = ({
   report,
@@ -99,8 +105,6 @@ const PerformanceAnalysisTable = ({
 
   const { scaleInfo } = report;
 
-  const getMasteryScore = getMasteryColorByScore(scaleInfo);
-
   const makeStandardColumns = averageScoreByView => {
     const { selectedData, dataField, standardColumnsData } = makeStandardColumnData()[viewBy];
 
@@ -136,7 +140,7 @@ const PerformanceAnalysisTable = ({
           if ([analyzeByMode.SCORE, analyzeByMode.RAW_SCORE].includes(analyzeBy)) {
             color = getHSLFromRange1(score * 100);
           } else {
-            color = getMasteryScore(score);
+            color = getMasteryColorByScore(score, scaleInfo);
           }
 
           return <ScoreCell color={color}>{standard ? formatScore(standard[field]) : "N/A"}</ScoreCell>;

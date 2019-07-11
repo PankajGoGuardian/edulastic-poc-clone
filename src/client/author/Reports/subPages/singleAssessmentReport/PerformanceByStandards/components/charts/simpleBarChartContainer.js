@@ -4,7 +4,7 @@ import { orderBy } from "lodash";
 import { Cell } from "recharts";
 
 import SimpleBarChart from "../../../../../common/components/charts/simpleBarChart";
-import { chartParseData, viewByMode, analyzeByMode } from "../../util/transformers";
+import { chartParseData, viewByMode, analyzeByMode, getYLabelString } from "../../util/transformers";
 import { TooltipWrapper, TooltipLabel } from "./styled";
 import { getHSLFromRange1 } from "../../../../../common/util";
 
@@ -21,21 +21,12 @@ const getBarDataKey = analyzeBy => {
   }
 };
 
-const getYLabel = analyzeBy => {
-  let label;
-  switch (analyzeBy) {
-    case analyzeByMode.RAW_SCORE:
-      label = "Avg. score";
-      break;
-    case analyzeByMode.MASTERY_LEVEL:
-    case analyzeByMode.MASTERY_SCORE:
-      label = "Student (%)";
-      break;
-    default:
-      label = "Avg. score (%)";
-  }
-  return { value: label, angle: -90, position: "insideLeft", dy: 35 };
-};
+export const getYLabel = analyzeBy => ({
+  value: getYLabelString(analyzeBy),
+  angle: -90,
+  position: "insideLeft",
+  dy: 35
+});
 
 const getMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
 

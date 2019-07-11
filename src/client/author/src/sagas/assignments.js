@@ -18,7 +18,7 @@ import {
   RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
   RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR
 } from "../constants/actions";
-import { getClassIds } from "../../../student/Reports/ducks";
+import { getUserRole } from "../selectors/user";
 
 function* receiveAssignmentClassList({ payload = {} }) {
   try {
@@ -44,9 +44,8 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       set(filters, "Subject", get(filters, "subject"));
       unset(filters, "subject");
     }
-
-    const classList = yield select(getClassIds);
-    if (classList && classList.length) {
+    const userRole = yield select(getUserRole);
+    if (userRole === "district-admin" || userRole === "school-admin") {
       const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
         districtId,
         filters: pickBy(filters, identity)

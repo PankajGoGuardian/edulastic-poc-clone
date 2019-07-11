@@ -78,7 +78,6 @@ class Assignments extends Component {
       loadAssignmentsSummary,
       districtId,
       loadFolders,
-      assignmentsSummary,
       userRole,
       defaultFilters,
       orgData

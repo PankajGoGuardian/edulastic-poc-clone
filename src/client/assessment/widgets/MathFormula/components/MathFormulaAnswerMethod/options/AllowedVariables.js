@@ -14,6 +14,11 @@ const AllowedVariablesPure = ({ options, onChange, t }) => {
     }
   }, [options.allowedVariables]);
 
+  const onChangeHandler = e => {
+    const { value } = e.target;
+    onChange("allowedVariables", value.replace(/[^a-zA-Z,]/g, ""));
+  };
+
   return (
     <FlexContainer flexDirection="column" alignItems="flex-start">
       <Checkbox
@@ -34,7 +39,7 @@ const AllowedVariablesPure = ({ options, onChange, t }) => {
         size="large"
         value={options.allowedVariables}
         readOnly={!allowAllowedVariables}
-        onChange={e => onChange("allowedVariables", e.target.value)}
+        onChange={onChangeHandler}
       />
     </FlexContainer>
   );

@@ -106,7 +106,7 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
         dataSource={classGroups}
         rowKey={rowKey}
         onRow={onRow}
-        pagination={classGroups.length > 10 ? true : false}
+        pagination={classGroups.length > 10}
       />
     </TableWrapper>
   );

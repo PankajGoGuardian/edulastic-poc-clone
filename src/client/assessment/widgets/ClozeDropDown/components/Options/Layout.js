@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { isEqual, clamp } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { response as Dimensions } from "@edulastic/constants";
+
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -14,8 +15,6 @@ import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../../components/Question";
-
-import { response as Dimensions } from "@edulastic/constants";
 
 class Layout extends Component {
   state = {

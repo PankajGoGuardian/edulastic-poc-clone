@@ -44,7 +44,6 @@ const TemplateBox = ({ resprops, id }) => {
     width,
     maxWidth: globalSettings ? "400px" : "auto"
   };
-
   const getLabel = () => {
     const answers = isReviewTab ? cAnswers : userAnswers;
     if (answers[dropTargetIndex]) {

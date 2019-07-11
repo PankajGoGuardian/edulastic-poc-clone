@@ -16,6 +16,8 @@ import { Delete } from "./styled/Delete";
 import { Widget } from "../../../../styled/Widget";
 import { Subtitle } from "../../../../styled/Subtitle";
 
+import { response as Dimensions } from "@edulastic/constants";
+
 class Layout extends Component {
   state = {
     focused: null,
@@ -100,7 +102,10 @@ class Layout extends Component {
       });
     };
 
-    const calculateRightWidth = value => (value >= 140 && value <= 400 ? value : value < 140 ? 140 : 400);
+    const calculateRightWidth = value => {
+      const { minWidth, maxWidth } = Dimensions;
+      return value >= minWidth && value <= maxWidth ? value : value < minWidth ? minWidth : maxWidth;
+    };
 
     const onWidthInputBlur = index => () => {
       const { input } = this.state;

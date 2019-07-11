@@ -1,7 +1,6 @@
 import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { Rnd } from "react-rnd";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
@@ -31,7 +30,6 @@ import { FlexContainer } from "./styled/FlexContainer";
 import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
-import { Widget } from "../../styled/Widget";
 import { FieldWrapper, FieldLabel } from "./styled/FieldWrapper";
 import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
@@ -41,6 +39,7 @@ import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
 import { CheckContainer } from "../ClozeImageDropDown/styled/CheckContainer";
 import { FormContainer, FormBottomContainer } from "../ClozeImageDropDown/styled/FormContainer";
 import { UploadButton } from "../ClozeImageDropDown/styled/UploadButton";
+import Question from "../../components/Question";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
 
@@ -77,21 +76,6 @@ class ComposeQuestion extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    if (item.imageUrl) this.getImageDimensions(item.imageUrl);
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.cloze.imageDragDrop.composequestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -444,7 +428,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, setQuestionData } = this.props;
+    const { t, item, setQuestionData, fillSections, cleanSections } = this.props;
     const { isEditableResizeMove, isAnnotationBelow } = this.state;
     const { toggleIsMoveResizeEditable, handleDragStop, toggleIsAnnotationBelow } = this;
 
@@ -497,7 +481,12 @@ class ComposeQuestion extends Component {
     }
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.cloze.imageDragDrop.composequestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.cloze.imageDragDrop.composequestion")}</Subtitle>
 
         <QuestionTextArea
@@ -748,7 +737,7 @@ class ComposeQuestion extends Component {
             </React.Fragment>
           )}
         </PaddingDiv>
-      </Widget>
+      </Question>
     );
   }
 }

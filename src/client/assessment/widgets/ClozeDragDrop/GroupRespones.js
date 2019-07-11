@@ -41,24 +41,6 @@ class GroupResponses extends React.Component {
     this.containerRef = React.createRef();
   }
 
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    if (this.containerRef.current) {
-      fillSections(
-        "main",
-        t("component.cloze.dragDrop.choicesforresponse"),
-        this.containerRef.current.offsetTop,
-        this.containerRef.current.scrollHeight
-      );
-    }
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(

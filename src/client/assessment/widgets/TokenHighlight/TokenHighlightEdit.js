@@ -9,7 +9,6 @@ import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
-import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 
 import TokenHighlightPreview from "./TokenHighlightPreview";

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import ColorPicker from "rc-color-picker";
 import { Row, Col } from "antd";
@@ -13,7 +12,7 @@ import { Tabs, Tab, Button, FlexContainer } from "@edulastic/common";
 import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import { hexToRGB, getAlpha } from "./helpers";
 import LocalColorPickers from "./components/LocalColorPickers";
@@ -21,19 +20,6 @@ import { IconPlus } from "./styled/IconPlus";
 import { IconClose } from "./styled/IconClose";
 
 class AttributesTitle extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.hotspot.attributesTitle"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
     const {
       item,
@@ -43,7 +29,9 @@ class AttributesTitle extends Component {
       customizeTab,
       setCustomizeTab,
       selectedIndexes,
-      setSelectedIndexes
+      setSelectedIndexes,
+      fillSections,
+      cleanSections
     } = this.props;
 
     const { areas, area_attributes } = item;
@@ -155,7 +143,12 @@ class AttributesTitle extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.hotspot.attributesTitle")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.hotspot.attributesTitle")}</Subtitle>
 
         <Tabs style={{ marginBottom: 15 }} value={customizeTab} onChange={setCustomizeTab} extra={renderPlusButton()}>
@@ -203,7 +196,7 @@ class AttributesTitle extends Component {
               )}
           />
         )}
-      </Widget>
+      </Question>
     );
   }
 }

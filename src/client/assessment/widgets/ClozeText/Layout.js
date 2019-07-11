@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import styled from "styled-components";
 import { isEqual, find } from "lodash";
 
@@ -15,12 +14,12 @@ import { Subtitle } from "../../styled/Subtitle";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 import { Label } from "../../styled/WidgetOptions/Label";
-import { Widget } from "../../styled/Widget";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
 import { Container } from "./components/Options/styled/Container";
 import { Delete } from "./components/Options/styled/Delete";
 import SpecialCharacters from "../../containers/WidgetOptions/components/SpecialCharacters";
+import Question from "../../components/Question";
 
 class Layout extends Component {
   static propTypes = {
@@ -54,29 +53,6 @@ class Layout extends Component {
     input: 0
   };
 
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   handleInputChange = e => {
     this.setState({
       input: +e.target.value
@@ -102,7 +78,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, multipleLine, advancedAreOpen, t } = this.props;
+    const { onChange, uiStyle, multipleLine, advancedAreOpen, t, fillSections, cleanSections } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -184,7 +160,13 @@ class Layout extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Block style={{ paddingTop: 0 }}>
           <Subtitle>{t("component.options.display")}</Subtitle>
           <Row gutter={20}>
@@ -373,7 +355,7 @@ class Layout extends Component {
             </Col>
           </Row>
         </Block>
-      </Widget>
+      </Question>
     );
   }
 }

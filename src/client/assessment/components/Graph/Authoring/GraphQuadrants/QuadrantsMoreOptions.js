@@ -14,7 +14,8 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 
 import { GraphDisplay } from "../../Display";
-import { AnnotationSettings, ControlsSettings, QuestionSection, ScoreSettings } from "..";
+import { AnnotationSettings, ControlsSettings, ScoreSettings } from "..";
+import Question from "../../../Question";
 
 class QuadrantsMoreOptions extends Component {
   handleCheckbox = (name, checked) => {
@@ -104,7 +105,7 @@ class QuadrantsMoreOptions extends Component {
 
     return (
       <Fragment>
-        <QuestionSection
+        <Question
           padding="0px"
           section="advanced"
           label="Scoring"
@@ -118,9 +119,9 @@ class QuadrantsMoreOptions extends Component {
             graphData={graphData}
             advancedAreOpen={advancedAreOpen}
           />
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label={t("component.graphing.display")}
           cleanSections={cleanSections}
@@ -227,9 +228,9 @@ class QuadrantsMoreOptions extends Component {
               />
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Grid"
           cleanSections={cleanSections}
@@ -437,9 +438,9 @@ class QuadrantsMoreOptions extends Component {
               </Row>
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Controls"
           cleanSections={cleanSections}
@@ -447,9 +448,9 @@ class QuadrantsMoreOptions extends Component {
           advancedAreOpen={advancedAreOpen}
         >
           <ControlsSettings onChange={setControls} controlbar={controlbar} />
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Annotation"
           cleanSections={cleanSections}
@@ -457,9 +458,9 @@ class QuadrantsMoreOptions extends Component {
           advancedAreOpen={advancedAreOpen}
         >
           <AnnotationSettings annotation={annotation} setAnnotation={setAnnotation} />
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Background Image"
           cleanSections={cleanSections}
@@ -545,9 +546,9 @@ class QuadrantsMoreOptions extends Component {
               />
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Background Shapes"
           cleanSections={cleanSections}
@@ -567,7 +568,7 @@ class QuadrantsMoreOptions extends Component {
               />
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
         <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
           <Extras.Distractors />

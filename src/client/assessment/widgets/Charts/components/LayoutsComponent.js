@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { get } from "lodash";
 import { connect } from "react-redux";
@@ -13,7 +12,7 @@ import { Layout, FontSizeOption, StemNumerationOption } from "../../../container
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import PointStyleOption from "./PointStyle";
 import MulticolorBarsOption from "./MulticolorBarsOption";
 import { Label } from "../../../styled/WidgetOptions/Label";
@@ -45,31 +44,8 @@ InputField.defaultProps = {
 };
 
 class LayoutsComponent extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, advancedAreOpen, t } = this.props;
+    const { item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t } = this.props;
     const chartType = get(item, "ui_style.chart_type");
 
     const changeItem = (prop, val) => {
@@ -154,7 +130,13 @@ class LayoutsComponent extends Component {
     const settings = getLayoutSettings(chartType);
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Layout>
           {settings.map((setting, index) => (
             <Fragment>
@@ -167,7 +149,7 @@ class LayoutsComponent extends Component {
             </Fragment>
           ))}
         </Layout>
-      </Widget>
+      </Question>
     );
   }
 }

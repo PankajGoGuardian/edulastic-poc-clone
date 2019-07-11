@@ -23,18 +23,6 @@ class CorrectAnswers extends Component {
     this.wrapperRef = React.createRef();
   }
 
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    if (this.wrapperRef.current) {
-      fillSections(
-        "main",
-        t("component.correctanswers.setcorrectanswers"),
-        this.wrapperRef.current.offsetTop,
-        this.wrapperRef.current.scrollHeight
-      );
-    }
-  };
-
   componentDidUpdate(prevProps) {
     const { options } = this.props;
 
@@ -50,12 +38,6 @@ class CorrectAnswers extends Component {
         this.updateCorrectValidationAnswers(newAnswers);
       }
     }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
   }
 
   handleTabChange = value => {

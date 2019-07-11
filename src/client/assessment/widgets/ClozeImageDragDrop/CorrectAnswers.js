@@ -1,7 +1,6 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
@@ -19,19 +18,6 @@ class CorrectAnswers extends Component {
   state = {
     value: 0
   };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   handleTabChange = value => {
     this.setState({ value });
@@ -248,8 +234,6 @@ CorrectAnswers.propTypes = {
   imageHeight: PropTypes.number,
   imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
-  fillSections: PropTypes.func,
-  cleanSections: PropTypes.func,
   imageOptions: PropTypes.object,
   item: PropTypes.object
 };
@@ -275,8 +259,6 @@ CorrectAnswers.defaultProps = {
     heightpx: 0,
     wordwrap: false
   },
-  fillSections: () => {},
-  cleanSections: () => {},
   imageOptions: {},
   item: {}
 };

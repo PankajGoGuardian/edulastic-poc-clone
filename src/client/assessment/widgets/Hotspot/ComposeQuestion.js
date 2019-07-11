@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import Dropzone from "react-dropzone";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
@@ -15,27 +14,14 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import DropZoneToolbar from "../../components/DropZoneToolbar/index";
 import StyledDropZone from "../../components/StyledDropZone/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 import { aws } from "@edulastic/constants";
 import { SOURCE, WIDTH, HEIGHT } from "../../constants/constantsForQuestions";
 import { uploadToS3 } from "@edulastic/common/src/helpers";
 
 class ComposeQuestion extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.hotspot.composeQuestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t, loading, setLoading } = this.props;
+    const { item, setQuestionData, t, loading, setLoading, fillSections, cleanSections } = this.props;
 
     const { image } = item;
     const maxWidth = 700,
@@ -135,7 +121,12 @@ class ComposeQuestion extends Component {
     const thumb = file && <ImageComponent width={width} height={height} src={file} alt={altText} />;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.hotspot.composeQuestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.hotspot.composeQuestion")}</Subtitle>
 
         <QuestionTextArea
@@ -180,7 +171,7 @@ class ComposeQuestion extends Component {
             </div>
           )}
         </Dropzone>
-      </Widget>
+      </Question>
     );
   }
 }

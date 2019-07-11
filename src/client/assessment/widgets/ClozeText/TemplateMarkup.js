@@ -1,7 +1,6 @@
 /* eslint-disable array-callback-return */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -16,7 +15,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -30,28 +29,6 @@ class TemplateMarkup extends Component {
   static defaultProps = {
     fillSections: () => {},
     cleanSections: () => {}
-  };
-
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
-
-    fillSections(
-      "main",
-      t("component.cloze.text.composequestion"),
-      node.offsetTop,
-      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
-      deskHeight === true,
-      deskHeight
-    );
-  };
-
-  componentWillUnmount = () => {
-    const { cleanSections } = this.props;
-
-    cleanSections();
   };
 
   onChangeMarkUp = stimulus => {
@@ -138,10 +115,15 @@ class TemplateMarkup extends Component {
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, fillSections, cleanSections } = this.props;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.cloze.text.composequestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.cloze.text.composequestion")}</Subtitle>
 
         <FroalaEditor
@@ -152,7 +134,7 @@ class TemplateMarkup extends Component {
           additionalToolbarOptions={["textinput"]}
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

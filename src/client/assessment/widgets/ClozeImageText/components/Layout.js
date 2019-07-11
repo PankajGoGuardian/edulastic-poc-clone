@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { get } from "lodash";
 import { connect } from "react-redux";
@@ -12,8 +11,8 @@ import Container from "./Container";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Block } from "../../../styled/WidgetOptions/Block";
-import { Widget } from "../../../styled/Widget";
 import { Subtitle } from "../../../styled/Subtitle";
+import Question from "../../../components/Question";
 import {
   FontSizeOption,
   StemNumerationOption,
@@ -26,31 +25,17 @@ import { changeItemAction } from "../../../../author/src/actions/question";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
 class Layout extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, t, changeItem, setQuestionData, advancedAreOpen, responses } = this.props;
+    const {
+      item,
+      t,
+      changeItem,
+      setQuestionData,
+      advancedAreOpen,
+      fillSections,
+      cleanSections,
+      responses
+    } = this.props;
 
     const mapValues = val => (Number.isNaN(+val) ? "" : val);
 
@@ -88,7 +73,13 @@ class Layout extends Component {
 
     return (
       <React.Fragment>
-        <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Question
+          section="advanced"
+          label={t("component.options.display")}
+          advancedAreOpen={advancedAreOpen}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        >
           <Block style={{ paddingTop: 0 }}>
             <Subtitle>{t("component.options.display")}</Subtitle>
             <Row gutter={20}>
@@ -142,7 +133,7 @@ class Layout extends Component {
               uiStyle={get(item, "ui_style", {})}
             />
           </Block>
-        </Widget>
+        </Question>
       </React.Fragment>
     );
   }

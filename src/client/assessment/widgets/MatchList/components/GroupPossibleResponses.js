@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from "react";
-import ReactDOM from "react-dom";
 import { Checkbox, Row, Col } from "antd";
 import PropTypes from "prop-types";
 
@@ -15,17 +14,6 @@ import Group from "./Group";
 const List = withAddButton(QuillSortableList);
 
 class GroupPossibleResponses extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-    fillSections("main", t("component.classification.possibleRespTitle"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount = () => {
-    const { cleanSections } = this.props;
-    cleanSections();
-  };
-
   render() {
     const { checkboxChange, checkboxVal, firstFocus, items, t, onAdd, ...restProps } = this.props;
 

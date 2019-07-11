@@ -1,6 +1,5 @@
 import React, { memo, Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 
@@ -8,35 +7,27 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import Options from "./components/Options";
 import PassageView from "./PassageView";
 
 class Details extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.passage.details"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, fillSections, cleanSections, t } = this.props;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.passage.details")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.passage.details")}</Subtitle>
         <Options setQuestionData={setQuestionData} item={item} />
 
         <PassageView item={item} />
-      </Widget>
+      </Question>
     );
   }
 }

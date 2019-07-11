@@ -15,7 +15,7 @@ import { EDIT } from "../../constants/constantsForQuestions";
 import GroupPossibleResponses from "./components/GroupPossibleResponses";
 import MatchListPreview from "./MatchListPreview";
 import Options from "./components/Options";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 import { ContentArea } from "../../styled/ContentArea";
 import { updateVariables } from "../../utils/variables";
 
@@ -24,7 +24,7 @@ import ListComponent from "./ListComponent";
 
 const OptionsList = withPoints(MatchListPreview);
 
-const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections }) => {
+const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const _setQuestionData = questionData => {
@@ -242,7 +242,12 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
       <Paper padding="0px" boxShadow="none">
         <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
         <ListComponent item={item} fillSections={fillSections} cleanSections={cleanSections} />
-        <Widget>
+        <Question
+          section="main"
+          label={t("component.matchList.possibleRespTitle")}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        >
           <GroupPossibleResponses
             checkboxChange={onGroupPossibleResp}
             checkboxVal={item.group_possible_responses}
@@ -258,7 +263,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-        </Widget>
+        </Question>
         <CorrectAnswers
           onTabChange={setCorrectTab}
           correctTab={correctTab}
@@ -278,6 +283,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
 
 MatchListEdit.propTypes = {
   item: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,

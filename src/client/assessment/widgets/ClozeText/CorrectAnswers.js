@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, findIndex } from "lodash";
@@ -18,20 +17,6 @@ import { IconPlus } from "./styled/IconPlus";
 class CorrectAnswers extends Component {
   state = {
     value: 0
-  };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount = () => {
-    const { cleanSections } = this.props;
-
-    cleanSections();
   };
 
   handleTabChange = value => {

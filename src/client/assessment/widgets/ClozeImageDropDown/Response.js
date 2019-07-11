@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -18,7 +17,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import SortableList from "../../components/SortableList/index";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class Response extends Component {
   static propTypes = {
@@ -35,27 +34,6 @@ class Response extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidMount = () => {
-    const { fillSections, t, index } = this.props;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-    fillSections(
-      "main",
-      `${t("component.cloze.imageDropDown.response")} ${index + 1}`,
-      node.offsetTop,
-      node.scrollHeight,
-      null,
-      null,
-      `cloze-image-dropdown-response-${index + 1}`
-    );
-  };
-
-  componentWillUnmount() {
-    const { cleanSections, index } = this.props;
-
-    cleanSections(`cloze-image-dropdown-response-${index + 1}`);
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -139,10 +117,16 @@ class Response extends Component {
   };
 
   render() {
-    const { t, item, index, option } = this.props;
+    const { t, item, index, option, fillSections, cleanSections } = this.props;
 
     return (
-      <Widget data-cy={`choice-response-${index}`}>
+      <Question
+        dataCy={`choice-response-${index}`}
+        section="main"
+        label={`${t("component.cloze.imageDropDown.response")} ${index + 1}`}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle style={{ paddingTop: index > 0 ? "30px" : "0px" }}>
           {t("component.cloze.imageDropDown.response")} {index + 1}
         </Subtitle>
@@ -159,7 +143,7 @@ class Response extends Component {
             {t("component.cloze.imageDropDown.addnewchoice")}
           </AddNewChoiceBtn>
         </PaddingDiv>
-      </Widget>
+      </Question>
     );
   }
 }

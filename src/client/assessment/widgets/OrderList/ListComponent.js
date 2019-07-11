@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
@@ -15,24 +14,11 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import withAddButton from "../../components/HOC/withAddButton";
 import { getFontSize } from "../../utils/helpers";
 import { updateVariables } from "../../utils/variables";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 const List = withAddButton(QuillSortableList);
 
 class ListComponent extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.orderlist.list"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
     const { item, t, setQuestionData, fillSections, cleanSections, saveAnswer } = this.props;
 
@@ -98,7 +84,12 @@ class ListComponent extends Component {
     if (!item) return null;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.orderlist.list")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle data-cy="list-container">{t("component.orderlist.list")}</Subtitle>
         <List
           fontSize={fontSize}
@@ -111,7 +102,7 @@ class ListComponent extends Component {
           fillSections={fillSections}
           cleanSections={cleanSections}
         />
-      </Widget>
+      </Question>
     );
   }
 }

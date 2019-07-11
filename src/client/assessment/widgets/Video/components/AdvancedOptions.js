@@ -12,7 +12,7 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import { StyledRow } from "../styled/StyledRow";
 import { StyledInput } from "../styled/StyledInput";
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 
 const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advancedAreOpen, setQuestionData }) => {
   const [modalSettings, setModalSettings] = useState({
@@ -54,7 +54,13 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
         advancedAreOpen={advancedAreOpen}
       />
 
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.extras")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      >
         <Subtitle>{t("component.options.extras")}</Subtitle>
 
         <StyledRow gutter={32}>
@@ -87,7 +93,7 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
             />
           </Col>
         </StyledRow>
-      </Widget>
+      </Question>
     </WidgetOptions>
   );
 };

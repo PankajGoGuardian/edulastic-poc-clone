@@ -22,12 +22,6 @@ import { FormGroup } from "../styled/FormGroup";
 const roundingTypes = [rounding.roundDown, rounding.none];
 
 class Scoring extends Component {
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
     const {
       setQuestionData,
@@ -39,7 +33,8 @@ class Scoring extends Component {
       advancedAreOpen,
       noPaddingLeft,
       fillSections,
-      cleanSections
+      cleanSections,
+      children
     } = this.props;
 
     const handleChangeValidation = (param, value) => {
@@ -216,6 +211,8 @@ class Scoring extends Component {
             </ColWrapper>
           </Row>
         )}
+
+        {children}
       </Question>
     );
   }
@@ -231,7 +228,8 @@ Scoring.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  noPaddingLeft: PropTypes.bool
+  noPaddingLeft: PropTypes.bool,
+  children: PropTypes.any
 };
 
 Scoring.defaultProps = {
@@ -239,6 +237,7 @@ Scoring.defaultProps = {
   isSection: false,
   showSelect: true,
   advancedAreOpen: true,
+  children: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

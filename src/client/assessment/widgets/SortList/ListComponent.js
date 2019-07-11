@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -10,26 +9,13 @@ import { updateVariables } from "../../utils/variables";
 import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 const List = withAddButton(QuillSortableList);
 
 class ListComponent extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.sortList.list"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleAdd = () => {
       setQuestionData(
@@ -78,7 +64,12 @@ class ListComponent extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.sortList.list")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.sortList.list")}</Subtitle>
         <List
           items={item.source}
@@ -90,7 +81,7 @@ class ListComponent extends Component {
           useDragHandle
           columns={1}
         />
-      </Widget>
+      </Question>
     );
   }
 }

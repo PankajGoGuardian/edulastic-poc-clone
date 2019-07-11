@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { get } from "lodash";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -14,7 +13,7 @@ import {
   BorderTypeOption,
   MaxSelectionOption
 } from "../../../containers/WidgetOptions/components";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
@@ -23,31 +22,18 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../../auth
 import { changeItemAction, changeUIStyleAction } from "../../../../author/src/actions/question";
 
 class LayoutComponent extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, t, changeItem, changeUIStyle, setQuestionData, saveAnswer, advancedAreOpen } = this.props;
+    const {
+      item,
+      t,
+      changeItem,
+      changeUIStyle,
+      setQuestionData,
+      saveAnswer,
+      advancedAreOpen,
+      fillSections,
+      cleanSections
+    } = this.props;
 
     const { canvas } = item;
 
@@ -72,7 +58,13 @@ class LayoutComponent extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.hideCells")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Layout>
           <Row gutter={36}>
             <Col md={12}>
@@ -117,7 +109,7 @@ class LayoutComponent extends Component {
             </Col>
           </Row>
         </Layout>
-      </Widget>
+      </Question>
     );
   }
 }

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { get } from "lodash";
 
@@ -14,34 +13,11 @@ import {
 } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 
 class LayoutWrapper extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, advancedAreOpen } = this.props;
+    const { item, setQuestionData, advancedAreOpen, t, fillSections, cleanSections } = this.props;
 
     const changeUIStyle = (prop, val) => {
       setQuestionData(
@@ -55,7 +31,13 @@ class LayoutWrapper extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Layout>
           <Row gutter={36}>
             <Col md={12}>
@@ -81,7 +63,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
         </Layout>
-      </Widget>
+      </Question>
     );
   }
 }

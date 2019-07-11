@@ -1,7 +1,6 @@
-import React, { Fragment, Component } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { videoTypes } from "@edulastic/constants";
@@ -11,7 +10,7 @@ import { FlexContainer, Button } from "@edulastic/common";
 import { updateVariables } from "../../../utils/variables";
 import FileSelectModal from "./FileSelectModal";
 
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Block } from "../../../styled/WidgetOptions/Block";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -21,29 +20,6 @@ import { IconPlus } from "../styled/IconPlus";
 import { IconEdit } from "../styled/IconEdit";
 
 class Settings extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.video.settings"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.video.settings"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
     const {
       t,
@@ -52,7 +28,9 @@ class Settings extends Component {
       setQuestionData,
       advancedAreOpen,
       modalSettings,
-      setModalSettings
+      setModalSettings,
+      fillSections,
+      cleanSections
     } = this.props;
 
     const handleChange = (prop, value) => {
@@ -77,7 +55,14 @@ class Settings extends Component {
     const isHostedVideo = videoType === videoTypes.HOSTED;
 
     return (
-      <Widget style={{ display: advancedAreOpen && isHostedVideo ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.video.settings")}
+        advancedAreOpen={advancedAreOpen && isHostedVideo}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        visible={isHostedVideo}
+      >
         <Subtitle>{t("component.video.settings")}</Subtitle>
         {!!modalSettings.modalName && (
           <FileSelectModal
@@ -129,7 +114,7 @@ class Settings extends Component {
             </Col>
           </Row>
         </Block>
-      </Widget>
+      </Question>
     );
   }
 }

@@ -1,7 +1,6 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { Tabs, Tab, MathSpan } from "@edulastic/common";
@@ -10,26 +9,23 @@ import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE } from "../../constants/consta
 import { updateVariables } from "../../utils/variables";
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 import { Container } from "./styled/Container";
 import { ModeButton } from "./styled/ModeButton";
 
 class Template extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.tokenHighlight.templateTitle"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, template, setTemplate, templateTab, setTemplateTab, t } = this.props;
+    const {
+      item,
+      setQuestionData,
+      template,
+      setTemplate,
+      templateTab,
+      setTemplateTab,
+      t,
+      fillSections,
+      cleanSections
+    } = this.props;
     const mode = item.tokenization;
 
     const handleItemChangeChange = (prop, uiStyle) => {
@@ -94,7 +90,12 @@ class Template extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.tokenHighlight.templateTitle")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.tokenHighlight.templateTitle")}</Subtitle>
         <Tabs style={{ marginBottom: 15 }} value={templateTab} onChange={setTemplateTab}>
           <Tab label={t("component.tokenHighlight.editTemplateTab")} />
@@ -145,7 +146,7 @@ class Template extends Component {
             ))}
           </Fragment>
         )}
-      </Widget>
+      </Question>
     );
   }
 }

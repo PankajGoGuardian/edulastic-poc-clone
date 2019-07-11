@@ -1,37 +1,28 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Checkbox } from "antd";
 
 import { FlexContainer } from "@edulastic/common";
 
 import withAddButton from "../../../components/HOC/withAddButton";
 import UiInputGroup from "./UiInputGroup";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
 
 class PointsList extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.chart.points"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { points, handleChange, handleDelete, t } = this.props;
+    const { points, handleChange, handleDelete, t, fillSections, cleanSections } = this.props;
 
     return (
       <Fragment>
         {points.map((dot, index) => (
-          <Widget>
+          <Question
+            section="main"
+            label={`${t("component.chart.point")} ${index + 1}`}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          >
             <FlexContainer justifyContent="space-between">
               <Subtitle>{`${t("component.chart.point")} ${index + 1}`}</Subtitle>
               <IconTrash onClick={() => handleDelete(index)} />
@@ -50,7 +41,7 @@ class PointsList extends Component {
             >
               {t("component.chart.interactive")}
             </Checkbox>
-          </Widget>
+          </Question>
         ))}
       </Fragment>
     );

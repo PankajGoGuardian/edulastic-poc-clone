@@ -1,6 +1,5 @@
 import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Rnd } from "react-rnd";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
@@ -45,7 +44,7 @@ import { FieldWrapper } from "./styled/FieldWrapper";
 import { FieldLabel } from "./styled/FieldLabel";
 import { ResponsTextInputWrapper } from "./styled/ResponsTextInputWrapper";
 import { UploadButton } from "./styled/UploadButton";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
 
@@ -81,21 +80,6 @@ class ComposeQuestion extends Component {
   state = {
     isEditableResizeMove: false
   };
-
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    if (item.imageUrl) this.getImageDimensions(item.imageUrl);
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.cloze.imageDropDown.composequestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -441,7 +425,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme, setQuestionData } = this.props;
+    const { t, item, theme, setQuestionData, fillSections, cleanSections } = this.props;
     const { background, imageAlterText, isEditAriaLabels, responses, keepAspectRatio } = item;
     const { isEditableResizeMove } = this.state;
 
@@ -489,7 +473,12 @@ class ComposeQuestion extends Component {
     return (
       <div>
         <PaddingDiv>
-          <Widget>
+          <Question
+            section="main"
+            label={t("component.cloze.imageDropDown.composequestion")}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          >
             <Subtitle>{t("component.cloze.imageDropDown.composequestion")}</Subtitle>
 
             <QuestionTextArea
@@ -733,7 +722,7 @@ class ComposeQuestion extends Component {
                 </React.Fragment>
               )}
             </PaddingDiv>
-          </Widget>
+          </Question>
         </PaddingDiv>
       </div>
     );

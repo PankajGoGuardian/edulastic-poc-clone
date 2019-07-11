@@ -1,7 +1,6 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Col, Select, Input } from "antd";
 import { isObject } from "lodash";
 import { math } from "@edulastic/constants";
@@ -11,7 +10,7 @@ import { numBtnColors } from "@edulastic/colors";
 
 import NumberPad from "../NumberPad";
 import KeyPad from "../KeyPad";
-import { Widget } from "../../styled/Widget";
+import Question from "../Question";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { StyledRow } from "./styled/StyledRow";
@@ -35,29 +34,6 @@ const defaultNumberPad = [
   "\\div"
 ];
 class KeyPadOptions extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   getNumberPad = isCustom => {
     const { item, onChange, t } = this.props;
     if (!item.numberPad || !item.numberPad.length) {
@@ -110,7 +86,7 @@ class KeyPadOptions extends Component {
   };
 
   render() {
-    const { item, onChange, advancedAreOpen, t } = this.props;
+    const { item, onChange, advancedAreOpen, fillSections, cleanSections, t } = this.props;
     const symbol = item.symbols[0];
     const isCustom = isObject(symbol);
 
@@ -125,7 +101,13 @@ class KeyPadOptions extends Component {
       : {};
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.keypad")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.keypad")}</Subtitle>
 
         <StyledRow gutter={60}>
@@ -180,7 +162,7 @@ class KeyPadOptions extends Component {
           </Col>
           <Col span={12} />
         </StyledRow>
-      </Widget>
+      </Question>
     );
   }
 }

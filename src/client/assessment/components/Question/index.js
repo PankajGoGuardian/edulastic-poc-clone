@@ -20,11 +20,12 @@ class Question extends Component {
   }
 
   componentDidMount = () => {
-    const { fillSections, section, label } = this.props;
+    const { fillSections, section, label, visible } = this.props;
 
     const { current: node } = this.node;
 
     if (!node) return false;
+    if (visible === false) return false;
 
     fillSections(section, label, node.offsetTop - (window.innerHeight - node.clientHeight) / 2, node.clientHeight);
 
@@ -35,13 +36,14 @@ class Question extends Component {
   };
 
   componentDidUpdate = (prevProps, prevState) => {
-    const { offsetTop, clientHeight } = this.state;
+    const { offsetTop, clientHeight, visible } = this.state;
 
     const { fillSections, section, label, advancedAreOpen } = this.props;
 
     const { current: node } = this.node;
 
     if (!node) return false;
+    if (visible === false) return false;
 
     if (
       (typeof prevState.offsetTop !== "undefined" || typeof prevState.clientHeight !== "undefined") &&
@@ -71,7 +73,7 @@ class Question extends Component {
   }
 
   render() {
-    const { dataCy, children, questionTextArea, advancedAreOpen } = this.props;
+    const { dataCy, children, questionTextArea, advancedAreOpen, position, visible } = this.props;
 
     return (
       <Widget
@@ -79,6 +81,8 @@ class Question extends Component {
         data-cy={dataCy}
         questionTextArea={questionTextArea}
         advancedAreOpen={advancedAreOpen}
+        position={position}
+        visible={visible}
       >
         {children}
       </Widget>
@@ -94,13 +98,17 @@ Question.propTypes = {
   children: PropTypes.any.isRequired,
   dataCy: PropTypes.string,
   questionTextArea: PropTypes.bool,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  visible: PropTypes.bool,
+  position: PropTypes.string
 };
 
 Question.defaultProps = {
   dataCy: "",
   questionTextArea: false,
-  advancedAreOpen: null
+  visible: true,
+  advancedAreOpen: null,
+  position: "relative"
 };
 
 export default compose(

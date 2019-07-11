@@ -23,8 +23,8 @@ import Display from "./Display";
 import Options from "./components/Options";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
-import { Widget } from "../../styled/Widget";
 import { CheckContainer } from "./styled/CheckContainer";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -140,7 +140,13 @@ class ClozeDragDrop extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
-                <Widget position="unset">
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  position="unset"
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     // key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
@@ -191,7 +197,7 @@ class ClozeDragDrop extends Component {
                       </Checkbox>
                     </CheckContainer>
                   </CorrectAnswerOptions>
-                </Widget>
+                </Question>
               </div>
               <div style={{ marginTop: 35 }}>
                 <Options

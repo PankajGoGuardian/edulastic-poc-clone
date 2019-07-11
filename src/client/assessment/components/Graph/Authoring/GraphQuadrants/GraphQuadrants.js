@@ -4,7 +4,6 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
-import { QuestionSection } from "..";
 import { StyledTextField } from "../../common/styled_components";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
@@ -13,6 +12,7 @@ import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
+import Question from "../../../Question";
 
 const X_RATIO = "x_ratio";
 const Y_RATIO = "y_ratio";
@@ -106,7 +106,7 @@ class GraphQuadrants extends Component {
 
     return (
       <div>
-        <QuestionSection
+        <Question
           section="main"
           label="Compose Question"
           cleanSections={cleanSections}
@@ -122,8 +122,8 @@ class GraphQuadrants extends Component {
             placeholder={t("component.graphing.question.enteryourquestion")}
             border="border"
           />
-        </QuestionSection>
-        <QuestionSection
+        </Question>
+        <Question
           section="main"
           label="Graph Parameters"
           cleanSections={cleanSections}
@@ -209,8 +209,8 @@ class GraphQuadrants extends Component {
               </Col>
             </Row>
           </PaddingDiv>
-        </QuestionSection>
-        <QuestionSection
+        </Question>
+        <Question
           section="main"
           label="Tools"
           cleanSections={cleanSections}
@@ -226,7 +226,7 @@ class GraphQuadrants extends Component {
               onChange={this.handleToolsChange}
             />
           </PaddingDiv>
-        </QuestionSection>
+        </Question>
       </div>
     );
   }

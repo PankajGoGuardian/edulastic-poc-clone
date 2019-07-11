@@ -16,7 +16,8 @@ import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 
-import { QuestionSection, ScoreSettings } from "..";
+import { ScoreSettings } from "..";
+import Question from "../../../Question";
 
 class AxisLabelsMoreOptions extends Component {
   constructor(props) {
@@ -207,7 +208,7 @@ class AxisLabelsMoreOptions extends Component {
 
     return (
       <Fragment>
-        <QuestionSection
+        <Question
           padding="0px"
           section="advanced"
           label="Scoring"
@@ -221,9 +222,9 @@ class AxisLabelsMoreOptions extends Component {
             graphData={graphData}
             advancedAreOpen={advancedAreOpen}
           />
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label={t("component.graphing.display")}
           cleanSections={cleanSections}
@@ -354,9 +355,9 @@ class AxisLabelsMoreOptions extends Component {
               </Select>
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Ticks"
           cleanSections={cleanSections}
@@ -456,9 +457,9 @@ class AxisLabelsMoreOptions extends Component {
               </Row>
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Labels"
           cleanSections={cleanSections}
@@ -503,7 +504,7 @@ class AxisLabelsMoreOptions extends Component {
               />
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
         <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
           <Extras.Distractors />

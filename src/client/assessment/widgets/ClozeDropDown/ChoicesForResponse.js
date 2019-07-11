@@ -16,8 +16,8 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import Question from "../../components/Question";
 
 class ChoicesForResponse extends Component {
   static propTypes = {
@@ -140,10 +140,16 @@ class ChoicesForResponse extends Component {
   };
 
   render() {
-    const { t, item, response } = this.props;
+    const { t, item, response, fillSections, cleanSections } = this.props;
     const { options, template } = item;
     return (
-      <Widget data-cy={`choice-response-${response.index}`}>
+      <Question
+        section="main"
+        dataCy={`choice-response-${response.index}`}
+        label={`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
         <SortableList
           items={options[response.id] || []}
@@ -158,7 +164,7 @@ class ChoicesForResponse extends Component {
             {t("component.cloze.dropDown.addnewchoice")}
           </AddNewChoiceBtn>
         </div>
-      </Widget>
+      </Question>
     );
   }
 }

@@ -9,7 +9,6 @@ import { updateVariables } from "../../../utils/variables";
 
 import WordLimitAndCount from "../../../components/WordLimitAndCount";
 import Scoring from "../../../containers/WidgetOptions/components/Scoring";
-import { Widget } from "../../../styled/Widget";
 import { ContentArea } from "../../../styled/ContentArea";
 
 import ComposeQuestion from "./ComposeQuestion";
@@ -37,8 +36,14 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
 
       <FormattingOptions item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Scoring t={t} scoringTypes={[]} questionData={item} advancedAreOpen={advancedAreOpen} noPaddingLeft={true} />
+      <Scoring
+        isSection
+        t={t}
+        scoringTypes={[]}
+        questionData={item}
+        advancedAreOpen={advancedAreOpen}
+        noPaddingLeft={true}
+      >
         <WordLimitAndCount
           onChange={handleItemChangeChange}
           selectValue={item.show_word_limit}
@@ -56,7 +61,7 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
         >
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>
-      </Widget>
+      </Scoring>
 
       <Options
         item={item}

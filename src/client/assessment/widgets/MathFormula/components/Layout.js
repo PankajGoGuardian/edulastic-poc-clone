@@ -1,7 +1,6 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Select, Checkbox, Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
@@ -13,7 +12,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import FontSizeSelect from "../../../components/FontSizeSelect";
 
 class Layout extends Component {
@@ -21,37 +20,12 @@ class Layout extends Component {
     minWidth: 0
   };
 
-  componentDidMount = () => {
-    const { fillSections, t, uiStyle } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-
-    this.setState({ minWidth: uiStyle.min_width });
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   onChangeMinWidth = e => {
     this.setState({ minWidth: e.target.value });
   };
 
   render() {
-    const { onChange, uiStyle, t, advancedAreOpen } = this.props;
+    const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections } = this.props;
     const { minWidth } = this.state;
 
     const changeUiStyle = (prop, value) => {
@@ -62,7 +36,13 @@ class Layout extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
 
         <Row gutter={60}>
@@ -113,7 +93,7 @@ class Layout extends Component {
             </Checkbox>
           </Col>
         </Row>
-      </Widget>
+      </Question>
     );
   }
 }

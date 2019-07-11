@@ -16,7 +16,6 @@ import { EDIT } from "../../constants/constantsForQuestions";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
-import { Widget } from "../../styled/Widget";
 
 import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
@@ -25,6 +24,7 @@ import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
 import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Graph/Annotations/Annotations";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -160,7 +160,12 @@ class ClozeImageDragDrop extends Component {
                   cleanSections={cleanSections}
                   setQuestionData={setQuestionData}
                 />
-                <Widget>
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
@@ -233,7 +238,7 @@ class ClozeImageDragDrop extends Component {
                     <PaddingDiv>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
                   </MaxRespCountWrapper>
                   <Annotations editable />
-                </Widget>
+                </Question>
               </div>
               <Options
                 onChange={this.handleOptionsChange}

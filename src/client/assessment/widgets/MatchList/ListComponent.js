@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 
@@ -11,26 +10,13 @@ import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList";
 import { Subtitle } from "../../styled/Subtitle";
 import { updateVariables } from "../../utils/variables";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 const List = withAddButton(QuillSortableList);
 
 class ListComponent extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.matchList.list"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleAdd = () => {
       setQuestionData(
@@ -68,7 +54,12 @@ class ListComponent extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.matchList.list")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle data-cy="list-container">{t("component.matchList.list")}</Subtitle>
         <List
           buttonText={t("component.matchList.addNew")}
@@ -81,7 +72,7 @@ class ListComponent extends Component {
           useDragHandle
           columns={1}
         />
-      </Widget>
+      </Question>
     );
   }
 }

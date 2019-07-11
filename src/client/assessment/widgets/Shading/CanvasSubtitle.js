@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { Input, Row, Col } from "antd";
 import { compose } from "redux";
@@ -11,24 +10,11 @@ import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class CanvasSubtitle extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.shading.canvasSubtitle"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t, theme } = this.props;
+    const { item, setQuestionData, t, theme, fillSections, cleanSections } = this.props;
 
     const { canvas } = item;
 
@@ -52,7 +38,12 @@ class CanvasSubtitle extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.shading.canvasSubtitle")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.shading.canvasSubtitle")}</Subtitle>
 
         <Row gutter={70}>
@@ -112,7 +103,7 @@ class CanvasSubtitle extends Component {
             />
           </Col>
         </Row>
-      </Widget>
+      </Question>
     );
   }
 }

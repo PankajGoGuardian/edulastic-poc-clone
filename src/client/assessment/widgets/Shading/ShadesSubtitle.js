@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
@@ -12,25 +11,12 @@ import { updateVariables } from "../../utils/variables";
 import ShadesView from "./components/ShadesView";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 import { StyledCheckbox } from "./styled/StyledCheckbox";
 
 class ShadesSubtitle extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.shading.shadesSubtitle"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const { canvas } = item;
 
@@ -74,7 +60,12 @@ class ShadesSubtitle extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.shading.shadesSubtitle")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.shading.shadesSubtitle")}</Subtitle>
 
         <div>
@@ -96,7 +87,7 @@ class ShadesSubtitle extends Component {
         >
           {t("component.shading.lockShadedCells")}
         </StyledCheckbox>
-      </Widget>
+      </Question>
     );
   }
 }

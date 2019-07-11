@@ -2,7 +2,6 @@
 /* eslint-disable no-undef */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { withNamespaces } from "react-i18next";
 import { cloneDeep, keys as _keys, flattenDeep, isArray, find, last, isEmpty } from "lodash";
@@ -13,7 +12,7 @@ import { FroalaEditor } from "@edulastic/common";
 // import { ToolbarContainer } from "../../styled/ToolbarContainer";
 // import { FroalaContainer } from "../../styled/FroalaContainer";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 const { methods } = math;
 
@@ -31,23 +30,8 @@ const initResponseId = {
 };
 
 class Template extends Component {
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-
-    if (item.templateDisplay)
-      fillSections("main", t("component.math.composequestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { t, item, setQuestionData } = this.props;
+    const { t, item, setQuestionData, fillSections, cleanSections } = this.props;
 
     const _reduceResponseIds = tmpl => {
       const newResponseId = cloneDeep(initResponseId);
@@ -311,7 +295,12 @@ class Template extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.math.composequestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle data-cy="template">{t("component.math.composequestion")}</Subtitle>
 
         <FroalaEditor
@@ -322,7 +311,7 @@ class Template extends Component {
           toolbarId="template-markup-area"
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

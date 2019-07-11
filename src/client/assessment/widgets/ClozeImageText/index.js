@@ -22,7 +22,7 @@ import Options from "./components/Options";
 import Display from "./Display";
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class ClozeImageText extends Component {
   state = {
@@ -177,7 +177,12 @@ class ClozeImageText extends Component {
                     cleanSections={cleanSections}
                     imageWidth={item.imageWidth}
                   />
-                  <Widget>
+                  <Question
+                    section="main"
+                    label={t("component.correctanswers.setcorrectanswers")}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                  >
                     <CorrectAnswers
                       key={duplicatedResponses || showDraghandle || shuffleOptions}
                       validation={item.validation}
@@ -231,7 +236,7 @@ class ClozeImageText extends Component {
                         <PaddingDiv>{t("component.cloze.imageText.maximumresponses")}</PaddingDiv>
                       </MaxRespCountWrapper>
                     </AdditionalContainer>
-                  </Widget>
+                  </Question>
                 </div>
               </EditorContainer>
               <OptionsContainer>

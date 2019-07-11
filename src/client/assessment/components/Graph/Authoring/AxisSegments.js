@@ -11,7 +11,7 @@ import { Label } from "../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../styled/Subtitle";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
-import { QuestionSection } from "./";
+import Question from "../../Question";
 
 class AxisSegments extends Component {
   onChangeQuestion = stimulus => {
@@ -54,7 +54,7 @@ class AxisSegments extends Component {
 
     return (
       <div>
-        <QuestionSection
+        <Question
           section="main"
           label="Compose Question"
           cleanSections={cleanSections}
@@ -70,9 +70,9 @@ class AxisSegments extends Component {
             firstFocus={firstMount}
             border="border"
           />
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="main"
           label="Line"
           cleanSections={cleanSections}
@@ -129,9 +129,9 @@ class AxisSegments extends Component {
               />
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="main"
           label="Title"
           cleanSections={cleanSections}
@@ -142,7 +142,7 @@ class AxisSegments extends Component {
             <Subtitle>{t("component.graphing.title")}</Subtitle>
             <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
           </PaddingDiv>
-        </QuestionSection>
+        </Question>
       </div>
     );
   }

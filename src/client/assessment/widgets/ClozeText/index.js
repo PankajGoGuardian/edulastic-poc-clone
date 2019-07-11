@@ -18,7 +18,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import Display from "./Display";
 import { ContentArea } from "../../styled/ContentArea";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -196,7 +196,12 @@ class ClozeText extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
-                <Widget>
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
@@ -238,7 +243,7 @@ class ClozeText extends Component {
                       checked={!!mixAndMatch}
                     />
                   </div>
-                </Widget>
+                </Question>
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}

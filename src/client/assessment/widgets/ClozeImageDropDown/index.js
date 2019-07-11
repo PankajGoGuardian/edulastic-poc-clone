@@ -22,7 +22,7 @@ import Authoring from "./Authoring";
 import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
 import { AdditionalContainer } from "./styled/AdditionalContainer";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import { ContentArea } from "../../styled/ContentArea";
 
@@ -195,7 +195,12 @@ class ClozeImageDropDown extends Component {
                     fillSections={fillSections}
                     cleanSections={cleanSections}
                   />
-                  <Widget>
+                  <Question
+                    section="main"
+                    label={t("component.correctanswers.setcorrectanswers")}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                  >
                     <CorrectAnswers
                       key={duplicatedResponses || showDraghandle || shuffleOptions}
                       validation={item.validation}
@@ -234,7 +239,7 @@ class ClozeImageDropDown extends Component {
                         />
                       </CorrectAnswerOptions>
                     </AdditionalContainer>
-                  </Widget>
+                  </Question>
                 </div>
               </EditorContainer>
               <OptionsContainer>

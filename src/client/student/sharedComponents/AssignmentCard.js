@@ -81,19 +81,29 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     thumbnail
   } = data;
 
-  if (!startDate && !endDate) {
-    const currentClass = maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "endDate") || {};
-    open = currentClass.open;
-    close = currentClass.close;
-    startDate = currentClass.startDate;
-    endDate = currentClass.endDate;
+  const currentClassList = clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true));
+  if (!startDate || !endDate) {
+    const maxCurrentClass =
+      currentClassList && currentClassList.length > 0
+        ? maxBy(currentClassList, "endDate") || currentClassList[currentClassList.length - 1]
+        : {};
+    open = maxCurrentClass.open;
+    close = maxCurrentClass.close;
+    startDate = maxCurrentClass.startDate;
+    endDate = maxCurrentClass.endDate;
   }
   if (!startDate && open) {
-    startDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "openDate") || {}).openDate;
+    const maxCurrentClass =
+      currentClassList && currentClassList.length > 0
+        ? maxBy(currentClassList, "openDate") || currentClassList[currentClassList.length - 1]
+        : {};
+    startDate = maxCurrentClass.openDate;
   }
   if (!endDate && close) {
-    endDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "closedDate") || {})
-      .closedDate;
+    endDate = (currentClass && currentClass.length > 0
+      ? maxBy(currentClass, "closedDate") || currentClass[currentClass.length - 1]
+      : {}
+    ).closedDate;
   }
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.

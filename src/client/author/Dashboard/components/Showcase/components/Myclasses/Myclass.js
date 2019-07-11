@@ -41,17 +41,15 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
 
   return (
     <CardsContainer>
+      <TextWrapper size="20px" color="#434B5D">
+        My classes
+      </TextWrapper>
       {loading ? (
         <Spin style={{ marginTop: "120px" }} />
       ) : classData.length == 0 ? (
         <CreateClassPage />
       ) : (
-        <>
-          <TextWrapper size="20px" color="#434B5D">
-            My classes
-          </TextWrapper>
-          <Row gutter={20}>{ClassCards}</Row>
-        </>
+        <Row gutter={20}>{ClassCards}</Row>
       )}
     </CardsContainer>
   );

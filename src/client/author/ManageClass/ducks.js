@@ -144,7 +144,6 @@ const initialState = {
 
 const setGoogleCourseList = (state, { payload }) => {
   state.googleCourseList = payload.map(o => {
-    console.log(o.course);
     o.courseId = o.course && o.course.id;
     return o;
   });

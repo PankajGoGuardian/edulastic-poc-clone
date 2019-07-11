@@ -8,7 +8,8 @@ import {
   ON_LIMIT,
   previewAreas,
   SENTENCE_MODE,
-  templateWithTokens
+  templateWithTokens,
+  defaultOptions
 } from "../../../../assessment/constants/constantsForQuestions";
 
 // Multiple Choice
@@ -731,15 +732,11 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Multiple choice - standard",
         type: questionType.MULTIPLE_CHOICE,
-        stimulus: "Which color has the smallest walvelenght?",
+        stimulus: "",
         ui_style: {
           type: "horizontal"
         },
-        options: [
-          { value: uuids[0], label: "Red" },
-          { value: uuids[1], label: "Violet" },
-          { value: uuids[2], label: "Green" }
-        ],
+        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -759,15 +756,11 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Multiple choice - multiple response",
         type: questionType.MULTIPLE_CHOICE,
-        stimulus: "Which color has the smallest walvelenght?",
+        stimulus: "",
         ui_style: {
           type: "horizontal"
         },
-        options: [
-          { value: uuids[0], label: "Red" },
-          { value: uuids[1], label: "Violet" },
-          { value: uuids[2], label: "Green" }
-        ],
+        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -787,7 +780,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "True or false",
         type: questionType.MULTIPLE_CHOICE,
-        stimulus: "The sky is blue due to gases.",
+        stimulus: "",
         ui_style: {
           type: "horizontal"
         },
@@ -811,16 +804,12 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Multiple choice - block layout",
         type: questionType.MULTIPLE_CHOICE,
-        stimulus: "What is the capital city of England?",
+        stimulus: "",
         ui_style: {
           type: "block",
           choice_label: "upper-alpha"
         },
-        options: [
-          { value: uuids[0], label: "Dublin" },
-          { value: uuids[1], label: "London" },
-          { value: uuids[2], label: "Liverpool" }
-        ],
+        options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1076,8 +1065,8 @@ export const getCards = onSelectQuestionType => {
           responsecontainerindividuals: []
         },
         options: {
-          [uuids[0]]: ["Option 1", "Option 2"],
-          [uuids[1]]: ["Option 2", "Option 3"]
+          [uuids[0]]: [defaultOptions[0], defaultOptions[1]],
+          [uuids[1]]: [defaultOptions[2], defaultOptions[3]]
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1138,7 +1127,7 @@ export const getCards = onSelectQuestionType => {
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
         maxRespCount: 1,
-        options: ["Option 1", "Option 2", "Option 3"],
+        options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1171,7 +1160,7 @@ export const getCards = onSelectQuestionType => {
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
-        options: [["Option 1", "Option 2"], ["Option 3", "Option 4"]],
+        options: [[defaultOptions[0], defaultOptions[1]], [defaultOptions[2], defaultOptions[3]]],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {

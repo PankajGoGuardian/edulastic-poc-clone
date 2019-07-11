@@ -14,8 +14,9 @@ function init(element, board, cb, readOnly = false) {
   element.editor = new FroalaEditor(
     selector,
     {
+      key: process.env.POI_APP_FROALA_KEY,
       toolbarInline: true,
-      placeholderText: "",
+      placeholder: "",
       events: {
         click: () => {
           FroalaEditorInput(element, board).setFocus();

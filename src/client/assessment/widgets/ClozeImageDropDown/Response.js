@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -17,6 +18,8 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import SortableList from "../../components/SortableList/index";
+import { Widget } from "../../styled/Widget";
+import { defaultOptions } from "../../constants/constantsForQuestions";
 import Question from "../../components/Question";
 
 class Response extends Component {
@@ -117,7 +120,7 @@ class Response extends Component {
   };
 
   render() {
-    const { t, item, index, option, fillSections, cleanSections } = this.props;
+    const { t, index, option, fillSections, cleanSections } = this.props;
 
     return (
       <Question
@@ -133,7 +136,7 @@ class Response extends Component {
         <SortableList
           items={option || []}
           onSortEnd={params => this.onSortEnd(index, params)}
-          dirty={item.firstMount}
+          defaultOptions={defaultOptions}
           useDragHandle
           onRemove={itemIndex => this.remove(index, itemIndex)}
           onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}

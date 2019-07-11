@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Row, Radio, Switch, Input, Select, DatePicker, Table } from "antd";
-import { white, secondaryTextColor, blue, fadedBlue, red, blueBorder } from "@edulastic/colors";
+import { white, secondaryTextColor, themeColor, themeColorLight, red } from "@edulastic/colors";
 
 const RadioGroup = Radio.Group;
 
@@ -123,10 +123,10 @@ export const Password = styled(Input)`
   width: 100%;
   float: right;
   margin-top: 5px;
-  border-color: ${props => (props.color ? props.color : blueBorder)};
+  border-color: ${props => (props.color ? props.color : themeColor)};
   &:hover,
   &:focus {
-    border-color: ${props => (props.color ? props.color : blueBorder)};
+    border-color: ${props => (props.color ? props.color : themeColor)};
   }
 `;
 
@@ -144,7 +144,7 @@ export const SettingsBtn = styled.span`
 
   svg {
     margin-left: 16px;
-    fill: ${blue};
+    fill: ${themeColor};
   }
 `;
 
@@ -167,8 +167,8 @@ export const StyledSelect = styled(Select)`
     .ant-select-selection__choice {
       border-radius: 5px;
       margin: 4px;
-      border: solid 1px ${fadedBlue};
-      background-color: ${fadedBlue};
+      border: solid 1px ${themeColorLight};
+      background-color: ${themeColorLight};
       height: 23.5px;
     }
 
@@ -176,19 +176,19 @@ export const StyledSelect = styled(Select)`
       font-size: 10px;
       font-weight: bold;
       letter-spacing: 0.2px;
-      color: ${blue};
+      color: ${themeColor};
       opacity: 1;
     }
     .ant-select-remove-icon {
       svg {
-        fill: ${blue};
+        fill: ${themeColor};
       }
     }
 
     .ant-select-arrow-icon {
       font-size: 14px;
       svg {
-        fill: ${blue};
+        fill: ${themeColor};
       }
     }
 
@@ -204,7 +204,7 @@ export const StyledDatePicker = styled(DatePicker)`
     border: 1px #e1e1e1 solid;
   }
   svg {
-    fill: ${blue};
+    fill: ${themeColor};
   }
 `;
 
@@ -251,7 +251,7 @@ export const StyledTable = styled(Table)`
           align-items: center;
 
           svg {
-            fill: ${blue};
+            fill: ${themeColor};
             font-size: 18px;
           }
         }

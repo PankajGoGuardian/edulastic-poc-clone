@@ -17,6 +17,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { defaultOptions } from "../../constants/constantsForQuestions";
 import Question from "../../components/Question";
 
 class ChoicesForResponse extends Component {
@@ -141,7 +142,7 @@ class ChoicesForResponse extends Component {
 
   render() {
     const { t, item, response, fillSections, cleanSections } = this.props;
-    const { options, template } = item;
+    const { options } = item;
     return (
       <Question
         section="main"
@@ -152,10 +153,10 @@ class ChoicesForResponse extends Component {
       >
         <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
         <SortableList
-          items={options[response.id] || []}
-          dirty={template}
-          onSortEnd={params => this.onSortEnd(response.id, params)}
           useDragHandle
+          items={options[response.id] || []}
+          defaultOptions={defaultOptions}
+          onSortEnd={params => this.onSortEnd(response.id, params)}
           onRemove={itemIndex => this.remove(response.id, itemIndex)}
           onChange={(itemIndex, e) => this.editOptions(response.id, itemIndex, e)}
         />

@@ -187,14 +187,18 @@ function* saveAssignment({ payload }) {
     const successMessage = `Assign ${payload.playlistModuleId ? "module" : "test"} is successed!`;
     yield call(message.success, successMessage);
     yield put(setAssignmentAction(assignment));
+    const assignmentId = result[0]._id;
     yield put(
       push(
         `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
           payload.playlistModuleId ? payload.playlistId : testIds[0]
-        }/assign`
+        }/assign/${assignmentId}`
       )
     );
   } catch (err) {
+    if (err.status === 409) {
+      return yield call(message.error, err.data.message);
+    }
     console.error(err);
   }
 }

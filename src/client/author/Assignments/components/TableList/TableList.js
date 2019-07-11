@@ -16,6 +16,7 @@ import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
 import ActionMenu from "../ActionMenu/ActionMenu";
 import { getFolderSelector } from "../../../src/selectors/folder";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import {
   Container,
@@ -43,9 +44,8 @@ const convertTableData = (data, assignments, index) => ({
   class: assignments.length,
   assigned: "",
   status: "status",
-  submitted: `${assignments.map(item => item.submittedCount).reduce((t, c) => t + c) || 0} of ${assignments
-    .map(item => item.totalNumber || 0)
-    .reduce((t, c) => t + c)}`,
+  submitted: `${assignments.map(item => (item.submittedCount || 0) + (item.gradedCount || 0)).reduce((t, c) => t + c) ||
+    0} of ${assignments.map(item => item.totalNumber || 0).reduce((t, c) => t + c)}`,
   graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c) || 0}`,
   action: "",
   classId: assignments[0].classId,
@@ -60,7 +60,7 @@ const convertExpandTableData = (data, testItem, index) => ({
   class: data.className,
   assigned: data.assignedBy.name,
   status: data.status === "NOT OPEN" && data.startDate && data.startDate < Date.now() ? "IN PROGRESS" : data.status,
-  submitted: `${data.submittedCount || 0} of ${data.totalNumber || 0}`,
+  submitted: `${(data.submittedCount || 0) + (data.gradedCount || 0)} of ${data.totalNumber || 0}`,
   graded: data.gradedCount,
   action: "",
   classId: data.classId,
@@ -86,22 +86,19 @@ class TableList extends Component {
         render: () => <GreyFont style={{ display: "block" }} />
       },
       {
-        dataIndex: "name",
-        width: "20%",
-        render: () => <GreyFont style={{ width: "253px", display: "block" }} />
-      },
-      {
         dataIndex: "class",
-        width: "10%",
+        width: "30%",
         render: text => (
-          <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <GreyFont className="class-column">{text}</GreyFont>
-          </Tooltip>
+          <GreyFont className="class-column">
+            <Tooltip placement="bottom" title={text}>
+              <span>{text}</span>
+            </Tooltip>
+          </GreyFont>
         )
       },
       {
         dataIndex: "testType",
-        width: "10%",
+        width: "14%",
         render: (_, row) =>
           row && row.testType === test.type.PRACTICE ? (
             <TypeIcon type="practice">P</TypeIcon>
@@ -133,7 +130,7 @@ class TableList extends Component {
       },
       {
         dataIndex: "action",
-        width: "14%",
+        width: "10%",
         render: (_, row) => (
           <ActionsWrapper data-cy="PresentationIcon">
             <Tooltip placement="bottom" title="LCB">
@@ -141,16 +138,20 @@ class TableList extends Component {
                 <Icon src={presentationIcon} alt="Images" />
               </Link>
             </Tooltip>
-            <Tooltip placement="bottom" title="Express Grader">
-              <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
-                <Icon src={additemsIcon} alt="Images" />
-              </Link>
-            </Tooltip>
-            <Tooltip placement="bottom" title="Reports">
-              <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
-                <Icon src={piechartIcon} alt="Images" />
-              </Link>
-            </Tooltip>
+            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={row.classId}>
+              <Tooltip placement="bottom" title="Express Grader">
+                <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
+                  <Icon src={additemsIcon} alt="Images" />
+                </Link>
+              </Tooltip>
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" groupId={row.classId}>
+              <Tooltip placement="bottom" title="Reports">
+                <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
+                  <Icon src={piechartIcon} alt="Images" />
+                </Link>
+              </Tooltip>
+            </FeaturesSwitch>
           </ActionsWrapper>
         )
       }
@@ -198,7 +199,7 @@ class TableList extends Component {
         className: "assignment-name",
         render: (text, row) => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <FlexContainer style={{ marginLeft: 0 }}>
+            <FlexContainer style={{ marginLeft: 0 }} justifyContent={"left"}>
               <div>
                 <TestThumbnail src={row.thumbnail} />
               </div>
@@ -225,7 +226,7 @@ class TableList extends Component {
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.testType.localeCompare(b.testType),
-        width: "10%",
+        width: "14%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
       {
@@ -260,7 +261,7 @@ class TableList extends Component {
       {
         title: renderFilter(),
         dataIndex: "action",
-        width: "14%",
+        width: "10%",
         render: (_, row) => (
           <ActionDiv>
             <Dropdown

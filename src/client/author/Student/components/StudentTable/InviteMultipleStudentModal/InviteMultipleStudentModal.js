@@ -1,13 +1,22 @@
 import React, { Component } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
-const { TabPane } = Tabs;
-const Search = Input.Search;
 import { userApi } from "@edulastic/api";
-import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv, Text, IconWrapper, ColWrapper } from "./styled";
+import {
+  StyledTextArea,
+  PlaceHolderText,
+  SelUserKindDiv,
+  ItemDiv,
+  Text,
+  IconWrapper,
+  ColWrapper,
+  ActionButton
+} from "./styled";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
 
+const { TabPane } = Tabs;
+const Search = Input.Search;
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
     moveItem(item);
@@ -178,6 +187,7 @@ class InviteMultipleStudentModal extends Component {
     setinfoModelVisible(true);
     loadStudents({ classId });
   };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const {
@@ -314,9 +324,9 @@ class InviteMultipleStudentModal extends Component {
 
               <Row type="flex" justify="end">
                 <Col>
-                  <Button type="primary" shape="round" key="submit" onClick={this.onInviteStudents}>
+                  <ActionButton type="primary" shape="round" key="submit" onClick={this.onInviteStudents}>
                     Add Student
-                  </Button>
+                  </ActionButton>
                 </Col>
               </Row>
             </TabPane>
@@ -353,7 +363,7 @@ class InviteMultipleStudentModal extends Component {
                     </Button>
                   </Col>
                   <Col>
-                    <Button
+                    <ActionButton
                       type="primary"
                       shape="round"
                       key="submit"
@@ -370,7 +380,7 @@ class InviteMultipleStudentModal extends Component {
                     >
                       Yes, Add to Class
                       <Icon type="right" />
-                    </Button>
+                    </ActionButton>
                   </Col>
                 </Row>
               </TabPane>

@@ -24,30 +24,32 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   useEffect(() => {
     getTeacherDashboard();
   }, []);
-  const [showAllCards, setShowAllCards] = useState(false);
 
-  const sortableCards = classData
+  const sortableClasses = classData
     .filter(d => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
     .sort((a, b) => b.asgnStartDate - a.asgnStartDate);
-  const unSortablecards = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
+  const unSortableClasses = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
 
-  const allCards = [...sortableCards, ...unSortablecards];
-
-  const ClassCards = allCards.map(item => (
-    <Col span={8} key={item._id}>
+  const allClasses = [...sortableClasses, ...unSortableClasses];
+  const allActiveClasses = allClasses.filter(c => c.active === 1);
+  const ClassCards = allActiveClasses.map(item => (
+    <Col xs={24} sm={24} md={12} lg={12} xl={8} key={item._id}>
       <Card data={item} />
     </Col>
   ));
 
   return (
-    <CardsContainer gutter={10}>
+    <CardsContainer>
       <TextWrapper size="20px" color="#434B5D">
         My classes
       </TextWrapper>
-      <Row gutter={10} style={{ width: "1000px" }}>
-        {loading === true ? <Spin /> : ClassCards}
-      </Row>
-      {!loading && classData.length == 0 && <CreateClassPage />}
+      {loading ? (
+        <Spin style={{ marginTop: "120px" }} />
+      ) : classData.length == 0 ? (
+        <CreateClassPage />
+      ) : (
+        <Row gutter={20}>{ClassCards}</Row>
+      )}
     </CardsContainer>
   );
 };

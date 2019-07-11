@@ -171,6 +171,7 @@ export const RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR = "[assignment’s class list] 
 export const SET_ASSIGNMENT_FILTER = "[assignments] set assignment filter";
 
 export const FETCH_CURRENT_EDITING_ASSIGNMENT = "[assignments] fetch assignment data";
+export const FETCH_CURRENT_ASSIGNMENT = "[assignments] fetch assignment using assignment id";
 export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current assignment";
 export const UPDATE_RELEASE_SCORE_SETTINGS = "[assignments] update assignment settings";
 export const TOGGLE_RELEASE_GRADE_SETTINGS = "[assignments] show release grade settings";
@@ -240,3 +241,4 @@ export const CREATE_PLAYLISTS_SUCCESS = "[playlists] create success";
 //
 export const SET_QUESTION_CATEGORY = "[pickUpQuestion] set question category success";
 export const SET_QUESTION_TAB = "[pickUpQuestion] set question tab success";
+export const SET_SCROLL_TOP = "[pickUpQuestion] set scroll top value";

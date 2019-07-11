@@ -14,7 +14,7 @@ import { white, dashBorderColor } from "@edulastic/colors";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
-import { uploadToS3, reIndexResponses, canInsert } from "../helpers";
+import { uploadToS3, reIndexResponses, canInsert, beforeUpload } from "../helpers";
 import headings from "./FroalaPlugins/headings";
 
 import MathModal from "./MathModal";
@@ -213,6 +213,7 @@ export const Placeholder = styled.div.attrs({
   right: 0;
   opacity: 0.7;
   color: #cccccc;
+  z-index: 1;
 `;
 
 //adds h1 & h2 buttons commands to froala editor.
@@ -278,7 +279,7 @@ const CustomEditor = ({
   const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
   const config = Object.assign(
     {
-      key: "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==",
+      key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
       initOnClick,
@@ -291,6 +292,7 @@ const CustomEditor = ({
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
+      placeholderText: null,
       htmlAllowedEmptyTags: [
         "textarea",
         "a",
@@ -434,7 +436,12 @@ const CustomEditor = ({
           }
         },
         "image.beforeUpload": function(image) {
-          if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
+          if (
+            !canInsert(this.selection.element()) ||
+            !canInsert(this.selection.endElement()) ||
+            !beforeUpload(image[0])
+          )
+            return false;
           this.image.showProgressBar();
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.DEFAULT)

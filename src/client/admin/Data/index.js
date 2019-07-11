@@ -209,3 +209,24 @@ export const SUBSCRIPTION_TYPE_CONFIG = {
     }
   }
 };
+
+export const subscriptionAdditionalDetails = [
+  {
+    fieldName: "customerSuccessManager",
+    label: "CS Manager",
+    placeholder: "Customer success manager",
+    type: "string"
+  },
+  {
+    fieldName: "opportunityId",
+    label: "Opportunity Id",
+    placeholder: "Opportunity id",
+    type: "string"
+  },
+  {
+    fieldName: "licenceCount",
+    label: "Licence Count",
+    placeholder: "Licence count",
+    type: "number"
+  }
+];

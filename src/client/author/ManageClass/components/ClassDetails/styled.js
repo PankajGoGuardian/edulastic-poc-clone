@@ -2,16 +2,13 @@ import styled, { css } from "styled-components";
 import { Link } from "react-router-dom";
 import {
   white,
-  blueButton,
-  blue,
+  themeColorLight,
+  themeColor,
   greyDarken,
-  darkBlue,
   textColor,
   greenDark,
   darkGrey,
-  titleColor,
-  lightBlue3,
-  themeColorLight
+  titleColor
 } from "@edulastic/colors";
 import { Button, Icon, Divider, Menu } from "antd";
 import { IconManage } from "@edulastic/icons";
@@ -49,11 +46,12 @@ export const EditButton = styled(Button)`
   ${ShareButtonStyle}
   padding: 5px 20px;
   border: none;
-  color: ${blue};
+  color: ${themeColor};
   background: ${white};
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${white};
-    background: ${blueButton};
+    background: ${themeColorLight};
   }
 `;
 
@@ -68,6 +66,7 @@ export const ActionButton = styled(Button)`
   display: flex;
   align-items: center;
   margin-right: 16px;
+  color: ${themeColor};
 `;
 
 export const AddStudentButton = styled(Button)`
@@ -75,12 +74,12 @@ export const AddStudentButton = styled(Button)`
   padding: 5px 20px;
   border: none;
   color: ${white};
-  background: ${blue};
+  background: ${themeColor};
   display: flex;
   align-items: center;
   &:hover {
     color: ${white};
-    background: ${lightBlue3};
+    background: ${themeColor};
   }
 `;
 
@@ -113,7 +112,7 @@ export const LeftContent = styled.div`
 export const StyledIcon = styled(Icon)`
   margin-left: 8px;
   svg {
-    fill: ${({ fill }) => fill || blue};
+    fill: ${({ fill }) => fill || themeColor};
     font-size: ${({ size }) => size || 20}px;
   }
 `;
@@ -137,7 +136,7 @@ export const RightContent = styled.div`
 export const AnchorLink = styled(Link)`
   font-size: 14px;
   font-weight: 600;
-  color: ${darkBlue};
+  color: ${themeColor};
 `;
 
 export const ClassCode = styled.div`
@@ -237,10 +236,10 @@ export const NoConentDesc = styled.div`
 export const MenuItem = styled(Menu.Item)`
   display: flex;
   align-items: center;
-  color: ${lightBlue3};
+  color: ${themeColorLight};
 
   svg {
-    fill: ${lightBlue3};
+    fill: ${themeColorLight};
   }
 `;
 

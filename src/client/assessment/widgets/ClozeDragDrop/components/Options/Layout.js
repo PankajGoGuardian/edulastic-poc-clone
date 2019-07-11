@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { Select, TextField, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { cloneDeep, isEqual } from "lodash";
+import { cloneDeep, isEqual, clamp } from "lodash";
 
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
@@ -14,6 +14,8 @@ import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../../components/Question";
+
+import { response as Dimensions } from "@edulastic/constants";
 
 class Layout extends Component {
   state = {
@@ -27,6 +29,33 @@ class Layout extends Component {
     });
   };
 
+  handleBlurGlobalHeight = () => {
+    const { onChange, uiStyle } = this.props;
+    const { minHeight, maxHeight } = Dimensions;
+    if (uiStyle.heightpx < minHeight || uiStyle.heightpx > maxHeight) {
+      const height = clamp(uiStyle.heightpx, minHeight, maxHeight);
+      onChange("ui_style", {
+        ...uiStyle,
+        heightpx: height
+      });
+    }
+  };
+
+  handleBlurIndividualHeight = index => {
+    const { uiStyle, onChange } = this.props;
+    const { responsecontainerindividuals: resp } = uiStyle;
+    const { minHeight, maxHeight } = Dimensions;
+    let height = resp[index].heightpx;
+    if (height && (height < minHeight || height > maxHeight)) {
+      height = clamp(height, minHeight, maxHeight);
+      resp[index].heightpx = height;
+      onChange("ui_style", {
+        ...uiStyle,
+        responsecontainerindividuals: resp
+      });
+    }
+  };
+
   render() {
     const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections } = this.props;
 
@@ -38,14 +67,25 @@ class Layout extends Component {
     };
 
     const changeIndividualUiStyle = (prop, value, index) => {
-      const newStyles = cloneDeep(uiStyle);
-      newStyles.responsecontainerindividuals[index][prop] = value;
-      onChange("ui_style", newStyles);
+      // const newStyles = cloneDeep(uiStyle);
+      const { responsecontainerindividuals } = uiStyle;
+      const ind = responsecontainerindividuals.findIndex(cont => cont.index === index);
+      if (ind !== -1) {
+        responsecontainerindividuals[ind][prop] = value;
+        onChange("ui_style", { ...uiStyle, responsecontainerindividuals });
+      }
+      // newStyles.responsecontainerindividuals[index][prop] = value;
+      // onChange("ui_style", newStyles);
     };
 
     const addIndividual = () => {
       const { responsecontainerindividuals } = uiStyle;
+      const { responseIDs } = this.props;
+      const ind = responsecontainerindividuals.length;
+      const response = responseIDs.find(resp => resp.index === ind);
       responsecontainerindividuals.push({
+        id: !!response ? response.id : "",
+        index: !!response ? response.index : "",
         widthpx: 0,
         heightpx: 0,
         wordwrap: false
@@ -65,7 +105,10 @@ class Layout extends Component {
       });
     };
 
-    const calculateRightWidth = value => (value >= 140 && value <= 400 ? value : value < 140 ? 140 : 400);
+    const calculateRightWidth = value => {
+      const { minWidth, maxWidth } = Dimensions;
+      return clamp(value, minWidth, maxWidth);
+    };
 
     const onWidthInputBlur = index => () => {
       const { input } = this.state;
@@ -103,7 +146,6 @@ class Layout extends Component {
     const textFieldStyles = {
       maxWidth: 280
     };
-
     return (
       <Question
         section="advanced"
@@ -163,6 +205,13 @@ class Layout extends Component {
             />
           </Col>
         </Row>
+        <Row>
+          <Checkbox
+            label={t("component.options.globalSettings")}
+            checked={!!uiStyle.globalSettings}
+            onChange={e => changeUiStyle("globalSettings", !uiStyle.globalSettings)}
+          />
+        </Row>
         <Row marginTop={13}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerglobal")}</Label>
@@ -192,6 +241,7 @@ class Layout extends Component {
               disabled={false}
               containerStyle={{ width: 350 }}
               style={textFieldStyles}
+              onBlur={this.handleBlurGlobalHeight}
               onChange={e => changeUiStyle("heightpx", +e.target.value)}
               value={uiStyle.heightpx}
             />
@@ -243,6 +293,7 @@ class Layout extends Component {
                   disabled={false}
                   containerStyle={{ width: 350 }}
                   style={textFieldStyles}
+                  onBlur={() => this.handleBlurIndividualHeight(index)}
                   onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
                   value={responsecontainerindividual.heightpx}
                 />

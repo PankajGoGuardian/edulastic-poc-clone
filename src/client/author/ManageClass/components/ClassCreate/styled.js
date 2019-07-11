@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { white, green, greenDark, blueButton, blue, greyDarken, red } from "@edulastic/colors";
+import { white, greyDarken, red } from "@edulastic/colors";
 import { Button } from "antd";
 import { IconManage } from "@edulastic/icons";
 import { Paper, FlexContainer } from "@edulastic/common";

@@ -5,7 +5,7 @@ import { isObject } from "lodash";
 
 import { math } from "@edulastic/constants";
 
-import { KEYBOARD_BUTTONS } from "./constants/keyboardButtons";
+import { KEYBOARD_BUTTONS, KEYBOARD_BUTTONS_ALL } from "./constants/keyboardButtons";
 import { NUMBER_PAD_ITEMS } from "./constants/numberPadItems";
 
 import Keyboard from "../Keyboard";
@@ -16,6 +16,8 @@ const { EMBED_RESPONSE } = math;
 
 class MathKeyboard extends React.PureComponent {
   static KEYBOARD_BUTTONS = KEYBOARD_BUTTONS;
+
+  static KEYBOARD_BUTTONS_ALL = KEYBOARD_BUTTONS_ALL;
 
   static NUMBER_PAD_ITEMS = NUMBER_PAD_ITEMS;
 
@@ -77,18 +79,28 @@ class MathKeyboard extends React.PureComponent {
   };
 
   get keyboardButtons() {
-    const { symbols } = this.props;
+    const { symbols, restrictKeys } = this.props;
     const { type } = this.state;
 
-    return KEYBOARD_BUTTONS.map(btn => {
-      symbols.forEach(symbol => {
-        if (isObject(symbol) && symbol.value.includes(btn.handler)) {
-          btn.types.push(symbol.label);
-        }
-      });
+    const restrictButtons = restrictKeys.map(key => ({
+      handler: key,
+      label: key,
+      types: [isObject(type) ? type.label : type],
+      command: "write"
+    }));
 
-      return btn;
-    }).filter(btn => btn.types.includes(isObject(type) ? type.label : type));
+    return restrictButtons
+      .concat(type === "all" ? KEYBOARD_BUTTONS_ALL : KEYBOARD_BUTTONS)
+      .map(btn => {
+        symbols.forEach(symbol => {
+          if (isObject(symbol) && symbol.value.includes(btn.handler)) {
+            btn.types.push(symbol.label);
+          }
+        });
+
+        return btn;
+      })
+      .filter(btn => btn.types.includes(isObject(type) ? type.label : type));
   }
 
   get selectOptions() {
@@ -214,12 +226,14 @@ MathKeyboard.propTypes = {
   showResponse: PropTypes.bool,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
-  showDropdown: PropTypes.bool
+  showDropdown: PropTypes.bool,
+  restrictKeys: PropTypes.array
 };
 
 MathKeyboard.defaultProps = {
   showResponse: false,
   showDropdown: false,
+  restrictKeys: [],
   onClose: () => {},
   onChangeKeypad: () => {}
 };

@@ -17,7 +17,7 @@ import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
 import { aws } from "@edulastic/constants";
 import { SOURCE, WIDTH, HEIGHT } from "../../constants/constantsForQuestions";
-import { uploadToS3 } from "@edulastic/common/src/helpers";
+import { uploadToS3, beforeUpload } from "@edulastic/common";
 
 class ComposeQuestion extends Component {
   render() {
@@ -105,6 +105,7 @@ class ComposeQuestion extends Component {
     };
 
     const onDrop = ([files]) => {
+      if (!beforeUpload(files)) return false;
       if (files) {
         setLoading(true);
         uploadToS3(files, aws.s3Folders.DEFAULT)
@@ -146,7 +147,6 @@ class ComposeQuestion extends Component {
 
         <Dropzone
           onDrop={onDrop}
-          maxSize={2 * 1024 * 1024}
           accept="image/*"
           className="dropzone"
           activeClassName="active-dropzone"

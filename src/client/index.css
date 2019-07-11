@@ -804,7 +804,7 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
 }
 
 .check-answer.right .index {
@@ -822,7 +822,7 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
 }
 
 .check-answer.showanswer .index {
@@ -1321,10 +1321,6 @@ span.token.active-word {
 
 .template_box .ant-select-selection {
   border-color: #fff;
-}
-
-.template_box .ant-select-selection:hover {
-  border-color: #0e93dc;
 }
 
 .template_box .anticon svg {
@@ -1889,7 +1885,7 @@ span.token.active-word {
   flex-wrap: wrap;
   align-items: center; */
   margin-bottom: 8px;
-  font-size: 16px;
+  /* font-size: 16px; */
   font-weight: 400;
 }
 
@@ -1997,5 +1993,31 @@ span.token.active-word {
 }
 
 .ant-radio-checked .ant-radio-inner::after {
+  background-color: #00ad50;
+}
+
+.ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
+.ant-select-focused .ant-select-selection,
+.ant-select-selection:focus,
+.ant-select-selection:hover,
+.ant-select-selection:active,
+.ant-input:hover,
+.ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled) {
+  border-color: #00ad50;
+}
+
+.ant-btn-background-ghost.ant-btn-primary,
+.ant-btn-background-ghost.ant-btn-primary:hover,
+.ant-btn-background-ghost.ant-btn-primary:focus {
+  color: #00ad50;
+  border-color: #00ad50;
+}
+
+.ant-tabs-nav .ant-tabs-tab-active,
+.ant-tabs-nav .ant-tabs-tab:hover {
+  color: #00ad50;
+}
+
+.ant-tabs-ink-bar {
   background-color: #00ad50;
 }

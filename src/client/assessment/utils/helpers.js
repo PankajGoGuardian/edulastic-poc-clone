@@ -1,4 +1,5 @@
-import { groupBy } from "lodash";
+import { groupBy, difference, isEmpty } from "lodash";
+import { MathKeyboard } from "@edulastic/common";
 
 export const getFontSize = (fontSize, withRem = false) => {
   switch (fontSize) {
@@ -224,4 +225,58 @@ export const getDirection = pos => {
     default:
       return "column";
   }
+};
+
+/**
+ * User is able to enter  only variables used in 'RESTRICT VARIABLES USED TO'
+ */
+export const isKeyboard = str => {
+  const isExist = MathKeyboard.KEYBOARD_BUTTONS_ALL.find(key => key.handler.includes(str));
+  return !!isExist;
+};
+
+export const mathValidateVariables = (val, options) => {
+  if (!options || (!options.allowedVariables && !options.allowNumericOnly) || !val) return val;
+
+  const { allowNumericOnly, allowedVariables } = options;
+  let newVal = val;
+
+  if (allowNumericOnly) {
+    newVal = newVal.replace(/\b([a-zA-Z]+)\b/gm, "");
+    return newVal;
+  }
+
+  if (!allowedVariables) return newVal;
+
+  const validVars = allowedVariables.split(",").map(segment => segment.trim());
+  if (validVars.length === 0) return newVal;
+
+  const foundVars = [];
+  const varReg = /\b([a-zA-Z]+)\b/gm;
+  let m;
+  do {
+    m = varReg.exec(newVal);
+    if (m) {
+      const isExist = isKeyboard(m[0]);
+      if (!isExist) {
+        foundVars.push({ str: m[0], segments: m[0].split("") });
+      }
+    }
+  } while (m);
+
+  for (const variable of foundVars) {
+    const varsToExclude = difference(variable.segments, validVars);
+    if (!isEmpty(varsToExclude)) {
+      let newStr = variable.str;
+      for (const varToexclude of varsToExclude) {
+        const excludeReg = new RegExp(`${varToexclude}`, "gm");
+        newStr = newStr.replace(excludeReg, "");
+      }
+
+      const excludeReg = new RegExp(`\\b${variable.str}\\b`, "gm");
+      newVal = newVal.replace(excludeReg, newStr);
+    }
+  }
+
+  return newVal;
 };

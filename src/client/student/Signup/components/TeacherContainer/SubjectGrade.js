@@ -6,7 +6,7 @@ import { isEmpty, filter, map, pick, find, mapKeys } from "lodash";
 import { Row, Col, Select, Form, Button } from "antd";
 import styled from "styled-components";
 import { IconHeader } from "@edulastic/icons";
-import { springGreen, white, title, fadedGrey } from "@edulastic/colors";
+import { themeColor, white, title, fadedGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import selectsData from "../../../../author/TestPage/components/common/selectsData";
 // actions
@@ -267,7 +267,7 @@ const SelectForm = styled(Form)`
 
     .ant-select-arrow {
       svg {
-        fill: ${springGreen};
+        fill: ${themeColor};
       }
     }
   }
@@ -283,14 +283,14 @@ const GradeSelect = styled(Select)`
 `;
 
 const ProceedBtn = styled(Button)`
-  background: ${springGreen};
+  background: ${themeColor};
   min-width: 60%;
   color: ${white};
   text-transform: uppercase;
   text-align: center;
   border: 0px;
   &:hover {
-    background: ${springGreen};
+    background: ${themeColor};
     color: ${white};
   }
 `;

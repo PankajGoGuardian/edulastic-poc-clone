@@ -28,12 +28,12 @@ const Link = styled.a`
   align-items: center;
   flex-wrap: nowrap;
   text-decoration: none;
-  color: #00ad50;
+  color: #333333;
   cursor: pointer;
   word-break: break-all;
 
   :hover {
-    color: #00ad50;
+    color: #333333;
   }
 
   p {

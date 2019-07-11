@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
+import { questionType as constantsQuestionType } from "@edulastic/constants";
 
 import styled from "styled-components";
 import SourceModal from "../SourceModal/SourceModal";
@@ -24,15 +25,37 @@ import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import { getItemIdSelector, getItemLevelScoringSelector } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
+import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
 import ItemLevelScoringContext from "./QuestionContext";
 
 class Container extends Component {
-  state = {
-    showModal: false,
-    saveClicked: false,
-    previewTab: "clear"
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showModal: false,
+      saveClicked: false,
+      previewTab: "clear"
+    };
+
+    this.innerDiv = React.createRef();
+  }
+
+  componentDidUpdate = () => {
+    const { view, savedWindowScrollTop, onSaveScrollTop } = this.props;
+
+    const { current: innerDiv } = this.innerDiv;
+
+    if (
+      savedWindowScrollTop !== 0 &&
+      view.toString() === "edit" &&
+      innerDiv.clientHeight + window.outerHeight >= savedWindowScrollTop
+    ) {
+      window.scrollTo(0, savedWindowScrollTop);
+      onSaveScrollTop(0);
+    }
   };
 
   handleChangeView = view => {
@@ -122,7 +145,8 @@ class Container extends Component {
       testName,
       testId,
       location,
-      toggleModalAction
+      toggleModalAction,
+      isItem
     } = this.props;
 
     if (location.pathname.includes("author/tests")) {
@@ -149,7 +173,7 @@ class Container extends Component {
       ];
     }
 
-    return [
+    const crumbs = [
       {
         title: "ITEM BANK",
         to: "/author/items"
@@ -163,12 +187,18 @@ class Container extends Component {
         to: ""
       }
     ];
+
+    if (isItem) crumbs.splice(1, 1);
+    return crumbs;
   }
 
   renderButtons = () => {
-    const { view, question } = this.props;
+    const { view, question, authorQuestions } = this.props;
     const { previewTab } = this.state;
     const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
+
+    const isShowAnswerVisible =
+      authorQuestions && !constantsQuestionType.manuallyGradableQn.includes(authorQuestions.type);
 
     return (
       <ButtonAction
@@ -178,17 +208,115 @@ class Container extends Component {
         changePreviewTab={this.handleChangePreviewTab}
         onSave={this.handleSave}
         view={view}
-        showCheckButton={checkAnswerButton}
+        showCheckButton={isShowAnswerVisible || checkAnswerButton}
         allowedAttempts={checkAttempts}
         previewTab={previewTab}
         showSettingsButton={false}
+        isShowAnswerVisible={isShowAnswerVisible}
+      />
+    );
+  };
+
+  renderRightSideButtons = () => {
+    const {
+      item,
+      updating,
+      testItemStatus,
+      changePreview,
+      preview,
+      view,
+      isTestFlow,
+      saveItem,
+      isEditable,
+      setShowSettings
+    } = this.props;
+
+    let showPublishButton = false;
+
+    if (item) {
+      const { _id: testItemId } = item;
+      showPublishButton =
+        isTestFlow && ((testItemId && testItemStatus && testItemStatus !== "published") || isEditable);
+    }
+
+    return (
+      <ButtonAction
+        onShowSource={this.handleShowSource}
+        onShowSettings={() => setShowSettings(true)}
+        onChangeView={this.handleChangeView}
+        changePreview={changePreview}
+        changePreviewTab={this.handleChangePreviewTab}
+        onSave={this.handleSave}
+        saving={updating}
+        view={view}
+        previewTab={preview}
+        showPublishButton={showPublishButton}
+      />
+    );
+  };
+
+  header = () => {
+    const {
+      view,
+      modalItemId,
+      onModalClose,
+      isItem,
+      showPublishButton,
+      isTestFlow = false,
+      item,
+      setEditable,
+      publishTestItem,
+      hasAuthorPermission,
+      onSaveScrollTop,
+      savedWindowScrollTop,
+      setShowSettings,
+      saveItem
+    } = this.props;
+    const { previewTab } = this.state;
+
+    const commonProps = {
+      onChangeView: this.handleChangeView,
+      onShowSource: this.handleShowSource,
+      changePreviewTab: this.handleChangePreviewTab,
+      view,
+      previewTab,
+      isTestFlow,
+      withLabels: true
+    };
+
+    return isItem ? (
+      <ButtonBar
+        onSave={saveItem}
+        {...commonProps}
+        showPublishButton={showPublishButton}
+        onPublishTestItem={publishTestItem}
+        onEnableEdit={() => setEditable(true)}
+        onSaveScrollTop={onSaveScrollTop}
+        hasAuthorPermission={hasAuthorPermission}
+        itemStatus={item && item.status}
+        renderRightSide={view === "edit" ? this.renderRightSideButtons : () => {}}
+      />
+    ) : (
+      <ButtonBar
+        {...commonProps}
+        onSave={this.handleSave}
+        renderRightSide={view === "edit" ? this.renderButtons : () => {}}
+        withLabels
+        onSaveScrollTop={onSaveScrollTop}
+        savedWindowScrollTop={savedWindowScrollTop}
+        renderExtra={() =>
+          modalItemId && (
+            <ButtonClose onClick={onModalClose}>
+              <IconClose />
+            </ButtonClose>
+          )
+        }
       />
     );
   };
 
   render() {
-    const { view, question, history, modalItemId, onModalClose, windowWidth } = this.props;
-
+    const { view, question, history, windowWidth, isItem } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -201,35 +329,20 @@ class Container extends Component {
       return <div />;
     }
 
-    const { previewTab, showModal } = this.state;
+    const { showModal } = this.state;
     const itemId = question === null ? "" : question._id;
 
     return (
-      <div>
+      <div ref={this.innerDiv}>
         {showModal && (
           <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
             {JSON.stringify(question, null, 4)}
           </SourceModal>
         )}
         <ItemHeader title={question.title} reference={itemId}>
-          <ButtonBar
-            onChangeView={this.handleChangeView}
-            onShowSource={this.handleShowSource}
-            changePreviewTab={this.handleChangePreviewTab}
-            onSave={this.handleSave}
-            view={view}
-            previewTab={previewTab}
-            renderRightSide={view === "edit" ? this.renderButtons : () => {}}
-            withLabels
-            renderExtra={() =>
-              modalItemId && (
-                <ButtonClose onClick={onModalClose}>
-                  <IconClose />
-                </ButtonClose>
-              )
-            }
-          />
+          {this.header()}
         </ItemHeader>
+
         <BreadCrumbBar>
           <Col md={12}>
             {windowWidth > desktopWidth.replace("px", "") ? (
@@ -269,7 +382,10 @@ Container.propTypes = {
   location: PropTypes.object.isRequired,
   testName: PropTypes.string.isRequired,
   testId: PropTypes.string.isRequired,
-  toggleModalAction: PropTypes.string.isRequired
+  toggleModalAction: PropTypes.string.isRequired,
+  savedWindowScrollTop: PropTypes.number.isRequired,
+  onSaveScrollTop: PropTypes.func.isRequired,
+  authorQuestions: PropTypes.object
 };
 
 Container.defaultProps = {
@@ -278,7 +394,8 @@ Container.defaultProps = {
   navigateToPickupQuestionType: () => {},
   navigateToItemDetail: () => {},
   onCompleteItemCreation: () => {},
-  onModalClose: () => {}
+  onModalClose: () => {},
+  authorQuestions: {}
 };
 
 const enhance = compose(
@@ -292,7 +409,9 @@ const enhance = compose(
       testItemId: getItemIdSelector(state),
       itemLevelScoring: getItemLevelScoringSelector(state),
       testName: state.tests.entity.title,
-      testId: state.tests.entity._id
+      testId: state.tests.entity._id,
+      savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,
+      authorQuestions: getCurrentQuestionSelector(state)
     }),
     {
       changeView: changeViewAction,
@@ -302,7 +421,8 @@ const enhance = compose(
       showAnswer: showAnswerAction,
       changePreview: changePreviewAction,
       removeAnswers: removeUserAnswerAction,
-      toggleModalAction: toggleCreateItemModalAction
+      toggleModalAction: toggleCreateItemModalAction,
+      onSaveScrollTop: saveScrollTop
     }
   )
 );

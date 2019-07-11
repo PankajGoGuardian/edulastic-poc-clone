@@ -11,7 +11,7 @@ export const HeaderWrapper = styled(Header)`
   z-index: 300;
   width: 100%;
   background: ${props => props.theme.header.headerBgColor};
-  padding: 0px 20px;
+  padding: 0px 30px;
   height: 96px;
   display: flex;
   justify-content: space-between;

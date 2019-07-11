@@ -31,6 +31,13 @@ const splitItems = (item, testItem) => {
   );
 };
 
+export const getQuestionTypes = item => {
+  return get(item, ["data", "questions"], []).reduce((acc, q) => {
+    acc.push(q.title);
+    return acc;
+  }, []);
+};
+
 const SortableItem = SortableElement(
   ({
     indx,
@@ -106,9 +113,9 @@ const SortableItem = SortableElement(
           items.map(({ item: _item, question }, index) => {
             return (
               <FlexContainer justifyContent="space-between" alignItems="flex-start">
-                <FlexContainer alignItems="flex-start" style={{ flex: 3 }}>
+                <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
                   <FlexContainer
-                    style={{ marginTop: 30, visibility: index === 0 ? "visible" : "hidden", flex: 1 }}
+                    style={{ marginTop: 30, visibility: index === 0 ? "visible" : "hidden", width: "5%" }}
                     flexDirection="column"
                     justifyContent="center"
                   >
@@ -117,7 +124,7 @@ const SortableItem = SortableElement(
                   </FlexContainer>
                   <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                     <TestItemPreview
-                      style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
+                      style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex", width: "95%" }}
                       cols={_item}
                       previewTab="clear"
                       metaData={metaInfoData.id}
@@ -130,9 +137,8 @@ const SortableItem = SortableElement(
                     />
                   </AnswerContext.Provider>
                 </FlexContainer>
-                <FlexContainer style={{ flex: 1 }}>
-                  {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
-                  <FlexContainer flexDirection="column">
+                <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end">
+                  <FlexContainer flexDirection="column" style={{ margin: 0 }}>
                     <PointsLabel>Points</PointsLabel>
                     <PointsInput
                       size="large"
@@ -146,6 +152,7 @@ const SortableItem = SortableElement(
                       onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                     />
                   </FlexContainer>
+                  {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
                 </FlexContainer>
               </FlexContainer>
             );
@@ -217,9 +224,14 @@ const List = SortableContainer(
               by: (testItems[i].createdBy && testItems[i].createdBy.name) || "",
               shared: "0",
               likes: "0",
-              types: types[testItems[i]._id],
-              standards: standards[testItems[i]._id],
-              audio: audioStatus(testItems[i])
+              types: getQuestionTypes(testItems[i]),
+              isPremium: !!testItems[i].collectionName,
+              item: testItems[i],
+              audio: audioStatus(testItems[i]),
+              dok:
+                testItems[i].data &&
+                testItems[i].data.questions &&
+                (testItems[i].data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
             }}
             index={i}
             owner={owner}

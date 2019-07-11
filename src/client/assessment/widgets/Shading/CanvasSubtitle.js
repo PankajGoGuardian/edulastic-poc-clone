@@ -24,6 +24,8 @@ class CanvasSubtitle extends Component {
     const column_count = canvas ? canvas.column_count : 1;
 
     const handleCanvasOptionsChange = (prop, val) => {
+      if (val < 1) return;
+
       setQuestionData(
         produce(item, draft => {
           draft.canvas[prop] = val;
@@ -59,6 +61,8 @@ class CanvasSubtitle extends Component {
             <Input
               size="large"
               value={row_count}
+              type="number"
+              min={1}
               onChange={e => handleCanvasOptionsChange("row_count", +e.target.value)}
             />
           </Col>
@@ -74,6 +78,8 @@ class CanvasSubtitle extends Component {
             <Input
               size="large"
               value={column_count}
+              min={0}
+              type="number"
               onChange={e => handleCanvasOptionsChange("column_count", +e.target.value)}
             />
           </Col>
@@ -88,6 +94,8 @@ class CanvasSubtitle extends Component {
             <Input
               size="large"
               value={cell_width}
+              type="number"
+              min={1}
               onChange={e => handleCanvasOptionsChange("cell_width", +e.target.value)}
             />
           </Col>
@@ -99,6 +107,8 @@ class CanvasSubtitle extends Component {
             <Input
               size="large"
               value={cell_height}
+              min={1}
+              type="number"
               onChange={e => handleCanvasOptionsChange("cell_height", +e.target.value)}
             />
           </Col>

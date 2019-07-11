@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Col } from "antd";
-import { white, fadedGrey } from "@edulastic/colors";
+import { white, fadedGrey, themeColorLight, themeColor } from "@edulastic/colors";
 import { IconBarChart } from "@edulastic/icons";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Breadcrumb from "../../../src/components/Breadcrumb";
@@ -48,28 +48,27 @@ export const CustomizedHeaderWrapper = ({
       <StyledCol>
         <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
           {onShareClickCB ? (
-            <StyledButton shape="round" size="default" icon="share-alt" onClick={_onShareClickCB}>
+            <StyledButton shape="round" icon="share-alt" onClick={_onShareClickCB}>
               Share
             </StyledButton>
           ) : null}
         </FeaturesSwitch>
         {onPrintClickCB ? (
-          <StyledButton shape="round" size="default" icon="printer" onClick={_onPrintClickCB}>
+          <StyledButton shape="round" icon="printer" onClick={_onPrintClickCB}>
             Print
           </StyledButton>
         ) : null}
         <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
           {onDownloadCSVClickCB ? (
-            <StyledButton type="primary" shape="round" size="default" icon="download" onClick={_onDownloadCSVClickCB}>
+            <StyledButton shape="round" icon="download" onClick={_onDownloadCSVClickCB}>
               Download CSV
             </StyledButton>
           ) : null}
         </FeaturesSwitch>
         {onRefineResultsCB ? (
           <StyledButton
-            type={refineButtonActive ? "default" : "primary"}
+            type={refineButtonActive ? "primary" : "default"}
             shape="round"
-            size="default"
             icon="filter"
             onClick={_onRefineResultsCB}
           >
@@ -88,6 +87,23 @@ const StyledCol = styled(Col)`
 const StyledButton = styled(Button)`
   margin-left: 10px;
   font-size: 14px;
+  text-shadow: none;
+  font-weight: 400;
+  &.ant-btn-primary {
+    background: ${themeColorLight};
+    color: ${white};
+    font-weight: 400;
+    &:hover,
+    &:focus {
+      background: ${themeColorLight};
+      color: ${white};
+    }
+  }
+  &:hover,
+  &:focus {
+    border-color: ${themeColor};
+    color: ${themeColor};
+  }
 `;
 
 const HeaderTitle = styled.div`

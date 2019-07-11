@@ -1,13 +1,10 @@
 import React, { lazy } from "react";
 import PropTypes from "prop-types";
 import { withRouter, Redirect } from "react-router";
-import styled from "styled-components";
 import { get } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Modal, Button } from "antd";
 import { SelectRolePopup } from "./student/SsoLogin/selectRolePopup";
-import { white, blue } from "@edulastic/colors";
 
 import { isLoggedInForPrivateRoute } from "./common/utils/helpers";
 
@@ -24,7 +21,7 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
   }
 
   if (isLoggedInForPrivateRoute(user) && user.user.role === "teacher") {
-    return <Redirect exact to="/author/assignments" />;
+    return <Redirect exact to="/author/dashboard" />;
   } else if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
     return <Redirect exact to="/home/assignments" />;
   } else if (location.pathname.toLocaleLowerCase().includes("auth")) {

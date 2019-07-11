@@ -1,6 +1,14 @@
 import styled from "styled-components";
 import TextareaAutosize from "react-autosize-textarea";
-import { greenDark, grey, tabletWidth, greenDarkSecondary, secondaryTextColor, mobileWidth } from "@edulastic/colors";
+import {
+  greenDark,
+  grey,
+  tabletWidth,
+  greenDarkSecondary,
+  secondaryTextColor,
+  mobileWidth,
+  themeColor
+} from "@edulastic/colors";
 import { TextField, Paper } from "@edulastic/common";
 
 export const InstructorStimulus = styled.p`
@@ -300,7 +308,7 @@ export const SelectContainer = styled.div`
     display: flex;
     align-items: center;
     height: 100%;
-    color: blue;
+    color: ${themeColor};
     content: "\f0d7";
   }
 

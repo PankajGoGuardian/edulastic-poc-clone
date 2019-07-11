@@ -34,11 +34,18 @@ export const MetaTag = styled(Tag)`
   font-size: 10px;
 
   &:first-child {
-    margin-left: 55px;
+    margin-left: ${props => (props.marginLeft ? props.marginLeft : "55px")};
   }
 `;
 
 export const ExtraInfo = styled.span`
   font-weight: 800;
   color: #bbbfc4;
+`;
+
+export const DokStyled = styled.div`
+  font-size: 10px;
+  font-weight: 600;
+  color: #bbbfc4;
+  margin-right: 15px;
 `;

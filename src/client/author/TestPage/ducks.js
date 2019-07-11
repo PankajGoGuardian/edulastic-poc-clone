@@ -61,12 +61,14 @@ export const PREVIEW_CHECK_ANSWER = "[test] check answer for preview modal";
 export const PREVIEW_SHOW_ANSWER = "[test] show answer for preview modal";
 export const REPLACE_TEST_ITEMS = "[test] replace test items";
 export const ADD_TEST_ITEM = "[test] add test item to test";
+export const UPDATE_TEST_DEFAULT_IMAGE = "[test] update default thumbnail image";
 
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER);
 export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS);
+export const updateDefaultThumbnailAction = createAction(UPDATE_TEST_DEFAULT_IMAGE);
 
 export const receiveTestByIdAction = id => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -152,6 +154,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const setCreatedItemToTestAction = createAction(SET_CREATED_ITEM_TO_TEST);
 export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TEST);
 
+const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
 //reducer
 export const createBlankTest = () => ({
   title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
@@ -173,7 +176,7 @@ export const createBlankTest = () => ({
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
   status: "draft",
-  thumbnail: "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg",
+  thumbnail: defaultImage,
   createdBy: {
     _id: "",
     name: ""
@@ -206,6 +209,7 @@ const initialState = {
   count: 0,
   loading: false,
   creating: false,
+  thumbnail: "",
   createdItems: [],
   sharedUsersList: []
 };
@@ -214,6 +218,8 @@ export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_DEFAULT_TEST_DATA:
       return { ...state, entity: createBlankTest() };
+    case UPDATE_TEST_DEFAULT_IMAGE:
+      return { ...state, thumbnail: payload };
     case RECEIVE_TEST_BY_ID_REQUEST:
       return { ...state, loading: true };
     case SET_TEST_EDIT_ASSIGNED:
@@ -368,6 +374,18 @@ function* receiveTestByIdSaga({ payload }) {
     const questions = getQuestions(entity.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
+    if (entity.thumbnail === defaultImage) {
+      const standardIdentifier =
+        entity.summary &&
+        entity.summary.standards &&
+        entity.summary.standards[0] &&
+        entity.summary.standards[0].identifier;
+      const thumbnail = yield call(testsApi.getDefaultImage, {
+        subject: entity.subjects.length > 0 ? entity.subjects[0] : "Other Subjects",
+        standard: standardIdentifier || ""
+      });
+      yield put(updateDefaultThumbnailAction(thumbnail));
+    }
   } catch (err) {
     const errorMessage = "Receive test by id is failing";
     if (err.status === 403) {
@@ -490,6 +508,8 @@ function* shareTestSaga({ payload }) {
 function* publishTestSaga({ payload }) {
   try {
     let { _id: id, test, assignFlow } = payload;
+    const defaultThumbnail = yield select(getDefaultThumbnailSelector);
+    test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
     yield call(updateTestSaga, { payload: { id, data: test, assignFlow: true } });
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
@@ -576,10 +596,23 @@ function* getEvaluation(testItemId) {
   const evaluation = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
   return evaluation;
 }
+function* getEvaluationFromItem(testItem) {
+  const { itemLevelScore, itemLevelScoring = false } = testItem;
+  const questions = _keyBy(testItem.data.questions, "id");
+  const answers = yield select(state => get(state, "answers", {}));
+  const evaluation = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
+  return evaluation;
+}
 
 function* checkAnswerSaga({ payload }) {
   try {
-    const { evaluation, score, maxScore } = yield getEvaluation(payload.id);
+    let evaluationObject = {};
+    if (payload.isItem) {
+      evaluationObject = yield getEvaluationFromItem(payload);
+    } else {
+      evaluationObject = yield getEvaluation(payload.id);
+    }
+    const { evaluation, score, maxScore } = evaluationObject;
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
@@ -593,7 +626,7 @@ function* checkAnswerSaga({ payload }) {
       }
     });
 
-    message.success(`score: ${score}/${maxScore}`);
+    message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
   } catch (e) {
     message.error("failed to check answer");
     console.log("error checking answer", e);
@@ -649,6 +682,10 @@ export const stateSelector = state => state.tests;
 export const getTestSelector = createSelector(
   stateSelector,
   state => state.entity
+);
+export const getDefaultThumbnailSelector = createSelector(
+  stateSelector,
+  state => state.thumbnail
 );
 
 export const getTestEntitySelector = createSelector(

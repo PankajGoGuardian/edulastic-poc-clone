@@ -20,7 +20,8 @@ const Preview = ({
   changePreviewTab,
   disableResponse,
   showQuestionNumber,
-  qIndex
+  qIndex,
+  isReviewTab
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
@@ -68,6 +69,7 @@ const Preview = ({
         type={type}
         smallSize={smallSize}
         previewTab={previewTab}
+        isReviewTab={isReviewTab}
       />
       {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
     </div>
@@ -83,13 +85,15 @@ Preview.propTypes = {
   feedbackAttempts: PropTypes.number.isRequired,
   smallSize: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  isReviewTab: PropTypes.bool
 };
 
 Preview.defaultProps = {
   smallSize: false,
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  isReviewTab: false
 };
 
 export default Preview;

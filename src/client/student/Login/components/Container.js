@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { compose } from "redux";
 import { trim } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { springGreen, fadedBlack } from "@edulastic/colors";
+import { themeColor, themeColorLighter } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
 import { isDistrictPolicyAllowed, emailSpecialCharCheck } from "../../../common/utils/helpers";
@@ -38,7 +38,7 @@ class LoginContainer extends React.Component {
       if (!err) {
         login({
           password,
-          email: trim(email)
+          username: trim(email)
         });
       }
     });
@@ -163,7 +163,7 @@ class LoginContainer extends React.Component {
                                 message: t("common.validation.emptyemailid")
                               },
                               {
-                                type: "email",
+                                type: "string",
                                 message: t("common.validation.validemail")
                               },
                               {
@@ -243,6 +243,9 @@ const LoginContentWrapper = styled.div``;
 
 const RegistrationBody = styled(Row)`
   padding-top: 30px;
+  @media (min-width: 1366px) {
+    justify-content: center;
+  }
 `;
 
 const Copyright = styled(Row)`
@@ -346,33 +349,36 @@ const FormBody = styled(Row)`
 
 const ForgetPassword = styled("a")`
   float: right;
-  color: ${fadedBlack};
+  color: ${themeColorLighter};
 
   &:hover {
-    color: ${fadedBlack};
-    border-bottom: 1px ${springGreen} solid;
+    color: ${themeColorLighter};
+    border-bottom: 1px ${themeColor} solid;
   }
 `;
 
 const LoginButton = styled(Button)`
   width: 100%;
-  background: ${springGreen};
+  background: ${themeColor};
+  border-color: ${themeColor};
   font-size: 13px;
   color: white;
   border: 1px solid #1fb58b;
   font-weight: 600;
   margin-top: 12px;
 
-  &:hover {
-    background: ${springGreen};
+  &:hover,
+  &:focus {
+    border-color: ${themeColor};
+    background: ${themeColor};
   }
 `;
 
 const RememberCheckBox = styled(Checkbox)`
   .ant-checkbox-checked .ant-checkbox-inner {
-    background: ${springGreen};
+    background: ${themeColor};
   }
   .ant-checkbox-input:focus + .ant-checkbox-inner {
-    border-color: ${springGreen};
+    border-color: ${themeColor};
   }
 `;

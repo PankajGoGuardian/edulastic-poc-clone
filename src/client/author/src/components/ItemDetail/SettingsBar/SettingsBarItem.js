@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { white, blue, textColor } from "@edulastic/colors";
+import { white, themeColor, textColor } from "@edulastic/colors";
 import SettingsBarIcon from "./SettingsBarIcon";
 
 const SettingsBarItem = ({ item, onSelect, selected }) => (
@@ -20,7 +20,7 @@ SettingsBarItem.propTypes = {
 export default SettingsBarItem;
 
 const Container = styled.div`
-  background: ${({ selected }) => (selected ? blue : white)};
+  background: ${({ selected }) => (selected ? themeColor : white)};
   cursor: pointer;
   border-radius: 10px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);

@@ -51,7 +51,8 @@ class ButtonAction extends Component {
       showCheckButton,
       allowedAttempts,
       showPublishButton,
-      showSettingsButton
+      showSettingsButton,
+      isShowAnswerVisible
     } = this.props;
 
     return (
@@ -64,13 +65,6 @@ class ButtonAction extends Component {
                 justifyContent: "flex-end"
               }}
             >
-              <Button htmlType="button" onClick={onShowSource} data-cy="source" style={{ height: 45, width: 45 }}>
-                <ButtonLink
-                  color="primary"
-                  icon={<IconSource color="#00AD50" width={20} height={11} />}
-                  style={{ color: "#00AD50" }}
-                />
-              </Button>
               {showSettingsButton && (
                 <Button htmlType="button" onClick={onShowSettings} style={{ height: 45, width: 45 }}>
                   <ButtonLink
@@ -89,7 +83,7 @@ class ButtonAction extends Component {
                 justifyContent: "flex-end"
               }}
             >
-              {(showCheckButton || window.location.pathname.includes("author")) && (
+              {showCheckButton && (
                 <Button
                   style={{ height: "25px" }}
                   htmlType="button"
@@ -101,16 +95,18 @@ class ButtonAction extends Component {
                   </ButtonLink>
                 </Button>
               )}
-              <Button
-                style={{ height: "25px" }}
-                htmlType="button"
-                onClick={() => changePreviewTab("show")}
-                data-cy="show-answers-btn"
-              >
-                <ButtonLink color="primary" style={{ color: "#00AD50" }}>
-                  <LabelText>SHOW ANSWER</LabelText>
-                </ButtonLink>
-              </Button>
+              {isShowAnswerVisible && (
+                <Button
+                  style={{ height: "25px" }}
+                  htmlType="button"
+                  onClick={() => changePreviewTab("show")}
+                  data-cy="show-answers-btn"
+                >
+                  <ButtonLink color="primary" style={{ color: "#00AD50" }}>
+                    <LabelText>SHOW ANSWER</LabelText>
+                  </ButtonLink>
+                </Button>
+              )}
               <Button
                 style={{ height: "25px" }}
                 htmlType="button"
@@ -143,14 +139,16 @@ ButtonAction.propTypes = {
   showCheckButton: PropTypes.bool,
   allowedAttempts: PropTypes.number,
   showPublishButton: PropTypes.bool,
-  showSettingsButton: PropTypes.bool
+  showSettingsButton: PropTypes.bool,
+  isShowAnswerVisible: PropTypes.bool
 };
 
 ButtonAction.defaultProps = {
   showPublishButton: null,
   showCheckButton: null,
   allowedAttempts: null,
-  showSettingsButton: true
+  showSettingsButton: true,
+  isShowAnswerVisible: true
 };
 
 const enhance = compose(

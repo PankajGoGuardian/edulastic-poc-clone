@@ -12,7 +12,12 @@ import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
-import { setTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../../ducks";
+import {
+  setTestDataAction,
+  previewCheckAnswerAction,
+  previewShowAnswerAction,
+  getDefaultThumbnailSelector
+} from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
@@ -209,6 +214,7 @@ class Review extends PureComponent {
       onChangeSubjects,
       questions,
       owner,
+      defaultThumbnail,
       isEditable = false,
       createTestItemModalVisible,
       itemsSubjectAndGrade,
@@ -320,7 +326,7 @@ class Review extends PureComponent {
               isEditable={isEditable}
               summary={test.summary || {}}
               onChangeField={this.handleChangeField}
-              thumbnail={test.thumbnail}
+              thumbnail={defaultThumbnail || test.thumbnail}
               totalPoints={getTotalScore(test.testItems)}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
@@ -379,6 +385,7 @@ const enhance = compose(
       summary: getSummarySelector(state),
       createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
       questions: getQuestionsSelectorForReview(state),
+      defaultThumbnail: getDefaultThumbnailSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {

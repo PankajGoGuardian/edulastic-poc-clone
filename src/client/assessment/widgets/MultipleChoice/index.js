@@ -21,6 +21,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import { replaceVariables, replaceValues } from "../../utils/variables";
 
 import { ContentArea } from "../../styled/ContentArea";
+import { changePreviewAction } from "../../../author/src/actions/view";
 import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
@@ -140,10 +141,11 @@ class MultipleChoice extends Component {
   };
 
   handleAddAnswer = qid => {
-    const { saveAnswer, userAnswer, item, previewTab, changePreviewTab } = this.props;
+    const { saveAnswer, userAnswer, item, previewTab, changePreviewTab, changeView } = this.props;
     const newAnswer = cloneDeep(userAnswer);
     if (previewTab !== CLEAR) {
       changePreviewTab(CLEAR);
+      changeView(CLEAR);
     }
     if (item.multiple_responses) {
       if (newAnswer.includes(qid)) {
@@ -293,6 +295,7 @@ class MultipleChoice extends Component {
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
+                  styleType="primary"
                   {...restProps}
                 />
               )}
@@ -314,6 +317,7 @@ class MultipleChoice extends Component {
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
+                  styleType="primary"
                   {...restProps}
                 />
               )}
@@ -333,6 +337,7 @@ class MultipleChoice extends Component {
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
+                  styleType="primary"
                   {...restProps}
                 />
               )}
@@ -363,7 +368,8 @@ MultipleChoice.propTypes = {
   isSidebarCollapsed: PropTypes.bool.isRequired,
   flowLayout: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  col: PropTypes.object
+  col: PropTypes.object,
+  changeView: PropTypes.func.isRequired
 };
 
 MultipleChoice.defaultProps = {
@@ -388,7 +394,7 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
-    { setQuestionData: setQuestionDataAction }
+    { setQuestionData: setQuestionDataAction, changeView: changePreviewAction }
   )
 );
 

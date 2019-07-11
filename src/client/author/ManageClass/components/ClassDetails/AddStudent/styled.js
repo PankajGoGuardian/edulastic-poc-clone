@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Modal, Button } from "antd";
-import { lightGrey3, linkColor, lightBlue3, title } from "@edulastic/colors";
+import { lightGrey3, linkColor, lightBlue3, title, themeColor } from "@edulastic/colors";
 
 export const StyledModal = styled(Modal)`
   .ant-modal-content,
@@ -14,12 +14,12 @@ export const StyledModal = styled(Modal)`
 `;
 
 export const Title = styled.div`
-  color: ${linkColor};
+  color: ${themeColor};
   label {
     margin-left: 8px;
   }
   svg {
-    fill: ${linkColor};
+    fill: ${themeColor};
   }
 `;
 
@@ -30,15 +30,23 @@ export const ActionButton = styled(Button)`
   height: 32px;
   display: flex;
   align-items: center;
+  background: ${themeColor};
+  border-color: ${themeColor};
+  &:hover,
+  &:focus {
+    background: ${themeColor};
+    border-color: ${themeColor};
+  }
 `;
 
 export const PanelHeader = styled.div`
-  color: ${lightBlue3};
+  color: ${themeColor};
   font-weight: 500;
   font-size: 16px;
 
   label {
     margin-left: 8px;
+    color: ${themeColor};
   }
 `;
 

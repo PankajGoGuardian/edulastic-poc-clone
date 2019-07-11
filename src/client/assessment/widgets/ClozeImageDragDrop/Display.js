@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { cloneDeep, flattenDeep, isUndefined, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
 
-import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, Stimulus } from "@edulastic/common";
 import { response, clozeImage } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -24,7 +24,7 @@ import { RelativeContainer } from "../../styled/RelativeContainer";
 import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
-import { AnswerContainer } from "./styled/AnswerContainer";
+import AnswerContainer from "./AnswerContainer";
 
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
@@ -82,6 +82,12 @@ class Display extends Component {
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     onChange(newAnswers);
+
+    const { changePreview, changePreviewTab } = this.props;
+    if (changePreview) {
+      changePreview("clear");
+    }
+    changePreviewTab("clear");
   };
 
   shuffle = arr => {
@@ -168,9 +174,13 @@ class Display extends Component {
 
   getResponseBoxMaxValues = () => {
     const { responseContainers } = this.props;
-    const maxTop = maxBy(responseContainers, res => res.top);
-    const maxLeft = maxBy(responseContainers, res => res.left);
-    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+
+    if (responseContainers.length > 0) {
+      const maxTop = maxBy(responseContainers, res => res.top);
+      const maxLeft = maxBy(responseContainers, res => res.left);
+      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+    }
+    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
   };
 
   render() {
@@ -368,13 +378,8 @@ class Display extends Component {
                           <AnswerContainer
                             height={responseContainer.height || "auto"}
                             width={responseContainer.width || "auto"}
-                          >
-                            <MathSpan
-                              dangerouslySetInnerHTML={{
-                                __html: answer.replace("<p>", "<p class='clipText'>") || ""
-                              }}
-                            />
-                          </AnswerContainer>
+                            answer={answer.replace("<p>", "<p class='clipText'>") || ""}
+                          />
                         </DragItem>
                       );
                     })}
@@ -526,6 +531,8 @@ class Display extends Component {
 
 Display.propTypes = {
   options: PropTypes.array,
+  changePreviewTab: PropTypes.func,
+  changePreview: PropTypes.func,
   onChange: PropTypes.func,
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
@@ -544,8 +551,6 @@ Display.propTypes = {
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
-  imageTitle: PropTypes.string,
-  imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
   imageOptions: PropTypes.object,
@@ -557,6 +562,8 @@ Display.propTypes = {
 
 Display.defaultProps = {
   options: [],
+  changePreviewTab: () => {},
+  changePreview: () => {},
   onChange: () => {},
   preview: true,
   disableResponse: false,

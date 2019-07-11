@@ -52,6 +52,17 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
   });
 
   const groupedMetricInfo = groupBy(normalizedMetricInfo, "questionId");
+  const groupedMetricInfoKeys = Object.keys(groupedMetricInfo);
+  let groupedBySchoolKeys = [];
+  let groupedByTeacherKeys = [];
+  let groupedByClassKeys = [];
+  if (groupedMetricInfoKeys.length) {
+    const groupedItem = groupedMetricInfo[groupedMetricInfoKeys[0]];
+    groupedBySchoolKeys = Object.keys(groupBy(groupedItem, "schoolId"));
+    groupedByTeacherKeys = Object.keys(groupBy(groupedItem, "teacherId"));
+    groupedByClassKeys = Object.keys(groupBy(groupedItem, "groupId"));
+  }
+
   let arr = Object.keys(groupedMetricInfo).map((item, index) => {
     const groupedItem = groupedMetricInfo[item];
     const districtAvg = Math.round(groupedItem[0].districtAvgPerf);
@@ -59,7 +70,7 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     // -----|-----|-----|-----| SCHOOL BEGIN |-----|-----|-----|----- //
     let comparedBySchool;
     const groupedBySchool = groupBy(groupedItem, "schoolId");
-    comparedBySchool = Object.keys(groupedBySchool).map(_item => {
+    comparedBySchool = groupedBySchoolKeys.map(_item => {
       let __item = groupedBySchool[_item].reduce(
         (total, currentValue, currentIndex) => {
           const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
@@ -90,7 +101,7 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     // -----|-----|-----|-----| TEACHER BEGIN |-----|-----|-----|----- //
     let comparedByTeacher;
     const groupedByTeacher = groupBy(groupedItem, "teacherId");
-    comparedByTeacher = Object.keys(groupedByTeacher).map(_item => {
+    comparedBySchool = groupedByTeacherKeys.map(_item => {
       let __item = groupedByTeacher[_item].reduce(
         (total, currentValue, currentIndex) => {
           const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;
@@ -120,7 +131,7 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     // -----|-----|-----|-----| CLASS ENDED |-----|-----|-----|----- //
     let comparedByClass;
     const groupedByClass = groupBy(groupedItem, "groupId");
-    comparedByClass = Object.keys(groupedByClass).map(_item => {
+    comparedByClass = groupedByClassKeys.map(_item => {
       let __item = groupedByClass[_item].reduce(
         (total, currentValue, currentIndex) => {
           const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;

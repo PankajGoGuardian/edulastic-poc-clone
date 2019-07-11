@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Modal from "react-responsive-modal";
-import { darkGrey, blue } from "@edulastic/colors";
+import { darkGrey, themeColor } from "@edulastic/colors";
 import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription } from "@edulastic/icons";
 import {
   ModalTitle,
@@ -113,7 +113,7 @@ export default class ViewModal extends React.Component {
                 }}
               >
                 <IconWrapper>
-                  <IconDescription color={blue} />
+                  <IconDescription color={themeColor} />
                 </IconWrapper>
                 DETAILS
               </ButtonComponent>
@@ -123,13 +123,13 @@ export default class ViewModal extends React.Component {
                 }}
               >
                 <IconWrapper>
-                  <IconCopy color={blue} />
+                  <IconCopy color={themeColor} />
                 </IconWrapper>
                 DUPLICATE
               </ButtonComponent>
             </ButtonContainer>
             <ButtonContainer>
-              <ButtonComponent size={"large"} bgColor={blue} onClick={status === "published" ? assign : onEdit}>
+              <ButtonComponent size={"large"} bgColor={themeColor} onClick={status === "published" ? assign : onEdit}>
                 {status === "published" ? "ASSIGN" : "EDIT"}
               </ButtonComponent>
             </ButtonContainer>

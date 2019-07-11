@@ -41,7 +41,8 @@ const ClozeMathPreview = ({
   evaluation,
   options,
   responseIds,
-  changePreviewTab
+  changePreviewTab, // Question level
+  changePreview // Item level
 }) => {
   const [newHtml, setNewHtml] = useState("");
 
@@ -69,8 +70,11 @@ const ClozeMathPreview = ({
   };
 
   const onInnerClick = () => {
-    if (type === CHECK) {
+    if (type === CHECK || type === SHOW) {
       changePreviewTab(CLEAR);
+      if (changePreview) {
+        changePreview(CLEAR);
+      }
     }
   };
 
@@ -150,12 +154,11 @@ ClozeMathPreview.propTypes = {
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
-  responseIds: PropTypes.object.isRequired
+  responseIds: PropTypes.object.isRequired,
+  changePreview: PropTypes.func.isRequired
 };
 
-ClozeMathPreview.defaultProps = {
-  showQuestionNumber: false
-};
+ClozeMathPreview.defaultProps = {};
 
 export default withCheckAnswerButton(ClozeMathPreview);
 

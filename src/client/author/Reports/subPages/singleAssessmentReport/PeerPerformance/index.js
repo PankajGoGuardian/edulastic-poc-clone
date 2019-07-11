@@ -7,14 +7,14 @@ import next from "immer";
 
 import { parseData, idToName } from "./util/transformers";
 
-import { StyledH3 } from "../../../common/styled";
+import { StyledH3, StyledSignedBarContainer } from "../../../common/styled";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { Placeholder } from "../../../common/components/loader";
 
 import { SimpleStackedBarChartContainer } from "./components/charts/simpleStackedBarChartContainer";
 import { SignedStackedBarChartContainer } from "./components/charts/signedStackedBarChartContainer";
-import { UpperContainer, TableContainer, StyledCard } from "./components/styled";
+import { UpperContainer, TableContainer } from "./components/styled";
 import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance, getReportsPeerPerformanceLoader } from "./ducks";
 
@@ -145,7 +145,7 @@ const PeerPerformance = ({ peerPerformance, getPeerPerformanceRequestAction, rol
       ) : (
         <>
           <UpperContainer>
-            <StyledCard>
+            <StyledSignedBarContainer>
               <Row type="flex" justify="start">
                 <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                   <StyledH3>
@@ -195,10 +195,10 @@ const PeerPerformance = ({ peerPerformance, getPeerPerformanceRequestAction, rol
                   />
                 )}
               </div>
-            </StyledCard>
+            </StyledSignedBarContainer>
           </UpperContainer>
           <TableContainer>
-            <StyledCard>
+            <StyledSignedBarContainer>
               <PeerPerformanceTable
                 columns={parsedData.columns}
                 dataSource={parsedData.data}
@@ -210,7 +210,7 @@ const PeerPerformance = ({ peerPerformance, getPeerPerformanceRequestAction, rol
                 bandInfo={res.bandInfo}
                 role={role}
               />
-            </StyledCard>
+            </StyledSignedBarContainer>
           </TableContainer>
         </>
       )}

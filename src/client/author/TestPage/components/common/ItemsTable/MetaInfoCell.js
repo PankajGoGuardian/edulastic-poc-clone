@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Button, Tag, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
-import { FlexContainer, MoveLink } from "@edulastic/common";
+import { FlexContainer, MoveLink, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
 import { greenDark } from "@edulastic/colors";
 import styled from "styled-components";
@@ -12,7 +12,13 @@ import { cloneDeep, uniq as _uniq } from "lodash";
 
 import Standards from "../../../../ItemList/components/Item/Standards";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
-import { setTestDataAction, getTestSelector, setTestDataAndUpdateAction } from "../../../ducks";
+import {
+  setTestDataAction,
+  getTestSelector,
+  setTestDataAndUpdateAction,
+  previewCheckAnswerAction,
+  previewShowAnswerAction
+} from "../../../ducks";
 
 import {
   setTestItemsAction,
@@ -22,6 +28,7 @@ import {
 } from "../../AddItems/ducks";
 
 import { AudioIcon } from "../../../../ItemList/components/Item/styled";
+import { getUserId } from "../../../../src/selectors/user";
 
 class MetaInfoCell extends Component {
   constructor(props) {
@@ -175,11 +182,22 @@ class MetaInfoCell extends Component {
 
   render() {
     const { isShowPreviewModal = false } = this.state;
-    const { data, windowWidth, search } = this.props;
-
+    const { data, windowWidth, search, checkAnswer, showAnswer, userId } = this.props;
+    const owner = data.item && data.item.authors && data.item.authors.some(x => x._id === userId);
+    const isEditable = owner;
     return (
       <Container>
-        <PreviewModal isVisible={isShowPreviewModal} page="addItems" onClose={this.closeModal} data={data} />
+        <PreviewModal
+          isVisible={isShowPreviewModal}
+          page="addItems"
+          onClose={this.closeModal}
+          data={data}
+          owner={owner}
+          showEvaluationButtons={true}
+          isEditable={isEditable}
+          checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
+          showAnswer={() => showAnswer(data)}
+        />
         {windowWidth > 468 ? (
           <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-end">
             <StyledButton
@@ -199,9 +217,19 @@ class MetaInfoCell extends Component {
                 </div>
               )}
               <FlexContainer>
+                {data.dok && (
+                  <MetaWrapper>
+                    <FirstText>{`DOK:${data.dok}`}</FirstText>
+                  </MetaWrapper>
+                )}
                 <MetaWrapper>
                   <Standards item={data.item} search={search} />
                 </MetaWrapper>
+                {data.isPremium && (
+                  <MetaWrapper>
+                    <PremiumTag />
+                  </MetaWrapper>
+                )}
                 <MetaWrapper>
                   <IconUser color="#bbbfc4" width={11} height={14} />
                   <FirstText>{data.by}</FirstText>
@@ -260,12 +288,15 @@ const enhance = compose(
     state => ({
       selectedRows: getSelectedItemSelector(state),
       test: getTestSelector(state),
+      userId: getUserId(state),
       tests: getTestItemsSelector(state)
     }),
     {
       setTestItems: setTestItemsAction,
       setTestData: setTestDataAction,
       setDataAndSave: setTestDataAndUpdateAction,
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }
   )
@@ -276,7 +307,7 @@ export default enhance(MetaInfoCell);
 const MetaWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-right: 34px;
+  margin-right: 15px;
 `;
 
 const FirstText = styled.span`

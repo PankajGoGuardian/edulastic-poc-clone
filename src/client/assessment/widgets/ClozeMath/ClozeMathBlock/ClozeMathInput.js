@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { find } from "lodash";
+import { find, isEqual } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
 
@@ -32,7 +32,7 @@ class ClozeMathInput extends React.Component {
   componentDidMount() {
     const { resprops = {}, id } = this.props;
     const { answers = {} } = resprops;
-    const { maths: _userAnwers = [] } = answers;
+    const { maths: userAnswers = [] } = answers;
 
     const _this = this;
 
@@ -50,9 +50,26 @@ class ClozeMathInput extends React.Component {
 
       const mQuill = MQ.MathField(this.mathRef.current, config);
       this.setState({ currentMathQuill: mQuill });
-      mQuill.latex(_userAnwers[id] ? _userAnwers[id].value || "" : "");
+      mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { currentMathQuill } = this.state;
+    const { resprops = {}, id } = this.props;
+    const { answers = {} } = resprops;
+    const { maths: userAnswers = [] } = answers;
+
+    const { resprops: prevResProps = {} } = prevProps;
+    const { answers: prevAnswers = {} } = prevResProps;
+    const { maths: prevUserAnswers = [] } = prevAnswers;
+
+    if (currentMathQuill) {
+      if (!isEqual(userAnswers[id], prevUserAnswers[id])) {
+        currentMathQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
+      }
+    }
   }
 
   componentWillUnmount() {
@@ -191,7 +208,8 @@ class ClozeMathInput extends React.Component {
     const { response_containers, item, uiStyles = {} } = resprops;
     const { showKeyboard, keyboardStyles } = this.state;
     const response = find(response_containers, cont => cont.id === id);
-    const width = response ? response.widthpx : item.ui_style.min_width || "auto";
+    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+    const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
 
     return (
@@ -199,7 +217,11 @@ class ClozeMathInput extends React.Component {
         <span
           ref={this.mathRef}
           onClick={this.showKeyboardModal}
-          style={{ ...btnStyle, width: `${width}px` || "auto" }}
+          style={{
+            ...btnStyle,
+            width: width || "auto",
+            height: height || "auto"
+          }}
         />
         {showKeyboard && (
           <KeyboardWrapper innerRef={this.mathKeyboardRef} style={keyboardStyles}>
@@ -221,11 +243,13 @@ const MathInput = ({ resprops = {}, id }) => {
   const { response_containers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(response_containers, cont => cont.id === id);
-  const width = response ? response.widthpx : item.ui_style.min_width || "auto";
+  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
 
   return checked ? (
     <CheckedBlock
       width={width}
+      height={height}
       evaluation={evaluation}
       userAnswer={_mathAnswers[id]}
       item={item}
@@ -251,5 +275,3 @@ const KeyboardWrapper = styled.div`
   position: fixed;
   z-index: 100;
 `;
-
-const StyledSpan = styled.span``;

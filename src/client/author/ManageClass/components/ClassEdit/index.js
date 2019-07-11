@@ -145,7 +145,7 @@ class ClassEdit extends React.Component {
       <Form onSubmit={this.handleSubmit}>
         <Header classId={classId} />
         <Spin spinning={updating}>
-          <Container>
+          <Container padding="30px">
             <Divider orientation="left">
               <FormTitle>Class Details</FormTitle>
             </Divider>

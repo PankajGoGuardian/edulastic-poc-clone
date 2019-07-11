@@ -1,22 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Col, Icon, message, Row, Select } from "antd";
+import { Col, Icon, Row, Select } from "antd";
 import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
 import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
 import Settings from "./Settings";
-import {
-  OptionConationer,
-  InitOptions,
-  StyledRowButton,
-  SettingsBtn,
-  StyledRowSettings,
-  StyledRowLabel,
-  StyledSelect
-} from "./styled";
+import { OptionConationer, InitOptions, StyledRowButton, SettingsBtn, StyledRowLabel, StyledSelect } from "./styled";
 import { getListOfStudents } from "../../utils";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
@@ -181,12 +173,9 @@ class SimpleOptions extends React.Component {
           </Row>
 
           <TestTypeSelector
-            isAssignTest
             userRole={userRole}
             testType={testSettings.testType}
-            generateReport={testSettings.generateReport}
             onAssignmentTypeChange={changeField("testType")}
-            onGenerateReportFieldChange={changeField("generateReport")}
           />
           <FeaturesSwitch
             inputFeatures="addCoTeacher"

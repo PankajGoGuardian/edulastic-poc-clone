@@ -61,18 +61,6 @@ export const CustomImage = styled.img`
 
 export const KEYBOARD_BUTTONS_ALL = [
   {
-    handler: "x",
-    label: "x",
-    types: ["all", "basic", "algebra", "general"],
-    command: "cmd"
-  },
-  {
-    handler: "y",
-    label: "y",
-    types: ["all", "basic", "algebra", "general"],
-    command: "cmd"
-  },
-  {
     handler: "leftright2",
     label: "x²",
     types: ["all", "basic", "algebra", "general"],
@@ -888,18 +876,6 @@ export const KEYBOARD_BUTTONS_ALL = [
   },
   // Misc
   {
-    handler: "a",
-    label: "a",
-    types: ["all", "misc"],
-    command: "cmd"
-  },
-  {
-    handler: "b",
-    label: "b",
-    types: ["all", "misc"],
-    command: "cmd"
-  },
-  {
     handler: "\\propto",
     label: "∝",
     types: ["all", "misc"],
@@ -1109,7 +1085,7 @@ export const KEYBOARD_BUTTONS = [
     command: "cmd"
   },
   {
-    handler: "°",
+    handler: "\\degree",
     label: "º",
     labelcy: "°",
     types: ["all", "intermediate", "advanced"],

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Row, Col, Card, Button } from "antd";
 import { IconCircleCheck, IconCalculator } from "@edulastic/icons";
-import { springGreen, white, blue } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 import Header from "./Header";
 
 const Schedule = () => (
@@ -78,7 +78,7 @@ const TitleWrapper = styled.div`
   }
 
   svg {
-    fill: ${springGreen};
+    fill: ${themeColor};
   }
 `;
 const Description = styled.div`
@@ -97,7 +97,7 @@ const StyledCard = styled(Card)`
     padding: 24px 32px;
   }
   svg {
-    fill: ${springGreen};
+    fill: ${themeColor};
     margin-left: 64px;
   }
   h1 {
@@ -113,7 +113,7 @@ const StyledCard = styled(Card)`
 
 const StyledCardContaner = styled(StyledCard)`
   svg {
-    fill: ${springGreen};
+    fill: ${themeColor};
   }
 `;
 
@@ -137,16 +137,16 @@ const commonBtn = styled(Button)`
 `;
 
 const ScheduleBtn = styled(commonBtn)`
-  background: ${springGreen};
+  background: ${themeColor};
   &:hover {
-    background: ${springGreen};
+    background: ${themeColor};
   }
 `;
 
 const TeacherBtn = styled(commonBtn)`
-  background: ${blue};
+  background: ${themeColor};
   bottom: -32px;
   &:hover {
-    background: ${blue};
+    background: ${themeColor};
   }
 `;

@@ -9,7 +9,7 @@ import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 import { IconFilter } from "@edulastic/icons";
-import { blue, white } from "@edulastic/colors";
+import { white } from "@edulastic/colors";
 
 import {
   receiveAssignmentsAction,
@@ -78,7 +78,6 @@ class Assignments extends Component {
       loadAssignmentsSummary,
       districtId,
       loadFolders,
-      assignmentsSummary,
       userRole,
       defaultFilters,
       orgData

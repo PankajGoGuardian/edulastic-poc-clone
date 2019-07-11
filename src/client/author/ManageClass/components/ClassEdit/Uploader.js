@@ -7,9 +7,10 @@ import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
 import { withWindowSizes } from "@edulastic/common";
 import { Upload } from "antd";
-import { blue, white } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
+import { beforeUpload } from "@edulastic/common";
 
 class Uploader extends React.Component {
   state = {};
@@ -17,6 +18,9 @@ class Uploader extends React.Component {
   handleChange = async info => {
     try {
       const { file } = info;
+      if (!beforeUpload(file)) {
+        return;
+      }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       const { setThumbnailUrl } = this.props;
       this.setState(
@@ -114,7 +118,7 @@ const Image = styled.img`
 `;
 
 const Camera = styled.div`
-  background: ${blue};
+  background: ${themeColor};
   border-radius: 50%;
   width: 40px;
   height: 40px;

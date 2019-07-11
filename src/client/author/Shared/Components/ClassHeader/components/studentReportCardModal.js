@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Modal, Button } from "antd";
 import qs from "qs";
-import { white, blue } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 import { StudentReportCardPrintPreview } from "./StudentReportCardPrintPreview";
 
 const StudentReportCardModal = props => {
@@ -77,7 +77,7 @@ const StyledStudentReportCardModal = styled(StudentReportCardModal)`
       button {
         height: 40px;
         background-color: ${white};
-        color: ${blue};
+        color: ${themeColor};
         border: none;
         border-radius: 5px;
         font-weight: 600;

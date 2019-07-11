@@ -98,6 +98,7 @@ const methodOptions = {
     "setDecimalSeparator",
     "setThousandsSeparator",
     "allowedVariables",
+    "setEvaluation",
     "compareSides"
   ],
   [methods.EQUIV_LITERAL]: [
@@ -108,7 +109,8 @@ const methodOptions = {
     "ignoreOrder",
     "ignoreCoefficientOfOne",
     "inverseResult",
-    "allowInterval"
+    "allowInterval",
+    "allowedVariables"
   ],
   [methods.EQUIV_VALUE]: [
     "ariaLabel",
@@ -123,7 +125,8 @@ const methodOptions = {
     "setThousandsSeparator",
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
-    "allowNumericOnly",
+    "allowedVariables",
+    "setEvaluation",
     "compareSides"
   ],
   [methods.EQUIV_SYNTAX]: ["syntax", "ignoreText", "argument", "rule"],

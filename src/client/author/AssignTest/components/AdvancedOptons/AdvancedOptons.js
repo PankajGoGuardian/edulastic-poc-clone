@@ -83,6 +83,7 @@ class AdvancedOptons extends React.Component {
             openPolicy={assignment.openPolicy}
             closePolicy={assignment.closePolicy}
             changeField={changeField}
+            testType={assignment.testType || testSettings.testType}
           />
 
           <FeaturesSwitch

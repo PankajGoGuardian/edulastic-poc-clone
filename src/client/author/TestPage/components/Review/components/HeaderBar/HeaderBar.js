@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Checkbox, message, Button } from "antd";
 
-import { blue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { IconClose, IconMoveTo, IconCollapse, IconEye } from "@edulastic/icons";
 
 import Prompt from "../Prompt/Prompt";
@@ -55,7 +55,11 @@ const HeaderBar = ({
         </Item>
       )}
       <ActionButton style={{ marginLeft: 0 }}>
-        <ButtonLink onClick={onShowTestPreview} color="primary" icon={<IconEye color={blue} width={12} height={12} />}>
+        <ButtonLink
+          onClick={onShowTestPreview}
+          color="primary"
+          icon={<IconEye color={themeColor} width={12} height={12} />}
+        >
           {windowWidth > 468 && <span>View as Student</span>}
         </ButtonLink>
       </ActionButton>
@@ -64,7 +68,7 @@ const HeaderBar = ({
           <ButtonLink
             onClick={onRemoveSelected}
             color="primary"
-            icon={<IconClose color={blue} width={12} height={12} />}
+            icon={<IconClose color={themeColor} width={12} height={12} />}
           >
             {windowWidth > 468 && <span>Remove Selected</span>}
           </ButtonLink>
@@ -72,7 +76,11 @@ const HeaderBar = ({
       )}
       {owner && isEditable && (
         <ActionButton data-cy="moveto" style={{ marginLeft: 0 }}>
-          <ButtonLink onClick={handleMoveTo} color="primary" icon={<IconMoveTo color={blue} width={12} height={12} />}>
+          <ButtonLink
+            onClick={handleMoveTo}
+            color="primary"
+            icon={<IconMoveTo color={themeColor} width={12} height={12} />}
+          >
             {windowWidth > 468 && <span>Move to</span>}
           </ButtonLink>
           {showPrompt && (
@@ -85,7 +93,11 @@ const HeaderBar = ({
         </ActionButton>
       )}
       <ActionButton data-cy="expandCollapseRow" style={{ marginLeft: 0 }}>
-        <ButtonLink onClick={onCollapse} color="primary" icon={<IconCollapse color={blue} width={12} height={12} />}>
+        <ButtonLink
+          onClick={onCollapse}
+          color="primary"
+          icon={<IconCollapse color={themeColor} width={12} height={12} />}
+        >
           {windowWidth > 468 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
         </ButtonLink>
       </ActionButton>

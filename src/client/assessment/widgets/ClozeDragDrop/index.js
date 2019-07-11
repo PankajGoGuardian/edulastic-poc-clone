@@ -13,6 +13,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { ContentArea } from "../../styled/ContentArea";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { changePreviewAction } from "../../../author/src/actions/view";
 import { EDIT } from "../../constants/constantsForQuestions";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
@@ -125,8 +126,7 @@ class ClozeDragDrop extends Component {
       ...restProps
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
-
+    const { duplicatedResponses, showDraghandle, shuffleOptions, response_ids: responseIDs } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
@@ -209,6 +209,7 @@ class ClozeDragDrop extends Component {
                   outerStyle={{
                     padding: "30px 120px"
                   }}
+                  responseIDs={responseIDs}
                 />
               </div>
             </React.Fragment>
@@ -325,7 +326,7 @@ const enhance = compose(
   withTheme,
   connect(
     ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
-    { setQuestionData: setQuestionDataAction }
+    { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );
 

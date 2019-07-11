@@ -15,7 +15,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { message, Upload } from "antd";
 import { TokenStorage, API_CONFIG } from "@edulastic/api";
 import { aws, clozeImage } from "@edulastic/constants";
-import { beforeUpload } from "@edulastic/common/src/helpers";
+import { beforeUpload } from "@edulastic/common";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
 import withPoints from "../../components/HOC/withPoints";

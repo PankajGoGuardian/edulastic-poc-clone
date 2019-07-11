@@ -119,14 +119,14 @@ export const themes = {
     mathEssayInput: {
       inputLineWrapperBorderColor: "#dfdfdf", // grey
       inputLineButtonFontSize: "14px",
-      inputLineButtonBorderColor: "#12a6e8", // blue
-      inputLineButtonBgHoverActiveClassColor: "#12a6e8", // blue
+      inputLineButtonBorderColor: themeColorLight,
+      inputLineButtonBgHoverActiveClassColor: themeColorLight,
       inputLineButtonHoverActiveClassColor: "#fff", // white
-      inputLineLabelBgColor: "#12a6e8", // blue
+      inputLineLabelBgColor: themeColorLight,
       inputLineLabelColor: "#fff", // white
       inputLineLabelFontSize: "10px",
       inputWrapperBorderColor: "transparent",
-      inputWrapperActiveClassBorderColor: "#12a6e8", // blue
+      inputWrapperActiveClassBorderColor: themeColorLight,
       inputWrapperActiveClassBorderLeftColor: "transparent",
       inputWrapperActiveClassBorderRightColor: "transparent"
     },
@@ -216,7 +216,7 @@ export const themes = {
     },
     correctAnswers: {
       iconPlusColor: "#fff", // white
-      iconCloseColor: "#12a6e8", // blue
+      iconCloseColor: themeColorLight,
       iconCloseHoverColor: "#ee1658" // red
     },
     correctAnswerBoxLayout: {
@@ -251,12 +251,12 @@ export const themes = {
       antSelectSelectionSelectedValueColor: themeColorLight,
       antSelectSelectionSelectedValueBackground: "#d1e3fc",
       containerBackground: "#f8f8fb",
-      antSelectArrowIconColor: "#12a6e8", // blue
+      antSelectArrowIconColor: themeColorLight,
       curruculumNameFontWeight: "bold",
       iconTrashColor: "#4aac8b",
       iconHoverTrashColor: "#ee1658",
       iconPencilEditColor: "#fff", // white
-      selectSuffixIconColor: "#12a6e8", // blue
+      selectSuffixIconColor: themeColorLight,
       selectSuffixIconFontSize: "16px"
     },
     widgetOptions: {
@@ -292,7 +292,7 @@ export const themes = {
         indexBoxFontSize: "14px",
         indexBoxFontWeight: "600",
         indexBoxColor: "#fff", // white
-        indexBoxBgColor: "#12a6e8", // blue
+        indexBoxBgColor: themeColorLight,
         indexBoxValidBgColor: "#1fe3a1", // green
         indexBoxNotValidBgColor: "#ee1658", // red
         dragItemBgColor: "#fff", // white
@@ -476,7 +476,7 @@ export const themes = {
         quillLimitedBgColor: "#fbdfe7", // lightRed
         qlBlocksFontFamily: "Arial",
         qlBlocksBgColor: "#fff", // white
-        qlBlocksBgActiveColor: "#12a6e8", // blue
+        qlBlocksBgActiveColor: themeColorLight,
         qlBlocksColor: "#000", // black
         qlBlocksActiveColor: "#fff", // white
         flexConBorderColor: "#e6e6e6", // dashBorderColor
@@ -550,7 +550,7 @@ export const themes = {
         intersectStrokeColor: "#ee1658", // red
         intersectFillColor: "#fbdfe750",
         iconPlusColor: "#fff", // white
-        iconCloseColor: "#12a6e8", // blue
+        iconCloseColor: themeColorLight,
         iconCloseHoverColor: "#ee1658", // red
         iconDrawColor: "#4aac8b", // greenDark
         iconTrashColor: "#4aac8b", // greenDark
@@ -580,9 +580,9 @@ export const themes = {
         correctResultBorderColor: "#1fe3a1", // green
         incorrectResultBorderColor: "#ee1658", // red
         modeButtonColor: "#fff", // white
-        modeButtonBorderColor: "#12a6e8", // blue
+        modeButtonBorderColor: themeColorLight,
         modeButtonActiveBorderColor: "#1fe3a1", // green
-        modeButtonBgColor: "#12a6e8", // blue
+        modeButtonBgColor: themeColorLight,
         modeButtonActiveBgColor: "#1fe3a1", // green
         containerBgColor: "#f9f9f9" // lightGrey
       },

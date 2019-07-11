@@ -50,6 +50,7 @@ import { UploadButton } from "./styled/UploadButton";
 import { uploadToS3 } from "../../../author/src/utils/upload";
 
 import SortableList from "../../components/SortableList";
+import { beforeUpload } from "@edulastic/common";
 import Question from "../../components/Question";
 
 const { Option } = Select;
@@ -355,6 +356,8 @@ class Authoring extends Component {
       const { file } = info;
       if (!file.type.match(/image/g)) {
         message.error("Please upload files in image format");
+        return;
+      } else if (!beforeUpload(file)) {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);

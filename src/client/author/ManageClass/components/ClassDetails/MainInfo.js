@@ -23,14 +23,14 @@ const MainInfo = ({ entity = {} }) => {
     endDate,
     googleCode,
     owners = [],
-    primaryTeacherId
+    parent
   } = entity;
   const _grade = find(allGrades, item => item.value === grade) || { text: grade };
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
   const coTeachers =
     owners &&
     owners
-      .filter(owner => owner.id !== primaryTeacherId)
+      .filter(owner => owner.id !== parent.id)
       .map(owner => owner.name)
       .join(",");
 
@@ -54,7 +54,11 @@ const MainInfo = ({ entity = {} }) => {
         </FieldValue>
         <FieldValue>
           <div>Standard :</div>
-          {standardSets && standardSets.map(({ name, _id }) => <span key={_id}>{name}</span>)}
+          {standardSets && standardSets.length ? (
+            standardSets.map(({ name, _id }) => <span key={_id}>{name}</span>)
+          ) : (
+            <span>Other</span>
+          )}
         </FieldValue>
         <FieldValue>
           <div>Course :</div>

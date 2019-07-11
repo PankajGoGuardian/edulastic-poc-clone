@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { find, isEmpty } from "lodash";
 import styled from "styled-components";
-import { white, blue } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
 
 const AnswerBox = ({
@@ -177,7 +177,7 @@ const Answer = styled.div`
 const Label = styled.div`
   width: 40px;
   color: ${white};
-  background: ${blue};
+  background: ${themeColor};
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   display: flex;

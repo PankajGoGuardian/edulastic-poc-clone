@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { MoveLink, MathFormulaDisplay } from "@edulastic/common";
+import { MoveLink, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
 import { getTestItemAuthorName } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
@@ -26,13 +26,13 @@ import {
   AddButtonStyled,
   HeartIcon,
   ShareIcon,
-  Count,
   UserIcon,
   IdIcon,
   MoreInfo,
   Details,
   AudioIcon
 } from "./styled";
+import PreviewModal from "../../../src/components/common/PreviewModal";
 
 // render single item
 class Item extends Component {
@@ -40,6 +40,8 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
+    checkAnswer: PropTypes.func.isRequired,
+    showAnser: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
     onToggleToCart: PropTypes.func.isRequired,
     selectedToCart: PropTypes.bool
@@ -50,6 +52,7 @@ class Item extends Component {
   };
 
   state = {
+    isShowPreviewModal: false,
     isOpenedDetails: false
   };
 
@@ -75,11 +78,23 @@ class Item extends Component {
     return get(item, "rows[0].widgets[0].entity.stimulus", "");
   }
 
+  closeModal = () => {
+    this.setState({ isShowPreviewModal: false });
+  };
+
+  previewItem = () => {
+    this.setState({ isShowPreviewModal: true });
+  };
+
   renderDetails = () => {
     const { item } = this.props;
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
     const details = [
+      {
+        name: "DOK:",
+        text: (questions.find(item => item.depthOfKnowledge) || {}).depthOfKnowledge
+      },
       {
         name: <UserIcon />,
         text: getTestItemAuthorName(item)
@@ -105,16 +120,24 @@ class Item extends Component {
       };
       details.push(ttsStatusSuccess);
     }
-    return details.map((detail, index) => (
-      <DetailCategory key={`DetailCategory_${index}`}>
-        <CategoryName>{detail.name}</CategoryName>
-        <CategoryContent>
-          <Text title={detail.type === "id" ? detail.text : ""}>
-            {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
-          </Text>
-        </CategoryContent>
-      </DetailCategory>
-    ));
+    if (item.collectionName) {
+      details.unshift({ name: <PremiumTag />, type: "premium" });
+    }
+    return details.map(
+      (detail, index) =>
+        (detail.text || detail.type === "premium") && (
+          <DetailCategory key={`DetailCategory_${index}`}>
+            <CategoryName>{detail.name}</CategoryName>
+            {detail.type !== "premium" && (
+              <CategoryContent>
+                <Text title={detail.type === "id" ? detail.text : ""}>
+                  {detail.type === "id" ? detail.text.substr(detail.text.length - 6) : detail.text}
+                </Text>
+              </CategoryContent>
+            )}
+          </DetailCategory>
+        )
+    );
   };
 
   toggleDetails = () => {
@@ -126,15 +149,29 @@ class Item extends Component {
   };
 
   render() {
-    const { item, t, windowWidth, selectedToCart, search } = this.props;
+    const { item, t, windowWidth, selectedToCart, search, userId, checkAnswer, showAnswer } = this.props;
     const resources =
       item.rows && item.rows.flatMap(row => row.widgets).filter(widget => widget.widgetType === "resource");
-    const { isOpenedDetails } = this.state;
+    const { isOpenedDetails, isShowPreviewModal = false } = this.state;
+    const owner = item.authors && item.authors.some(x => x._id === userId);
+    const isEditable = owner;
+
     return (
       <Container>
+        <PreviewModal
+          isVisible={isShowPreviewModal}
+          page="addItems"
+          showEvaluationButtons
+          onClose={this.closeModal}
+          data={{ ...item, id: item._id }}
+          isEditable={isEditable}
+          owner={owner}
+          checkAnswer={() => checkAnswer({ ...item, isItem: true })}
+          showAnswer={() => showAnswer(item)}
+        />
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.moveToItem}>
+            <MoveLink onClick={this.previewItem}>
               {item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
                 ? item.data.questions[0].stimulus
                 : "Click here to view the question detail."}
@@ -143,7 +180,7 @@ class Item extends Component {
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (
             <ViewButton>
-              <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
+              <ViewButtonStyled onClick={this.previewItem}>{t("component.item.view")}</ViewButtonStyled>
               <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
                 {selectedToCart ? "Remove" : <IconPlus />}
               </AddButtonStyled>

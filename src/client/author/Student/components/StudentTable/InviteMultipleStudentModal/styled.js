@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Input, Row, Icon, Col } from "antd";
+import { Input, Row, Icon, Col, Button } from "antd";
+import { themeColor } from "@edulastic/colors";
 
 const { TextArea } = Input;
 
@@ -54,4 +55,14 @@ export const ColWrapper = styled(Col)`
   border: 0.3px solid lightgrey;
   text-align: center;
   height: 200px;
+`;
+
+export const ActionButton = styled(Button)`
+  background: ${themeColor};
+  border-color: ${themeColor};
+  &:hover,
+  &:focus {
+    background: ${themeColor};
+    border-color: ${themeColor};
+  }
 `;

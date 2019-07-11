@@ -2,13 +2,14 @@ import PropTypes from "prop-types";
 import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { get, keyBy } from "lodash";
+import { get, keyBy, intersection, uniq } from "lodash";
 import { Spin, Button } from "antd";
 import styled from "styled-components";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import Modal from "react-responsive-modal";
 import { withRouter } from "react-router-dom";
 
+import { questionType } from "@edulastic/constants";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi } from "@edulastic/api";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
@@ -86,10 +87,14 @@ class PreviewModal extends React.Component {
       checkAnswer,
       showAnswer,
       preview,
-      showEvaluationButtons,
-      questions
+      showEvaluationButtons
     } = this.props;
-    const { authors = [], rows } = item;
+    const questions = keyBy(get(item, "data.questions", []), "id");
+    const { authors = [], rows, data = {} } = item;
+    const questionsType = data.questions && uniq(data.questions.map(question => question.type));
+    const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
+    const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
+
     const getAuthorsId = authors.map(item => item._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     const { allowDuplicate } = collections.find(o => o._id === item.collectionName) || { allowDuplicate: true };
@@ -124,8 +129,12 @@ class PreviewModal extends React.Component {
                 )}
               </ButtonsWrapper>
               <ButtonsWrapper>
-                <Button onClick={checkAnswer}> Check Answer </Button>
-                <Button onClick={showAnswer}> Show Answer </Button>
+                {isAnswerBtnVisible && (
+                  <>
+                    <Button onClick={checkAnswer}> Check Answer </Button>
+                    <Button onClick={showAnswer}> Show Answer </Button>
+                  </>
+                )}
                 <Button onClick={this.clearView}> Clear </Button>
               </ButtonsWrapper>
             </FlexContainer>

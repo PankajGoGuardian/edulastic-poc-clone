@@ -189,6 +189,7 @@ export const SignedStackedBarChart = ({
                 barSize={70}
                 onMouseOver={onBarMouseOver(bdIndex)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
+                minPointSize={20}
               >
                 <LabelList
                   dataKey={bdItem.key}

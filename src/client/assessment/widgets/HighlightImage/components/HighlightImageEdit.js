@@ -24,14 +24,6 @@ const HighlightImageEdit = ({ item, fillSections, cleanSections, advancedAreOpen
         cleanSections={cleanSections}
       />
 
-      <LineColorOptionsSubtitle
-        line_color={line_color}
-        item={item}
-        setQuestionData={setQuestionData}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      />
-
       <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
     </ContentArea>
   );

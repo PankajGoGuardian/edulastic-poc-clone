@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Row, Col, Button } from "antd";
-import { blue, fadedBlack } from "@edulastic/colors";
+import { themeColor, fadedBlack } from "@edulastic/colors";
 import { StyledTable as Table, StyledCard as Card } from "../../../../common/styled";
 
 export const StyledCard = Card;
@@ -51,7 +51,7 @@ export const StyledContainer = styled(Row)`
         flex: 0 0 50px;
         text-align: left;
         span {
-          color: ${blue};
+          color: ${themeColor};
           font-weight: 600;
         }
       }

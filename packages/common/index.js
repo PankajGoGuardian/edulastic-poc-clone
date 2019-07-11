@@ -35,12 +35,13 @@ export { default as TabContainer } from "./src/components/Tabs/TabContainer";
 export { default as MathModal } from "./src/components/MathModal";
 export { StyledComponents };
 export { default as TypeToConfirmModal } from "./src/components/TypeToConfirmModal";
+export { default as PremiumTag } from "./src/components/PremiumTag/PremiumTag";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
 export { WithResources, useResources } from "./src/HOC/withResources";
 export { withMathFormula as WithMathFormula } from "./src/HOC/withMathFormula";
 export { scrollTo, offset } from "./src/utils/DomUtils";
-export { default as helpers } from "./src/helpers";
+export { default as helpers, beforeUpload, uploadToS3 } from "./src/helpers";
 
 // contexts
 export { default as AnswerContext } from "./src/contexts/AnswerContext";

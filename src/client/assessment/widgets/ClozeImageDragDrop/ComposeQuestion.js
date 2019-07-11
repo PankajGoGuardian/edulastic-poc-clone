@@ -42,6 +42,7 @@ import { UploadButton } from "../ClozeImageDropDown/styled/UploadButton";
 import Question from "../../components/Question";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
+import { beforeUpload } from "@edulastic/common";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -215,6 +216,8 @@ class ComposeQuestion extends Component {
       const { file } = info;
       if (!file.type.match(/image/g)) {
         message.error("Please upload files in image format");
+        return;
+      } else if (!beforeUpload(file)) {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
@@ -422,9 +425,14 @@ class ComposeQuestion extends Component {
     const {
       item: { responses }
     } = this.props;
-    const maxTop = maxBy(responses, res => res.top);
-    const maxLeft = maxBy(responses, res => res.left);
-    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+
+    if (responses.length > 0) {
+      const maxTop = maxBy(responses, res => res.top);
+      const maxLeft = maxBy(responses, res => res.left);
+      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+    } else {
+      return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
+    }
   };
 
   render() {

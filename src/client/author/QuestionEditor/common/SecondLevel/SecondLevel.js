@@ -3,14 +3,8 @@ import PropTypes from "prop-types";
 import { Button } from "antd";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import {
-  IconEye,
-  IconCheck,
-  IconSource,
-  IconSettings,
-  IconEraseText
-} from "@edulastic/icons";
-import { blue, darkBlue, white } from "@edulastic/colors";
+import { IconEye, IconCheck, IconSource, IconSettings, IconEraseText } from "@edulastic/icons";
+import { themeColor, white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { Container, PreviewBar } from "./styled";
@@ -23,17 +17,9 @@ class SecondLevel extends Component {
 
   render() {
     const { option } = this.state;
-    const {
-      t,
-      view,
-      previewTab,
-      onShowSource,
-      onShowSettings,
-      changePreviewTab,
-      clearAnswers
-    } = this.props;
+    const { t, view, previewTab, onShowSource, onShowSettings, changePreviewTab, clearAnswers } = this.props;
 
-    const colorOptionValue = option ? white : blue;
+    const colorOptionValue = option ? white : themeColor;
 
     return (
       <Container type={option}>
@@ -84,12 +70,7 @@ class SecondLevel extends Component {
               <ButtonLink
                 color="primary"
                 style={{ color: colorOptionValue }}
-                icon={(
-                  <IconEye
-                    color={colorOptionValue}
-                    hoverColor={darkBlue}
-                  />
-                )}
+                icon={<IconEye color={colorOptionValue} hoverColor={themeColor} />}
               >
                 {t("component.questioneditor.buttonbar.showanswers")}
               </ButtonLink>

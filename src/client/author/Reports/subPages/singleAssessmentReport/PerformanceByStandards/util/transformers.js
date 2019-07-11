@@ -1,4 +1,5 @@
-import { groupBy, head, uniqBy, capitalize, last } from "lodash";
+import { groupBy, head, uniqBy, capitalize, last, ceil, orderBy, find, map, forEach, round, filter } from "lodash";
+import { percentage } from "../../../../common/util";
 
 export const viewByMode = {
   STANDARDS: "standards",
@@ -25,6 +26,18 @@ export const compareByMode = {
 };
 
 const lexicSort = field => (a, b) => (a[field] >= b[field] ? (a[field] === b[field] ? 0 : 1) : -1);
+
+export const getYLabelString = analyzeBy => {
+  switch (analyzeBy) {
+    case analyzeByMode.RAW_SCORE:
+      return "Avg. score";
+    case analyzeByMode.MASTERY_LEVEL:
+    case analyzeByMode.MASTERY_SCORE:
+      return "Student (%)";
+    default:
+      return "Avg. score (%)";
+  }
+};
 
 export const compareByColumns = {
   [compareByMode.SCHOOL]: {
@@ -137,13 +150,15 @@ const augmentMetricInfoWithStudentInfo = (studInfo, teacherInfo, metricInfo) => 
   }));
 };
 
-const chartFilterMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilters) => {
+const chartFilterMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilters, skillInfo = []) => {
   const filtersList = Object.keys(chartFilters).map(key => ({
     key,
     value: chartFilters[key]
   }));
 
-  const metricsWithStudent = augmentMetricInfoWithStudentInfo(studInfo, teacherInfo, metricInfo);
+  const filteredMetrics = filter(metricInfo, metric => find(skillInfo, skill => skill.standardId == metric.standardId));
+
+  const metricsWithStudent = augmentMetricInfoWithStudentInfo(studInfo, teacherInfo, filteredMetrics);
 
   return filtersList.reduce((filteredMetrics, filter) => {
     const byStudentInfo = metric => (filter.value === "all" ? true : metric[filter.key] === filter.value);
@@ -152,8 +167,8 @@ const chartFilterMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilters) 
 };
 
 const chartDataByStandards = (report, chartFilters) => {
-  const { studInfo, metricInfo, teacherInfo } = report;
-  const filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, chartFilters);
+  const { studInfo, metricInfo, teacherInfo, skillInfo } = report;
+  const filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, chartFilters, skillInfo);
 
   const metricsByStandardId = groupBy(filteredMetrics, "standardId");
 
@@ -164,7 +179,7 @@ const chartDataByStandards = (report, chartFilters) => {
 
 const chartDataByDomains = (report, chartFilters) => {
   const { skillInfo, studInfo, metricInfo, teacherInfo } = report;
-  const filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, chartFilters);
+  const filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, chartFilters, skillInfo);
 
   const skillInfoByDomain = groupBy(skillInfo, "domain");
 
@@ -435,4 +450,100 @@ export const reduceAverageStandardScore = (data, field) => {
       [standardId]: averagePoints / data.length
     };
   }, {});
+};
+
+export const getLeastMasteryLevel = (scaleInfo = []) =>
+  orderBy(scaleInfo, "threshold", ["desc"])[scaleInfo.length - 1] || { masteryLabel: "", score: 0 };
+
+export const getMasteryLevel = (score, scaleInfo, field = "threshold") => {
+  const orderedScaleInfo = orderBy(scaleInfo, "threshold", ["desc"]);
+  return find(orderedScaleInfo, info => ceil(score) >= info[field]) || getLeastMasteryLevel(scaleInfo);
+};
+
+export const getMasteryScore = (score, scaleInfo) => getMasteryLevel(score, scaleInfo).score;
+
+export const findSkillUsingStandard = (standardId, skillInfo) =>
+  find(skillInfo, skill => skill.standardId === standardId) || {};
+
+const findGroupInfo = (id, viewBy, skillInfo) => {
+  const isViewByStandards = viewBy == viewByMode.STANDARDS;
+
+  const dataGroup = isViewByStandards ? "selectedStandards" : "selectedDomains";
+  const field = isViewByStandards ? "standardId" : "domainId";
+
+  let groupedSkillInfo = skillInfo.reduce(
+    (total, { standardId, standard, domainId, domain }) => ({
+      selectedStandards: total.selectedStandards.concat({
+        name: standard,
+        standard,
+        standardId
+      }),
+      selectedDomains: total.selectedDomains.concat({
+        name: domain,
+        domain,
+        domainId
+      })
+    }),
+    {
+      selectedStandards: [],
+      selectedDomains: []
+    }
+  );
+
+  groupedSkillInfo.selectedDomains = uniqBy(groupedSkillInfo.selectedDomains, "domainId");
+
+  const item = find(groupedSkillInfo[dataGroup], item => item[field] == id) || {};
+
+  return item;
+};
+
+export const getParsedGroupedMetricData = (report = {}, chartFilters, viewBy) => {
+  const { metricInfo = {}, scaleInfo = {}, skillInfo = [], studInfo = [], teacherInfo = [] } = report;
+
+  const groupByKey = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
+
+  let filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, chartFilters, skillInfo);
+
+  const parsedMetricInfo = map(filteredMetrics, metric => {
+    const masteryPercentage = percentage(metric.totalScore, metric.maxScore);
+    const masteryLevel = getMasteryLevel(masteryPercentage, scaleInfo);
+    const skill = findSkillUsingStandard(metric.standardId, skillInfo);
+
+    return {
+      ...metric,
+      masteryScore: masteryLevel.score,
+      masteryLabel: masteryLevel.masteryLabel,
+      domainId: skill.domainId,
+      domain: skill.domain,
+      standard: skill.standard
+    };
+  });
+
+  let metricByViewBy = groupBy(parsedMetricInfo, groupByKey);
+  let metricByViewByWithMasteryCount = {};
+
+  for (const viewByKey in metricByViewBy) {
+    metricByViewByWithMasteryCount[viewByKey] = {};
+
+    forEach(scaleInfo, scale => {
+      metricByViewByWithMasteryCount[viewByKey][scale.masteryLabel] = 0;
+      metricByViewByWithMasteryCount[viewByKey][`${scale.masteryLabel} Percentage`] = 0;
+    });
+
+    const metricByMastery = groupBy(metricByViewBy[viewByKey], "masteryLabel");
+
+    Object.keys(metricByMastery).forEach(key => {
+      const masteryScorePercentage = round(percentage(metricByMastery[key].length, metricByViewBy[viewByKey].length));
+      metricByViewByWithMasteryCount[viewByKey][key] = metricByMastery[key].length;
+      metricByViewByWithMasteryCount[viewByKey][`${key} Percentage`] =
+        key == "NM" ? -1 * masteryScorePercentage : masteryScorePercentage;
+    });
+  }
+
+  let parsedGroupedMetricData = Object.keys(metricByViewByWithMasteryCount).map(id => ({
+    ...findGroupInfo(id, viewBy, skillInfo),
+    ...metricByViewByWithMasteryCount[id]
+  }));
+
+  return parsedGroupedMetricData.sort((a, b) => a.name.localeCompare(b.name));
 };

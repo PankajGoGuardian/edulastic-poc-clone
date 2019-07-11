@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import { title, white, mobileWidth } from "@edulastic/colors";
+import { title, cardBg, mobileWidth } from "@edulastic/colors";
 
 export const Content = styled.div`
   width: 25vw;
-  background: ${white};
+  background: ${cardBg};
   position: fixed;
   right: 0;
   top: 0;
@@ -41,4 +41,13 @@ export const Checkboxes = styled.div`
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
+  .ant-checkbox-wrapper {
+    margin-left: 0px;
+    color: rgba(67, 75, 93, 0.9);
+    font-weight: bold;
+    font-size: 13px;
+    .ant-checkbox {
+      padding-left: 20px;
+    }
+  }
 `;

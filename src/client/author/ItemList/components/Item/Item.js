@@ -26,13 +26,13 @@ import {
   AddButtonStyled,
   HeartIcon,
   ShareIcon,
-  Count,
   UserIcon,
   IdIcon,
   MoreInfo,
   Details,
   AudioIcon
 } from "./styled";
+import PreviewModal from "../../../src/components/common/PreviewModal";
 
 // render single item
 class Item extends Component {
@@ -50,6 +50,7 @@ class Item extends Component {
   };
 
   state = {
+    isShowPreviewModal: false,
     isOpenedDetails: false
   };
 
@@ -74,6 +75,14 @@ class Item extends Component {
     const { item } = this.props;
     return get(item, "rows[0].widgets[0].entity.stimulus", "");
   }
+
+  closeModal = () => {
+    this.setState({ isShowPreviewModal: false });
+  };
+
+  previewItem = () => {
+    this.setState({ isShowPreviewModal: true });
+  };
 
   renderDetails = () => {
     const { item } = this.props;
@@ -138,15 +147,28 @@ class Item extends Component {
   };
 
   render() {
-    const { item, t, windowWidth, selectedToCart, search } = this.props;
+    const { item, t, windowWidth, selectedToCart, search, userId } = this.props;
     const resources =
       item.rows && item.rows.flatMap(row => row.widgets).filter(widget => widget.widgetType === "resource");
-    const { isOpenedDetails } = this.state;
+    const { isOpenedDetails, isShowPreviewModal = false } = this.state;
+    const owner = item.authors && item.authors.some(x => x._id === userId);
+    const isEditable = owner;
+
     return (
       <Container>
+        <PreviewModal
+          isVisible={isShowPreviewModal}
+          page="addItems"
+          showEvaluationButtons
+          onClose={this.closeModal}
+          data={{ ...item, id: item._id }}
+          isEditable={isEditable}
+          owner={owner}
+          addDuplicate={this.handleDuplicateItem}
+        />
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.moveToItem}>
+            <MoveLink onClick={this.previewItem}>
               {item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
                 ? item.data.questions[0].stimulus
                 : "Click here to view the question detail."}
@@ -155,7 +177,7 @@ class Item extends Component {
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (
             <ViewButton>
-              <ViewButtonStyled onClick={this.moveToItem}>{t("component.item.view")}</ViewButtonStyled>
+              <ViewButtonStyled onClick={this.previewItem}>{t("component.item.view")}</ViewButtonStyled>
               <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
                 {selectedToCart ? "Remove" : <IconPlus />}
               </AddButtonStyled>

@@ -8,7 +8,7 @@ import { Tooltip } from "antd";
 import { find } from "lodash";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
-
+import ClassCreatePage from "./ClassCreatePage";
 import { TableWrapper, ClassListTable } from "./styled";
 import { fetchStudentsByIdAction } from "../../ducks";
 
@@ -101,13 +101,17 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
   return (
     <TableWrapper>
       <ClassSelector groups={groups} archiveGroups={archiveGroups} setClassGroups={setClassGroups} />
-      <ClassListTable
-        columns={columns}
-        dataSource={classGroups}
-        rowKey={rowKey}
-        onRow={onRow}
-        pagination={classGroups.length > 10}
-      />
+      {classGroups.length > 0 ? (
+        <ClassListTable
+          columns={columns}
+          dataSource={classGroups}
+          rowKey={rowKey}
+          onRow={onRow}
+          pagination={classGroups.length > 10}
+        />
+      ) : (
+        <ClassCreatePage />
+      )}
     </TableWrapper>
   );
 };

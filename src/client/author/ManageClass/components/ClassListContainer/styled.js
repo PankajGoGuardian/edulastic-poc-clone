@@ -1,8 +1,50 @@
 import styled, { css } from "styled-components";
 
-import { white, themeColor, boxShadowDefault } from "@edulastic/colors";
+import { white, themeColor, boxShadowDefault, lightBlue } from "@edulastic/colors";
 import { Button, Table, Select } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
+
+export const ClassCreateContainer = styled.div`
+  background: white;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 60vh;
+  font-style: italic;
+`;
+export const ButtonsContainer = styled.div`
+  display: flex;
+  margin: 1rem;
+  justify-content: space-between;
+`;
+
+export const SyncClassDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  color: ${themeColor};
+  font-size: 15px;
+`;
+export const SyncImg = styled.img`
+  margin-right: 0.5rem;
+  width: 30px;
+  height: 30px;
+  margin-left: 0.5rem;
+`;
+export const CreateClassBtn = styled(Button)`
+  display: flex;
+  align-items: center;
+  border: 2px solid ${themeColor} !important;
+  background-color: transparent;
+  border-radius: 50px;
+  color: ${themeColor};
+  margin-right: 0.5rem;
+  &:hover {
+    background: ${themeColor};
+    color: ${white};
+  }
+`;
 
 export const Title = styled.div`
   font-size: 22px;
@@ -76,7 +118,7 @@ export const ClassSelect = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   font-weight: bold;
   button {
     &:hover,

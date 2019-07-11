@@ -36,7 +36,8 @@ const Summary = ({
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
   onChangeColor,
-  onChangeSubjects
+  onChangeSubjects,
+  isEditable = true
 }) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
@@ -106,6 +107,7 @@ const Summary = ({
               onChangeColor={onChangeColor}
               isTextColorPickerVisible={isTextColorPickerVisible}
               isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
+              isEditable={isEditable}
             />
           </Col>
         </Row>

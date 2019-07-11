@@ -214,6 +214,7 @@ class Container extends PureComponent {
             test={test}
             owner={owner}
             current={current}
+            isEditable={isEditable}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
           />

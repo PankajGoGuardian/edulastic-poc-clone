@@ -196,27 +196,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
 
   const shouldShowReset = isViewByStandards ? selectedStandards.length : selectedDomains.length;
 
-  const tableData = analysisParseData(reportWithFilteredSkills, viewBy, compareBy);
-
-  const paginationOffset = page * PAGE_SIZE;
-  const paginatedData = tableData.slice(paginationOffset, paginationOffset + PAGE_SIZE);
-
-  const handlePrevPage = () => {
-    if (page === 0) return;
-
-    setPage(page - 1);
-  };
-
-  const handleNextPage = () => {
-    if (tableData.length <= paginationOffset) {
-      return;
-    }
-
-    setPage(page + 1);
-  };
-
-  const prevButtonDisabled = page === 0;
-  const nextButtonDisabled = (page + 1) * PAGE_SIZE >= tableData.length || tableData.length < PAGE_SIZE;
+  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy);
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
@@ -290,26 +270,17 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
               selectCB={handleCompareByChange}
               data={filteredDropDownData}
             />
-            <Button.Group size="middle">
-              <Button onClick={handlePrevPage} disabled={prevButtonDisabled}>
-                <Icon type="left" />
-                Prev
-              </Button>
-              <Button onClick={handleNextPage} disabled={nextButtonDisabled}>
-                Next
-                <Icon type="right" />
-              </Button>
-            </Button.Group>
           </CardDropdownWrapper>
         </CardHeader>
         <PerformanceAnalysisTable
-          tableData={paginatedData}
+          tableData={tableData}
           report={reportWithFilteredSkills}
           viewBy={viewBy}
           analyzeBy={analyzeBy}
           compareBy={compareBy}
           selectedStandards={selectedStandards}
           selectedDomains={selectedDomains}
+          totalPoints={totalPoints}
         />
       </StyledSignedBarContainer>
     </>

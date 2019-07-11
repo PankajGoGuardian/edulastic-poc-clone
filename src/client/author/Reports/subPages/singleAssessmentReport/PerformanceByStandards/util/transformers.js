@@ -1,5 +1,21 @@
-import { groupBy, head, uniqBy, capitalize, last, ceil, orderBy, find, map, forEach, round, filter } from "lodash";
-import { percentage } from "../../../../common/util";
+import {
+  groupBy,
+  head,
+  uniqBy,
+  capitalize,
+  last,
+  ceil,
+  orderBy,
+  find,
+  map,
+  forEach,
+  round,
+  filter,
+  sumBy,
+  mapValues
+} from "lodash";
+import { percentage, ceilingPercentage } from "../../../../common/util";
+import next from "immer";
 
 export const viewByMode = {
   STANDARDS: "standards",
@@ -85,8 +101,7 @@ export const compareByColumns = {
   [compareByMode.GENDER]: {
     title: "Gender",
     dataIndex: "gender",
-    key: "gender",
-    render: gender => (gender === "M" ? "Male" : "Female")
+    key: "gender"
   },
   [compareByMode.FRL_STATUS]: {
     title: "FRL Status",
@@ -107,6 +122,11 @@ export const compareByColumns = {
     render: capitalize
   }
 };
+
+export const getOverallRawScore = (metrics = []) => sumBy(metrics, "totalScore") / metrics.length;
+
+export const getOverallScore = (metrics = []) =>
+  ceilingPercentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
 
 const chartGetAverageScoreByStandards = studentMetrics => standardId => {
   // get list of metrics by students for a standard
@@ -210,125 +230,65 @@ const chartDataByDomains = (report, chartFilters) => {
   return byDomains;
 };
 
-const makeStandardColumnData = (skillInfo, selectedDomains, selectedStandards) => {
-  return {
-    [viewByMode.STANDARDS]: {
-      selectedData: selectedStandards,
-      dataField: "standardId",
-      standardColumnsData: skillInfo
-    },
-    [viewByMode.DOMAINS]: {
-      selectedData: selectedDomains,
-      dataField: "domainId",
-      standardColumnsData: uniqBy(skillInfo, "domainId")
-    }
-  };
+const getStandardMetrics = (data = {}, scaleInfo = []) => {
+  return next(data, draft => {
+    Object.keys(draft).forEach(dataId => {
+      const score = getOverallScore(draft[dataId].metric);
+      const masteryLevel = getMasteryLevel(score, scaleInfo);
+      draft[dataId] = {
+        masteryScore: masteryLevel.score,
+        masteryLabel: masteryLevel.masteryLabel,
+        avgScore: score,
+        rawScore: getOverallRawScore(draft[dataId].metric),
+        maxScore: draft[dataId].maxScore,
+        records: draft[dataId].metric
+      };
+    });
+  });
 };
 
-const groupAnalysisByCompare = (data, viewBy, compareBy) => {
-  const groupingField = compareByColumns[compareBy].key;
-
-  const viewByMetric = makeStandardColumnData()[viewBy].dataField;
-
-  const grouped = groupBy(data, groupingField);
-
-  const defaultMetric = { totalScore: 0, masteryScore: 0 };
-
-  const reduced = Object.keys(grouped).reduce((result, field) => {
-    const students = grouped[field];
-
-    const gatheredStudents = students.reduce(
-      (gathered, student) => {
-        const standardMetrics = Object.keys(student.standardMetrics);
-
-        return {
-          ...student,
-          [groupingField]: student[groupingField],
-          standardMetrics: standardMetrics.reduce(
-            (reducedMetrics, standardId) => ({
-              ...reducedMetrics,
-              [standardId]: {
-                [viewByMetric]: standardId,
-                totalScore:
-                  (gathered.standardMetrics[standardId] || defaultMetric).totalScore +
-                  student.standardMetrics[standardId].totalScore / students.length,
-                masteryScore:
-                  (gathered.standardMetrics[standardId] || defaultMetric).masteryScore +
-                  student.standardMetrics[standardId].masteryScore / students.length
-              }
-            }),
-            {}
-          )
-        };
-      },
-      {
-        standardMetrics: {}
-      }
-    );
-
-    return {
-      ...result,
-      [field]: gatheredStudents
-    };
-  }, {});
-
-  return Object.values(reduced);
-};
-
-const analysisDataSource = (compareBy, studInfo, teacherInfo) => ({
-  dataSource: [compareByMode.SCHOOL, compareByMode.TEACHER, compareByMode.CLASS].includes(compareBy)
-    ? teacherInfo
-    : studInfo,
-  dataField: compareByColumns[compareBy].key
-});
-
-const analysisStandardsData = (viewBy, compareBy, studInfo, teacherInfo, metricInfo) => {
-  const { dataSource, dataField } = analysisDataSource(compareBy, studInfo, teacherInfo);
-
+const analysisStandardsData = (compareBy, studInfo, teacherInfo, metricInfo, scaleInfo) => {
   const metricInfoWithStudentInfo = augmentMetricInfoWithStudentInfo(studInfo, teacherInfo, metricInfo);
 
-  const data = dataSource.map(item => {
-    const metrics = metricInfoWithStudentInfo.filter(metric => metric[dataField] === item[dataField]);
+  const groupingField = compareByColumns[compareBy].key;
 
-    const metricsGroupedByStandard = groupBy(metrics, "standardId");
+  const grouped = groupBy(metricInfoWithStudentInfo, groupingField);
 
-    const metricsWithAverageScore = Object.keys(metricsGroupedByStandard).reduce(
-      (result, standardId) => ({
-        ...result,
-        [standardId]: metricsGroupedByStandard[standardId].reduce(
-          (reducedStandard, standard) => {
-            const total = metricsGroupedByStandard[standardId].length;
+  const data = Object.keys(grouped).map(groupId => {
+    const groupedByStandard = groupBy(grouped[groupId], "standardId");
 
-            const average = reducedStandard.totalScore + standard.totalScore / standard.maxScore / total;
-            const masteryAverage = reducedStandard.masteryScore + standard.masteryScore / total;
+    let standardsData = {};
 
-            return {
-              standardId,
-              totalScore: average,
-              masteryScore: masteryAverage
-            };
-          },
-          {
-            totalScore: 0,
-            masteryScore: 0
-          }
-        )
-      }),
-      {}
-    );
+    Object.keys(groupedByStandard).forEach(standardId => {
+      let currentStandard = standardsData[standardId];
+
+      if (currentStandard) {
+        currentStandard = {
+          maxScore: currentStandard.maxScore + groupedByStandard[standardId][0].maxScore,
+          metric: currentStandard.metric.concat(groupedByStandard[standardId])
+        };
+      } else {
+        currentStandard = {
+          maxScore: groupedByStandard[standardId][0].maxScore,
+          metric: groupedByStandard[standardId]
+        };
+      }
+
+      standardsData[standardId] = currentStandard;
+    });
 
     return {
-      ...item,
-      standardMetrics: metricsWithAverageScore
+      ...grouped[groupId][0],
+      standardMetrics: getStandardMetrics(standardsData, scaleInfo)
     };
   });
 
-  return groupAnalysisByCompare(data, viewBy, compareBy);
+  let totalPoints = mapValues(data[0].standardMetrics, metric => metric.maxScore);
+
+  return [data, totalPoints];
 };
 
-const analysisDomainsData = (viewBy, compareBy, studInfo, teacherInfo, skillInfo, metricInfo) => {
-  const { dataSource, dataField } = analysisDataSource(compareBy, studInfo, teacherInfo);
-
+const analysisDomainsData = (compareBy, studInfo, teacherInfo, skillInfo, metricInfo, scaleInfo) => {
   const skillsByStandardId = groupBy(skillInfo, "standardId");
 
   const domainByStandardId = skillInfo.reduce((total, skill) => {
@@ -340,49 +300,45 @@ const analysisDomainsData = (viewBy, compareBy, studInfo, teacherInfo, skillInfo
 
   const metricInfoWithStudentInfo = augmentMetricInfoWithStudentInfo(studInfo, teacherInfo, metricInfo);
 
-  const defaultDomain = { totalScore: 0, masteryScore: 0 };
+  const groupingField = compareByColumns[compareBy].key;
 
-  const data = dataSource.map(item => {
-    const standardMetrics = metricInfoWithStudentInfo.filter(metric => metric[dataField] === item[dataField]);
+  const grouped = groupBy(metricInfoWithStudentInfo, groupingField);
 
-    const metricsByStandardId = groupBy(standardMetrics, "standardId");
+  const data = Object.keys(grouped).map(groupId => {
+    const groupedByStandard = groupBy(grouped[groupId], "standardId");
 
-    const metricsLength = Object.keys(metricsByStandardId).length || 1;
+    let domainsData = {};
 
-    const averageByStandardId = Object.keys(metricsByStandardId).reduce((total, standardId) => {
-      const amountOfMetrics = metricsByStandardId[standardId].length || 1;
+    Object.keys(groupedByStandard).forEach(standardId => {
+      const domainId = domainByStandardId[standardId];
+      if (domainId) {
+        let currentDomain = domainsData[domainByStandardId[standardId]];
 
-      const metrics = metricsByStandardId[standardId].reduce(
-        (result, metric) => ({
-          standardId,
-          totalScore: result.totalScore + metric.totalScore / metric.maxScore / amountOfMetrics,
-          masteryScore: result.masteryScore + metric.masteryScore / amountOfMetrics
-        }),
-        {
-          totalScore: 0,
-          masteryScore: 0
+        if (currentDomain) {
+          currentDomain = {
+            maxScore: currentDomain.maxScore + groupedByStandard[standardId][0].maxScore,
+            metric: currentDomain.metric.concat(groupedByStandard[standardId])
+          };
+        } else {
+          currentDomain = {
+            maxScore: groupedByStandard[standardId][0].maxScore,
+            metric: groupedByStandard[standardId]
+          };
         }
-      );
 
-      const domainId = domainByStandardId[metrics.standardId];
-
-      return {
-        ...total,
-        [domainId]: {
-          domainId: domainByStandardId[metrics.standardId],
-          totalScore: (total[domainId] || defaultDomain).totalScore + metrics.totalScore / metricsLength,
-          masteryScore: (total[domainId] || defaultDomain).masteryScore + metrics.masteryScore / metricsLength
-        }
-      };
-    }, {});
+        domainsData[domainByStandardId[standardId]] = currentDomain;
+      }
+    });
 
     return {
-      ...item,
-      standardMetrics: averageByStandardId
+      ...grouped[groupId][0],
+      standardMetrics: getStandardMetrics(domainsData, scaleInfo)
     };
   });
 
-  return groupAnalysisByCompare(data, viewBy, compareBy);
+  let totalPoints = mapValues(data[0].standardMetrics, metric => metric.maxScore);
+
+  return [data, totalPoints];
 };
 
 const augmentMetricInfoWithMasteryScore = report => {
@@ -421,35 +377,18 @@ export const chartParseData = (report, viewBy, filter) => {
 };
 
 export const analysisParseData = (report, viewBy, compareBy) => {
-  const { studInfo, teacherInfo, skillInfo } = report;
+  const { studInfo, teacherInfo, skillInfo, scaleInfo } = report;
 
   const metricInfo = augmentMetricInfoWithMasteryScore(report);
 
   switch (viewBy) {
     case viewByMode.STANDARDS:
-      return analysisStandardsData(viewBy, compareBy, studInfo, teacherInfo, metricInfo);
+      return analysisStandardsData(compareBy, studInfo, teacherInfo, metricInfo, scaleInfo);
     case viewByMode.DOMAINS:
-      return analysisDomainsData(viewBy, compareBy, studInfo, teacherInfo, skillInfo, metricInfo);
+      return analysisDomainsData(compareBy, studInfo, teacherInfo, skillInfo, metricInfo, scaleInfo);
     default:
       return [];
   }
-};
-
-export const reduceAverageStandardScore = (data, field) => {
-  if (!data.length) {
-    return {};
-  }
-
-  const standards = Object.keys(data[0].standardMetrics);
-
-  return standards.reduce((pointsByStandards, standardId) => {
-    const averagePoints = data.reduce((total, item) => total + item.standardMetrics[standardId][field], 0);
-
-    return {
-      ...pointsByStandards,
-      [standardId]: averagePoints / data.length
-    };
-  }, {});
 };
 
 export const getLeastMasteryLevel = (scaleInfo = []) =>

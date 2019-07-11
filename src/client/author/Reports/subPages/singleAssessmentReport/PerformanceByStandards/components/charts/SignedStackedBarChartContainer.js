@@ -49,7 +49,7 @@ const getChartSpecifics = (analyzeBy, scaleInfo) => {
       stackId: "a",
       fill: value.color,
       unit: "%",
-      name: value[analyzeBy === analyzeByMode.MASTERY_LEVEL ? "masteryName" : "score"]
+      name: value.masteryName
     });
   }
   return {

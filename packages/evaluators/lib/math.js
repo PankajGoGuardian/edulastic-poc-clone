@@ -58,12 +58,21 @@ var getChecks = function getChecks(answer) {
             }),
             "]"
           );
-          acc += "".concat(key, "=").concat(stringArr);
+
+          if (fieldVal.includes(".") && !options.setDecimalSeparator) {
+            acc += "".concat(key, "=").concat(stringArr, ",setDecimalSeparator=','");
+          } else {
+            acc += "".concat(key, "=").concat(stringArr);
+          }
         } else {
           return acc;
         }
       } else if (key === "setDecimalSeparator") {
-        acc += "".concat(key, "='").concat(fieldVal, "'");
+        if (fieldVal === "," && !options.setThousandsSeparator) {
+          acc += "".concat(key, "='").concat(fieldVal, "',setThousandsSeparator='.'");
+        } else {
+          acc += "".concat(key, "='").concat(fieldVal, "'");
+        }
       } else if (key === "allowedUnits") {
         acc += "".concat(key, "=[").concat(fieldVal, "]");
       } else if (key === "syntax") {

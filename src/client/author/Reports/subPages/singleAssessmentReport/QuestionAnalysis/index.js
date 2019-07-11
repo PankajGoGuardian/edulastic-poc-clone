@@ -90,9 +90,7 @@ const QuestionAnalysis = ({ questionAnalysis, getQuestionAnalysisRequestAction, 
                 <Col className={"top-row-container"}>
                   <Row type="flex" justify="space-between" className="top-row">
                     <Col>
-                      <StyledH3>
-                        Detailed Performance Analysis By {"compareBy"} | {questionAnalysis.assessmentName}
-                      </StyledH3>
+                      <StyledH3>Detailed Performance Analysis By | {questionAnalysis.assessmentName}</StyledH3>
                     </Col>
                     <Col>
                       {role !== "teacher" ? (
@@ -122,8 +120,7 @@ export default connect(
   state => ({
     questionAnalysis: getReportsQuestionAnalysis(state),
     loading: getReportsQuestionAnalysisLoader(state),
-    // role: getUserRole(state)
-    role: "da"
+    role: getUserRole(state)
   }),
   { getQuestionAnalysisRequestAction }
 )(QuestionAnalysis);

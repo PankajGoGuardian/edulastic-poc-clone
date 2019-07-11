@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { cloneDeep, flattenDeep, isUndefined, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
 
-import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, Stimulus } from "@edulastic/common";
 import { response, clozeImage } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -24,7 +24,7 @@ import { RelativeContainer } from "../../styled/RelativeContainer";
 import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
-import { AnswerContainer } from "./styled/AnswerContainer";
+import AnswerContainer from "./AnswerContainer";
 
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
@@ -179,9 +179,8 @@ class Display extends Component {
       const maxTop = maxBy(responseContainers, res => res.top);
       const maxLeft = maxBy(responseContainers, res => res.left);
       return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
-    } else {
-      return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
     }
+    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
   };
 
   render() {
@@ -379,13 +378,8 @@ class Display extends Component {
                           <AnswerContainer
                             height={responseContainer.height || "auto"}
                             width={responseContainer.width || "auto"}
-                          >
-                            <MathSpan
-                              dangerouslySetInnerHTML={{
-                                __html: answer.replace("<p>", "<p class='clipText'>") || ""
-                              }}
-                            />
-                          </AnswerContainer>
+                            answer={answer.replace("<p>", "<p class='clipText'>") || ""}
+                          />
                         </DragItem>
                       );
                     })}
@@ -557,8 +551,6 @@ Display.propTypes = {
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
-  imageTitle: PropTypes.string,
-  imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
   imageOptions: PropTypes.object,

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, Checkbox, Button, Menu } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, themeColor, white, linkColor, tabGrey, mainTextColor } from "@edulastic/colors";
+import { mobileWidth, themeColor, white, linkColor, tabGrey, mainTextColor, title } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
@@ -149,22 +149,27 @@ export const RedirectButton = styled(StyledTabButton)`
 
 export const DropMenu = styled(Menu)`
   margin-top: 10px;
+  width: 190px;
 `;
 
 export const MenuItems = styled(Menu.Item)`
   display: flex;
   align-items: center;
+  font-size: 11px;
+  color: ${title};
+  font-weight: 600;
   &:hover {
     svg {
       fill: ${white};
       path {
         fill: ${white};
+        stroke: ${white};
       }
     }
   }
   svg {
     fill: ${mainTextColor};
-    width: 15px;
+    height: 12px;
     margin-right: 10px;
     path {
       fill: ${mainTextColor};

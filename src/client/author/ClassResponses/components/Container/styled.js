@@ -66,10 +66,14 @@ export const GraphContainer = styled.div`
 `;
 
 export const StyledFlexContainer = styled(FlexContainer)`
-  width: 95%;
-  margin: 0px auto;
+  width: 100%;
+  margin-bottom: 0px;
   p {
-    padding: 0px 0px;
+    padding: 0px;
+  }
+  .question-wrapper {
+    max-width: calc(100vw - 490px);
+    min-width: calc(100vw - 490px);
   }
 `;
 

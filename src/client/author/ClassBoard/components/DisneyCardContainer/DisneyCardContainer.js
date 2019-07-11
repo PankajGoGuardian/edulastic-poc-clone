@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
-import { greenSecondary, yellow, red } from "@edulastic/colors";
+import { themeColorLighter, yellow, red } from "@edulastic/colors";
 import { connect } from "react-redux";
 
 import CardCheckbox from "./CardCheckbox/CardCheckbox";
@@ -112,10 +112,10 @@ class DisneyCardContainer extends Component {
           } else {
             status.status = "Submitted";
           }
-          status.color = greenSecondary;
+          status.color = themeColorLighter;
         } else if (student.status === "redirected") {
           status.status = "Redirected";
-          status.color = greenSecondary;
+          status.color = themeColorLighter;
         } else if (student.status === "absent") {
           status.status = "Absent";
           status.color = red;

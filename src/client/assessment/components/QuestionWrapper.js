@@ -312,6 +312,7 @@ class QuestionWrapper extends Component {
               data-cy="question-container"
             >
               <PaperWrapper
+                className="question-wrapper"
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 style={{

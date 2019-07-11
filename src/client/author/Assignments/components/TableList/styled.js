@@ -90,6 +90,7 @@ export const TableData = styled(Table)`
 
     &.assignment-name {
       text-align: left !important;
+      padding-left: 0;
     }
   }
 
@@ -118,10 +119,8 @@ export const TableData = styled(Table)`
 
   .ant-table-tbody {
     .ant-table-expanded-row td {
-      padding-left: 0 !important;
-      padding-top: 0;
-      padding-bottom: 0;
       text-align: center;
+      padding: 9px 0px 9px 5px;
     }
 
     tr {
@@ -195,7 +194,6 @@ export const TestThumbnail = styled.img`
   border-radius: 5px;
   width: 71px;
   height: 23px;
-  margin-right: 9px;
 `;
 
 export const AssignmentTD = styled.div`
@@ -304,8 +302,8 @@ export const GreyFont = styled.div`
   text-overflow: ellipsis;
   width: 100%;
   &.class-column {
-    display: inline-block;
-    max-width: 150px;
+    text-align: right;
+    white-space: initial;
   }
 `;
 
@@ -326,10 +324,6 @@ export const ExpandedTable = styled(Table)`
 
   .ant-table-tbody tr {
     background-color: ${lightGreySecondary};
-  }
-
-  .ant-table-tbody tr td {
-    padding: 9px 0px 9px 25px !important;
   }
 
   @media (max-width: ${mobileWidth}) {

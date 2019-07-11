@@ -87,22 +87,19 @@ class TableList extends Component {
         render: () => <GreyFont style={{ display: "block" }} />
       },
       {
-        dataIndex: "name",
-        width: "20%",
-        render: () => <GreyFont style={{ width: "253px", display: "block" }} />
-      },
-      {
         dataIndex: "class",
-        width: "14%",
+        width: "30%",
         render: text => (
-          <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <GreyFont className="class-column">{text}</GreyFont>
-          </Tooltip>
+          <GreyFont className="class-column">
+            <Tooltip placement="bottom" title={text}>
+              <span>{text}</span>
+            </Tooltip>
+          </GreyFont>
         )
       },
       {
         dataIndex: "testType",
-        width: "10%",
+        width: "14%",
         render: (_, row) =>
           row && row.testType === test.type.PRACTICE ? (
             <TypeIcon type="practice">P</TypeIcon>
@@ -203,7 +200,7 @@ class TableList extends Component {
         className: "assignment-name",
         render: (text, row) => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <FlexContainer style={{ marginLeft: 0 }}>
+            <FlexContainer style={{ marginLeft: 0 }} justifyContent={"left"}>
               <div>
                 <TestThumbnail src={row.thumbnail} />
               </div>
@@ -217,7 +214,7 @@ class TableList extends Component {
         dataIndex: "class",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.class - b.class,
-        width: "14%",
+        width: "10%",
         render: text => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
             <IconArrowDown onclick={() => false} src={arrowUpIcon} />
@@ -230,7 +227,7 @@ class TableList extends Component {
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.testType.localeCompare(b.testType),
-        width: "10%",
+        width: "14%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
       {

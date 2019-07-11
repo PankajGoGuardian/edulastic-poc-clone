@@ -45,7 +45,7 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       unset(filters, "subject");
     }
     const userRole = yield select(getUserRole);
-    if (userRole !== "teacher") {
+    if (userRole === "district-admin" || userRole === "school-admin") {
       const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
         districtId,
         filters: pickBy(filters, identity)

@@ -44,9 +44,8 @@ const convertTableData = (data, assignments, index) => ({
   class: assignments.length,
   assigned: "",
   status: "status",
-  submitted: `${assignments.map(item => item.submittedCount).reduce((t, c) => t + c) || 0} of ${assignments
-    .map(item => item.totalNumber || 0)
-    .reduce((t, c) => t + c)}`,
+  submitted: `${assignments.map(item => item.submittedCount || item.gradedCount || 0).reduce((t, c) => t + c) ||
+    0} of ${assignments.map(item => item.totalNumber || 0).reduce((t, c) => t + c)}`,
   graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c) || 0}`,
   action: "",
   classId: assignments[0].classId,
@@ -61,7 +60,7 @@ const convertExpandTableData = (data, testItem, index) => ({
   class: data.className,
   assigned: data.assignedBy.name,
   status: data.status === "NOT OPEN" && data.startDate && data.startDate < Date.now() ? "IN PROGRESS" : data.status,
-  submitted: `${data.submittedCount || 0} of ${data.totalNumber || 0}`,
+  submitted: `${(data.submittedCount || 0) + (data.gradedCount || 0)} of ${data.totalNumber || 0}`,
   graded: data.gradedCount,
   action: "",
   classId: data.classId,

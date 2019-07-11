@@ -108,7 +108,6 @@ const ItemDetailContainer = ({
       ) : (
         <MultipleQuestionView {...allProps} />
       )}
-      }{" "}
     </>
   );
 };

@@ -25,6 +25,7 @@ export const SyncClassDiv = styled.div`
   justify-content: space-between;
   color: ${themeColor};
   font-size: 15px;
+  cursor: pointer;
 `;
 export const SyncImg = styled.img`
   margin-right: 0.5rem;

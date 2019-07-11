@@ -13,13 +13,13 @@ export const MainDiv = styled.div`
   }
 
   .navigator-left {
-    left: -12px;
-    top: 37%;
+    left: -25px;
+    top: 35%;
   }
 
   .navigator-right {
-    right: -12px;
-    top: 37%;
+    right: -25px;
+    top: 35%;
   }
 
   .highcharts-credits {

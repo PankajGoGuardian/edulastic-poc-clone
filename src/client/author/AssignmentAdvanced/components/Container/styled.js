@@ -5,12 +5,11 @@ import { tabletWidth, mobileWidth, linkColor, themeColor, white } from "@edulast
 import { Card } from "@edulastic/common";
 
 export const Container = styled.div`
-  padding: 0 44px 20px 46px;
+  padding: 30px;
   left: 0;
   right: 0;
   height: 100%;
   overflow: auto;
-  margin-top: 22px;
   @media (max-width: ${mobileWidth}) {
     padding: 0 26px 45px 26px;
   }

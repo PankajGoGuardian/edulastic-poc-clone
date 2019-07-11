@@ -5,12 +5,11 @@ import { mobileWidth, tabletWidth, white, themeColor } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
-  padding: 0 44px 20px 46px;
+  padding: 30px;
   left: 0;
   right: 0;
   height: 100%;
   overflow: auto;
-  margin-top: 30px;
 
   .scrollbar-container {
     overflow: auto !important;

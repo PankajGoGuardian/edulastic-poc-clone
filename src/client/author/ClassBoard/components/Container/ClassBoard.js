@@ -79,7 +79,8 @@ import {
   ButtonIconWrap,
   MenuItems,
   CaretUp,
-  DropMenu
+  DropMenu,
+  CardDetailsContainer
 } from "./styled";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 
@@ -467,250 +468,248 @@ class ClassBoard extends Component {
           testActivityId={testActivityId}
           selectedStudentsKeys={selectedStudentsKeys}
         />
-        <StyledFlexContainer justifyContent="space-between">
-          <PaginationInfo>
-            &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
-            <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
-            <Anchor>{additionalData.className}</Anchor>
-          </PaginationInfo>
+        <CardDetailsContainer>
+          <StyledFlexContainer justifyContent="space-between">
+            <PaginationInfo>
+              &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
+              <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
+              <Anchor>{additionalData.className}</Anchor>
+            </PaginationInfo>
 
-          <StudentButtonDiv data-cy="studentnQuestionTab">
-            <PresentationToggleSwitch groupId={classId} />
-            <BothButton
-              style={{ marginLeft: "10px" }}
-              active={selectedTab === "Both"}
-              onClick={e => this.onTabChange(e, "Both")}
-            >
-              CARD VIEW
-            </BothButton>
-            <StudentButton
-              disabled={!firstStudentId}
-              active={selectedTab === "Student"}
-              onClick={e => this.onTabChange(e, "Student", firstStudentId)}
-            >
-              STUDENTS
-            </StudentButton>
-            <QuestionButton
-              active={selectedTab === "questionView"}
-              disabled={!firstStudentId}
-              onClick={() => {
-                const firstQuestion = get(this.props, ["entities", 0, "questionActivities", 0]);
-                if (!firstQuestion) {
-                  console.warn("no question activities");
-                  return;
-                }
-                this.setState({
-                  selectedQuestion: 0,
-                  selectedQid: firstQuestion._id,
-                  itemId: firstQuestion.testItemId,
-                  selectedTab: "questionView"
-                });
-              }}
-            >
-              QUESTIONS
-            </QuestionButton>
-          </StudentButtonDiv>
-        </StyledFlexContainer>
-        {selectedTab === "Both" && (
-          <React.Fragment>
-            <GraphContainer>
-              <StyledCard bordered={false}>
-                <Graph
-                  gradebook={gradebook}
-                  testActivity={testActivity}
-                  testQuestionActivities={testQuestionActivities}
-                  onClickHandler={this.onClickBarGraph}
-                />
-              </StyledCard>
-            </GraphContainer>
-            {
-              <StyledFlexContainer
-                justifyContent="space-between"
-                marginBottom="0px"
-                paddingRight={isMobile ? "5px" : "20px"}
+            <StudentButtonDiv data-cy="studentnQuestionTab">
+              <PresentationToggleSwitch groupId={classId} />
+              <BothButton
+                style={{ marginLeft: "20px" }}
+                active={selectedTab === "Both"}
+                onClick={e => this.onTabChange(e, "Both")}
               >
-                <CheckContainer>
-                  <StyledCheckbox
-                    checked={unselectedStudents.length === 0}
-                    indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < entities.length}
-                    onChange={this.onSelectAllChange}
-                  >
-                    {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
-                  </StyledCheckbox>
-                </CheckContainer>
-                <ClassBoardFeats>
-                  <RedirectButton
-                    first={true}
-                    data-cy="printButton"
-                    onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
-                  >
-                    <ButtonIconWrap>
-                      <IconPrint />
-                    </ButtonIconWrap>
-                    PRINT
-                  </RedirectButton>
-                  <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
-                    <ButtonIconWrap>
-                      <IconRedirect />
-                    </ButtonIconWrap>
-                    REDIRECT
-                  </RedirectButton>
-                  <FeaturesSwitch
-                    inputFeatures="assessmentSuperPowersMarkAsDone"
-                    actionOnInaccessible="hidden"
-                    groupId={classId}
-                  >
-                    <Dropdown
-                      overlay={
-                        <DropMenu>
-                          <CaretUp className="fa fa-caret-up" />
-                          <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
-                            <IconMarkAsAbsent />
-                            <span>Mark as Absent</span>
-                          </MenuItems>
-                          <MenuItems onClick={this.onStudentReportCardsClick}>
-                            <IconStudentReportCard />
-                            <span>Student Report Cards</span>
-                          </MenuItems>
-                        </DropMenu>
-                      }
-                      placement="bottomRight"
-                    >
-                      <RedirectButton last={true}>
-                        <ButtonIconWrap>
-                          <IconMoreHorizontal />
-                        </ButtonIconWrap>
-                        MORE
-                      </RedirectButton>
-                    </Dropdown>
-                  </FeaturesSwitch>
-                </ClassBoardFeats>
-              </StyledFlexContainer>
-            }
-
-            <>
-              {/* Modals */}
-              {studentReportCardMenuModalVisibility ? (
-                <StudentReportCardMenuModal
-                  title="Student Report Card"
-                  visible={studentReportCardMenuModalVisibility}
-                  onOk={this.onStudentReportCardMenuModalOk}
-                  onCancel={this.onStudentReportCardMenuModalCancel}
-                />
-              ) : null}
-              {studentReportCardModalVisibility ? (
-                <StudentReportCardModal
-                  visible={studentReportCardModalVisibility}
-                  onOk={this.onStudentReportCardModalOk}
-                  onCancel={this.onStudentReportCardModalCancel}
-                  groupId={classId}
-                  selectedStudentsKeys={selectedStudentsKeys}
-                  columnsFlags={studentReportCardModalColumnsFlags}
-                  assignmentId={assignmentId}
-                />
-              ) : null}
-            </>
-
-            {flag ? (
-              <DisneyCardContainer
-                selectedStudents={selectedStudents}
-                testActivity={testActivity}
-                updateDisabledList={this.updateDisabledList}
-                assignmentId={assignmentId}
-                classId={classId}
-                studentSelect={this.onSelectCardOne}
-                endDate={additionalData.endDate || additionalData.closedDate}
-                studentUnselect={this.onUnselectCardOne}
-                viewResponses={(e, selected) => {
-                  this.onTabChange(e, "Student", selected);
+                CARD VIEW
+              </BothButton>
+              <StudentButton
+                disabled={!firstStudentId}
+                active={selectedTab === "Student"}
+                onClick={e => this.onTabChange(e, "Student", firstStudentId)}
+              >
+                STUDENTS
+              </StudentButton>
+              <QuestionButton
+                active={selectedTab === "questionView"}
+                disabled={!firstStudentId}
+                onClick={() => {
+                  const firstQuestion = get(this.props, ["entities", 0, "questionActivities", 0]);
+                  if (!firstQuestion) {
+                    console.warn("no question activities");
+                    return;
+                  }
+                  this.setState({
+                    selectedQuestion: 0,
+                    selectedQid: firstQuestion._id,
+                    itemId: firstQuestion.testItemId,
+                    selectedTab: "questionView"
+                  });
                 }}
-                isPresentationMode={isPresentationMode}
-                enrollmentStatus={this.props.enrollmentStatus}
-              />
-            ) : (
-              <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
-            )}
-
-            <RedirectPopup
-              open={redirectPopup}
-              allStudents={allStudents}
-              disabledList={disabledList}
-              absentList={absentList}
-              selectedStudents={selectedStudents}
-              additionalData={additionalData}
-              closePopup={() => {
-                this.setState({ redirectPopup: false });
-              }}
-              setSelected={setSelected}
-              assignmentId={assignmentId}
-              groupId={classId}
-            />
-          </React.Fragment>
-        )}
-
-        {selectedTab === "Student" && studentItems && (
-          <React.Fragment>
-            <StudentGrapContainer>
-              <StyledCard bordered={false} paddingTop={15}>
-                <BarGraph
-                  gradebook={gradebook}
-                  testActivity={testActivity}
-                  studentId={selectedStudentId}
-                  studentview
-                  studentResponse={qActivityByStudent}
-                >
-                  <StudentSelect
-                    students={studentItems}
-                    selectedStudent={selectedStudentId}
-                    studentResponse={qActivityByStudent}
-                    handleChange={value => {
-                      this.setState({ selectedStudentId: value });
-                    }}
-                    isPresentationMode={isPresentationMode}
+              >
+                QUESTIONS
+              </QuestionButton>
+            </StudentButtonDiv>
+          </StyledFlexContainer>
+          {selectedTab === "Both" && (
+            <React.Fragment>
+              <GraphContainer>
+                <StyledCard bordered={false}>
+                  <Graph
+                    gradebook={gradebook}
+                    testActivity={testActivity}
+                    testQuestionActivities={testQuestionActivities}
+                    onClickHandler={this.onClickBarGraph}
                   />
-                </BarGraph>
-              </StyledCard>
-            </StudentGrapContainer>
-            <StudentContainer
-              classResponse={classResponse}
-              testActivity={testActivity}
-              studentItems={studentItems}
-              selectedStudent={selectedStudentId}
-              isPresentationMode={isPresentationMode}
-            />
-          </React.Fragment>
-        )}
+                </StyledCard>
+              </GraphContainer>
+              {
+                <StyledFlexContainer justifyContent="space-between" marginBottom="0px">
+                  <CheckContainer>
+                    <StyledCheckbox
+                      checked={unselectedStudents.length === 0}
+                      indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < entities.length}
+                      onChange={this.onSelectAllChange}
+                    >
+                      {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
+                    </StyledCheckbox>
+                  </CheckContainer>
+                  <ClassBoardFeats>
+                    <RedirectButton
+                      first={true}
+                      data-cy="printButton"
+                      onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
+                    >
+                      <ButtonIconWrap>
+                        <IconPrint />
+                      </ButtonIconWrap>
+                      PRINT
+                    </RedirectButton>
+                    <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
+                      <ButtonIconWrap>
+                        <IconRedirect />
+                      </ButtonIconWrap>
+                      REDIRECT
+                    </RedirectButton>
+                    <FeaturesSwitch
+                      inputFeatures="assessmentSuperPowersMarkAsDone"
+                      actionOnInaccessible="hidden"
+                      groupId={classId}
+                    >
+                      <Dropdown
+                        overlay={
+                          <DropMenu>
+                            <CaretUp className="fa fa-caret-up" />
+                            <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
+                              <IconMarkAsAbsent />
+                              <span>Mark as Absent</span>
+                            </MenuItems>
+                            <MenuItems onClick={this.onStudentReportCardsClick}>
+                              <IconStudentReportCard />
+                              <span>Student Report Cards</span>
+                            </MenuItems>
+                          </DropMenu>
+                        }
+                        placement="bottomRight"
+                      >
+                        <RedirectButton last={true}>
+                          <ButtonIconWrap>
+                            <IconMoreHorizontal />
+                          </ButtonIconWrap>
+                          MORE
+                        </RedirectButton>
+                      </Dropdown>
+                    </FeaturesSwitch>
+                  </ClassBoardFeats>
+                </StyledFlexContainer>
+              }
 
-        {selectedTab === "questionView" && (selectedQuestion || selectedQuestion === 0) && (
-          <React.Fragment>
-            <QuestionContainer
-              classResponse={classResponse}
-              testActivity={testActivity}
-              qIndex={selectedQuestion}
-              itemId={itemId}
-              question={{ id: selectedQid }}
-              isPresentationMode={isPresentationMode}
-            >
-              <GenSelect
-                classid="DI"
-                classname={
-                  selectedTab === "Student"
-                    ? classname
-                    : firstQuestionEntities
-                        .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled, id: x._id }))
-                        .filter(x => !x.disabled)
-                        .map(({ value, id }) => ({ value, name: labels[id].barLabel }))
-                }
-                selected={selectedQuestion}
-                justifyContent="flex-end"
-                handleChange={value => {
-                  const { _id: qid, testItemId } = entities[0].questionActivities[value];
-                  this.setState({ selectedQuestion: value, selectedQid: qid, testItemId });
+              <>
+                {/* Modals */}
+                {studentReportCardMenuModalVisibility ? (
+                  <StudentReportCardMenuModal
+                    title="Student Report Card"
+                    visible={studentReportCardMenuModalVisibility}
+                    onOk={this.onStudentReportCardMenuModalOk}
+                    onCancel={this.onStudentReportCardMenuModalCancel}
+                  />
+                ) : null}
+                {studentReportCardModalVisibility ? (
+                  <StudentReportCardModal
+                    visible={studentReportCardModalVisibility}
+                    onOk={this.onStudentReportCardModalOk}
+                    onCancel={this.onStudentReportCardModalCancel}
+                    groupId={classId}
+                    selectedStudentsKeys={selectedStudentsKeys}
+                    columnsFlags={studentReportCardModalColumnsFlags}
+                    assignmentId={assignmentId}
+                  />
+                ) : null}
+              </>
+
+              {flag ? (
+                <DisneyCardContainer
+                  selectedStudents={selectedStudents}
+                  testActivity={testActivity}
+                  updateDisabledList={this.updateDisabledList}
+                  assignmentId={assignmentId}
+                  classId={classId}
+                  studentSelect={this.onSelectCardOne}
+                  endDate={additionalData.endDate || additionalData.closedDate}
+                  studentUnselect={this.onUnselectCardOne}
+                  viewResponses={(e, selected) => {
+                    this.onTabChange(e, "Student", selected);
+                  }}
+                  isPresentationMode={isPresentationMode}
+                  enrollmentStatus={this.props.enrollmentStatus}
+                />
+              ) : (
+                <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
+              )}
+
+              <RedirectPopup
+                open={redirectPopup}
+                allStudents={allStudents}
+                disabledList={disabledList}
+                absentList={absentList}
+                selectedStudents={selectedStudents}
+                additionalData={additionalData}
+                closePopup={() => {
+                  this.setState({ redirectPopup: false });
                 }}
+                setSelected={setSelected}
+                assignmentId={assignmentId}
+                groupId={classId}
               />
-            </QuestionContainer>
-          </React.Fragment>
-        )}
+            </React.Fragment>
+          )}
+
+          {selectedTab === "Student" && studentItems && (
+            <React.Fragment>
+              <StudentGrapContainer>
+                <StyledCard bordered={false} paddingTop={15}>
+                  <BarGraph
+                    gradebook={gradebook}
+                    testActivity={testActivity}
+                    studentId={selectedStudentId}
+                    studentview
+                    studentResponse={qActivityByStudent}
+                  >
+                    <StudentSelect
+                      students={studentItems}
+                      selectedStudent={selectedStudentId}
+                      studentResponse={qActivityByStudent}
+                      handleChange={value => {
+                        this.setState({ selectedStudentId: value });
+                      }}
+                      isPresentationMode={isPresentationMode}
+                    />
+                  </BarGraph>
+                </StyledCard>
+              </StudentGrapContainer>
+              <StudentContainer
+                classResponse={classResponse}
+                testActivity={testActivity}
+                studentItems={studentItems}
+                selectedStudent={selectedStudentId}
+                isPresentationMode={isPresentationMode}
+              />
+            </React.Fragment>
+          )}
+
+          {selectedTab === "questionView" && (selectedQuestion || selectedQuestion === 0) && (
+            <React.Fragment>
+              <QuestionContainer
+                classResponse={classResponse}
+                testActivity={testActivity}
+                qIndex={selectedQuestion}
+                itemId={itemId}
+                question={{ id: selectedQid }}
+                isPresentationMode={isPresentationMode}
+              >
+                <GenSelect
+                  classid="DI"
+                  classname={
+                    selectedTab === "Student"
+                      ? classname
+                      : firstQuestionEntities
+                          .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled, id: x._id }))
+                          .filter(x => !x.disabled)
+                          .map(({ value, id }) => ({ value, name: labels[id].barLabel }))
+                  }
+                  selected={selectedQuestion}
+                  justifyContent="flex-end"
+                  handleChange={value => {
+                    const { _id: qid, testItemId } = entities[0].questionActivities[value];
+                    this.setState({ selectedQuestion: value, selectedQid: qid, testItemId });
+                  }}
+                />
+              </QuestionContainer>
+            </React.Fragment>
+          )}
+        </CardDetailsContainer>
       </div>
     );
   }

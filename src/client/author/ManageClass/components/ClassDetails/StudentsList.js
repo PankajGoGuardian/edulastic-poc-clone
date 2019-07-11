@@ -50,10 +50,14 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
     },
     {
       title: "Google User",
-      dataIndex: "isGoogleUser",
-      width: "30%",
+      dataIndex: "googleId",
+      width: "20%",
       defaultSortOrder: "descend",
-      sorter: a => a.isGoogleUser
+      render: googleId => (
+        <TableDataSpan>
+          {!!googleId ? <Icon type="check-circle" theme="filled" /> : <Icon type="close-circle" theme="filled" />}
+        </TableDataSpan>
+      )
     },
     {
       title: "Status",

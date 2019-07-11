@@ -17,7 +17,9 @@ const StudentFeedback = ({ question, qId, index }) => {
           <Total>{currentQuestionReport && currentQuestionReport.maxScore}</Total>
         </ScoreWrapper>
         <Feedback>
-          <FeedbackGiven>{currentQuestionReport && currentQuestionReport.text}</FeedbackGiven>
+          <FeedbackGiven>
+            {currentQuestionReport && currentQuestionReport.feedback && currentQuestionReport.feedback.text}
+          </FeedbackGiven>
         </Feedback>
       </FeedbackContainer>
     </FeedbackWrapper>

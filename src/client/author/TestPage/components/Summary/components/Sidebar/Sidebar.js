@@ -47,7 +47,8 @@ const Sidebar = ({
   onChangeColor,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
-  windowWidth
+  windowWidth,
+  isEditable
 }) => {
   const subjectsList = selectsData.allSubjects.slice(1);
   return (
@@ -60,6 +61,7 @@ const Sidebar = ({
           windowWidth={windowWidth}
           analytics={analytics}
           onChangeField={onChangeField}
+          isEditable={isEditable}
         />
         <MainTitle>{isPlaylist ? "Play List Name" : "Assessment Name"}</MainTitle>
         <SummaryInput

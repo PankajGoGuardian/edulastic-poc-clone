@@ -2,7 +2,7 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { classBoardApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
-import { values as _values, get, keyBy } from "lodash";
+import { values as _values, get, keyBy, sortBy } from "lodash";
 
 import {
   setShowScoreAction,
@@ -167,7 +167,13 @@ export const getAggregateByQuestion = (entities, studentId) => {
   const activeEntities = entities.filter(
     x => x.status === "inProgress" || (x.status === "submitted") | (x.status === "graded")
   );
-
+  let questionsOrder = {};
+  if (entities.length > 0) {
+    questionsOrder = entities[0].questionActivities.reduce((acc, cur, ind) => {
+      acc[cur._id] = ind;
+      return acc;
+    }, {});
+  }
   const submittedNumber = submittedEntities.length;
   // TODO: handle absent
   const absentNumber = 0;
@@ -254,7 +260,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
   for (const question in questionMap) {
     questionMap[question].avgTimeSpent = questionMap[question].timeSpent / questionMap[question].attemptsNum;
   }
-  const itemsSummary = _values(questionMap);
+  const itemsSummary = sortBy(_values(questionMap), [x => questionsOrder[x._id]]);
   const result = {
     total,
     submittedNumber,

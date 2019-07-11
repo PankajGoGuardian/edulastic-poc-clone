@@ -1,12 +1,11 @@
-/* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { getUserRole } from "../../../src/selectors/user";
-// import PropTypes from "prop-types";
 import * as moment from "moment";
-import { Col, Select } from "antd";
+import { Col, Select, Row } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledRow, StyledRowLabel, StyledDatePicker, StyledSelect } from "./styled";
+import TestTypeSelector from "../SimpleOptions/TestTypeSelector";
 
 const DatePolicySelector = ({
   startDate,
@@ -14,7 +13,8 @@ const DatePolicySelector = ({
   changeField,
   openPolicy: selectedOpenPolicy,
   closePolicy: selectedClosePolicy,
-  userRole
+  userRole,
+  testType
 }) => {
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {
@@ -40,13 +40,14 @@ const DatePolicySelector = ({
   return (
     <React.Fragment>
       <StyledRowLabel gutter={48} style={{ marginBottom: "10" }}>
-        <Col span={6}>Open Date</Col>
-        <Col span={6}>Close Date</Col>
-        <Col span={6}>Open Policy</Col>
-        <Col span={6}>Close Policy</Col>
+        <Col span={5}>Open Date</Col>
+        <Col span={5}>Close Date</Col>
+        <Col span={5}>Open Policy</Col>
+        <Col span={5}>Close Policy</Col>
+        <Col span={4}>Test Type</Col>
       </StyledRowLabel>
       <StyledRow gutter={48}>
-        <Col span={6}>
+        <Col span={5}>
           <StyledDatePicker
             allowClear={false}
             data-cy="startDate"
@@ -60,7 +61,7 @@ const DatePolicySelector = ({
             onChange={changeField("startDate")}
           />
         </Col>
-        <Col span={6}>
+        <Col span={5}>
           <StyledDatePicker
             allowClear={false}
             data-cy="closeDate"
@@ -75,7 +76,7 @@ const DatePolicySelector = ({
             onChange={changeField("endDate")}
           />
         </Col>
-        <Col span={6}>
+        <Col span={5}>
           <StyledSelect
             data-cy="selectOpenPolicy"
             placeholder="Please select"
@@ -90,7 +91,7 @@ const DatePolicySelector = ({
             ))}
           </StyledSelect>
         </Col>
-        <Col span={6}>
+        <Col span={5}>
           <StyledSelect
             data-cy="selectClosePolicy"
             placeholder="Please select"
@@ -104,6 +105,16 @@ const DatePolicySelector = ({
               </Select.Option>
             ))}
           </StyledSelect>
+        </Col>
+        <Col span={4}>
+          <Row>
+            <TestTypeSelector
+              isAdvanceView
+              userRole={userRole}
+              testType={testType}
+              onAssignmentTypeChange={changeField("testType")}
+            />
+          </Row>
         </Col>
       </StyledRow>
     </React.Fragment>

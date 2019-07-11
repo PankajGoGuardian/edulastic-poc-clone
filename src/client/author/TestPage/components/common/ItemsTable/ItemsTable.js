@@ -12,6 +12,7 @@ import { getTestItemAuthorName } from "../../../../dataUtils";
 import MainInfoCell from "./MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../Review/ducks";
+import { previewShowAnswerAction, previewCheckAnswerAction } from "../../../ducks";
 
 const ItemsTable = ({
   items,
@@ -24,6 +25,8 @@ const ItemsTable = ({
   showModal = false,
   isEditable = false,
   addDuplicate,
+  checkAnswer,
+  showAnswer,
   testId,
   search,
   gotoSummary
@@ -49,6 +52,8 @@ const ItemsTable = ({
           addDuplicate={addDuplicate}
           showModal={showModal}
           isEditable={isEditable}
+          checkAnswer={checkAnswer}
+          showAnswer={showAnswer}
           testId={testId}
           data={data}
         />
@@ -139,10 +144,16 @@ ItemsTable.propTypes = {
 const enhance = compose(
   memo,
   withWindowSizes,
-  connect(state => ({
-    types: getItemsTypesSelector(state),
-    standards: getStandardsSelector(state)
-  }))
+  connect(
+    state => ({
+      types: getItemsTypesSelector(state),
+      standards: getStandardsSelector(state)
+    }),
+    {
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction
+    }
+  )
 );
 
 export default enhance(ItemsTable);

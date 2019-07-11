@@ -40,6 +40,8 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
+    checkAnswer: PropTypes.func.isRequired,
+    showAnser: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
     onToggleToCart: PropTypes.func.isRequired,
     selectedToCart: PropTypes.bool
@@ -147,7 +149,7 @@ class Item extends Component {
   };
 
   render() {
-    const { item, t, windowWidth, selectedToCart, search, userId } = this.props;
+    const { item, t, windowWidth, selectedToCart, search, userId, checkAnswer, showAnswer } = this.props;
     const resources =
       item.rows && item.rows.flatMap(row => row.widgets).filter(widget => widget.widgetType === "resource");
     const { isOpenedDetails, isShowPreviewModal = false } = this.state;
@@ -164,7 +166,8 @@ class Item extends Component {
           data={{ ...item, id: item._id }}
           isEditable={isEditable}
           owner={owner}
-          addDuplicate={this.handleDuplicateItem}
+          checkAnswer={() => checkAnswer({ ...item, isItem: true })}
+          showAnswer={() => showAnswer(item)}
         />
         <Question>
           <QuestionContent>

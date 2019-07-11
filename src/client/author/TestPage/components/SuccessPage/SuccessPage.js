@@ -39,6 +39,8 @@ import { IconPencilEdit, IconLock } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import ShareModal from "../../../src/components/common/ShareModal";
 import { Divider } from "antd";
+import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assignments";
+import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
 
 const statusConstants = {
   DRAFT: "draft",
@@ -57,14 +59,17 @@ class SuccessPage extends React.Component {
   }
 
   componentDidMount() {
-    const { fetchTestByID, match, isPlaylist, fetchPlaylistById, isAssignSuccess } = this.props;
-    const { id: testId } = match.params;
+    const { fetchTestByID, match, isPlaylist, fetchPlaylistById, isAssignSuccess, fetchAssignmentById } = this.props;
+    const { id: testId, assignmentId } = match.params;
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
     } else {
       if (testId) {
         fetchTestByID(testId);
       }
+    }
+    if (isAssignSuccess) {
+      fetchAssignmentById(assignmentId);
     }
   }
 
@@ -116,11 +121,12 @@ class SuccessPage extends React.Component {
   }
 
   render() {
-    const { test, isPlaylist, playlist, isAssignSuccess } = this.props;
+    const { test, isPlaylist, playlist, isAssignSuccess, assignment = {} } = this.props;
     const { isShareModalVisible } = this.state;
     const { title, _id, status, thumbnail, scoring = {}, grades, subjects } = isPlaylist ? playlist : test;
     const shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
-
+    const currentClass = (assignment.class && assignment.class[0]) || {};
+    const assignmentStatus = currentClass.startDate > Date.now() ? "NOT OPEN" : "IN PROGRESS";
     const playlistBreadCrumbData = [
       {
         title: "PLAY LIST",
@@ -186,7 +192,7 @@ class SuccessPage extends React.Component {
                 <>
                   <FlexTitle>Success!</FlexTitle>
                   <FlexTextWrapper>
-                    <b>{title}</b>&nbsp; has been assigned in &nbsp;<b>{"In Progress"}</b> &nbsp; status
+                    <b>{title}</b>&nbsp; has been assigned in &nbsp;<b>{assignmentStatus}</b> &nbsp; status
                   </FlexTextWrapper>
                   <FlexText>
                     Your students can begin work on this assessment right away.You can monitor student progress and
@@ -239,10 +245,12 @@ const enhance = compose(
     state => ({
       playlist: getPlaylistSelector(state),
       test: getTestSelector(state),
+      assignment: getCurrentAssignmentSelector(state),
       playListSharedUsersList: getPlayListSharedListSelector(state),
       testSharedUsersList: getTestSharedListSelector(state)
     }),
     {
+      fetchAssignmentById: receiveAssignmentByAssignmentIdAction,
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction
     }

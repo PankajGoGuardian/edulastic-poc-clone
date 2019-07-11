@@ -164,7 +164,9 @@ ClozeMath.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  flowLayout: PropTypes.bool
 };
 
 ClozeMath.defaultProps = {
@@ -174,7 +176,9 @@ ClozeMath.defaultProps = {
   evaluation: [],
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  showQuestionNumber: false,
+  flowLayout: false
 };
 
 const enhance = compose(

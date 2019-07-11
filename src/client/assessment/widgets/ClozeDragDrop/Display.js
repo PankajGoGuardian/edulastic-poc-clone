@@ -275,6 +275,7 @@ class ClozeDragDropDisplay extends Component {
       responseIDs,
       disableResponse,
       isReviewTab,
+      flowLayout,
       showQuestionNumber
     } = this.props;
 
@@ -377,7 +378,7 @@ class ClozeDragDropDisplay extends Component {
 
     return (
       <div style={{ fontSize }}>
-        {showQuestionNumber ? (
+        {showQuestionNumber && !flowLayout ? (
           <QuestionTitleWrapper>
             <QuestionNumber>{item.qLabel}</QuestionNumber>
             <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
@@ -476,7 +477,8 @@ ClozeDragDropDisplay.propTypes = {
   uiStyle: PropTypes.object,
   disableResponse: PropTypes.bool,
   theme: PropTypes.object.isRequired,
-  // showQuestionNumber: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool,
+  flowLayout: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   responseIDs: PropTypes.array.isRequired,
   changePreview: PropTypes.func.isRequired
@@ -512,7 +514,8 @@ ClozeDragDropDisplay.defaultProps = {
     wordwrap: false,
     responsecontainerindividuals: []
   },
-  // showQuestionNumber: false,
+  showQuestionNumber: false,
+  flowLayout: false,
   isReviewTab: false
   // qIndex: null
 };

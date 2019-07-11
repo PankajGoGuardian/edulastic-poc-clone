@@ -307,11 +307,13 @@ const ActionContainer = ({
           <Link to={"/author/manageClass/printPreview"}>
             <CircleIconButton type="primary" shape="circle" icon="printer" size="large" disabled={!studentLoaded} />
           </Link>
-          <Dropdown overlay={actionMenu} trigger={["click"]}>
-            <ActionButton type="primary" ghost>
-              Actions <StyledIcon type="caret-down" theme="filled" size={16} />
-            </ActionButton>
-          </Dropdown>
+          {studentsList.length > 0 && (
+            <Dropdown overlay={actionMenu} trigger={["click"]}>
+              <ActionButton type="primary" ghost>
+                Actions <StyledIcon type="caret-down" theme="filled" size={16} />
+              </ActionButton>
+            </Dropdown>
+          )}
 
           <AddStudentButton onClick={handleAddMultipleStudent}>Add Multiple Students</AddStudentButton>
           {isAddMultipleStudentsModal && (

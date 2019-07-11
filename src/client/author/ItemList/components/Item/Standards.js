@@ -2,8 +2,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
 import { StandardContent, LabelStandard, LabelStandardText, CountGreen } from "./styled";
-const Standards = ({ item, interestedCurriculums, search }) => {
-  const outStandardsCount = 3;
+const Standards = ({ item, interestedCurriculums, search, reviewpage = false }) => {
+  const outStandardsCount = reviewpage ? 1 : 3;
   const { curriculumId } = search;
   const domains = [];
   const standards = [];

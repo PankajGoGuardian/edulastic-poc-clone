@@ -31,6 +31,13 @@ const splitItems = (item, testItem) => {
   );
 };
 
+export const getQuestionTypes = item => {
+  return get(item, ["data", "questions"], []).reduce((acc, q) => {
+    acc.push(q.title);
+    return acc;
+  }, []);
+};
+
 const SortableItem = SortableElement(
   ({
     indx,
@@ -217,9 +224,9 @@ const List = SortableContainer(
               by: (testItems[i].createdBy && testItems[i].createdBy.name) || "",
               shared: "0",
               likes: "0",
-              types: types[testItems[i]._id],
+              types: getQuestionTypes(testItems[i]),
               isPremium: !!testItems[i].collectionName,
-              standards: standards[testItems[i]._id],
+              item: testItems[i],
               audio: audioStatus(testItems[i]),
               dok:
                 testItems[i].data &&

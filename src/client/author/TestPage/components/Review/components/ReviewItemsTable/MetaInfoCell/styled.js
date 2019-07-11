@@ -34,7 +34,7 @@ export const MetaTag = styled(Tag)`
   font-size: 10px;
 
   &:first-child {
-    margin-left: 55px;
+    margin-left: ${props => (props.marginLeft ? props.marginLeft : "55px")};
   }
 `;
 

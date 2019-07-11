@@ -18,6 +18,9 @@ export const getChecks = answer => {
     options = omitBy(options, f => f === false);
 
     let midRes = Object.keys(options).reduce((acc, key, i) => {
+      if (key === "allowedVariables") {
+        return acc;
+      }
       const fieldVal = options[key];
       acc += i === 0 ? ":" : "";
 

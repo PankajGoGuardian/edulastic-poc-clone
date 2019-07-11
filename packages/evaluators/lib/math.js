@@ -39,6 +39,10 @@ var getChecks = function getChecks(answer) {
       return f === false;
     });
     var midRes = Object.keys(options).reduce(function(acc, key, i) {
+      if (key === "allowedVariables") {
+        return acc;
+      }
+
       var fieldVal = options[key];
       acc += i === 0 ? ":" : "";
 

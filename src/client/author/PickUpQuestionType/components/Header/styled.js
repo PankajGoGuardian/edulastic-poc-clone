@@ -11,7 +11,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   background: ${props => props.theme.header.headerBgColor};
-  padding: 20px;
+  padding: 20px 30px;
   height: 96px;
   z-index: 10;
 

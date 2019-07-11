@@ -6,7 +6,7 @@ const classBoardTheme = themes.default.classboard;
 
 export const StyledCard = styled(Card)`
   margin: 0px auto 60px auto;
-  width: 95%;
+  width: 100%;
   height: auto;
   border-radius: 10px;
   box-shadow: 3px 2px 7px lightgray;

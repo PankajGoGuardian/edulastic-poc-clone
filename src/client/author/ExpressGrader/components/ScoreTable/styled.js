@@ -3,8 +3,8 @@ import { Card, Table, Tag } from "antd";
 import { secondaryTextColor, greenDark, lightGreen, green } from "@edulastic/colors";
 
 export const StyledCard = styled(Card)`
-  margin: 0px auto 60px auto;
-  width: 95%;
+  margin-bottom: 20px;
+  width: 100%;
   height: auto;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;

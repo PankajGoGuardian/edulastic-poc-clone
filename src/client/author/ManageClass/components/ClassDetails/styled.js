@@ -48,7 +48,8 @@ export const EditButton = styled(Button)`
   border: none;
   color: ${themeColor};
   background: ${white};
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${white};
     background: ${themeColorLight};
   }

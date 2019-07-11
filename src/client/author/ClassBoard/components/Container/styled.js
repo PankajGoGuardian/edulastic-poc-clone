@@ -49,25 +49,25 @@ export const ButtonGroup = styled.div`
   display: inline-block;
 `;
 
+export const CardDetailsContainer = styled.div`
+  width: 100%;
+  padding: 20px 30px;
+`;
+
 export const StyledFlexContainer = styled(FlexContainer)`
-  width: 95%;
-  margin: 20px auto;
+  width: 100%;
   margin-bottom: ${({ marginBottom }) => marginBottom || "20px"};
   padding-right: ${({ paddingRight }) => paddingRight || "0px"};
 `;
 
 export const GraphContainer = styled(FlexContainer)`
-  width: 95%;
-  margin: 20px auto;
-  padding-right: 20px;
-  @media (max-width: ${mobileWidth}) {
-    padding-right: 5px;
-  }
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 export const StudentGrapContainer = styled(FlexContainer)`
-  width: 95%;
-  margin: 20px auto;
+  width: 100%;
+  margin-bottom: 20px;
 `;
 
 export const StyledCard = styled(Card)`
@@ -81,7 +81,6 @@ export const StyledCard = styled(Card)`
 `;
 
 export const StudentButtonDiv = styled.div`
-  margin-right: 20px !important;
   .ant-btn-primary {
     background-color: #0e93dc;
   }
@@ -93,7 +92,7 @@ export const StudentButtonDiv = styled.div`
 const StyledTabButton = styled.a`
   height: 28px;
   padding: 6px 35px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
   background-color: ${({ active }) => (active ? themeColor : white)};
   color: ${({ active }) => (active ? white : tabGrey)};
@@ -116,13 +115,20 @@ export const QuestionButton = styled(StyledTabButton)`
 `;
 
 export const RedirectButton = styled(StyledTabButton)`
-  border-radius: ${props => (props.first ? "4px 0 0 4px" : props.last ? "0 4px 4px 0" : 0)};
+  border-radius: 0;
   display: flex;
   width: 150px;
   color: ${themeColor};
-  margin-right: ${props => (!props.last ? "3px" : "")};
+  margin-right: 2px;
   position: relative;
   justify-content: center;
+  &:nth-child(1) {
+    border-radius: 4px 0 0 4px;
+  }
+  &:nth-last-child(1) {
+    border-radius: 0 4px 4px 0;
+    margin-right: 0px;
+  }
   &:hover {
     svg {
       fill: ${white};
@@ -210,6 +216,7 @@ export const ButtonSpace = styled.div`
 export const ClassBoardFeats = styled.div`
   display: flex;
   box-shadow: 0px 3px 20px 0px rgb(210, 210, 217);
+  border-radius: 4px;
 `;
 
 export const StyledButton = styled(Button)`

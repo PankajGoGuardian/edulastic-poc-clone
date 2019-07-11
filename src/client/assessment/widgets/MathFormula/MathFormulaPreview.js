@@ -198,7 +198,11 @@ class MathFormulaPreview extends Component {
               symbols={item.symbols}
               restrictKeys={this.restrictKeys}
               numberPad={item.numberPad}
-              value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+              value={
+                latex && !Array.isArray(latex)
+                  ? (latex.value ? latex.value : latex).replace("\\MathQuillMathField{}", "")
+                  : ""
+              }
               onInput={latexv => this.onUserResponse(latexv)}
               onBlur={latexv => this.onBlur(latexv)}
               disabled={evaluation && !evaluation.some(ie => ie)}

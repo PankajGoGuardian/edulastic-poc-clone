@@ -73,12 +73,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
 
   const response = find(responsecontainerindividuals, resp => resp.index === index);
   if (uiStyle.globalSettings) {
-    btnStyle.width =
-      userSelections[index] && userSelections[index].value
-        ? (response && response.previewWidth) || uiStyle.widthpx
-        : uiStyle.widthpx;
+    btnStyle.width = (response && response.previewWidth) || uiStyle.widthpx;
+    btnStyle.height = uiStyle.heightpx;
   } else {
     btnStyle.width = (response && response.widthpx) || uiStyle.widthpx || "auto";
+    btnStyle.height = (response && response.heightpx) || uiStyle.heightpx || "auto";
   }
 
   const handleClick = () => changeEditable(true);
@@ -108,6 +107,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                 className="text"
                 style={{
                   width: "100%",
+                  height: "100%",
                   display: "block",
                   whiteSpace: "nowrap",
                   textOverflow: "ellipsis",
@@ -138,6 +138,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               )}
               <span
                 style={{
+                  height: "100%",
                   width: "100%",
                   display: "block",
                   whiteSpace: "nowrap",

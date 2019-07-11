@@ -309,7 +309,8 @@ const ScoreInput = styled(Input)`
 const TextPara = styled.p`
   padding-left: 10px;
   padding-right: 15px;
-  font-size: 32px;
+  font-size: 25px;
+  line-height: 47px;
   background-color: #ececec;
   font-weight: 600;
   height: 47px;

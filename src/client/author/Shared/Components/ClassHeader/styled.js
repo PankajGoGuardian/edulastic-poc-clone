@@ -107,7 +107,7 @@ export const StyledAnchor = styled.div`
   padding: 0px 18px;
   text-align: center;
   height: 45px;
-  margin: 0 10px;
+  margin: 0 5px;
   border-radius: 4px;
   background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
   -webkit-transition: background-color 0.3s;

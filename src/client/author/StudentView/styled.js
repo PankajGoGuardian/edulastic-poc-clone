@@ -2,11 +2,11 @@ import styled from "styled-components";
 
 import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, white, themeColor } from "@edulastic/colors";
+import { mobileWidth, white, themeColor, tabGrey } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
-  width: 95%;
-  margin: 20px auto;
+  width: 100%;
+  margin-bottom: 0px;
   @media (max-width: ${mobileWidth}) {
     flex: none;
     overflow: auto;
@@ -29,11 +29,13 @@ const StyledStudentTabButton = styled.a`
   padding: 6px 35px;
   font-size: 11px;
   font-weight: 600;
-  background-color: ${({ active }) => (active ? themeColor : white)};
-  color: ${({ active }) => (active ? white : themeColor)};
+  border-radius: 0px;
+  margin-right: 2px;
+  background-color: ${({ active }) => (active ? "rgba(255, 255, 255, .30)" : white)};
+  color: ${({ active }) => (active ? themeColor : tabGrey)};
   &:hover {
-    background-color: ${themeColor};
-    color: ${white};
+    background-color: rgba(255, 255, 255, 0.3);
+    color: ${themeColor};
   }
 `;
 
@@ -41,18 +43,13 @@ export const AllButton = styled(StyledStudentTabButton)`
   border-radius: 4px 0px 0px 4px;
 `;
 
-export const CorrectButton = styled(StyledStudentTabButton)`
-  border-radius: 0px;
-  margin: 0px 2px;
-`;
+export const CorrectButton = styled(StyledStudentTabButton)``;
 
-export const WrongButton = styled(StyledStudentTabButton)`
-  border-radius: 0px;
-  margin: 0px 2px;
-`;
+export const WrongButton = styled(StyledStudentTabButton)``;
 
 export const PartiallyCorrectButton = styled(StyledStudentTabButton)`
   border-radius: 0px 4px 4px 0px;
+  margin-right: 0px;
 `;
 
 const StyledTabButton = styled.a`
@@ -73,9 +70,10 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   display: flex;
   padding: 20px 10px;
   align-items: center;
-  min-width: 250px;
+  min-width: 300px;
   justify-content: center;
-  font-size: 12px;
+  font-size: 11px;
+  text-transform: uppercase;
   @media (max-width: ${mobileWidth}) {
     padding: 20px 20px;
     min-width: 175px;

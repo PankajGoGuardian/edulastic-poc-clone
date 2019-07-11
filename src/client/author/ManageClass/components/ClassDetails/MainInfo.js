@@ -23,14 +23,14 @@ const MainInfo = ({ entity = {} }) => {
     endDate,
     googleCode,
     owners = [],
-    primaryTeacherId
+    parent
   } = entity;
   const _grade = find(allGrades, item => item.value === grade) || { text: grade };
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
   const coTeachers =
     owners &&
     owners
-      .filter(owner => owner.id !== primaryTeacherId)
+      .filter(owner => owner.id !== parent.id)
       .map(owner => owner.name)
       .join(",");
 

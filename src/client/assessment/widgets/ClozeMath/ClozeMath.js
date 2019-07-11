@@ -86,12 +86,12 @@ const ClozeMath = ({
       fallBack={<span />}
       onLoaded={() => {}}
     >
-      {!flowLayout && (
+      {!flowLayout ? (
         <>
           <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
           <QuestionTitleWrapper>{showQuestionNumber && <QuestionNumber>{qLabel}</QuestionNumber>}</QuestionTitleWrapper>
         </>
-      )}
+      ) : null}
 
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>

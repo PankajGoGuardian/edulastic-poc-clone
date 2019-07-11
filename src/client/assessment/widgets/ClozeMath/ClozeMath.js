@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { Paper, WithResources } from "@edulastic/common";
+import { Paper, WithResources, InstructorStimulus } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -17,6 +17,7 @@ import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import { ContentArea } from "../../styled/ContentArea";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/Label";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -37,6 +38,9 @@ const ClozeMath = ({
   cleanSections,
   isSidebarCollapsed,
   advancedAreOpen,
+  instructorStimulus,
+  showQuestionNumber,
+  flowLayout,
   ...restProps
 }) => {
   const { col } = restProps;
@@ -70,6 +74,7 @@ const ClozeMath = ({
 
   const itemForPreview = replaceVariables(item);
   const isV1Multipart = get(col, "isV1Multipart", false);
+  const { qLabel } = item;
 
   return (
     <WithResources
@@ -81,6 +86,13 @@ const ClozeMath = ({
       fallBack={<span />}
       onLoaded={() => {}}
     >
+      {!flowLayout && (
+        <>
+          <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+          <QuestionTitleWrapper>{showQuestionNumber && <QuestionNumber>{qLabel}</QuestionNumber>}</QuestionTitleWrapper>
+        </>
+      )}
+
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
           {/* <ComposeQuestion

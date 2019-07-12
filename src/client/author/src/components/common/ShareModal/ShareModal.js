@@ -237,11 +237,9 @@ class ShareModal extends React.Component {
           <ShareBlock>
             <ShareLabel>Share</ShareLabel>
             <FlexContainer>
-              <ShareTitle>{sharableURL}</ShareTitle>
-              <CopyWrapper>
-                <TitleCopy copyable={{ text: sharableURL }} />
-                <span>COPY</span>
-              </CopyWrapper>
+              <TitleCopy copyable={{ text: sharableURL }}>
+                <ShareUrlDiv title={sharableURL}>{sharableURL}</ShareUrlDiv>
+              </TitleCopy>
             </FlexContainer>
             {sharedUsersList.length !== 0 && (
               <ShareList>
@@ -478,19 +476,44 @@ const CloseIcon = styled(IconClose)`
   fill: ${greenDark};
 `;
 
-const CopyWrapper = styled.div`
+export const ShareUrlDiv = styled.div`
   display: flex;
   color: ${themeColor};
   font-weight: 600;
   align-items: center;
-  font-size: 12px;
 `;
-const TitleCopy = styled(Paragraph)`
+
+export const TitleCopy = styled(Paragraph)`
+  div:first-child {
+    background-color: ${whiteSmoke};
+    display: flex;
+    width: 90%;
+    border-radius: 4px;
+    padding: 10px;
+    border: 1px solid ${fadedGrey};
+    color: #5d616f;
+  }
   &.ant-typography {
-    margin: 0;
+    color: ${themeColor};
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
   button {
     margin-right: 10px;
+  }
+  .anticon {
+    margin-top: 10px;
+  }
+  i.anticon.anticon-copy {
+    display: flex;
+    align-items: center;
+    &:after {
+      content: "COPY";
+      font-size: 12px;
+      color: ${themeColor};
+      margin-left: 3px;
+    }
   }
   svg {
     width: 20px;

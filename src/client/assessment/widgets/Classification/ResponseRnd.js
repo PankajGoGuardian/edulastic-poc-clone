@@ -70,8 +70,10 @@ const ResponseRnd = props => {
     );
   };
 
-  const rndX = get(question, `responseOptions[${index}].x`, 0);
-  const rndY = get(question, `responseOptions[${index}].y`, 0);
+  const delta = 50;
+  const offset = index + 1;
+  const rndX = get(question, `responseOptions[${index}].x`, delta * offset);
+  const rndY = get(question, `responseOptions[${index}].y`, delta * offset);
   const rndWidth = get(question, `responseOptions[${index}].width`, width);
   const rndHeight = get(question, `responseOptions[${index}].height`, height);
 

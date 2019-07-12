@@ -39,6 +39,7 @@ export { default as TypeToConfirmModal } from "./src/components/TypeToConfirmMod
 export { default as PremiumTag } from "./src/components/PremiumTag/PremiumTag";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
+export { default as withWindowScroll } from "./src/HOC/withWindowScroll";
 export { WithResources, useResources } from "./src/HOC/withResources";
 export { withMathFormula as WithMathFormula } from "./src/HOC/withMathFormula";
 export { scrollTo, offset } from "./src/utils/DomUtils";

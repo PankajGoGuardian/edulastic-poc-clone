@@ -71,7 +71,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
       dataIndex: "enrollmentStatus",
       width: "30%",
       defaultSortOrder: "descend",
-      sorter: (a, b) => a.status > b.status,
+      sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
       render: enrollmentStatus => (
         <span>{enrollmentStatus && enrollmentStatus === "1" ? "Active" : "Not Enrolled"}</span>
       )

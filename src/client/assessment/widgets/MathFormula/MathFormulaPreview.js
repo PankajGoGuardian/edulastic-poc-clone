@@ -37,14 +37,12 @@ class MathFormulaPreview extends Component {
   studentRef = React.createRef();
 
   state = {
-    latex: "",
     innerValues: []
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      latex: this.getValidLatex(props),
       innerValues: []
     };
   }
@@ -54,11 +52,6 @@ class MathFormulaPreview extends Component {
     const { studentTemplate: prevStudentTemplate, type: prevPreviewType } = prevProps;
 
     if ((previewType !== prevPreviewType && previewType === CLEAR) || studentTemplate !== prevStudentTemplate) {
-      if (!this.isStatic()) {
-        // eslint-disable-next-line react/no-did-update-set-state
-        this.setState({ latex: this.getValidLatex(this.props) });
-        return;
-      }
       this.updateStaticMathFromUserAnswer();
     }
   }
@@ -86,7 +79,6 @@ class MathFormulaPreview extends Component {
     const { userAnswer, studentTemplate } = this.props;
     if (!userAnswer) {
       this.setState({
-        latex: studentTemplate,
         innerValues: []
       });
       return;
@@ -120,7 +112,7 @@ class MathFormulaPreview extends Component {
       saveAnswer(validatedVal);
       return;
     }
-    this.setState({ latex: validatedVal });
+
     saveAnswer(validatedVal);
   }
 
@@ -153,7 +145,9 @@ class MathFormulaPreview extends Component {
 
   render() {
     const { evaluation, item, type: previewType, showQuestionNumber, studentTemplate, theme } = this.props;
-    const { latex, innerValues } = this.state;
+    const { innerValues } = this.state;
+
+    const latex = this.getValidLatex(this.props);
 
     const hasAltAnswers =
       item && item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;

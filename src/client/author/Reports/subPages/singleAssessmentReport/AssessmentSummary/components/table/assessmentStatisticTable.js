@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
+import styled from "styled-components";
 import { Row, Col } from "antd";
 import { groupBy, cloneDeep } from "lodash";
 import Moment from "moment";
@@ -171,9 +172,9 @@ export const AssessmentStatisticTable = props => {
           </StyledH3>
         </Col>
         {props.role !== "teacher" ? (
-          <Col className="top-area-col control-area">
+          <StyledControlDropDownContainer className="top-area-col control-area">
             <ControlDropDown prefix={"Compare by"} by={tableType} selectCB={updateTableCB} data={dropDownData} />
-          </Col>
+          </StyledControlDropDownContainer>
         ) : (
           ""
         )}
@@ -188,3 +189,8 @@ export const AssessmentStatisticTable = props => {
     </div>
   );
 };
+
+const StyledControlDropDownContainer = styled(Col)`
+  display: flex;
+  justify-content: flex-end;
+`;

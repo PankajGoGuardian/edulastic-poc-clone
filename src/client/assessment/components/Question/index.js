@@ -13,7 +13,8 @@ class Question extends Component {
 
     this.state = {
       offsetTop: null,
-      clientHeight: null
+      clientHeight: null,
+      timerID: null
     };
 
     this.node = React.createRef();
@@ -24,15 +25,25 @@ class Question extends Component {
 
     const { current: node } = this.node;
 
+    const additionalOffset =
+      node.clientHeight >= window.innerHeight / 2 ? 0 : (window.innerHeight - node.clientHeight) / 2.1;
+
     if (!node) return false;
     if (visible === false) return false;
 
-    fillSections(section, label, node.offsetTop - (window.innerHeight - node.clientHeight) / 2, node.clientHeight);
+    fillSections(
+      section,
+      label,
+      node.offsetTop <= 0 ? null : node.offsetTop - (window.innerHeight - node.clientHeight) / 2.1,
+      node.clientHeight <= 0 ? null : node.clientHeight
+    );
 
     this.setState({
-      offsetTop: node.offsetTop - (window.innerHeight - node.clientHeight) / 2,
-      clientHeight: node.clientHeight
+      offsetTop: node.offsetTop <= 0 ? null : node.offsetTop - additionalOffset,
+      clientHeight: node.clientHeight <= 0 ? null : node.clientHeight
     });
+
+    this.updateVariablesOfSection();
   };
 
   componentDidUpdate = (prevProps, prevState) => {
@@ -50,27 +61,61 @@ class Question extends Component {
       (prevState.offsetTop !== offsetTop ||
         prevState.clientHeight !== clientHeight ||
         prevProps.advancedAreOpen !== advancedAreOpen) &&
-      (node.offsetTop >= 0 && node.clientHeight >= 0)
+      (node.offsetTop > 0 && node.clientHeight > 0)
     ) {
+      const additionalOffset =
+        node.clientHeight >= window.innerHeight / 2 ? 0 : (window.innerHeight - node.clientHeight) / 2.1;
+
       fillSections(
         section,
         label,
-        node.offsetTop === 0 ? null : node.offsetTop - (window.innerHeight - node.clientHeight) / 2,
-        node.clientHeight === 0 ? null : node.clientHeight
+        node.offsetTop <= 0 ? null : node.offsetTop - additionalOffset,
+        node.clientHeight <= 0 ? null : node.clientHeight
       );
 
       this.setState({
-        offsetTop: node.offsetTop === 0 ? null : node.offsetTop - (window.innerHeight - node.clientHeight) / 2,
-        clientHeight: node.clientHeight === 0 ? null : node.clientHeight
+        offsetTop: node.offsetTop <= 0 ? null : node.offsetTop - additionalOffset,
+        clientHeight: node.clientHeight <= 0 ? null : node.clientHeight
       });
     }
   };
 
   componentWillUnmount() {
+    const { timerID } = this.state;
     const { cleanSections } = this.props;
 
     cleanSections();
+    clearInterval(timerID);
   }
+
+  updateVariablesOfSection = () => {
+    const { offsetTop, clientHeight } = this.state;
+    const { fillSections, section, label } = this.props;
+
+    const { current: node } = this.node;
+
+    if (!node) return false;
+
+    const timerID = setInterval(() => {
+      const additionalOffset =
+        node.clientHeight >= window.innerHeight / 2 ? 0 : (window.innerHeight - node.clientHeight) / 2.1;
+
+      if (
+        (typeof node.offsetTop !== "undefined" || typeof node.clientHeight !== "undefined") &&
+        (node.offsetTop !== offsetTop || node.clientHeight !== clientHeight) &&
+        (node.offsetTop > 0 && node.clientHeight > 0)
+      ) {
+        fillSections(
+          section,
+          label,
+          node.offsetTop <= 0 ? null : node.offsetTop - additionalOffset,
+          node.clientHeight <= 0 ? null : node.clientHeight
+        );
+      }
+    }, 2000);
+
+    this.setState({ timerID });
+  };
 
   render() {
     const { dataCy, children, questionTextArea, advancedAreOpen, position, visible } = this.props;

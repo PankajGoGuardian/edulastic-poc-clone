@@ -12,8 +12,8 @@ class QuestionMenu extends Component {
     activeTab: 0
   };
 
-  handleScroll = (option, index) => {
-    const offset = index === 1 ? -96 : 96;
+  handleScroll = option => {
+    const offset = option.height >= window.innerHeight / 2 ? 111 : option.height <= 300 ? 0 : 96;
 
     window.scrollTo({
       top: option.offset - offset,
@@ -31,48 +31,35 @@ class QuestionMenu extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({ activeTab: nextProps.activeTab });
+    this.findActiveTab();
   }
 
   isActive = (index, options) => {
     const { activeTab } = this.state;
     const { advancedAreOpen } = this.props;
-    const mainOptions = options.filter(el => el.section === "main");
 
     if (!advancedAreOpen && options[index].section === "advanced") return false;
 
     // first section
     if (window.scrollY <= 10 && activeTab !== index) return this.setState({ activeTab: 0 });
 
-    // last section in main array
-    if (
-      window.scrollY + window.innerHeight / 1.7 >=
-        options[mainOptions.length - 1].offset + options[mainOptions.length - 1].height &&
-      window.scrollY - options[mainOptions.length - 1].offset < options[mainOptions.length - 1].height &&
-      !advancedAreOpen &&
-      activeTab !== index
-    )
-      return this.setState({ activeTab: mainOptions.length - 1 });
-
     // last section
     if (
-      window.scrollY + window.innerHeight >=
-        options[options.length - 1].offset +
-          (window.innerHeight - options[options.length - 1].height) / 2 +
-          options[options.length - 1].height +
-          70 &&
-      window.scrollY - options[options.length - 1].offset - options[options.length - 1].height <
-        options[options.length - 1].height &&
-      activeTab !== index
-    )
+      window.scrollY + window.innerHeight >
+        options[options.length - 1].offset + options[options.length - 1].height / 2.1 &&
+      window.scrollY > options[options.length - 1].offset - window.innerHeight / 3 &&
+      advancedAreOpen
+    ) {
       return this.setState({ activeTab: options.length - 1 });
+    }
 
     // other sections
     if (
-      window.scrollY + window.innerHeight - window.innerHeight / 1.15 > options[index].offset &&
-      window.scrollY - options[index].offset < options[index].height &&
-      activeTab !== index
-    )
+      window.scrollY > options[index].offset - options[index].height / 1.2 ||
+      window.scrollY + window.innerHeight / 3 > options[index].offset + options[index].height / 1.2
+    ) {
       return this.setState({ activeTab: index });
+    }
   };
 
   findActiveTab = () => {

@@ -370,7 +370,7 @@ function* receiveAddStudentRequest({ payload }) {
     if (student) {
       const successMsg = "Student added to class successfully.";
       yield call(message.success, successMsg);
-      let newStudent = Object.assign({}, student);
+      let newStudent = Object.assign({ enrollmentStatus: "1" }, student);
       newStudent._id = student.userId;
       delete newStudent.userId;
       yield put(addStudentSuccessAction(newStudent));

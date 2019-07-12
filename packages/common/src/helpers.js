@@ -195,7 +195,13 @@ export const reIndexResponses = htmlStr => {
 
 export const sanitizeForReview = stimulus => {
   if (!stimulus) return stimulus;
-  const jqueryEl = $(stimulus);
+  let jqueryEl;
+  try {
+    jqueryEl = $(stimulus);
+  } catch (err) {
+    jqueryEl = $("<p>").append(stimulus);
+  }
+
   // eslint-disable-next-line func-names
   const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table"];
   tagsToRemove.forEach(tagToRemove => {

@@ -60,7 +60,6 @@ export const CLEAR_CREATED_ITEMS_FROM_TEST = "[test] clear createdItems from tes
 export const PREVIEW_CHECK_ANSWER = "[test] check answer for preview modal";
 export const PREVIEW_SHOW_ANSWER = "[test] show answer for preview modal";
 export const REPLACE_TEST_ITEMS = "[test] replace test items";
-export const ADD_TEST_ITEM = "[test] add test item to test";
 export const UPDATE_TEST_DEFAULT_IMAGE = "[test] update default thumbnail image";
 
 // actions
@@ -141,8 +140,6 @@ export const setRegradeSettingsDataAction = payload => ({
   type: REGRADE_TEST,
   payload
 });
-
-export const addTestItemAction = createAction(ADD_TEST_ITEM);
 
 export const sendTestShareAction = createAction(TEST_SHARE);
 export const publishTestAction = createAction(TEST_PUBLISH);
@@ -336,14 +333,6 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           testItems: payload
-        }
-      };
-    case ADD_TEST_ITEM:
-      return {
-        ...state,
-        entity: {
-          ...state.entity,
-          testItems: [...state.entity.testItems, payload]
         }
       };
     default:

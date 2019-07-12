@@ -272,6 +272,11 @@ class Layout extends Component {
             </Col>
           </Row>
           <SpecialCharacters />
+          <Row gutter={20}>
+            <Col md={24}>
+              <Label>{t("component.options.responsecontainerglobal")}</Label>
+            </Col>
+          </Row>
           <Row>
             <Checkbox
               checked={!!uiStyle.globalSettings}
@@ -279,11 +284,6 @@ class Layout extends Component {
             >
               {t("component.options.globalSettings")}
             </Checkbox>
-          </Row>
-          <Row gutter={20}>
-            <Col md={24}>
-              <Label>{t("component.options.responsecontainerglobal")}</Label>
-            </Col>
           </Row>
           <Row gutter={20}>
             <Col md={24}>

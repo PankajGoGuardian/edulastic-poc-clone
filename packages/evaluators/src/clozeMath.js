@@ -271,7 +271,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
   };
 };
 
-export default ({ userResponse, validation }) =>
+export default ({ userResponse = {}, validation }) =>
   validation.mixAndMatch
     ? mixAndMatchEvaluator({ userResponse, validation })
     : normalEvaluator({ userResponse, validation });

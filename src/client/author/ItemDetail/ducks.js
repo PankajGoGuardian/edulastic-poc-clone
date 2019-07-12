@@ -636,7 +636,7 @@ export function* updateItemSaga({ payload }) {
   }
 }
 
-const hasStandards = question => {
+export const hasStandards = question => {
   const alignments = get(question, "alignment", []);
   if (!alignments.length) return false;
   const hasDomain = alignments.some(i => i.domains && i.domains.length);

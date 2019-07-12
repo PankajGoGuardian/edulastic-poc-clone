@@ -22,13 +22,14 @@ import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
-import { getItemIdSelector, getItemLevelScoringSelector } from "../../../ItemDetail/ducks";
+import { getItemIdSelector, getItemLevelScoringSelector, proceedPublishingItemAction } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
 import ItemLevelScoringContext from "./QuestionContext";
+import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 class Container extends Component {
   constructor(props) {
@@ -316,7 +317,7 @@ class Container extends Component {
   };
 
   render() {
-    const { view, question, history, windowWidth, isItem } = this.props;
+    const { view, question, history, windowWidth, isItem, showWarningModal, proceedSave } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -357,6 +358,7 @@ class Container extends Component {
         </BreadCrumbBar>
 
         <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
+        <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
       </div>
     );
   }
@@ -411,11 +413,13 @@ const enhance = compose(
       testName: state.tests.entity.title,
       testId: state.tests.entity._id,
       savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,
-      authorQuestions: getCurrentQuestionSelector(state)
+      authorQuestions: getCurrentQuestionSelector(state),
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false)
     }),
     {
       changeView: changeViewAction,
       saveQuestion: saveQuestionAction,
+      proceedSave: proceedPublishingItemAction,
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,
       showAnswer: showAnswerAction,

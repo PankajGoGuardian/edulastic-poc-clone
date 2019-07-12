@@ -18,7 +18,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY"];
+const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
 class SimpleOptions extends React.Component {
   static propTypes = {

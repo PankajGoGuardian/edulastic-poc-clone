@@ -65,7 +65,7 @@ const testTypes = {
 };
 
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY"];
+const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
 class MainSetting extends Component {
   constructor(props) {

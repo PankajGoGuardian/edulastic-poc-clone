@@ -26,11 +26,11 @@ const _yTickFormatter = val => {
 };
 
 const LabelText = props => {
-  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave } = props;
+  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, index } = props;
   return (
     <g class="asd-asd" onMouseOver={onBarMouseOver()} onMouseLeave={onBarMouseLeave()}>
       <text x={x + width / 2} y={y + height} textAnchor="middle" dominantBaseline="text-after-edge">
-        {formatter(value)}
+        {formatter(value, index)}
       </text>
     </g>
   );

@@ -93,7 +93,7 @@ const PerformanceAnalysisTable = ({
   const { scaleInfo } = report;
 
   const getOverallValue = (records = {}, analyzeBy) => {
-    const allRecords = reduce(records, (result, value) => result.concat(value.records), []);
+    const allRecords = reduce(records, (result, value = {}) => result.concat(value.records || []), []);
     const masteryLevel = getMasteryLevel(getOverallScore(allRecords), scaleInfo);
 
     switch (analyzeBy) {
@@ -170,6 +170,10 @@ const PerformanceAnalysisTable = ({
         render: (studentId, student) => {
           const standard = student.standardMetrics[config.key];
           let color = "white";
+
+          if (!standard) {
+            return <ScoreCell color={color}>N/A</ScoreCell>;
+          }
 
           const getColValue = (columnKey, record) => {
             if (columnKey == "students") {

@@ -6,7 +6,7 @@ import { Form, Select, Radio, Popover, Button, Icon } from "antd";
 import next from "immer";
 
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import SimpleBarChartContainer from "./components/charts/simpleBarChartContainer";
+import SimpleStackedBarChartContainer from "./components/charts/SimpleStackedBarChartContainer";
 import SignedStackedBarChartContainer from "./components/charts/SignedStackedBarChartContainer";
 import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
 import CardHeader, { CardTitle, CardDropdownWrapper } from "./common/CardHeader/CardHeader";
@@ -236,15 +236,13 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
         </CardHeader>
         <>
           {analyzeBy === analyzeByMode.SCORE || analyzeBy === analyzeByMode.RAW_SCORE ? (
-            <SimpleBarChartContainer
+            <SimpleStackedBarChartContainer
               report={reportWithFilteredSkills}
               filter={filter}
               viewBy={viewBy}
               analyzeBy={analyzeBy}
               onBarClick={handleToggleSelectedData}
-              selectedDomains={selectedDomains}
-              selectedStandards={selectedStandards}
-              shouldShowReset={shouldShowReset}
+              selectedData={selectedItems}
               onResetClick={handleResetSelection}
             />
           ) : (

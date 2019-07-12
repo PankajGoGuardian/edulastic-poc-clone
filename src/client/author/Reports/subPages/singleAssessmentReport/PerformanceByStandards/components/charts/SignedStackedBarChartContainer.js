@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import { SignedStackedBarChart } from "../../../../../common/components/charts/signedStackedBarChart";
-import { getParsedGroupedMetricData, analyzeByMode, getYLabelString, viewByMode } from "../../util/transformers";
+import { getChartMasteryData, analyzeByMode, getYLabelString, viewByMode } from "../../util/transformers";
 import { find, forEach } from "lodash";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
@@ -74,11 +74,7 @@ const SignedStackedBarChartContainer = ({
     return a.threshold - b.threshold;
   });
 
-  const parsedGroupedMetricData = useMemo(() => getParsedGroupedMetricData(report, filter, viewBy), [
-    report,
-    filter,
-    viewBy
-  ]);
+  const parsedGroupedMetricData = useMemo(() => getChartMasteryData(report, filter, viewBy), [report, filter, viewBy]);
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {

@@ -10,12 +10,7 @@ import { push } from "connected-react-router";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
 
 import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
-import {
-  setTestDataAction,
-  getTestEntitySelector,
-  setTestDataAndUpdateAction,
-  setCreatedItemToTestAction
-} from "../TestPage/ducks";
+import { getTestEntitySelector, setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   UPDATE_QUESTION,

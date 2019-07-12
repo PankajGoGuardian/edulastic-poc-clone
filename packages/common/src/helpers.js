@@ -1,5 +1,6 @@
 /* eslint-disable */
 import uuid from "uuid/v4";
+import { isString } from "lodash";
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
 import { message } from "antd";
@@ -235,6 +236,28 @@ export const beforeUpload = file => {
   return isAllowedType && withinSizeLimit;
 };
 
+/**
+ * does question have enough data !?
+ *  This is only the begnning. This func is going to grow to handle
+ *  the idiosyncraices of  multiple questions types.
+ *  "To inifinity and beyond" ~ Buzz Lightyear, or someone wise!
+ */
+export const isIncompleteQuestion = question => {
+  if (!question.stimulus) {
+    return [true, "Question text shouldnot be empty"];
+  }
+
+  if (question.options) {
+    const hasEmptyOptions = question.options.some(opt => {
+      return (opt.hasOwnProperty("label") && !opt.label.trim()) || (isString(opt) && opt.trim() === "");
+    });
+
+    if (hasEmptyOptions) return [true, "Answer choices shouldnot be empty"];
+  }
+
+  return [false];
+};
+
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -247,5 +270,6 @@ export default {
   reIndexResponses,
   sanitizeForReview,
   canInsert,
-  removeIndexFromTemplate
+  removeIndexFromTemplate,
+  isIncompleteQuestion
 };

@@ -112,10 +112,6 @@ function* receiveAssignmentByAssignmentIdSaga({ payload }) {
       type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
       payload: data
     });
-    yield put({
-      type: TOGGLE_RELEASE_GRADE_SETTINGS,
-      payload: true
-    });
   } catch (e) {
     yield put({
       type: UPDATE_CURRENT_EDITING_ASSIGNMENT,

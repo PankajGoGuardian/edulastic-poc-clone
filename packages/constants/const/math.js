@@ -125,6 +125,7 @@ const methodOptions = {
     "setThousandsSeparator",
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
+    "allowNumericOnly",
     "allowedVariables",
     "setEvaluation",
     "compareSides"

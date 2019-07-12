@@ -15,6 +15,10 @@ import { getUserRole } from "../../../src/selectors/user";
 import * as moment from "moment";
 import TestTypeSelector from "./TestTypeSelector";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+import { getUserFeatures } from "../../../../student/Login/ducks";
+const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
+const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY"];
 
 class SimpleOptions extends React.Component {
   static propTypes = {
@@ -31,8 +35,32 @@ class SimpleOptions extends React.Component {
     this.state = {
       showSettings: false,
       classIds: [],
-      studentList: []
+      studentList: [],
+      _releaseGradeKeys: nonPremiumReleaseGradeKeys
     };
+  }
+
+  static getDerivedStateFromProps(nextProps, nextState) {
+    const { features, testSettings } = nextProps;
+    const { grades, subjects } = testSettings || {};
+    if (
+      features["assessmentSuperPowersReleaseScorePremium"] === false &&
+      grades &&
+      subjects &&
+      isFeatureAccessible({
+        features: features,
+        inputFeatures: "assessmentSuperPowersReleaseScorePremium",
+        gradeSubject: { grades, subjects }
+      })
+    ) {
+      return {
+        _releaseGradeKeys: releaseGradeKeys
+      };
+    } else {
+      return {
+        _releaseGradeKeys: nonPremiumReleaseGradeKeys
+      };
+    }
   }
 
   toggleSettings = () => {
@@ -104,7 +132,7 @@ class SimpleOptions extends React.Component {
   };
 
   render() {
-    const { showSettings, classIds, studentList } = this.state;
+    const { showSettings, classIds, studentList, _releaseGradeKeys } = this.state;
     const { group, fetchStudents, students, testSettings = {}, assignment, updateOptions, userRole } = this.props;
     const changeField = curry(this.onChange);
     let openPolicy = selectsData.openPolicy;
@@ -171,27 +199,26 @@ class SimpleOptions extends React.Component {
               </StyledSelect>
             </Col>
           </Row>
-
-          <TestTypeSelector
-            userRole={userRole}
-            testType={testSettings.testType}
-            onAssignmentTypeChange={changeField("testType")}
-          />
           <FeaturesSwitch
-            inputFeatures="addCoTeacher"
+            inputFeatures="selectTestType"
             actionOnInaccessible="hidden"
-            key="addCoTeacher"
+            key="selectTestType"
             gradeSubject={gradeSubject}
           >
-            <StyledRowButton gutter={16}>
-              <Col>
-                <SettingsBtn onClick={this.toggleSettings}>
-                  OVERRIDE TEST SETTINGS
-                  {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                </SettingsBtn>
-              </Col>
-            </StyledRowButton>
+            <TestTypeSelector
+              userRole={userRole}
+              testType={testSettings.testType}
+              onAssignmentTypeChange={changeField("testType")}
+            />
           </FeaturesSwitch>
+          <StyledRowButton gutter={16}>
+            <Col>
+              <SettingsBtn onClick={this.toggleSettings}>
+                OVERRIDE TEST SETTINGS
+                {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+              </SettingsBtn>
+            </Col>
+          </StyledRowButton>
 
           {showSettings && (
             <Settings
@@ -199,6 +226,8 @@ class SimpleOptions extends React.Component {
               updateAssignmentSettings={updateOptions}
               changeField={changeField}
               testSettings={testSettings}
+              gradeSubject={gradeSubject}
+              _releaseGradeKeys={_releaseGradeKeys}
             />
           )}
         </InitOptions>
@@ -208,5 +237,6 @@ class SimpleOptions extends React.Component {
 }
 
 export default connect(state => ({
-  userRole: getUserRole(state)
+  userRole: getUserRole(state),
+  features: getUserFeatures(state)
 }))(SimpleOptions);

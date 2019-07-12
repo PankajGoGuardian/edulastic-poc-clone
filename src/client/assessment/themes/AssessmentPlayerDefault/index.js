@@ -46,6 +46,8 @@ import SvgDraw from "./SvgDraw";
 import Tools from "./Tools";
 import { saveScratchPadAction } from "../../actions/userWork";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
+import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
+import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -250,7 +252,8 @@ class AssessmentPlayerDefault extends React.Component {
       isBookmarked,
       answerChecksUsedForItem,
       bookmarksInOrder,
-      skippedInOrder
+      skippedInOrder,
+      currentGroupId
     } = this.props;
 
     const {
@@ -314,11 +317,18 @@ class AssessmentPlayerDefault extends React.Component {
               onColorChange={this.handleColorChange}
             />
           )}
-          <ToolbarModal
-            isVisible={isToolbarModalVisible}
-            onClose={() => this.closeToolbarModal()}
-            checkanswer={() => this.changeTabItemState("check")}
-          />
+          <FeaturesSwitch
+            inputFeatures="studentSettings"
+            actionOnInaccessible="hidden"
+            key="studentSettings"
+            groupId={currentGroupId}
+          >
+            <ToolbarModal
+              isVisible={isToolbarModalVisible}
+              onClose={() => this.closeToolbarModal()}
+              checkanswer={() => this.changeTabItemState("check")}
+            />
+          </FeaturesSwitch>
           {!previewPlayer && (
             <SavePauseModalMobile
               isVisible={isSavePauseModalVisible}
@@ -454,7 +464,8 @@ const enhance = compose(
       answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
       isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false),
       bookmarksInOrder: bookmarksByIndexSelector(state),
-      skippedInOrder: getSkippedAnswerSelector(state)
+      skippedInOrder: getSkippedAnswerSelector(state),
+      currentGroupId: getCurrentGroupWithAllClasses(state)
     }),
     {
       checkAnswer: checkAnswerAction,

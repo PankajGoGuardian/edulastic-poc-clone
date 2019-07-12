@@ -6,6 +6,7 @@ import { get } from "lodash";
 import { Col, Radio, Select, Icon, Checkbox, Input } from "antd";
 import { green, red, blueBorder } from "@edulastic/colors";
 import { test } from "@edulastic/constants";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import {
   AlignRight,
   AlignSwitchRight,
@@ -33,7 +34,9 @@ const Settings = ({
   updateAssignmentSettings,
   isAdvanced,
   changeField,
-  performanceBandData
+  performanceBandData,
+  gradeSubject,
+  _releaseGradeKeys
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
@@ -148,18 +151,25 @@ const Settings = ({
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
         {/* Mark as done */}
-        <StyledRowSettings gutter={16}>
-          <Col span={8}>Mark as Done</Col>
-          <Col span={16}>
-            <AlignRight onChange={e => overRideSettings("markAsDone", e.target.value)} value={markAsDone}>
-              {completionTypeKeys.map(item => (
-                <Radio value={completionTypes[item]} key={item}>
-                  {completionTypes[item]}
-                </Radio>
-              ))}
-            </AlignRight>
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersMarkAsDone"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersMarkAsDone"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={8}>Mark as Done</Col>
+            <Col span={16}>
+              <AlignRight onChange={e => overRideSettings("markAsDone", e.target.value)} value={markAsDone}>
+                {completionTypeKeys.map(item => (
+                  <Radio value={completionTypes[item]} key={item}>
+                    {completionTypes[item]}
+                  </Radio>
+                ))}
+              </AlignRight>
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Mark as done */}
 
         {/* Release score */}
@@ -173,7 +183,7 @@ const Settings = ({
               value={releaseScore}
               onChange={changeField("releaseScore")}
             >
-              {releaseGradeKeys.map((item, index) => (
+              {_releaseGradeKeys.map((item, index) => (
                 <Select.Option data-cy="class" key={index} value={item}>
                   {releaseGradeTypes[item]}
                 </Select.Option>
@@ -184,185 +194,261 @@ const Settings = ({
         {/* Release score */}
 
         {/* Maximum attempt */}
-        <StyledRowSettings gutter={16}>
-          <Col span={8}>Maximum Attempts Allowed</Col>
-          <Col span={16}>
-            <MaxAttemptIInput
-              type="number"
-              size="large"
-              value={maxAttempts}
-              onChange={e => overRideSettings("maxAttempts", e.target.value)}
-              min={1}
-              step={1}
-            />
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="maxAttemptAllowed"
+          actionOnInaccessible="hidden"
+          key="maxAttemptAllowed"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={8}>Maximum Attempts Allowed</Col>
+            <Col span={16}>
+              <MaxAttemptIInput
+                type="number"
+                size="large"
+                value={maxAttempts}
+                onChange={e => overRideSettings("maxAttempts", e.target.value)}
+                min={1}
+                step={1}
+              />
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Maximum attempt */}
 
         {/* Require Safe Exam Browser */}
-        <StyledRowSettings gutter={16}>
-          <Col span={16}>Require Safe Exam Browser</Col>
-          <Col span={8}>
-            <AlignSwitchRight
-              defaultChecked={safeBrowser}
-              size="small"
-              onChange={value => overRideSettings("safeBrowser", value)}
-            />
-            {safeBrowser && (
-              <Password
-                suffix={
-                  <Icon
-                    type={showPassword ? "eye-invisible" : "eye"}
-                    theme="filled"
-                    onClick={() => setShowSebPassword(prevState => !prevState)}
-                  />
-                }
-                onChange={e => overRideSettings("sebPassword", e.target.value)}
-                size="large"
-                value={sebPassword}
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersRequireSafeExamBrowser"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersRequireSafeExamBrowser"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={16}>Require Safe Exam Browser</Col>
+            <Col span={8}>
+              <AlignSwitchRight
+                defaultChecked={safeBrowser}
+                size="small"
+                onChange={value => overRideSettings("safeBrowser", value)}
               />
-            )}
-          </Col>
-        </StyledRowSettings>
+              {safeBrowser && (
+                <Password
+                  suffix={
+                    <Icon
+                      type={showPassword ? "eye-invisible" : "eye"}
+                      theme="filled"
+                      onClick={() => setShowSebPassword(prevState => !prevState)}
+                    />
+                  }
+                  onChange={e => overRideSettings("sebPassword", e.target.value)}
+                  size="large"
+                  value={sebPassword}
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                />
+              )}
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Require Safe Exam Browser */}
 
         {/* show questions */}
-        <StyledRowSettings gutter={16}>
-          <Col span={12}>Show Questions to Students After Submission</Col>
-          <Col span={12}>
-            <AlignSwitchRight
-              defaultChecked={showQuestionsAfterSubmission}
-              size="small"
-              onChange={value => overRideSettings("showQuestionsAfterSubmission", value)}
-            />
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersShowQuestionsToStudentsAfterSubmission"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersShowQuestionsToStudentsAfterSubmission"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={12}>Show Questions to Students After Submission</Col>
+            <Col span={12}>
+              <AlignSwitchRight
+                defaultChecked={showQuestionsAfterSubmission}
+                size="small"
+                onChange={value => overRideSettings("showQuestionsAfterSubmission", value)}
+              />
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* show questions */}
 
         {/* Shuffle Question */}
-        <StyledRowSettings gutter={16}>
-          <Col span={8}>Shuffle Questions</Col>
-          <Col span={16}>
-            <AlignSwitchRight
-              size="small"
-              defaultChecked={shuffleQuestions}
-              onChange={value => overRideSettings("shuffleQuestions", value)}
-            />
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersShuffleQuestions"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersShuffleQuestions"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={8}>Shuffle Questions</Col>
+            <Col span={16}>
+              <AlignSwitchRight
+                size="small"
+                defaultChecked={shuffleQuestions}
+                onChange={value => overRideSettings("shuffleQuestions", value)}
+              />
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Shuffle Question */}
 
         {/* Shuffle Answer Choice */}
-        <StyledRowSettings gutter={16}>
-          <Col span={8}>Shuffle Answer Choice</Col>
-          <Col span={16}>
-            <AlignSwitchRight
-              size="small"
-              defaultChecked={shuffleAnswers}
-              onChange={value => overRideSettings("shuffleAnswers", value)}
-            />
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersShuffleAnswerChoice"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersShuffleAnswerChoice"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={8}>Shuffle Answer Choice</Col>
+            <Col span={16}>
+              <AlignSwitchRight
+                size="small"
+                defaultChecked={shuffleAnswers}
+                onChange={value => overRideSettings("shuffleAnswers", value)}
+              />
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Shuffle Answer Choice */}
 
         {/* Show Calculator */}
-        <StyledRowSettings gutter={16}>
-          <Col span={8}>Show Calculator</Col>
-          <Col span={16}>
-            <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
-              {calculatorKeys.map(item => (
-                <Radio value={item} key={item}>
-                  {calculators[item]}
-                </Radio>
-              ))}
-            </AlignRight>
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersShowCalculator"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersShowCalculator"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={8}>Show Calculator</Col>
+            <Col span={16}>
+              <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
+                {calculatorKeys.map(item => (
+                  <Radio value={item} key={item}>
+                    {calculators[item]}
+                  </Radio>
+                ))}
+              </AlignRight>
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Show Calculator */}
 
         {/* Answer on Paper */}
-        <StyledRowSettings gutter={16}>
-          <Col span={8}>Answer on Paper</Col>
-          <Col span={16}>
-            <AlignSwitchRight
-              size="small"
-              defaultChecked={answerOnPaper}
-              onChange={value => overRideSettings("answerOnPaper", value)}
-            />
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersAnswerOnPaper"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersAnswerOnPaper"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={8}>Answer on Paper</Col>
+            <Col span={16}>
+              <AlignSwitchRight
+                size="small"
+                defaultChecked={answerOnPaper}
+                onChange={value => overRideSettings("answerOnPaper", value)}
+              />
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Answer on Paper */}
 
         {/* Require Password */}
-        <StyledRowSettings gutter={16}>
-          <Col span={16}>Require Password</Col>
-          <Col span={8}>
-            <AlignSwitchRight
-              defaultChecked={requirePassword}
-              size="small"
-              onChange={value => overRideSettings("requirePassword", value)}
-            />
-            {requirePassword && (
-              <>
-                <Password
-                  onChange={e => overRideSettings("assignmentPassword", e.target.value)}
-                  size="large"
-                  value={assignmentPassword}
-                  type={"text"}
-                  placeholder="Enter Password"
-                  color={passwordStatus.color}
-                />
-                <MessageSpan>{passwordStatus.message}</MessageSpan>
-              </>
-            )}
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersRequirePassword"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersRequirePassword"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={16}>Require Password</Col>
+            <Col span={8}>
+              <AlignSwitchRight
+                defaultChecked={requirePassword}
+                size="small"
+                onChange={value => overRideSettings("requirePassword", value)}
+              />
+              {requirePassword && (
+                <>
+                  <Password
+                    onChange={e => overRideSettings("assignmentPassword", e.target.value)}
+                    size="large"
+                    value={assignmentPassword}
+                    type={"text"}
+                    placeholder="Enter Password"
+                    color={passwordStatus.color}
+                  />
+                  <MessageSpan>{passwordStatus.message}</MessageSpan>
+                </>
+              )}
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Require Password */}
 
         {/* Check Answer Tries Per Question */}
-        <StyledRowSettings gutter={16}>
-          <Col span={16}>Check Answer Tries Per Question</Col>
-          <Col span={8}>
-            <Input
-              onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
-              size="large"
-              value={maxAnswerChecks}
-              type={"number"}
-              min={0}
-              placeholder="Number of tries"
-            />
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersCheckAnswerTries"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersCheckAnswerTries"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={16}>Check Answer Tries Per Question</Col>
+            <Col span={8}>
+              <Input
+                onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
+                size="large"
+                value={maxAnswerChecks}
+                type={"number"}
+                min={0}
+                placeholder="Number of tries"
+              />
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Check Answer Tries Per Question */}
 
         {/* Evaluation Method */}
-        <StyledRowSettings gutter={16}>
-          <Col span={6}>Evaluation Method</Col>
-          <Col span={18}>
-            <AlignRight onChange={e => overRideSettings("scoringType", e.target.value)} value={scoringType}>
-              {evalTypeKeys.map(item => (
-                <Radio value={item} key={item}>
-                  {evalTypes[item]}
-                </Radio>
-              ))}
-            </AlignRight>
-            {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
-              <CheckBoxWrapper>
-                <Checkbox checked={penalty === false} onChange={e => overRideSettings("penalty", !e.target.checked)}>
-                  {"Don’t penalize for incorrect selection"}
-                </Checkbox>
-              </CheckBoxWrapper>
-            )}
-          </Col>
-        </StyledRowSettings>
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersEvaluationMethod"
+          actionOnInaccessible="hidden"
+          key="assessmentSuperPowersEvaluationMethod"
+          gradeSubject={gradeSubject}
+        >
+          <StyledRowSettings gutter={16}>
+            <Col span={6}>Evaluation Method</Col>
+            <Col span={18}>
+              <AlignRight onChange={e => overRideSettings("scoringType", e.target.value)} value={scoringType}>
+                {evalTypeKeys.map(item => (
+                  <Radio value={item} key={item}>
+                    {evalTypes[item]}
+                  </Radio>
+                ))}
+              </AlignRight>
+              {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
+                <CheckBoxWrapper>
+                  <Checkbox checked={penalty === false} onChange={e => overRideSettings("penalty", !e.target.checked)}>
+                    {"Don’t penalize for incorrect selection"}
+                  </Checkbox>
+                </CheckBoxWrapper>
+              )}
+            </Col>
+          </StyledRowSettings>
+        </FeaturesSwitch>
         {/* Evaluation Method */}
       </StyledDiv>
-
-      <StyledDiv>
-        <StyledTable columns={columns} dataSource={performanceBand} pagination={false} isAdvanced={isAdvanced} />
-      </StyledDiv>
+      <FeaturesSwitch
+        inputFeatures="performanceBands"
+        actionOnInaccessible="hidden"
+        key="performanceBands"
+        gradeSubject={gradeSubject}
+      >
+        <StyledDiv>
+          <StyledTable columns={columns} dataSource={performanceBand} pagination={false} isAdvanced={isAdvanced} />
+        </StyledDiv>
+      </FeaturesSwitch>
     </SettingsWrapper>
   );
 };

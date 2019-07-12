@@ -65,6 +65,7 @@ const testTypes = {
 };
 
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
+const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY"];
 
 class MainSetting extends Component {
   constructor(props) {
@@ -74,12 +75,31 @@ class MainSetting extends Component {
       showPassword: false,
       enable: true,
       showAdvancedOption: false,
-      inputBlur: false
+      inputBlur: false,
+      _releaseGradeKeys: nonPremiumReleaseGradeKeys
     };
+  }
 
-    this._releaseGradeKeys = releaseGradeKeys;
-    if (!props.features.assessmentSuperPowersReleaseScorePremium) {
-      this._releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]];
+  static getDerivedStateFromProps(nextProps, nextState) {
+    const { features, entity } = nextProps;
+    const { grades, subjects } = entity;
+    if (
+      features["assessmentSuperPowersReleaseScorePremium"] === false &&
+      grades &&
+      subjects &&
+      isFeatureAccessible({
+        features: features,
+        inputFeatures: "assessmentSuperPowersReleaseScorePremium",
+        gradeSubject: { grades, subjects }
+      })
+    ) {
+      return {
+        _releaseGradeKeys: releaseGradeKeys
+      };
+    } else {
+      return {
+        _releaseGradeKeys: nonPremiumReleaseGradeKeys
+      };
     }
   }
 
@@ -175,7 +195,7 @@ class MainSetting extends Component {
   };
 
   render() {
-    const { enable, showAdvancedOption, showPassword } = this.state;
+    const { enable, showAdvancedOption, showPassword, _releaseGradeKeys } = this.state;
     const { history, windowWidth, entity, owner, userRole, isEditable = false, sebPasswordRef } = this.props;
 
     const {
@@ -226,6 +246,9 @@ class MainSetting extends Component {
         })
       ) {
         return settingCategoriesFeatureMap[category.id];
+      } else if (settingCategoriesFeatureMap[category.id] === "releaseScore") {
+        // release score is free feature
+        return settingCategoriesFeatureMap[category.id];
       }
     });
     return (
@@ -263,42 +286,50 @@ class MainSetting extends Component {
             )} */}
           </Col>
           <Col span={isSmallSize ? 24 : 18}>
-            <Block id="test-type" smallSize={isSmallSize}>
-              <Row>
-                <Title>Test Type</Title>
-                <Body smallSize={isSmallSize}>
-                  <TestTypeSelect
-                    defaultValue={testType}
+            {availableFeatures.includes("selectTestType") ? (
+              <Block id="test-type" smallSize={isSmallSize}>
+                <Row>
+                  <Title>Test Type</Title>
+                  <Body smallSize={isSmallSize}>
+                    <TestTypeSelect
+                      defaultValue={testType}
+                      disabled={!owner || !isEditable}
+                      onChange={this.updateTestData("testType")}
+                    >
+                      {Object.keys(testTypes).map(key => (
+                        <Option key={key} value={key}>
+                          {key === ASSESSMENT
+                            ? userRole === "teacher"
+                              ? "Class Assessment "
+                              : "Common Assessment "
+                            : testTypes[key]}
+                        </Option>
+                      ))}
+                    </TestTypeSelect>
+                  </Body>
+                </Row>
+              </Block>
+            ) : (
+              ""
+            )}
+            {availableFeatures.includes("maxAttemptAllowed") ? (
+              <Block id="maximum-attempts-allowed">
+                <Title>Maximum Attempts Allowed </Title>
+                <Body>
+                  <MaxAttempts
+                    type="number"
                     disabled={!owner || !isEditable}
-                    onChange={this.updateTestData("testType")}
-                  >
-                    {Object.keys(testTypes).map(key => (
-                      <Option key={key} value={key}>
-                        {key === ASSESSMENT
-                          ? userRole === "teacher"
-                            ? "Class Assessment "
-                            : "Common Assessment "
-                          : testTypes[key]}
-                      </Option>
-                    ))}
-                  </TestTypeSelect>
+                    size="large"
+                    value={maxAttempts}
+                    onChange={this.updateAttempt}
+                    min={1}
+                    step={1}
+                  />
                 </Body>
-              </Row>
-            </Block>
-            <Block id="maximum-attempts-allowed">
-              <Title>Maximum Attempts Allowed </Title>
-              <Body>
-                <MaxAttempts
-                  type="number"
-                  disabled={!owner || !isEditable}
-                  size="large"
-                  value={maxAttempts}
-                  onChange={this.updateAttempt}
-                  min={1}
-                  step={1}
-                />
-              </Body>
-            </Block>
+              </Block>
+            ) : (
+              ""
+            )}
             {availableFeatures.includes("assessmentSuperPowersMarkAsDone") ? (
               <Block id="mark-as-done" smallSize={isSmallSize}>
                 <Title>Mark as Done</Title>
@@ -334,7 +365,7 @@ class MainSetting extends Component {
                   onChange={this.updateFeatures("releaseScore")}
                   value={releaseScore}
                 >
-                  {this._releaseGradeKeys.map(item => (
+                  {_releaseGradeKeys.map(item => (
                     <Radio value={item} key={item}>
                       {releaseGradeTypes[item]}
                     </Radio>

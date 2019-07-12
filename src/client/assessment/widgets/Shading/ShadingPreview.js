@@ -121,13 +121,6 @@ const ShadingPreview = ({
 
   const correctAnswers = (userAnswer ? userAnswer.value || [] : []).filter((value, i) => evaluation && evaluation[i]);
 
-  const isValidationExists = !!(
-    validation &&
-    validation.valid_response &&
-    validation.valid_response.value &&
-    validation.valid_response.value.value
-  );
-
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
@@ -180,8 +173,8 @@ const ShadingPreview = ({
             correctAnswers={correctAnswers}
             onCellClick={disableResponse ? () => {} : handleCellClick}
             shaded={
-              disableResponse && isValidationExists
-                ? validation.valid_response.value.value
+              disableResponse
+                ? validation.valid_response.value && validation.valid_response.value.value
                 : Array.isArray(userAnswer)
                 ? userAnswer
                 : []

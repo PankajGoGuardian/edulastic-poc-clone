@@ -29,7 +29,9 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
       dataIndex: "name",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.firstName > b.firstName,
-      render: (_, { firstName, lastName }) => <span>{`${firstName || "-"} ${lastName || ""}`}</span>
+      render: (_, { firstName, lastName }) => (
+        <span>{`${firstName == "Anonymous" || firstName == "" ? "-" : firstName} ${lastName || ""}`}</span>
+      )
     },
     {
       title: "Username",

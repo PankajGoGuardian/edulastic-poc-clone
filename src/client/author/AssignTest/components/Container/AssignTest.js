@@ -115,7 +115,7 @@ class AssignTest extends React.Component {
         }
       }));
     } else {
-      if (userRole !== "teacher") {
+      if (userRole === "district-admin" || userRole === "school-admin") {
         this.setState(prevState => ({
           assignment: {
             ...prevState.assignment,

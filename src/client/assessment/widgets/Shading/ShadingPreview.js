@@ -174,7 +174,7 @@ const ShadingPreview = ({
             onCellClick={disableResponse ? () => {} : handleCellClick}
             shaded={
               disableResponse
-                ? validation.valid_response.value && validation.valid_response.value.value
+                ? validation.valid_response && validation.valid_response.value && validation.valid_response.value.value
                 : Array.isArray(userAnswer)
                 ? userAnswer
                 : []

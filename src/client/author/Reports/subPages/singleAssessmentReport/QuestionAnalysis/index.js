@@ -92,8 +92,8 @@ const QuestionAnalysis = ({ questionAnalysis, getQuestionAnalysisRequestAction, 
                   <Row type="flex" justify="space-between" className="top-row">
                     <Col>
                       <StyledH3>
-                        Detailed Performance Analysis By {dropDownKeyToLabel[compareBy]} |{" "}
-                        {questionAnalysis.assessmentName}
+                        Detailed Performance Analysis {role !== "teacher" ? "By " + dropDownKeyToLabel[compareBy] : ""}{" "}
+                        | {questionAnalysis.assessmentName}
                       </StyledH3>
                     </Col>
                     <Col>
@@ -109,7 +109,7 @@ const QuestionAnalysis = ({ questionAnalysis, getQuestionAnalysisRequestAction, 
                   </Row>
                 </Col>
                 <Col className={"bottom-table-container"}>
-                  <QuestionAnalysisTable tableData={tableData} compareBy={compareBy} filter={chartFilter} />
+                  <QuestionAnalysisTable tableData={tableData} compareBy={compareBy} filter={chartFilter} role={role} />
                 </Col>
               </Row>
             </StyledCard>

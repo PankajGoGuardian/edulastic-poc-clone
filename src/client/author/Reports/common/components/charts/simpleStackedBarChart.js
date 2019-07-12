@@ -37,7 +37,7 @@ const LabelText = props => {
 };
 
 export const SimpleStackedBarChart = ({
-  margin = { top: 0, right: 0, left: 0, bottom: 0 },
+  margin = { top: 0, right: 20, left: 20, bottom: 0 },
   pageSize,
   data = [],
   yDomain = [0, 110],

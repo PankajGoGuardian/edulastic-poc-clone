@@ -3,6 +3,7 @@ import { Row, Col } from "antd";
 import { get, keyBy, isEmpty } from "lodash";
 import next from "immer";
 
+import { roleuser } from "@edulastic/constants";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { StyledTable } from "../styled";
@@ -37,7 +38,7 @@ const sortNumbers = (compareByType, index, key) => (a, b) => {
   return _a - _b;
 };
 
-export const QuestionAnalysisTable = ({ tableData, compareBy, filter }) => {
+export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role }) => {
   const colouredCells = (compareByType, index) => (text, record) => {
     const tooltipText = (_compareByType, _record, _index) => {
       return (
@@ -105,10 +106,18 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter }) => {
     rawColumns[3].render = (text, record, _index) => {
       return text + "%";
     };
-    rawColumns[4].title = `All ${compareByToPluralName[compareBy]} (Score %)`;
-    rawColumns[4].render = (text, record, _index) => {
-      return text + "%";
-    };
+
+    if (roleuser.TEACHER === role) {
+      rawColumns.push({
+        title: `All ${compareByToPluralName[compareBy]} (Score %)`,
+        dataIndex: "avgPerformance",
+        key: "avgPerformance",
+        width: 100,
+        render: (text, record, _index) => {
+          return text + "%";
+        }
+      });
+    }
     if (!tableData.length) {
       return;
     }
@@ -162,5 +171,12 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter }) => {
     });
   }, [filter]);
 
-  return <StyledTable columns={_columns} dataSource={_tableData} rowKey={"questionId"} />;
+  return (
+    <StyledTable
+      columns={_columns}
+      dataSource={_tableData}
+      rowKey={"questionId"}
+      colorCellStart={role === roleuser.TEACHER ? 6 : 5}
+    />
+  );
 };

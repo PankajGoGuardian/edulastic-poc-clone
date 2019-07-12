@@ -13,7 +13,6 @@ import { questionType } from "@edulastic/constants";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi } from "@edulastic/api";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
-import { addTestItemAction } from "../../../../TestPage/ducks";
 import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
@@ -53,11 +52,15 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const { data, addTestItemToList } = this.props;
+    const { data, testId, history } = this.props;
     const itemId = data.id;
     this.closeModal();
     const duplicatedItem = await duplicateTestItem(itemId);
-    addTestItemToList(duplicatedItem);
+    if (testId) {
+      history.push(`/author/tests/${testId}/createItem/${duplicatedItem._id}`);
+    } else {
+      history.push(`/author/items/${duplicatedItem._id}/item-detail`);
+    }
   };
 
   editTestItem = () => {
@@ -193,8 +196,7 @@ const enhance = compose(
     }),
     {
       changeView: changePreviewAction,
-      clearAnswers: clearAnswersAction,
-      addTestItemToList: addTestItemAction
+      clearAnswers: clearAnswersAction
     }
   )
 );

@@ -87,10 +87,30 @@ class Layout extends Component {
     const { onChange, uiStyle } = this.props;
     const { minWidth, maxWidth } = response;
     const width = uiStyle.widthpx;
+    let { responsecontainerindividuals: responses } = uiStyle;
+    if (uiStyle.globalSettings) {
+      responses = responses.map(response => ({
+        ...response,
+        previewWidth: null
+      }));
+      if (width < minWidth || width > maxWidth) {
+        onChange("ui_style", {
+          ...uiStyle,
+          widthpx: clamp(width, minWidth, maxWidth),
+          responsecontainerindividuals: responses
+        });
+      } else {
+        onChange("ui_style", {
+          ...uiStyle,
+          responsecontainerindividuals: responses
+        });
+      }
+    }
     if (width < minWidth || width > maxWidth) {
       onChange("ui_style", {
         ...uiStyle,
-        widthpx: clamp(width, minWidth, maxWidth)
+        widthpx: clamp(width, minWidth, maxWidth),
+        responsecontainerindividuals: responses
       });
     }
   };

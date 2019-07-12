@@ -596,10 +596,23 @@ function* getEvaluation(testItemId) {
   const evaluation = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
   return evaluation;
 }
+function* getEvaluationFromItem(testItem) {
+  const { itemLevelScore, itemLevelScoring = false } = testItem;
+  const questions = _keyBy(testItem.data.questions, "id");
+  const answers = yield select(state => get(state, "answers", {}));
+  const evaluation = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
+  return evaluation;
+}
 
 function* checkAnswerSaga({ payload }) {
   try {
-    const { evaluation, score, maxScore } = yield getEvaluation(payload.id);
+    let evaluationObject = {};
+    if (payload.isItem) {
+      evaluationObject = yield getEvaluationFromItem(payload);
+    } else {
+      evaluationObject = yield getEvaluation(payload.id);
+    }
+    const { evaluation, score, maxScore } = evaluationObject;
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

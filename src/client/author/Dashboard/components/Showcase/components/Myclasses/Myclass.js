@@ -75,17 +75,18 @@ const MyClasses = ({
     setIsModalVisible(false);
   }, []);
 
-  const sortableCards = classData
+  const sortableClasses = classData
     .filter(d => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
     .sort((a, b) => b.asgnStartDate - a.asgnStartDate);
-  const unSortablecards = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
+  const unSortableClasses = classData.filter(d => d.asgnStartDate === null || d.asgnStartDate === undefined);
 
-  const allCards = [...sortableCards, ...unSortablecards];
+  const allClasses = [...sortableClasses, ...unSortableClasses];
   const selectedGroups = classData.filter(i => !!i.googleCode).map(i => i.googleCode);
-
-  const ClassCards = allCards.map(item => (
+  const allActiveClasses = allClasses.filter(c => c.active === 1);
+  const ClassCards = allActiveClasses.map(item => (
     <Col xs={24} sm={24} md={12} lg={12} xl={8} key={item._id}>
       <Card data={item} />
+  const ClassCards = allActiveClasses.map(item => (
     </Col>
   ));
 

@@ -8,8 +8,24 @@ export const Container = styled.div`
   margin-bottom: 5px;
 
   .ant-select {
-    margin-right: 23px;
-    width: 128px;
+    width: auto;
+    .ant-select-selection__rendered {
+      margin: 0px;
+      .ant-select-selection-selected-value {
+        padding-right: 30px;
+        font-size: 16px;
+      }
+    }
+    .ant-select-selection {
+      .ant-select-arrow {
+        right: 0px;
+        .ant-select-arrow-icon {
+          svg {
+            fill: #434b5d;
+          }
+        }
+      }
+    }
   }
 
   svg {

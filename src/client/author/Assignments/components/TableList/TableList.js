@@ -44,7 +44,7 @@ const convertTableData = (data, assignments, index) => ({
   class: assignments.length,
   assigned: "",
   status: "status",
-  submitted: `${assignments.map(item => item.submittedCount || item.gradedCount || 0).reduce((t, c) => t + c) ||
+  submitted: `${assignments.map(item => (item.submittedCount || 0) + (item.gradedCount || 0)).reduce((t, c) => t + c) ||
     0} of ${assignments.map(item => item.totalNumber || 0).reduce((t, c) => t + c)}`,
   graded: `${assignments.map(item => item.gradedCount).reduce((t, c) => t + c) || 0}`,
   action: "",

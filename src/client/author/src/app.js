@@ -308,7 +308,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   />
                   <Route
                     exact
-                    path="/author/tests/:id/assign"
+                    path="/author/tests/:id/assign/:assignmentId"
                     render={props => (
                       <Suspense fallback={<Progress />}>
                         <SuccessPage {...props} isAssignSuccess />

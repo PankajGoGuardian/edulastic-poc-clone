@@ -202,7 +202,6 @@ class StudentViewContainer extends Component {
             {initFeedbackValue.length ? (
               <Tooltip title={feedbackButtonToolTip}>
                 <span>{`${initFeedbackValue.slice(0, 30)}${initFeedbackValue.length > 30 ? "....." : ""}`}</span>
-                <EditIconStyled />
               </Tooltip>
             ) : (
               "GIVE OVERALL FEEDBACK"

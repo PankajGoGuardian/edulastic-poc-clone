@@ -200,7 +200,6 @@ class Assignments extends Component {
           createAssignment={true}
           title={t("common.assignmentsTitle")}
           btnTitle="AUTHOR TEST"
-          renderFilter={this.renderSwitch}
           isAdvancedView={isAdvancedView}
         />
         <Container>

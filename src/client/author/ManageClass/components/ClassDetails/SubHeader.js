@@ -49,7 +49,7 @@ const SubHeader = ({
           <div>{name}</div>
 
           <p>
-            {districtName},{institutionName}
+            {districtName}, {institutionName}
           </p>
         </TitleWarapper>
       </LeftContent>

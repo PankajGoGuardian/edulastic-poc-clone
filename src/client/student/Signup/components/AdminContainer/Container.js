@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { trim } from "lodash";
-import { emailSpecialCharCheck } from "../../../../common/utils/helpers";
+import { isEmailValid } from "../../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import {
   themeColor,
@@ -176,7 +176,7 @@ class AdminSignup extends React.Component {
                                 },
                                 {
                                   validator: (rule, value, callback) =>
-                                    emailSpecialCharCheck(rule, value, callback, t("common.validation.validemail"))
+                                    isEmailValid(rule, value, callback, "email", t("common.validation.validemail"))
                                 }
                               ]
                             })(<Input prefix={<img src={mailIcon} alt="" />} />)}

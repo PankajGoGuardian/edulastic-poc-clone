@@ -6,6 +6,7 @@ import { get, isUndefined, toNumber, isNaN } from "lodash";
 import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { round } from "lodash";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -187,7 +188,7 @@ class FeedbackRight extends Component {
               data-cy="scoreInput"
               onChange={this.onChangeScore}
               onBlur={this.preCheckSubmit}
-              value={activity && activity.graded === false ? "" : score}
+              value={activity && activity.graded === false ? "" : round(score, 2)}
               disabled={!activity || isPresentationMode}
               innerRef={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}

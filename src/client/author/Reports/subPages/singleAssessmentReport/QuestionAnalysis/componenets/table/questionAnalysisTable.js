@@ -39,29 +39,29 @@ const sortNumbers = (compareByType, index, key) => (a, b) => {
 
 export const QuestionAnalysisTable = ({ tableData, compareBy, filter }) => {
   const colouredCells = (compareByType, index) => (text, record) => {
-    const tooltipText = (compareByType, record, index) => {
+    const tooltipText = (_compareByType, _record, _index) => {
       return (
         <div>
           <Row type="flex" justify="center">
-            <Col className="custom-table-tooltip-value">{record.qLabel}</Col>
+            <Col className="custom-table-tooltip-value">{_record.qLabel}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[compareByType].name}: </Col>
+            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].name}: </Col>
             <Col className="custom-table-tooltip-value">
-              {record[compareByType][index][comparedByToToolTipLabel[compareByType].nameKey]}
+              {_record[_compareByType][_index][comparedByToToolTipLabel[_compareByType].nameKey]}
             </Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[compareByType].type}: </Col>
-            <Col className="custom-table-tooltip-value">{record[compareByType][index].avgPerformance}%</Col>
+            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].type}: </Col>
+            <Col className="custom-table-tooltip-value">{_record[_compareByType][_index].avgPerformance}%</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[compareByType].all}: </Col>
-            <Col className="custom-table-tooltip-value">{record.avgPerformance}%</Col>
+            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].all}: </Col>
+            <Col className="custom-table-tooltip-value">{_record.avgPerformance}%</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="custom-table-tooltip-key">District (% Score): </Col>
-            <Col className="custom-table-tooltip-value">{record.districtAvg}%</Col>
+            <Col className="custom-table-tooltip-value">{_record.districtAvg}%</Col>
           </Row>
         </div>
       );

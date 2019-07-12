@@ -109,7 +109,8 @@ const methodOptions = {
     "ignoreOrder",
     "ignoreCoefficientOfOne",
     "inverseResult",
-    "allowInterval"
+    "allowInterval",
+    "allowedVariables"
   ],
   [methods.EQUIV_VALUE]: [
     "ariaLabel",
@@ -125,6 +126,7 @@ const methodOptions = {
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
     "allowNumericOnly",
+    "allowedVariables",
     "setEvaluation",
     "compareSides"
   ],

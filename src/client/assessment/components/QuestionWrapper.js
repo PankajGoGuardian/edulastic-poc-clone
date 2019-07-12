@@ -112,6 +112,26 @@ const QuestionContainer = styled.div`
   }
 `;
 
+export const TimeSpentWrapper = styled.p`
+  font-size: 19px;
+  color: grey;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  align-items: center;
+  padding-top: 10px;
+  i {
+    padding-right: 15px;
+  }
+`;
+
+export const FlexContainer = styled.div`
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+`;
+
 const getQuestion = type => {
   switch (type) {
     case questionType.LINE_PLOT:
@@ -331,14 +351,7 @@ class QuestionWrapper extends Component {
                     handleAdvancedOpen={handleAdvancedOpen}
                   />
                 )}
-                <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
-                  {showFeedback && timeSpent && (
-                    <p style={{ fontSize: 19, color: "grey" }}>
-                      <i className="fa fa-clock-o" style={{ paddingRight: 15 }} aria-hidden="true" />
-                      {round(timeSpent / 1000, 1)}s
-                    </p>
-                  )}
-
+                <FlexContainer>
                   <Question
                     {...restProps}
                     setQuestionData={setQuestionData}
@@ -354,7 +367,15 @@ class QuestionWrapper extends Component {
                     disableResponse={disableResponse}
                     {...userAnswerProps}
                   />
-                </div>
+                  {showFeedback && timeSpent ? (
+                    <TimeSpentWrapper>
+                      <i className="fa fa-clock-o" aria-hidden="true" />
+                      {round(timeSpent / 1000, 1)}s
+                    </TimeSpentWrapper>
+                  ) : (
+                    ""
+                  )}
+                </FlexContainer>
               </PaperWrapper>
               {showFeedback &&
                 !isPassageOrVideoType &&

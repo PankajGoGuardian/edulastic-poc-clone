@@ -8,7 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { themeColor, themeColorLighter } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
-import { isDistrictPolicyAllowed, emailSpecialCharCheck } from "../../../common/utils/helpers";
+import { isDistrictPolicyAllowed, isEmailValid } from "../../../common/utils/helpers";
 import { ForgotPasswordPopup } from "./forgotPasswordPopup";
 
 import mailIcon from "../../assets/mail-icon.svg";
@@ -168,7 +168,7 @@ class LoginContainer extends React.Component {
                               },
                               {
                                 validator: (rule, value, callback) =>
-                                  emailSpecialCharCheck(rule, value, callback, t("common.validation.validemail"))
+                                  isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
                               }
                             ]
                           })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}

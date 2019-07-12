@@ -101,7 +101,7 @@ export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
     // -----|-----|-----|-----| TEACHER BEGIN |-----|-----|-----|----- //
     let comparedByTeacher;
     const groupedByTeacher = groupBy(groupedItem, "teacherId");
-    comparedBySchool = groupedByTeacherKeys.map(_item => {
+    comparedByTeacher = groupedByTeacherKeys.map(_item => {
       let __item = groupedByTeacher[_item].reduce(
         (total, currentValue, currentIndex) => {
           const { totalTotalMaxScore = 0, totalTotalScore = 0, totalTimeSpent = 0 } = total;

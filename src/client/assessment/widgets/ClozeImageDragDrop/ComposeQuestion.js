@@ -606,21 +606,13 @@ class ComposeQuestion extends Component {
               onDragStart={e => e.preventDefault()}
               innerRef={this.canvasRef}
             >
-              <div
-                style={{
-                  position: "relative",
-                  width: imageWidth || "100%",
-                  height: imageHeight || "100%"
-                }}
-              >
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={item.id}
-                  disableDragging={false}
-                  isAbove={!isAnnotationBelow}
-                  onDoubleClick={toggleIsAnnotationBelow}
-                />
-              </div>
+              <AnnotationRnd
+                style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+                questionId={item.id}
+                disableDragging={false}
+                isAbove={!isAnnotationBelow}
+                onDoubleClick={toggleIsAnnotationBelow}
+              />
               {item.imageUrl && (
                 <React.Fragment>
                   <Rnd

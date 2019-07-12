@@ -7,7 +7,7 @@ import next from "immer";
 
 import { parseData, idToName } from "./util/transformers";
 
-import { StyledH3, StyledSignedBarContainer } from "../../../common/styled";
+import { StyledH3, StyledSignedBarContainer, StyledCard } from "../../../common/styled";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import { FilterDropDownWithDropDown } from "../../../common/components/widgets/filterDropDownWithDropDown";
 import { Placeholder } from "../../../common/components/loader";
@@ -145,60 +145,62 @@ const PeerPerformance = ({ peerPerformance, getPeerPerformanceRequestAction, rol
       ) : (
         <>
           <UpperContainer>
-            <StyledSignedBarContainer>
-              <Row type="flex" justify="start">
-                <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-                  <StyledH3>
-                    Assessment Performance by {idToName[ddfilter.compareBy]} | {res.assessmentName}
-                  </StyledH3>
-                </Col>
-                <Col className="dropdown-container" xs={24} sm={24} md={12} lg={12} xl={12}>
-                  <ControlDropDown
-                    prefix={"Analyse by"}
-                    by={dropDownFormat.analyseByDropDownData[0]}
-                    selectCB={updateAnalyseByCB}
-                    data={dropDownFormat.analyseByDropDownData}
-                  />
-                  <ControlDropDown
-                    prefix={"Compare by"}
-                    by={compareByDropDownData[0]}
-                    selectCB={updateCompareByCB}
-                    data={compareByDropDownData}
-                  />
-                  <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
-                </Col>
-              </Row>
-              <div>
-                {ddfilter.analyseBy === "score(%)" || ddfilter.analyseBy === "rawScore" ? (
-                  <SimpleStackedBarChartContainer
-                    data={parsedData.data}
-                    analyseBy={ddfilter.analyseBy}
-                    compareBy={ddfilter.compareBy}
-                    filter={chartFilter}
-                    assessmentName={res.assessmentName}
-                    onBarClickCB={onBarClickCB}
-                    onResetClickCB={onResetClickCB}
-                    bandInfo={res.bandInfo}
-                    role={role}
-                  />
-                ) : (
-                  <SignedStackedBarChartContainer
-                    data={parsedData.data}
-                    analyseBy={ddfilter.analyseBy}
-                    compareBy={ddfilter.compareBy}
-                    filter={chartFilter}
-                    assessmentName={res.assessmentName}
-                    onBarClickCB={onBarClickCB}
-                    onResetClickCB={onResetClickCB}
-                    bandInfo={res.bandInfo}
-                    role={role}
-                  />
-                )}
-              </div>
-            </StyledSignedBarContainer>
+            <StyledCard>
+              <StyledSignedBarContainer>
+                <Row type="flex" justify="start">
+                  <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                    <StyledH3>
+                      Assessment Performance by {idToName[ddfilter.compareBy]} | {res.assessmentName}
+                    </StyledH3>
+                  </Col>
+                  <Col className="dropdown-container" xs={24} sm={24} md={12} lg={12} xl={12}>
+                    <ControlDropDown
+                      prefix={"Analyse by"}
+                      by={dropDownFormat.analyseByDropDownData[0]}
+                      selectCB={updateAnalyseByCB}
+                      data={dropDownFormat.analyseByDropDownData}
+                    />
+                    <ControlDropDown
+                      prefix={"Compare by"}
+                      by={compareByDropDownData[0]}
+                      selectCB={updateCompareByCB}
+                      data={compareByDropDownData}
+                    />
+                    <FilterDropDownWithDropDown updateCB={filterDropDownCB} data={dropDownFormat.filterDropDownData} />
+                  </Col>
+                </Row>
+                <div>
+                  {ddfilter.analyseBy === "score(%)" || ddfilter.analyseBy === "rawScore" ? (
+                    <SimpleStackedBarChartContainer
+                      data={parsedData.data}
+                      analyseBy={ddfilter.analyseBy}
+                      compareBy={ddfilter.compareBy}
+                      filter={chartFilter}
+                      assessmentName={res.assessmentName}
+                      onBarClickCB={onBarClickCB}
+                      onResetClickCB={onResetClickCB}
+                      bandInfo={res.bandInfo}
+                      role={role}
+                    />
+                  ) : (
+                    <SignedStackedBarChartContainer
+                      data={parsedData.data}
+                      analyseBy={ddfilter.analyseBy}
+                      compareBy={ddfilter.compareBy}
+                      filter={chartFilter}
+                      assessmentName={res.assessmentName}
+                      onBarClickCB={onBarClickCB}
+                      onResetClickCB={onResetClickCB}
+                      bandInfo={res.bandInfo}
+                      role={role}
+                    />
+                  )}
+                </div>
+              </StyledSignedBarContainer>
+            </StyledCard>
           </UpperContainer>
           <TableContainer>
-            <StyledSignedBarContainer>
+            <StyledCard>
               <PeerPerformanceTable
                 columns={parsedData.columns}
                 dataSource={parsedData.data}
@@ -210,7 +212,7 @@ const PeerPerformance = ({ peerPerformance, getPeerPerformanceRequestAction, rol
                 bandInfo={res.bandInfo}
                 role={role}
               />
-            </StyledSignedBarContainer>
+            </StyledCard>
           </TableContainer>
         </>
       )}

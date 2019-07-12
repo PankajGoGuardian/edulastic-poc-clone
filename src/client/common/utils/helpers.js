@@ -117,7 +117,7 @@ export const isEmailValid = (rule, value, callback, checks, message) => {
   const emailRegExp = new RegExp(
     "^[_A-Za-z0-9-'\\+]+(\\.[_A-Za-z0-9-']+)*@[A-Za-z0-9]+([A-Za-z0-9\\-\\.]+)*(\\.[A-Za-z]{1,25})$"
   );
-  const userNameRegExp = new RegExp("^[A-Za-z0-9@._ -']+$");
+  const userNameRegExp = new RegExp(`^[A-Za-z0-9._ \\-\\+\\'\\"]+$`);
 
   let flag = false;
 

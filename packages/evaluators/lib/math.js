@@ -39,7 +39,7 @@ var getChecks = function getChecks(answer) {
       return f === false;
     });
     var midRes = Object.keys(options).reduce(function(acc, key, i) {
-      if (key === "allowedVariables") {
+      if (key === "allowedVariables" || key === "allowNumericOnly") {
         return acc;
       }
 

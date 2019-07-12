@@ -93,7 +93,7 @@ class Assignments extends Component {
     }
     filters = {
       ...filters,
-      testType: userRole !== "teacher" ? type.COMMON : "",
+      testType: userRole !== "teacher" ? "common" : "",
       ...defaultFilters
     };
     loadAssignments({ filters });

@@ -18,7 +18,7 @@ import TableTooltipRow from "../../../../../common/components/tooltip/TableToolt
 const columnHashMap = {
   school: "studentName",
   teacher: "teacherName",
-  group: "groupName",
+  class: "className",
   school: "schoolName"
 };
 

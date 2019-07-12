@@ -2,34 +2,13 @@ import React, { useMemo } from "react";
 import next from "immer";
 import PropTypes from "prop-types";
 import { find, map, round, includes } from "lodash";
-import { Cell } from "recharts";
 
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { viewByMode, analyzeByMode, getYLabelString, getChartScoreData } from "../../util/transformers";
-import { TooltipWrapper, TooltipLabel } from "./styled";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
-const getBarDataKey = analyzeBy => {
-  switch (analyzeBy) {
-    case analyzeByMode.RAW_SCORE:
-    case analyzeByMode.SCORE:
-      return "avgScore";
-    default:
-      return "";
-  }
-};
-
 const defaultSkillInfo = { standard: "", domain: "" };
-
-const getTicks = analyzeBy => {
-  switch (analyzeBy) {
-    case analyzeByMode.SCORE:
-      return [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-    default:
-      return [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-  }
-};
 
 const addColors = (data = [], selectedData, xDataKey) => {
   return map(data, item =>
@@ -47,12 +26,11 @@ const SimpleStackedBarChartContainer = ({
   analyzeBy,
   onBarClick,
   selectedData,
-  shouldShowReset,
   onResetClick
 }) => {
   const xDataKey = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
-  const barDataKey = getBarDataKey(analyzeBy);
-  const ticks = getTicks(analyzeBy);
+  const barDataKey = "avgScore";
+  const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
   let formattedData = useMemo(() => getChartScoreData(report, filter, viewBy), [report, filter, viewBy]);
 
@@ -60,26 +38,7 @@ const SimpleStackedBarChartContainer = ({
     return addColors(formattedData, selectedData, xDataKey);
   }, [formattedData, selectedData, xDataKey]);
 
-  formattedData = data.map(item => {
-    switch (analyzeBy) {
-      case analyzeByMode.SCORE:
-        return {
-          ...item,
-          totalScore: item.totalScore * 100,
-          totalScoreRaw: item.totalScore
-        };
-      case analyzeByMode.MASTERY_LEVEL:
-        return {
-          ...item,
-          masteryScoreRaw: item.masteryScore,
-          masteryScore: (item.masteryScore / 4) * 100
-        };
-      default:
-        return item;
-    }
-  });
-
-  const { skillInfo, scaleInfo } = report;
+  const { skillInfo } = report;
 
   const tickFormatter = id => {
     const dataField = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
@@ -90,23 +49,15 @@ const SimpleStackedBarChartContainer = ({
     return (skill || defaultSkillInfo)[labelKey];
   };
 
-  formattedData = formattedData.sort((a, b) => tickFormatter(a[xDataKey]).localeCompare(tickFormatter(b[xDataKey])));
-
-  const getTooltipPayloadRawField = () => {
-    switch (analyzeBy) {
-      case analyzeByMode.SCORE:
-      case analyzeByMode.RAW_SCORE:
-        return "totalScoreRaw";
-      case analyzeByMode.MASTERY_LEVEL:
-      case analyzeByMode.MASTERY_SCORE:
-        return "masteryScoreRaw";
-      default:
-        return {};
-    }
-  };
+  formattedData = data.sort((a, b) => tickFormatter(a[xDataKey]).localeCompare(tickFormatter(b[xDataKey])));
 
   const yTickformatLabel = score => {
-    return `${Math.round(Number(score))}%`;
+    switch (analyzeBy) {
+      case analyzeByMode.SCORE:
+        return `${Math.round(Number(score))}%`;
+      case analyzeByMode.RAW_SCORE:
+        return "";
+    }
   };
 
   const barsLabelFormatter = (value, index) => {
@@ -116,48 +67,6 @@ const SimpleStackedBarChartContainer = ({
       case analyzeByMode.RAW_SCORE:
         return `${round(formattedData[index].rawScore, 2)} / ${formattedData[index].maxScore}`;
     }
-  };
-
-  const standardById = skillInfo.reduce(
-    (result, skill) => ({
-      ...result,
-      [skill.standardId]: skill.standard
-    }),
-    {}
-  );
-
-  const domainById = skillInfo.reduce(
-    (result, skill) => ({
-      ...result,
-      [skill.domainId]: skill.domain
-    }),
-    {}
-  );
-
-  const renderTooltip = ({ payload }) => {
-    if (!payload || !payload.length) {
-      return;
-    }
-
-    const [data] = payload;
-
-    const skillById = viewBy === viewByMode.STANDARDS ? standardById : domainById;
-    const field = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
-    const title = viewBy === viewByMode.STANDARDS ? "Standard" : "Domain";
-    const skillId = data.payload[field];
-    const skillTitle = skillById[skillId];
-
-    const rawValue = getTooltipPayloadRawField();
-
-    return (
-      <TooltipWrapper>
-        <TooltipLabel>
-          {title}: {skillTitle}
-        </TooltipLabel>
-        <TooltipLabel>Total Points: {(data.payload[rawValue] || data.value).toFixed(2)}</TooltipLabel>
-        <TooltipLabel>Avg.Score(%): {formatLabel(data.value)}</TooltipLabel>
-      </TooltipWrapper>
-    );
   };
 
   const getXTickText = (payload, data) => {
@@ -224,10 +133,10 @@ SimpleStackedBarChartContainer.propTypes = {
   viewBy: PropTypes.string.isRequired,
   analyzeBy: PropTypes.string.isRequired,
   onBarClick: PropTypes.func.isRequired,
+  filter: PropTypes.object.isRequired,
+  onResetClick: PropTypes.func.isRequired,
   report: PropTypes.object,
-  selectedStandards: PropTypes.array,
-  selectedData: PropTypes.array,
-  filter: PropTypes.object.isRequired
+  selectedData: PropTypes.array
 };
 
 SimpleStackedBarChartContainer.defaultProps = {

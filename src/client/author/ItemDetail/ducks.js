@@ -4,7 +4,7 @@ import { testItemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
-import { call, put, all, takeEvery, select } from "redux-saga/effects";
+import { call, put, all, takeEvery, select, take } from "redux-saga/effects";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 import { message } from "antd";
@@ -69,8 +69,13 @@ export const UPDATE_DEFAULT_GRADES = "[itemDetail] update default grades";
 export const UPDATE_DEFAULT_SUBJECT = "[itemDetail] update default subject";
 
 export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing test id";
+export const SHOW_PUBLISH_WARNING_MODAL = "[itemDetail] show publish warning modal";
+export const PROCEED_PUBLISH_ACTION = "[itemDeatil] goto metadata page";
 // actions
 
+//
+export const togglePublishWarningModalAction = createAction(SHOW_PUBLISH_WARNING_MODAL);
+export const proceedPublishingItemAction = createAction(PROCEED_PUBLISH_ACTION);
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
   payload: { id, params }
@@ -330,7 +335,8 @@ const initialState = {
         : []
       : getFromLocalStorage("defaultGrades"),
   defaultSubject: getFromLocalStorage("defaultSubject"),
-  currentEditingTestId: null
+  currentEditingTestId: null,
+  showWarningModal: false
 };
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
@@ -487,6 +493,11 @@ export function reducer(state = initialState, { type, payload }) {
       };
     case CLEAR_ITEM_DETAIL:
       return initialState;
+    case SHOW_PUBLISH_WARNING_MODAL:
+      return {
+        ...state,
+        showWarningModal: payload
+      };
     default:
       return state;
   }
@@ -632,8 +643,33 @@ export function* updateItemSaga({ payload }) {
   }
 }
 
+export const hasStandards = question => {
+  const alignments = get(question, "alignment", []);
+  if (!alignments.length) return false;
+  const hasDomain = alignments.some(i => i.domains && i.domains.length);
+  return !!hasDomain;
+};
+
 function* publishTestItemSaga({ payload }) {
   try {
+    const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
+    const standardPresent = questions.some(hasStandards);
+
+    // if alignment data is not present, set the flag to open the modal, and wait for
+    // an action from the modal.!
+    if (!standardPresent) {
+      yield put(togglePublishWarningModalAction(true));
+      // action dispatched by the modal.
+      const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
+      yield put(togglePublishWarningModalAction(false));
+
+      // if he wishes to add some just close the modal and do nothing - yeah, nothing!
+      // else continue the normal flow.
+      if (!publishItem) {
+        return;
+      }
+    }
+
     yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
@@ -644,7 +680,7 @@ function* publishTestItemSaga({ payload }) {
     }
     yield call(message.success, "Successfully published");
   } catch (e) {
-    console.error("publish error", e, e.stack);
+    console.log("publish error", e);
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
   }

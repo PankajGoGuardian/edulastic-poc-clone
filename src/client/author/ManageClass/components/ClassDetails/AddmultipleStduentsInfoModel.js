@@ -8,12 +8,7 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
 
   const newInfoModalData = infoModalData.map(user => ({
     ...user,
-    msg: user.status
-      .toLowerCase()
-      .split(" ")
-      .includes("failed" || "restricted" || "fail" || "restrict")
-      ? " -"
-      : "Student name will be auto-updated after first sign-in"
+    msg: user.status == "FAILED_DOMAIN_RESTRICTED" ? " -" : "Student name will be auto-updated after first sign-in"
   }));
   const columns = [
     {

@@ -35,7 +35,7 @@ const allCollections = [
 ];
 
 const allDepthOfKnowledge = [
-  { value: "", text: "All Depth of Knowledge" },
+  { value: "", text: "Not Specified" },
   { value: "Recall", text: "Recall" },
   { value: "Skill/Concept", text: "Skill/Concept" },
   { value: "Strategic Thinking", text: "Strategic Thinking" },

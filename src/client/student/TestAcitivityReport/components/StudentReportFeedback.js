@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { FeedbackByQIdSelector } from "../../sharedDucks/TestItem";
 //TODO user  response to show in UI
 const StudentFeedback = ({ question, qId, index }) => {
-  const { score, maxScore, feedback } = question[qId];
+  const { score, maxScore, feedback } = question[qId] || {};
   return (
     <FeedbackWrapper>
       <FeedbackText>

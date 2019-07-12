@@ -1,4 +1,5 @@
 /* global $ */
+/* global katex */
 import Helpers from "../helpers";
 
 export const getMathHtml = latex => {
@@ -14,6 +15,7 @@ export const replaceLatexesWithMathHtml = val => {
   const latexHtmls = jqueryEl.find("span.input__math");
   if (!latexHtmls.length) return Helpers.sanitizeSelfClosingTags(val);
 
+  // eslint-disable-next-line func-names
   jqueryEl.find("span.input__math").each(function() {
     const katexHtml = getMathHtml($(this).attr("data-latex"));
     $(this)
@@ -29,6 +31,7 @@ export const replaceMathHtmlWithLatexes = val => {
   const mathHtmls = jqueryEl.find("span.input__math");
   if (!mathHtmls.length) return Helpers.sanitizeSelfClosingTags(val);
 
+  // eslint-disable-next-line func-names
   jqueryEl.find("span.input__math").each(function() {
     $(this)
       .removeAttr("contenteditable")

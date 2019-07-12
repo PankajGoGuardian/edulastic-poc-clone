@@ -1,18 +1,20 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { MoveLink } from "@edulastic/common";
 import { withRouter } from "react-router-dom";
+import { helpers, WithMathFormula } from "@edulastic/common";
 import { Stimulus } from "./styled";
 
 class MainInfoCell extends React.Component {
   render() {
     const { data, handlePreview } = this.props;
-    return <Stimulus onClick={() => handlePreview(data.id)} dangerouslySetInnerHTML={{ __html: data.stimulus }} />;
+    const newHtml = helpers.sanitizeForReview(data.stimulus);
+    return <Stimulus onClick={() => handlePreview(data.id)} dangerouslySetInnerHTML={{ __html: newHtml }} />;
   }
 }
 
 MainInfoCell.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  handlePreview: PropTypes.func.isRequired
 };
 
-export default withRouter(MainInfoCell);
+export default WithMathFormula(withRouter(MainInfoCell));

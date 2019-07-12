@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { FeedbackByQIdSelector } from "../../sharedDucks/TestItem";
 //TODO user  response to show in UI
 const StudentFeedback = ({ question, qId, index }) => {
-  const currentQuestionReport = question[qId];
+  const { score, maxScore, feedback } = question[qId];
   return (
     <FeedbackWrapper>
       <FeedbackText>
@@ -13,13 +13,11 @@ const StudentFeedback = ({ question, qId, index }) => {
       </FeedbackText>
       <FeedbackContainer>
         <ScoreWrapper>
-          <Score>{currentQuestionReport && currentQuestionReport.score}</Score>
-          <Total>{currentQuestionReport && currentQuestionReport.maxScore}</Total>
+          <Score>{score}</Score>
+          <Total>{maxScore}</Total>
         </ScoreWrapper>
         <Feedback>
-          <FeedbackGiven>
-            {currentQuestionReport && currentQuestionReport.feedback && currentQuestionReport.feedback.text}
-          </FeedbackGiven>
+          <FeedbackGiven>{feedback && feedback.text}</FeedbackGiven>
         </Feedback>
       </FeedbackContainer>
     </FeedbackWrapper>

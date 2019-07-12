@@ -1016,7 +1016,7 @@ textinput::before {
   display: flex;
   align-items: center;
   border-radius: 5px;
-  z-index: 9;
+  z-index: 30;
 }
 
 .imagelabeldragdrop-droppable .index-box {

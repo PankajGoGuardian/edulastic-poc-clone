@@ -259,6 +259,19 @@ class Display extends Component {
       canvasWidth = responseBoxMaxLeft;
     }
 
+    const renderAnnotations = () => (
+      <div style={{ position: "relative" }}>
+        <AnnotationRnd
+          style={{
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            border: preview ? null : "1px solid lightgray"
+          }}
+          questionId={questionId}
+        />
+      </div>
+    );
+
     const renderImage = () => (
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
@@ -288,16 +301,7 @@ class Display extends Component {
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
           height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
         >
-          <div style={{ position: "relative" }}>
-            <AnnotationRnd
-              style={{
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                border: preview ? null : "1px solid lightgray"
-              }}
-              questionId={questionId}
-            />
-          </div>
+          {renderAnnotations()}
           {renderImage()}
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
@@ -400,6 +404,7 @@ class Display extends Component {
         responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
+        annotations={renderAnnotations()}
         image={renderImage()}
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}

@@ -86,7 +86,6 @@ const MyClasses = ({
   const ClassCards = allActiveClasses.map(item => (
     <Col xs={24} sm={24} md={12} lg={12} xl={8} key={item._id}>
       <Card data={item} />
-  const ClassCards = allActiveClasses.map(item => (
     </Col>
   ));
 

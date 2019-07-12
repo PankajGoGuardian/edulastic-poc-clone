@@ -52,7 +52,7 @@ import { getUserRole } from "../../../src/selectors/user";
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
-const ExtendedInput = ({ value, onChange, visible }) => {
+const ExtendedInput = ({ value, onChange, visible, onKeyUp }) => {
   const renameInput = useRef();
   useLayoutEffect(() => {
     renameInput.current.select();
@@ -64,6 +64,7 @@ const ExtendedInput = ({ value, onChange, visible }) => {
       value={value}
       onChange={onChange}
       ref={renameInput}
+      onKeyUp={onKeyUp}
     />
   );
 };
@@ -113,6 +114,13 @@ class LeftFilter extends React.Component {
       folderName: "",
       selectedFolder: ""
     });
+  };
+
+  handleCreateOnKeyPress = e => {
+    const { folderName } = this.state;
+    if (e.keyCode === 13 && folderName.length) {
+      this.createUpdateFolder();
+    }
   };
 
   moveFolder = () => {
@@ -334,6 +342,7 @@ class LeftFilter extends React.Component {
             value={folderName || oldFolderName}
             onChange={this.handleChangeNewFolderName}
             visible={visibleModal.newFolder}
+            onKeyUp={this.handleCreateOnKeyPress}
           />
         </FolderActionModal>
 

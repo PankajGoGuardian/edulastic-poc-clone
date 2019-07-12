@@ -42,11 +42,11 @@ const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassLis
               <p>or</p>
               <SyncClassDiv>
                 <i
-                  style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}
+                  style={{ cursor: "pointer", marginLeft: "8px", display: "flex", alignItems: "center" }}
                   title={"Sync with Google Classroom"}
                   onClick={renderProps.onClick}
                 >
-                  <SyncImg src={GoogleClassRoomImg} width={35} />
+                  <SyncImg src={GoogleClassRoomImg} width={35} /> Sync With Google Classroom
                 </i>
               </SyncClassDiv>
             </>

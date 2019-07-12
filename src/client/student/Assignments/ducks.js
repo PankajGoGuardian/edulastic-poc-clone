@@ -290,12 +290,11 @@ export const isLiveAssignment = (assignment, currentGroup, classIds) => {
     if (!endDate) {
       // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
       if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE && assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE) {
-        const isLive = currentClass.open && (!currentClass.closed || currentClass.closeDate > Date.now());
-        return isLive;
+        return !currentClass.closed;
       }
       // IF MANUAL OPEN AND AUTO CLOSE
       if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE) {
-        const isLive = currentClass.open && (!currentClass.closed || currentClass.endDate > Date.now());
+        const isLive = !currentClass.closed || currentClass.endDate > Date.now();
         return isLive;
       }
       // IF MANUAL CLOSE AND AUTO OPEN

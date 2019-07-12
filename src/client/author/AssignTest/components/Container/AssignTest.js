@@ -136,9 +136,12 @@ class AssignTest extends React.Component {
   handleAssign = () => {
     const { assignment } = this.state;
     const { saveAssignment } = this.props;
-    if (!assignment.requirePassword) {
+    if (assignment.requirePassword === false) {
       delete assignment.assignmentPassword;
-    } else if (assignment.assignmentPassword.length < 6 || assignment.assignmentPassword.length > 25) {
+    } else if (
+      assignment.assignmentPassword &&
+      (assignment.assignmentPassword.length < 6 || assignment.assignmentPassword.length > 25)
+    ) {
       return message.error("Please add a valid password.");
     }
     if (saveAssignment && isEmpty(assignment.class)) {

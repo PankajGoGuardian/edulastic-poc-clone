@@ -176,8 +176,7 @@ const MatchListPreview = ({
 
   const getStyles = ({ flag, preview, correct, isDragging }) => ({
     display: "flex",
-    width: "100%",
-    maxWidth: "220px",
+    width: "auto",
     maxHeight: "140px",
     alignItems: "center",
     justifyContent: preview ? "space-between" : "center",

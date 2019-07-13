@@ -273,6 +273,7 @@ const Matrix = props => {
       columns={getColumns()}
       dataSource={data}
       pagination={false}
+      hasOptionRow={!helpers.isEmpty(uiStyle.option_row_title)}
     />
   );
 };

@@ -721,11 +721,18 @@ class ComposeQuestion extends Component {
             {t("component.cloze.imageDragDrop.showdashedborder")}
           </Checkbox>
           <Checkbox
-            data-cy="drag-drop-image-dashboard-check"
+            data-cy="drag-drop-image-transparent-check"
             defaultChecked={responseLayout && responseLayout.transparentbackground}
             onChange={val => this.onResponsePropChange("transparentbackground", val.target.checked)}
           >
             {t("component.cloze.imageDragDrop.transparentbackground")}
+          </Checkbox>
+          <Checkbox
+            data-cy="drag-drop-image-border-check"
+            defaultChecked={responseLayout && responseLayout.showborder}
+            onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
+          >
+            {t("component.cloze.imageDragDrop.showborder")}
           </Checkbox>
           <Checkbox
             data-cy="drag-drop-image-aria-check"

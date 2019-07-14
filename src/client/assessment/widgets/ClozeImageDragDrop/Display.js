@@ -216,6 +216,7 @@ class Display extends Component {
     const cAnswers = get(item, "validation.valid_response.value", []);
 
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
+    const showDropItemBorder = get(item, "responseLayout.showborder", false);
 
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
 
@@ -313,9 +314,11 @@ class Display extends Component {
               top: smallSize ? responseContainer.top / 2 : responseContainer.top,
               left: smallSize ? responseContainer.left / 2 : responseContainer.left,
               height: smallSize ? responseContainer.height / 2 : responseContainer.height,
-              border: showDashedBorder
-                ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
-                : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
+              border: showDropItemBorder
+                ? showDashedBorder
+                  ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
+                  : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
+                : 0,
               position: "absolute",
               background: transparentBackground ? "transparent" : backgroundColor,
               borderRadius: 5

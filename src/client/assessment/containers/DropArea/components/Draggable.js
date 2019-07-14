@@ -16,11 +16,13 @@ const Draggable = ({
   background,
   showDashedBorder,
   transparentBackground,
-  showIndex = true
+  showIndex = true,
+  showBorder
 }) => (
   <CustomRnd
     background={background}
     showDashedBorder={showDashedBorder}
+    showBorder={showBorder}
     transparentBackground={transparentBackground}
     bounds="parent"
     onClick={onClick}
@@ -54,6 +56,7 @@ Draggable.propTypes = {
   background: PropTypes.string,
   transparentBackground: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
+  showBorder: PropTypes.bool,
   showIndex: PropTypes.bool
 };
 
@@ -61,7 +64,8 @@ Draggable.defaultProps = {
   background: white,
   transparentBackground: false,
   showDashedBorder: false,
-  showIndex: false
+  showIndex: false,
+  showBorder: true
 };
 
 export default Draggable;

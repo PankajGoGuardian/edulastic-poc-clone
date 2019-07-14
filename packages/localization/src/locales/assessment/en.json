@@ -451,7 +451,8 @@
         "fileUploadFailed": "file upload failed",
         "yourOwnImage": "YOUR OWN Image",
         "orBrowse": "OR BROWSE",
-        "transparentbackground": "Transparent Background"
+        "transparentbackground": "Transparent Background",
+        "showborder": "Show drop area border"
       },
       "imageDropDown": {
         "composequestion": "Question",

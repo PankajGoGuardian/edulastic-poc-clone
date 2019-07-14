@@ -132,6 +132,7 @@ const DropArea = ({
           index={getIndex(i)}
           background={item.background}
           showDashedBorder={get(item, "responseLayout.showdashedborder", false)}
+          transparentBackground={get(item, "responseLayout.transparentbackground", false)}
           onDragStop={_dragStop(i)}
           onResize={_resize(i)}
           onDelete={_delete(response.id)}

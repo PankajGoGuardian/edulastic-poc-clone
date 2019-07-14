@@ -10,7 +10,7 @@ const CustomRnd = styled(Rnd)`
   position: absolute;
   background: rgb(255, 255, 255);
   border-radius: 5px;
-  background: ${props => props.background};
+  background: ${props => (props.transparentBackground ? "transparent" : props.background)};
   min-height: ${response.minHeight}px;
   min-width: ${response.minWidth}px;
 

@@ -15,11 +15,13 @@ const Draggable = ({
   index,
   background,
   showDashedBorder,
+  transparentBackground,
   showIndex = true
 }) => (
   <CustomRnd
     background={background}
     showDashedBorder={showDashedBorder}
+    transparentBackground={transparentBackground}
     bounds="parent"
     onClick={onClick}
     onDragStop={onDragStop}
@@ -50,12 +52,14 @@ Draggable.propTypes = {
   onDelete: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   background: PropTypes.string,
+  transparentBackground: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   showIndex: PropTypes.bool
 };
 
 Draggable.defaultProps = {
   background: white,
+  transparentBackground: false,
   showDashedBorder: false,
   showIndex: false
 };

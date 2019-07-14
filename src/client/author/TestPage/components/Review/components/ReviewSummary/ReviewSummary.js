@@ -80,7 +80,7 @@ const ReviewSummary = ({
           <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
           <SummaryInfoTitle>Questions</SummaryInfoTitle>
         </SummaryInfoContainer>
-        <SummaryInfoContainer>
+        <SummaryInfoContainer minWidth="95px">
           <SummaryInfoNumber data-cy="points">{summary.totalPoints}</SummaryInfoNumber>
           <SummaryInfoTitle>Points</SummaryInfoTitle>
         </SummaryInfoContainer>

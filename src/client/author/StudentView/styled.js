@@ -26,7 +26,7 @@ export const StudentButtonDiv = styled.div`
 
 const StyledStudentTabButton = styled.a`
   height: 28px;
-  padding: 6px 35px;
+  padding: 6px 20px;
   font-size: 11px;
   font-weight: 600;
   border-radius: 0px;
@@ -54,7 +54,7 @@ export const PartiallyCorrectButton = styled(StyledStudentTabButton)`
 
 const StyledTabButton = styled.a`
   height: 28px;
-  padding: 6px 35px;
+  padding: 6px 25px;
   font-size: 11px;
   font-weight: 600;
   background-color: ${({ active }) => (active ? themeColor : white)};

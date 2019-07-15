@@ -27,7 +27,7 @@ const Points = ({ circles, onPointOver, onMouseDown, activeIndex, view, gridPara
   const getCrossD = (x, y) => `M ${x - 6},${y - 6} L ${x + 7},${y + 7} M ${x + 7},${y - 6} L ${x - 6},${y + 7}`;
 
   const renderValidationIcons = index => (
-    <g transform={`translate(${getCenterX(index) - 20},${getCenterY(circles[index]) - 20})`}>
+    <g transform={`translate(${getCenterX(index) - 25},${getCenterY(circles[index]) - 5})`}>
       {correct[index] && <IconCheck color={green} width={12} height={12} />}
       {!correct[index] && <IconClose color={red} width={12} height={12} />}
     </g>

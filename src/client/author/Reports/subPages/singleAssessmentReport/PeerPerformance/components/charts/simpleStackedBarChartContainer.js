@@ -86,12 +86,8 @@ export const SimpleStackedBarChartContainer = ({
       return {
         yDomain: [0, 110],
         ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        yTickFormatter: val => {
-          if (val !== 0) {
-            return val + "%";
-          } else {
-            return "";
-          }
+        formatter: val => {
+          return val + "%";
         },
         yAxisLabel: yAxisLabel,
         referenceLineY: referenceLineY
@@ -103,12 +99,8 @@ export const SimpleStackedBarChartContainer = ({
       return {
         yDomain: [0, max + (arr[1] - arr[0])],
         ticks: arr,
-        yTickFormatter: val => {
-          if (val !== 0) {
-            return val;
-          } else {
-            return "";
-          }
+        formatter: val => {
+          return val;
         },
         yAxisLabel: "Avg. Score",
         referenceLineY: referenceLineY
@@ -125,8 +117,8 @@ export const SimpleStackedBarChartContainer = ({
       data={chartData}
       yDomain={chartSpecifics.yDomain}
       ticks={chartSpecifics.ticks}
-      yTickFormatter={chartSpecifics.yTickFormatter}
-      barsLabelFormatter={chartSpecifics.yTickFormatter}
+      yTickFormatter={chartSpecifics.formatter}
+      barsLabelFormatter={chartSpecifics.formatter}
       xAxisDataKey={compareBy}
       bottomStackDataKey={"correct"}
       topStackDataKey={"incorrect"}

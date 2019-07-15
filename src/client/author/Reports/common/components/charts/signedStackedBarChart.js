@@ -26,6 +26,10 @@ const _yTickFormatter = val => {
   }
 };
 
+const __yTickFormatter = val => {
+  return val + "%";
+};
+
 const LabelText = props => {
   let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, bdIndex } = props;
   return (
@@ -50,7 +54,7 @@ export const SignedStackedBarChart = ({
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = _yTickFormatter,
+  yTickFormatter = __yTickFormatter,
   barsLabelFormatter = _yTickFormatter,
   referenceLine = 0,
   filter = {}
@@ -190,7 +194,6 @@ export const SignedStackedBarChart = ({
                 barSize={70}
                 onMouseOver={onBarMouseOver(bdIndex)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
-                minPointSize={20}
               >
                 <LabelList
                   dataKey={bdItem.key}

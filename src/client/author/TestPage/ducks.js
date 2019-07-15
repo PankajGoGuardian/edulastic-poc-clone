@@ -554,11 +554,25 @@ function* setTestDataAndUpdateSaga({ payload }) {
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
     yield put(setTestDataAction(payload.data));
-    if (payload.data._id) {
-      yield put(updateTestAction(payload.data._id, payload.data, true));
-    } else {
-      yield put(createTestAction(payload.data));
+    const { title } = payload.data;
+    if (!title) {
+      return yield call(message.error("Name field cannot be empty"));
     }
+    if (!payload.data.requirePassword) {
+      delete payload.data.assignmentPassword;
+    } else if (!payload.data.assignmentPassword) {
+      yield call(message.error, "Please add a valid password.");
+      return;
+    }
+    const entity = yield call(testsApi.create, payload.data);
+    yield put({
+      type: UPDATE_ENTITY_DATA,
+      payload: {
+        entity
+      }
+    });
+    yield put(replace(`/author/tests/${entity._id}`));
+    yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
   } catch (e) {
     const errorMessage = "Auto Save of Test is failing";
     yield call(message.error, errorMessage);

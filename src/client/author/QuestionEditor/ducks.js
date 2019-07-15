@@ -410,8 +410,12 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
-      yield put(setTestDataAndUpdateAction(updatedTestEntity));
-      yield put(push(!isEditFlow ? `/author/tests/${tId}#review` : `/author/tests/${tId}/createItem/${item._id}`));
+      if (!tId || tId === "undefined") {
+        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+      } else {
+        yield put(setCreatedItemToTestAction(item));
+        yield put(push(!isEditFlow ? `/author/tests/${tId}#review` : `/author/tests/${tId}/createItem/${item._id}`));
+      }
       yield put(changeViewAction("edit"));
       return;
     }

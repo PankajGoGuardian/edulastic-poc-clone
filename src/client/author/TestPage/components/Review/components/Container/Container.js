@@ -17,7 +17,7 @@ import {
   previewCheckAnswerAction,
   previewShowAnswerAction,
   getDefaultThumbnailSelector,
-  setTestDataAndUpdateAction
+  updateDefaultThumbnailAction
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
@@ -188,7 +188,10 @@ class Review extends PureComponent {
   }
 
   handleChangeField = (field, value) => {
-    const { setData } = this.props;
+    const { setData, updateDefaultThumbnail } = this.props;
+    if (field === "thumbnail") {
+      updateDefaultThumbnail("");
+    }
     setData({ [field]: value });
   };
 
@@ -394,7 +397,7 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
-      setDataAndSave: setTestDataAndUpdateAction,
+      updateDefaultThumbnail: updateDefaultThumbnailAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,

@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Table } from "antd";
+import { Modal, Table, Button } from "antd";
 const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, infoModalData, setInfoModalData }) => {
   const handleCancel = () => {
     setinfoModelVisible(false);
@@ -33,7 +33,17 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
     }
   ];
   return (
-    <Modal title="Student details" visible={infoModelVisible} onCancel={handleCancel} width={700} onOk={handleCancel}>
+    <Modal
+      title="Student details"
+      visible={infoModelVisible}
+      onCancel={handleCancel}
+      width={700}
+      footer={
+        <Button type="primary" onClick={handleCancel}>
+          Done
+        </Button>
+      }
+    >
       <Table dataSource={newInfoModalData} columns={columns} pagination={false} />
     </Modal>
   );

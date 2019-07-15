@@ -181,12 +181,10 @@ class Container extends PureComponent {
     const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade, updateDefaultThumbnail } = this.props;
     setData({ ...test, subjects });
     if (test.thumbnail === defaultImage) {
-      const standardIdentifier =
-        test.summary && test.summary.standards && test.summary.standards[0] && test.summary.standards[0].identifier;
-
-      getDefaultImage({ subject: subjects[0] || "Other Subjects", standard: standardIdentifier || "" }).then(
-        thumbnail => updateDefaultThumbnail(thumbnail)
-      );
+      getDefaultImage({
+        subject: subjects[0] || "Other Subjects",
+        standard: get(test, "summary.standards[0].identifier", "")
+      }).then(thumbnail => updateDefaultThumbnail(thumbnail));
     }
     getItemsSubjectAndGrade({ grades: itemsSubjectAndGrade.grades, subjects: [] });
   };

@@ -6,6 +6,7 @@ import { get } from "lodash";
 import { Paper, Stimulus, InstructorStimulus, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconUndo, IconRedo, IconEraseText } from "@edulastic/icons";
+import { canvasDimensions } from "@edulastic/constants";
 
 import { PREVIEW } from "../../constants/constantsForQuestions";
 
@@ -17,8 +18,6 @@ import { CanvasContainer } from "./styled/CanvasContainer";
 import { AdaptiveButtonList } from "./styled/AdaptiveButtonList";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
-
-import { canvasDimensions } from "@edulastic/constants";
 
 const { Option } = Select;
 

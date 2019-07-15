@@ -28,7 +28,7 @@ class MainInfoCell extends React.Component {
     const { data, testId, showModal, addDuplicate, isEditable = false, checkAnswer, showAnswer } = this.props;
     const { isShowPreviewModal } = this.state;
     return (
-      <div>
+      <div className="fr-view">
         <MoveLink onClick={() => this.previewItem()}>{data.stimulus}</MoveLink>
         <TypeContainer>
           <ItemTypes item={data.item} />

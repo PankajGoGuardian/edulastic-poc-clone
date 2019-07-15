@@ -157,7 +157,7 @@ class Item extends Component {
     const isEditable = owner;
 
     return (
-      <Container>
+      <Container className="fr-view">
         <PreviewModal
           isVisible={isShowPreviewModal}
           page="addItems"

@@ -113,15 +113,6 @@ const MatchListPreview = ({
     possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
   );
 
-  useEffect(() => {
-    setAns(
-      Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
-        ? userAnswer
-        : Array.from({ length: list.length }).fill(null)
-    );
-    setDragItems(possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
-  }, []);
-
   if (editCorrectAnswers.length > 0) {
     if (
       !isEqual(ans, editCorrectAnswers) ||

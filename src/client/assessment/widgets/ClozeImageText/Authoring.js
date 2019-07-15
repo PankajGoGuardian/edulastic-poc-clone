@@ -16,7 +16,7 @@ import { withTheme } from "styled-components";
 import { cloneDeep, isUndefined, maxBy } from "lodash";
 
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
-import { PaddingDiv, EduButton } from "@edulastic/common";
+import { PaddingDiv, EduButton, beforeUpload } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { clozeImage, aws } from "@edulastic/constants";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -52,7 +52,6 @@ import { UploadButton } from "./styled/UploadButton";
 import { uploadToS3 } from "../../../author/src/utils/upload";
 
 import SortableList from "../../components/SortableList";
-import { beforeUpload } from "@edulastic/common";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -181,6 +180,18 @@ class Authoring extends Component {
           this.imageRndRef.current.updatePosition({ x: 0, y: 0 });
         }
         draft[prop] = value;
+        updateVariables(draft);
+      })
+    );
+  };
+
+  onResponsePropChange = (prop, value) => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.responseLayout = draft.responseLayout || {};
+        draft.responseLayout[prop] = value;
+
         updateVariables(draft);
       })
     );
@@ -370,10 +381,7 @@ class Authoring extends Component {
     try {
       const { t } = this.props;
       const { file } = info;
-      if (!file.type.match(/image/g)) {
-        message.error("Please upload files in image format");
-        return;
-      } else if (!beforeUpload(file)) {
+      if (!beforeUpload(file)) {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
@@ -475,7 +483,15 @@ class Authoring extends Component {
 
   render() {
     const { t, item, theme, setQuestionData } = this.props;
-    const { background, imageAlterText, isEditAriaLabels, responses, imageOptions = {}, keepAspectRatio } = item;
+    const {
+      background,
+      imageAlterText,
+      isEditAriaLabels,
+      responses,
+      imageOptions = {},
+      keepAspectRatio,
+      responseLayout
+    } = item;
     const { isEditableResizeMove } = this.state;
 
     const { maxHeight, maxWidth } = clozeImage;
@@ -742,6 +758,13 @@ class Authoring extends Component {
                   {t("component.cloze.imageText.editAriaLabels")}
                 </Checkbox>
               </CheckContainer>
+              <Checkbox
+                data-cy="drag-drop-image-border-check"
+                defaultChecked={responseLayout && responseLayout.showborder}
+                onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
+              >
+                {t("component.cloze.imageText.showborder")}
+              </Checkbox>
             </FlexContainer>
             <PaddingDiv>
               {isEditAriaLabels && (

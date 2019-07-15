@@ -491,7 +491,8 @@
         "yourOwnImage": "YOUR OWN Image",
         "orBrowse": "OR BROWSE",
         "shuffleoptions": "Shuffle Options",
-        "dragAndDrop": "Drag & Drop"
+        "dragAndDrop": "Drag & Drop",
+        "showborder": "Show drop area border"
       },
       "imageText": {
         "composequestion": "Question",
@@ -524,7 +525,8 @@
         "yourOwnImage": "YOUR OWN Image",
         "orBrowse": "OR BROWSE",
         "shuffleoptions": "Shuffle Options",
-        "dragAndDrop": "Drag & Drop"
+        "dragAndDrop": "Drag & Drop",
+        "showborder": "Show drop area border"
       },
       "dropDown": {
         "templatemarkup": "Template Markup",

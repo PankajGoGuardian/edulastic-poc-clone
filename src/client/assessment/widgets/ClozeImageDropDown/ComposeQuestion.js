@@ -16,7 +16,7 @@ import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
-import { PaddingDiv, EduButton } from "@edulastic/common";
+import { PaddingDiv, EduButton, beforeUpload } from "@edulastic/common";
 
 import { clozeImage, aws } from "@edulastic/constants";
 import { updateVariables } from "../../utils/variables";
@@ -48,7 +48,6 @@ import { UploadButton } from "./styled/UploadButton";
 import { Widget } from "../../styled/Widget";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
-import { beforeUpload } from "@edulastic/common";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -154,6 +153,18 @@ class ComposeQuestion extends Component {
     );
   };
 
+  onResponsePropChange = (prop, value) => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.responseLayout = draft.responseLayout || {};
+        draft.responseLayout[prop] = value;
+
+        updateVariables(draft);
+      })
+    );
+  };
+
   onResponseLabelChange = (index, value) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -229,10 +240,7 @@ class ComposeQuestion extends Component {
     try {
       const { t } = this.props;
       const { file } = info;
-      if (!file.type.match(/image/g)) {
-        message.error("Please upload files in image format");
-        return;
-      } else if (!beforeUpload(file)) {
+      if (!beforeUpload(file)) {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
@@ -445,13 +453,19 @@ class ComposeQuestion extends Component {
 
   render() {
     const { t, item, theme, setQuestionData } = this.props;
-    const { background, imageAlterText, isEditAriaLabels, responses, keepAspectRatio } = item;
+    const {
+      background,
+      imageAlterText,
+      isEditAriaLabels,
+      responses,
+      keepAspectRatio,
+      responseLayout,
+      imageOptions = {}
+    } = item;
     const { isEditableResizeMove } = this.state;
 
     const { toggleIsMoveResizeEditable, handleDragStop } = this;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
-
-    const { imageOptions = {} } = item;
 
     const { maxHeight, maxWidth } = clozeImage;
 
@@ -705,6 +719,13 @@ class ComposeQuestion extends Component {
                   onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
                 >
                   {t("component.cloze.imageDropDown.editAriaLabels")}
+                </Checkbox>
+                <Checkbox
+                  data-cy="drag-drop-image-border-check"
+                  defaultChecked={responseLayout && responseLayout.showborder}
+                  onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
+                >
+                  {t("component.cloze.imageDropDown.showborder")}
                 </Checkbox>
               </CheckContainer>
             </FlexContainer>

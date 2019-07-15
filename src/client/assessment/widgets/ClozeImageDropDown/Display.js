@@ -142,6 +142,7 @@ class Display extends Component {
     };
 
     const cAnswers = get(item, "validation.valid_response.value", []);
+    const showDropItemBorder = get(item, "responseLayout.showborder", false);
 
     const imageHeight = this.getHeight();
     const imageWidth = this.getWidth();
@@ -201,9 +202,11 @@ class Display extends Component {
                   fontsize,
                   smallSize
                 ),
-                border: showDashedBorder
-                  ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
-                  : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`,
+                border: showDropItemBorder
+                  ? showDashedBorder
+                    ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                    : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                  : 0,
                 position: "absolute",
                 borderRadius: 5
               };

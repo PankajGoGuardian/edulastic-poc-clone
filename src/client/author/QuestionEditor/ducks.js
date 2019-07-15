@@ -277,6 +277,12 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
   try {
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
+
+    const [isIncomplete, errMsg] = helpers.isIncompleteQuestion(question);
+    if (isIncomplete) {
+      return message.error(errMsg);
+    }
+
     const locationState = yield select(state => state.router.location.state);
     let currentQuestionIds = getQuestionIds(itemDetail);
     const { rowIndex, tabIndex } = locationState || { rowIndex: 0, tabIndex: 1 };

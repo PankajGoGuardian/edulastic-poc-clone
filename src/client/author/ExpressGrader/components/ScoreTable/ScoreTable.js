@@ -89,7 +89,7 @@ class ScoreTable extends Component {
             dataIndex: "students",
             className: "th-border-bottom",
             render: record => (
-              <StyledDivMid style={{ textAlign: "left", paddingLeft: 15 }}>
+              <StyledDivMid className="name-col">
                 {isPresentationMode ? record.fakeName : record.studentName}
               </StyledDivMid>
             ),
@@ -104,8 +104,8 @@ class ScoreTable extends Component {
               const { score = 0, maxScore = 0 } = record;
               const percent = maxScore === 0 ? "-" : `${((100 * score) / maxScore).toFixed(0)}%`;
               return (
-                <StyledDivMid style={{ textAlign: "left", paddingLeft: 25 }}>
-                  <StyledText color={greenThird}>{percent}</StyledText>({round(score, 1)} / {maxScore})
+                <StyledDivMid>
+                  <StyledText color={greenThird}>{percent}</StyledText> ({round(score, 1)}/{maxScore})
                 </StyledDivMid>
               );
             },
@@ -136,10 +136,12 @@ class ScoreTable extends Component {
       const averageScore = successScore;
       const questionAvarageScore = (
         <StyledDivMid>
-          <StyledText color={greenThird}>{`${
-            submittedLength > 0 ? round((averageScore / submittedLength) * 100, 1) || 0 : 0
-          }%`}</StyledText>
-          {round(averageScore, 2) || 0} / {submittedLength}
+          <StyledText color={greenThird}>
+            {`${submittedLength > 0 ? round((averageScore / submittedLength) * 100, 1) || 0 : 0}%`}
+          </StyledText>
+          <div style={{ fontSize: "12px", lineHeight: "14px" }}>
+            ({round(averageScore, 2) || 0}/{submittedLength})
+          </div>
         </StyledDivMid>
       );
 

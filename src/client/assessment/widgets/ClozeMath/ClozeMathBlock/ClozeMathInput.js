@@ -154,7 +154,9 @@ class ClozeMathInput extends React.Component {
 
     const innerField = currentMathQuill;
 
-    if (key === "left_move") {
+    if (key === "in") {
+      innerField.write("in");
+    } else if (key === "left_move") {
       innerField.keystroke("Left");
     } else if (key === "right_move") {
       innerField.keystroke("Right");

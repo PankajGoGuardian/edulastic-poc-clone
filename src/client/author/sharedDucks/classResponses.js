@@ -89,7 +89,6 @@ function* receiveClassStudentResponseSaga({ payload }) {
 function* receiveFeedbackResponseSaga({ payload }) {
   yield delay(1000);
   try {
-    
     const {
       testActivityId,
       itemId,

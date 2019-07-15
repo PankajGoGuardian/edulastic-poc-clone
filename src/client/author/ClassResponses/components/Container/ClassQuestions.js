@@ -83,6 +83,12 @@ class ClassQuestions extends Component {
             if (filter === "partial" && !(firstQAct.score > 0 && firstQAct.score < firstQAct.maxScore)) {
               return false;
             }
+            if (filter === "skipped" && !(firstQAct.skipped && firstQAct.score === 0)) {
+              return false;
+            }
+            if (filter === "notGraded" && !(firstQAct.graded === false)) {
+              return false;
+            }
           }
         }
         const questions = [...data.questions, ...data.resources]
@@ -101,6 +107,12 @@ class ClassQuestions extends Component {
                 return false;
               }
               if (filter === "wrong" && qActivities[0].score > 0) {
+                return false;
+              }
+              if (filter === "skipped" && !(qActivities[0].skipped && qActivities[0].score === 0)) {
+                return false;
+              }
+              if (filter === "notGraded" && !(qActivities[0].graded === false)) {
                 return false;
               }
               if (

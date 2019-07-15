@@ -11,7 +11,13 @@ import {
   getGroupsSelector,
   getArchiveGroupsSelector
 } from "../../sharedDucks/groups";
-import { setModalAction, syncClassAction, setClassAction, updateGoogleCourseListAction } from "../ducks";
+import {
+  setModalAction,
+  syncClassAction,
+  setClassAction,
+  updateGoogleCourseListAction,
+  getGoogleCourseListSelector
+} from "../ducks";
 
 // components
 
@@ -94,7 +100,7 @@ const enhance = compose(
       allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       isGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
       syncClassLoading: get(state, "manageClass.syncClassLoading", false),
-      googleCourseList: state.manageClass.googleCourseList
+      googleCourseList: getGoogleCourseListSelector(state)
     }),
     {
       fetchGroups: fetchGroupsAction,

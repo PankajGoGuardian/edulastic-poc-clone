@@ -2,6 +2,7 @@ import React from "react";
 import { Switch, message } from "antd";
 import { connect } from "react-redux";
 import { get } from "lodash";
+import styled from "styled-components";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 import { togglePresentationModeAction } from "../../src/actions/testActivity";
 
@@ -17,10 +18,10 @@ const PresentationToggleSwitch = ({ isPresentationMode, togglePresentationMode, 
     : " Presentation Mode will get OFF";
   return (
     <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden" groupId={groupId}>
-      <span>
+      <SwitchBox style={{ fontSize: "10px" }}>
         {isPresentationMode ? "RESET" : "PRESENT"}{" "}
         <Switch checked={isPresentationMode} title={title} onClick={toggleCurrentMode} />
-      </span>
+      </SwitchBox>
     </FeaturesSwitch>
   );
 };
@@ -33,3 +34,16 @@ export default connect(
     togglePresentationMode: togglePresentationModeAction
   }
 )(PresentationToggleSwitch);
+
+const SwitchBox = styled.span`
+  font-size: 10px;
+  .ant-switch {
+    min-width: 32px;
+    height: 16px;
+    margin: 0px 0px 0px 5px;
+    &:after {
+      width: 12px;
+      height: 12px;
+    }
+  }
+`;

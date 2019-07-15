@@ -1,8 +1,10 @@
 //@ts-check
 import React, { useState, useCallback, useEffect } from "react";
-import { Modal, Button, Row, Col, Input, Radio, Select, DatePicker, message } from "antd";
+import { Button, Row, Col, Radio, Select, DatePicker, message } from "antd";
 import moment from "moment";
 import { assignmentApi } from "@edulastic/api";
+import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
+import { BodyContainer } from "./styled";
 
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
@@ -91,86 +93,87 @@ const RedirectPopUp = ({
   };
 
   return (
-    <Modal
-      title="Redirect"
+    <ConfirmationModal
+      textAlign="left"
+      title="Redirect Assignment"
       visible={open}
-      closable={false}
+      onCancel={() => closePopup()}
       footer={[
-        <Button key="cancel" onClick={() => closePopup()}>
-          cancel
+        <Button ghost key="cancel" onClick={() => closePopup()}>
+          CANCEL
         </Button>,
         <Button loading={loading} key="submit" onClick={submitAction}>
-          submit
+          SUBMIT
         </Button>
       ]}
     >
-      <Row>Class/Group Section</Row>
-      <Row>{additionalData.className}</Row>
-      <Row>
-        {/* 
+      <BodyContainer>
+        <h3>Class/Group Section</h3>
+        <h4>{additionalData.className}</h4>
+        <Row>
+          {/* 
             TODO: handle the change
         */}
-        <RadioGroup
-          value={type}
-          onChange={e => {
-            setType(e.target.value);
-          }}
-        >
-          <Radio value="entire">Entire Class</Radio>
-          <Radio value="absentStudents">Absent Students</Radio>
-          <Radio value="specificStudents">Specific Students</Radio>
-        </RadioGroup>
-      </Row>
+          <RadioGroup
+            value={type}
+            onChange={e => {
+              setType(e.target.value);
+            }}
+          >
+            <Radio value="entire">Entire Class</Radio>
+            <Radio value="absentStudents">Absent Students</Radio>
+            <Radio value="specificStudents">Specific Students</Radio>
+          </RadioGroup>
+        </Row>
 
-      <Row> Students </Row>
-      <Row>
-        <Col span={24}>
-          <Row>
-            <Select
-              showSearch
-              optionFilterProp="children"
-              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-              mode="multiple"
-              disabled={type !== "specificStudents"}
-              style={{ width: "100%" }}
-              placeholder="Select the students"
-              value={Object.keys(selectedStudents)}
-              onChange={v => {
-                setSelected(v);
-              }}
-            >
-              {allStudents.map(x => (
-                <Option key={x._id} value={x._id} disabled={disabledList.includes(x._id)}>
-                  {x.firstName}
-                </Option>
-              ))}
-            </Select>
-          </Row>
-        </Col>
-      </Row>
-      <Row>
-        <Row>Close Date</Row>
-        <Col span={12}>
-          <Row>
-            <DatePicker
-              allowClear={false}
-              disabledDate={disabledEndDate}
-              style={{ width: "100%", cursor: "pointer" }}
-              value={dueDate}
-              showTime
-              showToday={false}
-              onChange={v => {
-                if (!v) {
-                  setDueDate(moment().add(1, "day"));
-                } else {
-                  setDueDate(v);
-                }
-              }}
-            />
-          </Row>
-        </Col>
-      </Row>
-    </Modal>
+        <h4> Students </h4>
+        <Row>
+          <Select
+            showSearch
+            optionFilterProp="data"
+            filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            mode="multiple"
+            disabled={type !== "specificStudents"}
+            style={{ width: "100%" }}
+            placeholder="Select the students"
+            value={Object.keys(selectedStudents)}
+            onChange={v => {
+              setSelected(v);
+            }}
+          >
+            {allStudents.map(x => (
+              <Option
+                key={x._id}
+                value={x._id}
+                disabled={disabledList.includes(x._id)}
+                data={`${x.firstName},${x.email}`}
+              >
+                {x.firstName}
+              </Option>
+            ))}
+          </Select>
+        </Row>
+
+        <h4>Close Date</h4>
+        <Row>
+          <DatePicker
+            allowClear={false}
+            disabledDate={disabledEndDate}
+            style={{ width: "100%", cursor: "pointer" }}
+            value={dueDate}
+            showTime
+            showToday={false}
+            onChange={v => {
+              if (!v) {
+                setDueDate(moment().add(1, "day"));
+              } else {
+                setDueDate(v);
+              }
+            }}
+          />
+        </Row>
+      </BodyContainer>
+    </ConfirmationModal>
   );
 };
 

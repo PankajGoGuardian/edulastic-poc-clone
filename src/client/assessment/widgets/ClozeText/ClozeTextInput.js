@@ -128,22 +128,31 @@ const ClozeTextInput = ({ resprops, id }) => {
       type
     });
   };
-  let width = style.widthpx || "auto";
+  let width = style.width || "auto";
+  let height = style.height || "auto";
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
   if (view === "edit") {
-    width = (responseStyle && responseStyle.widthpx) || (style.widthpx || "auto");
-  } else if (uiStyle.globalSettings) {
-    if (!value.length) {
-      width = style.widthpx || "auto";
-    } else {
+    if (uiStyle.globalSettings) {
       width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+      height = style.height || "auto";
+    } else {
+      width = (responseStyle && responseStyle.widthpx) || (style.widthpx || "auto");
+      height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
     }
   } else {
-    width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
+    if (uiStyle.globalSettings) {
+      width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+      height = style.height || "auto";
+    } else {
+      width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
+      height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
+    }
   }
-
   return (
-    <CustomInput style={{ ...style, width: "auto" }} title={value.length ? value : null}>
+    <CustomInput
+      style={{ ...style, width: `${width}px` || "auto", height: `${height}px` || "auto" }}
+      title={value.length ? value : null}
+    >
       {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
@@ -162,12 +171,13 @@ const ClozeTextInput = ({ resprops, id }) => {
           ...style,
           resize: "none",
           height: "100%",
+          width: "100%",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           fontSize: style.fontSize,
           background: item.background,
-          width: `${width}px` || "auto"
+          padding: width <= 50 ? "3px" : null
         }}
         placeholder={placeholder}
       />

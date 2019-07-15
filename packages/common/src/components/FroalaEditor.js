@@ -188,7 +188,7 @@ export const ToolbarContainer = styled.div.attrs({
   toolbarId: props => props.toolbarId
 })`
   position: absolute;
-  top: -50px;
+  bottom: 105%;
   left: 0;
   right: 0;
   z-index: 1000;
@@ -279,7 +279,7 @@ const CustomEditor = ({
   const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
   const config = Object.assign(
     {
-      key: "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==",
+      key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
       initOnClick,
@@ -709,7 +709,6 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
-  console.log("content: ", `"${content}"`, content === "");
   const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>

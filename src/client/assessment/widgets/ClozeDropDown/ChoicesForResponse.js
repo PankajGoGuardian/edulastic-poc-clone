@@ -18,6 +18,7 @@ import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { defaultOptions } from "../../constants/constantsForQuestions";
 
 class ChoicesForResponse extends Component {
   static propTypes = {
@@ -141,15 +142,15 @@ class ChoicesForResponse extends Component {
 
   render() {
     const { t, item, response } = this.props;
-    const { options, template } = item;
+    const { options } = item;
     return (
       <Widget data-cy={`choice-response-${response.index}`}>
         <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
         <SortableList
-          items={options[response.id] || []}
-          dirty={template}
-          onSortEnd={params => this.onSortEnd(response.id, params)}
           useDragHandle
+          items={options[response.id] || []}
+          defaultOptions={defaultOptions}
+          onSortEnd={params => this.onSortEnd(response.id, params)}
           onRemove={itemIndex => this.remove(response.id, itemIndex)}
           onChange={(itemIndex, e) => this.editOptions(response.id, itemIndex, e)}
         />

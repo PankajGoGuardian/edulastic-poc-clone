@@ -64,7 +64,8 @@ const MatchListPreview = ({
   showBorder,
   setQuestionData,
   disableResponse,
-  changePreviewTab
+  changePreviewTab,
+  changePreview
 }) => {
   const {
     possible_responses: posResponses,
@@ -113,15 +114,6 @@ const MatchListPreview = ({
     possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
   );
 
-  useEffect(() => {
-    setAns(
-      Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
-        ? userAnswer
-        : Array.from({ length: list.length }).fill(null)
-    );
-    setDragItems(possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
-  }, [userAnswer, possible_responses]);
-
   if (editCorrectAnswers.length > 0) {
     if (
       !isEqual(ans, editCorrectAnswers) ||
@@ -131,6 +123,8 @@ const MatchListPreview = ({
       setDragItems(possible_responses.filter(ite => !editCorrectAnswers.includes(ite)));
     }
   }
+
+  const preview = previewTab === CHECK || previewTab === SHOW;
 
   const drop = ({ flag, index }) => ({ flag, index });
 
@@ -163,6 +157,9 @@ const MatchListPreview = ({
       setDragItems(dItems);
     }
 
+    if (preview) {
+      changePreview(CLEAR);
+    }
     saveAnswer(answers);
   };
 
@@ -176,8 +173,7 @@ const MatchListPreview = ({
 
   const getStyles = ({ flag, preview, correct, isDragging }) => ({
     display: "flex",
-    width: "100%",
-    maxWidth: "220px",
+    width: "auto",
     maxHeight: "140px",
     alignItems: "center",
     justifyContent: preview ? "space-between" : "center",
@@ -196,8 +192,6 @@ const MatchListPreview = ({
     color: theme.widgets.matchList.dragItemColor,
     opacity: isDragging ? 0.5 : 1
   });
-
-  const preview = previewTab === CHECK || previewTab === SHOW;
 
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 

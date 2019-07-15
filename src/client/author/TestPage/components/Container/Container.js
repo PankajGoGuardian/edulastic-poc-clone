@@ -4,11 +4,10 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty } from "lodash";
+import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
-import { get, without } from "lodash";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
   createTestAction,
@@ -25,7 +24,6 @@ import {
   setRegradeOldIdAction
 } from "../../ducks";
 import {
-  getSelectedItemSelector,
   clearSelectedItemsAction,
   getItemsSubjectAndGradeAction,
   getItemsSubjectAndGradeSelector
@@ -86,7 +84,9 @@ class Container extends PureComponent {
       setDefaultData,
       history: { location },
       clearSelectedItems,
-      clearTestAssignments
+      clearTestAssignments,
+      editAssigned,
+      setRegradeOldId
     } = this.props;
 
     if (location.hash === "#review") {
@@ -101,18 +101,20 @@ class Container extends PureComponent {
       setDefaultData();
     }
 
-    if (this.props.editAssigned) {
-      this.props.setRegradeOldId(match.params.id);
+    if (editAssigned) {
+      setRegradeOldId(match.params.id);
     }
   }
 
   componentDidUpdate() {
-    if (this.props.editAssigned) {
-      this.props.setRegradeOldId(this.props.match.params.id);
+    const { editAssigned, match, setRegradeOldId } = this.props;
+    if (editAssigned) {
+      setRegradeOldId(match.params.id);
     }
   }
 
   handleNavChange = value => () => {
+    const { test } = this.props;
     if (!this.props.test.title) {
       return;
     }
@@ -214,6 +216,7 @@ class Container extends PureComponent {
             test={test}
             owner={owner}
             current={current}
+            isEditable={isEditable}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
           />

@@ -16,8 +16,8 @@ export const Stats = props => {
 
   const rolesMap = {
     teacher: "class",
-    sa: "school",
-    da: "district"
+    "school-admin": "school",
+    "district-admin": "district"
   };
 
   const parseData = data => {
@@ -49,8 +49,8 @@ export const Stats = props => {
     }
 
     avgStudentScore = ((sumTotalScore / sumTotalMaxScore) * 100 || 0).toFixed(0);
-    avgScore = (sumTotalScore / sumStudentCount || 0).toFixed(2);
-    total = (sumTotalMaxScore / sumStudentCount || 0).toFixed(2);
+    avgScore = (sumTotalScore / (sumStudentCount - (studentsAbsent || 0)) || 0).toFixed(2);
+    total = (sumTotalMaxScore / (sumStudentCount - (studentsAbsent || 0)) || 0).toFixed(2);
 
     return {
       avgScore: avgScore,

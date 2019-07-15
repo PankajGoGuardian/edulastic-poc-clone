@@ -29,13 +29,6 @@ const Setting = ({ t, current, history, onShowSource, windowWidth, owner, isEdit
     <Container>
       <SecondHeader>
         <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-        {owner && isEditable && (
-          <Button onClick={!isEditable ? "" : onShowSource}>
-            <ButtonLink color="primary" icon={<IconSource color={themeColor} width={16} height={16} />}>
-              {t("component.questioneditor.buttonbar.source")}
-            </ButtonLink>
-          </Button>
-        )}
       </SecondHeader>
       <MainSetting
         history={history}

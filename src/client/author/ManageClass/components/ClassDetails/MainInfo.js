@@ -5,6 +5,7 @@ import * as moment from "moment";
 import { MainContainer, LeftWrapper, MidWrapper, RightWrapper, Image, FieldValue } from "./styled";
 import defaultImage from "../../../src/assets/manageclass/abstract.jpg";
 import selectsData from "../../../TestPage/components/common/selectsData";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -23,17 +24,17 @@ const MainInfo = ({ entity = {} }) => {
     endDate,
     googleCode,
     owners = [],
-    primaryTeacherId
+    parent
   } = entity;
   const _grade = find(allGrades, item => item.value === grade) || { text: grade };
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
   const coTeachers =
     owners &&
     owners
-      .filter(owner => owner.id !== primaryTeacherId)
+      .filter(owner => owner.id !== parent.id)
       .map(owner => owner.name)
       .join(",");
-
+  const gradeSubject = { grades: grade, subjects: subject };
   return (
     <MainContainer>
       <LeftWrapper>
@@ -54,16 +55,29 @@ const MainInfo = ({ entity = {} }) => {
         </FieldValue>
         <FieldValue>
           <div>Standard :</div>
-          {standardSets && standardSets.map(({ name, _id }) => <span key={_id}>{name}</span>)}
+          {standardSets && standardSets.length ? (
+            standardSets.map(({ name, _id }) => <span key={_id}>{name}</span>)
+          ) : (
+            <span>Other</span>
+          )}
         </FieldValue>
-        <FieldValue>
-          <div>Course :</div>
-          <span>{course && course.name}</span>
-        </FieldValue>
-        <FieldValue>
-          <div>Co-Teachers :</div>
-          <span>{coTeachers}</span>
-        </FieldValue>
+        <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
+          <FieldValue>
+            <div>Course :</div>
+            <span>{course && course.name}</span>
+          </FieldValue>
+        </FeaturesSwitch>
+        <FeaturesSwitch
+          inputFeatures="addCoTeacher"
+          actionOnInaccessible="hidden"
+          key="addCoTeacher"
+          gradeSubject={gradeSubject}
+        >
+          <FieldValue>
+            <div>Co-Teachers :</div>
+            <span>{coTeachers}</span>
+          </FieldValue>
+        </FeaturesSwitch>
       </MidWrapper>
       <RightWrapper>
         <FieldValue>

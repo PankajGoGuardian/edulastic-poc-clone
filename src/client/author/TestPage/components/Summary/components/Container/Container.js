@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { uniq as _uniq } from "lodash";
+import { uniq as _uniq, get } from "lodash";
 import { IconSource } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
 import { Paper, withWindowSizes } from "@edulastic/common";
@@ -16,6 +16,7 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
 import { getUser } from "../../../../../src/selectors/user";
+import { getDefaultThumbnailSelector } from "../../../../ducks";
 
 const Summary = ({
   setData,
@@ -24,6 +25,7 @@ const Summary = ({
   current,
   owner,
   t,
+  defaultThumbnail,
   onShowSource,
   windowWidth,
   itemsSubjectAndGrade,
@@ -34,7 +36,8 @@ const Summary = ({
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
   onChangeColor,
-  onChangeSubjects
+  onChangeSubjects,
+  isEditable = true
 }) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
@@ -97,13 +100,14 @@ const Summary = ({
               onChangeSubjects={onChangeSubjects}
               textColor={textColor}
               createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
-              thumbnail={test.thumbnail}
+              thumbnail={defaultThumbnail || test.thumbnail}
               backgroundColor={backgroundColor}
               isPlaylist={isPlaylist}
               description={test.description}
               onChangeColor={onChangeColor}
               isTextColorPickerVisible={isTextColorPickerVisible}
               isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
+              isEditable={isEditable}
             />
           </Col>
         </Row>
@@ -144,6 +148,7 @@ const enhance = compose(
     state => ({
       summary: getSummarySelector(state),
       currentUser: getUser(state),
+      defaultThumbnail: getDefaultThumbnailSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     null

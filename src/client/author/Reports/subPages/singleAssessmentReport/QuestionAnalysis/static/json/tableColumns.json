@@ -22,11 +22,5 @@
     "dataIndex": "districtAvg",
     "key": "districtAvg",
     "width": 100
-  },
-  {
-    "title": "All",
-    "dataIndex": "avgPerformance",
-    "key": "avgPerformance",
-    "width": 100
   }
 ]

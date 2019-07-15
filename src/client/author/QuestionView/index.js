@@ -132,7 +132,7 @@ class QuestionViewContainer extends Component {
 
     if (!isEmpty(testActivity)) {
       data = testActivity
-        .filter(student => student.status != "notStarted" || student.redirect)
+        .filter(student => (student.status != "notStarted" || student.redirect) && student.status != "absent")
         .map(st => {
           const name = isPresentationMode ? st.fakeName : st.studentName;
           const stData = {
@@ -241,7 +241,8 @@ class QuestionViewContainer extends Component {
                     value: "AVG TIME (SECONDS)",
                     angle: -90,
                     fill: greyGraphstroke,
-                    dx: 10
+                    dx: 10,
+                    fontSize: "10px"
                   }}
                   orientation="right"
                   stroke={greyGraphstroke}

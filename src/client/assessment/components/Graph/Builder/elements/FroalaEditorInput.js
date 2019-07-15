@@ -14,6 +14,7 @@ function init(element, board, cb, readOnly = false) {
   element.editor = new FroalaEditor(
     selector,
     {
+      key: process.env.POI_APP_FROALA_KEY,
       toolbarInline: true,
       placeholder: "",
       events: {

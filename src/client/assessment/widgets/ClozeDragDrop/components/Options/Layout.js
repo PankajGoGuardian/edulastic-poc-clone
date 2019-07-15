@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 
 import { Select, TextField, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { cloneDeep, isEqual } from "lodash";
+import { cloneDeep, isEqual, clamp } from "lodash";
 
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
@@ -15,6 +15,8 @@ import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 import { Widget } from "../../../../styled/Widget";
 import { Subtitle } from "../../../../styled/Subtitle";
+
+import { response as Dimensions } from "@edulastic/constants";
 
 class Layout extends Component {
   state = {
@@ -49,6 +51,33 @@ class Layout extends Component {
     this.setState({
       input: +e.target.value
     });
+  };
+
+  handleBlurGlobalHeight = () => {
+    const { onChange, uiStyle } = this.props;
+    const { minHeight, maxHeight } = Dimensions;
+    if (uiStyle.heightpx < minHeight || uiStyle.heightpx > maxHeight) {
+      const height = clamp(uiStyle.heightpx, minHeight, maxHeight);
+      onChange("ui_style", {
+        ...uiStyle,
+        heightpx: height
+      });
+    }
+  };
+
+  handleBlurIndividualHeight = index => {
+    const { uiStyle, onChange } = this.props;
+    const { responsecontainerindividuals: resp } = uiStyle;
+    const { minHeight, maxHeight } = Dimensions;
+    let height = resp[index].heightpx;
+    if (height && (height < minHeight || height > maxHeight)) {
+      height = clamp(height, minHeight, maxHeight);
+      resp[index].heightpx = height;
+      onChange("ui_style", {
+        ...uiStyle,
+        responsecontainerindividuals: resp
+      });
+    }
   };
 
   render() {
@@ -100,7 +129,10 @@ class Layout extends Component {
       });
     };
 
-    const calculateRightWidth = value => (value >= 140 && value <= 400 ? value : value < 140 ? 140 : 400);
+    const calculateRightWidth = value => {
+      const { minWidth, maxWidth } = Dimensions;
+      return clamp(value, minWidth, maxWidth);
+    };
 
     const onWidthInputBlur = index => () => {
       const { input } = this.state;
@@ -227,6 +259,7 @@ class Layout extends Component {
               disabled={false}
               containerStyle={{ width: 350 }}
               style={textFieldStyles}
+              onBlur={this.handleBlurGlobalHeight}
               onChange={e => changeUiStyle("heightpx", +e.target.value)}
               value={uiStyle.heightpx}
             />
@@ -278,6 +311,7 @@ class Layout extends Component {
                   disabled={false}
                   containerStyle={{ width: 350 }}
                   style={textFieldStyles}
+                  onBlur={() => this.handleBlurIndividualHeight(index)}
                   onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
                   value={responsecontainerindividual.heightpx}
                 />

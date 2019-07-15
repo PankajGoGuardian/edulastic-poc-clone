@@ -12,7 +12,13 @@ import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
-import { setTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../../ducks";
+import {
+  setTestDataAction,
+  previewCheckAnswerAction,
+  previewShowAnswerAction,
+  getDefaultThumbnailSelector,
+  setTestDataAndUpdateAction
+} from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
@@ -26,12 +32,11 @@ import TestPreviewModal from "../../../../../Assignments/components/Container/Te
 const scoreOfItem = item => {
   if (item.itemLevelScoring) {
     return item.itemLevelScore;
-  } else {
-    return get(item, "data.questions", []).reduce(
-      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
-      0
-    );
   }
+  return get(item, "data.questions", []).reduce(
+    (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
+    0
+  );
 };
 
 const getTotalScore = testItems => testItems.map(item => scoreOfItem(item)).reduce((total, s) => total + s, 0);
@@ -54,7 +59,6 @@ class Review extends PureComponent {
   state = {
     isCollapse: true,
     isModalVisible: false,
-    questionCreateType: "Duplicate",
     item: [],
     isTestPreviewModalVisible: false,
     currentTestId: ""
@@ -88,7 +92,7 @@ class Review extends PureComponent {
   };
 
   handleRemoveSelected = () => {
-    const { test, setData } = this.props;
+    const { test, setDataAndSave } = this.props;
     const newData = cloneDeep(test);
     const itemsSelected = test.testItems.find(item => item.selected);
     if (!itemsSelected) {
@@ -102,13 +106,14 @@ class Review extends PureComponent {
     });
 
     this.setSelected([]);
-    setData(newData);
+    setDataAndSave(newData);
     message.success("Selected testItems removed successfully");
   };
 
   handleCollapse = () => {
+    const { isCollapse } = this.state;
     this.setState({
-      isCollapse: !this.state.isCollapse
+      isCollapse: !isCollapse
     });
   };
 
@@ -209,21 +214,13 @@ class Review extends PureComponent {
       onChangeSubjects,
       questions,
       owner,
+      defaultThumbnail,
       isEditable = false,
-      createTestItemModalVisible,
       itemsSubjectAndGrade,
       checkAnswer,
       showAnswer
     } = this.props;
-    const {
-      isCollapse,
-      isModalVisible,
-      item,
-      questionCreateType,
-      isTestPreviewModalVisible,
-      currentTestId
-    } = this.state;
-    const totalPoints = test.scoring.total;
+    const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId } = this.state;
 
     const questionsCount = test.testItems.length;
 
@@ -320,7 +317,7 @@ class Review extends PureComponent {
               isEditable={isEditable}
               summary={test.summary || {}}
               onChangeField={this.handleChangeField}
-              thumbnail={test.thumbnail}
+              thumbnail={defaultThumbnail || test.thumbnail}
               totalPoints={getTotalScore(test.testItems)}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
@@ -331,7 +328,7 @@ class Review extends PureComponent {
           testId={get(this.props, "match.params.id", false)}
           isVisible={isModalVisible}
           onClose={this.closeModal}
-          showModal={true}
+          showModal
           isEditable={isEditable}
           owner={owner}
           addDuplicate={this.handleDuplicateItem}
@@ -362,11 +359,24 @@ Review.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
+  clearDictAlignment: PropTypes.func.isRequired,
   owner: PropTypes.bool,
   onSaveTestId: PropTypes.func,
   current: PropTypes.string.isRequired,
+  history: PropTypes.any.isRequired,
+  clearAnswer: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  questions: PropTypes.object.isRequired
+  questions: PropTypes.object.isRequired,
+  itemsSubjectAndGrade: PropTypes.any.isRequired,
+  isEditable: PropTypes.bool.isRequired,
+  defaultThumbnail: PropTypes.any.isRequired
+};
+
+Review.defaultProps = {
+  owner: false,
+  onSaveTestId: () => {}
 };
 
 const enhance = compose(
@@ -379,10 +389,12 @@ const enhance = compose(
       summary: getSummarySelector(state),
       createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
       questions: getQuestionsSelectorForReview(state),
+      defaultThumbnail: getDefaultThumbnailSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {
       setData: setTestDataAction,
+      setDataAndSave: setTestDataAndUpdateAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,

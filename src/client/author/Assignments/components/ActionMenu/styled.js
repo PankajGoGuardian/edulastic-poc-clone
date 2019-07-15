@@ -9,7 +9,7 @@ export const Container = styled.div`
   height: 100%;
   box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.07);
   background: white;
-  margin-top: -40px;
+  margin-top: -4px;
   width: 170px;
 
   @media screen and (max-width: ${mobileWidth}) {

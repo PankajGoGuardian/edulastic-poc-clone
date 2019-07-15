@@ -21,6 +21,10 @@ export const getSelectedClassName = createSelector(
   state => state.entity.name
 );
 
+export const getGoogleCourseListSelector = createSelector(
+  manageClassSelector,
+  state => state.googleCourseList
+);
 // action types
 
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";
@@ -139,7 +143,10 @@ const initialState = {
 };
 
 const setGoogleCourseList = (state, { payload }) => {
-  state.googleCourseList = payload;
+  state.googleCourseList = payload.map(o => {
+    o.courseId = o.course && o.course.id;
+    return o;
+  });
 };
 
 const updateGoogleCourseList = (state, { payload }) => {
@@ -363,9 +370,11 @@ function* receiveAddStudentRequest({ payload }) {
     if (student) {
       const successMsg = "Student added to class successfully.";
       yield call(message.success, successMsg);
-      let newStudent = Object.assign({}, student);
-      newStudent._id = student.userId;
-      delete newStudent.userId;
+      const newStudent = {
+        ...student,
+        _id: student.userId,
+        enrollmentStatus: "1"
+      };
       yield put(addStudentSuccessAction(newStudent));
     } else {
       const msg = get(result, "data.message", "Student already part of this class section");

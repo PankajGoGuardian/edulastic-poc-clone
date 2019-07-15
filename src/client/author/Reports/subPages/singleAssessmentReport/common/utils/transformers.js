@@ -173,7 +173,9 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
       groupIdMap[item.groupId] = item;
     }
   }
-
+  _dropDownData.testDataArr.sort((a, b) => {
+    return b.assessmentDate - a.assessmentDate;
+  });
   let arr = _dropDownData.testDataArr.filter((item, index) => (groupIdMap[item.groupId] ? true : false));
   let finalTestIds = [];
   let makeUniqueMap = {};
@@ -185,6 +187,5 @@ export const processTestIds = (_dropDownData, currentFilter, urlTestId, role) =>
   }
 
   const validTestId = finalTestIds.find((item, index) => urlTestId === item.key);
-
   return { testIds: finalTestIds, validTestId: validTestId ? validTestId.key : "" };
 };

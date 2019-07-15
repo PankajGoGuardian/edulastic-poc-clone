@@ -73,7 +73,6 @@ class AdvancedOptons extends React.Component {
     const { showSettings, classIds } = this.state;
     const changeField = curry(this.onChange);
 
-    const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
     return (
       <OptionConationer>
         <InitOptions>
@@ -83,22 +82,15 @@ class AdvancedOptons extends React.Component {
             openPolicy={assignment.openPolicy}
             closePolicy={assignment.closePolicy}
             changeField={changeField}
+            testType={assignment.testType || testSettings.testType}
           />
-
-          <FeaturesSwitch
-            inputFeatures="addCoTeacher"
-            actionOnInaccessible="hidden"
-            key="addCoTeacher"
-            gradeSubject={gradeSubject}
-          >
-            <StyledRowLabel gutter={16}>
-              <Col>
-                <SettingsBtn onClick={this.toggleSettings} isVisible={showSettings}>
-                  OVERRIDE TEST SETTINGS {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                </SettingsBtn>
-              </Col>
-            </StyledRowLabel>
-          </FeaturesSwitch>
+          <StyledRowLabel gutter={16}>
+            <Col>
+              <SettingsBtn onClick={this.toggleSettings} isVisible={showSettings}>
+                OVERRIDE TEST SETTINGS {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+              </SettingsBtn>
+            </Col>
+          </StyledRowLabel>
 
           {showSettings && (
             <Settings

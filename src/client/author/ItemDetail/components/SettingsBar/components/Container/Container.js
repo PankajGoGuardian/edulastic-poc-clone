@@ -180,9 +180,11 @@ class Container extends Component {
     return (
       <Content>
         {isSingleQuestion ? (
-          <div>
-            <Checkbox onChange={this.handleMultipart} value={isMultipart} /> Convert item into a multipart
-          </div>
+          <Checkboxes>
+            <Checkbox onChange={this.handleMultipart} value={isMultipart}>
+              Convert item into a multipart
+            </Checkbox>
+          </Checkboxes>
         ) : (
           multipleItemsSettings()
         )}

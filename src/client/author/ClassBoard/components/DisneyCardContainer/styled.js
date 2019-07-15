@@ -13,10 +13,8 @@ export const StyledFlexContainer = styled(FlexContainer)`
 `;
 
 export const StyledCardContiner = styled(FlexContainer)`
-  margin: auto;
-  margin-bottom: 30px;
   flex-wrap: wrap;
-  width: 95%;
+  width: 100%;
   justify-content: flex-start;
   position: relative;
 `;
@@ -56,23 +54,33 @@ export const StyledCard = styled(Card)`
   margin-right: 20px;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  max-width: calc((100% - 80px) / 4);
-  min-width: calc((100% - 80px) / 4);
+  max-width: calc((100% - 0px) / 4);
+  min-width: calc((100% - 60px) / 4);
   .ant-card-body {
     padding: 19px 22px;
   }
+  @media only screen and (min-width: 1440px) {
+    &:nth-child(4n) {
+      margin-right: 0px;
+    }
+  }
   @media only screen and (max-width: 1440px) {
-    max-width: calc((100% - 80px) / 3);
-    min-width: calc((100% - 80px) / 3);
+    max-width: calc((100% - 40px) / 3);
+    min-width: calc((100% - 40px) / 3);
+    &:nth-child(3n) {
+      margin-right: 0px;
+    }
   }
   @media only screen and (max-width: 1024px) {
-    max-width: calc((100% - 80px) / 2);
-    min-width: calc((100% - 80px) / 2);
+    max-width: calc((100% - 20px) / 2);
+    min-width: calc((100% - 20px) / 2);
+    &:nth-child(2n) {
+      margin-right: 0px;
+    }
   }
   @media only screen and (max-width: ${mobileWidth}) {
     max-width: calc((100% - 20px) / 2);
     min-width: calc((100% - 20px) / 2);
-    margin-right: 15px;
   }
 `;
 
@@ -83,7 +91,7 @@ export const Space = styled.div`
 
 export const PagInfo = styled.span`
   font-weight: 600;
-  font-size: 12px;
+  font-size: 11px;
   color: ${themeColor};
   text-overflow: ellipsis;
   /* width: 50%; */
@@ -198,12 +206,14 @@ export const StyledParaS = styled.p`
   line-height: 10px;
   font-weight: bold;
   color: ${({ color }) => color || classBoardTheme.CardCircularColor};
+  text-transform: capitalize;
 `;
 
 export const StyledColorParaS = styled.p`
   font-size: 0.6em;
   font-weight: bold;
   color: ${red};
+  text-transform: capitalize;
 `;
 
 export const StyledParaFF = styled.p`

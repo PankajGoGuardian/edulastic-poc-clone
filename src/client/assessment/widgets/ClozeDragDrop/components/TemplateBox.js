@@ -25,7 +25,7 @@ const TemplateBox = ({ resprops, id }) => {
     globalSettings
   } = resprops;
   const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
-  const response = responsecontainerindividuals.find(resp => resp.id === id);
+  const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
   const heightpx = response && response.heightpx;
   const widthpx = response && response.widthpx;
   const height = !globalSettings
@@ -44,7 +44,6 @@ const TemplateBox = ({ resprops, id }) => {
     width,
     maxWidth: globalSettings ? "400px" : "auto"
   };
-
   const getLabel = () => {
     const answers = isReviewTab ? cAnswers : userAnswers;
     if (answers[dropTargetIndex]) {

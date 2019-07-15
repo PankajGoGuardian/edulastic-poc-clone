@@ -12,6 +12,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Paper, PaddingDiv } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { changePreviewAction } from "../../../author/src/actions/view";
 import { EDIT } from "../../constants/constantsForQuestions";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -280,6 +281,7 @@ class ClozeImageDragDrop extends Component {
                 evaluation={evaluation}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                {...restProps}
               />
             )}
             {previewTab === "show" && (
@@ -372,7 +374,8 @@ ClozeImageDragDrop.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   isSidebarCollapsed: PropTypes.bool.isRequired,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  changePreview: PropTypes.func.isRequired
 };
 
 ClozeImageDragDrop.defaultProps = {
@@ -396,7 +399,7 @@ const enhance = compose(
   withTheme,
   connect(
     ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
-    { setQuestionData: setQuestionDataAction }
+    { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );
 

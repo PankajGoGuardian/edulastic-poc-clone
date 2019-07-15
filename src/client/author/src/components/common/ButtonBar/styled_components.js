@@ -136,6 +136,12 @@ export const RightSide = styled.div`
       text-transform: uppercase;
     }
   }
+  .save-btn {
+    width: 45px;
+    > div {
+      margin-right: 0px;
+    }
+  }
 `;
 
 export const MenuItem = styled.li`

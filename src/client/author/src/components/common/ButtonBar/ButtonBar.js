@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Menu, Button } from "antd";
+import { Menu, Button, Tooltip } from "antd";
 import {
   IconSaveNew,
   IconSource,
@@ -44,7 +44,7 @@ class ButtonBar extends Component {
 
     onChangeView(view);
 
-    if (view !== "edit") {
+    if (view !== "edit" && onSaveScrollTop) {
       onSaveScrollTop(window.pageYOffset);
     }
 
@@ -126,18 +126,27 @@ class ButtonBar extends Component {
             {hasAuthorPermission && (
               <RightSide>
                 {renderRightSide()}
+                {(showPublishButton || showPublishButton === undefined) &&
+                  (itemStatus === "draft" ? (
+                    <Tooltip title={"Save"}>
+                      <CustomButton data-cy="saveButton" className="save-btn" onClick={onSave}>
+                        <HeadIcon>
+                          <IconSaveNew color="#00AD50" width={20.4} height={20.4} />
+                        </HeadIcon>
+                      </CustomButton>
+                    </Tooltip>
+                  ) : (
+                    <CustomButton data-cy="saveButton" onClick={onSave}>
+                      <HeadIcon>
+                        <IconSaveNew color="#00AD50" width={20.4} height={20.4} />
+                      </HeadIcon>
+                      Save
+                    </CustomButton>
+                  ))}
                 {showPublishButton && itemStatus === "draft" && !isTestFlow && (
                   <Button data-cy="publishItem" onClick={onPublishTestItem}>
                     Publish
                   </Button>
-                )}
-                {(showPublishButton || showPublishButton === undefined) && (
-                  <CustomButton data-cy="saveButton" onClick={onSave}>
-                    <HeadIcon>
-                      <IconSaveNew color="#00AD50" width={20.4} height={20.4} />
-                    </HeadIcon>
-                    Save
-                  </CustomButton>
                 )}
                 {!(showPublishButton || showPublishButton === undefined) && (
                   <Button data-cy="editItem" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
@@ -271,6 +280,7 @@ ButtonBar.defaultProps = {
   renderRightSide: () => {},
   onEnableEdit: () => {},
   renderExtra: () => null,
+
   withLabels: false
   // saving: false,
 };

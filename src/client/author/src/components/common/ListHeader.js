@@ -38,6 +38,7 @@ const ListHeader = ({
     )}
 
     <RightButtonWrapper>
+      {renderFilter(isAdvancedView)}
       {hasButton &&
         !createAssignment &&
         (renderButton ? (

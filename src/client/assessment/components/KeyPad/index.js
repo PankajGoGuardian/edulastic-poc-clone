@@ -26,13 +26,15 @@ export default class KeyPad extends React.Component {
   };
 
   keyboardButtons = symbol =>
-    MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
-      if (isObject(symbol) && symbol.value.includes(btn.handler)) {
-        btn.types.push(symbol.label);
-      }
+    symbol === "all"
+      ? MathKeyboard.KEYBOARD_BUTTONS_ALL
+      : MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
+          if (isObject(symbol) && symbol.value.includes(btn.handler)) {
+            btn.types.push(symbol.label);
+          }
 
-      return btn;
-    }).filter(btn => btn.types.includes(symbol));
+          return btn;
+        }).filter(btn => btn.types.includes(symbol));
 
   render() {
     const { symbol, buttonStyle } = this.props;

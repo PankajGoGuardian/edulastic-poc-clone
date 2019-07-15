@@ -6,16 +6,6 @@ import { FilterDropDownWithDropDown } from "../../../../common/components/widget
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import { StyledCard as Card } from "../../../../common/styled";
 
-export const StyledCard = styled(Card)`
-  .recharts-default-legend {
-    .recharts-legend-item {
-      &:nth-child(1) {
-        padding-left: 90px;
-      }
-    }
-  }
-`;
-
 export const UpperContainer = styled.div`
   .dropdown-container {
     text-align: left;

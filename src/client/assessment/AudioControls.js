@@ -72,7 +72,7 @@ const AudioControls = ({ item: questionData = {}, audioSrc, qId, currentPlayingD
       if (questionData.type === "multipleChoice") {
         const optionUrls = questionData.tts.optionUrls;
         const audioLoad = [];
-        const choicePrefix = "https://cdn.edulastic.com/choice-";
+        const choicePrefix = "https://cdneduv2.snapwiz.net/media/choice-";
         const optionKeys = Object.keys(optionUrls);
         optionKeys.forEach((item, i) => {
           const choiceVal = ALPHABET[i];

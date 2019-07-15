@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { cloneDeep, flattenDeep, isUndefined, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
 
-import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, Stimulus } from "@edulastic/common";
 import { response, clozeImage } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -24,7 +24,7 @@ import { RelativeContainer } from "../../styled/RelativeContainer";
 import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
-import { AnswerContainer } from "./styled/AnswerContainer";
+import AnswerContainer from "./AnswerContainer";
 
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
@@ -82,6 +82,12 @@ class Display extends Component {
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     onChange(newAnswers);
+
+    const { changePreview, changePreviewTab } = this.props;
+    if (changePreview) {
+      changePreview("clear");
+    }
+    changePreviewTab("clear");
   };
 
   shuffle = arr => {
@@ -173,9 +179,8 @@ class Display extends Component {
       const maxTop = maxBy(responseContainers, res => res.top);
       const maxLeft = maxBy(responseContainers, res => res.left);
       return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
-    } else {
-      return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
     }
+    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
   };
 
   render() {
@@ -209,6 +214,9 @@ class Display extends Component {
 
     const { userAnswers: _uAnswers, possibleResponses } = this.state;
     const cAnswers = get(item, "validation.valid_response.value", []);
+
+    const transparentBackground = get(item, "responseLayout.transparentbackground", false);
+    const showDropItemBorder = get(item, "responseLayout.showborder", false);
 
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
 
@@ -254,6 +262,19 @@ class Display extends Component {
       canvasWidth = responseBoxMaxLeft;
     }
 
+    const renderAnnotations = () => (
+      <div style={{ position: "relative" }}>
+        <AnnotationRnd
+          style={{
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            border: preview ? null : "1px solid lightgray"
+          }}
+          questionId={questionId}
+        />
+      </div>
+    );
+
     const renderImage = () => (
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
@@ -283,16 +304,7 @@ class Display extends Component {
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
           height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
         >
-          <div style={{ position: "relative" }}>
-            <AnnotationRnd
-              style={{
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                border: preview ? null : "1px solid lightgray"
-              }}
-              questionId={questionId}
-            />
-          </div>
+          {renderAnnotations()}
           {renderImage()}
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
@@ -302,11 +314,13 @@ class Display extends Component {
               top: smallSize ? responseContainer.top / 2 : responseContainer.top,
               left: smallSize ? responseContainer.left / 2 : responseContainer.left,
               height: smallSize ? responseContainer.height / 2 : responseContainer.height,
-              border: showDashedBorder
-                ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
-                : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
+              border: showDropItemBorder
+                ? showDashedBorder
+                  ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
+                  : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
+                : 0,
               position: "absolute",
-              background: backgroundColor,
+              background: transparentBackground ? "transparent" : backgroundColor,
               borderRadius: 5
               // overflow: "hidden"
             };
@@ -373,13 +387,8 @@ class Display extends Component {
                           <AnswerContainer
                             height={responseContainer.height || "auto"}
                             width={responseContainer.width || "auto"}
-                          >
-                            <MathSpan
-                              dangerouslySetInnerHTML={{
-                                __html: answer.replace("<p>", "<p class='clipText'>") || ""
-                              }}
-                            />
-                          </AnswerContainer>
+                            answer={answer.replace("<p>", "<p class='clipText'>") || ""}
+                          />
                         </DragItem>
                       );
                     })}
@@ -400,6 +409,7 @@ class Display extends Component {
         responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
+        annotations={renderAnnotations()}
         image={renderImage()}
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}
@@ -531,6 +541,8 @@ class Display extends Component {
 
 Display.propTypes = {
   options: PropTypes.array,
+  changePreviewTab: PropTypes.func,
+  changePreview: PropTypes.func,
   onChange: PropTypes.func,
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
@@ -549,8 +561,6 @@ Display.propTypes = {
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
-  imageTitle: PropTypes.string,
-  imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
   imageOptions: PropTypes.object,
@@ -562,6 +572,8 @@ Display.propTypes = {
 
 Display.defaultProps = {
   options: [],
+  changePreviewTab: () => {},
+  changePreview: () => {},
   onChange: () => {},
   preview: true,
   disableResponse: false,

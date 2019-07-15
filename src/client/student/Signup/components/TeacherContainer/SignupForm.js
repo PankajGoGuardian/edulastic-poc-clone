@@ -5,11 +5,11 @@ import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
-import { emailSpecialCharCheck } from "../../../../common/utils/helpers";
+import { isEmailValid } from "../../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
 import {
-  springGreen,
+  themeColor,
   greyGraphstroke,
   grey,
   darkBlue1,
@@ -254,15 +254,16 @@ class Signup extends React.Component {
                                     message: t("component.signup.teacher.validemail")
                                   },
                                   {
-                                    type: "email",
+                                    type: "string",
                                     message: t("component.signup.teacher.validemail")
                                   },
                                   {
                                     validator: (rule, value, callback) =>
-                                      emailSpecialCharCheck(
+                                      isEmailValid(
                                         rule,
                                         value,
                                         callback,
+                                        "email",
                                         t("component.signup.teacher.validemail")
                                       )
                                   }
@@ -362,7 +363,7 @@ const RegistrationHeader = styled(Row)`
     color: white;
     text-transform: uppercase;
     border-radius: 4px;
-    background: ${springGreen};
+    background: ${themeColor};
   }
 `;
 
@@ -446,6 +447,7 @@ const InfoIcon = styled(Col)`
   padding-top: 4px;
   img {
     width: 14px;
+    filter: contrast(2);
   }
 `;
 
@@ -503,17 +505,22 @@ const FormBody = styled(Row)`
 
 const RegisterButton = styled(Button)`
   width: 100%;
-  background: ${greenDark2};
+  background: ${themeColor};
+  border-color: ${themeColor};
   font-size: 13px;
   color: ${white};
-  border: 1px solid ${greenDark2};
   font-weight: 600;
+  &:hover,
+  &:focus {
+    border-color: ${themeColor};
+    background: ${themeColor};
+  }
 `;
 
 const LinkDiv = styled.div`
   a {
     padding-bottom: 2px;
-    border-bottom: 2px ${springGreen} solid;
+    border-bottom: 2px ${themeColor} solid;
   }
 `;
 

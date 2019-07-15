@@ -4,11 +4,11 @@ import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
-import { trim } from "lodash";
-import { emailSpecialCharCheck } from "../../../common/utils/helpers";
+import { trim, get } from "lodash";
+import { isEmailValid } from "../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
 import {
-  springGreen,
+  themeColor,
   greyGraphstroke,
   grey,
   lightGreen2,
@@ -19,7 +19,13 @@ import {
   white
 } from "@edulastic/colors";
 import { connect } from "react-redux";
-import { signupAction, googleLoginAction, msoLoginAction } from "../../Login/ducks";
+import {
+  signupAction,
+  googleLoginAction,
+  msoLoginAction,
+  signupSetPolicyViolationAction,
+  studentSignupCheckClasscodeAction
+} from "../../Login/ducks";
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
@@ -65,7 +71,7 @@ class StudentSignup extends React.Component {
   };
 
   handleSubmit = e => {
-    const { form, signup } = this.props;
+    const { form, signup, t } = this.props;
     const { method } = this.state;
     e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email, name, classCode }) => {
@@ -82,7 +88,8 @@ class StudentSignup extends React.Component {
             email,
             name,
             role: "student",
-            classCode
+            classCode,
+            policyvoilation: t("common.policyvoilation")
           });
         }
       }
@@ -101,26 +108,58 @@ class StudentSignup extends React.Component {
     });
   };
 
+  onClassCodeChange = () => {
+    const { signupSetPolicyViolationAction } = this.props;
+    signupSetPolicyViolationAction("");
+  };
+
+  onClassCodeBlur = event => {
+    const { studentSignupCheckClasscodeAction } = this.props;
+    studentSignupCheckClasscodeAction({
+      classCode: event.currentTarget.value,
+      role: "student",
+      signOnMethod: "userNameAndPassword"
+    });
+  };
+
   renderGeneralFormFields = () => {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldError },
       t,
       isSignupUsingDaURL,
       generalSettings,
       districtPolicy,
       districtShortName
     } = this.props;
+
+    const classCodeError = this.props.signupPolicyViolation || getFieldError("classCode");
+
     return (
       <>
-        <FormItem {...formItemLayout} label={t("component.signup.student.signupclasslabel")}>
+        <FormItem
+          {...formItemLayout}
+          label={t("component.signup.student.signupclasslabel")}
+          validateStatus={classCodeError ? "error" : "success"}
+          help={classCodeError}
+        >
           {getFieldDecorator("classCode", {
+            validateFirst: true,
+            initialValue: "",
             rules: [
               {
                 required: true,
                 message: t("component.signup.student.validclasscode")
               }
             ]
-          })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" placeholder="Class code" />)}
+          })(
+            <Input
+              prefix={<img src={hashIcon} alt="" />}
+              data-cy="classCode"
+              placeholder="Class code"
+              onChange={this.onClassCodeChange}
+              onBlur={this.onClassCodeBlur}
+            />
+          )}
         </FormItem>
         <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
           {getFieldDecorator("name", {
@@ -145,12 +184,12 @@ class StudentSignup extends React.Component {
                 message: t("common.validation.emptyemailid")
               },
               {
-                type: "email",
+                type: "string",
                 message: t("common.validation.validemail")
               },
               {
                 validator: (rule, value, callback) =>
-                  emailSpecialCharCheck(rule, value, callback, t("common.validation.validemail"))
+                  isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
               }
             ]
           })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} placeholder="Email" />)}
@@ -329,8 +368,16 @@ const SignupForm = Form.create()(StudentSignup);
 const enhance = compose(
   withNamespaces("login"),
   connect(
-    null,
-    { signup: signupAction, googleLoginAction, msoLoginAction }
+    state => ({
+      signupPolicyViolation: get(state, "user.signupPolicyViolation", false)
+    }),
+    {
+      signup: signupAction,
+      googleLoginAction,
+      msoLoginAction,
+      signupSetPolicyViolationAction,
+      studentSignupCheckClasscodeAction
+    }
   )
 );
 
@@ -358,11 +405,11 @@ const RegistrationHeader = styled(Row)`
   }
   a {
     padding: 8px 48px;
-    border: 1px solid ${springGreen};
+    border: 1px solid ${themeColor};
     text-decoration: none;
     color: white;
     border-radius: 4px;
-    background: ${springGreen};
+    background: ${themeColor};
   }
 `;
 
@@ -392,7 +439,7 @@ const BannerText = styled(Col)`
 const LinkDiv = styled.div`
   a {
     padding-bottom: 2px;
-    border-bottom: 2px ${springGreen} solid;
+    border-bottom: 2px ${themeColor} solid;
   }
 `;
 
@@ -457,6 +504,7 @@ const InfoIcon = styled(Col)`
   padding-top: 4px;
   img {
     width: 14px;
+    filter: contrast(2);
   }
 `;
 
@@ -517,11 +565,16 @@ const FormBody = styled(Row)`
 
 const RegisterButton = styled(Button)`
   width: 100%;
-  background: ${springGreen};
+  background: ${themeColor};
+  border-color: ${themeColor};
   font-size: 13px;
   color: white;
-  border: 1px solid ${greenDark2};
   font-weight: 600;
+  &:hover,
+  &:focus {
+    border-color: ${themeColor};
+    background: ${themeColor};
+  }
 `;
 
 const CircleDiv = styled.div`

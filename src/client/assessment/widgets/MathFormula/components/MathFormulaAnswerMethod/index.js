@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
-import { pick } from "lodash";
+import { pick, get } from "lodash";
 import styled from "styled-components";
 import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
 
@@ -312,6 +312,11 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
+  const { options: validVariable = {} } = get(item, ["validation", "valid_response", "value", 0], {});
+  const { allowedVariables } = validVariable;
+
+  const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+
   return (
     <Container data-cy="math-formula-answer">
       <StyledRow gutter={60}>
@@ -320,6 +325,7 @@ const MathFormulaAnswerMethod = ({
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
               symbols={item.symbols}
+              restrictKeys={restrictKeys}
               style={style}
               numberPad={item.numberPad}
               onChangeKeypad={onChangeKeypad}
@@ -363,30 +369,28 @@ const MathFormulaAnswerMethod = ({
         <AdditionalContainer>
           <FlexContainer justifyContent="space-between" alignItems="none">
             <AdditionalCompareUsing>
-              <Col spn={index === 0 ? 12 : 11}>
-                <Label>{t("component.math.compareUsing")}</Label>
-                <Select
-                  data-cy="method-selection-dropdown"
-                  size="large"
-                  value={method}
-                  style={{ width: "100%", height: 42 }}
-                  onChange={val => {
-                    onChange("method", val);
-                    handleChangeAdditionals(`${method}_${index}`, "pop");
-                    handleChangeAdditionals(`${val}_${index}`, "push");
-                  }}
-                >
-                  {methods.map(methodKey => (
-                    <Select.Option
-                      data-cy={`method-selection-dropdown-list-${methodKey}`}
-                      key={methodKey}
-                      value={methodsConst[methodKey]}
-                    >
-                      {t(`component.math.${methodsConst[methodKey]}`)}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Col>
+              <Label marginBottom="7px !important">{t("component.math.compareUsing")}</Label>
+              <Select
+                data-cy="method-selection-dropdown"
+                size="large"
+                value={method}
+                style={{ width: "100%", height: 42 }}
+                onChange={val => {
+                  onChange("method", val);
+                  handleChangeAdditionals(`${method}_${index}`, "pop");
+                  handleChangeAdditionals(`${val}_${index}`, "push");
+                }}
+              >
+                {methods.map(methodKey => (
+                  <Select.Option
+                    data-cy={`method-selection-dropdown-list-${methodKey}`}
+                    key={methodKey}
+                    value={methodsConst[methodKey]}
+                  >
+                    {t(`component.math.${methodsConst[methodKey]}`)}
+                  </Select.Option>
+                ))}
+              </Select>
             </AdditionalCompareUsing>
             {methodOptions.includes("rule") && (
               <RuleContainer>

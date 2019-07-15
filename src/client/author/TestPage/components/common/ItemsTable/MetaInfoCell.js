@@ -12,7 +12,13 @@ import { cloneDeep, uniq as _uniq } from "lodash";
 
 import Standards from "../../../../ItemList/components/Item/Standards";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
-import { setTestDataAction, getTestSelector, setTestDataAndUpdateAction } from "../../../ducks";
+import {
+  setTestDataAction,
+  getTestSelector,
+  setTestDataAndUpdateAction,
+  previewCheckAnswerAction,
+  previewShowAnswerAction
+} from "../../../ducks";
 
 import {
   setTestItemsAction,
@@ -22,6 +28,7 @@ import {
 } from "../../AddItems/ducks";
 
 import { AudioIcon } from "../../../../ItemList/components/Item/styled";
+import { getUserId } from "../../../../src/selectors/user";
 
 class MetaInfoCell extends Component {
   constructor(props) {
@@ -106,11 +113,7 @@ class MetaInfoCell extends Component {
       subjects: _uniq([...subjects, ...questionSubjects]),
       grades: _uniq([...grades, ...questionGrades])
     });
-    if (!test._id) {
-      setDataAndSave(newTest);
-    } else {
-      setTestData(newTest);
-    }
+    setDataAndSave(newTest);
   };
 
   get isAddOrRemove() {
@@ -175,11 +178,22 @@ class MetaInfoCell extends Component {
 
   render() {
     const { isShowPreviewModal = false } = this.state;
-    const { data, windowWidth, search } = this.props;
-
+    const { data, windowWidth, search, checkAnswer, showAnswer, userId } = this.props;
+    const owner = data.item && data.item.authors && data.item.authors.some(x => x._id === userId);
+    const isEditable = owner;
     return (
       <Container>
-        <PreviewModal isVisible={isShowPreviewModal} page="addItems" onClose={this.closeModal} data={data} />
+        <PreviewModal
+          isVisible={isShowPreviewModal}
+          page="addItems"
+          onClose={this.closeModal}
+          data={data}
+          owner={owner}
+          showEvaluationButtons={true}
+          isEditable={isEditable}
+          checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
+          showAnswer={() => showAnswer(data)}
+        />
         {windowWidth > 468 ? (
           <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-end">
             <StyledButton
@@ -270,12 +284,15 @@ const enhance = compose(
     state => ({
       selectedRows: getSelectedItemSelector(state),
       test: getTestSelector(state),
+      userId: getUserId(state),
       tests: getTestItemsSelector(state)
     }),
     {
       setTestItems: setTestItemsAction,
       setTestData: setTestDataAction,
       setDataAndSave: setTestDataAndUpdateAction,
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }
   )

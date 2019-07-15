@@ -40,7 +40,7 @@ const TableRow = ({
       flexWrap: "wrap",
       minHeight: height,
       width: "100%",
-      height: "auto",
+      height: "100%",
       borderRadius: 4,
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }

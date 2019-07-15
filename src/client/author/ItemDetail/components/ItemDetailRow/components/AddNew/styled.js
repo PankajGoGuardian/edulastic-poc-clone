@@ -1,24 +1,39 @@
-import { white } from '@edulastic/colors';
-import styled from 'styled-components';
+import { secondaryTextColor, dashBorderColor, cardBg } from "@edulastic/colors";
+
+import { Button } from "antd";
+import styled from "styled-components";
 
 export const Container = styled.div`
-  .ant-btn-primary {
-    width: 195px;
-    height: 40px;
+  svg {
+    margin: 0px 10px;
+    fill: ${secondaryTextColor};
+    &:hover {
+      fill: ${secondaryTextColor};
+    }
   }
+  button.ant-btn {
+    border-color: ${dashBorderColor};
+    &:hover {
+      border-color: ${dashBorderColor};
+    }
+  }
+`;
 
-  .anticon-plus {
-    position: relative;
-    right: 35px;
-    font-size: 18px;
-    color: ${white};
+export const AddNewButton = styled(Button)`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 25px;
+  height: auto;
+  border-radius: 8px;
+  background-color: ${cardBg};
+  color: ${secondaryTextColor};
+  font-size: 13px;
+  &:hover {
+    color: ${secondaryTextColor};
   }
+`;
 
-  .ant-btn > .anticon + span {
-    color: ${white};
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
-    text-transform: uppercase;
-  }
+export const TextWrapper = styled.span`
+  margin-right: 15px;
 `;

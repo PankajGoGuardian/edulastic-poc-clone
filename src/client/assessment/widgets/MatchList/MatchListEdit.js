@@ -268,7 +268,6 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
           onCloseTab={handleCloseTab}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          marginBottom="-50px"
         />
       </Paper>
       <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />

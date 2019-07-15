@@ -8,13 +8,25 @@ export const Container = styled.div`
   margin-bottom: 5px;
 
   .ant-select {
-    margin-right: 23px;
-    width: 128px;
-  }
-
-  svg {
-    margin-right: 23px;
-    width: 18px !important;
+    width: auto;
+    .ant-select-selection__rendered {
+      margin: 0px;
+      .ant-select-selection-selected-value {
+        padding-right: 30px;
+        font-size: 16px;
+      }
+    }
+    .ant-select-selection {
+      border: 0px;
+      .ant-select-arrow {
+        right: 0px;
+        .ant-select-arrow-icon {
+          svg {
+            fill: #434b5d;
+          }
+        }
+      }
+    }
   }
 
   .ant-select-selection__rendered {
@@ -22,17 +34,6 @@ export const Container = styled.div`
     font-weight: 600;
     letter-spacing: 0.2px;
     color: #434b5d;
-  }
-
-  .ant-select-selection {
-    border: 0px;
-  }
-
-  .ant-select-arrow-icon {
-    svg {
-      fill: ${themeColor};
-      margin-right: 0px;
-    }
   }
 `;
 

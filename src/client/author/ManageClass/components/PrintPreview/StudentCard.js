@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Title from "./Title";
 import { StyledCard, BoldText, ParaP, StudnetName, UserInfo } from "./styled";
 
-const StudentCard = ({ student: { firstName, lastName, email }, code }) => (
+const StudentCard = ({ student: { firstName, lastName, email, username }, code }) => (
   <StyledCard>
     <Title bgColor={white} align="center" />
     <ParaP>
@@ -15,7 +15,7 @@ const StudentCard = ({ student: { firstName, lastName, email }, code }) => (
     </ParaP>
     <UserInfo>
       <div>
-        <BoldText>Username: </BoldText> <span>{email}</span>
+        <BoldText>Username: </BoldText> <span>{username || email}</span>
       </div>
       <div>
         <BoldText>Password: </BoldText> <span>{code}</span>

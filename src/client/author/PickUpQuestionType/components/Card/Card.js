@@ -12,18 +12,6 @@ const Card = ({ title, cardImage, onSelectQuestionType, data, setUserAnswer }) =
     smallSize: true
   };
 
-  const questionId = uuidv4();
-
-  useEffect(() => {
-    if (questionId) {
-      if (data.type === "math") {
-        setUserAnswer(questionId, data.validation.valid_response.value[0].value);
-      } else if (data.validation && data.validation.valid_response) {
-        setUserAnswer(questionId, data.validation.valid_response.value);
-      }
-    }
-  }, [questionId]);
-
   return (
     <Fragment>
       <RoundDiv onClick={() => onSelectQuestionType(smallData)}>

@@ -184,6 +184,7 @@ const InputScore = styled(Input)`
   width: 100%;
   text-align: center;
   border: none;
+  min-width: 100px;
   ::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { round, shuffle, get } from "lodash";
 import { Col, Row, Spin } from "antd";
-import { greenSecondary, yellow, red } from "@edulastic/colors";
+import { themeColorLighter, yellow, red } from "@edulastic/colors";
 import { connect } from "react-redux";
 
 import CardCheckbox from "./CardCheckbox/CardCheckbox";
@@ -98,26 +98,26 @@ class DisneyCardContainer extends Component {
         };
 
         if (student.status === "notStarted") {
-          status.status = "NOT STARTED";
+          status.status = "Not Started";
           status.color = red;
           if (endDate < Date.now()) {
-            status.status = "ABSENT";
+            status.status = "Absent";
           }
         } else if (student.status === "inProgress") {
-          status.status = "IN PROGRESS";
+          status.status = "In Progress";
           status.color = yellow;
         } else if (student.status === "submitted") {
           if (student.graded) {
-            status.status = "GRADED";
+            status.status = "Graded";
           } else {
-            status.status = "SUBMITTED";
+            status.status = "Submitted";
           }
-          status.color = greenSecondary;
+          status.color = themeColorLighter;
         } else if (student.status === "redirected") {
-          status.status = "REDIRECTED";
-          status.color = greenSecondary;
+          status.status = "Redirected";
+          status.color = themeColorLighter;
         } else if (student.status === "absent") {
-          status.status = "ABSENT";
+          status.status = "Absent";
           status.color = red;
         }
 
@@ -157,7 +157,7 @@ class DisneyCardContainer extends Component {
                     {status.status}
                   </StyledParaS>
                 ) : (
-                  <StyledColorParaS>{enrollMentFlag}ABSENT</StyledColorParaS>
+                  <StyledColorParaS>{enrollMentFlag}Absent</StyledColorParaS>
                 )}
               </StyledName>
               <RightAlignedCol>
@@ -201,7 +201,7 @@ class DisneyCardContainer extends Component {
                     {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                   </StyledParaSSS>
                 </StyledFlexDiv>
-                {student.testActivityId && status.status !== "ABSENT" && (
+                {student.testActivityId && status.status !== "Absent" && (
                   <PagInfo data-cy="viewResponse" onClick={e => viewResponses(e, student.studentId)}>
                     {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
                     VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>

@@ -26,18 +26,18 @@ const _yTickFormatter = val => {
 };
 
 const LabelText = props => {
-  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave } = props;
+  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, index } = props;
   return (
     <g class="asd-asd" onMouseOver={onBarMouseOver()} onMouseLeave={onBarMouseLeave()}>
       <text x={x + width / 2} y={y + height} textAnchor="middle" dominantBaseline="text-after-edge">
-        {formatter(value)}
+        {formatter(value, index)}
       </text>
     </g>
   );
 };
 
 export const SimpleStackedBarChart = ({
-  margin = { top: 0, right: 0, left: 0, bottom: 0 },
+  margin = { top: 0, right: 20, left: 20, bottom: 0 },
   pageSize,
   data = [],
   yDomain = [0, 110],
@@ -49,6 +49,7 @@ export const SimpleStackedBarChart = ({
   onResetClickCB,
   getXTickText,
   getTooltipJSX = () => null,
+  TooltipCursor = false,
   yAxisLabel = "",
   yTickFormatter = _yTickFormatter,
   barsLabelFormatter = _yTickFormatter,
@@ -178,7 +179,6 @@ export const SimpleStackedBarChart = ({
             tickFormatter={yTickFormatter}
             label={constants.Y_AXIS_LABEL}
           />
-          <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />} />
           <Brush
             dataKey={xAxisDataKey}
             height={0}
@@ -238,6 +238,16 @@ export const SimpleStackedBarChart = ({
             <Line yAxisId="lineChart" type="monotone" dataKey={lineChartDataKey} {...lineProps} />
           ) : null}
           {referenceLineY > 0 ? <ReferenceLine yAxisId={"barChart"} y={referenceLineY} stroke="#010101" /> : null}
+          <Tooltip
+            cursor={
+              typeof TooltipCursor === "boolean" ? (
+                TooltipCursor
+              ) : (
+                <TooltipCursor lineYDomain={lineYDomain} yDomain={yDomain} />
+              )
+            }
+            content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />}
+          />
         </ComposedChart>
       </ResponsiveContainer>
     </StyledStackedBarChartContainer>

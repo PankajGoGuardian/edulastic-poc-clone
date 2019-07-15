@@ -71,6 +71,7 @@ function* updateTestItemSaga({ payload }) {
 function* evaluateAnswers({ payload }) {
   try {
     // clear previous evaluation
+
     yield put({
       type: CLEAR_ITEM_EVALUATION
     });
@@ -126,7 +127,7 @@ function* evaluateAnswers({ payload }) {
     }
 
     // User is at the item level
-    if (currentPath.indexOf("item-detail") !== -1) {
+    else {
       const oldAnswers = yield select(state => _get(state, "answers", []));
       const entityId = yield select(state => _get(state, "question.entity.data.id", null));
       const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
@@ -166,7 +167,7 @@ function* evaluateAnswers({ payload }) {
       });
       const previewMode = yield select(state => _get(state, "view.preview", null));
       if (previewMode === CHECK) {
-        message.success(`score: ${score.toFixed(2)}/${maxScore}`);
+        message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
       }
     }
   } catch (err) {

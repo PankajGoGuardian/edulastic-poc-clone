@@ -606,21 +606,13 @@ class ComposeQuestion extends Component {
               onDragStart={e => e.preventDefault()}
               innerRef={this.canvasRef}
             >
-              <div
-                style={{
-                  position: "relative",
-                  width: imageWidth || "100%",
-                  height: imageHeight || "100%"
-                }}
-              >
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={item.id}
-                  disableDragging={false}
-                  isAbove={!isAnnotationBelow}
-                  onDoubleClick={toggleIsAnnotationBelow}
-                />
-              </div>
+              <AnnotationRnd
+                style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+                questionId={item.id}
+                disableDragging={false}
+                isAbove={!isAnnotationBelow}
+                onDoubleClick={toggleIsAnnotationBelow}
+              />
               {item.imageUrl && (
                 <React.Fragment>
                   <Rnd
@@ -719,6 +711,20 @@ class ComposeQuestion extends Component {
             onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
           >
             {t("component.cloze.imageDragDrop.showdashedborder")}
+          </Checkbox>
+          <Checkbox
+            data-cy="drag-drop-image-transparent-check"
+            defaultChecked={responseLayout && responseLayout.transparentbackground}
+            onChange={val => this.onResponsePropChange("transparentbackground", val.target.checked)}
+          >
+            {t("component.cloze.imageDragDrop.transparentbackground")}
+          </Checkbox>
+          <Checkbox
+            data-cy="drag-drop-image-border-check"
+            defaultChecked={responseLayout && responseLayout.showborder}
+            onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
+          >
+            {t("component.cloze.imageDragDrop.showborder")}
           </Checkbox>
           <Checkbox
             data-cy="drag-drop-image-aria-check"

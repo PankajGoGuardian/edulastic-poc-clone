@@ -113,11 +113,25 @@ export const isDistrictPolicyAllowed = (isSignupUsingDaURL, districtPolicy, name
 export const isDistrictPolicyAvailable = (isSignupUsingDaURL, districtPolicy) =>
   isSignupUsingDaURL && typeof districtPolicy === "object";
 
-export const emailSpecialCharCheck = (rule, value, callback, message) => {
-  const regExp = new RegExp("^[A-Za-z0-9@._ ]+$");
-  if (!regExp.test(value.trim())) {
-    callback(message);
-  } else {
+export const isEmailValid = (rule, value, callback, checks, message) => {
+  const emailRegExp = new RegExp(
+    "^[_A-Za-z0-9-'\\+]+(\\.[_A-Za-z0-9-']+)*@[A-Za-z0-9]+([A-Za-z0-9\\-\\.]+)*(\\.[A-Za-z]{1,25})$"
+  );
+  const userNameRegExp = new RegExp(`^[A-Za-z0-9._ \\-\\+\\'\\"]+$`);
+
+  let flag = false;
+
+  if (checks === "email") {
+    flag = emailRegExp.test(value.trim());
+  } else if (checks === "username") {
+    flag = userNameRegExp.test(value.trim());
+  } else if (checks === "both" || !checks) {
+    flag = emailRegExp.test(value.trim()) || userNameRegExp.test(value.trim());
+  }
+
+  if (flag) {
     callback();
+  } else {
+    callback(message);
   }
 };

@@ -260,3 +260,23 @@ export const PrintableScreen = styled.div`
     }
   }
 `;
+
+export const StyledSignedBarContainer = styled.div`
+  .recharts-default-legend {
+    .recharts-legend-item {
+      &:nth-child(1) {
+        padding-left: 90px;
+      }
+    }
+  }
+`;
+
+export const StyledDropDownContainer = styled(Col)`
+  .ant-btn.ant-dropdown-trigger {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+`;

@@ -1,5 +1,5 @@
 import { test } from "@edulastic/constants";
-const { ASSESSMENT, PRACTICE, COMMON } = test.type;
+const { ASSESSMENT, PRACTICE } = test.type;
 const allGrades = [
   { value: "K", text: "Kindergarten" },
   { value: "1", text: "Grade 1" },
@@ -31,11 +31,11 @@ const allTags = [{ value: "tag1", text: "Tag1" }, { value: "tag2", text: "Tag2" 
 const allCollections = [
   { value: "Private", text: "Private" },
   { value: "Public", text: "Public" },
-  { value: "Edulastic Certified", text: "Edulastic Certified" }
+  { value: "edulastic_certified", text: "Edulastic Certified" }
 ];
 
 const allDepthOfKnowledge = [
-  { value: "", text: "All Depth of Knowledge" },
+  { value: "", text: "Not Specified" },
   { value: "Recall", text: "Recall" },
   { value: "Skill/Concept", text: "Skill/Concept" },
   { value: "Strategic Thinking", text: "Strategic Thinking" },
@@ -72,14 +72,14 @@ const closePolicyForAdmin = [
 
 const testTypes = [
   { value: "", text: "All" },
-  { value: COMMON, text: "Common Assessments" },
+  { value: "common", text: "Common Assessments" },
   { value: ASSESSMENT, text: "Class Assessments" },
   { value: PRACTICE, text: "Practice" }
 ];
 
 const AdminTestTypes = [
   { value: "", text: "All" },
-  { value: COMMON, text: "Common Assessments" },
+  { value: "common", text: "Common Assessments" },
   { value: ASSESSMENT, text: "Class Assessments" },
   { value: PRACTICE, text: "Practice" }
 ];

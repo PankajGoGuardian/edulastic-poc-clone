@@ -6,14 +6,12 @@ import {
   fadedGrey,
   mainBgColor,
   lightGreySecondary,
-  mainTextColor,
   textColor,
   black,
   title,
   white
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
-import { IconPencilEdit } from "@edulastic/icons";
 
 const filterWidth = "250px";
 
@@ -116,7 +114,12 @@ export const FolderButton = styled(NewFolderButton)`
   }
 `;
 
-export const FolderListItem = styled.div`
+export const FoldersListWrapper = styled.ul`
+  padding: 0px;
+  margin: 0px;
+`;
+
+export const FolderListItem = styled.li`
   min-height: 28px;
   min-width: 140px;
   margin-top: 5px;
@@ -172,54 +175,119 @@ export const FolderActionButton = styled(Button)`
   }
 `;
 
-export const ModalFooterButton = styled(NewFolderButton)`
+export const ModalFooterButton = styled(Button)`
   margin-top: 0px;
+  padding: 5px 30px;
+  font-size: 11px;
   min-width: 80px;
+  min-height: 30px;
+`;
+
+export const FooterCancelButton = styled(ModalFooterButton)`
+  color: ${themeColor};
+  margin-right: 10px;
+  &:hover,
+  &:focus {
+    color: ${themeColor};
+    background: ${white};
+    outline: none;
+  }
 `;
 
 export const FolderActionModal = styled(Modal)`
-  .ant-modal-header {
-    border-bottom: 0px;
-  }
-  .ant-modal-footer {
-    border-top: 0px;
-    display: flex;
-    justify-content: flex-end;
-    padding-bottom: 15px;
-  }
-  .ant-input {
-    &:hover &:focus {
-      border-color: ${props => props.theme.themeColor};
-    }
-  }
-`;
-
-export const ModalTitle = styled.div`
-  font-size: 24px;
-  font-weight: bold;
-  color: ${mainTextColor};
-`;
-
-export const StyledMenu = styled(Menu)`
-  min-width: 180px;
-
-  .ant-dropdown-menu-item {
-    display: flex;
-    align-items: center;
-    &:hover {
-      background-color: ${props => props.theme.themeColor};
-      color: ${white};
-
+  .ant-modal-content {
+    background: ${lightGreySecondary};
+    .ant-modal-close {
       svg {
-        fill: ${white};
+        fill: ${title};
+        width: 14px;
+      }
+    }
+    .ant-modal-header {
+      background: transparent;
+      border-bottom: 0px;
+      padding: 20px 24px 0px;
+    }
+    .ant-modal-footer {
+      border-top: 0px;
+      display: flex;
+      justify-content: flex-end;
+      padding: 0px 24px 20px;
+    }
+    .ant-modal-body {
+      .ant-input {
+        border: none;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.07);
       }
     }
   }
 `;
 
-export const StyledIconPencilEdit = styled(IconPencilEdit)`
-  margin-right: 8px;
-  fill: ${title};
+export const MoveFolderActionModal = styled(FolderActionModal)`
+  min-width: 560px;
+  .ant-modal-body {
+    padding: 20px 0px;
+    ul {
+      li {
+        margin: 0px;
+        font-size: 14px;
+        padding: 10px 24px;
+        height: 56px;
+        display: flex;
+        align-items: center;
+        background: ${lightGreySecondary};
+        &:hover {
+          background: rgba(0, 173, 80, 0.15);
+        }
+        svg {
+          width: 32px;
+          height: 32px;
+        }
+      }
+    }
+  }
+`;
+
+export const ModalTitle = styled.div`
+  font-size: 18px;
+  font-weight: 600;
+  color: ${title};
+`;
+
+export const DropMenu = styled(Menu)`
+  margin-top: 10px;
+  min-width: 160px;
+`;
+
+export const MenuItems = styled(Menu.Item)`
+  color: ${title};
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  svg,
+  i {
+    fill: ${title};
+    color: ${title};
+    margin-right: 12px !important;
+    width: 12px;
+  }
+  &:not(.ant-dropdown-menu-item-disabled):hover {
+    color: ${white};
+    background-color: ${themeColor};
+    svg,
+    i {
+      fill: ${white};
+      color: ${white};
+    }
+  }
+`;
+
+export const CaretUp = styled.i`
+  position: absolute;
+  top: -20px;
+  color: ${white};
+  right: 5px;
+  font-size: 30px;
 `;
 
 export const ModalBody = styled.div`

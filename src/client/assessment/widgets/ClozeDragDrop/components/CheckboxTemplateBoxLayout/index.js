@@ -49,7 +49,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     default:
   }
   const btnStyle = { ...responseBtnStyle };
-  const response = responsecontainerindividuals.find(resp => resp.id === id);
+  const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
   const heightpx = response && response.heightpx;
   const widthpx = response && response.widthpx;
   btnStyle.width = !globalSettings

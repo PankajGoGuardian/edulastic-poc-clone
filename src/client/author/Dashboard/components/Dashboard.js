@@ -9,9 +9,7 @@ const Dashboard = () => {
   return (
     <Layout>
       <HeaderSection />
-      <ContentWrapper>
-        <MainContent />
-      </ContentWrapper>
+      <MainContent />
       <SideContent />
     </Layout>
   );

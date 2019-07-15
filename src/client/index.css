@@ -804,7 +804,7 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
 }
 
 .check-answer.right .index {
@@ -822,7 +822,7 @@ input[type="checkbox"] {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  display: inline-block;
+  display: inline-flex;
 }
 
 .check-answer.showanswer .index {
@@ -1016,7 +1016,7 @@ textinput::before {
   display: flex;
   align-items: center;
   border-radius: 5px;
-  z-index: 9;
+  z-index: 30;
 }
 
 .imagelabeldragdrop-droppable .index-box {
@@ -1885,7 +1885,7 @@ span.token.active-word {
   flex-wrap: wrap;
   align-items: center; */
   margin-bottom: 8px;
-  font-size: 16px;
+  /* font-size: 16px; */
   font-weight: 400;
 }
 
@@ -2001,7 +2001,8 @@ span.token.active-word {
 .ant-select-selection:focus,
 .ant-select-selection:hover,
 .ant-select-selection:active,
-.ant-input:hover {
+.ant-input:hover,
+.ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled) {
   border-color: #00ad50;
 }
 

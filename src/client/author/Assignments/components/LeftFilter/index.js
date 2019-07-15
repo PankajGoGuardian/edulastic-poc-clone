@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Select, Input, Menu, Dropdown, Icon, message, Modal } from "antd";
+import { Select, Input, Menu, Dropdown, Icon, message, Modal, Button } from "antd";
 import { get, pickBy, identity, orderBy, lowerCase, find } from "lodash";
 import {
   IconFolderNew,
@@ -10,9 +10,11 @@ import {
   IconFolderDeactive,
   IconFolderMove,
   // IconDuplicate,
-  IconMoreVertical
+  IconMoreVertical,
+  IconPencilEdit
 } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { receiveAssignmentsSummaryAction, receiveAssignmentsAction } from "../../../src/actions/assignments";
@@ -34,20 +36,23 @@ import {
   FolderButton,
   FolderActionModal,
   ModalFooterButton,
+  MoveFolderActionModal,
+  FooterCancelButton,
+  FoldersListWrapper,
   ModalTitle,
   FolderActionButton,
   FolderListItem,
   FolderListItemTitle,
   MoreButton,
-  StyledMenu,
-  StyledIconPencilEdit,
-  ModalBody
+  DropMenu,
+  MenuItems,
+  CaretUp
 } from "./styled";
 import { getUserRole } from "../../../src/selectors/user";
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
-const ExtendedInput = ({ value, onChange, visible }) => {
+const ExtendedInput = ({ value, onChange, visible, onKeyUp }) => {
   const renameInput = useRef();
   useLayoutEffect(() => {
     renameInput.current.select();
@@ -59,6 +64,7 @@ const ExtendedInput = ({ value, onChange, visible }) => {
       value={value}
       onChange={onChange}
       ref={renameInput}
+      onKeyUp={onKeyUp}
     />
   );
 };
@@ -108,6 +114,13 @@ class LeftFilter extends React.Component {
       folderName: "",
       selectedFolder: ""
     });
+  };
+
+  handleCreateOnKeyPress = e => {
+    const { folderName } = this.state;
+    if (e.keyCode === 13 && folderName.length) {
+      this.createUpdateFolder();
+    }
   };
 
   moveFolder = () => {
@@ -247,16 +260,16 @@ class LeftFilter extends React.Component {
     const { moveFolderId, visibleModal } = this.state;
 
     const menu = id => (
-      <StyledMenu>
-        <Menu.Item key="1" onClick={() => this.showRenameModal(id)}>
-          <StyledIconPencilEdit width={14} height={14} />
+      <DropMenu>
+        <CaretUp className="fa fa-caret-up" />
+        <MenuItems key="1" onClick={() => this.showRenameModal(id)}>
+          <IconPencilEdit width={12} height={12} />
           <span>Rename</span>
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="2" onClick={() => this.showDeleteConfirm(id)}>
+        </MenuItems>
+        <MenuItems key="2" onClick={() => this.showDeleteConfirm(id)}>
           <Icon type="close" /> <span>Delete</span>
-        </Menu.Item>
-      </StyledMenu>
+        </MenuItems>
+      </DropMenu>
     );
 
     return (
@@ -307,13 +320,13 @@ class LeftFilter extends React.Component {
     return (
       <FilterContainer>
         <FolderActionModal
-          title={<ModalTitle>{selectedFolder ? "Rename Folder" : "Create a New Folder"}</ModalTitle>}
+          title={<ModalTitle>{selectedFolder ? "Rename" : "Create a New Folder"}</ModalTitle>}
           visible={visibleModal.newFolder}
           onCancel={() => this.hideModal("newFolder")}
           footer={[
-            <ModalFooterButton key="back" variant="create" onClick={() => this.hideModal("newFolder")}>
+            <FooterCancelButton key="back" variant="create" onClick={() => this.hideModal("newFolder")}>
               Cancel
-            </ModalFooterButton>,
+            </FooterCancelButton>,
             <ModalFooterButton
               key="submit"
               color="primary"
@@ -329,42 +342,44 @@ class LeftFilter extends React.Component {
             value={folderName || oldFolderName}
             onChange={this.handleChangeNewFolderName}
             visible={visibleModal.newFolder}
+            onKeyUp={this.handleCreateOnKeyPress}
           />
         </FolderActionModal>
 
-        <FolderActionModal
-          title={<ModalTitle>Delete Folder</ModalTitle>}
+        <ConfirmationModal
+          title="Delete Folder"
           visible={visibleModal.delFolder}
           onCancel={() => this.hideModal("delFolder")}
           footer={[
-            <ModalFooterButton key="back" onClick={() => this.hideModal("delFolder")}>
-              No
-            </ModalFooterButton>,
-            <ModalFooterButton key="submit" color="primary" onClick={this.deleteSelectedFolder}>
-              Yes
-            </ModalFooterButton>
+            <Button ghost key="back" onClick={() => this.hideModal("delFolder")}>
+              CANCEL
+            </Button>,
+            <Button key="submit" color="primary" onClick={this.deleteSelectedFolder}>
+              PROCEED
+            </Button>
           ]}
         >
-          <ModalBody>
-            Are you sure you want to delete <b>{oldFolderName}</b> folder?
-          </ModalBody>
-        </FolderActionModal>
+          <p>
+            {" "}
+            Are you sure? <br /> This will delete the folder but all the tests will remain untouched.{" "}
+          </p>
+        </ConfirmationModal>
 
-        <FolderActionModal
+        <MoveFolderActionModal
           title={<ModalTitle>{`Move ${selectedRows.length} item(s) to…`}</ModalTitle>}
           visible={visibleModal.moveFolder}
           onCancel={() => this.hideModal("moveFolder")}
           footer={[
-            <ModalFooterButton key="back" variant="create" onClick={() => this.hideModal("moveFolder")}>
+            <FooterCancelButton key="back" variant="create" onClick={() => this.hideModal("moveFolder")}>
               Cancel
-            </ModalFooterButton>,
+            </FooterCancelButton>,
             <ModalFooterButton key="submit" color="primary" variant="create" onClick={this.moveFolder}>
               Move
             </ModalFooterButton>
           ]}
         >
-          {this.renderFolders()}
-        </FolderActionModal>
+          <FoldersListWrapper>{this.renderFolders()}</FoldersListWrapper>
+        </MoveFolderActionModal>
 
         {selectedRows.length ? (
           <>
@@ -425,7 +440,7 @@ class LeftFilter extends React.Component {
             >
               NEW FOLDER
             </NewFolderButton>
-            {this.renderFolders(true)}
+            <FoldersListWrapper>{this.renderFolders(true)}</FoldersListWrapper>
           </>
         )}
       </FilterContainer>

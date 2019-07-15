@@ -26,11 +26,22 @@ const Option = props => {
     checkAnswer,
     validation,
     styleType,
-    multipleResponses
+    multipleResponses,
+    isReviewTab
   } = props;
   let className = "";
-  const isSelected = userSelections.includes(item.value);
-  const isCorrect = correct[userSelections.indexOf(item.value)];
+  let correctAnswers = [];
+  if (!isEmpty(validation)) {
+    const altResponses = validation.alt_responses.length > 0 ? validation.alt_responses.map(ar => ar.value) : [];
+    correctAnswers = flatten([validation.valid_response.value, ...altResponses]);
+  }
+
+  const isSelected = isReviewTab ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
+
+  const isCorrect = isReviewTab
+    ? correct[correctAnswers.indexOf(item.value)]
+    : correct[userSelections.indexOf(item.value)];
+
   const fontSize = getFontSize(uiStyle.fontsize);
 
   if (showAnswer) {
@@ -171,7 +182,8 @@ Option.propTypes = {
   uiStyle: PropTypes.object.isRequired,
   correct: PropTypes.any.isRequired,
   styleType: PropTypes.string,
-  multipleResponses: PropTypes.bool
+  multipleResponses: PropTypes.bool,
+  isReviewTab: PropTypes.bool.isRequired
 };
 
 Option.defaultProps = {

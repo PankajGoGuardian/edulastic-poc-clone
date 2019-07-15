@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
+import { questionType as constantsQuestionType } from "@edulastic/constants";
 
 import styled from "styled-components";
 import SourceModal from "../SourceModal/SourceModal";
@@ -21,13 +22,14 @@ import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
-import { getItemIdSelector, getItemLevelScoringSelector } from "../../../ItemDetail/ducks";
+import { getItemIdSelector, getItemLevelScoringSelector, proceedPublishingItemAction } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
 import ItemLevelScoringContext from "./QuestionContext";
+import WarningModal from "../../../ItemDetail/components/WarningModal";
 
 class Container extends Component {
   constructor(props) {
@@ -86,7 +88,6 @@ class Container extends Component {
 
   handleSave = () => {
     const { saveQuestion, removeAnswers, setAuthoredByMeFilter, match, isEditFlow, isTestFlow } = this.props;
-
     const { testId } = match.params;
     saveQuestion(testId, isTestFlow, isEditFlow);
     removeAnswers();
@@ -193,9 +194,12 @@ class Container extends Component {
   }
 
   renderButtons = () => {
-    const { view, question } = this.props;
+    const { view, question, authorQuestions } = this.props;
     const { previewTab } = this.state;
     const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
+
+    const isShowAnswerVisible =
+      authorQuestions && !constantsQuestionType.manuallyGradableQn.includes(authorQuestions.type);
 
     return (
       <ButtonAction
@@ -205,10 +209,11 @@ class Container extends Component {
         changePreviewTab={this.handleChangePreviewTab}
         onSave={this.handleSave}
         view={view}
-        showCheckButton={checkAnswerButton}
+        showCheckButton={isShowAnswerVisible || checkAnswerButton}
         allowedAttempts={checkAttempts}
         previewTab={previewTab}
         showSettingsButton={false}
+        isShowAnswerVisible={isShowAnswerVisible}
       />
     );
   };
@@ -287,6 +292,7 @@ class Container extends Component {
         showPublishButton={showPublishButton}
         onPublishTestItem={publishTestItem}
         onEnableEdit={() => setEditable(true)}
+        onSaveScrollTop={onSaveScrollTop}
         hasAuthorPermission={hasAuthorPermission}
         itemStatus={item && item.status}
         renderRightSide={view === "edit" ? this.renderRightSideButtons : () => {}}
@@ -311,7 +317,7 @@ class Container extends Component {
   };
 
   render() {
-    const { view, question, history, windowWidth, isItem } = this.props;
+    const { view, question, history, windowWidth, isItem, showWarningModal, proceedSave } = this.props;
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
       if (backUrl.includes("pickup-questiontype")) {
@@ -352,6 +358,7 @@ class Container extends Component {
         </BreadCrumbBar>
 
         <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
+        <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
       </div>
     );
   }
@@ -379,7 +386,8 @@ Container.propTypes = {
   testId: PropTypes.string.isRequired,
   toggleModalAction: PropTypes.string.isRequired,
   savedWindowScrollTop: PropTypes.number.isRequired,
-  onSaveScrollTop: PropTypes.func.isRequired
+  onSaveScrollTop: PropTypes.func.isRequired,
+  authorQuestions: PropTypes.object
 };
 
 Container.defaultProps = {
@@ -388,7 +396,8 @@ Container.defaultProps = {
   navigateToPickupQuestionType: () => {},
   navigateToItemDetail: () => {},
   onCompleteItemCreation: () => {},
-  onModalClose: () => {}
+  onModalClose: () => {},
+  authorQuestions: {}
 };
 
 const enhance = compose(
@@ -403,11 +412,14 @@ const enhance = compose(
       itemLevelScoring: getItemLevelScoringSelector(state),
       testName: state.tests.entity.title,
       testId: state.tests.entity._id,
-      savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop
+      savedWindowScrollTop: state.pickUpQuestion.savedWindowScrollTop,
+      authorQuestions: getCurrentQuestionSelector(state),
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false)
     }),
     {
       changeView: changeViewAction,
       saveQuestion: saveQuestionAction,
+      proceedSave: proceedPublishingItemAction,
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,
       showAnswer: showAnswerAction,

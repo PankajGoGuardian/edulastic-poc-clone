@@ -5,7 +5,17 @@ import { MathKeyboard } from "@edulastic/common";
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
 
-const StaticMath = ({ style, onBlur, onInput, onInnerFieldClick, symbols, numberPad, latex, innerValues }) => {
+const StaticMath = ({
+  style,
+  onBlur,
+  onInput,
+  onInnerFieldClick,
+  symbols,
+  numberPad,
+  latex,
+  innerValues,
+  restrictKeys
+}) => {
   const [mathField, setMathField] = useState(null);
   const [currentInnerField, setCurrentInnerField] = useState(null);
   const [innerFields, setInnerFields] = useState([]);
@@ -184,6 +194,7 @@ const StaticMath = ({ style, onBlur, onInput, onInnerFieldClick, symbols, number
           {showKeyboard && (
             <MathKeyboard
               symbols={symbols}
+              restrictKeys={restrictKeys}
               numberPad={numberPad}
               onInput={onInputKeyboard}
               showResponse={false}
@@ -204,11 +215,13 @@ StaticMath.propTypes = {
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
   latex: PropTypes.string.isRequired,
+  restrictKeys: PropTypes.array,
   innerValues: PropTypes.array
 };
 
 StaticMath.defaultProps = {
   style: {},
+  restrictKeys: [],
   innerValues: [],
   onInnerFieldClick: () => {}
 };

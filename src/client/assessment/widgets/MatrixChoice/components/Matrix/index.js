@@ -96,19 +96,21 @@ const validatedAnswers = (answers, responses, matrix, type) => {
 
 const MathSpan = WithMathFormula(styled.div``);
 
-const Matrix = ({
-  stems,
-  options,
-  response,
-  isMultiple,
-  onCheck,
-  uiStyle,
-  validation,
-  type,
-  smallSize,
-  theme,
-  previewTab
-}) => {
+const Matrix = props => {
+  const {
+    stems,
+    options,
+    response,
+    isMultiple,
+    onCheck,
+    uiStyle,
+    validation,
+    type,
+    smallSize,
+    theme,
+    previewTab,
+    isReviewTab
+  } = props;
   let correctAnswersMatrix;
 
   // We expect stems to be an array, otherwise don't render
@@ -120,6 +122,12 @@ const Matrix = ({
     const responses = getResponses(validation);
     const matrix = stems.map(() => options.map(() => false));
     correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, type);
+  }
+
+  if (isReviewTab) {
+    const responses = getResponses(validation);
+    const matrix = stems.map(() => options.map(() => false));
+    correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, "show");
   }
 
   const getCell = (columnIndex, data) => {
@@ -141,6 +149,10 @@ const Matrix = ({
 
     if (data && data.value && data.value.length) {
       checked = data.value.includes(columnIndex);
+    }
+
+    if (isReviewTab && correct === true) {
+      checked = true;
     }
 
     const handleChange = e => {
@@ -275,14 +287,16 @@ Matrix.propTypes = {
   isMultiple: PropTypes.bool,
   validation: PropTypes.object,
   type: PropTypes.string,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  isReviewTab: PropTypes.bool
 };
 
 Matrix.defaultProps = {
   isMultiple: false,
   validation: null,
   type: "clear",
-  smallSize: false
+  smallSize: false,
+  isReviewTab: false
 };
 
 export default withTheme(Matrix);

@@ -15,8 +15,10 @@ import {
   updateItemDetailByIdAction,
   publishTestItemAction,
   getTestItemStatusSelector,
-  clearItemDetailAction
+  clearItemDetailAction,
+  proceedPublishingItemAction
 } from "../../ducks";
+import WarningModal from "../WarningModal";
 import { getCurrentQuestionIdSelector } from "../../../sharedDucks/questions";
 import SettingsBar from "../SettingsBar";
 
@@ -35,6 +37,8 @@ const ItemDetailContainer = ({
   currentUserId,
   clearItem,
   currentQuestionId,
+  showWarningModal,
+  proceedPublish,
   ...props
 }) => {
   const { modalItemId } = props;
@@ -93,6 +97,7 @@ const ItemDetailContainer = ({
 
   return (
     <>
+      <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
       {showSettings && (
         // TODO: combine this with the other settings bar in itemDetail page. or seprate it
         // and have it in side questionView maybe !? !!Food for thought.
@@ -108,7 +113,6 @@ const ItemDetailContainer = ({
       ) : (
         <MultipleQuestionView {...allProps} />
       )}
-      }{" "}
     </>
   );
 };
@@ -122,14 +126,16 @@ const enhance = compose(
       isSingleQuestionView: isSingleQuestionViewSelector(state),
       isLoading: getItemDetailLoadingSelector(state),
       currentUserId: get(state, ["user", "user", "_id"]),
-      currentQuestionId: getCurrentQuestionIdSelector(state)
+      currentQuestionId: getCurrentQuestionIdSelector(state),
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false)
     }),
     {
       getItem: getItemDetailByIdAction,
       setRedirectTest: setRedirectTestAction,
       updateItem: updateItemDetailByIdAction,
       publishTestItem: publishTestItemAction,
-      clearItem: clearItemDetailAction
+      clearItem: clearItemDetailAction,
+      proceedPublish: proceedPublishingItemAction
     }
   )
 );

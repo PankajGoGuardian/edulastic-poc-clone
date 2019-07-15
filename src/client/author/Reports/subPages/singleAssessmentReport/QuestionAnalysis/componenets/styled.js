@@ -23,7 +23,7 @@ export const StyledTable = styled(Table)`
             text-align: right;
             padding: 10px;
           }
-          td:nth-child(n + 6) {
+          td:nth-child(n + ${props => props.colorCellStart}) {
             padding: 0px;
             div {
               height: 100%;

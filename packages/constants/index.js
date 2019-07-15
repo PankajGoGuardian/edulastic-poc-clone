@@ -24,8 +24,10 @@ const response = require("./const/dimensions");
 const canvasDimensions = require("./const/canvas");
 const clozeImage = require("./const/clozeImage");
 const fonts = require("./const/fonts");
+const question = require("./const/question");
 
 module.exports = {
+  question,
   questionType,
   evaluationType,
   nonAutoGradableTypes,

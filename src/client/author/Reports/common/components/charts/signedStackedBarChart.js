@@ -38,6 +38,7 @@ const LabelText = props => {
 };
 
 export const SignedStackedBarChart = ({
+  margin = { top: 0, right: 20, left: 20, bottom: 0 },
   pageSize,
   barsData,
   data = [],
@@ -158,7 +159,7 @@ export const SignedStackedBarChart = ({
         }}
       />
       <ResponsiveContainer width={"100%"} height={400}>
-        <BarChart width={730} height={400} data={renderData} stackOffset="sign">
+        <BarChart width={730} height={400} data={renderData} stackOffset="sign" margin={margin}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis
             dataKey={xAxisDataKey}
@@ -189,6 +190,7 @@ export const SignedStackedBarChart = ({
                 barSize={70}
                 onMouseOver={onBarMouseOver(bdIndex)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
+                minPointSize={20}
               >
                 <LabelList
                   dataKey={bdItem.key}

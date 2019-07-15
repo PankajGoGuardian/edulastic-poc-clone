@@ -89,7 +89,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
   }
   const rowKey = recode => recode.email || recode.username;
   const showStudentsHandler = () => {
-    setShowAllStudents(!showAllStudents);
+    setShowAllStudents(showAllStudents => !showAllStudents);
   };
   return (
     <div style={{ textAlign: "end" }}>

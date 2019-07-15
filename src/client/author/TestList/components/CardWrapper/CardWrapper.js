@@ -5,6 +5,14 @@ import { getTestAuthorName, getPlaylistAuthorName } from "../../../dataUtils";
 import Item from "../Item/Item";
 import ListItem from "../ListItem/ListItem";
 
+const getStandards = test => {
+  const alignments = (test.alignment || []).filter(item => !item.isEquivalentStandard);
+  const allStandards = alignments
+    .flatMap(item => item.domains || [])
+    .flatMap(item => item.standards || [])
+    .map((item = {}) => item.name);
+  return [...new Set(allStandards)];
+};
 class CardWrapper extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
@@ -75,6 +83,7 @@ class CardWrapper extends Component {
           authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
           isPlaylist={isPlaylist}
           testItemId={itemId}
+          standards={getStandards(item)}
         />
       </Col>
     );

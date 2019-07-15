@@ -27,10 +27,10 @@ import {
   CardId,
   Footer,
   ButtonWrapper,
-  AddButton
+  AddButton,
+  TestStatus
 } from "./styled";
 import ViewModal from "../ViewModal";
-import { TestStatus } from "../../../TestPage/components/TestPageHeader/styled";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { EllipsisWrapper } from "../Item/styled";
 
@@ -106,6 +106,7 @@ class ListItem extends Component {
       mode,
       removeTestFromPlaylist,
       addTestToPlaylist,
+      standards,
       likes = analytics ? analytics[0].likes : "0",
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
@@ -170,11 +171,6 @@ class ListItem extends Component {
               <Inner>
                 <div>
                   <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-                  {mode && (
-                    <TestStatus className={testStatus} mode={"embedded"}>
-                      {testStatus}
-                    </TestStatus>
-                  )}
                 </div>
                 <Description title={isPlaylist ? _source.description : description}>
                   <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
@@ -203,7 +199,13 @@ class ListItem extends Component {
             )}
 
             <Footer span={24}>
-              <TagsWrapper span={12}>{!isPlaylist && <Tags tags={tags} />}</TagsWrapper>
+              <TagsWrapper span={12}>
+                {!isPlaylist && <Tags tags={tags} />}
+                {!isPlaylist && <Tags tags={standards} show={3} />}
+                <TestStatus style={{ marginLeft: tags.length || standards.length ? "10px" : 0 }} status={testStatus}>
+                  {testStatus}
+                </TestStatus>
+              </TagsWrapper>
 
               <ItemInformation span={12}>
                 <ContentWrapper>

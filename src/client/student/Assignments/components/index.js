@@ -20,7 +20,7 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
     loadAllClasses();
   }, []);
   if (loading) return <Spin />;
-  const { classItem = {} } = location.state;
+  const { classItem = {} } = location;
   const activeEnrolledClasses = activeClasses.filter(c => c.status === "1");
   if (!isEmpty(classItem)) {
     const { _id } = classItem;

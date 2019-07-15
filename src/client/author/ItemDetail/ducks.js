@@ -615,13 +615,8 @@ export function* updateItemSaga({ payload }) {
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
-      if (!payload.testId) {
-        yield put(setTestDataAndUpdateAction(updatedTestEntity));
-      } else {
-        yield put(setCreatedItemToTestAction(item));
-        yield put(push(`/author/tests/${payload.testId}#review`));
-      }
-      yield put(toggleCreateItemModalAction(false));
+      yield put(setTestDataAndUpdateAction(updatedTestEntity));
+      yield put(push(`/author/tests/${payload.testId}#review`));
       yield put(changeViewAction("edit"));
       return;
     }

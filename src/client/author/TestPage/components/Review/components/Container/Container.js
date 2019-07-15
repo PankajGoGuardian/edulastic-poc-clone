@@ -16,7 +16,8 @@ import {
   setTestDataAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
-  getDefaultThumbnailSelector
+  getDefaultThumbnailSelector,
+  setTestDataAndUpdateAction
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
@@ -91,7 +92,7 @@ class Review extends PureComponent {
   };
 
   handleRemoveSelected = () => {
-    const { test, setData } = this.props;
+    const { test, setDataAndSave } = this.props;
     const newData = cloneDeep(test);
     const itemsSelected = test.testItems.find(item => item.selected);
     if (!itemsSelected) {
@@ -105,7 +106,7 @@ class Review extends PureComponent {
     });
 
     this.setSelected([]);
-    setData(newData);
+    setDataAndSave(newData);
     message.success("Selected testItems removed successfully");
   };
 
@@ -393,6 +394,7 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
+      setDataAndSave: setTestDataAndUpdateAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,

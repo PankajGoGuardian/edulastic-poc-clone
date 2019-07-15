@@ -113,11 +113,7 @@ class MetaInfoCell extends Component {
       subjects: _uniq([...subjects, ...questionSubjects]),
       grades: _uniq([...grades, ...questionGrades])
     });
-    if (!test._id) {
-      setDataAndSave(newTest);
-    } else {
-      setTestData(newTest);
-    }
+    setDataAndSave(newTest);
   };
 
   get isAddOrRemove() {

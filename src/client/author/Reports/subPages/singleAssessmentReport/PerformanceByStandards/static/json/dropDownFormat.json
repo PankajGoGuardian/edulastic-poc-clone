@@ -1,5 +1,5 @@
 {
-  "viewByDropDownData": [{ "key": "standards", "title": "Standards" }, { "key": "domains", "title": "Domains" }],
+  "viewByDropDownData": [{ "key": "standard", "title": "Standards" }, { "key": "domain", "title": "Domains" }],
   "analyzeByDropDownData": [
     { "key": "score", "title": "Score (%)" },
     { "key": "rawScore", "title": "Raw Score" },
@@ -21,7 +21,11 @@
     {
       "key": "gender",
       "title": "Gender",
-      "data": [{ "key": "all", "title": "All" }, { "key": "F", "title": "Female" }, { "key": "M", "title": "Male" }]
+      "data": [
+        { "key": "all", "title": "All" },
+        { "key": "Female", "title": "Female" },
+        { "key": "Male", "title": "Male" }
+      ]
     },
     {
       "key": "race",
@@ -38,17 +42,17 @@
     {
       "key": "frlStatus",
       "title": "FRL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [{ "key": "all", "title": "All" }, { "key": "No", "title": "No" }, { "key": "Yes", "title": "Yes" }]
     },
     {
       "key": "ellStatus",
       "title": "ELL Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [{ "key": "all", "title": "All" }, { "key": "No", "title": "No" }, { "key": "Yes", "title": "Yes" }]
     },
     {
       "key": "iepStatus",
       "title": "IEP Status",
-      "data": [{ "key": "all", "title": "All" }, { "key": "no", "title": "No" }, { "key": "yes", "title": "Yes" }]
+      "data": [{ "key": "all", "title": "All" }, { "key": "No", "title": "No" }, { "key": "Yes", "title": "Yes" }]
     }
   ]
 }

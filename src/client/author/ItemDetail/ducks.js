@@ -666,12 +666,16 @@ function* publishTestItemSaga({ payload }) {
     yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
+    yield call(message.success, "Item created successfully");
+
     if (redirectTestId) {
       yield delay(1500);
       yield put(push(`/author/tests/${redirectTestId}`));
       yield put(clearRedirectTestAction());
+    } else {
+      // on publishing redirect to items bank.
+      yield put(push("/author/items"));
     }
-    yield call(message.success, "Successfully published");
   } catch (e) {
     console.log("publish error", e);
     const errorMessage = "publish failed";

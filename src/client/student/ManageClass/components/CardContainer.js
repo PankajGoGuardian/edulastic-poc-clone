@@ -13,7 +13,14 @@ const ClassCard = ({ t, classItem }) => {
       <ManageClassCardContent>
         <CardHeader type="flex" justify="space-between" align="middle">
           <CardTitle title="Class Name">{name}</CardTitle>
-          <Link to={{ pathname: "/home/assignments", classItem }}>
+          <Link
+            to={{
+              pathname: "/home/assignments",
+              state: {
+                classItem
+              }
+            }}
+          >
             <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
           </Link>
         </CardHeader>

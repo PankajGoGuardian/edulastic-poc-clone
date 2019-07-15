@@ -6,6 +6,7 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import ClozeTextInput from "../../ClozeTextInput";
+import { CLEAR } from "../../../../constants/constantsForQuestions";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -23,10 +24,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     stemNumeration,
     showIndex,
     responsecontainerindividuals,
-    responseIds
+    responseIds,
+    previewTab,
+    changePreviewTab
   } = resprops;
   const { id: choiceId, index } = find(responseIds, res => res.id === id);
-  const [isEdit, changeEditable] = useState(false);
   const status = evaluation[choiceId] ? "right" : "wrong";
   // eslint-disable-next-line no-unused-vars
   let indexStr = "";
@@ -80,83 +82,76 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = (response && response.heightpx) || uiStyle.heightpx || "auto";
   }
 
-  const handleClick = () => changeEditable(true);
-
-  useEffect(() => {
-    changeEditable(false);
-  }, [evaluation[id]]);
+  const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
 
   return (
     <>
-      {isEdit && <ClozeTextInput resprops={{ ...resprops, showIndex: false }} id={id} />}
-      {!isEdit && (
-        <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>
-          {showAnswer && (
-            <span
-              className={`
+      <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>
+        {showAnswer && (
+          <span
+            className={`
                     response-btn 
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-              style={btnStyle}
-              title={userSelections[index] && userSelections[index].value}
-              onClick={handleClick}
-            >
-              <span className="index">{index + 1}</span>
-              <span
-                className="text"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  display: "block",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                  overflow: "hidden"
-                }}
-              >
-                {userSelections[index] && userSelections[index].value}&nbsp;
-              </span>
-              <IconWrapper>
-                {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
-                {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
-              </IconWrapper>
-            </span>
-          )}
-          {!showAnswer && (
+            style={btnStyle}
+            title={userSelections[index] && userSelections[index].value}
+            onClick={handleClick}
+          >
+            <span className="index">{index + 1}</span>
             <span
-              className={`response-btn 
+              className="text"
+              style={{
+                width: "100%",
+                height: "100%",
+                display: "block",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                overflow: "hidden"
+              }}
+            >
+              {userSelections[index] && userSelections[index].value}&nbsp;
+            </span>
+            <IconWrapper>
+              {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
+              {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
+            </IconWrapper>
+          </span>
+        )}
+        {!showAnswer && (
+          <span
+            className={`response-btn 
                 ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                 ${status}`}
-              style={btnStyle}
-              title={userSelections[index] && userSelections[index].value}
-              onClick={handleClick}
+            style={btnStyle}
+            title={userSelections[index] && userSelections[index].value}
+            onClick={handleClick}
+          >
+            {showIndex && (
+              <Fragment>
+                <span className="index">{index + 1}</span>
+              </Fragment>
+            )}
+            <span
+              style={{
+                height: "100%",
+                width: "100%",
+                display: "block",
+                whiteSpace: "nowrap",
+                textOverflow: "ellipsis",
+                overflow: "hidden"
+              }}
+              className="text"
             >
-              {showIndex && (
-                <Fragment>
-                  <span className="index">{index + 1}</span>
-                </Fragment>
-              )}
-              <span
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  display: "block",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                  overflow: "hidden"
-                }}
-                className="text"
-              >
-                {userSelections[index] && userSelections[index].value}&nbsp;
-              </span>
-              <IconWrapper>
-                {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
-                {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
-              </IconWrapper>
+              {userSelections[index] && userSelections[index].value}&nbsp;
             </span>
-          )}
-        </span>
-      )}
+            <IconWrapper>
+              {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
+              {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
+            </IconWrapper>
+          </span>
+        )}
+      </span>
     </>
   );
 };

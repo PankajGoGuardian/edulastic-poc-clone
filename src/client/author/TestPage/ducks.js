@@ -151,7 +151,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const setCreatedItemToTestAction = createAction(SET_CREATED_ITEM_TO_TEST);
 export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TEST);
 
-const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
+export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
 //reducer
 export const createBlankTest = () => ({
   title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
@@ -305,6 +305,7 @@ export const reducer = (state = initialState, { type, payload }) => {
           subjects: []
         },
         createdItems: [],
+        thumbnail: "",
         sharedUsersList: []
       };
     case SET_CREATED_ITEM_TO_TEST:
@@ -364,14 +365,9 @@ function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
     if (entity.thumbnail === defaultImage) {
-      const standardIdentifier =
-        entity.summary &&
-        entity.summary.standards &&
-        entity.summary.standards[0] &&
-        entity.summary.standards[0].identifier;
       const thumbnail = yield call(testsApi.getDefaultImage, {
-        subject: entity.subjects.length > 0 ? entity.subjects[0] : "Other Subjects",
-        standard: standardIdentifier || ""
+        subject: get(entity, "subjects[0]", "Other Subjects"),
+        standard: get(entity, "summary.standards[0].identifier", "")
       });
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
@@ -397,7 +393,8 @@ function* createTestSaga({ payload }) {
       delete payload.data.assignmentPassword;
     }
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
-    const entity = yield call(testsApi.create, dataToSend);
+    let entity = yield call(testsApi.create, dataToSend);
+    entity = { ...entity, ...payload.data };
     yield put({
       type: UPDATE_ENTITY_DATA,
       payload: {
@@ -410,7 +407,6 @@ function* createTestSaga({ payload }) {
       yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
     } else {
       const hash = payload.toReview ? "#review" : "";
-
       yield put(createTestSuccessAction(entity));
       yield put(replace(`/author/tests/${entity._id}${hash}`));
 
@@ -550,6 +546,14 @@ function* deleteSharedUserSaga({ payload }) {
 
 function* setTestDataAndUpdateSaga({ payload }) {
   try {
+    if (payload.data.thumbnail === defaultImage) {
+      const thumbnail = yield call(testsApi.getDefaultImage, {
+        subject: get(payload, "data.subjects[0]", "Other Subjects"),
+        standard: get(payload, "data.summary.standards[0].identifier", "")
+      });
+      yield put(updateDefaultThumbnailAction(thumbnail));
+    }
+    yield put(setTestDataAction(payload.data));
     if (payload.data._id) {
       yield put(updateTestAction(payload.data._id, payload.data, true));
     } else {

@@ -1,4 +1,4 @@
-import { partialRight, ceil, groupBy } from "lodash";
+import { partialRight, ceil, groupBy, sumBy } from "lodash";
 
 export const percentage = (numerator, denominator, ceilCalculation = false) => {
   const calculatedPercentage = (numerator / denominator) * 100;
@@ -121,3 +121,6 @@ export const processTeacherIds = orgDataArr => {
 
   return teacherIdArr;
 };
+
+export const getOverallScore = (metrics = []) =>
+  ceilingPercentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));

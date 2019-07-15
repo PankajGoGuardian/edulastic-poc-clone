@@ -89,7 +89,7 @@ export const MultipleAssessmentReportContainer = props => {
       <Route
         exact
         path={`/author/reports/peer-progress-analysis/test/:testId?`}
-        render={_props => <PeerProgressAnalysis />}
+        render={_props => <PeerProgressAnalysis {..._props} settings={settings} />}
       />
     </>
   );

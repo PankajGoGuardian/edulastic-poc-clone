@@ -4,9 +4,6 @@
     { "key": "school", "title": "School", "hiddenFromRole": ["teacher"] },
     { "key": "teacher", "title": "Teacher", "hiddenFromRole": ["teacher"] },
     { "key": "group", "title": "Class" },
-    { "key": "race", "title": "Race" },
-    { "key": "gender", "title": "Gender" },
-    { "key": "FRL Status", "title": "frlStatus" },
-    { "key": "ELL Status", "title": "ellStatus" }
+    { "key": "student", "title": "Student" }
   ]
 }

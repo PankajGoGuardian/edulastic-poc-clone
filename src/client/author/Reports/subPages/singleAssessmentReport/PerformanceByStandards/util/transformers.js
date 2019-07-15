@@ -15,7 +15,7 @@ import {
   mapValues,
   reduce
 } from "lodash";
-import { percentage, ceilingPercentage } from "../../../../common/util";
+import { percentage, getOverallScore } from "../../../../common/util";
 import next from "immer";
 
 export const viewByMode = {
@@ -118,9 +118,6 @@ export const compareByColumns = {
 };
 
 export const getOverallRawScore = (metrics = []) => sumBy(metrics, "totalScore") / metrics.length;
-
-export const getOverallScore = (metrics = []) =>
-  ceilingPercentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
 
 const chartGetAverageScoreByStandards = studentMetrics => standardId => {
   // get list of metrics by students for a standard

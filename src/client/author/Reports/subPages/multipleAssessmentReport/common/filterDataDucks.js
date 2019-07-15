@@ -5,16 +5,16 @@ import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
 import { groupBy } from "lodash";
 
-const GET_REPORTS_SAR_FILTER_DATA_REQUEST = "[reports] get reports sar filter data request";
-const GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports sar filter data request success";
-const GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR = "[reports] get reports sar filter data request error";
+const GET_REPORTS_MAR_FILTER_DATA_REQUEST = "[reports] get reports mar filter data request";
+const GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports mar filter data request success";
+const GET_REPORTS_MAR_FILTER_DATA_REQUEST_ERROR = "[reports] get reports mar filter data request error";
 
-const SET_FILTERS = "[reports] set sar filters";
-const SET_TEST_ID = "[reports] set sar testId";
+const SET_FILTERS = "[reports] set mar filters";
+const SET_TEST_ID = "[reports] set mar testId";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const getSARFilterDataRequestAction = createAction(GET_REPORTS_SAR_FILTER_DATA_REQUEST);
+export const getMARFilterDataRequestAction = createAction(GET_REPORTS_MAR_FILTER_DATA_REQUEST);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setTestIdAction = createAction(SET_TEST_ID);
@@ -25,11 +25,11 @@ export const setTestIdAction = createAction(SET_TEST_ID);
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-export const stateSelector = state => state.reportSARFilterDataReducer;
+export const stateSelector = state => state.reportMARFilterDataReducer;
 
-export const getReportsSARFilterData = createSelector(
+export const getReportsMARFilterData = createSelector(
   stateSelector,
-  state => state.SARFilterData
+  state => state.MARFilterData
 );
 
 export const getFiltersSelector = createSelector(
@@ -49,7 +49,7 @@ export const getTestIdSelector = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  SARFilterData: {},
+  MARFilterData: {},
   filters: {
     termId: "",
     subject: "All",
@@ -103,15 +103,15 @@ const setTestIdReducer = (state, { payload }) => {
   state.testId = payload;
 };
 
-export const reportSARFilterDataReducer = createReducer(initialState, {
-  [GET_REPORTS_SAR_FILTER_DATA_REQUEST]: (state, { payload }) => {
+export const reportMARFilterDataReducer = createReducer(initialState, {
+  [GET_REPORTS_MAR_FILTER_DATA_REQUEST]: (state, { payload }) => {
     state.loading = true;
   },
-  [GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
+  [GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    state.SARFilterData = payload.SARFilterData;
+    state.MARFilterData = payload.MARFilterData;
   },
-  [GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR]: (state, { payload }) => {
+  [GET_REPORTS_MAR_FILTER_DATA_REQUEST_ERROR]: (state, { payload }) => {
     state.loading = false;
     state.error = payload.error;
   },
@@ -125,26 +125,26 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
 
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
-function* getReportsSARFilterDataRequest({ payload }) {
+function* getReportsMARFilterDataRequest({ payload }) {
   try {
-    const SARFilterData = yield call(reportsApi.fetchSARFilterData, payload);
+    const MARFilterData = yield call(reportsApi.fetchMARFilterData, payload);
 
     yield put({
-      type: GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS,
-      payload: { SARFilterData }
+      type: GET_REPORTS_MAR_FILTER_DATA_REQUEST_SUCCESS,
+      payload: { MARFilterData }
     });
   } catch (error) {
     let msg = "Failed to fetch filter data Please try again...";
     yield call(message.error, msg);
     yield put({
-      type: GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR,
+      type: GET_REPORTS_MAR_FILTER_DATA_REQUEST_ERROR,
       payload: { error: msg }
     });
   }
 }
 
-export function* reportSARFilterDataSaga() {
-  yield all([yield takeEvery(GET_REPORTS_SAR_FILTER_DATA_REQUEST, getReportsSARFilterDataRequest)]);
+export function* reportMARFilterDataSaga() {
+  yield all([yield takeEvery(GET_REPORTS_MAR_FILTER_DATA_REQUEST, getReportsMARFilterDataRequest)]);
 }
 
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //

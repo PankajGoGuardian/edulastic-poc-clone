@@ -11,8 +11,8 @@ import { ControlDropDown } from "../../../../common/components/widgets/controlDr
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../utils/transformers";
 import {
-  getSARFilterDataRequestAction,
-  getReportsSARFilterData,
+  getMARFilterDataRequestAction,
+  getReportsMARFilterData,
   getFiltersSelector,
   setFiltersAction,
   getTestIdSelector,
@@ -37,12 +37,12 @@ const getTestIdFromURL = url => {
 };
 
 const SingleAssessmentReportFilters = ({
-  SARFilterData,
+  MARFilterData,
   filters,
   testId,
   user,
   role,
-  getSARFilterDataRequestAction,
+  getMARFilterDataRequestAction,
   setFiltersAction,
   setTestIdAction,
   onGoClick: _onGoClick,
@@ -50,10 +50,10 @@ const SingleAssessmentReportFilters = ({
   className,
   style
 }) => {
-  const [prevSARFilterData, setPrevSARFilterData] = useState(null);
+  const [prevMARFilterData, setPrevMARFilterData] = useState(null);
 
   const getTitleByTestId = testId => {
-    let arr = get(SARFilterData, "data.result.testData", []);
+    let arr = get(MARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
 
     if (item) {
@@ -77,16 +77,16 @@ const SingleAssessmentReportFilters = ({
     let q = {
       termId: schoolYear.length ? schoolYear[0].key : ""
     };
-    getSARFilterDataRequestAction(q);
+    getMARFilterDataRequestAction(q);
   }, []);
 
   let processedTestIds;
   let dropDownData;
-  if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
+  if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
     const search = queryString.parse(location.search);
     search.testId = getTestIdFromURL(location.pathname);
 
-    dropDownData = getDropDownData(SARFilterData, user);
+    dropDownData = getDropDownData(MARFilterData, user);
 
     const urlSchoolYear =
       schoolYear.find((item, index) => item.key === search.termId) ||
@@ -141,7 +141,7 @@ const SingleAssessmentReportFilters = ({
       assessmentType: urlAssessmentType.key
     };
 
-    dropDownData = filteredDropDownData(SARFilterData, user, obtainedFilters);
+    dropDownData = filteredDropDownData(MARFilterData, user, obtainedFilters);
 
     processedTestIds = processTestIds(dropDownData, obtainedFilters, urlTestId.key, role);
 
@@ -164,10 +164,10 @@ const SingleAssessmentReportFilters = ({
       filters: urlParams
     });
 
-    setPrevSARFilterData(SARFilterData);
+    setPrevMARFilterData(MARFilterData);
   }
 
-  dropDownData = useMemo(() => filteredDropDownData(SARFilterData, user, { ...filters }), [SARFilterData, filters]);
+  dropDownData = useMemo(() => filteredDropDownData(MARFilterData, user, { ...filters }), [MARFilterData, filters]);
 
   processedTestIds = useMemo(() => {
     return processTestIds(
@@ -185,7 +185,7 @@ const SingleAssessmentReportFilters = ({
       testId,
       role
     );
-  }, [SARFilterData, filters, testId]);
+  }, [MARFilterData, filters, testId]);
 
   if (!processedTestIds.validTestId && processedTestIds.testIds.length) {
     setTestIdAction(processedTestIds.testIds[0].key ? processedTestIds.testIds[0].key : "");
@@ -367,14 +367,14 @@ const SingleAssessmentReportFilters = ({
 const enhance = compose(
   connect(
     state => ({
-      SARFilterData: getReportsSARFilterData(state),
+      MARFilterData: getReportsMARFilterData(state),
       filters: getFiltersSelector(state),
       testId: getTestIdSelector(state),
       role: getUserRole(state),
       user: getUser(state)
     }),
     {
-      getSARFilterDataRequestAction: getSARFilterDataRequestAction,
+      getMARFilterDataRequestAction: getMARFilterDataRequestAction,
       setFiltersAction: setFiltersAction,
       setTestIdAction: setTestIdAction
     }

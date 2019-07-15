@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
+import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, select, take } from "redux-saga/effects";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -577,6 +578,12 @@ export function* updateItemSaga({ payload }) {
       resources
     };
 
+    if (questions.length === 1) {
+      const [isIncomplete, errMsg] = helpers.isIncompleteQuestion(questions[0]);
+      if (isIncomplete) {
+        return message.error(errMsg);
+      }
+    }
     // return;
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
     // on update, if there is only question.. set it as the questionId, since we are changing the view

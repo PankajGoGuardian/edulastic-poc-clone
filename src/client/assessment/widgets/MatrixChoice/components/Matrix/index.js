@@ -283,7 +283,7 @@ Matrix.propTypes = {
   options: PropTypes.array.isRequired,
   response: PropTypes.object.isRequired,
   onCheck: PropTypes.func.isRequired,
-  uiStyle: PropTypes.object.isRequired,
+  uiStyle: PropTypes.object,
   smallSize: PropTypes.bool,
   isMultiple: PropTypes.bool,
   validation: PropTypes.object,
@@ -297,7 +297,8 @@ Matrix.defaultProps = {
   validation: null,
   type: "clear",
   smallSize: false,
-  isReviewTab: false
+  isReviewTab: false,
+  uiStyle: {}
 };
 
 export default withTheme(Matrix);

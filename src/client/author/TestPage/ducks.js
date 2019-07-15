@@ -151,7 +151,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const setCreatedItemToTestAction = createAction(SET_CREATED_ITEM_TO_TEST);
 export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TEST);
 
-const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
+export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
 //reducer
 export const createBlankTest = () => ({
   title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
@@ -305,6 +305,7 @@ export const reducer = (state = initialState, { type, payload }) => {
           subjects: []
         },
         createdItems: [],
+        thumbnail: "",
         sharedUsersList: []
       };
     case SET_CREATED_ITEM_TO_TEST:
@@ -397,7 +398,8 @@ function* createTestSaga({ payload }) {
       delete payload.data.assignmentPassword;
     }
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
-    const entity = yield call(testsApi.create, dataToSend);
+    let entity = yield call(testsApi.create, dataToSend);
+    entity = { ...entity, ...payload.data };
     yield put({
       type: UPDATE_ENTITY_DATA,
       payload: {
@@ -410,7 +412,6 @@ function* createTestSaga({ payload }) {
       yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
     } else {
       const hash = payload.toReview ? "#review" : "";
-
       yield put(createTestSuccessAction(entity));
       yield put(replace(`/author/tests/${entity._id}${hash}`));
 
@@ -550,6 +551,19 @@ function* deleteSharedUserSaga({ payload }) {
 
 function* setTestDataAndUpdateSaga({ payload }) {
   try {
+    if (payload.data.thumbnail === defaultImage) {
+      const standardIdentifier =
+        payload.data.summary &&
+        payload.data.summary.standards &&
+        payload.data.summary.standards[0] &&
+        payload.data.summary.standards[0].identifier;
+      const thumbnail = yield call(testsApi.getDefaultImage, {
+        subject: payload.data.subjects.length > 0 ? payload.data.subjects[0] : "Other Subjects",
+        standard: standardIdentifier || ""
+      });
+      yield put(updateDefaultThumbnailAction(thumbnail));
+    }
+    yield put(setTestDataAction(payload.data));
     if (payload.data._id) {
       yield put(updateTestAction(payload.data._id, payload.data, true));
     } else {

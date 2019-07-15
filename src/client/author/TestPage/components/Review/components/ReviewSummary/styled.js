@@ -44,16 +44,18 @@ export const Container = styled(Paper)`
 export const SummaryInfoContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 7px 12px;
+  justify-content: space-between;
+  padding: 5px 10px;
   border-radius: 2px;
   background: ${lightGreySecondary};
-  width: 140px;
+  min-width: ${props => (props.minWidth ? props.minWidth : "")};
+  width: 100%;
   height: 40px;
 `;
 
 export const SummaryInfoNumber = styled.span`
   display: block;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: ${secondaryTextColor};
 `;
@@ -63,7 +65,7 @@ export const SummaryInfoTitle = styled.span`
   font-size: 12px;
   font-weight: 600;
   color: ${secondaryTextColor};
-  margin-left: 28px;
+  margin-left: 5px;
 `;
 
 export const TableHeaderCol = styled(Col)`

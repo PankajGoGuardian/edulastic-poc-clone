@@ -126,7 +126,7 @@ export class ResponseFrequencyTable extends Component {
       if (sum == 0) sum = 1;
       if (!data || Object.keys(data).length === 0) {
         arr.push({
-          value: ((corr_cnt / sum) * 100).toFixed(0),
+          value: Number(((corr_cnt / sum) * 100).toFixed(0)),
           count: corr_cnt,
           name: "Correct",
           key: "corr_cnt",
@@ -135,7 +135,7 @@ export class ResponseFrequencyTable extends Component {
           record: record
         });
         arr.push({
-          value: ((incorr_cnt / sum) * 100).toFixed(0),
+          value: Number(((incorr_cnt / sum) * 100).toFixed(0)),
           count: incorr_cnt,
           name: "Incorrect",
           key: "incorr_cnt",
@@ -144,7 +144,7 @@ export class ResponseFrequencyTable extends Component {
           record: record
         });
         arr.push({
-          value: ((part_cnt / sum) * 100).toFixed(0),
+          value: Number(((part_cnt / sum) * 100).toFixed(0)),
           count: part_cnt,
           name: "Partially Correct",
           key: "part_cnt",
@@ -170,6 +170,10 @@ export class ResponseFrequencyTable extends Component {
                 isCorrect = isCorrect && (!isNaN(tmp) ? true : false);
               }
             }
+          }
+
+          if (record.qType === "True or false" && record.validation && record.validation[0]) {
+            str = record.validation[0][0] === comboKey ? "Correct" : "Incorrect";
           }
 
           return {
@@ -217,14 +221,14 @@ export class ResponseFrequencyTable extends Component {
       return (
         <Row type="flex" justify="start" className="table-tag-container">
           {arr.map((data, i) => {
-            return (
+            return data.value || data.record.qType.toLocaleLowerCase().includes("multiple choice") ? (
               <ResponseTag
                 isPrinting={this.props.isPrinting}
                 key={i}
                 data={data}
                 incorrectFrequencyThreshold={this.props.incorrectFrequencyThreshold}
               />
-            );
+            ) : null;
           })}
         </Row>
       );

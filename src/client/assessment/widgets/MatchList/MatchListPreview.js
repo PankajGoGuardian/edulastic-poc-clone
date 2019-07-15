@@ -64,7 +64,8 @@ const MatchListPreview = ({
   showBorder,
   setQuestionData,
   disableResponse,
-  changePreviewTab
+  changePreviewTab,
+  changePreview
 }) => {
   const {
     possible_responses: posResponses,
@@ -132,6 +133,8 @@ const MatchListPreview = ({
     }
   }
 
+  const preview = previewTab === CHECK || previewTab === SHOW;
+
   const drop = ({ flag, index }) => ({ flag, index });
 
   const onDrop = (itemCurrent, itemTo) => {
@@ -163,6 +166,9 @@ const MatchListPreview = ({
       setDragItems(dItems);
     }
 
+    if (preview) {
+      changePreview(CLEAR);
+    }
     saveAnswer(answers);
   };
 
@@ -196,8 +202,6 @@ const MatchListPreview = ({
     color: theme.widgets.matchList.dragItemColor,
     opacity: isDragging ? 0.5 : 1
   });
-
-  const preview = previewTab === CHECK || previewTab === SHOW;
 
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 

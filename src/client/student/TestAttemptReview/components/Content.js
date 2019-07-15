@@ -62,8 +62,9 @@ class SummaryTest extends Component {
   };
 
   render() {
-    const { questionList, t, test } = this.props;
-    const questions = Object.keys(questionList);
+    const { questionList: questionsAndOrder, t, test } = this.props;
+    const { blocks: questionList, allQids } = questionsAndOrder;
+    const questions = allQids;
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
     return (

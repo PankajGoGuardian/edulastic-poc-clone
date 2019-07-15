@@ -9,7 +9,7 @@ export const Label = styled.label`
   letter-spacing: -0.4px;
   text-align: left;
   color: ${props => props.theme.widgetOptions.labelColor};
-  margin-bottom: 7px;
+  margin-bottom: ${({ marginBottom }) => marginBottom || "7px"};
   display: ${props => (props.display ? props.display : "block")};
   text-transform: uppercase;
 `;

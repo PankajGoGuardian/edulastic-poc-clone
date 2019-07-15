@@ -87,10 +87,30 @@ class Layout extends Component {
     const { onChange, uiStyle } = this.props;
     const { minWidth, maxWidth } = response;
     const width = uiStyle.widthpx;
+    let { responsecontainerindividuals: responses } = uiStyle;
+    if (uiStyle.globalSettings) {
+      responses = responses.map(response => ({
+        ...response,
+        previewWidth: null
+      }));
+      if (width < minWidth || width > maxWidth) {
+        onChange("ui_style", {
+          ...uiStyle,
+          widthpx: clamp(width, minWidth, maxWidth),
+          responsecontainerindividuals: responses
+        });
+      } else {
+        onChange("ui_style", {
+          ...uiStyle,
+          responsecontainerindividuals: responses
+        });
+      }
+    }
     if (width < minWidth || width > maxWidth) {
       onChange("ui_style", {
         ...uiStyle,
-        widthpx: clamp(width, minWidth, maxWidth)
+        widthpx: clamp(width, minWidth, maxWidth),
+        responsecontainerindividuals: responses
       });
     }
   };
@@ -252,6 +272,11 @@ class Layout extends Component {
             </Col>
           </Row>
           <SpecialCharacters />
+          <Row gutter={20}>
+            <Col md={24}>
+              <Label>{t("component.options.responsecontainerglobal")}</Label>
+            </Col>
+          </Row>
           <Row>
             <Checkbox
               checked={!!uiStyle.globalSettings}
@@ -259,11 +284,6 @@ class Layout extends Component {
             >
               {t("component.options.globalSettings")}
             </Checkbox>
-          </Row>
-          <Row gutter={20}>
-            <Col md={24}>
-              <Label>{t("component.options.responsecontainerglobal")}</Label>
-            </Col>
           </Row>
           <Row gutter={20}>
             <Col md={24}>

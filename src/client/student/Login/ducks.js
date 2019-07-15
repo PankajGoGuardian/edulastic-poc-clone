@@ -336,8 +336,9 @@ function* signup({ payload }) {
     const msg = msg1 || msg2 || errorMessage;
     if (msg === "Please provide a valid class code.") {
       yield put(signupSetPolicyViolationAction(msg));
+    } else {
+      yield call(message.error, msg);
     }
-    yield call(message.error, msg);
   }
 }
 

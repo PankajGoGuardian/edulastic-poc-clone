@@ -193,6 +193,25 @@ export const reIndexResponses = htmlStr => {
   return $(parsedHTML).html();
 };
 
+export const sanitizeForReview = stimulus => {
+  if (!stimulus) return stimulus;
+  let jqueryEl;
+  try {
+    jqueryEl = $(stimulus);
+  } catch (err) {
+    jqueryEl = $("<p>").append(stimulus);
+  }
+
+  // eslint-disable-next-line func-names
+  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table"];
+  tagsToRemove.forEach(tagToRemove => {
+    jqueryEl.find(tagToRemove).each(function() {
+      $(this).replaceWith("...");
+    });
+  });
+  return sanitizeSelfClosingTags(jqueryEl.html());
+};
+
 export const removeIndexFromTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
@@ -232,6 +251,7 @@ export default {
   uploadToS3,
   parseTemplate,
   reIndexResponses,
+  sanitizeForReview,
   canInsert,
   removeIndexFromTemplate
 };

@@ -93,7 +93,7 @@ class Assignments extends Component {
     }
     filters = {
       ...filters,
-      testType: userRole !== "teacher" ? type.COMMON : "",
+      testType: userRole === ("district-admin" || userRole === "school-admin") ? "common" : "",
       ...defaultFilters
     };
     loadAssignments({ filters });
@@ -200,7 +200,6 @@ class Assignments extends Component {
           createAssignment={true}
           title={t("common.assignmentsTitle")}
           btnTitle="AUTHOR TEST"
-          renderFilter={this.renderSwitch}
           isAdvancedView={isAdvancedView}
         />
         <Container>

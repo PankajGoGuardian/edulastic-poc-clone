@@ -105,6 +105,7 @@ const SortableItem = SortableElement(
                   questions={questions}
                   windowWidth="100%"
                   isReviewTab
+                  testItem
                 />
               </AnswerContext.Provider>
             </FlexContainer>
@@ -134,6 +135,7 @@ const SortableItem = SortableElement(
                       questions={questions}
                       windowWidth="100%"
                       isReviewTab
+                      testItem
                     />
                   </AnswerContext.Provider>
                 </FlexContainer>

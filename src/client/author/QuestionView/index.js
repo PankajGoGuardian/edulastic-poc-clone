@@ -241,7 +241,8 @@ class QuestionViewContainer extends Component {
                     value: "AVG TIME (SECONDS)",
                     angle: -90,
                     fill: greyGraphstroke,
-                    dx: 10
+                    dx: 10,
+                    fontSize: "10px"
                   }}
                   orientation="right"
                   stroke={greyGraphstroke}

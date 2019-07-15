@@ -2,15 +2,14 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import { get, isUndefined, toNumber, isNaN } from "lodash";
+import { get, isUndefined, toNumber, round, isNaN } from "lodash";
 import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { round } from "lodash";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth, themeColor } from "@edulastic/colors";
+import { mobileWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
@@ -164,13 +163,11 @@ class FeedbackRight extends Component {
 
     if (isStudentName) {
       title = (
-        <TitleDiv data-cy="studentName" style={{ marginTop: 0, fontWeight: "bold" }}>
+        <TitleDiv data-cy="studentName">
           {isPresentationMode ? (
             <i className={`fa fa-${icon}`} style={{ color, fontSize: "32px" }} />
           ) : (
-            <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: themeColor }} size={34}>
-              {studentName.charAt(0)}
-            </Avatar>
+            <UserAvatar>{studentName.charAt(0)}</UserAvatar>
           )}
           &nbsp;
           {studentName}
@@ -268,6 +265,9 @@ const StyledCardTwo = styled(Card)`
   .ant-card-head {
     height: 60px;
   }
+  .ant-card-head-title {
+    padding: 13px 0px;
+  }
   .ant-card-body {
     display: flex;
     flex-direction: column;
@@ -321,15 +321,15 @@ const TextPara = styled.p`
 `;
 
 const LeaveDiv = styled.div`
-  margin: 20px 0px;
+  margin: 20px 0px 10px;
   font-weight: 600;
-  color: #7c848e;
+  color: ${tabGrey};
   font-size: 13px;
 `;
 
 const TitleDiv = styled.div`
-  font-weight: 600;
-  color: #7c848e;
+  font-weight: 400;
+  color: ${tabGrey};
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -359,4 +359,18 @@ const UpdateButton = styled(Button)`
     background-color: ${themeColor};
     border-color: ${themeColor};
   }
+`;
+
+const UserAvatar = styled(Avatar)`
+  background-color: ${themeColorTagsBg};
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  border-radius: 50%;
+  color: ${themeColor};
+  font-weight: 600;
+  margin-right: 10px;
+  font-size: 14px;
+  text-transform: uppercase;
 `;

@@ -96,8 +96,7 @@ class CorrectAnswers extends Component {
         padding: 0,
         boxShadow: "none",
         marginLeft: "auto",
-        minHeight: 28,
-        marginBottom: this.props.marginBottom
+        minHeight: 28
       }}
       onClick={() => {
         this.props.onTabChange();
@@ -117,10 +116,12 @@ class CorrectAnswers extends Component {
 
     return (
       <Widget>
-        <Subtitle margin="0 0 6px">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
-
+        <FlexContainer>
+          <Subtitle margin="0 0 6px">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+          {this.renderPlusButton()}
+        </FlexContainer>
         <div>
-          <Tabs value={correctTab} onChange={onTabChange} extra={this.renderPlusButton()} style={{ marginBottom: 10 }}>
+          <Tabs value={correctTab} onChange={onTabChange} style={{ marginBottom: 10 }}>
             {tabs > 1 && (
               <Tab
                 type="primary"

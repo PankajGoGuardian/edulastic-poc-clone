@@ -16,8 +16,8 @@ export const Stats = props => {
 
   const rolesMap = {
     teacher: "class",
-    sa: "school",
-    da: "district"
+    "school-admin": "school",
+    "district-admin": "district"
   };
 
   const parseData = data => {

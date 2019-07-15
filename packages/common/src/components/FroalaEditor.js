@@ -188,7 +188,7 @@ export const ToolbarContainer = styled.div.attrs({
   toolbarId: props => props.toolbarId
 })`
   position: absolute;
-  top: -50px;
+  bottom: 105%;
   left: 0;
   right: 0;
   z-index: 1000;

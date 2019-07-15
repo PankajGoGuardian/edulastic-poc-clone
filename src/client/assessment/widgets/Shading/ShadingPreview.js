@@ -119,7 +119,7 @@ const ShadingPreview = ({
     hidden: get(item, "canvas.hidden", [])
   };
 
-  const correctAnswers = (userAnswer || []).filter((value, i) => evaluation && evaluation[i]);
+  const correctAnswers = (userAnswer ? userAnswer.value || [] : []).filter((value, i) => evaluation && evaluation[i]);
 
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -172,7 +172,13 @@ const ShadingPreview = ({
             checkAnswers={previewTab === CHECK && isCheck}
             correctAnswers={correctAnswers}
             onCellClick={disableResponse ? () => {} : handleCellClick}
-            shaded={Array.isArray(userAnswer) ? userAnswer : []}
+            shaded={
+              disableResponse
+                ? validation.valid_response && validation.valid_response.value && validation.valid_response.value.value
+                : Array.isArray(userAnswer)
+                ? userAnswer
+                : []
+            }
             lockedCells={read_only_author_cells ? shaded : undefined}
           />
         )}

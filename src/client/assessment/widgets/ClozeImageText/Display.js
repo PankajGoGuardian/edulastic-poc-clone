@@ -154,6 +154,7 @@ class Display extends Component {
       isReviewTab
     } = this.props;
     const cAnswers = get(item, "validation.valid_response.value", []);
+    const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers: _uAnswers } = this.state;
 
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
@@ -208,9 +209,11 @@ class Display extends Component {
               top: uiStyle.top || responseContainer.top,
               left: uiStyle.left || responseContainer.left,
               height: uiStyle.height || responseContainer.height,
-              border: showDashedBorder
-                ? `dashed 2px ${theme.widgets.clozeImageText.responseContainerDashedBorderColor}`
-                : `solid 1px ${theme.widgets.clozeImageText.responseContainerSolidBorderColor}`,
+              border: showDropItemBorder
+                ? showDashedBorder
+                  ? `dashed 2px ${theme.widgets.clozeImageText.responseContainerDashedBorderColor}`
+                  : `solid 1px ${theme.widgets.clozeImageText.responseContainerSolidBorderColor}`
+                : 0,
               position: "absolute",
               background: backgroundColor,
               borderRadius: 5,
@@ -246,7 +249,7 @@ class Display extends Component {
                   noIndent={responseWidth < 30}
                   lessPadding={responseWidth <= 43}
                   resprops={{
-                    btnStyle: {},
+                    btnStyle: { border: btnStyle.border },
                     item,
                     onChange: ({ value }) => this.selectChange(value, dropTargetIndex),
                     placeholder: uiStyle.placeholder,

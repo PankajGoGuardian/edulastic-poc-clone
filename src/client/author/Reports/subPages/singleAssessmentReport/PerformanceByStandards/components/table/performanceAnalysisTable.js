@@ -1,17 +1,26 @@
 import PropTypes from "prop-types";
-import { orderBy } from "lodash";
 import styled from "styled-components";
-import { Table } from "antd";
-import { uniqBy } from "lodash";
+import { uniqBy, round, reduce } from "lodash";
 
 import {
   compareByColumns,
   analyzeByMode,
   viewByMode,
-  reduceAverageStandardScore,
-  getMasteryLevel
+  getMasteryLevel,
+  getOverallScore,
+  getOverallRawScore
 } from "../../util/transformers";
 import { getHSLFromRange1 } from "../../../../../common/util";
+import { StyledTable } from "../../../../../common/styled";
+import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
+import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
+
+const columnHashMap = {
+  school: "studentName",
+  teacher: "teacherName",
+  class: "className",
+  school: "schoolName"
+};
 
 const makeStandardColumnConfig = skill => ({
   [viewByMode.STANDARDS]: {
@@ -33,26 +42,32 @@ const PerformanceAnalysisTable = ({
   compareBy,
   selectedStandards,
   selectedDomains,
-  tableData
+  tableData,
+  totalPoints
 }) => {
-  const formatScore = score => {
+  const formatScore = (score, analyzeBy) => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
-        return `${Math.round(Number(score) * 100)}%`;
-      case analyzeByMode.MASTERY_LEVEL:
-        return `${Math.round((Number(score) / 4) * 100)}%`;
+        return `${Math.round(Number(score))}%`;
+      case analyzeByMode.RAW_SCORE:
+        return round(score, 2);
       default:
-        return Number(score).toFixed(2);
+        return score;
     }
   };
 
   const getAnalyzeField = () => {
     switch (analyzeBy) {
       case analyzeByMode.MASTERY_LEVEL:
+        return "masteryLabel";
       case analyzeByMode.MASTERY_SCORE:
         return "masteryScore";
+      case analyzeByMode.RAW_SCORE:
+        return "rawScore";
+      case analyzeByMode.SCORE:
+        return "avgScore";
       default:
-        return "totalScore";
+        return "avgScore";
     }
   };
 
@@ -75,6 +90,26 @@ const PerformanceAnalysisTable = ({
     };
   };
 
+  const { scaleInfo } = report;
+
+  const getOverallValue = (records = {}, analyzeBy) => {
+    const allRecords = reduce(records, (result, value = {}) => result.concat(value.records || []), []);
+    const masteryLevel = getMasteryLevel(getOverallScore(allRecords), scaleInfo);
+
+    switch (analyzeBy) {
+      case analyzeByMode.SCORE:
+        return formatScore(getOverallScore(allRecords), analyzeBy);
+      case analyzeByMode.RAW_SCORE:
+        return formatScore(getOverallRawScore(allRecords), analyzeBy);
+      case analyzeByMode.MASTERY_LEVEL:
+        return masteryLevel.masteryLabel;
+      case analyzeByMode.MASTERY_SCORE:
+        return masteryLevel.score;
+      default:
+        return "N/A";
+    }
+  };
+
   const makeOverallColumn = () => {
     const { selectedData, dataField } = makeStandardColumnData()[viewBy];
 
@@ -94,18 +129,23 @@ const PerformanceAnalysisTable = ({
       dataIndex: "overall",
       key: "overall",
       sorter: (a, b) => getAverage(a) - getAverage(b),
-      render: (studentId, student) => {
-        const standardMetrics = Object.values(student.standardMetrics).filter(selectedItems);
-        const average = getAverage(student);
-
-        return standardMetrics.length ? formatScore(average) : "N/A";
-      }
+      render: (recordId, record) => getOverallValue(record.standardMetrics, analyzeBy)
     };
   };
 
-  const { scaleInfo } = report;
+  const getFieldTotalValue = (tableData, analyzeBy, config) => {
+    const allRecords = reduce(
+      tableData,
+      (result, value) => {
+        return result.concat(value.standardMetrics[config.key]);
+      },
+      []
+    );
 
-  const makeStandardColumns = averageScoreByView => {
+    return getOverallValue(allRecords, analyzeBy);
+  };
+
+  const makeStandardColumns = tableData => {
     const { selectedData, dataField, standardColumnsData } = makeStandardColumnData()[viewBy];
 
     const selectedItems = skill => selectedData.includes(skill[dataField]) || !selectedData.length;
@@ -113,16 +153,16 @@ const PerformanceAnalysisTable = ({
     const makeStandardColumn = skill => {
       const config = makeStandardColumnConfig(skill)[viewBy];
       const field = getAnalyzeField();
-      const averagePoints = averageScoreByView[config.key] || 0;
+      const averagePoints = totalPoints[config.key] || 0;
 
       return {
         title: (
           <p>
             {config.title}
             <br />
-            Points - {averagePoints.toFixed(2)}
+            Points - {parseFloat(averagePoints.toFixed(2))}
             <br />
-            {formatScore(averagePoints)}
+            {getFieldTotalValue(tableData, analyzeBy, config)}
           </p>
         ),
         dataIndex: "standardMetrics",
@@ -135,15 +175,77 @@ const PerformanceAnalysisTable = ({
             return <ScoreCell color={color}>N/A</ScoreCell>;
           }
 
-          const score = standard[field];
+          const getColValue = (columnKey, record) => {
+            if (columnKey == "students") {
+              return `${record.firstName} ${record.lastName}`;
+            } else if (record[columnHashMap[columnKey]]) {
+              return record[columnHashMap[columnKey]];
+            } else {
+              return record[columnKey];
+            }
+          };
 
-          if ([analyzeByMode.SCORE, analyzeByMode.RAW_SCORE].includes(analyzeBy)) {
-            color = getHSLFromRange1(score * 100);
-          } else {
-            color = getMasteryColorByScore(score, scaleInfo);
+          switch (analyzeBy) {
+            case analyzeByMode.RAW_SCORE:
+            case analyzeByMode.SCORE:
+              color = getHSLFromRange1(standard.avgScore);
+              break;
+            default:
+              color = getMasteryColorByScore(standard.masteryScore, scaleInfo);
+              break;
           }
 
-          return <ScoreCell color={color}>{standard ? formatScore(standard[field]) : "N/A"}</ScoreCell>;
+          const toolTipText = record => {
+            const compareByColumn = compareByColumns[compareBy];
+
+            let lastItem = null;
+
+            switch (analyzeBy) {
+              case analyzeByMode.MASTERY_LEVEL:
+                lastItem = {
+                  title: "Mastery Code: ",
+                  value: `${formatScore(standard[field], analyzeByMode.MASTERY_LEVEL)}`
+                };
+                break;
+              case analyzeByMode.MASTERY_SCORE:
+                lastItem = {
+                  title: "Mastery Score: ",
+                  value: `${formatScore(standard[field], analyzeByMode.MASTERY_SCORE)}`
+                };
+                break;
+            }
+
+            return (
+              <div>
+                <TableTooltipRow title={`${compareByColumn.title}: `} value={getColValue(compareBy, record)} />
+                <TableTooltipRow
+                  title={`${viewBy == viewByMode.STANDARDS ? "Standard" : "Domain"} : `}
+                  value={config.title}
+                />
+                <TableTooltipRow
+                  title={`
+                    Avg.Score${analyzeBy === analyzeByMode.RAW_SCORE ? "" : "(%)"} :
+                  `}
+                  value={
+                    analyzeBy === analyzeByMode.RAW_SCORE
+                      ? formatScore(standard.rawScore, analyzeByMode.RAW_SCORE)
+                      : formatScore(standard.avgScore, analyzeByMode.SCORE)
+                  }
+                />
+                {lastItem ? <TableTooltipRow {...lastItem} /> : null}
+              </div>
+            );
+          };
+
+          return (
+            <CustomTableTooltip
+              placement="top"
+              title={toolTipText(student)}
+              getCellContents={() => (
+                <ScoreCell color={color}>{standard ? formatScore(standard[field], analyzeBy) : "N/A"}</ScoreCell>
+              )}
+            />
+          );
         }
       };
     };
@@ -151,17 +253,15 @@ const PerformanceAnalysisTable = ({
     return standardColumnsData.filter(selectedItems).map(makeStandardColumn);
   };
 
-  const averageScoreByView = reduceAverageStandardScore(tableData, getAnalyzeField());
-
   const getAnalysisColumns = () => [
     compareByColumns[compareBy],
     makeOverallColumn(),
-    ...makeStandardColumns(averageScoreByView)
+    ...makeStandardColumns(tableData)
   ];
 
   const columns = getAnalysisColumns();
 
-  return <AnalysisTable dataSource={tableData} columns={columns} pagination={false} size="middle" />;
+  return <AnalysisTable dataSource={tableData} columns={columns} />;
 };
 
 PerformanceAnalysisTable.propTypes = {
@@ -187,7 +287,7 @@ PerformanceAnalysisTable.defaultProps = {
 
 export default PerformanceAnalysisTable;
 
-const AnalysisTable = styled(Table)`
+const AnalysisTable = styled(StyledTable)`
   .ant-table-thead {
     th {
       font-size: 12px;

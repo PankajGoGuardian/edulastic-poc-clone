@@ -56,7 +56,6 @@ class TestItemCol extends Component {
     return (
       <Tabs.TabContainer>
         <QuestionWrapper
-          testItem
           showFeedback={showFeedback}
           evaluation={evaluation}
           multiple={multiple}

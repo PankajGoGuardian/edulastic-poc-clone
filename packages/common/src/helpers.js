@@ -1,8 +1,10 @@
 /* eslint-disable */
 import uuid from "uuid/v4";
+import { isString, get } from "lodash";
 import { fileApi } from "@edulastic/api";
-import { aws } from "@edulastic/constants";
+import { aws, question, questionType } from "@edulastic/constants";
 import { message } from "antd";
+import { empty } from "rxjs";
 
 export const ALPHABET = [
   "A",
@@ -193,6 +195,25 @@ export const reIndexResponses = htmlStr => {
   return $(parsedHTML).html();
 };
 
+export const sanitizeForReview = stimulus => {
+  if (!stimulus) return stimulus;
+  let jqueryEl;
+  try {
+    jqueryEl = $(stimulus);
+  } catch (err) {
+    jqueryEl = $("<p>").append(stimulus);
+  }
+
+  // eslint-disable-next-line func-names
+  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table"];
+  tagsToRemove.forEach(tagToRemove => {
+    jqueryEl.find(tagToRemove).each(function() {
+      $(this).replaceWith("...");
+    });
+  });
+  return sanitizeSelfClosingTags(jqueryEl.html());
+};
+
 export const removeIndexFromTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
@@ -222,6 +243,53 @@ export const beforeUpload = file => {
   return isAllowedType && withinSizeLimit;
 };
 
+/**
+ * does question have enough data !?
+ *  This is only the begnning. This func is going to grow to handle
+ *  the idiosyncraices of  multiple questions types.
+ *  "To inifinity and beyond" ~ Buzz Lightyear, or someone wise!
+ */
+export const isIncompleteQuestion = item => {
+  // if resource type question it doesnt have stimulus or options.
+
+  const emptyChoiceError = "Answer choices should not be empty";
+
+  if (question.resourceTypeQuestions.includes(item.type)) {
+    return [false];
+  }
+
+  if (!item.stimulus) {
+    return [true, "Question text shouldnot be empty"];
+  }
+
+  if (item.options) {
+    // options check for expression multipart type question.
+    if (item.type === questionType.EXPRESSION_MULTIPART) {
+      const optionsCount = get(item, ["response_ids", "dropDowns", "length"], 0);
+      if (optionsCount !== Object.keys(item.options).length) {
+        return [true, emptyChoiceError];
+      }
+      const options = Object.values(item.options);
+      for (const opt of options) {
+        if (!opt.length) {
+          return [true, emptyChoiceError];
+        }
+        const hasEmptyOptions = opt.some(opt => !opt);
+        if (hasEmptyOptions) return [true, emptyChoiceError];
+      }
+    } else {
+      // for other question types.
+      const hasEmptyOptions = item.options.some(opt => {
+        return (opt.hasOwnProperty("label") && !opt.label.trim()) || (isString(opt) && opt.trim() === "");
+      });
+
+      if (hasEmptyOptions) return [true, emptyChoiceError];
+    }
+  }
+
+  return [false];
+};
+
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -232,6 +300,8 @@ export default {
   uploadToS3,
   parseTemplate,
   reIndexResponses,
+  sanitizeForReview,
   canInsert,
-  removeIndexFromTemplate
+  removeIndexFromTemplate,
+  isIncompleteQuestion
 };

@@ -369,30 +369,28 @@ const MathFormulaAnswerMethod = ({
         <AdditionalContainer>
           <FlexContainer justifyContent="space-between" alignItems="none">
             <AdditionalCompareUsing>
-              <Col spn={index === 0 ? 12 : 11}>
-                <Label>{t("component.math.compareUsing")}</Label>
-                <Select
-                  data-cy="method-selection-dropdown"
-                  size="large"
-                  value={method}
-                  style={{ width: "100%", height: 42 }}
-                  onChange={val => {
-                    onChange("method", val);
-                    handleChangeAdditionals(`${method}_${index}`, "pop");
-                    handleChangeAdditionals(`${val}_${index}`, "push");
-                  }}
-                >
-                  {methods.map(methodKey => (
-                    <Select.Option
-                      data-cy={`method-selection-dropdown-list-${methodKey}`}
-                      key={methodKey}
-                      value={methodsConst[methodKey]}
-                    >
-                      {t(`component.math.${methodsConst[methodKey]}`)}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Col>
+              <Label marginBottom="7px !important">{t("component.math.compareUsing")}</Label>
+              <Select
+                data-cy="method-selection-dropdown"
+                size="large"
+                value={method}
+                style={{ width: "100%", height: 42 }}
+                onChange={val => {
+                  onChange("method", val);
+                  handleChangeAdditionals(`${method}_${index}`, "pop");
+                  handleChangeAdditionals(`${val}_${index}`, "push");
+                }}
+              >
+                {methods.map(methodKey => (
+                  <Select.Option
+                    data-cy={`method-selection-dropdown-list-${methodKey}`}
+                    key={methodKey}
+                    value={methodsConst[methodKey]}
+                  >
+                    {t(`component.math.${methodsConst[methodKey]}`)}
+                  </Select.Option>
+                ))}
+              </Select>
             </AdditionalCompareUsing>
             {methodOptions.includes("rule") && (
               <RuleContainer>

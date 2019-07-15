@@ -117,7 +117,6 @@ const methodOptions = {
     "inverseResult",
     "isMixedFraction",
     "isSimpleFraction",
-    "ignoreTrailingZeros",
     "ignoreText",
     "isUnit",
     "tolerance",
@@ -125,6 +124,7 @@ const methodOptions = {
     "setThousandsSeparator",
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
+    "allowNumericOnly",
     "allowedVariables",
     "setEvaluation",
     "compareSides"

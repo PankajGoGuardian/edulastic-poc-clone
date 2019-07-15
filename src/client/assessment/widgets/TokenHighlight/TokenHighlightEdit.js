@@ -26,29 +26,32 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
   const mode = item.tokenization;
 
   const initialArray = item.template
-    .replace(/<p .*?>(.*?)<\/p>/g, "")
-    .replace(/(<p>|<\/p>)*/g, "")
-    .replace(/<br\/>/g, "<br/> ")
-    .split('<p class="newline_section"><br>');
+    .replace(/<br\/>/g, "")
+    .replace(/(<p>)/g, "")
+    .replace(/(<\/p>)/g, "<br/>")
+    .split('<p class="newline_section">');
 
-  const paragraphsArray = initialArray.map(el => ({
-    value: `${el}<br/>`,
-    active: true
-  }));
+  const paragraphsArray = initialArray
+    .join("")
+    .match(/(.*?)(<br\/>)+/g)
+    .map(el => ({
+      value: `${el}`,
+      active: true
+    }));
 
   const sentencesArray = initialArray
-    .join("<br/>")
-    .split(".")
-    .map(el => ({ value: `${el}.`, active: true }))
+    .join("")
+    .match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g)
+    .map(el => ({ value: `${el}`, active: true }))
     .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
 
-  const mathArray = initialArray.join("<br/> ").match(/<span(.*?)class="input__math"(.*?)>/g);
+  const mathArray = initialArray.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
   let i = 0;
   const wordsArray = initialArray
-    .join("<br/> ")
-    .replace("&nbsp;", "")
+    .join("")
+    .replace("&nbsp;", " ")
     .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
-    .split(/\s/g)
+    .match(/(.*?)(([\s]+([.]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g)
     .map(el => {
       if (mathArray && el.indexOf("<span></span>") !== -1) {
         el = el.replace("<span></span>", mathArray[i]);

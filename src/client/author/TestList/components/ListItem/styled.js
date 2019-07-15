@@ -41,7 +41,32 @@ export const Description = styled.div`
   color: #444444;
 `;
 
-export const TagsWrapper = styled(Col)``;
+export const TagsWrapper = styled(Col)`
+  display: flex;
+  align-items: center;
+`;
+
+export const TestStatus = styled.span`
+  background: ${props => (props.status === "draft" ? "#F9F9F9" : "#E8F2FF")};
+  padding: 4px 20px;
+  border-radius: 5px;
+  font-size: 9px;
+  color: ${props => (props.status === "draft" ? "#979BA1" : "#798CA8")};
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: ${props => (props.view === "tile" ? "10px" : 0)};
+`;
+
+export const StatusWrapper = styled.div`
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+`;
+
+export const UsageWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 
 export const Author = styled.div`
   font-size: 11px;

@@ -661,7 +661,8 @@ var mixAndMatchEvaluator =
   })();
 
 var _default = function _default(_ref9) {
-  var userResponse = _ref9.userResponse,
+  var _ref9$userResponse = _ref9.userResponse,
+    userResponse = _ref9$userResponse === void 0 ? {} : _ref9$userResponse,
     validation = _ref9.validation;
   return validation.mixAndMatch
     ? mixAndMatchEvaluator({

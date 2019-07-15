@@ -157,9 +157,9 @@ class Search extends Component {
             <ItemHeader>Depth of Knowledge</ItemHeader>
             <ItemBody>
               <Select size="large" onSelect={onSearchFieldChange("depthOfKnowledge")} value={depthOfKnowledge}>
-                {selectsData.allDepthOfKnowledge.map(el => (
+                {selectsData.allDepthOfKnowledge.map((el, index) => (
                   <Select.Option key={el.value} value={el.value}>
-                    {el.text}
+                    {`${index > 0 ? index : ""} ${el.text}`}
                   </Select.Option>
                 ))}
               </Select>

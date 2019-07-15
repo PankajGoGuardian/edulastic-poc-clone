@@ -5,6 +5,7 @@ import * as moment from "moment";
 import { MainContainer, LeftWrapper, MidWrapper, RightWrapper, Image, FieldValue } from "./styled";
 import defaultImage from "../../../src/assets/manageclass/abstract.jpg";
 import selectsData from "../../../TestPage/components/common/selectsData";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -33,7 +34,7 @@ const MainInfo = ({ entity = {} }) => {
       .filter(owner => owner.id !== parent.id)
       .map(owner => owner.name)
       .join(",");
-
+  const gradeSubject = { grades: grade, subjects: subject };
   return (
     <MainContainer>
       <LeftWrapper>
@@ -60,14 +61,23 @@ const MainInfo = ({ entity = {} }) => {
             <span>Other</span>
           )}
         </FieldValue>
-        <FieldValue>
-          <div>Course :</div>
-          <span>{course && course.name}</span>
-        </FieldValue>
-        <FieldValue>
-          <div>Co-Teachers :</div>
-          <span>{coTeachers}</span>
-        </FieldValue>
+        <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
+          <FieldValue>
+            <div>Course :</div>
+            <span>{course && course.name}</span>
+          </FieldValue>
+        </FeaturesSwitch>
+        <FeaturesSwitch
+          inputFeatures="addCoTeacher"
+          actionOnInaccessible="hidden"
+          key="addCoTeacher"
+          gradeSubject={gradeSubject}
+        >
+          <FieldValue>
+            <div>Co-Teachers :</div>
+            <span>{coTeachers}</span>
+          </FieldValue>
+        </FeaturesSwitch>
       </MidWrapper>
       <RightWrapper>
         <FieldValue>

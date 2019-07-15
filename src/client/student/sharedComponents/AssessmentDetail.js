@@ -45,16 +45,14 @@ const AssessmentDetails = ({
       </CardTitle>
       <CardDate>
         <Icon type={theme.assignment.cardTimeIconType} />
-        <span data-cy="date">
-          <StrongText>
-            {type === "assignment"
-              ? new Date(startDate) > new Date()
-                ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
-                : t("common.dueOn")
-              : t("common.finishedIn")}{" "}
-          </StrongText>
+        <DueDetails data-cy="date">
+          {type === "assignment"
+            ? new Date(startDate) > new Date()
+              ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
+              : t("common.dueOn")
+            : t("common.finishedIn")}{" "}
           {formatTime(dueDate)}
-        </span>
+        </DueDetails>
       </CardDate>
       <StatusWrapper>
         {type === "assignment" ? (
@@ -200,8 +198,7 @@ const CardDate = styled.div`
   }
 `;
 
-const StrongText = styled.span`
-  font-weight: 600;
+const DueDetails = styled.span`
   padding-left: 5px;
 `;
 const StatusWrapper = styled.div`

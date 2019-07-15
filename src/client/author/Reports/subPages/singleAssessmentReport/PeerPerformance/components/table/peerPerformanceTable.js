@@ -143,6 +143,7 @@ export const PeerPerformanceTable = ({
     } else if (analyseBy === "aboveBelowStandard") {
       arr[arr.length - 1].render = colorCell("fill_0", "aboveStandard", "Above Standard");
       arr[arr.length - 2].render = colorCell("fill_1", "belowStandard", "Below Standard");
+      arr[arr.length - 2].sorter = sortNumbers(arr[arr.length - 2].key);
       colouredCellsNo = 2;
     } else {
       bandInfo.sort((a, b) => {

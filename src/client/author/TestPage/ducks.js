@@ -60,7 +60,6 @@ export const CLEAR_CREATED_ITEMS_FROM_TEST = "[test] clear createdItems from tes
 export const PREVIEW_CHECK_ANSWER = "[test] check answer for preview modal";
 export const PREVIEW_SHOW_ANSWER = "[test] show answer for preview modal";
 export const REPLACE_TEST_ITEMS = "[test] replace test items";
-export const ADD_TEST_ITEM = "[test] add test item to test";
 export const UPDATE_TEST_DEFAULT_IMAGE = "[test] update default thumbnail image";
 
 // actions
@@ -142,8 +141,6 @@ export const setRegradeSettingsDataAction = payload => ({
   payload
 });
 
-export const addTestItemAction = createAction(ADD_TEST_ITEM);
-
 export const sendTestShareAction = createAction(TEST_SHARE);
 export const publishTestAction = createAction(TEST_PUBLISH);
 export const updateTestStatusAction = createAction(UPDATE_TEST_STATUS);
@@ -154,7 +151,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const setCreatedItemToTestAction = createAction(SET_CREATED_ITEM_TO_TEST);
 export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TEST);
 
-const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
+export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
 //reducer
 export const createBlankTest = () => ({
   title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
@@ -207,6 +204,7 @@ const initialState = {
   page: 1,
   limit: 20,
   count: 0,
+  updated: false,
   loading: false,
   creating: false,
   thumbnail: "",
@@ -217,7 +215,7 @@ const initialState = {
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_DEFAULT_TEST_DATA:
-      return { ...state, entity: createBlankTest() };
+      return { ...state, entity: createBlankTest(), updated: false };
     case UPDATE_TEST_DEFAULT_IMAGE:
       return { ...state, thumbnail: payload };
     case RECEIVE_TEST_BY_ID_REQUEST:
@@ -232,7 +230,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         entity: {
           ...payload.entity
-        }
+        },
+        updated: state.createdItems.length > 0
       };
     case RECEIVE_TEST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };
@@ -247,13 +246,15 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: { ...state.entity, ...entity },
         createdItems: [],
+        updated: false,
         creating: false
       };
     case UPDATE_ENTITY_DATA:
       const { testItems: items, ...dataRest } = payload.entity;
       return {
         ...state,
-        entity: { ...state.entity, ...dataRest }
+        entity: { ...state.entity, ...dataRest },
+        updated: false
       };
     case CREATE_TEST_ERROR:
     case UPDATE_TEST_ERROR:
@@ -264,7 +265,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           ...payload.data
-        }
+        },
+        updated: true
       };
     case UPDATE_TEST_IMAGE:
       return {
@@ -272,7 +274,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           thumbnail: payload.fileUrl
-        }
+        },
+        updated: true
       };
     case SET_MAX_ATTEMPT:
       return {
@@ -307,17 +310,21 @@ export const reducer = (state = initialState, { type, payload }) => {
           grades: [],
           subjects: []
         },
+        updated: false,
         createdItems: [],
+        thumbnail: "",
         sharedUsersList: []
       };
     case SET_CREATED_ITEM_TO_TEST:
       return {
         ...state,
-        createdItems: [...state.createdItems, payload]
+        createdItems: [...state.createdItems, payload],
+        updated: true
       };
     case TEST_CREATE_SUCCESS:
       return {
         ...state,
+        updated: false,
         creating: false
       };
     case UPDATE_SHARED_USERS_LIST:
@@ -336,14 +343,6 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           testItems: payload
-        }
-      };
-    case ADD_TEST_ITEM:
-      return {
-        ...state,
-        entity: {
-          ...state.entity,
-          testItems: [...state.entity.testItems, payload]
         }
       };
     default:
@@ -375,14 +374,9 @@ function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
     if (entity.thumbnail === defaultImage) {
-      const standardIdentifier =
-        entity.summary &&
-        entity.summary.standards &&
-        entity.summary.standards[0] &&
-        entity.summary.standards[0].identifier;
       const thumbnail = yield call(testsApi.getDefaultImage, {
-        subject: entity.subjects.length > 0 ? entity.subjects[0] : "Other Subjects",
-        standard: standardIdentifier || ""
+        subject: get(entity, "subjects[0]", "Other Subjects"),
+        standard: get(entity, "summary.standards[0].identifier", "")
       });
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
@@ -408,7 +402,8 @@ function* createTestSaga({ payload }) {
       delete payload.data.assignmentPassword;
     }
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
-    const entity = yield call(testsApi.create, dataToSend);
+    let entity = yield call(testsApi.create, dataToSend);
+    entity = { ...entity, ...payload.data };
     yield put({
       type: UPDATE_ENTITY_DATA,
       payload: {
@@ -421,7 +416,6 @@ function* createTestSaga({ payload }) {
       yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
     } else {
       const hash = payload.toReview ? "#review" : "";
-
       yield put(createTestSuccessAction(entity));
       yield put(replace(`/author/tests/${entity._id}${hash}`));
 
@@ -561,6 +555,13 @@ function* deleteSharedUserSaga({ payload }) {
 
 function* setTestDataAndUpdateSaga({ payload }) {
   try {
+    if (payload.data.thumbnail === defaultImage) {
+      const thumbnail = yield call(testsApi.getDefaultImage, {
+        subject: get(payload, "data.subjects[0]", "Other Subjects"),
+        standard: get(payload, "data.summary.standards[0].identifier", "")
+      });
+      yield put(updateDefaultThumbnailAction(thumbnail));
+    }
     yield put(setTestDataAction(payload.data));
     const { title } = payload.data;
     if (!title) {

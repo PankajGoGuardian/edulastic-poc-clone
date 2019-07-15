@@ -13,7 +13,6 @@ import { questionType } from "@edulastic/constants";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi } from "@edulastic/api";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
-import { addTestItemAction } from "../../../../TestPage/ducks";
 import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
@@ -53,11 +52,15 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = async () => {
-    const { data, addTestItemToList } = this.props;
+    const { data, testId, history } = this.props;
     const itemId = data.id;
     this.closeModal();
     const duplicatedItem = await duplicateTestItem(itemId);
-    addTestItemToList(duplicatedItem);
+    if (testId) {
+      history.push(`/author/tests/${testId}/createItem/${duplicatedItem._id}`);
+    } else {
+      history.push(`/author/items/${duplicatedItem._id}/item-detail`);
+    }
   };
 
   editTestItem = () => {
@@ -95,7 +98,7 @@ class PreviewModal extends React.Component {
     const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
 
-    const getAuthorsId = authors.map(item => item._id);
+    const getAuthorsId = authors.map(author => author._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     const { allowDuplicate } = collections.find(o => o._id === item.collectionName) || { allowDuplicate: true };
     return (
@@ -105,9 +108,9 @@ class PreviewModal extends React.Component {
         </HeadingWrapper>
         <QuestionWrapper padding="0px">
           {showEvaluationButtons && (
-            <FlexContainer padding="15px 15px 0px" justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
+            <FlexContainer padding="15px 15px 0px" justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
               <ButtonsWrapper>
-                {allowDuplicate && isEditable && (
+                {allowDuplicate && (
                   <EduButton
                     title="Duplicate"
                     style={{ width: 42, padding: 0 }}
@@ -165,20 +168,25 @@ PreviewModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
   isEditable: PropTypes.bool,
-  owner: PropTypes.bool,
-  addDuplicate: PropTypes.func,
-  showModal: PropTypes.bool,
-  item: PropTypes.object,
+  item: PropTypes.object.isRequired,
+  preview: PropTypes.any.isRequired,
+  currentAuthorId: PropTypes.string.isRequired,
+  collections: PropTypes.any.isRequired,
+  loading: PropTypes.bool,
   checkAnswer: PropTypes.func,
   showAnswer: PropTypes.func,
+  clearAnswers: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   showEvaluationButtons: PropTypes.bool,
-  questions: PropTypes.object.isRequired
+  testId: PropTypes.string.isRequired,
+  history: PropTypes.any.isRequired
 };
 
 PreviewModal.defaultProps = {
   checkAnswer: () => {},
   showAnswer: () => {},
+  loading: false,
+  isEditable: false,
   showEvaluationButtons: false
 };
 
@@ -193,8 +201,7 @@ const enhance = compose(
     }),
     {
       changeView: changePreviewAction,
-      clearAnswers: clearAnswersAction,
-      addTestItemToList: addTestItemAction
+      clearAnswers: clearAnswersAction
     }
   )
 );
@@ -230,9 +237,7 @@ const ButtonsWrapper = styled.div`
     margin: 0 10px;
   }
 `;
-const ButtonEdit = styled(Button)`
-  margin-left: 20px;
-`;
+
 const QuestionWrapper = styled.div`
   border-radius: 10px;
   background: #fff;

@@ -26,6 +26,7 @@ const CheckboxTemplateBoxLayout = ({
   showAnswer,
   checkAnswer,
   responseContainers,
+  annotations,
   image,
   canvasHeight,
   canvasWidth,
@@ -48,6 +49,7 @@ const CheckboxTemplateBoxLayout = ({
         width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
         height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
       >
+        {annotations}
         {image}
         {responseContainers.map((responseContainer, index) => {
           const dropTargetIndex = index;
@@ -100,7 +102,7 @@ const CheckboxTemplateBoxLayout = ({
                   className={`
                 imagelabeldragdrop-droppable
                 active
-                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}  
+                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}
                 ${status}`}
                   drop={drop}
                 >
@@ -168,7 +170,7 @@ const CheckboxTemplateBoxLayout = ({
                   className={`
               imagelabeldragdrop-droppable
               active
-              ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}  
+              ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}
               ${status} show-answer`}
                   drop={drop}
                 >
@@ -252,6 +254,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   showAnswer: PropTypes.bool.isRequired,
   checkAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
+  annotations: PropTypes.any.isRequired,
   image: PropTypes.any.isRequired,
   drop: PropTypes.func.isRequired,
   canvasWidth: PropTypes.number.isRequired,

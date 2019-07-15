@@ -185,7 +185,8 @@ class ClassResponses extends Component {
                   label={{
                     value: "AVG TIME (SECONDS)",
                     angle: -90,
-                    fill: "#999"
+                    fill: "#999",
+                    fontSize: "10px"
                   }}
                   orientation="right"
                   stroke="#999"

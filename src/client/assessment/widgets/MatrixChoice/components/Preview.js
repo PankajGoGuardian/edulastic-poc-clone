@@ -21,12 +21,14 @@ const Preview = ({
   disableResponse,
   showQuestionNumber,
   qIndex,
-  isReviewTab
+  isReviewTab,
+  changeView
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
     if (previewTab !== CLEAR) {
       changePreviewTab(CLEAR);
+      changeView(CLEAR);
     }
     let value = newAnswer.value[rowIndex];
     let findIndex;
@@ -86,7 +88,8 @@ Preview.propTypes = {
   smallSize: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  isReviewTab: PropTypes.bool
+  isReviewTab: PropTypes.bool,
+  changeView: PropTypes.func.isRequired
 };
 
 Preview.defaultProps = {

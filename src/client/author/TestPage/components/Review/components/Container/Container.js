@@ -31,12 +31,11 @@ import TestPreviewModal from "../../../../../Assignments/components/Container/Te
 const scoreOfItem = item => {
   if (item.itemLevelScoring) {
     return item.itemLevelScore;
-  } else {
-    return get(item, "data.questions", []).reduce(
-      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
-      0
-    );
   }
+  return get(item, "data.questions", []).reduce(
+    (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
+    0
+  );
 };
 
 const getTotalScore = testItems => testItems.map(item => scoreOfItem(item)).reduce((total, s) => total + s, 0);
@@ -59,7 +58,6 @@ class Review extends PureComponent {
   state = {
     isCollapse: true,
     isModalVisible: false,
-    questionCreateType: "Duplicate",
     item: [],
     isTestPreviewModalVisible: false,
     currentTestId: ""
@@ -112,8 +110,9 @@ class Review extends PureComponent {
   };
 
   handleCollapse = () => {
+    const { isCollapse } = this.state;
     this.setState({
-      isCollapse: !this.state.isCollapse
+      isCollapse: !isCollapse
     });
   };
 
@@ -216,20 +215,11 @@ class Review extends PureComponent {
       owner,
       defaultThumbnail,
       isEditable = false,
-      createTestItemModalVisible,
       itemsSubjectAndGrade,
       checkAnswer,
       showAnswer
     } = this.props;
-    const {
-      isCollapse,
-      isModalVisible,
-      item,
-      questionCreateType,
-      isTestPreviewModalVisible,
-      currentTestId
-    } = this.state;
-    const totalPoints = test.scoring.total;
+    const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId } = this.state;
 
     const questionsCount = test.testItems.length;
 
@@ -337,7 +327,7 @@ class Review extends PureComponent {
           testId={get(this.props, "match.params.id", false)}
           isVisible={isModalVisible}
           onClose={this.closeModal}
-          showModal={true}
+          showModal
           isEditable={isEditable}
           owner={owner}
           addDuplicate={this.handleDuplicateItem}
@@ -368,11 +358,24 @@ Review.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
+  clearDictAlignment: PropTypes.func.isRequired,
   owner: PropTypes.bool,
   onSaveTestId: PropTypes.func,
   current: PropTypes.string.isRequired,
+  history: PropTypes.any.isRequired,
+  clearAnswer: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  questions: PropTypes.object.isRequired
+  questions: PropTypes.object.isRequired,
+  itemsSubjectAndGrade: PropTypes.any.isRequired,
+  isEditable: PropTypes.bool.isRequired,
+  defaultThumbnail: PropTypes.any.isRequired
+};
+
+Review.defaultProps = {
+  owner: false,
+  onSaveTestId: () => {}
 };
 
 const enhance = compose(

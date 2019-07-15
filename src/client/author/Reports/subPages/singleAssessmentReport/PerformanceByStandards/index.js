@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { indexOf, filter as filterArr } from "lodash";
-import { Form, Select, Radio, Popover, Button, Icon } from "antd";
+import { indexOf, filter as filterArr, capitalize, find } from "lodash";
+import { Form, Select, Radio, Popover, Button, Icon, Row, Col } from "antd";
 import next from "immer";
 
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import SimpleBarChartContainer from "./components/charts/simpleBarChartContainer";
+import SimpleStackedBarChartContainer from "./components/charts/SimpleStackedBarChartContainer";
 import SignedStackedBarChartContainer from "./components/charts/SignedStackedBarChartContainer";
 import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
 import CardHeader, { CardTitle, CardDropdownWrapper } from "./common/CardHeader/CardHeader";
@@ -20,19 +20,27 @@ import {
 
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
-import { StyledSignedBarContainer } from "../../../common/styled";
+import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
 
 const PAGE_SIZE = 15;
+
+const findCompareByTitle = (key = "") => {
+  if (!key) return "";
+
+  const { title = "" } = find(dropDownFormat.compareByDropDownData, item => item.key == key) || {};
+
+  return title;
+};
 
 const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandards, match, settings, role }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
-  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.CLASS : compareByMode.SCHOOL);
+  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
   const [standardId, setStandardId] = useState(0);
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
-  const [page, setPage] = useState(0);
 
+  const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0;
   const isViewByStandards = viewBy === viewByMode.STANDARDS;
 
   const reportWithFilteredSkills = useMemo(() => {
@@ -140,7 +148,9 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
       <Form.Item label={filterTitle}>
         <Radio.Group value={radioValue} onChange={handleChange}>
           {data.map(({ title, key }) => (
-            <Radio value={key}>{title}</Radio>
+            <Radio key={key} value={key}>
+              {title}
+            </Radio>
           ))}
         </Radio.Group>
       </Form.Item>
@@ -154,7 +164,9 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
       <Form.Item label={filterTitle}>
         <Select value={selectValue} onChange={handleSetFilter(filterKey)}>
           {data.map(({ title, key }) => (
-            <Select.Option value={key}>{title}</Select.Option>
+            <Select.Option key={key} value={key}>
+              {title}
+            </Select.Option>
           ))}
         </Select>
       </Form.Item>
@@ -194,29 +206,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
     name: standardsMap[id]
   }));
 
-  const shouldShowReset = isViewByStandards ? selectedStandards.length : selectedDomains.length;
-
-  const tableData = analysisParseData(reportWithFilteredSkills, viewBy, compareBy);
-
-  const paginationOffset = page * PAGE_SIZE;
-  const paginatedData = tableData.slice(paginationOffset, paginationOffset + PAGE_SIZE);
-
-  const handlePrevPage = () => {
-    if (page === 0) return;
-
-    setPage(page - 1);
-  };
-
-  const handleNextPage = () => {
-    if (tableData.length <= paginationOffset) {
-      return;
-    }
-
-    setPage(page + 1);
-  };
-
-  const prevButtonDisabled = page === 0;
-  const nextButtonDisabled = (page + 1) * PAGE_SIZE >= tableData.length || tableData.length < PAGE_SIZE;
+  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter);
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
@@ -227,91 +217,89 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
 
   const selectedItems = isViewByStandards ? selectedStandards : selectedDomains;
 
+  const BarToRender =
+    analyzeBy === analyzeByMode.SCORE || analyzeBy === analyzeByMode.RAW_SCORE
+      ? SimpleStackedBarChartContainer
+      : SignedStackedBarChartContainer;
+
   return (
     <>
-      <StyledSignedBarContainer>
+      <StyledCard>
+        <Row type="flex" justify="start">
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <StyledH3>
+              Performance by {capitalize(`${viewBy}s`)} | {assignmentInfo}
+            </StyledH3>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Row>
+              <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+                <ControlDropDown
+                  prefix="View By"
+                  by={dropDownFormat.viewByDropDownData[0]}
+                  selectCB={handleViewByChange}
+                  data={dropDownFormat.viewByDropDownData}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+                <ControlDropDown
+                  prefix="Analyze By"
+                  by={dropDownFormat.analyzeByDropDownData[0]}
+                  selectCB={handleAnalyzeByChange}
+                  data={dropDownFormat.analyzeByDropDownData}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
+                <ControlDropDown
+                  prefix="Standard set"
+                  by={selectedStandardId || { key: "", title: "" }}
+                  selectCB={handleStandardIdChange}
+                  data={standardsDropdownData}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer xs={24} sm={24} md={2} lg={2} xl={2}>
+                {renderFilters()}
+              </StyledDropDownContainer>
+            </Row>
+          </Col>
+        </Row>
+        <StyledSignedBarContainer>
+          <BarToRender
+            report={reportWithFilteredSkills}
+            filter={filter}
+            viewBy={viewBy}
+            analyzeBy={analyzeBy}
+            onBarClick={handleToggleSelectedData}
+            selectedData={selectedItems}
+            onResetClick={handleResetSelection}
+          />
+        </StyledSignedBarContainer>
+      </StyledCard>
+      <StyledCard style={{ marginTop: "20px" }}>
         <CardHeader>
-          <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
-          <CardDropdownWrapper>
-            <ControlDropDown
-              prefix="View By"
-              by={dropDownFormat.viewByDropDownData[0]}
-              selectCB={handleViewByChange}
-              data={dropDownFormat.viewByDropDownData}
-            />
-            <ControlDropDown
-              prefix="Analyze By"
-              by={dropDownFormat.analyzeByDropDownData[0]}
-              selectCB={handleAnalyzeByChange}
-              data={dropDownFormat.analyzeByDropDownData}
-            />
-            <ControlDropDown
-              prefix=""
-              by={selectedStandardId || { key: "", title: "" }}
-              selectCB={handleStandardIdChange}
-              data={standardsDropdownData}
-            />
-            {renderFilters()}
-          </CardDropdownWrapper>
-        </CardHeader>
-        <>
-          {analyzeBy === analyzeByMode.SCORE || analyzeBy === analyzeByMode.RAW_SCORE ? (
-            <SimpleBarChartContainer
-              report={reportWithFilteredSkills}
-              filter={filter}
-              viewBy={viewBy}
-              analyzeBy={analyzeBy}
-              onBarClick={handleToggleSelectedData}
-              selectedDomains={selectedDomains}
-              selectedStandards={selectedStandards}
-              shouldShowReset={shouldShowReset}
-              onResetClick={handleResetSelection}
-            />
-          ) : (
-            <SignedStackedBarChartContainer
-              report={reportWithFilteredSkills}
-              filter={filter}
-              viewBy={viewBy}
-              analyzeBy={analyzeBy}
-              onBarClick={handleToggleSelectedData}
-              selectedData={selectedItems}
-              onResetClick={handleResetSelection}
-            />
-          )}
-        </>
-      </StyledSignedBarContainer>
-      <StyledSignedBarContainer style={{ marginTop: "20px" }}>
-        <CardHeader>
-          <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
+          <CardTitle>
+            {capitalize(viewBy)} Performance Analysis by {findCompareByTitle(compareBy)} | {assignmentInfo}
+          </CardTitle>
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="Compare By"
-              by={filteredDropDownData[0]}
+              by={filteredDropDownData[compareByIndex]}
               selectCB={handleCompareByChange}
               data={filteredDropDownData}
             />
-            <Button.Group size="middle">
-              <Button onClick={handlePrevPage} disabled={prevButtonDisabled}>
-                <Icon type="left" />
-                Prev
-              </Button>
-              <Button onClick={handleNextPage} disabled={nextButtonDisabled}>
-                Next
-                <Icon type="right" />
-              </Button>
-            </Button.Group>
           </CardDropdownWrapper>
         </CardHeader>
         <PerformanceAnalysisTable
-          tableData={paginatedData}
+          tableData={tableData}
           report={reportWithFilteredSkills}
           viewBy={viewBy}
           analyzeBy={analyzeBy}
           compareBy={compareBy}
           selectedStandards={selectedStandards}
           selectedDomains={selectedDomains}
+          totalPoints={totalPoints}
         />
-      </StyledSignedBarContainer>
+      </StyledCard>
     </>
   );
 };

@@ -330,7 +330,7 @@ class QuestionWrapper extends Component {
               data-cy="question-container"
             >
               <PaperWrapper
-                className="question-wrapper"
+                // className="question-wrapper" // this style not working with test item layout columns settings (when > 1 columns)
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 style={{

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileWidth, themeColor } from "@edulastic/colors";
+import { mobileWidth, themeColor, themeColorTagsBg } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { Card } from "antd";
 
@@ -12,8 +12,8 @@ export const PaginationInfo = styled.div`
   color: #1890ffd9;
 `;
 export const StyledFlexContainer = styled(FlexContainer)`
-  width: 95%;
-  margin: 0px auto;
+  width: 100%;
+  margin: 0px;
 `;
 
 export const LabelContainer = styled.div`
@@ -30,6 +30,7 @@ export const StyledCard = styled(Card)`
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
   .ant-card-body {
+    padding: 20px 30px;
   }
 
   .recharts-rectangle {
@@ -66,9 +67,10 @@ export const ResponseCardTitle = styled.span`
 `;
 
 export const CircularDiv = styled.div`
-  background-color: #e7f1fd;
+  background-color: ${themeColorTagsBg};
   width: 34px;
   height: 34px;
+  line-height: 34px;
   border-radius: 50%;
   color: ${themeColor};
   font-weight: 600;

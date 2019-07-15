@@ -215,6 +215,9 @@ class Display extends Component {
     const { userAnswers: _uAnswers, possibleResponses } = this.state;
     const cAnswers = get(item, "validation.valid_response.value", []);
 
+    const transparentBackground = get(item, "responseLayout.transparentbackground", false);
+    const showDropItemBorder = get(item, "responseLayout.showborder", false);
+
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
 
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
@@ -259,6 +262,19 @@ class Display extends Component {
       canvasWidth = responseBoxMaxLeft;
     }
 
+    const renderAnnotations = () => (
+      <div style={{ position: "relative" }}>
+        <AnnotationRnd
+          style={{
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            border: preview ? null : "1px solid lightgray"
+          }}
+          questionId={questionId}
+        />
+      </div>
+    );
+
     const renderImage = () => (
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
@@ -288,16 +304,7 @@ class Display extends Component {
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
           height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
         >
-          <div style={{ position: "relative" }}>
-            <AnnotationRnd
-              style={{
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                border: preview ? null : "1px solid lightgray"
-              }}
-              questionId={questionId}
-            />
-          </div>
+          {renderAnnotations()}
           {renderImage()}
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
@@ -307,11 +314,13 @@ class Display extends Component {
               top: smallSize ? responseContainer.top / 2 : responseContainer.top,
               left: smallSize ? responseContainer.left / 2 : responseContainer.left,
               height: smallSize ? responseContainer.height / 2 : responseContainer.height,
-              border: showDashedBorder
-                ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
-                : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
+              border: showDropItemBorder
+                ? showDashedBorder
+                  ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
+                  : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
+                : 0,
               position: "absolute",
-              background: backgroundColor,
+              background: transparentBackground ? "transparent" : backgroundColor,
               borderRadius: 5
               // overflow: "hidden"
             };
@@ -400,6 +409,7 @@ class Display extends Component {
         responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
+        annotations={renderAnnotations()}
         image={renderImage()}
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}

@@ -86,9 +86,7 @@ export const SimpleStackedBarChartContainer = ({
       return {
         yDomain: [0, 110],
         ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        formatter: val => {
-          return val + "%";
-        },
+        formatter: val => val + "%",
         yAxisLabel: yAxisLabel,
         referenceLineY: referenceLineY
       };
@@ -99,9 +97,7 @@ export const SimpleStackedBarChartContainer = ({
       return {
         yDomain: [0, max + (arr[1] - arr[0])],
         ticks: arr,
-        formatter: val => {
-          return val;
-        },
+        formatter: val => val,
         yAxisLabel: "Avg. Score",
         referenceLineY: referenceLineY
       };

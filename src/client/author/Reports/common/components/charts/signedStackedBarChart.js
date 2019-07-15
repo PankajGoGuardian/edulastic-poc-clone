@@ -18,16 +18,12 @@ import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 import { YAxisLabel } from "./chartUtils/yAxisLabel";
 
-const _yTickFormatter = val => {
+const _barsLabelFormatter = val => {
   if (val !== 0) {
     return val + "%";
   } else {
     return "";
   }
-};
-
-const __yTickFormatter = val => {
-  return val + "%";
 };
 
 const LabelText = props => {
@@ -54,8 +50,8 @@ export const SignedStackedBarChart = ({
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = __yTickFormatter,
-  barsLabelFormatter = _yTickFormatter,
+  yTickFormatter = val => val + "%",
+  barsLabelFormatter = _barsLabelFormatter,
   referenceLine = 0,
   filter = {}
 }) => {

@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus, Subtitle } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, CorrectAnswersContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 import { charts as checkAnswerMethod } from "@edulastic/evaluators";
@@ -16,7 +16,6 @@ import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
-import { CorrectAnswerWrapper } from "./styled";
 
 const ChartPreview = ({
   item,
@@ -125,8 +124,7 @@ const ChartPreview = ({
         correct={correct}
       />
       {view === PREVIEW && previewTab === SHOW && (
-        <CorrectAnswerWrapper>
-          <Subtitle>{t("component.chart.correctAnswer")}</Subtitle>
+        <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
           <CurrentChart
             {...passData}
             data={answerData}
@@ -137,15 +135,14 @@ const ChartPreview = ({
             saveAnswer={saveAnswerHandler}
             correct={answerCorrect}
           />
-        </CorrectAnswerWrapper>
+        </CorrectAnswersContainer>
       )}
 
       {view === PREVIEW &&
         previewTab === SHOW &&
         altAnswerData.length &&
         altAnswerData.map((ans, index) => (
-          <CorrectAnswerWrapper key={index}>
-            <Subtitle>{`${t("component.chart.alternateAnswer")} ${index + 1}`}</Subtitle>
+          <CorrectAnswersContainer title={`${t("component.chart.alternateAnswer")} ${index + 1}`}>
             <CurrentChart
               {...passData}
               data={ans.value}
@@ -156,7 +153,7 @@ const ChartPreview = ({
               saveAnswer={saveAnswerHandler}
               correct={altAnswerCorrect[index]}
             />
-          </CorrectAnswerWrapper>
+          </CorrectAnswersContainer>
         ))}
     </Paper>
   );

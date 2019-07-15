@@ -716,6 +716,9 @@ export const themes = {
         instructorStimulusBgColor: "#93d8f7", // lightBlue
         headingFontSize: "22px",
         headingFontWeight: "700"
+      },
+      chart: {
+        bgColor: "#fff"
       }
     }
   }

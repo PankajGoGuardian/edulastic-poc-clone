@@ -75,7 +75,3 @@ export const Cross = styled.path`
   fill: ${themeColorLight};
   stroke-width: 4;
 `;
-
-export const CorrectAnswerWrapper = styled.div`
-  margin-top: 50px;
-`;

@@ -98,7 +98,7 @@ const SortableItem = SortableElement(
                   style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex" }}
                   cols={item}
                   metaData={metaInfoData.id}
-                  previewTab="clear"
+                  preview="show"
                   verticalDivider={item.verticalDivider}
                   disableResponse
                   scrolling={item.scrolling}
@@ -127,7 +127,7 @@ const SortableItem = SortableElement(
                     <TestItemPreview
                       style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex", width: "95%" }}
                       cols={_item}
-                      previewTab="clear"
+                      preview="show"
                       metaData={metaInfoData.id}
                       disableResponse
                       verticalDivider={item.verticalDivider}

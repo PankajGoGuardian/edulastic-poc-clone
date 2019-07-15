@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { withTheme } from "styled-components";
 
 import { FlexContainer } from "@edulastic/common";
 
@@ -8,6 +9,7 @@ import { getYAxis, getPadding } from "../helpers";
 const withGrid = WrappedComponent => {
   const hocComponent = props => {
     const {
+      theme,
       name,
       gridParams: { width, margin, yAxisMax, yAxisMin, stepSize, xAxisLabel, yAxisLabel }
     } = props;
@@ -16,7 +18,7 @@ const withGrid = WrappedComponent => {
     const padding = getPadding(yAxis);
 
     return (
-      <FlexContainer justifyContent="flex-start">
+      <FlexContainer justifyContent="flex-start" style={{ background: theme.widgets.chart.bgColor }}>
         <FlexContainer style={{ transform: "rotate(-90deg)", width: 40, whiteSpace: "nowrap", marginTop: margin }}>
           {yAxisLabel}
         </FlexContainer>
@@ -34,6 +36,7 @@ const withGrid = WrappedComponent => {
   };
 
   hocComponent.propTypes = {
+    theme: PropTypes.any.isRequired,
     data: PropTypes.array.isRequired,
     name: PropTypes.string.isRequired,
     gridParams: PropTypes.shape({
@@ -59,7 +62,7 @@ const withGrid = WrappedComponent => {
     }
   };
 
-  return hocComponent;
+  return withTheme(hocComponent);
 };
 
 export default withGrid;

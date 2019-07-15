@@ -1161,7 +1161,7 @@ export const KEYBOARD_BUTTONS = [
     handler: "\\sin^{-1}",
     label: <CustomImage src={Group2251} role="presentation" />,
     types: ["all", "advanced"],
-    command: "cmd"
+    command: "write"
   },
   {
     handler: "\\cos^{-1}",

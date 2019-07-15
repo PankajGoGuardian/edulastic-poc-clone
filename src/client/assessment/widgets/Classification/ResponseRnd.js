@@ -76,7 +76,6 @@ const ResponseRnd = props => {
   const rndY = get(question, `responseOptions[${index}].y`, delta * offset);
   const rndWidth = get(question, `responseOptions[${index}].width`, width);
   const rndHeight = get(question, `responseOptions[${index}].height`, height);
-
   return (
     <div style={{ position: "relative", minHeight: rndHeight }}>
       <Rnd
@@ -87,6 +86,7 @@ const ResponseRnd = props => {
           padding: "2px",
           border: `1px solid ${lightGrey}`
         }}
+        size={{ width: rndWidth, height: rndHeight }}
         default={{
           x: rndX,
           y: rndY,

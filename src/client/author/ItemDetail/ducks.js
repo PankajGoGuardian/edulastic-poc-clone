@@ -658,9 +658,10 @@ function* publishTestItemSaga({ payload }) {
       const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
       yield put(togglePublishWarningModalAction(false));
 
-      // if he wishes to add some just close the modal and do nothing - yeah, nothing!
+      // if he wishes to add some just close the modal and switch to metadata tab!
       // else continue the normal flow.
       if (!publishItem) {
+        yield put(changeViewAction("metadata"));
         return;
       }
     }

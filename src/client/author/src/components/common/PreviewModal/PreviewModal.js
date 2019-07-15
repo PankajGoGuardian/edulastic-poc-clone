@@ -110,7 +110,7 @@ class PreviewModal extends React.Component {
           {showEvaluationButtons && (
             <FlexContainer padding="15px 15px 0px" justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
               <ButtonsWrapper>
-                {allowDuplicate && isEditable && (
+                {allowDuplicate && (
                   <EduButton
                     title="Duplicate"
                     style={{ width: 42, padding: 0 }}

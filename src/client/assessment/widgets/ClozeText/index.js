@@ -277,6 +277,7 @@ class ClozeText extends Component {
                 showIndex
                 view={view}
                 previewTab={previewTab}
+                {...restProps}
               />
             )}
             {previewTab === "show" && (

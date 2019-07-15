@@ -436,15 +436,19 @@ class Display extends Component {
         transparentResponses={transparentResponses}
       />
     );
+
+    const validAnswers = get(item, "validation.valid_response.value", []);
+    const altAnswers = get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
+    const allAnswers = [validAnswers, ...altAnswers];
+
     const correctAnswerBoxLayout = showAnswer ? (
-      <CorrectAnswerBoxLayout
-        fontSize={fontSize}
-        groupResponses={options}
-        userAnswers={validation.valid_response && validation.valid_response.value}
-      />
+      allAnswers.map(answers => (
+        <CorrectAnswerBoxLayout fontSize={fontSize} groupResponses={options} userAnswers={answers} />
+      ))
     ) : (
       <div />
     );
+
     const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 

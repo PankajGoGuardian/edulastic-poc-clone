@@ -13,7 +13,7 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
         ? " -"
         : user.firstName === ""
         ? "Student name will be auto-updated after first sign-in"
-        : `${user.firstName} ${user.lastName}`
+        : `${user.firstName} ${user.lastName || ""}`
   }));
   const columns = [
     {

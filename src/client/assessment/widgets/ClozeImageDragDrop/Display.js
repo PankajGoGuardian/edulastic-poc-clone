@@ -442,8 +442,13 @@ class Display extends Component {
     const allAnswers = [validAnswers, ...altAnswers];
 
     const correctAnswerBoxLayout = showAnswer ? (
-      allAnswers.map(answers => (
-        <CorrectAnswerBoxLayout fontSize={fontSize} groupResponses={options} userAnswers={answers} />
+      allAnswers.map((answers, answersIndex) => (
+        <CorrectAnswerBoxLayout
+          fontSize={fontSize}
+          groupResponses={options}
+          userAnswers={answers}
+          title={answersIndex === 0 ? "Correct Answer" : "Alternate Answer"}
+        />
       ))
     ) : (
       <div />

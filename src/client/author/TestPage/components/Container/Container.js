@@ -120,7 +120,6 @@ class Container extends PureComponent {
   }
 
   componentWillUnmount() {
-    console.log("unmount");
     const {
       test,
       match: { params },
@@ -138,7 +137,6 @@ class Container extends PureComponent {
   }
 
   handleNavChange = (value, firstFlow) => () => {
-    console.log("nav change");
     const {
       test,
       match: { params },

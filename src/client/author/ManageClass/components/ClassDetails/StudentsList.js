@@ -23,12 +23,8 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
 
   const empty = isEmpty(students);
   // here only students without enrollmentStatus as "0" are shown
-  const filteredStudents =
-    students.length > 0
-      ? !showAllStudents
-        ? students.filter(student => student.enrollmentStatus !== "0")
-        : [...students]
-      : [];
+  let filteredStudents = [];
+  filteredStudents = !showAllStudents ? students.filter(student => student.enrollmentStatus !== "0") : [...students];
 
   const columns = [
     {

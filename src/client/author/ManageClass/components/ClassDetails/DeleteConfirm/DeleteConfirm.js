@@ -93,7 +93,7 @@ class DeleteConfirm extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer}>
+      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer} destroyOnClose={true}>
         {this.renderUserNames()}
         <Description>
           Are you sure you want to remove the selected students from the class? <br />

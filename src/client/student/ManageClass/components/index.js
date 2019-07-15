@@ -1,36 +1,45 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 // components
 import ManageHeader from "../../sharedComponents/Header";
 import SubHeader from "./SubHeader";
 import ManageClassContainer from "./Container";
-import { getEnrollClassAction } from "../ducks";
+import { getEnrollClassAction, setFilterClassAction } from "../ducks";
 
 const Wrapper = styled(Layout)`
   width: 100%;
 `;
 
-const ManageClass = ({ enrollClassList, loadEnrollClasses, loading }) => {
+const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList }) => {
   useEffect(() => {
-    loadEnrollClasses();
+    loadAllClasses();
   }, []);
+  if (loading) return <Spin />;
   return (
     <Wrapper>
-      <ManageHeader titleText="common.manageClassTitle" classSelect={false} showActiveClass={true} />
+      <ManageHeader
+        titleText="common.manageClassTitle"
+        classSelect={false}
+        showActiveClass={true}
+        classList={allClasses}
+        setClassList={setClassList}
+      />
       <SubHeader />
-      <ManageClassContainer classList={enrollClassList} loading={loading} />
+      <ManageClassContainer classList={filterClasses} loading={loading} />
     </Wrapper>
   );
 };
 
 export default connect(
   state => ({
-    enrollClassList: state.studentEnrollClassList.enrollClasslist,
+    allClasses: state.studentEnrollClassList.allClasses,
+    filterClasses: state.studentEnrollClassList.filteredClasses,
     loading: state.studentEnrollClassList.loading
   }),
   {
-    loadEnrollClasses: getEnrollClassAction
+    loadAllClasses: getEnrollClassAction,
+    setClassList: setFilterClassAction
   }
 )(ManageClass);

@@ -4,6 +4,7 @@ import { withTheme } from "styled-components";
 
 import { MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { green } from "@edulastic/colors";
 
 const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
   const results = userAnswers;
@@ -45,7 +46,8 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
                   alignItems: "center",
                   justifyContent: "center",
                   alignSelf: "stretch",
-                  height: "auto"
+                  height: "auto",
+                  backgroundColor: green
                 }}
               >
                 {index + 1}

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
 import { keyBy as _keyBy, isEmpty } from "lodash";
 // components
@@ -6,11 +6,13 @@ import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
+import { AnswerContext } from "@edulastic/common";
 
 function Preview({ item, qIndex, studentId, evaluation }) {
   const rows = getRows(item);
   const questions = (item.data && item.data.questions) || [];
   const questionsKeyed = _keyBy(questions, "id");
+  const answerContextConfig = useContext(AnswerContext);
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
       <TestItemPreview
@@ -19,7 +21,7 @@ function Preview({ item, qIndex, studentId, evaluation }) {
         preview="show"
         previewTab="show"
         questions={questionsKeyed}
-        disableResponse
+        disableResponse={!answerContextConfig.isAnswerModifiable}
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
         style={{ width: "100%" }}
@@ -91,10 +93,17 @@ class ClassQuestions extends Component {
             }
           }
         }
-        const questions = [...data.questions, ...data.resources]
+
+        let questions = data.questions
           .map(question => {
             const { id } = question;
             let qActivities = questionActivities.filter(({ qid }) => qid === id);
+            if (qActivities.length > 1) {
+              /**
+               * taking latest qActivity for a qid
+               */
+              qActivities = [qActivities[qActivities.length - 1]];
+            }
             qActivities = qActivities.map(q => ({
               ...q,
               studentName: this.getStudentName(),
@@ -139,6 +148,7 @@ class ClassQuestions extends Component {
             return { ...question, ...label };
           })
           .filter(x => x);
+        questions = [...questions, ...data.resources];
         return { ...others, rows, data: { questions } };
       })
       .filter(x => x);

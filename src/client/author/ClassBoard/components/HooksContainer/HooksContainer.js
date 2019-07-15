@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   realtimeGradebookActivityAddAction,
-  realtimeGradebookTestItemAddAction,
+  gradebookTestItemAddAction,
   realtimeGradebookActivitySubmitAction,
   realtimeGradebookQuestionAddMaxScoreAction,
   realtimeGradebookQuestionsRemoveAction,
@@ -48,7 +48,7 @@ export default compose(
     null,
     {
       addActivity: realtimeGradebookActivityAddAction,
-      addItem: realtimeGradebookTestItemAddAction,
+      addItem: gradebookTestItemAddAction,
       submitActivity: realtimeGradebookActivitySubmitAction,
       removeQuestions: realtimeGradebookQuestionsRemoveAction,
       addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,

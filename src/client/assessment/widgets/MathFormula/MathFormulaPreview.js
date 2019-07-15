@@ -12,7 +12,7 @@ import MathInputStatus from "./components/MathInputStatus/index";
 import MathInputWrapper from "./styled/MathInputWrapper";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
-import { getStylesFromUiStyleToCssStyle, mathValidateVariables } from "../../utils/helpers";
+import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 
 class MathFormulaPreview extends Component {
   static propTypes = {
@@ -105,28 +105,40 @@ class MathFormulaPreview extends Component {
   }
 
   onUserResponse(latexv) {
-    const { saveAnswer, item } = this.props;
-    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
-    const validatedVal = mathValidateVariables(latexv, options);
-
+    const { saveAnswer } = this.props;
     // if (previewType === CHECK) return;
     if (this.isStatic()) {
-      saveAnswer(validatedVal);
+      saveAnswer(latexv);
       return;
     }
 
-    saveAnswer(validatedVal);
+    saveAnswer(latexv);
   }
 
   onBlur(latexv) {
-    const { type: previewType, saveAnswer, item } = this.props;
-    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
-    const validatedVal = mathValidateVariables(latexv, options);
-
+    const { type: previewType, saveAnswer } = this.props;
     if (this.isStatic() && previewType !== CHECK) {
-      saveAnswer(validatedVal);
+      saveAnswer(latexv);
     }
   }
+
+  specialKeyCheck = e => {
+    if (!e) {
+      return false;
+    }
+
+    if (e === "cmd") {
+      return true;
+    }
+
+    const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
+    const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+
+    if (!isSpecialChar || isArrowOrShift) {
+      return false;
+    }
+    return true;
+  };
 
   onInnerFieldClick() {
     const { type: previewType, changePreview, changePreviewTab } = this.props;

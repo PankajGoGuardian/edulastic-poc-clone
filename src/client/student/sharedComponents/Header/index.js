@@ -8,12 +8,12 @@ import HeaderWrapper from "./headerWrapper";
 import ClassSelect from "../ClassSelector";
 import ShowActiveClass from "../ShowActiveClasses";
 
-const Header = ({ t, titleText, classSelect = true, showActiveClass = false }) => (
+const Header = ({ t, titleText, classList, classSelect, showActiveClass, setClassList }) => (
   <HeaderWrapper>
     <Wrapper>
       <AssignmentTitle>{t(titleText)}</AssignmentTitle>
-      {classSelect && <ClassSelect t={t} />}
-      {showActiveClass && <ShowActiveClass t={t} />}
+      {classSelect && <ClassSelect t={t} classList={classList} />}
+      {showActiveClass && <ShowActiveClass t={t} classList={classList} setClassList={setClassList} />}
     </Wrapper>
   </HeaderWrapper>
 );

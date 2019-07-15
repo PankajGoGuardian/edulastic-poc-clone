@@ -185,7 +185,7 @@ class FeedbackRight extends Component {
               data-cy="scoreInput"
               onChange={this.onChangeScore}
               onBlur={this.preCheckSubmit}
-              value={activity && activity.graded === false ? "" : round(score, 2)}
+              value={activity && activity.graded === false && activity.score === 0 && !score ? "" : round(score, 2)}
               disabled={!activity || isPresentationMode}
               innerRef={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}

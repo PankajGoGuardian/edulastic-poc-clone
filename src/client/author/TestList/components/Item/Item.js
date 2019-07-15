@@ -28,6 +28,7 @@ import {
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
+import { TestStatus, StatusWrapper, UsageWrapper } from "../ListItem/styled";
 
 class Item extends Component {
   static propTypes = {
@@ -171,31 +172,31 @@ class Item extends Component {
             {authorName && (
               <Author>
                 <IconText>Created by</IconText>
-
                 <AuthorWrapper>
                   <IconUser /> &nbsp;
                   <AuthorName title={authorName}>{authorName}</AuthorName>
                 </AuthorWrapper>
               </Author>
             )}
-            {status !== "draft" && (
-              <>
-                <ShareIcon>
-                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                  <IconText>{usage}</IconText>
-                </ShareIcon>
-                <LikeIcon>
-                  <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                  <IconText>{likes}</IconText>
-                </LikeIcon>
-              </>
-            )}
-            {status === "draft" && (
-              <DraftIconWrapper>
-                <IconDraft /> &nbsp;
-                <IconText>In Draft</IconText>
-              </DraftIconWrapper>
-            )}
+            <StatusWrapper>
+              {!isPlaylist && (
+                <TestStatus status={status} view="tile">
+                  {status}
+                </TestStatus>
+              )}
+              {status !== "draft" && (
+                <UsageWrapper>
+                  <ShareIcon>
+                    <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                    <IconText>{usage}</IconText>
+                  </ShareIcon>
+                  <LikeIcon>
+                    <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+                    <IconText>{likes}</IconText>
+                  </LikeIcon>
+                </UsageWrapper>
+              )}
+            </StatusWrapper>
           </Footer>
         </Container>
       </>

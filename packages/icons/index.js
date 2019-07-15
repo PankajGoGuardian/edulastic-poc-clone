@@ -160,3 +160,4 @@ export { default as IconWrong } from "./src/IconWrong";
 export { default as IconRedirect } from "./src/IconRedirect";
 export { default as IconPrint } from "./src/IconPrint";
 export { default as IconGoogleClassroom } from "./src/IconGoogleClassroom";
+export { default as IconMultipart } from "./src/IconMultipart";

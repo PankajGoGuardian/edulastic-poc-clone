@@ -301,8 +301,7 @@ class ShareModal extends React.Component {
                     value={`${item._source.firstName}${"||"}${item._source.email}${"||"}${item._id}`}
                     key={item._id}
                   >
-                    {item._source.firstName}
-                    {", "}
+                    {item._source.firstName} {item._source.lastName ? `${item._source.lastName}, ` : ", "}
                     {item._source.email}
                   </Select.Option>
                 ))}

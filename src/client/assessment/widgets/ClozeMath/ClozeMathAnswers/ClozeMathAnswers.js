@@ -251,6 +251,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
+  const handleAllowedVariables = variables => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.allowedVariables = variables;
+      })
+    );
+  };
+
   const mathAnswers = get(item, "validation.valid_response.value", []);
   const inputAnswers = get(item, "validation.valid_inputs.value", []);
   const dropDownAnswers = get(item, "validation.valid_dropdown.value", []);
@@ -324,6 +332,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                 <MathFormulaAnswer
                   item={item}
                   onChange={_changeCorrectMethod}
+                  onChangeAllowedVars={handleAllowedVariables}
                   onAdd={_addCorrectMethod}
                   onDelete={_deleteCorrectMethod}
                   answers={[answer]}
@@ -340,6 +349,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                       key={i}
                       item={item}
                       onChange={_changeAltMethod(i)}
+                      onChangeAllowedVars={handleAllowedVariables}
                       onAdd={_addAltMethod(i)}
                       onDelete={_deleteAltMethod(i)}
                       answers={[altAnswer]}

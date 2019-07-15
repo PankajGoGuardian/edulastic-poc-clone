@@ -423,6 +423,7 @@ MathFormulaAnswerMethod.propTypes = {
   options: PropTypes.object,
   value: PropTypes.string,
   method: PropTypes.string,
+  style: PropTypes.object,
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
@@ -436,6 +437,7 @@ MathFormulaAnswerMethod.propTypes = {
 MathFormulaAnswerMethod.defaultProps = {
   value: "",
   method: "",
+  style: {},
   options: {},
   onDelete: undefined,
   showAdditionals: [],

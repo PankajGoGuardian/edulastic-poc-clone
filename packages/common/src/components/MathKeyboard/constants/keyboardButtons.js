@@ -329,6 +329,12 @@ export const KEYBOARD_BUTTONS_ALL = [
   },
   // Trigonometry
   {
+    handler: "\\log", // handler: "\\iota"
+    label: "log",
+    types: ["all", "advanced"],
+    command: "cmd"
+  },
+  {
     handler: "\\sin",
     label: "sin",
     types: ["all", "trigonometry"],
@@ -614,7 +620,7 @@ export const KEYBOARD_BUTTONS_ALL = [
     command: "cmd"
   },
   {
-    handler: "fl oz",
+    handler: "\\fl oz",
     label: "fl oz",
     types: ["all", "units_us"],
     command: "cmd"

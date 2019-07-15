@@ -365,14 +365,9 @@ function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
     if (entity.thumbnail === defaultImage) {
-      const standardIdentifier =
-        entity.summary &&
-        entity.summary.standards &&
-        entity.summary.standards[0] &&
-        entity.summary.standards[0].identifier;
       const thumbnail = yield call(testsApi.getDefaultImage, {
-        subject: entity.subjects.length > 0 ? entity.subjects[0] : "Other Subjects",
-        standard: standardIdentifier || ""
+        subject: get(entity, "subjects[0]", "Other Subjects"),
+        standard: get(entity, "summary.standards[0].identifier", "")
       });
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
@@ -552,14 +547,9 @@ function* deleteSharedUserSaga({ payload }) {
 function* setTestDataAndUpdateSaga({ payload }) {
   try {
     if (payload.data.thumbnail === defaultImage) {
-      const standardIdentifier =
-        payload.data.summary &&
-        payload.data.summary.standards &&
-        payload.data.summary.standards[0] &&
-        payload.data.summary.standards[0].identifier;
       const thumbnail = yield call(testsApi.getDefaultImage, {
-        subject: payload.data.subjects.length > 0 ? payload.data.subjects[0] : "Other Subjects",
-        standard: standardIdentifier || ""
+        subject: get(payload, "data.subjects[0]", "Other Subjects"),
+        standard: get(payload, "data.summary.standards[0].identifier", "")
       });
       yield put(updateDefaultThumbnailAction(thumbnail));
     }

@@ -62,7 +62,7 @@ const updateResponseEntryAndScore = ({ testActivityId, itemId, ...data }) =>
       method: "put",
       data
     })
-    .then(result => result.data.result);
+    .then(result => result.data);
 
 const updateQuestionFeedBack = ({ testActivityId, questionId, ...data }) =>
   api

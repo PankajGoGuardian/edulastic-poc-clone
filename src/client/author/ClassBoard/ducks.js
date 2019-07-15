@@ -2,7 +2,8 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { classBoardApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
-import { values as _values, get, keyBy, sortBy } from "lodash";
+
+import { values as _values, get, keyBy, sortBy ,isEmpty} from "lodash";
 
 import {
   setShowScoreAction,
@@ -331,6 +332,7 @@ export const stateStudentResponseSelector = state => state.studentResponse;
 export const stateClassStudentResponseSelector = state => state.classStudentResponse;
 export const stateFeedbackResponseSelector = state => state.feedbackResponse;
 export const stateStudentAnswerSelector = state => state.studentQuestionResponse;
+export const stateExpressGraderAnswerSelector = state => state.answers;
 export const stateQuestionAnswersSelector = state => state.classQuestionResponse;
 
 export const getClassResponseSelector = createSelector(
@@ -360,7 +362,21 @@ export const getFeedbackResponseSelector = createSelector(
 
 export const getStudentQuestionSelector = createSelector(
   stateStudentAnswerSelector,
-  state => state.data
+  stateExpressGraderAnswerSelector,
+  (state, egAnswers) => {
+    if (!isEmpty(state.data)) {
+      const data = Array.isArray(state.data) ? state.data : [state.data];
+      return data.map(x => {
+        if (egAnswers[x.qid]) {
+          return { ...x, userResponse: egAnswers[x.qid] };
+        } else {
+          return x;
+        }
+      });
+    } else {
+      return [];
+    }
+  }
 );
 
 export const getClassQuestionSelector = createSelector(

@@ -34,7 +34,9 @@ export default WrappedComponent => {
         userAnswer: getUserAnswerSelector(state, props),
         evaluation: getEvaluationByIdSelector(state, props)
       }),
-      { setUserAnswer: setUserAnswerAction }
+      {
+        setUserAnswer: setUserAnswerAction
+      }
     )
   );
 

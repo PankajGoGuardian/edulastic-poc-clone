@@ -16,7 +16,7 @@ export const getUserSelector = createSelector(
 
 export const getUserNameSelector = createSelector(
   stateSelector,
-  state => (state.user && state.user.firstName) || "Anonymous"
+  state => (state.user ? `${state.user.firstName} ${state.user.lastName}` : "Anonymous")
 );
 
 export const getOrgDataSelector = createSelector(

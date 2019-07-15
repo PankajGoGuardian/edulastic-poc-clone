@@ -1,15 +1,16 @@
 import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
-import { get } from "lodash";
+import { get, isNaN } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus, withWindowSizes } from "@edulastic/common";
+import { Stimulus, InstructorStimulus, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconUndo, IconRedo, IconEraseText } from "@edulastic/icons";
 import { canvasDimensions } from "@edulastic/constants";
 
 import { PREVIEW } from "../../constants/constantsForQuestions";
 
+import { PreviewContainer } from "./styled/PreviewContainer";
 import { Container } from "./styled/Container";
 import { StyledSelect } from "./styled/StyledSelect";
 import { Button } from "./styled/Button";
@@ -34,11 +35,11 @@ const HighlightImagePreview = ({
   disableResponse
 }) => {
   const canvas = useRef(null);
+  const canvasContainerRef = useRef(null);
   const [ctx, setCtx] = useState(null);
   const [history, setHistory] = useState([]);
   const [historyTab, setHistoryTab] = useState(0);
   const [mouseDown, setMouseDown] = useState(false);
-  const canvasContainerRef = useRef(null);
 
   const { image, line_color = [] } = item;
 
@@ -180,23 +181,26 @@ const HighlightImagePreview = ({
     ) : (
       <div style={{ width, height }} />
     );
+
+  let canvasContainerWidth = canvasDimensions.maxWidth;
+
+  const _w = parseInt(width, 10);
+
+  if (!isNaN(_w)) {
+    canvasContainerWidth = _w >= canvasContainerWidth ? _w : canvasContainerWidth;
+  }
+
   return (
-    <Paper
-      style={{
-        padding: 0
-      }}
-      padding={smallSize}
-      boxShadow={smallSize ? "none" : ""}
-    >
+    <PreviewContainer padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <div
         ref={canvasContainerRef}
         style={{
           minHeight: `${canvasDimensions.maxHeight}px`,
-          minWidth: `${canvasDimensions.maxWidth}px`
+          width: `${canvasContainerWidth}px`
         }}
       >
         <CanvasContainer>
-          <InstructorStimulus width={"100%"}>{item.instructor_stimulus}</InstructorStimulus>
+          <InstructorStimulus width="100%">{item.instructor_stimulus}</InstructorStimulus>
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
@@ -210,7 +214,7 @@ const HighlightImagePreview = ({
           />
         </CanvasContainer>
       </div>
-    </Paper>
+    </PreviewContainer>
   );
 };
 

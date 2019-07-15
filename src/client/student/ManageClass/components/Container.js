@@ -13,14 +13,18 @@ const ClassCards = ({ classList, t }) => {
 };
 
 const ManageClassContainer = ({ flag, t, classList, loading }) => {
+  if (loading) return <Spin />;
   return (
     <ManageClassContentWrapper flag={flag}>
-      <Row gutter={20}>{!loading ? <ClassCards classList={classList} t={t} /> : <Spin />}</Row>
-      {/* <NoDataWrapper>
-        <IconManage />
-        <NoDataHeading>{t("common.noClassesTitle")}</NoDataHeading>
-        <NoDataSubText>{t("common.noClassesSubTitle")}</NoDataSubText>
-      </NoDataWrapper> */}
+      {classList.length ? (
+        <Row gutter={20}>{<ClassCards classList={classList} t={t} />}</Row>
+      ) : (
+        <NoDataWrapper>
+          <IconManage />
+          <NoDataHeading>{t("common.noClassesTitle")}</NoDataHeading>
+          <NoDataSubText>{t("common.noClassesSubTitle")}</NoDataSubText>
+        </NoDataWrapper>
+      )}
     </ManageClassContentWrapper>
   );
 };

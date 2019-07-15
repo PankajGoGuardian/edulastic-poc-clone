@@ -19,8 +19,8 @@ import { percentage, ceilingPercentage } from "../../../../common/util";
 import next from "immer";
 
 export const viewByMode = {
-  STANDARDS: "standards",
-  DOMAINS: "domains"
+  STANDARDS: "standard",
+  DOMAINS: "domain"
 };
 
 export const analyzeByMode = {
@@ -164,7 +164,7 @@ const augmentMetricInfoWithStudentInfo = (studInfo, teacherInfo, metricInfo) => 
   }));
 };
 
-const chartFilterMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilters, skillInfo = []) => {
+const chartFilterMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilters = {}, skillInfo = []) => {
   const filtersList = Object.keys(chartFilters).map(key => ({
     key,
     value: chartFilters[key]
@@ -197,12 +197,15 @@ const getStandardMetrics = (data = {}, scaleInfo = []) => {
   });
 };
 
-const analysisStandardsData = (compareBy, studInfo, teacherInfo, metricInfo, scaleInfo) => {
-  const metricInfoWithStudentInfo = augmentMetricInfoWithStudentInfo(studInfo, teacherInfo, metricInfo);
+const analysisStandardsData = (compareBy, metricInfo = [], scaleInfo) => {
+  // if metricInfo is empty return empty data and totalpoints
+  if (!metricInfo.length) {
+    return [[], []];
+  }
 
   const groupingField = compareByColumns[compareBy].key;
 
-  const grouped = groupBy(metricInfoWithStudentInfo, groupingField);
+  const grouped = groupBy(metricInfo, groupingField);
 
   const data = Object.keys(grouped).map(groupId => {
     const groupedByStandard = groupBy(grouped[groupId], "standardId");
@@ -212,17 +215,10 @@ const analysisStandardsData = (compareBy, studInfo, teacherInfo, metricInfo, sca
     Object.keys(groupedByStandard).forEach(standardId => {
       let currentStandard = standardsData[standardId];
 
-      if (currentStandard) {
-        currentStandard = {
-          maxScore: currentStandard.maxScore + groupedByStandard[standardId][0].maxScore,
-          metric: currentStandard.metric.concat(groupedByStandard[standardId])
-        };
-      } else {
-        currentStandard = {
-          maxScore: groupedByStandard[standardId][0].maxScore,
-          metric: groupedByStandard[standardId]
-        };
-      }
+      currentStandard = {
+        maxScore: groupedByStandard[standardId][0].maxScore,
+        metric: groupedByStandard[standardId]
+      };
 
       standardsData[standardId] = currentStandard;
     });
@@ -238,7 +234,12 @@ const analysisStandardsData = (compareBy, studInfo, teacherInfo, metricInfo, sca
   return [data, totalPoints];
 };
 
-const analysisDomainsData = (compareBy, studInfo, teacherInfo, skillInfo, metricInfo, scaleInfo) => {
+const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
+  // if metricInfo is empty return empty data and totalpoints
+  if (!metricInfo.length) {
+    return [[], []];
+  }
+
   const skillsByStandardId = groupBy(skillInfo, "standardId");
 
   const domainByStandardId = skillInfo.reduce((total, skill) => {
@@ -248,11 +249,9 @@ const analysisDomainsData = (compareBy, studInfo, teacherInfo, skillInfo, metric
     };
   }, {});
 
-  const metricInfoWithStudentInfo = augmentMetricInfoWithStudentInfo(studInfo, teacherInfo, metricInfo);
-
   const groupingField = compareByColumns[compareBy].key;
 
-  const grouped = groupBy(metricInfoWithStudentInfo, groupingField);
+  const grouped = groupBy(metricInfo, groupingField);
 
   const data = Object.keys(grouped).map(groupId => {
     const groupedByStandard = groupBy(grouped[groupId], "standardId");
@@ -291,16 +290,17 @@ const analysisDomainsData = (compareBy, studInfo, teacherInfo, skillInfo, metric
   return [data, totalPoints];
 };
 
-export const analysisParseData = (report, viewBy, compareBy) => {
-  const { studInfo, teacherInfo, skillInfo, scaleInfo } = report;
+export const analysisParseData = (report, viewBy, compareBy, filters) => {
+  const { studInfo, teacherInfo, skillInfo, scaleInfo, metricInfo } = report;
 
-  const metricInfo = augmentMetricInfoWithMasteryScore(report.metricInfo, scaleInfo);
+  let filteredMetrics = chartFilterMetricInfo(studInfo, metricInfo, teacherInfo, filters, skillInfo);
+  filteredMetrics = augmentMetricInfoWithMasteryScore(filteredMetrics, scaleInfo);
 
   switch (viewBy) {
     case viewByMode.STANDARDS:
-      return analysisStandardsData(compareBy, studInfo, teacherInfo, metricInfo, scaleInfo);
+      return analysisStandardsData(compareBy, filteredMetrics, scaleInfo);
     case viewByMode.DOMAINS:
-      return analysisDomainsData(compareBy, studInfo, teacherInfo, skillInfo, metricInfo, scaleInfo);
+      return analysisDomainsData(compareBy, skillInfo, filteredMetrics, scaleInfo);
     default:
       return [];
   }

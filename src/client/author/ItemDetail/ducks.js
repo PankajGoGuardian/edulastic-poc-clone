@@ -28,6 +28,8 @@ import {
 } from "../TestPage/ducks";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
+import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
+import { getNewAlignmentState } from "../src/reducers/dictionaries";
 
 // constants
 const testItemStatusConstants = {
@@ -546,6 +548,12 @@ function* receiveItemSaga({ payload }) {
     yield put({
       type: CLEAR_DICT_ALIGNMENTS
     });
+
+    let alignments = yield select(getAlignmentFromQuestionSelector);
+    if (!alignments.length) {
+      alignments = [getNewAlignmentState()];
+    }
+    yield put(setDictAlignmentFromQuestion(alignments));
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive item by id is failing";

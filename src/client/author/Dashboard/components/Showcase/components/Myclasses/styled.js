@@ -3,6 +3,8 @@ export const CardsContainer = styled.div`
   display: flex;
   justify-content: center;
   margin: 1rem;
+  padding-left: 4rem;
+  padding-right: 4rem;
 `;
 
 export const CardBox = styled.div`

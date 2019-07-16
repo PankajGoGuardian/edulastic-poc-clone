@@ -606,7 +606,10 @@ function* updateUserRoleSaga({ payload }) {
     TokenStorage.selectAccessToken(_user._id, _user.role);
     yield put(signupSuccessAction(_user));
   } catch (e) {
-    yield call(message.error, "Failed to update user please try again.");
+    yield call(
+      message.error,
+      e && e.data && e.data.message ? e.data.message : "Failed to update user please try again."
+    );
   }
 }
 

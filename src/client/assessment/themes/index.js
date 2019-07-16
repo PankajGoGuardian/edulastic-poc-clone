@@ -166,7 +166,7 @@ const AssessmentContainer = ({
   return (
     <>
       <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
-        defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
+        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
       </ScratchPadContext.Provider>
     </>
   );

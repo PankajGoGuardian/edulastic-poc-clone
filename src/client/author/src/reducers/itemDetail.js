@@ -21,6 +21,7 @@ const initialState = {
   loading: false,
   updating: false,
   updateError: null,
+  newItem: false,
   dragging: false
 };
 
@@ -80,7 +81,7 @@ export default function reducer(state = initialState, { type, payload }) {
     case RECEIVE_ITEM_DETAIL_REQUEST:
       return { ...state, loading: true };
     case RECEIVE_ITEM_DETAIL_SUCCESS:
-      return { ...state, item: payload, loading: false, error: null };
+      return { ...state, item: payload, loading: false, error: null, newItem: !payload.data };
     case RECEIVE_ITEM_DETAIL_ERROR:
       return { ...state, loading: false, error: payload.error };
 

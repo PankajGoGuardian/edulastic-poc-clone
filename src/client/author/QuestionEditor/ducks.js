@@ -31,6 +31,7 @@ import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import changeViewAction from "../src/actions/view";
+import { getIsNewItemSelector } from "../src/selectors/itemDetail";
 
 // constants
 export const resourceTypeQuestions = {
@@ -277,6 +278,7 @@ export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTe
 
 function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } }) {
   try {
+    const newItem = yield select(getIsNewItemSelector);
     if (isTestFlow) {
       const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
       const standardPresent = questions.some(hasStandards);
@@ -395,8 +397,11 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-
-    yield call(message.success, "Update item by id is success", "Success");
+    if (newItem) {
+      yield call(message.success, "Create new item is success", "Success");
+    } else {
+      yield call(message.success, "Update item by id is success", "Success");
+    }
 
     if (isTestFlow) {
       // add item to test entity
@@ -412,10 +417,9 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         testItems: [...testEntity.testItems, item]
       };
       if (!tId || tId === "undefined") {
-        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+        yield put(setTestDataAndUpdateAction({ ...updatedTestEntity, isTestFlow: true, itemId: item._id }));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(!isEditFlow ? `/author/tests/${tId}#review` : `/author/tests/${tId}/createItem/${item._id}`));
       }
       yield put(changeViewAction("edit"));
       return;

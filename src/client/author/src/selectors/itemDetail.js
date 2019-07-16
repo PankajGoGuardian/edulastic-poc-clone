@@ -7,6 +7,11 @@ export const getItemDetailSelector = createSelector(
   state => state.item
 );
 
+export const getIsNewItemSelector = createSelector(
+  stateSelector,
+  state => state.newItem
+);
+
 export const getItemIdSelector = createSelector(
   getItemDetailSelector,
   item => item && item._id

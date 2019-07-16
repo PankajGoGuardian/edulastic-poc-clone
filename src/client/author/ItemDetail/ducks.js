@@ -650,6 +650,21 @@ export const hasStandards = question => {
   return !!hasDomain;
 };
 
+function* saveTestItem() {
+  const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+  const data = yield select(getItemDetailSelector);
+  const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
+  const questions = widgets.filter(item => !resourceTypes.includes(item.type));
+  const resources = widgets.filter(item => resourceTypes.includes(item.type));
+
+  data.data = {
+    questions,
+    resources
+  };
+  const redirectTestId = yield select(getRedirectTestSelector);
+  yield call(testItemsApi.updateById, data._id, data, redirectTestId);
+}
+
 function* publishTestItemSaga({ payload }) {
   try {
     const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
@@ -663,7 +678,7 @@ function* publishTestItemSaga({ payload }) {
       const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
       yield put(togglePublishWarningModalAction(false));
 
-      // if he wishes to add some just close the modal and switch to metadata tab!
+      // if they wishes to add some just close the modal and switch to metadata tab!
       // else continue the normal flow.
       if (!publishItem) {
         yield put(changeViewAction("metadata"));
@@ -671,6 +686,7 @@ function* publishTestItemSaga({ payload }) {
       }
     }
 
+    yield saveTestItem();
     yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);

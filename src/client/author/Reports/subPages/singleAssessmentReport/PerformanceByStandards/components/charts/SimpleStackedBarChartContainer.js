@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import next from "immer";
 import PropTypes from "prop-types";
-import { find, map, round, includes } from "lodash";
+import { find, map, round, includes, get } from "lodash";
 
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { viewByMode, analyzeByMode, getYLabelString, getChartScoreData } from "../../util/transformers";
@@ -103,6 +103,7 @@ const SimpleStackedBarChartContainer = ({
       return (
         <div>
           <BarTooltipRow title={`${viewBy === viewByMode.STANDARDS ? "Standard" : "Domain"} : `} value={name} />
+          <BarTooltipRow title="Total Points :" value={get(payload[0], "payload.maxScore", "")} />
           {lastItem && <BarTooltipRow {...lastItem} />}
         </div>
       );

@@ -124,6 +124,7 @@ export const Widget = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     padding: 20px;
+    min-height: 0;
     display: block !important;
 
     &:not(:first-child) {

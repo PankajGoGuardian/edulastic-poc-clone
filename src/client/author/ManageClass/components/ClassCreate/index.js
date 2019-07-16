@@ -104,6 +104,13 @@ class ClassCreate extends React.Component {
     });
   };
 
+  clearStandards = () => {
+    const { form } = this.props;
+    form.setFieldsValue({
+      standardSets: []
+    });
+  };
+
   searchCourse = keyword => {
     const { searchCourseList, userOrgData } = this.props;
     const { districtId } = userOrgData;
@@ -173,6 +180,7 @@ class ClassCreate extends React.Component {
                   isSearching={isSearching}
                   setSubject={setSubject}
                   userOrgData={userOrgData}
+                  clearStandards={this.clearStandards}
                 />
               </RightContainer>
             </FlexContainer>

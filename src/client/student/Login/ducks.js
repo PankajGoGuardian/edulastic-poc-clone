@@ -491,7 +491,7 @@ function* googleSSOLogin({ payload }) {
     const res = yield call(authApi.googleSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    yield call(message.error, "Google Login failed");
+    yield call(message.error, e && e.data && e.data.message ? e.data.message : "Google Login failed");
     yield put(push("/login"));
   }
 }
@@ -532,7 +532,7 @@ function* msoSSOLogin({ payload }) {
     const res = yield call(authApi.msoSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    yield call(message.error, "MSO Login failed");
+    yield call(message.error, e && e.data && e.data.message ? e.data.message : "MSO Login failed");
     yield put(push("/login"));
   }
 }

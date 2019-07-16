@@ -239,38 +239,49 @@ const MatchListPreview = ({
           flexDirection="column"
           alignItems="flex-start"
         >
-          {list.map((ite, i) => (
-            <AnswerItem
-              key={i}
-              style={styles.listItemContainerStyle}
-              alignItems="center"
-              childMarginRight={smallSize ? 13 : 45}
-            >
-              <ListItem smallSize={smallSize}>
-                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
-              </ListItem>
-              <Separator smallSize={smallSize} />
-              <DropContainer
-                noBorder={!!ans[i]}
-                index={i}
-                drop={drop}
-                flag="ans"
-                style={styles.dropContainerStyle(smallSize)}
+          {list.map((ite, i) => {
+            const widthRegex = /width:\s*(\d+)px;/;
+            const widthAttrMatches = ite.match(widthRegex)[1];
+            let imgWidth;
+            // Assign image width when resized (unresized images get 300 from Froala)
+            if (widthAttrMatches.length > 0) {
+              const markupImgWidth = Number(widthAttrMatches);
+              imgWidth = markupImgWidth && markupImgWidth !== 300 ? markupImgWidth : undefined;
+            }
+
+            return (
+              <AnswerItem
+                key={i}
+                style={styles.listItemContainerStyle}
+                alignItems="center"
+                childMarginRight={smallSize ? 13 : 45}
               >
-                <DragItem
-                  preview={preview}
-                  correct={altAnswers.includes(ans[i])}
+                <ListItem imgWidth={imgWidth} smallSize={smallSize}>
+                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                </ListItem>
+                <Separator smallSize={smallSize} />
+                <DropContainer
+                  noBorder={!!ans[i]}
+                  index={i}
+                  drop={drop}
                   flag="ans"
-                  renderIndex={i}
-                  onDrop={onDrop}
-                  item={ans[i]}
-                  getStyles={getStyles}
-                  disableResponse={disableResponse}
-                  changePreviewTab={changePreviewTab}
-                />
-              </DropContainer>
-            </AnswerItem>
-          ))}
+                  style={styles.dropContainerStyle(smallSize)}
+                >
+                  <DragItem
+                    preview={preview}
+                    correct={altAnswers.includes(ans[i])}
+                    flag="ans"
+                    renderIndex={i}
+                    onDrop={onDrop}
+                    item={ans[i]}
+                    getStyles={getStyles}
+                    disableResponse={disableResponse}
+                    changePreviewTab={changePreviewTab}
+                  />
+                </DropContainer>
+              </AnswerItem>
+            );
+          })}
         </FlexContainer>
 
         {!disableResponse && (

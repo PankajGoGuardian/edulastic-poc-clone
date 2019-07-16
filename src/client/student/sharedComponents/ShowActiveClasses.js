@@ -3,7 +3,7 @@ import { Select } from "antd";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-const ShowActiveClasses = ({ t, classList, setClassList }) => {
+const ShowActiveClasses = ({ t, classList, setClassList, setShowClass }) => {
   const activeClasses = classList.filter(c => c.active === 1);
   const archiveClasses = classList.filter(c => c.active === 0);
   const options = [`ACTIVE (${activeClasses.length})`, `ARCHIVE (${archiveClasses.length})`];
@@ -11,8 +11,10 @@ const ShowActiveClasses = ({ t, classList, setClassList }) => {
     const key = val.split(" ")[0];
     if (key === "ACTIVE") {
       setClassList(activeClasses);
+      setShowClass("ACTIVE");
     } else if (key === "ARCHIVE") {
       setClassList(archiveClasses);
+      setShowClass("INACTIVE");
     }
   };
 

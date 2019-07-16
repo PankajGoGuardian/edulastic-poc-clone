@@ -2,6 +2,7 @@ import { createSelector } from "reselect";
 import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
+import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, select, take } from "redux-saga/effects";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -577,6 +578,12 @@ export function* updateItemSaga({ payload }) {
       resources
     };
 
+    if (questions.length === 1) {
+      const [isIncomplete, errMsg] = helpers.isIncompleteQuestion(questions[0]);
+      if (isIncomplete) {
+        return message.error(errMsg);
+      }
+    }
     // return;
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
     // on update, if there is only question.. set it as the questionId, since we are changing the view
@@ -615,13 +622,13 @@ export function* updateItemSaga({ payload }) {
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
+
       if (!payload.testId) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
         yield put(push(`/author/tests/${payload.testId}#review`));
       }
-      yield put(toggleCreateItemModalAction(false));
       yield put(changeViewAction("edit"));
       return;
     }
@@ -656,9 +663,10 @@ function* publishTestItemSaga({ payload }) {
       const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
       yield put(togglePublishWarningModalAction(false));
 
-      // if he wishes to add some just close the modal and do nothing - yeah, nothing!
+      // if he wishes to add some just close the modal and switch to metadata tab!
       // else continue the normal flow.
       if (!publishItem) {
+        yield put(changeViewAction("metadata"));
         return;
       }
     }
@@ -666,12 +674,16 @@ function* publishTestItemSaga({ payload }) {
     yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
+    yield call(message.success, "Item created successfully");
+
     if (redirectTestId) {
       yield delay(1500);
       yield put(push(`/author/tests/${redirectTestId}`));
       yield put(clearRedirectTestAction());
+    } else {
+      // on publishing redirect to items bank.
+      yield put(push("/author/items"));
     }
-    yield call(message.success, "Successfully published");
   } catch (e) {
     console.log("publish error", e);
     const errorMessage = "publish failed";

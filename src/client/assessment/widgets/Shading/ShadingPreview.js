@@ -67,7 +67,7 @@ const ShadingPreview = ({
         saveAnswer([]);
       }
     }
-    if (previewTab === CHECK) {
+    if (previewTab === CHECK || previewTab === SHOW) {
       setIsCheck(true);
     } else {
       setIsCheck(false);
@@ -75,7 +75,7 @@ const ShadingPreview = ({
   }, [previewTab]);
 
   useEffect(() => {
-    if (previewTab === CHECK) {
+    if (previewTab === CHECK || previewTab === SHOW) {
       setIsCheck(true);
     } else {
       setIsCheck(false);
@@ -119,7 +119,12 @@ const ShadingPreview = ({
     hidden: get(item, "canvas.hidden", [])
   };
 
-  const correctAnswers = (userAnswer ? userAnswer.value || [] : []).filter((value, i) => evaluation && evaluation[i]);
+  const correctAnswers = (Array.isArray(userAnswer)
+    ? userAnswer
+    : userAnswer && Array.isArray(userAnswer.value)
+    ? userAnswer.value
+    : []
+  ).filter((value, i) => evaluation && evaluation[i]);
 
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -169,7 +174,7 @@ const ShadingPreview = ({
         {view === PREVIEW && (
           <ShadesView
             {...renderProps}
-            checkAnswers={previewTab === CHECK && isCheck}
+            checkAnswers={isCheck}
             correctAnswers={correctAnswers}
             onCellClick={disableResponse ? () => {} : handleCellClick}
             shaded={

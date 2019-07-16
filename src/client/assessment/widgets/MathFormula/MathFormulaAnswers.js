@@ -150,6 +150,15 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
+  const handleAllowedVariables = variables => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.allowedVariables = variables;
+        updateVariables(draft, latexKeys);
+      })
+    );
+  };
+
   return (
     <CorrectAnswers
       onTabChange={setCorrectTab}
@@ -165,6 +174,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
           <MathFormulaWithPoints
             item={item}
             onChange={handleChangeCorrectMethod}
+            onChangeAllowedVars={handleAllowedVariables}
             onAdd={handleAddCorrectMethod}
             onDelete={handleDeleteCorrectMethod}
             answer={item.validation.valid_response.value}
@@ -182,6 +192,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
                   key={i}
                   item={item}
                   onChange={handleChangeAltMethod(i)}
+                  onChangeAllowedVars={handleAllowedVariables}
                   onAdd={handleAddAltMethod(i)}
                   onDelete={handleDeleteAltMethod(i)}
                   answer={alter.value}

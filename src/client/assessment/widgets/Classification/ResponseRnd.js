@@ -76,41 +76,38 @@ const ResponseRnd = props => {
   const rndY = get(question, `responseOptions[${index}].y`, delta * offset);
   const rndWidth = get(question, `responseOptions[${index}].width`, width);
   const rndHeight = get(question, `responseOptions[${index}].height`, height);
-
   return (
-    <div style={{ position: "relative", minHeight: rndHeight }}>
-      <Rnd
-        style={{
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-          padding: "2px",
-          border: `1px solid ${lightGrey}`
-        }}
-        default={{
-          x: rndX,
-          y: rndY,
-          width: rndWidth
-        }}
-        disableDragging={!isResizable}
-        enableResizing={{
-          bottom: isResizable,
-          top: isResizable,
-          bottomLeft: isResizable,
-          bottomRight: isResizable,
-          left: isResizable,
-          right: isResizable,
-          topLeft: isResizable,
-          topRight: isResizable
-        }}
-        onDragStop={handleResponseDragStop}
-        onResizeStop={handleResponseResizeStop}
-        cancel=".drag-item"
-        {...{ ...props, height: "auto" }}
-      >
-        {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
-      </Rnd>
-    </div>
+    <Rnd
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        padding: "2px",
+        border: `1px solid ${lightGrey}`
+      }}
+      size={{ width: rndWidth, height: rndHeight }}
+      default={{
+        x: rndX,
+        y: rndY,
+        width: rndWidth
+      }}
+      disableDragging={!isResizable}
+      enableResizing={{
+        bottom: isResizable,
+        top: isResizable,
+        bottomLeft: isResizable,
+        bottomRight: isResizable,
+        left: isResizable,
+        right: isResizable,
+        topLeft: isResizable,
+        topRight: isResizable
+      }}
+      onDragStop={handleResponseDragStop}
+      onResizeStop={handleResponseResizeStop}
+      cancel=".drag-item"
+      {...{ ...props, height: "auto" }}
+    >
+      {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
+    </Rnd>
   );
 };
 

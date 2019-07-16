@@ -117,7 +117,6 @@ const methodOptions = {
     "inverseResult",
     "isMixedFraction",
     "isSimpleFraction",
-    "ignoreTrailingZeros",
     "ignoreText",
     "isUnit",
     "tolerance",

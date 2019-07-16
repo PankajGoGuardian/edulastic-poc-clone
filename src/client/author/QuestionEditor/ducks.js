@@ -289,15 +289,22 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
         yield put(togglePublishWarningModalAction(false));
 
-        // if he wishes to add some just close the modal and do nothing - yeah, nothing!
+        // if he wishes to add some just close the modal, and go to metadata.
         // else continue the normal flow.
         if (!publishItem) {
+          yield put(changeViewAction("metadata"));
           return;
         }
       }
     }
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
+
+    const [isIncomplete, errMsg] = helpers.isIncompleteQuestion(question);
+    if (isIncomplete) {
+      return message.error(errMsg);
+    }
+
     const locationState = yield select(state => state.router.location.state);
     let currentQuestionIds = getQuestionIds(itemDetail);
     const { rowIndex, tabIndex } = locationState || { rowIndex: 0, tabIndex: 1 };
@@ -410,7 +417,6 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         yield put(setCreatedItemToTestAction(item));
         yield put(push(!isEditFlow ? `/author/tests/${tId}#review` : `/author/tests/${tId}/createItem/${item._id}`));
       }
-      yield put(toggleCreateItemModalAction(false));
       yield put(changeViewAction("edit"));
       return;
     }

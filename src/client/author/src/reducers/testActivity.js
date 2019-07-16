@@ -14,7 +14,7 @@ import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/T
 
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD = "[gradebook] realtime test activity add";
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT = "[gradebook] realtime test activity submit";
-export const REALTIME_GRADEBOOK_TEST_ITEM_ADD = "[gradebook] realtime test item add";
+export const GRADEBOOK_TEST_ITEM_ADD = "[gradebook] test item add";
 
 export const REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE = "[gradebook] realtime test question remove";
 export const REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE = "[gradebook] realtime test question add max score";
@@ -22,7 +22,7 @@ export const REALTIME_GRADEBOOK_REDIRECT = "[gradebook] realtime assignment redi
 
 export const realtimeGradebookActivityAddAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD);
 export const realtimeGradebookActivitySubmitAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT);
-export const realtimeGradebookTestItemAddAction = createAction(REALTIME_GRADEBOOK_TEST_ITEM_ADD);
+export const gradebookTestItemAddAction = createAction(GRADEBOOK_TEST_ITEM_ADD);
 export const realtimeGradebookQuestionsRemoveAction = createAction(REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE);
 export const realtimeGradebookQuestionAddMaxScoreAction = createAction(REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE);
 
@@ -103,7 +103,7 @@ const reducer = (state = initialState, { type, payload }) => {
         }
       });
       return nextState;
-    case REALTIME_GRADEBOOK_TEST_ITEM_ADD:
+    case GRADEBOOK_TEST_ITEM_ADD:
       nextState = produce(state, _st => {
         for (const { testActivityId, score, maxScore, ...questionItem } of payload) {
           const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);

@@ -528,21 +528,20 @@ class TestList extends Component {
 
     return (
       <Row>
-        {tests.length &&
-          tests.map((item, index) => (
-            <CardWrapper
-              key={index}
-              owner={item.authors && item.authors.some(x => x._id === userId)}
-              item={item}
-              windowWidth={windowWidth}
-              history={history}
-              match={match}
-              mode={mode}
-              removeTestFromPlaylist={this.handleRemoveTest}
-              isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
-              addTestToPlaylist={this.handleAddTests}
-            />
-          ))}
+        {tests.map((item, index) => (
+          <CardWrapper
+            key={index}
+            owner={item.authors && item.authors.some(x => x._id === userId)}
+            item={item}
+            windowWidth={windowWidth}
+            history={history}
+            match={match}
+            mode={mode}
+            removeTestFromPlaylist={this.handleRemoveTest}
+            isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
+            addTestToPlaylist={this.handleAddTests}
+          />
+        ))}
       </Row>
     );
   };

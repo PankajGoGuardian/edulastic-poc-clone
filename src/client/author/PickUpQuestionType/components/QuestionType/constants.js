@@ -1172,6 +1172,9 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
+        responseLayout: {
+          showborder: true
+        },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
           { top: 100, left: 120, width: 220, height: 40, id: uuids[1] }
@@ -1211,6 +1214,9 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
+        },
+        responseLayout: {
+          showborder: true
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
@@ -1918,11 +1924,11 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      type: "math",
+      type: "multipart",
       cardImage: MTClozeMath,
       stimulus: "",
       data: {
-        title: "Expression Multipart",
+        title: "Math, Text & Dropdown",
         stimulus:
           '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
         templateDisplay: true,

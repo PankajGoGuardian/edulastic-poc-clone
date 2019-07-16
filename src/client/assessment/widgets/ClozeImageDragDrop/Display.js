@@ -180,6 +180,7 @@ class Display extends Component {
       const maxLeft = maxBy(responseContainers, res => res.left);
       return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
     }
+
     return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
   };
 

@@ -21,6 +21,7 @@ const RightFields = ({
   setSubject,
   selectedSubject,
   userOrgData,
+  clearStandards,
   ...restProps
 }) => {
   const [startDate, setStartDate] = useState(moment());
@@ -31,6 +32,7 @@ const RightFields = ({
   const endDate = term ? term.endDate : moment().add(1, "year");
   const updateSubject = e => {
     setSubject(e);
+    clearStandards();
   };
 
   const onStartDateChangeHnadler = date => {

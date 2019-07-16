@@ -11,6 +11,7 @@ import {
   getTestItemsDataSelector
 } from "../../../ClassBoard/ducks";
 import ClassQuestions from "../../../ClassResponses/components/Container/ClassQuestions";
+import { AnswerContext } from "@edulastic/common";
 
 class Question extends Component {
   constructor() {
@@ -51,13 +52,15 @@ class Question extends Component {
     }
 
     return (
-      <ClassQuestions
-        currentStudent={student}
-        questionActivities={studentQuestions}
-        classResponse={{ testItems: selectedItems }}
-        qIndex={qIndex}
-        isPresentationMode={isPresentationMode}
-      />
+      <AnswerContext.Provider value={{ isAnswerModifiable: this.props.editResponse }}>
+        <ClassQuestions
+          currentStudent={student}
+          questionActivities={studentQuestions}
+          classResponse={{ testItems: selectedItems }}
+          qIndex={qIndex}
+          isPresentationMode={isPresentationMode}
+        />
+      </AnswerContext.Provider>
     );
   }
 }

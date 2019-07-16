@@ -83,7 +83,7 @@ export const AssessmentStatisticTable = props => {
         avgStudentScore: Number(((sumTotalScore / sumTotalMaxScore) * 100).toFixed(0)),
         scoreVariance: scoreVariance.toFixed(2),
         scoreStdDeviation: getStandardDeviation(scoreVariance).toFixed(2),
-        avgScore: (sumTotalScore / sumSampleCount).toFixed(2),
+        avgScore: (sumTotalScore / (sumSampleCount - (sumStudentsAbsent || 0))).toFixed(2),
         assessmentDate: Moment(maxAssessmentDate).format("MMMM D, YYYY"),
         studentsAbsent: sumStudentsAbsent,
         studentsAssigned: sumStudentsAssigned,

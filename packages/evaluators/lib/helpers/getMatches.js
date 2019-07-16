@@ -37,7 +37,7 @@ var getMatches = function getMatches(response, answer, compareFunction) {
         );
 
       case _constants.evaluatorTypes.IS_EQUAL:
-        if ((0, _typeof2["default"])(answer[index]) === "object" && answer[index].y) {
+        if (answer[index] && (0, _typeof2["default"])(answer[index]) === "object" && answer[index].y) {
           return (0, _isEqual2["default"])(
             (0, _objectSpread2["default"])({}, answer[index], {
               y: +answer[index].y.toFixed(5)

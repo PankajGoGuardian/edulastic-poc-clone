@@ -130,8 +130,8 @@ const RedirectPopUp = ({
         <Row>
           <Select
             showSearch
-            optionFilterProp="children"
-            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            optionFilterProp="data"
+            filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             mode="multiple"
             disabled={type !== "specificStudents"}
             style={{ width: "100%" }}
@@ -142,7 +142,12 @@ const RedirectPopUp = ({
             }}
           >
             {allStudents.map(x => (
-              <Option key={x._id} value={x._id} disabled={disabledList.includes(x._id)}>
+              <Option
+                key={x._id}
+                value={x._id}
+                disabled={disabledList.includes(x._id)}
+                data={`${x.firstName},${x.email}`}
+              >
                 {x.firstName}
               </Option>
             ))}

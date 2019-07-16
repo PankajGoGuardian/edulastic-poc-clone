@@ -10,10 +10,12 @@ import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
+  defaultImage,
   createTestAction,
   receiveTestByIdAction,
   setTestDataAction,
   updateTestAction,
+  updateDefaultThumbnailAction,
   setDefaultTestDataAction,
   getTestSelector,
   getTestItemsRowsSelector,
@@ -39,6 +41,10 @@ import Review from "../Review";
 import Summary from "../Summary";
 import Assign from "../Assign";
 import Setting from "../Setting";
+
+import { testsApi } from "@edulastic/api";
+
+const { getDefaultImage } = testsApi;
 
 const statusConstants = {
   DRAFT: "draft",
@@ -90,7 +96,7 @@ class Container extends PureComponent {
     } = this.props;
 
     if (location.hash === "#review") {
-      this.handleNavChange("review")();
+      this.handleNavChange("review", true)();
     }
     if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id);
@@ -113,8 +119,33 @@ class Container extends PureComponent {
     }
   }
 
-  handleNavChange = value => () => {
-    const { test } = this.props;
+  componentWillUnmount() {
+    const {
+      test,
+      match: { params },
+      userId,
+      testStatus,
+      updated
+    } = this.props;
+    const { authors, testItems } = test;
+    const { editEnable } = this.state;
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+    if (isEditable && testItems.length > 0 && updated) {
+      this.handleSave(test);
+    }
+  }
+
+  handleNavChange = (value, firstFlow) => () => {
+    const {
+      test,
+      match: { params },
+      userId,
+      testStatus,
+      updated
+    } = this.props;
+    const { authors, testItems = [] } = test;
+    const { editEnable } = this.state;
     if (!this.props.test.title) {
       return;
     }
@@ -129,6 +160,11 @@ class Container extends PureComponent {
     this.setState({
       current: value
     });
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+    if (isEditable && testItems.length > 0 && updated && !firstFlow) {
+      this.handleSave(test);
+    }
   };
 
   handleAssign = () => {
@@ -172,8 +208,16 @@ class Container extends PureComponent {
   };
 
   handleChangeSubject = subjects => {
-    const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
+    const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade, updateDefaultThumbnail } = this.props;
     setData({ ...test, subjects });
+    if (test.thumbnail === defaultImage) {
+      const standardIdentifier =
+        test.summary && test.summary.standards && test.summary.standards[0] && test.summary.standards[0].identifier;
+
+      getDefaultImage({ subject: subjects[0] || "Other Subjects", standard: standardIdentifier || "" }).then(
+        thumbnail => updateDefaultThumbnail(thumbnail)
+      );
+    }
     getItemsSubjectAndGrade({ grades: itemsSubjectAndGrade.grades, subjects: [] });
   };
 
@@ -461,6 +505,7 @@ const enhance = compose(
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),
+      updated: get(state, "tests.updated", false),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {
@@ -468,6 +513,7 @@ const enhance = compose(
       updateTest: updateTestAction,
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,
+      updateDefaultThumbnail: updateDefaultThumbnailAction,
       setDefaultData: setDefaultTestDataAction,
       publishTest: publishTestAction,
       clearSelectedItems: clearSelectedItemsAction,

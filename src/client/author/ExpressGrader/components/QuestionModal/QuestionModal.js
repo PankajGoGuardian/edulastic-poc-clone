@@ -3,8 +3,12 @@ import PropTypes from "prop-types";
 
 import Question from "../Question/Question";
 import { ModalWrapper, QuestionWrapper, BottomNavigationWrapper } from "./styled";
+import { submitResponseAction } from "../../ducks";
+import { stateExpressGraderAnswerSelector, getStudentQuestionSelector } from "../../../ClassBoard/ducks";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
 import { message } from "antd";
+import { get, isEmpty } from "lodash";
+import { connect } from "react-redux";
 
 class QuestionModal extends React.Component {
   constructor() {
@@ -16,7 +20,8 @@ class QuestionModal extends React.Component {
       rowIndex: null,
       colIndex: null,
       maxQuestions: null,
-      maxStudents: null
+      maxStudents: null,
+      editResponse: false
     };
   }
 
@@ -82,11 +87,13 @@ class QuestionModal extends React.Component {
   };
 
   hideModal = () => {
+    this.submitResponse();
     const { hideQuestionModal } = this.props;
     hideQuestionModal();
   };
 
   nextStudent = () => {
+    this.submitResponse();
     const { maxStudents } = this.state;
     const { rowIndex } = this.state;
     const nextIndex = rowIndex + 1;
@@ -100,6 +107,7 @@ class QuestionModal extends React.Component {
   };
 
   prevStudent = () => {
+    this.submitResponse();
     const { rowIndex } = this.state;
     if (rowIndex !== 0) {
       const prevIndex = rowIndex - 1;
@@ -109,7 +117,33 @@ class QuestionModal extends React.Component {
     }
   };
 
+  getQuestion = () => {
+    const { rowIndex, colIndex, loaded } = this.state;
+    const { tableData } = this.props;
+    return get(tableData, [rowIndex, `Q${colIndex}`]);
+  };
+
+  submitResponse = () => {
+    const question = this.getQuestion();
+    /**
+     *  testActivityId,
+        itemId,
+        groupId,
+        userResponse
+     */
+    const { groupId, userResponse: _userResponse, allResponse, submitResponse } = this.props;
+    const { testActivityId, testItemId: itemId } = question;
+    if (!isEmpty(_userResponse)) {
+      const userResponse = allResponse.reduce((acc, cur) => {
+        acc[cur.qid] = cur.userResponse;
+        return acc;
+      }, {});
+      submitResponse({ testActivityId, itemId, groupId, userResponse });
+    }
+  };
+
   nextQuestion = () => {
+    this.submitResponse();
     const { maxQuestions } = this.state;
     const { colIndex } = this.state;
     const nextIndex = colIndex + 1;
@@ -123,6 +157,7 @@ class QuestionModal extends React.Component {
   };
 
   prevQuestion = () => {
+    this.submitResponse();
     const { colIndex } = this.state;
     if (colIndex !== 0) {
       const prevIndex = colIndex - 1;
@@ -135,7 +170,7 @@ class QuestionModal extends React.Component {
   render() {
     let question = null;
     const { isVisibleModal, tableData, record, isPresentationMode } = this.props;
-    const { rowIndex, colIndex, loaded, row } = this.state;
+    const { rowIndex, colIndex, loaded, row, editResponse } = this.state;
 
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`];
@@ -167,6 +202,7 @@ class QuestionModal extends React.Component {
                 qIndex={colIndex}
                 student={student}
                 isPresentationMode={isPresentationMode}
+                editResponse={editResponse}
               />
             </QuestionWrapper>
             <BottomNavigationWrapper>
@@ -177,6 +213,8 @@ class QuestionModal extends React.Component {
                 prevQuestion={this.prevQuestion}
                 nextQuestion={this.nextQuestion}
                 style={{ padding: "20px 3%" }}
+                editResponse={editResponse}
+                toggleEditResponse={() => this.setState(({ editResponse }) => ({ editResponse: !editResponse }))}
               />
             </BottomNavigationWrapper>
           </React.Fragment>
@@ -199,4 +237,10 @@ QuestionModal.defaultProps = {
   isPresentationMode: false
 };
 
-export default QuestionModal;
+export default connect(
+  state => ({
+    userResponse: stateExpressGraderAnswerSelector(state),
+    allResponse: getStudentQuestionSelector(state)
+  }),
+  { submitResponse: submitResponseAction }
+)(QuestionModal);

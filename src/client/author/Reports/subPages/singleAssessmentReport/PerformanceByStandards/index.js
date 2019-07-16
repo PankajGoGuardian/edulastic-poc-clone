@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { indexOf, filter as filterArr } from "lodash";
+import { indexOf, filter as filterArr, capitalize, find } from "lodash";
 import { Form, Select, Radio, Popover, Button, Icon, Row, Col } from "antd";
 import next from "immer";
 
@@ -17,21 +17,30 @@ import {
   getPerformanceByStandardsLoadingSelector,
   getPerformanceByStandardsReportSelector
 } from "./ducks";
-
+import { AutocompleteDropDown } from "../../../../Reports/common/components/widgets/autocompleteDropDown";
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
 
 const PAGE_SIZE = 15;
 
+const findCompareByTitle = (key = "") => {
+  if (!key) return "";
+
+  const { title = "" } = find(dropDownFormat.compareByDropDownData, item => item.key == key) || {};
+
+  return title;
+};
+
 const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandards, match, settings, role }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
-  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.CLASS : compareByMode.SCHOOL);
+  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
   const [standardId, setStandardId] = useState(0);
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
 
+  const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0;
   const isViewByStandards = viewBy === viewByMode.STANDARDS;
 
   const reportWithFilteredSkills = useMemo(() => {
@@ -124,7 +133,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
     setCompareBy(selected.key);
   };
 
-  const handleStandardIdChange = (event, selected) => {
+  const handleStandardIdChange = selected => {
     setStandardId(selected.key);
   };
 
@@ -139,7 +148,9 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
       <Form.Item label={filterTitle}>
         <Radio.Group value={radioValue} onChange={handleChange}>
           {data.map(({ title, key }) => (
-            <Radio value={key}>{title}</Radio>
+            <Radio key={key} value={key}>
+              {title}
+            </Radio>
           ))}
         </Radio.Group>
       </Form.Item>
@@ -153,7 +164,9 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
       <Form.Item label={filterTitle}>
         <Select value={selectValue} onChange={handleSetFilter(filterKey)}>
           {data.map(({ title, key }) => (
-            <Select.Option value={key}>{title}</Select.Option>
+            <Select.Option key={key} value={key}>
+              {title}
+            </Select.Option>
           ))}
         </Select>
       </Form.Item>
@@ -193,7 +206,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
     name: standardsMap[id]
   }));
 
-  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy);
+  const [tableData, totalPoints] = analysisParseData(reportWithFilteredSkills, viewBy, compareBy, filter);
 
   const { testId } = match.params;
   const testName = getTitleByTestId(testId);
@@ -214,7 +227,9 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
       <StyledCard>
         <Row type="flex" justify="start">
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <StyledH3>Performance by Standards | {assignmentInfo}</StyledH3>
+            <StyledH3>
+              Performance by {capitalize(`${viewBy}s`)} | {assignmentInfo}
+            </StyledH3>
           </Col>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Row>
@@ -235,7 +250,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
-                <ControlDropDown
+                <AutocompleteDropDown
                   prefix="Standard set"
                   by={selectedStandardId || { key: "", title: "" }}
                   selectCB={handleStandardIdChange}
@@ -262,11 +277,13 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
       </StyledCard>
       <StyledCard style={{ marginTop: "20px" }}>
         <CardHeader>
-          <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
+          <CardTitle>
+            {capitalize(viewBy)} Performance Analysis by {findCompareByTitle(compareBy)} | {assignmentInfo}
+          </CardTitle>
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="Compare By"
-              by={filteredDropDownData[0]}
+              by={filteredDropDownData[compareByIndex]}
               selectCB={handleCompareByChange}
               data={filteredDropDownData}
             />

@@ -83,8 +83,9 @@ const SubHeader = ({
               responseType="code"
             />
           ))}
-        <StyledIcon type="user" fill={greenDark} />
-        <StyledIcon type="delete" fill={greyDarken} />
+        {/* hiding icons as of now, after functinality is added these icons will be displayed */}
+        {/* <StyledIcon type="user" fill={greenDark} />
+        <StyledIcon type="delete" fill={greyDarken} /> */}
         <ClassCode>
           Class Code: <span>{code}</span>
         </ClassCode>

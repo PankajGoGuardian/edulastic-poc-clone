@@ -56,7 +56,7 @@ const MainInfo = ({ entity = {} }) => {
         <FieldValue>
           <div>Standard :</div>
           {standardSets && standardSets.length ? (
-            standardSets.map(({ name, _id }) => <span key={_id}>{name}</span>)
+            <span>{standardSets.map(({ name }) => name).join(", ")}</span>
           ) : (
             <span>Other</span>
           )}

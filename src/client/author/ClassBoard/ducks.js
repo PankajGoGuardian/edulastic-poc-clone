@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
-import { classBoardApi, testActivityApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi, enrollmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 
@@ -10,7 +10,8 @@ import {
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction,
   updateStudentActivityAction,
-  updateRemovedStudentsAction
+  updateRemovedStudentsAction,
+  updateClassStudentsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -29,7 +30,8 @@ import {
   CLOSE_ASSIGNMENT,
   SAVE_OVERALL_FEEDBACK,
   MARK_AS_ABSENT,
-  REMOVE_STUDENTS
+  REMOVE_STUDENTS,
+  FETCH_STUDENTS
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -144,6 +146,15 @@ function* markAbsentSaga({ payload }) {
   }
 }
 
+function* fetchStudentsByClassSaga({ payload }) {
+  try {
+    const { students = [] } = yield call(enrollmentApi.fetch, payload.classId);
+    yield put(updateClassStudentsAction(students));
+  } catch (err) {
+    console.error("Receive students from class failed");
+  }
+}
+
 function* removeStudentsSaga({ payload }) {
   try {
     const { students } = yield call(classBoardApi.removeStudents, payload);
@@ -153,6 +164,8 @@ function* removeStudentsSaga({ payload }) {
     yield call(message.error, "Remove students failed");
   }
 }
+
+function* addStudentsSaga({ payload }) {}
 
 export function* watcherSaga() {
   yield all([
@@ -164,7 +177,8 @@ export function* watcherSaga() {
     yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
     yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
     yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
-    yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga)
+    yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
+    yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga)
   ]);
 }
 
@@ -289,6 +303,10 @@ export const getGradeBookSelector = createSelector(
   state => getAggregateByQuestion(state.entities)
 );
 
+export const classStudentsSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.classStudents
+);
 export const removedStudentsSelector = createSelector(
   stateTestActivitySelector,
   state => state.removedStudents

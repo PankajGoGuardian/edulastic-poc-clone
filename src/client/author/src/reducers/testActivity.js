@@ -9,7 +9,8 @@ import {
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
   UPDATE_STUDENT_ACTIVITY,
-  UPDATE_STUDENTS_LIST
+  UPDATE_STUDENTS_LIST,
+  UPDATE_CLASS_STUDENTS_LIST
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 
@@ -32,6 +33,7 @@ export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_R
 const initialState = {
   entities: [],
   removedStudents: [],
+  classStudents: [],
   error: null,
   loading: false,
   presentationMode: false
@@ -215,6 +217,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         removedStudents: payload
+      };
+    case UPDATE_CLASS_STUDENTS_LIST:
+      return {
+        ...state,
+        classStudents: payload
       };
     default:
       return state;

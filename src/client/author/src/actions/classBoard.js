@@ -21,7 +21,9 @@ import {
   MARK_AS_ABSENT,
   UPDATE_STUDENT_ACTIVITY,
   REMOVE_STUDENTS,
-  UPDATE_STUDENTS_LIST
+  UPDATE_STUDENTS_LIST,
+  UPDATE_CLASS_STUDENTS_LIST,
+  FETCH_STUDENTS
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -105,6 +107,16 @@ export const removeStudentAction = (assignmentId, classId, students) => ({
 
 export const updateRemovedStudentsAction = payload => ({
   type: UPDATE_STUDENTS_LIST,
+  payload
+});
+
+export const updateClassStudentsAction = payload => ({
+  type: UPDATE_CLASS_STUDENTS_LIST,
+  payload
+});
+
+export const fetchClassStudentsAction = payload => ({
+  type: FETCH_STUDENTS,
   payload
 });
 

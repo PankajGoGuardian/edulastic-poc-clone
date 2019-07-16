@@ -91,6 +91,7 @@ import {
   CardDetailsContainer
 } from "./styled";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
+import AddStudentsPopup from "../AddStudentsPopup";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -118,6 +119,7 @@ class ClassBoard extends Component {
       studentReportCardModalColumnsFlags: {},
       showMarkAbsentPopup: false,
       showRemoveStudentsPopup: false,
+      showAddStudentsPopup: false,
       modalInputVal: "",
       selectedNotStartedStudents: []
     };
@@ -373,6 +375,13 @@ class ClassBoard extends Component {
     this.setState({ showMarkAbsentPopup: false });
   };
 
+  handleShowAddStudentsPopup = () => {
+    this.setState({ showAddStudentsPopup: true });
+  };
+
+  handleHideAddStudentsPopup = () => {
+    this.setState({ showAddStudentsPopup: false });
+  };
   handleCancelMarkAbsent = () => {
     this.setState({ showMarkAbsentPopup: false });
   };
@@ -450,7 +459,8 @@ class ClassBoard extends Component {
       nCountTrue,
       modalInputVal,
       showMarkAbsentPopup,
-      showRemoveStudentsPopup
+      showRemoveStudentsPopup,
+      showAddStudentsPopup
     } = this.state;
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
@@ -468,6 +478,7 @@ class ClassBoard extends Component {
     const disableMarkAbsent =
       (assignmentStatus.toLowerCase() == "not open" && additionalData.startDate > Date.now()) ||
       assignmentStatus.toLowerCase() === "graded";
+    const existingStudents = testActivity.map(item => item.studentId);
     return (
       <div>
         {showMarkAbsentPopup ? (
@@ -613,7 +624,7 @@ class ClassBoard extends Component {
                               <IconMarkAsAbsent />
                               <span>Mark as Absent</span>
                             </MenuItems>
-                            <MenuItems onClick={this.onStudentReportCardsClick}>
+                            <MenuItems onClick={this.handleShowAddStudentsPopup}>
                               <IconAddStudents />
                               <span>Add Students</span>
                             </MenuItems>
@@ -698,6 +709,14 @@ class ClassBoard extends Component {
                 assignmentId={assignmentId}
                 groupId={classId}
               />
+              {showAddStudentsPopup && (
+                <AddStudentsPopup
+                  open={showAddStudentsPopup}
+                  groupId={classId}
+                  closePopup={this.handleHideAddStudentsPopup}
+                  disabledList={existingStudents}
+                />
+              )}
             </React.Fragment>
           )}
 

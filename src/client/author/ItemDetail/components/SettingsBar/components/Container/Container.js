@@ -110,8 +110,9 @@ class Container extends Component {
   };
 
   handleMultipart = () => {
-    const { setMultipart, onCancel } = this.props;
+    const { setMultipart, onCancel, saveTestItem } = this.props;
     setMultipart(true);
+    saveTestItem();
     onCancel();
   };
 

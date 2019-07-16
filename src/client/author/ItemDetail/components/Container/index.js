@@ -16,7 +16,8 @@ import {
   publishTestItemAction,
   getTestItemStatusSelector,
   clearItemDetailAction,
-  proceedPublishingItemAction
+  proceedPublishingItemAction,
+  saveCurrentTestItemAction
 } from "../../ducks";
 import WarningModal from "../WarningModal";
 import { getCurrentQuestionIdSelector } from "../../../sharedDucks/questions";
@@ -38,6 +39,7 @@ const ItemDetailContainer = ({
   clearItem,
   currentQuestionId,
   showWarningModal,
+  saveTestItem,
   proceedPublish,
   ...props
 }) => {
@@ -106,6 +108,7 @@ const ItemDetailContainer = ({
           isMultipart={isMultipart}
           onCancel={() => setShowSettings(false)}
           setMultipart={setMultipart}
+          saveTestItem={saveTestItem}
         />
       )}
       {isSingleQuestionView && !isMultipart ? (
@@ -135,7 +138,8 @@ const enhance = compose(
       updateItem: updateItemDetailByIdAction,
       publishTestItem: publishTestItemAction,
       clearItem: clearItemDetailAction,
-      proceedPublish: proceedPublishingItemAction
+      proceedPublish: proceedPublishingItemAction,
+      saveTestItem: saveCurrentTestItemAction
     }
   )
 );

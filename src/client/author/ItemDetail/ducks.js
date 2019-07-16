@@ -4,7 +4,7 @@ import { testItemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
-import { call, put, all, takeEvery, select, take } from "redux-saga/effects";
+import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 import { message } from "antd";
@@ -71,11 +71,13 @@ export const UPDATE_DEFAULT_SUBJECT = "[itemDetail] update default subject";
 export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing test id";
 export const SHOW_PUBLISH_WARNING_MODAL = "[itemDetail] show publish warning modal";
 export const PROCEED_PUBLISH_ACTION = "[itemDeatil] goto metadata page";
+export const SAVE_CURRENT_TEST_ITEM = "[itemDetail] save current test item";
 // actions
 
 //
 export const togglePublishWarningModalAction = createAction(SHOW_PUBLISH_WARNING_MODAL);
 export const proceedPublishingItemAction = createAction(PROCEED_PUBLISH_ACTION);
+export const saveCurrentTestItemAction = createAction(SAVE_CURRENT_TEST_ITEM);
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
   payload: { id, params }
@@ -650,7 +652,12 @@ export const hasStandards = question => {
   return !!hasDomain;
 };
 
-function* saveTestItem() {
+/**
+ * save the test item, but not strictly update the store, because it will have
+ *  the same data. This is mainly used during publish item, or whlie converting
+ *  to a multipart question type.
+ */
+function* saveTestItemSaga() {
   const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
   const data = yield select(getItemDetailSelector);
   const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
@@ -686,7 +693,7 @@ function* publishTestItemSaga({ payload }) {
       }
     }
 
-    yield saveTestItem();
+    yield saveTestItemSaga();
     yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
@@ -721,6 +728,7 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
     yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
-    yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga)
+    yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),
+    yield takeLatest(SAVE_CURRENT_TEST_ITEM, saveTestItemSaga)
   ]);
 }

@@ -144,7 +144,7 @@ class MathFormulaPreview extends Component {
   onInnerFieldClick() {
     const { type: previewType, changePreview, changePreviewTab, disableResponse } = this.props;
 
-    if (previewType === SHOW || (previewType === CHECK && !disableResponse)) {
+    if ((previewType === SHOW || previewType === CHECK) && !disableResponse) {
       changePreview(CLEAR); // Item level
       changePreviewTab(CLEAR); // Question level
     }

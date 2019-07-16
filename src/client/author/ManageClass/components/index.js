@@ -9,7 +9,8 @@ import {
   fetchGroupsAction,
   fetchArchiveGroupsAction,
   getGroupsSelector,
-  getArchiveGroupsSelector
+  getArchiveGroupsSelector,
+  getActiveGroupsLoadingSelector
 } from "../../sharedDucks/groups";
 import {
   setModalAction,
@@ -32,6 +33,7 @@ const ManageClass = ({
   districtId,
   fetchArchiveGroups,
   groups,
+  activeGroupsLoading,
   state,
   syncClassLoading,
   allowGoogleLogin,
@@ -73,6 +75,7 @@ const ManageClass = ({
       allowGoogleLogin={allowGoogleLogin}
       groups={groups}
       archiveGroups={archiveGroups}
+      activeGroupsLoading={activeGroupsLoading}
     />
   );
 };
@@ -93,6 +96,7 @@ const enhance = compose(
     state => ({
       groups: getGroupsSelector(state),
       archiveGroups: getArchiveGroupsSelector(state),
+      activeGroupsLoading: getActiveGroupsLoadingSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       state: state,
       courseList: get(state, "coursesReducer.searchResult"),

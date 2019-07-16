@@ -3,11 +3,13 @@ import PropTypes from "prop-types";
 import Header from "./Header";
 import ClassList from "./ClassList";
 import ClassSelectModal from "./ClassSelectModal";
+import { Spin } from "antd";
 
 // eslint-disable-next-line max-len
 const ClassListContainer = ({
   groups,
   archiveGroups,
+  activeGroupsLoading,
   googleCourseList,
   courseList,
   allowGoogleLogin,
@@ -19,7 +21,7 @@ const ClassListContainer = ({
   state
 }) => {
   const selectedGroups = groups.filter(i => !!i.googleCode).map(i => i.googleCode);
-
+  if (activeGroupsLoading) return <Spin />;
   return (
     <React.Fragment>
       <Header allowGoogleLogin={allowGoogleLogin} />

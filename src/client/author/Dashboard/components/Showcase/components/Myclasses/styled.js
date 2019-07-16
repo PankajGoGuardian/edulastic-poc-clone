@@ -1,8 +1,8 @@
 import styled from "styled-components";
 export const CardsContainer = styled.div`
-  margin-top: 110px;
-  padding-right: 5rem;
-  padding-left: 5rem;
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
 `;
 
 export const CardBox = styled.div`

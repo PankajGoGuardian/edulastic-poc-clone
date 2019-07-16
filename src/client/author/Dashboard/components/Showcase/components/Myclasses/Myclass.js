@@ -9,7 +9,7 @@ import { receiveTeacherDashboardAction } from "../../../../duck";
 import CreateClassPage from "./components/CreateClassPage/createClassPage";
 const Card = ({ data }) => {
   return (
-    <CardBox>
+    <CardBox style={{ minWidth: "300px" }}>
       <Row>
         <CardImage data={data} />
       </Row>
@@ -40,18 +40,20 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   ));
 
   return (
-    <CardsContainer>
-      <TextWrapper size="20px" color="#434B5D">
+    <div style={{ marginTop: "110px" }}>
+      <TextWrapper size="20px" color="#434B5D" style={{ marginLeft: "2rem" }}>
         My classes
       </TextWrapper>
-      {loading ? (
-        <Spin style={{ marginTop: "120px" }} />
-      ) : classData.length == 0 ? (
-        <CreateClassPage />
-      ) : (
-        <Row gutter={20}>{ClassCards}</Row>
-      )}
-    </CardsContainer>
+      <CardsContainer>
+        {loading ? (
+          <Spin style={{ marginTop: "120px" }} />
+        ) : classData.length == 0 ? (
+          <CreateClassPage />
+        ) : (
+          <Row gutter={20}>{ClassCards}</Row>
+        )}
+      </CardsContainer>
+    </div>
   );
 };
 

@@ -5,15 +5,13 @@ import { ClassSelect, LabelMyClasses } from "./styled";
 
 const options = ["Active Classes", "Archive Classes"];
 
-const ClassSelector = ({ groups, archiveGroups, setClassGroups }) => {
-  const [selectedOption, setOption] = useState(options[0]);
-
+const ClassSelector = ({ groups, archiveGroups, setClassGroups, filterClass, setFilterClass }) => {
   const handleActiveClassClick = () => {
-    setOption(options[0]);
+    setFilterClass(options[0]);
     setClassGroups(groups);
   };
   const handleArchiveClassClick = () => {
-    setOption(options[1]);
+    setFilterClass(options[1]);
     setClassGroups(archiveGroups);
   };
 
@@ -31,7 +29,7 @@ const ClassSelector = ({ groups, archiveGroups, setClassGroups }) => {
   return (
     <ClassSelect>
       <LabelMyClasses>My Classes</LabelMyClasses>
-      <Dropdown.Button overlay={menu}> {selectedOption} </Dropdown.Button>
+      <Dropdown.Button overlay={menu}> {filterClass || options[0]} </Dropdown.Button>
     </ClassSelect>
   );
 };

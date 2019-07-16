@@ -122,6 +122,8 @@ const ClassificationPreview = ({
 
   const [dragItems, setDragItems] = useState(possible_responses);
 
+  const [isCheck, setIsCheck] = useState(previewTab === CHECK || previewTab === SHOW);
+
   useEffect(() => {
     if (
       !isEqual(answers, initialAnswers) ||
@@ -131,6 +133,18 @@ const ClassificationPreview = ({
       setDragItems(uniq(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))));
     }
   }, [userAnswer, possible_responses]);
+
+  useEffect(() => {
+    setIsCheck(false);
+  }, [userAnswer]);
+
+  useEffect(() => {
+    if (previewTab === CHECK || previewTab === SHOW) {
+      setIsCheck(true);
+    } else {
+      setIsCheck(false);
+    }
+  }, [evaluation]);
 
   const boxes = createEmptyArrayOfArrays();
 
@@ -255,7 +269,7 @@ const ClassificationPreview = ({
                   drop={drop}
                   dragHandle={show_drag_handle}
                   answers={answers}
-                  validArray={evaluation}
+                  validArray={isCheck ? evaluation : []}
                   preview={preview}
                   possible_responses={possible_responses}
                   onDrop={onDrop}

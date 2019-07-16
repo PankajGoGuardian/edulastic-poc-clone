@@ -1173,7 +1173,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responseLayout: {
-          showborder: true
+          showborder: true,
+          snapfit: true
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },

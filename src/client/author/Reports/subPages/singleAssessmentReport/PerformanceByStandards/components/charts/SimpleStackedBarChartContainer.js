@@ -89,7 +89,7 @@ const SimpleStackedBarChartContainer = ({
         case analyzeByMode.SCORE:
           lastItem = {
             title: "Avg.Score(%) : ",
-            value: `${payload[0].value}%`
+            value: `${round(payload[0].value)}%`
           };
           break;
         case analyzeByMode.RAW_SCORE:

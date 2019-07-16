@@ -1,19 +1,31 @@
 //@ts-check
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Button, Row, Select } from "antd";
+import { Button, Row, Select, message } from "antd";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
 
-import { fetchClassStudentsAction } from "../../src/actions/classBoard";
+import { fetchClassStudentsAction, addStudentsAction } from "../../src/actions/classBoard";
 import { classStudentsSelector } from "../ducks";
 
-const AddStudentsPopup = ({ groupId, closePopup, open, disabledList, fetchGroupMembers, studentsList }) => {
+const AddStudentsPopup = ({
+  groupId,
+  assignmentId,
+  closePopup,
+  open,
+  disabledList,
+  fetchGroupMembers,
+  studentsList,
+  addStudents
+}) => {
   const [selectedStudents, setSelectedStudent] = useState([]);
   useEffect(() => {
     fetchGroupMembers({ classId: groupId });
   }, []);
-  const submitAction = () => {};
+  const submitAction = () => {
+    if (!selectedStudents.length) message.warn("Select atleast one student to submit or press cancel");
+    addStudents(assignmentId, groupId, selectedStudents, true);
+  };
   return (
     <ConfirmationModal
       centered
@@ -39,7 +51,7 @@ const AddStudentsPopup = ({ groupId, closePopup, open, disabledList, fetchGroupM
             filterOption={(input, option) => option.props.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             mode="multiple"
             style={{ width: "100%" }}
-            onChange={e => console.log(e)}
+            onChange={value => setSelectedStudent(value)}
             placeholder="Select the students"
           >
             {studentsList.map(x => (
@@ -64,6 +76,7 @@ export default connect(
     studentsList: classStudentsSelector(state)
   }),
   {
-    fetchGroupMembers: fetchClassStudentsAction
+    fetchGroupMembers: fetchClassStudentsAction,
+    addStudents: addStudentsAction
   }
 )(AddStudentsPopup);

@@ -31,7 +31,8 @@ import {
   SAVE_OVERALL_FEEDBACK,
   MARK_AS_ABSENT,
   REMOVE_STUDENTS,
-  FETCH_STUDENTS
+  FETCH_STUDENTS,
+  ADD_STUDENTS
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -165,7 +166,14 @@ function* removeStudentsSaga({ payload }) {
   }
 }
 
-function* addStudentsSaga({ payload }) {}
+function* addStudentsSaga({ payload }) {
+  try {
+    yield call(classBoardApi.addStudents, payload);
+    yield call(message.success, "Successfully added");
+  } catch (err) {
+    yield call(message.error, "Add students failed");
+  }
+}
 
 export function* watcherSaga() {
   yield all([
@@ -178,7 +186,8 @@ export function* watcherSaga() {
     yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
     yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
     yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
-    yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga)
+    yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
+    yield takeEvery(ADD_STUDENTS, addStudentsSaga)
   ]);
 }
 

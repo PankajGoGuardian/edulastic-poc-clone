@@ -713,6 +713,7 @@ class ClassBoard extends Component {
                 <AddStudentsPopup
                   open={showAddStudentsPopup}
                   groupId={classId}
+                  assignmentId={assignmentId}
                   closePopup={this.handleHideAddStudentsPopup}
                   disabledList={existingStudents}
                 />

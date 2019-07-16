@@ -151,6 +151,7 @@ export const SAVE_OVERALL_FEEDBACK = "[gradebook] save overall feedback";
 export const UPDATE_OVERALL_FEEDBACK = "[gradebook] update overalll feedback";
 export const MARK_AS_ABSENT = "[gradebook] mark student/students as absent";
 export const REMOVE_STUDENTS = "[gradebook] remove students";
+export const ADD_STUDENTS = "[gradebook] add students";
 export const FETCH_STUDENTS = "[gradebook] fetch students by class id";
 export const UPDATE_STUDENT_ACTIVITY = "[gradebook] update student activity as absent";
 export const UPDATE_STUDENTS_LIST = "[gradebook] update removed students list";

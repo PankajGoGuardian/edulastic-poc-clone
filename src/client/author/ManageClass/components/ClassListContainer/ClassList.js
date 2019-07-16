@@ -15,7 +15,7 @@ import { fetchStudentsByIdAction } from "../../ducks";
 const { allGrades, allSubjects } = selectsData;
 
 const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
-  const findGrade = _grade => find(allGrades, item => item.value === _grade) || { text: _grade };
+  const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
   // eslint-disable-next-line max-len
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
   const [classGroups, setClassGroups] = useState(groups);
@@ -44,13 +44,13 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
     },
     {
       title: "Grades",
-      dataIndex: "grade",
+      dataIndex: "grades",
       render: (_, row) => {
-        const grade = findGrade(row.grade);
-        const gradeValue = grade.value || grade.text;
+        const grades = findGrade(row.grades);
+        const gradeValue = grades.value || grades.text;
         return (
-          <Tooltip title={gradeValue} placement="bottom">
-            {gradeValue}
+          <Tooltip title={` ${grades}`} placement="bottom">
+            {` ${grades}`}
           </Tooltip>
         );
       }

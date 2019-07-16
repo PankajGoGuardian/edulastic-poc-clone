@@ -134,7 +134,7 @@ class ClassEdit extends React.Component {
       name,
       startDate,
       endDate,
-      grade,
+      grades,
       subject,
       standardSets,
       course,
@@ -163,7 +163,7 @@ class ClassEdit extends React.Component {
                   defaultName={name}
                   defaultStartDate={startDate}
                   defaultEndDate={endDate}
-                  defaultGrade={grade}
+                  defaultGrade={grades}
                   defaultSubject={subject}
                   defaultStandardSets={standardSets}
                   defaultCourse={course}

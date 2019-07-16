@@ -81,11 +81,12 @@ const RightFields = ({
       </StyledFlexContainer>
 
       <StyledFlexContainer>
-        <FieldLabel label="Grade" {...restProps} fiedlName="grade" initialValue={[]}>
+        <FieldLabel label="Grades" {...restProps} fiedlName="grades" initialValue={[]}>
           <Select
             showSearch
-            placeholder="Select Grade"
+            placeholder="Select Grades"
             optionFilterProp="children"
+            mode="multiple"
             filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           >
             {grades.map(el => (

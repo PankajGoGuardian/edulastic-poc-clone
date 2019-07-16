@@ -105,6 +105,7 @@ const ResponseRnd = props => {
         }}
         onDragStop={handleResponseDragStop}
         onResizeStop={handleResponseResizeStop}
+        cancel=".drag-item"
         {...{ ...props, height: "auto" }}
       >
         {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}

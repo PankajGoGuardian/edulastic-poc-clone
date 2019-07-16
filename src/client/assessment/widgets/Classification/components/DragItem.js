@@ -55,6 +55,7 @@ const DragItem = ({
   item
     ? connectDragSource(
         <div
+          className="drag-item"
           data-cy={`drag-drop-item-${renderIndex}`}
           style={{
             display: "flex",

@@ -218,6 +218,7 @@ class Display extends Component {
 
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
+    const { snapfit: snapFitToDropArea } = item;
 
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
 
@@ -307,100 +308,101 @@ class Display extends Component {
         >
           {renderAnnotations()}
           {renderImage()}
-          {responseContainers.map((responseContainer, index) => {
-            const dropTargetIndex = index;
-            const btnStyle = {
-              widthpx: smallSize ? responseContainer.width / 2 : responseContainer.width,
-              width: smallSize ? responseContainer.width / 2 : responseContainer.width,
-              top: smallSize ? responseContainer.top / 2 : responseContainer.top,
-              left: smallSize ? responseContainer.left / 2 : responseContainer.left,
-              height: smallSize ? responseContainer.height / 2 : responseContainer.height,
-              border: showDropItemBorder
-                ? showDashedBorder
-                  ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
-                  : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
-                : 0,
-              position: "absolute",
-              background: transparentBackground ? "transparent" : backgroundColor,
-              borderRadius: 5
-              // overflow: "hidden"
-            };
-            if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-              const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-              btnStyle.width = widthpx;
-              btnStyle.widthpx = widthpx;
-            }
-            if (btnStyle && btnStyle.width === 0) {
-              btnStyle.width = responseBtnStyle.widthpx;
-            } else {
-              btnStyle.width = btnStyle.widthpx;
-            }
-            // eslint-disable-next-line no-unused-vars
-            let indexStr = "";
-            switch (stemnumeration) {
-              case "lowercase": {
-                indexStr = ALPHABET[dropTargetIndex];
-                break;
+          {(snapFitToDropArea || !preview) &&
+            responseContainers.map((responseContainer, index) => {
+              const dropTargetIndex = index;
+              const btnStyle = {
+                widthpx: smallSize ? responseContainer.width / 2 : responseContainer.width,
+                width: smallSize ? responseContainer.width / 2 : responseContainer.width,
+                top: smallSize ? responseContainer.top / 2 : responseContainer.top,
+                left: smallSize ? responseContainer.left / 2 : responseContainer.left,
+                height: smallSize ? responseContainer.height / 2 : responseContainer.height,
+                border: showDropItemBorder
+                  ? showDashedBorder
+                    ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
+                    : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`
+                  : 0,
+                position: "absolute",
+                background: transparentBackground ? "transparent" : backgroundColor,
+                borderRadius: 5
+                // overflow: "hidden"
+              };
+              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+                const { widthpx } = responsecontainerindividuals[dropTargetIndex];
+                btnStyle.width = widthpx;
+                btnStyle.widthpx = widthpx;
               }
-              case "uppercase": {
-                indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-                break;
+              if (btnStyle && btnStyle.width === 0) {
+                btnStyle.width = responseBtnStyle.widthpx;
+              } else {
+                btnStyle.width = btnStyle.widthpx;
               }
-              default:
-                indexStr = dropTargetIndex + 1;
-            }
-            return (
-              <DropContainer
-                key={index}
-                index={index}
-                style={{
-                  ...btnStyle,
-                  borderStyle: smallSize ? "dashed" : "solid",
-                  height: responseContainer.height || "auto", // responseContainer.height || "auto",
-                  width: responseContainer.width || "auto",
-                  minHeight: responseContainer.height || "auto",
-                  minWidth: responseContainer.width || "auto",
-                  maxWidth: response.maxWidth
-                }}
-                className="imagelabeldragdrop-droppable active"
-                drop={drop}
-              >
-                {responseContainer.label && (
-                  <span className="sr-only" role="heading">
-                    Drop target {responseContainer.label}
-                  </span>
-                )}
-                <div className="container">
-                  {userAnswers[dropTargetIndex] &&
-                    userAnswers[dropTargetIndex].map((answer, item_index) => {
-                      const title = striptags(answer) || null;
-                      return (
-                        <DragItem
-                          title={title}
-                          key={item_index}
-                          showDashedBorder={showDashedBorder}
-                          index={item_index}
-                          item={answer}
-                          data={`${answer}_${dropTargetIndex}_${item_index}`}
-                          style={dragItemStyle}
-                          onDrop={this.onDrop}
-                        >
-                          <AnswerContainer
-                            height={responseContainer.height || "auto"}
-                            width={responseContainer.width || "auto"}
-                            answer={answer.replace("<p>", "<p class='clipText'>") || ""}
-                          />
-                        </DragItem>
-                      );
-                    })}
-                </div>
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                  <Point />
-                  <Triangle />
-                </Pointer>
-              </DropContainer>
-            );
-          })}
+              // eslint-disable-next-line no-unused-vars
+              let indexStr = "";
+              switch (stemnumeration) {
+                case "lowercase": {
+                  indexStr = ALPHABET[dropTargetIndex];
+                  break;
+                }
+                case "uppercase": {
+                  indexStr = ALPHABET[dropTargetIndex].toUpperCase();
+                  break;
+                }
+                default:
+                  indexStr = dropTargetIndex + 1;
+              }
+              return (
+                <DropContainer
+                  key={index}
+                  index={index}
+                  style={{
+                    ...btnStyle,
+                    borderStyle: smallSize ? "dashed" : "solid",
+                    height: responseContainer.height || "auto", // responseContainer.height || "auto",
+                    width: responseContainer.width || "auto",
+                    minHeight: responseContainer.height || "auto",
+                    minWidth: responseContainer.width || "auto",
+                    maxWidth: response.maxWidth
+                  }}
+                  className="imagelabeldragdrop-droppable active"
+                  drop={drop}
+                >
+                  {responseContainer.label && (
+                    <span className="sr-only" role="heading">
+                      Drop target {responseContainer.label}
+                    </span>
+                  )}
+                  <div className="container">
+                    {userAnswers[dropTargetIndex] &&
+                      userAnswers[dropTargetIndex].map((answer, item_index) => {
+                        const title = striptags(answer) || null;
+                        return (
+                          <DragItem
+                            title={title}
+                            key={item_index}
+                            showDashedBorder={showDashedBorder}
+                            index={item_index}
+                            item={answer}
+                            data={`${answer}_${dropTargetIndex}_${item_index}`}
+                            style={dragItemStyle}
+                            onDrop={this.onDrop}
+                          >
+                            <AnswerContainer
+                              height={responseContainer.height || "auto"}
+                              width={responseContainer.width || "auto"}
+                              answer={answer.replace("<p>", "<p class='clipText'>") || ""}
+                            />
+                          </DragItem>
+                        );
+                      })}
+                  </div>
+                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                    <Point />
+                    <Triangle />
+                  </Pointer>
+                </DropContainer>
+              );
+            })}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
     );

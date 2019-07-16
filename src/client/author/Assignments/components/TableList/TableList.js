@@ -220,11 +220,11 @@ class TableList extends Component {
         width: "10%",
         render: (text, row, index) => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
-            {expandedRows.includes(`${index}`) ? (
-              <IconArrowDown onclick={() => false} src={arrowUpIcon} style={{ transform: "rotate(180deg)" }} />
-            ) : (
-              <IconArrowDown onClick={() => false} src={arrowUpIcon} />
-            )}
+            <IconArrowDown
+              onclick={() => false}
+              src={arrowUpIcon}
+              style={{ transform: expandedRows.includes(`${index}`) ? "rotate(180deg)" : "" }}
+            />
             {text}
           </ExpandDivdier>
         )

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { isEmpty, get } from "lodash";
+import { isEmpty } from "lodash";
 
 import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay } from "@edulastic/common";
 
@@ -151,9 +151,7 @@ class MathFormulaPreview extends Component {
 
   get restrictKeys() {
     const { item } = this.props;
-    const { options = {} } = get(item, ["validation", "valid_response", "value", 0], {});
-    const { allowedVariables } = options;
-
+    const { allowedVariables } = item;
     return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 

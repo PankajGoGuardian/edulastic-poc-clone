@@ -118,6 +118,7 @@ const MathFormula = ({
 
 MathFormula.propTypes = {
   view: PropTypes.string.isRequired,
+  changePreview: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,

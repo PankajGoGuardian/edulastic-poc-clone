@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { find, isEqual } from "lodash";
+import { find, isEqual, isEmpty } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
 
@@ -49,7 +49,11 @@ class ClozeMathInput extends React.Component {
       };
 
       const mQuill = MQ.MathField(this.mathRef.current, config);
-      this.setState({ currentMathQuill: mQuill });
+      this.setState({ currentMathQuill: mQuill }, () => {
+        const textarea = mQuill.el().querySelector(".mq-textarea textarea");
+        textarea.setAttribute("data-cy", `answer-input-math-textarea`);
+        textarea.addEventListener("keypress", this.handleKeypress);
+      });
       mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
@@ -75,6 +79,21 @@ class ClozeMathInput extends React.Component {
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.clickOutside);
   }
+
+  handleKeypress = e => {
+    const { restrictKeys } = this;
+    if (!isEmpty(restrictKeys)) {
+      const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
+      const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+      if (!(isSpecialChar || isArrowOrShift) && !isEmpty(restrictKeys)) {
+        const isValidKey = restrictKeys.includes(e.key);
+        if (!isValidKey) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    }
+  };
 
   clickOutside = e => {
     const { target } = e;
@@ -205,6 +224,13 @@ class ClozeMathInput extends React.Component {
     return uiStyles;
   };
 
+  get restrictKeys() {
+    const { resprops = {} } = this.props;
+    const { item } = resprops;
+    const { allowedVariables } = item;
+    return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  }
+
   render() {
     const { resprops = {}, id } = this.props;
     const { response_containers, item, uiStyles = {} } = resprops;
@@ -232,6 +258,7 @@ class ClozeMathInput extends React.Component {
               onClose={() => {}}
               symbols={item.symbols}
               numberPad={item.numberPad}
+              restrictKeys={this.restrictKeys}
               showResponse={false}
             />
           </KeyboardWrapper>

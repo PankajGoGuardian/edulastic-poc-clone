@@ -31,7 +31,7 @@ class ClozeMathAnswer extends Component {
   };
 
   render() {
-    const { answers, onChange, onAdd, onDelete, item, onChangeKeypad } = this.props;
+    const { answers, onChange, onAdd, onDelete, item, onChangeKeypad, onChangeAllowedVars } = this.props;
     const { showAdditionals } = this.state;
     const { response_containers: responseContainers = [], ui_style: uiStyle } = item;
     const _changeMethod = (methodId, methodIndex) => (prop, val) => {
@@ -93,6 +93,7 @@ class ClozeMathAnswer extends Component {
                     onAddIndex={method.id}
                     style={{ width, height }}
                     onChangeKeypad={onChangeKeypad}
+                    onChangeAllowedVars={onChangeAllowedVars}
                     {...method}
                   />
                 ))}
@@ -110,6 +111,7 @@ ClozeMathAnswer.propTypes = {
   t: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
+  onChangeAllowedVars: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired

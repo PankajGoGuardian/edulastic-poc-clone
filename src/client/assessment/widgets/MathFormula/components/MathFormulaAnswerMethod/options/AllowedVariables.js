@@ -5,18 +5,18 @@ import { Checkbox, Input } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-const AllowedVariablesPure = ({ options, onChange, t }) => {
+const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
   const [allowAllowedVariables, setAllowAllowedVariables] = useState(false);
 
   useEffect(() => {
-    if (options.allowedVariables) {
+    if (allowedVariables) {
       setAllowAllowedVariables(true);
     }
-  }, [options.allowedVariables]);
+  }, [allowedVariables]);
 
   const onChangeHandler = e => {
     const { value } = e.target;
-    onChange("allowedVariables", value.replace(/[^a-zA-Z,]/g, ""));
+    onChange(value.replace(/[^a-zA-Z,]/g, ""));
   };
 
   return (
@@ -37,7 +37,7 @@ const AllowedVariablesPure = ({ options, onChange, t }) => {
         data-cy="answer-allowed-variables"
         style={{ marginTop: 15, width: "30%" }}
         size="large"
-        value={options.allowedVariables}
+        value={allowedVariables}
         readOnly={!allowAllowedVariables}
         onChange={onChangeHandler}
       />
@@ -46,7 +46,7 @@ const AllowedVariablesPure = ({ options, onChange, t }) => {
 };
 
 AllowedVariablesPure.propTypes = {
-  options: PropTypes.object.isRequired,
+  allowedVariables: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired
 };

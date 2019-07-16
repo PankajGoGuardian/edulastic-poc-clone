@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { MoveLink, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
+import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
 import { getTestItemAuthorName } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
@@ -85,8 +85,7 @@ class Item extends Component {
         ? item.data.questions[0].stimulus
         : "Click here to view the question detail.";
 
-    console.log(item);
-    return stimulus;
+    return helpers.sanitizeForReview(stimulus);
   }
 
   closeModal = () => {

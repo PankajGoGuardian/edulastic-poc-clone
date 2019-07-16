@@ -196,7 +196,7 @@ export const reIndexResponses = htmlStr => {
 };
 
 export const sanitizeForReview = stimulus => {
-  if (!stimulus) return stimulus;
+  if (!stimulus || !window.$) return stimulus;
   let jqueryEl;
   try {
     jqueryEl = $(stimulus);

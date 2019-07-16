@@ -7,6 +7,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
+
+var _isObject2 = _interopRequireDefault(require("lodash/isObject"));
+
 var _isString2 = _interopRequireDefault(require("lodash/isString"));
 
 var _isBoolean2 = _interopRequireDefault(require("lodash/isBoolean"));
@@ -39,9 +43,21 @@ var getEvaluation = function getEvaluation(response, answers, rightIndex, compar
           break;
 
         case _constants.evaluatorTypes.IS_EQUAL:
-          ans = (0, _isString2["default"])(ans) ? ans.trim() : ans;
-          item = (0, _isString2["default"])(item) ? item.trim() : item;
-          evaluation[i] = (0, _isEqual2["default"])(ans, item);
+          if (ans && (0, _isObject2["default"])(ans) && ans.y) {
+            evaluation[i] = (0, _isEqual2["default"])(
+              (0, _objectSpread2["default"])({}, ans, {
+                y: +ans.y.toFixed(5)
+              }),
+              (0, _objectSpread2["default"])({}, item, {
+                y: +item.y.toFixed(5)
+              })
+            );
+          } else {
+            ans = (0, _isString2["default"])(ans) ? ans.trim() : ans;
+            item = (0, _isString2["default"])(item) ? item.trim() : item;
+            evaluation[i] = (0, _isEqual2["default"])(ans, item);
+          }
+
           break;
 
         case _constants.evaluatorTypes.MCQ_TYPE:

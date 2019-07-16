@@ -1,26 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { trendTypes } from "../utils/constants";
+import { StyledTrendIcon } from "./styled";
 
-const trendTypes = {
-  up: {
-    color: "#99cb76",
-    rotation: 45
-  },
-  flat: {
-    color: "#ffe6c0",
-    rotation: 90
-  },
-  down: {
-    color: "#eb7b65",
-    rotation: 135
-  }
-};
-
-const TrendCard = ({ count, ...restProps }) => {
+const TrendCard = ({ count, type, ...restProps }) => {
   return (
     <div {...restProps}>
-      {count} <i className="fa fa-arrow-up" />
+      {count} <StyledTrendIcon type={type} className="fa fa-arrow-up" />
     </div>
   );
 };
@@ -34,10 +21,6 @@ const StyledTrendCard = styled(TrendCard)`
   border-radius: 5px;
   color: #676a6c;
   background-color: ${props => trendTypes[props.type].color};
-
-  i {
-    transform: rotate(${props => trendTypes[props.type].rotation}deg);
-  }
 `;
 
 StyledTrendCard.propTypes = {

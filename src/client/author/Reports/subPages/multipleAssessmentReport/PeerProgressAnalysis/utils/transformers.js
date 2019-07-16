@@ -1,4 +1,4 @@
-import { groupBy, map, sumBy, forEach, find, round } from "lodash";
+import { groupBy, map, sumBy, forEach, find, round, head, values, filter } from "lodash";
 import { getOverallScore } from "../../../../common/util";
 
 const groupByCompareKey = (metricInfo, compareBy) => {
@@ -47,8 +47,10 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
       });
     case "student":
       return map(metricInfo, metric => {
-        // const { firstName = '', lastName = ''} = metric.tests[0]
-        return { ...metric, studentName: "Student Name" };
+        const firstTest = head(values(metric.tests)) || {};
+        const firstRecord = head(firstTest.records || []) || {};
+        const { firstName = "", lastName = "" } = firstRecord;
+        return { ...metric, firstName, lastName, studentName: `${firstName} ${lastName}` };
       });
     default:
       return [];
@@ -64,7 +66,7 @@ export const parseData = (metricInfo = [], compareBy = "") => {
 
     forEach(groupByTests, (value, key) => {
       tests[key] = {
-        ...value,
+        records: value,
         score: getOverallScore(value),
         rawScore: `${round(sumBy(value, "totalScore"), 2)} / ${sumBy(value, "maxScore")}`
       };
@@ -77,4 +79,75 @@ export const parseData = (metricInfo = [], compareBy = "") => {
   });
 
   return parsedGroupedMetric;
+};
+
+export const calculateTrend = groupedData => {
+  let counts = {
+    up: 0,
+    flat: 0,
+    down: 0
+  };
+
+  const dataWithTrend = map(groupedData, d => {
+    let slope = 0,
+      sum_xy = 0,
+      sum_xx = 0,
+      sum_x = 0,
+      sum_y = 0,
+      trend = "flat";
+    let allAssessments = values(d.tests).sort(function(a, b) {
+      return a.records[0].assessmentDate - b.records[0].assessmentDate;
+    });
+
+    const n = allAssessments.length;
+
+    forEach(allAssessments, (ob, index) => {
+      sum_x += index + 1;
+      sum_y += ob.score;
+      sum_xx += (index + 1) * (index + 1);
+      sum_xy += (index + 1) * ob.score;
+    });
+
+    if (n === 0 || n === 1) {
+      trend = "No Trend";
+      return {
+        ...d,
+        trend
+      };
+    }
+
+    if (n * sum_xy - sum_x * sum_y === 0) {
+      trend = "flat";
+
+      if (!counts[trend]) {
+        counts[trend] = 0;
+      }
+
+      counts[trend]++;
+    } else {
+      slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x);
+
+      if (Math.abs(slope) > 0.01) {
+        if (slope > 0) {
+          trend = "up";
+        } else {
+          trend = "down";
+        }
+      } else {
+        trend = "flat";
+      }
+      if (!counts[trend]) {
+        counts[trend] = 0;
+      }
+
+      counts[trend]++;
+    }
+
+    return {
+      ...d,
+      trend
+    };
+  });
+
+  return [dataWithTrend, counts];
 };

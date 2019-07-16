@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { get } from "lodash";
+import { get, head } from "lodash";
 import { connect } from "react-redux";
 import { Row, Col } from "antd";
 import {
@@ -15,8 +15,7 @@ import PeerProgressAnalysisTable from "./components/table/PeerProgressAnalysisTa
 import { Placeholder } from "../../../common/components/loader";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
-import { parseData, augmentWithData } from "./utils/transformers";
-import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
+import { parseData, augmentWithData, calculateTrend } from "./utils/transformers";
 
 import dropDownData from "./static/json/dropDownData.json";
 
@@ -29,11 +28,11 @@ const usefetchProgressHook = (settings, compareBy, fetchAction) => {
 
     if (termId) {
       fetchAction({
-        compareBy,
+        compareBy: compareBy.key,
         termId
       });
     }
-  }, [settings, compareBy]);
+  }, [settings, compareBy.key]);
 };
 
 const PeerProgressAnalysis = ({
@@ -44,17 +43,32 @@ const PeerProgressAnalysis = ({
   loading,
   role
 }) => {
-  const [compareBy, setCompareBy] = useState("school");
-  const [analyseBy, setAnalyseBy] = useState("score");
+  const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
+  const [compareBy, setCompareBy] = useState(head(dropDownData.compareByData));
 
   usefetchProgressHook(settings, compareBy, getPeerProgressAnalysisRequestAction);
+
   const { metricInfo = [] } = get(peerProgressAnalysis, "data.result", {});
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", []);
 
-  const parsedData = parseData(metricInfo, compareBy, orgData);
-  const augmentedData = augmentWithData(parsedData, compareBy, orgData);
+  const parsedData = parseData(metricInfo, compareBy.key, orgData);
+  const [dataWithTrend, trendCount] = calculateTrend(parsedData);
+  const augmentedData = augmentWithData(dataWithTrend, compareBy.key, orgData);
 
-  console.log(dropDownData, "dropDownData");
+  console.log(augmentedData, dataWithTrend);
+
+  const onFilterChange = (key, selectedItem) => {
+    switch (key) {
+      case "compareBy":
+        setCompareBy(selectedItem);
+        break;
+      case "analyseBy":
+        setAnalyseBy(selectedItem);
+        break;
+      default:
+        return;
+    }
+  };
 
   if (loading) {
     return (
@@ -74,58 +88,28 @@ const PeerProgressAnalysis = ({
         <TrendContainer>
           <Col span={8}>
             <PaddedContainer>
-              <TrendCard type="up" />
+              <TrendCard type="up" count={trendCount.up} />
             </PaddedContainer>
           </Col>
           <Col span={8}>
             <PaddedContainer>
-              <TrendCard type="flat" />
+              <TrendCard type="flat" count={trendCount.flat} />
             </PaddedContainer>
           </Col>
           <Col span={8}>
             <PaddedContainer>
-              <TrendCard type="down" />
+              <TrendCard type="down" count={trendCount.down} />
             </PaddedContainer>
           </Col>
         </TrendContainer>
       </UpperContainer>
-      <StyledCard>
-        <Row>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <StyledH3>How well are student sub-groups progressing ?</StyledH3>
-          </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Row type="flex" justify="end">
-              <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                <ControlDropDown
-                  prefix="Analyse By"
-                  by={dropDownData.analyseByData[0]}
-                  selectCB={({ key }) => setAnalyseBy(key)}
-                  data={dropDownData.analyseByData}
-                />
-              </Col>
-              <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                <ControlDropDown
-                  prefix="Compare By"
-                  by={dropDownData.compareByData[0]}
-                  selectCB={({ key }) => setCompareBy(key)}
-                  data={dropDownData.compareByData}
-                />
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <PeerProgressAnalysisTable
-              data={augmentedData}
-              testData={testData}
-              compareBy={compareBy}
-              analyseBy={analyseBy}
-            />
-          </Col>
-        </Row>
-      </StyledCard>
+      <PeerProgressAnalysisTable
+        data={augmentedData}
+        testData={testData}
+        compareBy={compareBy}
+        analyseBy={analyseBy}
+        onFilterChange={onFilterChange}
+      />
     </>
   );
 };

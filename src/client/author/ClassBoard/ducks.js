@@ -6,11 +6,11 @@ import { createSelector } from "reselect";
 import { values as _values, get, keyBy, sortBy, isEmpty } from "lodash";
 
 import {
-  setShowScoreAction,
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction,
-  updateStudentActivityAction
+  updateStudentActivityAction,
+  updateRemovedStudentsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -28,7 +28,8 @@ import {
   OPEN_ASSIGNMENT,
   CLOSE_ASSIGNMENT,
   SAVE_OVERALL_FEEDBACK,
-  MARK_AS_ABSENT
+  MARK_AS_ABSENT,
+  REMOVE_STUDENTS
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -143,6 +144,16 @@ function* markAbsentSaga({ payload }) {
   }
 }
 
+function* removeStudentsSaga({ payload }) {
+  try {
+    const { students } = yield call(classBoardApi.removeStudents, payload);
+    yield put(updateRemovedStudentsAction(students));
+    yield call(message.success, "Successfully removed");
+  } catch (err) {
+    yield call(message.error, "Remove students failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -152,7 +163,8 @@ export function* watcherSaga() {
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
     yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
     yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
-    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga)
+    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
+    yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga)
   ]);
 }
 
@@ -277,9 +289,15 @@ export const getGradeBookSelector = createSelector(
   state => getAggregateByQuestion(state.entities)
 );
 
+export const removedStudentsSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.removedStudents
+);
+
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
-  state => state.entities
+  removedStudentsSelector,
+  (state, removedStudents) => state.entities.filter(item => !removedStudents.includes(item.studentId))
 );
 
 export const getAdditionalDataSelector = createSelector(

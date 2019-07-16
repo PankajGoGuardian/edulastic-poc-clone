@@ -3,18 +3,26 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get, keyBy } from "lodash";
-import moment from "moment";
-import { message, Dropdown, Menu } from "antd";
+import { message, Dropdown } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { IconMarkAsAbsent, IconStudentReportCard, IconMoreHorizontal, IconRedirect, IconPrint } from "@edulastic/icons";
+import {
+  IconMarkAsAbsent,
+  IconStudentReportCard,
+  IconMoreHorizontal,
+  IconRedirect,
+  IconPrint,
+  IconAddStudents,
+  IconRemove
+} from "@edulastic/icons";
 // actions
 import {
   receiveTestActivitydAction,
   receiveClassResponseAction,
   releaseScoreAction,
   markAsDoneAction,
-  markAbsentAction
+  markAbsentAction,
+  removeStudentAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
@@ -108,7 +116,8 @@ class ClassBoard extends Component {
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {},
-      showModal: false,
+      showMarkAbsentPopup: false,
+      showRemoveStudentsPopup: false,
       modalInputVal: "",
       selectedNotStartedStudents: []
     };
@@ -335,7 +344,23 @@ class ClassBoard extends Component {
         `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`
       );
     }
-    this.setState({ showModal: true, selectedNotStartedStudents, modalInputVal: "" });
+    this.setState({ showMarkAbsentPopup: true, selectedNotStartedStudents, modalInputVal: "" });
+  };
+
+  handleShowRemoveStudentsModal = () => {
+    const { selectedStudents } = this.props;
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    if (!selectedStudentKeys.length) return message.warn("At least one student should be selected to be removed.");
+    this.setState({ showRemoveStudentsPopup: true, modalInputVal: "" });
+  };
+
+  handleRemoveStudents = () => {
+    const { selectedStudents, studentUnselectAll, removeStudent, match } = this.props;
+    const { assignmentId, classId } = match.params;
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    removeStudent(assignmentId, classId, selectedStudentKeys);
+    studentUnselectAll();
+    this.setState({ showRemoveStudentsPopup: false });
   };
 
   handleMarkAbsent = () => {
@@ -345,11 +370,15 @@ class ClassBoard extends Component {
     if (!selectedNotStartedStudents.length) return message.warn("No students selected");
     markAbsent(assignmentId, classId, selectedNotStartedStudents);
     studentUnselectAll();
-    this.setState({ showModal: false });
+    this.setState({ showMarkAbsentPopup: false });
   };
 
   handleCancelMarkAbsent = () => {
-    this.setState({ showModal: false });
+    this.setState({ showMarkAbsentPopup: false });
+  };
+
+  handleCancelRemove = () => {
+    this.setState({ showRemoveStudentsPopup: false });
   };
 
   handleValidateInput = e => {
@@ -420,7 +449,8 @@ class ClassBoard extends Component {
       selectAll,
       nCountTrue,
       modalInputVal,
-      showModal
+      showMarkAbsentPopup,
+      showRemoveStudentsPopup
     } = this.state;
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
@@ -440,10 +470,10 @@ class ClassBoard extends Component {
       assignmentStatus.toLowerCase() === "graded";
     return (
       <div>
-        {showModal ? (
+        {showMarkAbsentPopup ? (
           <ConfirmationModal
             title="Absent"
-            show={showModal}
+            show={showMarkAbsentPopup}
             onOk={this.handleMarkAbsent}
             onCancel={this.handleCancelMarkAbsent}
             inputVal={modalInputVal}
@@ -453,6 +483,23 @@ class ClassBoard extends Component {
               "You are about to Mark the selected student(s) as Absent. Student's response if present will be deleted. Do you still want to proceed?"
             }
             okText="Yes,Absent"
+          />
+        ) : (
+          ""
+        )}
+        {showRemoveStudentsPopup ? (
+          <ConfirmationModal
+            title="Remove"
+            show={showRemoveStudentsPopup}
+            onOk={this.handleRemoveStudents}
+            onCancel={this.handleCancelRemove}
+            inputVal={modalInputVal}
+            onInputChange={this.handleValidateInput}
+            expectedVal="REMOVE"
+            bodyText={
+              "You are about to remove the selected student(s) from this assessment. Student's responses will be deleted. Do you still want to proceed?"
+            }
+            okText="Yes,Remove"
           />
         ) : (
           ""
@@ -565,6 +612,14 @@ class ClassBoard extends Component {
                             <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
                               <IconMarkAsAbsent />
                               <span>Mark as Absent</span>
+                            </MenuItems>
+                            <MenuItems onClick={this.onStudentReportCardsClick}>
+                              <IconAddStudents />
+                              <span>Add Students</span>
+                            </MenuItems>
+                            <MenuItems onClick={this.handleShowRemoveStudentsModal}>
+                              <IconRemove />
+                              <span>Remove Students</span>
                             </MenuItems>
                             <MenuItems onClick={this.onStudentReportCardsClick}>
                               <IconStudentReportCard />
@@ -747,7 +802,8 @@ const enhance = compose(
       setSelected: gradebookSetSelectedAction,
       setReleaseScore: releaseScoreAction,
       setMarkAsDone: markAsDoneAction,
-      markAbsent: markAbsentAction
+      markAbsent: markAbsentAction,
+      removeStudent: removeStudentAction
     }
   )
 );

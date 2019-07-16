@@ -19,7 +19,9 @@ import {
   SAVE_OVERALL_FEEDBACK,
   UPDATE_OVERALL_FEEDBACK,
   MARK_AS_ABSENT,
-  UPDATE_STUDENT_ACTIVITY
+  UPDATE_STUDENT_ACTIVITY,
+  REMOVE_STUDENTS,
+  UPDATE_STUDENTS_LIST
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -93,6 +95,16 @@ export const markAbsentAction = (assignmentId, classId, students) => ({
 
 export const updateStudentActivityAction = payload => ({
   type: UPDATE_STUDENT_ACTIVITY,
+  payload
+});
+
+export const removeStudentAction = (assignmentId, classId, students) => ({
+  type: REMOVE_STUDENTS,
+  payload: { assignmentId, classId, students }
+});
+
+export const updateRemovedStudentsAction = payload => ({
+  type: UPDATE_STUDENTS_LIST,
   payload
 });
 

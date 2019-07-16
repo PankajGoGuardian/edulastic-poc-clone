@@ -8,7 +8,8 @@ import {
   TOGGLE_PRESENTATION_MODE,
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
-  UPDATE_STUDENT_ACTIVITY
+  UPDATE_STUDENT_ACTIVITY,
+  UPDATE_STUDENTS_LIST
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 
@@ -30,6 +31,7 @@ export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_R
 
 const initialState = {
   entities: [],
+  removedStudents: [],
   error: null,
   loading: false,
   presentationMode: false
@@ -208,6 +210,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entities: updatedStudents
+      };
+    case UPDATE_STUDENTS_LIST:
+      return {
+        ...state,
+        removedStudents: payload
       };
     default:
       return state;

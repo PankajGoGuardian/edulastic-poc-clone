@@ -61,6 +61,15 @@ const markAbsent = ({ assignmentId, classId, students }) =>
     })
     .then(result => result.data);
 
+const removeStudents = ({ assignmentId, classId, students }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${assignmentId}/remove-students`,
+      data: { _id: classId, students }
+    })
+    .then(response => response.data.result.result);
+
 export default {
   gradebook,
   testActivity,
@@ -68,5 +77,6 @@ export default {
   markAsDone,
   openAssignment,
   closeAssignment,
-  markAbsent
+  markAbsent,
+  removeStudents
 };

@@ -78,6 +78,17 @@ class Item extends Component {
     return get(item, "rows[0].widgets[0].entity.stimulus", "");
   }
 
+  get itemStimulus() {
+    const { item } = this.props;
+    const stimulus =
+      item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
+        ? item.data.questions[0].stimulus
+        : "Click here to view the question detail.";
+
+    console.log(item);
+    return stimulus;
+  }
+
   closeModal = () => {
     this.setState({ isShowPreviewModal: false });
   };
@@ -171,11 +182,7 @@ class Item extends Component {
         />
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.previewItem}>
-              {item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
-                ? item.data.questions[0].stimulus
-                : "Click here to view the question detail."}
-            </MoveLink>
+            <MoveLink onClick={this.previewItem}>{this.itemStimulus}</MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (

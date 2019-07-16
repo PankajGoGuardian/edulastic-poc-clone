@@ -59,12 +59,17 @@ const ResetPasswordPopup = props => {
 };
 
 const InputPasswordForm = props => {
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, getFieldError, setFields } = props.form;
   const { t, onCancel, onSubmit: _onSubmit, requestingNewPassword } = props;
   const [passwd, setPasswd] = useState("");
+  const [confPasswd, setConfPasswd] = useState("");
 
   const onNewPasswordChange = event => {
     setPasswd(event.currentTarget.value);
+  };
+
+  const onConfirmPasswordChange = event => {
+    setConfPasswd(event.currentTarget.value);
   };
 
   const checkPassword = (rule, value, callback) => {
@@ -72,6 +77,8 @@ const InputPasswordForm = props => {
       callback(t("component.signup.teacher.shortpassword"));
     } else if (value.includes(" ")) {
       callback(t("component.signup.teacher.validpassword"));
+    } else if (value !== confPasswd) {
+      callback(t("Passwords don't match"));
     }
     callback();
   };
@@ -95,10 +102,25 @@ const InputPasswordForm = props => {
     });
   };
 
+  let newPasswordError = getFieldError("newPassword");
+  let confirmPasswordError = getFieldError("confirmPassword");
+  if (
+    ((newPasswordError && !confirmPasswordError) || (!newPasswordError && confirmPasswordError)) &&
+    passwd &&
+    passwd.trim() &&
+    confPasswd &&
+    confPasswd.trim() &&
+    passwd.trim() === confPasswd.trim()
+  ) {
+    setFields({ newPassword: { value: passwd, errors: undefined } });
+    setFields({ confirmPassword: { value: confPasswd, errors: undefined } });
+  }
+
   return (
     <Form onSubmit={onSubmit} autoComplete="new-password">
-      <Form.Item>
+      <Form.Item validateStatus={newPasswordError ? "error" : "success"} help={newPasswordError}>
         {getFieldDecorator("newPassword", {
+          validateTrigger: ["onChange", "onBlur", "onInput"],
           validateFirst: true,
           initialValue: "",
           rules: [
@@ -121,8 +143,9 @@ const InputPasswordForm = props => {
           />
         )}
       </Form.Item>
-      <Form.Item>
+      <Form.Item validateStatus={confirmPasswordError ? "error" : "success"} help={confirmPasswordError}>
         {getFieldDecorator("confirmPassword", {
+          validateTrigger: ["onChange", "onBlur", "onInput"],
           validateFirst: true,
           initialValue: "",
           rules: [
@@ -141,6 +164,7 @@ const InputPasswordForm = props => {
             placeholder="Confirm Password"
             autoComplete="new-password"
             prefix={<Icon type="key" style={{ color: "white" }} />}
+            onChange={onConfirmPasswordChange}
           />
         )}
       </Form.Item>

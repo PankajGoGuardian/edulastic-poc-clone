@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Spin } from "antd";
-import { TextWrapper, LinkWrapper } from "../../../styledComponents";
-import { CardsContainer, CardBox } from "./styled";
+import { TextWrapper } from "../../../styledComponents";
+import { Container, CardBox } from "./styled";
 import CardImage from "./components/CardImage/cardImage";
 import CardTextContent from "./components/CardTextContent/cardTextContent";
 import { receiveTeacherDashboardAction } from "../../../../duck";
 import CreateClassPage from "./components/CreateClassPage/createClassPage";
 const Card = ({ data }) => {
   return (
-    <CardBox style={{ minWidth: "300px" }}>
+    <CardBox>
       <Row>
         <CardImage data={data} />
       </Row>
@@ -24,7 +24,6 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   useEffect(() => {
     getTeacherDashboard();
   }, []);
-  const [showAllCards, setShowAllCards] = useState(false);
 
   const sortableCards = classData
     .filter(d => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
@@ -40,20 +39,18 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   ));
 
   return (
-    <div style={{ marginTop: "110px" }}>
-      <TextWrapper size="20px" color="#434B5D" style={{ marginLeft: "2rem" }}>
+    <Container>
+      <TextWrapper size="20px" color="#434B5D" style={{ marginBottom: "1rem" }}>
         My classes
       </TextWrapper>
-      <CardsContainer>
-        {loading ? (
-          <Spin style={{ marginTop: "120px" }} />
-        ) : classData.length == 0 ? (
-          <CreateClassPage />
-        ) : (
-          <Row gutter={20}>{ClassCards}</Row>
-        )}
-      </CardsContainer>
-    </div>
+      {loading ? (
+        <Spin style={{ marginTop: "80px" }} />
+      ) : classData.length == 0 ? (
+        <CreateClassPage />
+      ) : (
+        <Row gutter={20}>{ClassCards}</Row>
+      )}
+    </Container>
   );
 };
 

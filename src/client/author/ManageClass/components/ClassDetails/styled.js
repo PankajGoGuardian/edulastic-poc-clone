@@ -95,7 +95,7 @@ export const Container = styled(Paper)`
   margin: 15px auto 0 auto;
   padding: 30px 15px;
   border-radius: 0px;
-  width: 80%;
+  width: 90%;
 `;
 
 export const ContainerHeader = styled.div`

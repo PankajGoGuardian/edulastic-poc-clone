@@ -18,7 +18,7 @@ import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 import { YAxisLabel } from "./chartUtils/yAxisLabel";
 
-const _yTickFormatter = val => {
+const _barsLabelFormatter = val => {
   if (val !== 0) {
     return val + "%";
   } else {
@@ -50,8 +50,8 @@ export const SignedStackedBarChart = ({
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = _yTickFormatter,
-  barsLabelFormatter = _yTickFormatter,
+  yTickFormatter = val => val + "%",
+  barsLabelFormatter = _barsLabelFormatter,
   referenceLine = 0,
   filter = {}
 }) => {
@@ -190,7 +190,6 @@ export const SignedStackedBarChart = ({
                 barSize={70}
                 onMouseOver={onBarMouseOver(bdIndex)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
-                minPointSize={20}
               >
                 <LabelList
                   dataKey={bdItem.key}

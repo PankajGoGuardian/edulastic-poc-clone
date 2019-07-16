@@ -23,7 +23,6 @@ import {
   MaxAttemptIInput
 } from "./styled";
 
-const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
 const { calculatorKeys, calculators, releaseGradeTypes, evalTypes, evalTypeLabels, completionTypes } = test;

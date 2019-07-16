@@ -204,6 +204,7 @@ const initialState = {
   page: 1,
   limit: 20,
   count: 0,
+  updated: false,
   loading: false,
   creating: false,
   thumbnail: "",
@@ -214,7 +215,7 @@ const initialState = {
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_DEFAULT_TEST_DATA:
-      return { ...state, entity: createBlankTest() };
+      return { ...state, entity: createBlankTest(), updated: false };
     case UPDATE_TEST_DEFAULT_IMAGE:
       return { ...state, thumbnail: payload };
     case RECEIVE_TEST_BY_ID_REQUEST:
@@ -229,7 +230,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         entity: {
           ...payload.entity
-        }
+        },
+        updated: state.createdItems.length > 0
       };
     case RECEIVE_TEST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };
@@ -244,13 +246,15 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: { ...state.entity, ...entity },
         createdItems: [],
+        updated: false,
         creating: false
       };
     case UPDATE_ENTITY_DATA:
       const { testItems: items, ...dataRest } = payload.entity;
       return {
         ...state,
-        entity: { ...state.entity, ...dataRest }
+        entity: { ...state.entity, ...dataRest },
+        updated: false
       };
     case CREATE_TEST_ERROR:
     case UPDATE_TEST_ERROR:
@@ -261,7 +265,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           ...payload.data
-        }
+        },
+        updated: true
       };
     case UPDATE_TEST_IMAGE:
       return {
@@ -269,7 +274,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...state.entity,
           thumbnail: payload.fileUrl
-        }
+        },
+        updated: true
       };
     case SET_MAX_ATTEMPT:
       return {
@@ -304,6 +310,7 @@ export const reducer = (state = initialState, { type, payload }) => {
           grades: [],
           subjects: []
         },
+        updated: false,
         createdItems: [],
         thumbnail: "",
         sharedUsersList: []
@@ -311,11 +318,13 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_CREATED_ITEM_TO_TEST:
       return {
         ...state,
-        createdItems: [...state.createdItems, payload]
+        createdItems: [...state.createdItems, payload],
+        updated: true
       };
     case TEST_CREATE_SUCCESS:
       return {
         ...state,
+        updated: false,
         creating: false
       };
     case UPDATE_SHARED_USERS_LIST:
@@ -554,11 +563,25 @@ function* setTestDataAndUpdateSaga({ payload }) {
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
     yield put(setTestDataAction(payload.data));
-    if (payload.data._id) {
-      yield put(updateTestAction(payload.data._id, payload.data, true));
-    } else {
-      yield put(createTestAction(payload.data));
+    const { title } = payload.data;
+    if (!title) {
+      return yield call(message.error("Name field cannot be empty"));
     }
+    if (!payload.data.requirePassword) {
+      delete payload.data.assignmentPassword;
+    } else if (!payload.data.assignmentPassword) {
+      yield call(message.error, "Please add a valid password.");
+      return;
+    }
+    const entity = yield call(testsApi.create, payload.data);
+    yield put({
+      type: UPDATE_ENTITY_DATA,
+      payload: {
+        entity
+      }
+    });
+    yield put(replace(`/author/tests/${entity._id}`));
+    yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
   } catch (e) {
     const errorMessage = "Auto Save of Test is failing";
     yield call(message.error, errorMessage);

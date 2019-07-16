@@ -22,7 +22,8 @@ const ModalStyles = {
   minWidth: 750,
   borderRadius: "5px",
   padding: "30px",
-  background: "#f7f7f7"
+  background: "#f7f7f7",
+  maxWidth: "70%"
 };
 
 const { duplicateTestItem } = testItemsApi;

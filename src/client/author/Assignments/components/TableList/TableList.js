@@ -73,6 +73,7 @@ class TableList extends Component {
   };
 
   state = {
+    expandedRows: ["0", "1", "2"],
     details: true
   };
 
@@ -174,6 +175,9 @@ class TableList extends Component {
 
   disableExtend = () => this.setState({ details: true });
 
+  handleExpandedRowsChange = expandedRows => {
+    this.setState({ expandedRows });
+  };
   render() {
     const {
       assignmentsByTestId = {},
@@ -188,7 +192,7 @@ class TableList extends Component {
       showPreviewModal
     } = this.props;
 
-    const { details } = this.state;
+    const { details, expandedRows } = this.state;
     const columns = [
       {
         title: "Assignment Name",
@@ -214,9 +218,13 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.class - b.class,
         width: "10%",
-        render: text => (
+        render: (text, row, index) => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
-            <IconArrowDown onclick={() => false} src={arrowUpIcon} />
+            <IconArrowDown
+              onclick={() => false}
+              src={arrowUpIcon}
+              style={{ transform: expandedRows.includes(`${index}`) ? "rotate(180deg)" : "" }}
+            />
             {text}
           </ExpandDivdier>
         )
@@ -317,7 +325,8 @@ class TableList extends Component {
           expandedRowRender={this.expandedRowRender}
           dataSource={data}
           expandRowByClick={details}
-          defaultExpandedRowKeys={["0", "1", "2"]}
+          onExpandedRowsChange={this.handleExpandedRowsChange}
+          defaultExpandedRowKeys={expandedRows}
         />
       </Container>
     );

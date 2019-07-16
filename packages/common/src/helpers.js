@@ -100,12 +100,18 @@ function addProps() {
   $(this).replaceWith(text);
 }
 
-const sanitizeSelfClosingTags = inputString =>
-  inputString &&
-  inputString
-    .replace(/<hr>/g, "<hr/>")
-    .replace(/<br>/g, "<br/>")
-    .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+const sanitizeSelfClosingTags = inputString => {
+  let _inputString = typeof inputString === "number" ? inputString.toString() : inputString;
+
+  const sanitizedString =
+    _inputString &&
+    _inputString
+      .replace(/<hr>/g, "<hr/>")
+      .replace(/<br>/g, "<br/>")
+      .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+
+  return sanitizedString;
+};
 
 const replaceForJsxParser = inputString =>
   inputString &&

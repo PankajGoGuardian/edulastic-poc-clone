@@ -32,7 +32,6 @@ import Group2256 from "../keyboardButtons/2256.svg";
 import Group2253 from "../keyboardButtons/2253.svg";
 import Group2263 from "../keyboardButtons/2263.svg";
 import Group2261 from "../keyboardButtons/2261.svg";
-import Group2255 from "../keyboardButtons/2255.svg";
 import Group2266 from "../keyboardButtons/2266.svg";
 import Group2262 from "../keyboardButtons/2262.svg";
 import Group1024 from "../keyboardButtons/1024.svg";
@@ -433,7 +432,7 @@ export const KEYBOARD_BUTTONS_ALL = [
   },
   {
     handler: "\\in",
-    label: <CustomImage src={Group2255} role="presentation" />,
+    label: "in",
     types: ["all", "sets"],
     command: "cmd"
   },

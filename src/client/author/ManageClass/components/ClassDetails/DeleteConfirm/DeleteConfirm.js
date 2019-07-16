@@ -98,7 +98,7 @@ class DeleteConfirm extends React.Component {
         <Description>
           Are you sure you want to remove the selected students from the class? <br />
           If yes type
-          <BoldText>{defaultText}</BoldText> in the space given below and proceed.
+          <BoldText> {defaultText}</BoldText> in the space given below and proceed.
         </Description>
         <InputWrapper>
           {/* Here paste is not allowed, and user has to manually type in REMOVE */}

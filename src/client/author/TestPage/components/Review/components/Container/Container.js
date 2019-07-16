@@ -92,7 +92,7 @@ class Review extends PureComponent {
   };
 
   handleRemoveSelected = () => {
-    const { test, setDataAndSave } = this.props;
+    const { test, setData } = this.props;
     const newData = cloneDeep(test);
     const itemsSelected = test.testItems.find(item => item.selected);
     if (!itemsSelected) {
@@ -106,7 +106,7 @@ class Review extends PureComponent {
     });
 
     this.setSelected([]);
-    setDataAndSave(newData);
+    setData(newData);
     message.success("Selected testItems removed successfully");
   };
 

@@ -18,11 +18,7 @@ import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 
 const _yTickFormatter = val => {
-  if (val !== 0) {
-    return val + "%";
-  } else {
-    return "";
-  }
+  return val + "%";
 };
 
 const LabelText = props => {

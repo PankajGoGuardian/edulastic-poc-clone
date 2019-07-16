@@ -1924,11 +1924,11 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      type: "math",
+      type: "multipart",
       cardImage: MTClozeMath,
       stimulus: "",
       data: {
-        title: "Expression Multipart",
+        title: "Math, Text & Dropdown",
         stimulus:
           '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
         templateDisplay: true,

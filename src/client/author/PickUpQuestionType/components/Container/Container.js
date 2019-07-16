@@ -38,7 +38,8 @@ import {
   SelectWidget,
   BackLink,
   RulerIcon,
-  PlayIcon
+  PlayIcon,
+  MultipartIcon
 } from "./styled";
 import { toggleCreateItemModalAction } from "../../../src/actions/testItem";
 
@@ -259,6 +260,10 @@ class Container extends Component {
               <MoleculeIcon />
               {"Chemistry"}
             </Menu.Item>
+            <Menu.Item key="multipart">
+              <MultipartIcon />
+              {"Multipart"}
+            </Menu.Item>
             <Menu.Item key="video-passages">
               <PlayIcon />
               {"Video & Passages"}
@@ -360,6 +365,10 @@ class Container extends Component {
               <Menu.Item key="chemistry" onClick={this.toggleCategories}>
                 <MoleculeIcon />
                 {"Chemistry"}
+              </Menu.Item>
+              <Menu.Item key="multipart">
+                <MultipartIcon />
+                {"Multipart"}
               </Menu.Item>
               <Menu.Item key="video-passages" onClick={this.toggleCategories}>
                 <PlayIcon />

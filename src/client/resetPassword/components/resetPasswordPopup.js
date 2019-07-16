@@ -120,7 +120,7 @@ const InputPasswordForm = props => {
     <Form onSubmit={onSubmit} autoComplete="new-password">
       <Form.Item validateStatus={newPasswordError ? "error" : "success"} help={newPasswordError}>
         {getFieldDecorator("newPassword", {
-          validateTrigger: ["onChange", "onBlur", "onInput"],
+          validateTrigger: ["onChange", "onBlur"],
           validateFirst: true,
           initialValue: "",
           rules: [
@@ -145,7 +145,7 @@ const InputPasswordForm = props => {
       </Form.Item>
       <Form.Item validateStatus={confirmPasswordError ? "error" : "success"} help={confirmPasswordError}>
         {getFieldDecorator("confirmPassword", {
-          validateTrigger: ["onChange", "onBlur", "onInput"],
+          validateTrigger: ["onChange", "onBlur"],
           validateFirst: true,
           initialValue: "",
           rules: [

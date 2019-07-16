@@ -247,7 +247,10 @@ const MatchListPreview = ({
               childMarginRight={smallSize ? 13 : 45}
             >
               <ListItem smallSize={smallSize}>
-                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                <MathFormulaDisplay
+                  style={{ margin: "auto", width: "unset" }}
+                  dangerouslySetInnerHTML={{ __html: ite }}
+                />
               </ListItem>
               <Separator smallSize={smallSize} />
               <DropContainer

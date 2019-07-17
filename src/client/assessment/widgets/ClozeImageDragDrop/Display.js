@@ -2,8 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep, flattenDeep, isUndefined, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
-
-import { InstructorStimulus, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, Stimulus, MathSpan } from "@edulastic/common";
 import { response, clozeImage } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -39,10 +38,12 @@ class Display extends Component {
       return 0;
     });
     const possibleResponses = this.getInitialResponses(props);
+    this.previewContainerRef = React.createRef();
 
     this.state = {
       userAnswers,
-      possibleResponses
+      possibleResponses,
+      snapItems: []
     };
   }
 
@@ -56,12 +57,46 @@ class Display extends Component {
     }
   }
 
-  onDrop = ({ item: sourceData, fromContainerIndex, fromRespIndex }, index, position = {}) => {
-    const { userAnswers, possibleResponses } = this.state;
-    const { maxRespCount, onChange, item, preview } = this.props;
+  onDropForSnapFit = (sourceData, fromContainerIndex, fromRespIndex, itemRect) => {
+    if (!this.previewContainerRef.current) {
+      return;
+    }
+    const { possibleResponses, userAnswers, snapItems } = this.state;
 
-    const { snapfit: snapFitToDropArea } = item;
-    console.log(fromContainerIndex, index, position, !snapFitToDropArea && preview);
+    const newAnswers = cloneDeep(userAnswers);
+    const newResponses = cloneDeep(possibleResponses);
+    const newSnapItems = cloneDeep(snapItems);
+
+    const containerRect = this.previewContainerRef.current.getBoundingClientRect();
+    let top = itemRect.y - containerRect.top;
+    let left = itemRect.x - containerRect.left;
+    top = top < 0 ? 0 : top;
+    left = left < 0 ? 0 : left;
+
+    const diffW = left + itemRect.width - containerRect.width;
+    const diffH = top + itemRect.height - containerRect.height;
+
+    left = diffW > 0 ? left - diffW : left;
+    top = diffH > 0 ? top - diffH : top;
+
+    if (fromContainerIndex !== fromRespIndex) {
+      newSnapItems.push({ answer: sourceData, rect: { top, left } });
+      newResponses.splice(fromRespIndex, 1);
+    } else {
+      newSnapItems[fromRespIndex].rect = { top, left };
+    }
+
+    this.setState({ snapItems: newSnapItems, possibleResponses: newResponses });
+  };
+
+  onDrop = ({ item: sourceData, fromContainerIndex, fromRespIndex, itemRect }, index) => {
+    const { maxRespCount, onChange, item, preview } = this.props;
+    const { userAnswers, possibleResponses } = this.state;
+    const { isSnapFitValues } = item;
+    if (!isSnapFitValues && preview) {
+      return this.onDropForSnapFit(sourceData, fromContainerIndex, fromRespIndex, itemRect);
+    }
+
     if (fromContainerIndex === index) {
       return;
     }
@@ -214,12 +249,12 @@ class Display extends Component {
 
     const questionId = item && item.id;
 
-    const { userAnswers: _uAnswers, possibleResponses } = this.state;
+    const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
     const cAnswers = get(item, "validation.valid_response.value", []);
 
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
-    const { snapfit: snapFitToDropArea } = item;
+    const { isSnapFitValues } = item;
 
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
 
@@ -306,10 +341,12 @@ class Display extends Component {
           smallSize={smallSize}
           width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
           height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+          data-cy="preview-contaniner"
+          innerRef={this.previewContainerRef}
         >
           {renderAnnotations()}
           {renderImage()}
-          {(snapFitToDropArea || !preview) &&
+          {(isSnapFitValues || !preview) &&
             responseContainers.map((responseContainer, index) => {
               const dropTargetIndex = index;
               const btnStyle = {
@@ -404,14 +441,49 @@ class Display extends Component {
                 </DropContainer>
               );
             })}
-          {!snapFitToDropArea && preview && (
+          {!isSnapFitValues && preview && (
             <DropContainer
               index={0}
               drop={drop}
               data-cy="drop-container"
               style={{ height: "100%", border: "1px red solid" }}
               className="imagelabeldragdrop-droppable active"
-            />
+            >
+              {snapItems.map((snap_item, index) => {
+                const title = striptags(snap_item.answer) || null;
+                const { rect } = snap_item;
+                const btnStyle = {
+                  top: smallSize ? rect.top / 2 : rect.top,
+                  left: smallSize ? rect.left / 2 : rect.left,
+                  border: showDashedBorder
+                    ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
+                    : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
+                  position: "absolute",
+                  background: backgroundColor,
+                  borderRadius: 5,
+                  padding: "8px 20px",
+                  margin: 0
+                  // overflow: "hidden"
+                };
+                return (
+                  <DragItem
+                    key={index}
+                    title={title}
+                    showDashedBorder={showDashedBorder}
+                    index={index}
+                    item={snap_item.answer}
+                    data={`${snap_item.answer}_${index}_${index}`}
+                    style={{
+                      ...dragItemStyle,
+                      ...btnStyle
+                    }}
+                    onDrop={this.onDrop}
+                  >
+                    <MathSpan dangerouslySetInnerHTML={{ __html: snap_item.answer || "" }} />
+                  </DragItem>
+                );
+              })}
+            </DropContainer>
           )}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>

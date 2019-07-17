@@ -45,12 +45,12 @@ const ResponseBoxLayout = ({
           }}
         >
           {!dragHandler && (
-            <DragItem index={index} onDrop={onDrop} item={option} data={option}>
+            <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
               <MathSpan dangerouslySetInnerHTML={{ __html: option || "" }} />
             </DragItem>
           )}
           {dragHandler && (
-            <DragItem index={index} onDrop={onDrop} item={option} data={option}>
+            <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
               <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
               <MathSpan dangerouslySetInnerHTML={{ __html: option || "" }} />
             </DragItem>

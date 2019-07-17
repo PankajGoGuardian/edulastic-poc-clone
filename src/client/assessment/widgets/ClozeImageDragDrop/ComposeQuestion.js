@@ -460,7 +460,7 @@ class ComposeQuestion extends Component {
       imageAlterText,
       isEditAriaLabels,
       responses,
-      snapfit,
+      isSnapFitValues,
       imageOptions = {},
       keepAspectRatio
     } = item;
@@ -731,8 +731,8 @@ class ComposeQuestion extends Component {
           </Checkbox>
           <Checkbox
             data-cy="drag-drop-image-border-check"
-            defaultChecked={snapfit}
-            onChange={val => this.onItemPropChange("snapfit", val.target.checked)}
+            defaultChecked={isSnapFitValues}
+            onChange={val => this.onItemPropChange("isSnapFitValues", val.target.checked)}
           >
             {t("component.cloze.imageDragDrop.snapfittodroparea")}
           </Checkbox>

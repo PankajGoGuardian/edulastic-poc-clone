@@ -98,7 +98,8 @@
       "itemDetail": "Item Detail",
       "backToItemList": "Back to Item Bank",
       "backText": "Back to Item Detail",
-      "addNew": "ANOTHER PART"
+      "addNew": "ANOTHER PART",
+      "addFirstPart": "FIRST PART"
     },
     "itemdetail": {
       "backText": "Back to Item Detail",

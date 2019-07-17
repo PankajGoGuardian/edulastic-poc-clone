@@ -1982,6 +1982,15 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
+      type: "multipart",
+      cardImage: MTUnits,
+      data: {
+        title: "Combination Multipart",
+        type: questionType.COMBINATION_MULTIPART
+      },
+      onSelectQuestionType
+    },
+    {
       type: "math",
       cardImage: MTEssay,
       stimulus: "",

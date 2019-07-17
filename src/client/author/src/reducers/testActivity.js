@@ -50,7 +50,8 @@ const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         data: payload.gradebookData,
         entities: transformGradeBookResponse(payload.gradebookData),
-        additionalData: payload.additionalData
+        additionalData: payload.additionalData,
+        removedStudents: payload.gradebookData.exStudents
       };
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD:
       let entity = payload;

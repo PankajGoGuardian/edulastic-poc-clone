@@ -68,7 +68,8 @@ const removeStudents = ({ assignmentId, classId, students }) =>
       url: `${prefix}/${assignmentId}/remove-students`,
       data: { _id: classId, students }
     })
-    .then(response => response.data.result.result);
+    .then(response => response.data.result);
+
 const addStudents = ({ assignmentId, classId, students }) =>
   api
     .callApi({
@@ -76,7 +77,7 @@ const addStudents = ({ assignmentId, classId, students }) =>
       url: `${prefix}/${assignmentId}/add-students`,
       data: { _id: classId, students, specificStudents: students.length > 0 }
     })
-    .then(response => response.data.result.result);
+    .then(response => response.data.result);
 
 export default {
   gradebook,

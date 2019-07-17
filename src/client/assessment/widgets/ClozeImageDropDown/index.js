@@ -26,8 +26,9 @@ import { AdditionalContainer } from "./styled/AdditionalContainer";
 import { Widget } from "../../styled/Widget";
 
 import { ContentArea } from "../../styled/ContentArea";
-
+import { AnswerContext } from "@edulastic/common";
 class ClozeImageDropDown extends Component {
+  static contextType = AnswerContext;
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -157,6 +158,7 @@ class ClozeImageDropDown extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       qIndex,
       view,
@@ -255,9 +257,9 @@ class ClozeImageDropDown extends Component {
         {view === "preview" && (
           <Wrapper>
             <Display
-              preview={previewTab === "clear"}
-              showAnswer={previewTab === "show"}
-              checkAnswer={previewTab === "check"}
+              preview={previewTab === "clear" || answerContextConfig.isAnswerModifiable}
+              showAnswer={previewTab === "show" && !answerContextConfig.isAnswerModifiable}
+              checkAnswer={previewTab === "check" || answerContextConfig.isAnswerModifiable}
               validation={itemForPreview.validation}
               configureOptions={{
                 duplicatedResponses,

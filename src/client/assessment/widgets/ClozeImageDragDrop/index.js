@@ -26,10 +26,12 @@ import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
 import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Graph/Annotations/Annotations";
+import { AnswerContext } from "@edulastic/common";
 
 const EmptyWrapper = styled.div``;
 
 class ClozeImageDragDrop extends Component {
+  static contextType = AnswerContext;
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -123,6 +125,7 @@ class ClozeImageDragDrop extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       view,
       previewTab,
@@ -284,7 +287,7 @@ class ClozeImageDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === "show" && !answerContextConfig.isAnswerModifiable && (
               <Display
                 showAnswer
                 item={itemForPreview}
@@ -316,7 +319,7 @@ class ClozeImageDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "clear" && (
+            {(previewTab === "clear" || answerContextConfig.isAnswerModifiable) && (
               <Display
                 preview
                 item={itemForPreview}

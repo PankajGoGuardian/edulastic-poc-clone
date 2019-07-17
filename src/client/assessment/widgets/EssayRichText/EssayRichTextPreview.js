@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
 import stripTags from "striptags";
+import { AnswerContext } from "@edulastic/common";
 
 import {
   Paper,
@@ -51,8 +52,9 @@ const EssayRichTextPreview = ({
   disableResponse,
   previewTab
 }) => {
-  const toolbarButtons = getToolBarButtons(item);
 
+  const toolbarButtons = getToolBarButtons(item);
+  const answerContextConfig = useContext(AnswerContext);
   const [showCharacters, setShowCharacters] = useState(false);
   const [text, setText] = useState("");
   const [selection, setSelection] = useState({ start: 0, end: 0 });
@@ -122,7 +124,10 @@ const EssayRichTextPreview = ({
 
   const isV1Multipart = get(col, "isV1Multipart", false);
 
-  const isReadOnly = (previewTab === "show" || disableResponse) && !location.pathname.includes("student");
+  /**
+   * if answerContextConfig comes from LCB/EG pages
+   */
+  const isReadOnly = (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
 
   return item.id ? (
     <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>

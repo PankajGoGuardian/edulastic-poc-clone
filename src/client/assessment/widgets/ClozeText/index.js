@@ -19,10 +19,11 @@ import Authoring from "./Authoring";
 import Display from "./Display";
 import { ContentArea } from "../../styled/ContentArea";
 import { Widget } from "../../styled/Widget";
-
+import { AnswerContext } from "@edulastic/common";
 const EmptyWrapper = styled.div``;
 
 class ClozeText extends Component {
+  static contextType = AnswerContext;
   componentDidUpdate(prevProps) {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
@@ -172,6 +173,7 @@ class ClozeText extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       view,
       previewTab,
@@ -294,7 +296,7 @@ class ClozeText extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === "show" && !answerContextConfig.isAnswerModifiable && (
               <Display
                 showAnswer
                 configureOptions={{
@@ -317,7 +319,7 @@ class ClozeText extends Component {
                 previewTab={previewTab}
               />
             )}
-            {previewTab === "clear" && (
+            {(previewTab === "clear" || answerContextConfig.isAnswerModifiable) && (
               <Display
                 preview={false}
                 configureOptions={{

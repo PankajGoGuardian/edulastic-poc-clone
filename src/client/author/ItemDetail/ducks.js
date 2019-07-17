@@ -592,7 +592,6 @@ function* receiveItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
-    const newItem = yield select(getIsNewItemSelector);
     const { addToTest } = payload;
     if (!payload.keepData) {
       // avoid data part being put into db
@@ -644,11 +643,7 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-    if (newItem) {
-      yield call(message.success, "create new item is success", "Success");
-    } else {
-      yield call(message.success, "Update item by id is success", "Success");
-    }
+    yield call(message.success, "Item is saved as draft", 2);
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
@@ -674,7 +669,7 @@ export function* updateItemSaga({ payload }) {
     }
   } catch (err) {
     console.error(err);
-    const errorMessage = "Update item by id is failing";
+    const errorMessage = "Item save is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,

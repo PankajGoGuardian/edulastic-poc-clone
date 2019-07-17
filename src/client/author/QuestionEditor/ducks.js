@@ -422,15 +422,6 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         yield put(setCreatedItemToTestAction(item));
         yield put(push(!isEditFlow ? `/author/tests/${tId}` : `/author/tests/${tId}/createItem/${item._id}`));
       }
-      yield call(
-        message.success,
-        <span>
-          {" "}
-          New item has been created and added to the current test. Click{" "}
-          <a href={`/author/tests/${tId}/#review`}>here</a> to see it.
-        </span>,
-        5
-      );
       yield put(changeViewAction("edit"));
       return;
     }

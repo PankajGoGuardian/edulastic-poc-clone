@@ -283,6 +283,16 @@ export const isIncompleteQuestion = item => {
         const hasEmptyOptions = opt.some(opt => !opt);
         if (hasEmptyOptions) return [true, emptyChoiceError];
       }
+    } else if (item.type === questionType.CLOZE_DROP_DOWN) {
+      const responses = get(item, "response_ids", []);
+      for (const res of responses) {
+        const opts = item.options[res.id] || [];
+        if (!opts.length) {
+          return [true, emptyChoiceError];
+        }
+        const hasEmptyOptions = opts.some(opt => !opt);
+        if (hasEmptyOptions) return [true, emptyChoiceError];
+      }
     } else {
       // for other question types.
       const hasEmptyOptions = item.options.some(opt => {

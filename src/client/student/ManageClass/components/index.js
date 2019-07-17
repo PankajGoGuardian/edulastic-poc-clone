@@ -16,6 +16,7 @@ const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setCl
   useEffect(() => {
     loadAllClasses();
   }, []);
+  const [showClass, setShowClass] = useState("ACTIVE");
   if (loading) return <Spin />;
   return (
     <Wrapper>
@@ -25,9 +26,10 @@ const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setCl
         showActiveClass={true}
         classList={allClasses}
         setClassList={setClassList}
+        setShowClass={setShowClass}
       />
       <SubHeader />
-      <ManageClassContainer classList={filterClasses} loading={loading} />
+      <ManageClassContainer classList={filterClasses} loading={loading} showClass={showClass} />
     </Wrapper>
   );
 };

@@ -94,16 +94,18 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-            style={btnStyle}
+            style={{ ...btnStyle, height: "auto", width: "max-content" }}
             title={userSelections[index] && userSelections[index].value}
             onClick={handleClick}
           >
-            <span className="index">{index + 1}</span>
+            <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+              {index + 1}
+            </span>
             <span
               className="text"
               style={{
-                width: "100%",
-                height: "100%",
+                width: btnStyle.width,
+                height: btnStyle.height,
                 display: "block",
                 whiteSpace: "nowrap",
                 textOverflow: "ellipsis",
@@ -123,19 +125,21 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             className={`response-btn 
                 ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                 ${status}`}
-            style={btnStyle}
+            style={{ ...btnStyle, height: "auto", width: "max-content" }}
             title={userSelections[index] && userSelections[index].value}
             onClick={handleClick}
           >
             {showIndex && (
               <Fragment>
-                <span className="index">{index + 1}</span>
+                <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+                  {index + 1}
+                </span>
               </Fragment>
             )}
             <span
               style={{
-                height: "100%",
-                width: "100%",
+                width: btnStyle.width,
+                height: btnStyle.height,
                 display: "block",
                 whiteSpace: "nowrap",
                 textOverflow: "ellipsis",

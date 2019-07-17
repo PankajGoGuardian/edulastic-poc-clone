@@ -124,6 +124,15 @@ const MatchListPreview = ({
     }
   }
 
+  useEffect(() => {
+    setAns(
+      Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
+        ? userAnswer
+        : Array.from({ length: list.length }).fill(null)
+    );
+    setDragItems(possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
+  }, [userAnswer]);
+
   const preview = previewTab === CHECK || previewTab === SHOW;
 
   const drop = ({ flag, index }) => ({ flag, index });
@@ -247,7 +256,10 @@ const MatchListPreview = ({
               childMarginRight={smallSize ? 13 : 45}
             >
               <ListItem smallSize={smallSize}>
-                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                <MathFormulaDisplay
+                  style={{ margin: "auto", width: "unset" }}
+                  dangerouslySetInnerHTML={{ __html: ite }}
+                />
               </ListItem>
               <Separator smallSize={smallSize} />
               <DropContainer

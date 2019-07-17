@@ -11,6 +11,7 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
 
   let score = 0;
   let maxScore = 1;
+  let matchCount = 0;
 
   let rightLen = 0;
   let rightIndex = 0;
@@ -20,9 +21,9 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
       return;
     }
 
-    const matchCount = getMatches(existingResponse, answer, compareFunction);
+    const currentMatchCount = getMatches(existingResponse, answer, compareFunction);
 
-    let matches = matchCount === answer.length;
+    let matches = currentMatchCount === answer.length;
 
     if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
       matches = getClozeTextMatches(existingResponse, answer, restOptions) === answer.length;
@@ -32,8 +33,9 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
 
     score = Math.max(score, currentScore);
     maxScore = Math.max(maxScore, totalScore);
+    matchCount = Math.max(matchCount, currentMatchCount);
 
-    if ((currentScore === score && score !== 0) || (maxScore === totalScore && currentScore === score)) {
+    if ((currentScore === score && score !== 0) || (currentMatchCount === matchCount && matchCount !== 0)) {
       rightLen = answer.length;
       rightIndex = index;
     }

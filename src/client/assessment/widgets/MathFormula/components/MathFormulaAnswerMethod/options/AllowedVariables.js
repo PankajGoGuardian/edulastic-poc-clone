@@ -27,7 +27,7 @@ const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
         onChange={e => {
           setAllowAllowedVariables(e.target.checked);
           if (!e.target.checked) {
-            onChange("allowedVariables", null);
+            onChange(null);
           }
         }}
       >

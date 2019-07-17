@@ -33,6 +33,7 @@ import {
   getDynamicVariablesSetIdForViewResponse,
   getTestItemsOrderSelector
 } from "../ClassBoard/ducks";
+import { AnswerContext } from "@edulastic/common";
 
 import { getQuestionLabels } from "../ClassBoard/Transformer";
 
@@ -222,15 +223,17 @@ class StudentViewContainer extends Component {
           </GiveOverallFeedBackButton>
         </StyledFlexContainer>
         {!loading && (
-          <ClassQuestions
-            currentStudent={currentStudent || {}}
-            questionActivities={studentResponse.questionActivities}
-            classResponse={classResponseProcessed}
-            testItemsOrder={testItemsOrder}
-            studentViewFilter={filter}
-            labels={_getquestionLabels(classResponse.testItems, testItemIds)}
-            isPresentationMode={isPresentationMode}
-          />
+          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <ClassQuestions
+              currentStudent={currentStudent || {}}
+              questionActivities={studentResponse.questionActivities}
+              classResponse={classResponseProcessed}
+              testItemsOrder={testItemsOrder}
+              studentViewFilter={filter}
+              labels={_getquestionLabels(classResponse.testItems, testItemIds)}
+              isPresentationMode={isPresentationMode}
+            />
+          </AnswerContext.Provider>
         )}
       </React.Fragment>
     );

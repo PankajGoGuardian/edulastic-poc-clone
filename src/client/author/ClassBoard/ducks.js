@@ -3,7 +3,7 @@ import { classBoardApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 
-import { values as _values, get, keyBy, sortBy ,isEmpty} from "lodash";
+import { values as _values, get, keyBy, sortBy, isEmpty } from "lodash";
 
 import {
   setShowScoreAction,

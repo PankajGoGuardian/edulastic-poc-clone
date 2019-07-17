@@ -1,48 +1,41 @@
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { Modal, Menu } from "antd";
 import {
   themeColor,
-  fadedBlue,
   fadedGrey,
   mainBgColor,
   lightGreySecondary,
   textColor,
   black,
   title,
-  white
+  white,
+  themeColorTagsBg,
+  themeColorLighter,
+  tabGrey
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 
-const filterWidth = "250px";
-
-const width = keyframes`
-  from {
-    width: 0px;
-  }
-
-  to {
-    width: ${filterWidth};
-  }
-`;
-
 export const FilterContainer = styled.div`
-  animation: ${width} 300ms ease;
-  padding: 0px 40px 0px 0px;
-
   .ant-select-selection {
-    background: ${lightGreySecondary};
+    background: ${white};
+    border: none;
+    border-radius: 0px;
+    padding: 5px;
+    border-radius: 4px;
+    box-shadow: 0px 0px 5px 1px ${fadedGrey};
   }
   .ant-select,
   .ant-input,
   .ant-input-number {
     min-width: 100px;
     width: 100%;
+    margin-bottom: 10px;
   }
   .ant-select-lg {
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.2px;
-    color: #434b5d;
+    color: ${title};
     .ant-select-selection--multiple {
       .ant-select-selection__rendered {
         li.ant-select-selection__choice {
@@ -55,10 +48,10 @@ export const FilterContainer = styled.div`
   }
 
   .ant-select-selection__choice {
-    border-radius: 5px;
-    border: solid 1px ${fadedBlue};
-    background-color: ${fadedBlue};
-    height: 23.5px;
+    border-radius: 4px;
+    border: solid 1px ${themeColorLighter}22;
+    background-color: ${themeColorTagsBg};
+    height: 24px;
   }
 
   .ant-select-selection__choice__content {
@@ -67,6 +60,7 @@ export const FilterContainer = styled.div`
     letter-spacing: 0.2px;
     color: ${themeColor};
     opacity: 1;
+    text-transform: uppercase;
   }
 
   .ant-select-remove-icon {
@@ -86,15 +80,15 @@ export const FilterContainer = styled.div`
 export const StyledBoldText = styled.p`
   font-weight: 600;
   font-size: 12px;
-  margin: 15px 0px 10px 0px;
+  margin-bottom: 5px;
   text-align: left;
-  width: ${filterWidth};
+  width: 100%;
 `;
 
 export const NewFolderButton = styled(Button)`
-  min-height: 28px;
+  min-height: 30px;
   min-width: 140px;
-  margin-top: 20px;
+  margin-top: 10px;
   padding: 2px;
   display: flex;
   justify-content: space-evenly;
@@ -108,7 +102,13 @@ export const FolderButton = styled(NewFolderButton)`
   justify-content: flex-start;
   margin-top: 10px;
   color: ${({ active }) => (active ? black : textColor)};
-
+  background: ${({ active }) => (active ? fadedGrey : "transparent")};
+  padding: 3px 5px;
+  border-radius: 0px;
+  &:hover,
+  &:focus {
+    background: ${({ active }) => (active ? fadedGrey : "transparent")};
+  }
   svg {
     margin-right: 15px;
   }
@@ -120,21 +120,32 @@ export const FoldersListWrapper = styled.ul`
 `;
 
 export const FolderListItem = styled.li`
-  min-height: 28px;
-  min-width: 140px;
+  min-height: 30px;
+  width: 100%;
   margin-top: 5px;
-  padding: 2px;
+  padding: 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-radius: 2px;
   background-color: ${({ active }) => (active ? fadedGrey : mainBgColor)};
   color: ${({ active }) => (active ? black : title)};
-  /* text-transform: uppercase; */
   font-weight: 600;
   font-size: 11px;
   user-select: none;
   cursor: pointer;
+  &:hover {
+    svg path {
+      fill: ${themeColor};
+    }
+  }
+  svg {
+    width: 20px;
+    height: 16px;
+    path {
+      fill: ${({ active }) => (active ? themeColor : tabGrey)};
+    }
+  }
 `;
 
 export const FolderListItemTitle = styled.div`

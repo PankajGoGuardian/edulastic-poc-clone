@@ -131,12 +131,7 @@ export const PeerPerformanceTable = ({
   };
 
   const tableData = useMemo(() => {
-    let arr = dataSource.filter((item, index) => {
-      if (filter[item[compareBy]] || Object.keys(filter).length === 0) {
-        return true;
-      }
-      return false;
-    });
+    let arr = dataSource.filter(item => filter[item[compareBy]] || Object.keys(filter).length === 0);
     return arr;
   }, [dataSource, filter]);
 
@@ -165,11 +160,7 @@ export const PeerPerformanceTable = ({
       for (let band of bandInfo) {
         let name = band.name;
         const sum = sumBy(tableData, o => o[name + "Percentage"]);
-        if (sum !== 0) {
-          allBandCols[name + "Percentage"] = true;
-        } else {
-          allBandCols[name + "Percentage"] = false;
-        }
+        allBandCols[name + "Percentage"] = sum !== 0;
       }
 
       let validBandCols = 0;

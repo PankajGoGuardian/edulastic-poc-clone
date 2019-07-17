@@ -203,7 +203,7 @@ export const getDefaultSubjectSelector = createSelector(
 );
 export const getIsNewItemSelector = createSelector(
   stateSelector,
-  state => state.newItem
+  state => !get(state, "item.version", 0)
 );
 
 export const getItemDetailSelector = createSelector(
@@ -435,7 +435,7 @@ export function reducer(state = initialState, { type, payload }) {
     case RECEIVE_ITEM_DETAIL_REQUEST:
       return { ...state, loading: true };
     case RECEIVE_ITEM_DETAIL_SUCCESS:
-      return { ...state, item: payload, loading: false, error: null, newItem: !payload.data };
+      return { ...state, item: payload, loading: false, error: null };
 
     case SET_ITEM_QIDS:
       return { ...state, qids: payload };

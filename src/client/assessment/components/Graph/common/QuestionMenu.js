@@ -12,13 +12,15 @@ class QuestionMenu extends Component {
     activeTab: 0
   };
 
-  handleScroll = option => {
-    const offset = option.height >= window.innerHeight / 2 ? 111 : option.height <= 300 ? 0 : 96;
+  handleScroll = (option, e) => {
+    e.target.scrollIntoView({ behavior: "smooth", block: "start" });
 
-    window.scrollTo({
-      top: option.offset - offset,
-      behavior: "smooth"
-    });
+    if (option.el.clientHeight >= window.innerHeight / 2) {
+      option.el.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.scrollBy(0, -111);
+    } else {
+      option.el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   };
 
   componentDidMount() {
@@ -37,27 +39,17 @@ class QuestionMenu extends Component {
   isActive = (index, options) => {
     const { activeTab } = this.state;
     const { advancedAreOpen } = this.props;
+    const rect = options[index].el.getBoundingClientRect();
+    const viewHeight = Math.max(options[index].el.clientHeight, window.innerHeight / 1.8);
+    const activeOption = document.querySelector(".option.active");
 
     if (!advancedAreOpen && options[index].section === "advanced") return false;
 
-    // first section
-    if (window.scrollY <= 10 && activeTab !== index) return this.setState({ activeTab: 0 });
+    if (!(rect.bottom < 0 || rect.top - viewHeight >= 0) && activeTab !== index) {
+      if (activeOption) {
+        activeOption.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
 
-    // last section
-    if (
-      window.scrollY + window.innerHeight >
-        options[options.length - 1].offset + options[options.length - 1].height / 2.1 &&
-      window.scrollY > options[options.length - 1].offset - window.innerHeight / 3 &&
-      advancedAreOpen
-    ) {
-      return this.setState({ activeTab: options.length - 1 });
-    }
-
-    // other sections
-    if (
-      window.scrollY > options[index].offset - options[index].height / 1.2 ||
-      window.scrollY + window.innerHeight / 3 > options[index].offset + options[index].height / 1.2
-    ) {
       return this.setState({ activeTab: index });
     }
   };
@@ -85,8 +77,8 @@ class QuestionMenu extends Component {
               main.map((option, index) => (
                 <Option
                   key={index}
-                  onClick={() => this.handleScroll(option, index)}
-                  className={index === activeTab && "active"}
+                  onClick={e => this.handleScroll(option, e)}
+                  className={`option ${index === activeTab && "active"}`}
                 >
                   {option.label}
                 </Option>
@@ -102,8 +94,8 @@ class QuestionMenu extends Component {
                   {advanced.map((option, index) => (
                     <Option
                       key={index}
-                      onClick={() => this.handleScroll(option, index)}
-                      className={main.length + index === activeTab && "active"}
+                      onClick={e => this.handleScroll(option, e)}
+                      className={`option ${main.length + index === activeTab && "active"}`}
                     >
                       {option.label}
                     </Option>

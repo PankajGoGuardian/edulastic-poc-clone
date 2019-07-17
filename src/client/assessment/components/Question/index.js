@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { debounce } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -12,9 +13,7 @@ class Question extends Component {
     super(props);
 
     this.state = {
-      offsetTop: null,
-      clientHeight: null,
-      timerID: null
+      el: null
     };
 
     this.node = React.createRef();
@@ -25,96 +24,41 @@ class Question extends Component {
 
     const { current: node } = this.node;
 
-    const additionalOffset =
-      node.clientHeight >= window.innerHeight / 2 ? 0 : (window.innerHeight - node.clientHeight) / 2.1;
-
     if (!node) return false;
     if (visible === false) return false;
 
-    fillSections(
-      section,
-      label,
-      node.offsetTop <= 0 ? null : node.offsetTop - (window.innerHeight - node.clientHeight) / 2.1,
-      node.clientHeight <= 0 ? null : node.clientHeight
-    );
+    fillSections(section, label, node);
 
     this.setState({
-      offsetTop: node.offsetTop <= 0 ? null : node.offsetTop - additionalOffset,
-      clientHeight: node.clientHeight <= 0 ? null : node.clientHeight
+      el: node
     });
 
     this.updateVariablesOfSection();
   };
 
-  componentDidUpdate = (prevProps, prevState) => {
-    const { offsetTop, clientHeight, visible } = this.state;
-
-    const { fillSections, section, label, advancedAreOpen } = this.props;
-
-    const { current: node } = this.node;
-
-    if (!node) return false;
-    if (visible === false) return false;
-
-    if (
-      (typeof prevState.offsetTop !== "undefined" || typeof prevState.clientHeight !== "undefined") &&
-      (prevState.offsetTop !== offsetTop ||
-        prevState.clientHeight !== clientHeight ||
-        prevProps.advancedAreOpen !== advancedAreOpen) &&
-      (node.offsetTop > 0 && node.clientHeight > 0)
-    ) {
-      const additionalOffset =
-        node.clientHeight >= window.innerHeight / 2 ? 0 : (window.innerHeight - node.clientHeight) / 2.1;
-
-      fillSections(
-        section,
-        label,
-        node.offsetTop <= 0 ? null : node.offsetTop - additionalOffset,
-        node.clientHeight <= 0 ? null : node.clientHeight
-      );
-
-      this.setState({
-        offsetTop: node.offsetTop <= 0 ? null : node.offsetTop - additionalOffset,
-        clientHeight: node.clientHeight <= 0 ? null : node.clientHeight
-      });
-    }
-  };
-
   componentWillUnmount() {
-    const { timerID } = this.state;
     const { cleanSections } = this.props;
 
     cleanSections();
-    clearInterval(timerID);
   }
 
   updateVariablesOfSection = () => {
-    const { offsetTop, clientHeight } = this.state;
+    const { el } = this.state;
     const { fillSections, section, label } = this.props;
 
     const { current: node } = this.node;
 
     if (!node) return false;
 
-    const timerID = setInterval(() => {
-      const additionalOffset =
-        node.clientHeight >= window.innerHeight / 2 ? 0 : (window.innerHeight - node.clientHeight) / 2.1;
+    debounce(() => {
+      if (node.clientHeight !== el.clientHeight || node !== el) {
+        fillSections(section, label, node);
 
-      if (
-        (typeof node.offsetTop !== "undefined" || typeof node.clientHeight !== "undefined") &&
-        (node.offsetTop !== offsetTop || node.clientHeight !== clientHeight) &&
-        (node.offsetTop > 0 && node.clientHeight > 0)
-      ) {
-        fillSections(
-          section,
-          label,
-          node.offsetTop <= 0 ? null : node.offsetTop - additionalOffset,
-          node.clientHeight <= 0 ? null : node.clientHeight
-        );
+        this.setState({
+          el: node
+        });
       }
-    }, 2000);
-
-    this.setState({ timerID });
+    }, 100);
   };
 
   render() {

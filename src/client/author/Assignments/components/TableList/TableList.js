@@ -307,12 +307,12 @@ class TableList extends Component {
 
       const tempData = [];
       content.forEach(({ _id }) => {
-        const temp = find(data, ({ testId }) => testId === _id);
+        const temp = find(tests, ({ _id: testId }) => testId === _id);
         if (temp) {
           tempData.push(temp);
         }
       });
-      data = tempData;
+      data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
     }
 
     return (

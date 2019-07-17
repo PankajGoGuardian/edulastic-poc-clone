@@ -2,18 +2,16 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import { groupBy, map, capitalize, orderBy } from "lodash";
+import { groupBy, map, capitalize } from "lodash";
 
 import { StyledTable, StyledCard, StyledH3 } from "../../../../../common/styled";
-import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
-import dropDownData from "../../static/json/dropDownData.json";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
+import { StyledCell } from "../styled";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
 import TrendColumn from "./TrendColumn";
-import { StyledCell } from "../styled";
-import { getCompareByOptions } from "../../utils/transformers";
+import dropDownData from "../../static/json/dropDownData.json";
 
 const compareByMap = {
   school: "schoolName",
@@ -71,7 +69,25 @@ const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
           return getCol("N/A", "#cccccc");
         }
 
-        const value = formatText(currentTest[analyseBy.key], analyseBy.key);
+        let value = "N/A";
+        let color = "#cccccc";
+
+        switch (analyseBy.key) {
+          case "proficiencyBand":
+            if (currentTest.proficiencyBand) {
+              value = currentTest.proficiencyBand.name || value;
+              color = currentTest.proficiencyBand.color || color;
+            }
+            break;
+          case "standard":
+            value = currentTest.proficiencyBand.aboveStandard ? "Above Standard" : "Below Standard";
+            color = getHSLFromRange1((currentTest.proficiencyBand.aboveStandard || 0) * 100);
+            break;
+          default:
+            value = formatText(currentTest[analyseBy.key], analyseBy.key);
+            color = getHSLFromRange1(currentTest.score);
+            break;
+        }
 
         const toolTipText = () => (
           <div>
@@ -82,11 +98,7 @@ const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
         );
 
         return (
-          <CustomTableTooltip
-            placement="top"
-            title={toolTipText()}
-            getCellContents={() => getCol(value, getHSLFromRange1(currentTest.score))}
-          />
+          <CustomTableTooltip placement="top" title={toolTipText()} getCellContents={() => getCol(value, color)} />
         );
       }
     };
@@ -132,14 +144,8 @@ const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
   );
 };
 
-const PeerProgressAnalysisTable = ({ data, testData, analyseBy, compareBy, onFilterChange, role }) => {
+const TrendTable = ({ data, testData, analyseBy, compareBy, renderFilters }) => {
   const columns = getColumns(testData, analyseBy, compareBy);
-  const compareByData = getCompareByOptions(role);
-
-  const onDropDownChange = key => (_, selectedItem) => onFilterChange(key, selectedItem);
-
-  const onCompareByChange = onDropDownChange("compareBy");
-  const onAnalyseByChange = onDropDownChange("analyseBy");
 
   return (
     <StyledCard>
@@ -148,15 +154,7 @@ const PeerProgressAnalysisTable = ({ data, testData, analyseBy, compareBy, onFil
           <StyledH3>How well are student sub-groups progressing ?</StyledH3>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-          <Row type="flex" justify="end">
-            <ControlDropDown
-              prefix="Analyse By"
-              by={analyseBy}
-              selectCB={onAnalyseByChange}
-              data={dropDownData.analyseByData}
-            />
-            <ControlDropDown prefix="Compare By" by={compareBy} selectCB={onCompareByChange} data={compareByData} />
-          </Row>
+          {renderFilters()}
         </Col>
       </Row>
       <TableContainer>
@@ -175,22 +173,21 @@ const getShape = data =>
 const analyseByShape = getShape(dropDownData.analyseByData);
 const compareByShape = getShape(dropDownData.compareByData);
 
-PeerProgressAnalysisTable.propTypes = {
+TrendTable.propTypes = {
   testData: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
-  onFilterChange: PropTypes.func.isRequired,
   analyseBy: analyseByShape,
   compareBy: compareByShape,
-  role: PropTypes.string.isRequired
+  renderFilters: PropTypes.func
 };
 
-PeerProgressAnalysisTable.defaultProps = {
-  analyseBy: "score",
-  compareBy: "group",
-  role: ""
+TrendTable.defaultProps = {
+  analyseBy: dropDownData.analyseByData[0],
+  compareBy: dropDownData.compareByData[0],
+  renderFilters: () => null
 };
 
-export default PeerProgressAnalysisTable;
+export default TrendTable;
 
 const TableContainer = styled.div`
   margin-top: 30px;

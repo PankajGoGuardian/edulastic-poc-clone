@@ -161,7 +161,6 @@ class Container extends PureComponent {
       testStatus,
       updated
     } = this.props;
-    console.log("handle", value);
     const { authors, testItems = [] } = test;
     const { editEnable } = this.state;
     if (!this.props.test.title) {

@@ -106,11 +106,7 @@ const InputPasswordForm = props => {
   let confirmPasswordError = getFieldError("confirmPassword");
   if (
     ((newPasswordError && !confirmPasswordError) || (!newPasswordError && confirmPasswordError)) &&
-    passwd &&
-    passwd.trim() &&
-    confPasswd &&
-    confPasswd.trim() &&
-    passwd.trim() === confPasswd.trim()
+    passwd === confPasswd
   ) {
     setFields({ newPassword: { value: passwd, errors: undefined } });
     setFields({ confirmPassword: { value: confPasswd, errors: undefined } });

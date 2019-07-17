@@ -2021,3 +2021,14 @@ span.token.active-word {
 .ant-tabs-ink-bar {
   background-color: #00ad50;
 }
+
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on,
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on {
+  color: #00ad50;
+}
+
+.ant-select-focused .ant-select-selection,
+.ant-select-selection:focus,
+.ant-select-selection:active {
+  box-shadow: 0px 0px 1px 1px #5eb50066;
+}

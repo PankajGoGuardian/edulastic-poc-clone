@@ -105,7 +105,7 @@
       "group": "standardsMasteryReport"
     },
     "performance-over-time": {
-      "title": "Performance over time",
+      "title": "Performance Over Time",
       "breadcrumb": [
         {
           "title": "REPORTS",
@@ -203,7 +203,7 @@
       {
         "key": "student-progress",
         "title": "Student Progress",
-        "location": "/author/reports/"
+        "location": "/author/reports/student-progress/test/"
       }
     ]
   }

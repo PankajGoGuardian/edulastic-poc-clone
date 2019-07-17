@@ -15,7 +15,7 @@ import {
   mapValues,
   reduce
 } from "lodash";
-import { percentage, getOverallScore } from "../../../../common/util";
+import { percentage } from "../../../../common/util";
 import next from "immer";
 
 export const viewByMode = {
@@ -116,6 +116,8 @@ export const compareByColumns = {
     render: capitalize
   }
 };
+
+export const getOverallScore = (metrics = []) => percentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
 
 export const getOverallRawScore = (metrics = []) => sumBy(metrics, "totalScore") / metrics.length;
 

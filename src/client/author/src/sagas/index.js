@@ -25,6 +25,7 @@ import { reportStandardsGradebookSaga } from "../../Reports/subPages/standardsMa
 import { reportStandardsFilterSaga } from "../../Reports/subPages/standardsMasteryReport/common/filterDataDucks";
 import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
 import { reportPeerProgressAnalysisSaga } from "../../Reports/subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
+import { reportStudentProgressSaga } from "../../Reports/subPages/multipleAssessmentReport/StudentProgress/ducks";
 import { authorRoutesWatcherSaga } from "../../sharedDucks/routes";
 import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
 import { assessmentPageSaga } from "../../AssessmentCreate";
@@ -69,6 +70,7 @@ const authorSagas = [
   reportStandardsPerformanceSummarySaga(),
   reportStandardsFilterSaga(),
   reportPeerProgressAnalysisSaga(),
+  reportStudentProgressSaga(),
   classResponsesSaga(),
   testsListSaga(),
   testPageSaga(),

@@ -18,7 +18,7 @@ const links = [
   {
     key: "studentProgress",
     title: "Student Progress",
-    location: "/author/reports"
+    location: "/author/reports/student-progress/test/"
   }
 ];
 export const MultipleAssessmentReport = props => {

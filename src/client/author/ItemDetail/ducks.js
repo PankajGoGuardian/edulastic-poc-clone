@@ -630,10 +630,20 @@ export function* updateItemSaga({ payload }) {
       };
 
       if (!payload.testId) {
-        yield put(setTestDataAndUpdateAction({ ...updatedTestEntity, isTestFlow: true }));
+        yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
+        yield put(push(`/author/tests/${payload.testId}`));
       }
+      yield call(
+        message.success,
+        <span>
+          {" "}
+          New item has been created and added to the current test. Click{" "}
+          <a href={`/author/tests/${tId}/#review`}>here</a> to see it.
+        </span>,
+        5
+      );
       yield put(changeViewAction("edit"));
       return;
     }

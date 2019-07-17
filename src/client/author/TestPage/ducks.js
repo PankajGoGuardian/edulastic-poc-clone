@@ -580,12 +580,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
         entity
       }
     });
-    if (payload.isTestFlow) {
-      const itemId = yield select(state => get(state, "itemDetail.item._id", ""));
-      yield put(replace(`/author/tests/${entity._id}/createItem/${itemId}/questions/create`));
-    } else {
-      yield put(replace(`/author/tests/${entity._id}`));
-    }
+    yield put(replace(`/author/tests/${entity._id}`));
     yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
   } catch (e) {
     const errorMessage = "Auto Save of Test is failing";

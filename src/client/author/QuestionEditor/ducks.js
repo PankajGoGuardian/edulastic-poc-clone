@@ -417,10 +417,20 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         testItems: [...testEntity.testItems, item]
       };
       if (!tId || tId === "undefined") {
-        yield put(setTestDataAndUpdateAction({ ...updatedTestEntity, isTestFlow: true, itemId: item._id }));
+        yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
+        yield put(push(!isEditFlow ? `/author/tests/${tId}` : `/author/tests/${tId}/createItem/${item._id}`));
       }
+      yield call(
+        message.success,
+        <span>
+          {" "}
+          New item has been created and added to the current test. Click{" "}
+          <a href={`/author/tests/${tId}/#review`}>here</a> to see it.
+        </span>,
+        5
+      );
       yield put(changeViewAction("edit"));
       return;
     }

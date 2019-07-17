@@ -22,7 +22,7 @@ const BasicFields = ({
   ...restProps
 }) => {
   if (!isEmpty(stds[0])) {
-    var { email, firstName, lastName } = stds[0];
+    var { email, firstName, lastName, username, googleId, canvasId, cliId, cleverId } = stds[0];
   }
 
   const [enroll, setEnroll] = useState(false);
@@ -112,8 +112,8 @@ const BasicFields = ({
           <Form.Item>
             {getFieldDecorator("email", {
               rules: [...commonEmailValidations],
-              initialValue: email
-            })(<Input placeholder="Enter Username" />)}
+              initialValue: email || username
+            })(<Input placeholder="Enter Username" disabled={googleId || canvasId || cliId || cleverId} />)}
           </Form.Item>
         </Field>
       )}

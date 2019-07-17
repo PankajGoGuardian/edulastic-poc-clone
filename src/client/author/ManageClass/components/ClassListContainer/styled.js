@@ -92,6 +92,14 @@ export const ClassListTable = styled(Table)`
   .ant-table-tbody > tr {
     cursor: pointer;
   }
+  .ant-table {
+    &-tbody,
+    &-thead {
+      & > tr :nth-last-of-type(-n + 2) {
+        text-align: end;
+      }
+    }
+  }
 `;
 export const StyledSelect = styled(Select)`
   width: 100%;

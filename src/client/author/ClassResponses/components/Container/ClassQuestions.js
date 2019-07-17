@@ -21,7 +21,7 @@ function Preview({ item, qIndex, studentId, evaluation }) {
         preview="show"
         previewTab="show"
         questions={questionsKeyed}
-        disableResponse
+        disableResponse={!answerContextConfig.isAnswerModifiable}
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
         style={{ width: "100%" }}

@@ -194,7 +194,7 @@ class FeedbackRight extends Component {
             <TextPara>{maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
-        <LeaveDiv>{isError ? "Score is to large" : "Leave a feedback!"}</LeaveDiv>
+        <LeaveDiv>{isError ? "Score is too large" : "Leave a feedback!"}</LeaveDiv>
         {!isError && (
           <Fragment>
             <FeedbackInput

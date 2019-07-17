@@ -19,6 +19,8 @@ import {
   SAVE_OVERALL_FEEDBACK,
   UPDATE_OVERALL_FEEDBACK,
   MARK_AS_ABSENT,
+  TOGGLE_PAUSE_ASSIGNMENT,
+  SET_IS_PAUSED,
   UPDATE_STUDENT_ACTIVITY
 } from "../constants/actions";
 
@@ -118,5 +120,15 @@ export const saveOverallFeedbackAction = (testActivityId, groupId, feedback) => 
 
 export const updateOverallFeedbackAction = payload => ({
   type: UPDATE_OVERALL_FEEDBACK,
+  payload
+});
+
+export const togglePauseAssignmentAction = payload => ({
+  type: TOGGLE_PAUSE_ASSIGNMENT,
+  payload
+});
+
+export const setIsPausedAction = payload => ({
+  type: SET_IS_PAUSED,
   payload
 });

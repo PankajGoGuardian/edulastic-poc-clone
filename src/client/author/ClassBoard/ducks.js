@@ -10,7 +10,8 @@ import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction,
-  updateStudentActivityAction
+  updateStudentActivityAction,
+  setIsPausedAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -28,7 +29,8 @@ import {
   OPEN_ASSIGNMENT,
   CLOSE_ASSIGNMENT,
   SAVE_OVERALL_FEEDBACK,
-  MARK_AS_ABSENT
+  MARK_AS_ABSENT,
+  TOGGLE_PAUSE_ASSIGNMENT
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -143,6 +145,16 @@ function* markAbsentSaga({ payload }) {
   }
 }
 
+function* togglePauseAssignment({ payload }) {
+  try {
+    yield call(classBoardApi.togglePause, payload);
+    yield put(setIsPausedAction(payload.value));
+    yield call(message.success, `Successfully ${payload.value ? "paused" : "resumed"} assignment`);
+  } catch (e) {
+    yield call(message.error, `${payload.value ? "Pause" : "Resume"} assignment failed`);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -152,6 +164,7 @@ export function* watcherSaga() {
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
     yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
     yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
+    yield takeEvery(TOGGLE_PAUSE_ASSIGNMENT, togglePauseAssignment),
     yield takeEvery(MARK_AS_ABSENT, markAbsentSaga)
   ]);
 }

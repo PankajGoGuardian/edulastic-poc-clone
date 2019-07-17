@@ -247,6 +247,10 @@ function* submitTest() {
     }
   } catch (err) {
     console.log(err);
+    if (err.statusCode === 403) {
+      yield call(message.error, err.message);
+      yield put(push("/home/assignments"));
+    }
   }
 }
 

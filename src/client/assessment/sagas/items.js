@@ -117,6 +117,10 @@ function* saveUserResponse({ payload }) {
     yield call(testItemActivityApi.create, activity, autoSave);
   } catch (err) {
     console.log(err);
+    if (err.statusCode === 403) {
+      yield call(message.error, err.message);
+      yield put(push("/home/assignments"));
+    }
     // yield call(message.error, "Failed saving the Answer");
   }
 }

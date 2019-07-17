@@ -132,6 +132,12 @@ const ClassificationPreview = ({
     }
   }, [userAnswer, possible_responses]);
 
+  useEffect(() => {
+    if (previewTab === CHECK || previewTab === SHOW) {
+      changePreviewTab(CLEAR);
+    }
+  }, [userAnswer]);
+
   const boxes = createEmptyArrayOfArrays();
 
   const onDrop = (itemCurrent, itemTo) => {
@@ -298,7 +304,6 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
                               />
                             ) : (
                               dragItems.includes(ite) && (
@@ -311,7 +316,6 @@ const ClassificationPreview = ({
                                   onDrop={onDrop}
                                   item={ite}
                                   disableResponse={disableResponse}
-                                  changePreviewTab={changePreviewTab}
                                 />
                               )
                             )
@@ -350,7 +354,6 @@ const ClassificationPreview = ({
                               onDrop={onDrop}
                               item={ite}
                               disableResponse={disableResponse}
-                              changePreviewTab={changePreviewTab}
                             />
                           ) : (
                             dragItems.includes(ite) && (
@@ -363,7 +366,6 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
                               />
                             )
                           )

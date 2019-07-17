@@ -28,9 +28,12 @@ import {
 } from "../TestPage/ducks";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
+
 import { getIsNewItemSelector } from "../src/selectors/itemDetail";
+import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
+
 
 // constants
 const testItemStatusConstants = {
@@ -75,12 +78,15 @@ export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing t
 export const SHOW_PUBLISH_WARNING_MODAL = "[itemDetail] show publish warning modal";
 export const PROCEED_PUBLISH_ACTION = "[itemDeatil] goto metadata page";
 export const SAVE_CURRENT_TEST_ITEM = "[itemDetail] save current test item";
+export const CONVERT_TO_MULTIPART = "[itemDetail] convert item to multipart";
 // actions
 
 //
 export const togglePublishWarningModalAction = createAction(SHOW_PUBLISH_WARNING_MODAL);
 export const proceedPublishingItemAction = createAction(PROCEED_PUBLISH_ACTION);
 export const saveCurrentTestItemAction = createAction(SAVE_CURRENT_TEST_ITEM);
+export const convertItemToMultipartAction = createAction(CONVERT_TO_MULTIPART);
+
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
   payload: { id, params }
@@ -207,6 +213,7 @@ export const isSingleQuestionViewSelector = createSelector(
   getItemDetailSelector,
   (item = {}) => {
     const { resources = [], questions = [] } = item.data || {};
+
     return resources.length === 0 && questions.length === 1;
   }
 );
@@ -287,6 +294,13 @@ export const getItemDetailRowsSelector = createSelector(
   }
 );
 
+export const isFirstQuestionSelector = createSelector(
+  getItemDetailSelector,
+  item => {
+    // has no widgets at all!
+    return item.rows && item.rows.length === 1 && item.rows[0].widgets && item.rows[0].widgets.length === 0;
+  }
+);
 export const getItemDetailLoadingSelector = createSelector(
   stateSelector,
   state => state.loading
@@ -502,6 +516,14 @@ export function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         showWarningModal: payload
+      };
+    case CONVERT_TO_MULTIPART:
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          multipartItem: true
+        }
       };
     default:
       return state;
@@ -737,12 +759,29 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex } }) {
   yield put(deleteQuestionAction(targetId));
 }
 
+function* convertToMultipartSaga({ payload }) {
+  try {
+    const { isTestFlow = false, itemId } = payload;
+
+    yield saveTestItemSaga();
+    const nextPageUrl = isTestFlow
+      ? `/author/tests/${testId}/createItem/${itemId}`
+      : `/author/items/${itemId}/item-detail`;
+    yield put(setQuestionCategory("multiple-choice"));
+    yield put(push(nextPageUrl));
+  } catch (e) {
+    console.log("error", e);
+    yield call(message.error, e);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
     yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
     yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),
-    yield takeLatest(SAVE_CURRENT_TEST_ITEM, saveTestItemSaga)
+    yield takeLatest(SAVE_CURRENT_TEST_ITEM, saveTestItemSaga),
+    yield takeLatest(CONVERT_TO_MULTIPART, convertToMultipartSaga)
   ]);
 }

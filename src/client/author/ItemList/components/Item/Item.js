@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { MoveLink, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
+import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
 import { getTestItemAuthorName } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
@@ -76,6 +76,12 @@ class Item extends Component {
   get description() {
     const { item } = this.props;
     return get(item, "rows[0].widgets[0].entity.stimulus", "");
+  }
+
+  get itemStimulus() {
+    const { item } = this.props;
+    const stimulus = get(item, ["data", "questions", 0, "stimulus"], "<p>click here to view the question details</p>");
+    return helpers.sanitizeForReview(stimulus);
   }
 
   closeModal = () => {
@@ -171,11 +177,7 @@ class Item extends Component {
         />
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.previewItem}>
-              {item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
-                ? item.data.questions[0].stimulus
-                : "Click here to view the question detail."}
-            </MoveLink>
+            <MoveLink onClick={this.previewItem}>{this.itemStimulus}</MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (

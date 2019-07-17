@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
+
 import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
-import { getTestItemAuthorName } from "../../../dataUtils";
+import { getTestItemAuthorName, getQuestionType } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
-import ItemTypes from "./ItemTypes";
 import {
   Container,
   Categories,
@@ -156,12 +156,10 @@ class Item extends Component {
 
   render() {
     const { item, t, windowWidth, selectedToCart, search, userId, checkAnswer, showAnswer } = this.props;
-    const resources =
-      item.rows && item.rows.flatMap(row => row.widgets).filter(widget => widget.widgetType === "resource");
     const { isOpenedDetails, isShowPreviewModal = false } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
     const isEditable = owner;
-
+    const itemType = getQuestionType(item);
     return (
       <Container className="fr-view">
         <PreviewModal
@@ -190,17 +188,14 @@ class Item extends Component {
           )}
         </Question>
         <Detail>
-          {resources.map((resource, index) => (
-            <TypeCategory>
-              <Label key={index}>
-                <LabelText>{resource.title}</LabelText>
-              </Label>
-            </TypeCategory>
-          ))}
           <TypeCategory>
             {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
             <CategoryContent>
-              <ItemTypes item={item} />
+              {itemType && (
+                <Label>
+                  <LabelText>{itemType}</LabelText>
+                </Label>
+              )}
             </CategoryContent>
           </TypeCategory>
           {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}

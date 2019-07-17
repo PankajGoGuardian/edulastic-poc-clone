@@ -122,8 +122,6 @@ const ClassificationPreview = ({
 
   const [dragItems, setDragItems] = useState(possible_responses);
 
-  const [isCheck, setIsCheck] = useState(previewTab === CHECK || previewTab === SHOW);
-
   useEffect(() => {
     if (
       !isEqual(answers, initialAnswers) ||
@@ -135,16 +133,10 @@ const ClassificationPreview = ({
   }, [userAnswer, possible_responses]);
 
   useEffect(() => {
-    setIsCheck(false);
-  }, [userAnswer]);
-
-  useEffect(() => {
     if (previewTab === CHECK || previewTab === SHOW) {
-      setIsCheck(true);
-    } else {
-      setIsCheck(false);
+      changePreviewTab(CLEAR);
     }
-  }, [evaluation]);
+  }, [userAnswer]);
 
   const boxes = createEmptyArrayOfArrays();
 
@@ -269,7 +261,7 @@ const ClassificationPreview = ({
                   drop={drop}
                   dragHandle={show_drag_handle}
                   answers={answers}
-                  validArray={isCheck ? evaluation : []}
+                  validArray={evaluation}
                   preview={preview}
                   possible_responses={possible_responses}
                   onDrop={onDrop}
@@ -312,7 +304,6 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
                               />
                             ) : (
                               dragItems.includes(ite) && (
@@ -325,7 +316,6 @@ const ClassificationPreview = ({
                                   onDrop={onDrop}
                                   item={ite}
                                   disableResponse={disableResponse}
-                                  changePreviewTab={changePreviewTab}
                                 />
                               )
                             )
@@ -364,7 +354,6 @@ const ClassificationPreview = ({
                               onDrop={onDrop}
                               item={ite}
                               disableResponse={disableResponse}
-                              changePreviewTab={changePreviewTab}
                             />
                           ) : (
                             dragItems.includes(ite) && (
@@ -377,7 +366,6 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
                               />
                             )
                           )

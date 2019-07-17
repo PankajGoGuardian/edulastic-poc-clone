@@ -97,6 +97,7 @@ const ActionContainer = ({
             const std = { ...selectedStudent[0], ...values };
             const userId = std._id || std.userId;
             std.currentSignUpState = "DONE";
+            std.username = values.email;
             const stdData = pick(std, [
               "districtId",
               "dob",

@@ -439,9 +439,12 @@ function* updateStudentRequest({ payload }) {
     const { userId, data } = payload;
     const result = yield call(userApi.updateUser, { userId, data });
     const msg = "Successfully Updated student.";
-
+    const updatedStudent = {
+      ...result,
+      enrollmentStatus: "1"
+    };
     message.success(msg);
-    yield put(updateStudentSuccessAction(result));
+    yield put(updateStudentSuccessAction(updatedStudent));
   } catch (error) {
     message.error("Update a student request failing");
     yield put(updateStudentFaildedAction());

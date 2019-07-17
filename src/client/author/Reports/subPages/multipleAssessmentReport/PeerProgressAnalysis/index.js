@@ -11,10 +11,11 @@ import { getUserRole } from "../../../../../student/Login/ducks";
 import PeerProgressAnalysisTable from "./components/table/PeerProgressAnalysisTable";
 import { Placeholder } from "../../../common/components/loader";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
-import { parseData, augmentWithData, calculateTrend } from "./utils/transformers";
+import { parseData, augmentWithData, calculateTrend, getCompareByOptions } from "./utils/transformers";
 
 import dropDownData from "./static/json/dropDownData.json";
 import TrendStats from "./components/trend/TrendStats";
+import { filterAccordingToRole } from "../../../common/util";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -40,8 +41,9 @@ const PeerProgressAnalysis = ({
   loading,
   role
 }) => {
+  const compareByData = getCompareByOptions(role);
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
-  const [compareBy, setCompareBy] = useState(head(dropDownData.compareByData));
+  const [compareBy, setCompareBy] = useState(head(compareByData));
   const [selectedTrend, setSelectedTrend] = useState("");
 
   usefetchProgressHook(settings, compareBy, getPeerProgressAnalysisRequestAction);
@@ -52,7 +54,6 @@ const PeerProgressAnalysis = ({
   const [parsedData, trendCount] = parseData(metricInfo, compareBy.key, orgData, selectedTrend);
 
   const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
-
   const onFilterChange = (key, selectedItem) => {
     switch (key) {
       case "compareBy":
@@ -79,6 +80,7 @@ const PeerProgressAnalysis = ({
     <>
       <TrendStats trendCount={trendCount} selectedTrend={selectedTrend} onTrendSelect={onTrendSelect} />
       <PeerProgressAnalysisTable
+        role={role}
         data={parsedData}
         testData={testData}
         compareBy={compareBy}

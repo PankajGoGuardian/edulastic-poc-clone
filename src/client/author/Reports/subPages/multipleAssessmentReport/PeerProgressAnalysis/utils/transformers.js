@@ -1,5 +1,7 @@
 import { groupBy, map, sumBy, forEach, find, round, head, values, filter } from "lodash";
-import { getOverallScore } from "../../../../common/util";
+import { getOverallScore, filterAccordingToRole } from "../../../../common/util";
+
+import dropDownData from "../static/json/dropDownData.json";
 
 const groupByCompareKey = (metricInfo, compareBy) => {
   switch (compareBy) {
@@ -15,6 +17,8 @@ const groupByCompareKey = (metricInfo, compareBy) => {
       return {};
   }
 };
+
+export const getCompareByOptions = (role = "") => filterAccordingToRole(dropDownData.compareByData, role);
 
 export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []) => {
   switch (compareBy) {

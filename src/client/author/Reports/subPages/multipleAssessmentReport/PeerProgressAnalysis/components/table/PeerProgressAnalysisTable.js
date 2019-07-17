@@ -13,6 +13,7 @@ import { CustomTableTooltip } from "../../../../../common/components/customTable
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
 import TrendColumn from "./TrendColumn";
 import { StyledCell } from "../styled";
+import { getCompareByOptions } from "../../utils/transformers";
 
 const compareByMap = {
   school: "schoolName",
@@ -131,8 +132,9 @@ const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
   );
 };
 
-const PeerProgressAnalysisTable = ({ data, testData, analyseBy, compareBy, onFilterChange }) => {
+const PeerProgressAnalysisTable = ({ data, testData, analyseBy, compareBy, onFilterChange, role }) => {
   const columns = getColumns(testData, analyseBy, compareBy);
+  const compareByData = getCompareByOptions(role);
 
   const onDropDownChange = key => (_, selectedItem) => onFilterChange(key, selectedItem);
 
@@ -153,12 +155,7 @@ const PeerProgressAnalysisTable = ({ data, testData, analyseBy, compareBy, onFil
               selectCB={onAnalyseByChange}
               data={dropDownData.analyseByData}
             />
-            <ControlDropDown
-              prefix="Compare By"
-              by={compareBy}
-              selectCB={onCompareByChange}
-              data={dropDownData.compareByData}
-            />
+            <ControlDropDown prefix="Compare By" by={compareBy} selectCB={onCompareByChange} data={compareByData} />
           </Row>
         </Col>
       </Row>
@@ -183,12 +180,14 @@ PeerProgressAnalysisTable.propTypes = {
   data: PropTypes.array.isRequired,
   onFilterChange: PropTypes.func.isRequired,
   analyseBy: analyseByShape,
-  compareBy: compareByShape
+  compareBy: compareByShape,
+  role: PropTypes.string.isRequired
 };
 
 PeerProgressAnalysisTable.defaultProps = {
   analyseBy: "score",
-  compareBy: "group"
+  compareBy: "group",
+  role: ""
 };
 
 export default PeerProgressAnalysisTable;

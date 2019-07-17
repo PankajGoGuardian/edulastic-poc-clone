@@ -1,4 +1,4 @@
-import { partialRight, ceil, groupBy, sumBy } from "lodash";
+import { partialRight, ceil, groupBy, sumBy, includes, filter } from "lodash";
 
 export const percentage = (numerator, denominator, ceilCalculation = false) => {
   const calculatedPercentage = (numerator / denominator) * 100;
@@ -124,3 +124,6 @@ export const processTeacherIds = orgDataArr => {
 
 export const getOverallScore = (metrics = []) =>
   ceilingPercentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
+
+export const filterAccordingToRole = (columns, role) =>
+  filter(columns, column => !includes(column.hiddenFromRole, role));

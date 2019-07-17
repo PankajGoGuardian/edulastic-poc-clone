@@ -4,12 +4,11 @@ import { testActivity } from "@edulastic/constants";
 import {
   mobileWidth,
   tabletWidth,
-  red,
   darkGrey,
   lightGreySecondary,
   white,
   authorAssignment,
-  greenThird,
+  themeColorLighter,
   themeColor,
   title
 } from "@edulastic/colors";
@@ -220,9 +219,8 @@ export const BtnAction = styled(Button)`
   width: 100%;
   padding: 0px 20px;
   text-align: center;
-
   &:hover,
-  &:active {
+  &:focus {
     background-color: ${themeColor};
     color: ${white};
   }
@@ -237,7 +235,7 @@ export const TypeIcon = styled.span`
   width: 18px;
   height: 18px;
   max-width: 18px;
-  background: ${props => (props.type === "practice" ? red : greenThird)};
+  background: ${props => (props.type === "p" ? "#00A8FF" : props.type === "c" ? "#FF0088" : themeColorLighter)};
   text-align: center;
   color: ${white};
   border-radius: 50%;

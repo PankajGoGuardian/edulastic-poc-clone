@@ -108,11 +108,11 @@ class TableList extends Component {
         width: "10%",
         render: (_, row) =>
           row && row.testType === test.type.PRACTICE ? (
-            <TypeIcon type="practice">P</TypeIcon>
+            <TypeIcon type="p">P</TypeIcon>
           ) : row.testType === test.type.ASSESSMENT ? (
             <TypeIcon>A</TypeIcon>
           ) : (
-            <TypeIcon>C</TypeIcon>
+            <TypeIcon type="c">C</TypeIcon>
           )
       },
       {

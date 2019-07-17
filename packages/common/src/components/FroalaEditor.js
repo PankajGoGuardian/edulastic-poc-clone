@@ -257,6 +257,7 @@ const CustomEditor = ({
   initOnClick,
   theme,
   border,
+  imageDefaultWidth,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -282,6 +283,7 @@ const CustomEditor = ({
       key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
+      imageDefaultWidth: imageDefaultWidth,
       initOnClick,
       toolbarButtons,
       toolbarButtonsMD,
@@ -758,6 +760,7 @@ CustomEditor.propTypes = {
   toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
   readOnly: PropTypes.bool,
+  imageDefaultWidth: PropTypes.number,
   initOnClick: PropTypes.bool,
   border: PropTypes.string
 };
@@ -769,6 +772,7 @@ CustomEditor.defaultProps = {
   toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false,
+  imageDefaultWidth: 300,
   border: "none"
 };
 

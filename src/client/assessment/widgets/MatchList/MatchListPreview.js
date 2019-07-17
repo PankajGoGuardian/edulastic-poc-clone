@@ -29,6 +29,8 @@ import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize, getDirection } from "../../utils/helpers";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
+export const IMAGE_DEFAULT_WIDTH = 265;
+
 const styles = {
   dropContainerStyle: smallSize => ({
     borderRadius: 4,
@@ -240,13 +242,21 @@ const MatchListPreview = ({
           alignItems="flex-start"
         >
           {list.map((ite, i) => {
-            const widthRegex = /width:\s*(\d+)px;/;
-            const widthAttrMatches = ite.match(widthRegex)[1];
+            let hasImageTag;
+            let widthRegex;
+            let widthAttrMatches;
             let imgWidth;
+
+            if (ite) {
+              hasImageTag = ite.includes("<img");
+              widthRegex = /width:\s*(\d+)px;/;
+              [widthAttrMatches] = ite.match(widthRegex);
+            }
+
             // Assign image width when resized (unresized images get 300 from Froala)
-            if (widthAttrMatches.length > 0) {
+            if (hasImageTag && widthAttrMatches && widthAttrMatches.length > 0) {
               const markupImgWidth = Number(widthAttrMatches);
-              imgWidth = markupImgWidth && markupImgWidth !== 300 ? markupImgWidth : undefined;
+              imgWidth = markupImgWidth && markupImgWidth !== IMAGE_DEFAULT_WIDTH ? markupImgWidth : undefined;
             }
 
             return (

@@ -205,7 +205,7 @@ export const sanitizeForReview = stimulus => {
   }
 
   // eslint-disable-next-line func-names
-  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table"];
+  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table", "response"];
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
       $(this).replaceWith("...");

@@ -80,11 +80,7 @@ class Item extends Component {
 
   get itemStimulus() {
     const { item } = this.props;
-    const stimulus =
-      item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
-        ? item.data.questions[0].stimulus
-        : "Click here to view the question detail.";
-
+    const stimulus = get(item, ["data", "questions", 0, "stimulus"], "<p>click here to view the question details</p>");
     return helpers.sanitizeForReview(stimulus);
   }
 

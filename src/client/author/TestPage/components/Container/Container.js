@@ -23,7 +23,8 @@ import {
   getTestsLoadingSelector,
   publishTestAction,
   getTestStatusSelector,
-  setRegradeOldIdAction
+  setRegradeOldIdAction,
+  getTestCreatedItemsSelector
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -92,11 +93,15 @@ class Container extends PureComponent {
       clearSelectedItems,
       clearTestAssignments,
       editAssigned,
+      createdItems = [],
       setRegradeOldId
     } = this.props;
 
     if (location.hash === "#review") {
       this.handleNavChange("review", true)();
+    }
+    if (createdItems.length > 0) {
+      this.handleNavChange("addItems", true)();
     }
     if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id);
@@ -502,6 +507,7 @@ const enhance = compose(
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       user: getUserSelector(state),
+      createdItems: getTestCreatedItemsSelector(state),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),

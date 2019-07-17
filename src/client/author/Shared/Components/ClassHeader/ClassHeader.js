@@ -53,6 +53,7 @@ import { togglePresentationModeAction } from "../../../src/actions/testActivity"
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
 import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
 import { themeColor } from "@edulastic/colors";
+import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 
 class ClassHeader extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ class ClassHeader extends Component {
     this.state = {
       visible: false,
       isPauseModalVisible: false,
+      modalInputVal: "",
       condition: true, // Whether meet the condition, if not show popconfirm.
       showDropdown: false,
       studentReportCardMenuModalVisibility: false,
@@ -166,18 +168,24 @@ class ClassHeader extends Component {
   };
 
   handlePauseAssignment(value) {
-    if (this.inputRef.current.state.value.toLowerCase() === "pause") {
-      const { togglePauseAssignment, assignmentId, classId } = this.props;
-      togglePauseAssignment({ value, assignmentId, classId });
-      this.togglePauseModal(false);
-    } else {
-      message.error("Please enter pause to pause the assignment");
-    }
+    const {
+      togglePauseAssignment,
+      assignmentId,
+      classId,
+      additionalData: { testName }
+    } = this.props;
+    togglePauseAssignment({ value, assignmentId, classId, name: testName });
+    this.togglePauseModal(false);
   }
 
   togglePauseModal = value => {
-    this.setState({ isPauseModalVisible: value });
+    this.setState({ isPauseModalVisible: value, modalInputVal: "" });
   };
+
+  handleValidateInput = e => {
+    this.setState({ modalInputVal: e.target.value });
+  };
+
   render() {
     const {
       t,
@@ -197,7 +205,7 @@ class ClassHeader extends Component {
       userRole
     } = this.props;
 
-    const { showDropdown, visible, isPauseModalVisible } = this.state;
+    const { showDropdown, visible, isPauseModalVisible, modalInputVal = "" } = this.state;
     const { endDate, startDate, releaseScore, isPaused = false } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
@@ -315,27 +323,20 @@ class ClassHeader extends Component {
             updateReleaseScoreSettings={this.handleReleaseScore}
             releaseScore={releaseScore}
           />
-          <Modal
-            visible={isPauseModalVisible}
+          <ConfirmationModal
+            title="Pause"
+            show={isPauseModalVisible}
+            onOk={() => this.handlePauseAssignment(!isPaused)}
             onCancel={() => this.togglePauseModal(false)}
+            inputVal={modalInputVal}
+            onInputChange={this.handleValidateInput}
+            expectedVal="PAUSE"
+            canUndone={true}
+            bodyText={`Are you sure you want to pause? Once paused, no student would be able to answer the test unless you
+                resume it.`}
             okText="Yes, Pause"
             cancelText="No, Cancel"
-            onOk={() => this.handlePauseAssignment(!isPaused)}
-            title="Pause"
-          >
-            <div>
-              <p>
-                {" "}
-                Are you sure you want to pause? Once paused, no student would be able to answer the test unless you
-                resume it.
-              </p>
-              <p>
-                {" "}
-                If Yes, type <b style={{ color: themeColor }}>PAUSE</b> in the space given below and proceed.
-              </p>
-              <Input defaultValue="" ref={this.inputRef} />
-            </div>
-          </Modal>
+          />
         </StyledDiv>
       </Container>
     );

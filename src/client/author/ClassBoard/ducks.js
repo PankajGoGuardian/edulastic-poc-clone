@@ -149,7 +149,10 @@ function* togglePauseAssignment({ payload }) {
   try {
     yield call(classBoardApi.togglePause, payload);
     yield put(setIsPausedAction(payload.value));
-    yield call(message.success, `Successfully ${payload.value ? "paused" : "resumed"} assignment`);
+    yield call(
+      message.success,
+      `Assignment ${payload.name} is now ${payload.value ? "paused." : "open and available for students to work."}`
+    );
   } catch (e) {
     yield call(message.error, `${payload.value ? "Pause" : "Resume"} assignment failed`);
   }

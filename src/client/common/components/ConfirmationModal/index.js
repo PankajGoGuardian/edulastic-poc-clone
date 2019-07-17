@@ -12,7 +12,18 @@ import {
 } from "./styled";
 import PropTypes from "prop-types";
 
-const ConfirmationModal = ({ title, show, onOk, onCancel, inputVal, onInputChange, expectedVal, bodyText, okText }) => {
+const ConfirmationModal = ({
+  title,
+  show,
+  onOk,
+  onCancel,
+  inputVal,
+  onInputChange,
+  expectedVal,
+  bodyText,
+  okText,
+  canUndone
+}) => {
   return (
     <ModalWrapper
       centered
@@ -37,8 +48,8 @@ const ConfirmationModal = ({ title, show, onOk, onCancel, inputVal, onInputChang
           <Col span={24}>
             <StyledP>{bodyText}</StyledP>
             <StyledP>
-              This action can NOT be undone. If you are sure, please type <LightGreenSpan>{expectedVal}</LightGreenSpan>{" "}
-              in the space below
+              {canUndone ? "" : "This action can NOT be undone."} If you are sure, please type{" "}
+              <LightGreenSpan>{expectedVal}</LightGreenSpan> in the space below
             </StyledP>
           </Col>
         </Row>

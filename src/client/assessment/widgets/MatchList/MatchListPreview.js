@@ -202,6 +202,10 @@ const MatchListPreview = ({
     opacity: isDragging ? 0.5 : 1
   });
 
+  const centerContent = {
+    width: "unset",
+    margin: "auto"
+  };
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 
   let altAnswers = [...validAnswers];
@@ -256,10 +260,7 @@ const MatchListPreview = ({
               childMarginRight={smallSize ? 13 : 45}
             >
               <ListItem smallSize={smallSize}>
-                <MathFormulaDisplay
-                  style={{ margin: "auto", width: "unset" }}
-                  dangerouslySetInnerHTML={{ __html: ite }}
-                />
+                <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: ite }} />
               </ListItem>
               <Separator smallSize={smallSize} />
               <DropContainer
@@ -381,7 +382,7 @@ const MatchListPreview = ({
             {list.map((ite, i) => (
               <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
-                  <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: ite }} />
+                  <MathFormulaDisplay style={centerContent} stem dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <CorItem index={i}>
                   <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
@@ -395,7 +396,7 @@ const MatchListPreview = ({
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} alignItems="center">
                   <CorTitle>
-                    <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: list[i] }} />
+                    <MathFormulaDisplay style={centerContent} stem dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
                   <CorItem index={i}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />

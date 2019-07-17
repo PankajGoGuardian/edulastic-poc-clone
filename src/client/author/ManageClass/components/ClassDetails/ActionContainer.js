@@ -116,6 +116,10 @@ const ActionContainer = ({
               "username",
               "contactEmails"
             ]);
+            const contactEmails = get(stdData, "contactEmails");
+            if (contactEmails) {
+              stdData.contactEmails = [contactEmails];
+            }
             updateStudentRequest({
               userId,
               data: stdData

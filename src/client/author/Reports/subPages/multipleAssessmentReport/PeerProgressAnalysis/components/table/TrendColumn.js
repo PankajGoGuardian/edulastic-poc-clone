@@ -18,7 +18,7 @@ const TrendColumn = ({ tests, type }) => {
           cursor={false}
           content={({ payload }) => {
             if (!payload[0]) {
-              return <StyledTooltip>asfdlasdjfklajslfkjaslkfjlkasjdfklasdjkfl</StyledTooltip>;
+              return null;
             }
 
             const { testName, score } = payload[0].payload;

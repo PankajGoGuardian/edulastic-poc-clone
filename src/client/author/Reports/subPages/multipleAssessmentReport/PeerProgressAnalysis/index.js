@@ -11,7 +11,7 @@ import { getUserRole } from "../../../../../student/Login/ducks";
 import PeerProgressAnalysisTable from "./components/table/PeerProgressAnalysisTable";
 import { Placeholder } from "../../../common/components/loader";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
-import { parseData, augmentWithData, calculateTrend, getCompareByOptions } from "./utils/transformers";
+import { parseData, getCompareByOptions } from "./utils/transformers";
 
 import dropDownData from "./static/json/dropDownData.json";
 import TrendStats from "./components/trend/TrendStats";

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { get, head } from "lodash";
+import { get, head, filter } from "lodash";
 import { connect } from "react-redux";
-import { Row, Col } from "antd";
 import {
   getReportsPeerProgressAnalysis,
   getReportsPeerProgressAnalysisLoader,
@@ -10,14 +8,13 @@ import {
 } from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
 
-import TrendCard from "./components/TrendCard";
 import PeerProgressAnalysisTable from "./components/table/PeerProgressAnalysisTable";
 import { Placeholder } from "../../../common/components/loader";
-import { StyledCard, StyledH3 } from "../../../common/styled";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { parseData, augmentWithData, calculateTrend } from "./utils/transformers";
 
 import dropDownData from "./static/json/dropDownData.json";
+import TrendStats from "./components/trend/TrendStats";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -45,17 +42,16 @@ const PeerProgressAnalysis = ({
 }) => {
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
   const [compareBy, setCompareBy] = useState(head(dropDownData.compareByData));
+  const [selectedTrend, setSelectedTrend] = useState("");
 
   usefetchProgressHook(settings, compareBy, getPeerProgressAnalysisRequestAction);
 
   const { metricInfo = [] } = get(peerProgressAnalysis, "data.result", {});
   const { orgData = [], testData = [] } = get(MARFilterData, "data.result", []);
 
-  const parsedData = parseData(metricInfo, compareBy.key, orgData);
-  const [dataWithTrend, trendCount] = calculateTrend(parsedData);
-  const augmentedData = augmentWithData(dataWithTrend, compareBy.key, orgData);
+  const [parsedData, trendCount] = parseData(metricInfo, compareBy.key, orgData, selectedTrend);
 
-  console.log(augmentedData, dataWithTrend);
+  const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
 
   const onFilterChange = (key, selectedItem) => {
     switch (key) {
@@ -81,30 +77,9 @@ const PeerProgressAnalysis = ({
 
   return (
     <>
-      <UpperContainer>
-        <PaddedContainer>
-          <StyledH3>Distribution of student subgroup as per progress trend ?</StyledH3>
-        </PaddedContainer>
-        <TrendContainer>
-          <Col span={8}>
-            <PaddedContainer>
-              <TrendCard type="up" count={trendCount.up} />
-            </PaddedContainer>
-          </Col>
-          <Col span={8}>
-            <PaddedContainer>
-              <TrendCard type="flat" count={trendCount.flat} />
-            </PaddedContainer>
-          </Col>
-          <Col span={8}>
-            <PaddedContainer>
-              <TrendCard type="down" count={trendCount.down} />
-            </PaddedContainer>
-          </Col>
-        </TrendContainer>
-      </UpperContainer>
+      <TrendStats trendCount={trendCount} selectedTrend={selectedTrend} onTrendSelect={onTrendSelect} />
       <PeerProgressAnalysisTable
-        data={augmentedData}
+        data={parsedData}
         testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
@@ -127,18 +102,5 @@ const enhance = connect(
 );
 
 export default enhance(PeerProgressAnalysis);
-
-const UpperContainer = styled(StyledCard)`
-  .ant-card-body {
-    padding: 18px 0px;
-  }
-`;
-const PaddedContainer = styled.div`
-  padding: 0px 18px;
-`;
-
-const TrendContainer = styled(Row)`
-  padding-top: 5px;
-`;
 
 // -----|-----|-----|-----|-----| COMPONENT ENDED |-----|-----|-----|-----|----- //

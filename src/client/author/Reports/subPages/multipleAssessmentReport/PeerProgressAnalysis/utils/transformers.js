@@ -57,7 +57,7 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
   }
 };
 
-export const parseData = (metricInfo = [], compareBy = "") => {
+export const parseData = (metricInfo = [], compareBy = "", orgData = [], selectedTrend = "") => {
   const groupedMetric = groupByCompareKey(metricInfo, compareBy);
 
   const parsedGroupedMetric = map(groupedMetric, (value, metricId) => {
@@ -78,7 +78,11 @@ export const parseData = (metricInfo = [], compareBy = "") => {
     };
   });
 
-  return parsedGroupedMetric;
+  const [dataWithTrend, trendCount] = calculateTrend(parsedGroupedMetric);
+  const augmentedData = augmentWithData(dataWithTrend, compareBy, orgData);
+  const filteredTrendData = filter(augmentedData, record => (selectedTrend ? record.trend === selectedTrend : true));
+
+  return [filteredTrendData, trendCount];
 };
 
 export const calculateTrend = groupedData => {

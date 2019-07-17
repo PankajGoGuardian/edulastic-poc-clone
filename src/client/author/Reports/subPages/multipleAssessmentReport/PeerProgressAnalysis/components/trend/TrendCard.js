@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { trendTypes } from "../utils/constants";
-import { StyledTrendIcon } from "./styled";
 
-const TrendCard = ({ count, type, ...restProps }) => {
+import { trendTypes } from "../../utils/constants";
+import { StyledTrendIcon } from "../styled";
+
+const TrendCard = ({ count, type, onClick, className }) => {
   return (
-    <div {...restProps}>
+    <div onClick={onClick} className={className}>
       {count} <StyledTrendIcon type={type} className="fa fa-arrow-up" />
     </div>
   );
@@ -21,16 +22,21 @@ const StyledTrendCard = styled(TrendCard)`
   border-radius: 5px;
   color: #676a6c;
   background-color: ${props => trendTypes[props.type].color};
+  opacity: ${props => (props.isSelected ? 1 : 0.6)};
 `;
 
 StyledTrendCard.propTypes = {
   count: PropTypes.number,
-  type: PropTypes.oneOf(Object.keys(trendTypes))
+  type: PropTypes.oneOf(Object.keys(trendTypes)),
+  isSelected: PropTypes.bool,
+  onClick: PropTypes.func
 };
 
 StyledTrendCard.defaultProps = {
   count: 0,
-  type: "flat"
+  type: "flat",
+  isSelected: true,
+  onClick: () => {}
 };
 
 export default StyledTrendCard;

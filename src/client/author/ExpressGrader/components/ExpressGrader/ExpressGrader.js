@@ -130,35 +130,35 @@ class ExpressGrader extends Component {
             testActivityId={testActivityId}
           />
           <ExpressGraderDetailContainer>
-          <StyledFlexContainer justifyContent="space-between">
-            <PaginationInfo>
-              &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link> /{" "}
-              {additionalData && <a>{additionalData.testName}</a>} /{" "}
-              {additionalData && <a>{additionalData.className}</a>}
-            </PaginationInfo>
-            <PresentationToggleSwitch groupId={classId} />
-          </StyledFlexContainer>
-          {!isMobile && (
-            <ScoreTable
-              testActivity={testActivity}
-              showQuestionModal={this.showQuestionModal}
-              isPresentationMode={isPresentationMode}
-            />
-          )}
+            <StyledFlexContainer justifyContent="space-between">
+              <PaginationInfo>
+                &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link> /{" "}
+                {additionalData && <a>{additionalData.testName}</a>} /{" "}
+                {additionalData && <a>{additionalData.className}</a>}
+              </PaginationInfo>
+              <PresentationToggleSwitch groupId={classId} />
+            </StyledFlexContainer>
+            {!isMobile && (
+              <ScoreTable
+                testActivity={testActivity}
+                showQuestionModal={this.showQuestionModal}
+                isPresentationMode={isPresentationMode}
+              />
+            )}
 
-          {isMobile && <ScoreCard testActivity={testActivity} />}
+            {isMobile && <ScoreCard testActivity={testActivity} />}
 
-          {isVisibleModal && (
-            <QuestionModal
-              record={record}
-              tableData={tableData}
-              isVisibleModal={isVisibleModal}
-              showQuestionModal={this.showQuestionModal}
-              hideQuestionModal={this.hideQuestionModal}
-              isPresentationMode={isPresentationMode}
-              groupId={classId}
-            />
-          )}
+            {isVisibleModal && (
+              <QuestionModal
+                record={record}
+                tableData={tableData}
+                isVisibleModal={isVisibleModal}
+                showQuestionModal={this.showQuestionModal}
+                hideQuestionModal={this.hideQuestionModal}
+                isPresentationMode={isPresentationMode}
+                groupId={classId}
+              />
+            )}
           </ExpressGraderDetailContainer>
         </div>
       </FeaturesSwitch>

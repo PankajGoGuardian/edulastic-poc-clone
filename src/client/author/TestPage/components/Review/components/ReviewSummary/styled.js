@@ -102,4 +102,6 @@ export const Standard = styled.span`
   font-weight: 700;
   border-radius: 5px;
   padding: 5px 20px;
+  width: 100%;
+  word-break: break-word;
 `;

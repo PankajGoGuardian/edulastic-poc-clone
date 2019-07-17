@@ -15,7 +15,8 @@ import {
   setRedirectTestAction,
   hasStandards,
   PROCEED_PUBLISH_ACTION,
-  togglePublishWarningModalAction
+  togglePublishWarningModalAction,
+  getIsNewItemSelector
 } from "../ItemDetail/ducks";
 import { getTestEntitySelector, setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
@@ -31,7 +32,6 @@ import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import changeViewAction from "../src/actions/view";
-import { getIsNewItemSelector } from "../src/selectors/itemDetail";
 
 // constants
 export const resourceTypeQuestions = {

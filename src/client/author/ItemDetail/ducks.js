@@ -34,7 +34,6 @@ import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 
-
 // constants
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -202,6 +201,10 @@ export const getDefaultGradesSelector = createSelector(
 export const getDefaultSubjectSelector = createSelector(
   stateSelector,
   state => state.defaultSubject
+);
+export const getIsNewItemSelector = createSelector(
+  stateSelector,
+  state => state.newItem
 );
 
 export const getItemDetailSelector = createSelector(

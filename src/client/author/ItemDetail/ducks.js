@@ -29,7 +29,6 @@ import {
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
 
-import { getIsNewItemSelector } from "../src/selectors/itemDetail";
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";

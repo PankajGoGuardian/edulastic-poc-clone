@@ -58,7 +58,7 @@ const ActionContainer = ({
   const [infoModelVisible, setinfoModelVisible] = useState(false);
   const [infoModalData, setInfoModalData] = useState([]);
 
-  const { _id: classId } = selectedClass;
+  const { _id: classId, active } = selectedClass;
   let formRef = null;
 
   const toggleModal = key => {
@@ -295,27 +295,31 @@ const ActionContainer = ({
         <TitleWarapper>Student</TitleWarapper>
         <DividerDiv />
         <ButtonsWrapper>
-          <Tooltip placement="bottomLeft" title="Add Student">
-            <CircleIconButton
-              type="primary"
-              shape="circle"
-              icon="plus"
-              size="large"
-              onClick={() => toggleModal("add")}
-            />
-          </Tooltip>
+          {active ? (
+            <Tooltip placement="bottomLeft" title="Add Student">
+              <CircleIconButton
+                type="primary"
+                shape="circle"
+                icon="plus"
+                size="large"
+                onClick={() => toggleModal("add")}
+              />
+            </Tooltip>
+          ) : null}
           <Link to={"/author/manageClass/printPreview"}>
             <CircleIconButton type="primary" shape="circle" icon="printer" size="large" disabled={!studentLoaded} />
           </Link>
-          {studentsList.length > 0 && (
+          {studentsList.length > 0 && active ? (
             <Dropdown overlay={actionMenu} trigger={["click"]}>
               <ActionButton type="primary" ghost>
                 Actions <StyledIcon type="caret-down" theme="filled" size={16} />
               </ActionButton>
             </Dropdown>
-          )}
+          ) : null}
 
-          <AddStudentButton onClick={handleAddMultipleStudent}>Add Multiple Students</AddStudentButton>
+          {active ? (
+            <AddStudentButton onClick={handleAddMultipleStudent}>Add Multiple Students</AddStudentButton>
+          ) : null}
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal
               modalVisible={isAddMultipleStudentsModal}

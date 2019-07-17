@@ -13,7 +13,7 @@ const links = [
   {
     key: "peerProgressAnalysis",
     title: "Peer Progress Analysis",
-    location: "/author/reports"
+    location: "/author/reports/peer-progress-analysis/test/"
   },
   {
     key: "studentProgress",

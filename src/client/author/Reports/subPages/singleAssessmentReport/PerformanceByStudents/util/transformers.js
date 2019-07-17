@@ -17,12 +17,9 @@ import {
   maxBy,
   get
 } from "lodash";
-import { filterData, getHSLFromRange1 } from "../../../../common/util";
+import { filterData, getHSLFromRange1, filterAccordingToRole } from "../../../../common/util";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
-
-const filterColumnsAccordingToRole = (columns, role) =>
-  filter(columns, column => !includes(column.hiddenFromRole, role));
 
 export const getInterval = maxValue => min([maxValue, 9]);
 
@@ -252,7 +249,7 @@ const getColorCell = (columnKey, columnType, assessmentName) => (text, record) =
 };
 
 export const getColumns = (columns, assessmentName, role) => {
-  const filteredColumns = filterColumnsAccordingToRole(columns, role);
+  const filteredColumns = filterAccordingToRole(columns, role);
 
   return next(filteredColumns, columnsDraft => {
     forEach(columnsDraft, column => {

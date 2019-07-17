@@ -6,6 +6,7 @@ import dictionaries from "./dictionaries";
 import author_assignments from "./assignments";
 import { reportAssignmentsReducer } from "../../Reports/assignmentsDucks";
 import { reportSARFilterDataReducer } from "../../Reports/subPages/singleAssessmentReport/common/filterDataDucks";
+import { reportMARFilterDataReducer } from "../../Reports/subPages/multipleAssessmentReport/common/filterDataDucks";
 import { reportAssessmentSummaryReducer } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
 import { reportReducer } from "../../Reports/ducks";
 import { reportResponseFrequencyReducer } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
@@ -16,6 +17,7 @@ import { reportPerformanceByStudentsReducer } from "../../Reports/subPages/singl
 import { reportStandardsGradebookReducer } from "../../Reports/subPages/standardsMasteryReport/standardsGradebook/ducks";
 import { reportStandardsPerformanceSummaryReducer } from "../../Reports/subPages/standardsMasteryReport/standardsPerformance/ducks";
 import { reportStandardsFilterDataReducer } from "../../Reports/subPages/standardsMasteryReport/common/filterDataDucks";
+import { reportPeerProgressAnalysisReducer } from "../../Reports/subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
 import authorGroups from "../../sharedDucks/groups";
@@ -71,6 +73,7 @@ const authorReducers = {
   author_assignments,
   reportAssignmentsReducer,
   reportSARFilterDataReducer,
+  reportMARFilterDataReducer,
   reportAssessmentSummaryReducer,
   reportReducer,
   reportResponseFrequencyReducer,
@@ -80,6 +83,7 @@ const authorReducers = {
   reportStandardsGradebookReducer,
   reportStandardsPerformanceSummaryReducer,
   reportStandardsFilterDataReducer,
+  reportPeerProgressAnalysisReducer,
   authorTestAssignments: testAssignmentsReducer,
   author_classboard_gradebook,
   author_classboard_testActivity,

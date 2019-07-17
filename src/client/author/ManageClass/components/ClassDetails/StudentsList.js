@@ -12,7 +12,7 @@ import { getGroupList } from "../../../src/selectors/user";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
 const StudentsList = ({ loaded, students, selectStudents, selectedStudent, features, groupList, selectedClass }) => {
-  const { groupId, activeClass } = selectedClass;
+  const { groupId, active } = selectedClass;
   const [showAllStudents, setShowAllStudents] = useState(false);
 
   const rowSelection = {
@@ -20,7 +20,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
       selectStudents(selectedRows);
     },
     getCheckboxProps: () => ({
-      disabled: !activeClass
+      disabled: !active
     }),
     selectedRowKeys: selectedStudent.map(({ email, username }) => email || username)
   };

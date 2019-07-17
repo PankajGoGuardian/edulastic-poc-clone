@@ -27,7 +27,7 @@ const usefetchProgressHook = (settings, compareBy, fetchAction) => {
     if (termId) {
       fetchAction({
         compareBy: compareBy.key,
-        termId
+        ...requestFilters
       });
     }
   }, [settings, compareBy.key]);

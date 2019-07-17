@@ -36,7 +36,8 @@ const specSource = {
         item: props.item,
         index: itemCurrent.index
       },
-      itemTo.index
+      itemTo.index,
+      itemTo.position
     );
   }
 };

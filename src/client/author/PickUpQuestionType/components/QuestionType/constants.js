@@ -1126,6 +1126,7 @@ export const getCards = onSelectQuestionType => {
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
+        snapfit: true,
         maxRespCount: 1,
         options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
@@ -1163,7 +1164,6 @@ export const getCards = onSelectQuestionType => {
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
-        snapfit: true,
         options: [[defaultOptions[0], defaultOptions[1]], [defaultOptions[2], defaultOptions[3]]],
         validation: {
           scoring_type: EXACT_MATCH,

@@ -56,11 +56,12 @@ class Display extends Component {
     }
   }
 
-  onDrop = ({ item: sourceData, fromContainerIndex, fromRespIndex }, index) => {
+  onDrop = ({ item: sourceData, fromContainerIndex, fromRespIndex }, index, position = {}) => {
     const { userAnswers, possibleResponses } = this.state;
-    const { maxRespCount } = this.props;
-    const { onChange } = this.props;
+    const { maxRespCount, onChange, item, preview } = this.props;
 
+    const { snapfit: snapFitToDropArea } = item;
+    console.log(fromContainerIndex, index, position, !snapFitToDropArea && preview);
     if (fromContainerIndex === index) {
       return;
     }
@@ -403,6 +404,15 @@ class Display extends Component {
                 </DropContainer>
               );
             })}
+          {!snapFitToDropArea && preview && (
+            <DropContainer
+              index={0}
+              drop={drop}
+              data-cy="drop-container"
+              style={{ height: "100%", border: "1px red solid" }}
+              className="imagelabeldragdrop-droppable active"
+            />
+          )}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
     );

@@ -16,7 +16,7 @@ import {
   getQuestionsArraySelector,
   changeCurrentQuestionAction
 } from "../../sharedDucks/questions";
-import { getItemDetailSelector, getIsNewItemSelector } from "../selectors/itemDetail";
+import { getItemDetailSelector } from "../selectors/itemDetail";
 
 function* receiveQuestionSaga({ payload }) {
   try {
@@ -52,7 +52,6 @@ function* saveQuestionSaga() {
   try {
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
-    const newItem = yield select(getIsNewItemSelector);
     let currentQuestionIds = getQuestionIds(itemDetail);
     const { rowIndex, tabIndex } = history.location.state || {};
     const { id } = question;
@@ -93,12 +92,7 @@ function* saveQuestionSaga() {
       payload: { item }
     });
 
-    if (newItem) {
-      yield call(message.success, "Create new item is success", "Success");
-    } else {
-      yield call(message.success, "Update item by id is success", "Success");
-    }
-
+    yield call(message.success, "Item is saved as draft", 2);
     if (itemDetail) {
       yield call(history.push, {
         pathname: `/author/items/${itemDetail._id}/item-detail`,

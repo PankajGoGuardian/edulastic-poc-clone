@@ -16,7 +16,7 @@ import CustomTreeSelect from "./CustomTreeSelect";
 import StandardsModal from "./StandardsModal";
 import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
 import StandardTags from "./styled/StandardTags";
-import StandardsWrapper from "./styled/StandardsWrapper";
+import StandardsWrapper, { RecentStandards } from "./styled/StandardsWrapper";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { themeColor } from "@edulastic/colors";
 
@@ -295,17 +295,19 @@ const AlignmentRow = ({
               </ItemBody>
               {recentStandardsList && recentStandardsList.length > 0 && (
                 <StandardsWrapper>
-                  RECENTLY USED:
-                  {recentStandardsList.map(recentStandard => (
-                    <StandardTags
-                      color={themeColor}
-                      onClick={() => {
-                        handleAddStandard(recentStandard);
-                      }}
-                    >
-                      {recentStandard.identifier}
-                    </StandardTags>
-                  ))}
+                  <div>RECENTLY USED:</div>
+                  <RecentStandards>
+                    {recentStandardsList.map(recentStandard => (
+                      <StandardTags
+                        color={themeColor}
+                        onClick={() => {
+                          handleAddStandard(recentStandard);
+                        }}
+                      >
+                        {recentStandard.identifier}
+                      </StandardTags>
+                    ))}
+                  </RecentStandards>
                 </StandardsWrapper>
               )}
             </Col>

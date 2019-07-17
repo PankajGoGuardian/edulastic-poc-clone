@@ -54,9 +54,9 @@ const BasicFields = ({
       });
       setEnroll(false);
     }
-
     const result = await userApi.checkUser({
-      username: value
+      username: value,
+      districtId
     });
 
     let errorMsg = "";

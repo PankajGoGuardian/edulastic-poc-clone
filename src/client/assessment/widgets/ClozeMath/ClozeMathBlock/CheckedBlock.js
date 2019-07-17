@@ -8,7 +8,7 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CheckBox } from "./styled/CheckBox";
 
-const CheckBoxedMathBox = ({ value }) => {
+const CheckBoxedMathBox = ({ value, style }) => {
   const filedRef = useRef();
 
   const replaceWithMathQuill = () => {
@@ -24,7 +24,7 @@ const CheckBoxedMathBox = ({ value }) => {
     replaceWithMathQuill();
   }, [value]);
 
-  return <span ref={filedRef} />;
+  return <span className="value" ref={filedRef} style={style} />;
 };
 
 const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick }) => {
@@ -39,9 +39,17 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
 
   return (
     <Tooltip placement="bottomLeft" title={isMath ? <CheckBoxedMathBox value={userAnswer.value} /> : userAnswer.value}>
-      <CheckBox width={width} height={height} className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick}>
-        <span className="index">{index + 1}</span>
-        <span className="value">{isMath ? <CheckBoxedMathBox value={userAnswer.value} /> : userAnswer.value}</span>
+      <CheckBox className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick}>
+        <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+          {index + 1}
+        </span>
+        <span className="value" style={{ height, width, display: "flex", alignItems: "center" }}>
+          {isMath ? (
+            <CheckBoxedMathBox value={userAnswer.value} style={{ height, width, minWidth: "unset" }} />
+          ) : (
+            userAnswer.value
+          )}
+        </span>
         {userAnswer && !isUndefined(evaluation[id]) && (
           <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>
         )}

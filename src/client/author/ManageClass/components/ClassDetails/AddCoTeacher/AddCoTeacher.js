@@ -97,7 +97,7 @@ class AddCoTeacher extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={() => handleCancel()}>
+      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={() => handleCancel()} destroyOnClose={true}>
         <Description>
           Invite your colleagues to view and manage your class. Co-teachers can manage enrollment, assign the assessment
           and view reports of your class(es)
@@ -114,7 +114,10 @@ class AddCoTeacher extends React.Component {
         >
           {coTeachers.map((el, index) => (
             <Select.Option key={index} value={el._id}>
-              {`${el.firstName} ${el.lastName || ""}`}
+              <div>
+                <span style={{ fontSize: "14px" }}>{`${el.firstName} ${el.lastName || ""}`}</span>
+                <span style={{ fontSize: "12px" }}>{` (${el.email || el.username})`}</span>
+              </div>
             </Select.Option>
           ))}
         </Select>

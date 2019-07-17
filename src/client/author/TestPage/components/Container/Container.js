@@ -23,7 +23,8 @@ import {
   getTestsLoadingSelector,
   publishTestAction,
   getTestStatusSelector,
-  setRegradeOldIdAction
+  setRegradeOldIdAction,
+  getTestCreatedItemsSelector
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -43,6 +44,7 @@ import Assign from "../Assign";
 import Setting from "../Setting";
 
 import { testsApi } from "@edulastic/api";
+import { themeColor } from "@edulastic/colors";
 
 const { getDefaultImage } = testsApi;
 
@@ -88,15 +90,30 @@ class Container extends PureComponent {
       match,
       receiveTestById,
       setDefaultData,
+      history,
       history: { location },
       clearSelectedItems,
       clearTestAssignments,
       editAssigned,
+      createdItems = [],
       setRegradeOldId
     } = this.props;
-
+    const self = this;
     if (location.hash === "#review") {
       this.handleNavChange("review", true)();
+    } else if (createdItems.length > 0) {
+      this.handleNavChange("addItems", true)();
+      message.success(
+        <span>
+          {" "}
+          New item has been created and added to the current test. Click{" "}
+          <span onClick={() => self.setState({ current: "review" })} style={{ color: themeColor, cursor: "pointer" }}>
+            here
+          </span>{" "}
+          to see it.
+        </span>,
+        3
+      );
     }
     if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id);
@@ -500,6 +517,7 @@ const enhance = compose(
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       user: getUserSelector(state),
+      createdItems: getTestCreatedItemsSelector(state),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),

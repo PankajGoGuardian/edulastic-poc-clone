@@ -15,7 +15,8 @@ import {
   setRedirectTestAction,
   hasStandards,
   PROCEED_PUBLISH_ACTION,
-  togglePublishWarningModalAction
+  togglePublishWarningModalAction,
+  getIsNewItemSelector
 } from "../ItemDetail/ducks";
 import { getTestEntitySelector, setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
@@ -277,6 +278,7 @@ export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTe
 
 function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } }) {
   try {
+    const newItem = yield select(getIsNewItemSelector);
     if (isTestFlow) {
       const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
       const standardPresent = questions.some(hasStandards);
@@ -395,8 +397,11 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-
-    yield call(message.success, "Update item by id is success", "Success");
+    if (newItem) {
+      yield call(message.success, "Create new item is success", "Success");
+    } else {
+      yield call(message.success, "Update item by id is success", "Success");
+    }
 
     if (isTestFlow) {
       // add item to test entity
@@ -415,7 +420,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(!isEditFlow ? `/author/tests/${tId}#review` : `/author/tests/${tId}/createItem/${item._id}`));
+        yield put(push(!isEditFlow ? `/author/tests/${tId}` : `/author/tests/${tId}/createItem/${item._id}`));
       }
       yield put(changeViewAction("edit"));
       return;

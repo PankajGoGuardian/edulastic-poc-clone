@@ -28,6 +28,7 @@ import {
 } from "../TestPage/ducks";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
+
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
@@ -199,6 +200,10 @@ export const getDefaultGradesSelector = createSelector(
 export const getDefaultSubjectSelector = createSelector(
   stateSelector,
   state => state.defaultSubject
+);
+export const getIsNewItemSelector = createSelector(
+  stateSelector,
+  state => !get(state, "item.version", 0)
 );
 
 export const getItemDetailSelector = createSelector(
@@ -587,6 +592,7 @@ function* receiveItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
+    const newItem = yield select(getIsNewItemSelector);
     const { addToTest } = payload;
     if (!payload.keepData) {
       // avoid data part being put into db
@@ -638,7 +644,11 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-    yield call(message.success, "Update item by id is success", "Success");
+    if (newItem) {
+      yield call(message.success, "create new item is success", "Success");
+    } else {
+      yield call(message.success, "Update item by id is success", "Success");
+    }
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
@@ -657,7 +667,7 @@ export function* updateItemSaga({ payload }) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(`/author/tests/${payload.testId}#review`));
+        yield put(push(`/author/tests/${payload.testId}`));
       }
       yield put(changeViewAction("edit"));
       return;

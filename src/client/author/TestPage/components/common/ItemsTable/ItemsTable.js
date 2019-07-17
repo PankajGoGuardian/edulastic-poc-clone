@@ -8,15 +8,14 @@ import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 
 import styled from "styled-components";
-import { getTestItemAuthorName } from "../../../../dataUtils";
+import { getTestItemAuthorName, getQuestionType } from "../../../../dataUtils";
 import MainInfoCell from "./MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell";
-import { getItemsTypesSelector, getStandardsSelector } from "../../Review/ducks";
+import { getStandardsSelector } from "../../Review/ducks";
 import { previewShowAnswerAction, previewCheckAnswerAction } from "../../../ducks";
 
 const ItemsTable = ({
   items,
-  types,
   setSelectedTests,
   selectedTests,
   onAddItems,
@@ -101,7 +100,7 @@ const ItemsTable = ({
       by: getTestItemAuthorName(item),
       shared: "9578 (1)",
       likes: 9,
-      types: types[item._id],
+      type: getQuestionType(item),
       standards: standards[item._id],
       stimulus,
       isPremium: !!item.collectionName,
@@ -130,7 +129,6 @@ const ItemsTable = ({
 
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
-  types: PropTypes.object.isRequired,
   setSelectedTests: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
@@ -146,7 +144,6 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state)
     }),
     {

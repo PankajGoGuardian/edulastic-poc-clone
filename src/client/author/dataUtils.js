@@ -1,3 +1,5 @@
+import { get } from "lodash";
+
 export const getTestAuthorName = item => {
   const { createdBy = {}, collectionName = "", authors = [] } = item;
   if (collectionName) return collectionName;
@@ -34,4 +36,13 @@ export const getPlaylistAuthorName = item => {
   if (sharedBy && sharedBy[0]) {
     return `${sharedBy[0].name}`;
   } else return ``;
+};
+
+export const getQuestionType = item => {
+  const questions = get(item, ["data", "questions"], []);
+  const resources = get(item, ["data", "resources"], []);
+  if (questions.length > 1 || resources.length) {
+    return "MULTIPART";
+  }
+  return questions[0] && questions[0].title;
 };

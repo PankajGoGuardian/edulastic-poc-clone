@@ -7,6 +7,7 @@ import { FlexContainer, AnswerContext } from "@edulastic/common";
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
 import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionIndex, QuestionCheckbox } from "./styled";
+import { getQuestionType } from "../../../../../dataUtils";
 
 const transformItemRow = ([row], qid) => [
   {
@@ -29,13 +30,6 @@ const splitItems = (item, testItem) => {
       question: { id: qid, ...qRest }
     }))
   );
-};
-
-export const getQuestionTypes = item => {
-  return get(item, ["data", "questions"], []).reduce((acc, q) => {
-    acc.push(q.title);
-    return acc;
-  }, []);
 };
 
 const SortableItem = SortableElement(
@@ -175,7 +169,6 @@ const List = SortableContainer(
     setSelected,
     testItems,
     onChangePoints,
-    types,
     isEditable = false,
     standards,
     scoring,
@@ -226,7 +219,7 @@ const List = SortableContainer(
               by: (testItems[i].createdBy && testItems[i].createdBy.name) || "",
               shared: "0",
               likes: "0",
-              types: getQuestionTypes(testItems[i]),
+              type: getQuestionType(testItems[i]),
               isPremium: !!testItems[i].collectionName,
               item: testItems[i],
               audio: audioStatus(testItems[i]),
@@ -262,7 +255,6 @@ List.propTypes = {
   onChangePoints: PropTypes.func.isRequired,
   onPreview: PropTypes.func.isRequired,
   testItems: PropTypes.array.isRequired,
-  types: PropTypes.any.isRequired,
   isEditable: PropTypes.bool,
   standards: PropTypes.object.isRequired,
   scoring: PropTypes.object.isRequired,

@@ -18,7 +18,6 @@ import {
 import { loadQuestionsAction } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
-import { itemDetail } from "../ItemDetail";
 
 // constants
 

@@ -11,6 +11,7 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import Group from "./Group";
+import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "..";
 
 const List = withAddButton(QuillSortableList);
 
@@ -78,6 +79,7 @@ class GroupPossibleResponses extends Component {
                   onRemove={restProps.onRemove}
                   useDragHandle
                   columns={1}
+                  imageDefaultWidth={IMAGE_RESPONSE_DEFAULT_WIDTH}
                 />
               </Col>
             </Row>

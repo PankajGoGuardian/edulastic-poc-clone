@@ -8,6 +8,9 @@ import { changePreviewAction } from "../../../author/src/actions/view";
 import MatchListPreview from "./MatchListPreview";
 import MatchListEdit from "./MatchListEdit";
 
+export const IMAGE_LIST_DEFAULT_WIDTH = 265;
+export const IMAGE_RESPONSE_DEFAULT_WIDTH = 245;
+
 const MatchList = props => {
   const { item, view } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);

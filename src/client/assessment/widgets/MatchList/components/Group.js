@@ -10,6 +10,7 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import { IconTrash } from "../styled/IconTrash";
+import { IMAGE_LIST_DEFAULT_WIDTH, IMAGE_RESPONSE_DEFAULT_WIDTH } from "..";
 
 const List = withAddButton(QuillSortableList);
 
@@ -55,6 +56,7 @@ const Group = ({
         onRemove={onRemoveInner(index)}
         useDragHandle
         columns={1}
+        imageDefaultWidth={IMAGE_RESPONSE_DEFAULT_WIDTH}
       />
     </div>
   </Fragment>

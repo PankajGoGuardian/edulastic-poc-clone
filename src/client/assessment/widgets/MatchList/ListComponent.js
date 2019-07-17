@@ -12,7 +12,8 @@ import QuillSortableList from "../../components/QuillSortableList";
 import { Subtitle } from "../../styled/Subtitle";
 import { updateVariables } from "../../utils/variables";
 import { Widget } from "../../styled/Widget";
-import { IMAGE_DEFAULT_WIDTH } from "./MatchListPreview";
+
+import { IMAGE_LIST_DEFAULT_WIDTH } from ".";
 
 const List = withAddButton(QuillSortableList);
 
@@ -81,7 +82,7 @@ class ListComponent extends Component {
           onRemove={handleRemove}
           useDragHandle
           columns={1}
-          imageDefaultWidth={IMAGE_DEFAULT_WIDTH}
+          imageDefaultWidth={IMAGE_LIST_DEFAULT_WIDTH}
         />
       </Widget>
     );

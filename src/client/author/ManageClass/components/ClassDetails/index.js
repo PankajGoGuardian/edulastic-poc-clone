@@ -101,7 +101,7 @@ const ClassDetails = ({
       >
         <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
       </Modal>
-      <Header onEdit={handleEditClick} />
+      <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
       <Container>
         <SubHeader
           {...selectedClass}
@@ -116,7 +116,7 @@ const ClassDetails = ({
 
         <ActionContainer loadStudents={loadStudents} />
 
-        <StudentsList selectStudent groupId={selectedClass._id} />
+        <StudentsList selectStudent selectedClass={selectedClass} />
       </Container>
     </>
   );

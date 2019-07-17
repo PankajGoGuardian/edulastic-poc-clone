@@ -11,13 +11,17 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getGroupList } from "../../../src/selectors/user";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
-const StudentsList = ({ loaded, students, selectStudents, selectedStudent, features, groupList, groupId }) => {
+const StudentsList = ({ loaded, students, selectStudents, selectedStudent, features, groupList, selectedClass }) => {
+  const { groupId, activeClass } = selectedClass;
   const [showAllStudents, setShowAllStudents] = useState(false);
 
   const rowSelection = {
     onChange: (_, selectedRows) => {
       selectStudents(selectedRows);
     },
+    getCheckboxProps: () => ({
+      disabled: !activeClass
+    }),
     selectedRowKeys: selectedStudent.map(({ email, username }) => email || username)
   };
 

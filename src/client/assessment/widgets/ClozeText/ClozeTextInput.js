@@ -149,10 +149,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     }
   }
   return (
-    <CustomInput
-      style={{ ...style, width: `${width}px` || "auto", height: `${height}px` || "auto" }}
-      title={value.length ? value : null}
-    >
+    <CustomInput style={{ ...style, width: "max-content", height: "auto" }} title={value.length ? value : null}>
       {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
@@ -170,14 +167,14 @@ const ClozeTextInput = ({ resprops, id }) => {
         style={{
           ...style,
           resize: "none",
-          height: "100%",
-          width: "100%",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           fontSize: style.fontSize,
           background: item.background,
-          padding: width <= 50 ? "3px" : null
+          padding: width <= 50 ? "3px" : null,
+          width: `${width}px` || "auto",
+          height: `${height}px` || "auto"
         }}
         placeholder={placeholder}
       />
@@ -222,4 +219,6 @@ const IndexBox = styled.div`
   background: #878282;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+  align-self: stretch;
+  height: auto;
 `;

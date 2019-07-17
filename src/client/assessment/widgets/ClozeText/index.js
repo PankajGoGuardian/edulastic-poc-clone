@@ -26,6 +26,9 @@ class ClozeText extends Component {
   componentDidUpdate(prevProps) {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
+    let {
+      ui_style: { responsecontainerindividuals: responses = [], globalSettings }
+    } = newItem;
     if (!isEqual(prevProps.item.validation, newItem.validation)) {
       let maxLength = 0;
 
@@ -38,11 +41,22 @@ class ClozeText extends Component {
           maxLength = Math.max(maxLength, resp.length);
         });
       });
-
       const finalWidth = 30 + maxLength * 7;
       newItem.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
 
       setQuestionData(newItem);
+    }
+    if (globalSettings && responses.length) {
+      const previewTabChange = prevProps.previewTab !== this.props.previewTab && this.props.previewTab === "clear";
+      const tabChange = prevProps.view !== this.props.view;
+      if (tabChange || previewTabChange) {
+        responses = responses.map(response => ({
+          ...response,
+          previewWidth: null
+        }));
+        newItem.ui_style.responsecontainerindividuals = responses;
+        setQuestionData(newItem);
+      }
     }
   }
 

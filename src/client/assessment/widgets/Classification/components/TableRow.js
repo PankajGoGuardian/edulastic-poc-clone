@@ -63,13 +63,6 @@ const TableRow = ({
       );
     }
     cols.push(
-      // <Column
-      //   data-cy={`drag-drop-board-${index}`}
-      //   id={`drag-drop-board-${index}`}
-      //   key={index}
-      //   rowTitles={rowTitles}
-      //   colCount={colCount}
-      // >
       <ResponseRnd question={item} height={height} index={index} isResizable={isResizable}>
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
           <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
@@ -105,7 +98,6 @@ const TableRow = ({
             })}
         </DropContainer>
       </ResponseRnd>
-      // </Column>
     );
   }
 

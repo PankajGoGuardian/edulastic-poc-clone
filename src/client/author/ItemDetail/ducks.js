@@ -32,7 +32,6 @@ import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 
-
 // constants
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -698,7 +697,11 @@ function* saveTestItemSaga() {
     resources
   };
   const redirectTestId = yield select(getRedirectTestSelector);
-  yield call(testItemsApi.updateById, data._id, data, redirectTestId);
+  const newTestItem = yield call(testItemsApi.updateById, data._id, data, redirectTestId);
+  yield put({
+    type: UPDATE_ITEM_DETAIL_SUCCESS,
+    payload: { item: newTestItem }
+  });
 }
 
 function* publishTestItemSaga({ payload }) {

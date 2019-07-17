@@ -30,6 +30,8 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   const [localData, setLocalData] = useState(data);
 
+  const paddingTop = 10;
+
   useEffect(() => {
     if (!isEqual(data, localData)) {
       setLocalData(data);
@@ -38,7 +40,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   const getPolylinePoints = () =>
     localData
-      .map((dot, index) => `${step * index + margin / 2 + padding},${convertUnitToPx(dot.y, gridParams)}`)
+      .map((dot, index) => `${step * index + margin / 2 + padding},${convertUnitToPx(dot.y, gridParams) + paddingTop}`)
       .join(" ");
 
   const getActivePoint = index =>
@@ -96,7 +98,11 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     >
       <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
 
-      <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
+      <HorizontalLines
+        gridParams={gridParams}
+        displayGridlines={displayHorizontalLines(showGridlines)}
+        paddingTop={paddingTop}
+      />
 
       <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
 
@@ -111,6 +117,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
         onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
         correct={correct}
+        paddingTop={paddingTop}
       />
     </svg>
   );

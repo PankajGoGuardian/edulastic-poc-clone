@@ -62,9 +62,10 @@ const BasicFields = ({
     let errorMsg = "";
     if (result.length > 0) {
       let foundUser = result[0];
-      const sameClassStudents = students.filter(student => student._id == foundUser._id);
-
-      if (sameClassStudents.length) {
+      const isExistingStudent = students.find(
+        student => student._id == foundUser._id && student.enrollmentStatus === "1"
+      );
+      if (isExistingStudent) {
         errorMsg = "User already part of this class section";
       } else {
         let isSameDistrict = foundUser.districtId == districtId;

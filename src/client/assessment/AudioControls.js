@@ -73,7 +73,7 @@ const AudioControls = ({ item: questionData = {}, audioSrc, qId, currentPlayingD
         const optionUrls = questionData.tts.optionUrls;
         const audioLoad = [];
         const choicePrefix = "https://cdneduv2.snapwiz.net/media/choice-";
-        const optionKeys = Object.keys(optionUrls);
+        const optionKeys = (optionUrls && Object.keys(optionUrls)) || [];
         optionKeys.forEach((item, i) => {
           const choiceVal = ALPHABET[i];
           const choiceAudio = `${choicePrefix}${choiceVal}.mp3`;

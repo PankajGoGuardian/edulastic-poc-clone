@@ -491,7 +491,8 @@
         "yourOwnImage": "YOUR OWN Image",
         "orBrowse": "OR BROWSE",
         "shuffleoptions": "Shuffle Options",
-        "dragAndDrop": "Drag & Drop"
+        "dragAndDrop": "Drag & Drop",
+        "showborder": "Show drop area border"
       },
       "imageText": {
         "composequestion": "Question",
@@ -524,7 +525,8 @@
         "yourOwnImage": "YOUR OWN Image",
         "orBrowse": "OR BROWSE",
         "shuffleoptions": "Shuffle Options",
-        "dragAndDrop": "Drag & Drop"
+        "dragAndDrop": "Drag & Drop",
+        "showborder": "Show drop area border"
       },
       "dropDown": {
         "templatemarkup": "Template Markup",
@@ -722,7 +724,7 @@
       "choicesfordropdown": "Choices for Text Dropdown",
       "additionalOptions": "Additional Options",
       "setThousandsSeparator": "Set Thousands Separator",
-      "setEvaluation": "Set Evaluation",
+      "setEvaluation": "Interpret Response as Set",
       "setDecimalSeparator": "Set Decimal Separator"
     },
     "matrix": {

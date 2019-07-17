@@ -17,7 +17,7 @@ import {
   getPerformanceByStandardsLoadingSelector,
   getPerformanceByStandardsReportSelector
 } from "./ducks";
-
+import { AutocompleteDropDown } from "../../../../Reports/common/components/widgets/autocompleteDropDown";
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
@@ -35,11 +35,12 @@ const findCompareByTitle = (key = "") => {
 const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandards, match, settings, role }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
-  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.CLASS : compareByMode.SCHOOL);
+  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
   const [standardId, setStandardId] = useState(0);
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
 
+  const compareByIndex = compareBy === compareByMode.STUDENTS ? 1 : 0;
   const isViewByStandards = viewBy === viewByMode.STANDARDS;
 
   const reportWithFilteredSkills = useMemo(() => {
@@ -132,7 +133,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
     setCompareBy(selected.key);
   };
 
-  const handleStandardIdChange = (event, selected) => {
+  const handleStandardIdChange = selected => {
     setStandardId(selected.key);
   };
 
@@ -249,7 +250,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
                 />
               </StyledDropDownContainer>
               <StyledDropDownContainer xs={24} sm={24} md={7} lg={7} xl={7}>
-                <ControlDropDown
+                <AutocompleteDropDown
                   prefix="Standard set"
                   by={selectedStandardId || { key: "", title: "" }}
                   selectCB={handleStandardIdChange}
@@ -282,7 +283,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="Compare By"
-              by={filteredDropDownData[0]}
+              by={filteredDropDownData[compareByIndex]}
               selectCB={handleCompareByChange}
               data={filteredDropDownData}
             />

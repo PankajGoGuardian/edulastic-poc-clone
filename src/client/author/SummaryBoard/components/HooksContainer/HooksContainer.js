@@ -2,7 +2,7 @@
 import { connect } from "react-redux";
 import {
   realtimeGradebookActivityAddAction,
-  realtimeGradebookTestItemAddAction,
+  gradebookTestItemAddAction,
   realtimeGradebookActivitySubmitAction,
   realtimeGradebookQuestionAddMaxScoreAction,
   realtimeGradebookQuestionsRemoveAction
@@ -37,7 +37,7 @@ export default connect(
   null,
   {
     addActivity: realtimeGradebookActivityAddAction,
-    addItem: realtimeGradebookTestItemAddAction,
+    addItem: gradebookTestItemAddAction,
     submitActivity: realtimeGradebookActivitySubmitAction,
     removeQuestions: realtimeGradebookQuestionsRemoveAction,
     addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction

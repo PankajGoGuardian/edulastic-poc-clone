@@ -82,9 +82,14 @@ class Display extends Component {
 
   getResponseBoxMaxValues = () => {
     const { responseContainers } = this.props;
-    const maxTop = maxBy(responseContainers, res => res.top);
-    const maxLeft = maxBy(responseContainers, res => res.left);
-    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+
+    if (responseContainers.length > 0) {
+      const maxTop = maxBy(responseContainers, res => res.top);
+      const maxLeft = maxBy(responseContainers, res => res.left);
+      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+    }
+
+    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
   };
 
   onClickCheckboxHandler = () => {
@@ -142,6 +147,7 @@ class Display extends Component {
     };
 
     const cAnswers = get(item, "validation.valid_response.value", []);
+    const showDropItemBorder = get(item, "responseLayout.showborder", false);
 
     const imageHeight = this.getHeight();
     const imageWidth = this.getWidth();
@@ -201,9 +207,11 @@ class Display extends Component {
                   fontsize,
                   smallSize
                 ),
-                border: showDashedBorder
-                  ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
-                  : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`,
+                border: showDropItemBorder
+                  ? showDashedBorder
+                    ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                    : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
+                  : 0,
                 position: "absolute",
                 borderRadius: 5
               };

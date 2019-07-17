@@ -6,13 +6,14 @@ import { compose } from "redux";
 import { isEmpty, size, get } from "lodash";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
-
+import { clearAnswersAction } from "../../../src/actions/answers";
 // ducks
 import {
   getTestActivitySelector,
   getAdditionalDataSelector,
   getClassResponseSelector
 } from "../../../ClassBoard/ducks";
+import HooksContainer from "../../../ClassBoard/components/HooksContainer/HooksContainer";
 import { getFeedbackResponseSelector } from "../../../src/selectors/feedback";
 // components
 import ScoreTable from "../ScoreTable/ScoreTable";
@@ -57,6 +58,10 @@ class ExpressGrader extends Component {
       const { assignmentId, classId } = match.params;
       loadTestActivity(assignmentId, classId);
     }
+  }
+
+  componentWillUnmount() {
+    this.props.clearEgAnswers();
   }
 
   static getDerivedStateFromProps(props) {
@@ -112,10 +117,10 @@ class ExpressGrader extends Component {
     const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
     const testActivity = transformMemoized(_testActivity);
-
     return (
       <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" groupId={classId}>
         <div>
+          <HooksContainer assignmentId={assignmentId} classId={classId} />
           <ClassHeader
             classId={classId}
             active="expressgrader"
@@ -151,6 +156,7 @@ class ExpressGrader extends Component {
                 showQuestionModal={this.showQuestionModal}
                 hideQuestionModal={this.hideQuestionModal}
                 isPresentationMode={isPresentationMode}
+                groupId={classId}
               />
             )}
           </ExpressGraderDetailContainer>
@@ -171,7 +177,8 @@ const enhance = compose(
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
-      clearFeedbackResponse: clearFeedbackResponseAction
+      clearFeedbackResponse: clearFeedbackResponseAction,
+      clearEgAnswers: clearAnswersAction
     }
   )
 );

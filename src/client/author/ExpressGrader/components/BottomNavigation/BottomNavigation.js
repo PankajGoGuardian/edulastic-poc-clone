@@ -12,7 +12,15 @@ import {
   EditResponse
 } from "./styled";
 
-const BottomNavigation = ({ prevStudent, nextStudent, prevQuestion, nextQuestion, hideModal }) => (
+const BottomNavigation = ({
+  prevStudent,
+  nextStudent,
+  prevQuestion,
+  nextQuestion,
+  hideModal,
+  editResponse,
+  toggleEditResponse
+}) => (
   <NavigationWrapper>
     <StyledTextInfo>
       <Icon type="info-circle" />
@@ -37,7 +45,7 @@ const BottomNavigation = ({ prevStudent, nextStudent, prevQuestion, nextQuestion
       </Link>
       <EditResponse>
         <StyledText>Edit Response</StyledText>
-        <Switch defaultChecked />
+        <Switch checked={editResponse} onClick={toggleEditResponse} />
       </EditResponse>
       <CloseModal data-cy="exitbutton" onClick={hideModal}>
         <Icon type="close" width={5} height={5} />

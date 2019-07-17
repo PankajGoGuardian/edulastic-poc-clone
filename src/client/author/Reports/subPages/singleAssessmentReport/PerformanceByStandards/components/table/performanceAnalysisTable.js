@@ -159,7 +159,7 @@ const PerformanceAnalysisTable = ({
           <p>
             {config.title}
             <br />
-            Points - {averagePoints.toFixed(2)}
+            Points - {parseFloat(averagePoints.toFixed(2))}
             <br />
             {getFieldTotalValue(tableData, analyzeBy, config)}
           </p>

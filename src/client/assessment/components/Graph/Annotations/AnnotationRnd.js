@@ -153,7 +153,7 @@ class AnnotationsRnd extends Component {
                 }}
                 onDragStop={(evt, d) => this.handleAnnotationPosition(d, annotation.id)}
                 onResizeStop={(e, dir, ref, delta) => this.handleAnnotationSize(delta, annotation.id)}
-                style={{ zIndex: isAbove ? 20 : 10 }}
+                style={{ zIndex: isAbove ? 20 : 10, border: disableDragging ? "none" : "1px solid #efefef" }}
                 enableResizing={disableDragging ? resizeDisable : resizeEnable}
                 disableDragging={disableDragging}
                 bounds={"parent"}

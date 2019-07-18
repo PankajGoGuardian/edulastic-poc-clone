@@ -535,7 +535,7 @@ class Display extends Component {
               index={0}
               drop={drop}
               data-cy="drop-container"
-              style={{ height: "100%", border: "1px red solid" }}
+              style={{ height: "100%" }}
               className="imagelabeldragdrop-droppable active"
             >
               {snapItems.map((snap_item, index) => {

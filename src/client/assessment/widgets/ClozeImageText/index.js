@@ -282,7 +282,7 @@ class ClozeImageText extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && !answerContextConfig.isAnswerModifiable && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 options={previewDisplayOptions}
@@ -308,7 +308,8 @@ class ClozeImageText extends Component {
                 {...restProps}
               />
             )}
-            {(previewTab === "clear" || answerContextConfig.isAnswerModifiable) && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 preview
                 validation={itemForPreview.validation}

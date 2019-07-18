@@ -287,7 +287,7 @@ class ClozeImageDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && !answerContextConfig.isAnswerModifiable && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 item={itemForPreview}
@@ -319,7 +319,8 @@ class ClozeImageDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {(previewTab === "clear" || answerContextConfig.isAnswerModifiable) && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 preview
                 item={itemForPreview}

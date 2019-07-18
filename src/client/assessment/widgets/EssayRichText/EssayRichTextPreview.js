@@ -52,7 +52,6 @@ const EssayRichTextPreview = ({
   disableResponse,
   previewTab
 }) => {
-
   const toolbarButtons = getToolBarButtons(item);
   const answerContextConfig = useContext(AnswerContext);
   const [showCharacters, setShowCharacters] = useState(false);

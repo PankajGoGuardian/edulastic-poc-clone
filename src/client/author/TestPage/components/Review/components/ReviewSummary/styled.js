@@ -5,7 +5,7 @@ import { Paper } from "@edulastic/common";
 import { lightGreySecondary, secondaryTextColor, dropZoneTitleColor, greenDark } from "@edulastic/colors";
 
 export const Container = styled(Paper)`
-  padding: 16px 24px;
+  padding: 16px;
   margin-top: 46px;
 `;
 

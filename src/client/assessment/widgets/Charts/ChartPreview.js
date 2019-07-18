@@ -142,7 +142,7 @@ const ChartPreview = ({
 
       {view === PREVIEW &&
         previewTab === SHOW &&
-        altAnswerData.length &&
+        altAnswerData.length > 0 &&
         altAnswerData.map((ans, index) => (
           <CorrectAnswerWrapper key={index}>
             <Subtitle>{`${t("component.chart.alternateAnswer")} ${index + 1}`}</Subtitle>

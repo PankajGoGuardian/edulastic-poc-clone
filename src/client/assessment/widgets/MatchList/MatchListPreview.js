@@ -396,7 +396,7 @@ const MatchListPreview = ({
           {hasAlternateAnswers && (
             <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
               {Object.keys(alternateAnswers).map((key, i) => (
-                <FlexContainer key={i} alignItems="center">
+                <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>
                     <MathFormulaDisplay style={centerContent} stem dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>

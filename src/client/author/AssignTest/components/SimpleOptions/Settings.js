@@ -136,7 +136,6 @@ const Settings = ({
     shuffleQuestions = tempTestSettings.shuffleQuestions,
     shuffleAnswers = tempTestSettings.shuffleAnswers,
     calcType = tempTestSettings.calcType,
-    showQuestionsAfterSubmission = tempTestSettings.showQuestionsAfterSubmission,
     answerOnPaper = tempTestSettings.answerOnPaper,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     scoringType = tempTestSettings.scoringType,
@@ -250,26 +249,6 @@ const Settings = ({
           </StyledRowSettings>
         </FeaturesSwitch>
         {/* Require Safe Exam Browser */}
-
-        {/* show questions */}
-        <FeaturesSwitch
-          inputFeatures="assessmentSuperPowersShowQuestionsToStudentsAfterSubmission"
-          actionOnInaccessible="hidden"
-          key="assessmentSuperPowersShowQuestionsToStudentsAfterSubmission"
-          gradeSubject={gradeSubject}
-        >
-          <StyledRowSettings gutter={16}>
-            <Col span={12}>Show Questions to Students After Submission</Col>
-            <Col span={12}>
-              <AlignSwitchRight
-                defaultChecked={showQuestionsAfterSubmission}
-                size="small"
-                onChange={value => overRideSettings("showQuestionsAfterSubmission", value)}
-              />
-            </Col>
-          </StyledRowSettings>
-        </FeaturesSwitch>
-        {/* show questions */}
 
         {/* Shuffle Question */}
         <FeaturesSwitch

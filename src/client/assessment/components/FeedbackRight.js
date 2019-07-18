@@ -210,9 +210,6 @@ class FeedbackRight extends Component {
             />
           </Fragment>
         )}
-        <UpdateButton data-cy="updateButton" disabled={!activity || submitted} onClick={this.preCheckSubmit}>
-          UPDATE
-        </UpdateButton>
       </StyledCardTwo>
     );
   }

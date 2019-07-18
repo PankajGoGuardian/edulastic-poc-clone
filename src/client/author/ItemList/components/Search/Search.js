@@ -144,7 +144,15 @@ class Search extends Component {
           <Item>
             <ItemHeader>Question Type</ItemHeader>
             <ItemBody>
-              <Select size="large" onSelect={onSearchFieldChange("questionType")} value={questionType}>
+              <Select
+                showSearch
+                size="large"
+                optionFilterProp={"children"}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                size="large"
+                onSelect={onSearchFieldChange("questionType")}
+                value={questionType}
+              >
                 {questionTypes.selectsData.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}

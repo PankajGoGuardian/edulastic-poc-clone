@@ -4,8 +4,6 @@ import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
 import styled from "styled-components";
 
-import { Stimulus } from "@edulastic/common";
-
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
@@ -493,8 +491,6 @@ class GraphDisplay extends Component {
   };
 
   render() {
-    const { graphData } = this.props;
-    const { stimulus } = graphData;
     const { graphIsValid } = this.state;
 
     const GraphContainer = this.getGraphContainer();
@@ -503,7 +499,6 @@ class GraphDisplay extends Component {
       <Fragment>
         {graphIsValid ? (
           <Fragment>
-            <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
             <GraphContainer {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (

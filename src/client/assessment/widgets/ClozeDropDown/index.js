@@ -210,7 +210,9 @@ class ClozeDropDown extends Component {
               preview={
                 previewTab === "clear" || (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)
               }
-              checkAnswer={previewTab === "check"}
+              checkAnswer={
+                previewTab === "check" || (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)
+              }
               configureOptions={{
                 shuffleOptions
               }}

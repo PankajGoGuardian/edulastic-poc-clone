@@ -255,7 +255,8 @@ class ClozeImageDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
                 checkAnswer
                 item={itemForPreview}

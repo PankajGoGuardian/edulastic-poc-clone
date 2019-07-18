@@ -261,7 +261,9 @@ class ClozeImageDropDown extends Component {
                 previewTab === "clear" || (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)
               }
               showAnswer={previewTab === "show" && !answerContextConfig.expressGrader}
-              checkAnswer={previewTab === "check"}
+              checkAnswer={
+                previewTab === "check" || (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)
+              }
               validation={itemForPreview.validation}
               configureOptions={{
                 duplicatedResponses,

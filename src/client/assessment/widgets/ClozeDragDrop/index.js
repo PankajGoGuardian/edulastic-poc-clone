@@ -131,8 +131,6 @@ class ClozeDragDrop extends Component {
       ...restProps
     } = this.props;
 
-    console.log("cloze props", { view, previewTab, answerContextConfig });
-
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, response_ids: responseIDs } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;

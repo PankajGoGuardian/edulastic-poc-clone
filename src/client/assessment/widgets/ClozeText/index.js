@@ -274,7 +274,8 @@ class ClozeText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
                 checkAnswer
                 configureOptions={{
@@ -296,7 +297,7 @@ class ClozeText extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && !answerContextConfig.isAnswerModifiable && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 configureOptions={{
@@ -319,7 +320,8 @@ class ClozeText extends Component {
                 previewTab={previewTab}
               />
             )}
-            {(previewTab === "clear" || answerContextConfig.isAnswerModifiable) && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 preview={false}
                 configureOptions={{

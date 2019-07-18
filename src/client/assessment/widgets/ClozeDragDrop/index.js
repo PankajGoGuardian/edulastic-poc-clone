@@ -217,7 +217,8 @@ class ClozeDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
                 item={item}
                 checkAnswer
@@ -238,7 +239,7 @@ class ClozeDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && !answerContextConfig.isAnswerModifiable && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 item={item}
@@ -259,7 +260,8 @@ class ClozeDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {(previewTab === "clear" || answerContextConfig.isAnswerModifiable) && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 item={item}
                 preview

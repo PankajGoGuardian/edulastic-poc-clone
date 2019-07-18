@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
+import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isUndefined, round } from "lodash";
@@ -272,6 +273,7 @@ class QuestionWrapper extends Component {
       userRole,
       disableResponse,
       isStudentReport,
+      showStudentWork,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -368,10 +370,13 @@ class QuestionWrapper extends Component {
                     {...userAnswerProps}
                   />
                   {showFeedback && timeSpent ? (
-                    <TimeSpentWrapper>
-                      <i className="fa fa-clock-o" aria-hidden="true" />
-                      {round(timeSpent / 1000, 1)}s
-                    </TimeSpentWrapper>
+                    <>
+                      <TimeSpentWrapper>
+                        {!!showStudentWork && <Button onClick={showStudentWork}> Show student work</Button>}
+                        <i className="fa fa-clock-o" aria-hidden="true" />
+                        {round(timeSpent / 1000, 1)}s
+                      </TimeSpentWrapper>
+                    </>
                   ) : (
                     ""
                   )}

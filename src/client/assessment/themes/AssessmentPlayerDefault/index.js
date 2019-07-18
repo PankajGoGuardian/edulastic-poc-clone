@@ -304,7 +304,7 @@ class AssessmentPlayerDefault extends React.Component {
             saveHistory={this.saveHistory}
             history={scratchPad}
           />
-          {scratchPadMode && (
+          {scratchPadMode && !previewPlayer && (
             <Tools
               onFillColorChange={this.onFillColorChange}
               fillColor={fillColor}

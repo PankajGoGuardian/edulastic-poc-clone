@@ -1,14 +1,18 @@
 import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { keyBy as _keyBy, isEmpty } from "lodash";
 // components
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
+import { loadScratchPadAction } from "../../../../assessment/actions/userWork.js";
+
+import AssessmentPlayerModal from "../../../Assignments/components/Container/TestPreviewModal";
 import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
 import { AnswerContext } from "@edulastic/common";
 
-function Preview({ item, qIndex, studentId, evaluation }) {
+function Preview({ item, qIndex, studentId, evaluation, showStudentWork }) {
   const rows = getRows(item);
   const questions = (item.data && item.data.questions) || [];
   const questionsKeyed = _keyBy(questions, "id");
@@ -27,6 +31,7 @@ function Preview({ item, qIndex, studentId, evaluation }) {
         style={{ width: "100%" }}
         qIndex={qIndex}
         evaluation={evaluation}
+        showStudentWork={showStudentWork}
       />
     </StyledFlexContainer>
   );
@@ -43,6 +48,30 @@ Preview.defaultProps = {
 };
 
 class ClassQuestions extends Component {
+  state = {
+    showPlayerModal: false,
+    selectedTestItem: []
+  };
+
+  componentDidMount() {
+    const { loadScratchPad, questionActivities } = this.props;
+    const userWork = {};
+    // load scratchpad data to store.
+    questionActivities.forEach(curr => {
+      if (curr.scratchPad && !userWork[curr.testItemId]) {
+        userWork[curr.testItemId] = curr.scratchPad;
+      }
+    });
+
+    loadScratchPad(userWork);
+  }
+  // show AssessmentPlayerModal
+  showPlayerModal = () => {
+    this.setState({
+      showPlayerModal: true
+    });
+  };
+
   getStudentName = () => {
     const { isPresentationMode, currentStudent } = this.props;
     if (!currentStudent) return null;
@@ -155,28 +184,64 @@ class ClassQuestions extends Component {
     return [...testItems];
   }
 
+  showStudentWork = testItem => {
+    this.setState({
+      showPlayerModal: true,
+      selectedTestItem: testItem
+    });
+  };
+
   render() {
+    const { showPlayerModal, selectedTestItem } = this.state;
     const { questionActivities } = this.props;
     const testItems = this.getTestItems();
+    const userWork = {};
+
     const evaluation = questionActivities.reduce((acc, curr) => {
       acc[curr.qid] = curr.evaluation;
+      // accumulating userwork also here to avoid an extra loops. ummm... another frugal
+      // ride over the looops?
+      if (curr.scratchPad && !userWork[curr.testItemId]) {
+        userWork[curr.testItemId] = curr.scratchPad;
+      }
       return acc;
     }, {});
 
     const { qIndex, currentStudent } = this.props;
-    return testItems.map((item, index) => (
-      <Preview
-        studentId={(currentStudent || {}).studentId}
-        key={index}
-        item={item}
-        qIndex={qIndex || index}
-        evaluation={evaluation}
-      />
-    ));
+
+    const testItemsPreview = testItems.map((item, index) => {
+      const showStudentWork = userWork[item._id] ? this.showStudentWork.bind(null, item) : null;
+      return (
+        <Preview
+          studentId={(currentStudent || {}).studentId}
+          key={index}
+          item={item}
+          qIndex={qIndex || index}
+          evaluation={evaluation}
+          showStudentWork={showStudentWork}
+        />
+      );
+    });
+
+    return (
+      <>
+        <AssessmentPlayerModal
+          isModalVisible={showPlayerModal}
+          hideModal={() => this.setState({ showPlayerModal: false })}
+          test={{ testItems: [selectedTestItem] }}
+        />
+        {testItemsPreview}
+      </>
+    );
   }
 }
 
-export default ClassQuestions;
+export default connect(
+  null,
+  {
+    loadScratchPad: loadScratchPadAction
+  }
+)(ClassQuestions);
 
 ClassQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,

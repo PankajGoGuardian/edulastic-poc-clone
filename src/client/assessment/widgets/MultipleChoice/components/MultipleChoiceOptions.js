@@ -105,7 +105,7 @@ class MultipleChoiceOptions extends Component {
       produce(item, draft => {
         draft.options.push({
           value: uuid(),
-          label: `${t("component.multiplechoice.choice")} ${ALPHABET[draft.options.length]}`
+          label: ""
         });
       })
     );

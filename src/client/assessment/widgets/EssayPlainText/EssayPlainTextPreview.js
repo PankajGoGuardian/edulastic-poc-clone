@@ -48,6 +48,8 @@ const EssayPlainTextPreview = ({
       setText("");
       saveAnswer("");
       setWordCount(0);
+    } else {
+      setText(userAnswer);
     }
   }, [userAnswer]);
 

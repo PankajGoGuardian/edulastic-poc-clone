@@ -8,7 +8,8 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
-import { Image as Img } from "@edulastic/common";
+import { Image as Img, uploadToS3, beforeUpload } from "@edulastic/common";
+import { canvasDimensions, aws } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../../utils/variables";
@@ -19,9 +20,6 @@ import Question from "../../../components/Question";
 import DropZoneToolbar from "../../../components/DropZoneToolbar";
 import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
-
-import { canvasDimensions, aws } from "@edulastic/constants";
-import { uploadToS3, beforeUpload } from "@edulastic/common";
 
 class ComposeQuestion extends Component {
   render() {
@@ -67,7 +65,9 @@ class ComposeQuestion extends Component {
 
     const getImageDimensions = url => {
       const uploadedImage = new Image();
+      // eslint-disable-next-line func-names
       uploadedImage.addEventListener("load", function() {
+        // eslint-disable-next-line
         let height, width;
         if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
           const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));

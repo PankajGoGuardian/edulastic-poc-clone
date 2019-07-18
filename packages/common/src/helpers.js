@@ -100,12 +100,18 @@ function addProps() {
   $(this).replaceWith(text);
 }
 
-const sanitizeSelfClosingTags = inputString =>
-  inputString &&
-  inputString
-    .replace(/<hr>/g, "<hr/>")
-    .replace(/<br>/g, "<br/>")
-    .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+const sanitizeSelfClosingTags = inputString => {
+  let _inputString = typeof inputString === "number" ? inputString.toString() : inputString;
+
+  const sanitizedString =
+    _inputString &&
+    _inputString
+      .replace(/<hr>/g, "<hr/>")
+      .replace(/<br>/g, "<br/>")
+      .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+
+  return sanitizedString;
+};
 
 const replaceForJsxParser = inputString =>
   inputString &&
@@ -196,7 +202,7 @@ export const reIndexResponses = htmlStr => {
 };
 
 export const sanitizeForReview = stimulus => {
-  if (!stimulus) return stimulus;
+  if (!stimulus || !window.$) return stimulus;
   let jqueryEl;
   try {
     jqueryEl = $(stimulus);
@@ -205,7 +211,7 @@ export const sanitizeForReview = stimulus => {
   }
 
   // eslint-disable-next-line func-names
-  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table"];
+  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table", "response"];
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
       $(this).replaceWith("...");
@@ -275,6 +281,16 @@ export const isIncompleteQuestion = item => {
           return [true, emptyChoiceError];
         }
         const hasEmptyOptions = opt.some(opt => !opt);
+        if (hasEmptyOptions) return [true, emptyChoiceError];
+      }
+    } else if (item.type === questionType.CLOZE_DROP_DOWN) {
+      const responses = get(item, "response_ids", []);
+      for (const res of responses) {
+        const opts = item.options[res.id] || [];
+        if (!opts.length) {
+          return [true, emptyChoiceError];
+        }
+        const hasEmptyOptions = opts.some(opt => !opt);
         if (hasEmptyOptions) return [true, emptyChoiceError];
       }
     } else {

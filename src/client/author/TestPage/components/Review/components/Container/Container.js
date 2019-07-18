@@ -11,12 +11,13 @@ import HeaderBar from "../HeaderBar/HeaderBar";
 import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
-import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
+import { getStandardsSelector } from "../../ducks";
 import {
   setTestDataAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
-  getDefaultThumbnailSelector
+  getDefaultThumbnailSelector,
+  updateDefaultThumbnailAction
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
@@ -48,7 +49,6 @@ class Review extends PureComponent {
     onChangeSubjects: PropTypes.func.isRequired,
     rows: PropTypes.array.isRequired,
     setData: PropTypes.func.isRequired,
-    types: PropTypes.any.isRequired,
     standards: PropTypes.object.isRequired,
     summary: PropTypes.array.isRequired,
     current: PropTypes.string.isRequired,
@@ -187,7 +187,10 @@ class Review extends PureComponent {
   }
 
   handleChangeField = (field, value) => {
-    const { setData } = this.props;
+    const { setData, updateDefaultThumbnail } = this.props;
+    if (field === "thumbnail") {
+      updateDefaultThumbnail("");
+    }
     setData({ [field]: value });
   };
 
@@ -208,7 +211,6 @@ class Review extends PureComponent {
       windowWidth,
       rows,
       standards,
-      types,
       onChangeGrade,
       onChangeSubjects,
       questions,
@@ -290,7 +292,6 @@ class Review extends PureComponent {
                   selected={selected}
                   setSelected={this.setSelected}
                   onSortEnd={this.moveTestItems}
-                  types={types}
                   owner={owner}
                   isEditable={isEditable}
                   scoring={test.scoring}
@@ -355,7 +356,6 @@ Review.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
   rows: PropTypes.array.isRequired,
   setData: PropTypes.func.isRequired,
-  types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
   clearDictAlignment: PropTypes.func.isRequired,
@@ -383,7 +383,6 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state),
       summary: getSummarySelector(state),
       createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
@@ -393,6 +392,7 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
+      updateDefaultThumbnail: updateDefaultThumbnailAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,

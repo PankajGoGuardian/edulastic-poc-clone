@@ -112,7 +112,7 @@ class MathFormulaEdit {
       },
       {
         handler: "in",
-        label: "∈",
+        label: "in",
         types: ["all", "units_us"],
         command: "cmd"
       },

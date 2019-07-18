@@ -56,7 +56,7 @@ const MainInfo = ({ entity = {} }) => {
         <FieldValue>
           <div>Standard :</div>
           {standardSets && standardSets.length ? (
-            standardSets.map(({ name, _id }) => <span key={_id}>{name}</span>)
+            <span>{standardSets.map(({ name }) => name).join(", ")}</span>
           ) : (
             <span>Other</span>
           )}
@@ -67,17 +67,21 @@ const MainInfo = ({ entity = {} }) => {
             <span>{course && course.name}</span>
           </FieldValue>
         </FeaturesSwitch>
-        <FeaturesSwitch
-          inputFeatures="addCoTeacher"
-          actionOnInaccessible="hidden"
-          key="addCoTeacher"
-          gradeSubject={gradeSubject}
-        >
-          <FieldValue>
-            <div>Co-Teachers :</div>
-            <span>{coTeachers}</span>
-          </FieldValue>
-        </FeaturesSwitch>
+        {coTeachers && coTeachers.length ? (
+          <FeaturesSwitch
+            inputFeatures="addCoTeacher"
+            actionOnInaccessible="hidden"
+            key="addCoTeacher"
+            gradeSubject={gradeSubject}
+          >
+            <FieldValue>
+              <div>Co-Teachers :</div>
+              <span>{coTeachers}</span>
+            </FieldValue>
+          </FeaturesSwitch>
+        ) : (
+          ""
+        )}
       </MidWrapper>
       <RightWrapper>
         <FieldValue>

@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
-import { Checkbox, Paper, PaddingDiv } from "@edulastic/common";
+import { Checkbox, Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -26,6 +26,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Question from "../../components/Question";
 
 class ClozeImageText extends Component {
+  static contextType = AnswerContext;
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -140,6 +141,7 @@ class ClozeImageText extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       qIndex,
       view,
@@ -258,7 +260,8 @@ class ClozeImageText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
                 checkAnswer
                 options={previewDisplayOptions}
@@ -284,7 +287,7 @@ class ClozeImageText extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 options={previewDisplayOptions}
@@ -310,7 +313,8 @@ class ClozeImageText extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "clear" && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 preview
                 validation={itemForPreview.validation}

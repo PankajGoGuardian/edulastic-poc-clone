@@ -16,7 +16,8 @@ import {
   publishTestItemAction,
   getTestItemStatusSelector,
   clearItemDetailAction,
-  proceedPublishingItemAction
+  proceedPublishingItemAction,
+  saveCurrentTestItemAction
 } from "../../ducks";
 import WarningModal from "../WarningModal";
 import { getCurrentQuestionIdSelector } from "../../../sharedDucks/questions";
@@ -38,6 +39,7 @@ const ItemDetailContainer = ({
   clearItem,
   currentQuestionId,
   showWarningModal,
+  saveTestItem,
   proceedPublish,
   ...props
 }) => {
@@ -70,7 +72,7 @@ const ItemDetailContainer = ({
   // the store could have values from previous load, in that case
   // makes sure its the one we intend to load. also, if its the same question loaded,
   // makes sure currentQuestionId is there in case of singleQuestionview
-  if (isLoading || item._id !== itemId || (isSingleQuestionView && !currentQuestionId))
+  if (isLoading || item._id !== itemId || (isSingleQuestionView && !currentQuestionId && !isMultipart))
     return (
       <div>
         <Spin />
@@ -106,9 +108,11 @@ const ItemDetailContainer = ({
           isMultipart={isMultipart}
           onCancel={() => setShowSettings(false)}
           setMultipart={setMultipart}
+          saveTestItem={saveTestItem}
         />
       )}
-      {isSingleQuestionView && !isMultipart ? (
+
+      {isSingleQuestionView && !item.multipartItem && !isMultipart ? (
         <QuestionView isItem {...allProps} />
       ) : (
         <MultipleQuestionView {...allProps} />
@@ -135,7 +139,8 @@ const enhance = compose(
       updateItem: updateItemDetailByIdAction,
       publishTestItem: publishTestItemAction,
       clearItem: clearItemDetailAction,
-      proceedPublish: proceedPublishingItemAction
+      proceedPublish: proceedPublishingItemAction,
+      saveTestItem: saveCurrentTestItemAction
     }
   )
 );

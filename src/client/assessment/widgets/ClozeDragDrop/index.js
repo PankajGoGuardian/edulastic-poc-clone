@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -8,7 +8,7 @@ import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { Checkbox } from "antd";
 
-import { Paper, WithResources } from "@edulastic/common";
+import { Paper, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ContentArea } from "../../styled/ContentArea";
 
@@ -30,6 +30,8 @@ import Question from "../../components/Question";
 const EmptyWrapper = styled.div``;
 
 class ClozeDragDrop extends Component {
+  static contextType = AnswerContext;
+
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);
@@ -108,6 +110,8 @@ class ClozeDragDrop extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
+
     const {
       view,
       previewTab,
@@ -125,6 +129,7 @@ class ClozeDragDrop extends Component {
       advancedAreOpen,
       ...restProps
     } = this.props;
+
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, response_ids: responseIDs } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -217,7 +222,8 @@ class ClozeDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
                 item={item}
                 checkAnswer
@@ -238,7 +244,7 @@ class ClozeDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 item={item}
@@ -259,7 +265,8 @@ class ClozeDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "clear" && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 item={item}
                 preview

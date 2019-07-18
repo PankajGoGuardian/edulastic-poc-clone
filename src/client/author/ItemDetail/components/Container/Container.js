@@ -70,7 +70,18 @@ class Container extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match, rows, history, t, loading, redirectOnEmptyItem, isTestFlow } = this.props;
+    const {
+      getItemDetailById,
+      match,
+      rows,
+      history,
+      t,
+      loading,
+      redirectOnEmptyItem,
+      isTestFlow,
+      isMultipart,
+      item
+    } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
     const { itemId, testId } = match.params;
@@ -79,7 +90,7 @@ class Container extends Component {
       getItemDetailById(newId, { data: true, validation: true });
     }
 
-    if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
+    if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && !item.multipartItem) {
       history.replace({
         pathname: isTestFlow
           ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`

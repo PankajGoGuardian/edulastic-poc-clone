@@ -9,7 +9,7 @@ import styled, { withTheme } from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, PaddingDiv } from "@edulastic/common";
+import { Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -30,6 +30,7 @@ import Question from "../../components/Question";
 const EmptyWrapper = styled.div``;
 
 class ClozeImageDragDrop extends Component {
+  static contextType = AnswerContext;
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -123,6 +124,7 @@ class ClozeImageDragDrop extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       view,
       previewTab,
@@ -257,7 +259,8 @@ class ClozeImageDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
                 checkAnswer
                 item={itemForPreview}
@@ -289,7 +292,7 @@ class ClozeImageDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 item={itemForPreview}
@@ -321,7 +324,8 @@ class ClozeImageDragDrop extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "clear" && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 preview
                 item={itemForPreview}

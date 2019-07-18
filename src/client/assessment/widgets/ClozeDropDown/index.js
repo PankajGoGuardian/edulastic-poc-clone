@@ -7,7 +7,7 @@ import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
-import { Checkbox, Paper, WithResources } from "@edulastic/common";
+import { Checkbox, Paper, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -28,6 +28,8 @@ import Question from "../../components/Question";
 const EmptyWrapper = styled.div``;
 
 class ClozeDropDown extends Component {
+  static contextType = AnswerContext;
+
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);
@@ -107,6 +109,7 @@ class ClozeDropDown extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       view,
       previewTab,
@@ -208,9 +211,13 @@ class ClozeDropDown extends Component {
         {view === "preview" && (
           <Wrapper>
             <Display
-              showAnswer={previewTab === "show"}
-              preview={previewTab === "clear"}
-              checkAnswer={previewTab === "check"}
+              showAnswer={previewTab === "show" && !answerContextConfig.expressGrader}
+              preview={
+                previewTab === "clear" || (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)
+              }
+              checkAnswer={
+                previewTab === "check" || (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)
+              }
               configureOptions={{
                 shuffleOptions
               }}

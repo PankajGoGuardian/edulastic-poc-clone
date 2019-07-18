@@ -31,7 +31,6 @@ import {
   clearSelectedItemsAction
 } from "../../../TestPage/components/AddItems/ducks";
 import { setDefaultTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../TestPage/ducks";
-import { getItemsTypesSelector } from "../../../TestPage/components/Review/ducks";
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { addItemToCartAction } from "../../ducks";
@@ -298,7 +297,7 @@ class Contaier extends Component {
   renderItems = () => {
     const {
       items,
-      itemTypes,
+
       history,
       windowWidth,
       addItemToCart,
@@ -323,7 +322,6 @@ class Contaier extends Component {
       <Item
         key={`Item_${item._id}`}
         item={item}
-        types={itemTypes[item._id]}
         history={history}
         userId={userId}
         windowWidth={windowWidth}
@@ -468,7 +466,6 @@ const enhance = compose(
       count: getTestsItemsCountSelector(state),
       loading: getTestItemsLoadingSelector(state),
       creating: getTestItemCreatingSelector(state),
-      itemTypes: getItemsTypesSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
       selectedCartItems: getSelectedItemSelector(state).data,

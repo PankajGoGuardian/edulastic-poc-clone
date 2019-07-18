@@ -155,7 +155,6 @@ export class ResponseFrequencyTable extends Component {
       } else {
         arr = Object.keys(data).map((comboKey, i) => {
           let validMap = {};
-
           let slittedKeyArr = comboKey.split(",");
           let str = "";
           let isCorrect = true;
@@ -167,13 +166,12 @@ export class ResponseFrequencyTable extends Component {
                 let tmp = find(record.validation, vstr => {
                   return key == vstr;
                 });
-                isCorrect = isCorrect && (!isNaN(tmp) ? true : false);
+                isCorrect = !!(isCorrect && tmp);
               }
             }
           }
-
           if (record.qType === "True or false" && record.validation && record.validation[0]) {
-            str = record.validation[0][0] === comboKey ? "Correct" : "Incorrect";
+            str = record.validation[0] === comboKey ? "Correct" : "Incorrect";
           }
 
           return {

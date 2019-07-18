@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Modal, Button, Input } from "antd";
-import { lightGrey3, linkColor, white } from "@edulastic/colors";
+import { lightGrey3, linkColor, white, themeColor } from "@edulastic/colors";
 
 export const StyledModal = styled(Modal)`
   .ant-modal-content,
@@ -27,6 +27,10 @@ export const ActionButton = styled(Button)`
   height: 32px;
   display: flex;
   align-items: center;
+  ${props => props.reset && `background-color:${themeColor}`}
+  &:hover {
+    ${props => props.reset && `background-color:${themeColor}`}
+  }
 `;
 
 export const Title = styled.div`

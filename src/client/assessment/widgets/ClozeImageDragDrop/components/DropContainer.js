@@ -7,8 +7,8 @@ const specTarget = {
     if (monitor.didDrop()) {
       return;
     }
-
-    return props.drop(props);
+    const sourcePos = monitor.getSourceClientOffset();
+    return props.drop({ ...props, position: sourcePos });
   }
 };
 

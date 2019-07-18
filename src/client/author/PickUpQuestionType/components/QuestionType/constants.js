@@ -56,8 +56,9 @@ import MTText from "../../../src/assets/math/math-text.svg";
 import MTMatrices from "../../../src/assets/math/math-matrices.svg";
 import MTUnits from "../../../src/assets/math/math-units.svg";
 import MTEssay from "../../../src/assets/math/math-essay.svg";
-import MTClozeMath from "../../../src/assets/math/cloze-math.svg";
-// import MTClozeMathWithImage from '../../assets/math/cloze-math-img.svg';
+// import MTClozeMath from "../../../src/assets/math/cloze-math.svg";
+import MTCombinationClozeText from "../../../src/assets/math/math-multipart-cloze.svg";
+import MTCombinationMulti from "../../../src/assets/math/math-multipart-combination.svg";
 
 // Graphing
 import GRGraphing from "../../../src/assets/graphing/graphing.svg";
@@ -1126,6 +1127,7 @@ export const getCards = onSelectQuestionType => {
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
+        isSnapFitValues: true,
         maxRespCount: 1,
         options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
@@ -1924,11 +1926,11 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      type: "math",
-      cardImage: MTClozeMath,
+      type: "multipart",
+      cardImage: MTCombinationClozeText,
       stimulus: "",
       data: {
-        title: "Expression Multipart",
+        title: "Math, Text & Dropdown",
         stimulus:
           '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
         templateDisplay: true,
@@ -1978,6 +1980,15 @@ export const getCards = onSelectQuestionType => {
         symbols: ["basic", "qwerty"],
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         hints: [{ value: uuids[0], label: "Hint A" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "multipart",
+      cardImage: MTCombinationMulti,
+      data: {
+        title: "Combination Multipart",
+        type: questionType.COMBINATION_MULTIPART
       },
       onSelectQuestionType
     },

@@ -16,7 +16,7 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
 import { getUser } from "../../../../../src/selectors/user";
-import { getDefaultThumbnailSelector } from "../../../../ducks";
+import { getDefaultThumbnailSelector, updateDefaultThumbnailAction } from "../../../../ducks";
 
 const Summary = ({
   setData,
@@ -33,6 +33,7 @@ const Summary = ({
   onChangeGrade,
   backgroundColor,
   textColor,
+  updateDefaultThumbnail,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
   onChangeColor,
@@ -40,6 +41,9 @@ const Summary = ({
   isEditable = true
 }) => {
   const handleChangeField = (field, value) => {
+    if (field === "thumbnail") {
+      updateDefaultThumbnail("");
+    }
     setData({ ...test, [field]: value });
   };
 
@@ -151,7 +155,9 @@ const enhance = compose(
       defaultThumbnail: getDefaultThumbnailSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
-    null
+    {
+      updateDefaultThumbnail: updateDefaultThumbnailAction
+    }
   )
 );
 

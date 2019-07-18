@@ -13,7 +13,7 @@ const StudentFeedback = ({ question, qId, index }) => {
       </FeedbackText>
       <FeedbackContainer>
         <ScoreWrapper>
-          <Score>{score}</Score>
+          <Score>{score || score === 0 ? parseFloat(score.toFixed(2)) : "-"}</Score>
           <Total>{maxScore}</Total>
         </ScoreWrapper>
         <Feedback>

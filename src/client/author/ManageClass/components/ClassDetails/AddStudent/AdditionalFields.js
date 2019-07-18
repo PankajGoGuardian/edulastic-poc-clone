@@ -7,8 +7,24 @@ import Field from "./CustomField";
 const { Option } = Select;
 const initDOB = moment().add(-10, "years");
 
-const AdditionalFields = ({ std, ...restProps }) => {
-  const { sisId, studentNumber, iepStatus, ellStatus, sedStatus, frlStatus, race, dob, gender, contactEmails } = std;
+const AdditionalFields = ({ std, stds, isEdit, ...restProps }) => {
+  let { sisId, studentNumber, iepStatus, ellStatus, sedStatus, frlStatus, race, dob, gender, contactEmails } = std;
+  if (isEdit && stds && stds.length) {
+    const [studentDetails = {}] = stds;
+    ({
+      sisId,
+      studentNumber,
+      iepStatus,
+      ellStatus,
+      sedStatus,
+      frlStatus,
+      race,
+      dob,
+      gender,
+      contactEmails
+    } = studentDetails);
+    contactEmails = contactEmails.join(",");
+  }
   return (
     <>
       <Field label="SIS ID" {...restProps} fiedlName="sisId" initialValue={sisId}>

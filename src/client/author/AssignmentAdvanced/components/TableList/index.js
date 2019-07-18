@@ -26,7 +26,7 @@ const columns = [
     sortDirections: ["descend", "ascend"],
     sorter: true,
     width: "8%",
-    render: (text = test.type.ASSESSMENT) => <TypeIcon>{text.charAt(0)}</TypeIcon>
+    render: (text = test.type.ASSESSMENT) => <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
   },
   {
     title: "Assigned by",

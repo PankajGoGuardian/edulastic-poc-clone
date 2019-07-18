@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withTheme } from "styled-components";
-import { isEmpty, get } from "lodash";
+import styled, { withTheme } from "styled-components";
+import { isEmpty } from "lodash";
 
 import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay } from "@edulastic/common";
 
@@ -13,6 +13,7 @@ import MathInputWrapper from "./styled/MathInputWrapper";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
+import MathSpanWrapper from "../../components/MathSpanWrapper";
 
 class MathFormulaPreview extends Component {
   static propTypes = {
@@ -141,9 +142,9 @@ class MathFormulaPreview extends Component {
   };
 
   onInnerFieldClick() {
-    const { type: previewType, changePreview, changePreviewTab } = this.props;
+    const { type: previewType, changePreview, changePreviewTab, disableResponse } = this.props;
 
-    if (previewType === SHOW || previewType === CHECK) {
+    if ((previewType === SHOW || previewType === CHECK) && !disableResponse) {
       changePreview(CLEAR); // Item level
       changePreviewTab(CLEAR); // Question level
     }
@@ -151,14 +152,21 @@ class MathFormulaPreview extends Component {
 
   get restrictKeys() {
     const { item } = this.props;
-    const { options = {} } = get(item, ["validation", "valid_response", "value", 0], {});
-    const { allowedVariables } = options;
-
+    const { allowedVariables } = item;
     return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
   render() {
-    const { evaluation, item, type: previewType, showQuestionNumber, studentTemplate, testItem, theme } = this.props;
+    const {
+      evaluation,
+      item,
+      type: previewType,
+      showQuestionNumber,
+      studentTemplate,
+      testItem,
+      theme,
+      disableResponse
+    } = this.props;
     const { innerValues } = this.state;
 
     const latex = this.getValidLatex(this.props);
@@ -207,7 +215,7 @@ class MathFormulaPreview extends Component {
                 onInnerFieldClick={() => this.onInnerFieldClick()}
               />
             )}
-            {!this.isStatic() && (
+            {!this.isStatic() && !disableResponse && (
               <MathInput
                 symbols={item.symbols}
                 restrictKeys={this.restrictKeys}
@@ -219,6 +227,13 @@ class MathFormulaPreview extends Component {
                 onInnerFieldClick={() => this.onInnerFieldClick()}
                 style={{ background: statusColor, ...cssStyles }}
               />
+            )}
+            {!this.isStatic() && disableResponse && (
+              <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
+                <MathSpanWrapper
+                  latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+                />
+              </MathInputSpan>
             )}
             {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
               <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
@@ -240,3 +255,15 @@ class MathFormulaPreview extends Component {
 }
 
 export default withTheme(MathFormulaPreview);
+const MathInputSpan = styled.div`
+  align-items: center;
+  min-width: 80px;
+  min-height: 42px;
+  display: inline-flex;
+  width: 100%;
+  padding-right: 40px;
+  position: relative;
+  border-radius: 5px;
+  border: 1px solid #dfdfdf;
+  padding: 5px 25px;
+`;

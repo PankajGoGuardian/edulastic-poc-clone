@@ -6,7 +6,6 @@ import { get } from "lodash";
 import { withRouter } from "react-router-dom";
 import MultipleQuestionView from "./Container";
 import QuestionView from "../../../QuestionEditor";
-import { questionType } from "@edulastic/constants";
 import {
   isSingleQuestionViewSelector,
   getItemDetailByIdAction,

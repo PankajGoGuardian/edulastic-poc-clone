@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep, isUndefined, get, maxBy } from "lodash";
+import { cloneDeep, flattenDeep, isUndefined, get, maxBy, minBy, findIndex } from "lodash";
 import { withTheme } from "styled-components";
 import { InstructorStimulus, Stimulus, MathSpan } from "@edulastic/common";
 import { response, clozeImage } from "@edulastic/constants";
@@ -28,6 +28,44 @@ import AnswerContainer from "./AnswerContainer";
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+
+const isColliding = (responseRect, answerRect) => {
+  const responseDistanceFromTop = responseRect.top + responseRect.height;
+  const responseDistanceFromLeft = responseRect.left + responseRect.width;
+
+  const answerDistanceFromTop = answerRect.top + answerRect.height;
+  const answerDistanceFromTeft = answerRect.left + answerRect.width;
+
+  const notColliding =
+    responseDistanceFromTop < answerRect.top ||
+    responseRect.top > answerDistanceFromTop ||
+    responseDistanceFromLeft < answerRect.left ||
+    responseRect.left > answerDistanceFromTeft;
+
+  // return whether it is colliding
+  return !notColliding;
+};
+
+const findClosestResponseBoxIndex = (containers, answer) => {
+  const crosspoints = [];
+  for (const container of containers) {
+    let { left } = answer;
+    if (container.left > answer.left) {
+      left = answer.left + answer.width;
+    }
+
+    let { top } = answer;
+    if (container.top > answer.top) {
+      top = answer.top + answer.height;
+    }
+
+    crosspoints.push({ left, top, index: container.containerIndex });
+  }
+
+  const shouldSeleted = minBy(crosspoints, point => point.left);
+
+  return shouldSeleted.index;
+};
 
 class Display extends Component {
   constructor(props) {
@@ -61,9 +99,10 @@ class Display extends Component {
     if (!this.previewContainerRef.current) {
       return;
     }
-    const { possibleResponses, userAnswers, snapItems } = this.state;
+    const { responseContainers, onChange, maxRespCount, userSelections } = this.props;
+    const { possibleResponses, snapItems } = this.state;
 
-    const newAnswers = cloneDeep(userAnswers);
+    const newAnswers = [];
     const newResponses = cloneDeep(possibleResponses);
     const newSnapItems = cloneDeep(snapItems);
 
@@ -80,12 +119,62 @@ class Display extends Component {
     top = diffH > 0 ? top - diffH : top;
 
     if (fromContainerIndex !== fromRespIndex) {
-      newSnapItems.push({ answer: sourceData, rect: { top, left } });
+      newSnapItems.push({ answer: sourceData, rect: { ...itemRect, top, left } });
       newResponses.splice(fromRespIndex, 1);
     } else {
-      newSnapItems[fromRespIndex].rect = { top, left };
+      newSnapItems[fromRespIndex].rect = { ...itemRect, top, left };
     }
 
+    for (const snapItem of newSnapItems) {
+      const overlaps = [];
+      let containerIndex = 0;
+
+      for (const responseContainer of responseContainers) {
+        const { height, width, left: responseLeft, top: responseTop } = responseContainer;
+        const responseRect = {
+          left: responseLeft,
+          top: responseTop,
+          width: parseInt(width, 10),
+          height: parseInt(height, 10)
+        };
+        const answerRect = {
+          top: snapItem.rect.top,
+          left: snapItem.rect.left,
+          width: snapItem.rect.width,
+          height: snapItem.rect.height
+        };
+        if (isColliding(responseRect, answerRect)) {
+          overlaps.push({ ...responseContainer, containerIndex });
+        }
+        containerIndex += 1;
+      }
+
+      if (overlaps[0]) {
+        let index = overlaps[0].containerIndex;
+        if (overlaps.length > 1) {
+          index = findClosestResponseBoxIndex(overlaps, snapItem.rect);
+        }
+        let { answer } = snapItem;
+
+        if (newAnswers[index]) {
+          answer = sourceData;
+          const prevAnswerIndex = findIndex(snapItems, item => item.answer === userSelections[index][0]);
+          if (prevAnswerIndex >= 0) {
+            newResponses.push(newSnapItems[prevAnswerIndex].answer);
+            newSnapItems.splice(prevAnswerIndex, 1);
+          }
+        }
+        const data = Array.isArray(answer) ? answer : [answer];
+
+        newAnswers[index] = [...(newAnswers[index] || []), ...data];
+
+        if (maxRespCount && newAnswers[index].length > maxRespCount) {
+          newAnswers[index].splice(newAnswers[index].length - 2, 1);
+        }
+      }
+    }
+
+    onChange(newAnswers);
     this.setState({ snapItems: newSnapItems, possibleResponses: newResponses });
   };
 

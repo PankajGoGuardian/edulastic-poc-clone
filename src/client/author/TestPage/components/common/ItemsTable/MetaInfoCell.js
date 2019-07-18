@@ -6,7 +6,7 @@ import { Button, Tag, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, MoveLink, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
-import { greenDark } from "@edulastic/colors";
+import { greenDark, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { cloneDeep, uniq as _uniq } from "lodash";
 
@@ -168,8 +168,8 @@ class MetaInfoCell extends Component {
         <StyledButton
           onClick={() => this.handleSelection(data)}
           style={{
-            border: this.isAddOrRemove ? "1px solid #00b0ff" : "1px solid #ee1658",
-            color: this.isAddOrRemove ? "#00b0ff" : "#ee1658",
+            border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+            color: this.isAddOrRemove ? themeColor : "#ff0099",
             marginTop: 15,
             width: "100%"
           }}
@@ -203,8 +203,8 @@ class MetaInfoCell extends Component {
             <StyledButton
               onClick={() => this.handleSelection(data)}
               style={{
-                border: "none",
-                color: this.isAddOrRemove ? "#00b0ff" : "#ff0099"
+                border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+                color: this.isAddOrRemove ? themeColor : "#ff0099"
               }}
             >
               {this.isAddOrRemove ? "ADD" : "REMOVE"}

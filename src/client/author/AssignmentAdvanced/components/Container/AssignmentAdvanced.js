@@ -7,7 +7,7 @@ import { find, isEmpty } from "lodash";
 import { Dropdown } from "antd";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { cardTitleColor, orange, greenThird, themeColor } from "@edulastic/colors";
+import { authorAssignment } from "@edulastic/colors";
 import { receiveAssignmentClassList, receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 
 import { getAssignmentsSummary, getAssignmentClassList } from "../../../src/selectors/assignments";
@@ -27,6 +27,8 @@ import {
 import { Breadcrumb } from "../Breadcrumb";
 import TableList from "../TableList";
 
+const { assignmentStatusBg } = authorAssignment;
+
 class AssignmentAdvanced extends Component {
   componentDidMount() {
     const { match } = this.props;
@@ -45,17 +47,17 @@ class AssignmentAdvanced extends Component {
   renderBreadcrumbs = (assingment, history) => (
     <FlexContainer>
       <Breadcrumbs>
-        <Breadcrumb first color={cardTitleColor}>
+        <Breadcrumb first color={assignmentStatusBg.NOT_OPEN}>
           <span>{assingment.notStarted || 0}</span>Not Started
         </Breadcrumb>
-        <Breadcrumb color={orange}>
+        <Breadcrumb color={assignmentStatusBg.IN_PROGRESS}>
           <span>{assingment.inProgress || 0}</span>In Progress
         </Breadcrumb>
-        <Breadcrumb color={greenThird}>
-          <span>{assingment.inGrading || 0}</span>Submitted
+        <Breadcrumb color={assignmentStatusBg.IN_GRADING}>
+          <span>{assingment.inGrading || 0}</span>In Grading
         </Breadcrumb>
-        <Breadcrumb color={themeColor}>
-          <span>{assingment.graded || 0}</span>Graded
+        <Breadcrumb color={assignmentStatusBg.DONE}>
+          <span>{assingment.graded || 0}</span>Done
         </Breadcrumb>
       </Breadcrumbs>
       <ActionDiv>

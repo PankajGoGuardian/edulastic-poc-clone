@@ -280,6 +280,7 @@ class GraphDisplay extends Component {
 
   getAxisSegmentsProps = () => {
     const {
+      view,
       graphData,
       evaluation,
       onChange,
@@ -374,12 +375,14 @@ class GraphDisplay extends Component {
       graphType,
       questionId: id,
       altAnswerId,
+      view,
       disableResponse
     };
   };
 
   getAxisLabelsProps = () => {
     const {
+      view,
       graphData,
       evaluation,
       onChange,
@@ -475,6 +478,7 @@ class GraphDisplay extends Component {
       checkAnswer,
       questionId: id,
       altAnswerId,
+      view,
       disableResponse,
       setCalculatedHeight: this.setCalculatedHeight
     };

@@ -73,10 +73,12 @@ const MainInfo = ({ entity = {} }) => {
           key="addCoTeacher"
           gradeSubject={gradeSubject}
         >
-          <FieldValue>
-            <div>Co-Teachers :</div>
-            <span>{coTeachers}</span>
-          </FieldValue>
+          {coTeachers.length && (
+            <FieldValue>
+              <div>Co-Teachers :</div>
+              <span>{coTeachers}</span>
+            </FieldValue>
+          )}
         </FeaturesSwitch>
       </MidWrapper>
       <RightWrapper>

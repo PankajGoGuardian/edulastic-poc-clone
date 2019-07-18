@@ -123,6 +123,7 @@ class AddStudentModal extends React.Component {
                   getFieldValue={getFieldValue}
                   std={std}
                   isEdit={isEdit}
+                  stds={stds}
                 />
               </Panel>
             </Collapse>

@@ -368,14 +368,14 @@ function* receiveAddStudentRequest({ payload }) {
     const result = yield call(enrollmentApi.addStudent, payload);
     const student = get(result, "data.result");
     if (student) {
-      const successMsg = "Student added to class successfully.";
-      yield call(message.success, successMsg);
       const newStudent = {
         ...student,
         _id: student.userId,
         enrollmentStatus: "1"
       };
       yield put(addStudentSuccessAction(newStudent));
+      const successMsg = "Student added to class successfully.";
+      yield call(message.success, successMsg);
     } else {
       const msg = get(result, "data.message", "Student already part of this class section");
       message.error(msg);
@@ -438,13 +438,14 @@ function* updateStudentRequest({ payload }) {
   try {
     const { userId, data } = payload;
     const result = yield call(userApi.updateUser, { userId, data });
-    const msg = "Successfully Updated student.";
+    yield put(updateStudentSuccessAction(result));
     const updatedStudent = {
       ...result,
       enrollmentStatus: "1"
     };
-    message.success(msg);
     yield put(updateStudentSuccessAction(updatedStudent));
+    const msg = "Successfully Updated student.";
+    message.success(msg);
   } catch (error) {
     message.error("Update a student request failing");
     yield put(updateStudentFaildedAction());

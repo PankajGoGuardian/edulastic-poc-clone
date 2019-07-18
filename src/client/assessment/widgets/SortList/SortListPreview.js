@@ -84,6 +84,9 @@ const SortListPreview = ({
   const setActiveItem = activeItem => {
     if (previewTab === CLEAR) {
       setActive(typeof activeItem === "string" ? activeItem : "");
+    } else {
+      changePreviewTab(CLEAR);
+      setActive(typeof activeItem === "string" ? activeItem : "");
     }
   };
 
@@ -101,6 +104,13 @@ const SortListPreview = ({
         saveAnswer(draft.selected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
       }
     });
+
+    // we want users to be able to interact with the items,
+    // when in other modes user can't do that
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
+
     setItems(newItems);
     setSelected(newSelected);
   };
@@ -127,6 +137,12 @@ const SortListPreview = ({
         }
       })
     );
+
+    // we want users to be able to interact with the items,
+    // when in other modes user can't do that
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
   };
 
   const drop = ({ obj, index, flag }) => ({ obj, index, flag });

@@ -111,6 +111,7 @@ const ItemDetailContainer = ({
           saveTestItem={saveTestItem}
         />
       )}
+
       {isSingleQuestionView && !item.multipartItem && !isMultipart ? (
         <QuestionView isItem {...allProps} />
       ) : (

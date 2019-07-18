@@ -15,7 +15,8 @@ import {
   addItemsQuestionAction,
   deleteQuestionAction,
   SET_QUESTION_SCORE,
-  changeCurrentQuestionAction
+  changeCurrentQuestionAction,
+  UPDATE_QUESTION
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
@@ -209,6 +210,11 @@ export const getIsNewItemSelector = createSelector(
 export const getItemDetailSelector = createSelector(
   stateSelector,
   state => state.item || {}
+);
+
+export const getItemSelector = createSelector(
+  stateSelector,
+  state => state.item
 );
 
 export const isSingleQuestionViewSelector = createSelector(
@@ -451,6 +457,29 @@ export function reducer(state = initialState, { type, payload }) {
 
     case SET_ITEM_DETAIL_SCORE:
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
+
+    case UPDATE_QUESTION:
+      /**
+       * since we are enabling scoring block on single
+       * questions even with itemLevelScoring
+       *  we need to update the itemLevel score on scoring block change.
+       * But only need to do under certain conditions
+       */
+      const itemLevelScoring = get(state, "item.itemLevelScoring");
+      const updatingScore = get(payload, "validation.valid_response.score");
+      const newQuestionTobeAdded = !get(state, "item.data.questions", []).find(x => x.id === payload.id);
+      let canUpdateItemLevelScore = false;
+      const questionsLength = get(state, "item.data.questions.length", 0);
+      if (questionsLength === 0) {
+        canUpdateItemLevelScore = true;
+      } else if (questionsLength === 1 && !newQuestionTobeAdded) {
+        canUpdateItemLevelScore = true;
+      }
+      if (itemLevelScoring && canUpdateItemLevelScore) {
+        return { ...state, item: { ...state.item, itemLevelScore: updatingScore } };
+      } else {
+        return state;
+      }
 
     case ADD_QUESTION:
       if (!payload.validation) return state; // do not set itemLevelScore for resources

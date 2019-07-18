@@ -31,6 +31,7 @@ export const FormContainer = styled(FlexContainer)`
 
 export const FormBottomContainer = styled(FlexContainer)`
   justify-content: flex-start;
+  flex-wrap: wrap;
 
   .ant-checkbox-wrapper {
     white-space: nowrap;

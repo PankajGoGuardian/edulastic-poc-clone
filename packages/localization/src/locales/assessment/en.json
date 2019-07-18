@@ -452,7 +452,8 @@
         "yourOwnImage": "YOUR OWN Image",
         "orBrowse": "OR BROWSE",
         "transparentbackground": "Transparent Background",
-        "showborder": "Show drop area border"
+        "showborder": "Show drop area border",
+        "snapfittodroparea": "Snap fit to drop Area"
       },
       "imageDropDown": {
         "composequestion": "Question",

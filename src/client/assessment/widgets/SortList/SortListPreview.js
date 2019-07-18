@@ -39,7 +39,8 @@ const SortListPreview = ({
   saveAnswer,
   showQuestionNumber,
   disableResponse,
-  changePreviewTab
+  changePreviewTab,
+  isReviewTab
 }) => {
   const { source = [], instructor_stimulus, stimulus } = item;
 
@@ -262,9 +263,9 @@ const SortListPreview = ({
         </FlexCol>
       </FlexContainer>
 
-      {previewTab === SHOW && (
+      {previewTab === SHOW || isReviewTab ? (
         <ShowCorrect source={source} list={inCorrectList} altResponses={alt_responses} correctList={valid_response} />
-      )}
+      ) : null}
     </Paper>
   );
 };
@@ -279,7 +280,8 @@ SortListPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
-  changePreviewTab: PropTypes.func.isRequired
+  changePreviewTab: PropTypes.func.isRequired,
+  isReviewTab: PropTypes.bool
 };
 
 SortListPreview.defaultProps = {
@@ -288,7 +290,8 @@ SortListPreview.defaultProps = {
   item: {},
   showQuestionNumber: false,
   qIndex: null,
-  disableResponse: false
+  disableResponse: false,
+  isReviewTab: false
 };
 
 export default withNamespaces("assessment")(SortListPreview);

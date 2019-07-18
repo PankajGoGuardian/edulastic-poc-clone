@@ -141,9 +141,7 @@ class ViewModal extends React.Component {
               <SummaryCardContainer>
                 <SummaryCard>
                   <SummaryCardValue>
-                    {isPlaylist
-                      ? _source.modules && _source.modules.length
-                      : summary.totalItems || summary.totalQuestions || 0}
+                    {isPlaylist ? _source.modules && _source.modules.length : summary.totalItems || 0}
                   </SummaryCardValue>
                   <SummaryCardLabel>Items</SummaryCardLabel>
                 </SummaryCard>

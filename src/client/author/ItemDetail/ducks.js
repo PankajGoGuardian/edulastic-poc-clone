@@ -791,7 +791,7 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex } }) {
 
 function* convertToMultipartSaga({ payload }) {
   try {
-    const { isTestFlow = false, itemId } = payload;
+    const { isTestFlow = false, itemId, testId } = payload;
 
     yield saveTestItemSaga();
     const nextPageUrl = isTestFlow

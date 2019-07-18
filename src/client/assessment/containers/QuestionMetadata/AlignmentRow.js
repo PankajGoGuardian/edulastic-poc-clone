@@ -8,7 +8,7 @@ import {
   getFormattedCurriculumsSelector,
   getRecentStandardsListSelector
 } from "../../../author/src/selectors/dictionaries";
-import { clearDictStandardsAction, updateRecentStandardsAction } from "../../../author/src/actions/dictionaries";
+import { updateRecentStandardsAction } from "../../../author/src/actions/dictionaries";
 import BrowseButton from "./styled/BrowseButton";
 import { ItemBody } from "./styled/ItemBody";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
@@ -35,15 +35,13 @@ const AlignmentRow = ({
   createUniqGradeAndSubjects,
   formattedCuriculums,
   updateRecentStandardsList,
-  recentStandardsList = [],
-  clearStandards
+  recentStandardsList = []
 }) => {
   const { subject, curriculumId, curriculum, grades = [], standards = [] } = alignment;
   const [showModal, setShowModal] = useState(false);
   const setSubject = val => {
     storeInLocalStorage("defaultSubject", val);
     editAlignment(alignmentIndex, { subject: val, standards: [], curriculum: "" });
-    clearStandards();
   };
 
   const setGrades = val => {
@@ -55,7 +53,7 @@ const AlignmentRow = ({
     const curriculumId = event.key;
     storeInLocalStorage("defaultCurriculumSelected", curriculum);
     storeInLocalStorage("defaultCurriculumIdSelected", curriculumId);
-    editAlignment(alignmentIndex, { curriculumId, curriculum, standards: [] });
+    editAlignment(alignmentIndex, { curriculumId, curriculum });
   };
 
   const standardsArr = standards.map(el => el.identifier);
@@ -263,6 +261,7 @@ const AlignmentRow = ({
                   placeholder={t("component.options.searchStandards")}
                   filterOption={false}
                   value={standardsArr}
+                  optionLabelProp="title"
                   onFocus={handleStandardFocus}
                   onSearch={handleSearchStandard}
                   onSelect={handleStandardSelect}
@@ -274,7 +273,7 @@ const AlignmentRow = ({
                     curriculumStandardsELO.length > 0 &&
                     curriculumStandardsELO.map(el => (
                       <Select.Option
-                        title="true"
+                        title={el.identifier}
                         key={el._id}
                         value={el.identifier}
                         obj={el}
@@ -342,7 +341,6 @@ export default connect(
     recentStandardsList: getRecentStandardsListSelector(state)
   }),
   {
-    updateRecentStandardsList: updateRecentStandardsAction,
-    clearStandards: clearDictStandardsAction
+    updateRecentStandardsList: updateRecentStandardsAction
   }
 )(AlignmentRow);

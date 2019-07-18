@@ -235,13 +235,16 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
     {};
 
   // math evaluations
-  const mathEvaluation = await mixAndMatchMathEvaluator({
-    userResponse: maths,
-    validation: {
-      valid_response,
-      alt_responses
-    }
-  });
+  const mathEvaluation =
+    (valid_response &&
+      (await mixAndMatchMathEvaluator({
+        userResponse: maths,
+        validation: {
+          valid_response,
+          alt_responses
+        }
+      }))) ||
+    {};
 
   const evaluation = {
     ...dropDownEvaluation,

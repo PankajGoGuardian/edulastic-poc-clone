@@ -70,11 +70,10 @@ const ResponseRnd = props => {
     );
   };
 
-  const delta = 50;
-  const offset = index + 1;
-  const rndX = get(question, `responseOptions[${index}].x`, delta * offset);
-  const rndY = get(question, `responseOptions[${index}].y`, delta * offset);
-  const rndWidth = get(question, `responseOptions[${index}].width`, width);
+  const offset = 200;
+  const rndX = get(question, `responseOptions[${index}].x`, index * offset);
+  const rndY = get(question, `responseOptions[${index}].y`, 0);
+  const rndWidth = get(question, `responseOptions[${index}].width`, offset);
   const rndHeight = get(question, `responseOptions[${index}].height`, height);
   return (
     <Rnd
@@ -85,11 +84,7 @@ const ResponseRnd = props => {
         border: `1px solid ${lightGrey}`
       }}
       size={{ width: rndWidth, height: rndHeight }}
-      default={{
-        x: rndX,
-        y: rndY,
-        width: rndWidth
-      }}
+      position={{ x: rndX, y: rndY }}
       disableDragging={!isResizable}
       enableResizing={{
         bottom: isResizable,

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { removeStudentsRequestAction, selectStudentAction } from "../../../ducks";
 import { getUserOrgData } from "../../../../src/selectors/user";
-import { UserNameContainer, UserName } from "./styled";
+import { UserNameContainer, UserName, LightGreenSpan } from "./styled";
 
 import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
 
@@ -66,7 +66,7 @@ class DeleteConfirm extends React.Component {
 
     return (
       <ConfirmationModal
-        title="Remove Student (s)"
+        title="Remove Student(s)"
         show={isOpen}
         onOk={this.onRemove}
         onCancel={handleCancel}
@@ -76,10 +76,10 @@ class DeleteConfirm extends React.Component {
         bodyText={
           <>
             {this.renderUserNames()}
-            <span>
-              "You are about to Removed the selected student(s). Student's response if present will be deleted. Do you
-              still want to proceed?"
-            </span>
+            <div> Are you sure you want to remove the selected students from the class? </div>
+            <div>
+              If Yes type<LightGreenSpan> REMOVE</LightGreenSpan> in the space given below and proceed
+            </div>
           </>
         }
         okText="Yes,Remove"

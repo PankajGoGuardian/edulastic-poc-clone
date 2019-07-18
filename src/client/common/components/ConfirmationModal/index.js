@@ -37,10 +37,12 @@ const ConfirmationModal = ({ title, show, onOk, onCancel, inputVal, onInputChang
         <Row>
           <Col span={24}>
             <StyledDiv>{bodyText}</StyledDiv>
-            <StyledDiv>
-              This action can NOT be undone. If you are sure, please type <LightGreenSpan>{expectedVal}</LightGreenSpan>{" "}
-              in the space below
-            </StyledDiv>
+            {!bodyText && (
+              <StyledDiv>
+                This action can NOT be undone. If you are sure, please type{" "}
+                <LightGreenSpan>{expectedVal}</LightGreenSpan> in the space below
+              </StyledDiv>
+            )}
           </Col>
         </Row>
         <Row>

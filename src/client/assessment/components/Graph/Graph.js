@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import { CorrectAnswersContainer, Paper } from "@edulastic/common";
+import { CorrectAnswersContainer, Paper, Stimulus } from "@edulastic/common";
 
 import { compose } from "redux";
 import styled from "styled-components";
@@ -272,7 +272,7 @@ class Graph extends Component {
       disableResponse,
       ...restProps
     } = this.props;
-    const { extra_options, ui_style, validation } = item;
+    const { extra_options, ui_style, validation, stimulus } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -329,6 +329,7 @@ class Graph extends Component {
             {extra_options && extra_options.instructor_stimulus && (
               <InstructorStimulus>{extra_options.instructor_stimulus}</InstructorStimulus>
             )}
+            <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
             {previewTab === "check" && item.canvas && item.ui_style && (
               <GraphDisplay
                 disableResponse={disableResponse}

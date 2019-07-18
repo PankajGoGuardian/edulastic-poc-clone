@@ -82,7 +82,7 @@ const ReviewSummary = ({
       <FlexContainer justifyContent="space-between">
         <SummaryInfoContainer>
           <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
-          <SummaryInfoTitle>Questions</SummaryInfoTitle>
+          <SummaryInfoTitle>Items</SummaryInfoTitle>
         </SummaryInfoContainer>
         <SummaryInfoContainer minWidth="95px">
           <SummaryInfoNumber data-cy="points">{summary.totalPoints}</SummaryInfoNumber>

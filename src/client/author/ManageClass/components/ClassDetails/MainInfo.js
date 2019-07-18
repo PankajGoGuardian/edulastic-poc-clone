@@ -67,19 +67,19 @@ const MainInfo = ({ entity = {} }) => {
             <span>{course && course.name}</span>
           </FieldValue>
         </FeaturesSwitch>
-        <FeaturesSwitch
-          inputFeatures="addCoTeacher"
-          actionOnInaccessible="hidden"
-          key="addCoTeacher"
-          gradeSubject={gradeSubject}
-        >
-          {coTeachers.length && (
+        {coTeachers.length && (
+          <FeaturesSwitch
+            inputFeatures="addCoTeacher"
+            actionOnInaccessible="hidden"
+            key="addCoTeacher"
+            gradeSubject={gradeSubject}
+          >
             <FieldValue>
               <div>Co-Teachers :</div>
               <span>{coTeachers}</span>
             </FieldValue>
-          )}
-        </FeaturesSwitch>
+          </FeaturesSwitch>
+        )}
       </MidWrapper>
       <RightWrapper>
         <FieldValue>

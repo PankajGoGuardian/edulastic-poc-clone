@@ -180,9 +180,9 @@ const MatchListPreview = ({
     );
   }, [shuffleOptions]);
 
-  const getStyles = ({ flag, preview, correct, isDragging }) => ({
+  const getStyles = ({ flag, preview, correct, isDragging, width }) => ({
     display: "flex",
-    width: "auto",
+    width: width ? width : "auto",
     maxHeight: "140px",
     alignItems: "center",
     justifyContent: preview ? "space-between" : "center",
@@ -277,6 +277,8 @@ const MatchListPreview = ({
                   renderIndex={i}
                   onDrop={onDrop}
                   item={ans[i]}
+                  width="100%"
+                  centerContent={centerContent}
                   getStyles={getStyles}
                   disableResponse={disableResponse}
                   changePreviewTab={changePreviewTab}

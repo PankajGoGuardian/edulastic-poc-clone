@@ -8,7 +8,7 @@ import {
   TOGGLE_PRESENTATION_MODE,
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
-  UPDATE_STUDENT_ACTIVITY,
+  UPDATE_REMOVED_STUDENTS_LIST,
   UPDATE_STUDENTS_LIST,
   UPDATE_CLASS_STUDENTS_LIST
 } from "../constants/actions";
@@ -203,7 +203,7 @@ const reducer = (state = initialState, { type, payload }) => {
           canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId)
         }
       };
-    case UPDATE_STUDENT_ACTIVITY:
+    case UPDATE_REMOVED_STUDENTS_LIST:
       const updatedStudents = state.entities.map(item => {
         if (payload.includes(item.studentId)) {
           return { ...item, status: "absent" };

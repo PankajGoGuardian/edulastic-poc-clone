@@ -48,7 +48,6 @@ const SubHeader = ({
   };
 
   const handleArchiveClass = () => {
-    console.log("class id", _id, districtId);
     archiveClass({ _id, districtId });
     setShowModal(false);
   };

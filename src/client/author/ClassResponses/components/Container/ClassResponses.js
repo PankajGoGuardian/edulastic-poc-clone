@@ -40,6 +40,7 @@ import {
   SelectWrapper,
   FeedbackActiveButton
 } from "./styled";
+import { AnswerContext } from "@edulastic/common";
 
 class ClassResponses extends Component {
   state = {
@@ -234,11 +235,13 @@ class ClassResponses extends Component {
           </PaginationButtonGroup>
         </StyledFlexContainer>
         {showClassQuestions && !!studentResponse && (
-          <ClassQuestions
-            currentStudent={currentStudent || []}
-            questionActivities={studentResponse.questionActivities}
-            classResponse={classResponse}
-          />
+          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <ClassQuestions
+              currentStudent={currentStudent || []}
+              questionActivities={studentResponse.questionActivities}
+              classResponse={classResponse}
+            />
+          </AnswerContext.Provider>
         )}
         {showFeedbackForm && (
           <StyledFlexContainer justifyContent="flex-end">

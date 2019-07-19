@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { find } from "lodash";
 import * as moment from "moment";
-import { MainContainer, LeftWrapper, MidWrapper, RightWrapper, Image, FieldValue } from "./styled";
+import { MainContainer, LeftWrapper, MidWrapper, RightWrapper, Image, FieldValue, FieldLabel } from "./styled";
 import defaultImage from "../../../src/assets/manageclass/abstract.jpg";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
@@ -67,35 +67,39 @@ const MainInfo = ({ entity = {} }) => {
             <span>{course && course.name}</span>
           </FieldValue>
         </FeaturesSwitch>
-        <FeaturesSwitch
-          inputFeatures="addCoTeacher"
-          actionOnInaccessible="hidden"
-          key="addCoTeacher"
-          gradeSubject={gradeSubject}
-        >
-          <FieldValue>
-            <div>Co-Teachers :</div>
-            <span>{coTeachers}</span>
-          </FieldValue>
-        </FeaturesSwitch>
+        {coTeachers && coTeachers.length ? (
+          <FeaturesSwitch
+            inputFeatures="addCoTeacher"
+            actionOnInaccessible="hidden"
+            key="addCoTeacher"
+            gradeSubject={gradeSubject}
+          >
+            <FieldValue>
+              <div>Co-Teachers :</div>
+              <span>{coTeachers}</span>
+            </FieldValue>
+          </FeaturesSwitch>
+        ) : (
+          ""
+        )}
       </MidWrapper>
       <RightWrapper>
         <FieldValue>
-          <div>Start Date :</div>
+          <FieldLabel>Start Date :</FieldLabel>
           <span>{moment(startDate).format("MMM DD, YYYY")}</span>
         </FieldValue>
         <FieldValue>
-          <div>End Date :</div>
+          <FieldLabel>End Date :</FieldLabel>
           <span>{moment(endDate).format("MMM DD, YYYY")}</span>
         </FieldValue>
         {!!googleId && (
           <>
             <FieldValue>
-              <div>Google Class-code :</div>
+              <FieldLabel>Google Class-code :</FieldLabel>
               <span>{googleCode}</span>
             </FieldValue>
             <FieldValue>
-              <div>Last Sync :</div>
+              <FieldLabel>Last Sync :</FieldLabel>
               <span>{moment(lastSyncDate).format("MMM DD, YYYY")}</span>
             </FieldValue>
           </>

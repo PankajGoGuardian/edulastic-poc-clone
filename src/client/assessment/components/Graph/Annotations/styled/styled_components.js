@@ -11,9 +11,9 @@ export const FroalaInput = styled.div`
   min-height: ${({ isRnd }) => (!isRnd ? "40px" : "0")};
   display: flex;
   align-items: center;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  box-shadow: ${({ isRnd }) => (isRnd ? "none" : "0 2px 5px 0 rgba(0, 0, 0, 0.07)")};
   padding-left: 8px;
-  background: ${({ isRnd }) => (isRnd ? "#efefef" : "#fff")};
+  background: ${({ isRnd }) => (isRnd ? "transparent" : "#fff")};
   width: ${({ isRnd }) => (isRnd ? "auto" : "400px")};
   padding-right: ${({ isRnd }) => (isRnd ? "8px" : "0")};
   margin-right: ${({ isRnd }) => (isRnd ? "0" : "10px")};

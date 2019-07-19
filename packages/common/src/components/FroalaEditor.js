@@ -258,6 +258,7 @@ const CustomEditor = ({
   theme,
   border,
   imageDefaultWidth,
+  placeholder,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -294,7 +295,7 @@ const CustomEditor = ({
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
-      placeholderText: null,
+      placeholderText: placeholder,
       htmlAllowedEmptyTags: [
         "textarea",
         "a",
@@ -711,7 +712,6 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
-  const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>
       <MathModal
@@ -732,11 +732,7 @@ const CustomEditor = ({
         theme={theme}
       >
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
-        {showPlaceholder && (
-          <Placeholder toolbarExpanded={toolbarExpanded} border={border} showMargin={!tag}>
-            {config.placeholder}
-          </Placeholder>
-        )}
+
         <Editor
           tag={tag}
           model={content}

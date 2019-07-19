@@ -23,7 +23,8 @@ import {
   getTestsLoadingSelector,
   publishTestAction,
   getTestStatusSelector,
-  setRegradeOldIdAction
+  setRegradeOldIdAction,
+  getTestCreatedItemsSelector
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -43,6 +44,7 @@ import Assign from "../Assign";
 import Setting from "../Setting";
 
 import { testsApi } from "@edulastic/api";
+import { themeColor } from "@edulastic/colors";
 
 const { getDefaultImage } = testsApi;
 
@@ -88,15 +90,30 @@ class Container extends PureComponent {
       match,
       receiveTestById,
       setDefaultData,
+      history,
       history: { location },
       clearSelectedItems,
       clearTestAssignments,
       editAssigned,
+      createdItems = [],
       setRegradeOldId
     } = this.props;
-
+    const self = this;
     if (location.hash === "#review") {
       this.handleNavChange("review", true)();
+    } else if (createdItems.length > 0) {
+      this.handleNavChange("addItems", true)();
+      message.success(
+        <span>
+          {" "}
+          New item has been created and added to the current test. Click{" "}
+          <span onClick={() => self.setState({ current: "review" })} style={{ color: themeColor, cursor: "pointer" }}>
+            here
+          </span>{" "}
+          to see it.
+        </span>,
+        3
+      );
     }
     if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id);
@@ -110,6 +127,9 @@ class Container extends PureComponent {
     if (editAssigned) {
       setRegradeOldId(match.params.id);
     }
+    window.onbeforeunload = () => {
+      return this.beforeUnload();
+    };
   }
 
   componentDidUpdate() {
@@ -118,7 +138,24 @@ class Container extends PureComponent {
       setRegradeOldId(match.params.id);
     }
   }
+  beforeUnload = () => {
+    const {
+      test,
+      match: { params },
+      userId,
+      testStatus,
+      updated
+    } = this.props;
+    const { authors, testItems } = test;
+    const { editEnable } = this.state;
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
+    if (isEditable && testItems.length > 0 && updated) {
+      return "";
+    }
+    return;
+  };
   componentWillUnmount() {
     const {
       test,
@@ -131,6 +168,7 @@ class Container extends PureComponent {
     const { editEnable } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+
     if (isEditable && testItems.length > 0 && updated) {
       this.handleSave(test);
     }
@@ -211,12 +249,10 @@ class Container extends PureComponent {
     const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade, updateDefaultThumbnail } = this.props;
     setData({ ...test, subjects });
     if (test.thumbnail === defaultImage) {
-      const standardIdentifier =
-        test.summary && test.summary.standards && test.summary.standards[0] && test.summary.standards[0].identifier;
-
-      getDefaultImage({ subject: subjects[0] || "Other Subjects", standard: standardIdentifier || "" }).then(
-        thumbnail => updateDefaultThumbnail(thumbnail)
-      );
+      getDefaultImage({
+        subject: subjects[0] || "Other Subjects",
+        standard: get(test, "summary.standards[0].identifier", "")
+      }).then(thumbnail => updateDefaultThumbnail(thumbnail));
     }
     getItemsSubjectAndGrade({ grades: itemsSubjectAndGrade.grades, subjects: [] });
   };
@@ -502,6 +538,7 @@ const enhance = compose(
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       user: getUserSelector(state),
+      createdItems: getTestCreatedItemsSelector(state),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),

@@ -6,6 +6,9 @@ export const Image = styled.img`
   height: 120px;
   position: relative;
   filter: brightness(50%);
+  border: none;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 `;
 export const OverlayText = styled.div`
   position: absolute;
@@ -25,7 +28,7 @@ export const IconWrapper = styled.div`
   padding: 0.5rem;
   border-radius: 50%;
   text-align: center;
-  margin-left: 1rem;
+  margin-left: 1.2rem;
   line-height: 1rem;
   background: ${white};
   cursor: pointer;

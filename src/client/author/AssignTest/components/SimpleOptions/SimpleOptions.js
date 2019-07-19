@@ -17,8 +17,8 @@ import TestTypeSelector from "./TestTypeSelector";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
+export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
+export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
 class SimpleOptions extends React.Component {
   static propTypes = {
@@ -44,14 +44,14 @@ class SimpleOptions extends React.Component {
     const { features, testSettings } = nextProps;
     const { grades, subjects } = testSettings || {};
     if (
-      features["assessmentSuperPowersReleaseScorePremium"] === false &&
-      grades &&
-      subjects &&
-      isFeatureAccessible({
-        features: features,
-        inputFeatures: "assessmentSuperPowersReleaseScorePremium",
-        gradeSubject: { grades, subjects }
-      })
+      features["assessmentSuperPowersReleaseScorePremium"] ||
+      (grades &&
+        subjects &&
+        isFeatureAccessible({
+          features: features,
+          inputFeatures: "assessmentSuperPowersReleaseScorePremium",
+          gradeSubject: { grades, subjects }
+        }))
     ) {
       return {
         _releaseGradeKeys: releaseGradeKeys

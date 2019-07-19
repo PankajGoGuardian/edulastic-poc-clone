@@ -115,7 +115,7 @@ export const Container = styled(Paper)`
   margin: 15px auto 0 auto;
   padding: 30px 15px;
   border-radius: 0px;
-  width: 80%;
+  width: 90%;
 `;
 
 export const ContainerHeader = styled.div`
@@ -231,6 +231,12 @@ export const FieldValue = styled.div`
     margin-left: 5px;
     color: ${darkGrey};
   }
+`;
+
+export const FieldLabel = styled.section`
+  min-width: 150px;
+  text-align: right;
+  margin-right: 15px;
 `;
 
 export const StudentContent = styled.div``;

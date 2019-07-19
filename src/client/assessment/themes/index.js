@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Spin } from "antd";
 import { isUndefined } from "lodash";
-
+import { ScratchPadContext } from "@edulastic/common";
 import useInterval from "@use-it/interval";
 
 import { gotoItem, saveUserResponse } from "../actions/items";
@@ -163,7 +163,13 @@ const AssessmentContainer = ({
     );
   }
 
-  return defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />;
+  return (
+    <>
+      <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
+        {defaultAP ? <AssessmentPlayerDefault {...props} /> : <AssessmentPlayerSimple {...props} />}
+      </ScratchPadContext.Provider>
+    </>
+  );
 };
 
 AssessmentContainer.propTypes = {

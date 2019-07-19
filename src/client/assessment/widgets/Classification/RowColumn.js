@@ -134,7 +134,8 @@ class RowColumn extends Component {
               ite.value = Array(...Array(initialLength)).map(() => []);
             });
           }
-
+          draft.responseOptions = draft.responseOptions || [];
+          draft.responseOptions = draft.responseOptions.map(option => null);
           updateVariables(draft);
         })
       );

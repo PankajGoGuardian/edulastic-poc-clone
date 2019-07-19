@@ -12,7 +12,7 @@ const ClassCards = ({ classList, t }) => {
   return cards;
 };
 
-const ManageClassContainer = ({ flag, t, classList, loading }) => {
+const ManageClassContainer = ({ flag, t, classList, loading, showClass }) => {
   if (loading) return <Spin />;
   return (
     <ManageClassContentWrapper flag={flag}>
@@ -21,8 +21,12 @@ const ManageClassContainer = ({ flag, t, classList, loading }) => {
       ) : (
         <NoDataWrapper>
           <IconManage />
-          <NoDataHeading>{t("common.noClassesTitle")}</NoDataHeading>
-          <NoDataSubText>{t("common.noClassesSubTitle")}</NoDataSubText>
+          <NoDataHeading>
+            {showClass === "ACTIVE" ? t("common.noActiveClassesTitle") : t("common.noClassesTitle")}
+          </NoDataHeading>
+          <NoDataSubText>
+            {showClass === "ACTIVE" ? t("common.noActiveClassesSubTitle") : t("common.noClassesSubTitle")}
+          </NoDataSubText>
         </NoDataWrapper>
       )}
     </ManageClassContentWrapper>

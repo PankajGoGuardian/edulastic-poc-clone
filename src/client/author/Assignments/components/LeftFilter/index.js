@@ -294,7 +294,7 @@ class LeftFilter extends React.Component {
                 title={folder.folderName}
                 onClick={() => this.handleSelectFolder(folder)}
               >
-                {isActive ? <IconFolderActive /> : <IconFolderDeactive />}
+                <IconFolderDeactive />
                 <span>{folder.folderName}</span>
               </FolderListItemTitle>
               {!visibleModal.moveFolder && (

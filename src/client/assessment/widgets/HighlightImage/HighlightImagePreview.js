@@ -1,9 +1,9 @@
-import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
+import React, { useRef, useEffect, useState, useLayoutEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { get, isNaN } from "lodash";
 
-import { Stimulus, InstructorStimulus, withWindowSizes } from "@edulastic/common";
+import { Stimulus, InstructorStimulus, withWindowSizes, ScratchPadContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconUndo, IconRedo, IconEraseText } from "@edulastic/icons";
 import { canvasDimensions } from "@edulastic/constants";
@@ -50,6 +50,8 @@ const HighlightImagePreview = ({
   const [canvasHeight, setCanvasHeight] = useState(image ? image.height : canvasDimensions.maxHeight);
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
+
+  const { enableQuestionLevelScratchPad = true } = useContext(ScratchPadContext);
 
   const renderImg = context => {
     const img = new Image();
@@ -206,12 +208,14 @@ const HighlightImagePreview = ({
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
           {item.image && item.image.source && renderImage()}
-          <canvas
-            onMouseDown={!disableResponse ? onCanvasMouseDown : () => {}}
-            onMouseUp={!disableResponse ? onCanvasMouseUp : () => {}}
-            onMouseMove={!disableResponse ? onCanvasMouseMove : () => {}}
-            ref={canvas}
-          />
+          {enableQuestionLevelScratchPad && (
+            <canvas
+              onMouseDown={!disableResponse ? onCanvasMouseDown : () => {}}
+              onMouseUp={!disableResponse ? onCanvasMouseUp : () => {}}
+              onMouseMove={!disableResponse ? onCanvasMouseMove : () => {}}
+              ref={canvas}
+            />
+          )}
         </CanvasContainer>
       </div>
     </PreviewContainer>

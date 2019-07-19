@@ -223,7 +223,7 @@ export const getQuestionDataSelector = createSelector(
 );
 export const getQuestionAlignmentSelector = createSelector(
   getCurrentQuestionSelector,
-  state => state.alignment || []
+  state => get(state, "alignment", [])
 );
 
 export const getValidationSelector = createSelector(
@@ -395,8 +395,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-
-    yield call(message.success, "Update item by id is success", "Success");
+    yield call(message.success, "Item is saved as draft", 2);
 
     if (isTestFlow) {
       // add item to test entity
@@ -411,11 +410,11 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
+      yield put(setCreatedItemToTestAction(item));
       if (!tId || tId === "undefined") {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
-        yield put(setCreatedItemToTestAction(item));
-        yield put(push(!isEditFlow ? `/author/tests/${tId}#review` : `/author/tests/${tId}/createItem/${item._id}`));
+        yield put(push(!isEditFlow ? `/author/tests/${tId}` : `/author/tests/${tId}/createItem/${item._id}`));
       }
       yield put(changeViewAction("edit"));
       return;

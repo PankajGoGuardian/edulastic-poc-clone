@@ -6,6 +6,7 @@ const StyledSpan = styled.span`
   padding: 5px;
   border-radius: 2px;
   border: 1px solid #d9d9d9;
+  display: inline-block;
 `;
 
 const ClozeInputAnswerDisplay = ({ resprops, id }) => {

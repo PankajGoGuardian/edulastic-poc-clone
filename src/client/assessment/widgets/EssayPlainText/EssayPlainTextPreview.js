@@ -48,6 +48,8 @@ const EssayPlainTextPreview = ({
       setText("");
       saveAnswer("");
       setWordCount(0);
+    } else {
+      setText(userAnswer);
     }
   }, [userAnswer]);
 
@@ -91,14 +93,17 @@ const EssayPlainTextPreview = ({
         break;
       }
       case PASTE: {
+        let val = "";
         if (selection.end) {
-          setText(text.slice(0, selection.start) + buffer + text.slice(selection.end));
+          val = text.slice(0, selection.start) + buffer + text.slice(selection.end);
+          setText(val);
         } else {
-          setText(text.slice(0, selection.start) + buffer + text.slice(selection.start));
+          val = text.slice(0, selection.start) + buffer + text.slice(selection.start);
+          setText(val);
         }
+        !disableResponse && saveAnswer(val);
         break;
       }
-
       default:
         break;
     }

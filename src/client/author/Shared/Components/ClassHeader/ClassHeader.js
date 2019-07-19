@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { message, Menu, Dropdown, Button, Modal, Icon, Switch } from "antd";
+import { message, Menu, Dropdown, Button, Modal, Icon, Switch, Input } from "antd";
 import moment from "moment";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
@@ -44,25 +44,31 @@ import {
   releaseScoreAction,
   markAsDoneAction,
   openAssignmentAction,
-  closeAssignmentAction
+  closeAssignmentAction,
+  togglePauseAssignmentAction
 } from "../../../src/actions/classBoard";
 import { showScoreSelector, getClassResponseSelector, getMarkAsDoneEnableSelector } from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { togglePresentationModeAction } from "../../../src/actions/testActivity";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
 import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
+import { themeColor } from "@edulastic/colors";
+import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 
 class ClassHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
+      isPauseModalVisible: false,
+      modalInputVal: "",
       condition: true, // Whether meet the condition, if not show popconfirm.
       showDropdown: false,
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {}
     };
+    this.inputRef = React.createRef();
   }
 
   changeCondition = value => {
@@ -161,6 +167,25 @@ class ClassHeader extends Component {
     togglePresentationMode(!isPresentationMode);
   };
 
+  handlePauseAssignment(value) {
+    const {
+      togglePauseAssignment,
+      assignmentId,
+      classId,
+      additionalData: { testName }
+    } = this.props;
+    togglePauseAssignment({ value, assignmentId, classId, name: testName });
+    this.togglePauseModal(false);
+  }
+
+  togglePauseModal = value => {
+    this.setState({ isPauseModalVisible: value, modalInputVal: "" });
+  };
+
+  handleValidateInput = e => {
+    this.setState({ modalInputVal: e.target.value });
+  };
+
   render() {
     const {
       t,
@@ -169,7 +194,6 @@ class ClassHeader extends Component {
       classId,
       testActivityId,
       additionalData = {},
-
       selectedStudentsKeys,
       classResponse = {},
       assignmentStatus,
@@ -181,8 +205,8 @@ class ClassHeader extends Component {
       userRole
     } = this.props;
 
-    const { showDropdown, visible } = this.state;
-    const { endDate, startDate, releaseScore } = additionalData;
+    const { showDropdown, visible, isPauseModalVisible, modalInputVal = "" } = this.state;
+    const { endDate, startDate, releaseScore, isPaused = false } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
     const canOpen =
@@ -218,7 +242,9 @@ class ClassHeader extends Component {
         <StyledTitle>
           <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
-            {assignmentStatusForDisplay} (Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
+            {assignmentStatusForDisplay}
+            {assignmentStatusForDisplay === "IN PROGRESS" && isPaused ? "(PAUSED)" : ""} (Due on{" "}
+            {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
           </StyledParaSecond>
         </StyledTitle>
         <StyledTabContainer>
@@ -264,7 +290,15 @@ class ClassHeader extends Component {
           {canOpen ? (
             <OpenCloseButton onClick={this.handleOpenAssignment}>OPEN</OpenCloseButton>
           ) : canClose ? (
-            <OpenCloseButton onClick={this.handleCloseAssignment}>CLOSE</OpenCloseButton>
+            <>
+              <OpenCloseButton
+                onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
+              >
+                {" "}
+                {isPaused ? "OPEN" : "PAUSE"}
+              </OpenCloseButton>
+              <OpenCloseButton onClick={this.handleCloseAssignment}>CLOSE</OpenCloseButton>
+            </>
           ) : (
             ""
           )}
@@ -288,6 +322,20 @@ class ClassHeader extends Component {
             onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
             updateReleaseScoreSettings={this.handleReleaseScore}
             releaseScore={releaseScore}
+          />
+          <ConfirmationModal
+            title="Pause"
+            show={isPauseModalVisible}
+            onOk={() => this.handlePauseAssignment(!isPaused)}
+            onCancel={() => this.togglePauseModal(false)}
+            inputVal={modalInputVal}
+            onInputChange={this.handleValidateInput}
+            expectedVal="PAUSE"
+            canUndone={true}
+            bodyText={`Are you sure you want to pause? Once paused, no student would be able to answer the test unless you
+                resume it.`}
+            okText="Yes, Pause"
+            cancelText="No, Cancel"
           />
         </StyledDiv>
       </Container>
@@ -325,6 +373,7 @@ const enhance = compose(
     }),
     {
       setReleaseScore: releaseScoreAction,
+      togglePauseAssignment: togglePauseAssignmentAction,
       setMarkAsDone: markAsDoneAction,
       openAssignment: openAssignmentAction,
       closeAssignment: closeAssignmentAction,

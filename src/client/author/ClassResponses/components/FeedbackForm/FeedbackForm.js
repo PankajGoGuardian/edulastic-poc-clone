@@ -62,7 +62,7 @@ class FeedbackRight extends Component {
           <ScoreInput data-cy="scoreInput" onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
           <TextPara> / {maxScore}</TextPara>
         </StyledDivSec>
-        <LeaveDiv>{isError ? "Score is to large" : "Leave a Feedback!"}</LeaveDiv>
+        <LeaveDiv>{isError ? "Score is too large" : "Leave a Feedback!"}</LeaveDiv>
         {!isError && (
           <Fragment>
             <FeedbackInput

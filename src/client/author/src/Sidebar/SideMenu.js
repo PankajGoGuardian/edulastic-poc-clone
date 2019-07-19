@@ -7,7 +7,7 @@ import { get, remove } from "lodash";
 import { withRouter } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
-import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon } from "antd";
+import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Tooltip } from "antd";
 import styled from "styled-components";
 import {
   IconHeader,
@@ -282,10 +282,13 @@ class SideMenu extends Component {
                   >
                     <div>
                       <img src={Profile} alt="Profile" />
-                      <div style={{ paddingLeft: 11 }}>
-                        {!isCollapsed && !isMobile && <UserName>{userName || "Zack Oliver"}</UserName>}
-                        {!isCollapsed && !isMobile && <UserType>Teacher</UserType>}
-                      </div>
+                      <Tooltip title={userName}>
+                        <div style={{ paddingLeft: 11 }}>
+                          {!isCollapsed && !isMobile && <UserName>{userName || "Zack Oliver"}</UserName>}
+                          {!isCollapsed && !isMobile && <UserType>Teacher</UserType>}
+                        </div>
+                      </Tooltip>
+
                       {!isCollapsed && !isMobile && (
                         <IconDropdown
                           style={{ fontSize: 20, pointerEvents: "none" }}

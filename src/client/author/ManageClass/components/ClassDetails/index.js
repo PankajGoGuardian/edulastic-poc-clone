@@ -10,6 +10,8 @@ import {
   fetchClassListAction,
   syncByCodeModalAction
 } from "../../ducks";
+
+import { archiveClassAction } from "../../../Classes/ducks";
 import { Spin, Modal, Input, message } from "antd";
 
 import Header from "./Header";
@@ -32,7 +34,8 @@ const ClassDetails = ({
   fetchClassListLoading,
   classLoaded,
   match,
-  syncClassUsingCode
+  syncClassUsingCode,
+  archiveClass
 }) => {
   const [disabled, setDisabled] = useState(selectedClass && !!selectedClass.googleCode);
   let googleCode = React.createRef();
@@ -101,7 +104,7 @@ const ClassDetails = ({
       >
         <Input defaultValue={selectedClass.googleCode} ref={googleCode} disabled={disabled} />
       </Modal>
-      <Header onEdit={handleEditClick} />
+      <Header onEdit={handleEditClick} activeClass={selectedClass.active} />
       <Container>
         <SubHeader
           {...selectedClass}
@@ -110,13 +113,14 @@ const ClassDetails = ({
           isUserGoogleLoggedIn={isUserGoogleLoggedIn}
           allowGoogleLogin={allowGoogleLogin}
           syncGCModal={() => setOpenGCModal(true)}
+          archiveClass={archiveClass}
         />
         <StyledDivider orientation="left" />
         <MainInfo entity={selectedClass} />
 
         <ActionContainer loadStudents={loadStudents} />
 
-        <StudentsList selectStudent groupId={selectedClass._id} />
+        <StudentsList selectStudent selectedClass={selectedClass} />
       </Container>
     </>
   );
@@ -144,7 +148,8 @@ const enhance = compose(
       syncClassUsingCode: syncClassUsingCodeAction,
       fetchClassList: fetchClassListAction,
       syncByCodeModal: syncByCodeModalAction,
-      loadStudents: fetchStudentsByIdAction
+      loadStudents: fetchStudentsByIdAction,
+      archiveClass: archiveClassAction
     }
   )
 );

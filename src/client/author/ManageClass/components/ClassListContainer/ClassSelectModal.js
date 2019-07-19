@@ -124,9 +124,11 @@ const ClassListModal = ({
         >
           {selectsData.allSubjects.map(allSubject => {
             return (
-              <Select.Option value={allSubject.value} key={allSubject.value}>
-                {allSubject.text}
-              </Select.Option>
+              allSubject.value && (
+                <Select.Option value={allSubject.value} key={allSubject.value}>
+                  {allSubject.text}
+                </Select.Option>
+              )
             );
           })}
         </StyledSelect>

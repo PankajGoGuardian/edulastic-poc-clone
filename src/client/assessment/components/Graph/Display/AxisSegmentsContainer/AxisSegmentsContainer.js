@@ -15,6 +15,8 @@ import {
 } from "@edulastic/icons";
 import { cloneDeep, isEqual } from "lodash";
 import { GraphWrapper, JSXBox } from "./styled";
+
+import { EDIT } from "../../../../constants/constantsForQuestions";
 import {
   defaultAxesParameters,
   defaultGraphParameters,
@@ -519,15 +521,15 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, canvas, elements, tools, questionId, disableResponse } = this.props;
+    const { layout, canvas, elements, tools, questionId, disableResponse, view } = this.props;
     const { selectedTool } = this.state;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
           <div style={{ position: "relative", overflow: "hidden" }}>
-            <AnnotationRnd questionId={questionId} disableDragging={false} />
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+            <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
           </div>
           {!disableResponse && (
             <SegmentsTools
@@ -587,7 +589,6 @@ export default connect(
   state => ({
     stash: state.graphTools.stash,
     stashIndex: state.graphTools.stashIndex,
-    view: state.view.view,
     question: getQuestionDataSelector(state)
   }),
   {

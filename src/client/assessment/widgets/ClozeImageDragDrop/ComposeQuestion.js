@@ -13,7 +13,7 @@ import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
 import { cloneDeep, isUndefined, maxBy } from "lodash";
 
-import { PaddingDiv, EduButton } from "@edulastic/common";
+import { PaddingDiv, EduButton, beforeUpload } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { themeColor } from "@edulastic/colors";
 import { aws, clozeImage } from "@edulastic/constants";
@@ -43,7 +43,6 @@ import { FormContainer, FormBottomContainer } from "../ClozeImageDropDown/styled
 import { UploadButton } from "../ClozeImageDropDown/styled/UploadButton";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
-import { beforeUpload } from "@edulastic/common";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -230,10 +229,7 @@ class ComposeQuestion extends Component {
     try {
       const { t } = this.props;
       const { file } = info;
-      if (!file.type.match(/image/g)) {
-        message.error("Please upload files in image format");
-        return;
-      } else if (!beforeUpload(file)) {
+      if (!beforeUpload(file)) {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
@@ -464,7 +460,7 @@ class ComposeQuestion extends Component {
       imageAlterText,
       isEditAriaLabels,
       responses,
-
+      isSnapFitValues,
       imageOptions = {},
       keepAspectRatio
     } = item;
@@ -706,6 +702,13 @@ class ComposeQuestion extends Component {
             </UploadButton>
           )}
           <Checkbox
+            data-cy="drag-drop-image-aria-check"
+            defaultChecked={isEditAriaLabels}
+            onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+          >
+            {t("component.cloze.imageDragDrop.editAriaLabels")}
+          </Checkbox>
+          <Checkbox
             data-cy="drag-drop-image-dashboard-check"
             defaultChecked={responseLayout && responseLayout.showdashedborder}
             onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
@@ -727,11 +730,11 @@ class ComposeQuestion extends Component {
             {t("component.cloze.imageDragDrop.showborder")}
           </Checkbox>
           <Checkbox
-            data-cy="drag-drop-image-aria-check"
-            defaultChecked={isEditAriaLabels}
-            onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+            data-cy="drag-drop-image-border-check"
+            defaultChecked={isSnapFitValues}
+            onChange={val => this.onItemPropChange("isSnapFitValues", val.target.checked)}
           >
-            {t("component.cloze.imageDragDrop.editAriaLabels")}
+            {t("component.cloze.imageDragDrop.snapfittodroparea")}
           </Checkbox>
         </FormBottomContainer>
         <PaddingDiv>

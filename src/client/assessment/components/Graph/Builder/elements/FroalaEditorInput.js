@@ -45,7 +45,7 @@ const FroalaEditorInput = (element, board) => ({
       element,
       board,
       () => {
-        if (label) {
+        if (label && element.editor && element.editor.html) {
           element.editor.html.set(label);
         }
       },

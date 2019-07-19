@@ -1,23 +1,13 @@
 import React, { useMemo } from "react";
-import next from "immer";
 import PropTypes from "prop-types";
-import { find, map, round, includes, get } from "lodash";
+import { find, round, get } from "lodash";
 
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { viewByMode, analyzeByMode, getYLabelString, getChartScoreData } from "../../util/transformers";
-import { getHSLFromRange1 } from "../../../../../common/util";
+import { addColors } from "../../../../../common/util";
 import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
 const defaultSkillInfo = { standard: "", domain: "" };
-
-const addColors = (data = [], selectedData, xDataKey) => {
-  return map(data, item =>
-    next(item, draft => {
-      draft.fill =
-        includes(selectedData, item[xDataKey]) || !selectedData.length ? getHSLFromRange1(draft.avgScore) : "#cccccc";
-    })
-  );
-};
 
 const SimpleStackedBarChartContainer = ({
   report,
@@ -60,12 +50,14 @@ const SimpleStackedBarChartContainer = ({
     }
   };
 
-  const barsLabelFormatter = (value, index) => {
+  const barsLabelFormatter = (value, index, startIndex = 0) => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
         return yTickformatLabel(value);
       case analyzeByMode.RAW_SCORE:
-        return `${round(formattedData[index].rawScore, 2)} / ${formattedData[index].maxScore}`;
+        return `${round(formattedData[startIndex + index].rawScore, 2)} / ${
+          formattedData[startIndex + index].maxScore
+        }`;
     }
   };
 
@@ -89,7 +81,7 @@ const SimpleStackedBarChartContainer = ({
         case analyzeByMode.SCORE:
           lastItem = {
             title: "Avg.Score(%) : ",
-            value: `${payload[0].value}%`
+            value: `${round(payload[0].value)}%`
           };
           break;
         case analyzeByMode.RAW_SCORE:

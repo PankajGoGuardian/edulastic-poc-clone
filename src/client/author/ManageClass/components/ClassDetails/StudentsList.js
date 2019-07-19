@@ -11,13 +11,17 @@ import { getUserFeatures } from "../../../../student/Login/ducks";
 import { getGroupList } from "../../../src/selectors/user";
 import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
 
-const StudentsList = ({ loaded, students, selectStudents, selectedStudent, features, groupList, groupId }) => {
+const StudentsList = ({ loaded, students, selectStudents, selectedStudent, features, groupList, selectedClass }) => {
+  const { groupId, active } = selectedClass;
   const [showAllStudents, setShowAllStudents] = useState(false);
 
   const rowSelection = {
     onChange: (_, selectedRows) => {
       selectStudents(selectedRows);
     },
+    getCheckboxProps: () => ({
+      disabled: !active
+    }),
     selectedRowKeys: selectedStudent.map(({ email, username }) => email || username)
   };
 
@@ -91,9 +95,11 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
   };
   return (
     <div style={{ textAlign: "end" }}>
-      <CheckboxShowStudents defaultChecked={!showAllStudents} onChange={showStudentsHandler}>
-        Show current students only
-      </CheckboxShowStudents>
+      {!!students.length && (
+        <CheckboxShowStudents defaultChecked={!showAllStudents} onChange={showStudentsHandler}>
+          Show current students only
+        </CheckboxShowStudents>
+      )}
       <Spin tip="Loading..." spinning={!loaded}>
         <StudentContent>
           {empty && (

@@ -4,21 +4,6 @@ import { getTestItemsSelector } from "../AddItems/ducks";
 
 // selectors
 
-export const getItemsTypesSelector = createSelector(
-  getTestItemsSelector,
-  state => {
-    const result = {};
-
-    state.forEach(item => {
-      const types = item.rows.reduce((acc, row) => [...acc, ...row.widgets.map(({ type }) => type)], []);
-
-      result[item._id] = [...new Set(types)];
-    });
-
-    return result;
-  }
-);
-
 export const getStandardsSelector = createSelector(
   getTestItemsSelector,
   state => {

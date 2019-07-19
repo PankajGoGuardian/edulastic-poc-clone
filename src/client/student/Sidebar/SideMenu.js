@@ -6,7 +6,8 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { withNamespaces } from "@edulastic/localization";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown } from "antd";
+import { get } from "lodash";
+import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip } from "antd";
 import styled, { css } from "styled-components";
 import {
   IconAssignment,
@@ -123,7 +124,8 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, currentPath, firstName, logout, isSidebarCollapsed, t } = this.props;
+    const { windowWidth, currentPath, firstName, middleName, lastName, logout, isSidebarCollapsed, t } = this.props;
+    const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
     const menuIndex = getIndex(page, menuItems);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
@@ -239,10 +241,13 @@ class SideMenu extends Component {
                   >
                     <div>
                       <img src={Profile} alt="Profile" />
-                      <div style={{ paddingLeft: 11 }}>
-                        {!isSidebarCollapsed && <UserName>{firstName || "Zack Oliver"}</UserName>}
-                        {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
-                      </div>
+                      <Tooltip title={userName}>
+                        <div style={{ paddingLeft: 11 }}>
+                          {!isSidebarCollapsed && <UserName>{userName || "Zack Oliver"}</UserName>}
+                          {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
+                        </div>
+                      </Tooltip>
+
                       {!isSidebarCollapsed && !isMobile && (
                         <IconDropdown
                           style={{ fontSize: 20, pointerEvents: "none" }}
@@ -280,7 +285,9 @@ const enhance = compose(
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,
-      firstName: (user.user && user.user.firstName) || "",
+      firstName: get(user, "user.firstName", ""),
+      middleName: get(user, "user.middleName", ""),
+      lastName: get(user, "user.lastName", ""),
       isSidebarCollapsed: ui.isSidebarCollapsed
     }),
     { logout: logoutAction, toggleSideBar: toggleSideBarAction }

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
-import { pick, get } from "lodash";
+import { pick } from "lodash";
 import styled from "styled-components";
 import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
 
@@ -313,9 +313,7 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const { options: validVariable = {} } = get(item, ["validation", "valid_response", "value", 0], {});
-  const { allowedVariables } = validVariable;
-
+  const { allowedVariables } = item;
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
 
   return (

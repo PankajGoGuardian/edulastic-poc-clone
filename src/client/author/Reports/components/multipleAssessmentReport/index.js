@@ -8,17 +8,17 @@ const links = [
   {
     key: "performanceOverTime",
     title: "Performance Over Time",
-    location: "/author/reports"
+    location: "/author/reports/performance-over-time/test/"
   },
   {
     key: "peerProgressAnalysis",
     title: "Peer Progress Analysis",
-    location: "/author/reports"
+    location: "/author/reports/peer-progress-analysis/test/"
   },
   {
     key: "studentProgress",
     title: "Student Progress",
-    location: "/author/reports"
+    location: "/author/reports/student-progress/test/"
   }
 ];
 export const MultipleAssessmentReport = props => {

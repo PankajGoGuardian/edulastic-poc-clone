@@ -36,6 +36,7 @@ import {
   FETCH_STUDENTS,
   ADD_STUDENTS
 } from "../src/constants/actions";
+import { isNullOrUndefined } from "util";
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -148,7 +149,6 @@ function* markAbsentSaga({ payload }) {
     yield call(message.error, "Mark absent students failed");
   }
 }
-
 
 function* togglePauseAssignment({ payload }) {
   try {
@@ -429,7 +429,7 @@ export const getStudentQuestionSelector = createSelector(
     if (!isEmpty(state.data)) {
       const data = Array.isArray(state.data) ? state.data : [state.data];
       return data.map(x => {
-        if (egAnswers[x.qid]) {
+        if (!isNullOrUndefined(egAnswers[x.qid])) {
           return { ...x, userResponse: egAnswers[x.qid] };
         } else {
           return x;

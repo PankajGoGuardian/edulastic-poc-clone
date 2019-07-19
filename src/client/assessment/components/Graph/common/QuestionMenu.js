@@ -16,10 +16,15 @@ class QuestionMenu extends Component {
     e.target.scrollIntoView({ behavior: "smooth", block: "start" });
 
     if (option.el.clientHeight >= window.innerHeight / 2) {
-      option.el.scrollIntoView({ behavior: "smooth", block: "start" });
-      window.scrollBy(0, -111);
+      window.scrollTo({
+        top: option.el.offsetTop - 111,
+        behavior: "smooth"
+      });
     } else {
-      option.el.scrollIntoView({ behavior: "smooth", block: "center" });
+      window.scrollTo({
+        top: option.el.offsetTop - 111 + option.el.clientHeight - window.innerHeight / 2,
+        behavior: "smooth"
+      });
     }
   };
 

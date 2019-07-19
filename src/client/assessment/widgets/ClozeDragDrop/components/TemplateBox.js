@@ -78,6 +78,7 @@ const TemplateBox = ({ resprops, id }) => {
             className="content"
             onDrop={onDrop}
             data={`${getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
+            smallSize={smallSize}
           >
             <MathSpan dangerouslySetInnerHTML={{ __html: getLabel(dropTargetIndex) || "" }} />
           </Draggable>
@@ -92,6 +93,7 @@ const TemplateBox = ({ resprops, id }) => {
             onDrop={onDrop}
             data={`${getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
               userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+            smallSize={smallSize}
           >
             <MathSpan dangerouslySetInnerHTML={{ __html: getLabelForGroup(dropTargetIndex) || "" }} />
           </Draggable>

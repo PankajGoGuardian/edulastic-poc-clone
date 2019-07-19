@@ -30,15 +30,13 @@ const initialState = {
   groups: [],
   archiveGroups: [],
   students: [],
-  loadedGroups: [],
-  activeGroupsLoading: false
+  loadedGroups: []
 };
 
 // set groups
 const setGroups = (state, { payload }) => {
   state.groups = payload;
   state.isLoading = false;
-  state.activeGroupsLoading = false;
 };
 // set archive groups
 const setArchiveGroups = (state, { payload }) => {
@@ -49,7 +47,6 @@ const setArchiveGroups = (state, { payload }) => {
 // set loading to true
 const setLoading = state => {
   state.isLoading = true;
-  state.activeGroupsLoading = true;
 };
 
 // populate groups
@@ -82,7 +79,7 @@ export const getArchiveGroupsSelector = state => (state[module].isLoading ? [] :
 export const getStudentsSelector = state => (state[module].isLoading ? [] : state[module].students);
 
 export const getLoadedGroupsSelector = state => state[module].loadedGroups;
-export const getActiveGroupsLoadingSelector = state => state[module].activeGroupsLoading;
+export const groupsLoadingSelector = state => state[module].isLoading;
 
 // fetch groups of that user
 function* fetchGroups() {

@@ -9,7 +9,7 @@ import { Spin } from "antd";
 const ClassListContainer = ({
   groups,
   archiveGroups,
-  activeGroupsLoading,
+  groupsLoading,
   googleCourseList,
   courseList,
   allowGoogleLogin,
@@ -21,7 +21,7 @@ const ClassListContainer = ({
   state
 }) => {
   const selectedGroups = groups.filter(i => !!i.googleCode).map(i => i.googleCode);
-  if (activeGroupsLoading) return <Spin />;
+  if (groupsLoading) return <Spin />;
   return (
     <React.Fragment>
       <Header allowGoogleLogin={allowGoogleLogin} />

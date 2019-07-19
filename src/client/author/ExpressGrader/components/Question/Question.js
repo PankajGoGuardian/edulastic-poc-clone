@@ -52,7 +52,7 @@ class Question extends Component {
     }
 
     return (
-      <AnswerContext.Provider value={{ isAnswerModifiable: this.props.editResponse }}>
+      <AnswerContext.Provider value={{ isAnswerModifiable: this.props.editResponse, expressGrader: true }}>
         <ClassQuestions
           currentStudent={student}
           questionActivities={studentQuestions}

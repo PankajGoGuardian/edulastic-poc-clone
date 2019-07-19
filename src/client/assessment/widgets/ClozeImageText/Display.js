@@ -293,12 +293,23 @@ class Display extends Component {
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const altResponses = validation.alt_responses || [];
     const correctAnswerBoxLayout = showAnswer ? (
-      <CorrectAnswerBoxLayout
-        fontSize={fontSize}
-        groupResponses={options}
-        userAnswers={validation.valid_response && validation.valid_response.value}
-      />
+      <React.Fragment>
+        <CorrectAnswerBoxLayout
+          fontSize={fontSize}
+          groupResponses={options}
+          userAnswers={validation.valid_response && validation.valid_response.value}
+        />
+        {altResponses.map((altResponse, index) => (
+          <CorrectAnswerBoxLayout
+            fontSize={fontSize}
+            groupResponses={options}
+            userAnswers={altResponse.value}
+            altAnsIndex={index + 1}
+          />
+        ))}
+      </React.Fragment>
     ) : (
       <div />
     );

@@ -10,7 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
-import { updateClassAction, fetchStudentsByIdAction } from "../../ducks";
+import { updateClassAction, fetchStudentsByIdAction, updateClassStandardsAction } from "../../ducks";
 
 // selectors
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
@@ -123,6 +123,21 @@ class ClassEdit extends React.Component {
     searchCourseList(searchTerms);
   };
 
+  clearStandards = () => {
+    const { form } = this.props;
+    form.setFieldsValue({
+      standardSets: []
+    });
+  };
+
+  setStandards = standardSets => {
+    const { form, updateClassStandards } = this.props;
+    form.setFieldsValue({
+      standardSets
+    });
+    updateClassStandards(standardSets);
+  };
+
   render() {
     const { curriculums, form, courseList, isSearching, selctedClass, updating, classLoaded } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
@@ -174,6 +189,8 @@ class ClassEdit extends React.Component {
                   courseList={courseList}
                   searchCourse={this.searchCourse}
                   isSearching={isSearching}
+                  clearStandards={this.clearStandards}
+                  setStandards={this.setStandards}
                 />
               </RightContainer>
             </FlexContainer>
@@ -203,6 +220,7 @@ const enhance = compose(
     {
       getCurriculums: getDictCurriculumsAction,
       updateClass: updateClassAction,
+      updateClassStandards: updateClassStandardsAction,
       searchCourseList: receiveSearchCourseAction,
       loadStudents: fetchStudentsByIdAction
     }

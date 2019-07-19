@@ -24,8 +24,10 @@ import Display from "./Display";
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
 import { Widget } from "../../styled/Widget";
+import { AnswerContext } from "@edulastic/common";
 
 class ClozeImageText extends Component {
+  static contextType = AnswerContext;
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -140,6 +142,7 @@ class ClozeImageText extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       qIndex,
       view,
@@ -253,7 +256,8 @@ class ClozeImageText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
                 checkAnswer
                 options={previewDisplayOptions}
@@ -279,7 +283,7 @@ class ClozeImageText extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 options={previewDisplayOptions}
@@ -305,7 +309,8 @@ class ClozeImageText extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "clear" && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 preview
                 validation={itemForPreview.validation}

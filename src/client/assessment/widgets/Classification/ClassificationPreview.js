@@ -41,7 +41,8 @@ const ClassificationPreview = ({
   qIndex,
   showQuestionNumber,
   disableResponse,
-  changePreviewTab
+  changePreviewTab,
+  isReviewTab
 }) => {
   const styles = {
     itemContainerStyle: {
@@ -131,6 +132,12 @@ const ClassificationPreview = ({
       setDragItems(uniq(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))));
     }
   }, [userAnswer, possible_responses]);
+
+  useEffect(() => {
+    if (previewTab === CHECK || previewTab === SHOW) {
+      changePreviewTab(CLEAR);
+    }
+  }, [userAnswer]);
 
   const boxes = createEmptyArrayOfArrays();
 
@@ -298,7 +305,6 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
                               />
                             ) : (
                               dragItems.includes(ite) && (
@@ -311,7 +317,6 @@ const ClassificationPreview = ({
                                   onDrop={onDrop}
                                   item={ite}
                                   disableResponse={disableResponse}
-                                  changePreviewTab={changePreviewTab}
                                 />
                               )
                             )
@@ -350,7 +355,6 @@ const ClassificationPreview = ({
                               onDrop={onDrop}
                               item={ite}
                               disableResponse={disableResponse}
-                              changePreviewTab={changePreviewTab}
                             />
                           ) : (
                             dragItems.includes(ite) && (
@@ -363,7 +367,6 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
                               />
                             )
                           )
@@ -378,7 +381,7 @@ const ClassificationPreview = ({
         )}
       </div>
 
-      {previewTab === SHOW && (
+      {previewTab === SHOW || isReviewTab ? (
         <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
           {arrayOfCols.map((arr, i) => (
             <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
@@ -432,7 +435,7 @@ const ClassificationPreview = ({
             </Fragment>
           ))}
         </CorrectAnswersContainer>
-      )}
+      ) : null}
     </Paper>
   );
 };
@@ -451,7 +454,8 @@ ClassificationPreview.propTypes = {
   qIndex: PropTypes.number,
   showQuestionNumber: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  changePreviewTab: PropTypes.func.isRequired
+  changePreviewTab: PropTypes.func.isRequired,
+  isReviewTab: PropTypes.bool
 };
 
 ClassificationPreview.defaultProps = {
@@ -460,7 +464,8 @@ ClassificationPreview.defaultProps = {
   editCorrectAnswers: [],
   showQuestionNumber: false,
   qIndex: null,
-  disableResponse: false
+  disableResponse: false,
+  isReviewTab: false
 };
 
 const enhance = compose(

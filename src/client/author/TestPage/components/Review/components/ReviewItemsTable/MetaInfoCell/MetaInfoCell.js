@@ -13,20 +13,18 @@ import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
 import { MetaTag, ExtraInfo, DokStyled } from "./styled";
 
 const MetaInfoCell = ({
-  data: { item, types, by, id, shared, likes, audio = {}, isPremium = false, points = 0, dok },
+  data: { item, type, by, id, shared, likes, audio = {}, isPremium = false, points = 0, dok },
   itemTableView
 }) => {
   return (
     <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
       <FlexContainer>
         {item && item.data && <Standards item={item} search={{ curriculumId: "" }} reviewpage={true} />}
-        {types && !!types.length && (
+        {type && (
           <FlexContainer>
-            {types.map(type => (
-              <MetaTag key={type} marginLeft={"0px"}>
-                {type}
-              </MetaTag>
-            ))}
+            <MetaTag key={type} marginLeft={"0px"}>
+              {type}
+            </MetaTag>
           </FlexContainer>
         )}
       </FlexContainer>

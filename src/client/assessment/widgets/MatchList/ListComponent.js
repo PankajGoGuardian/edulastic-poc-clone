@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 
 import { withNamespaces } from "@edulastic/localization";
+import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList";
@@ -35,7 +36,15 @@ class ListComponent extends Component {
     const handleAdd = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.list.push("");
+          draft.list.push(null);
+          draft.validation.valid_response.value.push(null);
+
+          if (draft.validation.alt_responses.length > 0) {
+            draft.validation.alt_responses.forEach(altResponse => {
+              altResponse.value.push(null);
+            });
+          }
+
           updateVariables(draft);
         })
       );
@@ -45,6 +54,15 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list.splice(index, 1);
+
+          draft.validation.valid_response.value.splice(index, 1);
+
+          if (draft.validation.alt_responses.length > 0) {
+            draft.validation.alt_responses.forEach(altResponse => {
+              altResponse.value.splice(index, 1);
+            });
+          }
+
           updateVariables(draft);
         })
       );
@@ -80,6 +98,7 @@ class ListComponent extends Component {
           onRemove={handleRemove}
           useDragHandle
           columns={1}
+          imageDefaultWidth={IMAGE_LIST_DEFAULT_WIDTH}
         />
       </Widget>
     );

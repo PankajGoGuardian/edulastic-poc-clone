@@ -7,10 +7,9 @@ import {
   analyzeByMode,
   viewByMode,
   getMasteryLevel,
-  getOverallScore,
   getOverallRawScore
 } from "../../util/transformers";
-import { getHSLFromRange1 } from "../../../../../common/util";
+import { getHSLFromRange1, getOverallScore } from "../../../../../common/util";
 import { StyledTable } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";

@@ -4,7 +4,11 @@ import { Button } from "antd";
 import { IconManage } from "@edulastic/icons";
 import { Paper, FlexContainer } from "@edulastic/common";
 
-export const StyledFlexContainer = styled(FlexContainer)``;
+export const StyledFlexContainer = styled(FlexContainer)`
+  .ant-select-selection__placeholder {
+    margin-left: 6px;
+  }
+`;
 
 export const Title = styled.div`
   font-size: 22px;

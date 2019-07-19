@@ -212,6 +212,8 @@ export const SammaryMark = styled.div`
   color: ${greenDark};
   background-color: #d1f9eb;
   font-weight: 700;
+  width: 100%;
+  word-break: break-word;
 `;
 
 export const IconWrapper = styled.span`

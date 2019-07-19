@@ -43,6 +43,7 @@ export const RESET_PASSWORD_USER_SUCCESS = "[auth] reset password user success";
 export const RESET_PASSWORD_REQUEST = "[auth] reset password request";
 export const RESET_PASSWORD_FAILED = "[auth] reset password failed";
 export const RESET_PASSWORD_SUCCESS = "[auth] reset password success";
+export const RESET_PASSWORD_REQUEST_STATE = "[auth] reset password request state variable";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST = "[auth] student signup check classcode request";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup check classcode success";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
@@ -70,6 +71,7 @@ export const requestNewPasswordAction = createAction(REQUEST_NEW_PASSWORD_REQUES
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
 export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
+export const resetPasswordRequestStateAction = createAction(RESET_PASSWORD_REQUEST_STATE);
 
 const initialState = {
   isAuthenticated: false,
@@ -147,6 +149,9 @@ export default createReducer(initialState, {
   [REQUEST_NEW_PASSWORD_SUCCESS]: state => {
     state.requestingNewPassword = false;
     state.requestNewPasswordSuccess = true;
+  },
+  [RESET_PASSWORD_REQUEST_STATE]: state => {
+    state.requestNewPasswordSuccess = false;
   },
   [RESET_PASSWORD_USER_SUCCESS]: (state, { payload }) => {
     state.resetPasswordUser = payload;
@@ -491,7 +496,7 @@ function* googleSSOLogin({ payload }) {
     const res = yield call(authApi.googleSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    yield call(message.error, "Google Login failed");
+    yield call(message.error, get(e, "data.message", "Google Login failed"));
     yield put(push("/login"));
   }
 }
@@ -517,7 +522,7 @@ function* msoLogin({ payload }) {
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
   } catch (e) {
-    yield call(message.error, e.data && e.data.message ? e.data.message : "MSO Login failed");
+    yield call(message.error, get(e, "data.message", "MSO Login failed"));
   }
 }
 
@@ -532,7 +537,7 @@ function* msoSSOLogin({ payload }) {
     const res = yield call(authApi.msoSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    yield call(message.error, "MSO Login failed");
+    yield call(message.error, get(e, "data.message", "MSO Login failed"));
     yield put(push("/login"));
   }
 }
@@ -606,7 +611,7 @@ function* updateUserRoleSaga({ payload }) {
     TokenStorage.selectAccessToken(_user._id, _user.role);
     yield put(signupSuccessAction(_user));
   } catch (e) {
-    yield call(message.error, "Failed to update user please try again.");
+    yield call(message.error, get(e, "data.message", "Failed to update user please try again."));
   }
 }
 

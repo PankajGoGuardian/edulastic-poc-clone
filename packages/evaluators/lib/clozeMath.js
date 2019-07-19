@@ -606,7 +606,14 @@ var mixAndMatchEvaluator =
                     }).evaluation) ||
                   {}; // math evaluations
 
-                _context6.next = 10;
+                _context6.t1 = valid_response;
+
+                if (!_context6.t1) {
+                  _context6.next = 13;
+                  break;
+                }
+
+                _context6.next = 12;
                 return mixAndMatchMathEvaluator({
                   userResponse: maths,
                   validation: {
@@ -615,8 +622,21 @@ var mixAndMatchEvaluator =
                   }
                 });
 
-              case 10:
-                mathEvaluation = _context6.sent;
+              case 12:
+                _context6.t1 = _context6.sent;
+
+              case 13:
+                _context6.t0 = _context6.t1;
+
+                if (_context6.t0) {
+                  _context6.next = 16;
+                  break;
+                }
+
+                _context6.t0 = {};
+
+              case 16:
+                mathEvaluation = _context6.t0;
                 evaluation = (0, _objectSpread2["default"])(
                   {},
                   dropDownEvaluation,
@@ -646,7 +666,7 @@ var mixAndMatchEvaluator =
                   maxScore: questionScore
                 });
 
-              case 17:
+              case 23:
               case "end":
                 return _context6.stop();
             }

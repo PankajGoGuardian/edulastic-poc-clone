@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Select, Col } from "antd";
 
-import { IconHeart, IconShare, IconWorldWide } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
+import { ChromePicker } from "react-color";
 import { selectsData } from "../../../common";
 import {
   SummaryInput,
@@ -15,7 +15,6 @@ import {
   SummaryButton
 } from "../../common/SummaryForm";
 import { Block, MainTitle, MetaTitle, AnalyticsItem, ErrorWrapper } from "./styled";
-import { ChromePicker } from "react-color";
 
 import { ColorPickerContainer } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer";
 import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";

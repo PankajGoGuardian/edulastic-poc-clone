@@ -1,4 +1,4 @@
-import { isEqual, includes, difference, isBoolean, isString } from "lodash";
+import { isEqual, includes, difference, isBoolean, isString, isObject } from "lodash";
 import { evaluatorTypes } from "@edulastic/constants";
 import { getClozeTextEvaluation } from "./clozeTextHelpers";
 
@@ -18,9 +18,13 @@ const getEvaluation = (response, answers, rightIndex, compareFunction, restOptio
           break;
 
         case evaluatorTypes.IS_EQUAL:
-          ans = isString(ans) ? ans.trim() : ans;
-          item = isString(item) ? item.trim() : item;
-          evaluation[i] = isEqual(ans, item);
+          if (ans && isObject(ans) && ans.y) {
+            evaluation[i] = isEqual({ ...ans, y: +ans.y.toFixed(5) }, { ...item, y: +item.y.toFixed(5) });
+          } else {
+            ans = isString(ans) ? ans.trim() : ans;
+            item = isString(item) ? item.trim() : item;
+            evaluation[i] = isEqual(ans, item);
+          }
           break;
 
         case evaluatorTypes.MCQ_TYPE:

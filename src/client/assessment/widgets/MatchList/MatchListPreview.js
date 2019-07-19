@@ -65,7 +65,8 @@ const MatchListPreview = ({
   setQuestionData,
   disableResponse,
   changePreviewTab,
-  changePreview
+  changePreview,
+  isReviewTab
 }) => {
   const {
     possible_responses: posResponses,
@@ -124,6 +125,15 @@ const MatchListPreview = ({
     }
   }
 
+  useEffect(() => {
+    setAns(
+      Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
+        ? userAnswer
+        : Array.from({ length: list.length }).fill(null)
+    );
+    setDragItems(possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
+  }, [userAnswer]);
+
   const preview = previewTab === CHECK || previewTab === SHOW;
 
   const drop = ({ flag, index }) => ({ flag, index });
@@ -171,10 +181,9 @@ const MatchListPreview = ({
     );
   }, [shuffleOptions]);
 
-  const getStyles = ({ flag, preview, correct, isDragging }) => ({
+  const getStyles = ({ flag, preview, correct, isDragging, width }) => ({
     display: "flex",
     width: "auto",
-    maxHeight: "140px",
     alignItems: "center",
     justifyContent: preview ? "space-between" : "center",
     margin: flag === "dragItems" ? "10px 15px 10px 15px" : "10px 0px 10px 0",
@@ -193,6 +202,10 @@ const MatchListPreview = ({
     opacity: isDragging ? 0.5 : 1
   });
 
+  const centerContent = {
+    width: "unset",
+    margin: "auto"
+  };
   const validAnswers = ans.filter((ite, i) => ite === validArray[i]);
 
   let altAnswers = [...validAnswers];
@@ -219,6 +232,12 @@ const MatchListPreview = ({
   if (shuffleOptions === true) {
     dragItems = shuffle(dragItems);
   }
+
+  const choicesImageStyle = {
+    maxWidth: "220px !important",
+    maxHeight: "120px !important",
+    width: "auto !important"
+  };
 
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -247,7 +266,7 @@ const MatchListPreview = ({
               childMarginRight={smallSize ? 13 : 45}
             >
               <ListItem smallSize={smallSize}>
-                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: ite }} />
               </ListItem>
               <Separator smallSize={smallSize} />
               <DropContainer
@@ -264,6 +283,8 @@ const MatchListPreview = ({
                   renderIndex={i}
                   onDrop={onDrop}
                   item={ans[i]}
+                  width="100%"
+                  centerContent={centerContent}
                   getStyles={getStyles}
                   disableResponse={disableResponse}
                   changePreviewTab={changePreviewTab}
@@ -274,7 +295,7 @@ const MatchListPreview = ({
         </FlexContainer>
 
         {!disableResponse && (
-          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
+          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")} imageStyle={choicesImageStyle}>
             <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
                 {group_possible_responses ? (
@@ -363,13 +384,13 @@ const MatchListPreview = ({
           checked={item.shuffleOptions}
         />
       )}
-      {previewTab === SHOW && (
+      {previewTab === SHOW || isReviewTab ? (
         <Fragment>
-          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
+          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")} imageStyle={choicesImageStyle}>
             {list.map((ite, i) => (
               <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
-                  <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: ite }} />
+                  <MathFormulaDisplay style={centerContent} stem dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <CorItem index={i}>
                   <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
@@ -379,11 +400,11 @@ const MatchListPreview = ({
           </CorrectAnswersContainer>
 
           {hasAlternateAnswers && (
-            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
+            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")} imageStyle={choicesImageStyle}>
               {Object.keys(alternateAnswers).map((key, i) => (
-                <FlexContainer key={i} alignItems="center">
+                <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>
-                    <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: list[i] }} />
+                    <MathFormulaDisplay style={centerContent} stem dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
                   <CorItem index={i}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
@@ -393,7 +414,7 @@ const MatchListPreview = ({
             </CorrectAnswersContainer>
           )}
         </Fragment>
-      )}
+      ) : null}
     </Paper>
   );
 };
@@ -411,7 +432,8 @@ MatchListPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
-  changePreviewTab: PropTypes.func.isRequired
+  changePreviewTab: PropTypes.func.isRequired,
+  isReviewTab: PropTypes.bool
 };
 
 MatchListPreview.defaultProps = {
@@ -421,7 +443,8 @@ MatchListPreview.defaultProps = {
   userAnswer: [],
   showQuestionNumber: false,
   qIndex: null,
-  disableResponse: false
+  disableResponse: false,
+  isReviewTab: false
 };
 
 const enhance = compose(

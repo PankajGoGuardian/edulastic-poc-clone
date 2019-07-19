@@ -22,14 +22,33 @@ import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
-import { getItemIdSelector, getItemLevelScoringSelector, proceedPublishingItemAction } from "../../../ItemDetail/ducks";
+import {
+  getItemIdSelector,
+  getItemLevelScoringSelector,
+  getItemSelector,
+  proceedPublishingItemAction
+} from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { saveScrollTop } from "../../../src/actions/pickUpQuestion";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
-import ItemLevelScoringContext from "./QuestionContext";
+import HideScoringBlackContext from "./QuestionContext";
 import WarningModal from "../../../ItemDetail/components/WarningModal";
+
+const shouldHideScoringBlock = (item, currentQuestionId) => {
+  const questions = get(item, "data.questions", []);
+  const newQuestionTobeAdded = !questions.find(x => x.id === currentQuestionId);
+  const itemLevelScoring = get(item, "itemLevelScoring", true);
+  let canHideScoringBlock = true;
+  if (questions.length === 0) {
+    canHideScoringBlock = false;
+  } else if (questions.length == 1 && !newQuestionTobeAdded) {
+    canHideScoringBlock = false;
+  }
+  const hideScoringBlock = canHideScoringBlock ? itemLevelScoring : false;
+  return hideScoringBlock;
+};
 
 class Container extends Component {
   constructor(props) {
@@ -112,15 +131,16 @@ class Container extends Component {
   };
 
   renderQuestion = () => {
-    const { view, question, itemLevelScoring } = this.props;
+    const { view, question, itemLevelScoring, containsVideoOrPassage } = this.props;
     const { previewTab, saveClicked } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
       return <QuestionMetadata />;
     }
     if (questionType) {
+      const hidingScoringBlock = shouldHideScoringBlock(this.props.itemFromState, this.props.question.id);
       return (
-        <ItemLevelScoringContext.Provider value={itemLevelScoring}>
+        <HideScoringBlackContext.Provider value={hidingScoringBlock}>
           <QuestionWrapper
             type={questionType}
             view={view}
@@ -131,7 +151,7 @@ class Container extends Component {
             questionId={question.id}
             saveClicked={saveClicked}
           />
-        </ItemLevelScoringContext.Provider>
+        </HideScoringBlackContext.Provider>
       );
     }
   };
@@ -409,6 +429,7 @@ const enhance = compose(
       view: getViewSelector(state),
       question: getCurrentQuestionSelector(state),
       testItemId: getItemIdSelector(state),
+      itemFromState: getItemSelector(state),
       itemLevelScoring: getItemLevelScoringSelector(state),
       testName: state.tests.entity.title,
       testId: state.tests.entity._id,

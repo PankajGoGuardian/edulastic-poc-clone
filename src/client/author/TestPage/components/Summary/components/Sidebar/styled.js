@@ -28,7 +28,7 @@ export const Block = styled.div`
     border-radius: 5px;
     display: flex;
     align-items: center;
-    background: #cbdef7;
+    background: ${themeColor}20;
     color: ${themeColor};
     font-weight: 600;
     margin-top: 9px !important;

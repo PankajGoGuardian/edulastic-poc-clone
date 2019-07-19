@@ -9,16 +9,18 @@ import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 // ducks
 import { fetchClassListAction, getSelectedClassName } from "../../ducks";
 
-const Header = ({ onEdit, selectedClass }) => (
+const Header = ({ onEdit, activeClass, selectedClassName }) => (
   <HeaderWrapper>
     <Title>
       <IconManageClass color={white} width={20} height={20} />
-      Manage Class / <span>{selectedClass}</span>
+      Manage Class / <span>{selectedClassName}</span>
     </Title>
 
-    <ButtonsWrapper>
-      <EditButton onClick={onEdit}>Edit Class</EditButton>
-    </ButtonsWrapper>
+    {activeClass ? (
+      <ButtonsWrapper>
+        <EditButton onClick={onEdit}>Edit Class</EditButton>
+      </ButtonsWrapper>
+    ) : null}
   </HeaderWrapper>
 );
 
@@ -33,7 +35,7 @@ Header.defaultProps = {
 const enhance = compose(
   connect(
     state => ({
-      selectedClass: getSelectedClassName(state)
+      selectedClassName: getSelectedClassName(state)
     }),
     { fetchClassList: fetchClassListAction }
   )

@@ -15,7 +15,7 @@ import {
   mapValues,
   reduce
 } from "lodash";
-import { percentage, ceilingPercentage } from "../../../../common/util";
+import { percentage } from "../../../../common/util";
 import next from "immer";
 
 export const viewByMode = {
@@ -117,9 +117,9 @@ export const compareByColumns = {
   }
 };
 
-export const getOverallRawScore = (metrics = []) => sumBy(metrics, "totalScore") / metrics.length;
-
 export const getOverallScore = (metrics = []) => percentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
+
+export const getOverallRawScore = (metrics = []) => sumBy(metrics, "totalScore") / metrics.length;
 
 const chartGetAverageScoreByStandards = studentMetrics => standardId => {
   // get list of metrics by students for a standard
@@ -425,7 +425,7 @@ const filterAndAugmentMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilt
   return parsedMetricInfo || [];
 };
 
-export const getChartMasteryData = (report = {}, chartFilters, viewBy) => {
+export const getChartMasteryData = (report = {}, chartFilters, viewBy, leastScale) => {
   const { scaleInfo = {}, skillInfo = [] } = report;
   // group data according to the chosen viewBy
   let metricByViewBy = groupByView(report, chartFilters, viewBy);
@@ -448,7 +448,7 @@ export const getChartMasteryData = (report = {}, chartFilters, viewBy) => {
       metricByViewByWithMasteryCount[viewByKey][key] = metricByMastery[key].length;
       // if key is not mastered mark it negative
       metricByViewByWithMasteryCount[viewByKey][`${key} Percentage`] =
-        key == "NM" ? -1 * masteryScorePercentage : masteryScorePercentage;
+        leastScale.masteryLabel === key ? -1 * masteryScorePercentage : masteryScorePercentage;
     });
   }
 

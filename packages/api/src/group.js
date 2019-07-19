@@ -27,7 +27,6 @@ const getGroups = body =>
       data: body
     })
     .then(({ data: { result } }) => result.data.hits);
-
 const editGroup = ({ groupId, body }) =>
   api
     .callApi({
@@ -55,7 +54,6 @@ const deleteGroup = data =>
     })
     .then(result => result.data.result);
 
-
 const addCoTeacher = data =>
   api
     .callApi({
@@ -74,6 +72,12 @@ const bulkUpdateClasses = data =>
     })
     .then(({ data: response }) => response);
 
+const archiveGroup = ({ _id, districtId }) => {
+  return api.callApi({
+    url: `${prefix}/${_id}?districtId=${districtId}`,
+    method: "delete"
+  });
+};
 
 export default {
   fetchMyGroups,
@@ -83,5 +87,6 @@ export default {
   createGroup,
   deleteGroup,
   addCoTeacher,
-  bulkUpdateClasses
+  bulkUpdateClasses,
+  archiveGroup
 };

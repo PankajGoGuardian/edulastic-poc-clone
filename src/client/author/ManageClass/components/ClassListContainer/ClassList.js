@@ -4,11 +4,11 @@ import { get } from "lodash";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Tooltip } from "antd";
+import { Tooltip, Spin } from "antd";
 import { find } from "lodash";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
-
+import ClassCreatePage from "./ClassCreatePage";
 import { TableWrapper, ClassListTable } from "./styled";
 import { fetchStudentsByIdAction } from "../../ducks";
 
@@ -18,7 +18,8 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
   // eslint-disable-next-line max-len
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
-  const [classGroups, setClassGroups] = useState(groups);
+  const [filterClass, setFilterClass] = useState(null);
+  const [classGroups, setClassGroups] = useState(null);
 
   useEffect(() => {
     setClassGroups(groups);
@@ -97,17 +98,27 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
       }
     }
   });
-
+  if (!classGroups) return <Spin />;
   return (
     <TableWrapper>
-      <ClassSelector groups={groups} archiveGroups={archiveGroups} setClassGroups={setClassGroups} />
-      <ClassListTable
-        columns={columns}
-        dataSource={classGroups}
-        rowKey={rowKey}
-        onRow={onRow}
-        pagination={classGroups.length > 10}
+      <ClassSelector
+        groups={groups}
+        archiveGroups={archiveGroups}
+        setClassGroups={setClassGroups}
+        filterClass={filterClass}
+        setFilterClass={setFilterClass}
       />
+      {classGroups.length > 0 ? (
+        <ClassListTable
+          columns={columns}
+          dataSource={classGroups}
+          rowKey={rowKey}
+          onRow={onRow}
+          pagination={classGroups.length > 10}
+        />
+      ) : (
+        <ClassCreatePage filterClass={filterClass} />
+      )}
     </TableWrapper>
   );
 };

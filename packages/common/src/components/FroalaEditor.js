@@ -257,6 +257,8 @@ const CustomEditor = ({
   initOnClick,
   theme,
   border,
+  imageDefaultWidth,
+  placeholder,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -282,6 +284,7 @@ const CustomEditor = ({
       key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
+      imageDefaultWidth: imageDefaultWidth,
       initOnClick,
       toolbarButtons,
       toolbarButtonsMD,
@@ -292,7 +295,7 @@ const CustomEditor = ({
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
-      placeholderText: null,
+      placeholderText: placeholder,
       htmlAllowedEmptyTags: [
         "textarea",
         "a",
@@ -709,7 +712,6 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
-  const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>
       <MathModal
@@ -730,11 +732,7 @@ const CustomEditor = ({
         theme={theme}
       >
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
-        {showPlaceholder && (
-          <Placeholder toolbarExpanded={toolbarExpanded} border={border} showMargin={!tag}>
-            {config.placeholder}
-          </Placeholder>
-        )}
+
         <Editor
           tag={tag}
           model={content}
@@ -758,6 +756,7 @@ CustomEditor.propTypes = {
   toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
   readOnly: PropTypes.bool,
+  imageDefaultWidth: PropTypes.number,
   initOnClick: PropTypes.bool,
   border: PropTypes.string
 };
@@ -769,6 +768,7 @@ CustomEditor.defaultProps = {
   toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false,
+  imageDefaultWidth: 300,
   border: "none"
 };
 

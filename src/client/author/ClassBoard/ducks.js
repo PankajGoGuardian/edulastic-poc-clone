@@ -1,16 +1,18 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
-import { classBoardApi, testActivityApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi, enrollmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 
-import { values as _values, get, keyBy, sortBy ,isEmpty} from "lodash";
+import { values as _values, get, keyBy, sortBy, isEmpty } from "lodash";
 
 import {
-  setShowScoreAction,
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction,
-  updateStudentActivityAction
+  updateStudentActivityAction,
+  setIsPausedAction,
+  updateRemovedStudentsAction,
+  updateClassStudentsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -28,8 +30,13 @@ import {
   OPEN_ASSIGNMENT,
   CLOSE_ASSIGNMENT,
   SAVE_OVERALL_FEEDBACK,
-  MARK_AS_ABSENT
+  MARK_AS_ABSENT,
+  TOGGLE_PAUSE_ASSIGNMENT,
+  REMOVE_STUDENTS,
+  FETCH_STUDENTS,
+  ADD_STUDENTS
 } from "../src/constants/actions";
+import { isNullOrUndefined } from "util";
 
 function* receiveGradeBookSaga({ payload }) {
   try {
@@ -143,6 +150,47 @@ function* markAbsentSaga({ payload }) {
   }
 }
 
+function* togglePauseAssignment({ payload }) {
+  try {
+    yield call(classBoardApi.togglePause, payload);
+    yield put(setIsPausedAction(payload.value));
+    yield call(
+      message.success,
+      `Assignment ${payload.name} is now ${payload.value ? "paused." : "open and available for students to work."}`
+    );
+  } catch (e) {
+    yield call(message.error, `${payload.value ? "Pause" : "Resume"} assignment failed`);
+  }
+}
+
+function* fetchStudentsByClassSaga({ payload }) {
+  try {
+    const { students = [] } = yield call(enrollmentApi.fetch, payload.classId);
+    yield put(updateClassStudentsAction(students));
+  } catch (err) {
+    console.error("Receive students from class failed");
+  }
+}
+
+function* removeStudentsSaga({ payload }) {
+  try {
+    const { students } = yield call(classBoardApi.removeStudents, payload);
+    yield put(updateRemovedStudentsAction(students));
+    yield call(message.success, "Successfully removed");
+  } catch (err) {
+    yield call(message.error, "Remove students failed");
+  }
+}
+
+function* addStudentsSaga({ payload }) {
+  try {
+    yield call(classBoardApi.addStudents, payload);
+    yield call(message.success, "Successfully added");
+  } catch (err) {
+    yield call(message.error, "Add students failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -152,7 +200,11 @@ export function* watcherSaga() {
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
     yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
     yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
-    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga)
+    yield takeEvery(TOGGLE_PAUSE_ASSIGNMENT, togglePauseAssignment),
+    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
+    yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
+    yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
+    yield takeEvery(ADD_STUDENTS, addStudentsSaga)
   ]);
 }
 
@@ -277,9 +329,19 @@ export const getGradeBookSelector = createSelector(
   state => getAggregateByQuestion(state.entities)
 );
 
+export const classStudentsSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.classStudents
+);
+export const removedStudentsSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.removedStudents
+);
+
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
-  state => state.entities
+  removedStudentsSelector,
+  (state, removedStudents) => state.entities.filter(item => !removedStudents.includes(item.studentId))
 );
 
 export const getAdditionalDataSelector = createSelector(
@@ -367,7 +429,7 @@ export const getStudentQuestionSelector = createSelector(
     if (!isEmpty(state.data)) {
       const data = Array.isArray(state.data) ? state.data : [state.data];
       return data.map(x => {
-        if (egAnswers[x.qid]) {
+        if (!isNullOrUndefined(egAnswers[x.qid])) {
           return { ...x, userResponse: egAnswers[x.qid] };
         } else {
           return x;

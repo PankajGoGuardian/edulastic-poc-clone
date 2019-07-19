@@ -39,7 +39,8 @@ const SortListPreview = ({
   saveAnswer,
   showQuestionNumber,
   disableResponse,
-  changePreviewTab
+  changePreviewTab,
+  isReviewTab
 }) => {
   const { source = [], instructor_stimulus, stimulus } = item;
 
@@ -84,6 +85,9 @@ const SortListPreview = ({
   const setActiveItem = activeItem => {
     if (previewTab === CLEAR) {
       setActive(typeof activeItem === "string" ? activeItem : "");
+    } else {
+      changePreviewTab(CLEAR);
+      setActive(typeof activeItem === "string" ? activeItem : "");
     }
   };
 
@@ -101,6 +105,13 @@ const SortListPreview = ({
         saveAnswer(draft.selected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
       }
     });
+
+    // we want users to be able to interact with the items,
+    // when in other modes user can't do that
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
+
     setItems(newItems);
     setSelected(newSelected);
   };
@@ -127,6 +138,12 @@ const SortListPreview = ({
         }
       })
     );
+
+    // we want users to be able to interact with the items,
+    // when in other modes user can't do that
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
   };
 
   const drop = ({ obj, index, flag }) => ({ obj, index, flag });
@@ -142,7 +159,10 @@ const SortListPreview = ({
   let alt_responses = validation && validation.alt_responses && validation.alt_responses;
   alt_responses = alt_responses || [];
 
-  const inCorrectList = source.map((ans, i) => source[valid_response[i]]);
+  const validResponseCorrectList = source.map((ans, i) => source[valid_response[i]]);
+  const altResponseCorrectList = alt_responses.map((altResponse, arIndex) =>
+    source.map((ans, i) => source[alt_responses[arIndex].value[i]])
+  );
 
   const validRespCorrect = selected.filter(
     (selectedItem, i) => selectedItem && selectedItem === source[valid_response[i]]
@@ -206,9 +226,18 @@ const SortListPreview = ({
           ))}
         </FullWidthContainer>
 
-        <FlexWithMargins smallSize={smallSize}>
-          <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
-          <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+        <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection}>
+          {orientation === "vertical" ? (
+            <>
+              <IconUp smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+              <IconDown smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+            </>
+          ) : (
+            <>
+              <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+              <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+            </>
+          )}
         </FlexWithMargins>
 
         <FullWidthContainer>
@@ -232,7 +261,7 @@ const SortListPreview = ({
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
-                obj={disableResponse && userAnswer.length !== 0 ? inCorrectList[i] : selectedItem}
+                obj={disableResponse && userAnswer.length !== 0 ? validResponseCorrectList[i] : selectedItem}
                 disableResponse={disableResponse}
                 changePreviewTab={changePreviewTab}
               />
@@ -246,9 +275,17 @@ const SortListPreview = ({
         </FlexCol>
       </FlexContainer>
 
-      {previewTab === SHOW && (
-        <ShowCorrect source={source} list={inCorrectList} altResponses={alt_responses} correctList={valid_response} />
+
+      {(previewTab === SHOW || isReviewTab) && (
+        <ShowCorrect
+          source={source}
+          list={validResponseCorrectList}
+          altList={altResponseCorrectList}
+          altResponses={alt_responses}
+          correctList={valid_response}
+        />
       )}
+
     </Paper>
   );
 };
@@ -263,7 +300,8 @@ SortListPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
-  changePreviewTab: PropTypes.func.isRequired
+  changePreviewTab: PropTypes.func.isRequired,
+  isReviewTab: PropTypes.bool
 };
 
 SortListPreview.defaultProps = {
@@ -272,7 +310,8 @@ SortListPreview.defaultProps = {
   item: {},
   showQuestionNumber: false,
   qIndex: null,
-  disableResponse: false
+  disableResponse: false,
+  isReviewTab: false
 };
 
 export default withNamespaces("assessment")(SortListPreview);

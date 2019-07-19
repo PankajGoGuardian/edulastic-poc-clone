@@ -104,7 +104,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
         groupId,
         scores: { [questionId]: score }
       }),
-      call(testActivityApi.updateQuestionFeedBack, { testActivityId, questionId, feedback, groupId })
+      call(testActivityApi.updateQuestionFeedBack, { testActivityId, questionId, feedback, groupId, itemId })
     ]);
     const { questionActivities } = scoreRes;
     for (const { qid: _id, score, maxScore, testActivityId } of questionActivities) {
@@ -118,6 +118,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
       payload: feedbackResponse
     });
   } catch (err) {
+    console.error(err);
     const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put({

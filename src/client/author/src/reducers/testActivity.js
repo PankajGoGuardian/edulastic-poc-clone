@@ -8,7 +8,11 @@ import {
   TOGGLE_PRESENTATION_MODE,
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
-  UPDATE_STUDENT_ACTIVITY
+  SET_IS_PAUSED,
+  UPDATE_STUDENT_ACTIVITY,
+  UPDATE_REMOVED_STUDENTS_LIST,
+  UPDATE_STUDENTS_LIST,
+  UPDATE_CLASS_STUDENTS_LIST
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 
@@ -30,6 +34,8 @@ export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_R
 
 const initialState = {
   entities: [],
+  removedStudents: [],
+  classStudents: [],
   error: null,
   loading: false,
   presentationMode: false
@@ -46,7 +52,8 @@ const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         data: payload.gradebookData,
         entities: transformGradeBookResponse(payload.gradebookData),
-        additionalData: payload.additionalData
+        additionalData: payload.additionalData,
+        removedStudents: payload.gradebookData.exStudents
       };
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD:
       let entity = payload;
@@ -190,6 +197,15 @@ const reducer = (state = initialState, { type, payload }) => {
           canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId)
         }
       };
+
+    case SET_IS_PAUSED:
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          isPaused: payload
+        }
+      };
     case UPDATE_CLOSE_ASSIGNMENTS:
       return {
         ...state,
@@ -198,7 +214,7 @@ const reducer = (state = initialState, { type, payload }) => {
           canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId)
         }
       };
-    case UPDATE_STUDENT_ACTIVITY:
+    case UPDATE_REMOVED_STUDENTS_LIST:
       const updatedStudents = state.entities.map(item => {
         if (payload.includes(item.studentId)) {
           return { ...item, status: "absent" };
@@ -208,6 +224,16 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entities: updatedStudents
+      };
+    case UPDATE_STUDENTS_LIST:
+      return {
+        ...state,
+        removedStudents: payload
+      };
+    case UPDATE_CLASS_STUDENTS_LIST:
+      return {
+        ...state,
+        classStudents: payload
       };
     default:
       return state;

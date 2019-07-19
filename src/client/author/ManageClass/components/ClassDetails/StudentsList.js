@@ -95,9 +95,11 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
   };
   return (
     <div style={{ textAlign: "end" }}>
-      <CheckboxShowStudents defaultChecked={!showAllStudents} onChange={showStudentsHandler}>
-        Show current students only
-      </CheckboxShowStudents>
+      {!!students.length && (
+        <CheckboxShowStudents defaultChecked={!showAllStudents} onChange={showStudentsHandler}>
+          Show current students only
+        </CheckboxShowStudents>
+      )}
       <Spin tip="Loading..." spinning={!loaded}>
         <StudentContent>
           {empty && (

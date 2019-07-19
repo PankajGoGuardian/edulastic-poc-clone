@@ -5,12 +5,12 @@ import { withTheme } from "styled-components";
 
 import { FlexContainer } from "@edulastic/common";
 
+import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { Subtitle } from "../../../styled/Subtitle";
 import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import { IconTrash } from "../styled/IconTrash";
-import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "../constants";
 
 const List = withAddButton(QuillSortableList);
 

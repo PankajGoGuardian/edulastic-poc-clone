@@ -6,14 +6,13 @@ import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 
 import { withNamespaces } from "@edulastic/localization";
+import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList";
 import { Subtitle } from "../../styled/Subtitle";
 import { updateVariables } from "../../utils/variables";
 import { Widget } from "../../styled/Widget";
-
-import { IMAGE_LIST_DEFAULT_WIDTH } from "./constants";
 
 const List = withAddButton(QuillSortableList);
 

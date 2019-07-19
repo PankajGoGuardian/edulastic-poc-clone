@@ -6,12 +6,12 @@ import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton } from "@edulastic/common";
 
+import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { Subtitle } from "../../../styled/Subtitle";
 import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import Group from "./Group";
-import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "../constants";
 
 const List = withAddButton(QuillSortableList);
 

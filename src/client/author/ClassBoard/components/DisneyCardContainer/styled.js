@@ -2,6 +2,7 @@ import { Pagination, Card, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 import { mobileWidth, red, themeColor } from "@edulastic/colors";
+import { IconExclamationMark } from "@edulastic/icons";
 
 import { themes } from "../../../../student/themes";
 
@@ -10,6 +11,12 @@ const classBoardTheme = themes.default.classboard;
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
   margin: 0px auto;
+`;
+
+export const ExclamationMark = styled(IconExclamationMark)`
+  margin-right: 5px;
+  width: 13px;
+  height: 13px;
 `;
 
 export const StyledCardContiner = styled(FlexContainer)`
@@ -192,6 +199,8 @@ export const StyledParaS = styled.p`
   font-weight: bold;
   color: ${({ color }) => color || classBoardTheme.CardCircularColor};
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
 `;
 
 export const StyledColorParaS = styled.p`
@@ -199,6 +208,8 @@ export const StyledColorParaS = styled.p`
   font-weight: bold;
   color: ${red};
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
 `;
 
 export const StyledParaFF = styled.p`

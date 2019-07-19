@@ -51,13 +51,13 @@ const ConfirmationModal = ({
 
             {canUndone ? (
               <StyledDiv>
-                If Yes, type<LightGreenSpan> {expectedVal}</LightGreenSpan>
+                If Yes, type<LightGreenSpan> {expectedVal} </LightGreenSpan>
                 in the space given below and proceed.
               </StyledDiv>
             ) : (
               <StyledDiv>
                 This action can NOT be undone.If you are sure, please type{" "}
-                <LightGreenSpan>{expectedVal}</LightGreenSpan> in the space below.
+                <LightGreenSpan> {expectedVal} </LightGreenSpan> in the space below.
               </StyledDiv>
             )}
           </Col>

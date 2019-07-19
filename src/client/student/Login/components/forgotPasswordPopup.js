@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -7,11 +7,24 @@ import { get, trim } from "lodash";
 import { white, greenDark, orange } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { isEmailValid } from "../../../common/utils/helpers";
-import { requestNewPasswordAction } from "./../ducks";
+import { requestNewPasswordAction, resetPasswordRequestStateAction } from "./../ducks";
 
 const ForgotPasswordPopup = props => {
-  const { visible, className, onCancel, onOk, t, requestNewPasswordAction, user } = props;
+  const {
+    visible,
+    className,
+    onCancel,
+    onOk,
+    t,
+    requestNewPasswordAction,
+    user,
+    resetPasswordRequestStateAction
+  } = props;
   const { requestingNewPassword, requestNewPasswordSuccess } = user;
+
+  useEffect(() => {
+    resetPasswordRequestStateAction();
+  }, []);
 
   const onCancelForgotPassword = () => {
     onCancel();
@@ -26,7 +39,14 @@ const ForgotPasswordPopup = props => {
   };
 
   return (
-    <Modal visible={visible} footer={null} className={className} width={"500px"} onCancel={onCancelForgotPassword}>
+    <Modal
+      visible={visible}
+      footer={null}
+      className={className}
+      width={"500px"}
+      onCancel={onCancelForgotPassword}
+      destroyOnClose={true}
+    >
       <div className="third-party-signup-select-role">
         {!requestNewPasswordSuccess ? (
           <div className="link-not-sent">
@@ -224,7 +244,7 @@ const enhance = compose(
     state => ({
       user: get(state, "user", null)
     }),
-    { requestNewPasswordAction }
+    { requestNewPasswordAction, resetPasswordRequestStateAction }
   )
 );
 

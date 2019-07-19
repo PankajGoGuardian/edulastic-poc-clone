@@ -106,7 +106,7 @@ class Review extends PureComponent {
 
     this.setSelected([]);
     setData(newData);
-    message.success("Selected testItems removed successfully");
+    message.success("Selected item(s) removed successfully");
   };
 
   handleCollapse = () => {

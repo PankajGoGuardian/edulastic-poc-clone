@@ -14,6 +14,8 @@ import {
   IconGraphSegment as IconSegment,
   IconGraphPolygon as IconPolygon
 } from "@edulastic/icons";
+
+import { EDIT } from "../../../../constants/constantsForQuestions";
 import Tools from "./Tools";
 import { makeBorder } from "../../Builder/index";
 import { CONSTANT, Colors } from "../../Builder/config";
@@ -585,7 +587,7 @@ class GraphContainer extends PureComponent {
   drawingObjectsAreVisible = () => {
     const { view, toolbar } = this.props;
     const { drawingPrompt } = toolbar;
-    return view !== "edit" && drawingPrompt === "byObjects";
+    return view !== EDIT && drawingPrompt === "byObjects";
   };
 
   getDrawingObjects = () => {
@@ -606,7 +608,7 @@ class GraphContainer extends PureComponent {
   };
 
   render() {
-    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse } = this.props;
+    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse, view } = this.props;
     const { tools } = toolbar;
     const { selectedTool } = this.state;
     const hasAnnotation =
@@ -658,7 +660,7 @@ class GraphContainer extends PureComponent {
                 className="jxgbox"
                 margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
               />
-              <AnnotationRnd questionId={questionId} disableDragging={false} />
+              <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
             </JSXBoxWrapper>
           </JSXBoxWithDrawingObjectsWrapper>
         </GraphWrapper>
@@ -717,8 +719,7 @@ GraphContainer.defaultProps = {
 export default connect(
   state => ({
     stash: state.graphTools.stash,
-    stashIndex: state.graphTools.stashIndex,
-    view: state.view.view
+    stashIndex: state.graphTools.stashIndex
   }),
   {
     setElementsStash: setElementsStashAction,

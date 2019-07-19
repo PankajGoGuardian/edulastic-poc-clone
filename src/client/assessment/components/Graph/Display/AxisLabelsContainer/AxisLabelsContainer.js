@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import { isEqual } from "lodash";
 import { WithResources } from "@edulastic/common";
 import { GraphWrapper, JSXBox } from "./styled";
+
+import { EDIT } from "../../../../constants/constantsForQuestions";
 import {
   defaultAxesParameters,
   defaultGraphParameters,
@@ -285,7 +287,7 @@ class AxisLabelsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, numberlineAxis, questionId, disableResponse } = this.props;
+    const { layout, numberlineAxis, questionId, disableResponse, view } = this.props;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
@@ -309,8 +311,10 @@ class AxisLabelsContainer extends PureComponent {
               fontSize={numberlineAxis.fontSize}
             />
           )}
-          <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-          <AnnotationRnd questionId={questionId} disableDragging={false} />
+          <div style={{ position: "relative", overflow: "hidden" }}>
+            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+            <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
+          </div>
         </GraphWrapper>
       </div>
     );
@@ -357,8 +361,7 @@ AxisLabelsContainer.defaultProps = {
 export default connect(
   state => ({
     stash: state.graphTools.stash,
-    stashIndex: state.graphTools.stashIndex,
-    view: state.view.view
+    stashIndex: state.graphTools.stashIndex
   }),
   {
     setElementsStash: setElementsStashAction,

@@ -77,7 +77,8 @@ const SingleAssessmentReportFilters = ({
 
   useEffect(() => {
     const search = queryString.parse(location.search);
-    const termId = search.termId || (schoolYear.length ? schoolYear[0].key : "");
+    const termId =
+      search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
     let q = {
       termId
     };
@@ -91,8 +92,10 @@ const SingleAssessmentReportFilters = ({
     search.testId = getTestIdFromURL(location.pathname);
 
     dropDownData = getDropDownData(SARFilterData, user);
+    const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
       schoolYear.find((item, index) => item.key === search.termId) ||
+      schoolYear.find((item, index) => item.key === defaultTermId) ||
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
     const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || {
       key: "All",
@@ -157,7 +160,6 @@ const SingleAssessmentReportFilters = ({
       delete urlParams.schoolId;
       delete urlParams.teacherId;
     }
-
     setFiltersAction(urlParams);
     setTestIdAction(filteredUrlTestId);
 

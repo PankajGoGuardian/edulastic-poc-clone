@@ -127,6 +127,9 @@ class Container extends PureComponent {
     if (editAssigned) {
       setRegradeOldId(match.params.id);
     }
+    window.onbeforeunload = () => {
+      return this.beforeUnload();
+    };
   }
 
   componentDidUpdate() {
@@ -135,7 +138,24 @@ class Container extends PureComponent {
       setRegradeOldId(match.params.id);
     }
   }
+  beforeUnload = () => {
+    const {
+      test,
+      match: { params },
+      userId,
+      testStatus,
+      updated
+    } = this.props;
+    const { authors, testItems } = test;
+    const { editEnable } = this.state;
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
+    if (isEditable && testItems.length > 0 && updated) {
+      return "";
+    }
+    return;
+  };
   componentWillUnmount() {
     const {
       test,
@@ -148,6 +168,7 @@ class Container extends PureComponent {
     const { editEnable } = this.state;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+
     if (isEditable && testItems.length > 0 && updated) {
       this.handleSave(test);
     }

@@ -74,7 +74,13 @@ const SignedStackedBarChartContainer = ({
     return a.threshold - b.threshold;
   });
 
-  const parsedGroupedMetricData = useMemo(() => getChartMasteryData(report, filter, viewBy), [report, filter, viewBy]);
+  const leastScale = orderedScaleInfo[0];
+  const parsedGroupedMetricData = useMemo(() => getChartMasteryData(report, filter, viewBy, leastScale), [
+    report,
+    filter,
+    viewBy,
+    leastScale
+  ]);
 
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {

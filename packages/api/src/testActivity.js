@@ -64,10 +64,10 @@ const updateResponseEntryAndScore = ({ testActivityId, itemId, ...data }) =>
     })
     .then(result => result.data);
 
-const updateQuestionFeedBack = ({ testActivityId, questionId, ...data }) =>
+const updateQuestionFeedBack = ({ testActivityId, questionId, itemId, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/${testActivityId}/question/${questionId}/feedback`,
+      url: `${prefix}/${testActivityId}/test-item/${itemId}/question/${questionId}/feedback`,
       method: "put",
       data
     })

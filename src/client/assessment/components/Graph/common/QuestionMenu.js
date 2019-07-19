@@ -45,6 +45,9 @@ class QuestionMenu extends Component {
 
     if (!advancedAreOpen && options[index].section === "advanced") return false;
 
+    // first section
+    if (window.scrollY <= 40 && activeTab !== index) return this.setState({ activeTab: 0 });
+
     if (!(rect.bottom < 0 || rect.top - viewHeight >= 0) && activeTab !== index) {
       if (activeOption) {
         activeOption.scrollIntoView({ behavior: "smooth", block: "center" });

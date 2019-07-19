@@ -158,6 +158,13 @@ const fetchStudentProgressReport = params => {
   });
 };
 
+const fetchPerformanceOverTimeReport = params => {
+  return api.callApi({
+    url: `/report/performance-over-time`,
+    params
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -177,5 +184,6 @@ export default {
   fetchStandardMasteryBrowseStandards,
   fetchQuestionAnalysisReport,
   fetchPeerProgressAnalysisReport,
-  fetchStudentProgressReport
+  fetchStudentProgressReport,
+  fetchPerformanceOverTimeReport
 };

@@ -2,16 +2,15 @@ import React, { useEffect, useState } from "react";
 import { get, head } from "lodash";
 import { connect } from "react-redux";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
-import { getUserRole } from "../../../../../student/Login/ducks";
 
 import { Placeholder } from "../../../common/components/loader";
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
+import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { parseTrendData, augmentWithBand } from "../common/utils/trend";
 
 import dropDownData from "./static/json/dropDownData.json";
-import Filters from "./components/table/Filters";
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 const bandInfo = [
   {
@@ -67,16 +66,6 @@ const StudentProgress = ({
   const dataWithBand = augmentWithBand(parsedData, bandInfo);
 
   const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
-  const onFilterChange = (key, selectedItem) => {
-    switch (key) {
-      case "analyseBy":
-        setAnalyseBy(selectedItem);
-        break;
-      default:
-        return;
-    }
-  };
-
   if (loading) {
     return (
       <>
@@ -94,7 +83,7 @@ const StudentProgress = ({
         testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
-        renderFilters={() => <Filters onFilterChange={onFilterChange} analyseBy={analyseBy} />}
+        renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
       />
     </>
   );

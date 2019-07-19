@@ -6,10 +6,10 @@ import { Row, Col, Button } from "antd";
 import { get, isEmpty } from "lodash";
 import queryString from "query-string";
 
-import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
-import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
+import { AutocompleteDropDown } from "../../../../../common/components/widgets/autocompleteDropDown";
+import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
-import { getDropDownData, filteredDropDownData, processTestIds } from "../utils/transformers";
+import { getDropDownData, filteredDropDownData, processTestIds } from "../../utils/transformers";
 import {
   getMARFilterDataRequestAction,
   getReportsMARFilterData,
@@ -17,11 +17,11 @@ import {
   setFiltersAction,
   getTestIdSelector,
   setTestIdAction
-} from "../filterDataDucks";
-import { getUserRole } from "../../../../../src/selectors/user";
-import { getUser } from "../../../../../src/selectors/user";
+} from "../../filterDataDucks";
+import { getUserRole } from "../../../../../../src/selectors/user";
+import { getUser } from "../../../../../../src/selectors/user";
 
-import staticDropDownData from "../static/staticDropDownData";
+import staticDropDownData from "../../static/staticDropDownData";
 import school from "@edulastic/api/src/school";
 
 const getTestIdFromURL = url => {

@@ -223,9 +223,18 @@ const SortListPreview = ({
           ))}
         </FullWidthContainer>
 
-        <FlexWithMargins smallSize={smallSize}>
-          <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
-          <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+        <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection}>
+          {orientation === "vertical" ? (
+            <>
+              <IconUp smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+              <IconDown smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+            </>
+          ) : (
+            <>
+              <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+              <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+            </>
+          )}
         </FlexWithMargins>
 
         <FullWidthContainer>

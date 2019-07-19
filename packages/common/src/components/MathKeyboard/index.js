@@ -201,7 +201,10 @@ class MathKeyboard extends React.PureComponent {
                       key={index}
                       className={`num num--type-${lastNum ? 5 : 6}`}
                       data-cy={`virtual-keyboard-${item.data_cy || item.value}`}
-                      onClick={() => this.handleClickNumPad(item)}
+                      onClick={e => {
+                        this.handleClickNumPad(item);
+                        e.target.blur();
+                      }}
                     >
                       {item.label}
                     </Button>

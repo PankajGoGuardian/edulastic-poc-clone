@@ -377,6 +377,9 @@ const FlexItems = styled.div`
     width: 50%;
     margin-right: 5px;
   }
+  .ant-form-item-control {
+    line-height: initial;
+  }
 `;
 
 const CreateDistrict = styled.div`

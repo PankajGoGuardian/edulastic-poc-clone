@@ -10,7 +10,7 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import { IconTrash } from "../styled/IconTrash";
-import { IMAGE_LIST_DEFAULT_WIDTH, IMAGE_RESPONSE_DEFAULT_WIDTH } from "..";
+import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "../constants";
 
 const List = withAddButton(QuillSortableList);
 

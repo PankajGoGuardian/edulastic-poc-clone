@@ -11,7 +11,7 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import Group from "./Group";
-import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "..";
+import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "../constants";
 
 const List = withAddButton(QuillSortableList);
 

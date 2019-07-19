@@ -13,7 +13,7 @@ import { Subtitle } from "../../styled/Subtitle";
 import { updateVariables } from "../../utils/variables";
 import { Widget } from "../../styled/Widget";
 
-import { IMAGE_LIST_DEFAULT_WIDTH } from ".";
+import { IMAGE_LIST_DEFAULT_WIDTH } from "./constants";
 
 const List = withAddButton(QuillSortableList);
 

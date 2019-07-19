@@ -425,7 +425,7 @@ const filterAndAugmentMetricInfo = (studInfo, metricInfo, teacherInfo, chartFilt
   return parsedMetricInfo || [];
 };
 
-export const getChartMasteryData = (report = {}, chartFilters, viewBy) => {
+export const getChartMasteryData = (report = {}, chartFilters, viewBy, leastScale) => {
   const { scaleInfo = {}, skillInfo = [] } = report;
   // group data according to the chosen viewBy
   let metricByViewBy = groupByView(report, chartFilters, viewBy);
@@ -448,7 +448,7 @@ export const getChartMasteryData = (report = {}, chartFilters, viewBy) => {
       metricByViewByWithMasteryCount[viewByKey][key] = metricByMastery[key].length;
       // if key is not mastered mark it negative
       metricByViewByWithMasteryCount[viewByKey][`${key} Percentage`] =
-        key == "NM" ? -1 * masteryScorePercentage : masteryScorePercentage;
+        leastScale.masteryLabel === key ? -1 * masteryScorePercentage : masteryScorePercentage;
     });
   }
 

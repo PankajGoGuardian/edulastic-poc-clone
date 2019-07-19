@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import next from "immer";
-import { get, filter, includes, indexOf } from "lodash";
+import { get, filter, includes } from "lodash";
 import { connect } from "react-redux";
 import { Row, Col } from "antd";
 
@@ -16,11 +15,10 @@ import {
   getPerformanceOverTimeRequestAction
 } from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
-import PerformanceOverTimeTable from "./components/PerformanceOvetTimeTable";
+import PerformanceOverTimeTable from "./components/table/PerformanceOvetTimeTable";
+import ProgressChart from "./components/charts/ProgressChart";
 
 import analyseByData from "../common/static/json/analyseByDropDown.json";
-import ScoreChart from "./components/charts/ScoreChart";
-import BandChart from "./components/charts/BandChart";
 
 const usefetchProgressHook = (settings, fetchAction) => {
   useEffect(() => {
@@ -47,28 +45,10 @@ const PerformanceOverTime = ({
 
   const rawData = get(performanceOverTime, "data.result", {});
   const { testData = [] } = get(MARFilterData, "data.result", {});
-  const parsedData = parseData(rawData);
-  const dataWithTestInfo = augmentTestData(parsedData, testData);
+  const dataWithTestInfo = augmentTestData(parseData(rawData), testData);
   const filteredTableData = filter(dataWithTestInfo, test => {
     return selectedTests.length ? includes(selectedTests, test.testId) : true;
   });
-
-  const onResetClick = () => setSelectedTests([]);
-
-  const handleToggleSelectedBars = item => {
-    setSelectedTests(prevState => {
-      const newState = next(prevState, draftState => {
-        let index = indexOf(prevState, item.testId);
-        if (-1 < index) {
-          draftState.splice(index, 1);
-        } else {
-          draftState.push(item.testId);
-        }
-      });
-
-      return newState;
-    });
-  };
 
   if (loading) {
     return (
@@ -90,25 +70,13 @@ const PerformanceOverTime = ({
             <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />
           </Col>
         </Row>
-        {includes(["score", "rawScore"], analyseBy.key) ? (
-          <ScoreChart
-            data={dataWithTestInfo}
-            analyseBy={analyseBy}
-            onBarClickCB={handleToggleSelectedBars}
-            selectedTests={selectedTests}
-            onResetClickCB={onResetClick}
-          />
-        ) : (
-          <BandChart
-            data={dataWithTestInfo}
-            bandInfo={rawData.bandInfo}
-            analyseBy={analyseBy}
-            onBarClickCB={handleToggleSelectedBars}
-            selectedTests={selectedTests}
-            analyseBy={analyseBy.key}
-            onResetClickCB={onResetClick}
-          />
-        )}
+        <ProgressChart
+          data={dataWithTestInfo}
+          analyseBy={analyseBy.key}
+          selectedItems={selectedTests}
+          setSelectedItems={setSelectedTests}
+          bandInfo={rawData.bandInfo}
+        />
       </StyledCard>
       <PerformanceOverTimeTable dataSource={filteredTableData} />
     </>

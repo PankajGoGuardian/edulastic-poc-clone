@@ -1,12 +1,12 @@
 import React from "react";
 import { map } from "lodash";
 import PropTypes from "prop-types";
-import { StyledCard, StyledTable, StyledH3 } from "../../../../common/styled";
+import { StyledCard, StyledTable, StyledH3 } from "../../../../../common/styled";
 
-import { StyledCell } from "../../common/components/styled";
-import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
-import TableTooltipRow from "../../../../common/components/tooltip/TableTooltipRow";
-import { getHSLFromRange1, stringCompare } from "../../../../common/util";
+import { StyledCell } from "../../../common/components/styled";
+import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
+import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
+import { getHSLFromRange1, stringCompare } from "../../../../../common/util";
 
 const staticFields = [
   {

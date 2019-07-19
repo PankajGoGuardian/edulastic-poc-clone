@@ -22,7 +22,7 @@ const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClick
   const dataWithColors = addColors(data, selectedTests, "testId", "score");
 
   const yTickformatLabel = score => {
-    switch (analyseBy.key) {
+    switch (analyseBy) {
       case "score":
         return `${round(score)}%`;
       case "rawScore":
@@ -31,7 +31,7 @@ const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClick
   };
 
   const barsLabelFormatter = (value, index) => {
-    switch (analyseBy.key) {
+    switch (analyseBy) {
       case "score":
         return yTickformatLabel(value);
       case "rawScore":
@@ -71,7 +71,7 @@ const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClick
       xAxisDataKey={xDataKey}
       bottomStackDataKey={"score"}
       topStackDataKey={"diffScore"}
-      yAxisLabel={getYLabelString(analyseBy.key)}
+      yAxisLabel={getYLabelString(analyseBy)}
       getTooltipJSX={getTooltipJSX}
       getXTickText={getXTickText}
       yTickFormatter={yTickformatLabel}
@@ -84,10 +84,7 @@ const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClick
 
 ScoreChart.propTypes = {
   data: PropTypes.array.isRequired,
-  analyseBy: PropTypes.shape({
-    key: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired
-  }).isRequired,
+  analyseBy: PropTypes.string.isRequired,
   onBarClickCB: PropTypes.func,
   onResetClickCB: PropTypes.func,
   selectedTests: PropTypes.array

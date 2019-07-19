@@ -73,13 +73,11 @@ class DeleteConfirm extends React.Component {
         inputVal={confirmText}
         onInputChange={this.onChangeHandler}
         expectedVal={defaultText}
+        canUndone
         bodyText={
           <>
             {this.renderUserNames()}
             <div> Are you sure you want to remove the selected students from the class? </div>
-            <div>
-              If Yes type<LightGreenSpan> REMOVE</LightGreenSpan> in the space given below and proceed
-            </div>
           </>
         }
         okText="Yes,Remove"

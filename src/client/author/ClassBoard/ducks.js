@@ -10,6 +10,7 @@ import {
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction,
   updateStudentActivityAction,
+  setIsPausedAction,
   updateRemovedStudentsAction,
   updateClassStudentsAction
 } from "../src/actions/classBoard";
@@ -30,6 +31,7 @@ import {
   CLOSE_ASSIGNMENT,
   SAVE_OVERALL_FEEDBACK,
   MARK_AS_ABSENT,
+  TOGGLE_PAUSE_ASSIGNMENT,
   REMOVE_STUDENTS,
   FETCH_STUDENTS,
   ADD_STUDENTS
@@ -147,6 +149,20 @@ function* markAbsentSaga({ payload }) {
   }
 }
 
+
+function* togglePauseAssignment({ payload }) {
+  try {
+    yield call(classBoardApi.togglePause, payload);
+    yield put(setIsPausedAction(payload.value));
+    yield call(
+      message.success,
+      `Assignment ${payload.name} is now ${payload.value ? "paused." : "open and available for students to work."}`
+    );
+  } catch (e) {
+    yield call(message.error, `${payload.value ? "Pause" : "Resume"} assignment failed`);
+  }
+}
+
 function* fetchStudentsByClassSaga({ payload }) {
   try {
     const { students = [] } = yield call(enrollmentApi.fetch, payload.classId);
@@ -184,6 +200,7 @@ export function* watcherSaga() {
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
     yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
     yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
+    yield takeEvery(TOGGLE_PAUSE_ASSIGNMENT, togglePauseAssignment),
     yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
     yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
     yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),

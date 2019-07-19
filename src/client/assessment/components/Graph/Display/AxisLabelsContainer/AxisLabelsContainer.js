@@ -2,10 +2,12 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
-import { WithResources } from "@edulastic/common";
-import { GraphWrapper, JSXBox } from "./styled";
 
-import { EDIT } from "../../../../constants/constantsForQuestions";
+import { WithResources } from "@edulastic/common";
+
+import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
+import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+
 import {
   defaultAxesParameters,
   defaultGraphParameters,
@@ -13,10 +15,12 @@ import {
   defaultPointParameters
 } from "../../Builder/settings";
 import { makeBorder } from "../../Builder";
-import Tools from "../QuadrantsContainer/Tools";
-import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
 import { AUTO_HEIGHT_VALUE, AUTO_VALUE } from "../../Builder/config/constants";
+
+import AnnotationRnd from "../../Annotations/AnnotationRnd";
+
+import Tools from "../QuadrantsContainer/Tools";
+import { GraphWrapper, JSXBox } from "./styled";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -40,16 +44,6 @@ const getColoredElems = (elements, compareResult) => {
     });
   }
   return elements;
-};
-
-const getColoredAnswer = answerArr => {
-  if (Array.isArray(answerArr)) {
-    return answerArr.map(el => ({
-      className: "show",
-      ...el
-    }));
-  }
-  return answerArr;
 };
 
 const getCorrectAnswer = answerArr => {
@@ -89,7 +83,9 @@ class AxisLabelsContainer extends PureComponent {
   constructor(props) {
     super(props);
 
-    this._graphId = `jxgbox${Math.random().toString(36)}`;
+    this._graphId = `jxgbox${Math.random()
+      .toString(36)
+      .replace(".", "")}`;
     this._graph = null;
 
     this.state = {
@@ -114,9 +110,7 @@ class AxisLabelsContainer extends PureComponent {
     this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
-      if (disableResponse) {
-        this._graph.setDisableResponse();
-      }
+      this._graph.setDisableResponse(disableResponse);
 
       let { height } = layout;
       if (height === AUTO_VALUE) {
@@ -159,9 +153,22 @@ class AxisLabelsContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { canvas, numberlineAxis, layout, list, setValue, setCalculatedHeight } = this.props;
+    const {
+      canvas,
+      numberlineAxis,
+      layout,
+      list,
+      setValue,
+      setCalculatedHeight,
+      disableResponse,
+      previewTab,
+      changePreviewTab,
+      elements
+    } = this.props;
 
     if (this._graph) {
+      this._graph.setDisableResponse(disableResponse);
+
       if (
         !isEqual(canvas, prevProps.canvas) ||
         !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
@@ -176,6 +183,10 @@ class AxisLabelsContainer extends PureComponent {
         const conf = this._graph.getMarks();
         setValue(conf);
       }
+    }
+
+    if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
+      changePreviewTab(CLEAR);
     }
   }
 
@@ -192,9 +203,10 @@ class AxisLabelsContainer extends PureComponent {
       return;
     }
 
-    const { elements, checkAnswer, showAnswer, evaluation, list, disableResponse } = this.props;
+    const { elements, evaluation, list, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
-    if (showAnswer) {
+    // correct answers blocks
+    if (elementsIsCorrect) {
       this._graph.removeMarksAnswers();
       this._graph.loadMarksAnswers(list, getCorrectAnswer(elements));
       return;
@@ -212,14 +224,14 @@ class AxisLabelsContainer extends PureComponent {
       return;
     }
 
-    if (checkAnswer && !isEqual(evaluation, prevProps.evaluation)) {
+    if (previewTab === CHECK || previewTab === SHOW) {
       this._graph.removeMarks();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);
         const coloredElements = getColoredElems(elements, compareResult);
-        this._graph.renderMarks(list, coloredElements, true);
+        this._graph.renderMarks(list, coloredElements);
       } else {
-        this._graph.renderMarks(list, [], true);
+        this._graph.renderMarks(list, []);
       }
       return;
     }
@@ -228,10 +240,10 @@ class AxisLabelsContainer extends PureComponent {
       !isEqual(elements, this._graph.getMarks()) ||
       this.elementsIsEmpty() ||
       !isEqual(prevProps.list, list) ||
-      this._graph.elementsAreEvaluated
+      (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.removeMarks();
-      this._graph.renderMarks(list, elements, false);
+      this._graph.renderMarks(list, elements);
     }
   };
 
@@ -334,8 +346,6 @@ AxisLabelsContainer.propTypes = {
   evaluation: PropTypes.any,
   setValue: PropTypes.func.isRequired,
   elements: PropTypes.array.isRequired,
-  showAnswer: PropTypes.bool,
-  checkAnswer: PropTypes.bool,
   view: PropTypes.string.isRequired,
   setElementsStash: PropTypes.func.isRequired,
   setStashIndex: PropTypes.func.isRequired,
@@ -344,18 +354,22 @@ AxisLabelsContainer.propTypes = {
   questionId: PropTypes.string.isRequired,
   altAnswerId: PropTypes.string,
   setCalculatedHeight: PropTypes.func.isRequired,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  previewTab: PropTypes.string,
+  changePreviewTab: PropTypes.func,
+  elementsIsCorrect: PropTypes.bool
 };
 
 AxisLabelsContainer.defaultProps = {
   list: [],
   evaluation: null,
-  showAnswer: false,
-  checkAnswer: false,
   stash: {},
   stashIndex: {},
   altAnswerId: null,
-  disableResponse: false
+  disableResponse: false,
+  previewTab: CLEAR,
+  changePreviewTab: () => {},
+  elementsIsCorrect: false
 };
 
 export default connect(

@@ -16,10 +16,10 @@ import {
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 export const getNewAlignmentState = () => ({
-  curriculum: undefined,
-  curriculumId: undefined,
-  subject: undefined,
-  grades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : undefined,
+  curriculum: "",
+  curriculumId: "",
+  subject: "",
+  grades: [],
   domains: []
 });
 

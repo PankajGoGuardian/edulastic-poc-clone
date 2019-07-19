@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
@@ -676,15 +676,9 @@ export function* updateItemSaga({ payload }) {
     });
     const alignments = yield select(getDictionariesAlignmentsSelector);
     const { standards } = alignments[0];
+    // to update recent standards used in local storage and store
     let recentStandardsList = yield select(getRecentStandardsListSelector);
-    for (const newStandard of standards) {
-      const isStandardPresent = recentStandardsList.some(recentStandard => recentStandard._id === newStandard._id);
-      if (isStandardPresent) {
-        continue;
-      }
-      recentStandardsList.unshift(newStandard);
-      recentStandardsList = recentStandardsList.slice(0, 10);
-    }
+    recentStandardsList = uniqBy([...recentStandardsList, ...standards], i => i._id).slice(-10);
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
     yield call(message.success, "Item is saved as draft", 2);

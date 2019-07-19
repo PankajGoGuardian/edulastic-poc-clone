@@ -137,7 +137,14 @@ class DisneyCardContainer extends Component {
         /**
          * for differentiating archived students
          */
-        const enrollMentFlag = enrollmentStatus[student.studentId] === 0 ? <ExclamationMark /> : "";
+        const enrollMentFlag =
+          enrollmentStatus[student.studentId] !== 0 ? (
+            <span title="Not Enrolled">
+              <ExclamationMark />
+            </span>
+          ) : (
+            ""
+          );
         const studentData = (
           <StyledCard data-cy={`student-card-${name}`} bordered={false} key={index}>
             <PaginationInfoF>

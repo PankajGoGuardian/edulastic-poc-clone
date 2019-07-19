@@ -4,3 +4,10 @@ export const getFormattedTimeInMins = secs => {
   const avgTimeMins = `${totalMins < 10 ? "0" : ""}${totalMins}:${totalSecs < 10 ? "0" : ""}${totalSecs}`;
   return avgTimeMins;
 };
+
+export const getSecondsFormattedTimeInMins = secs => {
+  const totalMins = Math.floor(secs / 60);
+  const totalSecs = Math.floor(secs - totalMins * 60);
+  const avgTimeMins = `${totalMins < 10 ? "0" : ""}${totalMins}:${totalSecs < 10 ? "0" : ""}${totalSecs}`;
+  return avgTimeMins;
+};

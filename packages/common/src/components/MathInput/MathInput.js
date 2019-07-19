@@ -172,7 +172,7 @@ class MathInput extends React.PureComponent {
     } = this.props;
 
     return (
-      <MathInputStyles fullWidth={fullWidth} className={className}>
+      <MathInputStyles fullWidth={fullWidth} width={style.width} className={className}>
         <div
           ref={this.containerRef}
           onFocus={() => {

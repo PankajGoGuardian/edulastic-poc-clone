@@ -82,18 +82,18 @@ class MainSetting extends Component {
     };
   }
 
-  static getDerivedStateFromProps(nextProps, nextState) {
+  static getDerivedStateFromProps(nextProps) {
     const { features, entity } = nextProps;
     const { grades, subjects } = entity;
     if (
-      features["assessmentSuperPowersReleaseScorePremium"] === false &&
-      grades &&
-      subjects &&
-      isFeatureAccessible({
-        features: features,
-        inputFeatures: "assessmentSuperPowersReleaseScorePremium",
-        gradeSubject: { grades, subjects }
-      })
+      features["assessmentSuperPowersReleaseScorePremium"] ||
+      (grades &&
+        subjects &&
+        isFeatureAccessible({
+          features: features,
+          inputFeatures: "assessmentSuperPowersReleaseScorePremium",
+          gradeSubject: { grades, subjects }
+        }))
     ) {
       return {
         _releaseGradeKeys: releaseGradeKeys

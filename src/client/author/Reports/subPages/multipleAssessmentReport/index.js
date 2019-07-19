@@ -10,6 +10,7 @@ import navigation from "../../common/static/json/navigation.json";
 
 import MultipleAssessmentReportFilters from "./common/components/filters";
 import PeerProgressAnalysis from "./PeerProgressAnalysis";
+import StudentProgress from "./StudentProgress";
 
 export const MultipleAssessmentReportContainer = props => {
   const [settings, setSettings] = useState({
@@ -90,6 +91,11 @@ export const MultipleAssessmentReportContainer = props => {
         exact
         path={`/author/reports/peer-progress-analysis/test/:testId?`}
         render={_props => <PeerProgressAnalysis {..._props} settings={settings} />}
+      />
+      <Route
+        exact
+        path={`/author/reports/student-progress/test/:testId?`}
+        render={_props => <StudentProgress {..._props} settings={settings} />}
       />
     </>
   );

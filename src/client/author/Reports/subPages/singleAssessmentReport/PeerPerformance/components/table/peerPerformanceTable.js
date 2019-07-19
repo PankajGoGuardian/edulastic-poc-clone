@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { Row, Col } from "antd";
+import { sumBy } from "lodash";
 import next from "immer";
 import { StyledTable } from "../styled";
 import { StyledH3 } from "../../../../../common/styled";
@@ -129,6 +130,11 @@ export const PeerPerformanceTable = ({
     );
   };
 
+  const tableData = useMemo(() => {
+    let arr = dataSource.filter(item => filter[item[compareBy]] || Object.keys(filter).length === 0);
+    return arr;
+  }, [dataSource, filter]);
+
   let colouredCellsNo = 0;
 
   _columns = next(columns, arr => {
@@ -149,7 +155,19 @@ export const PeerPerformanceTable = ({
       bandInfo.sort((a, b) => {
         return a.threshold - b.threshold;
       });
+
+      const allBandCols = {};
+      for (let band of bandInfo) {
+        let name = band.name;
+        const sum = sumBy(tableData, o => o[name + "Percentage"]);
+        allBandCols[name + "Percentage"] = sum !== 0;
+      }
+
+      let validBandCols = 0;
       for (let [index, value] of bandInfo.entries()) {
+        if (!allBandCols[value.name + "Percentage"]) {
+          continue;
+        }
         arr.push({
           title: value.name,
           dataIndex: value.name,
@@ -157,24 +175,15 @@ export const PeerPerformanceTable = ({
           width: 250,
           render: colorCell("fill_" + index, value.name, value.name)
         });
+        validBandCols++;
       }
-      colouredCellsNo = bandInfo.length;
+      colouredCellsNo = validBandCols;
     }
     arr[arr.length - 1].sorter = sortNumbers(arr[arr.length - 1].key);
     if (role === "teacher" && compareBy === "groupId") {
       arr.splice(1, 2);
     }
   });
-
-  const tableData = useMemo(() => {
-    let arr = dataSource.filter((item, index) => {
-      if (filter[item[compareBy]] || Object.keys(filter).length === 0) {
-        return true;
-      }
-      return false;
-    });
-    return arr;
-  }, [dataSource, filter]);
 
   return (
     <div>

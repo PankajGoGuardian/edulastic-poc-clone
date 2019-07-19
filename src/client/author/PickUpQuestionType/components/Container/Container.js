@@ -69,7 +69,7 @@ class Container extends Component {
     const { testId, itemId, id } = match.params;
 
     if (data.type === questionType.COMBINATION_MULTIPART) {
-      convertToMultipart({ isTestFlow, itemId: itemId || id });
+      convertToMultipart({ isTestFlow, itemId: itemId || id, testId });
       return;
     }
     // FIXME: Weird! connect not working properly. setQuestion not available as a prop

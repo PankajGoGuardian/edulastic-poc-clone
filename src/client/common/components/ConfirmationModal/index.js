@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Button, Modal } from "antd";
 import {
   StyledCol,
-  StyledP,
+  StyledDiv,
   StyledInput,
   LightGreenSpan,
   ModalWrapper,
@@ -31,6 +31,7 @@ const ConfirmationModal = ({
       width="750px"
       title={title}
       onCancel={onCancel}
+      destroyOnClose={true}
       maskClosable={false}
       footer={[
         <ModalFooter>
@@ -46,11 +47,11 @@ const ConfirmationModal = ({
       <InitOptions>
         <Row>
           <Col span={24}>
-            <StyledP>{bodyText}</StyledP>
-            <StyledP>
+            <StyledDiv>{bodyText}</StyledDiv>
+{!bodyText && (<StyledDiv>
               {canUndone ? "" : "This action can NOT be undone."} If you are sure, please type{" "}
               <LightGreenSpan>{expectedVal}</LightGreenSpan> in the space below
-            </StyledP>
+            </StyledDiv>)}
           </Col>
         </Row>
         <Row>

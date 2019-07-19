@@ -15,7 +15,8 @@ import {
   addItemsQuestionAction,
   deleteQuestionAction,
   SET_QUESTION_SCORE,
-  changeCurrentQuestionAction
+  changeCurrentQuestionAction,
+  UPDATE_QUESTION
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
@@ -209,6 +210,11 @@ export const getIsNewItemSelector = createSelector(
 export const getItemDetailSelector = createSelector(
   stateSelector,
   state => state.item || {}
+);
+
+export const getItemSelector = createSelector(
+  stateSelector,
+  state => state.item
 );
 
 export const isSingleQuestionViewSelector = createSelector(
@@ -452,6 +458,29 @@ export function reducer(state = initialState, { type, payload }) {
     case SET_ITEM_DETAIL_SCORE:
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
 
+    case UPDATE_QUESTION:
+      /**
+       * since we are enabling scoring block on single
+       * questions even with itemLevelScoring
+       *  we need to update the itemLevel score on scoring block change.
+       * But only need to do under certain conditions
+       */
+      const itemLevelScoring = get(state, "item.itemLevelScoring");
+      const updatingScore = get(payload, "validation.valid_response.score");
+      const newQuestionTobeAdded = !get(state, "item.data.questions", []).find(x => x.id === payload.id);
+      let canUpdateItemLevelScore = false;
+      const questionsLength = get(state, "item.data.questions.length", 0);
+      if (questionsLength === 0) {
+        canUpdateItemLevelScore = true;
+      } else if (questionsLength === 1 && !newQuestionTobeAdded) {
+        canUpdateItemLevelScore = true;
+      }
+      if (itemLevelScoring && canUpdateItemLevelScore) {
+        return { ...state, item: { ...state.item, itemLevelScore: updatingScore } };
+      } else {
+        return state;
+      }
+
     case ADD_QUESTION:
       if (!payload.validation) return state; // do not set itemLevelScore for resources
       return {
@@ -592,7 +621,6 @@ function* receiveItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
-    const newItem = yield select(getIsNewItemSelector);
     const { addToTest } = payload;
     if (!payload.keepData) {
       // avoid data part being put into db
@@ -644,11 +672,7 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-    if (newItem) {
-      yield call(message.success, "create new item is success", "Success");
-    } else {
-      yield call(message.success, "Update item by id is success", "Success");
-    }
+    yield call(message.success, "Item is saved as draft", 2);
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
@@ -674,7 +698,7 @@ export function* updateItemSaga({ payload }) {
     }
   } catch (err) {
     console.error(err);
-    const errorMessage = "Update item by id is failing";
+    const errorMessage = "Item save is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
@@ -767,7 +791,7 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex } }) {
 
 function* convertToMultipartSaga({ payload }) {
   try {
-    const { isTestFlow = false, itemId } = payload;
+    const { isTestFlow = false, itemId, testId } = payload;
 
     yield saveTestItemSaga();
     const nextPageUrl = isTestFlow

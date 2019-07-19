@@ -151,6 +151,13 @@ const fetchPeerProgressAnalysisReport = params => {
   });
 };
 
+const fetchStudentProgressReport = params => {
+  return api.callApi({
+    url: `/report/student-progress`,
+    params
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -169,5 +176,6 @@ export default {
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,
   fetchQuestionAnalysisReport,
-  fetchPeerProgressAnalysisReport
+  fetchPeerProgressAnalysisReport,
+  fetchStudentProgressReport
 };

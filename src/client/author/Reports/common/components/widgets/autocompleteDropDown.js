@@ -158,6 +158,9 @@ const StyledDiv = styled.div`
   button {
     white-space: pre-wrap;
   }
+  input {
+    cursor: pointer;
+  }
 `;
 
 const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`

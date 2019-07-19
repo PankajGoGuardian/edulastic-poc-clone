@@ -17,6 +17,8 @@ import { getFeedbackResponseSelector, getStatus, getErrorResponse } from "../../
 
 const { TextArea } = Input;
 
+const adaptiveRound = x => (x && x.endsWith ? (x.endsWith(".") ? x : round(x, 2)) : round(x, 2));
+
 const showNotification = (type, msg) => {
   message.open({ type, content: msg });
   return {
@@ -42,7 +44,6 @@ class FeedbackRight extends Component {
   ) {
     let newState = {};
     const { submitted, feedback, score, maxScore, changed } = preState || {};
-
     if (!waitingResponse && successFullMessage && submitted) {
       const [type, content] = successFullMessage ? ["success", successFullMessage] : ["error", errorMessage];
       newState = showNotification(type, content);
@@ -185,7 +186,9 @@ class FeedbackRight extends Component {
               data-cy="scoreInput"
               onChange={this.onChangeScore}
               onBlur={this.preCheckSubmit}
-              value={activity && activity.graded === false && activity.score === 0 && !score ? "" : round(score, 2)}
+              value={
+                activity && activity.graded === false && activity.score === 0 && !score ? "" : adaptiveRound(score)
+              }
               disabled={!activity || isPresentationMode}
               innerRef={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
@@ -207,9 +210,6 @@ class FeedbackRight extends Component {
             />
           </Fragment>
         )}
-        <UpdateButton data-cy="updateButton" disabled={!activity || submitted} onClick={this.preCheckSubmit}>
-          UPDATE
-        </UpdateButton>
       </StyledCardTwo>
     );
   }

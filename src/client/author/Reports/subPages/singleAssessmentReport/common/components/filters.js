@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Row, Col, Button } from "antd";
 import { get, isEmpty } from "lodash";
 import queryString from "query-string";
+import qs from "qs";
 
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
@@ -48,7 +49,8 @@ const SingleAssessmentReportFilters = ({
   onGoClick: _onGoClick,
   location,
   className,
-  style
+  style,
+  history
 }) => {
   const [prevSARFilterData, setPrevSARFilterData] = useState(null);
 
@@ -74,8 +76,10 @@ const SingleAssessmentReportFilters = ({
   });
 
   useEffect(() => {
+    const search = queryString.parse(location.search);
+    const termId = search.termId || (schoolYear.length ? schoolYear[0].key : "");
     let q = {
-      termId: schoolYear.length ? schoolYear[0].key : ""
+      termId
     };
     getSARFilterDataRequestAction(q);
   }, []);
@@ -87,7 +91,6 @@ const SingleAssessmentReportFilters = ({
     search.testId = getTestIdFromURL(location.pathname);
 
     dropDownData = getDropDownData(SARFilterData, user);
-
     const urlSchoolYear =
       schoolYear.find((item, index) => item.key === search.termId) ||
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
@@ -146,7 +149,6 @@ const SingleAssessmentReportFilters = ({
     processedTestIds = processTestIds(dropDownData, obtainedFilters, urlTestId.key, role);
 
     let urlParams = { ...obtainedFilters };
-
     let filteredUrlTestId = urlTestId.key;
     if (urlTestId.key !== processedTestIds.validTestId || urlTestId.key === "") {
       filteredUrlTestId = processedTestIds.testIds.length ? processedTestIds.testIds[0].key : "";
@@ -192,11 +194,18 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateSchoolYearDropDownCB = selected => {
-    let obj = {
-      ...filters,
+    let pathname = location.pathname;
+    let splitted = pathname.split("/");
+    splitted.splice(splitted.length - 1);
+    let newPathname = splitted.join("/") + "/";
+    let _filters = { ...filters };
+    _filters.termId = selected.key;
+    history.push(newPathname + "?" + qs.stringify(_filters));
+
+    let q = {
       termId: selected.key
     };
-    setFiltersAction(obj);
+    getSARFilterDataRequestAction(q);
   };
   const updateSubjectDropDownCB = selected => {
     let obj = {

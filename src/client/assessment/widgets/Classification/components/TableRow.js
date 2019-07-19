@@ -63,53 +63,45 @@ const TableRow = ({
       );
     }
     cols.push(
-      <Column
-        data-cy={`drag-drop-board-${index}`}
-        id={`drag-drop-board-${index}`}
-        key={index}
-        rowTitles={rowTitles}
-        colCount={colCount}
-      >
-        <ResponseRnd question={item} height={height} index={index} isResizable={isResizable}>
-          {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
-            <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
-          ) : null}
-          <DropContainer
-            style={{
-              ...styles.columnContainerStyle,
-              justifyContent: "center"
-            }}
-            drop={drop}
-            index={index}
-            flag="column"
-          >
-            {Array.isArray(answers) &&
-              Array.isArray(answers[index]) &&
-              answers[index].length > 0 &&
-              // eslint-disable-next-line no-loop-func
-              answers[index].map((answerValue, answerIndex) => {
-                validIndex++;
-                return (
-                  <DragItem
-                    isTransparent={isTransparent}
-                    dragHandle={dragHandle}
-                    valid={validArray && validArray[validIndex]}
-                    preview={preview}
-                    key={answerIndex}
-                    renderIndex={possible_responses.indexOf(answerValue)}
-                    onDrop={onDrop}
-                    item={answerValue}
-                    disableResponse={disableResponse}
-                  />
-                );
-              })}
-          </DropContainer>
-        </ResponseRnd>
-      </Column>
+      <ResponseRnd question={item} height="auto" index={index} isResizable={isResizable}>
+        {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
+          <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
+        ) : null}
+        <DropContainer
+          style={{
+            ...styles.columnContainerStyle,
+            justifyContent: "center"
+          }}
+          drop={drop}
+          index={index}
+          flag="column"
+        >
+          {Array.isArray(answers) &&
+            Array.isArray(answers[index]) &&
+            answers[index].length > 0 &&
+            // eslint-disable-next-line no-loop-func
+            answers[index].map((answerValue, answerIndex) => {
+              validIndex++;
+              return (
+                <DragItem
+                  isTransparent={isTransparent}
+                  dragHandle={dragHandle}
+                  valid={validArray && validArray[validIndex]}
+                  preview={preview}
+                  key={answerIndex}
+                  renderIndex={possible_responses.indexOf(answerValue)}
+                  onDrop={onDrop}
+                  item={answerValue}
+                  disableResponse={disableResponse}
+                />
+              );
+            })}
+        </DropContainer>
+      </ResponseRnd>
     );
   }
 
-  return <div style={{ display: "flex" }}>{cols}</div>;
+  return <div style={{ position: "relative", width: "100%", height: "100%", overflowX: "auto" }}>{cols}</div>;
 };
 
 TableRow.propTypes = {

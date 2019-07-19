@@ -2013,6 +2013,11 @@ span.token.active-word {
   border-color: #00ad50;
 }
 
+.ant-btn:hover,
+.ant-btn:focus {
+  border-color: #00ad50;
+}
+
 .ant-tabs-nav .ant-tabs-tab-active,
 .ant-tabs-nav .ant-tabs-tab:hover {
   color: #00ad50;

@@ -113,7 +113,8 @@ const checkUser = payload => {
     .callApi({
       url: `${prefix}/username-email/`,
       params: {
-        username: `${payload.username}`
+        username: `${payload.username}`,
+        districtId: `${payload.districtId}`
       },
       method: "get"
     })

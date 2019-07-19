@@ -212,10 +212,8 @@ class DistrictPolicyForm extends Component {
       allowDomainForSchoolValidate
     } = this.state;
 
-    let thirdPartyValue = -1;
-    if (districtPolicy.googleClassroom) thirdPartyValue = 1;
-    else if (districtPolicy.canvas) thirdPartyValue = 2;
-
+    let thirdPartyValue = 1;
+    if (districtPolicy.canvas) thirdPartyValue = 2;
     let saveBtnStr = "Create";
     if (districtPolicy.hasOwnProperty("_id")) {
       saveBtnStr = "Save";

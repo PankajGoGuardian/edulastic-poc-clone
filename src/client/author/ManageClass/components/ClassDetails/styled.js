@@ -233,6 +233,12 @@ export const FieldValue = styled.div`
   }
 `;
 
+export const FieldLabel = styled.section`
+  min-width: 150px;
+  text-align: right;
+  margin-right: 15px;
+`;
+
 export const StudentContent = styled.div``;
 
 export const NoStudents = styled.div`

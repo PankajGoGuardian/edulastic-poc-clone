@@ -22,7 +22,7 @@ const BasicFields = ({
   ...restProps
 }) => {
   if (!isEmpty(stds[0])) {
-    var { email, firstName, lastName } = stds[0];
+    var { email, firstName, lastName, username, googleId, canvasId, cliId, cleverId } = stds[0];
   }
 
   const [enroll, setEnroll] = useState(false);
@@ -54,17 +54,18 @@ const BasicFields = ({
       });
       setEnroll(false);
     }
-
     const result = await userApi.checkUser({
-      username: value
+      username: value,
+      districtId
     });
 
     let errorMsg = "";
     if (result.length > 0) {
       let foundUser = result[0];
-      const sameClassStudents = students.filter(student => student._id == foundUser._id);
-
-      if (sameClassStudents.length) {
+      const isExistingStudent = students.find(
+        student => student._id == foundUser._id && student.enrollmentStatus === "1"
+      );
+      if (isExistingStudent) {
         errorMsg = "User already part of this class section";
       } else {
         let isSameDistrict = foundUser.districtId == districtId;
@@ -111,8 +112,8 @@ const BasicFields = ({
           <Form.Item>
             {getFieldDecorator("email", {
               rules: [...commonEmailValidations],
-              initialValue: email
-            })(<Input placeholder="Enter Username" />)}
+              initialValue: email || username
+            })(<Input placeholder="Enter Username" disabled={googleId || canvasId || cliId || cleverId} />)}
           </Form.Item>
         </Field>
       )}

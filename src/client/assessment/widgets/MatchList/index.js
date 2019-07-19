@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 
 import { replaceVariables } from "../../utils/variables";
 import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
-
+import { changePreviewAction } from "../../../author/src/actions/view";
 import MatchListPreview from "./MatchListPreview";
 import MatchListEdit from "./MatchListEdit";
 
@@ -48,6 +48,9 @@ MatchList.defaultProps = {
   cleanSections: () => {}
 };
 
-const MatchListContainer = connect(({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }))(MatchList);
+const MatchListContainer = connect(
+  ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+  { changePreview: changePreviewAction }
+)(MatchList);
 
 export { MatchListContainer as MatchList };

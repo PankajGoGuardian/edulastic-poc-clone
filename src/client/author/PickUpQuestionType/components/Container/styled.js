@@ -11,7 +11,8 @@ import {
   IconSelection,
   IconTarget,
   IconRulerPencil,
-  IconPlay
+  IconPlay,
+  IconMultipart
 } from "@edulastic/icons";
 import { mobileWidth, desktopWidth, themeColor, textColor } from "@edulastic/colors";
 import Modal from "react-responsive-modal";
@@ -173,6 +174,13 @@ export const EditIcon = styled(IconEdit)`
 `;
 
 export const MathIcon = styled(IconMath)`
+  fill: #434b5d;
+  width: 21px !important;
+  height: 21px !important;
+  margin-right: 27px;
+`;
+
+export const MultipartIcon = styled(IconMultipart)`
   fill: #434b5d;
   width: 21px !important;
   height: 21px !important;

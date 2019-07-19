@@ -11,25 +11,15 @@ const CorrectAnswerBoxLayout = ({
   hasGroupResponses,
   fontSize,
   userAnswers,
-  altResponses,
+  altAnsIndex,
   cleanValue,
   groupResponses,
   btnStyle,
   t
 }) => {
   let results;
-  if (altResponses) {
-    const alternateAnswers = {};
-    altResponses.forEach(altAnswer => {
-      altAnswer.value.forEach((alt, index) => {
-        alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
-        if (alt) {
-          alternateAnswers[index + 1].push(alt);
-        }
-      });
-    });
-    results = Object.keys(alternateAnswers).map(key => alternateAnswers[key].join());
-  } else if (hasGroupResponses) {
+
+  if (hasGroupResponses) {
     results = {};
     userAnswers.forEach(userAnswer => {
       if (results[userAnswer.group] === undefined) {
@@ -61,7 +51,7 @@ const CorrectAnswerBoxLayout = ({
   return (
     <StyledCorrectAnswerbox fontSize={fontSize}>
       <CorrectAnswerTitle>
-        {altResponses ? t("component.cloze.altAnswers") : t("component.cloze.correctAnswer")}
+        {altAnsIndex ? `${t("component.cloze.altAnswers")} ${altAnsIndex}` : t("component.cloze.correctAnswer")}
       </CorrectAnswerTitle>
       <div>
         {hasGroupResponses &&
@@ -98,7 +88,7 @@ CorrectAnswerBoxLayout.propTypes = {
   t: PropTypes.func.isRequired,
   cleanValue: PropTypes.bool,
   btnStyle: PropTypes.object,
-  altResponses: PropTypes.object
+  altAnsIndex: PropTypes.number
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -107,7 +97,7 @@ CorrectAnswerBoxLayout.defaultProps = {
   fontSize: "13px",
   userAnswers: [],
   cleanValue: false,
-  altResponses: null,
+  altAnsIndex: 0,
   btnStyle: {}
 };
 

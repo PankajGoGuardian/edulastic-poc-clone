@@ -2,9 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Select, Col } from "antd";
 
-import { IconHeart, IconShare, IconWorldWide } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
+import { ChromePicker } from "react-color";
 import { selectsData } from "../../../common";
 import {
   SummaryInput,
@@ -15,7 +15,6 @@ import {
   SummaryButton
 } from "../../common/SummaryForm";
 import { Block, MainTitle, MetaTitle, AnalyticsItem, ErrorWrapper } from "./styled";
-import { ChromePicker } from "react-color";
 
 import { ColorPickerContainer } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer";
 import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";
@@ -47,7 +46,8 @@ const Sidebar = ({
   onChangeColor,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
-  windowWidth
+  windowWidth,
+  isEditable
 }) => {
   const subjectsList = selectsData.allSubjects.slice(1);
   return (
@@ -60,6 +60,7 @@ const Sidebar = ({
           windowWidth={windowWidth}
           analytics={analytics}
           onChangeField={onChangeField}
+          isEditable={isEditable}
         />
         <MainTitle>{isPlaylist ? "Play List Name" : "Assessment Name"}</MainTitle>
         <SummaryInput

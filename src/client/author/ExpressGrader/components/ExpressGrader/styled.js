@@ -15,10 +15,12 @@ export const PaginationInfo = styled.span`
   }
 `;
 
+export const ExpressGraderDetailContainer = styled.div`
+  width: 100%;
+  padding: 20px 30px;
+`;
+
 export const StyledFlexContainer = styled(FlexContainer)`
-  margin: 30px auto;
-  width: 95%;
-  @media (max-width: ${mobileWidth}) {
-    margin: 15px auto;
-  }
+  margin-bottom: 20px;
+  width: 100%;
 `;

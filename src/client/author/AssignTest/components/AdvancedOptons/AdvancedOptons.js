@@ -1,14 +1,17 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { curry } from "lodash";
-import { Col, Icon, message } from "antd";
+import * as moment from "moment";
+import { Col, Icon } from "antd";
 import ClassList from "./ClassList";
 import DatePolicySelector from "./DatePolicySelector";
 import Settings from "../SimpleOptions/Settings";
 import { OptionConationer, InitOptions, StyledRowLabel, SettingsBtn, ClassSelectorLabel } from "./styled";
-import * as moment from "moment";
-import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+import { getUserFeatures } from "../../../../student/Login/ducks";
+import { releaseGradeKeys, nonPremiumReleaseGradeKeys } from "../SimpleOptions/SimpleOptions";
 
 class AdvancedOptons extends React.Component {
   static propTypes = {
@@ -21,8 +24,32 @@ class AdvancedOptons extends React.Component {
     super(props);
     this.state = {
       showSettings: false,
-      classIds: []
+      classIds: [],
+      _releaseGradeKeys: nonPremiumReleaseGradeKeys
     };
+  }
+
+  static getDerivedStateFromProps(nextProps) {
+    const { features, testSettings } = nextProps;
+    const { grades, subjects } = testSettings || {};
+    if (
+      features["assessmentSuperPowersReleaseScorePremium"] ||
+      (grades &&
+        subjects &&
+        isFeatureAccessible({
+          features: features,
+          inputFeatures: "assessmentSuperPowersReleaseScorePremium",
+          gradeSubject: { grades, subjects }
+        }))
+    ) {
+      return {
+        _releaseGradeKeys: releaseGradeKeys
+      };
+    } else {
+      return {
+        _releaseGradeKeys: nonPremiumReleaseGradeKeys
+      };
+    }
   }
 
   toggleSettings = () => {
@@ -70,10 +97,9 @@ class AdvancedOptons extends React.Component {
 
   render() {
     const { testSettings = {}, assignment, updateOptions } = this.props;
-    const { showSettings, classIds } = this.state;
+    const { showSettings, classIds, _releaseGradeKeys } = this.state;
     const changeField = curry(this.onChange);
 
-    const gradeSubject = { grades: testSettings.grades, subjects: testSettings.subjects };
     return (
       <OptionConationer>
         <InitOptions>
@@ -83,22 +109,15 @@ class AdvancedOptons extends React.Component {
             openPolicy={assignment.openPolicy}
             closePolicy={assignment.closePolicy}
             changeField={changeField}
+            testType={assignment.testType || testSettings.testType}
           />
-
-          <FeaturesSwitch
-            inputFeatures="addCoTeacher"
-            actionOnInaccessible="hidden"
-            key="addCoTeacher"
-            gradeSubject={gradeSubject}
-          >
-            <StyledRowLabel gutter={16}>
-              <Col>
-                <SettingsBtn onClick={this.toggleSettings} isVisible={showSettings}>
-                  OVERRIDE TEST SETTINGS {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                </SettingsBtn>
-              </Col>
-            </StyledRowLabel>
-          </FeaturesSwitch>
+          <StyledRowLabel gutter={16}>
+            <Col>
+              <SettingsBtn onClick={this.toggleSettings} isVisible={showSettings}>
+                OVERRIDE TEST SETTINGS {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+              </SettingsBtn>
+            </Col>
+          </StyledRowLabel>
 
           {showSettings && (
             <Settings
@@ -106,6 +125,7 @@ class AdvancedOptons extends React.Component {
               updateAssignmentSettings={updateOptions}
               changeField={changeField}
               testSettings={testSettings}
+              _releaseGradeKeys={_releaseGradeKeys}
               isAdvanced
             />
           )}
@@ -125,4 +145,6 @@ class AdvancedOptons extends React.Component {
   }
 }
 
-export default AdvancedOptons;
+export default connect(state => ({
+  features: getUserFeatures(state)
+}))(AdvancedOptons);

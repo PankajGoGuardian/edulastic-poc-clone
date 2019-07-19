@@ -1,15 +1,22 @@
 import { Row, Col, Divider, Icon, Button } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
-import { white, lightBlue3 } from "@edulastic/colors";
+import { white, themeColorLight } from "@edulastic/colors";
 
 export const SliderButton = styled(Button)`
   width: 40px;
   height: 40px;
-  color: ${white} !important;
   border-radius: 50px 0 0 50px;
-  background: ${lightBlue3} !important;
+  background: ${themeColorLight};
+  border-color: ${themeColorLight} !important;
+  color: ${white};
   cursor: pointer;
+  margin-top: 3px;
+  &:hover,
+  &:focus {
+    background: ${themeColorLight};
+    color: ${white};
+  }
 `;
 export const SideContentContainer = styled.div`
   display: flex;

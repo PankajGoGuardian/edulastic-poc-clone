@@ -72,7 +72,7 @@ class AddStudentModal extends React.Component {
         </ActionButton>
 
         <ActionButton onClick={isUpdate ? this.enrollStudent : handleAdd} type="primary">
-          {isUpdate ? "Yes, Enroll Student" : "Yes, Add Student"}
+          {isUpdate ? "Yes, Enroll Student" : isEdit ? "Yes, Update" : "Yes, Add Student"}
 
           <Icon type="right" />
         </ActionButton>
@@ -123,6 +123,7 @@ class AddStudentModal extends React.Component {
                   getFieldValue={getFieldValue}
                   std={std}
                   isEdit={isEdit}
+                  stds={stds}
                 />
               </Panel>
             </Collapse>

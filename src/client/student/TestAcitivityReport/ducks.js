@@ -1,10 +1,10 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { takeEvery, put, call, all, select } from "redux-saga/effects";
+import { push } from "react-router-redux";
 import { reportsApi, testsApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { getReportByIdSelector } from "../sharedDucks/ReportsModule/ducks";
-import { push } from "react-router-redux";
-import { SET_ANSWER, LOAD_ANSWERS } from "../../assessment/constants/actions";
+import { ADD_ITEM_EVALUATION, LOAD_ANSWERS } from "../../assessment/constants/actions";
 import { replaceTestItemsAction } from "../../author/TestPage/ducks";
 // types
 export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
@@ -44,6 +44,17 @@ function* loadTestActivityReport({ payload }) {
         [item.qid]: item.userResponse
       };
     });
+
+    yield put({
+      type: ADD_ITEM_EVALUATION,
+      payload: {
+        ...questionActivities.reduce((result, item) => {
+          result[item.qid] = item.evaluation;
+          return result;
+        }, {})
+      }
+    });
+
     // load previous responses
     yield put({
       type: LOAD_ANSWERS,

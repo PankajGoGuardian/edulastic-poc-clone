@@ -52,7 +52,6 @@ function* saveQuestionSaga() {
   try {
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
-
     let currentQuestionIds = getQuestionIds(itemDetail);
     const { rowIndex, tabIndex } = history.location.state || {};
     const { id } = question;
@@ -93,8 +92,7 @@ function* saveQuestionSaga() {
       payload: { item }
     });
 
-    yield call(message.success, "Update item by id is success", "Success");
-
+    yield call(message.success, "Item is saved as draft", 2);
     if (itemDetail) {
       yield call(history.push, {
         pathname: `/author/items/${itemDetail._id}/item-detail`,

@@ -98,6 +98,7 @@ const MathFormula = ({
         <Wrapper style={{ height: "100%", overflow: "visible" }}>
           <MathFormulaPreview
             type={previewTab}
+            testItem={testItem}
             studentTemplate={studentTemplate}
             item={itemForPreview}
             saveAnswer={saveAnswer}
@@ -117,6 +118,7 @@ const MathFormula = ({
 
 MathFormula.propTypes = {
   view: PropTypes.string.isRequired,
+  changePreview: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,

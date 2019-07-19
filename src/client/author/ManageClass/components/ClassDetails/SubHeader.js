@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { greyDarken, greenDark } from "@edulastic/colors";
@@ -7,17 +7,24 @@ import { ContainerHeader, LeftContent, RightContent, TitleWarapper, StyledIcon, 
 import { message } from "antd";
 import GoogleLogin from "react-google-login";
 import { IconGoogleClassroom } from "@edulastic/icons";
-
+import ConfirmationModal from "../../../.././common/components/ConfirmationModal";
 const SubHeader = ({
   name,
   districtName,
   institutionName,
   code,
+  _id,
+  active,
+  districtId,
   syncGCModal,
   allowGoogleLogin,
   fetchClassList,
-  isUserGoogleLoggedIn
+  isUserGoogleLoggedIn,
+  archiveClass
 }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [modalInputVal, setModalInputVal] = useState("");
+
   const scopes = [
     "https://www.googleapis.com/auth/classroom.courses",
     "https://www.googleapis.com/auth/classroom.rosters",
@@ -39,6 +46,19 @@ const SubHeader = ({
     message.error("Google login failed");
     console.log("error", err);
   };
+
+  const handleArchiveClass = () => {
+    console.log("class id", _id, districtId);
+    archiveClass({ _id, districtId });
+    setShowModal(false);
+  };
+  const handleArchiveClassCancel = () => {
+    setShowModal(false);
+  };
+  const handleModalInput = e => {
+    setModalInputVal(e.target.value);
+  };
+
   return (
     <ContainerHeader>
       <LeftContent>
@@ -49,7 +69,7 @@ const SubHeader = ({
           <div>{name}</div>
 
           <p>
-            {districtName},{institutionName}
+            {districtName}, {institutionName}
           </p>
         </TitleWarapper>
       </LeftContent>
@@ -83,8 +103,27 @@ const SubHeader = ({
               responseType="code"
             />
           ))}
-        <StyledIcon type="user" fill={greenDark} />
-        <StyledIcon type="delete" fill={greyDarken} />
+        {/* hiding icons as of now, after functinality is added these icons will be displayed */}
+        {/* <StyledIcon type="user" fill={greenDark} />*/}
+        {active === 1 && <StyledIcon type="delete" fill={greyDarken} onClick={() => setShowModal(true)} />}
+        {showModal && (
+          <ConfirmationModal
+            title="Archive Class"
+            show={showModal}
+            onOk={handleArchiveClass}
+            onCancel={handleArchiveClassCancel}
+            inputVal={modalInputVal}
+            onInputChange={handleModalInput}
+            expectedVal="ARCHIVE"
+            bodyText={
+              <div>
+                Are you sure you want to archive the class -{" "}
+                <span style={{ color: "#4ca4e8", fontSize: "16px" }}>{code}</span>{" "}
+              </div>
+            }
+            okText="Yes,Archive"
+          />
+        )}
         <ClassCode>
           Class Code: <span>{code}</span>
         </ClassCode>

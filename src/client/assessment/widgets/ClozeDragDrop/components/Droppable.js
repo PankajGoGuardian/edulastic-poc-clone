@@ -21,14 +21,17 @@ function collectTarget(connector, monitor) {
   };
 }
 
-const Droppable = ({ connectDropTarget, children, style }) =>
+const Droppable = ({ connectDropTarget, children, style, isOver }) =>
   connectDropTarget(
     <div
       style={{
         top: -5,
         display: "inline-flex",
         verticalAlign: "middle",
-        ...style
+        borderRadius: 10,
+        border: "2px dotted",
+        ...style,
+        ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
       }}
     >
       {children}

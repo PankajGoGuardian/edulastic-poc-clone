@@ -4,9 +4,9 @@ import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 
 import { MoveLink } from "@edulastic/common";
-
-import ItemTypes from "../../../../ItemList/components/Item/ItemTypes";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
+import { getQuestionType } from "../../../../dataUtils";
+import { LabelText, Label } from "../../../../ItemList/components/Item/styled";
 class MainInfoCell extends React.Component {
   constructor(props) {
     super(props);
@@ -25,19 +25,27 @@ class MainInfoCell extends React.Component {
   };
 
   render() {
-    const { data, testId, showModal, addDuplicate, isEditable = false } = this.props;
+    const { data, testId, showModal, addDuplicate, isEditable = false, checkAnswer, showAnswer } = this.props;
     const { isShowPreviewModal } = this.state;
+    const itemType = getQuestionType(data.item);
     return (
-      <div>
+      <div className="fr-view">
         <MoveLink onClick={() => this.previewItem()}>{data.stimulus}</MoveLink>
         <TypeContainer>
-          <ItemTypes item={data.item} />
+          {itemType && (
+            <Label>
+              <LabelText>{itemType}</LabelText>
+            </Label>
+          )}
         </TypeContainer>
         <PreviewModal
           isVisible={isShowPreviewModal}
           testId={testId}
           isEditable={isEditable}
           page="addItems"
+          showEvaluationButtons
+          checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
+          showAnswer={() => showAnswer(data)}
           addDuplicate={addDuplicate}
           showModal={showModal}
           onClose={this.closeModal}

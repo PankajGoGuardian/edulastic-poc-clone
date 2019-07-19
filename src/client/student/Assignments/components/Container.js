@@ -81,7 +81,13 @@ const Content = ({
     addRealtimeAssignment(transformAssignmentForRedirect(currentGroup, userId, allClasses, payload));
   };
 
-  useRealtimeV2(topics, { addAssignment: transformAssignment, addReport: addRealtimeReport });
+  useRealtimeV2(topics, {
+    addAssignment: transformAssignment,
+    addReport: addRealtimeReport,
+    "absentee-mark": addRealtimeReport,
+    "open-assignment": transformAssignment,
+    "close-assignment": transformAssignment
+  });
 
   useInterval(() => {
     if (needRealtimeDateTracking(allAssignments)) {

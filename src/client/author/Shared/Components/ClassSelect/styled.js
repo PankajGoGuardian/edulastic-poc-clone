@@ -50,21 +50,28 @@ export const StyledClassID = styled.div`
 export const StyledSelect = styled(Select)`
   width: 120px;
   display: inline-block;
-  .ant-select-selection {
-    border: 0px;
-    &:focus {
-      box-shadow: unset;
+  &.ant-select {
+    width: auto;
+    .ant-select-selection__rendered {
+      margin: 0px;
+      .ant-select-selection-selected-value {
+        padding-right: 30px;
+        font-size: 16px;
+      }
     }
-  }
-  @media (max-width: 550px) {
-    display: none;
-  }
-  @media (max-width: 1000px) {
-    display: none;
-  }
-  .ant-select-selection.ant-select-selection--single,
-  .ant-select-arrow {
-    color: #000;
-    font-weight: bold;
+    .ant-select-selection {
+      border: none;
+      &:focus {
+        box-shadow: unset;
+      }
+      .ant-select-arrow {
+        right: 0px;
+        .ant-select-arrow-icon {
+          svg {
+            fill: #434b5d;
+          }
+        }
+      }
+    }
   }
 `;

@@ -137,6 +137,34 @@ const fetchQuestionAnalysisReport = params => {
   });
 };
 
+const fetchMARFilterData = params => {
+  return api.callApi({
+    url: `/report/filter/single-assessment`,
+    params
+  });
+};
+
+const fetchPeerProgressAnalysisReport = params => {
+  return api.callApi({
+    url: `/report/peer-progress-analysis`,
+    params
+  });
+};
+
+const fetchStudentProgressReport = params => {
+  return api.callApi({
+    url: `/report/student-progress`,
+    params
+  });
+};
+
+const fetchPerformanceOverTimeReport = params => {
+  return api.callApi({
+    url: `/report/performance-over-time`,
+    params
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -149,9 +177,13 @@ export default {
   fetchPerformanceByStandard,
   fetchPerformanceByStudentsReport,
   fetchSARFilterData,
+  fetchMARFilterData,
   fetchStandardsGradebookReport,
   fetchStandardsPerformanceSummaryReport,
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,
-  fetchQuestionAnalysisReport
+  fetchQuestionAnalysisReport,
+  fetchPeerProgressAnalysisReport,
+  fetchStudentProgressReport,
+  fetchPerformanceOverTimeReport
 };

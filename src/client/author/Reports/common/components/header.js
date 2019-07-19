@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Button, Col } from "antd";
+import { Button, Col, Icon } from "antd";
 import { white, fadedGrey, themeColorLight, themeColor } from "@edulastic/colors";
 import { IconBarChart } from "@edulastic/icons";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
@@ -73,6 +73,7 @@ export const CustomizedHeaderWrapper = ({
             onClick={_onRefineResultsCB}
           >
             Refine results
+            <Icon type="caret-down" style={refineButtonActive ? { transform: "rotate(-180deg)" } : {}} />
           </StyledButton>
         ) : null}
       </StyledCol>

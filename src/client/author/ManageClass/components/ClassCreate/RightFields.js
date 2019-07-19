@@ -6,6 +6,7 @@ import { Input, Select, DatePicker } from "antd";
 import { FieldLabel } from "./components";
 import { StyledFlexContainer, StandardsValidationMSG } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -20,6 +21,7 @@ const RightFields = ({
   setSubject,
   selectedSubject,
   userOrgData,
+  clearStandards,
   ...restProps
 }) => {
   const [startDate, setStartDate] = useState(moment());
@@ -30,6 +32,7 @@ const RightFields = ({
   const endDate = term ? term.endDate : moment().add(1, "year");
   const updateSubject = e => {
     setSubject(e);
+    clearStandards();
   };
 
   const onStartDateChangeHnadler = date => {
@@ -128,25 +131,30 @@ const RightFields = ({
           )}
         </Select>
       </FieldLabel>
-
-      <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={[]}>
-        <Select
-          placeholder="Select Course"
-          showSearch
-          defaultActiveFirstOption={false}
-          showArrow={false}
-          filterOption={false}
-          onSearch={handleSearch}
-          onFocus={handleFocus}
-          notFoundContent={null}
-          loading={isSearching}
-        >
-          {courseList.map(el => (
-            <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number}`}</Select.Option>
-          ))}
-        </Select>
-      </FieldLabel>
-
+      {/* TODO: feature switch should be removed and simple show hide should be here
+        show course flag will be available in district policy
+      */}
+      <StyledFlexContainer>
+        <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
+          <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={[]}>
+            <Select
+              placeholder="Select Course"
+              showSearch
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              filterOption={false}
+              onSearch={handleSearch}
+              onFocus={handleFocus}
+              notFoundContent={null}
+              loading={isSearching}
+            >
+              {courseList.map(el => (
+                <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number}`}</Select.Option>
+              ))}
+            </Select>
+          </FieldLabel>
+        </FeaturesSwitch>
+      </StyledFlexContainer>
       {!isDropdown && (
         <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool}>
           <input type="hidden" />

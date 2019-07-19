@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { Table, Card, Progress } from "antd";
 
 import {
-  darkBlueSecondary,
   white,
   cardTitleColor,
   linkColor,
@@ -10,9 +9,7 @@ import {
   lightGrey3,
   lightBlue3,
   lightBlue4,
-  lightBlue5,
   lightGreen1,
-  greenDark,
   dashBorderColor,
   secondaryTextColor,
   lightGreySecondary,
@@ -42,7 +39,7 @@ export const MoblieSubFlexContainer = styled(MoblieFlexContainer)`
   label {
     text-transform: uppercase;
     color: ${cardTitleColor};
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     margin-bottom: 15px;
   }
@@ -75,7 +72,7 @@ export const StyledCard = styled(Card)`
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
-    padding: 30px 35px 30px 40px;
+    padding: 30px 24px;
     @media (max-width: ${mobileWidth}) {
       padding: 18px;
       width: 320px;
@@ -88,7 +85,7 @@ export const StyledCard = styled(Card)`
 
 export const ReportTitle = styled.div`
   font-family: Open Sans, Bold;
-  font-size: 22px;
+  font-size: 18px;
   color: ${secondaryTextColor};
   font-weight: 800;
   margin-bottom: 5px;
@@ -111,7 +108,7 @@ export const DetailCard = styled(StyledCard)`
 
 export const DetailCardHeader = styled.div`
   background-color: ${lightGreySecondary};
-  padding: 38px 35px 30px 40px;
+  padding: 30px 24px;
   border-radius: 10px 10px 0px 0px;
   @media (max-width: ${mobileWidth}) {
     padding: 30px 15px 25px 15px;
@@ -119,9 +116,9 @@ export const DetailCardHeader = styled.div`
 `;
 export const DetailCardTitle = styled.div`
   color: ${secondaryTextColor};
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
-  margin-bottom: 29px;
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -137,19 +134,38 @@ export const DetailCardSubTitle = styled.div`
 `;
 export const DetailCardDesc = styled.div`
   color: ${linkColor1};
-  font-size: 15px;
+  font-size: 13px;
 `;
 
 export const DetailTable = styled(Table)`
-  padding: 40px 25px 25px;
-  .ant-table-thead > tr > th .ant-table-column-sorters {
-    text-transform: uppercase;
-    color: ${cardTitleColor};
-    font-size: 12px;
-    font-weight: 800;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  padding: 24px;
+  .ant-table-thead > tr > th {
+    background: white;
+    border: none;
+    &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+    & .ant-table-header-column .ant-table-column-sorters:hover::before {
+      background: white;
+    }
+    .ant-table-column-sorters {
+      text-transform: uppercase;
+      color: ${cardTitleColor};
+      font-size: 12px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .ant-table-column-sorter {
+        position: relative;
+        top: -2px;
+        left: 5px;
+        .ant-table-column-sorter-inner {
+          .ant-table-column-sorter-up,
+          .ant-table-column-sorter-down {
+            font-size: 10px;
+          }
+        }
+      }
+    }
   }
   .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters {
     @media (max-width: ${mobileWidth}) {
@@ -158,15 +174,9 @@ export const DetailTable = styled(Table)`
     }
   }
   .ant-table-tbody > tr > td {
-    @media (max-width: ${mobileWidth}) {
-      background-color: ${lightGreySecondary};
-      border-bottom: 10px solid white;
-    }
-  }
-  .ant-table-thead > tr > th .ant-table-column-sorter {
-    position: relative;
-    top: 3px;
-    left: 10px;
+    padding: 10px 16px;
+    background-color: ${lightGreySecondary};
+    border-bottom: 10px solid white;
   }
   @media (max-width: ${mobileWidth}) {
     padding: 0px;
@@ -306,24 +316,42 @@ export const MoreButton = styled.button`
 export const TableData = styled(Table)`
   width: 100%;
   text-align: center;
-  .ant-table-thead > tr > th .ant-table-column-sorters {
-    text-transform: uppercase;
-    color: ${cardTitleColor};
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .ant-table-thead > tr > th .ant-table-column-sorter {
-    position: relative;
-    top: 3px;
-    left: 10px;
+  .ant-table-thead > tr > th {
+    padding: 10px;
+    &:first-child.ant-table-column-has-actions.ant-table-column-has-sorters {
+      text-align: left;
+    }
+    border: none;
+    background-color: white;
+    &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+    .ant-table-header-column .ant-table-column-sorters:hover::before {
+      background-color: white;
+    }
+    .ant-table-column-sorters {
+      text-transform: uppercase;
+      color: ${cardTitleColor};
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      .ant-table-column-sorter {
+        position: relative;
+        top: -2px;
+        left: 5px;
+        .ant-table-column-sorter-inner {
+          .ant-table-column-sorter-up,
+          .ant-table-column-sorter-down {
+            font-size: 10px;
+          }
+        }
+      }
+    }
   }
   @media (max-width: 920px) {
     .ant-table-thead > tr > th,
     .ant-table-tbody > tr > td {
-      padding: 20px 0px;
+      padding: 10px 0px;
     }
     .ant-table-thead > tr > th .ant-table-column-sorters {
       padding-left: 2px;
@@ -347,7 +375,9 @@ export const TableData = styled(Table)`
     text-align: center;
   }
   .ant-table-tbody > tr > td {
-    border-bottom: none;
+    background: ${lightGreySecondary};
+    border-bottom: 10px solid ${white};
+    padding: 10px 16px;
   }
   @media (max-width: ${tabletWidth}) {
     display: none;
@@ -393,9 +423,10 @@ export const DivWrapper = styled(StyledFlexContainer)`
 
 export const StandardCell = styled.div`
   border-radius: 5px;
-  border: 1px ${greenDark} solid;
-  background-color: rgba(31, 227, 161, 0.2);
-  color: ${greenDark};
+  border: 1px rgba(74, 172, 139, 0.2) solid;
+  background-color: rgba(74, 172, 139, 0.2);
+  color: rgba(74, 172, 139, 1);
+  padding: 3px 0px;
   font-size: 10px;
   font-weight: bold;
   text-transform: uppercase;

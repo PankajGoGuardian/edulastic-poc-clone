@@ -7,9 +7,10 @@ import { ReviewTableWrapper } from "./styled";
 
 import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
-import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
+import { getStandardsSelector } from "../../ducks";
+import { getQuestionType } from "../../../../../dataUtils";
 
-const ItemsTable = ({ items, types, standards, selected, setSelected, handlePreview, isEditable }) => {
+const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, isEditable }) => {
   const columns = [
     {
       title: "Main info",
@@ -48,13 +49,6 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
     return audio;
   };
 
-  const getQuestionTypes = item => {
-    return get(item, ["data", "questions"], []).reduce((acc, q) => {
-      acc.push(q.title);
-      return acc;
-    }, []);
-  };
-
   const data = items.map((item, i) => {
     const main = {
       id: item._id,
@@ -66,7 +60,7 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
       by: get(item, ["createdBy", "name"], ""),
       shared: "9578 (1)",
       likes: 9,
-      types: getQuestionTypes(item),
+      type: getQuestionType(item),
       points: getPoints(item),
       standards: standards[item._id],
       audio: audioStatus(item),
@@ -113,7 +107,6 @@ ItemsTable.propTypes = {
 const enhance = compose(
   memo,
   connect(state => ({
-    types: getItemsTypesSelector(state),
     standards: getStandardsSelector(state)
   }))
 );

@@ -33,6 +33,7 @@ import {
   getDynamicVariablesSetIdForViewResponse,
   getTestItemsOrderSelector
 } from "../ClassBoard/ducks";
+import { AnswerContext } from "@edulastic/common";
 
 import { getQuestionLabels } from "../ClassBoard/Transformer";
 
@@ -144,11 +145,15 @@ class StudentViewContainer extends Component {
     const correctNumber = currentStudent.questionActivities.filter(x => x.score === x.maxScore && x.score > 0).length;
 
     const wrongNumber = currentStudent.questionActivities.filter(
-      x => x.score === 0 && x.maxScore > 0 && /* x.graded &&*/ !x.skipped
+      x => x.score === 0 && x.maxScore > 0 && x.graded && !x.skipped
     ).length;
 
     const partiallyCorrectNumber = currentStudent.questionActivities.filter(x => x.score > 0 && x.score < x.maxScore)
       .length;
+
+    const skippedNumber = currentStudent.questionActivities.filter(x => x.skipped && x.score === 0).length;
+
+    const notGradedNumber = currentStudent.questionActivities.filter(x => x.graded === false).length;
 
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const initFeedbackValue =
@@ -194,15 +199,23 @@ class StudentViewContainer extends Component {
             <WrongButton active={filter === "wrong"} onClick={() => this.setState({ filter: "wrong" })}>
               WRONG ({wrongNumber})
             </WrongButton>
-            <PartiallyCorrectButton active={filter === "partial"} onClick={() => this.setState({ filter: "partial" })}>
+            <WrongButton active={filter === "partial"} onClick={() => this.setState({ filter: "partial" })}>
               PARTIALLY CORRECT ({partiallyCorrectNumber})
+            </WrongButton>
+            <WrongButton active={filter === "skipped"} onClick={() => this.setState({ filter: "skipped" })}>
+              SKIPPED ({skippedNumber})
+            </WrongButton>
+            <PartiallyCorrectButton
+              active={filter === "notGraded"}
+              onClick={() => this.setState({ filter: "notGraded" })}
+            >
+              NOT GRADED ({notGradedNumber})
             </PartiallyCorrectButton>
           </StudentButtonDiv>
           <GiveOverallFeedBackButton onClick={() => this.handleShowFeedbackPopup(true)} active>
             {initFeedbackValue.length ? (
               <Tooltip title={feedbackButtonToolTip}>
                 <span>{`${initFeedbackValue.slice(0, 30)}${initFeedbackValue.length > 30 ? "....." : ""}`}</span>
-                <EditIconStyled />
               </Tooltip>
             ) : (
               "GIVE OVERALL FEEDBACK"
@@ -210,15 +223,17 @@ class StudentViewContainer extends Component {
           </GiveOverallFeedBackButton>
         </StyledFlexContainer>
         {!loading && (
-          <ClassQuestions
-            currentStudent={currentStudent || {}}
-            questionActivities={studentResponse.questionActivities}
-            classResponse={classResponseProcessed}
-            testItemsOrder={testItemsOrder}
-            studentViewFilter={filter}
-            labels={_getquestionLabels(classResponse.testItems, testItemIds)}
-            isPresentationMode={isPresentationMode}
-          />
+          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <ClassQuestions
+              currentStudent={currentStudent || {}}
+              questionActivities={studentResponse.questionActivities}
+              classResponse={classResponseProcessed}
+              testItemsOrder={testItemsOrder}
+              studentViewFilter={filter}
+              labels={_getquestionLabels(classResponse.testItems, testItemIds)}
+              isPresentationMode={isPresentationMode}
+            />
+          </AnswerContext.Provider>
         )}
       </React.Fragment>
     );

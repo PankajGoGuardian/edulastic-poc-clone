@@ -144,7 +144,15 @@ class Search extends Component {
           <Item>
             <ItemHeader>Question Type</ItemHeader>
             <ItemBody>
-              <Select size="large" onSelect={onSearchFieldChange("questionType")} value={questionType}>
+              <Select
+                showSearch
+                size="large"
+                optionFilterProp={"children"}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                size="large"
+                onSelect={onSearchFieldChange("questionType")}
+                value={questionType}
+              >
                 {questionTypes.selectsData.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}
@@ -157,9 +165,9 @@ class Search extends Component {
             <ItemHeader>Depth of Knowledge</ItemHeader>
             <ItemBody>
               <Select size="large" onSelect={onSearchFieldChange("depthOfKnowledge")} value={depthOfKnowledge}>
-                {selectsData.allDepthOfKnowledge.map(el => (
+                {selectsData.allDepthOfKnowledge.map((el, index) => (
                   <Select.Option key={el.value} value={el.value}>
-                    {el.text}
+                    {`${index > 0 ? index : ""} ${el.text}`}
                   </Select.Option>
                 ))}
               </Select>

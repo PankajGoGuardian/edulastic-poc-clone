@@ -156,6 +156,7 @@ export const SignedStackedBarChartContainer = ({
 
   return (
     <SignedStackedBarChart
+      margin={{ top: 0, right: 20, left: 20, bottom: 36 }}
       data={chartData}
       barsData={chartSpecifics.barsData}
       xAxisDataKey={compareBy}

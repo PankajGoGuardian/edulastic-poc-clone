@@ -27,6 +27,7 @@ const ShortTextPreview = ({
   smallSize,
   userAnswer,
   theme,
+  disableResponse,
   showQuestionNumber,
   qIndex,
   evaluation
@@ -100,6 +101,7 @@ const ShortTextPreview = ({
         <Input
           style={style}
           value={text}
+          disabled={disableResponse}
           onChange={handleTextChange}
           onSelect={handleSelect}
           placeholder={item.placeholder || ""}

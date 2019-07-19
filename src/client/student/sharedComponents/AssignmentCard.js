@@ -74,6 +74,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     close = false,
     _id: assignmentId,
     safeBrowser,
+    isPaused = false,
     testType,
     class: clazz = [],
     maxAttempts = 1,
@@ -91,6 +92,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     close = maxCurrentClass.close;
     startDate = maxCurrentClass.startDate;
     endDate = maxCurrentClass.endDate;
+    isPaused = maxCurrentClass.isPaused;
   }
   if (!startDate && open) {
     const maxCurrentClass =
@@ -98,6 +100,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         ? maxBy(currentClassList, "openDate") || currentClassList[currentClassList.length - 1]
         : {};
     startDate = maxCurrentClass.openDate;
+    isPaused = maxCurrentClass.isPaused;
   }
   if (!endDate && close) {
     endDate = (currentClass && currentClass.length > 0
@@ -222,6 +225,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
                 safeBrowser={safeBrowser}
                 startDate={startDate}
                 t={t}
+                isPaused={isPaused}
                 startTest={startTest}
                 attempted={attempted}
                 resume={resume}

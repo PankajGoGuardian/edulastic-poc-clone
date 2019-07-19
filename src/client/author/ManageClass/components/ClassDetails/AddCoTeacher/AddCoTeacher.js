@@ -5,10 +5,9 @@ import { get, isNull } from "lodash";
 import { Select, message } from "antd";
 import { StyledModal, Title, ActionButton, Description } from "./styled";
 import { receiveTeachersListAction } from "../../../../Teacher/ducks";
-import { getUserOrgId } from "../../../../src/selectors/user";
+import { getUserOrgId, getUserIdSelector } from "../../../../src/selectors/user";
 import { groupApi } from "@edulastic/api";
 import { setClassAction } from "../../../../ManageClass/ducks";
-
 
 class AddCoTeacher extends React.Component {
   static propTypes = {
@@ -27,7 +26,6 @@ class AddCoTeacher extends React.Component {
     teacherList: []
   };
 
-
   componentDidMount() {
     const { loadTeachers, userOrgId } = this.props;
     loadTeachers({
@@ -43,7 +41,6 @@ class AddCoTeacher extends React.Component {
       coTeacherId: id
     });
   };
-
 
   onSearchHandler = value => {
     const { teachers } = this.props;
@@ -79,8 +76,9 @@ class AddCoTeacher extends React.Component {
   };
 
   render() {
-    const { isOpen, handleCancel } = this.props;
-    let { teacherList } = this.state;
+    const { isOpen, handleCancel, primaryTeacherId } = this.props;
+    const { teacherList } = this.state;
+    const coTeachers = teacherList.filter(teacher => teacher._id !== primaryTeacherId);
     const title = (
       <Title>
         <label>Add Co-Teacher</label>
@@ -99,7 +97,7 @@ class AddCoTeacher extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={() => handleCancel()}>
+      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={() => handleCancel()} destroyOnClose={true}>
         <Description>
           Invite your colleagues to view and manage your class. Co-teachers can manage enrollment, assign the assessment
           and view reports of your class(es)
@@ -114,28 +112,29 @@ class AddCoTeacher extends React.Component {
           notFoundContent="Please enter 3 or more characters"
           onSearch={this.onSearchHandler}
         >
-          {teacherList.map((el, index) => (
+          {coTeachers.map((el, index) => (
             <Select.Option key={index} value={el._id}>
-              {`${el.firstName} ${el.lastName}`}
+              <div>
+                <span style={{ fontSize: "14px" }}>{`${el.firstName} ${el.lastName || ""}`}</span>
+                <span style={{ fontSize: "12px" }}>{` (${el.email || el.username})`}</span>
+              </div>
             </Select.Option>
           ))}
-
         </Select>
       </StyledModal>
     );
   }
 }
 
-
 export default connect(
   state => ({
     userOrgId: getUserOrgId(state),
     selectedStudent: get(state, "manageClass.selectedStudent", []),
-    teachers: get(state, "teacherReducer.data", [])
+    teachers: get(state, "teacherReducer.data", []),
+    primaryTeacherId: getUserIdSelector(state)
   }),
   {
     loadTeachers: receiveTeachersListAction,
     setClass: setClassAction
   }
 )(AddCoTeacher);
-

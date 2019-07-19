@@ -58,7 +58,7 @@ const ActionContainer = ({
   const [infoModelVisible, setinfoModelVisible] = useState(false);
   const [infoModalData, setInfoModalData] = useState([]);
 
-  const { _id: classId } = selectedClass;
+  const { _id: classId, active } = selectedClass;
   let formRef = null;
 
   const toggleModal = key => {
@@ -97,6 +97,7 @@ const ActionContainer = ({
             const std = { ...selectedStudent[0], ...values };
             const userId = std._id || std.userId;
             std.currentSignUpState = "DONE";
+            std.username = values.email;
             const stdData = pick(std, [
               "districtId",
               "dob",
@@ -115,6 +116,10 @@ const ActionContainer = ({
               "username",
               "contactEmails"
             ]);
+            const contactEmails = get(stdData, "contactEmails");
+            if (contactEmails) {
+              stdData.contactEmails = [contactEmails];
+            }
             updateStudentRequest({
               userId,
               data: stdData
@@ -295,25 +300,31 @@ const ActionContainer = ({
         <TitleWarapper>Student</TitleWarapper>
         <DividerDiv />
         <ButtonsWrapper>
-          <Tooltip placement="bottomLeft" title="Add Student">
-            <CircleIconButton
-              type="primary"
-              shape="circle"
-              icon="plus"
-              size="large"
-              onClick={() => toggleModal("add")}
-            />
-          </Tooltip>
+          {active ? (
+            <Tooltip placement="bottomLeft" title="Add Student">
+              <CircleIconButton
+                type="primary"
+                shape="circle"
+                icon="plus"
+                size="large"
+                onClick={() => toggleModal("add")}
+              />
+            </Tooltip>
+          ) : null}
           <Link to={"/author/manageClass/printPreview"}>
             <CircleIconButton type="primary" shape="circle" icon="printer" size="large" disabled={!studentLoaded} />
           </Link>
-          <Dropdown overlay={actionMenu} trigger={["click"]}>
-            <ActionButton type="primary" ghost>
-              Actions <StyledIcon type="caret-down" theme="filled" size={16} />
-            </ActionButton>
-          </Dropdown>
+          {studentsList.length > 0 && active ? (
+            <Dropdown overlay={actionMenu} trigger={["click"]}>
+              <ActionButton type="primary" ghost>
+                Actions <StyledIcon type="caret-down" theme="filled" size={16} />
+              </ActionButton>
+            </Dropdown>
+          ) : null}
 
-          <AddStudentButton onClick={handleAddMultipleStudent}>Add Multiple Students</AddStudentButton>
+          {active ? (
+            <AddStudentButton onClick={handleAddMultipleStudent}>Add Multiple Students</AddStudentButton>
+          ) : null}
           {isAddMultipleStudentsModal && (
             <InviteMultipleStudentModal
               modalVisible={isAddMultipleStudentsModal}

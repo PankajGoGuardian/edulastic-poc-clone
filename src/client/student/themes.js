@@ -102,7 +102,7 @@ export const themes = {
       cardDefaultBtnBgHoverColor: themeColor,
       cardDefaultBtnTextColor: themeColor,
       cardDefaultBtnTextHoverColor: "white",
-      cardAttemptLinkTextColor: "#12a6e8",
+      cardAttemptLinkTextColor: themeColor,
       cardAttemptLinkFontSize: "12px",
       cardResponseBoxLabelsColor: "#434b5d",
       cardResponseBoxLabelsFontSize: "12px",
@@ -153,7 +153,7 @@ export const themes = {
       breadcrumbLinkColor: themeColorLight
     },
     reportList: {
-      reportListTitleColor: "#12a6e8",
+      reportListTitleColor: themeColor,
       reportListTitleTextSize: "16px",
       reportListBackButtonBgColor: "transparent",
       reportListBackButtonBgBorderColor: themeColorLight,
@@ -247,9 +247,9 @@ export const themes = {
       formInputLabelColor: "rgba(0, 0, 0, 0.65)",
       saveButtonTextSize: "11px",
       saveButtonTextColor: "white",
-      saveButtonBgColor: "#12a6e8",
-      saveButtonBorderColor: "#12a6e8",
-      cancelButtonTextColor: "#12a6e8",
+      saveButtonBgColor: themeColor,
+      saveButtonBorderColor: themeColor,
+      cancelButtonTextColor: themeColor,
       cancelButtonBgColor: "white"
     },
     confirmation: {

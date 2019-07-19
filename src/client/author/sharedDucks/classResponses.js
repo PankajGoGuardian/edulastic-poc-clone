@@ -23,6 +23,7 @@ import {
   RECEIVE_CLASS_QUESTION_SUCCESS,
   RECEIVE_CLASS_QUESTION_ERROR
 } from "../src/constants/actions";
+import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
 
 function* receiveClassResponseSaga({ payload }) {
   try {
@@ -89,7 +90,6 @@ function* receiveClassStudentResponseSaga({ payload }) {
 function* receiveFeedbackResponseSaga({ payload }) {
   yield delay(1000);
   try {
-    
     const {
       testActivityId,
       itemId,
@@ -104,8 +104,12 @@ function* receiveFeedbackResponseSaga({ payload }) {
         groupId,
         scores: { [questionId]: score }
       }),
-      call(testActivityApi.updateQuestionFeedBack, { testActivityId, questionId, feedback, groupId })
+      call(testActivityApi.updateQuestionFeedBack, { testActivityId, questionId, feedback, groupId, itemId })
     ]);
+    const { questionActivities } = scoreRes;
+    for (const { qid: _id, score, maxScore, testActivityId } of questionActivities) {
+      yield put(gradebookTestItemAddAction([{ testActivityId, _id, score, maxScore }]));
+    }
 
     yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId } });
 
@@ -114,6 +118,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
       payload: feedbackResponse
     });
   } catch (err) {
+    console.error(err);
     const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put({

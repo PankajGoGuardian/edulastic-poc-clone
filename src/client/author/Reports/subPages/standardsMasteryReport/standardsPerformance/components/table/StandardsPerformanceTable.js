@@ -16,6 +16,9 @@ import { ControlDropDown } from "../../../../../common/components/widgets/contro
 import { StyledH3, StyledTable } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
+import { percentage } from "../../../../../common/util";
+
+export const getOverallScore = (metrics = []) => percentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
 
 const getColValue = (record = {}, domainId, analyseByKey, scaleInfo) => {
   const domain = record.domainData[domainId] || {};

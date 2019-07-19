@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { isEmpty } from "lodash";
 
 import { MathKeyboard } from "@edulastic/common";
 import { math } from "@edulastic/constants";
@@ -77,17 +78,33 @@ class MathInput extends React.PureComponent {
         const textarea = mathField.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
         textarea.addEventListener("keyup", this.handleChangeField);
+        textarea.addEventListener("keypress", this.handleKeypress);
         document.addEventListener("click", this.handleClick, false);
       }
     );
   }
 
+  handleKeypress = e => {
+    const { restrictKeys } = this.props;
+    if (!isEmpty(restrictKeys)) {
+      const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
+      const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+      if (!(isSpecialChar || isArrowOrShift) && !isEmpty(restrictKeys)) {
+        const isValidKey = restrictKeys.includes(e.key);
+        if (!isValidKey) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    }
+  };
+
   handleChangeField = () => {
-    const { onInput } = this.props;
+    const { onInput: saveAnswer } = this.props;
     const { mathField } = this.state;
 
     const text = mathField.latex();
-    onInput(text);
+    saveAnswer(text);
   };
 
   onInput = (key, command = "cmd") => {

@@ -1,4 +1,5 @@
-import { partialRight, ceil, groupBy } from "lodash";
+import { partialRight, ceil, groupBy, sumBy, includes, filter, map } from "lodash";
+import next from "immer";
 
 export const percentage = (numerator, denominator, ceilCalculation = false) => {
   const calculatedPercentage = (numerator / denominator) * 100;
@@ -6,6 +7,9 @@ export const percentage = (numerator, denominator, ceilCalculation = false) => {
 };
 
 export const ceilingPercentage = partialRight(percentage, true);
+
+export const stringCompare = (a_string = "", b_string = "") =>
+  (a_string || "").toLowerCase().localeCompare((b_string || "").toLowerCase());
 
 export const getVariance = arr => {
   let sum = 0;
@@ -120,4 +124,19 @@ export const processTeacherIds = orgDataArr => {
   });
 
   return teacherIdArr;
+};
+
+export const getOverallScore = (metrics = []) =>
+  ceilingPercentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
+
+export const filterAccordingToRole = (columns, role) =>
+  filter(columns, column => !includes(column.hiddenFromRole, role));
+
+export const addColors = (data = [], selectedData, xDataKey, scoreKey = "avgScore") => {
+  return map(data, item =>
+    next(item, draft => {
+      draft.fill =
+        includes(selectedData, item[xDataKey]) || !selectedData.length ? getHSLFromRange1(item[scoreKey]) : "#cccccc";
+    })
+  );
 };

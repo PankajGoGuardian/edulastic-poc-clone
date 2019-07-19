@@ -35,7 +35,15 @@ class ListComponent extends Component {
     const handleAdd = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.list.push("");
+          draft.list.push(null);
+          draft.validation.valid_response.value.push(null);
+
+          if (draft.validation.alt_responses.length > 0) {
+            draft.validation.alt_responses.forEach(altResponse => {
+              altResponse.value.push(null);
+            });
+          }
+
           updateVariables(draft);
         })
       );
@@ -45,6 +53,15 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list.splice(index, 1);
+
+          draft.validation.valid_response.value.splice(index, 1);
+
+          if (draft.validation.alt_responses.length > 0) {
+            draft.validation.alt_responses.forEach(altResponse => {
+              altResponse.value.splice(index, 1);
+            });
+          }
+
           updateVariables(draft);
         })
       );

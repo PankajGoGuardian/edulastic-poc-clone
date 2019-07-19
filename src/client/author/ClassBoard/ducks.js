@@ -1,15 +1,18 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
-import { classBoardApi, testActivityApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi, enrollmentApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
-import { values as _values, get, keyBy } from "lodash";
+
+import { values as _values, get, keyBy, sortBy, isEmpty } from "lodash";
 
 import {
-  setShowScoreAction,
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction,
-  updateStudentActivityAction
+  updateStudentActivityAction,
+  setIsPausedAction,
+  updateRemovedStudentsAction,
+  updateClassStudentsAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -27,7 +30,11 @@ import {
   OPEN_ASSIGNMENT,
   CLOSE_ASSIGNMENT,
   SAVE_OVERALL_FEEDBACK,
-  MARK_AS_ABSENT
+  MARK_AS_ABSENT,
+  TOGGLE_PAUSE_ASSIGNMENT,
+  REMOVE_STUDENTS,
+  FETCH_STUDENTS,
+  ADD_STUDENTS
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -142,6 +149,48 @@ function* markAbsentSaga({ payload }) {
   }
 }
 
+
+function* togglePauseAssignment({ payload }) {
+  try {
+    yield call(classBoardApi.togglePause, payload);
+    yield put(setIsPausedAction(payload.value));
+    yield call(
+      message.success,
+      `Assignment ${payload.name} is now ${payload.value ? "paused." : "open and available for students to work."}`
+    );
+  } catch (e) {
+    yield call(message.error, `${payload.value ? "Pause" : "Resume"} assignment failed`);
+  }
+}
+
+function* fetchStudentsByClassSaga({ payload }) {
+  try {
+    const { students = [] } = yield call(enrollmentApi.fetch, payload.classId);
+    yield put(updateClassStudentsAction(students));
+  } catch (err) {
+    console.error("Receive students from class failed");
+  }
+}
+
+function* removeStudentsSaga({ payload }) {
+  try {
+    const { students } = yield call(classBoardApi.removeStudents, payload);
+    yield put(updateRemovedStudentsAction(students));
+    yield call(message.success, "Successfully removed");
+  } catch (err) {
+    yield call(message.error, "Remove students failed");
+  }
+}
+
+function* addStudentsSaga({ payload }) {
+  try {
+    yield call(classBoardApi.addStudents, payload);
+    yield call(message.success, "Successfully added");
+  } catch (err) {
+    yield call(message.error, "Add students failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -151,7 +200,11 @@ export function* watcherSaga() {
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
     yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
     yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
-    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga)
+    yield takeEvery(TOGGLE_PAUSE_ASSIGNMENT, togglePauseAssignment),
+    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
+    yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
+    yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
+    yield takeEvery(ADD_STUDENTS, addStudentsSaga)
   ]);
 }
 
@@ -167,7 +220,13 @@ export const getAggregateByQuestion = (entities, studentId) => {
   const activeEntities = entities.filter(
     x => x.status === "inProgress" || (x.status === "submitted") | (x.status === "graded")
   );
-
+  let questionsOrder = {};
+  if (entities.length > 0) {
+    questionsOrder = entities[0].questionActivities.reduce((acc, cur, ind) => {
+      acc[cur._id] = ind;
+      return acc;
+    }, {});
+  }
   const submittedNumber = submittedEntities.length;
   // TODO: handle absent
   const absentNumber = 0;
@@ -254,7 +313,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
   for (const question in questionMap) {
     questionMap[question].avgTimeSpent = questionMap[question].timeSpent / questionMap[question].attemptsNum;
   }
-  const itemsSummary = _values(questionMap);
+  const itemsSummary = sortBy(_values(questionMap), [x => questionsOrder[x._id]]);
   const result = {
     total,
     submittedNumber,
@@ -270,9 +329,19 @@ export const getGradeBookSelector = createSelector(
   state => getAggregateByQuestion(state.entities)
 );
 
+export const classStudentsSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.classStudents
+);
+export const removedStudentsSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.removedStudents
+);
+
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
-  state => state.entities
+  removedStudentsSelector,
+  (state, removedStudents) => state.entities.filter(item => !removedStudents.includes(item.studentId))
 );
 
 export const getAdditionalDataSelector = createSelector(
@@ -325,6 +394,7 @@ export const stateStudentResponseSelector = state => state.studentResponse;
 export const stateClassStudentResponseSelector = state => state.classStudentResponse;
 export const stateFeedbackResponseSelector = state => state.feedbackResponse;
 export const stateStudentAnswerSelector = state => state.studentQuestionResponse;
+export const stateExpressGraderAnswerSelector = state => state.answers;
 export const stateQuestionAnswersSelector = state => state.classQuestionResponse;
 
 export const getClassResponseSelector = createSelector(
@@ -354,7 +424,21 @@ export const getFeedbackResponseSelector = createSelector(
 
 export const getStudentQuestionSelector = createSelector(
   stateStudentAnswerSelector,
-  state => state.data
+  stateExpressGraderAnswerSelector,
+  (state, egAnswers) => {
+    if (!isEmpty(state.data)) {
+      const data = Array.isArray(state.data) ? state.data : [state.data];
+      return data.map(x => {
+        if (egAnswers[x.qid]) {
+          return { ...x, userResponse: egAnswers[x.qid] };
+        } else {
+          return x;
+        }
+      });
+    } else {
+      return [];
+    }
+  }
 );
 
 export const getClassQuestionSelector = createSelector(

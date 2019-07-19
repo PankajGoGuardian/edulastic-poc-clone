@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { withTheme } from "styled-components";
-import { isEmpty, get } from "lodash";
+import styled, { withTheme } from "styled-components";
+import { isEmpty } from "lodash";
 
-import { MathInput, StaticMath, MathFormulaDisplay } from "@edulastic/common";
+import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay } from "@edulastic/common";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
@@ -12,7 +12,8 @@ import MathInputStatus from "./components/MathInputStatus/index";
 import MathInputWrapper from "./styled/MathInputWrapper";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
-import { getStylesFromUiStyleToCssStyle, mathValidateVariables } from "../../utils/helpers";
+import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
+import MathSpanWrapper from "../../components/MathSpanWrapper";
 
 class MathFormulaPreview extends Component {
   static propTypes = {
@@ -24,6 +25,7 @@ class MathFormulaPreview extends Component {
     saveAnswer: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     userAnswer: PropTypes.any,
+    testItem: PropTypes.bool,
     theme: PropTypes.object.isRequired,
     showQuestionNumber: PropTypes.bool
   };
@@ -31,20 +33,19 @@ class MathFormulaPreview extends Component {
   static defaultProps = {
     studentTemplate: "",
     userAnswer: null,
+    testItem: false,
     showQuestionNumber: false
   };
 
   studentRef = React.createRef();
 
   state = {
-    latex: "",
     innerValues: []
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      latex: this.getValidLatex(props),
       innerValues: []
     };
   }
@@ -54,11 +55,6 @@ class MathFormulaPreview extends Component {
     const { studentTemplate: prevStudentTemplate, type: prevPreviewType } = prevProps;
 
     if ((previewType !== prevPreviewType && previewType === CLEAR) || studentTemplate !== prevStudentTemplate) {
-      if (!this.isStatic()) {
-        // eslint-disable-next-line react/no-did-update-set-state
-        this.setState({ latex: this.getValidLatex(this.props) });
-        return;
-      }
       this.updateStaticMathFromUserAnswer();
     }
   }
@@ -86,7 +82,6 @@ class MathFormulaPreview extends Component {
     const { userAnswer, studentTemplate } = this.props;
     if (!userAnswer) {
       this.setState({
-        latex: studentTemplate,
         innerValues: []
       });
       return;
@@ -111,33 +106,45 @@ class MathFormulaPreview extends Component {
   }
 
   onUserResponse(latexv) {
-    const { saveAnswer, item } = this.props;
-    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
-    const validatedVal = mathValidateVariables(latexv, options);
-
+    const { saveAnswer } = this.props;
     // if (previewType === CHECK) return;
     if (this.isStatic()) {
-      saveAnswer(validatedVal);
+      saveAnswer(latexv);
       return;
     }
-    this.setState({ latex: validatedVal });
-    saveAnswer(validatedVal);
+
+    saveAnswer(latexv);
   }
 
   onBlur(latexv) {
-    const { type: previewType, saveAnswer, item } = this.props;
-    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
-    const validatedVal = mathValidateVariables(latexv, options);
-
+    const { type: previewType, saveAnswer } = this.props;
     if (this.isStatic() && previewType !== CHECK) {
-      saveAnswer(validatedVal);
+      saveAnswer(latexv);
     }
   }
 
-  onInnerFieldClick() {
-    const { type: previewType, changePreview, changePreviewTab } = this.props;
+  specialKeyCheck = e => {
+    if (!e) {
+      return false;
+    }
 
-    if (previewType === SHOW || previewType === CHECK) {
+    if (e === "cmd") {
+      return true;
+    }
+
+    const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
+    const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+
+    if (!isSpecialChar || isArrowOrShift) {
+      return false;
+    }
+    return true;
+  };
+
+  onInnerFieldClick() {
+    const { type: previewType, changePreview, changePreviewTab, disableResponse } = this.props;
+
+    if ((previewType === SHOW || previewType === CHECK) && !disableResponse) {
       changePreview(CLEAR); // Item level
       changePreviewTab(CLEAR); // Question level
     }
@@ -145,15 +152,24 @@ class MathFormulaPreview extends Component {
 
   get restrictKeys() {
     const { item } = this.props;
-    const { options = {} } = get(item, ["validation", "valid_response", "value", 0], {});
-    const { allowedVariables } = options;
-
+    const { allowedVariables } = item;
     return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
   render() {
-    const { evaluation, item, type: previewType, showQuestionNumber, studentTemplate, theme } = this.props;
-    const { latex, innerValues } = this.state;
+    const {
+      evaluation,
+      item,
+      type: previewType,
+      showQuestionNumber,
+      studentTemplate,
+      testItem,
+      theme,
+      disableResponse
+    } = this.props;
+    const { innerValues } = this.state;
+
+    const latex = this.getValidLatex(this.props);
 
     const hasAltAnswers =
       item && item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;
@@ -167,6 +183,9 @@ class MathFormulaPreview extends Component {
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
 
+    const testItemCorrectValues = testItem
+      ? item.validation.valid_response.value.map(validResponse => validResponse.value)
+      : [];
     return (
       <div>
         <QuestionTitleWrapper>
@@ -178,43 +197,54 @@ class MathFormulaPreview extends Component {
           />
         </QuestionTitleWrapper>
 
-        <MathInputWrapper data-cy="mathinput">
-          {this.isStatic() && (
-            <StaticMath
-              symbols={item.symbols}
-              restrictKeys={this.restrictKeys}
-              numberPad={item.numberPad}
-              ref={this.studentRef}
-              onInput={latexv => this.onUserResponse(latexv)}
-              onBlur={latexv => this.onBlur(latexv)}
-              style={{ background: statusColor, ...cssStyles }}
-              latex={studentTemplate}
-              innerValues={innerValues}
-              onInnerFieldClick={() => this.onInnerFieldClick()}
-            />
-          )}
-          {!this.isStatic() && (
-            <MathInput
-              symbols={item.symbols}
-              restrictKeys={this.restrictKeys}
-              numberPad={item.numberPad}
-              value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
-              onInput={latexv => this.onUserResponse(latexv)}
-              onBlur={latexv => this.onBlur(latexv)}
-              disabled={evaluation && !evaluation.some(ie => ie)}
-              onInnerFieldClick={() => this.onInnerFieldClick()}
-              style={{ background: statusColor, ...cssStyles }}
-            />
-          )}
-          {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
-            <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
-          )}
-        </MathInputWrapper>
+        {testItem && <MathDisplay template={studentTemplate} innerValues={testItemCorrectValues} />}
 
-        {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
+        {!testItem && (
+          <MathInputWrapper>
+            {this.isStatic() && (
+              <StaticMath
+                symbols={item.symbols}
+                restrictKeys={this.restrictKeys}
+                numberPad={item.numberPad}
+                ref={this.studentRef}
+                onInput={latexv => this.onUserResponse(latexv)}
+                onBlur={latexv => this.onBlur(latexv)}
+                style={{ background: statusColor, ...cssStyles }}
+                latex={studentTemplate}
+                innerValues={innerValues}
+                onInnerFieldClick={() => this.onInnerFieldClick()}
+              />
+            )}
+            {!this.isStatic() && !disableResponse && (
+              <MathInput
+                symbols={item.symbols}
+                restrictKeys={this.restrictKeys}
+                numberPad={item.numberPad}
+                value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+                onInput={latexv => this.onUserResponse(latexv)}
+                onBlur={latexv => this.onBlur(latexv)}
+                disabled={evaluation && !evaluation.some(ie => ie)}
+                onInnerFieldClick={() => this.onInnerFieldClick()}
+                style={{ background: statusColor, ...cssStyles }}
+              />
+            )}
+            {!this.isStatic() && disableResponse && (
+              <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
+                <MathSpanWrapper
+                  latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+                />
+              </MathInputSpan>
+            )}
+            {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+              <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+            )}
+          </MathInputWrapper>
+        )}
+
+        {!testItem && previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
           <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
         )}
-        {hasAltAnswers && previewType === SHOW && (
+        {!testItem && hasAltAnswers && previewType === SHOW && (
           <CorrectAnswerBox altAnswers>
             {item.validation.alt_responses.map(ans => ans.value[0].value).join(", ")}
           </CorrectAnswerBox>
@@ -225,3 +255,15 @@ class MathFormulaPreview extends Component {
 }
 
 export default withTheme(MathFormulaPreview);
+const MathInputSpan = styled.div`
+  align-items: center;
+  min-width: 80px;
+  min-height: 42px;
+  display: inline-flex;
+  width: 100%;
+  padding-right: 40px;
+  position: relative;
+  border-radius: 5px;
+  border: 1px solid #dfdfdf;
+  padding: 5px 25px;
+`;

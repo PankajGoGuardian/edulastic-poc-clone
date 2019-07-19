@@ -4,6 +4,7 @@ import uuid from "uuid/v4";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Menu } from "antd";
+import { questionType } from "@edulastic/constants";
 import { PaddingDiv, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router";
@@ -13,6 +14,7 @@ import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
+import { convertItemToMultipartAction } from "../../../ItemDetail/ducks";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
@@ -38,7 +40,8 @@ import {
   SelectWidget,
   BackLink,
   RulerIcon,
-  PlayIcon
+  PlayIcon,
+  MultipartIcon
 } from "./styled";
 import { toggleCreateItemModalAction } from "../../../src/actions/testItem";
 
@@ -51,9 +54,26 @@ class Container extends Component {
 
   // when a particular question type is picked, populate the "authorQuestions" collection
   selectQuestionType = data => {
+    const {
+      convertToMultipart,
+      setQuestion,
+      addQuestion,
+      history,
+      match,
+      t,
+      modalItemId,
+      navigateToQuestionEdit,
+      isTestFlow
+    } = this.props;
+
+    const { testId, itemId, id } = match.params;
+
+    if (data.type === questionType.COMBINATION_MULTIPART) {
+      convertToMultipart({ isTestFlow, itemId: itemId || id, testId });
+      return;
+    }
     // FIXME: Weird! connect not working properly. setQuestion not available as a prop
     // TODO: found the issue because of an indirect circular dependency. Found all the possible locations and eventually need to be fixed all the circular dependency issues
-    const { setQuestion, addQuestion, history, match, t, modalItemId, navigateToQuestionEdit, isTestFlow } = this.props;
 
     const question = {
       id: uuid(),
@@ -63,7 +83,7 @@ class Container extends Component {
     setQuestion(question);
     // add question to the questions store.
     addQuestion(question);
-    const { testId, itemId } = match.params;
+
     if (modalItemId) {
       navigateToQuestionEdit();
       return;
@@ -259,6 +279,10 @@ class Container extends Component {
               <MoleculeIcon />
               {"Chemistry"}
             </Menu.Item>
+            <Menu.Item key="multipart">
+              <MultipartIcon />
+              {"Multipart"}
+            </Menu.Item>
             <Menu.Item key="video-passages">
               <PlayIcon />
               {"Video & Passages"}
@@ -361,6 +385,10 @@ class Container extends Component {
                 <MoleculeIcon />
                 {"Chemistry"}
               </Menu.Item>
+              <Menu.Item key="multipart">
+                <MultipartIcon />
+                {"Multipart"}
+              </Menu.Item>
               <Menu.Item key="video-passages" onClick={this.toggleCategories}>
                 <PlayIcon />
                 {"Video & Passages"}
@@ -399,7 +427,8 @@ const enhance = compose(
       toggleSideBar: toggleSideBarAction,
       setCategory: setQuestionCategory,
       setTab: setQuestionTab,
-      toggleModalAction: toggleCreateItemModalAction
+      toggleModalAction: toggleCreateItemModalAction,
+      convertToMultipart: convertItemToMultipartAction
     }
   )
 );

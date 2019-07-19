@@ -139,6 +139,8 @@ class ClozeTextDisplay extends Component {
       disableResponse,
       qIndex,
       userSelections,
+      previewTab,
+      changePreviewTab,
       responseIds,
       isReviewTab,
       view
@@ -162,6 +164,8 @@ class ClozeTextDisplay extends Component {
       showAnswer,
       checkAnswer,
       evaluation,
+      previewTab,
+      changePreviewTab,
       responseIds,
       isReviewTab,
       userSelections,

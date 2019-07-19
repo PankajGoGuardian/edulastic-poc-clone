@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { white, themeColor, greyDarken } from "@edulastic/colors";
+import { white, themeColor, themeColorLight, greyDarken } from "@edulastic/colors";
 import { Button } from "antd";
 import { IconManage } from "@edulastic/icons";
 import { Paper, FlexContainer } from "@edulastic/common";
@@ -33,11 +33,12 @@ export const SaveClassBtn = styled(Button)`
   padding: 5px 20px;
   border: none;
   color: ${white};
-  background: ${themeColor};
+  background: ${themeColorLight};
   margin-left: 20px;
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${white};
-    background: ${themeColor};
+    background: ${themeColorLight};
   }
 `;
 
@@ -47,9 +48,10 @@ export const CancelClassBtn = styled(Button)`
   border: none;
   color: ${themeColor};
   background: ${white};
-  &:hover {
-    color: ${white};
-    background: ${themeColor};
+  &:hover,
+  &:focus {
+    color: ${themeColor};
+    background: ${white};
   }
 `;
 

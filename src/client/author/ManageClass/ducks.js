@@ -42,6 +42,7 @@ export const CREATE_CLASS_FAILED = "[manageClass] creat a class failed";
 export const UPDATE_CLASS_REQUEST = "[manageClass] update a class request";
 export const UPDATE_CLASS_SUCCESS = "[manageClass] update a class success";
 export const UPDATE_CLASS_FAILED = "[manageClass] update a class failed";
+export const UPDATE_CLASS_STANDARDS = "[manageClass] update class standards";
 
 export const FETCH_STUDENTS_BY_ID_REQUEST = "[manageClass] fetch students request by classId";
 export const FETCH_STUDENTS_BY_ID_SUCCESS = "[manageClass] fetch studnets success by classId";
@@ -92,6 +93,7 @@ export const createClassSuccessAction = createAction(CREATE_CLASS_SUCCESS);
 export const updateClassAction = createAction(UPDATE_CLASS_REQUEST);
 export const updateClassSuccessAction = createAction(UPDATE_CLASS_SUCCESS);
 export const updateClassFailedAction = createAction(UPDATE_CLASS_FAILED);
+export const updateClassStandardsAction = createAction(UPDATE_CLASS_STANDARDS);
 
 export const fetchStudentsByIdAction = createAction(FETCH_STUDENTS_BY_ID_REQUEST);
 export const fetchStudentsByIdSuccessAction = createAction(FETCH_STUDENTS_BY_ID_SUCCESS);
@@ -220,6 +222,10 @@ const updateClassFailed = (state, { payload }) => {
   state.error = payload;
 };
 
+const updateClassStandards = (state, { payload }) => {
+  state.entity.standardSets = payload;
+};
+
 const addStudentRequest = state => {
   state.submitted = true;
   state.added = false;
@@ -300,6 +306,7 @@ export default createReducer(initialState, {
   [UPDATE_CLASS_REQUEST]: updateClass,
   [UPDATE_CLASS_SUCCESS]: updateClassSuccess,
   [UPDATE_CLASS_FAILED]: updateClassFailed,
+  [UPDATE_CLASS_STANDARDS]: updateClassStandards,
   [ADD_STUDENT_REQUEST]: addStudentRequest,
   [ADD_STUDENT_SUCCESS]: addStudentSuccess,
   [ADD_STUDENT_FAILED]: addStudentFailed,
@@ -368,12 +375,14 @@ function* receiveAddStudentRequest({ payload }) {
     const result = yield call(enrollmentApi.addStudent, payload);
     const student = get(result, "data.result");
     if (student) {
+      const newStudent = {
+        ...student,
+        _id: student.userId,
+        enrollmentStatus: "1"
+      };
+      yield put(addStudentSuccessAction(newStudent));
       const successMsg = "Student added to class successfully.";
       yield call(message.success, successMsg);
-      let newStudent = Object.assign({}, student);
-      newStudent._id = student.userId;
-      delete newStudent.userId;
-      yield put(addStudentSuccessAction(newStudent));
     } else {
       const msg = get(result, "data.message", "Student already part of this class section");
       message.error(msg);
@@ -436,10 +445,14 @@ function* updateStudentRequest({ payload }) {
   try {
     const { userId, data } = payload;
     const result = yield call(userApi.updateUser, { userId, data });
-    const msg = "Successfully Updated student.";
-
-    message.success(msg);
     yield put(updateStudentSuccessAction(result));
+    const updatedStudent = {
+      ...result,
+      enrollmentStatus: "1"
+    };
+    yield put(updateStudentSuccessAction(updatedStudent));
+    const msg = "Successfully Updated student.";
+    message.success(msg);
   } catch (error) {
     message.error("Update a student request failing");
     yield put(updateStudentFaildedAction());

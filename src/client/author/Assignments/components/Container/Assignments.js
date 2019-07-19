@@ -48,7 +48,9 @@ import {
   SwitchWrapper,
   SwitchLabel,
   FilterButton,
-  TableWrapper
+  TableWrapper,
+  LeftWrapper,
+  FixedWrapper
 } from "./styled";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getUserRole } from "../../../src/selectors/user";
@@ -78,7 +80,6 @@ class Assignments extends Component {
       loadAssignmentsSummary,
       districtId,
       loadFolders,
-      assignmentsSummary,
       userRole,
       defaultFilters,
       orgData
@@ -94,7 +95,7 @@ class Assignments extends Component {
     }
     filters = {
       ...filters,
-      testType: userRole !== "teacher" ? type.COMMON : "",
+      testType: userRole === ("district-admin" || userRole === "school-admin") ? "common" : "",
       ...defaultFilters
     };
     loadAssignments({ filters });
@@ -201,7 +202,6 @@ class Assignments extends Component {
           createAssignment={true}
           title={t("common.assignmentsTitle")}
           btnTitle="AUTHOR TEST"
-          renderFilter={this.renderSwitch}
           isAdvancedView={isAdvancedView}
         />
         <Container>
@@ -210,15 +210,19 @@ class Assignments extends Component {
               {window.innerWidth >= tabletWidth && (
                 <>
                   {showFilter && (
-                    <PerfectScrollbar option={{ suppressScrollX: true }}>
-                      <LeftFilter
-                        selectedRows={selectedRows}
-                        onSetFilter={this.setFilterState}
-                        filterState={filterState}
-                        isAdvancedView={isAdvancedView}
-                        clearSelectedRow={() => this.onSelectRow([])}
-                      />
-                    </PerfectScrollbar>
+                    <LeftWrapper>
+                      <FixedWrapper>
+                        <PerfectScrollbar option={{ suppressScrollX: true }}>
+                          <LeftFilter
+                            selectedRows={selectedRows}
+                            onSetFilter={this.setFilterState}
+                            filterState={filterState}
+                            isAdvancedView={isAdvancedView}
+                            clearSelectedRow={() => this.onSelectRow([])}
+                          />
+                        </PerfectScrollbar>
+                      </FixedWrapper>
+                    </LeftWrapper>
                   )}
                   <TableWrapper>
                     <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
@@ -234,6 +238,7 @@ class Assignments extends Component {
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           filters={filterState}
                           showPreviewModal={this.showPreviewModal}
+                          showFilter={showFilter}
                         />
                       ) : (
                         <TableList
@@ -243,6 +248,7 @@ class Assignments extends Component {
                           selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           showPreviewModal={this.showPreviewModal}
+                          showFilter={showFilter}
                         />
                       )}
                     </StyledCard>

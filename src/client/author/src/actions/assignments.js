@@ -4,6 +4,7 @@ import {
   RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
   FETCH_CURRENT_EDITING_ASSIGNMENT,
   UPDATE_RELEASE_SCORE_SETTINGS,
+  FETCH_CURRENT_ASSIGNMENT,
   TOGGLE_RELEASE_GRADE_SETTINGS,
   SET_ASSIGNMENT_FILTER,
   ADVANCED_ASSIGNMENT_VIEW
@@ -21,6 +22,11 @@ export const receiveAssignmentsSummaryAction = payload => ({
 
 export const receiveAssignmentByIdAction = payload => ({
   type: FETCH_CURRENT_EDITING_ASSIGNMENT,
+  payload
+});
+
+export const receiveAssignmentByAssignmentIdAction = payload => ({
+  type: FETCH_CURRENT_ASSIGNMENT,
   payload
 });
 

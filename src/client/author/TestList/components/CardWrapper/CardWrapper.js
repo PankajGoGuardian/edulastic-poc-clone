@@ -39,7 +39,8 @@ class CardWrapper extends Component {
       removeTestFromPlaylist,
       addTestToPlaylist,
       mode,
-      owner
+      owner,
+      standards = []
     } = this.props;
 
     const itemId = _id.substr(_id.length - 5);
@@ -75,6 +76,7 @@ class CardWrapper extends Component {
           authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
           isPlaylist={isPlaylist}
           testItemId={itemId}
+          standards={standards}
         />
       </Col>
     );

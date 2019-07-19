@@ -18,6 +18,9 @@ export const getChecks = answer => {
     options = omitBy(options, f => f === false);
 
     let midRes = Object.keys(options).reduce((acc, key, i) => {
+      if (key === "allowedVariables" || key === "allowNumericOnly") {
+        return acc;
+      }
       const fieldVal = options[key];
       acc += i === 0 ? ":" : "";
 
@@ -32,12 +35,20 @@ export const getChecks = answer => {
       if (key === "setThousandsSeparator") {
         if (fieldVal.length) {
           const stringArr = `[${fieldVal.map(f => `'${f}'`)}]`;
-          acc += `${key}=${stringArr}`;
+          if (fieldVal.includes(".") && !options.setDecimalSeparator) {
+            acc += `${key}=${stringArr},setDecimalSeparator=','`;
+          } else {
+            acc += `${key}=${stringArr}`;
+          }
         } else {
           return acc;
         }
       } else if (key === "setDecimalSeparator") {
-        acc += `${key}='${fieldVal}'`;
+        if (fieldVal === "," && !options.setThousandsSeparator) {
+          acc += `${key}='${fieldVal}',setThousandsSeparator='.'`;
+        } else {
+          acc += `${key}='${fieldVal}'`;
+        }
       } else if (key === "allowedUnits") {
         acc += `${key}=[${fieldVal}]`;
       } else if (key === "syntax") {

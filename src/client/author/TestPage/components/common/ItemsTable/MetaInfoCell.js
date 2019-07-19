@@ -6,13 +6,19 @@ import { Button, Tag, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, MoveLink, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
-import { greenDark } from "@edulastic/colors";
+import { greenDark, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { cloneDeep, uniq as _uniq } from "lodash";
 
 import Standards from "../../../../ItemList/components/Item/Standards";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
-import { setTestDataAction, getTestSelector, setTestDataAndUpdateAction } from "../../../ducks";
+import {
+  setTestDataAction,
+  getTestSelector,
+  setTestDataAndUpdateAction,
+  previewCheckAnswerAction,
+  previewShowAnswerAction
+} from "../../../ducks";
 
 import {
   setTestItemsAction,
@@ -22,6 +28,7 @@ import {
 } from "../../AddItems/ducks";
 
 import { AudioIcon } from "../../../../ItemList/components/Item/styled";
+import { getUserId } from "../../../../src/selectors/user";
 
 class MetaInfoCell extends Component {
   constructor(props) {
@@ -161,8 +168,8 @@ class MetaInfoCell extends Component {
         <StyledButton
           onClick={() => this.handleSelection(data)}
           style={{
-            border: this.isAddOrRemove ? "1px solid #00b0ff" : "1px solid #ee1658",
-            color: this.isAddOrRemove ? "#00b0ff" : "#ee1658",
+            border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+            color: this.isAddOrRemove ? themeColor : "#ff0099",
             marginTop: 15,
             width: "100%"
           }}
@@ -175,18 +182,29 @@ class MetaInfoCell extends Component {
 
   render() {
     const { isShowPreviewModal = false } = this.state;
-    const { data, windowWidth, search } = this.props;
-
+    const { data, windowWidth, search, checkAnswer, showAnswer, userId } = this.props;
+    const owner = data.item && data.item.authors && data.item.authors.some(x => x._id === userId);
+    const isEditable = owner;
     return (
       <Container>
-        <PreviewModal isVisible={isShowPreviewModal} page="addItems" onClose={this.closeModal} data={data} />
+        <PreviewModal
+          isVisible={isShowPreviewModal}
+          page="addItems"
+          onClose={this.closeModal}
+          data={data}
+          owner={owner}
+          showEvaluationButtons={true}
+          isEditable={isEditable}
+          checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
+          showAnswer={() => showAnswer(data)}
+        />
         {windowWidth > 468 ? (
           <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-end">
             <StyledButton
               onClick={() => this.handleSelection(data)}
               style={{
-                border: "none",
-                color: this.isAddOrRemove ? "#00b0ff" : "#ff0099"
+                border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+                color: this.isAddOrRemove ? themeColor : "#ff0099"
               }}
             >
               {this.isAddOrRemove ? "ADD" : "REMOVE"}
@@ -270,12 +288,15 @@ const enhance = compose(
     state => ({
       selectedRows: getSelectedItemSelector(state),
       test: getTestSelector(state),
+      userId: getUserId(state),
       tests: getTestItemsSelector(state)
     }),
     {
       setTestItems: setTestItemsAction,
       setTestData: setTestDataAction,
       setDataAndSave: setTestDataAndUpdateAction,
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }
   )

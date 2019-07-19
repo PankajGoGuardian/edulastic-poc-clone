@@ -150,7 +150,17 @@ export const UPDATE_CLOSE_ASSIGNMENTS = "[gradebook] update close assignments";
 export const SAVE_OVERALL_FEEDBACK = "[gradebook] save overall feedback";
 export const UPDATE_OVERALL_FEEDBACK = "[gradebook] update overalll feedback";
 export const MARK_AS_ABSENT = "[gradebook] mark student/students as absent";
+
 export const UPDATE_STUDENT_ACTIVITY = "[gradebook] update student activity as absent";
+export const TOGGLE_PAUSE_ASSIGNMENT = "[gradebook] toggle pause assignment";
+export const SET_IS_PAUSED = "[gradebook] set is paused";
+
+export const REMOVE_STUDENTS = "[gradebook] remove students";
+export const ADD_STUDENTS = "[gradebook] add students";
+export const FETCH_STUDENTS = "[gradebook] fetch students by class id";
+export const UPDATE_REMOVED_STUDENTS_LIST = "[gradebook] update student activity as absent";
+export const UPDATE_STUDENTS_LIST = "[gradebook] update removed students list";
+export const UPDATE_CLASS_STUDENTS_LIST = "[gradebook] update class students list";
 
 export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request";
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";
@@ -171,6 +181,7 @@ export const RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR = "[assignment’s class list] 
 export const SET_ASSIGNMENT_FILTER = "[assignments] set assignment filter";
 
 export const FETCH_CURRENT_EDITING_ASSIGNMENT = "[assignments] fetch assignment data";
+export const FETCH_CURRENT_ASSIGNMENT = "[assignments] fetch assignment using assignment id";
 export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current assignment";
 export const UPDATE_RELEASE_SCORE_SETTINGS = "[assignments] update assignment settings";
 export const TOGGLE_RELEASE_GRADE_SETTINGS = "[assignments] show release grade settings";

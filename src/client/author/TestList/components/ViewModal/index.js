@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import Modal from "react-responsive-modal";
 import { darkGrey, themeColor } from "@edulastic/colors";
@@ -38,8 +39,10 @@ import {
   SammaryMark,
   IconWrapper
 } from "./styled";
+import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import { getInterestedStandards } from "../../../dataUtils";
 
-export default class ViewModal extends React.Component {
+class ViewModal extends React.Component {
   static propTypes = {
     isShow: PropTypes.bool.isRequired,
     assign: PropTypes.func.isRequired,
@@ -50,7 +53,7 @@ export default class ViewModal extends React.Component {
   };
 
   render() {
-    const { isShow, close, item, assign, isPlaylist, onDuplicate, onEdit, status } = this.props;
+    const { isShow, close, item, assign, isPlaylist, onDuplicate, onEdit, status, interestedCurriculums } = this.props;
     const {
       title = "",
       description = "",
@@ -138,9 +141,9 @@ export default class ViewModal extends React.Component {
               <SummaryCardContainer>
                 <SummaryCard>
                   <SummaryCardValue>
-                    {isPlaylist ? _source.modules && _source.modules.length : summary.totalQuestions}
+                    {isPlaylist ? _source.modules && _source.modules.length : summary.totalItems || 0}
                   </SummaryCardValue>
-                  <SummaryCardLabel>Questions</SummaryCardLabel>
+                  <SummaryCardLabel>Items</SummaryCardLabel>
                 </SummaryCard>
                 <SummaryCard>
                   <SummaryCardValue>{summary.totalPoints}</SummaryCardValue>
@@ -154,8 +157,7 @@ export default class ViewModal extends React.Component {
                   <ListHeaderCell>POINTS</ListHeaderCell>
                 </ListHeader>
                 {summary &&
-                  summary.standards &&
-                  summary.standards.map(
+                  getInterestedStandards(summary, interestedCurriculums).map(
                     data =>
                       !data.isEquivalentStandard && (
                         <ListRow>
@@ -175,3 +177,10 @@ export default class ViewModal extends React.Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    interestedCurriculums: getInterestedCurriculumsSelector(state)
+  }),
+  {}
+)(ViewModal);

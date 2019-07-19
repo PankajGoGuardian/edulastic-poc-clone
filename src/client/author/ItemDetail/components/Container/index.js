@@ -15,8 +15,11 @@ import {
   updateItemDetailByIdAction,
   publishTestItemAction,
   getTestItemStatusSelector,
-  clearItemDetailAction
+  clearItemDetailAction,
+  proceedPublishingItemAction,
+  saveCurrentTestItemAction
 } from "../../ducks";
+import WarningModal from "../WarningModal";
 import { getCurrentQuestionIdSelector } from "../../../sharedDucks/questions";
 import SettingsBar from "../SettingsBar";
 
@@ -35,6 +38,9 @@ const ItemDetailContainer = ({
   currentUserId,
   clearItem,
   currentQuestionId,
+  showWarningModal,
+  saveTestItem,
+  proceedPublish,
   ...props
 }) => {
   const { modalItemId } = props;
@@ -66,7 +72,7 @@ const ItemDetailContainer = ({
   // the store could have values from previous load, in that case
   // makes sure its the one we intend to load. also, if its the same question loaded,
   // makes sure currentQuestionId is there in case of singleQuestionview
-  if (isLoading || item._id !== itemId || (isSingleQuestionView && !currentQuestionId))
+  if (isLoading || item._id !== itemId || (isSingleQuestionView && !currentQuestionId && !isMultipart))
     return (
       <div>
         <Spin />
@@ -93,6 +99,7 @@ const ItemDetailContainer = ({
 
   return (
     <>
+      <WarningModal visible={showWarningModal} proceedPublish={proceedPublish} />
       {showSettings && (
         // TODO: combine this with the other settings bar in itemDetail page. or seprate it
         // and have it in side questionView maybe !? !!Food for thought.
@@ -101,14 +108,15 @@ const ItemDetailContainer = ({
           isMultipart={isMultipart}
           onCancel={() => setShowSettings(false)}
           setMultipart={setMultipart}
+          saveTestItem={saveTestItem}
         />
       )}
-      {isSingleQuestionView && !isMultipart ? (
+
+      {isSingleQuestionView && !item.multipartItem && !isMultipart ? (
         <QuestionView isItem {...allProps} />
       ) : (
         <MultipleQuestionView {...allProps} />
       )}
-      }{" "}
     </>
   );
 };
@@ -122,14 +130,17 @@ const enhance = compose(
       isSingleQuestionView: isSingleQuestionViewSelector(state),
       isLoading: getItemDetailLoadingSelector(state),
       currentUserId: get(state, ["user", "user", "_id"]),
-      currentQuestionId: getCurrentQuestionIdSelector(state)
+      currentQuestionId: getCurrentQuestionIdSelector(state),
+      showWarningModal: get(state, ["itemDetail", "showWarningModal"], false)
     }),
     {
       getItem: getItemDetailByIdAction,
       setRedirectTest: setRedirectTestAction,
       updateItem: updateItemDetailByIdAction,
       publishTestItem: publishTestItemAction,
-      clearItem: clearItemDetailAction
+      clearItem: clearItemDetailAction,
+      proceedPublish: proceedPublishingItemAction,
+      saveTestItem: saveCurrentTestItemAction
     }
   )
 );

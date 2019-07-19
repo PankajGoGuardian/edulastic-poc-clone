@@ -7,7 +7,7 @@ import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, PreWrapper, helpers } from "@edulastic/common"; // , Stimulus
+import { InstructorStimulus, PreWrapper, helpers, Stimulus } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
@@ -16,7 +16,7 @@ import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import TemplateBox from "./components/TemplateBox";
 import { AnswerContainer } from "./styled/AnswerContainer";
-// import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
@@ -274,7 +274,9 @@ class ClozeDragDropDisplay extends Component {
       theme,
       responseIDs,
       disableResponse,
-      isReviewTab
+      isReviewTab,
+      flowLayout,
+      showQuestionNumber
     } = this.props;
 
     const { userAnswers, possibleResponses, parsedTemplate } = this.state;
@@ -376,10 +378,12 @@ class ClozeDragDropDisplay extends Component {
 
     return (
       <div style={{ fontSize }}>
-        {/* <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper> */}
+        {showQuestionNumber && !flowLayout ? (
+          <QuestionTitleWrapper>
+            <QuestionNumber>{item.qLabel}</QuestionNumber>
+            <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+          </QuestionTitleWrapper>
+        ) : null}
         <div>
           {responsecontainerposition === "top" && (
             <React.Fragment>
@@ -473,7 +477,8 @@ ClozeDragDropDisplay.propTypes = {
   uiStyle: PropTypes.object,
   disableResponse: PropTypes.bool,
   theme: PropTypes.object.isRequired,
-  // showQuestionNumber: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool,
+  flowLayout: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   responseIDs: PropTypes.array.isRequired,
   changePreview: PropTypes.func.isRequired
@@ -509,7 +514,8 @@ ClozeDragDropDisplay.defaultProps = {
     wordwrap: false,
     responsecontainerindividuals: []
   },
-  // showQuestionNumber: false,
+  showQuestionNumber: false,
+  flowLayout: false,
   isReviewTab: false
   // qIndex: null
 };

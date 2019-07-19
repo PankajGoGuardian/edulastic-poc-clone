@@ -66,6 +66,7 @@ import {
   getInterestedGradesSelector
 } from "../../../src/selectors/user";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { getInterestedStandards } from "../../../dataUtils";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -496,7 +497,7 @@ class TestList extends Component {
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
-    const { loading, tests, windowWidth, history, match, userId, mode } = this.props;
+    const { loading, tests, windowWidth, history, match, userId, mode, interestedCurriculums } = this.props;
     const { blockStyle, selectedTests } = this.state;
 
     if (loading) {
@@ -528,21 +529,21 @@ class TestList extends Component {
 
     return (
       <Row>
-        {tests.length &&
-          tests.map((item, index) => (
-            <CardWrapper
-              key={index}
-              owner={item.authors && item.authors.some(x => x._id === userId)}
-              item={item}
-              windowWidth={windowWidth}
-              history={history}
-              match={match}
-              mode={mode}
-              removeTestFromPlaylist={this.handleRemoveTest}
-              isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
-              addTestToPlaylist={this.handleAddTests}
-            />
-          ))}
+        {tests.map((item, index) => (
+          <CardWrapper
+            key={index}
+            owner={item.authors && item.authors.some(x => x._id === userId)}
+            item={item}
+            windowWidth={windowWidth}
+            history={history}
+            match={match}
+            mode={mode}
+            removeTestFromPlaylist={this.handleRemoveTest}
+            isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
+            addTestToPlaylist={this.handleAddTests}
+            standards={getInterestedStandards(item.summary, interestedCurriculums)}
+          />
+        ))}
       </Row>
     );
   };

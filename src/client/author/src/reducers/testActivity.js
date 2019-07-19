@@ -8,13 +8,17 @@ import {
   TOGGLE_PRESENTATION_MODE,
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
-  UPDATE_STUDENT_ACTIVITY
+  SET_IS_PAUSED,
+  UPDATE_STUDENT_ACTIVITY,
+  UPDATE_REMOVED_STUDENTS_LIST,
+  UPDATE_STUDENTS_LIST,
+  UPDATE_CLASS_STUDENTS_LIST
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD = "[gradebook] realtime test activity add";
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT = "[gradebook] realtime test activity submit";
-export const REALTIME_GRADEBOOK_TEST_ITEM_ADD = "[gradebook] realtime test item add";
+export const GRADEBOOK_TEST_ITEM_ADD = "[gradebook] test item add";
 
 export const REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE = "[gradebook] realtime test question remove";
 export const REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE = "[gradebook] realtime test question add max score";
@@ -22,7 +26,7 @@ export const REALTIME_GRADEBOOK_REDIRECT = "[gradebook] realtime assignment redi
 
 export const realtimeGradebookActivityAddAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD);
 export const realtimeGradebookActivitySubmitAction = createAction(REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT);
-export const realtimeGradebookTestItemAddAction = createAction(REALTIME_GRADEBOOK_TEST_ITEM_ADD);
+export const gradebookTestItemAddAction = createAction(GRADEBOOK_TEST_ITEM_ADD);
 export const realtimeGradebookQuestionsRemoveAction = createAction(REALTIME_GRADEBOOK_TEST_QUESTION_REMOVE);
 export const realtimeGradebookQuestionAddMaxScoreAction = createAction(REALTIME_GRADEBOOK_TEST_QUESTION_ADD_MAXSCORE);
 
@@ -30,6 +34,8 @@ export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_R
 
 const initialState = {
   entities: [],
+  removedStudents: [],
+  classStudents: [],
   error: null,
   loading: false,
   presentationMode: false
@@ -46,7 +52,8 @@ const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         data: payload.gradebookData,
         entities: transformGradeBookResponse(payload.gradebookData),
-        additionalData: payload.additionalData
+        additionalData: payload.additionalData,
+        removedStudents: payload.gradebookData.exStudents
       };
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD:
       let entity = payload;
@@ -103,7 +110,7 @@ const reducer = (state = initialState, { type, payload }) => {
         }
       });
       return nextState;
-    case REALTIME_GRADEBOOK_TEST_ITEM_ADD:
+    case GRADEBOOK_TEST_ITEM_ADD:
       nextState = produce(state, _st => {
         for (const { testActivityId, score, maxScore, ...questionItem } of payload) {
           const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);
@@ -190,6 +197,15 @@ const reducer = (state = initialState, { type, payload }) => {
           canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId)
         }
       };
+
+    case SET_IS_PAUSED:
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          isPaused: payload
+        }
+      };
     case UPDATE_CLOSE_ASSIGNMENTS:
       return {
         ...state,
@@ -198,7 +214,7 @@ const reducer = (state = initialState, { type, payload }) => {
           canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId)
         }
       };
-    case UPDATE_STUDENT_ACTIVITY:
+    case UPDATE_REMOVED_STUDENTS_LIST:
       const updatedStudents = state.entities.map(item => {
         if (payload.includes(item.studentId)) {
           return { ...item, status: "absent" };
@@ -208,6 +224,16 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entities: updatedStudents
+      };
+    case UPDATE_STUDENTS_LIST:
+      return {
+        ...state,
+        removedStudents: payload
+      };
+    case UPDATE_CLASS_STUDENTS_LIST:
+      return {
+        ...state,
+        classStudents: payload
       };
     default:
       return state;

@@ -21,6 +21,7 @@ import CountWrapper from "../common/CountWrapper";
 import LinkWrapper from "../common/LinkWrapper";
 import FlexWrapper from "../common/FlexWrapper";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
+import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
 
 class Container extends Component {
   render() {
@@ -52,19 +53,21 @@ class Container extends Component {
           </SecondHeader>
           <BodyWrapper>
             <FlexWrapper>
-              <CardComponent>
-                <IconWrapper>
-                  <IconPlaylist style={{ height: "40px", width: "40px" }} />
-                </IconWrapper>
-                <TitleWrapper>Choose From Play List</TitleWrapper>
-                <TextWrapper> Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>
-                <Link to={toLinkForPlaylist}>
-                  <ButtonComponent type="primary">Play List</ButtonComponent>
-                </Link>
-                <Divider />
-                <CountWrapper>191</CountWrapper>
-                <TextWrapperBold>Pre-built Assessment in Play List</TextWrapperBold>
-              </CardComponent>
+              <FeaturesSwitch inputFeatures="playlist" actionOnInaccessible="hidden" key="playlist">
+                <CardComponent>
+                  <IconWrapper>
+                    <IconPlaylist style={{ height: "40px", width: "40px" }} />
+                  </IconWrapper>
+                  <TitleWrapper>Choose From Play List</TitleWrapper>
+                  <TextWrapper> Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>
+                  <Link to={toLinkForPlaylist}>
+                    <ButtonComponent type="primary">Play List</ButtonComponent>
+                  </Link>
+                  <Divider />
+                  <CountWrapper>191</CountWrapper>
+                  <TextWrapperBold>Pre-built Assessment in Play List</TextWrapperBold>
+                </CardComponent>
+              </FeaturesSwitch>
               <CardComponent>
                 <IconWrapper>
                   <IconTestBank style={{ height: "40px", width: "40px" }} />

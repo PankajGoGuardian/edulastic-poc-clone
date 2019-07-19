@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Select, Row } from "antd";
 
@@ -17,6 +18,8 @@ import {
   TableBodyCol,
   Standard
 } from "./styled";
+import { getInterestedStandards } from "../../../../../dataUtils";
+import { getInterestedCurriculumsSelector } from "../../../../../src/selectors/user";
 
 const ReviewSummary = ({
   totalPoints,
@@ -30,7 +33,8 @@ const ReviewSummary = ({
   thumbnail,
   onChangeSubjects,
   grades,
-  subjects
+  subjects,
+  interestedCurriculums
 }) => {
   let subjectsList = [...selectsData.allSubjects];
   subjectsList.splice(0, 1);
@@ -78,9 +82,9 @@ const ReviewSummary = ({
       <FlexContainer justifyContent="space-between">
         <SummaryInfoContainer>
           <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
-          <SummaryInfoTitle>Questions</SummaryInfoTitle>
+          <SummaryInfoTitle>Items</SummaryInfoTitle>
         </SummaryInfoContainer>
-        <SummaryInfoContainer>
+        <SummaryInfoContainer minWidth="95px">
           <SummaryInfoNumber data-cy="points">{summary.totalPoints}</SummaryInfoNumber>
           <SummaryInfoTitle>Points</SummaryInfoTitle>
         </SummaryInfoContainer>
@@ -90,8 +94,8 @@ const ReviewSummary = ({
         <TableHeaderCol span={8}>Q's</TableHeaderCol>
         <TableHeaderCol span={8}>Points</TableHeaderCol>
       </Row>
-      {summary.standards &&
-        summary.standards.map(
+      {summary &&
+        getInterestedStandards(summary, interestedCurriculums).map(
           data =>
             !data.isEquivalentStandard && (
               <TableBodyRow key={data.key}>
@@ -122,4 +126,9 @@ ReviewSummary.propTypes = {
   subjects: PropTypes.array.isRequired
 };
 
-export default ReviewSummary;
+export default connect(
+  state => ({
+    interestedCurriculums: getInterestedCurriculumsSelector(state)
+  }),
+  null
+)(ReviewSummary);

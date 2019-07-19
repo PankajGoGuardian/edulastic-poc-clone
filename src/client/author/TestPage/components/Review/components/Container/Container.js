@@ -11,12 +11,13 @@ import HeaderBar from "../HeaderBar/HeaderBar";
 import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
-import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
+import { getStandardsSelector } from "../../ducks";
 import {
   setTestDataAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
-  getDefaultThumbnailSelector
+  getDefaultThumbnailSelector,
+  updateDefaultThumbnailAction
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
@@ -31,12 +32,11 @@ import TestPreviewModal from "../../../../../Assignments/components/Container/Te
 const scoreOfItem = item => {
   if (item.itemLevelScoring) {
     return item.itemLevelScore;
-  } else {
-    return get(item, "data.questions", []).reduce(
-      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
-      0
-    );
   }
+  return get(item, "data.questions", []).reduce(
+    (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
+    0
+  );
 };
 
 const getTotalScore = testItems => testItems.map(item => scoreOfItem(item)).reduce((total, s) => total + s, 0);
@@ -49,7 +49,6 @@ class Review extends PureComponent {
     onChangeSubjects: PropTypes.func.isRequired,
     rows: PropTypes.array.isRequired,
     setData: PropTypes.func.isRequired,
-    types: PropTypes.any.isRequired,
     standards: PropTypes.object.isRequired,
     summary: PropTypes.array.isRequired,
     current: PropTypes.string.isRequired,
@@ -59,7 +58,6 @@ class Review extends PureComponent {
   state = {
     isCollapse: true,
     isModalVisible: false,
-    questionCreateType: "Duplicate",
     item: [],
     isTestPreviewModalVisible: false,
     currentTestId: ""
@@ -112,8 +110,9 @@ class Review extends PureComponent {
   };
 
   handleCollapse = () => {
+    const { isCollapse } = this.state;
     this.setState({
-      isCollapse: !this.state.isCollapse
+      isCollapse: !isCollapse
     });
   };
 
@@ -188,7 +187,10 @@ class Review extends PureComponent {
   }
 
   handleChangeField = (field, value) => {
-    const { setData } = this.props;
+    const { setData, updateDefaultThumbnail } = this.props;
+    if (field === "thumbnail") {
+      updateDefaultThumbnail("");
+    }
     setData({ [field]: value });
   };
 
@@ -209,27 +211,17 @@ class Review extends PureComponent {
       windowWidth,
       rows,
       standards,
-      types,
       onChangeGrade,
       onChangeSubjects,
       questions,
       owner,
       defaultThumbnail,
       isEditable = false,
-      createTestItemModalVisible,
       itemsSubjectAndGrade,
       checkAnswer,
       showAnswer
     } = this.props;
-    const {
-      isCollapse,
-      isModalVisible,
-      item,
-      questionCreateType,
-      isTestPreviewModalVisible,
-      currentTestId
-    } = this.state;
-    const totalPoints = test.scoring.total;
+    const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId } = this.state;
 
     const questionsCount = test.testItems.length;
 
@@ -300,7 +292,6 @@ class Review extends PureComponent {
                   selected={selected}
                   setSelected={this.setSelected}
                   onSortEnd={this.moveTestItems}
-                  types={types}
                   owner={owner}
                   isEditable={isEditable}
                   scoring={test.scoring}
@@ -337,7 +328,7 @@ class Review extends PureComponent {
           testId={get(this.props, "match.params.id", false)}
           isVisible={isModalVisible}
           onClose={this.closeModal}
-          showModal={true}
+          showModal
           isEditable={isEditable}
           owner={owner}
           addDuplicate={this.handleDuplicateItem}
@@ -365,14 +356,26 @@ Review.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
   rows: PropTypes.array.isRequired,
   setData: PropTypes.func.isRequired,
-  types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
+  clearDictAlignment: PropTypes.func.isRequired,
   owner: PropTypes.bool,
   onSaveTestId: PropTypes.func,
   current: PropTypes.string.isRequired,
+  history: PropTypes.any.isRequired,
+  clearAnswer: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  questions: PropTypes.object.isRequired
+  questions: PropTypes.object.isRequired,
+  itemsSubjectAndGrade: PropTypes.any.isRequired,
+  isEditable: PropTypes.bool.isRequired,
+  defaultThumbnail: PropTypes.any.isRequired
+};
+
+Review.defaultProps = {
+  owner: false,
+  onSaveTestId: () => {}
 };
 
 const enhance = compose(
@@ -380,7 +383,6 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state),
       summary: getSummarySelector(state),
       createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
@@ -390,6 +392,7 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
+      updateDefaultThumbnail: updateDefaultThumbnailAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,

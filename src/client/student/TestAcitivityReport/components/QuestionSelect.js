@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { Select, Button, Icon } from "antd";
+import { Select, Pagination } from "antd";
 import { themeColor } from "@edulastic/colors";
 
 import { connect } from "react-redux";
@@ -19,19 +19,16 @@ const createOptions = count => {
   }
   return options;
 };
+
 const QuestionSelect = ({ count, current, setCurrentItem }) => {
   const options = createOptions(count || 1);
 
-  const moveToNextQuestion = () => {
-    if (current < count - 1) {
-      setCurrentItem(current + 1);
-    }
-  };
-  const moveToPrevQuestion = () => {
+  const updatePagination = current => {
     if (current > 0) {
       setCurrentItem(current - 1);
     }
   };
+
   return (
     <QuestionListWrapper>
       <Select
@@ -46,19 +43,13 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => {
           </Option>
         ))}
       </Select>
-      <ButtonContainer>
-        <StyledButton disabled={current === 0} onClick={() => moveToPrevQuestion()}>
-          <Icon type="left" />
-        </StyledButton>
-        {options.map((_, index) => (
-          <StyledNumberButton enabled={current === index} onClick={() => setCurrentItem(index)}>
-            {index + 1}
-          </StyledNumberButton>
-        ))}
-        <StyledButton disabled={count - 1 === current} onClick={() => moveToNextQuestion()}>
-          <Icon type="right" />
-        </StyledButton>
-      </ButtonContainer>
+      <Pagination
+        onChange={updatePagination}
+        current={current + 1}
+        total={options.length}
+        showTotal={total => <b>{`${current + 1} out of ${total} questions`}</b>}
+        pageSize={1}
+      />
     </QuestionListWrapper>
   );
 };
@@ -104,47 +95,12 @@ const QuestionListWrapper = styled.div`
       fill: ${themeColor};
     }
   }
-`;
-
-const StyledButton = styled(Button)`
-  width: 35px;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 8px;
-  @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    color: #fff;
-    &:hover,
-    &:focus {
-      background: transparent;
-    }
+  .ant-pagination-item-active {
+    border-color: ${themeColor};
   }
-`;
-
-const StyledNumberButton = styled(Button)`
-  width: 35px;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: 8px;
-  background: ${props => (props.enabled ? "#00b0ff" : "#fff")};
-  color: ${props => (props.enabled ? "#fff" : "#4d4f5c")};
-  &:hover,
-  &:focus {
-    background: #00b0ff;
-    color: #fff;
+  .ant-pagination {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
   }
-  @media (max-width: 768px) {
-    display: none;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  margin-left: 15px;
 `;

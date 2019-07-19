@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
-import { pick, get } from "lodash";
+import { pick } from "lodash";
 import styled from "styled-components";
 import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
 
@@ -49,6 +49,7 @@ const MathFormulaAnswerMethod = ({
   showAdditionals,
   handleChangeAdditionals,
   onChangeKeypad,
+  onChangeAllowedVars,
   answer,
   onAdd,
   onAddIndex,
@@ -296,7 +297,7 @@ const MathFormulaAnswerMethod = ({
             />
           );
         case "allowedVariables":
-          return <AllowedVariables options={options} onChange={changeOptions} />;
+          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedVars} />;
         case "setEvaluation":
           return (
             <CheckOption
@@ -312,9 +313,7 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const { options: validVariable = {} } = get(item, ["validation", "valid_response", "value", 0], {});
-  const { allowedVariables } = validVariable;
-
+  const { allowedVariables } = item;
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
 
   return (
@@ -369,30 +368,28 @@ const MathFormulaAnswerMethod = ({
         <AdditionalContainer>
           <FlexContainer justifyContent="space-between" alignItems="none">
             <AdditionalCompareUsing>
-              <Col spn={index === 0 ? 12 : 11}>
-                <Label>{t("component.math.compareUsing")}</Label>
-                <Select
-                  data-cy="method-selection-dropdown"
-                  size="large"
-                  value={method}
-                  style={{ width: "100%", height: 42 }}
-                  onChange={val => {
-                    onChange("method", val);
-                    handleChangeAdditionals(`${method}_${index}`, "pop");
-                    handleChangeAdditionals(`${val}_${index}`, "push");
-                  }}
-                >
-                  {methods.map(methodKey => (
-                    <Select.Option
-                      data-cy={`method-selection-dropdown-list-${methodKey}`}
-                      key={methodKey}
-                      value={methodsConst[methodKey]}
-                    >
-                      {t(`component.math.${methodsConst[methodKey]}`)}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Col>
+              <Label marginBottom="7px !important">{t("component.math.compareUsing")}</Label>
+              <Select
+                data-cy="method-selection-dropdown"
+                size="large"
+                value={method}
+                style={{ width: "100%", height: 42 }}
+                onChange={val => {
+                  onChange("method", val);
+                  handleChangeAdditionals(`${method}_${index}`, "pop");
+                  handleChangeAdditionals(`${val}_${index}`, "push");
+                }}
+              >
+                {methods.map(methodKey => (
+                  <Select.Option
+                    data-cy={`method-selection-dropdown-list-${methodKey}`}
+                    key={methodKey}
+                    value={methodsConst[methodKey]}
+                  >
+                    {t(`component.math.${methodsConst[methodKey]}`)}
+                  </Select.Option>
+                ))}
+              </Select>
             </AdditionalCompareUsing>
             {methodOptions.includes("rule") && (
               <RuleContainer>
@@ -417,12 +414,14 @@ const MathFormulaAnswerMethod = ({
 
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onChangeAllowedVars: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   item: PropTypes.object.isRequired,
   options: PropTypes.object,
   value: PropTypes.string,
   method: PropTypes.string,
+  style: PropTypes.object,
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
@@ -436,6 +435,7 @@ MathFormulaAnswerMethod.propTypes = {
 MathFormulaAnswerMethod.defaultProps = {
   value: "",
   method: "",
+  style: {},
   options: {},
   onDelete: undefined,
   showAdditionals: [],

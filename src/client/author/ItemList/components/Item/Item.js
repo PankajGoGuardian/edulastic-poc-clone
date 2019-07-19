@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { MoveLink, MathFormulaDisplay, PremiumTag } from "@edulastic/common";
-import { getTestItemAuthorName } from "../../../dataUtils";
+
+import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
+import { getTestItemAuthorName, getQuestionType } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
 import Standards from "./Standards";
-import ItemTypes from "./ItemTypes";
 import {
   Container,
   Categories,
@@ -40,6 +40,8 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     t: PropTypes.func.isRequired,
+    checkAnswer: PropTypes.func.isRequired,
+    showAnser: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
     onToggleToCart: PropTypes.func.isRequired,
     selectedToCart: PropTypes.bool
@@ -74,6 +76,12 @@ class Item extends Component {
   get description() {
     const { item } = this.props;
     return get(item, "rows[0].widgets[0].entity.stimulus", "");
+  }
+
+  get itemStimulus() {
+    const { item } = this.props;
+    const stimulus = get(item, ["data", "questions", 0, "stimulus"], "<p>click here to view the question details</p>");
+    return helpers.sanitizeForReview(stimulus);
   }
 
   closeModal = () => {
@@ -147,15 +155,13 @@ class Item extends Component {
   };
 
   render() {
-    const { item, t, windowWidth, selectedToCart, search, userId } = this.props;
-    const resources =
-      item.rows && item.rows.flatMap(row => row.widgets).filter(widget => widget.widgetType === "resource");
+    const { item, t, windowWidth, selectedToCart, search, userId, checkAnswer, showAnswer } = this.props;
     const { isOpenedDetails, isShowPreviewModal = false } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
     const isEditable = owner;
-
+    const itemType = getQuestionType(item);
     return (
-      <Container>
+      <Container className="fr-view">
         <PreviewModal
           isVisible={isShowPreviewModal}
           page="addItems"
@@ -164,15 +170,12 @@ class Item extends Component {
           data={{ ...item, id: item._id }}
           isEditable={isEditable}
           owner={owner}
-          addDuplicate={this.handleDuplicateItem}
+          checkAnswer={() => checkAnswer({ ...item, isItem: true })}
+          showAnswer={() => showAnswer(item)}
         />
         <Question>
           <QuestionContent>
-            <MoveLink onClick={this.previewItem}>
-              {item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
-                ? item.data.questions[0].stimulus
-                : "Click here to view the question detail."}
-            </MoveLink>
+            <MoveLink onClick={this.previewItem}>{this.itemStimulus}</MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (
@@ -185,17 +188,14 @@ class Item extends Component {
           )}
         </Question>
         <Detail>
-          {resources.map((resource, index) => (
-            <TypeCategory>
-              <Label key={index}>
-                <LabelText>{resource.title}</LabelText>
-              </Label>
-            </TypeCategory>
-          ))}
           <TypeCategory>
             {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
             <CategoryContent>
-              <ItemTypes item={item} />
+              {itemType && (
+                <Label>
+                  <LabelText>{itemType}</LabelText>
+                </Label>
+              )}
             </CategoryContent>
           </TypeCategory>
           {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}

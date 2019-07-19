@@ -1,16 +1,15 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Button } from "antd";
-import { tabletWidth, mobileWidth, linkColor, themeColor, white } from "@edulastic/colors";
+import { tabletWidth, mobileWidth, linkColor, themeColor, white, darkGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled.div`
-  padding: 0 44px 20px 46px;
+  padding: 30px;
   left: 0;
   right: 0;
   height: 100%;
   overflow: auto;
-  margin-top: 22px;
   @media (max-width: ${mobileWidth}) {
     padding: 0 26px 45px 26px;
   }
@@ -18,6 +17,51 @@ export const Container = styled.div`
 
 export const TableWrapper = styled.div`
   margin-top: 22px;
+
+  .ant-table-body {
+    .ant-table-thead > tr {
+      & > th {
+        background: ${white};
+        padding: 10px 15px 20px;
+        border-bottom: none;
+        font-weight: bold;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: ${darkGrey};
+        white-space: nowrap;
+        text-align: center;
+
+        &.assignment-name {
+          text-align: left !important;
+          padding-left: 0;
+        }
+        &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+        & .ant-table-header-column .ant-table-column-sorters::before {
+          background: ${white};
+        }
+        &.ant-table-column-has-actions.ant-table-column-has-filters
+          &.ant-table-column-has-actions.ant-table-column-has-sorters {
+          text-align: center;
+        }
+        .ant-table-column-sorters {
+          display: flex;
+          justify-content: center;
+
+          .ant-table-column-sorter-inner {
+            &.ant-table-column-sorter-inner-full {
+              margin-top: 0em;
+            }
+            .ant-table-column-sorter {
+              &-up,
+              &-down {
+                font-size: 10px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 
 export const StyledCard = styled(Card)`
@@ -76,13 +120,8 @@ export const BtnAction = styled(Button)`
   text-transform: uppercase;
   margin-left: 20px;
   margin-right: 20px !important;
-
-  :active {
-    background-color: ${themeColor};
-    color: ${white};
-  }
-
-  :hover {
+  &:hover,
+  &:focus {
     background-color: ${themeColor};
     color: ${white};
   }

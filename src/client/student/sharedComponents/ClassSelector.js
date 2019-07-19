@@ -5,10 +5,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
 
-const ClassSelector = ({ t, classes, currentGroup, changeClass }) => {
-  if (!classes) {
-    return null;
-  }
+const ClassSelector = ({ t, classList, currentGroup, changeClass }) => {
   return (
     <AssignmentSelectClass id="class-dropdown-wrapper">
       <ClassLabel>{t("common.classLabel")}</ClassLabel>
@@ -19,12 +16,12 @@ const ClassSelector = ({ t, classes, currentGroup, changeClass }) => {
           changeClass(value);
         }}
       >
-        {classes.length > 1 && (
+        {classList.length > 1 && (
           <Select.Option key="all" value={""}>
             All classes
           </Select.Option>
         )}
-        {classes.map((cl, i) => (
+        {classList.map((cl, i) => (
           <Select.Option key={cl._id} value={cl._id}>
             {cl.name}
           </Select.Option>
@@ -39,7 +36,7 @@ ClassSelector.propTypes = {
 };
 
 const stateToProps = state => ({
-  classes: getClasses(state),
+  // classes: getClasses(state),
   currentGroup: getCurrentGroup(state)
 });
 export default connect(

@@ -5,25 +5,33 @@ import { mobileWidth, tabletWidth, white, themeColor } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
-  padding: 0 44px 20px 46px;
+  padding: 30px 30px 15px;
   left: 0;
   right: 0;
   height: 100%;
   overflow: auto;
-  margin-top: 30px;
 
   .scrollbar-container {
-    overflow: auto !important;
-    height: calc(100vh - 150px);
-
-    ::-webkit-scrollbar {
-      display: none;
-    }
+    height: calc(100vh - 170px);
+    width: 100%;
+    padding-right: 30px;
+    padding-left: 2px;
   }
 
   @media (max-width: ${mobileWidth}) {
     padding: 0 26px 45px 26px;
   }
+`;
+
+export const LeftWrapper = styled.div`
+  min-width: 230px;
+  max-width: 230px;
+  margin-top: 10px;
+`;
+
+export const FixedWrapper = styled.div`
+  width: 230px;
+  position: fixed;
 `;
 
 export const PaginationInfo = styled.span`
@@ -48,11 +56,11 @@ export const Main = styled.div`
 export const DRadio = styled(Radio)``;
 
 export const StyledCard = styled(Card)`
-  border-radius: 5;
   overflow-x: auto;
 
   .ant-card-body {
-    padding: 24px;
+    padding: 20px 0px 60px;
+    min-height: calc(100vh - 150px);
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -126,9 +134,9 @@ export const FilterButton = styled(Button)`
   padding: 2px;
   padding-top: 5px;
   border-radius: 3px;
-  position: absolute;
-  left: -20px;
-  top: 25px;
+  position: fixed;
+  margin-left: -20px;
+  margin-top: 34px;
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
   background: ${props => (props.showFilter ? "#00AD50" : "#ffffff")};

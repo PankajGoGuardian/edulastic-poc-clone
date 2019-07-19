@@ -1,4 +1,5 @@
 import { createAction, createReducer } from "redux-starter-kit";
+import { uniq } from "lodash";
 import { schema } from "normalizr";
 import { createSelector } from "reselect";
 
@@ -57,8 +58,23 @@ export default createReducer(initialState, {
   [UPDATE_TEST_ACTIVITY]: updateReports,
   [SET_FILTER]: setFilter,
   [ADD_REPORT_REALTIME]: (state, { payload: report }) => {
-    state.byId[report._id] = report;
-    state.allIds.push(report._id);
+    if (Array.isArray(report)) {
+      for (let el of report) {
+        state.byId[el._id] = el;
+      }
+      if (report.length === 1) {
+        // a tiny common usecase performance optimisation
+        if (!state.allIds.includes(report[0]._id)) {
+          state.allIds.push(report[0]._id);
+        }
+      } else {
+        state.allIds.push(...report.map(x => x._id));
+        state.allIds = uniq(state.allIds);
+      }
+    } else {
+      state.byId[report._id] = report;
+      state.allIds.push(report._id);
+    }
   }
 });
 

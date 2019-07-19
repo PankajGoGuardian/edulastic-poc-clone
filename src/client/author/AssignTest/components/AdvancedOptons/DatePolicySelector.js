@@ -1,12 +1,11 @@
-/* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import { getUserRole } from "../../../src/selectors/user";
-// import PropTypes from "prop-types";
 import * as moment from "moment";
 import { Col, Select } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledRow, StyledRowLabel, StyledDatePicker, StyledSelect } from "./styled";
+import TestTypeSelector from "../SimpleOptions/TestTypeSelector";
 
 const DatePolicySelector = ({
   startDate,
@@ -14,7 +13,8 @@ const DatePolicySelector = ({
   changeField,
   openPolicy: selectedOpenPolicy,
   closePolicy: selectedClosePolicy,
-  userRole
+  userRole,
+  testType
 }) => {
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {
@@ -104,6 +104,19 @@ const DatePolicySelector = ({
               </Select.Option>
             ))}
           </StyledSelect>
+        </Col>
+      </StyledRow>
+      <StyledRowLabel gutter={48} style={{ marginBottom: "10" }}>
+        <Col span={6}>Test Type</Col>
+      </StyledRowLabel>
+      <StyledRow>
+        <Col span={6}>
+          <TestTypeSelector
+            isAdvanceView
+            userRole={userRole}
+            testType={testType}
+            onAssignmentTypeChange={changeField("testType")}
+          />
         </Col>
       </StyledRow>
     </React.Fragment>

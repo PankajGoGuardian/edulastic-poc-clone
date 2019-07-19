@@ -1,23 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Icon } from "antd";
-import { upperCase, get } from "lodash";
-import { IconUser } from "@edulastic/icons";
-
-import { removeStudentsRequestAction } from "../../../ducks";
+import { get } from "lodash";
+import { removeStudentsRequestAction, selectStudentAction } from "../../../ducks";
 import { getUserOrgData } from "../../../../src/selectors/user";
-import {
-  StyledModal,
-  Title,
-  ActionButton,
-  UserNameContainer,
-  UserName,
-  StyledInput,
-  Description,
-  BoldText,
-  InputWrapper
-} from "./styled";
+import { UserNameContainer, UserName, LightGreenSpan } from "./styled";
+
+import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
 
 class DeleteConfirm extends React.Component {
   static propTypes = {
@@ -34,7 +23,7 @@ class DeleteConfirm extends React.Component {
   };
 
   state = {
-    confirmText: null,
+    confirmText: "",
     defaultText: "REMOVE"
   };
 
@@ -51,10 +40,10 @@ class DeleteConfirm extends React.Component {
     );
   }
 
-  onChangeHandler = ({ target }) => this.setState({ confirmText: upperCase(target.value) });
+  onChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
 
   onRemove = () => {
-    const { handleCancel, selectedStudent, orgData, selectedClass, removeStds } = this.props;
+    const { handleCancel, selectedStudent, orgData, selectedClass, removeStds, selectStudents } = this.props;
     const { code: classCode } = selectedClass;
     const studentIds = selectedStudent.map(std => std._id || std.userId);
     const { districtId } = orgData;
@@ -66,6 +55,7 @@ class DeleteConfirm extends React.Component {
     });
 
     if (handleCancel) {
+      selectStudents([]);
       handleCancel();
     }
   };
@@ -74,37 +64,24 @@ class DeleteConfirm extends React.Component {
     const { isOpen, handleCancel } = this.props;
     const { defaultText, confirmText } = this.state;
 
-    const title = (
-      <Title>
-        <IconUser />
-        <label>Remove Students</label>
-      </Title>
-    );
-
-    const footer = (
-      <>
-        <ActionButton onClick={handleCancel} ghost type="primary">
-          No, Cancel
-        </ActionButton>
-        <ActionButton onClick={this.onRemove} type="primary" disabled={upperCase(defaultText) !== confirmText}>
-          Yes, Remove <Icon type="right" />
-        </ActionButton>
-      </>
-    );
-
     return (
-      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer}>
-        {this.renderUserNames()}
-        <Description>
-          Are you sure you want to remove the selected students from the class? <br />
-          If yes type
-          <BoldText>{defaultText}</BoldText> in the space given below and proceed.
-        </Description>
-        <InputWrapper>
-          {/* Here paste is not allowed, and user has to manually type in REMOVE */}
-          <StyledInput size="large" onChange={this.onChangeHandler} onPaste={evt => evt.preventDefault()} />
-        </InputWrapper>
-      </StyledModal>
+      <ConfirmationModal
+        title="Remove Student(s)"
+        show={isOpen}
+        onOk={this.onRemove}
+        onCancel={handleCancel}
+        inputVal={confirmText}
+        onInputChange={this.onChangeHandler}
+        expectedVal={defaultText}
+        canUndone
+        bodyText={
+          <>
+            {this.renderUserNames()}
+            <div> Are you sure you want to remove the selected students from the class? </div>
+          </>
+        }
+        okText="Yes,Remove"
+      />
     );
   }
 }
@@ -116,6 +93,7 @@ export default connect(
     selectedClass: get(state, "manageClass.entity")
   }),
   {
-    removeStds: removeStudentsRequestAction
+    removeStds: removeStudentsRequestAction,
+    selectStudents: selectStudentAction
   }
 )(DeleteConfirm);

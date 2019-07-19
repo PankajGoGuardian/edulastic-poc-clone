@@ -9,7 +9,17 @@ import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestio
 import { Circle, Cross } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Points = ({ circles, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, correct }) => {
+const Points = ({
+  circles,
+  onPointOver,
+  onMouseDown,
+  activeIndex,
+  view,
+  gridParams,
+  previewTab,
+  correct,
+  paddingTop
+}) => {
   const { margin, pointStyle } = gridParams;
 
   const { padding, step } = getGridVariables(circles, gridParams);
@@ -22,12 +32,12 @@ const Points = ({ circles, onPointOver, onMouseDown, activeIndex, view, gridPara
 
   const getCenterX = index => step * index + margin / 2 + padding;
 
-  const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
+  const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + paddingTop;
 
   const getCrossD = (x, y) => `M ${x - 6},${y - 6} L ${x + 7},${y + 7} M ${x + 7},${y - 6} L ${x - 6},${y + 7}`;
 
   const renderValidationIcons = index => (
-    <g transform={`translate(${getCenterX(index) - 20},${getCenterY(circles[index]) - 20})`}>
+    <g transform={`translate(${getCenterX(index) - 6},${getCenterY(circles[index]) - 24})`}>
       {correct[index] && <IconCheck color={green} width={12} height={12} />}
       {!correct[index] && <IconClose color={red} width={12} height={12} />}
     </g>
@@ -81,7 +91,8 @@ Points.propTypes = {
     pointStyle: PropTypes.string
   }).isRequired,
   correct: PropTypes.array.isRequired,
-  previewTab: PropTypes.string
+  previewTab: PropTypes.string,
+  paddingTop: PropTypes.number.isRequired
 };
 
 Points.defaultProps = {

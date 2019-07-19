@@ -78,6 +78,7 @@ export const MathKeyboardStyles = styled.div`
     letter-spacing: normal;
     text-align: center;
     color: ${props => props.theme.mathKeyboard.numColor};
+    float: left;
 
     :disabled,
     :disabled:hover {

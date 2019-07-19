@@ -30,8 +30,7 @@ import {
   getSelectedItemSelector,
   clearSelectedItemsAction
 } from "../../../TestPage/components/AddItems/ducks";
-import { setDefaultTestDataAction } from "../../../TestPage/ducks";
-import { getItemsTypesSelector } from "../../../TestPage/components/Review/ducks";
+import { setDefaultTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../TestPage/ducks";
 import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { addItemToCartAction } from "../../ducks";
@@ -298,12 +297,14 @@ class Contaier extends Component {
   renderItems = () => {
     const {
       items,
-      itemTypes,
+
       history,
       windowWidth,
       addItemToCart,
       selectedCartItems,
       userId,
+      checkAnswer,
+      showAnswer,
       interestedCurriculums
     } = this.props;
     const { search } = this.state;
@@ -321,13 +322,14 @@ class Contaier extends Component {
       <Item
         key={`Item_${item._id}`}
         item={item}
-        types={itemTypes[item._id]}
         history={history}
         userId={userId}
         windowWidth={windowWidth}
         onToggleToCart={addItemToCart}
         selectedToCart={selectedCartItems ? selectedCartItems.includes(item._id) : false}
         interestedCurriculums={interestedCurriculums}
+        checkAnswer={checkAnswer}
+        showAnswer={showAnswer}
         search={search}
       />
     ));
@@ -464,7 +466,6 @@ const enhance = compose(
       count: getTestsItemsCountSelector(state),
       loading: getTestItemsLoadingSelector(state),
       creating: getTestItemCreatingSelector(state),
-      itemTypes: getItemsTypesSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
       selectedCartItems: getSelectedItemSelector(state).data,
@@ -485,6 +486,8 @@ const enhance = compose(
       udpateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
       clearSelectedItems: clearSelectedItemsAction,
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction,
       addItemToCart: addItemToCartAction
     }
   )

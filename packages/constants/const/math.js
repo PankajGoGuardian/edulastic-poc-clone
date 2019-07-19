@@ -109,14 +109,14 @@ const methodOptions = {
     "ignoreOrder",
     "ignoreCoefficientOfOne",
     "inverseResult",
-    "allowInterval"
+    "allowInterval",
+    "allowedVariables"
   ],
   [methods.EQUIV_VALUE]: [
     "ariaLabel",
     "inverseResult",
     "isMixedFraction",
     "isSimpleFraction",
-    "ignoreTrailingZeros",
     "ignoreText",
     "isUnit",
     "tolerance",
@@ -125,6 +125,7 @@ const methodOptions = {
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
     "allowNumericOnly",
+    "allowedVariables",
     "setEvaluation",
     "compareSides"
   ],

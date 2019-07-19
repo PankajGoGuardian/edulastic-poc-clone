@@ -2,58 +2,28 @@ import styled from "styled-components";
 import { Col, Row } from "antd";
 
 import { Paper } from "@edulastic/common";
-import { themeColor, lightGreySecondary, secondaryTextColor, dropZoneTitleColor, greenDark } from "@edulastic/colors";
+import { lightGreySecondary, secondaryTextColor, dropZoneTitleColor, greenDark } from "@edulastic/colors";
 
 export const Container = styled(Paper)`
-  padding: 16px 24px;
+  padding: 16px;
   margin-top: 46px;
-
-  .ant-select-selection__choice {
-    height: 23px !important;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    background: #cbdef7;
-    color: ${themeColor};
-    font-weight: 600;
-    margin-top: 9px !important;
-  }
-
-  .ant-select-selection__rendered {
-    padding-left: 9px;
-    margin-left: 0;
-  }
-
-  .ant-select-selection__choice__content {
-    font-size: 11px;
-    letter-spacing: 0.2px;
-    color: #0083be;
-    font-weight: bold;
-    height: 23px;
-    display: flex;
-    align-items: center;
-  }
-
-  .ant-select-remove-icon svg {
-    fill: ${themeColor};
-    width: 12px;
-    height: 12px;
-  }
 `;
 
 export const SummaryInfoContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 7px 12px;
+  justify-content: space-between;
+  padding: 5px 10px;
   border-radius: 2px;
   background: ${lightGreySecondary};
-  width: 140px;
+  min-width: ${props => (props.minWidth ? props.minWidth : "")};
+  width: 100%;
   height: 40px;
 `;
 
 export const SummaryInfoNumber = styled.span`
   display: block;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 600;
   color: ${secondaryTextColor};
 `;
@@ -63,7 +33,7 @@ export const SummaryInfoTitle = styled.span`
   font-size: 12px;
   font-weight: 600;
   color: ${secondaryTextColor};
-  margin-left: 28px;
+  margin-left: 5px;
 `;
 
 export const TableHeaderCol = styled(Col)`
@@ -100,4 +70,6 @@ export const Standard = styled.span`
   font-weight: 700;
   border-radius: 5px;
   padding: 5px 20px;
+  width: 100%;
+  word-break: break-word;
 `;

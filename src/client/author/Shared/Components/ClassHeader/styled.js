@@ -18,9 +18,9 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   background-color: ${props => props.theme.header.headerBgColor};
-  height: 95px;
+  height: 96px;
   z-index: 1;
-  padding: 0px 20px;
+  padding: 0px 30px;
   &:hover {
     background-color: darken(${props => props.theme.header.headerBgColor}, 10%);
   }
@@ -107,7 +107,7 @@ export const StyledAnchor = styled.div`
   padding: 0px 18px;
   text-align: center;
   height: 45px;
-  margin: 0 10px;
+  margin: 0 5px;
   border-radius: 4px;
   background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
   -webkit-transition: background-color 0.3s;
@@ -213,6 +213,11 @@ export const PresentModeSwitch = styled(Switch)`
 const commonButtonsCSS = css`
   color: ${themeColor};
   height: 100%;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    color: ${themeColor};
+  }
 `;
 export const HeaderMenuIcon = styled(Button)`
   ${commonButtonsCSS}
@@ -226,6 +231,7 @@ export const OpenCloseButton = styled(Button)`
 `;
 
 export const MenuItems = styled(Menu.Item)`
+  font-size: 12px;
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
     background-color: ${themeColor};
@@ -242,4 +248,5 @@ export const CaretUp = styled.i`
 
 export const DropMenu = styled(Menu)`
   margin-top: 10px;
+  min-width: 175px;
 `;

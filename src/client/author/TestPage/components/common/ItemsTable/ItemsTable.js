@@ -8,14 +8,14 @@ import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 
 import styled from "styled-components";
-import { getTestItemAuthorName } from "../../../../dataUtils";
+import { getTestItemAuthorName, getQuestionType } from "../../../../dataUtils";
 import MainInfoCell from "./MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell";
-import { getItemsTypesSelector, getStandardsSelector } from "../../Review/ducks";
+import { getStandardsSelector } from "../../Review/ducks";
+import { previewShowAnswerAction, previewCheckAnswerAction } from "../../../ducks";
 
 const ItemsTable = ({
   items,
-  types,
   setSelectedTests,
   selectedTests,
   onAddItems,
@@ -24,6 +24,8 @@ const ItemsTable = ({
   showModal = false,
   isEditable = false,
   addDuplicate,
+  checkAnswer,
+  showAnswer,
   testId,
   search,
   gotoSummary
@@ -49,6 +51,8 @@ const ItemsTable = ({
           addDuplicate={addDuplicate}
           showModal={showModal}
           isEditable={isEditable}
+          checkAnswer={checkAnswer}
+          showAnswer={showAnswer}
           testId={testId}
           data={data}
         />
@@ -96,7 +100,7 @@ const ItemsTable = ({
       by: getTestItemAuthorName(item),
       shared: "9578 (1)",
       likes: 9,
-      types: types[item._id],
+      type: getQuestionType(item),
       standards: standards[item._id],
       stimulus,
       isPremium: !!item.collectionName,
@@ -125,7 +129,6 @@ const ItemsTable = ({
 
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
-  types: PropTypes.object.isRequired,
   setSelectedTests: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
@@ -139,10 +142,15 @@ ItemsTable.propTypes = {
 const enhance = compose(
   memo,
   withWindowSizes,
-  connect(state => ({
-    types: getItemsTypesSelector(state),
-    standards: getStandardsSelector(state)
-  }))
+  connect(
+    state => ({
+      standards: getStandardsSelector(state)
+    }),
+    {
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction
+    }
+  )
 );
 
 export default enhance(ItemsTable);

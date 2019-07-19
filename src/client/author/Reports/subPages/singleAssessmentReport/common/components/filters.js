@@ -17,7 +17,10 @@ import {
   getFiltersSelector,
   setFiltersAction,
   getTestIdSelector,
-  setTestIdAction
+  setTestIdAction,
+  getReportsPrevSARFilterData,
+  setPrevSARFilterDataRequestAction,
+  getReportsSARFilterLoadingState
 } from "../filterDataDucks";
 import { getUserRole } from "../../../../../src/selectors/user";
 import { getUser } from "../../../../../src/selectors/user";
@@ -50,9 +53,12 @@ const SingleAssessmentReportFilters = ({
   location,
   className,
   style,
-  history
+  history,
+  setPrevSARFilterDataRequestAction,
+  prevSARFilterData,
+  loading
 }) => {
-  const [prevSARFilterData, setPrevSARFilterData] = useState(null);
+  // const [prevSARFilterData, setPrevSARFilterData] = useState(null);
 
   const getTitleByTestId = testId => {
     let arr = get(SARFilterData, "data.result.testData", []);
@@ -76,18 +82,28 @@ const SingleAssessmentReportFilters = ({
   });
 
   useEffect(() => {
-    const search = queryString.parse(location.search);
-    const termId =
-      search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
-    let q = {
-      termId
-    };
-    getSARFilterDataRequestAction(q);
+    if (SARFilterData !== prevSARFilterData) {
+      const search = queryString.parse(location.search);
+      const termId =
+        search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
+      let q = {
+        termId
+      };
+      getSARFilterDataRequestAction(q);
+    }
   }, []);
 
   let processedTestIds;
   let dropDownData;
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
+    console.log("SARFilterData change");
+    console.log("SARFilterData", SARFilterData);
+    console.log("prevSARFilterData", prevSARFilterData);
+    console.log(
+      "SARFilterData === prevSARFilterData",
+      JSON.stringify(SARFilterData) == JSON.stringify(prevSARFilterData)
+    );
+
     const search = queryString.parse(location.search);
     search.testId = getTestIdFromURL(location.pathname);
 
@@ -162,13 +178,14 @@ const SingleAssessmentReportFilters = ({
     }
     setFiltersAction(urlParams);
     setTestIdAction(filteredUrlTestId);
-
+    debugger;
     _onGoClick({
       selectedTest: { key: filteredUrlTestId, title: getTitleByTestId(filteredUrlTestId) },
       filters: urlParams
     });
 
-    setPrevSARFilterData(SARFilterData);
+    // setPrevSARFilterData(SARFilterData);
+    setPrevSARFilterDataRequestAction(SARFilterData);
   }
 
   dropDownData = useMemo(() => filteredDropDownData(SARFilterData, user, { ...filters }), [SARFilterData, filters]);
@@ -393,12 +410,15 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       testId: getTestIdSelector(state),
       role: getUserRole(state),
-      user: getUser(state)
+      user: getUser(state),
+      prevSARFilterData: getReportsPrevSARFilterData(state),
+      loading: getReportsSARFilterLoadingState(state)
     }),
     {
       getSARFilterDataRequestAction: getSARFilterDataRequestAction,
       setFiltersAction: setFiltersAction,
-      setTestIdAction: setTestIdAction
+      setTestIdAction: setTestIdAction,
+      setPrevSARFilterDataRequestAction
     }
   )
 );

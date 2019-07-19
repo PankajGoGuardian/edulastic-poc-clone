@@ -17,22 +17,29 @@ import { getNavigationTabLinks } from "../../common/util";
 import navigation from "../../common/static/json/navigation.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-export const SingleAssessmentReportContainer = props => {
-  const [settings, setSettings] = useState({
-    selectedTest: { key: "", title: "" },
-    requestFilters: {
-      termId: "",
-      subject: "",
-      grade: "",
-      courseId: "",
-      groupId: "",
-      schoolId: "",
-      teacherId: "",
-      assessmentType: ""
-    }
-  });
+import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
+import { connect } from "react-redux";
+
+const SingleAssessmentReportContainer = props => {
+  const { settings, setSARSettingsAction } = props;
+  // const [settings, setSettings] = useState({
+  //   selectedTest: { key: "", title: "" },
+  //   requestFilters: {
+  //     termId: "",
+  //     subject: "",
+  //     grade: "",
+  //     courseId: "",
+  //     groupId: "",
+  //     schoolId: "",
+  //     teacherId: "",
+  //     assessmentType: ""
+  //   }
+  // });
 
   useEffect(() => {
+    console.log("settings change effect");
+    console.log("settings.selectedTest.key", settings.selectedTest.key);
+    console.log("settings", JSON.stringify(settings));
     if (settings.selectedTest.key) {
       let arr = Object.keys(settings.requestFilters);
       let obj = {};
@@ -43,7 +50,7 @@ export const SingleAssessmentReportContainer = props => {
       let path = settings.selectedTest.key + "?" + qs.stringify(obj);
       props.history.push(path);
     }
-  }, [settings]);
+  }, [props.settings]);
 
   let computedChartNavigatorLinks;
 
@@ -66,6 +73,7 @@ export const SingleAssessmentReportContainer = props => {
   computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
 
   const onGoClick = _settings => {
+    debugger;
     if (_settings.selectedTest.key) {
       let obj = {};
       let arr = Object.keys(_settings.filters);
@@ -73,8 +81,12 @@ export const SingleAssessmentReportContainer = props => {
         let val = _settings.filters[item] === "All" ? "" : _settings.filters[item];
         obj[item] = val;
       });
-
-      setSettings({
+      console.log("onGoClick - setSettings");
+      // setSettings({
+      //   selectedTest: _settings.selectedTest,
+      //   requestFilters: obj
+      // });
+      setSARSettingsAction({
         selectedTest: _settings.selectedTest,
         requestFilters: obj
       });
@@ -83,6 +95,7 @@ export const SingleAssessmentReportContainer = props => {
 
   return (
     <>
+      {console.log("****singleAssessmentReport****")}
       <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
         <SingleAssessmentReportFilters
           onGoClick={onGoClick}
@@ -96,12 +109,18 @@ export const SingleAssessmentReportContainer = props => {
         <Route
           exact
           path={`/author/reports/assessment-summary/test/:testId?`}
-          render={_props => <AssessmentSummary {..._props} settings={settings} />}
+          render={_props => {
+            console.log("AssessmentSummary - component");
+            return <AssessmentSummary {..._props} settings={settings} />;
+          }}
         />
         <Route
           exact
           path={`/author/reports/peer-performance/test/:testId?`}
-          render={_props => <PeerPerformance {..._props} settings={settings} />}
+          render={_props => {
+            console.log("PeerPerformance - component");
+            return <PeerPerformance {..._props} settings={settings} />;
+          }}
         />
         <Route
           exact
@@ -127,3 +146,10 @@ export const SingleAssessmentReportContainer = props => {
     </>
   );
 };
+
+const ConnectedSingleAssessmentReportContainer = connect(
+  state => ({ settings: getReportsSARSettings(state) }),
+  { setSARSettingsAction }
+)(SingleAssessmentReportContainer);
+
+export { ConnectedSingleAssessmentReportContainer as SingleAssessmentReportContainer };

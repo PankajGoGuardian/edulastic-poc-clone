@@ -31,7 +31,7 @@ const initialState = {
   archiveGroups: [],
   students: [],
   loadedGroups: [],
-  activeGroupsLoading: true
+  activeGroupsLoading: false
 };
 
 // set groups
@@ -49,6 +49,7 @@ const setArchiveGroups = (state, { payload }) => {
 // set loading to true
 const setLoading = state => {
   state.isLoading = true;
+  state.activeGroupsLoading = true;
 };
 
 // populate groups

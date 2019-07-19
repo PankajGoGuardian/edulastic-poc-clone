@@ -18,7 +18,7 @@ import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
 import StandardTags from "./styled/StandardTags";
 import StandardsWrapper, { RecentStandards } from "./styled/StandardsWrapper";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, grey } from "@edulastic/colors";
 
 const AlignmentRow = ({
   t,
@@ -34,25 +34,27 @@ const AlignmentRow = ({
   editAlignment,
   createUniqGradeAndSubjects,
   formattedCuriculums,
-  updateRecentStandardsList,
+  interestedCurriculums,
   recentStandardsList = []
 }) => {
-  const { subject, curriculumId, curriculum, grades = [], standards = [] } = alignment;
+  let {
+    subject = "Mathematics",
+    curriculumId = "d6ec0d994eaf3f4c805c8011",
+    curriculum = "Math - Common Core",
+    grades = ["7"],
+    standards = []
+  } = alignment;
   const [showModal, setShowModal] = useState(false);
   const setSubject = val => {
-    storeInLocalStorage("defaultSubject", val);
     editAlignment(alignmentIndex, { subject: val, standards: [], curriculum: "" });
   };
 
   const setGrades = val => {
-    storeInLocalStorage("defaultGrades", val);
     editAlignment(alignmentIndex, { grades: val, standards: [] });
   };
 
   const handleChangeStandard = (curriculum, event) => {
     const curriculumId = event.key;
-    storeInLocalStorage("defaultCurriculumSelected", curriculum);
-    storeInLocalStorage("defaultCurriculumIdSelected", curriculumId);
     editAlignment(alignmentIndex, { curriculumId, curriculum });
   };
 
@@ -60,16 +62,6 @@ const AlignmentRow = ({
 
   const handleSearchStandard = searchStr => {
     getCurriculumStandards({ id: curriculumId, grades, searchStr });
-  };
-
-  const updateRecentStandards = newStandard => {
-    recentStandardsList = recentStandardsList.filter(recentStandard => recentStandard._id !== newStandard._id);
-    recentStandardsList.unshift(newStandard);
-    if (recentStandardsList.length > 10) {
-      recentStandardsList = recentStandardsList.splice(0, 10);
-    }
-    updateRecentStandardsList({ recentStandards: recentStandardsList });
-    storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
   };
 
   const handleStandardSelect = (chosenStandardsArr, option) => {
@@ -112,32 +104,23 @@ const AlignmentRow = ({
       standards: data.eloStandards
     });
 
-    data.eloStandards &&
-      data.eloStandards.forEach(elo => {
-        updateRecentStandards(elo);
-      });
     setShowModal(false);
   };
 
   const handleAddStandard = newStandard => {
-    let newStandards = standards.filter(standard => {
-      return standard._id !== newStandard._id;
+    let newStandards = standards.some(standard => {
+      return standard._id === newStandard._id;
     });
-    newStandards = [...newStandards, newStandard];
-    let { subject } = alignment;
-    if (!subject) {
-      const curriculumFromStandard = (option.props.obj || {}).curriculumId
-        ? formattedCuriculums.find(curriculum => curriculum.value === option.props.obj.curriculumId)
-        : {};
-      subject = curriculumFromStandard.subject;
+    if (newStandards) {
+      newStandards = standards.filter(standard => standard._id !== newStandard._id);
+    } else {
+      newStandards = [...standards, newStandard];
     }
-    const alignmentGrades = alignment.grades;
     const standardsGrades = newStandards.flatMap(standard => standard.grades);
-    createUniqGradeAndSubjects([...alignmentGrades, ...standardsGrades], subject);
+    createUniqGradeAndSubjects([...grades, ...standardsGrades], subject);
     editAlignment(alignmentIndex, {
       standards: newStandards
     });
-    updateRecentStandards(newStandard);
   };
 
   const handleStandardFocus = () => {
@@ -159,6 +142,27 @@ const AlignmentRow = ({
     });
   }, [alignment]);
 
+  useEffect(() => {
+    const { grades: alGrades, subject: alSubject, curriculum: alCurriculum, curriculumId: alCurriculumId } = alignment;
+    if (!alCurriculumId) {
+      if (interestedCurriculums.length > 0) {
+        editAlignment(alignmentIndex, {
+          subject: interestedCurriculums[0].subject,
+          curriculum: interestedCurriculums[0].name,
+          curriculumId: interestedCurriculums[0]._id,
+          grades: interestedCurriculums[0].grades || []
+        });
+      } else {
+        editAlignment(alignmentIndex, {
+          subject: "Mathematics",
+          curriculumId: "d6ec0d994eaf3f4c805c8011",
+          curriculum: "Math - Common Core",
+          grades: ["7"],
+          standards: []
+        });
+      }
+    }
+  }, []);
   return (
     <Fragment>
       {showModal && (
@@ -298,7 +302,7 @@ const AlignmentRow = ({
                   <RecentStandards>
                     {recentStandardsList.map(recentStandard => (
                       <StandardTags
-                        color={themeColor}
+                        color={standardsArr.includes(recentStandard.identifier) ? grey : themeColor}
                         onClick={() => {
                           handleAddStandard(recentStandard);
                         }}
@@ -340,7 +344,5 @@ export default connect(
     formattedCuriculums: getFormattedCurriculumsSelector(state, props.alignment),
     recentStandardsList: getRecentStandardsListSelector(state)
   }),
-  {
-    updateRecentStandardsList: updateRecentStandardsAction
-  }
+  null
 )(AlignmentRow);

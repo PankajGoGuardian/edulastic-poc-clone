@@ -37,6 +37,7 @@ import { AddButtonContainer } from "./styled/AddButtonContainer";
 import { CustomSelect } from "./styled/SubjectAndGradeSelect";
 import SecondBlock from "./SecondBlock";
 import AlignmentRow from "./AlignmentRow";
+import { getInterestedCurriculumsSelector } from "../../../author/src/selectors/user";
 
 const { Title } = Typography;
 
@@ -59,6 +60,7 @@ const QuestionMetadata = ({
   curriculums,
   getCurriculums,
   removeAlignment,
+  interestedCurriculums,
   editAlignment,
   curriculumStandardsLoading
 }) => {
@@ -140,6 +142,7 @@ const QuestionMetadata = ({
                 curriculumStandardsTLO={curriculumStandards.tlo}
                 curriculumStandardsLoading={curriculumStandardsLoading}
                 editAlignment={editAlignment}
+                interestedCurriculums={interestedCurriculums}
                 createUniqGradeAndSubjects={createUniqGradeAndSubjects}
               />
             ))}
@@ -208,6 +211,7 @@ const enhance = compose(
       curriculumStandardsLoading: standardsSelector(state).loading,
       curriculumStandards: getStandardsListSelector(state),
       questionData: getQuestionDataSelector(state),
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
       alignment: getDictionariesAlignmentsSelector(state)
     }),
     {

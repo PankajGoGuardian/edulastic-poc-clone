@@ -22,7 +22,7 @@ export const StyledInput = styled(Input)`
   padding: 20px;
 `;
 
-export const StyledP = styled.p`
+export const StyledDiv = styled.div`
   margin-bottom: 5px;
 `;
 

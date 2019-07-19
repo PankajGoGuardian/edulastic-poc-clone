@@ -206,9 +206,13 @@ class ClozeDropDown extends Component {
         {view === "preview" && (
           <Wrapper>
             <Display
-              showAnswer={previewTab === "show" && !answerContextConfig.isAnswerModifiable}
-              preview={previewTab === "clear" || answerContextConfig.isAnswerModifiable}
-              checkAnswer={previewTab === "check" || answerContextConfig.isAnswerModifiable}
+              showAnswer={previewTab === "show" && !answerContextConfig.expressGrader}
+              preview={
+                previewTab === "clear" || (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)
+              }
+              checkAnswer={
+                previewTab === "check" || (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)
+              }
               configureOptions={{
                 shuffleOptions
               }}

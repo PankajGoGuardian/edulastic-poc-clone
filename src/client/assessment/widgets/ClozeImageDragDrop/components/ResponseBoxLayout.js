@@ -32,10 +32,19 @@ const ResponseBoxLayout = ({
   dragHandler,
   onDrop,
   transparentResponses,
-  connectDropTarget
+  connectDropTarget,
+  isOver
 }) =>
   connectDropTarget(
-    <div className="responses_box" data-cy="responses-box" style={{ padding: smallSize ? "5px 10px" : 16 }}>
+    <div
+      className="responses_box"
+      data-cy="responses-box"
+      style={{
+        padding: smallSize ? "5px 10px" : 16,
+        border: "2px dashed transparent",
+        ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
+      }}
+    >
       {responses.map((option, index) => (
         <div
           key={index}
@@ -45,12 +54,12 @@ const ResponseBoxLayout = ({
           }}
         >
           {!dragHandler && (
-            <DragItem index={index} onDrop={onDrop} item={option} data={option}>
+            <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
               <MathSpan dangerouslySetInnerHTML={{ __html: option || "" }} />
             </DragItem>
           )}
           {dragHandler && (
-            <DragItem index={index} onDrop={onDrop} item={option} data={option}>
+            <DragItem index={index} onDrop={onDrop} item={option} data={`${option}_null_${index}`}>
               <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
               <MathSpan dangerouslySetInnerHTML={{ __html: option || "" }} />
             </DragItem>

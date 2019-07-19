@@ -44,14 +44,14 @@ class SimpleOptions extends React.Component {
     const { features, testSettings } = nextProps;
     const { grades, subjects } = testSettings || {};
     if (
-      features["assessmentSuperPowersReleaseScorePremium"] === false &&
-      grades &&
-      subjects &&
-      isFeatureAccessible({
-        features: features,
-        inputFeatures: "assessmentSuperPowersReleaseScorePremium",
-        gradeSubject: { grades, subjects }
-      })
+      features["assessmentSuperPowersReleaseScorePremium"] ||
+      (grades &&
+        subjects &&
+        isFeatureAccessible({
+          features: features,
+          inputFeatures: "assessmentSuperPowersReleaseScorePremium",
+          gradeSubject: { grades, subjects }
+        }))
     ) {
       return {
         _releaseGradeKeys: releaseGradeKeys

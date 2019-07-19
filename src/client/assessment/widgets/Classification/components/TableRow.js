@@ -63,7 +63,7 @@ const TableRow = ({
       );
     }
     cols.push(
-      <ResponseRnd question={item} height={height} index={index} isResizable={isResizable}>
+      <ResponseRnd question={item} height="auto" index={index} isResizable={isResizable}>
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
           <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
         ) : null}

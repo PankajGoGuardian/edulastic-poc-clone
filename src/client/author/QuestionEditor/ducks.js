@@ -223,7 +223,7 @@ export const getQuestionDataSelector = createSelector(
 );
 export const getQuestionAlignmentSelector = createSelector(
   getCurrentQuestionSelector,
-  state => state.alignment || []
+  state => get(state, "alignment", [])
 );
 
 export const getValidationSelector = createSelector(

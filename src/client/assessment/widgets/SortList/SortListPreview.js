@@ -39,7 +39,8 @@ const SortListPreview = ({
   saveAnswer,
   showQuestionNumber,
   disableResponse,
-  changePreviewTab
+  changePreviewTab,
+  isReviewTab
 }) => {
   const { source = [], instructor_stimulus, stimulus } = item;
 
@@ -84,6 +85,9 @@ const SortListPreview = ({
   const setActiveItem = activeItem => {
     if (previewTab === CLEAR) {
       setActive(typeof activeItem === "string" ? activeItem : "");
+    } else {
+      changePreviewTab(CLEAR);
+      setActive(typeof activeItem === "string" ? activeItem : "");
     }
   };
 
@@ -101,6 +105,13 @@ const SortListPreview = ({
         saveAnswer(draft.selected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
       }
     });
+
+    // we want users to be able to interact with the items,
+    // when in other modes user can't do that
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
+
     setItems(newItems);
     setSelected(newSelected);
   };
@@ -127,6 +138,12 @@ const SortListPreview = ({
         }
       })
     );
+
+    // we want users to be able to interact with the items,
+    // when in other modes user can't do that
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
   };
 
   const drop = ({ obj, index, flag }) => ({ obj, index, flag });
@@ -209,9 +226,18 @@ const SortListPreview = ({
           ))}
         </FullWidthContainer>
 
-        <FlexWithMargins smallSize={smallSize}>
-          <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
-          <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+        <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection}>
+          {orientation === "vertical" ? (
+            <>
+              <IconUp smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+              <IconDown smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+            </>
+          ) : (
+            <>
+              <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+              <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+            </>
+          )}
         </FlexWithMargins>
 
         <FullWidthContainer>
@@ -249,7 +275,8 @@ const SortListPreview = ({
         </FlexCol>
       </FlexContainer>
 
-      {previewTab === SHOW && (
+
+      {(previewTab === SHOW || isReviewTab) && (
         <ShowCorrect
           source={source}
           list={validResponseCorrectList}
@@ -258,6 +285,7 @@ const SortListPreview = ({
           correctList={valid_response}
         />
       )}
+
     </Paper>
   );
 };
@@ -272,7 +300,8 @@ SortListPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
-  changePreviewTab: PropTypes.func.isRequired
+  changePreviewTab: PropTypes.func.isRequired,
+  isReviewTab: PropTypes.bool
 };
 
 SortListPreview.defaultProps = {
@@ -281,7 +310,8 @@ SortListPreview.defaultProps = {
   item: {},
   showQuestionNumber: false,
   qIndex: null,
-  disableResponse: false
+  disableResponse: false,
+  isReviewTab: false
 };
 
 export default withNamespaces("assessment")(SortListPreview);

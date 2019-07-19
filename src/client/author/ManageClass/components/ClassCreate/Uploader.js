@@ -13,7 +13,9 @@ import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
 import { beforeUpload } from "@edulastic/common";
 
 class Uploader extends React.Component {
-  state = {};
+  state = {
+    imageUrl: "https://fakeimg.pl/1000x500/"
+  };
 
   handleChange = async info => {
     try {
@@ -93,7 +95,7 @@ const enhance = compose(
 export default enhance(Uploader);
 
 const Container = styled.div`
-  height: ${props => props.height}px;
+  min-height: ${props => props.height}px;
   width: 100%;
   position: relative;
 `;
@@ -133,7 +135,7 @@ const Camera = styled.div`
 
 const ImageContainer = styled.div`
   width: 100%;
-  height: ${props => props.height}px;
+  min-height: ${props => props.height}px;
   overflow: hidden;
   border-radius: 5px;
 `;

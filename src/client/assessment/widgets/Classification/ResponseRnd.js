@@ -84,7 +84,12 @@ const ResponseRnd = props => {
         border: `1px solid ${lightGrey}`
       }}
       size={{ width: rndWidth, height: rndHeight }}
-      position={{ x: rndX, y: rndY }}
+      default={{
+        x: rndX,
+        y: rndY,
+        width: rndWidth,
+        height: rndHeight
+      }}
       disableDragging={!isResizable}
       enableResizing={{
         bottom: isResizable,

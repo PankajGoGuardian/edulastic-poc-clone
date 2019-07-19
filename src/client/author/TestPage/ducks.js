@@ -640,7 +640,7 @@ function* showAnswerSaga({ payload }) {
     const testItem = testItems.find(x => x._id === payload.id) || {};
     const questions = _keyBy(testItem.data && testItem.data.questions, "id");
     const answers = yield select(state => get(state, "answers", {}));
-    const { evaluation } = yield createShowAnswerData(questions, answers);
+    const evaluation = yield createShowAnswerData(questions, answers);
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

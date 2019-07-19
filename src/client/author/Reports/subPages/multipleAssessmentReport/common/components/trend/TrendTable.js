@@ -48,15 +48,19 @@ const getCol = (text, backgroundColor) => {
   return <StyledCell style={{ backgroundColor }}>{text || "N/A"}</StyledCell>;
 };
 
-const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
+const getColumns = (testData = [], rawMetric = [], analyseBy = "", compareBy = {}) => {
   const groupedTests = groupBy(testData, "testId");
+  const groupedAvailableTests = groupBy(rawMetric, "testId");
 
-  const dynamicColumns = map(groupedTests, (tests, testId) => {
-    const assessmentName = tests[0].testName || "";
+  const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
+    const currentTestGroup = groupedTests[testId] || {};
+    const test = currentTestGroup[0] || {};
+    const assessmentName = (test && test.testName) || "";
+
     return {
       key: testId,
       title: assessmentName,
-      assessmentDate: tests[0].assessmentDate,
+      assessmentDate: test.assessmentDate,
       dataIndex: "tests",
       render: (tests = {}, record) => {
         const currentTest = tests[testId];
@@ -140,9 +144,8 @@ const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
   );
 };
 
-const TrendTable = ({ data, testData, analyseBy, compareBy, renderFilters }) => {
-  const columns = getColumns(testData, analyseBy, compareBy);
-
+const TrendTable = ({ data, rawMetric, testData, analyseBy, compareBy, renderFilters }) => {
+  const columns = getColumns(testData, rawMetric, analyseBy, compareBy);
   return (
     <StyledCard>
       <Row>
@@ -172,6 +175,7 @@ const compareByShape = getShape(dropDownData.compareByData);
 TrendTable.propTypes = {
   testData: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
+  rawMetric: PropTypes.array.isRequired,
   analyseBy: analyseByShape,
   compareBy: compareByShape,
   renderFilters: PropTypes.func

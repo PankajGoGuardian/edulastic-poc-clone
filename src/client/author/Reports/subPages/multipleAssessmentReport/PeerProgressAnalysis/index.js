@@ -84,6 +84,7 @@ const PeerProgressAnalysis = ({
         testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
+        rawMetric={metricInfo}
         renderFilters={() => (
           <Filters
             compareByOptions={compareByData}

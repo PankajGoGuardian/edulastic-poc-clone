@@ -83,6 +83,7 @@ const StudentProgress = ({
         testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
+        rawMetric={metricInfo}
         renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
       />
     </>

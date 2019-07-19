@@ -97,12 +97,14 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
       tests[key] = {
         records: value,
         score: getOverallScore(value),
-        rawScore: `${round(sumBy(value, "totalScore"), 2)} / ${sumBy(value, "maxScore")}`
+        rawScore: `${round(sumBy(value, "totalScore"), 2)} / ${sumBy(value, "maxScore")}`,
+        studentCount: sumBy(value, item => parseInt(item.studentCount || 0))
       };
     });
 
     return {
       tests,
+      studentCount: sumBy(values(tests), "studentCount"),
       id: metricId
     };
   });

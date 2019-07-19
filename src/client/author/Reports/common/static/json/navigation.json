@@ -193,17 +193,17 @@
       {
         "key": "performance-over-time",
         "title": "Performance Over Time",
-        "location": "/author/reports/performance-over-time/test/"
+        "location": "/author/reports/performance-over-time"
       },
       {
         "key": "peer-progress-analysis",
         "title": "Peer Progress Analysis",
-        "location": "/author/reports/peer-progress-analysis/test/"
+        "location": "/author/reports/peer-progress-analysis"
       },
       {
         "key": "student-progress",
         "title": "Student Progress",
-        "location": "/author/reports/student-progress/test/"
+        "location": "/author/reports/student-progress"
       }
     ]
   }

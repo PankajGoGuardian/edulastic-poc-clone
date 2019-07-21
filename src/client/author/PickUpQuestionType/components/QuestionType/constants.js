@@ -1895,7 +1895,7 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        text_blocks: [
+        custom_keys: [
           "g",
           "kg",
           "mg",

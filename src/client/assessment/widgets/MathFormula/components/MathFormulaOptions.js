@@ -22,27 +22,27 @@ class MathFormulaOptions extends Component {
       uiStyle,
       t,
       responseContainers,
-      textBlocks,
+      customKeys,
       item,
       fillSections,
       cleanSections,
       advancedAreOpen
     } = this.props;
 
-    const changeTextBlock = ({ index, value }) => {
-      const newBlocks = cloneDeep(textBlocks);
-      newBlocks[index] = value;
-      onChange("text_blocks", newBlocks);
+    const changeCustomKey = ({ index, value }) => {
+      const newCustomKeys = cloneDeep(customKeys);
+      newCustomKeys[index] = value;
+      onChange("custom_keys", newCustomKeys);
     };
 
-    const addTextBlock = () => {
-      onChange("text_blocks", [...textBlocks, ""]);
+    const addCustomKey = () => {
+      onChange("custom_keys", [...customKeys, ""]);
     };
 
-    const deleteTextBlock = index => {
-      const newBlocks = cloneDeep(textBlocks);
-      newBlocks.splice(index, 1);
-      onChange("text_blocks", newBlocks);
+    const deleteCustomKey = index => {
+      const newCustomKeys = cloneDeep(customKeys);
+      newCustomKeys.splice(index, 1);
+      onChange("custom_keys", newCustomKeys);
     };
 
     const scoringTypes = [
@@ -70,7 +70,6 @@ class MathFormulaOptions extends Component {
           onChange={onChange}
           uiStyle={uiStyle}
           responseContainers={responseContainers}
-          textBlocks={textBlocks}
           item={item}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
@@ -86,10 +85,10 @@ class MathFormulaOptions extends Component {
         />
 
         <CustomKeys
-          blocks={textBlocks}
-          onChange={changeTextBlock}
-          onAdd={addTextBlock}
-          onDelete={deleteTextBlock}
+          blocks={customKeys}
+          onChange={changeCustomKey}
+          onAdd={addCustomKey}
+          onDelete={deleteCustomKey}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
           cleanSections={cleanSections}
@@ -109,7 +108,7 @@ MathFormulaOptions.propTypes = {
   item: PropTypes.object.isRequired,
   responseContainers: PropTypes.array,
   t: PropTypes.func.isRequired,
-  textBlocks: PropTypes.array,
+  customKeys: PropTypes.array,
   uiStyle: PropTypes.object,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
@@ -118,7 +117,7 @@ MathFormulaOptions.propTypes = {
 
 MathFormulaOptions.defaultProps = {
   responseContainers: [],
-  textBlocks: [],
+  customKeys: [],
   uiStyle: {
     type: "standard",
     fontsize: "normal",

@@ -1878,7 +1878,7 @@ export const getCards = onSelectQuestionType => {
         is_math: true,
         stimulus: "",
         template: `${EMBED_RESPONSE} = 1m`,
-        templateDisplay: true,
+        templateDisplay: false,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",

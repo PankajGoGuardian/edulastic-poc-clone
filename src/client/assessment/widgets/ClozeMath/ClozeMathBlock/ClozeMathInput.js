@@ -239,6 +239,7 @@ class ClozeMathInput extends React.Component {
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
+    const customKeys = get(item, "custom_keys", []);
 
     return (
       <span ref={this.wrappedRef} style={btnStyle}>
@@ -259,6 +260,7 @@ class ClozeMathInput extends React.Component {
               symbols={item.symbols}
               numberPad={item.numberPad}
               restrictKeys={this.restrictKeys}
+              customKeys={customKeys}
               showResponse={false}
             />
           </KeyboardWrapper>

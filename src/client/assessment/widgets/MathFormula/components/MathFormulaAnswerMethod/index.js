@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
-import { pick } from "lodash";
+import { pick, get } from "lodash";
 import styled from "styled-components";
 import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
 
@@ -315,6 +315,7 @@ const MathFormulaAnswerMethod = ({
 
   const { allowedVariables } = item;
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  const customKeys = get(item, "custom_keys", []);
 
   return (
     <Container data-cy="math-formula-answer">
@@ -325,6 +326,7 @@ const MathFormulaAnswerMethod = ({
             <MathInput
               symbols={item.symbols}
               restrictKeys={restrictKeys}
+              customKeys={customKeys}
               style={style}
               numberPad={item.numberPad}
               onChangeKeypad={onChangeKeypad}

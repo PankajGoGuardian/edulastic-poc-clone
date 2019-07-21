@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import { isEmpty } from "lodash";
+import { isEmpty, get } from "lodash";
 
 import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay } from "@edulastic/common";
 
@@ -186,6 +186,9 @@ class MathFormulaPreview extends Component {
     const testItemCorrectValues = testItem
       ? item.validation.valid_response.value.map(validResponse => validResponse.value)
       : [];
+
+    const customKeys = get(item, "custom_keys", []);
+
     return (
       <div>
         <QuestionTitleWrapper>
@@ -205,6 +208,7 @@ class MathFormulaPreview extends Component {
               <StaticMath
                 symbols={item.symbols}
                 restrictKeys={this.restrictKeys}
+                customKeys={customKeys}
                 numberPad={item.numberPad}
                 ref={this.studentRef}
                 onInput={latexv => this.onUserResponse(latexv)}
@@ -219,6 +223,7 @@ class MathFormulaPreview extends Component {
               <MathInput
                 symbols={item.symbols}
                 restrictKeys={this.restrictKeys}
+                customKeys={customKeys}
                 numberPad={item.numberPad}
                 value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                 onInput={latexv => this.onUserResponse(latexv)}

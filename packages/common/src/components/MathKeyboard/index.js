@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Button, Icon, Select } from "antd";
 import PropTypes from "prop-types";
-import { isObject } from "lodash";
+import { isObject, compact } from "lodash";
 
 import { math } from "@edulastic/constants";
 
@@ -79,7 +79,7 @@ class MathKeyboard extends React.PureComponent {
   };
 
   get keyboardButtons() {
-    const { symbols, restrictKeys } = this.props;
+    const { restrictKeys, customKeys } = this.props;
     const { type } = this.state;
 
     const restrictButtons = restrictKeys.map(key => ({
@@ -89,18 +89,20 @@ class MathKeyboard extends React.PureComponent {
       command: "write"
     }));
 
-    return restrictButtons
-      .concat(type === "all" ? KEYBOARD_BUTTONS_ALL : KEYBOARD_BUTTONS)
-      .map(btn => {
-        symbols.forEach(symbol => {
-          if (isObject(symbol) && symbol.value.includes(btn.handler)) {
-            btn.types.push(symbol.label);
-          }
-        });
+    const allBtns = customKeys
+      .map(key => ({
+        handler: key,
+        label: key,
+        types: [isObject(type) ? type.label : type],
+        command: "write"
+      }))
+      .concat(type === "all" ? KEYBOARD_BUTTONS_ALL : KEYBOARD_BUTTONS);
 
-        return btn;
-      })
-      .filter(btn => btn.types.includes(isObject(type) ? type.label : type));
+    const availables = isObject(type)
+      ? compact(type.value.map(handler => allBtns.find(btn => btn.handler === handler)))
+      : allBtns.filter(btn => btn.types.includes(type));
+
+    return restrictButtons.concat(availables);
   }
 
   get selectOptions() {
@@ -229,16 +231,18 @@ MathKeyboard.propTypes = {
   showResponse: PropTypes.bool,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
-  showDropdown: PropTypes.bool,
-  restrictKeys: PropTypes.array
+  restrictKeys: PropTypes.array,
+  customKeys: PropTypes.array,
+  showDropdown: PropTypes.bool
 };
 
 MathKeyboard.defaultProps = {
   showResponse: false,
   showDropdown: false,
-  restrictKeys: [],
   onClose: () => {},
-  onChangeKeypad: () => {}
+  onChangeKeypad: () => {},
+  restrictKeys: [],
+  customKeys: []
 };
 
 export default MathKeyboard;

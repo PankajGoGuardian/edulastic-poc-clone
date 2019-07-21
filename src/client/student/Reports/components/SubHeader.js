@@ -5,11 +5,16 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import React from "react";
 import { withNamespaces } from "@edulastic/localization";
+
 // actions
 import { setFilterAction } from "../../sharedDucks/ReportsModule/ducks";
 import { filterSelector, FILTERS } from "../ducks";
+
 // components
 import Breadcrumb from "../../sharedComponents/Breadcrumb";
+
+// styled components
+import { BreadcrumbWrapper } from "../../styled";
 
 const breadcrumbData = [{ title: "REPORTS", to: "" }];
 
@@ -23,16 +28,14 @@ const AssignmentSubHeader = ({ t, setFilter, filter }) => {
   );
 
   return (
-    <Wrapper>
-      <BreadcrumbWrapper>
-        <Breadcrumb data={breadcrumbData} />
-      </BreadcrumbWrapper>
+    <BreadcrumbWrapper>
+      <Breadcrumb data={breadcrumbData} />
       <StatusBtnsContainer>
         {filterItems.map((value, i) => (
           <Filter key={i} index={i} value={value} />
         ))}
       </StatusBtnsContainer>
-    </Wrapper>
+    </BreadcrumbWrapper>
   );
 };
 
@@ -56,17 +59,6 @@ AssignmentSubHeader.propTypes = {
   setFilter: PropTypes.func.isRequired
 };
 
-const Wrapper = styled.div`
-  display: flex;
-  margin-top: 24px;
-  justify-content: space-between;
-  margin-left: 30px;
-  margin-right: 40px;
-  @media screen and (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
-
 const StatusBtnsContainer = styled.div`
   @media screen and (max-width: 768px) {
     margin-top: 20px;
@@ -74,18 +66,6 @@ const StatusBtnsContainer = styled.div`
     display: flex;
     flex-direction: row;
     overflow: auto;
-  }
-`;
-
-const BreadcrumbWrapper = styled.div`
-  .ant-breadcrumb-link {
-    color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
-    text-transform: uppercase;
-    font-weight: 600;
-    a {
-      color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
-    }
   }
 `;
 

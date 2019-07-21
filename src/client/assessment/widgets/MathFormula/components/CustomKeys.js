@@ -11,12 +11,12 @@ import { Subtitle } from "../../../styled/Subtitle";
 
 import { IconTrash } from "../styled/IconTrash";
 
-class TextBlocks extends Component {
+class CustomKeys extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("advanced", t("component.options.textBlocks"), node.offsetTop, node.scrollHeight);
+    fillSections("advanced", t("component.options.customkeys"), node.offsetTop, node.scrollHeight);
   };
 
   componentDidUpdate(prevProps) {
@@ -25,7 +25,7 @@ class TextBlocks extends Component {
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.textBlocks"), node.offsetTop, node.scrollHeight);
+      fillSections("advanced", t("component.options.customkeys"), node.offsetTop, node.scrollHeight);
     }
   }
 
@@ -39,7 +39,7 @@ class TextBlocks extends Component {
     const { blocks, onChange, onAdd, onDelete, advancedAreOpen, t } = this.props;
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Subtitle>{t("component.options.textBlocks")}</Subtitle>
+        <Subtitle>{t("component.options.customkeys")}</Subtitle>
 
         <Row gutter={32}>
           {blocks.map((block, index) => (
@@ -65,7 +65,7 @@ class TextBlocks extends Component {
   }
 }
 
-TextBlocks.propTypes = {
+CustomKeys.propTypes = {
   blocks: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
@@ -76,10 +76,10 @@ TextBlocks.propTypes = {
   cleanSections: PropTypes.func
 };
 
-TextBlocks.defaultProps = {
+CustomKeys.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };
 
-export default withNamespaces("assessment")(TextBlocks);
+export default withNamespaces("assessment")(CustomKeys);

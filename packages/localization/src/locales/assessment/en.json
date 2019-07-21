@@ -93,6 +93,7 @@
       "responseContainer": "Response container",
       "response": "Response",
       "textBlocks": "Text Blocks",
+      "customkeys": "Custom Keys",
       "addTextBlock": "Add new text block",
       "addResponseContainer": "Add new response container",
       "additionalOptions": "Additional Options",

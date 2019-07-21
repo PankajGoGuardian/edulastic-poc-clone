@@ -9,7 +9,7 @@ import { evaluationType, questionType } from "@edulastic/constants";
 
 import Layout from "./Layout";
 
-import TextBlocks from "./TextBlocks";
+import CustomKeys from "./CustomKeys";
 
 import WidgetOptions from "../../../containers/WidgetOptions";
 import Extras from "../../../containers/Extras";
@@ -85,7 +85,7 @@ class MathFormulaOptions extends Component {
           cleanSections={cleanSections}
         />
 
-        <TextBlocks
+        <CustomKeys
           blocks={textBlocks}
           onChange={changeTextBlock}
           onAdd={addTextBlock}

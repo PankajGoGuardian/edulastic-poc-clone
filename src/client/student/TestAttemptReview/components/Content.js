@@ -60,7 +60,8 @@ class SummaryTest extends Component {
       return acc;
     }, null);
 
-    history.push(`/student/${assessmentType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`);
+    history.push(`/student/${assessmentType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`, {fromSummary: true});
+
   };
 
   render() {

@@ -34,7 +34,7 @@ ListStyle.propTypes = {
 };
 
 ListStyle.defaultProps = {
-  value: "button",
+  value: "list",
   size: "large",
   options: [
     { value: "button", label: i18n.t("assessment:component.options.button") },

@@ -20,6 +20,7 @@ const QuillSortableItem = SortableElement(
     rOnly,
     onChange,
     columns,
+    styleType,
     indx,
     label,
     fontSize,
@@ -27,7 +28,7 @@ const QuillSortableItem = SortableElement(
     placeholder,
     imageDefaultWidth
   }) => (
-    <SortableItemContainer fontSize={fontSize} columns={columns}>
+    <SortableItemContainer styleType={styleType} fontSize={fontSize} columns={columns}>
       {label && <Label>{label}</Label>}
       <FlexContainer style={{ flex: 1 }}>
         <div className="main" data-cy="quillSortableItem">
@@ -55,6 +56,7 @@ const QuillSortableItem = SortableElement(
 QuillSortableItem.propTypes = {
   t: PropTypes.func.isRequired,
   toolbarId: PropTypes.string,
+  styleType: PropTypes.string,
   columns: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
   rOnly: PropTypes.bool,
@@ -67,6 +69,7 @@ QuillSortableItem.defaultProps = {
   toolbarId: "quill-sortable-item",
   rOnly: false,
   firstFocus: false,
+  styleType: "list",
   style: {},
   imageDefaultWidth: 300
 };

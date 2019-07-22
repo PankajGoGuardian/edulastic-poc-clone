@@ -17,6 +17,7 @@ const QuillSortableList = SortableContainer(
     prefix = "prefix",
     columns = 1,
     label = "",
+    styleType = "",
     canDelete = true,
     t,
     imageDefaultWidth
@@ -35,6 +36,7 @@ const QuillSortableList = SortableContainer(
           rOnly={readOnly}
           canDelete={canDelete}
           columns={columns}
+          styleType={styleType}
           onRemove={() => onRemove(index)}
           onChange={val => (typeof onChange === "function" ? onChange(index, val) : () => {})}
           toolbarSize={toolbarSize}

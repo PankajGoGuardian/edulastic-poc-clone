@@ -86,7 +86,7 @@ const OrderList = ({
   const styleType = get(item, "ui_style.type", "list");
   const axis = styleType === "inline" ? "x" : "y";
   const columns = styleType === "inline" ? 3 : 1;
-
+  console.log(styleType);
   const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
     setQuestionData(
       produce(item, draft => {
@@ -162,6 +162,7 @@ const OrderList = ({
       onSortEnd={handleCorrectSortEnd}
       useDragHandle
       columns={columns}
+      styleType={styleType}
       points={
         correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }

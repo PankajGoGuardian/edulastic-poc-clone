@@ -59,7 +59,7 @@ class LayoutWrapper extends Component {
             <Col md={12}>
               <ListStyleOption
                 onChange={val => changeUIStyle("type", val)}
-                value={get(item, "ui_style.type", "button")}
+                value={get(item, "ui_style.type", "list")}
               />
             </Col>
             <Col md={12}>

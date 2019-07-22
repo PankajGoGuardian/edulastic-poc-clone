@@ -5,11 +5,11 @@ export const SortableItemContainer = styled.div`
   width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
   font-size: ${props => props.fontSize || "14px"};
   min-height: 40px;
-  margin: 0 0 17px 0;
+  margin: ${({ styleType }) => (styleType !== "list" ? "0 0 17px 0" : "0")};
   display: inline-flex;
   flex-direction: column;
   background: ${white};
-  border: 1px solid ${dashBorderColor};
+  border: ${({ styleType }) => (styleType !== "list" ? `1px solid ${dashBorderColor}` : "none")};
   border-radius: 4px;
   padding-right: 12px;
 

@@ -115,8 +115,8 @@ const RightFields = ({
       </StyledFlexContainer>
 
       <StyledFlexContainer>
-        <FieldLabel label="Grade" {...restProps} fiedlName="grade" initialValue={defaultGrade}>
-          <Select placeholder="Select Grade">
+        <FieldLabel label="Grades" {...restProps} fiedlName="grades" initialValue={defaultGrade}>
+          <Select placeholder="Select Grades" mode="multiple">
             {allGrades.map(el => (
               <Select.Option key={el.value} value={el.value}>
                 {el.text}
@@ -210,7 +210,7 @@ RightFields.propTypes = {
   defaultName: PropTypes.string.isRequired,
   defaultStartDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
   defaultEndDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
-  defaultGrade: PropTypes.string,
+  defaultGrade: PropTypes.array,
   defaultSubject: PropTypes.string,
   defaultStandardSets: PropTypes.array,
   defaultCourse: PropTypes.object,
@@ -223,7 +223,7 @@ RightFields.defaultProps = {
   defaultStartDate: classStartDate,
   defaultEndDate: classEndDate,
   defaultCourse: {},
-  defaultGrade: "",
+  defaultGrade: [],
   defaultSubject: "",
   defaultSchool: "",
   defaultStandardSets: []

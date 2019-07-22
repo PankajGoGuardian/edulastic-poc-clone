@@ -2,21 +2,12 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import styled from "styled-components";
 
+import { CLEAR } from "../../../constants/constantsForQuestions";
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
-
-const QuestionTitleWrapper = styled.div`
-  display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
-`;
 
 const safeParseFloat = val => {
   if (val) {
@@ -180,15 +171,16 @@ class GraphDisplay extends Component {
   getQuadrantsProps = () => {
     const {
       view,
+      previewTab,
+      changePreviewTab,
       graphData,
       evaluation,
       onChange,
-      showAnswer,
-      checkAnswer,
       elements,
       bgShapes,
       altAnswerId,
-      disableResponse
+      disableResponse,
+      elementsIsCorrect
     } = this.props;
 
     const {
@@ -266,29 +258,31 @@ class GraphDisplay extends Component {
       controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
       elements,
-      showAnswer,
-      checkAnswer,
       graphType,
       bgShapes,
       annotation,
       questionId: id,
       altAnswerId,
       view,
-      disableResponse
+      previewTab,
+      changePreviewTab,
+      disableResponse,
+      elementsIsCorrect
     };
   };
 
   getAxisSegmentsProps = () => {
     const {
       view,
+      previewTab,
+      changePreviewTab,
       graphData,
       evaluation,
       onChange,
-      showAnswer,
-      checkAnswer,
       elements,
       altAnswerId,
-      disableResponse
+      disableResponse,
+      elementsIsCorrect
     } = this.props;
 
     const { ui_style, canvas, toolbar, numberlineAxis, graphType, id } = graphData;
@@ -370,27 +364,29 @@ class GraphDisplay extends Component {
       tools: toolbar ? toolbar.tools : [],
       setValue: onChange,
       elements,
-      showAnswer,
-      checkAnswer,
       graphType,
       questionId: id,
       altAnswerId,
       view,
-      disableResponse
+      previewTab,
+      changePreviewTab,
+      disableResponse,
+      elementsIsCorrect
     };
   };
 
   getAxisLabelsProps = () => {
     const {
       view,
+      previewTab,
+      changePreviewTab,
       graphData,
       evaluation,
       onChange,
-      showAnswer,
-      checkAnswer,
       elements,
       altAnswerId,
-      disableResponse
+      disableResponse,
+      elementsIsCorrect
     } = this.props;
 
     const { ui_style, canvas, numberlineAxis, list, graphType, id } = graphData;
@@ -474,13 +470,14 @@ class GraphDisplay extends Component {
       evaluation,
       setValue: onChange,
       elements,
-      showAnswer,
-      checkAnswer,
       questionId: id,
       altAnswerId,
       view,
+      previewTab,
+      changePreviewTab,
       disableResponse,
-      setCalculatedHeight: this.setCalculatedHeight
+      setCalculatedHeight: this.setCalculatedHeight,
+      elementsIsCorrect
     };
   };
 
@@ -516,36 +513,34 @@ class GraphDisplay extends Component {
 GraphDisplay.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string,
   graphData: PropTypes.object.isRequired,
   smallSize: PropTypes.bool,
   onChange: PropTypes.func,
   changePreviewTab: PropTypes.func,
   elements: PropTypes.array,
   evaluation: PropTypes.any,
-  showAnswer: PropTypes.bool,
-  checkAnswer: PropTypes.bool,
-  clearAnswer: PropTypes.bool,
   bgShapes: PropTypes.bool,
   altAnswerId: PropTypes.string,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  elementsIsCorrect: PropTypes.bool
 };
 
 GraphDisplay.defaultProps = {
+  previewTab: CLEAR,
   smallSize: false,
   onChange: () => {},
   changePreviewTab: () => {},
   elements: [],
   evaluation: null,
-  showAnswer: false,
-  checkAnswer: false,
-  clearAnswer: false,
   bgShapes: false,
   altAnswerId: null,
   showQuestionNumber: false,
   qIndex: null,
-  disableResponse: false
+  disableResponse: false,
+  elementsIsCorrect: false
 };
 
 export default connect(

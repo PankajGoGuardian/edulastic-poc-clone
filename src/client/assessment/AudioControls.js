@@ -29,7 +29,14 @@ const ControlButtons = styled(Button)`
   }
 `;
 
-const AudioControls = ({ item: questionData = {}, audioSrc, qId, currentPlayingDetails, setCurrentPlayingDetails }) => {
+const AudioControls = ({
+  item: questionData = {},
+  showAudioControls,
+  audioSrc,
+  qId,
+  currentPlayingDetails,
+  setCurrentPlayingDetails
+}) => {
   const [loading, setLoading] = useState(true);
   const [stimulusHowl, setStimulusHowl] = useState({});
   const [optionHowl, setOptionHowl] = useState({});
@@ -144,12 +151,14 @@ const AudioControls = ({ item: questionData = {}, audioSrc, qId, currentPlayingD
     : "Play";
   return (
     <AudioButtonsWrapper>
-      <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
-        {currentPlayingDetails.qId === qId ? <IconPause /> : !loading && <IconPlay />}
-      </ControlButtons>
-      <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title={"Stop"}>
-        <StopIcon />
-      </ControlButtons>
+      <div style={{ display: showAudioControls ? "none" : "block" }}>
+        <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
+          {currentPlayingDetails.qId === qId ? <IconPause /> : !loading && <IconPlay />}
+        </ControlButtons>
+        <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title={"Stop"}>
+          <StopIcon />
+        </ControlButtons>
+      </div>
     </AudioButtonsWrapper>
   );
 };
@@ -165,4 +174,5 @@ export default connect(
 
 const AudioButtonsWrapper = styled.div`
   padding: 20px 20px 0px;
+  height: 60px;
 `;

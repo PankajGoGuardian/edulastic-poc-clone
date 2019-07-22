@@ -94,7 +94,8 @@ class AssessmentPlayerDefault extends React.Component {
     settings: PropTypes.object.isRequired,
     answerChecksUsedForItem: PropTypes.number.isRequired,
     previewPlayer: PropTypes.bool.isRequired,
-    saveScratchPad: PropTypes.func.isRequired
+    saveScratchPad: PropTypes.func.isRequired,
+    LCBPreviewModal: PropTypes.any.isRequired
   };
 
   static defaultProps = {
@@ -253,7 +254,8 @@ class AssessmentPlayerDefault extends React.Component {
       answerChecksUsedForItem,
       bookmarksInOrder,
       skippedInOrder,
-      currentGroupId
+      currentGroupId,
+      LCBPreviewModal
     } = this.props;
 
     const {
@@ -344,7 +346,7 @@ class AssessmentPlayerDefault extends React.Component {
             />
           )}
           <Affix>
-            <Header>
+            <Header LCBPreviewModal={LCBPreviewModal}>
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
@@ -422,7 +424,9 @@ class AssessmentPlayerDefault extends React.Component {
           </Affix>
           <Main skin>
             <MainWrapper>
-              {testItemState === "" && <TestItemPreview cols={itemRows} questions={questions} />}
+              {testItemState === "" && (
+                <TestItemPreview LCBPreviewModal={LCBPreviewModal} cols={itemRows} questions={questions} />
+              )}
               {testItemState === "check" && (
                 <TestItemPreview
                   cols={itemRows}
@@ -431,6 +435,7 @@ class AssessmentPlayerDefault extends React.Component {
                   verticalDivider={item.verticalDivider}
                   scrolling={item.scrolling}
                   questions={questions}
+                  LCBPreviewModal={LCBPreviewModal}
                 />
               )}
             </MainWrapper>

@@ -229,6 +229,7 @@ class ClassQuestions extends Component {
           isModalVisible={showPlayerModal}
           hideModal={() => this.setState({ showPlayerModal: false })}
           test={{ testItems: [selectedTestItem] }}
+          LCBPreviewModal
         />
         {testItemsPreview}
       </>

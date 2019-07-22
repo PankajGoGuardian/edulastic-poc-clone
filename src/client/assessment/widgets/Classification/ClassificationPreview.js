@@ -110,14 +110,12 @@ const ClassificationPreview = ({
   const initialLength = (colCount || 2) * (rowCount || 1);
 
   const createEmptyArrayOfArrays = () => Array(...Array(initialLength)).map(() => []);
-
-  const initialAnswers = disableResponse
-    ? validArray.map(arr => arr.map(ans => possible_responses[ans]))
-    : editCorrectAnswers.length > 0
-    ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
-    : userAnswer && userAnswer.some(arr => arr.length !== 0)
-    ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
-    : createEmptyArrayOfArrays();
+  const initialAnswers =
+    !disableResponse && editCorrectAnswers.length > 0
+      ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
+      : userAnswer && userAnswer.some(arr => arr.length !== 0)
+      ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
+      : createEmptyArrayOfArrays();
 
   const [answers, setAnswers] = useState(initialAnswers);
 

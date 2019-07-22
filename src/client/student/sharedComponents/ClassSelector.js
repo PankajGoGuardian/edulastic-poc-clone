@@ -3,6 +3,8 @@ import { Select } from "antd";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { extraDesktopWidthMax } from "@edulastic/colors";
+
 import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
 
 const ClassSelector = ({ t, classList, currentGroup, changeClass }) => {
@@ -65,7 +67,11 @@ const AssignmentSelectClass = styled.div`
 
   .ant-select {
     height: 40px;
-    width: 240px;
+    width: 190px;
+
+    @media (min-width: ${extraDesktopWidthMax}) {
+      width: 240px;
+    }
   }
   .ant-select-selection {
     border: 0px;
@@ -77,7 +83,8 @@ const AssignmentSelectClass = styled.div`
     height: 100%;
     align-items: center;
     display: flex !important;
-    padding-left: 10px;
+    padding-left: 15px;
+    font-size: 12px;
   }
   .anticon-down {
     svg {

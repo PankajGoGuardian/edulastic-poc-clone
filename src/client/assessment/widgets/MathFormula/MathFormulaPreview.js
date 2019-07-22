@@ -182,7 +182,7 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
-
+    cssStyles.width = cssStyles.width || cssStyles.minWidth;
     const testItemCorrectValues = testItem
       ? item.validation.valid_response.value.map(validResponse => validResponse.value)
       : [];
@@ -200,7 +200,7 @@ class MathFormulaPreview extends Component {
         {testItem && <MathDisplay template={studentTemplate} innerValues={testItemCorrectValues} />}
 
         {!testItem && (
-          <MathInputWrapper>
+          <MathInputWrapper width={cssStyles.width}>
             {this.isStatic() && (
               <StaticMath
                 symbols={item.symbols}
@@ -229,7 +229,7 @@ class MathFormulaPreview extends Component {
               />
             )}
             {!this.isStatic() && disableResponse && (
-              <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
+              <MathInputSpan width={cssStyles.width} style={{ background: statusColor, ...cssStyles }}>
                 <MathSpanWrapper
                   latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                 />
@@ -257,13 +257,13 @@ class MathFormulaPreview extends Component {
 export default withTheme(MathFormulaPreview);
 const MathInputSpan = styled.div`
   align-items: center;
-  min-width: 80px;
+  min-width: ${({ width }) => (width ? "unset" : "80px")};
   min-height: 42px;
   display: inline-flex;
-  width: 100%;
-  padding-right: 40px;
+  width: ${({ width }) => (width ? width : "100%")};
+  padding-right: ${({ width }) => (width ? "unset" : "40px")};
   position: relative;
   border-radius: 5px;
   border: 1px solid #dfdfdf;
-  padding: 5px 25px;
+  padding: ${({ width }) => (width ? "3px" : "5px 25px")};
 `;

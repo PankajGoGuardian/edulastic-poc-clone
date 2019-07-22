@@ -1,7 +1,7 @@
 import { testActivityApi, testsApi, assignmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { push } from "react-router-redux";
-import { keyBy as _keyBy, groupBy } from "lodash";
+import { keyBy as _keyBy, groupBy, get } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
@@ -23,7 +23,6 @@ import { loadBookmarkAction } from "../sharedDucks/bookmark";
 import { setPasswordValidateStatusAction, setPasswordStatusAction } from "../actions/test";
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
-import { history } from "../../configureStore";
 
 const getQuestions = (testItems = []) => {
   const allQuestions = [];
@@ -66,7 +65,7 @@ function* loadTest({ payload }) {
       : call(testsApi.getPublicTest, testId);
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {
-      const isFromSummary = history.location.state && history.location.state.fromSummary;
+      const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
       let passwordValidated = !testActivity.assignmentSettings.requirePassword || isFromSummary;
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));

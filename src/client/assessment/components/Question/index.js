@@ -51,8 +51,7 @@ class Question extends Component {
     if (!node) return false;
 
     debounce(() => {
-      if (node.clientHeight !== el.clientHeight || node !== el) {
-        console.log(label, node);
+      if (node.clientHeight !== el.clientHeight) {
         fillSections(section, label, node);
 
         this.setState({

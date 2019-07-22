@@ -44,14 +44,15 @@ class QuestionMenu extends Component {
   isActive = (index, options) => {
     const { activeTab } = this.state;
     const { advancedAreOpen } = this.props;
+
+    if ((!advancedAreOpen && options[index].section === "advanced") || !options[index].el) return false;
+
     const rect = options[index].el.getBoundingClientRect();
-    const viewHeight = Math.max(options[index].el.clientHeight, window.innerHeight / 1.8);
+    const viewHeight = Math.max(options[index].el.clientHeight, window.innerHeight / 2.3);
     const activeOption = document.querySelector(".option.active");
 
-    if (!advancedAreOpen && options[index].section === "advanced") return false;
-
     // first section
-    if (window.scrollY <= 40 && activeTab !== index) return this.setState({ activeTab: 0 });
+    if (window.scrollY <= 40 && activeTab !== index && index === 0) return this.setState({ activeTab: 0 });
 
     if (!(rect.bottom < 0 || rect.top - viewHeight >= 0) && activeTab !== index) {
       if (activeOption) {

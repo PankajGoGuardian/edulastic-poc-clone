@@ -183,8 +183,7 @@ const MatchListPreview = ({
 
   const getStyles = ({ flag, preview, correct, isDragging, width }) => ({
     display: "flex",
-    width: width ? width : "auto",
-    maxHeight: "140px",
+    width: "auto",
     alignItems: "center",
     justifyContent: preview ? "space-between" : "center",
     margin: flag === "dragItems" ? "10px 15px 10px 15px" : "10px 0px 10px 0",
@@ -233,6 +232,12 @@ const MatchListPreview = ({
   if (shuffleOptions === true) {
     dragItems = shuffle(dragItems);
   }
+
+  const choicesImageStyle = {
+    maxWidth: "220px !important",
+    maxHeight: "120px !important",
+    width: "auto !important"
+  };
 
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -290,7 +295,7 @@ const MatchListPreview = ({
         </FlexContainer>
 
         {!disableResponse && (
-          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
+          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")} imageStyle={choicesImageStyle}>
             <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
                 {group_possible_responses ? (
@@ -381,7 +386,7 @@ const MatchListPreview = ({
       )}
       {previewTab === SHOW || isReviewTab ? (
         <Fragment>
-          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
+          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")} imageStyle={choicesImageStyle}>
             {list.map((ite, i) => (
               <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
@@ -395,7 +400,7 @@ const MatchListPreview = ({
           </CorrectAnswersContainer>
 
           {hasAlternateAnswers && (
-            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
+            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")} imageStyle={choicesImageStyle}>
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>

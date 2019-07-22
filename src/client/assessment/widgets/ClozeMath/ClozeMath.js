@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { Paper, WithResources, InstructorStimulus } from "@edulastic/common";
 import { compose } from "redux";
@@ -24,6 +24,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 // import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 import ChoicesForDropDown from "./ChoicesForDropDown";
+import { AnswerContext } from "@edulastic/common";
 
 const ClozeMath = ({
   view,
@@ -43,6 +44,14 @@ const ClozeMath = ({
   flowLayout,
   ...restProps
 }) => {
+  const answerContextConfig = useContext(AnswerContext);
+  let actualPreviewMode = previewTab;
+  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+    actualPreviewMode = "check";
+  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+    actualPreviewMode = "clear";
+  }
+
   const { col } = restProps;
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
@@ -135,7 +144,7 @@ const ClozeMath = ({
       {view === PREVIEW && (
         <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
           <ClozeMathPreview
-            type={previewTab}
+            type={actualPreviewMode}
             item={itemForPreview}
             stimulus={item.stimulus}
             options={item.options || {}}

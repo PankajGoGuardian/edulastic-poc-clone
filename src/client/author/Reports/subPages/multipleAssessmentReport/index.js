@@ -8,9 +8,10 @@ import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
 
-import MultipleAssessmentReportFilters from "./common/components/filters";
+import MultipleAssessmentReportFilters from "./common/components/filters/MultipleAssessmentReportFilters";
 import PeerProgressAnalysis from "./PeerProgressAnalysis";
 import StudentProgress from "./StudentProgress";
+import PerformanceOverTime from "./PerformanceOverTime";
 
 export const MultipleAssessmentReportContainer = props => {
   const [settings, setSettings] = useState({
@@ -96,6 +97,11 @@ export const MultipleAssessmentReportContainer = props => {
         exact
         path={`/author/reports/student-progress/test/:testId?`}
         render={_props => <StudentProgress {..._props} settings={settings} />}
+      />
+      <Route
+        exact
+        path={`/author/reports/performance-over-time/test/:testId?`}
+        render={_props => <PerformanceOverTime {..._props} settings={settings} />}
       />
     </>
   );

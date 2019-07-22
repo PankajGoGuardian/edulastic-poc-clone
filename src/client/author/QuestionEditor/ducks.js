@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { testItemsApi, evaluateApi, questionsApi } from "@edulastic/api";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
-import { cloneDeep, values, get, omit, set } from "lodash";
+import { cloneDeep, values, get, omit, set, uniqBy } from "lodash";
 import produce from "immer";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
@@ -31,6 +31,9 @@ import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import changeViewAction from "../src/actions/view";
+import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
+import { updateRecentStandardsAction } from "../src/actions/dictionaries";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 // constants
 export const resourceTypeQuestions = {
@@ -396,6 +399,14 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       payload: { item }
     });
     yield call(message.success, "Item is saved as draft", 2);
+
+    const alignments = yield select(getDictionariesAlignmentsSelector);
+    const { standards } = alignments[0];
+    // to update recent standards used in local storage and store
+    let recentStandardsList = yield select(getRecentStandardsListSelector);
+    recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
+    yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
+    storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
 
     if (isTestFlow) {
       // add item to test entity

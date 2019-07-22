@@ -8,7 +8,7 @@ const links = [
   {
     key: "performanceOverTime",
     title: "Performance Over Time",
-    location: "/author/reports"
+    location: "/author/reports/performance-over-time/test/"
   },
   {
     key: "peerProgressAnalysis",

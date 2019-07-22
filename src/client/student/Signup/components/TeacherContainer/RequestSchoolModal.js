@@ -39,7 +39,8 @@ class RequestSchool extends React.Component {
     this.setState({
       ...this.state,
       countryList,
-      stateList: states
+      stateList: states,
+      initialState: "Alaska"
     });
   }
 
@@ -109,7 +110,7 @@ class RequestSchool extends React.Component {
   render() {
     const { isOpen, handleCancel, form, districts, isSearching, autocompleteDistricts } = this.props;
     const { getFieldDecorator } = form;
-    const { keyword, countryList, stateList } = this.state;
+    const { keyword, countryList, stateList, initialState } = this.state;
 
     const title = (
       <Title>
@@ -140,12 +141,14 @@ class RequestSchool extends React.Component {
       if (value !== "US") {
         this.setState({
           ...this.state,
-          stateList: []
+          stateList: [],
+          initialState: ""
         });
       } else {
         this.setState({
           ...this.state,
-          stateList: states
+          stateList: states,
+          initialState: "Alaska"
         });
       }
     };
@@ -225,7 +228,7 @@ class RequestSchool extends React.Component {
             <Form.Item label="State">
               {getFieldDecorator("state", {
                 rules: [{ required: false, message: "Please provide a valid state." }],
-                initialValue: "Alaska"
+                initialValue: initialState
               })(
                 <Select showSearch placeholder="Select state">
                   {stateOptions}
@@ -373,6 +376,9 @@ const FlexItems = styled.div`
   .ant-form-item:nth-child(1) {
     width: 50%;
     margin-right: 5px;
+  }
+  .ant-form-item-control {
+    line-height: initial;
   }
 `;
 

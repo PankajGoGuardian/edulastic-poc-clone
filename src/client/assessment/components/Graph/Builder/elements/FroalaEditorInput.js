@@ -10,7 +10,7 @@ function init(element, board, cb, readOnly = false) {
 
   element.setLabel("");
 
-  const selector = `[id*=${element.label.id}]`;
+  const selector = `#${board.$board.container}_${element.label.id}`;
   element.editor = new FroalaEditor(
     selector,
     {
@@ -45,7 +45,7 @@ const FroalaEditorInput = (element, board) => ({
       element,
       board,
       () => {
-        if (label && element.editor && element.editor.html) {
+        if (label) {
           element.editor.html.set(label);
         }
       },

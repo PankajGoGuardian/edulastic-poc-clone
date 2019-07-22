@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const TableWrapper = styled.div`
   overflow: auto;
   height: 600px;
-  width: 700px;
+  width: 100%;
   margin: auto;
   margin-top: 0;
   background: ${({ imageUrl }) => (imageUrl ? `url('${imageUrl}')` : "inherit")};

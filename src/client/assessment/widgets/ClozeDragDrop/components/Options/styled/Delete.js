@@ -7,4 +7,6 @@ export const Delete = styled.div`
   position: absolute;
   right: 10px;
   top: 0;
+  z-index: 1;
+  cursor: pointer;
 `;

@@ -25,7 +25,7 @@ class AddClassModal extends Component {
   onAddClass = () => {
     this.props.form.validateFieldsAndScroll((err, user) => {
       if (!err) {
-        const { teacher, name, institutionId, subject, tags, courseId, grade } = user;
+        const { teacher, name, institutionId, subject, tags, courseId, grades } = user;
         const teacherArr = [];
         for (let i = 0; i < teacher.length; i++) {
           teacherArr.push(teacher[i].key);
@@ -39,7 +39,7 @@ class AddClassModal extends Component {
           tags,
           courseId,
           // here multiple grades has to be sent as a comma separated string
-          grade: grade.join(",")
+          grades: grades
         };
         this.props.addClass(createClassData);
       }
@@ -179,7 +179,7 @@ class AddClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Grades">
-              {getFieldDecorator("grade", {
+              {getFieldDecorator("grades", {
                 rules: [
                   {
                     required: true,

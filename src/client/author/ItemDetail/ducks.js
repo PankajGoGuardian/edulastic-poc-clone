@@ -1,11 +1,11 @@
 import { createSelector } from "reselect";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
-import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { getFromLocalStorage, storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
@@ -33,6 +33,8 @@ import changeViewAction from "../src/actions/view";
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
 import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
+import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
+import { updateRecentStandardsAction } from "../src/actions/dictionaries";
 
 // constants
 const testItemStatusConstants = {
@@ -672,6 +674,13 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
+    const alignments = yield select(getDictionariesAlignmentsSelector);
+    const { standards } = alignments[0];
+    // to update recent standards used in local storage and store
+    let recentStandardsList = yield select(getRecentStandardsListSelector);
+    recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
+    yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
+    storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
     yield call(message.success, "Item is saved as draft", 2);
     if (addToTest) {
       // add item to test entity
@@ -691,9 +700,9 @@ export function* updateItemSaga({ payload }) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(`/author/tests/${payload.testId}`));
+        put(push(`/author/tests/${payload.testId}`));
       }
-      yield put(changeViewAction("edit"));
+      put(changeViewAction("edit"));
       return;
     }
   } catch (err) {

@@ -14,7 +14,7 @@ const allGrades = [
   { value: "10", text: "Grade 10" },
   { value: "11", text: "Grade 11" },
   { value: "12", text: "Grade 12" },
-  { value: "other", text: "Other" }
+  { value: "O", text: "Other" }
 ];
 
 const allSubjects = [

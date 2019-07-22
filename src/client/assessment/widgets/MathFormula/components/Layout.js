@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { math } from "@edulastic/constants";
+import { math, response } from "@edulastic/constants";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -18,6 +18,21 @@ import FontSizeSelect from "../../../components/FontSizeSelect";
 class Layout extends Component {
   state = {
     minWidth: 0
+  };
+
+  handleGlobalWidthBlur = e => {
+    const { minWidth, maxWidth } = response;
+    let val = e.target.value;
+    const { onChange, uiStyle } = this.props;
+    if (val < minWidth || val > maxWidth) {
+      val = val < minWidth ? minWidth : maxWidth;
+    }
+    this.setState({ minWidth: val }, () => {
+      onChange("ui_style", {
+        ...uiStyle,
+        min_width: +val
+      });
+    });
   };
 
   onChangeMinWidth = e => {
@@ -66,13 +81,9 @@ class Layout extends Component {
             <Input
               type="number"
               size="large"
-              value={minWidth}
+              value={minWidth || uiStyle.min_width}
               onChange={this.onChangeMinWidth}
-              onBlur={e => {
-                const val = e.target.value > 400 ? 400 : e.target.value < 20 ? 20 : e.target.value;
-                this.setState({ minWidth: val });
-                return changeUiStyle("min_width", val);
-              }}
+              onBlur={this.handleGlobalWidthBlur}
               max={400}
               min={20}
             />

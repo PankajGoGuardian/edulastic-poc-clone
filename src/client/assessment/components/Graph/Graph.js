@@ -332,10 +332,9 @@ class Graph extends Component {
               <InstructorStimulus>{extra_options.instructor_stimulus}</InstructorStimulus>
             )}
             <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
-            {previewTab === "check" && item.canvas && item.ui_style && (
+            {item.canvas && item.ui_style && (
               <GraphDisplay
                 disableResponse={disableResponse}
-                checkAnswer
                 graphData={item}
                 view={view}
                 previewTab={previewTab}
@@ -347,28 +346,15 @@ class Graph extends Component {
             )}
             {previewTab === "show" && item.canvas && item.ui_style && (
               <Fragment>
-                <GraphDisplay
-                  disableResponse={disableResponse}
-                  checkAnswer
-                  graphData={item}
-                  view={view}
-                  previewTab={previewTab}
-                  onChange={this.handleAddAnswer}
-                  elements={userAnswer}
-                  evaluation={evaluation}
-                  {...restProps}
-                />
-
                 <CorrectAnswersContainer title={t("component.graphing.correctAnswer")}>
                   <GraphDisplay
                     disableResponse
-                    showAnswer
                     graphData={item}
                     view={view}
                     previewTab={previewTab}
-                    onChange={this.handleAddAnswer}
                     elements={validation.valid_response.value}
                     evaluation={evaluation}
+                    elementsIsCorrect
                     {...restProps}
                   />
                 </CorrectAnswersContainer>
@@ -378,31 +364,17 @@ class Graph extends Component {
                     <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
                       <GraphDisplay
                         disableResponse
-                        showAnswer
                         graphData={item}
                         view={view}
                         previewTab={previewTab}
-                        onChange={this.handleAddAnswer}
                         elements={altAnswer.value}
                         evaluation={evaluation}
+                        elementsIsCorrect
                         {...restProps}
                       />
                     </CorrectAnswersContainer>
                   ))}
               </Fragment>
-            )}
-            {previewTab === "clear" && item.canvas && item.ui_style && (
-              <GraphDisplay
-                disableResponse={disableResponse}
-                clearAnswer
-                graphData={item}
-                view={view}
-                previewTab={previewTab}
-                onChange={this.handleAddAnswer}
-                elements={userAnswer}
-                evaluation={evaluation}
-                {...restProps}
-              />
             )}
           </Wrapper>
         )}

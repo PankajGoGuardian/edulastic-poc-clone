@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { get, isNull } from "lodash";
+import { get, isNull, debounce } from "lodash";
 import { Select, message } from "antd";
 import { StyledModal, Title, ActionButton, Description } from "./styled";
 import { receiveTeachersListAction } from "../../../../Teacher/ducks";
@@ -49,7 +49,8 @@ class AddCoTeacher extends React.Component {
       teacherList: teachers.filter(teacher => teacher.email.includes(value) || teacher.firstName.includes(value))
     });
   };
-  onAdd = () => {
+
+  onAddCoTeacher = debounce(() => {
     const { coTeacherId } = this.state;
     const { setClass } = this.props;
     if (isNull(coTeacherId)) {
@@ -73,7 +74,7 @@ class AddCoTeacher extends React.Component {
       .catch(err => {
         message.error(err.data.message);
       });
-  };
+  }, 1000);
 
   render() {
     const { isOpen, handleCancel, primaryTeacherId } = this.props;
@@ -87,7 +88,7 @@ class AddCoTeacher extends React.Component {
 
     const footer = (
       <>
-        <ActionButton onClick={this.onAdd} type="primary">
+        <ActionButton onClick={this.onAddCoTeacher} type="primary">
           Add
         </ActionButton>
         <ActionButton onClick={handleCancel} type="primary">

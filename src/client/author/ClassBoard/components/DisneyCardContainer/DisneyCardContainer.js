@@ -31,7 +31,8 @@ import {
   StyledName,
   StyledParaSS,
   StyledParaSSS,
-  RightAlignedCol
+  RightAlignedCol,
+  ExclamationMark
 } from "./styled";
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName, getFirstName } from "../../Transformer";
@@ -136,7 +137,14 @@ class DisneyCardContainer extends Component {
         /**
          * for differentiating archived students
          */
-        const enrollMentFlag = enrollmentStatus[student.studentId] == 0 ? " ! " : "";
+        const enrollMentFlag =
+          enrollmentStatus[student.studentId] !== 0 ? (
+            <span title="Not Enrolled">
+              <ExclamationMark />
+            </span>
+          ) : (
+            ""
+          );
         const studentData = (
           <StyledCard data-cy={`student-card-${name}`} bordered={false} key={index}>
             <PaginationInfoF>

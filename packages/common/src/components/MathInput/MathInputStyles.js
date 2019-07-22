@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { mobileWidth } from "@edulastic/colors";
 
 export const MathInputStyles = styled.div`
-  width: ${({ fullWidth }) => (fullWidth ? "100%" : "unset")};
+  width: ${({ width, fullWidth }) => (width ? width : fullWidth ? "100%" : "unset")};
 
   .input {
     position: relative;
@@ -12,12 +12,12 @@ export const MathInputStyles = styled.div`
     min-height: 42px;
     display: inline-flex;
     width: 100%;
-    padding-right: 40px;
+    padding-right: ${({ width }) => (width ? "unset" : "40px")};
     position: relative;
     border-radius: 5px;
     background: #fff;
     border: 1px solid ${props => props.theme.common.mathInputMathBorderColor};
-    padding: 5px 25px;
+    padding: ${({ width }) => (width ? "unset" : "5px 25px")};
     align-items: center;
 
     &.clear {

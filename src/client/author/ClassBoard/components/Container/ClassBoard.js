@@ -256,7 +256,8 @@ class ClassBoard extends Component {
   };
 
   handleRedirect = () => {
-    const { selectedStudents, testActivity } = this.props;
+    const { selectedStudents, testActivity, enrollmentStatus } = this.props;
+
     const notStartedStudents = testActivity.filter(
       x =>
         selectedStudents[x.studentId] &&
@@ -267,6 +268,9 @@ class ClassBoard extends Component {
       message.warn("You can redirect only Submitted and Absent student(s).");
       return;
     }
+    const selectedStudentIds = Object.keys(selectedStudents);
+    if (selectedStudentIds.some(item => enrollmentStatus[item] === "0"))
+      return message.warn("You can not redirect to not enrolled student(s).");
     this.setState({ redirectPopup: true });
   };
 
@@ -440,7 +444,8 @@ class ClassBoard extends Component {
       isPresentationMode,
       entities,
       labels,
-      assignmentStatus
+      assignmentStatus,
+      enrollmentStatus
     } = this.props;
     const {
       selectedTab,
@@ -689,7 +694,7 @@ class ClassBoard extends Component {
                     this.onTabChange(e, "Student", selected);
                   }}
                   isPresentationMode={isPresentationMode}
-                  enrollmentStatus={this.props.enrollmentStatus}
+                  enrollmentStatus={enrollmentStatus}
                 />
               ) : (
                 <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
@@ -702,6 +707,7 @@ class ClassBoard extends Component {
                 absentList={absentList}
                 selectedStudents={selectedStudents}
                 additionalData={additionalData}
+                enrollmentStatus={enrollmentStatus}
                 closePopup={() => {
                   this.setState({ redirectPopup: false });
                 }}

@@ -32,6 +32,7 @@ const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, showDr
       maskClosable={false}
       onOk={() => onSave(latex)}
       onCancel={() => onClose()}
+      width="785px"
     >
       {!isEditable && <KatexInput value={latex} onInput={onInput} />}
       {isEditable && (

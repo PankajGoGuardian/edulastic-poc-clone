@@ -246,7 +246,11 @@ function* submitTest() {
       yield put(push("/home/reports"));
     }
   } catch (err) {
-    console.log(err);
+    if (err.status === 403) {
+      console.log(err);
+      yield put(push("/home/assignments"));
+      yield call(message.error, err.data);
+    }
   }
 }
 

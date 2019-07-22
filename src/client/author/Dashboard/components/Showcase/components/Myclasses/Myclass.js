@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Spin } from "antd";
+import { TextWrapper } from "../../../styledComponents";
+import { Container, CardBox } from "./styled";
 import { get } from "lodash";
-import { TextWrapper, LinkWrapper } from "../../../styledComponents";
-import { CardsContainer, CardBox } from "./styled";
 import CardImage from "./components/CardImage/cardImage";
 import CardTextContent from "./components/CardTextContent/cardTextContent";
 import { receiveTeacherDashboardAction } from "../../../../duck";
@@ -90,24 +90,12 @@ const MyClasses = ({
   ));
 
   return (
-    <CardsContainer>
-      <ClassSelectModal
-        style={{ width: "700px" }}
-        visible={isModalVisible}
-        close={closeModal}
-        groups={googleCourseList}
-        state={state}
-        courseList={courseList}
-        syncClassLoading={syncClassLoading}
-        updateGoogleCourseList={updateGoogleCourseList}
-        syncClass={syncClass}
-        selectedGroups={selectedGroups}
-      />
-      <TextWrapper size="20px" color="#434B5D">
+    <Container>
+      <TextWrapper size="20px" color="#434B5D" style={{ marginBottom: "1rem" }}>
         My classes
       </TextWrapper>
       {loading ? (
-        <Spin style={{ marginTop: "120px" }} />
+        <Spin style={{ marginTop: "80px" }} />
       ) : classData.length == 0 ? (
         <CreateClassPage
           fetchClassList={fetchClassList}
@@ -117,7 +105,7 @@ const MyClasses = ({
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
       )}
-    </CardsContainer>
+    </Container>
   );
 };
 

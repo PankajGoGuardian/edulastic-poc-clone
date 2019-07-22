@@ -65,3 +65,8 @@ export const BoldText = styled.span`
   font-weight: 700;
   color: #4ca4e8;
 `;
+
+export const LightGreenSpan = styled.span`
+  color: ${props => props.theme.header.headerBgColor};
+  font-weight: bold;
+`;

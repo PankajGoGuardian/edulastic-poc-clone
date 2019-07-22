@@ -75,7 +75,11 @@ class UploadCourseModal extends React.Component {
         const textFromFileLoaded = fileLoadedEvent.target.result;
         const lineArr = textFromFileLoaded.split("\n");
         const headerArr = lineArr[0].split(",");
-        if (headerArr.length === 2 && headerArr[0] === "course_id" && headerArr[1] === "course_name") {
+        if (
+          headerArr.length === 2 &&
+          (headerArr[0] === `"course_id"` || headerArr[0] === `'course_id'`) &&
+          (headerArr[1] === `"course_name"` || headerArr[1] === `'course_name"`)
+        ) {
           uploadCSVCourse(file);
         } else {
           setPageStatus("upload-novalidate-csv");
@@ -83,7 +87,7 @@ class UploadCourseModal extends React.Component {
         }
       };
 
-      fileReader.readAsBinaryString(file, "UTF-8");
+      fileReader.readAsText(file, "UTF-8");
     } else {
       setPageStatus("upload-novalidate-csv");
       this.setState({ alertMsgStr: UPLOAD_FILE_UNSUPPORTED_FORMAT_ERROR });

@@ -44,8 +44,8 @@ class ImageUpload extends Component {
   };
 
   setRequiredStatus = () => {
-    const { imgSrc } = this.props;
-    if (imgSrc == null || imgSrc.length == 0) {
+    const { imgSrc, requiredStatus } = this.props;
+    if ((imgSrc == null || imgSrc.length == 0) && requiredStatus) {
       this.setState({ visibleRequired: true });
     }
   };
@@ -86,7 +86,9 @@ const enhance = compose(
     state => ({}),
     {
       setUploadingStatus: setImageUploadingStatusAction
-    }
+    },
+    null,
+    { withRef: true }
   )
 );
 export default enhance(ImageUpload);

@@ -18,7 +18,7 @@ import {
 } from "./styled";
 
 const CardImage = ({ data, history }) => {
-  const { name, grade, studentCount, subject, thumbnail } = data;
+  const { name, grades = [], studentCount, subject, thumbnail } = data;
 
   const gotoManageClass = () => {
     history.push("/author/manageClass");
@@ -38,7 +38,7 @@ const CardImage = ({ data, history }) => {
             <RowWrapperGrade>
               <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
                 <SpanRightMargin>Grade</SpanRightMargin>
-                {grade}
+                {grades.join(", ")}
 
                 {subject ? (
                   <>

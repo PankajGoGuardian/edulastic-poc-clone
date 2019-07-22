@@ -118,7 +118,7 @@ class SimpleOptions extends React.Component {
         name: get(groupById, `${_id}.name`, ""),
         assignedCount: studentsByGroupId[_id].length,
         students: studentsByGroupId[_id].map(item => item._id),
-        grade: get(groupById, `${_id}.grade`, ""),
+        grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
         termId: get(groupById, `${_id}.termId`, "")
       };

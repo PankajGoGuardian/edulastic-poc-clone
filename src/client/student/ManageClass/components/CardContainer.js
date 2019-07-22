@@ -6,7 +6,7 @@ import { Row, Col, Button, Spin } from "antd";
 import moment from "moment";
 
 const ClassCard = ({ t, classItem }) => {
-  const { name, owners, parent, startDate, endDate, subject, grade, active, status, standardSets } = classItem;
+  const { name, owners, parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
   const { name: instructorName } = owners.find(owner => owner.id == parent.id);
   return (
     <Col xs={24} md={12} lg={8} xxl={6}>
@@ -33,7 +33,7 @@ const ClassCard = ({ t, classItem }) => {
 
           <Col span={24}>
             <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
-            <InfoContent span={16}>{grade}</InfoContent>
+            <InfoContent span={16}>{grades.join(", ")}</InfoContent>
           </Col>
 
           <Col span={24}>

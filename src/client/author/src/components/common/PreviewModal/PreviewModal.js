@@ -150,7 +150,7 @@ class PreviewModal extends React.Component {
               </ButtonsWrapper>
             </ButtonsContainer>
           )}
-          {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} />}
+          {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} height={50} />}
           <QuestionWrapper padding="0px" innerRef={this.mountedQuestion}>
             {loading || item === null ? (
               <ProgressContainer>

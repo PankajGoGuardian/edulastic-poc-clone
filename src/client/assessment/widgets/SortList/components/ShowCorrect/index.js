@@ -26,7 +26,7 @@ const ShowCorrect = ({ list, altList, correctList, altResponses, source, t }) =>
         <FlexRow>
           {ans.value.map((answer, index) => (
             <Item key={index}>
-              <Index>{answer + 1}</Index>
+              <Index>{index + 1}</Index>
               <Content dangerouslySetInnerHTML={{ __html: altList[i][index] }} />
             </Item>
           ))}

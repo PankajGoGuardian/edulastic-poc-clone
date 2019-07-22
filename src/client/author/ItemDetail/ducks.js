@@ -678,7 +678,7 @@ export function* updateItemSaga({ payload }) {
     const { standards } = alignments[0];
     // to update recent standards used in local storage and store
     let recentStandardsList = yield select(getRecentStandardsListSelector);
-    recentStandardsList = uniqBy([...recentStandardsList, ...standards], i => i._id).slice(-10);
+    recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
     yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
     yield call(message.success, "Item is saved as draft", 2);

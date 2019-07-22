@@ -337,7 +337,9 @@ class Display extends Component {
     } = this.props;
 
     const questionId = item && item.id;
-
+    const {
+      responseLayout: { isWrapText = false }
+    } = item;
     const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
     const cAnswers = get(item, "validation.valid_response.value", []);
 
@@ -369,8 +371,8 @@ class Display extends Component {
       display: "flex",
       alignItems: "center",
       width: "max-content",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
+      whiteSpace: isWrapText ? "normal" : "nowrap",
+      overflow: isWrapText ? "visible" : "hidden",
       textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
@@ -485,8 +487,8 @@ class Display extends Component {
                   style={{
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
-                    height: responseContainer.height || "auto", // responseContainer.height || "auto",
-                    width: responseContainer.width || "auto",
+                    height: isWrapText ? "auto" : responseContainer.height || "auto", // responseContainer.height || "auto",
+                    width: isWrapText ? "auto" : responseContainer.width || "auto",
                     minHeight: responseContainer.height || "auto",
                     minWidth: responseContainer.width || "auto",
                     maxWidth: response.maxWidth
@@ -519,7 +521,7 @@ class Display extends Component {
                             <AnswerContainer
                               height={responseContainer.height || "auto"}
                               width={responseContainer.width || "auto"}
-                              answer={answer.replace("<p>", "<p class='clipText'>") || ""}
+                              answer={isWrapText ? answer : answer.replace("<p>", "<p class='clipText'>") || ""}
                             />
                           </DragItem>
                         );
@@ -601,6 +603,7 @@ class Display extends Component {
         onDropHandler={this.onDrop}
         showBorder={showBorder}
         disableResponse={disableResponse}
+        isWrapText={isWrapText}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

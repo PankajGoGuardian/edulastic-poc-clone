@@ -453,7 +453,8 @@
         "orBrowse": "OR BROWSE",
         "transparentbackground": "Transparent Background",
         "showborder": "Show drop area border",
-        "snapfittodroparea": "Snap fit to drop Area"
+        "snapfittodroparea": "Snap fit to drop Area",
+        "wrapTextToFitDropArea": "Wrap text to fit drop area"
       },
       "imageDropDown": {
         "composequestion": "Question",

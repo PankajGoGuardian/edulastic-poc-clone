@@ -19,7 +19,7 @@ const SET_TEST_ID = "[reports] set sar testId";
 
 export const getSARFilterDataRequestAction = createAction(GET_REPORTS_SAR_FILTER_DATA_REQUEST);
 
-export const setPrevSARFilterDataRequestAction = createAction(SET_REPORTS_PREV_SAR_FILTER_DATA);
+export const setPrevSARFilterDataAction = createAction(SET_REPORTS_PREV_SAR_FILTER_DATA);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setTestIdAction = createAction(SET_TEST_ID);

@@ -19,7 +19,7 @@ import {
   getTestIdSelector,
   setTestIdAction,
   getReportsPrevSARFilterData,
-  setPrevSARFilterDataRequestAction,
+  setPrevSARFilterDataAction,
   getReportsSARFilterLoadingState
 } from "../filterDataDucks";
 import { getUserRole } from "../../../../../src/selectors/user";
@@ -54,12 +54,10 @@ const SingleAssessmentReportFilters = ({
   className,
   style,
   history,
-  setPrevSARFilterDataRequestAction,
+  setPrevSARFilterDataAction,
   prevSARFilterData,
   loading
 }) => {
-  // const [prevSARFilterData, setPrevSARFilterData] = useState(null);
-
   const getTitleByTestId = testId => {
     let arr = get(SARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
@@ -96,14 +94,6 @@ const SingleAssessmentReportFilters = ({
   let processedTestIds;
   let dropDownData;
   if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
-    console.log("SARFilterData change");
-    console.log("SARFilterData", SARFilterData);
-    console.log("prevSARFilterData", prevSARFilterData);
-    console.log(
-      "SARFilterData === prevSARFilterData",
-      JSON.stringify(SARFilterData) == JSON.stringify(prevSARFilterData)
-    );
-
     const search = queryString.parse(location.search);
     search.testId = getTestIdFromURL(location.pathname);
 
@@ -178,14 +168,13 @@ const SingleAssessmentReportFilters = ({
     }
     setFiltersAction(urlParams);
     setTestIdAction(filteredUrlTestId);
-    debugger;
+
     _onGoClick({
       selectedTest: { key: filteredUrlTestId, title: getTitleByTestId(filteredUrlTestId) },
       filters: urlParams
     });
 
-    // setPrevSARFilterData(SARFilterData);
-    setPrevSARFilterDataRequestAction(SARFilterData);
+    setPrevSARFilterDataAction(SARFilterData);
   }
 
   dropDownData = useMemo(() => filteredDropDownData(SARFilterData, user, { ...filters }), [SARFilterData, filters]);
@@ -418,7 +407,7 @@ const enhance = compose(
       getSARFilterDataRequestAction: getSARFilterDataRequestAction,
       setFiltersAction: setFiltersAction,
       setTestIdAction: setTestIdAction,
-      setPrevSARFilterDataRequestAction
+      setPrevSARFilterDataAction
     }
   )
 );

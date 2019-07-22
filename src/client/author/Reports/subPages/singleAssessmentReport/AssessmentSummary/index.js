@@ -23,10 +23,7 @@ import { getUserRole } from "../../../../src/selectors/user";
 
 const AssessmentSummary = props => {
   useEffect(() => {
-    console.log("trying to sending request with");
-    console.log("props.settings", props.settings);
     if (props.settings.selectedTest && props.settings.selectedTest.key) {
-      console.log("sending request");
       let q = {};
       q.testId = props.settings.selectedTest.key;
       q.requestFilters = { ...props.settings.requestFilters };

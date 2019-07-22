@@ -1,13 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { groupBy } from "lodash";
 import { Row, Col } from "antd";
 import { ticks } from "d3-array";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import { idToName, analyseByToName } from "../../util/transformers";
-
-const yTickFormatter = val => val;
-const barsLabelFormatter = val => val + "%";
 
 export const SimpleStackedBarChartContainer = ({
   data,
@@ -89,10 +86,7 @@ export const SimpleStackedBarChartContainer = ({
       return {
         yDomain: [0, 110],
         ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-        formatter: val => {
-          console.log("formatter");
-          return val + "%";
-        },
+        formatter: val => val + "%",
         yAxisLabel: yAxisLabel,
         referenceLineY: referenceLineY
       };
@@ -114,18 +108,13 @@ export const SimpleStackedBarChartContainer = ({
 
   const chartSpecifics = getChartSpecifics();
 
-  // const yTickFormatter = useCallback(chartSpecifics.formatter, [analyseBy]);
-  // const barsLabelFormatter = useCallback(chartSpecifics.formatter, [analyseBy]);
-
   return (
     <SimpleStackedBarChart
       data={chartData}
       yDomain={chartSpecifics.yDomain}
       ticks={chartSpecifics.ticks}
-      // yTickFormatter={chartSpecifics.formatter}
-      // barsLabelFormatter={chartSpecifics.formatter}
-      yTickFormatter={yTickFormatter}
-      barsLabelFormatter={barsLabelFormatter}
+      yTickFormatter={chartSpecifics.formatter}
+      barsLabelFormatter={chartSpecifics.formatter}
       xAxisDataKey={compareBy}
       bottomStackDataKey={"correct"}
       topStackDataKey={"incorrect"}

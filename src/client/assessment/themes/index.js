@@ -91,14 +91,14 @@ const AssessmentContainer = ({
     saveUserAnswer(currentItem, timeSpent);
   };
 
-  const moveToNext = () => {
+  const moveToNext = async () => {
     if (!isLast()) {
       gotoQuestion(Number(currentItem) + 1);
     }
     if (isLast() && !preview) {
       const timeSpent = Date.now() - lastTime.current;
-      history.push("/student/test-summary");
-      saveUserAnswer(currentItem, timeSpent);
+      await saveUserAnswer(currentItem, timeSpent);
+      history.push(`${url}/${"test-summary"}`);
     }
   };
 
@@ -107,10 +107,10 @@ const AssessmentContainer = ({
     saveUserAnswer(currentItem, timeSpent);
   };
 
-  const gotoSummary = () => {
+  const gotoSummary = async () => {
     const timeSpent = Date.now() - lastTime.current;
-    history.push("/student/test-summary");
-    saveUserAnswer(currentItem, timeSpent);
+    await saveUserAnswer(currentItem, timeSpent);
+    history.push(`${url}/${"test-summary"}`);
   };
 
   const moveToPrev = () => {

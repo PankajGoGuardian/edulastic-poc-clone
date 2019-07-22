@@ -1,6 +1,8 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { cloneDeep, isEqual } from "lodash";
+
 import {
   IconGraphPoint as IconPoint,
   IconBothIncludedSegment,
@@ -13,8 +15,10 @@ import {
   IconNotIncludedToInfinitySegment,
   IconTrash
 } from "@edulastic/icons";
-import { cloneDeep, isEqual } from "lodash";
-import { GraphWrapper, JSXBox } from "./styled";
+
+import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
+import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+
 import {
   defaultAxesParameters,
   defaultGraphParameters,
@@ -23,10 +27,11 @@ import {
 } from "../../Builder/settings";
 import { makeBorder } from "../../Builder";
 import { CONSTANT, Colors } from "../../Builder/config";
-import SegmentsTools from "./SegmentsTools";
-import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
-import { getQuestionDataSelector, setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
+
 import AnnotationRnd from "../../Annotations/AnnotationRnd";
+
+import SegmentsTools from "./SegmentsTools";
+import { GraphWrapper, JSXBox } from "./styled";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -91,61 +96,6 @@ const getColoredElems = (elements, compareResult) => {
     return newElems;
   }
   return elements;
-};
-
-const getColoredAnswer = answerArr => {
-  if (Array.isArray(answerArr)) {
-    return answerArr.map(el => {
-      switch (el.type) {
-        case CONSTANT.TOOLS.SEGMENTS_POINT:
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
-          return {
-            colors: Colors.yellow[CONSTANT.TOOLS.POINT],
-            pointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
-          return {
-            lineColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            leftPointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            rightPointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-          return {
-            lineColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            leftPointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
-            rightPointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
-          return {
-            lineColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            leftPointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
-            rightPointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-          return {
-            lineColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            leftPointColor: Colors.yellow[CONSTANT.TOOLS.POINT],
-            rightPointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
-            ...el
-          };
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-          return {
-            colors: Colors.yellow[CONSTANT.TOOLS.POINT],
-            pointColor: Colors.yellow[CONSTANT.TOOLS.SEGMENTS_POINT],
-            ...el
-          };
-        default:
-          return null;
-      }
-    });
-  }
-  return answerArr;
 };
 
 const getCorrectAnswer = answerArr => {
@@ -230,7 +180,9 @@ class AxisSegmentsContainer extends PureComponent {
   constructor(props) {
     super(props);
 
-    this._graphId = `jxgbox${Math.random().toString(36)}`;
+    this._graphId = `jxgbox${Math.random()
+      .toString(36)
+      .replace(".", "")}`;
     this._graph = null;
 
     this.state = {
@@ -271,9 +223,8 @@ class AxisSegmentsContainer extends PureComponent {
     this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
-      if (disableResponse) {
-        this._graph.setDisableResponse();
-      }
+      this._graph.setDisableResponse(disableResponse);
+
       this._graph.resizeContainer(layout.width, layout.height);
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
@@ -314,7 +265,16 @@ class AxisSegmentsContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { canvas, numberlineAxis, layout, tools } = this.props;
+    const {
+      canvas,
+      numberlineAxis,
+      layout,
+      tools,
+      disableResponse,
+      previewTab,
+      changePreviewTab,
+      elements
+    } = this.props;
 
     const { selectedTool } = this.state;
 
@@ -323,6 +283,8 @@ class AxisSegmentsContainer extends PureComponent {
       this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT);
     }
     if (this._graph) {
+      this._graph.setDisableResponse(disableResponse);
+
       if (
         numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses ||
         numberlineAxis.stackResponsesSpacing !== prevProps.numberlineAxis.stackResponsesSpacing ||
@@ -342,6 +304,10 @@ class AxisSegmentsContainer extends PureComponent {
       }
 
       this.setElementsToGraph(prevProps);
+    }
+
+    if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
+      changePreviewTab(CLEAR);
     }
   }
 
@@ -397,9 +363,10 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
-    const { elements, checkAnswer, showAnswer, evaluation, disableResponse } = this.props;
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
-    if (showAnswer) {
+    // correct answers blocks
+    if (elementsIsCorrect) {
       this._graph.resetAnswers();
       this._graph.loadSegmentsAnswers(getCorrectAnswer(elements));
       return;
@@ -413,17 +380,20 @@ class AxisSegmentsContainer extends PureComponent {
       return;
     }
 
-    if (checkAnswer && !isEqual(evaluation, prevProps.evaluation)) {
+    if (previewTab === CHECK || previewTab === SHOW) {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.segmentsReset();
-      this._graph.loadSegments(coloredElements, true);
+      this._graph.loadSegments(coloredElements);
       return;
     }
 
-    if (!isEqual(elements, this._graph.getSegments()) || this._graph.elementsAreEvaluated) {
+    if (
+      !isEqual(elements, this._graph.getSegments()) ||
+      (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
+    ) {
       this._graph.segmentsReset();
-      this._graph.loadSegments(elements, false);
+      this._graph.loadSegments(elements);
     }
   };
 
@@ -519,15 +489,15 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, canvas, elements, tools, questionId, disableResponse } = this.props;
+    const { layout, canvas, elements, tools, questionId, disableResponse, view } = this.props;
     const { selectedTool } = this.state;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
-          <div style={{ position: "relative", overflow: "hidden" }}>
-            <AnnotationRnd questionId={questionId} disableDragging={false} />
+          <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+            <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
           </div>
           {!disableResponse && (
             <SegmentsTools
@@ -557,8 +527,6 @@ AxisSegmentsContainer.propTypes = {
   evaluation: PropTypes.any,
   setValue: PropTypes.func.isRequired,
   elements: PropTypes.array.isRequired,
-  showAnswer: PropTypes.bool,
-  checkAnswer: PropTypes.bool,
   tools: PropTypes.array.isRequired,
   graphType: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
@@ -568,31 +536,30 @@ AxisSegmentsContainer.propTypes = {
   stashIndex: PropTypes.object,
   questionId: PropTypes.string.isRequired,
   altAnswerId: PropTypes.string,
-  question: PropTypes.object.isRequired,
-  setQuestionData: PropTypes.func.isRequired,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  previewTab: PropTypes.string,
+  changePreviewTab: PropTypes.func,
+  elementsIsCorrect: PropTypes.bool
 };
 
 AxisSegmentsContainer.defaultProps = {
   evaluation: null,
-  showAnswer: false,
-  checkAnswer: false,
   stash: {},
   stashIndex: {},
   altAnswerId: null,
-  disableResponse: false
+  disableResponse: false,
+  previewTab: CLEAR,
+  changePreviewTab: () => {},
+  elementsIsCorrect: false
 };
 
 export default connect(
   state => ({
     stash: state.graphTools.stash,
-    stashIndex: state.graphTools.stashIndex,
-    view: state.view.view,
-    question: getQuestionDataSelector(state)
+    stashIndex: state.graphTools.stashIndex
   }),
   {
     setElementsStash: setElementsStashAction,
-    setStashIndex: setStashIndexAction,
-    setQuestionData: setQuestionDataAction
+    setStashIndex: setStashIndexAction
   }
 )(AxisSegmentsContainer);

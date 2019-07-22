@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 
 import { withNamespaces } from "@edulastic/localization";
+import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList";
@@ -88,6 +89,7 @@ class ListComponent extends Component {
           onRemove={handleRemove}
           useDragHandle
           columns={1}
+          imageDefaultWidth={IMAGE_LIST_DEFAULT_WIDTH}
         />
       </Question>
     );

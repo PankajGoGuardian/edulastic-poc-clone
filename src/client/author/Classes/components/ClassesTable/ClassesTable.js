@@ -519,9 +519,9 @@ class ClassesTable extends Component {
     );
 
     const gradeOptions = [];
-    gradeOptions.push(<Option value={"0"}>KinderGarten</Option>);
+    gradeOptions.push(<Option value={"K"}>Kindergarten</Option>);
     for (let i = 1; i <= 12; i++) gradeOptions.push(<Option value={i.toString()}>Grade {i}</Option>);
-    gradeOptions.push(<Option value="other">Other</Option>);
+    gradeOptions.push(<Option value="O">Other</Option>);
 
     const SearchRows = [];
     for (let i = 0; i < filtersData.length; i++) {

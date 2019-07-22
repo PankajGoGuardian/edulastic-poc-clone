@@ -21,12 +21,13 @@ function collectTarget(connector, monitor) {
   };
 }
 
-const DropContainer = ({ connectDropTarget, index, style, children, className }) =>
+const DropContainer = ({ connectDropTarget, index, style, children, className, isOver }) =>
   connectDropTarget(
     <div
       id={`answerboard-dragdropbox-${index}`}
       style={{
-        ...style
+        ...style,
+        ...(isOver ? { boxShadow: "0 0 6px #75b4dd", border: "2px dashed #75b4dd" } : {})
       }}
       className={className}
     >

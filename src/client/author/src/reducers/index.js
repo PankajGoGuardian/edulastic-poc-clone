@@ -19,6 +19,7 @@ import { reportStandardsPerformanceSummaryReducer } from "../../Reports/subPages
 import { reportStandardsFilterDataReducer } from "../../Reports/subPages/standardsMasteryReport/common/filterDataDucks";
 import { reportPeerProgressAnalysisReducer } from "../../Reports/subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
 import { reportStudentProgressReducer } from "../../Reports/subPages/multipleAssessmentReport/StudentProgress/ducks";
+import { reportPerformanceOverTimeReducer } from "../../Reports/subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
 import authorGroups from "../../sharedDucks/groups";
@@ -86,6 +87,7 @@ const authorReducers = {
   reportStandardsFilterDataReducer,
   reportPeerProgressAnalysisReducer,
   reportStudentProgressReducer,
+  reportPerformanceOverTimeReducer,
   authorTestAssignments: testAssignmentsReducer,
   author_classboard_gradebook,
   author_classboard_testActivity,

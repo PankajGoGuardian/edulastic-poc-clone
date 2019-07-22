@@ -2,6 +2,7 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
+
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
@@ -14,8 +15,11 @@ import {
   IconGraphSegment as IconSegment,
   IconGraphPolygon as IconPolygon
 } from "@edulastic/icons";
-import Tools from "./Tools";
-import { makeBorder } from "../../Builder/index";
+
+import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
+import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+
+import { makeBorder } from "../../Builder";
 import { CONSTANT, Colors } from "../../Builder/config";
 import {
   defaultGraphParameters,
@@ -23,6 +27,9 @@ import {
   defaultAxesParameters,
   defaultGridParameters
 } from "../../Builder/settings";
+
+import AnnotationRnd from "../../Annotations/AnnotationRnd";
+
 import {
   GraphWrapper,
   JSXBox,
@@ -34,10 +41,9 @@ import {
   JSXBoxWrapper,
   JSXBoxWithDrawingObjectsWrapper
 } from "./styled";
-import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+import Tools from "./Tools";
 import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -100,16 +106,6 @@ const getColoredElems = (elements, compareResult) => {
   return elements;
 };
 
-const getColoredAnswer = answerArr => {
-  if (Array.isArray(answerArr)) {
-    return answerArr.map(el => ({
-      colors: Colors.yellow[el.type],
-      ...el
-    }));
-  }
-  return answerArr;
-};
-
 const getCorrectAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
@@ -147,7 +143,9 @@ class GraphContainer extends PureComponent {
   constructor(props) {
     super(props);
 
-    this._graphId = `jxgbox${Math.random().toString(36)}`;
+    this._graphId = `jxgbox${Math.random()
+      .toString(36)
+      .replace(".", "")}`;
     this._graph = null;
 
     this.state = {
@@ -200,9 +198,8 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
-      if (disableResponse) {
-        this._graph.setDisableResponse();
-      }
+      this._graph.setDisableResponse(disableResponse);
+
       this._graph.resizeContainer(layout.width, layout.height);
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
@@ -245,7 +242,11 @@ class GraphContainer extends PureComponent {
       gridParams,
       bgImgOptions,
       backgroundShapes,
-      toolbar
+      toolbar,
+      disableResponse,
+      previewTab,
+      changePreviewTab,
+      elements
     } = this.props;
 
     const { tools } = toolbar;
@@ -256,6 +257,8 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
+      this._graph.setDisableResponse(disableResponse);
+
       if (
         canvas.xMin !== prevProps.canvas.xMin ||
         canvas.xMax !== prevProps.canvas.xMax ||
@@ -348,6 +351,10 @@ class GraphContainer extends PureComponent {
 
       this.setElementsToGraph(prevProps);
     }
+
+    if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
+      changePreviewTab(CLEAR);
+    }
   }
 
   onSelectTool({ name, index, groupIndex }) {
@@ -439,9 +446,10 @@ class GraphContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
-    const { elements, checkAnswer, showAnswer, evaluation, disableResponse } = this.props;
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
-    if (showAnswer) {
+    // correct answers blocks
+    if (elementsIsCorrect) {
       this._graph.resetAnswers();
       this._graph.loadAnswersFromConfig(getCorrectAnswer(elements));
       return;
@@ -455,17 +463,20 @@ class GraphContainer extends PureComponent {
       return;
     }
 
-    if (checkAnswer && !isEqual(evaluation, prevProps.evaluation)) {
+    if (previewTab === CHECK || previewTab === SHOW) {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
-      this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible(), true);
+      this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
       return;
     }
 
-    if (!isEqual(elements, this._graph.getConfig()) || this._graph.elementsAreEvaluated) {
+    if (
+      !isEqual(elements, this._graph.getConfig()) ||
+      (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
+    ) {
       this._graph.reset();
-      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible(), false);
+      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible());
     }
   };
 
@@ -585,7 +596,7 @@ class GraphContainer extends PureComponent {
   drawingObjectsAreVisible = () => {
     const { view, toolbar } = this.props;
     const { drawingPrompt } = toolbar;
-    return view !== "edit" && drawingPrompt === "byObjects";
+    return view !== EDIT && drawingPrompt === "byObjects";
   };
 
   getDrawingObjects = () => {
@@ -606,7 +617,7 @@ class GraphContainer extends PureComponent {
   };
 
   render() {
-    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse } = this.props;
+    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse, view } = this.props;
     const { tools } = toolbar;
     const { selectedTool } = this.state;
     const hasAnnotation =
@@ -658,7 +669,7 @@ class GraphContainer extends PureComponent {
                 className="jxgbox"
                 margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
               />
-              <AnnotationRnd questionId={questionId} disableDragging={false} />
+              <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
             </JSXBoxWrapper>
           </JSXBoxWithDrawingObjectsWrapper>
         </GraphWrapper>
@@ -681,8 +692,6 @@ GraphContainer.propTypes = {
   graphType: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
   elements: PropTypes.array.isRequired,
-  showAnswer: PropTypes.bool,
-  checkAnswer: PropTypes.bool,
   bgShapes: PropTypes.bool.isRequired,
   annotation: PropTypes.object,
   controls: PropTypes.array,
@@ -693,14 +702,15 @@ GraphContainer.propTypes = {
   stashIndex: PropTypes.object,
   questionId: PropTypes.string.isRequired,
   altAnswerId: PropTypes.string,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  previewTab: PropTypes.string,
+  changePreviewTab: PropTypes.func,
+  elementsIsCorrect: PropTypes.bool
 };
 
 GraphContainer.defaultProps = {
   backgroundShapes: { values: [], showPoints: true },
   evaluation: null,
-  showAnswer: false,
-  checkAnswer: false,
   annotation: null,
   controls: [],
   stash: {},
@@ -711,14 +721,16 @@ GraphContainer.defaultProps = {
     drawingPrompt: "byTools",
     drawingObjects: []
   },
-  disableResponse: false
+  disableResponse: false,
+  previewTab: CLEAR,
+  changePreviewTab: () => {},
+  elementsIsCorrect: false
 };
 
 export default connect(
   state => ({
     stash: state.graphTools.stash,
-    stashIndex: state.graphTools.stashIndex,
-    view: state.view.view
+    stashIndex: state.graphTools.stashIndex
   }),
   {
     setElementsStash: setElementsStashAction,

@@ -96,7 +96,9 @@ const TestPageHeader = ({
     <HeaderWrapper>
       <TitleWrapper>
         <Title title={title}>{title || "Untitled Test"} </Title>
-        <TestStatus className={isPlaylist ? "draft" : testStatus}>{isPlaylist ? "DRAFT" : testStatus}</TestStatus>
+        <TestStatus className={isPlaylist || editEnable ? "draft" : testStatus}>
+          {isPlaylist || editEnable ? "DRAFT" : testStatus}
+        </TestStatus>
       </TitleWrapper>
 
       <TestPageNav

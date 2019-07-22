@@ -79,6 +79,7 @@ export const getArchiveGroupsSelector = state => (state[module].isLoading ? [] :
 export const getStudentsSelector = state => (state[module].isLoading ? [] : state[module].students);
 
 export const getLoadedGroupsSelector = state => state[module].loadedGroups;
+export const groupsLoadingSelector = state => state[module].isLoading;
 
 // fetch groups of that user
 function* fetchGroups() {

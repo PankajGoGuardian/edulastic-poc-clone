@@ -195,7 +195,7 @@ class QuestionModal extends React.Component {
       >
         {isVisibleModal && question && loaded && (
           <React.Fragment>
-            <QuestionWrapper>
+            <QuestionWrapper style={{ marginBottom: "5%" }}>
               <Question
                 record={question}
                 key={question.id}

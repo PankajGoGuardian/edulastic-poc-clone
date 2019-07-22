@@ -5,6 +5,7 @@ import { withTheme } from "styled-components";
 
 import { FlexContainer } from "@edulastic/common";
 
+import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { Subtitle } from "../../../styled/Subtitle";
 import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
@@ -55,6 +56,7 @@ const Group = ({
         onRemove={onRemoveInner(index)}
         useDragHandle
         columns={1}
+        imageDefaultWidth={IMAGE_RESPONSE_DEFAULT_WIDTH}
       />
     </div>
   </Fragment>

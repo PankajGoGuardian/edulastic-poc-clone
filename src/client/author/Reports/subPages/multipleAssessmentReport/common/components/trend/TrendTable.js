@@ -6,7 +6,7 @@ import { groupBy, map, capitalize } from "lodash";
 
 import { StyledTable, StyledCard, StyledH3 } from "../../../../../common/styled";
 
-import { getHSLFromRange1 } from "../../../../../common/util";
+import { getHSLFromRange1, stringCompare } from "../../../../../common/util";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { StyledCell } from "../styled";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
@@ -18,10 +18,6 @@ const compareByMap = {
   teacher: "teacherName",
   group: "groupName",
   student: "studentName"
-};
-
-const stringCompare = (a_string = "", b_string = "") => {
-  return a_string.toLowerCase().localeCompare(b_string.toLowerCase());
 };
 
 const getSorter = compareBy => {

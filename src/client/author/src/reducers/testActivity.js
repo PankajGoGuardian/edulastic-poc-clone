@@ -8,6 +8,8 @@ import {
   TOGGLE_PRESENTATION_MODE,
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
+  SET_IS_PAUSED,
+  UPDATE_STUDENT_ACTIVITY,
   UPDATE_REMOVED_STUDENTS_LIST,
   UPDATE_STUDENTS_LIST,
   UPDATE_CLASS_STUDENTS_LIST
@@ -193,6 +195,15 @@ const reducer = (state = initialState, { type, payload }) => {
         additionalData: {
           ...state.additionalData,
           canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId)
+        }
+      };
+
+    case SET_IS_PAUSED:
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          isPaused: payload
         }
       };
     case UPDATE_CLOSE_ASSIGNMENTS:

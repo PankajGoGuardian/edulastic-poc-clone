@@ -26,7 +26,7 @@ export const generateClassData = (
       _id,
       name: get(groupsData, `${_id}.name`, ""),
       assignedCount: get(groupsData, `${_id}.studentCount`, 0),
-      grade: get(groupsData, `${_id}.grade`, ""),
+      grade: get(groupsData, `${_id}.grades`, ""),
       subject: get(groupsData, `${_id}.subject`, ""),
       termId: get(groupsData, `${_id}.termId`, "")
     }));
@@ -45,7 +45,7 @@ export const generateClassData = (
           name: groupsData[classId].name,
           students: tempStudents,
           assignedCount: tempStudents.length,
-          grade: groupsData[classId].grade,
+          grade: groupsData[classId].grades,
           subject: groupsData[classId].subject,
           termId: groupsData[classId].termId
         };

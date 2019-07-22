@@ -106,7 +106,7 @@ class Review extends PureComponent {
 
     this.setSelected([]);
     setData(newData);
-    message.success("Selected testItems removed successfully");
+    message.success("Selected item(s) removed successfully");
   };
 
   handleCollapse = () => {
@@ -280,6 +280,9 @@ class Review extends PureComponent {
                   setSelected={this.setSelected}
                   selected={selected}
                   isEditable={isEditable}
+                  owner={owner}
+                  scoring={test.scoring}
+                  onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
                 />
               ) : (

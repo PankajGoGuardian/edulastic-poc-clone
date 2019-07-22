@@ -61,6 +61,14 @@ const markAbsent = ({ assignmentId, classId, students }) =>
     })
     .then(result => result.data);
 
+const togglePause = ({ assignmentId, classId, value }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${assignmentId}/toggle-pause?groupId=${classId}&value=${value}`
+    })
+    .then(result => result.data);
+
 const removeStudents = ({ assignmentId, classId, students }) =>
   api
     .callApi({
@@ -84,6 +92,7 @@ export default {
   testActivity,
   releaseScore,
   markAsDone,
+  togglePause,
   openAssignment,
   closeAssignment,
   markAbsent,

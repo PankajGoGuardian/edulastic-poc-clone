@@ -401,7 +401,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     yield call(message.success, "Item is saved as draft", 2);
 
     const alignments = yield select(getDictionariesAlignmentsSelector);
-    const { standards } = alignments[0];
+    const { standards = [] } = alignments[0];
     // to update recent standards used in local storage and store
     let recentStandardsList = yield select(getRecentStandardsListSelector);
     recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);

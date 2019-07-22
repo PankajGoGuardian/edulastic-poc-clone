@@ -124,6 +124,7 @@ export const desktopWidth = "992px";
 export const largeDesktopWidth = "1200px";
 export const extraDesktopWidth = "1440px";
 export const extraDesktopWidthMax = "1600px";
+export const mobileWidthMax = "767px";
 
 export const authorAssignment = {
   assignmentStatusBg: {

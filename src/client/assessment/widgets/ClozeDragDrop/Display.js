@@ -375,13 +375,11 @@ class ClozeDragDropDisplay extends Component {
     );
     const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
-
     return (
       <div style={{ fontSize }}>
         {showQuestionNumber && !flowLayout ? (
           <QuestionTitleWrapper>
             <QuestionNumber>{item.qLabel}</QuestionNumber>
-            <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
           </QuestionTitleWrapper>
         ) : null}
         <div>
@@ -399,8 +397,6 @@ class ClozeDragDropDisplay extends Component {
                   borderRadius: smallSize ? 0 : 10
                 }}
               >
-                <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-
                 {templateBoxLayoutContainer}
               </div>
               <div

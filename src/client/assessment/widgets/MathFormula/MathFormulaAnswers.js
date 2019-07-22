@@ -159,6 +159,15 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
+  const handleShowDropdown = v => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.showDropdown = v;
+        updateVariables(draft, latexKeys);
+      })
+    );
+  };
+
   return (
     <CorrectAnswers
       onTabChange={setCorrectTab}
@@ -175,6 +184,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
             item={item}
             onChange={handleChangeCorrectMethod}
             onChangeAllowedVars={handleAllowedVariables}
+            onChangeShowDropdown={handleShowDropdown}
             onAdd={handleAddCorrectMethod}
             onDelete={handleDeleteCorrectMethod}
             answer={item.validation.valid_response.value}
@@ -194,6 +204,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
                   item={item}
                   onChange={handleChangeAltMethod(i)}
                   onChangeAllowedVars={handleAllowedVariables}
+                  onChangeShowDropdown={handleShowDropdown}
                   onAdd={handleAddAltMethod(i)}
                   onDelete={handleDeleteAltMethod(i)}
                   answer={alter.value}

@@ -58,6 +58,7 @@ const MathFormulaAnswerMethod = ({
   handleChangeAdditionals,
   onChangeKeypad,
   onChangeAllowedVars,
+  onChangeShowDropdown,
   answer,
   onAdd,
   onAddIndex,
@@ -360,7 +361,13 @@ const MathFormulaAnswerMethod = ({
             span={index === 0 ? 12 : 11}
             style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 25 : 5 }}
           >
-            <UnitsDropdown item={item} options={options} onChange={changeOptions} keypadOffset={keypadOffset} />
+            <UnitsDropdown
+              item={item}
+              options={options}
+              onChange={changeOptions}
+              keypadOffset={keypadOffset}
+              onChangeShowDropdown={onChangeShowDropdown}
+            />
           </Col>
         )}
       </StyledRow>
@@ -434,6 +441,7 @@ const MathFormulaAnswerMethod = ({
 
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onChangeShowDropdown: PropTypes.func.isRequired,
   onChangeAllowedVars: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,

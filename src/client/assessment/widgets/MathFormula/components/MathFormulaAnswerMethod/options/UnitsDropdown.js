@@ -13,7 +13,17 @@ import { toggleAdvancedSections } from "../../../../../actions/questions";
 
 const { Option } = Select;
 
-const UnitsDropdownPure = ({ item, onChange, t, handleAdvancedOpen, keypadOffset, preview, selected, options }) => {
+const UnitsDropdownPure = ({
+  item,
+  onChange,
+  t,
+  handleAdvancedOpen,
+  keypadOffset,
+  preview,
+  selected,
+  options,
+  onChangeShowDropdown
+}) => {
   const [offset, updateOffset] = useState(keypadOffset);
   const handleChange = value => {
     if (preview) {
@@ -85,7 +95,7 @@ const UnitsDropdownPure = ({ item, onChange, t, handleAdvancedOpen, keypadOffset
             data-cy="answer-allowed-variables"
             checked={item.showDropdown}
             onChange={e => {
-              onChange("showDropdown", e.target.checked);
+              onChangeShowDropdown(e.target.checked);
             }}
           >
             {`${t("component.math.showDropdown")} ${item.showDropdown ? "dropdown" : "keypad"}`}
@@ -105,13 +115,15 @@ UnitsDropdownPure.propTypes = {
   keypadOffset: PropTypes.number,
   selected: PropTypes.string,
   preview: PropTypes.bool,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  onChangeShowDropdown: PropTypes.func
 };
 
 UnitsDropdownPure.defaultProps = {
   keypadOffset: 0,
   preview: false,
-  selected: ""
+  selected: "",
+  onChangeShowDropdown: () => null
 };
 
 const enhance = compose(

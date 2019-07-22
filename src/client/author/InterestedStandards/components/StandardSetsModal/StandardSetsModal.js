@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Form, Col, Select, Button, Modal, Input } from "antd";
+import { Form, Col, Select, Button, Modal, Input, Checkbox } from "antd";
 const Option = Select.Option;
 
 import { StyledRow, SubjectContainer, SubjectSelect } from "./styled";
-import CheckboxGroup from "antd/lib/checkbox/Group";
+import { StyledCheckbox } from "../Container/styled";
+import { FlexContainer } from "../../../../assessment/themes/common";
 
 class StandardSetsModal extends React.Component {
   constructor(props) {
@@ -11,8 +12,27 @@ class StandardSetsModal extends React.Component {
     this.state = {
       selSubject: "",
       searchStr: "",
+      updatedPrevStandards: false,
       selectedStandards: []
     };
+  }
+
+  componentDidUpdate(p, s) {
+    const { interestedStaData } = this.props;
+    const { updatedPrevStandards } = this.state;
+    let selectedStandards = [];
+    if (interestedStaData != null) {
+      if (
+        interestedStaData.hasOwnProperty("curriculums") &&
+        interestedStaData.curriculums.length > 0 &&
+        !updatedPrevStandards
+      ) {
+        selectedStandards = interestedStaData.curriculums.map(row => {
+          return row.name;
+        });
+        this.setState({ selectedStandards, updatedPrevStandards: true });
+      }
+    }
   }
 
   onConfirm = () => {
@@ -25,9 +45,12 @@ class StandardSetsModal extends React.Component {
   };
 
   changeStandards = e => {
-    this.setState({
-      selectedStandards: e
-    });
+    const { selectedStandards } = this.state;
+    if (selectedStandards.includes(e)) {
+      this.setState(prevState => ({ selectedStandards: prevState.selectedStandards.filter(o => o !== e) }));
+    } else {
+      this.setState(prevState => ({ selectedStandards: [...prevState.selectedStandards, e] }));
+    }
   };
 
   changeSubject = e => {
@@ -91,11 +114,17 @@ class StandardSetsModal extends React.Component {
         <StyledRow>
           <Col span={24}>
             <SubjectContainer>
-              <CheckboxGroup
-                onChange={this.changeStandards}
-                options={standardsSetNames}
-                defaultValue={selectedStandards}
-              />
+              {standardsSetNames.map(standardSetName => (
+                <FlexContainer>
+                  <StyledCheckbox
+                    onChange={() => this.changeStandards(standardSetName)}
+                    checked={this.state.selectedStandards.includes(standardSetName)}
+                    key={standardSetName}
+                  >
+                    {standardSetName}
+                  </StyledCheckbox>
+                </FlexContainer>
+              ))}
             </SubjectContainer>
           </Col>
         </StyledRow>

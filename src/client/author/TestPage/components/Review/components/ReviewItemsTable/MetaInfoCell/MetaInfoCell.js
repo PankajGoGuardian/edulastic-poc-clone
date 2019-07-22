@@ -32,8 +32,6 @@ const MetaInfoCell = ({
         {dok && <DokStyled>{`DOK:${dok}`}</DokStyled>}
         {renderAnalytics(by, IconUser)}
         {renderAnalytics(id && id.substring(18), IconHash)}
-        {renderAnalytics(shared, IconShare)}
-        {renderAnalytics(likes, IconHeart)}
         {audio && audio.hasOwnProperty("ttsSuccess") ? (
           <AudioIcon className="fa fa-volume-up" success={audio.ttsSuccess} />
         ) : (

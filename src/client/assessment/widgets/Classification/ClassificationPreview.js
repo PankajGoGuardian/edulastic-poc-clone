@@ -269,6 +269,7 @@ const ClassificationPreview = ({
                   isResizable={view === EDIT}
                   item={item}
                   disableResponse={disableResponse}
+                  isReviewTab={isReviewTab}
                 />
               )
           )}

@@ -58,7 +58,9 @@ class SummaryTest extends Component {
       return acc;
     }, null);
 
-    history.push(`/student/${assignmentItem.testType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`);
+    history.push(`/student/${assignmentItem.testType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`, {
+      fromSummary: true
+    });
   };
 
   render() {

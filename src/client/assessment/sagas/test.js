@@ -23,6 +23,7 @@ import { loadBookmarkAction } from "../sharedDucks/bookmark";
 import { setPasswordValidateStatusAction, setPasswordStatusAction } from "../actions/test";
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
+import { history } from "../../configureStore";
 
 const getQuestions = (testItems = []) => {
   const allQuestions = [];
@@ -65,7 +66,8 @@ function* loadTest({ payload }) {
       : call(testsApi.getPublicTest, testId);
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {
-      let passwordValidated = !testActivity.assignmentSettings.requirePassword;
+      const isFromSummary = history.location.state && history.location.state.fromSummary;
+      let passwordValidated = !testActivity.assignmentSettings.requirePassword || isFromSummary;
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));
       }

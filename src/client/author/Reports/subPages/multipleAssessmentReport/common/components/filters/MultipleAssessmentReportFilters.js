@@ -38,6 +38,7 @@ const SingleAssessmentReportFilters = ({
   onGoClick: _onGoClick,
   location,
   className,
+  history,
   style
 }) => {
   const [prevMARFilterData, setPrevMARFilterData] = useState(null);
@@ -63,8 +64,11 @@ const SingleAssessmentReportFilters = ({
   });
 
   useEffect(() => {
+    const search = queryString.parse(location.search);
+    const termId =
+      search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
     let q = {
-      termId: schoolYear.length ? schoolYear[0].key : ""
+      termId
     };
     getMARFilterDataRequestAction(q);
   }, []);
@@ -177,13 +181,36 @@ const SingleAssessmentReportFilters = ({
     );
   }, [MARFilterData, filters, testIds]);
 
+  // const updateSchoolYearDropDownCB = selected => {
+  //   let pathname = location.pathname;
+  //   let splitted = pathname.split("/");
+  //   splitted.splice(splitted.length - 1);
+  //   let newPathname = splitted.join("/") + "/";
+  //   let _filters = { ...filters };
+  //   _filters.termId = selected.key;
+  //   history.push(newPathname + "?" + queryString.stringify(_filters));
+
+  //   let q = {
+  //     termId: selected.key
+  //   };
+  //   setFiltersAction(q);
+  // };
+
   const updateSchoolYearDropDownCB = selected => {
-    let obj = {
-      ...filters,
+    let pathname = location.pathname;
+    let _filters = { ...filters };
+    _filters.termId = selected.key;
+    history.push(pathname + "?" + queryString.stringify(_filters));
+
+    console.log(pathname + "?" + queryString.stringify(_filters));
+
+    let q = {
       termId: selected.key
     };
-    setFiltersAction(obj);
+
+    getMARFilterDataRequestAction(q);
   };
+
   const updateSubjectDropDownCB = selected => {
     let obj = {
       filters: {

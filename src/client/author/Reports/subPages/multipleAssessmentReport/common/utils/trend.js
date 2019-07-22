@@ -1,8 +1,15 @@
 import next from "immer";
-import { groupBy, map, sumBy, forEach, find, round, head, values, filter, orderBy, ceil } from "lodash";
+import { groupBy, map, sumBy, forEach, find, round, head, values, filter, orderBy, ceil, maxBy } from "lodash";
 import { getOverallScore, filterAccordingToRole, getHSLFromRange1 } from "../../../../common/util";
 
 import dropDownData from "../static/json/dropDownData.json";
+
+export const compareByMap = {
+  school: "schoolName",
+  teacher: "teacherName",
+  group: "groupName",
+  student: "studentName"
+};
 
 const groupByCompareKey = (metricInfo, compareBy) => {
   switch (compareBy) {
@@ -54,8 +61,8 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
       return map(metricInfo, metric => {
         const firstTest = head(values(metric.tests)) || {};
         const firstRecord = head(firstTest.records || []) || {};
-        const { firstName = "", lastName = "" } = firstRecord;
-        return { ...metric, firstName, lastName, studentName: `${firstName} ${lastName}` };
+        const { firstName = "", lastName = "", groupId = "" } = firstRecord;
+        return { ...metric, firstName, lastName, studentName: `${firstName} ${lastName}`, groupId };
       });
     default:
       return [];
@@ -76,16 +83,6 @@ export const getProficiencyBand = (score, bandInfo, field = "threshold") => {
   return find(orderedScaleInfo, info => ceil(score) >= info[field]) || getLeastProficiencyBand(orderedScaleInfo);
 };
 
-export const augmentWithBand = (metricInfo = [], bandInfo = []) => {
-  return map(metricInfo, metric => {
-    return next(metric, draftMetric => {
-      forEach(draftMetric.tests, (test, testId) => {
-        draftMetric.tests[testId].proficiencyBand = getProficiencyBand(test.score, bandInfo);
-      });
-    });
-  });
-};
-
 export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], selectedTrend = "") => {
   const groupedMetric = groupByCompareKey(metricInfo, compareBy);
 
@@ -94,17 +91,18 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
     const tests = {};
 
     forEach(groupByTests, (value, key) => {
+      const maxStudents = maxBy(value, item => parseInt(item.studentCount || 0)) || {};
       tests[key] = {
         records: value,
         score: getOverallScore(value),
         rawScore: `${round(sumBy(value, "totalScore"), 2)} / ${sumBy(value, "maxScore")}`,
-        studentCount: sumBy(value, item => parseInt(item.studentCount || 0))
+        studentCount: parseInt(maxStudents.studentCount) || 0
       };
     });
 
     return {
       tests,
-      studentCount: sumBy(values(tests), "studentCount"),
+      studentCount: maxBy(values(tests), "studentCount").studentCount,
       id: metricId
     };
   });

@@ -1,18 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { get, head } from "lodash";
+import React, { useState } from "react";
+import { get, head, capitalize } from "lodash";
 import { connect } from "react-redux";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
+import { getReportsMARFilterData } from "../common/filterDataDucks";
+import { getUserRole } from "../../../../src/selectors/user";
 
-import { Placeholder } from "../../../common/components/loader";
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
-import { getReportsMARFilterData } from "../common/filterDataDucks";
-import { parseTrendData, augmentWithBand } from "../common/utils/trend";
+import { Placeholder } from "../../../common/components/loader";
 
 import dropDownData from "./static/json/dropDownData.json";
-// -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
-const bandInfo = [
+import tableColumns from "./static/json/tableColumns.json";
+
+import { usefetchProgressHook } from "../common/hooks";
+import { useGetBandData } from "./hooks";
+import { filterAccordingToRole } from "../../../common/util";
+import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
+
+const DefaultBandInfo = [
   {
     threshold: 70,
     aboveStandard: 1,
@@ -35,37 +41,22 @@ const compareBy = {
   title: "Student"
 };
 
-const usefetchProgressHook = (settings, fetchAction) => {
-  useEffect(() => {
-    const { requestFilters = {} } = settings;
-    const { termId = "" } = requestFilters;
-
-    if (termId) {
-      fetchAction(requestFilters);
-    }
-  }, [settings]);
-};
-
 const StudentProgress = ({
   getStudentProgressRequestAction,
   studentProgress,
   MARFilterData,
   settings,
   loading,
-  bandInfo
+  role
 }) => {
+  usefetchProgressHook(settings, getStudentProgressRequestAction);
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
   const [selectedTrend, setSelectedTrend] = useState("");
 
-  usefetchProgressHook(settings, getStudentProgressRequestAction);
-
   const { metricInfo = [] } = get(studentProgress, "data.result", {});
-  const { orgData = [], testData = [] } = get(MARFilterData, "data.result", []);
+  const { orgData = [], testData = [], bandInfo = DefaultBandInfo } = get(MARFilterData, "data.result", {});
+  const [data, trendCount] = useGetBandData(metricInfo, compareBy.key, orgData, selectedTrend, bandInfo);
 
-  const [parsedData, trendCount] = parseTrendData(metricInfo, compareBy.key, orgData, selectedTrend);
-  const dataWithBand = augmentWithBand(parsedData, bandInfo);
-
-  const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
   if (loading) {
     return (
       <>
@@ -75,16 +66,41 @@ const StudentProgress = ({
     );
   }
 
+  const customTableColumns = filterAccordingToRole(tableColumns, role);
+
+  const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
+
   return (
     <>
-      <TrendStats trendCount={trendCount} selectedTrend={selectedTrend} onTrendSelect={onTrendSelect} />
+      <TrendStats
+        heading="How well are students progressing ?"
+        trendCount={trendCount}
+        selectedTrend={selectedTrend}
+        onTrendSelect={onTrendSelect}
+        renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
+      />
       <TrendTable
-        data={dataWithBand}
+        data={data}
         testData={testData}
         compareBy={compareBy}
         analyseBy={analyseBy}
         rawMetric={metricInfo}
-        renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
+        customColumns={customTableColumns}
+        toolTipContent={(record, columnValue) => {
+          return (
+            <>
+              <TableTooltipRow title={`Student Name : `} value={record.studentName} />
+              {role === "teacher" ? (
+                <TableTooltipRow title={`Class Name : `} value={record.groupName} />
+              ) : (
+                <>
+                  <TableTooltipRow title={`School Name : `} value={record.schoolName} />
+                  <TableTooltipRow title={`Teacher Name : `} value={record.teacherName} />
+                </>
+              )}
+            </>
+          );
+        }}
       />
     </>
   );
@@ -94,8 +110,8 @@ const enhance = connect(
   state => ({
     studentProgress: getReportsStudentProgress(state),
     loading: getReportsStudentProgressLoader(state),
-    bandInfo,
-    MARFilterData: getReportsMARFilterData(state)
+    MARFilterData: getReportsMARFilterData(state),
+    role: getUserRole(state)
   }),
   {
     getStudentProgressRequestAction
@@ -103,5 +119,3 @@ const enhance = connect(
 );
 
 export default enhance(StudentProgress);
-
-// -----|-----|-----|-----|-----| COMPONENT ENDED |-----|-----|-----|-----|----- //

@@ -12,8 +12,10 @@ import { themes } from "../../themes";
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
 import { getAssignmentsSelector } from "../../Assignments/ducks";
-import { receiveTestActivitydAction } from "../../../author/src/actions/classBoard";
+import { loadTestAction } from "../../../assessment/actions/test";
+import { test } from "@edulastic/constants";
 
+const { ASSESSMENT, PRACTICE } = test.type;
 class SummaryTest extends Component {
   constructor(props) {
     super(props);
@@ -24,15 +26,16 @@ class SummaryTest extends Component {
   }
 
   componentDidMount() {
-    const {
-      loadTestActivity,
-      assignments,
-      test: { testId }
-    } = this.props;
-    if (!testId || isEmpty(assignments)) return;
-    const [assignment] = assignments.filter(item => item.testId === testId);
-
-    loadTestActivity(assignment._id, assignment.class[0]._id);
+    const { loadTest, history, match, questionList } = this.props;
+    const { utaId: testActivityId, id: testId, assessmentType } = match.params;
+    if (assessmentType === ASSESSMENT || assessmentType === PRACTICE) {
+      const { allQids } = questionList;
+      if (allQids.length === 0) {
+        loadTest({ testId, testActivityId });
+      }
+    } else {
+      history.push("/home/assignments");
+    }
   }
 
   handlerButton = buttonIdx => {
@@ -50,17 +53,15 @@ class SummaryTest extends Component {
   };
 
   goToQuestion = (testId, testActivityId, q) => () => {
-    const { history, assignments, items, assignmentId } = this.props;
-
-    const [assignmentItem] = assignments.filter(item => item._id === assignmentId);
+    const { history, items, match } = this.props;
+    const { assessmentType } = match.params;
     const targetItemIndex = items.reduce((acc, item, index) => {
       if (item.data.questions.some(({ id }) => id === q)) acc = index;
       return acc;
     }, null);
 
-    history.push(`/student/${assignmentItem.testType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`, {
-      fromSummary: true
-    });
+    history.push(`/student/${assessmentType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`, {fromSummary: true});
+
   };
 
   render() {
@@ -128,6 +129,7 @@ class SummaryTest extends Component {
                 <QuestionBlock>
                   {questions.map((q, index) => (
                     <QuestionColorBlock
+                      key={index}
                       type={questionList[q]}
                       isVisible={buttonIdx === null || buttonIdx === questionList[q]}
                       onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
@@ -181,7 +183,7 @@ const enhance = compose(
       classId: get(state, "author_classboard_testActivity.classId", "")
     }),
     {
-      loadTestActivity: receiveTestActivitydAction
+      loadTest: loadTestAction
     }
   )
 );

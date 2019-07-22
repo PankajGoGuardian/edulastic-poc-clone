@@ -5,15 +5,17 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import React from "react";
 import { withNamespaces } from "@edulastic/localization";
+import { extraDesktopWidthMax } from "@edulastic/colors";
 
-//actions
-
-import { setFilterAction } from "../../sharedDucks/AssignmentModule/ducks";
 // actions
+import { setFilterAction } from "../../sharedDucks/AssignmentModule/ducks";
 import { filterSelector, FILTERS } from "../ducks";
 
 // components
 import Breadcrumb from "../../sharedComponents/Breadcrumb";
+
+// styled components
+import { BreadcrumbWrapper } from "../../styled";
 
 const breadcrumbData = [{ title: "ACTIVE ASSIGNMENTS", to: "" }];
 
@@ -21,22 +23,20 @@ const AssignmentSubHeader = ({ t, setFilter, filter }) => {
   const filterItems = Object.keys(FILTERS);
 
   const Filter = ({ value }) => (
-    <FilterBtn data-cy={value} onClick={() => setFilter(FILTERS[value])} enabled={FILTERS[value] == filter}>
+    <FilterBtn data-cy={value} onClick={() => setFilter(FILTERS[value])} enabled={FILTERS[value] === filter}>
       {t(FILTERS[value])}
     </FilterBtn>
   );
 
   return (
-    <Wrapper>
-      <BreadcrumbWrapper>
-        <Breadcrumb data={breadcrumbData} />
-      </BreadcrumbWrapper>
+    <BreadcrumbWrapper>
+      <Breadcrumb data={breadcrumbData} />
       <StatusBtnsContainer>
         {filterItems.map((value, i) => (
           <Filter key={i} index={i} value={value} />
         ))}
       </StatusBtnsContainer>
-    </Wrapper>
+    </BreadcrumbWrapper>
   );
 };
 
@@ -60,36 +60,13 @@ AssignmentSubHeader.propTypes = {
   setFilter: PropTypes.func.isRequired
 };
 
-const Wrapper = styled.div`
-  display: flex;
-  margin-top: 24px;
-  justify-content: space-between;
-  margin-left: 30px;
-  margin-right: 40px;
-  @media screen and (max-width: 992px) {
-    flex-direction: column;
-  }
-`;
-
 const StatusBtnsContainer = styled.div`
   @media screen and (max-width: 992px) {
-    margin-top: 20px;
+    margin-top: 10px;
     position: relative;
     display: flex;
     flex-direction: row;
     overflow: auto;
-  }
-`;
-
-const BreadcrumbWrapper = styled.div`
-  .ant-breadcrumb-link {
-    color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
-    font-size: ${props => props.theme.breadcrumbs.breadcrumbTextSize};
-    text-transform: uppercase;
-    font-weight: 600;
-    a {
-      color: ${props => props.theme.breadcrumbs.breadcrumbLinkColor};
-    }
   }
 `;
 

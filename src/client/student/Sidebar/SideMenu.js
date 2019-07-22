@@ -435,7 +435,7 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 9px 0px 10px;
+  padding: 5px 0px 10px;
   min-height: calc(100% - 100px);
 
   @media (max-width: ${tabletWidth}) {
@@ -499,7 +499,7 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    height: 48px;
+    height: 38px;
     padding: 10px 39px !important;
     max-width: 100%;
     
@@ -513,7 +513,7 @@ const Menu = styled(AntMenu)`
     justify-content: center;
     margin-top: 14px;
     padding: 10px 18px !important;
-    height: 48px;
+    height: 38px;
     width: 100%;
   }
   &.ant-menu-inline > .ant-menu-item {

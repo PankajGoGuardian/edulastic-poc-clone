@@ -26,10 +26,13 @@ class SummaryTest extends Component {
   }
 
   componentDidMount() {
-    const { loadTest, history, match } = this.props;
+    const { loadTest, history, match, questionList } = this.props;
     const { utaId: testActivityId, id: testId, assessmentType } = match.params;
     if (assessmentType === ASSESSMENT || assessmentType === PRACTICE) {
-      loadTest({ testId, testActivityId });
+      const { allQids } = questionList;
+      if (allQids.length === 0) {
+        loadTest({ testId, testActivityId });
+      }
     } else {
       history.push("/home/assignments");
     }
@@ -125,6 +128,7 @@ class SummaryTest extends Component {
                 <QuestionBlock>
                   {questions.map((q, index) => (
                     <QuestionColorBlock
+                      key={index}
                       type={questionList[q]}
                       isVisible={buttonIdx === null || buttonIdx === questionList[q]}
                       onClick={this.goToQuestion(test.testId, test.testActivityId, q)}

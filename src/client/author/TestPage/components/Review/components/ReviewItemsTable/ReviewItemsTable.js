@@ -69,6 +69,7 @@ const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, is
       likes: 9,
       type: getQuestionType(item),
       points: getPoints(item),
+      item,
       standards: standards[item._id],
       audio: audioStatus(item),
       dok:

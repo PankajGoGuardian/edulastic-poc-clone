@@ -10,19 +10,25 @@ import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getStandardsSelector } from "../../ducks";
 import { getQuestionType } from "../../../../../dataUtils";
 
-const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, isEditable }) => {
+const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, isEditable, owner, onChangePoints }) => {
   const columns = [
     {
       title: "Main info",
-      dataIndex: "main",
+      dataIndex: "data",
+      width: "100%",
       key: "main",
-      render: data => <MainInfoCell data={data} handlePreview={handlePreview} />
-    },
-    {
-      title: "Meta info",
-      dataIndex: "meta",
-      key: "meta",
-      render: data => <MetaInfoCell data={data} itemTableView={false} />
+      render: data => (
+        <>
+          <MainInfoCell
+            data={data.main}
+            handlePreview={handlePreview}
+            isEditable={isEditable}
+            owner={owner}
+            onChangePoints={onChangePoints}
+          />
+          <MetaInfoCell data={data.meta} />
+        </>
+      )
     }
   ];
   const getPoints = item => {
@@ -52,6 +58,7 @@ const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, is
   const data = items.map((item, i) => {
     const main = {
       id: item._id,
+      points: getPoints(item),
       title: item._id
     };
 
@@ -73,9 +80,11 @@ const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, is
     }
 
     return {
-      key: i,
-      main,
-      meta
+      data: {
+        key: i,
+        main,
+        meta
+      }
     };
   });
 

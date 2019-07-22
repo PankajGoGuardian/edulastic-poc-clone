@@ -13,11 +13,16 @@ import { toggleAdvancedSections } from "../../../../../actions/questions";
 
 const { Option } = Select;
 
-const UnitsDropdownPure = ({ item, showDropdown, onChange, t, handleAdvancedOpen, keypadOffset }) => {
+const UnitsDropdownPure = ({ item, onChange, t, handleAdvancedOpen, keypadOffset, preview, selected, options }) => {
   const [offset, updateOffset] = useState(keypadOffset);
   const handleChange = value => {
-    onChange("unit", value);
+    if (preview) {
+      onChange(value);
+    } else {
+      onChange("unit", value);
+    }
   };
+
   const scrollToKeypad = () => {
     window.scrollTo({
       top: keypadOffset - 115,
@@ -66,7 +71,7 @@ const UnitsDropdownPure = ({ item, showDropdown, onChange, t, handleAdvancedOpen
   return (
     <FlexContainer alignItems="center" justifyContent="flex-start">
       {item.showDropdown && (
-        <UniteSelet value={item.unit} onChange={handleChange}>
+        <UniteSelet value={preview ? selected : options ? options.unit : ""} onChange={handleChange}>
           {allBtns.map((btn, i) => (
             <Option value={btn.handler} key={i}>
               {getLabel(btn.handler)}
@@ -74,33 +79,39 @@ const UnitsDropdownPure = ({ item, showDropdown, onChange, t, handleAdvancedOpen
           ))}
         </UniteSelet>
       )}
-      <FlexContainer flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
-        <Checkbox
-          data-cy="answer-allowed-variables"
-          checked={showDropdown}
-          onChange={e => {
-            onChange("showDropdown", e.target.checked);
-          }}
-        >
-          {`${t("component.math.showDropdown")} ${showDropdown ? "dropdown" : "keypad"}`}
-        </Checkbox>
-        <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
-      </FlexContainer>
+      {!preview && (
+        <FlexContainer flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
+          <Checkbox
+            data-cy="answer-allowed-variables"
+            checked={item.showDropdown}
+            onChange={e => {
+              onChange("showDropdown", e.target.checked);
+            }}
+          >
+            {`${t("component.math.showDropdown")} ${item.showDropdown ? "dropdown" : "keypad"}`}
+          </Checkbox>
+          <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
+        </FlexContainer>
+      )}
     </FlexContainer>
   );
 };
 
 UnitsDropdownPure.propTypes = {
-  showDropdown: PropTypes.bool,
+  handleAdvancedOpen: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
-  keypadOffset: PropTypes.number.isRequired,
-  handleAdvancedOpen: PropTypes.object.isRequired,
+  options: PropTypes.object.isRequired,
+  keypadOffset: PropTypes.number,
+  selected: PropTypes.string,
+  preview: PropTypes.bool,
   t: PropTypes.func.isRequired
 };
 
 UnitsDropdownPure.defaultProps = {
-  showDropdown: false
+  keypadOffset: 0,
+  preview: false,
+  selected: ""
 };
 
 const enhance = compose(

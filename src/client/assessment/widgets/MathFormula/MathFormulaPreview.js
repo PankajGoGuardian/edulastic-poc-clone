@@ -3,12 +3,14 @@ import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { isEmpty, get } from "lodash";
 
-import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay } from "@edulastic/common";
+import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay, FlexContainer } from "@edulastic/common";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
 import CorrectAnswerBox from "./components/CorrectAnswerBox/index";
 import MathInputStatus from "./components/MathInputStatus/index";
+import { UnitsDropdown } from "./components/MathFormulaAnswerMethod/options";
+
 import MathInputWrapper from "./styled/MathInputWrapper";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
@@ -25,6 +27,7 @@ class MathFormulaPreview extends Component {
     saveAnswer: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     userAnswer: PropTypes.any,
+    disableResponse: PropTypes.bool.isRequired,
     testItem: PropTypes.bool,
     theme: PropTypes.object.isRequired,
     showQuestionNumber: PropTypes.bool
@@ -40,7 +43,8 @@ class MathFormulaPreview extends Component {
   studentRef = React.createRef();
 
   state = {
-    innerValues: []
+    innerValues: [],
+    unit: ""
   };
 
   constructor(props) {
@@ -108,11 +112,6 @@ class MathFormulaPreview extends Component {
   onUserResponse(latexv) {
     const { saveAnswer } = this.props;
     // if (previewType === CHECK) return;
-    if (this.isStatic()) {
-      saveAnswer(latexv);
-      return;
-    }
-
     saveAnswer(latexv);
   }
 
@@ -150,6 +149,11 @@ class MathFormulaPreview extends Component {
     }
   }
 
+  selectUnitFromDropdown = unit => {
+    this.setState({ unit });
+    console.log(unit);
+  };
+
   get restrictKeys() {
     const { item } = this.props;
     const { allowedVariables } = item;
@@ -167,7 +171,7 @@ class MathFormulaPreview extends Component {
       theme,
       disableResponse
     } = this.props;
-    const { innerValues } = this.state;
+    const { innerValues, unit } = this.state;
 
     const latex = this.getValidLatex(this.props);
 
@@ -203,47 +207,52 @@ class MathFormulaPreview extends Component {
         {testItem && <MathDisplay template={studentTemplate} innerValues={testItemCorrectValues} />}
 
         {!testItem && (
-          <MathInputWrapper>
-            {this.isStatic() && (
-              <StaticMath
-                symbols={item.symbols}
-                restrictKeys={this.restrictKeys}
-                customKeys={customKeys}
-                numberPad={item.numberPad}
-                ref={this.studentRef}
-                onInput={latexv => this.onUserResponse(latexv)}
-                onBlur={latexv => this.onBlur(latexv)}
-                style={{ background: statusColor, ...cssStyles }}
-                latex={studentTemplate}
-                innerValues={innerValues}
-                onInnerFieldClick={() => this.onInnerFieldClick()}
-              />
-            )}
-            {!this.isStatic() && !disableResponse && (
-              <MathInput
-                symbols={item.symbols}
-                restrictKeys={this.restrictKeys}
-                customKeys={customKeys}
-                numberPad={item.numberPad}
-                value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
-                onInput={latexv => this.onUserResponse(latexv)}
-                onBlur={latexv => this.onBlur(latexv)}
-                disabled={evaluation && !evaluation.some(ie => ie)}
-                onInnerFieldClick={() => this.onInnerFieldClick()}
-                style={{ background: statusColor, ...cssStyles }}
-              />
-            )}
-            {!this.isStatic() && disableResponse && (
-              <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
-                <MathSpanWrapper
-                  latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+          <FlexContainer alignItems="flex-start" justifyContent="flex-start">
+            <MathInputWrapper>
+              {this.isStatic() && (
+                <StaticMath
+                  symbols={item.symbols}
+                  restrictKeys={this.restrictKeys}
+                  customKeys={customKeys}
+                  numberPad={item.numberPad}
+                  ref={this.studentRef}
+                  onInput={latexv => this.onUserResponse(latexv)}
+                  onBlur={latexv => this.onBlur(latexv)}
+                  style={{ background: statusColor, ...cssStyles }}
+                  latex={studentTemplate}
+                  innerValues={innerValues}
+                  onInnerFieldClick={() => this.onInnerFieldClick()}
                 />
-              </MathInputSpan>
+              )}
+              {!this.isStatic() && !disableResponse && (
+                <MathInput
+                  symbols={item.symbols}
+                  restrictKeys={this.restrictKeys}
+                  customKeys={customKeys}
+                  numberPad={item.numberPad}
+                  value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+                  onInput={latexv => this.onUserResponse(latexv)}
+                  onBlur={latexv => this.onBlur(latexv)}
+                  disabled={evaluation && !evaluation.some(ie => ie)}
+                  onInnerFieldClick={() => this.onInnerFieldClick()}
+                  style={{ background: statusColor, ...cssStyles }}
+                />
+              )}
+              {!this.isStatic() && disableResponse && (
+                <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
+                  <MathSpanWrapper
+                    latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+                  />
+                </MathInputSpan>
+              )}
+              {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+                <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+              )}
+            </MathInputWrapper>
+            {item.isUnits && (
+              <UnitsDropdown item={item} onChange={this.selectUnitFromDropdown} preview selected={unit} />
             )}
-            {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
-              <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
-            )}
-          </MathInputWrapper>
+          </FlexContainer>
         )}
 
         {!testItem && previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (

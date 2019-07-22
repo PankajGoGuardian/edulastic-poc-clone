@@ -16,5 +16,6 @@ export const userPickFields = [
   "middleName",
   "msoId",
   "orgData",
-  "role"
+  "role",
+  "title"
 ];

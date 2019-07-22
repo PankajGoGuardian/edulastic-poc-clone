@@ -15,7 +15,7 @@ function collectSource(connector, monitor) {
 
 const specSource = {
   canDrag(props) {
-    return props.disableResponse ? !props.disableResponse : true;
+    return !props.disableResponse;
   },
 
   beginDrag(props) {

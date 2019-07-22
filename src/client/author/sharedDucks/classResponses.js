@@ -104,8 +104,13 @@ function* receiveFeedbackResponseSaga({ payload }) {
       body: { groupId, score, feedback }
     } = payload;
 
-    const feedbackResponse = yield;
-    call(testActivityApi.updateQuestionFeedBack, { testActivityId, questionId, feedback, groupId, itemId });
+    const feedbackResponse = yield call(testActivityApi.updateQuestionFeedBack, {
+      testActivityId,
+      questionId,
+      feedback,
+      groupId,
+      itemId
+    });
 
     yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId } });
 

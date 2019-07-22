@@ -17,21 +17,21 @@ class StandardSetsModal extends React.Component {
     };
   }
 
-  componentDidUpdate(p, s) {
-    const { interestedStaData } = this.props;
-    const { updatedPrevStandards } = this.state;
+  // setting the previous standards first time
+  static getDerivedStateFromProps(props, prevState) {
+    const { interestedStaData } = props;
+    const { updatedPrevStandards } = prevState;
     let selectedStandards = [];
-    if (interestedStaData != null) {
-      if (
-        interestedStaData.hasOwnProperty("curriculums") &&
-        interestedStaData.curriculums.length > 0 &&
-        !updatedPrevStandards
-      ) {
-        selectedStandards = interestedStaData.curriculums.map(row => {
-          return row.name;
-        });
-        this.setState({ selectedStandards, updatedPrevStandards: true });
-      }
+    if (
+      interestedStaData != null &&
+      interestedStaData.hasOwnProperty("curriculums") &&
+      interestedStaData.curriculums.length > 0 &&
+      !updatedPrevStandards
+    ) {
+      selectedStandards = interestedStaData.curriculums.map(row => {
+        return row.name;
+      });
+      return { selectedStandards, updatedPrevStandards: true };
     }
   }
 
@@ -72,15 +72,6 @@ class StandardSetsModal extends React.Component {
     const standardsSetNames = filteredStandardList.map(row => {
       return row.curriculum;
     });
-
-    let selectedStandards = [];
-    if (interestedStaData != null) {
-      if (interestedStaData.hasOwnProperty("curriculums")) {
-        selectedStandards = interestedStaData.curriculums.map(row => {
-          return row.name;
-        });
-      }
-    }
 
     return (
       <Modal

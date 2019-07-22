@@ -495,7 +495,7 @@ class AxisSegmentsContainer extends PureComponent {
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
-          <div style={{ position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
             <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
           </div>

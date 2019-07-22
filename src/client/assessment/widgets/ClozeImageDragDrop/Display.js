@@ -337,9 +337,7 @@ class Display extends Component {
     } = this.props;
 
     const questionId = item && item.id;
-    const {
-      responseLayout: { isWrapText = false }
-    } = item;
+    const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
     const cAnswers = get(item, "validation.valid_response.value", []);
 

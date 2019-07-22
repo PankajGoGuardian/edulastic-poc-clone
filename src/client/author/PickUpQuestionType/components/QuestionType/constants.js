@@ -1878,7 +1878,9 @@ export const getCards = onSelectQuestionType => {
         is_math: true,
         stimulus: "",
         template: `${EMBED_RESPONSE} = 1m`,
+        isUnits: true,
         templateDisplay: false,
+        showDropdown: false,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
@@ -1920,7 +1922,7 @@ export const getCards = onSelectQuestionType => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["units_si", "units_us", "qwerty"],
+        symbols: ["units_us", "units_si", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType

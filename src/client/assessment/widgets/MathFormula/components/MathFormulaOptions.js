@@ -26,7 +26,8 @@ class MathFormulaOptions extends Component {
       item,
       fillSections,
       cleanSections,
-      advancedAreOpen
+      advancedAreOpen,
+      setKeyPadOffest
     } = this.props;
 
     const changeCustomKey = ({ index, value }) => {
@@ -78,6 +79,7 @@ class MathFormulaOptions extends Component {
 
         <KeyPadOptions
           onChange={onChange}
+          setKeyPadOffest={setKeyPadOffest}
           item={item}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
@@ -106,6 +108,7 @@ class MathFormulaOptions extends Component {
 MathFormulaOptions.propTypes = {
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  setKeyPadOffest: PropTypes.func.isRequired,
   responseContainers: PropTypes.array,
   t: PropTypes.func.isRequired,
   customKeys: PropTypes.array,

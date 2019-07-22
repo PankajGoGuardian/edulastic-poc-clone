@@ -45,7 +45,7 @@ export default class KeyPad extends React.Component {
             }
 
             return btn;
-          }).filter(btn => btn.types.includes(symbol));
+          }).filter(btn => btn.types.includes(isObject(symbol) ? symbol.label : symbol));
     return customKeysBtns.concat(defaultKeys);
   };
 

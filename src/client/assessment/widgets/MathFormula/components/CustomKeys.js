@@ -43,7 +43,7 @@ class CustomKeys extends Component {
 
         <Row gutter={32}>
           {blocks.map((block, index) => (
-            <Col style={{ marginBottom: 15 }} span={12}>
+            <Col style={{ marginBottom: 15 }} span={12} key={index}>
               <FlexContainer>
                 <Input
                   style={{ width: "100%" }}

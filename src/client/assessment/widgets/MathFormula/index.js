@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo } from "react";
+import React, { Fragment, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { compose } from "redux";
@@ -42,6 +42,7 @@ const MathFormula = ({
   changePreview,
   ...restProps
 }) => {
+  const [keypadOffset, setOffset] = useState(0);
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
   const handleItemChangeChange = (prop, uiStyle) => {
@@ -76,6 +77,7 @@ const MathFormula = ({
           <MathFormulaAnswers
             item={item}
             setQuestionData={setQuestionData}
+            keypadOffset={keypadOffset}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
@@ -89,6 +91,7 @@ const MathFormula = ({
             instructorStimulus={item.instructor_stimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
+            setKeyPadOffest={setOffset}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />

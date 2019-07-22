@@ -36,19 +36,21 @@ const defaultNumberPad = [
 ];
 class KeyPadOptions extends Component {
   componentDidMount = () => {
-    const { fillSections, t } = this.props;
+    const { fillSections, t, setKeyPadOffest } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
     fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
+    setKeyPadOffest(node.offsetTop);
   };
 
   componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
+    const { advancedAreOpen, fillSections, t, setKeyPadOffest } = this.props;
 
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
       fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
+      setKeyPadOffest(node.offsetTop);
     }
   }
 
@@ -189,6 +191,7 @@ KeyPadOptions.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  setKeyPadOffest: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func

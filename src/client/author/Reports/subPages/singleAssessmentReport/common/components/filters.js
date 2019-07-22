@@ -17,7 +17,10 @@ import {
   getFiltersSelector,
   setFiltersAction,
   getTestIdSelector,
-  setTestIdAction
+  setTestIdAction,
+  getReportsPrevSARFilterData,
+  setPrevSARFilterDataAction,
+  getReportsSARFilterLoadingState
 } from "../filterDataDucks";
 import { getUserRole } from "../../../../../src/selectors/user";
 import { getUser } from "../../../../../src/selectors/user";
@@ -50,10 +53,11 @@ const SingleAssessmentReportFilters = ({
   location,
   className,
   style,
-  history
+  history,
+  setPrevSARFilterDataAction,
+  prevSARFilterData,
+  loading
 }) => {
-  const [prevSARFilterData, setPrevSARFilterData] = useState(null);
-
   const getTitleByTestId = testId => {
     let arr = get(SARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
@@ -76,13 +80,15 @@ const SingleAssessmentReportFilters = ({
   });
 
   useEffect(() => {
-    const search = queryString.parse(location.search);
-    const termId =
-      search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
-    let q = {
-      termId
-    };
-    getSARFilterDataRequestAction(q);
+    if (SARFilterData !== prevSARFilterData) {
+      const search = queryString.parse(location.search);
+      const termId =
+        search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
+      let q = {
+        termId
+      };
+      getSARFilterDataRequestAction(q);
+    }
   }, []);
 
   let processedTestIds;
@@ -168,7 +174,7 @@ const SingleAssessmentReportFilters = ({
       filters: urlParams
     });
 
-    setPrevSARFilterData(SARFilterData);
+    setPrevSARFilterDataAction(SARFilterData);
   }
 
   dropDownData = useMemo(() => filteredDropDownData(SARFilterData, user, { ...filters }), [SARFilterData, filters]);
@@ -393,12 +399,15 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       testId: getTestIdSelector(state),
       role: getUserRole(state),
-      user: getUser(state)
+      user: getUser(state),
+      prevSARFilterData: getReportsPrevSARFilterData(state),
+      loading: getReportsSARFilterLoadingState(state)
     }),
     {
       getSARFilterDataRequestAction: getSARFilterDataRequestAction,
       setFiltersAction: setFiltersAction,
-      setTestIdAction: setTestIdAction
+      setTestIdAction: setTestIdAction,
+      setPrevSARFilterDataAction
     }
   )
 );

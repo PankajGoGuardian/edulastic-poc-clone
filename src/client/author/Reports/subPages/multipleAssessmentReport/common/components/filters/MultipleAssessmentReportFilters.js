@@ -181,28 +181,11 @@ const SingleAssessmentReportFilters = ({
     );
   }, [MARFilterData, filters, testIds]);
 
-  // const updateSchoolYearDropDownCB = selected => {
-  //   let pathname = location.pathname;
-  //   let splitted = pathname.split("/");
-  //   splitted.splice(splitted.length - 1);
-  //   let newPathname = splitted.join("/") + "/";
-  //   let _filters = { ...filters };
-  //   _filters.termId = selected.key;
-  //   history.push(newPathname + "?" + queryString.stringify(_filters));
-
-  //   let q = {
-  //     termId: selected.key
-  //   };
-  //   setFiltersAction(q);
-  // };
-
   const updateSchoolYearDropDownCB = selected => {
     let pathname = location.pathname;
     let _filters = { ...filters };
     _filters.termId = selected.key;
     history.push(pathname + "?" + queryString.stringify(_filters));
-
-    console.log(pathname + "?" + queryString.stringify(_filters));
 
     let q = {
       termId: selected.key

@@ -107,9 +107,12 @@ class Layout extends Component {
       const { responseIDs } = this.props;
       const ind = responsecontainerindividuals.length;
       const response = responseIDs.find(resp => resp.index === ind);
+      if (!response) {
+        return;
+      }
       responsecontainerindividuals.push({
-        id: !!response ? response.id : "",
-        index: !!response ? response.index : "",
+        id: response.id,
+        index: response.index,
         widthpx: 0,
         heightpx: 0,
         wordwrap: false

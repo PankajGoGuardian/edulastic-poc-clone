@@ -11,7 +11,9 @@ import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi } from "@edulastic/api";
+import { white } from "@edulastic/colors";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
+import DragScrollContainer from "../../../../../assessment/components/DragScrollContainer";
 import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
@@ -23,7 +25,8 @@ class PreviewModal extends React.Component {
     super(props);
 
     this.state = {
-      flag: false
+      flag: false,
+      scrollElement: null
     };
   }
 
@@ -71,6 +74,12 @@ class PreviewModal extends React.Component {
     clearAnswers();
   };
 
+  mountedQuestion = node => {
+    if (node) {
+      this.setState({ scrollElement: node });
+    }
+  };
+
   render() {
     const {
       isVisible,
@@ -84,6 +93,7 @@ class PreviewModal extends React.Component {
       preview,
       showEvaluationButtons
     } = this.props;
+    const { scrollElement } = this.state;
     const questions = keyBy(get(item, "data.questions", []), "id");
     const { authors = [], rows, data = {} } = item;
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
@@ -104,9 +114,9 @@ class PreviewModal extends React.Component {
         <HeadingWrapper>
           <Title>Preview</Title>
         </HeadingWrapper>
-        <QuestionWrapper padding="0px">
+        <ModalContentArea>
           {showEvaluationButtons && (
-            <FlexContainer padding="15px 15px 0px" justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
+            <ButtonsContainer>
               <ButtonsWrapper>
                 {allowDuplicate && (
                   <EduButton
@@ -138,24 +148,27 @@ class PreviewModal extends React.Component {
                 )}
                 <Button onClick={this.clearView}> Clear </Button>
               </ButtonsWrapper>
-            </FlexContainer>
+            </ButtonsContainer>
           )}
-          {loading || item === null ? (
-            <ProgressContainer>
-              <Spin tip="" />
-            </ProgressContainer>
-          ) : (
-            <TestItemPreview
-              cols={rows}
-              preview={preview}
-              previewTab={preview}
-              verticalDivider={item.verticalDivider}
-              scrolling={item.scrolling}
-              style={{ width: "100%" }}
-              questions={questions}
-            />
-          )}
-        </QuestionWrapper>
+          {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} height={50} />}
+          <QuestionWrapper padding="0px" innerRef={this.mountedQuestion}>
+            {loading || item === null ? (
+              <ProgressContainer>
+                <Spin tip="" />
+              </ProgressContainer>
+            ) : (
+              <TestItemPreview
+                cols={rows}
+                preview={preview}
+                previewTab={preview}
+                verticalDivider={item.verticalDivider}
+                scrolling={item.scrolling}
+                style={{ width: "100%" }}
+                questions={questions}
+              />
+            )}
+          </QuestionWrapper>
+        </ModalContentArea>
       </PreviewModalWrapper>
     );
   }
@@ -238,6 +251,18 @@ const Title = styled.div`
   font-size: 20px;
 `;
 
+const ModalContentArea = styled.div`
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+`;
+
+const ButtonsContainer = styled(FlexContainer)`
+  background: ${white};
+  padding: 15px 15px 0px;
+  justify-content: flex-end;
+  flex-basis: 400px;
+  border-radius: 10px 10px 0px 0px;
+`;
+
 const ButtonsWrapper = styled.div`
   display: flex;
   margin-left: auto;
@@ -248,8 +273,9 @@ const ButtonsWrapper = styled.div`
 `;
 
 const QuestionWrapper = styled.div`
-  border-radius: 10px;
-  background: #fff;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 0px 0px 10px 10px;
+  height: calc(100vh - 180px);
+  background: ${white};
   padding: ${props => (props.padding ? props.padding : "20px")};
+  overflow: auto;
 `;

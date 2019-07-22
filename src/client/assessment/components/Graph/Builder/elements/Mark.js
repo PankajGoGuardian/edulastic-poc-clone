@@ -96,7 +96,8 @@ const onHandler = (board, coords, data) => {
     id: coords && coords.fixed ? null : data.id,
     anchorX: "middle",
     anchorY: "bottom",
-    fixed: coords && coords.fixed
+    fixed: coords && coords.fixed,
+    cssClass: "fr-box mark"
   });
 
   if (!coords || !coords.fixed) {

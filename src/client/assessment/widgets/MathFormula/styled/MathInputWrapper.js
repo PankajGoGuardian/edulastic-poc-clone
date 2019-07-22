@@ -3,7 +3,7 @@ import styled from "styled-components";
 const MathInputWrapper = styled.div`
   position: relative;
   max-width: 450px;
-  min-width: 300px;
+  width: ${({ width }) => width || "auto"};
 `;
 
 export default MathInputWrapper;

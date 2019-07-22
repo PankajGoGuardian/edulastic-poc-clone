@@ -33,8 +33,7 @@ BreadCrumb.defaultProps = {
 export default BreadCrumb;
 
 const Container = styled.div`
-  position: fixed;
-  top: 88px;
+  position: static;
   text-transform: uppercase;
 
   .ant-breadcrumb-link,
@@ -50,8 +49,5 @@ const Container = styled.div`
 
   .anticon-left {
     margin-right: 5px;
-  }
-  @media screen and (max-width: 768px) {
-    top: 120px;
   }
 `;

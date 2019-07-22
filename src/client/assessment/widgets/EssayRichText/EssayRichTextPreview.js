@@ -180,7 +180,7 @@ const EssayRichTextPreview = ({
           >
             <MathFormulaDisplay
               dangerouslySetInnerHTML={{
-                __html: !userAnswer ? "<p>Essay Editor Box</p>" : userAnswer
+                __html: userAnswer || ""
               }}
             />
           </FlexContainer>

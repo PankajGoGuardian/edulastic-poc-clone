@@ -14,6 +14,10 @@ function collectSource(connector, monitor) {
 }
 
 const specSource = {
+  canDrag(props) {
+    return !props.disableResponse;
+  },
+
   beginDrag(props) {
     const item = { item: props.obj, index: props.index };
     return item;
@@ -57,9 +61,9 @@ class DragItem extends React.Component {
           style={{
             ...style
           }}
-          draggable
+          draggable={!this.props.disableResponse}
         >
-          <DragPreview {...restProps}>{children}</DragPreview>
+          {!this.props.disableResponse && <DragPreview {...restProps}>{children}</DragPreview>}
           {children}
         </div>
       )

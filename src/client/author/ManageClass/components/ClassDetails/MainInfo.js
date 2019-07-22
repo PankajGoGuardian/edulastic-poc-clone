@@ -14,7 +14,7 @@ const MainInfo = ({ entity = {} }) => {
   const {
     thumbnail,
     tags = [],
-    grade,
+    grades = [],
     subject,
     googleId,
     lastSyncDate,
@@ -26,7 +26,7 @@ const MainInfo = ({ entity = {} }) => {
     owners = [],
     parent
   } = entity;
-  const _grade = find(allGrades, item => item.value === grade) || { text: grade };
+  const _grade = allGrades.filter(item => grades.includes(item.value)).map(item => ` ${item.text}`) || grades;
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
   const coTeachers =
     owners &&
@@ -34,7 +34,7 @@ const MainInfo = ({ entity = {} }) => {
       .filter(owner => owner.id !== parent.id)
       .map(owner => owner.name)
       .join(",");
-  const gradeSubject = { grades: grade, subjects: subject };
+  const gradeSubject = { grades, subjects: subject };
   return (
     <MainContainer>
       <LeftWrapper>
@@ -47,7 +47,7 @@ const MainInfo = ({ entity = {} }) => {
       <MidWrapper>
         <FieldValue>
           <div>Grade :</div>
-          <span>{_grade.text}</span>
+          <span>{`${_grade}`}</span>
         </FieldValue>
         <FieldValue>
           <div>Subject :</div>

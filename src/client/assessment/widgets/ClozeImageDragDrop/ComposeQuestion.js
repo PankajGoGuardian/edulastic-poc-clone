@@ -736,6 +736,13 @@ class ComposeQuestion extends Component {
           >
             {t("component.cloze.imageDragDrop.snapfittodroparea")}
           </Checkbox>
+          <Checkbox
+            data-cy="drag-drop-image-wrap-text-to-fit"
+            defaultChecked={responseLayout && responseLayout.isWrapText}
+            onChange={e => this.onResponsePropChange("isWrapText", e.target.checked)}
+          >
+            {t("component.cloze.imageDragDrop.wrapTextToFitDropArea")}
+          </Checkbox>
         </FormBottomContainer>
         <PaddingDiv>
           {isEditAriaLabels && (

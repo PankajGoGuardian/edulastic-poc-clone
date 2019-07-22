@@ -426,13 +426,13 @@ const MathFormulaAnswerMethod = ({
           </FlexContainer>
           <WidgetMethods>{renderMethodsOptions()}</WidgetMethods>
 
-          {index + 1 === answer.length && (
+          {/* {index + 1 === answer.length && (
             <AdditionalContainerRule>
               <AdditionalAddRule onClick={onAddIndex >= 0 ? () => onAdd(onAddIndex) : onAdd} data-cy="add-new-method">
                 {`+ ${t("component.math.chainAnotherEvaluationRule")}`}
               </AdditionalAddRule>
             </AdditionalContainerRule>
-          )}
+          )} */}
         </AdditionalContainer>
       ) : null}
     </Container>

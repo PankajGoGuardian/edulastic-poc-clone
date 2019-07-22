@@ -17,20 +17,11 @@ import { getNavigationTabLinks } from "../../common/util";
 import navigation from "../../common/static/json/navigation.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-export const SingleAssessmentReportContainer = props => {
-  const [settings, setSettings] = useState({
-    selectedTest: { key: "", title: "" },
-    requestFilters: {
-      termId: "",
-      subject: "",
-      grade: "",
-      courseId: "",
-      groupId: "",
-      schoolId: "",
-      teacherId: "",
-      assessmentType: ""
-    }
-  });
+import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
+import { connect } from "react-redux";
+
+const SingleAssessmentReportContainer = props => {
+  const { settings, setSARSettingsAction } = props;
 
   useEffect(() => {
     if (settings.selectedTest.key) {
@@ -43,7 +34,7 @@ export const SingleAssessmentReportContainer = props => {
       let path = settings.selectedTest.key + "?" + qs.stringify(obj);
       props.history.push(path);
     }
-  }, [settings]);
+  }, [props.settings]);
 
   let computedChartNavigatorLinks;
 
@@ -74,7 +65,7 @@ export const SingleAssessmentReportContainer = props => {
         obj[item] = val;
       });
 
-      setSettings({
+      setSARSettingsAction({
         selectedTest: _settings.selectedTest,
         requestFilters: obj
       });
@@ -127,3 +118,10 @@ export const SingleAssessmentReportContainer = props => {
     </>
   );
 };
+
+const ConnectedSingleAssessmentReportContainer = connect(
+  state => ({ settings: getReportsSARSettings(state) }),
+  { setSARSettingsAction }
+)(SingleAssessmentReportContainer);
+
+export { ConnectedSingleAssessmentReportContainer as SingleAssessmentReportContainer };

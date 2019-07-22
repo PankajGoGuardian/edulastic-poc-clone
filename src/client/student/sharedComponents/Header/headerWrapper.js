@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconMenuOpenClose } from "@edulastic/icons";
-import { tabletWidth, white } from "@edulastic/colors";
+import { tabletWidth, white, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
@@ -36,8 +36,9 @@ export default connect(
 )(HeaderWrapper);
 
 const HeaderContainer = styled.div`
-  padding-top: 62px;
-  margin-bottom: 10px;
+  padding-top: 96px;
+  margin-bottom: 16px;
+
   @media screen and (max-width: 768px) {
     padding-top: 95px;
   }
@@ -61,8 +62,13 @@ const AssignmentsHeader = styled(Layout.Header)`
   color: ${props => props.theme.headerTitleTextColor};
   display: flex;
   align-items: center;
-  height: 62px;
-  padding: 0px 15px;
+  height: 96px;
+  padding: 0px 30px;
+
+  @media screen and (min-width: ${extraDesktopWidthMax}) {
+    padding: 0px 44px;
+  }
+
   @media screen and (max-width: 768px) {
     height: 104px;
     padding: 0;

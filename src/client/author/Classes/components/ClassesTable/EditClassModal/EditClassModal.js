@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Select, Button, Modal, DatePicker } from "antd";
+import moment from "moment";
 const Option = Select.Option;
 
 import { ModalFormItem } from "./styled";
@@ -17,11 +18,13 @@ class EditClassModal extends Component {
           districtId,
           institutionId: row.institutionId,
           subject: row.subject,
-          grade: row.grade,
-          tags: row.tags,
-          endDate: row.endDate.valueOf()
+          grades: row.grades,
+          tags: row.tags
         };
         this.props.saveClass(saveClassData);
+        if (row.endDate) {
+          Object.assign(saveClassData, { endDate: row.endDate.valueOf() });
+        }
       }
     });
   };
@@ -32,7 +35,7 @@ class EditClassModal extends Component {
 
   render() {
     const { modalVisible, selClassData, schoolsData, teacherList } = this.props;
-    const { _source: { owners = [], name, subject, institutionId, grade, tags, endDate } = {} } = selClassData;
+    const { _source: { owners = [], name, subject, institutionId, grades, tags, endDate } = {} } = selClassData;
     const ownersData = owners.map(row => row.id);
 
     const schoolsOptions = [];
@@ -47,9 +50,9 @@ class EditClassModal extends Component {
     }
 
     const gradeOptions = [];
-    gradeOptions.push(<Option value={"0"}>KinderGarten</Option>);
+    gradeOptions.push(<Option value={"K"}>Kindergarten</Option>);
     for (let i = 1; i <= 12; i++) gradeOptions.push(<Option value={i.toString()}>Grade {i}</Option>);
-    gradeOptions.push(<Option value="other">Other</Option>);
+    gradeOptions.push(<Option value="O">Other</Option>);
 
     const teacherOptions = [];
     if (teacherList.length !== undefined) {
@@ -115,16 +118,16 @@ class EditClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Grades">
-              {getFieldDecorator("grade", {
+              {getFieldDecorator("grades", {
                 rules: [
                   {
                     required: true,
-                    message: "Please select grade"
+                    message: "Please select grades"
                   }
                 ],
-                initialValue: grade
+                initialValue: grades
               })(
-                <Select placeholder="Select Grade" mode="multiple">
+                <Select placeholder="Select Grades" mode="multiple">
                   {gradeOptions}
                 </Select>
               )}
@@ -185,7 +188,7 @@ class EditClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label="End Date">
               {getFieldDecorator("endDate", {
-                initialValue: endDate
+                initialValue: moment(endDate)
               })(<DatePicker />)}
             </ModalFormItem>
           </Col>

@@ -190,6 +190,7 @@ class App extends Component {
               redirectPath={defaultRoute}
             />
 
+            <PrivateRoute path={`/student/:assessmentType/:id/uta/:utaId/test-summary`} component={TestAttemptReview} />
             <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
             <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />

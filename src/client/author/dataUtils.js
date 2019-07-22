@@ -45,7 +45,7 @@ export const getPlaylistAuthorName = item => {
 export const getQuestionType = item => {
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
-  const hasPassage = resources.some(item => item.type == PASSAGE);
+  const hasPassage = resources.some(item => item.type === PASSAGE);
   if (hasPassage) {
     return PASSAGE.toUpperCase();
   }

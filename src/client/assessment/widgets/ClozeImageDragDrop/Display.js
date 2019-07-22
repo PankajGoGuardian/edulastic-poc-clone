@@ -491,6 +491,7 @@ class Display extends Component {
                     minWidth: responseContainer.width || "auto",
                     maxWidth: response.maxWidth
                   }}
+                  disableResponse={disableResponse}
                   className="imagelabeldragdrop-droppable active"
                   drop={drop}
                 >
@@ -513,6 +514,7 @@ class Display extends Component {
                             data={`${answer}_${dropTargetIndex}_${item_index}`}
                             style={dragItemStyle}
                             onDrop={this.onDrop}
+                            disableResponse={disableResponse}
                           >
                             <AnswerContainer
                               height={responseContainer.height || "auto"}
@@ -536,6 +538,7 @@ class Display extends Component {
               drop={drop}
               data-cy="drop-container"
               style={{ height: "100%" }}
+              disableResponse={disableResponse}
               className="imagelabeldragdrop-droppable active"
             >
               {snapItems.map((snap_item, index) => {
@@ -566,6 +569,7 @@ class Display extends Component {
                       ...dragItemStyle,
                       ...btnStyle
                     }}
+                    disableResponse={disableResponse}
                     onDrop={this.onDrop}
                   >
                     <MathSpan dangerouslySetInnerHTML={{ __html: snap_item.answer || "" }} />
@@ -596,6 +600,7 @@ class Display extends Component {
         drop={drop}
         onDropHandler={this.onDrop}
         showBorder={showBorder}
+        disableResponse={disableResponse}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

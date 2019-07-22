@@ -164,7 +164,6 @@ class ClassQuestions extends Component {
     }, {});
 
     const { qIndex, currentStudent } = this.props;
-
     return testItems.map((item, index) => (
       <Preview
         studentId={(currentStudent || {}).studentId}

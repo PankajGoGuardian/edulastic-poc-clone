@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import { DropTarget } from "react-dnd";
 
 const specTarget = {
+  canDrop(props) {
+    return props.disableResponse ? !props.disableResponse : true;
+  },
   drop: (props, monitor) => {
     if (monitor.didDrop()) {
       return;

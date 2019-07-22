@@ -39,10 +39,10 @@ const CheckboxTemplateBoxLayout = ({
   drop,
   onDropHandler,
   theme,
-  showBorder
+  showBorder,
+  disableResponse
 }) => {
   const { maxHeight, maxWidth } = clozeImage;
-
   return (
     <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
       <StyledPreviewContainer
@@ -99,6 +99,7 @@ const CheckboxTemplateBoxLayout = ({
                     minWidth: response.minWidth,
                     maxWidth: response.maxWidth
                   }}
+                  disableResponse={disableResponse}
                   className={`
                 imagelabeldragdrop-droppable
                 active
@@ -131,6 +132,7 @@ const CheckboxTemplateBoxLayout = ({
                             }}
                             item={answer}
                             onDrop={onDropHandler}
+                            disableResponse={disableResponse}
                           >
                             <div title={title}>
                               <MathSpan
@@ -167,6 +169,7 @@ const CheckboxTemplateBoxLayout = ({
                     minWidth: response.minWidth,
                     maxWidth: response.maxWidth
                   }}
+                  disableResponse={disableResponse}
                   className={`
               imagelabeldragdrop-droppable
               active
@@ -208,6 +211,7 @@ const CheckboxTemplateBoxLayout = ({
                             }}
                             item={answer}
                             onDrop={onDropHandler}
+                            disableResponse={disableResponse}
                           >
                             <div title={title}>
                               <MathSpan

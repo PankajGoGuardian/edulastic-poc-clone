@@ -1897,27 +1897,7 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        custom_keys: [
-          "g",
-          "kg",
-          "mg",
-          "m",
-          "km",
-          "cm",
-          "mm",
-          "L",
-          "mL",
-          "s",
-          "ms",
-          "oz",
-          "lb",
-          "in",
-          "ft",
-          "mi",
-          "fl oz",
-          "pt",
-          "gal"
-        ],
+        custom_keys: ["m", "km", "cm", "mm"],
         ui_style: {
           type: "floating-keyboard"
         },

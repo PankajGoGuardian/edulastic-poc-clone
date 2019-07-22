@@ -39,7 +39,7 @@ var getChecks = function getChecks(answer) {
       return f === false;
     });
     var midRes = Object.keys(options).reduce(function(acc, key, i) {
-      if (key === "allowedVariables" || key === "allowNumericOnly") {
+      if (key === "allowedVariables" || key === "allowNumericOnly" || key === "unit") {
         return acc;
       }
 
@@ -144,6 +144,13 @@ var exactMatchEvaluator =
                   getAnswerCorrectMethods = function getAnswerCorrectMethods(answer) {
                     if (answer.value && answer.value.length) {
                       return answer.value.map(function(val) {
+                        var _val$options = val.options,
+                          options = _val$options === void 0 ? {} : _val$options;
+
+                        if (options.unit) {
+                          return val.value.replace(/=/gm, "".concat(options.unit, "="));
+                        }
+
                         return val.value;
                       });
                     }

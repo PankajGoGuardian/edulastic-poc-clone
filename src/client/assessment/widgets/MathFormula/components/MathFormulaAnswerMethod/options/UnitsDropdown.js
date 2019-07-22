@@ -78,6 +78,12 @@ const UnitsDropdownPure = ({
     }
   }, [keypadOffset]);
 
+  useEffect(() => {
+    if (!item.showDropdown) {
+      onChange("unit", null);
+    }
+  }, [item.showDropdown]);
+
   return (
     <FlexContainer alignItems="center" justifyContent="flex-start">
       {item.showDropdown && (

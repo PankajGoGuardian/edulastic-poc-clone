@@ -326,7 +326,7 @@ const MathFormulaAnswerMethod = ({
   const { allowedVariables } = item;
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   const customKeys = get(item, "custom_keys", []);
-  const isShowDropdown = item.showDropdown && item.isUnit;
+  const isShowDropdown = item.isUnits && item.showDropdown;
 
   return (
     <Container data-cy="math-formula-answer">

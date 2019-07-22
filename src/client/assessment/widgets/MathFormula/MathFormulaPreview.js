@@ -43,8 +43,7 @@ class MathFormulaPreview extends Component {
   studentRef = React.createRef();
 
   state = {
-    innerValues: [],
-    unit: ""
+    innerValues: []
   };
 
   constructor(props) {
@@ -110,15 +109,26 @@ class MathFormulaPreview extends Component {
   }
 
   onUserResponse(latexv) {
-    const { saveAnswer } = this.props;
+    const { saveAnswer, userAnswer, item } = this.props;
     // if (previewType === CHECK) return;
-    saveAnswer(latexv);
+    const { isUnits, showDropdown } = item;
+    if (isUnits && showDropdown) {
+      saveAnswer({ ...userAnswer, expression: latexv });
+    } else {
+      saveAnswer(latexv);
+    }
   }
 
   onBlur(latexv) {
-    const { type: previewType, saveAnswer } = this.props;
+    const { type: previewType, saveAnswer, userAnswer, item } = this.props;
+    const { isUnits, showDropdown } = item;
+
     if (this.isStatic() && previewType !== CHECK) {
-      saveAnswer(latexv);
+      if (isUnits && showDropdown) {
+        saveAnswer({ ...userAnswer, expression: latexv });
+      } else {
+        saveAnswer(latexv);
+      }
     }
   }
 
@@ -150,14 +160,26 @@ class MathFormulaPreview extends Component {
   }
 
   selectUnitFromDropdown = unit => {
-    this.setState({ unit });
-    console.log(unit);
+    const { userAnswer, saveAnswer, type: previewType, changePreview, changePreviewTab, disableResponse } = this.props;
+    saveAnswer({ ...userAnswer, unit });
+    if ((previewType === SHOW || previewType === CHECK) && !disableResponse) {
+      changePreview(CLEAR); // Item level
+      changePreviewTab(CLEAR); // Question level
+    }
   };
 
   get restrictKeys() {
     const { item } = this.props;
     const { allowedVariables } = item;
     return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  }
+
+  get selectedUnit() {
+    const { userAnswer } = this.props;
+    if (userAnswer) {
+      return userAnswer.unit;
+    }
+    return "";
   }
 
   render() {
@@ -171,7 +193,7 @@ class MathFormulaPreview extends Component {
       theme,
       disableResponse
     } = this.props;
-    const { innerValues, unit } = this.state;
+    const { innerValues } = this.state;
 
     const latex = this.getValidLatex(this.props);
 
@@ -249,18 +271,32 @@ class MathFormulaPreview extends Component {
                 <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
               )}
             </MathInputWrapper>
-            {item.isUnits && (
-              <UnitsDropdown item={item} onChange={this.selectUnitFromDropdown} preview selected={unit} />
+            {item.isUnits && item.showDropdown && (
+              <UnitsDropdown item={item} preview onChange={this.selectUnitFromDropdown} selected={this.selectedUnit} />
             )}
           </FlexContainer>
         )}
 
         {!testItem && previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
-          <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
+          <CorrectAnswerBox>
+            {item.isUnits && item.showDropdown
+              ? item.validation.valid_response.value[0].value.replace(
+                  /=/gm,
+                  `${item.validation.valid_response.value[0].options.unit || ""}=`
+                )
+              : item.validation.valid_response.value[0].value}
+          </CorrectAnswerBox>
         )}
         {!testItem && hasAltAnswers && previewType === SHOW && (
           <CorrectAnswerBox altAnswers>
-            {item.validation.alt_responses.map(ans => ans.value[0].value).join(", ")}
+            {item.validation.alt_responses
+              .map(ans => {
+                if (item.isUnits && item.showDropdown) {
+                  return ans.value[0].value.replace(/=/gm, ans.value[0].options.unit || "");
+                }
+                return ans.value[0].value;
+              })
+              .join(", ")}
           </CorrectAnswerBox>
         )}
       </div>

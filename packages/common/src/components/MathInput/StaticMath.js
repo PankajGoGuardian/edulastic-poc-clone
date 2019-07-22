@@ -168,6 +168,7 @@ const StaticMath = ({
     if (mathFieldRef.current) {
       try {
         setMathField(MQ.StaticMath(mathFieldRef.current));
+        // eslint-disable-next-line no-empty
       } catch (e) {}
       setLatex(latex);
       setTimeout(() => {

@@ -401,7 +401,9 @@ function* createTestSaga({ payload }) {
     if (!requirePassword) {
       delete payload.data.assignmentPassword;
     }
-    const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
+
+    const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate", "testItems"]);
+    dataToSend.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
     yield put({
@@ -454,6 +456,7 @@ function* updateTestSaga({ payload }) {
       yield call(message.error, "Please add a valid password.");
       return;
     }
+    payload.data.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;

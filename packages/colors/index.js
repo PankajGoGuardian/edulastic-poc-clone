@@ -117,15 +117,16 @@ export const notStarted = "#bfbfbf";
 export const numBtnColors = { color: "#707070", borderColor: "#D9D9D9", backgroundColor: "#fff" };
 
 // Sizes
-export const mobileWidth = "480px";
-export const middleMobileWidth = "476px";
 export const smallMobileWidth = "325px";
+export const middleMobileWidth = "476px";
+export const mobileWidth = "480px";
+export const mobileWidthMax = "767px";
 export const tabletWidth = "768px";
 export const desktopWidth = "992px";
+export const smallDesktopWidth = "1024px";
 export const largeDesktopWidth = "1200px";
 export const extraDesktopWidth = "1440px";
 export const extraDesktopWidthMax = "1600px";
-export const mobileWidthMax = "767px";
 
 export const authorAssignment = {
   assignmentStatusBg: {

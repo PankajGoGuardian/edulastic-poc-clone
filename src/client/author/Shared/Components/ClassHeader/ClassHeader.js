@@ -2,17 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { message, Menu, Dropdown, Button, Modal, Icon, Switch, Input } from "antd";
+import { message, Dropdown } from "antd";
 import moment from "moment";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import {
-  IconSummaryBoard,
-  IconDeskTopMonitor,
-  IconBookMarkButton,
-  IconNotes,
-  IconMoreVertical
-} from "@edulastic/icons";
+import { IconDeskTopMonitor, IconBookMarkButton, IconNotes } from "@edulastic/icons";
 
 import {
   Container,
@@ -26,8 +20,6 @@ import {
   StyledTabContainer,
   StyledTabs,
   StyledAnchor,
-  StyledButton,
-  MenuWrapper,
   OpenCloseButton,
   HeaderMenuIcon,
   RightSideButtonWrapper,
@@ -243,7 +235,8 @@ class ClassHeader extends Component {
           <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
             {assignmentStatusForDisplay}
-            {isPaused ? "(PAUSED)" : ""} (Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
+            {isPaused ? "(PAUSED)" : ""}
+            <div>(Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})</div>
           </StyledParaSecond>
         </StyledTitle>
         <StyledTabContainer>

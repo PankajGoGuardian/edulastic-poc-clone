@@ -4,6 +4,7 @@ import { testActivity } from "@edulastic/constants";
 import {
   mobileWidth,
   tabletWidth,
+  smallDesktopWidth,
   darkGrey,
   lightGreySecondary,
   white,
@@ -79,6 +80,10 @@ export const TableData = styled(Table)`
         color: ${darkGrey};
         white-space: nowrap;
         text-align: center;
+
+        @media (max-width: ${smallDesktopWidth}) {
+          font-size: 10px;
+        }
 
         &.assignment-name {
           text-align: left !important;
@@ -169,20 +174,12 @@ export const TableData = styled(Table)`
       padding-right: 0px;
     }
   }
-  @media (max-width: 1170px) {
+  @media (max-width: ${smallDesktopWidth}) {
     .ant-table-thead > tr > th {
       font-size: 10px;
     }
     .ant-table-tbody > tr > td {
-      font-size: 9px;
-    }
-  }
-  @media (max-width: 1170px) {
-    .ant-table-thead > tr > th {
-      font-size: 9px;
-    }
-    .ant-table-tbody > tr > td {
-      font-size: 9px;
+      font-size: 11px;
     }
   }
 `;
@@ -191,6 +188,9 @@ export const TestThumbnail = styled.img`
   border-radius: 4px;
   width: 50px;
   height: 24px;
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 32px;
+  }
 `;
 
 export const AssignmentTD = styled.div`
@@ -259,8 +259,14 @@ export const BtnStatus = styled(Button)`
   width: 90px;
   height: 26px;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 5px;
   background-color: ${props => defineStatusBg(props.status)};
+
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 20px;
+    line-height: 20px;
+    font-size: 9px;
+  }
 `;
 
 export const TitleCase = styled.div`
@@ -293,6 +299,10 @@ export const GreyFont = styled.div`
   width: 100%;
   &.class-column {
     white-space: initial;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 11px;
   }
 `;
 

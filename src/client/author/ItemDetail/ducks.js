@@ -304,13 +304,6 @@ export const getItemDetailRowsSelector = createSelector(
   }
 );
 
-export const isFirstQuestionSelector = createSelector(
-  getItemDetailSelector,
-  item => {
-    // has no widgets at all!
-    return item.rows && item.rows.length === 1 && item.rows[0].widgets && item.rows[0].widgets.length === 0;
-  }
-);
 export const getItemDetailLoadingSelector = createSelector(
   stateSelector,
   state => state.loading

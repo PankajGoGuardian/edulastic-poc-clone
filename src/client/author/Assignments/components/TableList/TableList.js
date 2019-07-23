@@ -206,7 +206,7 @@ class TableList extends Component {
         title: "Assignment Name",
         dataIndex: "name",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.name.localeCompare(b.name, "fr", { ignorePunctuation: true }),
+        sorter: (a, b) => a.name.localeCompare(b.name, "en", { ignorePunctuation: true }),
         width: "20%",
         className: "assignment-name",
         render: (text, row) => (

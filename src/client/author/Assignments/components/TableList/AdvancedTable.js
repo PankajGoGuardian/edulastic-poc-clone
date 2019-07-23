@@ -88,7 +88,7 @@ class AdvancedTable extends Component {
         title: "ASSESSMENT NAME",
         dataIndex: "title",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.title.localeCompare(b.title, "fr", { ignorePunctuation: true }),
+        sorter: (a, b) => a.title.localeCompare(b.title, "en", { ignorePunctuation: true }),
         width: "22%",
         className: "assignment-name",
         render: (text, row) => (

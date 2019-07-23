@@ -4,6 +4,7 @@ import { cloneDeep, isEqual } from "lodash";
 
 import HorizontalLines from "./components/HorizontalLines";
 import ArrowPair from "./components/ArrowPair";
+import ValueLabel from "./components/ValueLabel";
 import withGrid from "./HOC/withGrid";
 import {
   convertPxToUnit,
@@ -47,6 +48,8 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
           .split(" ")
           [active].split(",")[index]
       : null;
+
+  const getActivePointValue = () => (active !== null ? localData[active].y : null);
 
   const save = () => {
     if (cursorY === null) {
@@ -120,7 +123,10 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
         gridParams={gridParams}
         correct={correct}
       />
+
       <ArrowPair getActivePoint={getActivePoint} />
+
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
     </svg>
   );
 };

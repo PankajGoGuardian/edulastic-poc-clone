@@ -7,13 +7,20 @@ import { StyledCard, StyledH3 } from "../../../../../common/styled";
 import TrendCard from "./TrendCard";
 import { trendTypes } from "../../utils/constants";
 
-const TrendStats = ({ trendCount, onTrendSelect, selectedTrend }) => {
+const TrendStats = ({ trendCount, onTrendSelect, selectedTrend, renderFilters, heading }) => {
   const trends = Object.keys(trendTypes);
 
   return (
     <UpperContainer>
       <PaddedContainer>
-        <StyledH3>Distribution of student subgroup as per progress trend ?</StyledH3>
+        <Row>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <StyledH3>{heading}</StyledH3>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            {renderFilters()}
+          </Col>
+        </Row>
       </PaddedContainer>
       <TrendContainer>
         {trends.map(trend => (
@@ -36,6 +43,8 @@ const TrendStats = ({ trendCount, onTrendSelect, selectedTrend }) => {
 TrendStats.propTypes = {
   onTrendSelect: PropTypes.func,
   selectedTrend: PropTypes.string,
+  renderFilters: PropTypes.func,
+  heading: PropTypes.string,
   trendCount: PropTypes.shape({
     up: PropTypes.number,
     flat: PropTypes.number,
@@ -50,7 +59,9 @@ TrendStats.defaultProps = {
     down: 0
   },
   selectedTrend: "",
-  onTrendSelect: () => {}
+  onTrendSelect: () => {},
+  renderFilters: () => null,
+  heading: ""
 };
 
 export default TrendStats;
@@ -65,5 +76,6 @@ const PaddedContainer = styled.div`
 `;
 
 const TrendContainer = styled(Row)`
+  margin-top: 15px;
   padding-top: 5px;
 `;

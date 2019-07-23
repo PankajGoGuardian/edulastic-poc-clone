@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Row, Col } from "antd";
-import { groupBy, map, capitalize } from "lodash";
+import { groupBy, map, capitalize, values } from "lodash";
 
 import { StyledTable, StyledCard, StyledH3 } from "../../../../../common/styled";
 
@@ -12,13 +12,7 @@ import { StyledCell } from "../styled";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
 import TrendColumn from "./TrendColumn";
 import dropDownData from "../../static/json/dropDownData.json";
-
-const compareByMap = {
-  school: "schoolName",
-  teacher: "teacherName",
-  group: "groupName",
-  student: "studentName"
-};
+import { compareByMap } from "../../utils/trend";
 
 const getSorter = compareBy => {
   switch (compareBy) {
@@ -48,15 +42,53 @@ const getCol = (text, backgroundColor) => {
   return <StyledCell style={{ backgroundColor }}>{text || "N/A"}</StyledCell>;
 };
 
-const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
-  const groupedTests = groupBy(testData, "testId");
+const getCellAttributes = (test = {}, analyseBy = {}) => {
+  let value = "N/A";
+  let color = "#cccccc";
 
-  const dynamicColumns = map(groupedTests, (tests, testId) => {
-    const assessmentName = tests[0].testName || "";
+  switch (analyseBy.key) {
+    case "proficiencyBand":
+      if (test.proficiencyBand) {
+        value = test.proficiencyBand.name || value;
+        color = test.proficiencyBand.color || color;
+      }
+      break;
+    case "standard":
+      value = test.proficiencyBand.aboveStandard ? "Above Standard" : "Below Standard";
+      color = getHSLFromRange1((test.proficiencyBand.aboveStandard || 0) * 100);
+      break;
+    default:
+      value = formatText(test[analyseBy.key], analyseBy.key);
+      color = getHSLFromRange1(test.score);
+      break;
+  }
+
+  return {
+    value,
+    color
+  };
+};
+
+const getColumns = (
+  testData = [],
+  rawMetric = [],
+  analyseBy = "",
+  compareBy = {},
+  customColumns = [],
+  toolTipContent
+) => {
+  const groupedTests = groupBy(testData, "testId");
+  const groupedAvailableTests = groupBy(rawMetric, "testId");
+
+  const dynamicColumns = map(groupedAvailableTests, (_, testId) => {
+    const currentTestGroup = groupedTests[testId] || {};
+    const test = currentTestGroup[0] || {};
+    const assessmentName = (test && test.testName) || "";
+
     return {
       key: testId,
       title: assessmentName,
-      assessmentDate: tests[0].assessmentDate,
+      assessmentDate: test.assessmentDate,
       dataIndex: "tests",
       render: (tests = {}, record) => {
         const currentTest = tests[testId];
@@ -65,30 +97,12 @@ const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
           return getCol("N/A", "#cccccc");
         }
 
-        let value = "N/A";
-        let color = "#cccccc";
-
-        switch (analyseBy.key) {
-          case "proficiencyBand":
-            if (currentTest.proficiencyBand) {
-              value = currentTest.proficiencyBand.name || value;
-              color = currentTest.proficiencyBand.color || color;
-            }
-            break;
-          case "standard":
-            value = currentTest.proficiencyBand.aboveStandard ? "Above Standard" : "Below Standard";
-            color = getHSLFromRange1((currentTest.proficiencyBand.aboveStandard || 0) * 100);
-            break;
-          default:
-            value = formatText(currentTest[analyseBy.key], analyseBy.key);
-            color = getHSLFromRange1(currentTest.score);
-            break;
-        }
+        const { color, value } = getCellAttributes(currentTest, analyseBy);
 
         const toolTipText = () => (
           <div>
             <TableTooltipRow title={"Assessment Name: "} value={assessmentName} />
-            <TableTooltipRow title={`${capitalize(compareBy.title)} : `} value={record[compareByMap[compareBy.key]]} />
+            {toolTipContent(record, value)}
             <TableTooltipRow title={`${capitalize(analyseBy.title)} : `} value={value} />
           </div>
         );
@@ -105,10 +119,9 @@ const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
       key: compareBy.key,
       title: capitalize(compareBy.title),
       sorter: getSorter(compareBy.key),
-      render: (value, record) => {
-        return record[compareByMap[compareBy.key]];
-      }
+      dataIndex: compareByMap[compareBy.key]
     },
+    ...customColumns,
     {
       key: "trend",
       title: "Trend",
@@ -140,55 +153,51 @@ const getColumns = (testData = [], analyseBy = "", compareBy = {}) => {
   );
 };
 
-const TrendTable = ({ data, testData, analyseBy, compareBy, renderFilters }) => {
-  const columns = getColumns(testData, analyseBy, compareBy);
-
+const TrendTable = ({ data, rawMetric, testData, analyseBy, compareBy, customColumns, heading, toolTipContent }) => {
+  const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent);
+  const groupedAvailableTests = groupBy(rawMetric, "testId");
   return (
     <StyledCard>
       <Row>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-          <StyledH3>How well are student sub-groups progressing ?</StyledH3>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-          {renderFilters()}
+          <StyledH3>{heading}</StyledH3>
         </Col>
       </Row>
       <TableContainer>
-        <StyledTable dataSource={data} columns={columns} colouredCellsNo={columns.length - 1} />
+        <StyledTable dataSource={data} columns={columns} colouredCellsNo={values(groupedAvailableTests).length} />
       </TableContainer>
     </StyledCard>
   );
 };
 
-const getShape = data =>
-  PropTypes.shape({
-    key: PropTypes.oneOf(data.map(item => item.key)),
-    title: PropTypes.oneOf(data.map(item => item.title))
-  });
-
-const analyseByShape = getShape(dropDownData.analyseByData);
-const compareByShape = getShape(dropDownData.compareByData);
+const optionShape = PropTypes.shape({
+  key: PropTypes.string,
+  title: PropTypes.string
+});
 
 TrendTable.propTypes = {
   testData: PropTypes.array.isRequired,
   data: PropTypes.array.isRequired,
-  analyseBy: analyseByShape,
-  compareBy: compareByShape,
-  renderFilters: PropTypes.func
+  rawMetric: PropTypes.array.isRequired,
+  analyseBy: optionShape,
+  compareBy: optionShape,
+  customColumns: PropTypes.array,
+  heading: PropTypes.string,
+  toolTipContent: PropTypes.func
 };
 
 TrendTable.defaultProps = {
   analyseBy: dropDownData.analyseByData[0],
   compareBy: dropDownData.compareByData[0],
-  renderFilters: () => null
+  customColumns: [],
+  heading: "",
+  toolTipContent: () => null
 };
 
 export default TrendTable;
 
 const TableContainer = styled.div`
-  margin-top: 30px;
   .ant-table-body {
-    overflow: auto visible;
-    overflow-x: visible;
+    padding-bottom: 30px;
   }
 `;

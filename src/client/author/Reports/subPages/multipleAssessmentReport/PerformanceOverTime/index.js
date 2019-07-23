@@ -19,17 +19,7 @@ import PerformanceOverTimeTable from "./components/table/PerformanceOvetTimeTabl
 import ProgressChart from "./components/charts/ProgressChart";
 
 import analyseByData from "../common/static/json/analyseByDropDown.json";
-
-const usefetchProgressHook = (settings, fetchAction) => {
-  useEffect(() => {
-    const { requestFilters = {} } = settings;
-    const { termId = "" } = requestFilters;
-
-    if (termId) {
-      fetchAction(requestFilters);
-    }
-  }, [settings]);
-};
+import { usefetchProgressHook } from "../common/hooks";
 
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequestAction,
@@ -47,7 +37,7 @@ const PerformanceOverTime = ({
   const { testData = [] } = get(MARFilterData, "data.result", {});
   const dataWithTestInfo = augmentTestData(parseData(rawData), testData);
   const filteredTableData = filter(dataWithTestInfo, test => {
-    return selectedTests.length ? includes(selectedTests, test.testId) : true;
+    return selectedTests.length ? includes(selectedTests, test.uniqId) : true;
   });
 
   if (loading) {

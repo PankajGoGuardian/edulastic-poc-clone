@@ -24,19 +24,15 @@ const Filters = ({ compareByOptions = [], onFilterChange, analyseBy, compareBy }
   );
 };
 
-const getShape = data =>
-  PropTypes.shape({
-    key: PropTypes.oneOf(data.map(item => item.key)),
-    title: PropTypes.oneOf(data.map(item => item.title))
-  });
-
-const analyseByShape = getShape(dropDownData.analyseByData);
-const compareByShape = getShape(dropDownData.compareByData);
+const optionsShape = PropTypes.shape({
+  key: PropTypes.string,
+  title: PropTypes.string
+});
 
 Filters.propTypes = {
   onFilterChange: PropTypes.func.isRequired,
-  analyseBy: analyseByShape,
-  compareBy: compareByShape
+  analyseBy: optionsShape,
+  compareBy: optionsShape
 };
 
 Filters.defaultProps = {

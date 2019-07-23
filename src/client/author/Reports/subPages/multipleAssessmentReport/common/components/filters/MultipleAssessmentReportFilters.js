@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { find } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
@@ -7,6 +8,7 @@ import { get, isEmpty } from "lodash";
 import queryString from "query-string";
 
 import { AutocompleteDropDown } from "../../../../../common/components/widgets/autocompleteDropDown";
+import { MultipleSelect } from "../../../../../common/components/widgets/MultipleSelect";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../../utils/transformers";
@@ -24,22 +26,10 @@ import { getUser } from "../../../../../../src/selectors/user";
 import staticDropDownData from "../../static/staticDropDownData";
 import school from "@edulastic/api/src/school";
 
-const getTestIdFromURL = url => {
-  if (url.length > 16) {
-    let _url = url.substring(16);
-    let index = _url.indexOf("test/");
-    if (index >= 0) {
-      let testId = _url.substring(index + 5);
-      return testId;
-    }
-  }
-  return "";
-};
-
 const SingleAssessmentReportFilters = ({
   MARFilterData,
   filters,
-  testId,
+  testIds,
   user,
   role,
   getMARFilterDataRequestAction,
@@ -48,10 +38,10 @@ const SingleAssessmentReportFilters = ({
   onGoClick: _onGoClick,
   location,
   className,
+  history,
   style
 }) => {
   const [prevMARFilterData, setPrevMARFilterData] = useState(null);
-
   const getTitleByTestId = testId => {
     let arr = get(MARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
@@ -74,98 +64,102 @@ const SingleAssessmentReportFilters = ({
   });
 
   useEffect(() => {
+    const search = queryString.parse(location.search);
+    const termId =
+      search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
     let q = {
-      termId: schoolYear.length ? schoolYear[0].key : ""
+      termId
     };
     getMARFilterDataRequestAction(q);
   }, []);
 
   let processedTestIds;
   let dropDownData;
-  if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
-    const search = queryString.parse(location.search);
-    search.testId = getTestIdFromURL(location.pathname);
 
-    dropDownData = getDropDownData(MARFilterData, user);
+  useEffect(() => {
+    if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
+      const search = queryString.parse(location.search, { arrayFormat: "index" });
 
-    const urlSchoolYear =
-      schoolYear.find((item, index) => item.key === search.termId) ||
-      (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
-    const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || {
-      key: "All",
-      title: "All Subjects"
-    };
-    const urlGrade = staticDropDownData.grades.find((item, index) => item.key === search.grade) || {
-      key: "All",
-      title: "All Grades"
-    };
-    const urlCourseId = dropDownData.courses.find((item, index) => item.key === search.courseId) || {
-      key: "All",
-      title: "All Courses"
-    };
-    const urlGroupId = dropDownData.groups.find((item, index) => item.key === search.groupId) || {
-      key: "All",
-      title: "All Groups"
-    };
-    let urlSchoolId = { key: "All", title: "All Schools" };
-    let urlTeacherId = { key: "All", title: "All Teachers" };
-    if (role !== "teacher") {
-      urlSchoolId = dropDownData.schools.find((item, index) => item.key === search.schoolId) || {
+      dropDownData = getDropDownData(MARFilterData, user);
+
+      const urlSchoolYear =
+        schoolYear.find((item, index) => item.key === search.termId) ||
+        (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
+      const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || {
         key: "All",
-        title: "All Schools"
+        title: "All Subjects"
       };
-      urlTeacherId = dropDownData.teachers.find((item, index) => item.key === search.teacherId) || {
+      const urlGrade = staticDropDownData.grades.find((item, index) => item.key === search.grade) || {
         key: "All",
-        title: "All Schools"
+        title: "All Grades"
       };
+      const urlCourseId = dropDownData.courses.find((item, index) => item.key === search.courseId) || {
+        key: "All",
+        title: "All Courses"
+      };
+      const urlGroupId = dropDownData.groups.find((item, index) => item.key === search.groupId) || {
+        key: "All",
+        title: "All Groups"
+      };
+      let urlSchoolId = { key: "All", title: "All Schools" };
+      let urlTeacherId = { key: "All", title: "All Teachers" };
+      if (role !== "teacher") {
+        urlSchoolId = dropDownData.schools.find((item, index) => item.key === search.schoolId) || {
+          key: "All",
+          title: "All Schools"
+        };
+        urlTeacherId = dropDownData.teachers.find((item, index) => item.key === search.teacherId) || {
+          key: "All",
+          title: "All Schools"
+        };
+      }
+      const urlAssessmentType = staticDropDownData.assessmentType.find(
+        (item, index) => item.key === search.assessmentType
+      ) || {
+        key: "All",
+        title: "All Assignment Types"
+      };
+
+      const testIdsArr = [].concat(search.testIds || []);
+
+      let urlTestIds = testIdsArr
+        .map(key => find(dropDownData.testIdArr, test => test.key == key))
+        .filter(item => item);
+
+      let obtainedFilters = {
+        termId: urlSchoolYear.key,
+        subject: urlSubject.key,
+        grade: urlGrade.key,
+        courseId: urlCourseId.key,
+        groupId: urlGroupId.key,
+        schoolId: urlSchoolId.key,
+        teacherId: urlTeacherId.key,
+        assessmentType: urlAssessmentType.key,
+        testIds: urlTestIds.length ? urlTestIds.join(",") : ""
+      };
+
+      dropDownData = filteredDropDownData(MARFilterData, user, obtainedFilters);
+
+      processedTestIds = processTestIds(dropDownData, obtainedFilters, "", role);
+
+      let urlParams = { ...obtainedFilters };
+
+      if (role === "teacher") {
+        delete urlParams.schoolId;
+        delete urlParams.teacherId;
+      }
+
+      setFiltersAction(urlParams);
+      setTestIdAction(urlTestIds);
+
+      _onGoClick({
+        selectedTest: urlTestIds,
+        filters: urlParams
+      });
+
+      setPrevMARFilterData(MARFilterData);
     }
-    const urlAssessmentType = staticDropDownData.assessmentType.find(
-      (item, index) => item.key === search.assessmentType
-    ) || {
-      key: "All",
-      title: "All Assignment Types"
-    };
-    const urlTestId = dropDownData.testIdArr.find((item, index) => item.key === search.testId) || {
-      key: "",
-      title: ""
-    };
-
-    let obtainedFilters = {
-      termId: urlSchoolYear.key,
-      subject: urlSubject.key,
-      grade: urlGrade.key,
-      courseId: urlCourseId.key,
-      groupId: urlGroupId.key,
-      schoolId: urlSchoolId.key,
-      teacherId: urlTeacherId.key,
-      assessmentType: urlAssessmentType.key
-    };
-
-    dropDownData = filteredDropDownData(MARFilterData, user, obtainedFilters);
-
-    processedTestIds = processTestIds(dropDownData, obtainedFilters, urlTestId.key, role);
-
-    let urlParams = { ...obtainedFilters };
-
-    let filteredUrlTestId = urlTestId.key;
-    if (urlTestId.key !== processedTestIds.validTestId || urlTestId.key === "") {
-      filteredUrlTestId = processedTestIds.testIds.length ? processedTestIds.testIds[0].key : "";
-    }
-    if (role === "teacher") {
-      delete urlParams.schoolId;
-      delete urlParams.teacherId;
-    }
-
-    setFiltersAction(urlParams);
-    setTestIdAction(filteredUrlTestId);
-
-    _onGoClick({
-      selectedTest: { key: filteredUrlTestId, title: getTitleByTestId(filteredUrlTestId) },
-      filters: urlParams
-    });
-
-    setPrevMARFilterData(MARFilterData);
-  }
+  }, [prevMARFilterData, MARFilterData]);
 
   dropDownData = useMemo(() => filteredDropDownData(MARFilterData, user, { ...filters }), [MARFilterData, filters]);
 
@@ -182,22 +176,24 @@ const SingleAssessmentReportFilters = ({
         teacherId: filters.teacherId,
         assessmentType: filters.assessmentType
       },
-      testId,
+      testIds,
       role
     );
-  }, [MARFilterData, filters, testId]);
-
-  if (!processedTestIds.validTestId && processedTestIds.testIds.length) {
-    setTestIdAction(processedTestIds.testIds[0].key ? processedTestIds.testIds[0].key : "");
-  }
+  }, [MARFilterData, filters, testIds]);
 
   const updateSchoolYearDropDownCB = selected => {
-    let obj = {
-      ...filters,
+    let pathname = location.pathname;
+    let _filters = { ...filters };
+    _filters.termId = selected.key;
+    history.push(pathname + "?" + queryString.stringify(_filters));
+
+    let q = {
       termId: selected.key
     };
-    setFiltersAction(obj);
+
+    getMARFilterDataRequestAction(q);
   };
+
   const updateSubjectDropDownCB = selected => {
     let obj = {
       filters: {
@@ -258,13 +254,13 @@ const SingleAssessmentReportFilters = ({
   };
 
   const onTestIdChange = (selected, comData) => {
-    setTestIdAction(selected.key);
+    setTestIdAction(selected);
   };
 
   const onGoClick = () => {
     let settings = {
       filters: { ...filters },
-      selectedTest: { key: testId, title: getTitleByTestId(testId) }
+      selectedTest: testIds
     };
     _onGoClick(settings);
   };
@@ -346,12 +342,13 @@ const SingleAssessmentReportFilters = ({
       </Row>
       <Row type="flex" className="single-assessment-report-bottom-filter">
         <Col className="single-assessment-report-test-autocomplete-container">
-          <AutocompleteDropDown
+          <MultipleSelect
             containerClassName="single-assessment-report-test-autocomplete"
             data={processedTestIds.testIds ? processedTestIds.testIds : []}
-            by={testId}
+            by={testIds}
             prefix="Assessment Name"
             selectCB={onTestIdChange}
+            placeholder="All Assessments"
           />
         </Col>
         <Col className={"single-assessment-report-go-button-container"}>
@@ -369,7 +366,7 @@ const enhance = compose(
     state => ({
       MARFilterData: getReportsMARFilterData(state),
       filters: getFiltersSelector(state),
-      testId: getTestIdSelector(state),
+      testIds: getTestIdSelector(state),
       role: getUserRole(state),
       user: getUser(state)
     }),

@@ -3,13 +3,12 @@ import PropTypes from "prop-types";
 import { Tag } from "antd";
 
 import { FlexContainer, PremiumTag } from "@edulastic/common";
-import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
+import { IconShare, IconHeart, IconUser, IconHash, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { greenDark } from "@edulastic/colors";
 
 import Tags from "../../../../../../src/components/common/Tags";
 import Standards from "../../../../../../ItemList/components/Item/Standards";
 import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
-import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
 import { MetaTag, ExtraInfo, DokStyled } from "./styled";
 
 const MetaInfoCell = ({
@@ -32,11 +31,7 @@ const MetaInfoCell = ({
         {dok && <DokStyled>{`DOK:${dok}`}</DokStyled>}
         {renderAnalytics(by, IconUser)}
         {renderAnalytics(id && id.substring(18), IconHash)}
-        {audio && audio.hasOwnProperty("ttsSuccess") ? (
-          <AudioIcon className="fa fa-volume-up" success={audio.ttsSuccess} />
-        ) : (
-          ""
-        )}
+        {audio && audio.hasOwnProperty("ttsSuccess") ? audio.ttsSuccess ? <IconVolumeUp /> : <IconNoVolume /> : ""}
       </FlexContainer>
     </FlexContainer>
   );

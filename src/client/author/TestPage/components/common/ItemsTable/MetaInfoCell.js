@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { Button, Tag, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, MoveLink, PremiumTag } from "@edulastic/common";
-import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
+import { IconShare, IconHeart, IconUser, IconHash, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { greenDark, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { cloneDeep, uniq as _uniq } from "lodash";
@@ -27,7 +27,6 @@ import {
   getTestItemsSelector
 } from "../../AddItems/ducks";
 
-import { AudioIcon } from "../../../../ItemList/components/Item/styled";
 import { getUserId } from "../../../../src/selectors/user";
 
 class MetaInfoCell extends Component {
@@ -247,9 +246,7 @@ class MetaInfoCell extends Component {
                   <FirstText>{data.likes}</FirstText>
                 </MetaWrapper>
                 {data.audio.hasOwnProperty("ttsSuccess") ? (
-                  <MetaWrapper>
-                    <AudioIcon className="fa fa-volume-up" success={data.audio.ttsSuccess} />
-                  </MetaWrapper>
+                  <MetaWrapper>{data.audio.ttsSuccess ? <IconVolumeUp /> : <IconNoVolume />}</MetaWrapper>
                 ) : (
                   ""
                 )}

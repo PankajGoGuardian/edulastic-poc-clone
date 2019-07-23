@@ -458,6 +458,9 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: { ...state.item, itemLevelScoring: !!payload } };
 
     case SET_ITEM_DETAIL_SCORE:
+      if (!(payload > 0)) {
+        return state;
+      }
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
 
     case UPDATE_QUESTION:

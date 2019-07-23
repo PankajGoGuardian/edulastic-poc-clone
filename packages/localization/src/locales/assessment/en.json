@@ -665,6 +665,8 @@
       "correctAnswers": "Correct Answer",
       "alternateAnswers": "Alternate Answer",
       "dot": "Dot",
+      "dropdown": "Dropdown",
+      "keypad": "Keypad",
       "comma": "Comma",
       "space": "Space",
       "decimal": "Decimal",

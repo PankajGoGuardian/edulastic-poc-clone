@@ -3,12 +3,12 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { Checkbox, Select } from "antd";
+import { Radio, Select } from "antd";
 import { get, isObject } from "lodash";
 
 import { FlexContainer, MathKeyboard } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { textColor } from "@edulastic/colors";
+import { textColor, mainTextColor } from "@edulastic/colors";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
 
 const { Option } = Select;
@@ -25,6 +25,11 @@ const UnitsDropdownPure = ({
   onChangeShowDropdown
 }) => {
   const [offset, updateOffset] = useState(keypadOffset);
+
+  const onChnageRadioGroup = e => {
+    onChangeShowDropdown(e.target.value === "dropdown");
+  };
+
   const handleChange = value => {
     if (preview) {
       onChange(value);
@@ -96,17 +101,19 @@ const UnitsDropdownPure = ({
         </UniteSelet>
       )}
       {!preview && (
-        <FlexContainer flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
-          <Checkbox
-            data-cy="answer-allowed-variables"
-            checked={item.showDropdown}
-            onChange={e => {
-              onChangeShowDropdown(e.target.checked);
-            }}
-          >
-            {`${t("component.math.showDropdown")} ${item.showDropdown ? "dropdown" : "keypad"}`}
-          </Checkbox>
-          <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
+        <FlexContainer alignItems="center" justifyContent="flex-start">
+          <FlexContainer flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
+            <FieldLabel>{t("component.math.showDropdown")}</FieldLabel>
+            <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
+          </FlexContainer>
+          <Radio.Group onChange={onChnageRadioGroup} value={item.showDropdown ? "dropdown" : "keypad"}>
+            <Radio value="dropdown">
+              <FieldLabel>{t("component.math.dropdown")}</FieldLabel>
+            </Radio>
+            <Radio value="keypad">
+              <FieldLabel>{t("component.math.keypad")}</FieldLabel>
+            </Radio>
+          </Radio.Group>
         </FlexContainer>
       )}
     </FlexContainer>
@@ -151,6 +158,17 @@ const UniteSelet = styled(Select)`
   }
 `;
 
+const FieldLabel = styled.div`
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: ${mainTextColor};
+  position: relative;
+  margin-top: 2px;
+  display: inline-block;
+  letter-spacing: 0.1px;
+`;
+
 const CustomKeyLink = styled.a`
   cursor: pointer;
   font-size: 11px;
@@ -159,7 +177,6 @@ const CustomKeyLink = styled.a`
   margin-top: 2px;
   display: inline-block;
   letter-spacing: 0.1px;
-  margin-left: 36px;
   margin-top: 2px;
   user-select: none;
 `;

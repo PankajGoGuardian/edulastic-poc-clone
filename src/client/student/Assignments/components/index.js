@@ -8,13 +8,13 @@ import Header from "../../sharedComponents/Header";
 import SubHeader from "./SubHeader";
 import AssignmentContainer from "./Container";
 import { getEnrollClassAction } from "../../ManageClass/ducks";
-import { changeClassAction } from "../../Login/ducks";
+import { changeClassAction, logoutAction } from "../../Login/ducks";
 
 const Wrapper = styled(Layout)`
   width: 100%;
 `;
 
-const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location }) => {
+const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location, logout }) => {
   // location is available as prop when we are navigating through link from student manage class
   useEffect(() => {
     loadAllClasses();
@@ -22,6 +22,13 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
   if (loading) return <Spin />;
   const { classItem = {} } = location;
   const activeEnrolledClasses = activeClasses.filter(c => c.status === "1");
+
+  useEffect(() => {
+    if (activeEnrolledClasses.length === 0) {
+      logout();
+    }
+  }, [activeEnrolledClasses.length]);
+
   if (!isEmpty(classItem)) {
     const { _id } = classItem;
     changeClass(_id);
@@ -52,6 +59,7 @@ export default connect(
   }),
   {
     loadAllClasses: getEnrollClassAction,
-    changeClass: changeClassAction
+    changeClass: changeClassAction,
+    logout: logoutAction
   }
 )(Assignments);

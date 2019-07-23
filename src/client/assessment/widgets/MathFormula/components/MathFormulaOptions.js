@@ -108,13 +108,13 @@ class MathFormulaOptions extends Component {
 MathFormulaOptions.propTypes = {
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
-  setKeyPadOffest: PropTypes.func.isRequired,
   responseContainers: PropTypes.array,
   t: PropTypes.func.isRequired,
   customKeys: PropTypes.array,
   uiStyle: PropTypes.object,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
+  setKeyPadOffest: PropTypes.func, // this needs only for units types
   cleanSections: PropTypes.func
 };
 
@@ -129,6 +129,7 @@ MathFormulaOptions.defaultProps = {
     choice_label: "number"
   },
   advancedAreOpen: false,
+  setKeyPadOffest: () => null,
   fillSections: () => {},
   cleanSections: () => {}
 };

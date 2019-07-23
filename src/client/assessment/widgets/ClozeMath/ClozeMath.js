@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { Paper, WithResources, InstructorStimulus } from "@edulastic/common";
+import { Paper, WithResources, InstructorStimulus, AnswerContext } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -24,7 +24,6 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 // import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 import ChoicesForDropDown from "./ChoicesForDropDown";
-import { AnswerContext } from "@edulastic/common";
 
 const ClozeMath = ({
   view,

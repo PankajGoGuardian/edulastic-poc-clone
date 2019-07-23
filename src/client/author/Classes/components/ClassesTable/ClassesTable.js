@@ -242,10 +242,6 @@ class ClassesTable extends Component {
   };
 
   changeStatusValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = value;
-    this.setState({ filtersData }, () => this.afterSetState(key));
-
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
@@ -366,7 +362,8 @@ class ClassesTable extends Component {
   };
 
   loadFilteredClassList = () => {
-    loadClassListData(getSearchQuery());
+    const { loadClassListData } = this.props;
+    loadClassListData(this.getSearchQuery());
   };
 
   changeActionMode = e => {
@@ -597,7 +594,9 @@ class ClassesTable extends Component {
               disabled={isFilterTextDisable}
               value={filterStr}
             >
-              <Option value="">Select a subject</Option>
+              <Option value="" disabled={true}>
+                Select a subject
+              </Option>
               <Option value="Mathematics">Mathematics</Option>
               <Option value="ELA">ELA</Option>
               <Option value="Science">Science</Option>

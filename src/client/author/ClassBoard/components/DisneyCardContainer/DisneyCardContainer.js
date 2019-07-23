@@ -138,7 +138,7 @@ class DisneyCardContainer extends Component {
          * for differentiating archived students
          */
         const enrollMentFlag =
-          enrollmentStatus[student.studentId] === 0 ? (
+          enrollmentStatus[student.studentId] == 0 ? (
             <span title="Not Enrolled">
               <ExclamationMark />
             </span>

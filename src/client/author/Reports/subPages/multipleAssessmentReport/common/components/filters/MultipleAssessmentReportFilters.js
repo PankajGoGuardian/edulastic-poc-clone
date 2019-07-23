@@ -120,7 +120,7 @@ const SingleAssessmentReportFilters = ({
         title: "All Assignment Types"
       };
 
-      const testIdsArr = search.testIds || [];
+      const testIdsArr = [].concat(search.testIds || []);
 
       let urlTestIds = testIdsArr
         .map(key => find(dropDownData.testIdArr, test => test.key == key))

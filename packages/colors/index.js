@@ -6,6 +6,7 @@ export const themeColor = "#00AD50"; // green
 export const themeColorLight = "#42d184"; // light green
 export const themeColorLighter = "#5EB500"; // light green
 export const themeColorTagsBg = "#E1FBED";
+export const themeColorBreadcrumb = "#69727E";
 
 export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";

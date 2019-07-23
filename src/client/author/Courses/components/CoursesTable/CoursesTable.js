@@ -171,9 +171,16 @@ class CoursesTable extends React.Component {
   };
 
   onBlurFilterText = (e, key) => {
-    const _filtersData = [...this.state.filtersData];
-    _filtersData[key].filterStr = e.target.value;
-    _filtersData[key].filterAdded = true;
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value,
+          filterAdded: true
+        };
+      }
+      return item;
+    });
     this.setState({ _filtersData });
 
     if (_filtersData[key].filterAdded) {
@@ -195,8 +202,15 @@ class CoursesTable extends React.Component {
 
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    const _filtersData = [...filtersData];
-    _filtersData[key].filterAdded = true;
+    const _filtersData = filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: true
+        };
+      }
+      return item;
+    });
     this.loadFilteredCourseList([..._filtersData], sortedInfo, searchByName, currentPage);
     _filtersData.push({
       filterAdded: false,

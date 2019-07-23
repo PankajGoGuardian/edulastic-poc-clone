@@ -83,10 +83,10 @@ const OrderList = ({
   }, [item, userAnswer]);
 
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
-  const styleType = get(item, "ui_style.type", "list");
+  const styleType = get(item, "ui_style.type", "button");
   const axis = styleType === "inline" ? "x" : "y";
   const columns = styleType === "inline" ? 3 : 1;
-  console.log(styleType);
+
   const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
     setQuestionData(
       produce(item, draft => {
@@ -263,6 +263,7 @@ const OrderList = ({
               previewIndexesList={userAnswer}
               evaluation={evaluation || (item && item.activity ? item.activity.evaluation : evaluation)}
               listStyle={{ fontSize }}
+              styleType={styleType}
               axis={axis}
               columns={columns}
             />
@@ -278,6 +279,7 @@ const OrderList = ({
                   evaluation={evaluationFromAnswers}
                   validation={itemForPreview.validation}
                   list={itemForPreview.list}
+                  styleType={styleType}
                   listStyle={{ fontSize }}
                   disableResponse={disableResponse}
                   axis={axis}
@@ -328,6 +330,7 @@ const OrderList = ({
               questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
               smallSize={smallSize}
               listStyle={{ fontSize }}
+              styleType={styleType}
               axis={axis}
               columns={columns}
               disableResponse={disableResponse}

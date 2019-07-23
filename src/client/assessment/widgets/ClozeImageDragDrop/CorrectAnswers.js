@@ -138,7 +138,8 @@ class CorrectAnswers extends Component {
       maxRespCount,
       showDashedBorder,
       imageOptions,
-      item
+      item,
+      children
     } = this.props;
     const { value } = this.state;
     return (
@@ -210,6 +211,7 @@ class CorrectAnswers extends Component {
               return null;
             })}
         </div>
+        {children}
       </div>
     );
   }

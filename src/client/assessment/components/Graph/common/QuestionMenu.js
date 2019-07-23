@@ -47,18 +47,34 @@ class QuestionMenu extends Component {
 
     if ((!advancedAreOpen && options[index].section === "advanced") || !options[index].el) return false;
 
-    const rect = options[index].el.getBoundingClientRect();
-    const viewHeight = Math.max(options[index].el.clientHeight, window.innerHeight / 2.3);
+    const summaryScrollHeight = document.querySelector("#react-app").scrollHeight;
+    const { el } = options[index];
     const activeOption = document.querySelector(".option.active");
+    const scrollBarOptions = document.querySelector(".option.active").parentNode.parentNode;
 
-    // first section
-    if (window.scrollY <= 40 && activeTab !== index && index === 0) return this.setState({ activeTab: 0 });
+    scrollBarOptions.scrollTo({
+      top: activeOption.offsetTop,
+      behavior: "smooth"
+    });
 
-    if (!(rect.bottom < 0 || rect.top - viewHeight >= 0) && activeTab !== index) {
-      if (activeOption) {
-        activeOption.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+    if (window.scrollY <= 40 && activeTab !== index && index === 0) {
+      return this.setState({ activeTab: 0 });
+    }
 
+    // last section
+    if (
+      window.scrollY + window.innerHeight >= summaryScrollHeight - 40 &&
+      activeTab !== index &&
+      index === options.length - 1
+    ) {
+      return this.setState({ activeTab: options.length - 1 });
+    }
+
+    if (
+      window.scrollY + window.innerHeight / 3 >= el.offsetTop &&
+      window.scrollY + (window.innerHeight / 4) * 2 <= el.offsetTop + el.clientHeight &&
+      activeTab !== index
+    ) {
       return this.setState({ activeTab: index });
     }
   };

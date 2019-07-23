@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { debounce } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -13,7 +12,8 @@ class Question extends Component {
     super(props);
 
     this.state = {
-      el: null
+      el: null,
+      intervalID: null
     };
 
     this.node = React.createRef();
@@ -30,16 +30,22 @@ class Question extends Component {
     fillSections(section, label, node);
 
     this.setState({
-      el: node
+      intervalID: setInterval(() => {
+        this.updateVariablesOfSection();
+      }, 1000)
     });
 
-    this.updateVariablesOfSection();
+    this.setState({
+      el: node
+    });
   };
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
+    const { intervalID } = this.state;
 
     cleanSections();
+    clearInterval(intervalID);
   }
 
   updateVariablesOfSection = () => {
@@ -50,15 +56,13 @@ class Question extends Component {
 
     if (!node) return false;
 
-    debounce(() => {
-      if (node.clientHeight !== el.clientHeight) {
-        fillSections(section, label, node);
+    if (node.clientHeight !== el.clientHeight || node.offsetTop !== el.offsetTop) {
+      fillSections(section, label, node);
 
-        this.setState({
-          el: node
-        });
-      }
-    }, 100);
+      this.setState({
+        el: node
+      });
+    }
   };
 
   render() {

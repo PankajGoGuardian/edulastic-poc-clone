@@ -78,7 +78,7 @@ class UploadCourseModal extends React.Component {
         if (
           headerArr.length === 2 &&
           (headerArr[0] === `"course_id"` || headerArr[0] === `'course_id'`) &&
-          (headerArr[1] === `"course_name"` || headerArr[1] === `'course_name"`)
+          (headerArr[1] === `"course_name"` || headerArr[1] === `'course_name'`)
         ) {
           uploadCSVCourse(file);
         } else {

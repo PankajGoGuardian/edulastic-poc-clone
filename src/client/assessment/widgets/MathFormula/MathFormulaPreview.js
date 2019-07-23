@@ -70,12 +70,21 @@ class MathFormulaPreview extends Component {
   }
 
   getValidLatex(props) {
-    const { studentTemplate, userAnswer } = props;
+    const { studentTemplate, userAnswer, item } = props;
     if (this.isStatic()) {
       return studentTemplate;
     }
+
     if (userAnswer) {
-      if (typeof userAnswer === "string") return userAnswer;
+      if (typeof userAnswer === "string") {
+        return userAnswer;
+      }
+
+      const { isUnits, showDropdown } = item;
+      if (isUnits && showDropdown && typeof userAnswer === "object") {
+        return userAnswer.expression;
+      }
+
       return userAnswer[0];
     }
     return studentTemplate;

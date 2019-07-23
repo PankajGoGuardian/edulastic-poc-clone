@@ -23,7 +23,13 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
       } else {
         const { isUnits, is_math, showDropdown } = validations[id];
         if (isUnits && is_math && showDropdown) {
-          answer = (answer.expression || "").replace(/=/gm, `${answer.unit || ""}=`);
+          const expression = answer.expression || "";
+          const unit = answer.unit ? answer.unit : "";
+          if (expression.search("=") === -1) {
+            answer = expression + unit;
+          } else {
+            answer = expression.replace(/=/gm, `${unit}=`);
+          }
         }
 
         const { evaluation, score, maxScore } = await evaluator({

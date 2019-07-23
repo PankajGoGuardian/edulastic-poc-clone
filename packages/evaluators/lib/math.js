@@ -148,6 +148,10 @@ var exactMatchEvaluator =
                           options = _val$options === void 0 ? {} : _val$options;
 
                         if (options.unit) {
+                          if (val.value.search("=") === -1) {
+                            return val.value + options.unit;
+                          }
+
                           return val.value.replace(/=/gm, "".concat(options.unit, "="));
                         }
 

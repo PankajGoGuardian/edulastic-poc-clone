@@ -84,6 +84,9 @@ const exactMatchEvaluator = async (userResponse, answers) => {
         return answer.value.map(val => {
           const { options = {} } = val;
           if (options.unit) {
+            if (val.value.search("=") === -1) {
+              return val.value + options.unit;
+            }
             return val.value.replace(/=/gm, `${options.unit}=`);
           }
           return val.value;

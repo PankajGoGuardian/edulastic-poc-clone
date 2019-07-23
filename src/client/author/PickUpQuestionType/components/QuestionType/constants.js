@@ -1877,7 +1877,7 @@ export const getCards = onSelectQuestionType => {
         title: "Units",
         is_math: true,
         stimulus: "",
-        template: `${EMBED_RESPONSE} = 1m`,
+        template: EMBED_RESPONSE,
         isUnits: true,
         templateDisplay: false,
         showDropdown: false,

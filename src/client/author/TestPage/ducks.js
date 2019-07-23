@@ -84,6 +84,12 @@ export const receiveTestByIdError = error => ({
   payload: { error }
 });
 
+/**
+ * To create a new test from the data passed.
+ * @param {object} data
+ * @param {boolean} toReview
+ * @param {boolean} isCartTest
+ */
 export const createTestAction = (data, toReview = false, isCartTest = false) => ({
   type: CREATE_TEST_REQUEST,
   payload: { data, toReview, isCartTest }
@@ -403,7 +409,7 @@ function* createTestSaga({ payload }) {
     }
 
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate", "testItems"]);
-    //from cart we are getting testItem ids only in payload
+    //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
     if (!payload.isCartTest) {
       dataToSend.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
     } else {

@@ -2,9 +2,72 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Row, Col, Button, Slider } from "antd";
 import { Table } from "antd";
-import { darkGrey, grey, fadedBlack, fadedGrey, black } from "@edulastic/colors";
+import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
+
+export const StyledGoButton = styled(Button)`
+  font-size: 16px;
+  padding-right: 11px;
+  padding-left: 11px;
+  height: 37px;
+  border-radius: 3px;
+  background-color: ${themeColor} !important;
+  border-color: transparent;
+`;
+
+export const StyledFilterWrapper = styled.div`
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px 20px;
+
+  .ant-select-selection {
+    &__rendered {
+      padding-left: 0px;
+    }
+  }
+
+  .ant-select-auto-complete.ant-select .ant-input {
+    background-color: ${lightGreySecondary};
+    border-radius: 3px;
+    padding: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    &:focus {
+      outline: 0px;
+      box-shadow: none;
+      border-color: ${themeColor};
+    }
+  }
+
+  .ant-input-affix-wrapper .ant-input-suffix {
+    right: 18px;
+    i {
+      svg {
+        color: ${themeColor};
+      }
+    }
+  }
+
+  .control-dropdown {
+    button {
+      background-color: ${lightGreySecondary};
+      border-radius: 3px;
+      padding: 8.5px 18px;
+      height: auto;
+      font-size: 13px;
+      font-weight: 600;
+
+      i {
+        color: ${themeColor};
+      }
+    }
+  }
+`;
+
+export const StyledReportsContentContainer = styled.div`
+  padding: 0px 35px;
+`;
 
 export const DropDownContainer = styled.div`
   .dropdown-container {

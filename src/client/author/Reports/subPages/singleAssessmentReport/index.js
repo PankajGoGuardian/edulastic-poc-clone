@@ -11,7 +11,6 @@ import PerformanceByStudents from "./PerformanceByStudents";
 import QuestionAnalysis from "./QuestionAnalysis";
 
 import SingleAssessmentReportFilters from "./common/components/filters";
-import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
@@ -22,21 +21,6 @@ import { connect } from "react-redux";
 
 const SingleAssessmentReportContainer = props => {
   const { settings, setSARSettingsAction } = props;
-
-  useEffect(() => {
-    if (settings.selectedTest.key) {
-      let arr = Object.keys(settings.requestFilters);
-      let obj = {};
-      arr.map((item, index) => {
-        let val = settings.requestFilters[item] === "" ? "All" : settings.requestFilters[item];
-        obj[item] = val;
-      });
-      let path = settings.selectedTest.key + "?" + qs.stringify(obj);
-      props.history.push(path);
-    }
-  }, [props.settings]);
-
-  let computedChartNavigatorLinks;
 
   const computeChartNavigationLinks = (sel, filt) => {
     if (navigation.locToData[props.loc]) {
@@ -54,7 +38,21 @@ const SingleAssessmentReportContainer = props => {
     }
   };
 
-  computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
+  useEffect(() => {
+    if (settings.selectedTest.key) {
+      let arr = Object.keys(settings.requestFilters);
+      let obj = {};
+      arr.map((item, index) => {
+        let val = settings.requestFilters[item] === "" ? "All" : settings.requestFilters[item];
+        obj[item] = val;
+      });
+      let path = settings.selectedTest.key + "?" + qs.stringify(obj);
+      props.history.push(path);
+    }
+
+    const navigationItems = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
+    props.updateNavigation(navigationItems);
+  }, [props.settings]);
 
   const onGoClick = _settings => {
     if (_settings.selectedTest.key) {
@@ -83,7 +81,7 @@ const SingleAssessmentReportContainer = props => {
           match={props.match}
           style={props.showFilter ? { display: "block" } : { display: "none" }}
         />
-        <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
+        {/* <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} /> */}
         <Route
           exact
           path={`/author/reports/assessment-summary/test/:testId?`}

@@ -26,28 +26,6 @@ export const StandardsMasteryReportContainer = props => {
   });
   const firstRender = useRef(true);
 
-  useEffect(() => {
-    if (!firstRender.current) {
-      let obj = {};
-      let arr = Object.keys(gradebookSettings.requestFilters);
-      arr.map((item, index) => {
-        if (gradebookSettings.requestFilters[item] === "") {
-          obj[item] = "All";
-        } else {
-          obj[item] = gradebookSettings.requestFilters[item];
-        }
-      });
-      obj.testId = gradebookSettings.selectedTest.key;
-      let path = qs.stringify(obj);
-      props.history.push("?" + path);
-    }
-    firstRender.current = false;
-  }, [gradebookSettings]);
-
-  let computedChartNavigatorLinks;
-
-  // IMPORTANT: This needs to be implemented properly when we know what all parameters the other tabs require cuz the parameters are not same for
-  // all the tabs
   const computeChartNavigationLinks = filt => {
     if (navigation.locToData[props.loc]) {
       let arr = Object.keys(filt);
@@ -64,7 +42,28 @@ export const StandardsMasteryReportContainer = props => {
     }
   };
 
-  computedChartNavigatorLinks = computeChartNavigationLinks(gradebookSettings.requestFilters);
+  useEffect(() => {
+    if (!firstRender.current) {
+      let obj = {};
+      let arr = Object.keys(gradebookSettings.requestFilters);
+      arr.map((item, index) => {
+        if (gradebookSettings.requestFilters[item] === "") {
+          obj[item] = "All";
+        } else {
+          obj[item] = gradebookSettings.requestFilters[item];
+        }
+      });
+      obj.testId = gradebookSettings.selectedTest.key;
+      let path = qs.stringify(obj);
+      props.history.push("?" + path);
+    }
+    firstRender.current = false;
+
+    const computedChartNavigatorLinks = computeChartNavigationLinks(gradebookSettings.requestFilters);
+    props.updateNavigation(computedChartNavigatorLinks);
+  }, [gradebookSettings]);
+
+  let computedChartNavigatorLinks;
 
   const onStandardsGradebookGoClick = _settings => {
     let obj = {};
@@ -94,7 +93,6 @@ export const StandardsMasteryReportContainer = props => {
         match={props.match}
         style={props.showFilter ? { display: "block" } : { display: "none" }}
       />
-      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
       <Route
         exact
         path={`/author/reports/standards-gradebook`}

@@ -25,6 +25,7 @@ import { getUser } from "../../../../../../src/selectors/user";
 
 import staticDropDownData from "../../static/staticDropDownData";
 import school from "@edulastic/api/src/school";
+import { StyledFilterWrapper, StyledGoButton } from "../../../../../common/styled";
 
 const SingleAssessmentReportFilters = ({
   MARFilterData,
@@ -267,96 +268,98 @@ const SingleAssessmentReportFilters = ({
 
   return (
     <div className={className} style={style}>
-      <Row type="flex" className="single-assessment-report-top-filter">
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown
-            by={filters.termId}
-            selectCB={updateSchoolYearDropDownCB}
-            data={dropDownData.schoolYear}
-            prefix="School Year"
-            showPrefixOnSelected={false}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown
-            by={filters.subject}
-            selectCB={updateSubjectDropDownCB}
-            data={staticDropDownData.subjects}
-            prefix="Subject"
-            showPrefixOnSelected={false}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <AutocompleteDropDown
-            prefix="Grade"
-            className="custom-1-scrollbar"
-            by={filters.grade}
-            selectCB={updateGradeDropDownCB}
-            data={staticDropDownData.grades}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <AutocompleteDropDown
-            prefix="Course"
-            by={filters.courseId}
-            selectCB={updateCourseDropDownCB}
-            data={dropDownData.courses}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <AutocompleteDropDown
-            prefix="Class"
-            by={filters.groupId}
-            selectCB={updateClassesDropDownCB}
-            data={dropDownData.groups}
-          />
-        </Col>
-        {role !== "teacher" ? (
-          <>
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <AutocompleteDropDown
-                prefix="School"
-                by={filters.schoolId}
-                selectCB={updateSchoolsDropDownCB}
-                data={dropDownData.schools}
-              />
-            </Col>
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <AutocompleteDropDown
-                prefix="Teacher"
-                by={filters.teacherId}
-                selectCB={updateTeachersDropDownCB}
-                data={dropDownData.teachers}
-              />
-            </Col>
-          </>
-        ) : null}
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <AutocompleteDropDown
-            prefix="Assessment Type"
-            by={filters.assessmentType}
-            selectCB={updateAssessmentTypeDropDownCB}
-            data={staticDropDownData.assessmentType}
-          />
-        </Col>
-      </Row>
-      <Row type="flex" className="single-assessment-report-bottom-filter">
-        <Col className="single-assessment-report-test-autocomplete-container">
-          <MultipleSelect
-            containerClassName="single-assessment-report-test-autocomplete"
-            data={processedTestIds.testIds ? processedTestIds.testIds : []}
-            by={testIds}
-            prefix="Assessment Name"
-            selectCB={onTestIdChange}
-            placeholder="All Assessments"
-          />
-        </Col>
-        <Col className={"single-assessment-report-go-button-container"}>
-          <Button type="primary" shape="round" onClick={onGoClick}>
-            Go
-          </Button>
-        </Col>
-      </Row>
+      <StyledFilterWrapper>
+        <Row type="flex" className="single-assessment-report-top-filter">
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <ControlDropDown
+              by={filters.termId}
+              selectCB={updateSchoolYearDropDownCB}
+              data={dropDownData.schoolYear}
+              prefix="School Year"
+              showPrefixOnSelected={false}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <ControlDropDown
+              by={filters.subject}
+              selectCB={updateSubjectDropDownCB}
+              data={staticDropDownData.subjects}
+              prefix="Subject"
+              showPrefixOnSelected={false}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <AutocompleteDropDown
+              prefix="Grade"
+              className="custom-1-scrollbar"
+              by={filters.grade}
+              selectCB={updateGradeDropDownCB}
+              data={staticDropDownData.grades}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <AutocompleteDropDown
+              prefix="Course"
+              by={filters.courseId}
+              selectCB={updateCourseDropDownCB}
+              data={dropDownData.courses}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <AutocompleteDropDown
+              prefix="Class"
+              by={filters.groupId}
+              selectCB={updateClassesDropDownCB}
+              data={dropDownData.groups}
+            />
+          </Col>
+          {role !== "teacher" ? (
+            <>
+              <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+                <AutocompleteDropDown
+                  prefix="School"
+                  by={filters.schoolId}
+                  selectCB={updateSchoolsDropDownCB}
+                  data={dropDownData.schools}
+                />
+              </Col>
+              <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+                <AutocompleteDropDown
+                  prefix="Teacher"
+                  by={filters.teacherId}
+                  selectCB={updateTeachersDropDownCB}
+                  data={dropDownData.teachers}
+                />
+              </Col>
+            </>
+          ) : null}
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <AutocompleteDropDown
+              prefix="Assessment Type"
+              by={filters.assessmentType}
+              selectCB={updateAssessmentTypeDropDownCB}
+              data={staticDropDownData.assessmentType}
+            />
+          </Col>
+        </Row>
+        <Row type="flex" className="single-assessment-report-bottom-filter">
+          <Col className="single-assessment-report-test-autocomplete-container">
+            <MultipleSelect
+              containerClassName="single-assessment-report-test-autocomplete"
+              data={processedTestIds.testIds ? processedTestIds.testIds : []}
+              by={testIds}
+              prefix="Assessment Name"
+              selectCB={onTestIdChange}
+              placeholder="All Assessments"
+            />
+          </Col>
+          <Col className={"single-assessment-report-go-button-container"}>
+            <StyledGoButton type="primary" shape="round" onClick={onGoClick}>
+              Go
+            </StyledGoButton>
+          </Col>
+        </Row>
+      </StyledFilterWrapper>
     </div>
   );
 };

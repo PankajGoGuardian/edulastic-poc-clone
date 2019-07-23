@@ -23,24 +23,6 @@ export const MainContainer = styled.div`
       background: #00ad50;
     }
   }
-  .ant-btn {
-    border-color: ${props => props.theme.themeColor};
-    &:hover,
-    &:focus,
-    &:active {
-      border-color: ${props => props.theme.themeColor};
-    }
-  }
-  .ant-btn-primary {
-    background-color: ${props => props.theme.themeColor};
-    border-color: ${props => props.theme.themeColor};
-    &:hover,
-    &:focus,
-    &:active {
-      background-color: ${props => props.theme.themeColor};
-      border-color: ${props => props.theme.themeColor};
-    }
-  }
   .ant-select-open,
   .ant-select-focused {
     .ant-select-selection {
@@ -173,7 +155,6 @@ export const MainContainer = styled.div`
 
   .ant-select-selection {
     &__rendered {
-      padding-left: 5px;
       margin-left: 0;
     }
     &__choice {

@@ -16,7 +16,18 @@ import {
 const { assignmentStatusBg, lightBlue } = authorAssignment;
 const {
   authorAssignmentConstants: {
-    assignmentStatus: { NOT_OPEN, IN_PROGRESS, IN_GRADING, NOT_GRADED, GRADES_HELD, DONE }
+    assignmentStatus: {
+      NOT_OPEN,
+      IN_PROGRESS,
+      IN_GRADING,
+      NOT_GRADED,
+      GRADES_HELD,
+      DONE,
+      IN_PROGRESS_PAUSED,
+      IN_GRADING_PAUSED,
+      NOT_GRADED_PAUSED,
+      GRADES_HELD_PAUSED
+    }
   }
 } = testActivity;
 
@@ -26,11 +37,19 @@ const defineStatusBg = status => {
       return assignmentStatusBg.NOT_OPEN;
     case IN_PROGRESS:
       return assignmentStatusBg.IN_PROGRESS;
+    case IN_PROGRESS_PAUSED:
+      return assignmentStatusBg.IN_PROGRESS;
     case IN_GRADING:
+      return assignmentStatusBg.IN_GRADING;
+    case IN_GRADING_PAUSED:
       return assignmentStatusBg.IN_GRADING;
     case NOT_GRADED:
       return assignmentStatusBg.NOT_GRADED;
+    case NOT_GRADED_PAUSED:
+      return assignmentStatusBg.NOT_GRADED;
     case GRADES_HELD:
+      return assignmentStatusBg.GRADES_HELD;
+    case GRADES_HELD_PAUSED:
       return assignmentStatusBg.GRADES_HELD;
     case DONE:
       return assignmentStatusBg.DONE;
@@ -256,7 +275,7 @@ export const BtnStatus = styled(Button)`
   border: 0px;
   font-size: 0.7em;
   font-weight: bold;
-  width: 90px;
+  min-width: 90px;
   height: 26px;
   text-align: center;
   border-radius: 8px;

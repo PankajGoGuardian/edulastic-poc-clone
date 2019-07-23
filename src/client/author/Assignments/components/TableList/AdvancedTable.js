@@ -138,7 +138,7 @@ class AdvancedTable extends Component {
         title: "Submitted",
         dataIndex: "inGrading",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.inGrading - b.inGrading,
+        sorter: (a, b) => a.inGrading + a.graded - (b.inGrading + b.graded),
         width: "16%",
         render: (text, row) => <div> {text + row.graded} </div>
       },

@@ -289,10 +289,13 @@ class MathFormulaPreview extends Component {
         {!testItem && previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
           <CorrectAnswerBox>
             {item.isUnits && item.showDropdown
-              ? item.validation.valid_response.value[0].value.replace(
-                  /=/gm,
-                  `${item.validation.valid_response.value[0].options.unit || ""}=`
-                )
+              ? item.validation.valid_response.value[0].value.search("=") === -1
+                ? item.validation.valid_response.value[0].value +
+                    item.validation.valid_response.value[0].options.unit || ""
+                : item.validation.valid_response.value[0].value.replace(
+                    /=/gm,
+                    `${item.validation.valid_response.value[0].options.unit || ""}=`
+                  )
               : item.validation.valid_response.value[0].value}
           </CorrectAnswerBox>
         )}
@@ -301,7 +304,9 @@ class MathFormulaPreview extends Component {
             {item.validation.alt_responses
               .map(ans => {
                 if (item.isUnits && item.showDropdown) {
-                  return ans.value[0].value.replace(/=/gm, ans.value[0].options.unit || "");
+                  return ans.value[0].value.search("=") === -1
+                    ? ans.value[0].value + ans.value[0].options.unit || ""
+                    : ans.value[0].value.replace(/=/gm, `${ans.value[0].options.unit || ""}=`);
                 }
                 return ans.value[0].value;
               })

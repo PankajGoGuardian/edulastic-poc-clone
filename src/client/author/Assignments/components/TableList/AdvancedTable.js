@@ -106,7 +106,7 @@ class AdvancedTable extends Component {
         title: "Type",
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.testType.localeCompare(b.testType),
+        sorter: (a, b) => a.testType.localeCompare(b.testType, "en", { ignorePunctuation: true }),
         width: "11%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },

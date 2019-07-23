@@ -171,13 +171,21 @@ class CoursesTable extends React.Component {
   };
 
   onBlurFilterText = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = e.target.value;
-    this.setState({ filtersData });
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value,
+          filterAdded: true
+        };
+      }
+      return item;
+    });
+    this.setState({ _filtersData });
 
-    if (filtersData[key].filterAdded) {
+    if (_filtersData[key].filterAdded) {
       const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+      this.loadFilteredCourseList(_filtersData, sortedInfo, searchByName, currentPage);
     }
   };
 
@@ -194,8 +202,23 @@ class CoursesTable extends React.Component {
 
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    filtersData[key].filterAdded = true;
-    this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+    const _filtersData = filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: true
+        };
+      }
+      return item;
+    });
+    this.loadFilteredCourseList([..._filtersData], sortedInfo, searchByName, currentPage);
+    _filtersData.push({
+      filterAdded: false,
+      filtersColumn: "",
+      filtersValue: "",
+      filterStr: ""
+    });
+    this.setState({ filtersData: _filtersData });
   };
 
   removeFilter = (e, key) => {
@@ -309,14 +332,10 @@ class CoursesTable extends React.Component {
     });
   };
 
-  handleSearchName = e => {
-    this.setState({ searchByName: e.target.value });
-  };
-
-  onBlurSearchName = e => {
+  handleSearchName = value => {
     const { filtersData, sortedInfo, currentPage } = this.state;
-    this.setState({ searchByName: e.target.value });
-    this.loadFilteredCourseList(filtersData, sortedInfo, e.target.value, currentPage);
+    this.setState({ searchByName: value });
+    this.loadFilteredCourseList(filtersData, sortedInfo, value, currentPage);
   };
 
   changePagination = pageNumber => {
@@ -549,11 +568,7 @@ class CoursesTable extends React.Component {
             + Create Course
           </Button>
 
-          <StyledNameSearch
-            placeholder="Search by name"
-            onChange={this.handleSearchName}
-            onBlur={this.onBlurSearchName}
-          />
+          <StyledNameSearch placeholder="Search by name" onSearch={this.handleSearchName} />
           <StyledActiveCheckbox defaultChecked={isShowActive} onChange={this.changeShowActiveCourse}>
             Show active courses only
           </StyledActiveCheckbox>

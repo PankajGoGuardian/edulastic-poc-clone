@@ -93,15 +93,30 @@ const RedirectPopUp = ({
     return endDate < moment().startOf("day");
   };
 
+  const studentDetails = student => {
+    if (student.firstName) {
+      return `${student.firstName}${student.lastName ? `, ${student.lastName}` : ""}
+              ${student.username ? ` (${student.username})` : ""}`;
+    }
+    if (student.lastName) {
+      return `${student.lastName ? `${student.lastName}` : ""}
+              ${student.username ? ` (${student.username})` : ""}`;
+    }
+    if (student.username) {
+      return student.username;
+    }
+    return "Anonymous";
+  };
+
   return (
     <ConfirmationModal
       centered
       textAlign="left"
       title="Redirect Assignment"
       visible={open}
-      onCancel={() => closePopup()}
+      onCancel={closePopup}
       footer={[
-        <Button ghost key="cancel" onClick={() => closePopup()}>
+        <Button ghost key="cancel" onClick={closePopup}>
           CANCEL
         </Button>,
         <Button loading={loading} key="submit" onClick={submitAction}>
@@ -150,9 +165,9 @@ const RedirectPopUp = ({
                     key={x._id}
                     value={x._id}
                     disabled={disabledList.includes(x._id)}
-                    data={`${x.firstName},${x.email}`}
+                    data={`${x.firstName}${x.lastName}${x.email}${x.username}`}
                   >
-                    {x.firstName}
+                    {studentDetails(x)}
                   </Option>
                 )
             )}

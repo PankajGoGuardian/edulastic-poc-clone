@@ -12,7 +12,7 @@ import { Placeholder } from "../../../common/components/loader";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { parseTrendData, getCompareByOptions, compareByMap } from "../common/utils/trend";
 
-import dropDownData from "../common/static/json/dropDownData.json";
+import dropDownData from "./static/json/dropDownData.json";
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
 import Filters from "./components/table/Filters";
@@ -80,9 +80,7 @@ const PeerProgressAnalysis = ({
   const studentColumn = {
     key: "studentCount",
     title: "Student#",
-    dataIndex: "studentCount",
-    // if compareBy is student always show student count as 1
-    render: count => (compareBy.key === "student" ? 1 : count)
+    dataIndex: "studentCount"
   };
 
   return (

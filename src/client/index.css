@@ -1889,6 +1889,10 @@ span.token.active-word {
   font-weight: 400;
 }
 
+.katex .mfrac .frac-line {
+  min-height: 1vh !important;
+}
+
 @media (max-width: 992px) {
   .jsx-parser p {
     font-size: 14px;

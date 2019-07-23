@@ -140,7 +140,7 @@ class AdvancedTable extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.inGrading - b.inGrading,
         width: "16%",
-        render: text => <div> {text} </div>
+        render: (text, row) => <div> {text + row.graded} </div>
       },
       {
         title: "Graded",

@@ -226,12 +226,12 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.class - b.class,
         width: "10%",
-        render: (text, row, index) => (
+        render: (text, row) => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
             <IconArrowDown
               onclick={() => false}
               src={arrowUpIcon}
-              style={{ transform: expandedRows.includes(`${index}`) ? "rotate(180deg)" : "" }}
+              style={{ transform: expandedRows.includes(`${row.key}`) ? "rotate(180deg)" : "" }}
             />
             {text}
           </ExpandDivdier>

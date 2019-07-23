@@ -16,7 +16,7 @@ const columns = [
     title: "Class",
     dataIndex: "class",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.class.localeCompare(b.class, "fr", { ignorePunctuation: true }),
     width: "16%",
     render: text => <div>{text}</div>
   },
@@ -24,7 +24,7 @@ const columns = [
     title: "Type",
     dataIndex: "type",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.type.localeCompare(b.type, "fr", { ignorePunctuation: true }),
     width: "8%",
     render: (text = test.type.ASSESSMENT) => <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
   },
@@ -32,7 +32,7 @@ const columns = [
     title: "Assigned by",
     dataIndex: "assigned",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.assigned.localeCompare(b.assigned, "fr", { ignorePunctuation: true }),
     width: "16%",
     render: text => <div> {text} </div>
   },
@@ -40,7 +40,7 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.status.localeCompare(b.status, "fr", { ignorePunctuation: true }),
     width: "16%",
     render: text => (text ? <BtnStatus status={text}>{text}</BtnStatus> : "")
   },
@@ -48,7 +48,7 @@ const columns = [
     title: "Submitted",
     dataIndex: "submitted",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => parseInt(a.submitted.split("/")[0]) - parseInt(b.submitted.split("/")[0]),
     width: "16%",
     render: text => <div> {text} </div>
   },
@@ -56,7 +56,7 @@ const columns = [
     title: "Graded",
     dataIndex: "graded",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.graded - b.graded,
     width: "16%",
     render: text => <div> {text} </div>
   },
@@ -93,7 +93,7 @@ class TableList extends Component {
     type: data.testType,
     status: data.status,
     assigned: data.assignedBy.name,
-    submitted: `${data.inGradingNumber}/${data.assignedCount}`,
+    submitted: `${data.inGradingNumber + data.gradedNumber}/${data.assignedCount}`,
     graded: data.gradedNumber,
     action: "",
     assignmentId: data.assignmentId,

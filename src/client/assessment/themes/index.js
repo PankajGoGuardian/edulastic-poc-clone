@@ -59,7 +59,8 @@ const AssessmentContainer = ({
   answers,
   answersById,
   loading,
-  preview
+  preview,
+  LCBPreviewModal
 }) => {
   const qid = preview ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
@@ -141,7 +142,8 @@ const AssessmentContainer = ({
     view,
     finishTest,
     history,
-    previewPlayer: preview
+    previewPlayer: preview,
+    LCBPreviewModal
   };
 
   if (loading) {
@@ -181,7 +183,8 @@ AssessmentContainer.propTypes = {
   annotations: PropTypes.array,
   answers: PropTypes.array.isRequired,
   answersById: PropTypes.object.isRequired,
-  loading: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  LCBPreviewModal: PropTypes.any.isRequired
 };
 
 AssessmentContainer.defaultProps = {

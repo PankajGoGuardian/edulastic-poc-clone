@@ -123,8 +123,6 @@ const BandChart = ({ data, bandInfo, selectedTests, analyseBy, onBarClickCB, onR
 
   const chartSpecifics = getChartSpecifics(analyseBy, orderedBandInfo);
 
-  console.log(getSelectedItems(selectedTests), "getSelectedItems(selectedTests)");
-
   return (
     <StyledSignedBarContainer>
       <SignedStackedBarChart

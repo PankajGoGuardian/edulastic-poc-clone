@@ -395,7 +395,7 @@ class QuestionWrapper extends Component {
                   />
                 ))}
               {/* STUDENT REPORT PAGE FEEDBACK */}
-              {studentReportFeedbackVisible && <StudentReportFeedback index={qIndex} qId={data.id} />}
+              {studentReportFeedbackVisible && <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />}
             </QuestionContainer>
           </>
         </ThemeProvider>

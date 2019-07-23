@@ -84,9 +84,15 @@ export const receiveTestByIdError = error => ({
   payload: { error }
 });
 
-export const createTestAction = (data, toReview = false) => ({
+/**
+ * To create a new test from the data passed.
+ * @param {object} data
+ * @param {boolean} toReview
+ * @param {boolean} isCartTest
+ */
+export const createTestAction = (data, toReview = false, isCartTest = false) => ({
   type: CREATE_TEST_REQUEST,
-  payload: { data, toReview }
+  payload: { data, toReview, isCartTest }
 });
 
 export const createTestSuccessAction = entity => ({
@@ -403,7 +409,12 @@ function* createTestSaga({ payload }) {
     }
 
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate", "testItems"]);
-    dataToSend.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
+    //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
+    if (!payload.isCartTest) {
+      dataToSend.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
+    } else {
+      dataToSend.testItems = payload.data.testItems;
+    }
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
     yield put({

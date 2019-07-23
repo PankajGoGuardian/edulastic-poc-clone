@@ -243,8 +243,7 @@ class ClassHeader extends Component {
           <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
             {assignmentStatusForDisplay}
-            {assignmentStatusForDisplay === "IN PROGRESS" && isPaused ? "(PAUSED)" : ""} (Due on{" "}
-            {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
+            {isPaused ? "(PAUSED)" : ""} (Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
           </StyledParaSecond>
         </StyledTitle>
         <StyledTabContainer>

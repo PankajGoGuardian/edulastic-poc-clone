@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { ResponsiveContainer, PieChart, Pie, Legend, Tooltip } from "recharts";
 import { fadedBlack } from "@edulastic/colors";
 import { StyledCustomChartTooltip } from "../styled";

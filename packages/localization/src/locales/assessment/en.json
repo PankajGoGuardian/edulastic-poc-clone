@@ -454,7 +454,8 @@
         "transparentbackground": "Transparent Background",
         "showborder": "Show drop area border",
         "snapfittodroparea": "Snap fit to drop Area",
-        "annotations": "Annotations"
+        "annotations": "Annotations",
+        "wrapTextToFitDropArea": "Wrap text to fit drop area"
       },
       "imageDropDown": {
         "composequestion": "Question",

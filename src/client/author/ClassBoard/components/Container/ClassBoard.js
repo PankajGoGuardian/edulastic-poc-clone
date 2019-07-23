@@ -256,7 +256,10 @@ class ClassBoard extends Component {
   };
 
   handleRedirect = () => {
-    const { selectedStudents, testActivity, enrollmentStatus } = this.props;
+    const { selectedStudents, testActivity, enrollmentStatus, additionalData = {}, assignmentStatus } = this.props;
+    if (additionalData.isPaused && assignmentStatus !== "DONE" && additionalData.endDate > Date.now()) {
+      return message.info("The class has been paused for this assessment.Please resume to continue with redirect.");
+    }
 
     const notStartedStudents = testActivity.filter(
       x =>

@@ -183,7 +183,7 @@ const MatchListPreview = ({
 
   const getStyles = ({ flag, preview, correct, isDragging, width }) => ({
     display: "flex",
-    width: "auto",
+    width: width ? width : "auto",
     alignItems: "center",
     justifyContent: preview ? "space-between" : "center",
     margin: flag === "dragItems" ? "10px 15px 10px 15px" : "10px 0px 10px 0",

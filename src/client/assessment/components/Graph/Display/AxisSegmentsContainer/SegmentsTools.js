@@ -28,12 +28,12 @@ const SegmentsTools = ({ tool, onSelect, fontSize, getIconByToolName, responsesA
           groupIndex: -1
         }));
 
-  const serviceTools = ["undo", "redo", "trash"];
+  const serviceTools = ["undo", "redo", "reset", "trash"];
 
   const isActive = uiTool => uiTool.index === tool.index && uiTool.groupIndex === tool.groupIndex;
 
   const getToolClassName = uiTool => {
-    if (uiTool.name === "undo" || uiTool.name === "redo") {
+    if (uiTool.name === "undo" || uiTool.name === "redo" || uiTool.name === "reset") {
       return "";
     }
     if (uiTool.name === "trash") {

@@ -12,4 +12,5 @@ export const TableWrapper = styled.div`
     `${imageOptions.width}px ${imageOptions.height}px`};
   background-position: ${({ imageOptions }) => (imageOptions ? `${imageOptions.x}px ${imageOptions.y}px` : "inherit")};
   padding-bottom: 20px;
+  position: relative;
 `;

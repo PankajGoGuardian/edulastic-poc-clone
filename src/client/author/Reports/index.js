@@ -119,19 +119,19 @@ const Container = props => {
         )}
       />
       <Route
-        path={`/author/reports/peer-progress-analysis/test/`}
+        path={`/author/reports/peer-progress-analysis`}
         render={_props => (
           <MultipleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
-        path={`/author/reports/student-progress/test/`}
+        path={`/author/reports/student-progress`}
         render={_props => (
           <MultipleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
-        path={`/author/reports/performance-over-time/test/`}
+        path={`/author/reports/performance-over-time`}
         render={_props => (
           <MultipleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
         )}

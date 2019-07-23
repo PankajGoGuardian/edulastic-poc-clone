@@ -8,6 +8,7 @@ import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
 import Points from "./components/Points";
 import ArrowPair from "./components/ArrowPair";
+import ValueLabel from "./components/ValueLabel";
 import withGrid from "./HOC/withGrid";
 import {
   convertPxToUnit,
@@ -30,7 +31,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   const [localData, setLocalData] = useState(data);
 
-  const paddingTop = 10;
+  const paddingTop = 15;
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
@@ -49,6 +50,8 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
           .split(" ")
           [active].split(",")[index]
       : null;
+
+  const getActivePointValue = () => (active !== null ? localData[active].y : null);
 
   const save = () => {
     if (cursorY === null) {
@@ -107,6 +110,8 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
       <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
 
       <ArrowPair getActivePoint={getActivePoint} />
+
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
 
       <Points
         activeIndex={activeIndex}

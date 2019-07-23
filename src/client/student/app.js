@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import styled, { ThemeProvider } from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
+import { tabletWidth, largeDesktopWidth } from "@edulastic/colors";
+
 import { themes } from "./themes";
 
 import Sidebar from "./Sidebar/SideMenu";
@@ -63,6 +65,7 @@ StudentApp.propTypes = {
 const MainContainer = styled.div`
   padding-left: 100px;
   width: 100%;
+
   .fixed-header {
     position: fixed;
     top: 0;
@@ -70,6 +73,11 @@ const MainContainer = styled.div`
     left: 100px;
     z-index: 1;
   }
+
+  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
+    padding-left: 90px;
+  }
+
   @media (max-width: 768px) {
     padding-left: 0px;
     .fixed-header {

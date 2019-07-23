@@ -337,7 +337,7 @@ class Display extends Component {
     } = this.props;
 
     const questionId = item && item.id;
-
+    const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
     const cAnswers = get(item, "validation.valid_response.value", []);
 
@@ -369,8 +369,8 @@ class Display extends Component {
       display: "flex",
       alignItems: "center",
       width: "max-content",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
+      whiteSpace: isWrapText ? "normal" : "nowrap",
+      overflow: isWrapText ? "visible" : "hidden",
       textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
@@ -485,12 +485,13 @@ class Display extends Component {
                   style={{
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
-                    height: responseContainer.height || "auto", // responseContainer.height || "auto",
-                    width: responseContainer.width || "auto",
+                    height: isWrapText ? "auto" : responseContainer.height || "auto", // responseContainer.height || "auto",
+                    width: isWrapText ? "auto" : responseContainer.width || "auto",
                     minHeight: responseContainer.height || "auto",
                     minWidth: responseContainer.width || "auto",
                     maxWidth: response.maxWidth
                   }}
+                  disableResponse={disableResponse}
                   className="imagelabeldragdrop-droppable active"
                   drop={drop}
                 >
@@ -513,11 +514,12 @@ class Display extends Component {
                             data={`${answer}_${dropTargetIndex}_${item_index}`}
                             style={dragItemStyle}
                             onDrop={this.onDrop}
+                            disableResponse={disableResponse}
                           >
                             <AnswerContainer
                               height={responseContainer.height || "auto"}
                               width={responseContainer.width || "auto"}
-                              answer={answer.replace("<p>", "<p class='clipText'>") || ""}
+                              answer={isWrapText ? answer : answer.replace("<p>", "<p class='clipText'>") || ""}
                             />
                           </DragItem>
                         );
@@ -536,6 +538,7 @@ class Display extends Component {
               drop={drop}
               data-cy="drop-container"
               style={{ height: "100%" }}
+              disableResponse={disableResponse}
               className="imagelabeldragdrop-droppable active"
             >
               {snapItems.map((snap_item, index) => {
@@ -566,6 +569,7 @@ class Display extends Component {
                       ...dragItemStyle,
                       ...btnStyle
                     }}
+                    disableResponse={disableResponse}
                     onDrop={this.onDrop}
                   >
                     <MathSpan dangerouslySetInnerHTML={{ __html: snap_item.answer || "" }} />
@@ -596,6 +600,8 @@ class Display extends Component {
         drop={drop}
         onDropHandler={this.onDrop}
         showBorder={showBorder}
+        disableResponse={disableResponse}
+        isWrapText={isWrapText}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

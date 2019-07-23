@@ -139,7 +139,7 @@ const fetchQuestionAnalysisReport = params => {
 
 const fetchMARFilterData = params => {
   return api.callApi({
-    url: `/report/filter/single-assessment`,
+    url: `/report/filter/multiple-assessment`,
     params
   });
 };

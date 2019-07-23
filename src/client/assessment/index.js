@@ -19,7 +19,8 @@ const AssessmentPlayer = ({
   demo,
   isPasswordValidated,
   testActivityLoading,
-  test
+  test,
+  LCBPreviewModal
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
@@ -29,7 +30,7 @@ const AssessmentPlayer = ({
   }, [testId]);
 
   if (preview) {
-    return <ThemeContainer defaultAP preview />;
+    return <ThemeContainer LCBPreviewModal={LCBPreviewModal} defaultAP preview />;
   }
   if (testActivityLoading) {
     return <Spin />;
@@ -51,7 +52,8 @@ AssessmentPlayer.propTypes = {
   match: PropTypes.any.isRequired,
   preview: PropTypes.any,
   testId: PropTypes.string,
-  test: PropTypes.object
+  test: PropTypes.object,
+  LCBPreviewModal: PropTypes.any.isRequired
 };
 
 AssessmentPlayer.defaultProps = {

@@ -243,7 +243,7 @@ class ClassHeader extends Component {
           <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
             {assignmentStatusForDisplay}
-            {assignmentStatusForDisplay === "IN PROGRESS" && isPaused ? "(PAUSED)" : ""} (Due on{" "}
+            {isPaused && assignmentStatusForDisplay !== "DONE" ? "(PAUSED)" : ""} (Due on{" "}
             {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
           </StyledParaSecond>
         </StyledTitle>
@@ -291,12 +291,14 @@ class ClassHeader extends Component {
             <OpenCloseButton onClick={this.handleOpenAssignment}>OPEN</OpenCloseButton>
           ) : canClose ? (
             <>
-              <OpenCloseButton
-                onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
-              >
-                {" "}
-                {isPaused ? "OPEN" : "PAUSE"}
-              </OpenCloseButton>
+              {assignmentStatusForDisplay !== "DONE" && (
+                <OpenCloseButton
+                  onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
+                >
+                  {" "}
+                  {isPaused ? "OPEN" : "PAUSE"}
+                </OpenCloseButton>
+              )}
               <OpenCloseButton onClick={this.handleCloseAssignment}>CLOSE</OpenCloseButton>
             </>
           ) : (

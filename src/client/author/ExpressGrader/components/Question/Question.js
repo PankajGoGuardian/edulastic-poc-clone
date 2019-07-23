@@ -38,10 +38,6 @@ class Question extends Component {
       ({ data: { questions = [] } = {} }) => questions.filter(({ id }) => id === record._id).length > 0
     );
 
-    if (isEmpty(studentQuestion)) {
-      return null;
-    }
-
     let studentQuestions = [];
     if (studentQuestion) {
       if (Array.isArray(studentQuestion)) {

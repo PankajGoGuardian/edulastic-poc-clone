@@ -269,20 +269,18 @@ const OrderList = ({
 
           {previewTab === SHOW || isReviewTab ? (
             <Fragment>
-              {!isReviewTab ? (
-                <OrderListReport
-                  onSortEnd={onSortPreviewEnd}
-                  questionsList={itemForPreview.list}
-                  previewIndexesList={userAnswer}
-                  evaluation={evaluationFromAnswers}
-                  validation={itemForPreview.validation}
-                  list={itemForPreview.list}
-                  listStyle={{ fontSize }}
-                  disableResponse={disableResponse}
-                  axis={axis}
-                  columns={columns}
-                />
-              ) : null}
+              <OrderListReport
+                onSortEnd={onSortPreviewEnd}
+                questionsList={itemForPreview.list}
+                previewIndexesList={userAnswer}
+                evaluation={evaluationFromAnswers}
+                validation={itemForPreview.validation}
+                list={itemForPreview.list}
+                listStyle={{ fontSize }}
+                disableResponse={disableResponse}
+                axis={axis}
+                columns={columns}
+              />
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
                 {correctAnswers.map((correctAnswer, i) => (
                   <CorrectAnswerItem theme={theme}>

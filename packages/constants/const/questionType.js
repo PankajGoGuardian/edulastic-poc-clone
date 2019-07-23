@@ -47,7 +47,7 @@ const selectsData = [
   { value: CLOZE_IMAGE_DROP_DOWN, text: "Cloze Image Drop Down" },
   { value: CLOZE_IMAGE_TEXT, text: "Cloze Image Text" },
   { value: PROTRACTOR, text: "Protractor" },
-  { value: PASSAGE, text: "Passage" },
+  { value: PASSAGE, text: "Passage with Multiple parts" },
   { value: VIDEO, text: "Video" },
   { value: MATH, text: "Math" },
   { value: FORMULA_ESSAY, text: "Formula Essay" },

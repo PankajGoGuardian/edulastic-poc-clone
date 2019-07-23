@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Route } from "react-router-dom";
+import { map } from "lodash";
 import next from "immer";
 import qs from "qs";
 
@@ -15,7 +16,7 @@ import PerformanceOverTime from "./PerformanceOverTime";
 
 export const MultipleAssessmentReportContainer = props => {
   const [settings, setSettings] = useState({
-    selectedTest: { key: "", title: "" },
+    selectedTest: [{ key: "", title: "" }],
     requestFilters: {
       termId: "",
       subject: "",
@@ -24,26 +25,27 @@ export const MultipleAssessmentReportContainer = props => {
       groupId: "",
       schoolId: "",
       teacherId: "",
-      assessmentType: ""
+      assessmentType: "",
+      testIds: ""
     }
   });
 
   useEffect(() => {
-    if (settings.selectedTest.key) {
+    if (settings.requestFilters.testIds) {
       let arr = Object.keys(settings.requestFilters);
       let obj = {};
       arr.map((item, index) => {
         let val = settings.requestFilters[item] === "" ? "All" : settings.requestFilters[item];
         obj[item] = val;
       });
-      let path = settings.selectedTest.key + "?" + qs.stringify(obj);
+      let path = "?" + qs.stringify(obj);
       props.history.push(path);
     }
   }, [settings]);
 
   let computedChartNavigatorLinks;
 
-  const computeChartNavigationLinks = (sel, filt) => {
+  const computeChartNavigationLinks = filt => {
     if (navigation.locToData[props.loc]) {
       let arr = Object.keys(filt);
       let obj = {};
@@ -52,17 +54,17 @@ export const MultipleAssessmentReportContainer = props => {
         obj[item] = val;
       });
       return next(navigation.navigation[navigation.locToData[props.loc].group], arr => {
-        getNavigationTabLinks(arr, sel.key + "?" + qs.stringify(obj));
+        getNavigationTabLinks(arr, "?" + qs.stringify(obj));
       });
     } else {
       return [];
     }
   };
 
-  computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
+  computedChartNavigatorLinks = computeChartNavigationLinks(settings.requestFilters);
 
   const onGoClick = _settings => {
-    if (_settings.selectedTest.key) {
+    if (_settings.selectedTest) {
       let obj = {};
       let arr = Object.keys(_settings.filters);
       arr.map((item, index) => {
@@ -70,9 +72,9 @@ export const MultipleAssessmentReportContainer = props => {
         obj[item] = val;
       });
 
+      const { selectedTest = [] } = _settings;
       setSettings({
-        selectedTest: _settings.selectedTest,
-        requestFilters: obj
+        requestFilters: { ...obj, testIds: map(selectedTest, test => test.key) }
       });
     }
   };
@@ -90,17 +92,17 @@ export const MultipleAssessmentReportContainer = props => {
       <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
       <Route
         exact
-        path={`/author/reports/peer-progress-analysis/test/:testId?`}
+        path={`/author/reports/peer-progress-analysis/`}
         render={_props => <PeerProgressAnalysis {..._props} settings={settings} />}
       />
       <Route
         exact
-        path={`/author/reports/student-progress/test/:testId?`}
+        path={`/author/reports/student-progress/`}
         render={_props => <StudentProgress {..._props} settings={settings} />}
       />
       <Route
         exact
-        path={`/author/reports/performance-over-time/test/:testId?`}
+        path={`/author/reports/performance-over-time/`}
         render={_props => <PerformanceOverTime {..._props} settings={settings} />}
       />
     </>

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { Form, Col, Select, Button, Modal, Input } from "antd";
+import { Form, Col, Select, Button, Modal, Input, Checkbox } from "antd";
 const Option = Select.Option;
 
 import { StyledRow, SubjectContainer, SubjectSelect } from "./styled";
-import CheckboxGroup from "antd/lib/checkbox/Group";
+import { StyledCheckbox } from "../Container/styled";
+import { FlexContainer } from "../../../../assessment/themes/common";
 
 class StandardSetsModal extends React.Component {
   constructor(props) {
@@ -11,8 +12,27 @@ class StandardSetsModal extends React.Component {
     this.state = {
       selSubject: "",
       searchStr: "",
+      updatedPrevStandards: false,
       selectedStandards: []
     };
+  }
+
+  // setting the previous standards first time
+  static getDerivedStateFromProps(props, prevState) {
+    const { interestedStaData } = props;
+    const { updatedPrevStandards } = prevState;
+    let selectedStandards = [];
+    if (
+      interestedStaData != null &&
+      interestedStaData.hasOwnProperty("curriculums") &&
+      interestedStaData.curriculums.length > 0 &&
+      !updatedPrevStandards
+    ) {
+      selectedStandards = interestedStaData.curriculums.map(row => {
+        return row.name;
+      });
+      return { selectedStandards, updatedPrevStandards: true };
+    }
   }
 
   onConfirm = () => {
@@ -25,9 +45,12 @@ class StandardSetsModal extends React.Component {
   };
 
   changeStandards = e => {
-    this.setState({
-      selectedStandards: e
-    });
+    const { selectedStandards } = this.state;
+    if (selectedStandards.includes(e)) {
+      this.setState(prevState => ({ selectedStandards: prevState.selectedStandards.filter(o => o !== e) }));
+    } else {
+      this.setState(prevState => ({ selectedStandards: [...prevState.selectedStandards, e] }));
+    }
   };
 
   changeSubject = e => {
@@ -49,15 +72,6 @@ class StandardSetsModal extends React.Component {
     const standardsSetNames = filteredStandardList.map(row => {
       return row.curriculum;
     });
-
-    let selectedStandards = [];
-    if (interestedStaData != null) {
-      if (interestedStaData.hasOwnProperty("curriculums")) {
-        selectedStandards = interestedStaData.curriculums.map(row => {
-          return row.name;
-        });
-      }
-    }
 
     return (
       <Modal
@@ -91,11 +105,17 @@ class StandardSetsModal extends React.Component {
         <StyledRow>
           <Col span={24}>
             <SubjectContainer>
-              <CheckboxGroup
-                onChange={this.changeStandards}
-                options={standardsSetNames}
-                defaultValue={selectedStandards}
-              />
+              {standardsSetNames.map(standardSetName => (
+                <FlexContainer>
+                  <StyledCheckbox
+                    onChange={() => this.changeStandards(standardSetName)}
+                    checked={this.state.selectedStandards.includes(standardSetName)}
+                    key={standardSetName}
+                  >
+                    {standardSetName}
+                  </StyledCheckbox>
+                </FlexContainer>
+              ))}
             </SubjectContainer>
           </Col>
         </StyledRow>

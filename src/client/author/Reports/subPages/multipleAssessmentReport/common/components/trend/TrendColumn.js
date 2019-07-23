@@ -10,11 +10,9 @@ const TrendColumn = ({ tests, type }) => {
     return <StyledCell>No Trend</StyledCell>;
   }
 
-  const slicedTests = tests.slice(0, 4);
-
   return (
     <StyledContainer>
-      <BarChart width={120} height={30} barCategoryGap={1} data={slicedTests} maxBarSize={100}>
+      <BarChart width={120} height={30} barCategoryGap={1} data={tests} maxBarSize={100}>
         <Bar dataKey="score" fill={trendTypes[type].color} />
         <Tooltip
           cursor={false}

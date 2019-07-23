@@ -248,7 +248,9 @@ ClozeTextDisplay.propTypes = {
   isReviewTab: PropTypes.bool,
   qIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
-  stimulus: PropTypes.string.isRequired
+  stimulus: PropTypes.string.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 ClozeTextDisplay.defaultProps = {

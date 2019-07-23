@@ -261,6 +261,7 @@ function* createSchoolAdminSaga({ payload }) {
     const createSchoolAdmin = yield call(userApi.createUser, payload);
     yield put(createSchoolAdminSuccessAction(createSchoolAdmin));
     // here after an update/delete/create, the new data is fetched back again
+    yield call(message.success, "Student added successfully");
     yield put(receiveAdminDataAction());
   } catch (err) {
     const errorMessage = "Create SchoolAdmin is failing";

@@ -320,6 +320,10 @@ class AxisSegmentsContainer extends PureComponent {
       this.onRedo();
       return;
     }
+    if (name === "reset") {
+      this.onReset();
+      return;
+    }
 
     this.setState({ selectedTool: { name, index, groupIndex } });
     this._graph.setTool(name);
@@ -341,6 +345,11 @@ class AxisSegmentsContainer extends PureComponent {
       setValue(stash[id][stashIndex[id] + 1]);
       setStashIndex(stashIndex[id] + 1, id);
     }
+  }
+
+  onReset() {
+    this._graph.segmentsReset();
+    this.updateValues();
   }
 
   getStashId() {
@@ -482,6 +491,9 @@ class AxisSegmentsContainer extends PureComponent {
       },
       redo: () => {
         return "Redo";
+      },
+      reset: () => {
+        return "Reset";
       }
     };
 

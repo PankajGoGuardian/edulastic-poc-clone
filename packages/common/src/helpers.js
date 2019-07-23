@@ -206,14 +206,21 @@ export const sanitizeForReview = stimulus => {
 
   const jqueryEl = $("<p>").append(stimulus);
 
+  //remove br tag also
   // eslint-disable-next-line func-names
-  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table", "response"];
+  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table", "response", "br"];
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
       $(this).replaceWith("...");
     });
   });
-  return sanitizeSelfClosingTags(jqueryEl.html());
+  //to remove any text after ...
+  const splitJquery = jqueryEl.html().split("...");
+  let returnQuery = `${splitJquery[0]}${splitJquery[1] ? "...</p>" : ""}`;
+  if (splitJquery[0].length === 3) {
+    returnQuery = question.DEFAULT_STIMULUS;
+  }
+  return sanitizeSelfClosingTags(returnQuery);
 };
 
 export const removeIndexFromTemplate = tmpl => {

@@ -18,7 +18,7 @@ class AddClassModal extends Component {
       fetchingTeacher: []
     };
     this.fetchSchool = debounce(this.fetchSchool, 1000);
-    this.fetchTeacher = debounce(this.fetchTeacher, 1000);
+    this.fetchTeacher = debounce(this._fetchTeacher, 1000);
     this.fetchCoursesForDistrict = debounce(this.fetchCoursesForDistrict, 1000);
   }
 
@@ -94,7 +94,7 @@ class AddClassModal extends Component {
     searchCourseList(searchTerms);
   };
 
-  fetchTeacher = async value => {
+  _fetchTeacher = async value => {
     this.setState({ teacherList: [], fetchingTeacher: true });
     const searchData = {
       districtId: this.props.userOrgId,
@@ -102,12 +102,14 @@ class AddClassModal extends Component {
       page: 1,
       role: "teacher"
     };
+
     value &&
       Object.assign(searchData, {
         search: {
-          username: { type: "con", value }
+          username: { type: "cont", value }
         }
       });
+
     const { result: teacherListData } = await userApi.fetchUsers(searchData);
     this.setState({ teacherList: teacherListData, fetchingTeacher: false });
   };
@@ -247,7 +249,7 @@ class AddClassModal extends Component {
                 >
                   {teacherList.map(teacher => (
                     <Option key={teacher._id} value={teacher._id}>
-                      {`${get(teacher, ["_source", "firstName"], "")} ${get(teacher, ["_source", "lastName"], "")}`}
+                      {`${get(teacher, ["_source", "username"], "")}`}
                     </Option>
                   ))}
                 </Select>

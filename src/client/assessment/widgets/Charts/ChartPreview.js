@@ -127,9 +127,13 @@ const ChartPreview = ({
         correct={correct}
       />
       <AnnotationRnd
-        style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+        style={{
+          backgroundColor: "transparent",
+          boxShadow: "none",
+          border: view === EDIT ? "1px solid lightgray" : "none"
+        }}
         questionId={item.id}
-        disableDragging={view === EDIT ? false : true}
+        disableDragging={view !== EDIT}
         isAbove={view === EDIT ? !barIsDragging : false}
         onDoubleClick={() => toggleBarDragging(!barIsDragging)}
       />

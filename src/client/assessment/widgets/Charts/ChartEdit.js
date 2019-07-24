@@ -18,6 +18,7 @@ import PointsList from "./components/PointsList";
 import { getReCalculatedPoints } from "./helpers";
 
 import ComposeQuestion from "./ComposeQuestion";
+import { Widget } from "../../styled/Widget";
 
 const OptionsList = withPoints(ChartPreview);
 
@@ -204,7 +205,9 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         cleanSections={cleanSections}
       />
 
-      <Annotations editable />
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Annotations editable />
+      </Widget>
 
       <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
     </Fragment>

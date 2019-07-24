@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
+import Annotations from "../../components/Graph/Annotations/Annotations";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import withPoints from "../../components/HOC/withPoints";
@@ -202,6 +203,8 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         fillSections={fillSections}
         cleanSections={cleanSections}
       />
+
+      <Annotations editable />
 
       <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
     </Fragment>

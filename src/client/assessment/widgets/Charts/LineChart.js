@@ -17,7 +17,7 @@ import {
   getGridVariables
 } from "./helpers";
 
-const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
+const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse, toggleBarDragging }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams);
@@ -59,6 +59,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setInitY(null);
     setActive(null);
     setIsMouseDown(false);
+    toggleBarDragging(false);
     saveAnswer(localData);
   };
 
@@ -77,6 +78,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setActiveIndex(index);
     setInitY(localData[index].y);
     setIsMouseDown(true);
+    toggleBarDragging(true);
   };
 
   const onMouseUp = () => {
@@ -89,7 +91,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   return (
     <svg
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width}
       height={height}
       onMouseMove={onMouseMove}

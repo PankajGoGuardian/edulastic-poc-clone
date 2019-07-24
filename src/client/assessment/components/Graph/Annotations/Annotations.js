@@ -111,6 +111,7 @@ class Annotations extends Component {
 
             {annotations.map((annotation, i) => (
               <Annotation
+                key={annotation.id}
                 index={annotation.id}
                 updateAnnotation={handleUpdateAnnotation}
                 removeAnnotation={handleRemoveAnnotation}

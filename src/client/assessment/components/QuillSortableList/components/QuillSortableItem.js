@@ -69,7 +69,7 @@ QuillSortableItem.defaultProps = {
   toolbarId: "quill-sortable-item",
   rOnly: false,
   firstFocus: false,
-  styleType: "list",
+  styleType: "button",
   style: {},
   imageDefaultWidth: 300
 };

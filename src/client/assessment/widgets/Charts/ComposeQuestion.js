@@ -31,7 +31,6 @@ class ComposeQuestion extends Component {
         ui_style: { yAxisMax, yAxisMin, snapTo }
       }
     } = props;
-    console.log("what are values", yAxisMax, yAxisMin, snapTo);
     this.state = {
       localMaxValue: yAxisMax,
       localMinValue: yAxisMin,

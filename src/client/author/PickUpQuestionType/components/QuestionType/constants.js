@@ -1271,7 +1271,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        sample_answer: "",
+        sampleAnswer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1351,7 +1351,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        sample_answer: "",
+        sampleAnswer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1422,7 +1422,7 @@ export const getCards = onSelectQuestionType => {
           tools: [],
           default_tool: null
         },
-        sample_answer: "",
+        sampleAnswer: "",
         numberlineAxis: {
           leftArrow: true,
           rightArrow: true,
@@ -1543,7 +1543,7 @@ export const getCards = onSelectQuestionType => {
           controls: [],
           default_control: ""
         },
-        sample_answer: "",
+        sampleAnswer: "",
         validation: {
           graphType: "axisLabels",
           scoring_type: EXACT_MATCH,

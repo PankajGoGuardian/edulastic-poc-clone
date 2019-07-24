@@ -11,6 +11,12 @@ import piechartIcon from "../../assets/pie-chart.svg";
 
 import { Container, Icon, TableData, TypeIcon, BtnStatus, ActionsWrapper } from "./styled";
 
+const testTypeToolTip = {
+  assessment: "Class Assessment",
+  "common assessment": "Common Assessment",
+  practice: "Practice Assessment"
+};
+
 const columns = [
   {
     title: "Class",
@@ -26,7 +32,11 @@ const columns = [
     sortDirections: ["descend", "ascend"],
     sorter: (a, b) => a.type.localeCompare(b.type, "en", { ignorePunctuation: true }),
     width: "8%",
-    render: (text = test.type.ASSESSMENT) => <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
+    render: (text = test.type.ASSESSMENT) => (
+      <Tooltip placement="bottom" title={testTypeToolTip[text]}>
+        <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
+      </Tooltip>
+    )
   },
   {
     title: "Assigned by",

@@ -30,6 +30,10 @@ import TableList from "../TableList";
 const { assignmentStatusBg } = authorAssignment;
 
 class AssignmentAdvanced extends Component {
+  state = {
+    filterStatus: ""
+  };
+
   componentDidMount() {
     const { match } = this.props;
     const { districtId, testId } = match.params;
@@ -47,16 +51,26 @@ class AssignmentAdvanced extends Component {
   renderBreadcrumbs = (assingment, history) => (
     <FlexContainer>
       <Breadcrumbs>
-        <Breadcrumb first color={assignmentStatusBg.NOT_OPEN}>
-          <span>{assingment.notStarted || 0}</span>Not Started
+        <Breadcrumb
+          handleClick={() => this.setState({ filterStatus: "NOT OPEN" })}
+          first
+          color={assignmentStatusBg.NOT_OPEN}
+        >
+          <span>{assingment.notStarted || 0}</span>Not Open
         </Breadcrumb>
-        <Breadcrumb color={assignmentStatusBg.IN_PROGRESS}>
+        <Breadcrumb
+          handleClick={() => this.setState({ filterStatus: "IN PROGRESS" })}
+          color={assignmentStatusBg.IN_PROGRESS}
+        >
           <span>{assingment.inProgress || 0}</span>In Progress
         </Breadcrumb>
-        <Breadcrumb color={assignmentStatusBg.IN_GRADING}>
+        <Breadcrumb
+          handleClick={() => this.setState({ filterStatus: "IN GRADING" })}
+          color={assignmentStatusBg.IN_GRADING}
+        >
           <span>{assingment.inGrading || 0}</span>In Grading
         </Breadcrumb>
-        <Breadcrumb color={assignmentStatusBg.DONE}>
+        <Breadcrumb handleClick={() => this.setState({ filterStatus: "DONE" })} color={assignmentStatusBg.DONE}>
           <span>{assingment.graded || 0}</span>Done
         </Breadcrumb>
       </Breadcrumbs>
@@ -75,6 +89,7 @@ class AssignmentAdvanced extends Component {
   render() {
     const { classList, assignmentsSummary, match, history } = this.props;
     const { testId } = match.params;
+    const { filterStatus } = this.state;
     const assingment = find(assignmentsSummary, item => item.testId === testId) || {};
 
     return (
@@ -89,7 +104,7 @@ class AssignmentAdvanced extends Component {
           </FlexContainer>
           <TableWrapper>
             <StyledCard>
-              <TableList classList={classList} rowKey={recode => recode.assignmentId} />
+              <TableList classList={classList} filterStatus={filterStatus} rowKey={recode => recode.assignmentId} />
             </StyledCard>
           </TableWrapper>
         </Container>

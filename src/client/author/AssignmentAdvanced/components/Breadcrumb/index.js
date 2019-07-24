@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { cardTitleColor } from "@edulastic/colors";
 import { Container, Mid, After, Before } from "./styled";
 
-export const Breadcrumb = ({ children, color, first }) => (
-  <Container>
+export const Breadcrumb = ({ children, color, first, handleClick }) => (
+  <Container onClick={handleClick} style={{ cursor: "pointer" }}>
     {!first && <Before bgColor={color} />}
     <Mid bgColor={color}>{children}</Mid>
     <After bgColor={color} />

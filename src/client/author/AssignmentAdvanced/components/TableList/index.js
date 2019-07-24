@@ -102,8 +102,10 @@ class TableList extends Component {
   });
 
   render() {
-    const { classList } = this.props;
-    const rowData = classList.map((data, index) => this.convertRowData(data, index));
+    const { classList, filterStatus } = this.props;
+    const rowData = classList
+      .filter(o => (filterStatus ? o.status === filterStatus : true))
+      .map((data, index) => this.convertRowData(data, index));
     const showPagination = rowData.length > 10;
 
     return (

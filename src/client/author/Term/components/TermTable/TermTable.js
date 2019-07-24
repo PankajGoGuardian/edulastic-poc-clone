@@ -66,8 +66,7 @@ class TermTable extends React.Component {
       selectedKey: -1,
       createTermModalVisible: false,
       editTermModalVisible: false,
-      deleteTermModalVisible: false,
-      recordKey: ""
+      deleteTermModalVisible: false
     };
 
     this.columns = [
@@ -106,9 +105,8 @@ class TermTable extends React.Component {
                   type="delete"
                   onClick={() => {
                     this.setState({
-                      ...this.state,
-                      recordKey: record.key,
-                      deleteTermModalVisible: !this.state.deleteTermModalVisible
+                      selectedKey: record.key,
+                      deleteTermModalVisible: true
                     });
                   }}
                 />
@@ -151,7 +149,6 @@ class TermTable extends React.Component {
     const { deleteTermSetting, userOrgId } = this.props;
     deleteTermSetting({ body: { termId: selectedTerm[0]._id, orgId: userOrgId } });
     this.setState({
-      ...this.state,
       deleteTermModalVisible: false
     });
   };
@@ -222,17 +219,8 @@ class TermTable extends React.Component {
         })
       };
     });
-    const {
-      data,
-      createTermModalVisible,
-      editTermModalVisible,
-      selectedKey,
-      deleteTermModalVisible,
-      recordKey
-    } = this.state;
-    const selectedRow = data.filter(item => item.key === selectedKey);
-    const selectedTerm = !isNaN(recordKey) ? this.state.data.find(d => d.key === recordKey) : null;
-
+    const { data, createTermModalVisible, editTermModalVisible, selectedKey, deleteTermModalVisible } = this.state;
+    const selectedTerm = data.find(item => item.key === selectedKey);
     return (
       <StyledTableContainer>
         <EditableContext.Provider value={this.props.form}>
@@ -260,11 +248,11 @@ class TermTable extends React.Component {
             modalVisible={editTermModalVisible}
             updateTerm={this.updateTerm}
             closeModal={this.closeEditTermModal}
-            termData={selectedRow[0]}
+            termData={selectedTerm}
             dataSource={data}
           />
         )}
-        {deleteTermModalVisible && (
+        {deleteTermModalVisible && selectedKey >= 0 && (
           <div>
             <Modal
               style={{ textAlign: "center" }}
@@ -288,13 +276,13 @@ class TermTable extends React.Component {
                   >
                     No, Cancel
                   </Button>
-                  <Button key="submit" type="primary" onClick={() => this.handleDelete(recordKey)}>
+                  <Button key="submit" type="primary" onClick={() => this.handleDelete(selectedKey)}>
                     Yes, Delete
                   </Button>
                 </DeleteTermModalFooterDiv>
               ]}
             >
-              <p>{`Are you sure you want to delete ${selectedTerm.name} - school year?`}</p>
+              <p>{`Are you sure you want to delete ${selectedTerm && selectedTerm.name} - school year?`}</p>
             </Modal>
           </div>
         )}

@@ -74,6 +74,7 @@ class ClassesTable extends Component {
       showActiveClassCheckbox: true,
       disableActiveUsers: false
     };
+    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
   componentDidMount() {
@@ -187,18 +188,17 @@ class ClassesTable extends Component {
   };
 
   changeFilterValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filtersValue = value;
-    this.setState({ filtersData }, () => this.afterSetState(key));
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filtersValue: value
+        };
+      }
+      return item;
+    });
 
-    // if (
-    //   // (filtersData[key].filterAdded || key === 2) &&
-    //   filtersData[key].filtersColumn !== "" &&
-    //   filtersData[key].filterStr !== ""
-    // ) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
+    this.setState({ filtersData: _filtersData }, () => this.afterSetState(key));
   };
 
   onSearchFilter = (value, event, i) => {
@@ -212,7 +212,8 @@ class ClassesTable extends Component {
       return item;
     });
 
-    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredClassList);
+    // For some unknown reason till now calling blur() synchronously doesnt work.
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
   };
 
   onBlurFilterText = (event, key) => {
@@ -338,7 +339,7 @@ class ClassesTable extends Component {
         if (filtersColumn === "active") {
           search[filtersColumn] = filterStr;
         } else {
-          if (!search.filtersColumn) {
+          if (!search[filtersColumn]) {
             search[filtersColumn] = [];
           }
           if (filtersColumn === "grades" || filtersColumn === "subjects") {
@@ -640,6 +641,7 @@ class ClassesTable extends Component {
               onBlur={e => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filterStr}
+              innerRef={this.filterTextInputRef[i]}
             />
           )}
           {i < 2 && (

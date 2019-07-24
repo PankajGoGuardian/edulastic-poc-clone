@@ -222,7 +222,7 @@ class CoursesTable extends React.Component {
 
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    if (filtersData.length < 1) {
+    if (filtersData.length < 3) {
       const _filtersData = filtersData.map((item, index) => {
         if (index === key) {
           return {
@@ -576,7 +576,7 @@ class CoursesTable extends React.Component {
             value={filtersData[i].filterStr}
             innerRef={this.filterTextInputRef[i]}
           />
-          {i < 0 && (
+          {i < 2 && (
             <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
               + Add Filter
             </StyledFilterButton>

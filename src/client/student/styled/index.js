@@ -24,7 +24,7 @@ export const Wrapper = styled.div`
   }
 
   @media (max-width: ${largeDesktopWidth}) {
-    margin: 12px 30px;
+    margin: 12px 20px 12px 30px;
   }
 
   @media screen and (max-width: 1300px) {
@@ -64,7 +64,8 @@ export const NoDataBox = styled.div`
     }
 
     @media (max-width: ${largeDesktopWidth}) {
-      margin-bottom: 15px;
+      max-width: 48px;
+      margin-bottom: 11px;
     }
   }
 
@@ -81,7 +82,7 @@ export const NoDataBox = styled.div`
 
     @media (max-width: ${largeDesktopWidth}) {
       font-size: 16px;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
     }
   }
 
@@ -94,6 +95,8 @@ export const NoDataBox = styled.div`
 
     @media (max-width: ${largeDesktopWidth}) {
       font-size: 12px;
+      line-height: 22px;
+      max-width: 224px;
     }
   }
 
@@ -106,7 +109,7 @@ export const NoDataBox = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     width: 295px;
     height: 263px;
-    padding: 66px 30px 50px;
+    padding: 48px 30px 56px;
   }
 
   @media screen and (max-width: ${mobileWidthMax}) {

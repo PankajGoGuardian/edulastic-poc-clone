@@ -15,19 +15,21 @@ const Wrapper = styled(Layout)`
 `;
 
 const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location, logout }) => {
+  const activeEnrolledClasses = (activeClasses || []).filter(c => c.status === "1");
+
   // location is available as prop when we are navigating through link from student manage class
   useEffect(() => {
     loadAllClasses();
   }, []);
-  if (loading) return <Spin />;
-  const { classItem = {} } = location;
-  const activeEnrolledClasses = activeClasses.filter(c => c.status === "1");
 
   useEffect(() => {
-    if (activeEnrolledClasses.length === 0) {
+    if (!loading && activeEnrolledClasses.length === 0) {
       logout();
     }
-  }, [activeEnrolledClasses.length]);
+  }, [loading, activeEnrolledClasses.length]);
+
+  if (loading) return <Spin />;
+  const { classItem = {} } = location;
 
   if (!isEmpty(classItem)) {
     const { _id } = classItem;

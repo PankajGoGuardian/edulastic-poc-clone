@@ -9,6 +9,7 @@ import { IndexBox, CustomRnd, Pointer } from "../styled";
 const Draggable = ({
   response,
   onDragStop,
+  onDrag,
   onResize,
   onDelete,
   onClick,
@@ -24,9 +25,9 @@ const Draggable = ({
     showDashedBorder={showDashedBorder}
     showBorder={showBorder}
     transparentBackground={transparentBackground}
-    bounds="parent"
     onClick={onClick}
     onDragStop={onDragStop}
+    onDrag={onDrag}
     onResize={onResize}
     position={{ x: response.left, y: response.top }}
     size={{ width: response.width, height: response.height }}
@@ -48,6 +49,7 @@ const Draggable = ({
 
 Draggable.propTypes = {
   response: PropTypes.object.isRequired,
+  onDrag: PropTypes.func.isRequired,
   onDragStop: PropTypes.func.isRequired,
   onResize: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,

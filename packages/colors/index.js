@@ -5,6 +5,7 @@ export const fadedBlack = "rgba(0, 0, 0, 0.65)";
 export const themeColor = "#00AD50"; // green
 export const themeColorLight = "#42d184"; // light green
 export const themeColorLighter = "#5EB500"; // light green
+export const themeColorSecondaryLighter = "#26B96A"; // light green
 export const themeColorTagsBg = "#E1FBED";
 export const themeColorBreadcrumb = "#69727E";
 

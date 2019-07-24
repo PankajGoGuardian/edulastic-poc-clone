@@ -172,12 +172,9 @@ class CoursesTable extends React.Component {
       }
       return item;
     });
-    this.setState({ filtersData: _filtersData });
 
-    // For some unknown reason till now calling blur() without setTimeout doesnt work.
-    setTimeout(() => {
-      this.filterTextInputRef[i].current.blur();
-    });
+    // For some unknown reason till now calling blur() synchronously doesnt work.
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
   };
 
   onBlurFilterText = (e, key) => {

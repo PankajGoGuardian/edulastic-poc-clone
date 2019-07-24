@@ -1271,12 +1271,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sample_answer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1356,12 +1351,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sample_answer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1432,12 +1422,7 @@ export const getCards = onSelectQuestionType => {
           tools: [],
           default_tool: null
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sample_answer: "",
         numberlineAxis: {
           leftArrow: true,
           rightArrow: true,
@@ -1558,12 +1543,7 @@ export const getCards = onSelectQuestionType => {
           controls: [],
           default_control: ""
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sample_answer: "",
         validation: {
           graphType: "axisLabels",
           scoring_type: EXACT_MATCH,

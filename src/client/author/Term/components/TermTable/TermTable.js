@@ -4,8 +4,14 @@ import { compose } from "redux";
 import * as moment from "moment";
 import { get } from "lodash";
 
-import { Table, Input, Popconfirm, Form, Icon, DatePicker } from "antd";
-import { StyledTableContainer, StyledButton, StyledDeleteButton, StyledAddButton } from "./styled";
+import { Table, Input, Form, Icon, DatePicker, Modal, Button } from "antd";
+import {
+  StyledTableContainer,
+  StyledButton,
+  StyledDeleteButton,
+  StyledAddButton,
+  DeleteTermModalFooterDiv
+} from "./styled";
 import CreateTermModal from "./CreateTermModal/CreateTermModal";
 import EditTermModal from "./EditTermModal/EditTermModal";
 // selectors
@@ -15,7 +21,6 @@ import { getUserOrgId } from "../../../src/selectors/user";
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
-
 class EditableCell extends React.Component {
   render() {
     const { editing, dataIndex, title, inputType, record, index, ...restProps } = this.props;
@@ -60,7 +65,9 @@ class TermTable extends React.Component {
     this.state = {
       selectedKey: -1,
       createTermModalVisible: false,
-      editTermModalVisible: false
+      editTermModalVisible: false,
+      deleteTermModalVisible: false,
+      recordKey: ""
     };
 
     this.columns = [
@@ -94,11 +101,18 @@ class TermTable extends React.Component {
               <StyledButton onClick={() => this.showEditTermModal(record.key)}>
                 <Icon type="edit" theme="twoTone" />
               </StyledButton>
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <StyledDeleteButton disabled={deleteDisabled}>
-                  <Icon type="delete" />
-                </StyledDeleteButton>
-              </Popconfirm>
+              <StyledDeleteButton disabled={deleteDisabled}>
+                <Icon
+                  type="delete"
+                  onClick={() => {
+                    this.setState({
+                      ...this.state,
+                      recordKey: record.key,
+                      deleteTermModalVisible: !this.state.deleteTermModalVisible
+                    });
+                  }}
+                />
+              </StyledDeleteButton>
             </React.Fragment>
           );
         }
@@ -136,6 +150,10 @@ class TermTable extends React.Component {
     const selectedTerm = data.filter(item => item.key == key);
     const { deleteTermSetting, userOrgId } = this.props;
     deleteTermSetting({ body: { termId: selectedTerm[0]._id, orgId: userOrgId } });
+    this.setState({
+      ...this.state,
+      deleteTermModalVisible: false
+    });
   };
 
   createTerm = termData => {
@@ -204,8 +222,17 @@ class TermTable extends React.Component {
         })
       };
     });
-    const { data, createTermModalVisible, editTermModalVisible, selectedKey } = this.state;
+    const {
+      data,
+      createTermModalVisible,
+      editTermModalVisible,
+      selectedKey,
+      deleteTermModalVisible,
+      recordKey
+    } = this.state;
     const selectedRow = data.filter(item => item.key === selectedKey);
+    const selectedTerm = !isNaN(recordKey) ? this.state.data.find(d => d.key === recordKey) : null;
+
     return (
       <StyledTableContainer>
         <EditableContext.Provider value={this.props.form}>
@@ -236,6 +263,40 @@ class TermTable extends React.Component {
             termData={selectedRow[0]}
             dataSource={data}
           />
+        )}
+        {deleteTermModalVisible && (
+          <div>
+            <Modal
+              style={{ textAlign: "center" }}
+              title="Delete School Year"
+              visible={deleteTermModalVisible}
+              destroyOnClose={true}
+              onCancel={() =>
+                this.setState({
+                  deleteTermModalVisible: false
+                })
+              }
+              footer={[
+                <DeleteTermModalFooterDiv>
+                  <Button
+                    key="back"
+                    onClick={() =>
+                      this.setState({
+                        deleteTermModalVisible: false
+                      })
+                    }
+                  >
+                    No, Cancel
+                  </Button>
+                  <Button key="submit" type="primary" onClick={() => this.handleDelete(recordKey)}>
+                    Yes, Delete
+                  </Button>
+                </DeleteTermModalFooterDiv>
+              ]}
+            >
+              <p>{`Are you sure you want to delete ${selectedTerm.name} - school year?`}</p>
+            </Modal>
+          </div>
         )}
       </StyledTableContainer>
     );

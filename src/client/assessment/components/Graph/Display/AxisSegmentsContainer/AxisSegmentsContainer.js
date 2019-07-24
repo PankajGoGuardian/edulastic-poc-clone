@@ -275,6 +275,10 @@ class AxisSegmentsContainer extends PureComponent {
       changePreviewTab,
       elements
     } = this.props;
+    const { disableResponse: prevDisableResponse } = prevProps;
+    if (disableResponse && prevDisableResponse != disableResponse) {
+      this.onReset();
+    }
 
     const { selectedTool } = this.state;
 

@@ -20,6 +20,7 @@ import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
 import { InstructorStimulus } from "./common/styled_components";
 import Annotations from "./Annotations/Annotations";
+import { AnswerContext } from "@edulastic/common";
 
 const EmptyWrapper = styled.div``;
 
@@ -63,6 +64,8 @@ const getStemNumerationList = () => [
 ];
 
 class Graph extends Component {
+  static contextType = AnswerContext;
+
   getOptionsComponent = () => {
     const { item } = this.props;
     const { graphType } = item;
@@ -256,13 +259,14 @@ class Graph extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       t,
       view,
       item,
       smallSize,
       testItem,
-      previewTab,
+      previewTab: _previewTab,
       userAnswer,
       evaluation,
       fillSections,
@@ -272,6 +276,18 @@ class Graph extends Component {
       disableResponse,
       ...restProps
     } = this.props;
+    let previewTab = _previewTab;
+    if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+      /**
+       * ideally wanted to be in CHECK mode.
+       * But this component seems to be
+       * written to work with only SHOW & CLEAR
+       */
+      previewTab = "show";
+    } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+      previewTab = "clear";
+    }
+
     const { extra_options, ui_style, validation, stimulus } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();

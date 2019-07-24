@@ -185,6 +185,12 @@ class AxisLabelsContainer extends PureComponent {
       }
     }
 
+    const { disableResponse: prevDisableResponse } = prevProps;
+    if (disableResponse && prevDisableResponse != disableResponse) {
+      // reset the graph when editResponse is disabled
+      this._graph.reset();
+    }
+
     if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
       changePreviewTab(CLEAR);
     }

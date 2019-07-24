@@ -16,7 +16,7 @@ import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
-import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
+import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
 
 const ChartPreview = ({
   item,

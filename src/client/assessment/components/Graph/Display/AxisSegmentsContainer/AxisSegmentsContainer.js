@@ -28,7 +28,7 @@ import { CONSTANT, Colors } from "../../Builder/config";
 import SegmentsTools from "./SegmentsTools";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 import { getQuestionDataSelector, setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {

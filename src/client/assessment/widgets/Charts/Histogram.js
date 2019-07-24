@@ -16,17 +16,7 @@ import Hists from "./components/Hists";
 
 import BarsAxises from "./components/BarsAxises";
 
-const Histogram = ({
-  data,
-  previewTab,
-  saveAnswer,
-  gridParams,
-  view,
-  correct,
-  disableResponse,
-  toggleBarDragging,
-  checkAnnotationLeave
-}) => {
+const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse, toggleBarDragging }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);

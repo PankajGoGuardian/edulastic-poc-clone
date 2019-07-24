@@ -25,7 +25,7 @@ import DropArea from "../../containers/DropArea";
 import { FlexView } from "../../styled/FlexView";
 import { Subtitle } from "../../styled/Subtitle";
 
-import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
+import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
 import { ColorBox } from "./styled/ColorBox";
 import { FlexContainer } from "./styled/FlexContainer";
 import { IconMoveResize } from "./styled/IconMoveResize";

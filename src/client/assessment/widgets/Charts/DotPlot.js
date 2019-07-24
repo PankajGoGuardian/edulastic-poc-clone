@@ -8,17 +8,7 @@ import withGrid from "./HOC/withGrid";
 import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 import { Line } from "./styled";
 
-const DotPlot = ({
-  data,
-  saveAnswer,
-  previewTab,
-  gridParams,
-  view,
-  correct,
-  disableResponse,
-  toggleBarDragging,
-  checkAnnotationLeave
-}) => {
+const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disableResponse, toggleBarDragging }) => {
   const { width, height, margin } = gridParams;
 
   const { step } = getGridVariables(data, gridParams, true);

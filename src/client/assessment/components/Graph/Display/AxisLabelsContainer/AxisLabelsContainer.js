@@ -15,7 +15,7 @@ import {
 import { makeBorder } from "../../Builder";
 import Tools from "../QuadrantsContainer/Tools";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 import { AUTO_HEIGHT_VALUE, AUTO_VALUE } from "../../Builder/config/constants";
 
 const getColoredElems = (elements, compareResult) => {

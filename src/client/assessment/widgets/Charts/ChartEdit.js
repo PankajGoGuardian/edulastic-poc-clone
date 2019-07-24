@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import Annotations from "../../components/Graph/Annotations/Annotations";
+import Annotations from "../../components/Annotations/Annotations";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import withPoints from "../../components/HOC/withPoints";

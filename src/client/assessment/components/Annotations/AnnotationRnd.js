@@ -6,9 +6,9 @@ import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
 import { FroalaEditor } from "@edulastic/common";
 import { FroalaInput } from "./styled/styled_components";
-import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
-import { getViewSelector } from "../../../../author/src/selectors/view";
-import { getQuestionByIdSelector, getCurrentQuestionSelector } from "../../../../author/sharedDucks/questions";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { getViewSelector } from "../../../author/src/selectors/view";
+import { getQuestionByIdSelector, getCurrentQuestionSelector } from "../../../author/sharedDucks/questions";
 import produce from "immer";
 
 const resizeDisable = {

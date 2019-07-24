@@ -39,7 +39,7 @@ import {
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {

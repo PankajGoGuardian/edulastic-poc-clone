@@ -11,7 +11,7 @@ import {
   getTestItemsDataSelector
 } from "../../../ClassBoard/ducks";
 import ClassQuestions from "../../../ClassResponses/components/Container/ClassQuestions";
-import { AnswerContext } from "@edulastic/common";
+import { AnswerContext, ScratchPadContext } from "@edulastic/common";
 
 class Question extends Component {
   constructor() {
@@ -49,13 +49,15 @@ class Question extends Component {
 
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: this.props.editResponse, expressGrader: true }}>
-        <ClassQuestions
-          currentStudent={student}
-          questionActivities={studentQuestions}
-          classResponse={{ testItems: selectedItems }}
-          qIndex={qIndex}
-          isPresentationMode={isPresentationMode}
-        />
+        <ScratchPadContext.Provider value={{ enableQuestionLevelScratchPad: false }}>
+          <ClassQuestions
+            currentStudent={student}
+            questionActivities={studentQuestions}
+            classResponse={{ testItems: selectedItems }}
+            qIndex={qIndex}
+            isPresentationMode={isPresentationMode}
+          />
+        </ScratchPadContext.Provider>
       </AnswerContext.Provider>
     );
   }

@@ -2,7 +2,16 @@ import React, { Component } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
 import { userApi } from "@edulastic/api";
-import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv, Text, IconWrapper, ColWrapper, ActionButton } from "./styled";
+import {
+  StyledTextArea,
+  PlaceHolderText,
+  SelUserKindDiv,
+  ItemDiv,
+  Text,
+  IconWrapper,
+  ColWrapper,
+  ActionButton
+} from "./styled";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
 
@@ -203,11 +212,11 @@ class InviteMultipleStudentModal extends Component {
     const allLists =
       allStudents.length > 0
         ? allStudents.map(item => {
-          const isEnrolled =
-            studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
-              .length > 0;
-          return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
-        })
+            const isEnrolled =
+              studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
+                .length > 0;
+            return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
+          })
         : null;
 
     const toEnrollLists =
@@ -376,8 +385,8 @@ class InviteMultipleStudentModal extends Component {
                 </Row>
               </TabPane>
             ) : (
-                ""
-              )}
+              ""
+            )}
           </Tabs>
         </Modal>
       </>

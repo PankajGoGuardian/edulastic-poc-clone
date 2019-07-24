@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -15,8 +14,8 @@ import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import OrientationSelect from "../../../components/OrientationSelect";
 import FontSizeSelect from "../../../components/FontSizeSelect";
+import Question from "../../../components/Question";
 
-import { Widget } from "../../../styled/Widget";
 import { Subtitle } from "../../../styled/Subtitle";
 
 class Layout extends Component {
@@ -42,31 +41,8 @@ class Layout extends Component {
     cleanSections: () => {}
   };
 
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { onChange, uiStyle, t, advancedAreOpen } = this.props;
+    const { onChange, uiStyle, t, fillSections, cleanSections, advancedAreOpen } = this.props;
 
     const changeUiStyle = (prop, value) => {
       const isNumberColumn = prop === "columns";
@@ -98,7 +74,13 @@ class Layout extends Component {
     ];
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
 
         <Row gutter={60}>
@@ -159,7 +141,7 @@ class Layout extends Component {
             </Col>
           </Row>
         )}
-      </Widget>
+      </Question>
     );
   }
 }

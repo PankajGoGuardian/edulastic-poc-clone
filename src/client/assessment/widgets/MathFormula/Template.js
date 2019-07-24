@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { cloneDeep } from "lodash";
 
 import { MathInput } from "@edulastic/common";
@@ -13,26 +12,13 @@ import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import { latexKeys } from "./constants";
 
 class Template extends Component {
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    if (item.templateDisplay) fillSections("main", t("component.math.template"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleUpdateTemplate = val => {
       setQuestionData(
@@ -55,7 +41,13 @@ class Template extends Component {
     };
 
     return (
-      <Widget visible={item.templateDisplay}>
+      <Question
+        section="main"
+        label={t("component.math.template")}
+        visible={item.templateDisplay}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle data-cy="template-container">{t("component.math.template")}</Subtitle>
         <MathInput
           showResponse
@@ -68,7 +60,7 @@ class Template extends Component {
             handleUpdateTemplate(latex);
           }}
         />
-      </Widget>
+      </Question>
     );
   }
 }

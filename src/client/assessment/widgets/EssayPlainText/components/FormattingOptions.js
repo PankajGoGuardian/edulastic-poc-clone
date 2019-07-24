@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
@@ -10,24 +9,11 @@ import { updateVariables } from "../../../utils/variables";
 
 import { AdaptiveCheckbox } from "../styled/AdaptiveCheckbox";
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 
 class FormattingOptions extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.essayText.plain.formattingOptions"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount = () => {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  };
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleItemChangeChange = (prop, uiStyle) => {
       setQuestionData(
@@ -39,7 +25,12 @@ class FormattingOptions extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.essayText.plain.formattingOptions")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.essayText.plain.formattingOptions")}</Subtitle>
         <FlexContainer childMarginRight={100}>
           <AdaptiveCheckbox
@@ -61,7 +52,7 @@ class FormattingOptions extends Component {
             {t("component.essayText.paste")}
           </AdaptiveCheckbox>
         </FlexContainer>
-      </Widget>
+      </Question>
     );
   }
 }

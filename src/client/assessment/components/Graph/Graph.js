@@ -15,12 +15,14 @@ import AxisSegmentsOptions from "./Authoring/AxisSegmentsOptions";
 import AxisLabelsOptions from "./Authoring/AxisLabelsLayoutSettings/AxisLabelsOptions";
 import QuadrantsSmallSize from "./components/QuadrantsSmallSize";
 import AxisSmallSize from "./components/AxisSmallSize";
-import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from "./Authoring";
+import { AxisSegments, GraphAxisLabels, GraphQuadrants } from "./Authoring";
 import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
 import { InstructorStimulus } from "./common/styled_components";
 import Annotations from "./Annotations/Annotations";
 import { AnswerContext } from "@edulastic/common";
+
+import Question from "../Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -307,7 +309,7 @@ class Graph extends Component {
                 advancedAreOpen
                 setCanvas={this.handleCanvasChange}
               />
-              <QuestionSection
+              <Question
                 section="main"
                 label="Set Correct Answer"
                 cleanSections={cleanSections}
@@ -326,8 +328,8 @@ class Graph extends Component {
                   getIgnoreRepeatedShapesOptions={getIgnoreRepeatedShapesOptions}
                   handleSelectIgnoreRepeatedShapes={this.handleSelectIgnoreRepeatedShapes}
                 />
-              </QuestionSection>
-              <QuestionSection
+              </Question>
+              <Question
                 section="main"
                 label="Annotations"
                 cleanSections={cleanSections}
@@ -335,7 +337,7 @@ class Graph extends Component {
                 advancedAreOpen
               >
                 <Annotations editable />
-              </QuestionSection>
+              </Question>
               <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>
           </React.Fragment>

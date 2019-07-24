@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Select, Row, Col, Input } from "antd";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
 import { withNamespaces } from "@edulastic/localization";
+import { response } from "@edulastic/constants";
 import styled from "styled-components";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
@@ -20,34 +20,9 @@ import Delete from "./styled/Delete";
 
 import { Block } from "../../../styled/WidgetOptions/Block";
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
-
-import { response } from "@edulastic/constants";
+import Question from "../../../components/Question";
 
 class Layout extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   handleWidthChange = () => {
     const { onChange, uiStyle, responses } = this.props;
     const { minWidth, maxWidth } = response;
@@ -102,7 +77,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { questionData, onChange, uiStyle, advancedAreOpen, t } = this.props;
+    const { questionData, onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections } = this.props;
 
     const changeUiStyle = (prop, value) => {
       const { maxHeight, maxWidth } = response;
@@ -199,7 +174,13 @@ class Layout extends Component {
 
     return (
       <React.Fragment>
-        <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Question
+          section="advanced"
+          label={t("component.options.display")}
+          advancedAreOpen={advancedAreOpen}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        >
           <Block style={{ paddingTop: 0 }}>
             <Subtitle>{t("component.options.display")}</Subtitle>
             <MarginRow gutter={20}>
@@ -385,7 +366,7 @@ class Layout extends Component {
               </Col>
             </MarginRow>
           </Block>
-        </Widget>
+        </Question>
       </React.Fragment>
     );
   }

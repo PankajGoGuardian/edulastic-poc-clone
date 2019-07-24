@@ -221,29 +221,26 @@ class QuestionWrapper extends Component {
     this.setState({ shuffledOptsOrder });
   };
 
-  fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight, id) => {
+  fillSections = (section, label, el) => {
     this.setState(state => {
       const sectionState = state[section];
-      const found = sectionState.filter(el => el.label === label && el.offset !== offset);
+      const found = sectionState.filter(block => block.label === label);
 
       if (found.length) {
         // update of section offset in array
         return {
-          [section]: sectionState.filter(el => {
+          [section]: sectionState.filter(block => {
             if (el.label === label) {
-              el.offset = offset;
-              el.offsetBottom = offsetBottom;
-              el.haveDesk = haveDesk;
-              el.deskHeight = deskHeight;
+              block.el = el;
             }
-            return el;
+            return block;
           })
         };
       }
 
       // push of section to array
       return {
-        [section]: sectionState.concat({ label, offset, offsetBottom, haveDesk, deskHeight, id })
+        [section]: sectionState.concat({ section, label, el })
       };
     });
   };

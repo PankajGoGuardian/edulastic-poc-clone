@@ -1,7 +1,6 @@
 /* eslint-disable func-names */
 import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Rnd } from "react-rnd";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
@@ -46,13 +45,13 @@ import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { FieldLabel } from "./styled/FieldLabel";
 import { ResponsTextInputWrapper } from "./styled/ResponsTextInputWrapper";
-import { Widget } from "../../styled/Widget";
 import { FieldWrapper } from "./styled/FieldWrapper";
 import { UploadButton } from "./styled/UploadButton";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
 
 import SortableList from "../../components/SortableList";
+import Question from "../../components/Question";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -89,21 +88,6 @@ class Authoring extends Component {
     // imageWidth:
     //   this.props.item.imageWidth > 0 ? (this.props.item.imageWidth >= 700 ? 700 : this.props.item.imageWidth) : 700
   };
-
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    if (item.imageUrl) this.getImageDimensions(item.imageUrl);
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.cloze.imageText.composequestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   componentDidUpdate(nextProps) {
     const { item, setQuestionData } = nextProps;
@@ -537,7 +521,7 @@ class Authoring extends Component {
   };
 
   render() {
-    const { t, item, theme, setQuestionData } = this.props;
+    const { t, item, theme, setQuestionData, fillSections, cleanSections } = this.props;
     const {
       background,
       imageAlterText,
@@ -590,7 +574,12 @@ class Authoring extends Component {
     return (
       <div>
         <PaddingDiv>
-          <Widget>
+          <Question
+            section="main"
+            label={t("component.cloze.imageText.composequestion")}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          >
             <Subtitle>{t("component.cloze.imageText.composequestion")}</Subtitle>
 
             <QuestionTextArea
@@ -856,7 +845,7 @@ class Authoring extends Component {
                 </PaddingDiv>
               </PaddingDiv>
             ))}
-          </Widget>
+          </Question>
         </PaddingDiv>
       </div>
     );

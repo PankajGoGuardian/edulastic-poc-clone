@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
-import { Checkbox, Paper, PaddingDiv } from "@edulastic/common";
+import { Checkbox, Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -23,8 +23,7 @@ import Options from "./components/Options";
 import Display from "./Display";
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
-import { Widget } from "../../styled/Widget";
-import { AnswerContext } from "@edulastic/common";
+import Question from "../../components/Question";
 
 class ClozeImageText extends Component {
   static contextType = AnswerContext;
@@ -181,7 +180,12 @@ class ClozeImageText extends Component {
                     cleanSections={cleanSections}
                     imageWidth={item.imageWidth}
                   />
-                  <Widget>
+                  <Question
+                    section="main"
+                    label={t("component.correctanswers.setcorrectanswers")}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                  >
                     <CorrectAnswers
                       key={duplicatedResponses || showDraghandle || shuffleOptions}
                       validation={item.validation}
@@ -235,7 +239,7 @@ class ClozeImageText extends Component {
                         <PaddingDiv>{t("component.cloze.imageText.maximumresponses")}</PaddingDiv>
                       </MaxRespCountWrapper>
                     </AdditionalContainer>
-                  </Widget>
+                  </Question>
                 </div>
               </EditorContainer>
               <OptionsContainer>

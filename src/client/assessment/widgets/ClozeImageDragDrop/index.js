@@ -9,7 +9,7 @@ import styled, { withTheme } from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, PaddingDiv } from "@edulastic/common";
+import { Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
@@ -17,7 +17,6 @@ import { EDIT } from "../../constants/constantsForQuestions";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
-import { Widget } from "../../styled/Widget";
 
 import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
@@ -26,18 +25,19 @@ import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
 import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Graph/Annotations/Annotations";
-import { AnswerContext } from "@edulastic/common";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
 class ClozeImageDragDrop extends Component {
-  static contextType = AnswerContext;
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
     showDraghandle: false,
     transparentResponses: false
   };
+
+  static contextType = AnswerContext;
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
@@ -164,7 +164,12 @@ class ClozeImageDragDrop extends Component {
                   cleanSections={cleanSections}
                   setQuestionData={setQuestionData}
                 />
-                <Widget>
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
@@ -191,53 +196,62 @@ class ClozeImageDragDrop extends Component {
                     questionId={item.id}
                     imageOptions={item.imageOptions}
                     item={item}
-                  />
-                  <CorrectAnswerOptions>
-                    <Checkbox
-                      data-cy="multi-check"
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
-                      defaultChecked={duplicatedResponses}
-                    >
-                      {t("component.cloze.imageDragDrop.duplicatedresponses")}
-                    </Checkbox>
-                    <Checkbox
-                      data-cy="drag-check"
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
-                      defaultChecked={showDraghandle}
-                    >
-                      {t("component.cloze.imageDragDrop.showdraghandle")}
-                    </Checkbox>
-                    <Checkbox
-                      data-cy="shuffle-check"
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                      defaultChecked={shuffleOptions}
-                    >
-                      {t("component.cloze.imageDragDrop.shuffleoptions")}
-                    </Checkbox>
-                    <Checkbox
-                      data-cy="transparent-check"
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
-                      defaultChecked={transparentResponses}
-                    >
-                      {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-                    </Checkbox>
-                  </CorrectAnswerOptions>
-                  <MaxRespCountWrapper>
-                    <MaxRespCountInput
-                      data-cy="drag-drop-image-max-res"
-                      min={1}
-                      max={10}
-                      defaultValue={item.maxRespCount}
-                      onChange={val => this.handleOptionsChange("maxRespCount", val)}
-                    />
-                    <PaddingDiv>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
-                  </MaxRespCountWrapper>
+                  >
+                    <CorrectAnswerOptions>
+                      <Checkbox
+                        data-cy="multi-check"
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
+                        defaultChecked={duplicatedResponses}
+                      >
+                        {t("component.cloze.imageDragDrop.duplicatedresponses")}
+                      </Checkbox>
+                      <Checkbox
+                        data-cy="drag-check"
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
+                        defaultChecked={showDraghandle}
+                      >
+                        {t("component.cloze.imageDragDrop.showdraghandle")}
+                      </Checkbox>
+                      <Checkbox
+                        data-cy="shuffle-check"
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                        defaultChecked={shuffleOptions}
+                      >
+                        {t("component.cloze.imageDragDrop.shuffleoptions")}
+                      </Checkbox>
+                      <Checkbox
+                        data-cy="transparent-check"
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
+                        defaultChecked={transparentResponses}
+                      >
+                        {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
+                      </Checkbox>
+                    </CorrectAnswerOptions>
+                    <MaxRespCountWrapper>
+                      <MaxRespCountInput
+                        data-cy="drag-drop-image-max-res"
+                        min={1}
+                        max={10}
+                        defaultValue={item.maxRespCount}
+                        onChange={val => this.handleOptionsChange("maxRespCount", val)}
+                      />
+                      <PaddingDiv>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
+                    </MaxRespCountWrapper>
+                  </CorrectAnswers>
+                </Question>
+
+                <Question
+                  section="main"
+                  label={t("component.cloze.imageDragDrop.annotations")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <Annotations editable />
-                </Widget>
+                </Question>
               </div>
               <Options
                 onChange={this.handleOptionsChange}

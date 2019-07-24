@@ -7,7 +7,6 @@ import StandardsGradebook from "./standardsGradebook";
 import StandardsPerfromance from "./standardsPerformance";
 
 import StandardsFilters from "./common/components/Filters";
-import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";

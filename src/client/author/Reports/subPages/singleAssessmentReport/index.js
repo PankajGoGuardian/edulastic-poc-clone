@@ -81,7 +81,6 @@ const SingleAssessmentReportContainer = props => {
           match={props.match}
           style={props.showFilter ? { display: "block" } : { display: "none" }}
         />
-        {/* <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} /> */}
         <Route
           exact
           path={`/author/reports/assessment-summary/test/:testId?`}

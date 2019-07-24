@@ -36,8 +36,6 @@ export const CustomizedHeaderWrapper = ({
     onRefineResultsCB(event, !refineButtonActive);
   };
 
-  console.log(navigationItems, "navigationItems");
-
   return (
     <div>
       <HeaderWrapper>
@@ -89,23 +87,25 @@ const StyledCol = styled(Col)`
 `;
 
 const StyledButton = styled(Button)`
-  margin-left: 10px;
-  font-size: 14px;
-  text-shadow: none;
-  font-weight: 400;
-  border-radius: 3px;
-  border-color: transparent;
-  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-  color: ${themeColor};
-  &:hover,
-  &:active,
-  &:focus {
-    color: ${themeColor};
+  &.ant-btn {
+    margin-left: 10px;
+    font-size: 14px;
+    text-shadow: none;
+    font-weight: 400;
+    border-radius: 3px;
     border-color: transparent;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-  }
-  &::after {
-    display: none !important;
+    color: ${themeColor};
+    &:hover,
+    &:active,
+    &:focus {
+      color: ${themeColor};
+      border-color: transparent;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    }
+    &::after {
+      display: none !important;
+    }
   }
 `;
 
@@ -127,7 +127,7 @@ const HeaderTitle = styled.div`
 `;
 
 const SecondaryHeader = styled.div`
-  padding: 15px 50px;
+  padding: 15px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;

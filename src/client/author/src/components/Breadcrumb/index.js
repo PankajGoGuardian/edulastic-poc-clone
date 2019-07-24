@@ -56,10 +56,6 @@ const Container = styled.div`
     }
   }
 
-  .ant-breadcrumb-separator {
-    margin: 0 7px 0 7px;
-  }
-
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator {
     font-size: 11px;

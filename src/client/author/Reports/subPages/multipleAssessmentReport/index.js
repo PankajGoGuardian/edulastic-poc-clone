@@ -4,7 +4,6 @@ import { map } from "lodash";
 import next from "immer";
 import qs from "qs";
 
-import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";

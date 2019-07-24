@@ -66,7 +66,7 @@ export const StyledFilterWrapper = styled.div`
 `;
 
 export const StyledReportsContentContainer = styled.div`
-  padding: 0px 35px;
+  padding: 0px 20px;
 `;
 
 export const DropDownContainer = styled.div`

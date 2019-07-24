@@ -109,14 +109,15 @@ const ChartPreview = ({
   const calculatedParams = {
     ...ui_style,
     width:
-      document.querySelector(`[data-cy="${metaData}"]`) !== null &&
-      ui_style.width > document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
+      document.querySelector(`[data-cy="${metaData}"]`) !== null && disableResponse
+        ? ui_style.width
+        : ui_style.width > document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
         ? document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
         : ui_style.width
   };
 
   return (
-    <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper className="chart-preview-class" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}

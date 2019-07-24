@@ -82,6 +82,7 @@ class Equations extends Component {
             <MathInput
               symbols={symbols}
               numberPad={numberPad}
+              fullWidth={true}
               value={eq.latex}
               onInput={latex => {
                 this.handleUpdateEquation(eq.latex, latex, index);
@@ -120,7 +121,7 @@ Equations.propTypes = {
 export default Equations;
 
 const Container = styled.div`
-  width: 50%;
+  width: 66.5%;
 `;
 
 const Wrapper = styled.div`

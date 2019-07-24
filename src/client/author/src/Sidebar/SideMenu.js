@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import ReactOutsideEvent from "react-outside-event";
-import { white, tabletWidth, dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
+import { white, tabletWidth, smallDesktopWidth, dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
 import { get, remove } from "lodash";
 import { withRouter } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -420,6 +420,9 @@ const SideBar = styled(Layout.Sider)`
 
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 22.5px 20px;
+    @media (max-width: ${smallDesktopWidth}) {
+      padding: 5px 20px;
+    }
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
@@ -509,6 +512,9 @@ const LogoWrapper = styled(Row)`
   text-align: center;
   display: flex;
   align-items: center;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 20px 39px 14px;
+  }
 `;
 
 const LogoDash = styled.div`

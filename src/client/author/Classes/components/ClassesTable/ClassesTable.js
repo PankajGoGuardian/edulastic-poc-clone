@@ -428,18 +428,24 @@ class ClassesTable extends Component {
       {
         title: "Class Name",
         dataIndex: "_source.name",
-        editable: true
+        editable: true,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.name.localeCompare(b._source.name)
       },
       {
         title: "Class Code",
         dataIndex: "_source.code",
-        editable: true
+        editable: true,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.code.localeCompare(b._source.code)
       },
       {
         title: "Course",
         dataIndex: "_source.course",
         editable: true,
-        render: course => (course ? course.name : "-")
+        render: course => (course ? course.name : "-"),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.course.name.localeCompare(b._source.course.name)
       },
       {
         title: "Teacher",
@@ -450,13 +456,17 @@ class ClassesTable extends Component {
             <TeacherSpan key={`${owner.id}${index}`}>{owner.name}</TeacherSpan>
           ));
           return <React.Fragment>{teachers}</React.Fragment>;
-        }
+        },
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name)
       },
       {
         title: "Users",
         dataIndex: "_source.studentCount",
         editable: true,
-        render: (studentCount = 0) => studentCount
+        render: (studentCount = 0) => studentCount,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.studentCount - b._source.studentCount
       },
       {
         dataIndex: "_id",
@@ -621,7 +631,6 @@ class ClassesTable extends Component {
         </StyledControlDiv>
       );
     }
-
     return (
       <StyledTableContainer>
         <StyledControlDiv>

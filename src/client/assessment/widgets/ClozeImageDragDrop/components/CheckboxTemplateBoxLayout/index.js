@@ -39,10 +39,11 @@ const CheckboxTemplateBoxLayout = ({
   drop,
   onDropHandler,
   theme,
-  showBorder
+  showBorder,
+  disableResponse,
+  isWrapText
 }) => {
   const { maxHeight, maxWidth } = clozeImage;
-
   return (
     <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
       <StyledPreviewContainer
@@ -94,11 +95,12 @@ const CheckboxTemplateBoxLayout = ({
                   index={index}
                   style={{
                     ...btnStyle,
-                    width: responseContainer.width || "max-content",
-                    height: responseContainer.height,
+                    width: isWrapText ? "auto" : responseContainer.width || "max-content",
+                    height: isWrapText ? "auto" : responseContainer.height,
                     minWidth: response.minWidth,
                     maxWidth: response.maxWidth
                   }}
+                  disableResponse={disableResponse}
                   className={`
                 imagelabeldragdrop-droppable
                 active
@@ -122,20 +124,21 @@ const CheckboxTemplateBoxLayout = ({
                               margin: 5,
                               padding: 5,
                               display: "inline-block",
-                              whiteSpace: "nowrap",
+                              whiteSpace: isWrapText ? "normal" : "nowrap",
                               textOverflow: "ellipsis",
                               width: "max-content",
                               minWidth: response.minWidth,
                               maxWidth: response.maxWidth,
-                              overflow: "hidden"
+                              overflow: isWrapText ? "visible" : "hidden"
                             }}
                             item={answer}
                             onDrop={onDropHandler}
+                            disableResponse={disableResponse}
                           >
                             <div title={title}>
                               <MathSpan
                                 dangerouslySetInnerHTML={{
-                                  __html: answer.replace("<p>", "<p class='clipText'>") || ""
+                                  __html: isWrapText ? answer : answer.replace("<p>", "<p class='clipText'>") || ""
                                 }}
                               />
                             </div>
@@ -162,11 +165,13 @@ const CheckboxTemplateBoxLayout = ({
                   index={index}
                   style={{
                     ...btnStyle,
-                    width: responseContainer.width || "max-content",
-                    height: responseContainer.height,
-                    minWidth: response.minWidth,
+                    width: isWrapText ? "auto" : responseContainer.width || "max-content",
+                    height: isWrapText ? "auto" : responseContainer.height,
+                    minWidth: responseContainer.width || response.minWidth || "auto",
+                    minHeight: responseContainer.height || response.minHeight || "auto",
                     maxWidth: response.maxWidth
                   }}
+                  disableResponse={disableResponse}
                   className={`
               imagelabeldragdrop-droppable
               active
@@ -174,16 +179,16 @@ const CheckboxTemplateBoxLayout = ({
               ${status} show-answer`}
                   drop={drop}
                 >
+                  <div
+                    style={{
+                      alignSelf: "stretch",
+                      height: "auto"
+                    }}
+                    className="index index-box"
+                  >
+                    {indexStr}
+                  </div>
                   <div className="text container" style={{ padding: "0px" }}>
-                    <div
-                      style={{
-                        alignSelf: "stretch",
-                        height: "auto"
-                      }}
-                      className="index index-box"
-                    >
-                      {indexStr}
-                    </div>
                     {userSelections[dropTargetIndex] &&
                       userSelections[dropTargetIndex].map((answer, user_select_index) => {
                         const title = striptags(answer) || null;
@@ -199,20 +204,21 @@ const CheckboxTemplateBoxLayout = ({
                               margin: 5,
                               padding: 5,
                               display: "inline-block",
-                              whiteSpace: "nowrap",
+                              whiteSpace: isWrapText ? "normal" : "nowrap",
                               textOverflow: "ellipsis",
                               width: "max-content",
                               minWidth: response.minWidth,
                               maxWidth: response.maxWidth,
-                              overflow: "hidden"
+                              overflow: isWrapText ? "visible" : "hidden"
                             }}
                             item={answer}
                             onDrop={onDropHandler}
+                            disableResponse={disableResponse}
                           >
                             <div title={title}>
                               <MathSpan
                                 dangerouslySetInnerHTML={{
-                                  __html: answer.replace("<p>", "<p class='clipText'>") || ""
+                                  __html: isWrapText ? answer : answer.replace("<p>", "<p class='clipText'>") || ""
                                 }}
                               />
                             </div>

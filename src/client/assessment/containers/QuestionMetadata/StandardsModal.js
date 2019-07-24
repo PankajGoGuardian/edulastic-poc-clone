@@ -48,7 +48,6 @@ const StandardsModal = ({
     setState(prevState => ({
       ...prevState,
       subject: val,
-      eloStandards: [],
       standard: { ...prevState.standard, curriculum: "" }
     }));
     getCurriculumStandards({ id: "", grades: state.grades, searchStr: "" });
@@ -56,7 +55,7 @@ const StandardsModal = ({
 
   const handleChangeStandard = (curriculum, event) => {
     const id = event.key;
-    setState({ ...state, standard: { id, curriculum }, eloStandards: [] });
+    setState({ ...state, standard: { id, curriculum } });
     getCurriculumStandards({ id, grades: state.grades, searchStr: "" });
   };
 

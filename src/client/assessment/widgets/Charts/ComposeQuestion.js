@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { Col, Input, Row, Select } from "antd";
@@ -11,7 +10,8 @@ import { questionType } from "@edulastic/constants";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget, WidgetSubHeading } from "../../styled/Widget";
+import { WidgetSubHeading } from "../../styled/Widget";
+import Question from "../../components/Question";
 import { ColContainer } from "../../styled/ColContainer";
 
 import UiInputGroup from "./components/UiInputGroup";
@@ -31,7 +31,6 @@ class ComposeQuestion extends Component {
         ui_style: { yAxisMax, yAxisMin, snapTo }
       }
     } = props;
-
     this.state = {
       localMaxValue: yAxisMax,
       localMinValue: yAxisMin,
@@ -39,21 +38,8 @@ class ComposeQuestion extends Component {
     };
   }
 
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.multiplechoice.composequestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
     const {
       ui_style: { chart_type, fractionFormat }
     } = item;
@@ -69,23 +55,24 @@ class ComposeQuestion extends Component {
     };
 
     const handleUiStyleChange = (prop, uiStyle) => {
+      const val = uiStyle <= 0 ? 0 : uiStyle;
       setQuestionData(
         produce(item, draft => {
           switch (prop) {
             case "yAxisMax":
-              this.setState({ localMaxValue: uiStyle });
+              this.setState({ localMaxValue: val > localMinValue ? val : localMinValue + 1 });
               break;
             case "yAxisMin":
-              this.setState({ localMinValue: uiStyle });
+              this.setState({ localMinValue: val });
               break;
             case "snapTo":
-              this.setState({ localSnapTo: uiStyle });
+              this.setState({ localSnapTo: val });
               break;
             case "stepSize":
-              draft.ui_style[prop] = uiStyle === 0 ? 1 : uiStyle;
+              draft.ui_style[prop] = val < 1 ? 1 : val;
               break;
             default:
-              draft.ui_style[prop] = uiStyle;
+              draft.ui_style[prop] = val;
           }
         })
       );
@@ -135,7 +122,12 @@ class ComposeQuestion extends Component {
       [questionType.BAR_CHART, questionType.LINE_CHART, questionType.HISTOGRAM].includes(chart_type);
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.chart.composeQuestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.chart.composeQuestion")}</Subtitle>
 
         <QuestionTextArea
@@ -205,7 +197,7 @@ class ComposeQuestion extends Component {
             </ColContainer>
           </Row>
         )}
-      </Widget>
+      </Question>
     );
   }
 }

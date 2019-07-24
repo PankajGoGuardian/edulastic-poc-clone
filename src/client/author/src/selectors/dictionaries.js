@@ -81,5 +81,5 @@ export const getStandardsListSelector = createSelector(
 );
 export const getRecentStandardsListSelector = createSelector(
   stateSelector,
-  state => state.recentStandardsList
+  state => state.recentStandardsList || []
 );

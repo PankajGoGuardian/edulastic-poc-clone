@@ -6,12 +6,12 @@ export const SortableItemContainer = styled.div`
   font-size: ${props => props.fontSize || "14px"};
   min-height: 40px;
   margin: ${({ styleType }) =>
-    styleType === "list" ? "0 0 5px 0" : styleType === "button" ? "0 0 17px 0" : "0 5px 0 0"};
+    styleType === "list" ? "0 0 5px 0" : styleType === "inline" ? "0 5px 0 0" : "0 0 17px 0"};
   display: inline-flex;
   flex-direction: column;
   background: ${white};
   border: ${({ styleType }) =>
-    styleType !== "list" && styleType !== "inline" ? `1px solid ${dashBorderColor}` : "none"};
+    styleType === "list" || styleType === "inline" ? "none" : `1px solid ${dashBorderColor}`};
   border-radius: 4px;
   padding-right: 12px;
 

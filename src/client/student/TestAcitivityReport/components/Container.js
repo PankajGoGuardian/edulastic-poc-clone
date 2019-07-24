@@ -31,6 +31,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById }) => {
               verticalDivider={item.verticalDivider}
               scrolling={item.scrolling}
               releaseScore={releaseScore}
+              showFeedback={true}
               disableResponse
               isStudentReport
             />

@@ -45,7 +45,8 @@ OrderListPreview.defaultProps = {
   questions: [],
   smallSize: false,
   disableResponse: false,
-  columns: 1
+  columns: 1,
+  styleType: "button"
 };
 
 const enhance = compose(SortableContainer);

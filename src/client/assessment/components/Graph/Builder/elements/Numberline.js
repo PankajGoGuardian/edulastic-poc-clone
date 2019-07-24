@@ -155,13 +155,14 @@ const onHandler = board => {
   /**
    * Specific points
    * */
-  if (isString(specificPoints)) {
-    const tickArr = specificPoints
-      .split(",")
-      .map(s => parseFloat(s))
-      .filter(num => !Number.isNaN(num));
-    ticks = union(ticks, tickArr);
-  }
+  const specificTicks = isString(specificPoints)
+    ? specificPoints
+        .split(",")
+        .map(s => parseFloat(s))
+        .filter(num => !Number.isNaN(num))
+    : [];
+
+  ticks = union(ticks, specificTicks);
 
   /**
    * Ticks labels
@@ -206,15 +207,6 @@ const onHandler = board => {
     labels = labels.map(t => toFractionHTML(t, fracTicksDistance.denominator, fractionsFormat));
   }
 
-  if (labelsFrequency) {
-    labels.forEach((label, index) => {
-      if (index % labelsFrequency === 0) {
-      } else if (index !== 0 && index !== labels.length - 1) {
-        labels[index] = "";
-      }
-    });
-  }
-
   board.$board.create("ticks", [newAxis, ticks], {
     strokeColor: "#d6d6d6",
     highlightStrokeColor: "#d6d6d6",
@@ -239,7 +231,16 @@ const onHandler = board => {
 
   if (!showLabels) {
     newAxis.ticks[1].labels.forEach((label, index) => {
-      if (parseInt(label.htmlStr, 10) === 0 && index !== 0) {
+      if (parseInt(label.htmlStr, 10) === 0 && index !== 0 && !specificTicks.includes(+label.htmlStr)) {
+        board.$board.removeObject(newAxis.ticks[1].labels[index]);
+      }
+    });
+  }
+
+  if (labelsFrequency) {
+    newAxis.ticks[1].labels.forEach((label, index) => {
+      if (index % labelsFrequency === 0 || specificTicks.includes(+label.htmlStr)) {
+      } else if (index !== 0 && index !== labels.length - 1) {
         board.$board.removeObject(newAxis.ticks[1].labels[index]);
       }
     });
@@ -253,7 +254,7 @@ const onHandler = board => {
         compareValue = "-" + compareValue.substr(1, compareValue.length - 1);
       }
 
-      if (parseInt(compareValue, 10) === xMin) {
+      if (parseInt(compareValue, 10) === xMin && !specificTicks.includes(+label.htmlStr)) {
         board.$board.removeObject(newAxis.ticks[1].labels[index]);
       }
     });
@@ -267,7 +268,7 @@ const onHandler = board => {
         compareValue = "-" + compareValue.substr(1, compareValue.length - 1);
       }
 
-      if (parseInt(compareValue, 10) === xMax) {
+      if (parseInt(compareValue, 10) === xMax && !specificTicks.includes(+label.htmlStr)) {
         board.$board.removeObject(newAxis.ticks[1].labels[index]);
       }
     });

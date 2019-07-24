@@ -71,17 +71,14 @@ class DragScroll extends Component {
 
   componentDidMount() {
     const dragEnterEl = this.dragEnterRef.current;
-    const { context } = this.props;
-    const { getScrollElement } = context;
-    const scrollContainer = getScrollElement();
 
-    scrollContainer.addEventListener("mousedown", this.handleMouseDown);
-    scrollContainer.addEventListener("mouseup", this.handleMouseUp);
-    scrollContainer.addEventListener("dragstart", this.handleIsDragging);
-    scrollContainer.addEventListener("dragend", this.handleDragEnd);
-    scrollContainer.addEventListener("focus", this.handleMouseUp);
-    scrollContainer.addEventListener("blur", this.handleMouseUp);
-    scrollContainer.addEventListener("contextmenu", this.handleMouseUp);
+    window.addEventListener("mousedown", this.handleMouseDown);
+    window.addEventListener("mouseup", this.handleMouseUp);
+    window.addEventListener("dragstart", this.handleIsDragging);
+    window.addEventListener("dragend", this.handleDragEnd);
+    window.addEventListener("focus", this.handleMouseUp);
+    window.addEventListener("blur", this.handleMouseUp);
+    window.addEventListener("contextmenu", this.handleMouseUp);
 
     dragEnterEl.addEventListener("dragenter", this.handleDragEnter);
     dragEnterEl.addEventListener("dragleave", this.handleDragLeave);
@@ -91,17 +88,14 @@ class DragScroll extends Component {
 
   componentWillUnmount() {
     const dragEnterEl = this.dragEnterRef.current;
-    const { context } = this.props;
-    const { getScrollElement } = context;
-    const scrollContainer = getScrollElement();
 
-    scrollContainer.removeEventListener("mousedown", this.handleMouseDown);
-    scrollContainer.removeEventListener("mouseup", this.handleMouseUp);
-    scrollContainer.removeEventListener("dragstart", this.handleIsDragging);
-    scrollContainer.removeEventListener("dragend", this.handleDragEnd);
-    scrollContainer.removeEventListener("focus", this.handleMouseUp);
-    scrollContainer.removeEventListener("blur", this.handleMouseUp);
-    scrollContainer.removeEventListener("contextmenu", this.handleMouseUp);
+    window.removeEventListener("mousedown", this.handleMouseDown);
+    window.removeEventListener("mouseup", this.handleMouseUp);
+    window.removeEventListener("dragstart", this.handleIsDragging);
+    window.removeEventListener("dragend", this.handleDragEnd);
+    window.removeEventListener("focus", this.handleMouseUp);
+    window.removeEventListener("blur", this.handleMouseUp);
+    window.removeEventListener("contextmenu", this.handleMouseUp);
 
     dragEnterEl.removeEventListener("dragenter", this.handleDragEnter);
     dragEnterEl.removeEventListener("dragleave", this.handleDragLeave);
@@ -145,7 +139,7 @@ class DragScroll extends Component {
 
     const key = scrollContainer.classList ? scrollContainer.classList.toString() : "window";
 
-    return <div key={key} ref={this.dragEnterRef} {...restProps} style={mergedStyle} />;
+    return <div key={key} ref={this.dragEnterRef} style={mergedStyle} />;
   };
 }
 

@@ -64,6 +64,7 @@ FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="custom-toolbar-bt
 FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">Text Input</span>`);
 FroalaEditor.DefineIconTemplate("textdropdown", `<span class="custom-toolbar-btn">Text Dropdown</span>`);
 FroalaEditor.DefineIconTemplate("mathinput", `<span class="custom-toolbar-btn">Math Input</span>`);
+FroalaEditor.DefineIconTemplate("paragraphNumber", `<span class="custom-toolbar-btn">PN</span>`);
 
 const symbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
 const numberPad = ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"];
@@ -311,6 +312,7 @@ const CustomEditor = ({
         "textinput",
         "textdropdown",
         "mathinput",
+        "paragraphnumber",
         "response",
         "specialCharacters"
       ],
@@ -413,7 +415,9 @@ const CustomEditor = ({
               const cursorEl = parent.childNodes[range.startOffset - 1];
               if (!cursorEl || !cursorEl.tagName) return;
 
-              if (["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT"].includes(cursorEl.tagName)) {
+              if (
+                ["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT", "PARAGRAPHNUMBER"].includes(cursorEl.tagName)
+              ) {
                 cursorEl.remove();
                 this.selection.save();
                 const updatedHtml = reIndexResponses(this.html.get(true));
@@ -498,7 +502,13 @@ const CustomEditor = ({
             setToolbarExpanded(this.toolbarExpanded);
             return;
           }
-          if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput" || cmd === "response") {
+          if (
+            cmd === "textinput" ||
+            cmd === "textdropdown" ||
+            cmd === "mathinput" ||
+            cmd === "response" ||
+            cmd === "paragraphNumber"
+          ) {
             this.selection.save();
             const updatedHtml = reIndexResponses(this.html.get(true));
             if (updatedHtml) {
@@ -659,6 +669,18 @@ const CustomEditor = ({
       callback: function(_, op) {
         // OP is registered commands
         this.commands.exec(op);
+      }
+    });
+
+    FroalaEditor.DefineIcon("paragraphNumber", { NAME: "paragraphNumber", template: "paragraphNumber" });
+    FroalaEditor.RegisterCommand("paragraphNumber", {
+      title: "paragraphNumber",
+      focus: false,
+      undo: true,
+      refreshAfterCallback: true,
+      callback: function() {
+        this.html.insert(`<ParagraphNumber></ParagraphNumber>`);
+        this.undo.saveStep();
       }
     });
 

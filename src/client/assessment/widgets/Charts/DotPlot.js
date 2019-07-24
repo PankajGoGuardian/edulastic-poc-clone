@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
 import ArrowPair from "./components/ArrowPair";
+import ValueLabel from "./components/ValueLabel";
 import Circles from "./components/Circles";
 import withGrid from "./HOC/withGrid";
 import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
@@ -38,6 +39,8 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disa
           .split(" ")
           [active].split(",")[index]
       : null;
+
+  const getActivePointValue = () => (active !== null ? localData[active].y : null);
 
   const save = () => {
     if (cursorY === null) {
@@ -99,7 +102,10 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disa
         gridParams={gridParams}
         correct={correct}
       />
+
       <ArrowPair getActivePoint={getActivePoint} />
+
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
     </svg>
   );
 };

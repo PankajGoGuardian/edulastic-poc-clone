@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Input } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton, FlexContainer } from "@edulastic/common";
 
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
@@ -15,33 +14,16 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled/IconTrash";
 
 class ResponseContainers extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.responseContainer"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.responseContainer"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { containers, onChange, onAdd, onDelete, advancedAreOpen, t } = this.props;
+    const { containers, onChange, onAdd, onDelete, advancedAreOpen, fillSections, cleanSections, t } = this.props;
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.responseContainer")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.responseContainer")}</Subtitle>
 
         {containers.map((container, index) => (
@@ -85,7 +67,7 @@ class ResponseContainers extends Component {
         <EduButton onClick={onAdd} type="primary">
           {t("component.options.addResponseContainer")}
         </EduButton>
-      </Widget>
+      </Question>
     );
   }
 }

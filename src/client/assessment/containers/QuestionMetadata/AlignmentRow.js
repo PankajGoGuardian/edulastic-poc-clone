@@ -46,11 +46,11 @@ const AlignmentRow = ({
   } = alignment;
   const [showModal, setShowModal] = useState(false);
   const setSubject = val => {
-    editAlignment(alignmentIndex, { subject: val, standards: [], curriculum: "" });
+    editAlignment(alignmentIndex, { subject: val, curriculum: "" });
   };
 
   const setGrades = val => {
-    editAlignment(alignmentIndex, { grades: val, standards: [] });
+    editAlignment(alignmentIndex, { grades: val });
   };
 
   const handleChangeStandard = (curriculum, event) => {

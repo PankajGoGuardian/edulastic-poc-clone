@@ -53,7 +53,18 @@ class AddStudentModal extends React.Component {
   };
 
   render() {
-    const { form, handleCancel, handleAdd, isOpen, submitted, stds, isEdit, foundUserId } = this.props;
+    const {
+      form,
+      handleCancel,
+      handleAdd,
+      isOpen,
+      submitted,
+      stds,
+      isEdit,
+      foundUserId,
+      showClassCodeField,
+      fetchClassDetailsUsingCode
+    } = this.props;
     const { keys, isUpdate } = this.state;
     const { getFieldDecorator, getFieldValue, setFields, setFieldsValue } = form;
     const std = {};
@@ -115,6 +126,8 @@ class AddStudentModal extends React.Component {
                   setFounduser={this.setFounduser}
                   foundUserId={foundUserId}
                   modalClose={handleCancel}
+                  showClassCodeField={showClassCodeField}
+                  fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
                 />
               </Panel>
               <Panel header={AdditionalDetailsHeader} key="additional">

@@ -1,4 +1,4 @@
-import { themeColor, themeColorLight } from "@edulastic/colors";
+import { themeColor, themeColorLight, themeColorBreadcrumb } from "@edulastic/colors";
 import edulasticDefaultLogo from "./assets/logo.svg";
 
 export const themes = {
@@ -148,7 +148,7 @@ export const themes = {
       headerSelectedFilterBgBorderColor: themeColor
     },
     breadcrumbs: {
-      breadcrumbTextColor: themeColorLight,
+      breadcrumbTextColor: themeColorBreadcrumb,
       breadcrumbTextSize: "10px",
       breadcrumbLinkColor: themeColorLight
     },

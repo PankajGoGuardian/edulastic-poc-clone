@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import ReactOutsideEvent from "react-outside-event";
-import { white, tabletWidth, dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
+import { white, tabletWidth, smallDesktopWidth, dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
 import { get, remove } from "lodash";
 import { withRouter } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -32,37 +32,49 @@ const menuItems = [
   {
     label: "Dashboard",
     icon: IconClockDashboard,
+    allowedPathPattern: [/author\/dashboard/],
     path: "author/dashboard"
   },
   {
     label: "Assignments",
     icon: IconAssignment,
+    allowedPathPattern: [
+      /author\/assignments/,
+      /author\/classboard/,
+      /author\/expressgrader/,
+      /author\/standardsBasedReport/
+    ],
     path: "author/assignments"
   },
   {
     label: "PlayList Library",
     icon: IconPlaylist,
+    allowedPathPattern: [/author\/playlists/],
     path: "author/playlists"
   },
 
   {
     label: "Test Library",
     icon: IconTestBank,
+    allowedPathPattern: [/author\/tests/],
     path: "author/tests"
   },
   {
     label: "Item Bank",
     icon: IconItemLibrary,
+    allowedPathPattern: [/author\/items/],
     path: "author/items"
   },
   {
     label: "Reports",
     icon: IconBarChart,
+    allowedPathPattern: [/author\/reports/],
     path: "author/reports"
   },
   {
     label: "Manage Class",
     icon: IconManage,
+    allowedPathPattern: [/author\/manageClass/],
     path: "author/manageClass",
     role: ["teacher"]
   },
@@ -70,6 +82,7 @@ const menuItems = [
     label: "Manage District",
     icon: IconSettings,
     path: "author/districtprofile",
+    allowedPathPattern: [/districtprofile/],
     role: ["edulastic-admin", "district-admin", "school-admin"]
   }
 ];
@@ -104,6 +117,7 @@ class SideMenu extends Component {
       {
         label: title,
         icon: PlayListTextIcon,
+        allowedPathPattern: [/playlists\/.{24}\/use-this/],
         path: `author/playlists/${_id}/use-this`
       },
       ...rest
@@ -171,7 +185,7 @@ class SideMenu extends Component {
     const isCollapsed = isSidebarCollapsed;
     const isMobile = windowWidth < 770;
     const defaultSelectedMenu = this.MenuItems.findIndex(menuItem =>
-      history.location.pathname.includes(`/${menuItem.path}`)
+      menuItem.allowedPathPattern.some(path => (history.location.pathname.match(path) ? true : false))
     );
 
     const footerDropdownMenu = (
@@ -406,6 +420,9 @@ const SideBar = styled(Layout.Sider)`
 
   &.ant-layout-sider-collapsed .logoWrapper {
     padding: 22.5px 20px;
+    @media (max-width: ${smallDesktopWidth}) {
+      padding: 5px 20px;
+    }
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
@@ -495,6 +512,9 @@ const LogoWrapper = styled(Row)`
   text-align: center;
   display: flex;
   align-items: center;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 20px 39px 14px;
+  }
 `;
 
 const LogoDash = styled.div`

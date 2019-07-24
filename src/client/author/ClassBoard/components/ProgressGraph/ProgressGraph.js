@@ -33,7 +33,8 @@ export default class Graph extends Component {
   };
 
   render() {
-    const { gradebook, onClickHandler, testQuestionActivities } = this.props;
+    const { gradebook, onClickHandler, testQuestionActivities, testActivity } = this.props;
+    const absentNumber = (testActivity || []).filter(x => x.status === "absent").length;
     const percentage = round(gradebook.avgScore * 100);
     return (
       <StyledDiv>
@@ -56,6 +57,7 @@ export default class Graph extends Component {
           </StyledProgressDiv>
           <GraphInfo data-cy="submittedSummary">
             {gradebook.submittedNumber} out of {gradebook.total} Submitted
+            {absentNumber > 0 && <p>({absentNumber} absent)</p>}
             {/* <p>({gradebook.total - gradebook.submittedNumber} Absent)</p> */}
           </GraphInfo>
         </ProgressBarContainer>

@@ -27,7 +27,8 @@ import {
   UPDATE_STUDENTS_LIST,
   UPDATE_CLASS_STUDENTS_LIST,
   FETCH_STUDENTS,
-  ADD_STUDENTS
+  ADD_STUDENTS,
+  SET_STUDENTS_GRADEBOOK
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -116,6 +117,11 @@ export const addStudentsAction = (assignmentId, classId, students) => ({
 
 export const updateRemovedStudentsAction = payload => ({
   type: UPDATE_STUDENTS_LIST,
+  payload
+});
+
+export const setStudentsGradeBookAction = payload => ({
+  type: SET_STUDENTS_GRADEBOOK,
   payload
 });
 

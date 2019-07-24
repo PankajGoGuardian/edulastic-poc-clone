@@ -59,7 +59,10 @@ const convertExpandTableData = (data, testItem, index) => ({
   assignmentId: data._id,
   class: data.className,
   assigned: data.assignedBy.name,
-  status: data.status === "NOT OPEN" && data.startDate && data.startDate < Date.now() ? "IN PROGRESS" : data.status,
+  status:
+    data.status === "NOT OPEN" && data.startDate && data.startDate < Date.now()
+      ? `IN PROGRESS${data.isPaused ? " (PAUSED)" : ""}`
+      : `${data.status}${data.isPaused && data.status !== "DONE" ? " (PAUSED)" : ""}`,
   submitted: `${(data.submittedCount || 0) + (data.gradedCount || 0)} of ${data.totalNumber || 0}`,
   graded: data.gradedCount,
   action: "",
@@ -206,7 +209,7 @@ class TableList extends Component {
         title: "Assignment Name",
         dataIndex: "name",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.name.localeCompare(b.name, "fr", { ignorePunctuation: true }),
+        sorter: (a, b) => a.name.localeCompare(b.name, "en", { ignorePunctuation: true }),
         width: "20%",
         className: "assignment-name",
         render: (text, row) => (
@@ -226,12 +229,12 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.class - b.class,
         width: "10%",
-        render: (text, row, index) => (
+        render: (text, row) => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
             <IconArrowDown
               onclick={() => false}
               src={arrowUpIcon}
-              style={{ transform: expandedRows.includes(`${index}`) ? "rotate(180deg)" : "" }}
+              style={{ transform: expandedRows.includes(`${row.key}`) ? "rotate(180deg)" : "" }}
             />
             {text}
           </ExpandDivdier>

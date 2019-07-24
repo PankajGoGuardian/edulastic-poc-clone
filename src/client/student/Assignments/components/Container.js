@@ -3,10 +3,13 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Layout, Spin } from "antd";
+
+import useInterval from "@use-it/interval";
 import { useRealtimeV2 } from "@edulastic/common";
 import { get, values } from "lodash";
 import { getCurrentGroup, getClasses } from "../../Login/ducks";
-import useInterval from "@use-it/interval";
+
+import { Wrapper, NoDataBox } from "../../styled";
 
 // actions
 import {
@@ -95,25 +98,21 @@ const Content = ({
     }
   }, 60 * 1000);
 
-  const noDataNotification = () => {
-    return (
-      <NoDataBox>
-        <img src={NoDataIcon} alt="noData" />
-        <h4>No Assignments</h4>
-        <p>You don&apos;t have any currently assigned or completed assignments.</p>
-      </NoDataBox>
-    );
-  };
+  const noDataNotification = () => (
+    <NoDataBox>
+      <img src={NoDataIcon} alt="noData" />
+      <h4>No Assignments</h4>
+      <p>You don&apos;t have any currently assigned or completed assignments.</p>
+    </NoDataBox>
+  );
 
-  const renderAssignments = () => {
-    return (
-      <div>
-        {assignments.map((item, index) => (
-          <AssignmentCard key={index} data={item} currentGroup={currentGroup} type="assignment" />
-        ))}
-      </div>
-    );
-  };
+  const renderAssignments = () => (
+    <div>
+      {assignments.map((item, index) => (
+        <AssignmentCard key={index} data={item} currentGroup={currentGroup} type="assignment" />
+      ))}
+    </div>
+  );
 
   const showLoader = () => <Spin size="small" />;
 
@@ -151,7 +150,15 @@ export default connect(
 Content.propTypes = {
   flag: PropTypes.bool.isRequired,
   assignments: PropTypes.array,
-  fetchAssignments: PropTypes.func.isRequired
+  fetchAssignments: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+  currentGroup: PropTypes.string.isRequired,
+  allClasses: PropTypes.object.isRequired,
+  allAssignments: PropTypes.object.isRequired,
+  userId: PropTypes.string.isRequired,
+  addRealtimeAssignment: PropTypes.func.isRequired,
+  addRealtimeReport: PropTypes.func.isRequired,
+  rerenderAssignments: PropTypes.func.isRequired
 };
 
 Content.defaultProps = {
@@ -159,55 +166,5 @@ Content.defaultProps = {
 };
 
 const LayoutContent = styled(Layout.Content)`
-  min-height: 100vh;
-  padding-bottom: 150px;
   width: 100%;
-`;
-
-const Wrapper = styled.div`
-  min-height: 400px;
-  margin: 30px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  background-color: ${props => props.theme.assignment.cardContainerBgColor};
-  padding: 5px 30px;
-  position: relative;
-  @media screen and (max-width: 1300px) {
-    padding: 5px 15px;
-  }
-
-  @media screen and (max-width: 767px) {
-    padding: 5px 30px;
-  }
-`;
-
-const NoDataBox = styled.div`
-  background: #f3f3f3;
-  width: 300px;
-  height: 300px;
-  position: absolute;
-  left: 50%;
-  border-radius: 6px;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 30px;
-  img {
-    width: 50px;
-    margin-bottom: 15px;
-  }
-  h4 {
-    color: #304050;
-    font-size: 18px;
-    font-weight: 600;
-  }
-  p {
-    color: #848993;
-    font-size: 12px;
-    line-height: 22px;
-  }
 `;

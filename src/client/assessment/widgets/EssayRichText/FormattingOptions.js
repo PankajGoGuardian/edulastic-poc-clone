@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import ReactQuill from "react-quill";
 import { compose } from "redux";
@@ -16,24 +15,11 @@ import SortableList from "./components/SortableList";
 import { Subtitle } from "../../styled/Subtitle";
 import { ValidList } from "./constants/validList";
 import { QlToolbar } from "./styled/QlToolbar";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class FormattingOptions extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.essayText.rich.formattingOptions"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, act, t } = this.props;
+    const { item, setQuestionData, act, t, fillSections, cleanSections } = this.props;
 
     const handleActiveChange = index => {
       setQuestionData(
@@ -54,7 +40,12 @@ class FormattingOptions extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.essayText.rich.formattingOptions")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.essayText.rich.formattingOptions")}</Subtitle>
         <QlToolbar id="toolbar">
           <SortableList
@@ -67,7 +58,7 @@ class FormattingOptions extends Component {
           />
         </QlToolbar>
         <ReactQuill modules={FormattingOptions.modules} readOnly />
-      </Widget>
+      </Question>
     );
   }
 }

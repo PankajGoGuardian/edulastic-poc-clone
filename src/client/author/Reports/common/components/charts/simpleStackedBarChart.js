@@ -232,7 +232,7 @@ export const SimpleStackedBarChart = ({
             />
           ) : null}
           {lineChartDataKey ? (
-            <Line yAxisId="lineChart" type="monotone" dataKey={lineChartDataKey} {...lineProps} />
+            <Line yAxisId="lineChart" type="linear" dataKey={lineChartDataKey} {...lineProps} />
           ) : null}
           {referenceLineY > 0 ? <ReferenceLine yAxisId={"barChart"} y={referenceLineY} stroke="#010101" /> : null}
           <Tooltip

@@ -123,8 +123,8 @@ function* saveAssignment({ payload }) {
         }
       }
     }
+    const test = yield select(getTestSelector);
     if (!testIds || !(testIds && testIds.length)) {
-      const test = yield select(getTestSelector);
       const entity = yield call(testsApi.create, test);
       testIds = [entity._id];
       yield put({
@@ -166,7 +166,7 @@ function* saveAssignment({ payload }) {
       }
     }
     let userRole = yield select(getUserRole);
-    const testType = get(payload, "testType", "assessment");
+    const testType = get(payload, "testType", test.testType);
     let data = [];
     data = testIds.map(testId =>
       omit(

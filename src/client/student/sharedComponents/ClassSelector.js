@@ -1,11 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Select } from "antd";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { extraDesktopWidthMax } from "@edulastic/colors";
+
 import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
 
 const ClassSelector = ({ t, classList, currentGroup, changeClass }) => {
+  useEffect(() => {
+    if (currentGroup === "" && classList.length === 1) {
+      //all classes. but really only one classes available
+      changeClass(classList[0]._id);
+    }
+    if (currentGroup != "") {
+      //not all classes
+      const currentGroupInList = classList.find(x => x._id === currentGroup);
+      if (!currentGroupInList) {
+        //currently selected class is not in the list. so selecting first available class
+        if (classList.length > 0) {
+          changeClass(classList[0]._id);
+        }
+      }
+    }
+  }, [classList, currentGroup]);
+
   return (
     <AssignmentSelectClass id="class-dropdown-wrapper">
       <ClassLabel>{t("common.classLabel")}</ClassLabel>
@@ -65,7 +84,11 @@ const AssignmentSelectClass = styled.div`
 
   .ant-select {
     height: 40px;
-    width: 240px;
+    width: 190px;
+
+    @media (min-width: ${extraDesktopWidthMax}) {
+      width: 240px;
+    }
   }
   .ant-select-selection {
     border: 0px;
@@ -77,7 +100,8 @@ const AssignmentSelectClass = styled.div`
     height: 100%;
     align-items: center;
     display: flex !important;
-    padding-left: 10px;
+    padding-left: 15px;
+    font-size: 12px;
   }
   .anticon-down {
     svg {

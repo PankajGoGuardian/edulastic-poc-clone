@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 
@@ -16,6 +16,7 @@ import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
+import { AnswerContext } from "@edulastic/common";
 import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
 
 const ChartPreview = ({
@@ -23,7 +24,7 @@ const ChartPreview = ({
   smallSize,
   saveAnswer,
   userAnswer,
-  previewTab,
+  previewTab: _previewTab,
   view,
   showQuestionNumber,
   disableResponse,
@@ -32,9 +33,16 @@ const ChartPreview = ({
   metaData,
   changePreviewTab
 }) => {
+  const answerContextConfig = useContext(AnswerContext);
   const [barIsDragging, toggleBarDragging] = useState(false);
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const chartType = get(item, "ui_style.chart_type");
+  let previewTab = _previewTab;
+  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+    previewTab = CHECK;
+  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+    previewTab = CLEAR;
+  }
 
   const { chart_data = {}, validation, ui_style } = item;
   const { data = [] } = chart_data;

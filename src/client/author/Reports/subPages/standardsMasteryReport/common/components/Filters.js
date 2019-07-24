@@ -24,6 +24,7 @@ import {
 
 import filtersDropDownData from "../static/json/filtersDropDownData";
 import { getDomains } from "../../common/utils";
+import { StyledFilterWrapper, StyledGoButton } from "../../../../common/styled";
 
 const StandardsFilters = ({
   filters,
@@ -301,76 +302,78 @@ const StandardsFilters = ({
 
   return (
     <div className={className} style={style}>
-      <Row type="flex" className="standards-gradebook-top-filter">
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown
-            by={filters.termId}
-            selectCB={updateSchoolYearDropDownCB}
-            data={schoolYear}
-            prefix="School Year"
-            showPrefixOnSelected={false}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown
-            by={filters.subject}
-            selectCB={updateSubjectDropDownCB}
-            data={curriculums}
-            prefix="Subject"
-            showPrefixOnSelected={false}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <AutocompleteDropDown
-            prefix="Grade"
-            className="custom-1-scrollbar"
-            by={filters.grades[0]}
-            selectCB={updateGradeDropDownCB}
-            data={filtersDropDownData.grades}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <AutocompleteDropDown
-            prefix="Domain"
-            by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0]}
-            selectCB={updateDomainDropDownCB}
-            data={domains}
-          />
-        </Col>
-        {/* // IMPORTANT: To be implemented later */}
-        {/* <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <AutocompleteDropDown
-            prefix="Class Section"
-            by={filters.groupId}
-            selectCB={updateClassSectionDropDownCB}
-            data={dropDownData.classSections}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown
-            prefix="Assessment Type"
-            by={filters.assessmentType}
-            selectCB={updateAssessmentTypeDropDownCB}
-            data={filtersDropDownData.assessmentType}
-          />
-        </Col> */}
-      </Row>
-      <Row type="flex" className="standards-gradebook-bottom-filter">
-        <Col className="standards-gradebook-domain-autocomplete-container">
-          <AutocompleteDropDown
-            containerClassName="standards-gradebook-domain-autocomplete"
-            data={testIds}
-            by={testId}
-            prefix="Assessment Name"
-            selectCB={onTestIdChange}
-          />
-        </Col>
-        <Col className={"standards-gradebook-go-button-container"}>
-          <Button type="primary" shape="round" onClick={onGoClick}>
-            Go
-          </Button>
-        </Col>
-      </Row>
+      <StyledFilterWrapper>
+        <Row type="flex" className="standards-gradebook-top-filter">
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <ControlDropDown
+              by={filters.termId}
+              selectCB={updateSchoolYearDropDownCB}
+              data={schoolYear}
+              prefix="School Year"
+              showPrefixOnSelected={false}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <ControlDropDown
+              by={filters.subject}
+              selectCB={updateSubjectDropDownCB}
+              data={curriculums}
+              prefix="Subject"
+              showPrefixOnSelected={false}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <AutocompleteDropDown
+              prefix="Grade"
+              className="custom-1-scrollbar"
+              by={filters.grades[0]}
+              selectCB={updateGradeDropDownCB}
+              data={filtersDropDownData.grades}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <AutocompleteDropDown
+              prefix="Domain"
+              by={filters.domainIds.length > 1 ? domains[0] : filters.domainIds[0]}
+              selectCB={updateDomainDropDownCB}
+              data={domains}
+            />
+          </Col>
+          {/* // IMPORTANT: To be implemented later */}
+          {/* <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <AutocompleteDropDown
+              prefix="Class Section"
+              by={filters.groupId}
+              selectCB={updateClassSectionDropDownCB}
+              data={dropDownData.classSections}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <ControlDropDown
+              prefix="Assessment Type"
+              by={filters.assessmentType}
+              selectCB={updateAssessmentTypeDropDownCB}
+              data={filtersDropDownData.assessmentType}
+            />
+          </Col> */}
+        </Row>
+        <Row type="flex" className="standards-gradebook-bottom-filter">
+          <Col className="standards-gradebook-domain-autocomplete-container">
+            <AutocompleteDropDown
+              containerClassName="standards-gradebook-domain-autocomplete"
+              data={testIds}
+              by={testId}
+              prefix="Assessment Name"
+              selectCB={onTestIdChange}
+            />
+          </Col>
+          <Col className={"standards-gradebook-go-button-container"}>
+            <StyledGoButton type="primary" shape="round" onClick={onGoClick}>
+              Go
+            </StyledGoButton>
+          </Col>
+        </Row>
+      </StyledFilterWrapper>
     </div>
   );
 };

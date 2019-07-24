@@ -30,10 +30,8 @@ export const MoveControlButton = styled(ControlButton)`
   width: 36px;
   height: 36px;
   position: absolute;
-  top: ${({ top }) => (top ? `${top - 36}px` : "unset")};
-  left: ${({ left }) => (left ? `${left - 36}px` : "unset")};
-  bottom: ${({ top }) => (top ? "unset" : "10px")};
-  right: ${({ left }) => (left ? "unset" : "10px")};
+  bottom: 5px;
+  right: 5px;
   cursor: move;
   z-index: 9000;
   margin-right: 0px;

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, get } from "lodash";
@@ -10,41 +9,19 @@ import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { rounding, evaluationType, nonAutoGradableTypes } from "@edulastic/constants";
 import { getQuestionDataSelector, setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
+import Question from "../../../components/Question";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { ColNoPaddingLeft } from "../../../styled/WidgetOptions/ColNoPadding";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
-import { Widget } from "../../../styled/Widget";
 import { Subtitle } from "../../../styled/Subtitle";
 import { FormGroup } from "../styled/FormGroup";
 
 const roundingTypes = [rounding.roundDown, rounding.none];
 
 class Scoring extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.scoring"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.scoring"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
     const {
       setQuestionData,
@@ -54,7 +31,10 @@ class Scoring extends Component {
       questionData,
       showSelect,
       advancedAreOpen,
-      noPaddingLeft
+      noPaddingLeft,
+      fillSections,
+      cleanSections,
+      children
     } = this.props;
 
     const handleChangeValidation = (param, value) => {
@@ -87,7 +67,13 @@ class Scoring extends Component {
         <Col md={12}>{props.children}</Col>
       );
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.scoring")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      >
         {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
         {!isSection && (
           <Subtitle margin={noPaddingLeft ? "0 0 29px -30px" : null}>{t("component.options.scoring")}</Subtitle>
@@ -225,7 +211,9 @@ class Scoring extends Component {
             </ColWrapper>
           </Row>
         )}
-      </Widget>
+
+        {children}
+      </Question>
     );
   }
 }
@@ -240,7 +228,8 @@ Scoring.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  noPaddingLeft: PropTypes.bool
+  noPaddingLeft: PropTypes.bool,
+  children: PropTypes.any
 };
 
 Scoring.defaultProps = {
@@ -248,6 +237,7 @@ Scoring.defaultProps = {
   isSection: false,
   showSelect: true,
   advancedAreOpen: true,
+  children: null,
   fillSections: () => {},
   cleanSections: () => {}
 };

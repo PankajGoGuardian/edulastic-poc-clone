@@ -31,7 +31,6 @@ class ComposeQuestion extends Component {
         ui_style: { yAxisMax, yAxisMin, snapTo }
       }
     } = props;
-
     this.state = {
       localMaxValue: yAxisMax,
       localMinValue: yAxisMin,
@@ -69,23 +68,24 @@ class ComposeQuestion extends Component {
     };
 
     const handleUiStyleChange = (prop, uiStyle) => {
+      const val = uiStyle <= 0 ? 0 : uiStyle;
       setQuestionData(
         produce(item, draft => {
           switch (prop) {
             case "yAxisMax":
-              this.setState({ localMaxValue: uiStyle });
+              this.setState({ localMaxValue: val > localMinValue ? val : localMinValue + 1 });
               break;
             case "yAxisMin":
-              this.setState({ localMinValue: uiStyle });
+              this.setState({ localMinValue: val });
               break;
             case "snapTo":
-              this.setState({ localSnapTo: uiStyle });
+              this.setState({ localSnapTo: val });
               break;
             case "stepSize":
-              draft.ui_style[prop] = uiStyle === 0 ? 1 : uiStyle;
+              draft.ui_style[prop] = val < 1 ? 1 : val;
               break;
             default:
-              draft.ui_style[prop] = uiStyle;
+              draft.ui_style[prop] = val;
           }
         })
       );

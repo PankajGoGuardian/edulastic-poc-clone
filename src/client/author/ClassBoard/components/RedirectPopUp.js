@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Button, Row, Radio, Select, DatePicker, message } from "antd";
 import moment from "moment";
 import { assignmentApi } from "@edulastic/api";
+import { getUserName } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
 
@@ -91,29 +92,6 @@ const RedirectPopUp = ({
       return false;
     }
     return endDate < moment().startOf("day");
-  };
-
-  /**
-   *
-   * @param {*} student
-   * student full name should be displayed to the user by default if student first name exists <FirstName>, <LastName> (username)
-   * student doesnt have first name then print last name with user name in brackets eg: <LastName> (username)
-   * student doesnt have first and last name then print user name only <UserName>
-   * None of the student details exist then print Anonymous
-   */
-  const getUserName = student => {
-    if (student.firstName) {
-      return `${student.firstName}${student.lastName ? `, ${student.lastName}` : ""}
-              ${student.username ? ` (${student.username})` : ""}`;
-    }
-    if (student.lastName) {
-      return `${student.lastName ? `${student.lastName}` : ""}
-              ${student.username ? ` (${student.username})` : ""}`;
-    }
-    if (student.username) {
-      return student.username;
-    }
-    return "Anonymous";
   };
 
   return (

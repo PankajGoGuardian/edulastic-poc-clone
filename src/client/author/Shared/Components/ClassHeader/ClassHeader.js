@@ -232,7 +232,9 @@ class ClassHeader extends Component {
     return (
       <Container>
         <StyledTitle>
-          <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
+          <StyledParaFirst data-cy="CurrentClassName" title={additionalData.className || "loading..."}>
+            {additionalData.className || "loading..."}
+          </StyledParaFirst>
           <StyledParaSecond>
             {assignmentStatusForDisplay}
             {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}

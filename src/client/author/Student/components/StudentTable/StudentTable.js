@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-
+import { get, split, unset, pickBy, identity } from "lodash";
+import * as moment from "moment";
 import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
 import { getUserFeatures } from "../../../../student/Login/ducks";
@@ -229,18 +229,35 @@ class StudentTable extends Component {
     }
   };
 
-  addStudent = ({ fullName, confirmPwd, ...rest }) => {
-    const { userOrgId: districtId, createAdminUser } = this.props;
-    const [firstName, lastName] = fullName.split(" ");
-    const data = {
-      role: "student",
-      districtId,
-      firstName,
-      lastName,
-      ...rest
-    };
-    createAdminUser(data);
-    this.setState({ addStudentModalVisible: false });
+  addStudent = () => {
+    if (this.formRef) {
+      const { userOrgId: districtId, createAdminUser } = this.props;
+      const { form } = this.formRef.props;
+      form.validateFields((err, values) => {
+        if (!err) {
+          const { fullName, email, password } = values;
+          const tempName = split(fullName, " ");
+          const firstName = tempName[0];
+          const lastName = tempName[1];
+          values.districtId = districtId;
+          values.firstName = firstName;
+          values.lastName = lastName;
+
+          const contactEmails = get(values, "contactEmails");
+          if (contactEmails) {
+            values.contactEmails = [contactEmails];
+          }
+
+          if (values.dob) {
+            values.dob = moment(values.dob).format("x");
+          }
+          unset(values, ["confirmPassword"]);
+          unset(values, ["fullName"]);
+          createAdminUser(pickBy(values, identity));
+          this.setState({ addStudentModalVisible: false });
+        }
+      });
+    }
   };
 
   closeAddStudentModal = () => {
@@ -283,7 +300,9 @@ class StudentTable extends Component {
     const { setSearchName } = this.props;
     setSearchName(e);
   };
-
+  saveFormRef = node => {
+    this.formRef = node;
+  };
   render() {
     const {
       selectedRowKeys,
@@ -432,6 +451,9 @@ class StudentTable extends Component {
             handleCancel={this.closeAddStudentModal}
             isOpen={addStudentModalVisible}
             submitted={false}
+            wrappedComponentRef={this.saveFormRef}
+            showClassCodeField={true}
+            fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           />
         )}
         {studentDetailsModalVisible && (

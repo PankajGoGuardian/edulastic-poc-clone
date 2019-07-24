@@ -91,7 +91,7 @@ class TableList extends Component {
   convertRowData = (data, index) => ({
     class: data.name,
     type: data.testType,
-    status: data.status,
+    status: data.isPaused && data.status !== "DONE" ? `${data.status} (PAUSED)` : data.status,
     assigned: data.assignedBy.name,
     submitted: `${data.inGradingNumber + data.gradedNumber}/${data.assignedCount}`,
     graded: data.gradedNumber,

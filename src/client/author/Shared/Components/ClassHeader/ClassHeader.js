@@ -235,7 +235,7 @@ class ClassHeader extends Component {
           <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
             {assignmentStatusForDisplay}
-            {isPaused && assignmentStatusForDisplay !== "DONE" ? "(PAUSED)" : ""}
+            {isPaused && assignmentStatusForDisplay !== "DONE" ? " (PAUSED)" : ""}
             <div>(Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})</div>
           </StyledParaSecond>
         </StyledTitle>

@@ -61,8 +61,8 @@ const convertExpandTableData = (data, testItem, index) => ({
   assigned: data.assignedBy.name,
   status:
     data.status === "NOT OPEN" && data.startDate && data.startDate < Date.now()
-      ? `IN PROGRESS${data.isPaused ? "(PAUSED)" : ""}`
-      : `${data.status}${data.isPaused ? "(PAUSED)" : ""}`,
+      ? `IN PROGRESS${data.isPaused ? " (PAUSED)" : ""}`
+      : `${data.status}${data.isPaused && data.status !== "DONE" ? " (PAUSED)" : ""}`,
   submitted: `${(data.submittedCount || 0) + (data.gradedCount || 0)} of ${data.totalNumber || 0}`,
   graded: data.gradedCount,
   action: "",

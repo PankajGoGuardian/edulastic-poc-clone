@@ -101,7 +101,7 @@ class TableList extends Component {
   convertRowData = (data, index) => ({
     class: data.name,
     type: data.testType,
-    status: data.status,
+    status: data.isPaused && data.status !== "DONE" ? `${data.status} (PAUSED)` : data.status,
     assigned: data.assignedBy.name,
     submitted: `${data.inGradingNumber + data.gradedNumber}/${data.assignedCount}`,
     graded: data.gradedNumber,
@@ -112,8 +112,10 @@ class TableList extends Component {
   });
 
   render() {
-    const { classList } = this.props;
-    const rowData = classList.map((data, index) => this.convertRowData(data, index));
+    const { classList, filterStatus } = this.props;
+    const rowData = classList
+      .filter(o => (filterStatus ? o.status === filterStatus : true))
+      .map((data, index) => this.convertRowData(data, index));
     const showPagination = rowData.length > 10;
 
     return (

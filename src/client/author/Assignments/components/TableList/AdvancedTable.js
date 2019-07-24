@@ -119,7 +119,7 @@ class AdvancedTable extends Component {
         render: text => <div>{text}</div>
       },
       {
-        title: "Not started",
+        title: "Not Open",
         dataIndex: "notStarted",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.notStarted - b.notStarted,
@@ -127,7 +127,7 @@ class AdvancedTable extends Component {
         render: text => <div> {text} </div>
       },
       {
-        title: "In progress",
+        title: "In Progress",
         dataIndex: "inProgress",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.inProgress - b.inProgress,
@@ -135,7 +135,7 @@ class AdvancedTable extends Component {
         render: text => <div>{text} </div>
       },
       {
-        title: "Submitted",
+        title: "In Grading",
         dataIndex: "inGrading",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.inGrading + a.graded - (b.inGrading + b.graded),
@@ -143,7 +143,7 @@ class AdvancedTable extends Component {
         render: (text, row) => <div> {text + row.graded} </div>
       },
       {
-        title: "Graded",
+        title: "Done",
         dataIndex: "graded",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.graded - b.graded,

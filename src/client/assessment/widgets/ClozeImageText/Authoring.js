@@ -8,12 +8,13 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import produce from "immer";
+import uuidv4 from "uuid/v4";
 import { themeColor } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message, Dropdown } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
-import { cloneDeep, isUndefined, maxBy } from "lodash";
+import { isUndefined, maxBy, get } from "lodash";
 
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { PaddingDiv, EduButton, beforeUpload } from "@edulastic/common";
@@ -83,7 +84,8 @@ class Authoring extends Component {
   };
 
   state = {
-    isEditableResizeMove: false
+    isEditableResizeMove: false,
+    isResizingImage: false
     // imageWidth:
     //   this.props.item.imageWidth > 0 ? (this.props.item.imageWidth >= 700 ? 700 : this.props.item.imageWidth) : 700
   };
@@ -107,13 +109,16 @@ class Authoring extends Component {
     const { item, setQuestionData } = nextProps;
     // const { item: pastItem } = this.props;
 
-    const newItem = cloneDeep(item);
     if (document.getElementById("mainImage") && item.imageUrl) {
       const imageWidth = document.getElementById("mainImage").clientWidth;
 
       if (item.imageWidth && imageWidth !== item.imageWidth) {
-        newItem.imageWidth = imageWidth;
-        setQuestionData(newItem);
+        setQuestionData(
+          produce(item, draft => {
+            draft.imageWidth = imageWidth;
+            updateVariables(draft);
+          })
+        );
       }
     }
   }
@@ -343,28 +348,26 @@ class Authoring extends Component {
 
   changeImageLeft = left => {
     const { item, setQuestionData } = this.props;
-    const oldImageOption = cloneDeep(item.imageOptions);
 
     setQuestionData(
       produce(item, draft => {
-        draft.imageOptions = { ...oldImageOption, x: left };
+        draft.imageOptions = { ...draft.imageOptions, x: left };
       })
     );
   };
 
   chnageImageTop = top => {
     const { item, setQuestionData } = this.props;
-    const oldImageOption = cloneDeep(item.imageOptions);
 
     setQuestionData(
       produce(item, draft => {
-        draft.imageOptions = { ...oldImageOption, y: top };
+        draft.imageOptions = { ...draft.imageOptions, y: top };
       })
     );
   };
 
-  toggleIsMoveResizeEditable = () => {
-    this.setState(prevState => ({ isEditableResizeMove: !prevState.isEditableResizeMove }));
+  toggleIsMoveResizeEditable = isAvaiable => () => {
+    this.setState({ isEditableResizeMove: isAvaiable });
   };
 
   handleDragStop = d => {
@@ -394,6 +397,10 @@ class Authoring extends Component {
     }
   };
 
+  handleResizeStart = () => {
+    this.setState({ isResizingImage: true });
+  };
+
   handleResizeStop = resizeRef => {
     const { width } = resizeRef.style;
     const { height } = resizeRef.style;
@@ -408,6 +415,10 @@ class Authoring extends Component {
         draft.imageWidth = _width;
       })
     );
+
+    setTimeout(() => {
+      this.setState({ isResizingImage: false });
+    });
   };
 
   handleResizing = resizeRef => {
@@ -484,6 +495,45 @@ class Authoring extends Component {
     }
 
     return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
+  };
+
+  addNewRespnose = e => {
+    if (!this.canvasRef.current) {
+      return;
+    }
+
+    const isContainer = e.target === this.canvasRef.current;
+    const isDragItem = e.target.classList.contains("react-draggable");
+    const { isEditableResizeMove, isResizingImage } = this.state;
+
+    if ((!isContainer && !isDragItem) || isEditableResizeMove || isResizingImage) {
+      return;
+    }
+    const { item, setQuestionData } = this.props;
+    const newResponseContainer = {};
+    const elemRect = this.canvasRef.current.getBoundingClientRect();
+    const _width = get(item, "ui_style.width", 150);
+    const _height = get(item, "ui_style.height", 40);
+
+    newResponseContainer.top = e.clientY - elemRect.top;
+    newResponseContainer.left = e.clientX - elemRect.left;
+    newResponseContainer.width = _width;
+    newResponseContainer.height = _height;
+    newResponseContainer.active = true;
+    newResponseContainer.id = uuidv4();
+
+    setQuestionData(
+      produce(item, draft => {
+        draft.responses = draft.responses.map(res => {
+          res.active = false;
+          return res;
+        });
+
+        draft.responses.push(newResponseContainer);
+
+        updateVariables(draft);
+      })
+    );
   };
 
   render() {
@@ -643,6 +693,7 @@ class Authoring extends Component {
                   imageUrl={item.imageUrl}
                   style={{ height: canvasHeight, width: canvasWidth }}
                   onDragStart={e => e.preventDefault()}
+                  onClick={this.addNewRespnose}
                   innerRef={this.canvasRef}
                 >
                   {item.imageUrl && (
@@ -665,22 +716,23 @@ class Authoring extends Component {
                           topLeft: false,
                           topRight: false
                         }}
+                        disableDragging={!isEditableResizeMove}
                         lockAspectRatio={item.keepAspectRatio}
                         onDragStop={(evt, d) => handleDragStop(d)}
                         onDrag={(evt, d) => this.handleDragging(d)}
                         onResizeStop={(e, direction, ref) => this.handleResizeStop(ref)}
                         onResize={(e, direction, ref) => this.handleResizing(ref)}
+                        onResizeStart={this.handleResizeStart}
                       >
-                        {isEditableResizeMove && (
-                          <MoveControlButton
-                            onClick={toggleIsMoveResizeEditable}
-                            style={{
-                              boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
-                            }}
-                          >
-                            <IconMoveResize />
-                          </MoveControlButton>
-                        )}
+                        <MoveControlButton
+                          onMouseEnter={toggleIsMoveResizeEditable(true)}
+                          onMouseLeave={toggleIsMoveResizeEditable(false)}
+                          style={{
+                            boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
+                          }}
+                        >
+                          <IconMoveResize />
+                        </MoveControlButton>
                         <PreivewImage
                           style={{ width: imageWidth, height: imageHeight }}
                           maxWidth={maxWidth}
@@ -691,13 +743,13 @@ class Authoring extends Component {
                         />
                       </Rnd>
                       <DropArea
-                        disable={isEditableResizeMove}
-                        updateData={this.updateData}
                         item={item}
                         key={item}
-                        width={canvasWidth}
                         showIndex={false}
+                        disable={isEditableResizeMove}
                         setQuestionData={setQuestionData}
+                        updateData={this.updateData}
+                        containerRef={this.canvasRef}
                       />
                     </React.Fragment>
                   )}
@@ -731,18 +783,6 @@ class Authoring extends Component {
                         {t("component.cloze.imageText.orBrowse")}: PNG, JPG, GIF (1024KB MAX.)
                       </p>
                     </Dragger>
-                  )}
-                  {!isEditableResizeMove && (
-                    <MoveControlButton
-                      onClick={toggleIsMoveResizeEditable}
-                      style={{
-                        boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
-                      }}
-                      top={imageTop + imageHeight - 14}
-                      left={imageLeft + imageWidth - 14}
-                    >
-                      <IconMoveResize />
-                    </MoveControlButton>
                   )}
                 </ImageContainer>
               </ImageFlexView>

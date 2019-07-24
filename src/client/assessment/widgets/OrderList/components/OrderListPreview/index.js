@@ -7,7 +7,7 @@ import OrderListPreviewItem from "./components/OrderListPreviewItem";
 
 class OrderListPreview extends Component {
   render() {
-    const { questions, smallSize, listStyle, columns, disableResponse } = this.props;
+    const { questions, smallSize, listStyle, columns, disableResponse, styleType } = this.props;
 
     return (
       <div data-cy="order-preview-container" id="order-preview-container" style={listStyle}>
@@ -17,6 +17,7 @@ class OrderListPreview extends Component {
             <OrderListPreviewItem
               columns={columns}
               showDragHandle
+              styleType={styleType}
               smallSize={smallSize}
               key={i}
               index={i}
@@ -36,14 +37,16 @@ OrderListPreview.propTypes = {
   questions: PropTypes.array,
   smallSize: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  columns: PropTypes.number
+  columns: PropTypes.number,
+  styleType: PropTypes.string
 };
 
 OrderListPreview.defaultProps = {
   questions: [],
   smallSize: false,
   disableResponse: false,
-  columns: 1
+  columns: 1,
+  styleType: "button"
 };
 
 const enhance = compose(SortableContainer);

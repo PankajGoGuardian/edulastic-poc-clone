@@ -6,6 +6,16 @@ import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor }
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
+export const PrintablePrefix = styled.b`
+  display: none;
+  padding-left: 5px;
+  float: left;
+
+  @media print {
+    display: block;
+  }
+`;
+
 export const StyledGoButton = styled(Button)`
   font-size: 16px;
   padding-right: 11px;
@@ -57,6 +67,7 @@ export const StyledFilterWrapper = styled.div`
       height: auto;
       font-size: 13px;
       font-weight: 600;
+      max-width: 100%;
 
       i {
         color: ${themeColor};

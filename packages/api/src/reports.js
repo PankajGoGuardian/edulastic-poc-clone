@@ -165,6 +165,20 @@ const fetchPerformanceOverTimeReport = params => {
   });
 };
 
+const fetchSPRFilterData = params => {
+  return api.callApi({
+    url: `/report/filter/student-profile`,
+    params
+  });
+};
+
+const fetchStudentMasteryProfileReport = params => {
+  return api.callApi({
+    url: `/report/student-mastery-profile`,
+    params
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -178,6 +192,7 @@ export default {
   fetchPerformanceByStudentsReport,
   fetchSARFilterData,
   fetchMARFilterData,
+  fetchSPRFilterData,
   fetchStandardsGradebookReport,
   fetchStandardsPerformanceSummaryReport,
   fetchStandardMasteryFilter,
@@ -185,5 +200,6 @@ export default {
   fetchQuestionAnalysisReport,
   fetchPeerProgressAnalysisReport,
   fetchStudentProgressReport,
-  fetchPerformanceOverTimeReport
+  fetchPerformanceOverTimeReport,
+  fetchStudentMasteryProfileReport
 };

@@ -161,6 +161,7 @@ export const FETCH_STUDENTS = "[gradebook] fetch students by class id";
 export const UPDATE_REMOVED_STUDENTS_LIST = "[gradebook] update student activity as absent";
 export const UPDATE_STUDENTS_LIST = "[gradebook] update removed students list";
 export const UPDATE_CLASS_STUDENTS_LIST = "[gradebook] update class students list";
+export const SET_STUDENTS_GRADEBOOK = "[gradebook] set students to gradebook";
 
 export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request";
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";

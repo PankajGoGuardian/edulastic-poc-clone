@@ -12,7 +12,8 @@ import {
   UPDATE_STUDENT_ACTIVITY,
   UPDATE_REMOVED_STUDENTS_LIST,
   UPDATE_STUDENTS_LIST,
-  UPDATE_CLASS_STUDENTS_LIST
+  UPDATE_CLASS_STUDENTS_LIST,
+  SET_STUDENTS_GRADEBOOK
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 
@@ -234,6 +235,19 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         classStudents: payload
+      };
+    case SET_STUDENTS_GRADEBOOK:
+      //take out newly added students from class students
+      const pickClassStudentsObj = state.classStudents.filter(item => payload.includes(item._id));
+      return {
+        ...state,
+        //update if removed students are added again
+        removedStudents: state.removedStudents.filter(item => !payload.includes(item)),
+        data: {
+          ...state.data,
+          //merge newly added student to gradebook entity and student object
+          students: [...state.data.students, ...pickClassStudentsObj]
+        }
       };
     default:
       return state;

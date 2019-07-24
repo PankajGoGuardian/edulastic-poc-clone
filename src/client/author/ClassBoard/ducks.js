@@ -12,7 +12,8 @@ import {
   updateStudentActivityAction,
   setIsPausedAction,
   updateRemovedStudentsAction,
-  updateClassStudentsAction
+  updateClassStudentsAction,
+  setStudentsGradeBookAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -184,7 +185,8 @@ function* removeStudentsSaga({ payload }) {
 
 function* addStudentsSaga({ payload }) {
   try {
-    yield call(classBoardApi.addStudents, payload);
+    const { students = [] } = yield call(classBoardApi.addStudents, payload);
+    yield put(setStudentsGradeBookAction(students));
     yield call(message.success, "Successfully added");
   } catch (err) {
     yield call(message.error, "Add students failed");

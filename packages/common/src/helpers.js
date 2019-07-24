@@ -172,12 +172,12 @@ export const getResponsesCount = element => {
 
 export const reIndexResponses = htmlStr => {
   const parsedHTML = $("<div />").html(htmlStr);
-  if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response").length) {
+  if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response, paragraphnumber").length) {
     return htmlStr;
   }
 
   $(parsedHTML)
-    .find("textinput, mathinput, textdropdown, response")
+    .find("textinput, mathinput, textdropdown, response, paragraphnumber")
     .each(function(index) {
       $(this)
         .find("span")
@@ -190,6 +190,10 @@ export const reIndexResponses = htmlStr => {
 
       $(this).attr("responseIndex", index + 1);
       $(this).attr("contenteditable", false);
+
+      if ($(this).context.nodeName === "PARAGRAPHNUMBER") {
+        $(this).html(`<label>${index + 1}</label>`);
+      }
 
       const text = $("<div>")
         .append($(this).clone())

@@ -911,7 +911,17 @@ textinput {
   min-height: 35px;
   white-space: nowrap;
 }
-
+paragraphnumber {
+  padding: 0 5px;
+  margin-right: 10px;
+  min-height: 10px;
+  color: #fff;
+  line-height: 1.5;
+  background-color: #70ce70;
+  cursor: pointer;
+  position: relative;
+  min-width: 20px;
+}
 response {
   min-width: 120px;
   min-height: 30px;

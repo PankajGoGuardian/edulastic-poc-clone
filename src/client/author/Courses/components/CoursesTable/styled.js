@@ -38,6 +38,14 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+  .ant-table {
+    &-tbody,
+    &-thead {
+      & > tr :nth-last-of-type(-n + 2) {
+        text-align: end;
+      }
+    }
+  }
 `;
 
 export const StyledFilterButton = styled(Button)`
@@ -82,7 +90,7 @@ export const StyledPagination = styled(Pagination)`
 
 export const StyledHeaderColumn = styled.div`
   display: flex;
-  align-item: center;
+  align-items: center;
   cursor: pointer;
 `;
 

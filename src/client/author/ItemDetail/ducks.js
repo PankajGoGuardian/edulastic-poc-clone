@@ -20,6 +20,7 @@ import {
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
+import { isIncompleteQuestion } from "../questionUtils";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   getTestEntitySelector,
@@ -641,7 +642,7 @@ export function* updateItemSaga({ payload }) {
     };
 
     if (questions.length === 1) {
-      const [isIncomplete, errMsg] = helpers.isIncompleteQuestion(questions[0]);
+      const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
       if (isIncomplete) {
         return message.error(errMsg);
       }

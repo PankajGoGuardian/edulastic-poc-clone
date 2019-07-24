@@ -30,6 +30,7 @@ import {
 import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
+import { isIncompleteQuestion } from "../questionUtils";
 import changeViewAction from "../src/actions/view";
 import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
 import { updateRecentStandardsAction } from "../src/actions/dictionaries";
@@ -303,7 +304,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
 
-    const [isIncomplete, errMsg] = helpers.isIncompleteQuestion(question);
+    const [isIncomplete, errMsg] = isIncompleteQuestion(question);
     if (isIncomplete) {
       return message.error(errMsg);
     }

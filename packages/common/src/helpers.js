@@ -245,63 +245,6 @@ export const beforeUpload = file => {
   return isAllowedType && withinSizeLimit;
 };
 
-/**
- * does question have enough data !?
- *  This is only the begnning. This func is going to grow to handle
- *  the idiosyncraices of  multiple questions types.
- *  "To inifinity and beyond" ~ Buzz Lightyear, or someone wise!
- */
-export const isIncompleteQuestion = item => {
-  // if resource type question it doesnt have stimulus or options.
-
-  const emptyChoiceError = "Answer choices should not be empty";
-
-  if (question.resourceTypeQuestions.includes(item.type)) {
-    return [false];
-  }
-
-  if (!item.stimulus) {
-    return [true, "Question text shouldnot be empty"];
-  }
-
-  if (item.options) {
-    // options check for expression multipart type question.
-    if (item.type === questionType.EXPRESSION_MULTIPART) {
-      const optionsCount = get(item, ["response_ids", "dropDowns", "length"], 0);
-      if (optionsCount !== Object.keys(item.options).length) {
-        return [true, emptyChoiceError];
-      }
-      const options = Object.values(item.options);
-      for (const opt of options) {
-        if (!opt.length) {
-          return [true, emptyChoiceError];
-        }
-        const hasEmptyOptions = opt.some(opt => !opt);
-        if (hasEmptyOptions) return [true, emptyChoiceError];
-      }
-    } else if (item.type === questionType.CLOZE_DROP_DOWN) {
-      const responses = get(item, "response_ids", []);
-      for (const res of responses) {
-        const opts = item.options[res.id] || [];
-        if (!opts.length) {
-          return [true, emptyChoiceError];
-        }
-        const hasEmptyOptions = opts.some(opt => !opt);
-        if (hasEmptyOptions) return [true, emptyChoiceError];
-      }
-    } else {
-      // for other question types.
-      const hasEmptyOptions = item.options.some(opt => {
-        return (opt.hasOwnProperty("label") && !opt.label.trim()) || (isString(opt) && opt.trim() === "");
-      });
-
-      if (hasEmptyOptions) return [true, emptyChoiceError];
-    }
-  }
-
-  return [false];
-};
-
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -314,6 +257,5 @@ export default {
   reIndexResponses,
   sanitizeForReview,
   canInsert,
-  removeIndexFromTemplate,
-  isIncompleteQuestion
+  removeIndexFromTemplate
 };

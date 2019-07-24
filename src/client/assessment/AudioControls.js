@@ -1,16 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { Howl, Howler } from "howler";
-import { IconPlay, IconPause } from "@edulastic/icons";
+import { IconPlayFilled, IconPause, IconStop } from "@edulastic/icons";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { curentPlayerDetailsSelector } from "./selectors/test";
 import { setCurrentAudioDetailsAction } from "./actions/test";
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-
-const StopIcon = styled.span`
-  border: 6px black solid;
-`;
 
 const ControlButtons = styled(Button)`
   width: 40px;
@@ -153,10 +149,10 @@ const AudioControls = ({
     <AudioButtonsWrapper>
       <div style={{ display: showAudioControls ? "none" : "block" }}>
         <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
-          {currentPlayingDetails.qId === qId ? <IconPause /> : !loading && <IconPlay />}
+          {currentPlayingDetails.qId === qId ? <IconPause /> : !loading && <IconPlayFilled />}
         </ControlButtons>
         <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title={"Stop"}>
-          <StopIcon />
+          <IconStop />
         </ControlButtons>
       </div>
     </AudioButtonsWrapper>

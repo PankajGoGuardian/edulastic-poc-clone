@@ -8,9 +8,5 @@ export const formatTime = time => {
       time = Number(time);
     }
   }
-  return (
-    moment(time)
-      //.local()
-      .format("MMM, DD YYYY hh:mm A")
-  );
+  return moment(time).format("MMM, DD YYYY HH:mm:ss");
 };

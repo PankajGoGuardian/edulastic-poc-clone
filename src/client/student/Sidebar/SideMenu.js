@@ -20,7 +20,7 @@ import {
   IconQuestion
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
-import { white, tabletWidth } from "@edulastic/colors";
+import { white, tabletWidth, largeDesktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
 
@@ -334,11 +334,23 @@ const SideBar = styled(Layout.Sider)`
   padding-bottom: 0;
 
   &.ant-layout-sider-collapsed .logoWrapper {
-    padding: 22.5px 20px;
+    padding: 12.5px 20px;
+
+    @media (min-width: ${extraDesktopWidthMax}) {
+      padding: 22.5px 20px;
+    }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      padding: 4.5px 20px;
+    }
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 100px;
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 90px;
+    }
   }
   &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
@@ -379,6 +391,14 @@ const SideBar = styled(Layout.Sider)`
   .ant-select {
     width: 125px;
   }
+
+  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
+    flex: 0 0 90px !important;
+    max-width: 90px !important;
+    min-width: 90px !important;
+    width: 90px !important;
+  }
+
   @media (max-width: ${tabletWidth}) {
     flex: 0 0 0px;
     max-width: 0px;
@@ -435,8 +455,12 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 9px 0px 10px;
-  min-height: calc(100% - 100px);
+  padding: 5px 0px 10px;
+  min-height: calc(100% - 90px);
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    min-height: calc(100% - 100px);
+  }
 
   @media (max-width: ${tabletWidth}) {
     min-height: 100%;
@@ -499,13 +523,17 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    height: 48px;
+    height: 38px;
     padding: 10px 39px !important;
     max-width: 100%;
     
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
+    
+    @media(max-width: ${largeDesktopWidth}) {
+      width: 90px;
+    }
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
@@ -513,7 +541,7 @@ const Menu = styled(AntMenu)`
     justify-content: center;
     margin-top: 14px;
     padding: 10px 18px !important;
-    height: 48px;
+    height: 38px;
     width: 100%;
   }
   &.ant-menu-inline > .ant-menu-item {

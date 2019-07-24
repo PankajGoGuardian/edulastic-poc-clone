@@ -88,7 +88,7 @@ class AdvancedTable extends Component {
         title: "ASSESSMENT NAME",
         dataIndex: "title",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.title.localeCompare(b.title, "fr", { ignorePunctuation: true }),
+        sorter: (a, b) => a.title.localeCompare(b.title, "en", { ignorePunctuation: true }),
         width: "22%",
         className: "assignment-name",
         render: (text, row) => (
@@ -106,7 +106,7 @@ class AdvancedTable extends Component {
         title: "Type",
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.testType.localeCompare(b.testType),
+        sorter: (a, b) => a.testType.localeCompare(b.testType, "en", { ignorePunctuation: true }),
         width: "11%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
@@ -138,9 +138,9 @@ class AdvancedTable extends Component {
         title: "Submitted",
         dataIndex: "inGrading",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.inGrading - b.inGrading,
+        sorter: (a, b) => a.inGrading + a.graded - (b.inGrading + b.graded),
         width: "16%",
-        render: text => <div> {text} </div>
+        render: (text, row) => <div> {text + row.graded} </div>
       },
       {
         title: "Graded",

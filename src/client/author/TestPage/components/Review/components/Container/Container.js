@@ -24,7 +24,7 @@ import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import { SecondHeader } from "./styled";
+import { SecondHeader, ReviewPageContainer } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
@@ -55,6 +55,8 @@ class Review extends PureComponent {
     windowWidth: PropTypes.number.isRequired
   };
 
+  secondHeaderRef = React.createRef();
+
   state = {
     isCollapse: true,
     isModalVisible: false,
@@ -62,6 +64,14 @@ class Review extends PureComponent {
     isTestPreviewModalVisible: false,
     currentTestId: ""
   };
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  componentDidMount() {
+    window.addEventListener("scroll", this.handleScroll);
+  }
 
   setSelected = values => {
     const { test, setData } = this.props;
@@ -204,6 +214,16 @@ class Review extends PureComponent {
     this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id });
   };
 
+  handleScroll = e => {
+    if (this.secondHeaderRef.current) {
+      if (window.scrollY > 50) {
+        this.secondHeaderRef.current.classList.add("fixed-second-header");
+      } else {
+        this.secondHeaderRef.current.classList.remove("fixed-second-header");
+      }
+    }
+  };
+
   render() {
     const {
       test,
@@ -254,25 +274,27 @@ class Review extends PureComponent {
     const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
     return (
-      <div style={{ paddingTop: 16 }}>
+      <ReviewPageContainer>
         <Row>
           <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
-            <SecondHeader isMobileSize={isMobileSize}>
-              <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-              <HeaderBar
-                onSelectAll={this.handleSelectAll}
-                itemTotal={test.testItems.length}
-                selectedItems={selected}
-                onRemoveSelected={this.handleRemoveSelected}
-                onCollapse={this.handleCollapse}
-                onMoveTo={this.handleMoveTo}
-                owner={owner}
-                isEditable={isEditable}
-                windowWidth={windowWidth}
-                setCollapse={isCollapse}
-                onShowTestPreview={this.showTestPreviewModal}
-              />
-            </SecondHeader>
+            <div ref={this.secondHeaderRef}>
+              <SecondHeader isMobileSize={isMobileSize}>
+                <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+                <HeaderBar
+                  onSelectAll={this.handleSelectAll}
+                  itemTotal={test.testItems.length}
+                  selectedItems={selected}
+                  onRemoveSelected={this.handleRemoveSelected}
+                  onCollapse={this.handleCollapse}
+                  onMoveTo={this.handleMoveTo}
+                  owner={owner}
+                  isEditable={isEditable}
+                  windowWidth={windowWidth}
+                  setCollapse={isCollapse}
+                  onShowTestPreview={this.showTestPreviewModal}
+                />
+              </SecondHeader>
+            </div>
             <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable
@@ -280,6 +302,9 @@ class Review extends PureComponent {
                   setSelected={this.setSelected}
                   selected={selected}
                   isEditable={isEditable}
+                  owner={owner}
+                  scoring={test.scoring}
+                  onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
                 />
               ) : (
@@ -345,7 +370,7 @@ class Review extends PureComponent {
           test={test}
           hideModal={this.hidePreviewModal}
         />
-      </div>
+      </ReviewPageContainer>
     );
   }
 }

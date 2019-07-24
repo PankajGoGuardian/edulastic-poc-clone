@@ -24,6 +24,14 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+  .ant-table {
+    &-tbody,
+    &-thead {
+      & > tr :nth-last-of-type(-n + 4) {
+        text-align: end;
+      }
+    }
+  }
 `;
 
 export const StyledControlDiv = styled.div`

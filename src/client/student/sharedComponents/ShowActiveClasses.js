@@ -3,6 +3,8 @@ import { Select } from "antd";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
+import { extraDesktopWidthMax } from "@edulastic/colors";
+
 const ShowActiveClasses = ({ t, classList, setClassList, setShowClass }) => {
   const activeClasses = classList.filter(c => c.active === 1);
   const archiveClasses = classList.filter(c => c.active === 0);
@@ -47,7 +49,11 @@ const ManageActiveClasses = styled.div`
 
   .ant-select {
     height: 40px;
-    width: 240px;
+    width: 190px;
+
+    @media (min-width: ${extraDesktopWidthMax}) {
+      width: 240px;
+    }
   }
   .ant-select-selection {
     border: 0px;

@@ -228,7 +228,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_STUDENTS_LIST:
       return {
         ...state,
-        removedStudents: payload
+        removedStudents: [...state.removedStudents, ...payload]
       };
     case UPDATE_CLASS_STUDENTS_LIST:
       return {

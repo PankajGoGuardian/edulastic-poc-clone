@@ -296,7 +296,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
         skipped = false;
       }
 
-      if (graded === false && !notStarted) {
+      if (graded === false && !notStarted && !skipped) {
         questionMap[_id].manualGradedNum += 1;
       } else if (score === maxScore && !notStarted && score > 0) {
         questionMap[_id].correctNum += 1;
@@ -324,11 +324,6 @@ export const getAggregateByQuestion = (entities, studentId) => {
   return result;
 };
 
-export const getGradeBookSelector = createSelector(
-  stateTestActivitySelector,
-  state => getAggregateByQuestion(state.entities)
-);
-
 export const classStudentsSelector = createSelector(
   stateTestActivitySelector,
   state => state.classStudents
@@ -336,6 +331,15 @@ export const classStudentsSelector = createSelector(
 export const removedStudentsSelector = createSelector(
   stateTestActivitySelector,
   state => state.removedStudents
+);
+
+export const getGradeBookSelector = createSelector(
+  stateTestActivitySelector,
+  removedStudentsSelector,
+  (state, removedStudents) => {
+    const entities = state.entities.filter(item => !removedStudents.includes(item.studentId));
+    return getAggregateByQuestion(entities);
+  }
 );
 
 export const getTestActivitySelector = createSelector(

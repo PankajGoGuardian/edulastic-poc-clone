@@ -289,7 +289,8 @@ function* receiveTeachersListSaga({ payload }) {
 
 function* bulkUpdateClassesSaga({ payload }) {
   try {
-    const { result } = yield call(groupApi.bulkUpdateClasses, payload);
+    const { result } = yield call(groupApi.bulkUpdateClasses, payload.data);
+    yield put(receiveClassListAction(payload.searchQuery));
     yield put(bulkUpdateClassesSuccessAction(result));
     message.success(result.message);
   } catch (err) {

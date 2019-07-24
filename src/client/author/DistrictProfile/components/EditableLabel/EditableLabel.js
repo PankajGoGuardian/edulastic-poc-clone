@@ -23,7 +23,7 @@ class EditableLabel extends React.Component {
   setRequiredStatus = () => {
     const { value } = this.state;
     const { requiredStatus, valueName } = this.props;
-    if (value.length == 0 && requiredStatus) {
+    if ((!value || value.length == 0) && requiredStatus) {
       this.setState({
         validateStatus: "error",
         validateMsg: `Plasse input your ${valueName}`,
@@ -37,7 +37,7 @@ class EditableLabel extends React.Component {
     const { requiredStatus, valueName, setProfileValue, isSpaceEnable } = this.props;
 
     if (validateStatus === "error") return;
-    if (value.length == 0 && requiredStatus) {
+    if ((!value || value.length == 0) && requiredStatus) {
       this.setState({
         validateStatus: "error",
         validateMsg: `Plasse input your ${valueName}`

@@ -548,7 +548,21 @@ class SchoolsTable extends React.Component {
         }
       },
       {
-        title: "Teacher",
+        title: (
+          <StyledHeaderColumn>
+            <p>Teacher</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "teachersCount" && sortedInfo.order === "desc"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "teachersCount" && sortedInfo.order === "asc"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
         dataIndex: "teachersCount",
         editable: true,
         onHeaderCell: column => {
@@ -560,7 +574,21 @@ class SchoolsTable extends React.Component {
         }
       },
       {
-        title: "Student",
+        title: (
+          <StyledHeaderColumn>
+            <p>Student</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "studentsCount" && sortedInfo.order === "desc"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "studentsCount" && sortedInfo.order === "asc"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
         dataIndex: "studentsCount",
         editable: true,
         onHeaderCell: column => {
@@ -572,7 +600,21 @@ class SchoolsTable extends React.Component {
         }
       },
       {
-        title: "Section",
+        title: (
+          <StyledHeaderColumn>
+            <p>Section</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "sectionsCount" && sortedInfo.order === "desc"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "sectionsCount" && sortedInfo.order === "asc"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
         dataIndex: "sectionsCount",
         editable: true,
         onHeaderCell: column => {
@@ -613,7 +655,6 @@ class SchoolsTable extends React.Component {
     };
 
     const editSchoolData = dataSource.filter(item => item.key === editSchoolKey);
-
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit school">Edit School</Menu.Item>

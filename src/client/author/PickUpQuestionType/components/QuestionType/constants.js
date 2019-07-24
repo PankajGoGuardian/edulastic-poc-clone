@@ -1653,10 +1653,10 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      type: "video-passages",
+      type: "edit",
       cardImage: VPPassage,
       data: {
-        title: "Passage",
+        title: "Passage with Multiple parts",
         type: questionType.PASSAGE,
         heading: "Section 3",
         math_renderer: "",

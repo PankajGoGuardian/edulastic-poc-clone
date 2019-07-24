@@ -275,7 +275,6 @@ const SortListPreview = ({
         </FlexCol>
       </FlexContainer>
 
-
       {(previewTab === SHOW || isReviewTab) && (
         <ShowCorrect
           source={source}
@@ -285,7 +284,6 @@ const SortListPreview = ({
           correctList={valid_response}
         />
       )}
-
     </Paper>
   );
 };

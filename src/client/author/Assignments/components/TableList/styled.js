@@ -4,6 +4,7 @@ import { testActivity } from "@edulastic/constants";
 import {
   mobileWidth,
   tabletWidth,
+  smallDesktopWidth,
   darkGrey,
   lightGreySecondary,
   white,
@@ -16,7 +17,18 @@ import {
 const { assignmentStatusBg, lightBlue } = authorAssignment;
 const {
   authorAssignmentConstants: {
-    assignmentStatus: { NOT_OPEN, IN_PROGRESS, IN_GRADING, NOT_GRADED, GRADES_HELD, DONE }
+    assignmentStatus: {
+      NOT_OPEN,
+      IN_PROGRESS,
+      IN_GRADING,
+      NOT_GRADED,
+      GRADES_HELD,
+      DONE,
+      IN_PROGRESS_PAUSED,
+      IN_GRADING_PAUSED,
+      NOT_GRADED_PAUSED,
+      GRADES_HELD_PAUSED
+    }
   }
 } = testActivity;
 
@@ -26,11 +38,19 @@ const defineStatusBg = status => {
       return assignmentStatusBg.NOT_OPEN;
     case IN_PROGRESS:
       return assignmentStatusBg.IN_PROGRESS;
+    case IN_PROGRESS_PAUSED:
+      return assignmentStatusBg.IN_PROGRESS;
     case IN_GRADING:
+      return assignmentStatusBg.IN_GRADING;
+    case IN_GRADING_PAUSED:
       return assignmentStatusBg.IN_GRADING;
     case NOT_GRADED:
       return assignmentStatusBg.NOT_GRADED;
+    case NOT_GRADED_PAUSED:
+      return assignmentStatusBg.NOT_GRADED;
     case GRADES_HELD:
+      return assignmentStatusBg.GRADES_HELD;
+    case GRADES_HELD_PAUSED:
       return assignmentStatusBg.GRADES_HELD;
     case DONE:
       return assignmentStatusBg.DONE;
@@ -79,6 +99,10 @@ export const TableData = styled(Table)`
         color: ${darkGrey};
         white-space: nowrap;
         text-align: center;
+
+        @media (max-width: ${smallDesktopWidth}) {
+          font-size: 10px;
+        }
 
         &.assignment-name {
           text-align: left !important;
@@ -169,20 +193,12 @@ export const TableData = styled(Table)`
       padding-right: 0px;
     }
   }
-  @media (max-width: 1170px) {
+  @media (max-width: ${smallDesktopWidth}) {
     .ant-table-thead > tr > th {
       font-size: 10px;
     }
     .ant-table-tbody > tr > td {
-      font-size: 9px;
-    }
-  }
-  @media (max-width: 1170px) {
-    .ant-table-thead > tr > th {
-      font-size: 9px;
-    }
-    .ant-table-tbody > tr > td {
-      font-size: 9px;
+      font-size: 11px;
     }
   }
 `;
@@ -191,6 +207,9 @@ export const TestThumbnail = styled.img`
   border-radius: 4px;
   width: 50px;
   height: 24px;
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 32px;
+  }
 `;
 
 export const AssignmentTD = styled.div`
@@ -256,11 +275,17 @@ export const BtnStatus = styled(Button)`
   border: 0px;
   font-size: 0.7em;
   font-weight: bold;
-  width: 90px;
+  min-width: 90px;
   height: 26px;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 5px;
   background-color: ${props => defineStatusBg(props.status)};
+
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 20px;
+    line-height: 20px;
+    font-size: 9px;
+  }
 `;
 
 export const TitleCase = styled.div`
@@ -293,6 +318,10 @@ export const GreyFont = styled.div`
   width: 100%;
   &.class-column {
     white-space: initial;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 11px;
   }
 `;
 

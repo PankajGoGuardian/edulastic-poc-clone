@@ -718,7 +718,8 @@ export const themes = {
         headingFontWeight: "700"
       },
       chart: {
-        bgColor: "#fff"
+        bgColor: "#fff",
+        labelStrokeColor: "#42d184"
       }
     }
   }

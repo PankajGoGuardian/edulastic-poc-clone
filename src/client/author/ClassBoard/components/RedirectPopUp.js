@@ -1,6 +1,5 @@
-//@ts-check
 import React, { useState, useCallback, useEffect } from "react";
-import { Button, Row, Col, Radio, Select, DatePicker, message } from "antd";
+import { Button, Row, Radio, Select, DatePicker, message } from "antd";
 import moment from "moment";
 import { assignmentApi } from "@edulastic/api";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
@@ -28,6 +27,7 @@ const Option = Select.Option;
  */
 const RedirectPopUp = ({
   allStudents,
+  enrollmentStatus,
   selectedStudents,
   additionalData,
   open,
@@ -42,6 +42,7 @@ const RedirectPopUp = ({
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
+
   useEffect(() => {
     let setRedirectStudents = {};
     if (type === "absentStudents") {
@@ -92,14 +93,38 @@ const RedirectPopUp = ({
     return endDate < moment().startOf("day");
   };
 
+  /**
+   *
+   * @param {*} student
+   * student full name should be displayed to the user by default if student first name exists <FirstName>, <LastName> (username)
+   * student doesnt have first name then print last name with user name in brackets eg: <LastName> (username)
+   * student doesnt have first and last name then print user name only <UserName>
+   * None of the student details exist then print Anonymous
+   */
+  const getUserName = student => {
+    if (student.firstName) {
+      return `${student.firstName}${student.lastName ? `, ${student.lastName}` : ""}
+              ${student.username ? ` (${student.username})` : ""}`;
+    }
+    if (student.lastName) {
+      return `${student.lastName ? `${student.lastName}` : ""}
+              ${student.username ? ` (${student.username})` : ""}`;
+    }
+    if (student.username) {
+      return student.username;
+    }
+    return "Anonymous";
+  };
+
   return (
     <ConfirmationModal
+      centered
       textAlign="left"
       title="Redirect Assignment"
       visible={open}
-      onCancel={() => closePopup()}
+      onCancel={closePopup}
       footer={[
-        <Button ghost key="cancel" onClick={() => closePopup()}>
+        <Button ghost key="cancel" onClick={closePopup}>
           CANCEL
         </Button>,
         <Button loading={loading} key="submit" onClick={submitAction}>
@@ -141,16 +166,19 @@ const RedirectPopUp = ({
               setSelected(v);
             }}
           >
-            {allStudents.map(x => (
-              <Option
-                key={x._id}
-                value={x._id}
-                disabled={disabledList.includes(x._id)}
-                data={`${x.firstName},${x.email}`}
-              >
-                {x.firstName}
-              </Option>
-            ))}
+            {allStudents.map(
+              x =>
+                enrollmentStatus[x._id] === "1" && (
+                  <Option
+                    key={x._id}
+                    value={x._id}
+                    disabled={disabledList.includes(x._id)}
+                    data={`${x.firstName}${x.lastName}${x.email}${x.username}`}
+                  >
+                    {getUserName(x)}
+                  </Option>
+                )
+            )}
           </Select>
         </Row>
 

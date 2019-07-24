@@ -12,7 +12,7 @@ const TrendColumn = ({ tests, type }) => {
 
   return (
     <StyledContainer>
-      <BarChart width={120} height={30} barCategoryGap={1} data={tests} maxBarSize={tests.length == 1 ? 30 : 100}>
+      <BarChart width={120} height={30} barCategoryGap={1} data={tests} maxBarSize={100}>
         <Bar dataKey="score" fill={trendTypes[type].color} />
         <Tooltip
           cursor={false}

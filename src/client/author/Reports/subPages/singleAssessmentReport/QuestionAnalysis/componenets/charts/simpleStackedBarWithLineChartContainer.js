@@ -7,7 +7,7 @@ import { SimpleStackedBarChart } from "../../../../../common/components/charts/s
 import { CustomChartCursor } from "../../../../../common/components/charts/chartUtils/customChartCursor";
 import { fadedBlack } from "@edulastic/colors";
 
-import { getFormattedTimeInMins } from "../../utils/helpers";
+import { getSecondsFormattedTimeInMins } from "../../utils/helpers";
 
 const chartSpecifics = {
   barsData: [
@@ -18,13 +18,14 @@ const chartSpecifics = {
 };
 
 const lineYTickFormatter = val => {
-  return getFormattedTimeInMins(val);
+  return getSecondsFormattedTimeInMins(val);
 };
 
 export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBarClickCB, onResetClickCB }) => {
   const getTooltipJSX = payload => {
     if (payload && payload.length) {
-      const { qLabel, avgPerformance, avgTime, districtAvg } = payload[0].payload;
+      const { qLabel, avgPerformance, avgTimeSecs, districtAvg } = payload[0].payload;
+
       return (
         <div>
           <Row type="flex" justify="start">
@@ -36,7 +37,7 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">Avg. Time: </Col>
-            <Col className="tooltip-value">{getFormattedTimeInMins(avgTime)} mins</Col>
+            <Col className="tooltip-value">{getSecondsFormattedTimeInMins(avgTimeSecs)} mins</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="tooltip-key">District Avg: </Col>
@@ -76,8 +77,8 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
   };
 
   const lineYDomain = useMemo(() => {
-    let m = maxBy(chartData, "avgTime");
-    m = m ? m.avgTime : 0;
+    let m = maxBy(chartData, "avgTimeSecs");
+    m = m ? m.avgTimeSecs : 0;
     m = m + (20 / 100) * m;
     return [0, m];
   }, [chartData]);
@@ -111,7 +112,7 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
       lineYTickFormatter={lineYTickFormatter}
       lineYDomain={lineYDomain}
       lineTicks={ticks(0, lineYDomain[1], 10)}
-      lineChartDataKey="avgTime"
+      lineChartDataKey="avgTimeSecs"
       lineProps={{ stroke: "#ff7300", strokeWidth: "5px" }}
       lineYAxisLabel="Time (mins)"
     />

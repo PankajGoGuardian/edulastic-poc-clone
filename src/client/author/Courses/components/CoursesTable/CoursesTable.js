@@ -229,7 +229,7 @@ class CoursesTable extends React.Component {
         }
         return item;
       });
-      this.loadFilteredCourseList([..._filtersData], sortedInfo, searchByName, currentPage);
+      // this.loadFilteredCourseList([..._filtersData], sortedInfo, searchByName, currentPage);
       _filtersData.push({
         filterAdded: false,
         filtersColumn: "",

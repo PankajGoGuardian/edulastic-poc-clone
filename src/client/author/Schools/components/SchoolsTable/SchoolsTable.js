@@ -62,6 +62,8 @@ class SchoolsTable extends React.Component {
       },
       currentPage: 1
     };
+
+    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
   componentDidMount() {
@@ -175,24 +177,46 @@ class SchoolsTable extends React.Component {
     }
   };
 
-  onSearchFilterText = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    if (e === filtersData[key].prevFilterStr) return;
+  onSearchFilterText = (value, event, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: !!value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[key].current.blur());
+  };
 
-    filtersData[key].filterStr = e;
-    filtersData[key].prevFilterStr = e;
-    filtersData[key].filterAdded = true;
-
-    this.setState({ filtersData });
-
+  onBlurFilterText = (event, key) => {
     const { sortedInfo, searchByName } = this.state;
-    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName);
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: !!event.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData }, () =>
+      this.loadFilteredSchoolList(_filtersData, sortedInfo, searchByName)
+    );
   };
 
   changeFilterText = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = e.target.value;
-    this.setState({ filtersData });
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
   };
 
   changeStatusValue = (value, key) => {
@@ -211,19 +235,21 @@ class SchoolsTable extends React.Component {
   };
 
   addFilter = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    if (filtersData[key].filterAdded && filtersData.length == 3) return;
+    const { filtersData } = this.state;
     if (filtersData.length < 3) {
-      filtersData[key].filterAdded = true;
-      filtersData.push({
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: "",
-        prevFilterStr: "",
-        filterAdded: false
+      this.setState({
+        filtersData: [
+          ...filtersData,
+          {
+            filtersColumn: "",
+            filtersValue: "",
+            filterStr: "",
+            prevFilterStr: "",
+            filterAdded: false
+          }
+        ]
       });
     }
-    this.setState({ filtersData });
   };
 
   removeFilter = (e, key) => {
@@ -666,7 +692,10 @@ class SchoolsTable extends React.Component {
     for (let i = 0; i < filtersData.length; i++) {
       const isFilterTextDisable = filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "";
       const isAddFilterDisable =
-        filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "" || filtersData[i].filterStr === "";
+        filtersData[i].filtersColumn === "" ||
+        filtersData[i].filtersValue === "" ||
+        filtersData[i].filterStr === "" ||
+        !filtersData[i].filterAdded;
 
       let showRemoveButton = false;
       if (i > 0) showRemoveButton = true;
@@ -710,9 +739,11 @@ class SchoolsTable extends React.Component {
             <StyledFilterInput
               placeholder="Enter text"
               onChange={e => this.changeFilterText(e, i)}
-              onSearch={e => this.onSearchFilterText(e, i)}
+              onSearch={(v, e) => this.onSearchFilterText(v, e, i)}
+              onBlur={e => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filtersData[i].filterStr}
+              innerRef={this.filterTextInputRef[i]}
             />
           ) : (
             <StyledFilterSelect

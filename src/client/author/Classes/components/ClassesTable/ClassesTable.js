@@ -260,20 +260,17 @@ class ClassesTable extends Component {
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     if (filtersData.length < 3) {
-      this.setState(
-        state => ({
-          filtersData: [
-            ...state.filtersData,
-            {
-              filtersColumn: "",
-              filtersValue: "",
-              filterStr: "",
-              filterAdded: false
-            }
-          ]
-        }),
-        this.loadFilteredClassList
-      );
+      this.setState(state => ({
+        filtersData: [
+          ...state.filtersData,
+          {
+            filtersColumn: "",
+            filtersValue: "",
+            filterStr: "",
+            filterAdded: false
+          }
+        ]
+      }));
     }
   };
 

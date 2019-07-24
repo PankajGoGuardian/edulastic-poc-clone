@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { isEqual, get } from "lodash";
 import produce from "immer";
@@ -22,6 +22,7 @@ import { IconUp } from "./styled/IconUp";
 import { IconDown } from "./styled/IconDown";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { AnswerContext } from "@edulastic/common";
 
 const styles = {
   dropContainerStyles: smallSize => ({
@@ -31,7 +32,7 @@ const styles = {
   wrapperStyles: smallSize => ({ marginTop: smallSize ? 0 : 40 })
 };
 const SortListPreview = ({
-  previewTab,
+  previewTab: _previewTab,
   t,
   smallSize,
   item,
@@ -42,6 +43,19 @@ const SortListPreview = ({
   changePreviewTab,
   isReviewTab
 }) => {
+  const answerContextConfig = useContext(AnswerContext);
+  let previewTab = _previewTab;
+  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+    /**
+     * ideally wanted to be in CHECK mode.
+     * But this component seems to be
+     * written to work with only SHOW & CLEAR
+     */
+    previewTab = SHOW;
+  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+    previewTab = CLEAR;
+  }
+
   const { source = [], instructor_stimulus, stimulus } = item;
 
   const getItemsFromUserAnswer = () =>

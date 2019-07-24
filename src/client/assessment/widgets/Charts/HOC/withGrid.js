@@ -11,18 +11,14 @@ const withGrid = WrappedComponent => {
     const {
       theme,
       name,
-      gridParams: { width, margin, yAxisMax, yAxisMin, stepSize, xAxisLabel, yAxisLabel },
-      disableResponse
+      gridParams: { width, margin, yAxisMax, yAxisMin, stepSize, xAxisLabel, yAxisLabel }
     } = props;
 
     const yAxis = getYAxis(yAxisMax, yAxisMin, stepSize);
     const padding = getPadding(yAxis);
 
     return (
-      <FlexContainer
-        justifyContent="flex-start"
-        style={{ background: theme.widgets.chart.bgColor, overflowX: disableResponse ? "scroll" : "auto" }}
-      >
+      <FlexContainer justifyContent="flex-start" style={{ background: theme.widgets.chart.bgColor, overflowX: "auto" }}>
         <FlexContainer style={{ transform: "rotate(-90deg)", width: 40, whiteSpace: "nowrap", marginTop: margin }}>
           {yAxisLabel}
         </FlexContainer>

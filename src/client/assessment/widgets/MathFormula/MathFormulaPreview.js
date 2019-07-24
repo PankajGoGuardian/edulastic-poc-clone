@@ -224,6 +224,10 @@ class MathFormulaPreview extends Component {
 
     const customKeys = get(item, "custom_keys", []);
 
+    // in Units type, this need when the show dropdown option is true
+    let correctUnit = item.validation.valid_response.value[0].options.unit;
+    correctUnit = !correctUnit ? "" : correctUnit;
+
     return (
       <div>
         <QuestionTitleWrapper>
@@ -290,12 +294,8 @@ class MathFormulaPreview extends Component {
           <CorrectAnswerBox>
             {item.isUnits && item.showDropdown
               ? item.validation.valid_response.value[0].value.search("=") === -1
-                ? item.validation.valid_response.value[0].value +
-                    item.validation.valid_response.value[0].options.unit || ""
-                : item.validation.valid_response.value[0].value.replace(
-                    /=/gm,
-                    `${item.validation.valid_response.value[0].options.unit || ""}=`
-                  )
+                ? item.validation.valid_response.value[0].value + correctUnit
+                : item.validation.valid_response.value[0].value.replace(/=/gm, `${correctUnit}=`)
               : item.validation.valid_response.value[0].value}
           </CorrectAnswerBox>
         )}
@@ -304,9 +304,10 @@ class MathFormulaPreview extends Component {
             {item.validation.alt_responses
               .map(ans => {
                 if (item.isUnits && item.showDropdown) {
+                  const altUnit = !ans.value[0].options.unit ? "" : ans.value[0].options.unit;
                   return ans.value[0].value.search("=") === -1
-                    ? ans.value[0].value + ans.value[0].options.unit || ""
-                    : ans.value[0].value.replace(/=/gm, `${ans.value[0].options.unit || ""}=`);
+                    ? ans.value[0].value + altUnit
+                    : ans.value[0].value.replace(/=/gm, `${altUnit}=`);
                 }
                 return ans.value[0].value;
               })

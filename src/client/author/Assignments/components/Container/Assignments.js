@@ -89,8 +89,7 @@ class Assignments extends Component {
       ...defaultFilters,
       testType: userRole === "district-admin" || userRole === "school-admin" ? "common" : ""
     };
-
-    if (defaultTermId) {
+    if (defaultTermId && !defaultFilters.hasOwnProperty("termId")) {
       const defaultTerm = find(terms, ({ _id }) => _id === defaultTermId) || {};
       filters.termId = defaultTerm._id || "";
     }

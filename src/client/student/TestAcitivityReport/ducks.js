@@ -19,18 +19,13 @@ export const setFeedbackReportAction = createAction(SET_FEEDBACK);
 
 function* loadTestActivityReport({ payload }) {
   try {
-    const { testActivityId, groupId } = payload;
+    const { testActivityId, groupId, testId } = payload;
     if (!testActivityId) {
       throw new Error("invalid data");
     }
-    const data = yield select(getReportByIdSelector(testActivityId));
-    if (!data || !data.testId) {
-      yield put(push("/home/reports"));
-      return;
-    }
 
     const [test, reports] = yield all([
-      call(testsApi.getById, data.testId, { data: true, testActivityId, groupId }),
+      call(testsApi.getById, testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
 
@@ -43,7 +38,12 @@ function* loadTestActivityReport({ payload }) {
       });
     });
 
-    yield put(replaceTestItemsAction(test.testItems));
+    yield put(
+      replaceTestItemsAction({
+        ...test,
+        testItems
+      })
+    );
     yield put(setFeedbackReportAction(reports.questionActivities));
     yield put(setTestItemsAction(test.testItems));
 

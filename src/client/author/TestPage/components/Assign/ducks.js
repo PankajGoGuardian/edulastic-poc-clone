@@ -168,6 +168,11 @@ function* saveAssignment({ payload }) {
     let userRole = yield select(getUserRole);
     const testType = get(payload, "testType", test.testType);
     let data = [];
+
+    payload.class.forEach(eachClass => {
+      eachClass.specificStudents = payload.specificStudents;
+    });
+
     data = testIds.map(testId =>
       omit(
         {
@@ -177,7 +182,16 @@ function* saveAssignment({ payload }) {
           testType: userRole !== "teacher" && testType === "assessment" ? "common assessment" : testType,
           testId
         },
-        ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]
+        [
+          "_id",
+          "__v",
+          "createdAt",
+          "updatedAt",
+          "students",
+          "scoreReleasedClasses",
+          "googleAssignmentIds",
+          "specificStudents"
+        ]
       )
     );
     const result = isUpdate

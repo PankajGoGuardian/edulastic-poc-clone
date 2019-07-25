@@ -12,8 +12,7 @@ import {
   white,
   themeColorTagsBg,
   themeColorLighter,
-  tabGrey,
-  smallDesktopWidth
+  tabGrey
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 

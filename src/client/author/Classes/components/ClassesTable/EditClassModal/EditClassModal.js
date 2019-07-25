@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Form, Input, Row, Col, Select, Button, Modal, DatePicker } from "antd";
 import moment from "moment";
 const Option = Select.Option;
-
+import selectsData from "../../../../TestPage/components/common/selectsData";
 import { ModalFormItem } from "./styled";
-
+const { allGrades, allSubjects } = selectsData;
 class EditClassModal extends Component {
   onSaveClass = () => {
     this.props.form.validateFields((err, row) => {
@@ -49,11 +49,6 @@ class EditClassModal extends Component {
       });
     }
 
-    const gradeOptions = [];
-    gradeOptions.push(<Option value={"K"}>Kindergarten</Option>);
-    for (let i = 1; i <= 12; i++) gradeOptions.push(<Option value={i.toString()}>Grade {i}</Option>);
-    gradeOptions.push(<Option value="O">Other</Option>);
-
     const teacherOptions = [];
     if (teacherList.length !== undefined) {
       teacherList.map(row => {
@@ -61,6 +56,8 @@ class EditClassModal extends Component {
         teacherOptions.push(<Option value={row._id}>{teacherName}</Option>);
       });
     }
+
+    const subjects = allSubjects.filter(el => el.value !== "");
 
     const { getFieldDecorator } = this.props.form;
     const {} = this.props;
@@ -105,11 +102,11 @@ class EditClassModal extends Component {
                 initialValue: subject
               })(
                 <Select placeholder="Select Subject">
-                  <Option value="Mathematics">Mathematics</Option>
-                  <Option value="ELA">ELA</Option>
-                  <Option value="Science">Science</Option>
-                  <Option value="Social Studies">Social Studies</Option>
-                  <Option value="Other Subjects">Other Subjects</Option>
+                  {subjects.map(el => (
+                    <Select.Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Select.Option>
+                  ))}
                 </Select>
               )}
             </ModalFormItem>
@@ -128,7 +125,11 @@ class EditClassModal extends Component {
                 initialValue: grades
               })(
                 <Select placeholder="Select Grades" mode="multiple">
-                  {gradeOptions}
+                  {allGrades.map(el => (
+                    <Select.Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Select.Option>
+                  ))}
                 </Select>
               )}
             </ModalFormItem>

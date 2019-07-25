@@ -177,7 +177,8 @@ class ClassQuestions extends Component {
             return { ...question, ...label };
           })
           .filter(x => x);
-        questions = [...questions, ...data.resources];
+        const resources = data.resources || [];
+        questions = [...questions, ...resources];
         return { ...others, rows, data: { questions } };
       })
       .filter(x => x);

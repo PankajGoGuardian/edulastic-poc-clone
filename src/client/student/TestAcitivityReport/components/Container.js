@@ -3,15 +3,17 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { keyBy, get } from "lodash";
 import PropTypes from "prop-types";
+import { Button } from "antd";
 import { AnswerContext } from "@edulastic/common";
 import { test as testConstants } from "@edulastic/constants";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import TestItemPreview from "../../../assessment/components/TestItemPreview";
-import { getItemSelector } from "../../sharedDucks/TestItem";
-
+import { getItemSelector, itemHasUserWorkSelector } from "../../sharedDucks/TestItem";
+import TestPreviewModal from "../../../author/Assignments/components/Container/TestPreviewModal";
 const { releaseGradeLabels } = testConstants;
 
-const ReportListContent = ({ item = {}, flag, testActivityById }) => {
+const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) => {
+  const [showModal, setModal] = useState(false);
   const { releaseScore = "" } = testActivityById;
   const questions = keyBy([...get(item, "data.questions", []), ...get(item, "data.resources", [])], "id");
   let showAnswerProps = { view: "preview" };
@@ -19,10 +21,13 @@ const ReportListContent = ({ item = {}, flag, testActivityById }) => {
     showAnswerProps = { preview: "show" };
   }
 
+  const closeModal = () => setModal(false);
+
   return (
     <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
         <Wrapper>
+          {hasUserWork && <Button onClick={() => setModal(true)}> Show My Work </Button>}
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             <TestItemPreview
               {...showAnswerProps}
@@ -38,12 +43,19 @@ const ReportListContent = ({ item = {}, flag, testActivityById }) => {
           </AnswerContext.Provider>
         </Wrapper>
       </AssignmentContentWrapper>
+      <TestPreviewModal
+        isModalVisible={showModal}
+        hideModal={closeModal}
+        test={{ testItems: [item] }}
+        LCBPreviewModal
+      />
     </AssignmentsContent>
   );
 };
 export default connect(
   (state, props) => ({
     item: getItemSelector(state),
+    hasUserWork: itemHasUserWorkSelector(state),
     testActivityById: get(state, `[studentReport][byId][${props.reportId}]`, {})
   }),
   null

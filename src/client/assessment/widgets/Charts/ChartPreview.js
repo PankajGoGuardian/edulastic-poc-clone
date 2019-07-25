@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus, CorrectAnswersContainer } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, CorrectAnswersContainer, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 import { charts as checkAnswerMethod } from "@edulastic/evaluators";
@@ -16,8 +16,8 @@ import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
-import { AnswerContext } from "@edulastic/common";
 import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
+
 
 const ChartPreview = ({
   item,
@@ -30,7 +30,6 @@ const ChartPreview = ({
   disableResponse,
   evaluation,
   t,
-  metaData,
   changePreviewTab
 }) => {
   const answerContextConfig = useContext(AnswerContext);
@@ -109,12 +108,7 @@ const ChartPreview = ({
   };
 
   const calculatedParams = {
-    ...ui_style,
-    width:
-      document.querySelector(`[data-cy="${metaData}"]`) !== null &&
-      ui_style.width > document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
-        ? document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
-        : ui_style.width
+    ...ui_style
   };
 
   return (

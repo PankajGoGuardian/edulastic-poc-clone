@@ -185,7 +185,7 @@ export const MainContainer = styled.div`
       background: ${themeColor}20;
       color: ${themeColor};
       font-weight: 600;
-      margin-top: 5px !important;
+      margin: 2px 5px 3px 0px !important;
       &__content {
         font-size: 10px;
         text-transform: uppercase;

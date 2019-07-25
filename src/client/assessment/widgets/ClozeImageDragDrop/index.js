@@ -24,7 +24,7 @@ import Display from "./Display";
 import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
 import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
-import Annotations from "../../components/Graph/Annotations/Annotations";
+import Annotations from "../../components/Annotations/Annotations";
 import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;

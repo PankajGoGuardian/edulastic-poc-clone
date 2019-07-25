@@ -9,7 +9,7 @@ import withGrid from "./HOC/withGrid";
 import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 import { Line } from "./styled";
 
-const LinePlot = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
+const LinePlot = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse, toggleBarDragging }) => {
   const { width, height, margin } = gridParams;
 
   const { step } = getGridVariables(data, gridParams, true);
@@ -51,6 +51,7 @@ const LinePlot = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
     setInitY(null);
     setActive(null);
     setIsMouseDown(false);
+    toggleBarDragging(false);
     saveAnswer(localData);
   };
 
@@ -69,6 +70,7 @@ const LinePlot = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
     setActiveIndex(index);
     setInitY(localData[index].y);
     setIsMouseDown(true);
+    toggleBarDragging(true);
   };
 
   const onMouseUp = () => {
@@ -81,7 +83,7 @@ const LinePlot = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
 
   return (
     <svg
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width}
       height={height + 40}
       onMouseMove={onMouseMove}

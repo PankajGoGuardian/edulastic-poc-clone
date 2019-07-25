@@ -6,8 +6,8 @@ import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { Subtitle } from "../common/styled_components";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
+import { Subtitle } from "../Graph/common/styled_components";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 import Annotation from "./Annotation";
 import { EditAnnotationsContainer } from "./styled/EditAnnotationsContainer";
 import { AnnotationsStyle } from "./styled/styled_components";
@@ -111,6 +111,7 @@ class Annotations extends Component {
 
             {annotations.map((annotation, i) => (
               <Annotation
+                key={annotation.id}
                 index={annotation.id}
                 updateAnnotation={handleUpdateAnnotation}
                 removeAnnotation={handleRemoveAnnotation}

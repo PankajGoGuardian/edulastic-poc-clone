@@ -19,7 +19,7 @@ import { AxisSegments, GraphAxisLabels, GraphQuadrants } from "./Authoring";
 import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
 import { InstructorStimulus } from "./common/styled_components";
-import Annotations from "./Annotations/Annotations";
+import Annotations from "../Annotations/Annotations";
 import { AnswerContext } from "@edulastic/common";
 
 import Question from "../Question";

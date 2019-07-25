@@ -28,7 +28,7 @@ import {
 import { makeBorder } from "../../Builder";
 import { CONSTANT, Colors } from "../../Builder/config";
 
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import SegmentsTools from "./SegmentsTools";
 import { GraphWrapper, JSXBox } from "./styled";

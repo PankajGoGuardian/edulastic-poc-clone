@@ -16,7 +16,17 @@ import {
 import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
 
-const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
+const BarChart = ({
+  data,
+  previewTab,
+  saveAnswer,
+  gridParams,
+  view,
+  correct,
+  disableResponse,
+  toggleBarDragging,
+  checkAnnotationLeave
+}) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
@@ -60,6 +70,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
     setInitY(null);
     setActive(null);
     setIsMouseDown(false);
+    toggleBarDragging(false);
     saveAnswer(localData);
   };
 
@@ -78,6 +89,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
     setActiveIndex(index);
     setInitY(localData[index].y);
     setIsMouseDown(true);
+    toggleBarDragging(true);
   };
 
   const onMouseUp = () => {
@@ -92,7 +104,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
 
   return (
     <svg
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width}
       height={height + heightAddition + 20}
       onMouseMove={onMouseMove}

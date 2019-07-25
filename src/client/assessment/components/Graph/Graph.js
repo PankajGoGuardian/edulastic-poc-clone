@@ -279,6 +279,7 @@ class Graph extends Component {
       ...restProps
     } = this.props;
     let previewTab = _previewTab;
+    let compact = false;
     if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
       /**
        * ideally wanted to be in CHECK mode.
@@ -288,6 +289,7 @@ class Graph extends Component {
       previewTab = "show";
     } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
       previewTab = "clear";
+      compact = true;
     }
 
     const { ui_style, validation, stimulus } = item;
@@ -343,7 +345,7 @@ class Graph extends Component {
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
-          <Wrapper>
+          <Wrapper className={compact ? "toolbar-compact" : ""}>
             <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
             {item.canvas && item.ui_style && (
               <GraphDisplay

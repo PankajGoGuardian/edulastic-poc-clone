@@ -18,8 +18,6 @@ import {
 import { getFilterOptions } from "../../utils/transformers";
 import { getStandardsBrowseStandardsRequestAction } from "../../../../standardsMasteryReport/common/filterDataDucks";
 
-let SARFilterDataPrev = null;
-
 const StudentProfileReportsFilters = ({
   style,
   className,
@@ -36,7 +34,6 @@ const StudentProfileReportsFilters = ({
 
   const { studentClassData = [] } = get(SARFilterData, "data.result", {});
   const { termOptions = [], courseOptions = [] } = useMemo(() => {
-    console.log(studentClassData, "courseOptions");
     return getFilterOptions(studentClassData);
   }, [SARFilterData]);
 
@@ -44,53 +41,51 @@ const StudentProfileReportsFilters = ({
     termId,
     termOptions
   ]);
+
   const selectedCourse = useMemo(
     () => find(courseOptions, course => course.key === courseId) || courseOptions[0] || {},
     [courseId, courseOptions]
   );
 
   useEffect(() => {
-    const groupedGrades = groupBy(studentClassData, "grades");
+    if (studentClassData.length) {
+      const groupedGrades = groupBy(studentClassData, "grades");
 
-    const q = {
-      curriculumId: "4f9d3dc42b3fdb5c48389ed1",
-      grades: Object.keys(groupedGrades)
-    };
-    getStandardsBrowseStandardsRequestAction(q);
-  }, [SARFilterData]);
+      const q = {
+        curriculumId: "4f9d3dc42b3fdb5c48389ed1",
+        grades: Object.keys(groupedGrades)
+      };
 
-  console.log(SARFilterDataPrev === SARFilterData);
-
-  SARFilterDataPrev = SARFilterData;
+      getStandardsBrowseStandardsRequestAction(q);
+    }
+  }, [studentClassData]);
 
   useEffect(() => {
     const parsedQuery = qs.parse(location.search);
+    const { termId, courseId } = parsedQuery;
 
-    if (parsedQuery.termId !== termId || parsedQuery.courseId !== courseId) {
-      setTermId(parsedQuery.termId);
-      setCourseId(parsedQuery.courseId);
-
-      // onGoClick({requestFilters: {termId: parsedQuery.termId, courseId: parsedQuery.courseId}, selectedStudent})
+    if (termId || courseId) {
+      setTermId(termId);
+      setCourseId(courseId);
+      onGoClick({ requestFilters: parsedQuery, selectedStudent });
     }
-  }, [location.search]);
+  }, []);
 
-  useEffect(() => {
+  const fetchFilters = () => {
     const q = {
       termId,
       courseId,
       studentId: selectedStudent.key
     };
     getSPRFilterDataRequestAction(q);
-  }, [selectedStudent.key]);
+  };
+
+  useEffect(() => {
+    fetchFilters();
+  }, [selectedStudent.key, termId]);
 
   const onFilterApply = () => {
     onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
-    const q = {
-      termId,
-      courseId,
-      studentId: selectedStudent.key
-    };
-    getSPRFilterDataRequestAction(q);
   };
 
   const onUpdateTerm = ({ key }) => setTermId(key);

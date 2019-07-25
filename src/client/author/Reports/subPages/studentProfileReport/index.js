@@ -10,10 +10,11 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import StudentMasteryProfile from "./StudentMasteryProfile";
 import StudentProfileReportsFilters from "./common/components/filter/StudentProfileReportsFilters";
-import { getFiltersSelector, getStudentSelector } from "./common/filterDataDucks";
+
+import { setSPRSettingsAction, getReportsSPRSettings } from "./ducks";
 
 const StudentProfileReportContainer = props => {
-  const [filters, setFilter] = useState({ selectedStudent: { key: "5d11b3a138a00c59ea7be6db" }, requestFilters: {} });
+  const { settings, setSPRSettingsAction } = props;
 
   const computeChartNavigationLinks = (sel, filt) => {
     if (navigation.locToData[props.loc]) {
@@ -32,23 +33,21 @@ const StudentProfileReportContainer = props => {
   };
 
   useEffect(() => {
-    const computedChartNavigatorLinks = computeChartNavigationLinks(filters.selectedStudent, filters.requestFilters);
-    props.updateNavigation(computedChartNavigatorLinks);
-  }, []);
-
-  useEffect(() => {
-    if (filters.selectedStudent.key) {
-      let path = filters.selectedStudent.key + "?" + qs.stringify(filters.requestFilters);
+    if (settings.selectedStudent.key) {
+      let path = settings.selectedStudent.key + "?" + qs.stringify(settings.requestFilters);
       props.history.push(path);
-      const computedChartNavigatorLinks = computeChartNavigationLinks(filters.selectedStudent, filters.requestFilters);
+      const computedChartNavigatorLinks = computeChartNavigationLinks(
+        settings.selectedStudent,
+        settings.requestFilters
+      );
       props.updateNavigation(computedChartNavigatorLinks);
     }
-    const computedChartNavigatorLinks = computeChartNavigationLinks(filters.selectedStudent, filters.requestFilters);
+    const computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedStudent, settings.requestFilters);
     props.updateNavigation(computedChartNavigatorLinks);
-  }, [filters]);
+  }, [settings]);
 
   const onGoClick = filters => {
-    setFilter(filters);
+    props.setSPRSettingsAction(filters);
   };
 
   return (
@@ -65,11 +64,22 @@ const StudentProfileReportContainer = props => {
         <Route
           exact
           path={`/author/reports/student-mastery-profile/student/:studentId?`}
-          render={_props => <StudentMasteryProfile {..._props} settings={filters} />}
+          render={_props => <StudentMasteryProfile {..._props} settings={settings} />}
         />
       </FeaturesSwitch>
     </>
   );
 };
 
-export { StudentProfileReportContainer };
+const enhance = connect(
+  state => ({
+    settings: getReportsSPRSettings(state)
+  }),
+  {
+    setSPRSettingsAction
+  }
+);
+
+const enhancedContainer = enhance(StudentProfileReportContainer);
+
+export { enhancedContainer as StudentProfileReportContainer };

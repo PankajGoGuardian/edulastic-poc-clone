@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
+import { get } from "lodash";
 import { StyledCard } from "../../../common/styled";
 import {
   getReportsStudentMasteryProfile,
@@ -8,6 +9,8 @@ import {
 } from "./ducks";
 import { getReportsStandardsBrowseStandards } from "../../standardsMasteryReport/common/filterDataDucks";
 
+import { getDomains } from "./utils/transformers";
+
 const StudentMasteryProfile = ({
   match,
   settings,
@@ -15,9 +18,14 @@ const StudentMasteryProfile = ({
   browseStandards,
   getStudentMasteryProfileRequestAction
 }) => {
+  const rawDomainData = get(browseStandards, "data.result", []);
+  const { metricInfo = [], studInfo = [] } = get(studentMasteryProfile, "data.result", {});
+
+  const studentDomains = getDomains(metricInfo, rawDomainData);
+
   useEffect(() => {
-    if (settings.selectedStudent.key) {
-      const { requestFilters = {}, selectedStudent = {} } = settings;
+    const { selectedStudent, requestFilters } = settings;
+    if (selectedStudent.key && requestFilters.termId) {
       getStudentMasteryProfileRequestAction({
         ...requestFilters,
         studentId: selectedStudent.key

@@ -91,7 +91,7 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   },
   [GET_REPORTS_SPR_FILTER_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    state.SPRFilterData = { ...payload.SPRFilterData };
+    state.SPRFilterData = payload.SPRFilterData;
   },
   [GET_REPORTS_SPR_FILTER_DATA_REQUEST_ERROR]: (state, { payload }) => {
     state.loading = false;

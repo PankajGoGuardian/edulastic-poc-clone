@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
-import uuid from "uuid/v4";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { find, cloneDeep, forEach } from "lodash";
@@ -19,52 +17,22 @@ import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { defaultOptions } from "../../constants/constantsForQuestions";
 import Question from "../../components/Question";
+import { ChoicesConatiner } from "./styled/ChoicesConatiner";
 
 class ChoicesForResponse extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    response: PropTypes.object.isRequired,
+    responses: PropTypes.array.isRequired,
     setQuestionData: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func
-  };
-
-  state = {
-    sectionId: uuid()
   };
 
   static defaultProps = {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidMount = () => {
-    const { fillSections, t, item, response } = this.props;
-    const { sectionId } = this.state;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
-
-    if (node) {
-      fillSections(
-        "main",
-        `${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`,
-        node.offsetTop,
-        deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
-        deskHeight === true,
-        deskHeight,
-        sectionId
-      );
-    }
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-    const { sectionId } = this.state;
-
-    cleanSections(sectionId);
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -141,30 +109,34 @@ class ChoicesForResponse extends Component {
   };
 
   render() {
-    const { t, item, response, fillSections, cleanSections } = this.props;
+    const { t, item, responses, fillSections, cleanSections } = this.props;
     const { options } = item;
     return (
       <Question
         section="main"
-        dataCy={`choice-response-${response.index}`}
-        label={`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}
+        dataCy="choice-response-section"
+        label={t("component.cloze.dropDown.choicesforresponse")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
-        <SortableList
-          useDragHandle
-          items={options[response.id] || []}
-          defaultOptions={defaultOptions}
-          onSortEnd={params => this.onSortEnd(response.id, params)}
-          onRemove={itemIndex => this.remove(response.id, itemIndex)}
-          onChange={(itemIndex, e) => this.editOptions(response.id, itemIndex, e)}
-        />
-        <div>
-          <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(response.id)}>
-            {t("component.cloze.dropDown.addnewchoice")}
-          </AddNewChoiceBtn>
-        </div>
+        {responses.map(response => (
+          <ChoicesConatiner>
+            <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${response.index + 1}`}</Subtitle>
+            <SortableList
+              useDragHandle
+              items={options[response.id] || []}
+              defaultOptions={defaultOptions}
+              onSortEnd={params => this.onSortEnd(response.id, params)}
+              onRemove={itemIndex => this.remove(response.id, itemIndex)}
+              onChange={(itemIndex, e) => this.editOptions(response.id, itemIndex, e)}
+            />
+            <div>
+              <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(response.id)}>
+                {t("component.cloze.dropDown.addnewchoice")}
+              </AddNewChoiceBtn>
+            </div>
+          </ChoicesConatiner>
+        ))}
       </Question>
     );
   }

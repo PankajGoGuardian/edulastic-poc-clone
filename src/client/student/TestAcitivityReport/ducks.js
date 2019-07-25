@@ -5,7 +5,7 @@ import { get } from "lodash";
 import { reportsApi, testsApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
 import { getReportByIdSelector } from "../sharedDucks/ReportsModule/ducks";
-import { ADD_ITEM_EVALUATION, LOAD_ANSWERS } from "../../assessment/constants/actions";
+import { ADD_ITEM_EVALUATION, LOAD_ANSWERS, LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
 import { replaceTestItemsAction } from "../../author/TestPage/ducks";
 // types
 export const LOAD_TEST_ACTIVITY_REPORT = "[studentReports] load testActivity  report";
@@ -49,11 +49,21 @@ function* loadTestActivityReport({ payload }) {
 
     const { questionActivities = [] } = reports || {};
     let allAnswers = {};
+    let userWork = {};
     questionActivities.forEach(item => {
       allAnswers = {
         ...allAnswers,
         [item.qid]: item.userResponse
       };
+      // accumulate user work
+      if (item.scratchPad) {
+        userWork[item.testItemId] = item.scratchPad;
+      }
+    });
+
+    yield put({
+      type: LOAD_SCRATCH_PAD,
+      payload: userWork
     });
 
     yield put({

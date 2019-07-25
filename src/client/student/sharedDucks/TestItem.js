@@ -54,6 +54,17 @@ export const getItemSelector = createSelector(
   (items, current) => items[current]
 );
 
+// check if a particular has scratchPad data associated.
+export const itemHasUserWorkSelector = createSelector(
+  getItemSelector,
+  state => state.userWork,
+  (item = {}, userWork) => {
+    const itemId = item._id;
+
+    return !!itemId && !!userWork.present[item._id];
+  }
+);
+
 export const FeedbackByQIdSelector = createSelector(
   getTestFeedbackSelector,
   testFeedback => keyBy(testFeedback, "qid")

@@ -385,8 +385,12 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
-    // const {allStudents,entities} = this.props;
-    // if(allStudents.length)
+    const { assignmentStatus } = this.props;
+    if (assignmentStatus === "DONE") {
+      return message.warn(
+        "Mismatch occurred with logged in class section, please navigate to assignments to select class section and try again."
+      );
+    }
     this.setState({ showAddStudentsPopup: true });
   };
 

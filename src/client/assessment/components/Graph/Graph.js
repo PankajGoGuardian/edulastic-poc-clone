@@ -290,7 +290,7 @@ class Graph extends Component {
       previewTab = "clear";
     }
 
-    const { extra_options, ui_style, validation, stimulus } = item;
+    const { ui_style, validation, stimulus } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -344,9 +344,6 @@ class Graph extends Component {
         )}
         {view === "preview" && smallSize === false && item && (
           <Wrapper>
-            {extra_options && extra_options.instructor_stimulus && (
-              <InstructorStimulus>{extra_options.instructor_stimulus}</InstructorStimulus>
-            )}
             <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
             {item.canvas && item.ui_style && (
               <GraphDisplay

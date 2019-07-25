@@ -12,7 +12,8 @@ import {
   white,
   themeColorTagsBg,
   themeColorLighter,
-  tabGrey
+  tabGrey,
+  smallDesktopWidth
 } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 
@@ -268,6 +269,10 @@ export const ModalTitle = styled.div`
   font-size: 18px;
   font-weight: 600;
   color: ${title};
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 16px;
+  }
 `;
 
 export const DropMenu = styled(Menu)`

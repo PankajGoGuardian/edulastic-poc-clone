@@ -8,7 +8,8 @@ import {
   tabletWidth,
   textColor,
   draftColor,
-  publishedColor
+  publishedColor,
+  smallDesktopWidth
 } from "@edulastic/colors";
 import { IconShare } from "@edulastic/icons";
 
@@ -38,6 +39,10 @@ export const Title = styled.div`
   letter-spacing: normal;
   color: ${white};
   align-items: center;
+
+  @media screen and (max-width: ${smallDesktopWidth}) {
+    font-size: 18px;
+  }
 `;
 
 export const TitleWrapper = styled.div`

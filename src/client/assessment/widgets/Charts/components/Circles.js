@@ -47,7 +47,7 @@ const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
   return (
     <Fragment>
       {bars.map((dot, index) => (
-        <Fragment>
+        <Fragment key={`bar-${index}`}>
           {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle

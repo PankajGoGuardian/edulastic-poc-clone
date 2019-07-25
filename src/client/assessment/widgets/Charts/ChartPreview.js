@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 
@@ -16,6 +16,8 @@ import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
+import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
+
 
 const ChartPreview = ({
   item,
@@ -31,6 +33,7 @@ const ChartPreview = ({
   changePreviewTab
 }) => {
   const answerContextConfig = useContext(AnswerContext);
+  const [barIsDragging, toggleBarDragging] = useState(false);
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const chartType = get(item, "ui_style.chart_type");
   let previewTab = _previewTab;
@@ -109,7 +112,7 @@ const ChartPreview = ({
   };
 
   return (
-    <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper className="chart-wrapper" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
@@ -119,10 +122,22 @@ const ChartPreview = ({
         {...passData}
         gridParams={calculatedParams}
         view={view}
+        toggleBarDragging={toggleBarDragging}
         disableResponse={disableResponse}
         previewTab={previewTab}
         saveAnswer={saveAnswerHandler}
         correct={correct}
+      />
+      <AnnotationRnd
+        style={{
+          backgroundColor: "transparent",
+          boxShadow: "none",
+          border: view === EDIT ? "1px solid lightgray" : "none"
+        }}
+        questionId={item.id}
+        disableDragging={view !== EDIT}
+        isAbove={view === EDIT ? !barIsDragging : false}
+        onDoubleClick={() => toggleBarDragging(!barIsDragging)}
       />
       {view === PREVIEW && previewTab === SHOW && (
         <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>

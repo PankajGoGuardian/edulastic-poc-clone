@@ -28,7 +28,7 @@ import {
   defaultGridParameters
 } from "../../Builder/settings";
 
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import {
   GraphWrapper,

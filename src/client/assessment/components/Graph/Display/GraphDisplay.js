@@ -199,10 +199,10 @@ class GraphDisplay extends Component {
 
     return {
       canvas: {
-        xMin: parseFloat(canvas.x_min),
-        xMax: parseFloat(canvas.x_max),
-        yMin: parseFloat(canvas.y_min),
-        yMax: parseFloat(canvas.y_max)
+        xMin: parseFloat(canvas.x_min) - 1,
+        xMax: parseFloat(canvas.x_max) + 1,
+        yMin: parseFloat(canvas.y_min) - 1,
+        yMax: parseFloat(canvas.y_max) + 1
       },
       layout: {
         width: ui_style.layout_width,

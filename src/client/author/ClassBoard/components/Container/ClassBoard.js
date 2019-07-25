@@ -359,9 +359,16 @@ class ClassBoard extends Component {
   };
 
   handleShowRemoveStudentsModal = () => {
-    const { selectedStudents } = this.props;
+    const { selectedStudents, testActivity } = this.props;
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length) return message.warn("At least one student should be selected to be removed.");
+    if (!selectedStudentKeys.length) {
+      return message.warn("At least one student should be selected to be removed.");
+    }
+    const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
+    const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
+    if (isAnyBodyGraded) {
+      return message.warn("You will not be able to remove selected student(s) as the status is graded");
+    }
     this.setState({ showRemoveStudentsPopup: true, modalInputVal: "" });
   };
 

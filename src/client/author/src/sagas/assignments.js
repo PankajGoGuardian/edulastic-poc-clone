@@ -40,7 +40,8 @@ function* receiveAssignmentClassList({ payload = {} }) {
 
 function* receiveAssignmentsSummary({ payload = {} }) {
   try {
-    const { districtId = "", filters = {}, filtering, sort } = payload;
+    // filtering should be false otherwise it will reset the current page to 1
+    const { districtId = "", filters = {}, filtering = false, sort } = payload;
     if (get(filters, "subject")) {
       set(filters, "Subject", get(filters, "subject"));
       unset(filters, "subject");

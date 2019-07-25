@@ -89,7 +89,7 @@ class AdvancedTable extends Component {
         sorter: true,
         sortOrder: false,
         onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 2) };
+          return { onClick: () => this.handleSort(col, 4) };
         },
         width: "12%",
         render: text => <div>{text} </div>
@@ -101,7 +101,7 @@ class AdvancedTable extends Component {
         sorter: true,
         sortOrder: false,
         onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 2) };
+          return { onClick: () => this.handleSort(col, 5) };
         },
         width: "16%",
         render: text => <div> {text} </div>
@@ -113,7 +113,7 @@ class AdvancedTable extends Component {
         sorter: true,
         sortOrder: false,
         onHeaderCell: col => {
-          return { onClick: () => this.handleSort(col, 2) };
+          return { onClick: () => this.handleSort(col, 6) };
         },
 
         width: "14%",

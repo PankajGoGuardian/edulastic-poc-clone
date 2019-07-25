@@ -26,9 +26,6 @@ export const GraphToolbar = styled.div`
   ul li {
     margin: 2px 1px 0 0;
   }
-
-  .toolbar-compact & ul li {
-  }
 `;
 
 export const SegmentsToolbarItem = styled.div`

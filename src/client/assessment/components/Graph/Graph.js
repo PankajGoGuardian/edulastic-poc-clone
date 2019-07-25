@@ -346,9 +346,6 @@ class Graph extends Component {
         )}
         {view === "preview" && smallSize === false && item && (
           <Wrapper className={compact ? "toolbar-compact" : ""}>
-            {extra_options && extra_options.instructor_stimulus && (
-              <InstructorStimulus>{extra_options.instructor_stimulus}</InstructorStimulus>
-            )}
             <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
             {item.canvas && item.ui_style && (
               <GraphDisplay

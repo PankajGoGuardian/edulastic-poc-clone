@@ -118,6 +118,31 @@ class AdvancedTable extends Component {
 
         width: "14%",
         render: text => <div> {text} </div>
+      },
+      {
+        title: "",
+        dataIndex: "action",
+        width: "14%",
+        render: (_, row) => (
+          <ActionDiv>
+            <Dropdown
+              overlay={ActionMenu(
+                this.props.onOpenReleaseScoreSettings,
+                row,
+                this.props.history,
+                this.props.showPreviewModal
+              )}
+              placement="bottomCenter"
+              trigger={["click"]}
+            >
+              <BtnAction>ACTIONS</BtnAction>
+            </Dropdown>
+          </ActionDiv>
+        ),
+        onCell: () => ({
+          onMouseEnter: this.disableRowClick,
+          onMouseLeave: this.enableRowClick
+        })
       }
     ]
   };
@@ -131,32 +156,6 @@ class AdvancedTable extends Component {
   }
 
   componentDidMount() {
-    const { onOpenReleaseScoreSettings, history, showPreviewModal } = this.props;
-    this.setState(prevState => ({
-      columns: [
-        ...prevState.columns,
-        {
-          title: "",
-          dataIndex: "action",
-          width: "14%",
-          render: (_, row) => (
-            <ActionDiv>
-              <Dropdown
-                overlay={ActionMenu(onOpenReleaseScoreSettings, row, history, showPreviewModal)}
-                placement="bottomCenter"
-                trigger={["click"]}
-              >
-                <BtnAction>ACTIONS</BtnAction>
-              </Dropdown>
-            </ActionDiv>
-          ),
-          onCell: () => ({
-            onMouseEnter: this.disableRowClick,
-            onMouseLeave: this.enableRowClick
-          })
-        }
-      ]
-    }));
     this.fetchSummary(1, {});
   }
 

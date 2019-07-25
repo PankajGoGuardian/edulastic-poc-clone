@@ -40,7 +40,7 @@ function* receiveAssignmentClassList({ payload = {} }) {
 
 function* receiveAssignmentsSummary({ payload = {} }) {
   try {
-    const { districtId = "", filters = {}, filtering } = payload;
+    const { districtId = "", filters = {}, filtering, sort } = payload;
     if (get(filters, "subject")) {
       set(filters, "Subject", get(filters, "subject"));
       unset(filters, "subject");
@@ -49,11 +49,12 @@ function* receiveAssignmentsSummary({ payload = {} }) {
     if (userRole === "district-admin" || userRole === "school-admin") {
       const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
         districtId,
-        filters: pickBy(filters, identity)
+        filters: pickBy(filters, identity),
+        sort
       });
       yield put({
         type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
-        payload: { entities, filtering }
+        payload: { entities: entities.result, filtering, total: entities.total }
       });
     }
   } catch (error) {

@@ -1,4 +1,3 @@
-import { concat } from "lodash";
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
   RECEIVE_ASSIGNMENTS_SUCCESS,
@@ -24,6 +23,7 @@ const initialState = {
   page: 1,
   limit: 20,
   count: 0,
+  total: 0,
   loading: false,
   filter: JSON.parse(getFromLocalStorage("filterAssignments")) || {},
   creating: false,
@@ -50,11 +50,12 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST:
       return { ...state, loading: true, filtering: payload.filtering };
     case RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS: {
-      const { entities = [], filtering } = payload;
+      const { entities = [], filtering, total } = payload;
       return {
         ...state,
         loading: false,
-        summaryEntities: filtering ? entities : concat(state.summaryEntities, entities),
+        summaryEntities: entities,
+        total,
         filtering: false
       };
     }

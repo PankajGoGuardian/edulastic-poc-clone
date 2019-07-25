@@ -482,6 +482,7 @@ class ComposeQuestion extends Component {
         });
 
         draft.responses.push(newResponseContainer);
+        draft.options.push([]);
 
         updateVariables(draft);
       })

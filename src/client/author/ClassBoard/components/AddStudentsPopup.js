@@ -42,7 +42,7 @@ const AddStudentsPopup = ({
           CANCEL
         </Button>,
         <Button key="submit" onClick={submitAction}>
-          SUBMIT
+          ADD
         </Button>
       ]}
     >

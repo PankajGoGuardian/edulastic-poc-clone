@@ -36,7 +36,8 @@ import {
   stateStudentResponseSelector,
   showScoreSelector,
   getMarkAsDoneEnableSelector,
-  getQLabelsSelector
+  getQLabelsSelector,
+  removedStudentsSelector
 } from "../../ducks";
 
 import {
@@ -192,7 +193,7 @@ class ClassBoard extends Component {
   onSelectAllChange = e => {
     const { checked } = e.target;
     const { testActivity } = this.props;
-    const { studentSelect, studentUnselectAll, allStudents } = this.props;
+    const { studentSelect, studentUnselectAll, allStudents, removedStudents } = this.props;
     testActivity.map(student => {
       student.check = checked;
       return null;
@@ -202,7 +203,8 @@ class ClassBoard extends Component {
       nCountTrue: checked ? testActivity.length : 0
     });
     if (checked) {
-      studentSelect(allStudents.map(x => x._id));
+      const selectedAllstudents = allStudents.map(x => x._id).filter(item => !removedStudents.includes(item));
+      studentSelect(selectedAllstudents);
     } else {
       studentUnselectAll();
     }
@@ -383,6 +385,8 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
+    // const {allStudents,entities} = this.props;
+    // if(allStudents.length)
     this.setState({ showAddStudentsPopup: true });
   };
 
@@ -820,7 +824,8 @@ const enhance = compose(
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      labels: getQLabelsSelector(state)
+      labels: getQLabelsSelector(state),
+      removedStudents: removedStudentsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

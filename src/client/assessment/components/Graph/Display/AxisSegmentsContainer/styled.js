@@ -14,12 +14,20 @@ export const GraphToolbar = styled.div`
   background-color: #efefef;
   font-size: ${props => (props.fontSize ? props.fontSize : 14)}px;
 
+  .toolbar-compact & {
+    max-width: 700px;
+    flex-flow: row wrap;
+  }
+
   ul {
     list-style: none;
   }
 
   ul li {
     margin: 2px 1px 0 0;
+  }
+
+  .toolbar-compact & ul li {
   }
 `;
 

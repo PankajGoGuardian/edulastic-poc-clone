@@ -96,7 +96,7 @@ class SchoolsTable extends React.Component {
       sortedInfo.order = sortedInfo.columnKey === "isApproved" ? "desc" : "asc";
     }
     this.setState({ sortedInfo });
-    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+    this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
   };
 
   onEditSchool = key => {
@@ -156,7 +156,7 @@ class SchoolsTable extends React.Component {
 
     if (filtersData[key].filtersValue !== "" && filtersData[key].filterStr !== "") {
       const { sortedInfo, searchByName } = this.state;
-      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName);
+      this.loadFilteredList(filtersData, sortedInfo, searchByName);
     }
   };
 
@@ -173,7 +173,7 @@ class SchoolsTable extends React.Component {
       filtersData[key].filterStr !== ""
     ) {
       const { sortedInfo, searchByName } = this.state;
-      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName);
+      this.loadFilteredList(filtersData, sortedInfo, searchByName);
     }
   };
 
@@ -201,9 +201,7 @@ class SchoolsTable extends React.Component {
       }
       return item;
     });
-    this.setState({ filtersData: _filtersData }, () =>
-      this.loadFilteredSchoolList(_filtersData, sortedInfo, searchByName)
-    );
+    this.setState({ filtersData: _filtersData }, () => this.loadFilteredList(_filtersData, sortedInfo, searchByName));
   };
 
   changeFilterText = (e, key) => {
@@ -230,7 +228,7 @@ class SchoolsTable extends React.Component {
 
     if (filtersData[key].filterAdded || key == 2) {
       const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName);
+      this.loadFilteredList(filtersData, sortedInfo, searchByName);
     }
   };
 
@@ -266,7 +264,7 @@ class SchoolsTable extends React.Component {
       newFiltersData = filtersData.filter((item, index) => index != key);
     }
     this.setState({ filtersData: newFiltersData });
-    this.loadFilteredSchoolList(newFiltersData, sortedInfo, searchByName, currentPage);
+    this.loadFilteredList(newFiltersData, sortedInfo, searchByName, currentPage);
   };
 
   changeActionMode = e => {
@@ -360,13 +358,13 @@ class SchoolsTable extends React.Component {
   handleSearchName = e => {
     const { filtersData, sortedInfo } = this.state;
     this.setState({ searchByName: e });
-    this.loadFilteredSchoolList(filtersData, sortedInfo, e);
+    this.loadFilteredList(filtersData, sortedInfo, e);
   };
 
   changePagination = pageNumber => {
     const { filtersData, sortedInfo, searchByName } = this.state;
     this.setState({ currentPage: pageNumber });
-    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, pageNumber);
+    this.loadFilteredList(filtersData, sortedInfo, searchByName, pageNumber);
   };
 
   deactivateSchool = () => {
@@ -385,7 +383,7 @@ class SchoolsTable extends React.Component {
     this.setState({ deactivateSchoolModalVisible: false });
   };
 
-  loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage = 1) {
+  loadFilteredList(filtersData, sortedInfo, searchByName, currentPage = 1) {
     const { loadSchoolsData, userOrgId } = this.props;
     let search = {};
 
@@ -697,12 +695,6 @@ class SchoolsTable extends React.Component {
         filtersData[i].filterStr === "" ||
         !filtersData[i].filterAdded;
 
-      let showRemoveButton = false;
-      if (i > 0) showRemoveButton = true;
-      else if (i == 0) {
-        showRemoveButton = !isAddFilterDisable && filtersData[i].filterAdded;
-      }
-
       const optValues = [];
       if (filtersData[i].filtersColumn === "isApproved") {
         optValues.push(<Option value="eq">Equals</Option>);
@@ -762,13 +754,13 @@ class SchoolsTable extends React.Component {
             <StyledFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
-              disabled={isAddFilterDisable || !filtersData[i].filterAdded || i < filtersData.length - 1}
+              disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
             </StyledFilterButton>
           )}
 
-          {showRemoveButton && (
+          {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
             <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
             </StyledFilterButton>

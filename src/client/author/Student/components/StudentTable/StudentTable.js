@@ -82,7 +82,18 @@ class StudentTable extends Component {
       inviteStudentModalVisible: false,
       editStudentKey: "",
       selectedAdminsForDeactivate: [],
-      deactivateAdminModalVisible: false
+      deactivateAdminModalVisible: false,
+
+      searchByName: "",
+      filtersData: [
+        {
+          filtersColumn: "",
+          filtersValue: "",
+          filterStr: "",
+          filterAdded: false
+        }
+      ],
+      currentPage: 1
     };
     this.columns = [
       {
@@ -125,6 +136,8 @@ class StudentTable extends Component {
         ]
       }
     ];
+
+    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
   componentDidMount() {
@@ -296,13 +309,123 @@ class StudentTable extends Component {
     this.props.setStudentsDetailsModalVisible(false);
   };
 
-  searchByName = e => {
-    const { setSearchName } = this.props;
-    setSearchName(e);
+  handleSearchName = e => {
+    // const { setSearchName } = this.props;
+    // setSearchName(e);
+    this.setState({ searchByName: e }, this.loadFilteredList);
   };
   saveFormRef = node => {
     this.formRef = node;
   };
+
+  // ************
+  onSearchFilter = (value, event, i) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === i) {
+        return {
+          ...item,
+          filterAdded: value ? true : false
+        };
+      }
+      return item;
+    });
+
+    // For some unknown reason till now calling blur() synchronously doesnt work.
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
+  };
+
+  onBlurFilterText = (event, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: event.target.value ? true : false
+        };
+      }
+      return item;
+    });
+    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
+  };
+
+  changeFilterText = (e, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+  };
+
+  changeFilterColumn = (value, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (key === index) {
+        let _item = {
+          ...item,
+          filtersColumn: value
+        };
+        if (value === "status") _item.filtersValue = "eq";
+        return _item;
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+
+    // if (filtersData[key].filterAdded) {
+    //   const { sortedInfo, searchByName, currentPage } = this.state;
+    //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
+    // }
+  };
+
+  changeFilterValue = (value, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterValue: value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+
+    // if (filtersData[key].filterAdded) {
+    //   const { sortedInfo, searchByName, currentPage } = this.state;
+    //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
+    // }
+  };
+
+  getSearchQuery = () => {
+    const { userOrgId } = this.props;
+    const { filtersData, searchByName, currentPage } = this.state;
+
+    let search = {};
+    for (let [index, item] of filtersData.entries()) {
+      const { filtersColumn, filtersValue, filterStr } = item;
+      search[filtersColumn] = { type: filtersValue, value: filterStr };
+    }
+    search[name] = { type: "cont", value: searchByName };
+
+    return {
+      districtId: userOrgId,
+      role: "teacher",
+      limit: 25,
+      // page:
+      // status:
+      search
+    };
+  };
+
+  loadFilteredList = () => {
+    const { loadAdminData } = this.props;
+    loadAdminData(this.getSearchQuery());
+  };
+
+  // ************
+
   render() {
     const {
       selectedRowKeys,
@@ -311,7 +434,9 @@ class StudentTable extends Component {
       inviteStudentModalVisible,
       editStudentKey,
       deactivateAdminModalVisible,
-      selectedAdminsForDeactivate
+      selectedAdminsForDeactivate,
+
+      filtersData
     } = this.state;
 
     const rowSelection = {
@@ -353,7 +478,9 @@ class StudentTable extends Component {
       </Menu>
     );
 
-    const filterKeysArray = Object.keys(filters);
+    // const filterKeysArray = Object.keys(filters);
+
+    // console.log("filters", filters);
 
     return (
       <StyledTableContainer>
@@ -369,7 +496,7 @@ class StudentTable extends Component {
               features={features}
             />
           )}
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
+          <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
           <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
             Show current users only
           </Checkbox>
@@ -379,48 +506,65 @@ class StudentTable extends Component {
             </Button>
           </StyledActionDropDown>
         </StyledControlDiv>
-        {filterKeysArray.map(filterKey => {
-          const { type, value } = filters[filterKey];
+        {filtersData.map((item, i) => {
+          const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
+          const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+          const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+
           return (
-            <StyledControlDiv key={filterKey}>
+            <StyledControlDiv key={i}>
               <StyledFilterSelect
                 placeholder="Select a column"
-                onChange={filterColumn => changeFilterColumn({ prevKey: filterKey, newKey: filterColumn })}
-                value={filterKey}
+                onChange={e => this.changeFilterColumn(e, i)}
+                value={filtersColumn}
               >
-                <Option value="other">Select a column</Option>
+                <Option value="other" disabled={true}>
+                  Select a column
+                </Option>
                 <Option value="username">Username</Option>
                 <Option value="email">Email</Option>
               </StyledFilterSelect>
               <StyledFilterSelect
                 placeholder="Select a value"
-                onChange={filterType => changeFilterType({ key: filterKey, value: filterType })}
-                value={type}
+                onChange={e => changeFilterValue(e, i)}
+                value={filtersValue}
               >
-                <Option value="">Select a value</Option>
+                <Option value="" disabled={true}>
+                  Select a value
+                </Option>
                 <Option value="eq">Equals</Option>
                 <Option value="cont">Contains</Option>
               </StyledFilterSelect>
               <StyledFilterInput
                 placeholder="Enter text"
-                onChange={({ target }) => changeFilterValue({ key: filterKey, value: target.value })}
-                value={value}
-                disabled={!type}
-                onSearch={loadAdminData}
+                onChange={e => this.changeFilterText(e, i)}
+                onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                onBlur={e => this.onBlurFilterText(e, i)}
+                value={filterStr}
+                disabled={isFilterTextDisable}
+                innerRef={this.filterTextInputRef[i]}
+                // onSearch={loadAdminData}
               />
-              <StyledAddFilterButton type="primary" onClick={addFilter} disabled={!!filters.other}>
-                + Add Filter
-              </StyledAddFilterButton>
-              <StyledAddFilterButton
-                type="primary"
-                disabled={filterKey === "other" || filterKeysArray.length === 1}
-                onClick={() => {
-                  removeFilter(filterKey);
-                  loadAdminData();
-                }}
-              >
-                - Remove Filter
-              </StyledAddFilterButton>
+              {i < 2 && (
+                <StyledAddFilterButton
+                  type="primary"
+                  onClick={e => addFilter(e, i)}
+                  disabled={isAddFilterDisable || i < filtersData.length - 1}
+                >
+                  + Add Filter
+                </StyledAddFilterButton>
+              )}
+              {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                <StyledAddFilterButton
+                  type="primary"
+                  onClick={e => {
+                    removeFilter(e, i);
+                    // loadAdminData();
+                  }}
+                >
+                  - Remove Filter
+                </StyledAddFilterButton>
+              )}
             </StyledControlDiv>
           );
         })}

@@ -46,6 +46,30 @@ import { receiveTeachersListAction, getTeachersListSelector } from "../../../Tea
 
 const { Option } = Select;
 
+const gradeOptions = [];
+gradeOptions.push({ title: "Kindergarten", value: "K", disabled: false });
+for (let i = 1; i <= 12; i++) gradeOptions.push({ title: `Grade ${i}`, value: i + "", disabled: false });
+gradeOptions.push({ title: "Other", value: "O", disabled: false });
+
+const filterStrDD = {
+  subjects: {
+    list: [
+      { title: "Select a subject", value: "", disabled: true },
+      { title: "Mathematics", value: "Mathematics", disabled: false },
+      { title: "ELA", value: "ELA", disabled: false },
+      { title: "Science", value: "Science", disabled: false },
+      { title: "Social Studies", value: "Social Studies", disabled: false },
+      { title: "Other Subjects", value: "Other Subjects", disabled: false }
+    ],
+    placeholder: "Select a subject"
+  },
+  grades: { list: gradeOptions, placeholder: "Select a grade" },
+  active: {
+    list: [{ title: "Active", value: 1, disabled: false }, { title: "Archived", value: 0, disabled: false }],
+    placeholder: "Select a value"
+  }
+};
+
 class ClassesTable extends Component {
   constructor(props) {
     super(props);
@@ -103,7 +127,7 @@ class ClassesTable extends Component {
   //     sortedInfo.order = sortedInfo.columnKey === "status" ? "desc" : "asc";
   //   }
   //   this.setState({ sortedInfo });
-  //   this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
+  //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
   // };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -183,7 +207,7 @@ class ClassesTable extends Component {
       filterStr !== "" // here because 0 can be a value too for "active" select
     ) {
       // const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredClassList();
+      this.loadFilteredList();
     }
   };
 
@@ -226,7 +250,7 @@ class ClassesTable extends Component {
       }
       return item;
     });
-    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredClassList);
+    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
   };
 
   changeFilterText = (e, key) => {
@@ -294,23 +318,23 @@ class ClassesTable extends Component {
           filtersData: newFiltersData,
           disableActiveUsers: false
         },
-        this.loadFilteredClassList
+        this.loadFilteredList
       );
-    } else this.setState({ filtersData: newFiltersData }, this.loadFilteredClassList);
+    } else this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
 
-    // this.loadFilteredClassList(newFiltersData, sortedInfo, searchByName, currentPage);
+    // this.loadFilteredList(newFiltersData, sortedInfo, searchByName, currentPage);
   };
 
   handleSearchName = e => {
     const { filtersData, sortedInfo, currentPage } = this.state;
-    this.setState({ searchByName: e }, this.loadFilteredClassList);
-    // this.loadFilteredClassList(filtersData, sortedInfo, e, currentPage);
+    this.setState({ searchByName: e }, this.loadFilteredList);
+    // this.loadFilteredList(filtersData, sortedInfo, e, currentPage);
   };
 
   changePagination = pageNumber => {
     const { filtersData, sortedInfo, searchByName } = this.state;
-    this.setState({ currentPage: pageNumber }, this.loadFilteredClassList);
-    // this.loadFilteredClassList(filtersData, sortedInfo, searchByName, pageNumber);
+    this.setState({ currentPage: pageNumber }, this.loadFilteredList);
+    // this.loadFilteredList(filtersData, sortedInfo, searchByName, pageNumber);
   };
 
   getSearchQuery = () => {
@@ -359,7 +383,7 @@ class ClassesTable extends Component {
     };
   };
 
-  loadFilteredClassList = () => {
+  loadFilteredList = () => {
     const { loadClassListData } = this.props;
     loadClassListData(this.getSearchQuery());
   };
@@ -551,10 +575,10 @@ class ClassesTable extends Component {
       </Menu>
     );
 
-    const gradeOptions = [];
-    gradeOptions.push(<Option value={"K"}>Kindergarten</Option>);
-    for (let i = 1; i <= 12; i++) gradeOptions.push(<Option value={i.toString()}>Grade {i}</Option>);
-    gradeOptions.push(<Option value="O">Other</Option>);
+    // const gradeOptions = [];
+    // gradeOptions.push(<Option value={"K"}>Kindergarten</Option>);
+    // for (let i = 1; i <= 12; i++) gradeOptions.push(<Option value={i.toString()}>Grade {i}</Option>);
+    // gradeOptions.push(<Option value="O">Other</Option>);
 
     const SearchRows = [];
     for (let i = 0; i < filtersData.length; i++) {
@@ -566,7 +590,11 @@ class ClassesTable extends Component {
       if (filtersColumn === "subjects" || filtersColumn === "grades" || filtersColumn === "active") {
         optValues.push(<Option value="eq">Equals</Option>);
       } else {
-        optValues.push(<Option value="">Select a value</Option>);
+        optValues.push(
+          <Option value="" disabled={true}>
+            Select a value
+          </Option>
+        );
         optValues.push(<Option value="equals">Equals</Option>);
         optValues.push(<Option value="contains">Contains</Option>);
       }
@@ -578,7 +606,9 @@ class ClassesTable extends Component {
             onChange={e => this.changeFilterColumn(e, i)}
             value={filtersColumn}
           >
-            <Option value="">Select a column</Option>
+            <Option value="" disabled={true}>
+              Select a column
+            </Option>
             <Option value="codes">Class Code</Option>
             <Option value="courses">Course</Option>
             <Option value="teachers">Teacher</Option>
@@ -587,7 +617,6 @@ class ClassesTable extends Component {
             <Option value="institutionNames">School Name</Option>
             <Option value="active">Status</Option>
           </StyledFilterSelect>
-
           <StyledFilterSelect
             placeholder="Select a value"
             onChange={e => this.changeFilterValue(e, i)}
@@ -595,40 +624,18 @@ class ClassesTable extends Component {
           >
             {optValues}
           </StyledFilterSelect>
-          {filtersColumn === "subjects" ? (
+          {filterStrDD[filtersColumn] ? (
             <StyledFilterSelect
-              placeholder="Select a value"
+              placeholder={filterStrDD[filtersColumn].placeholder}
               onChange={e => this.changeStatusValue(e, i)}
               disabled={isFilterTextDisable}
               value={filterStr}
             >
-              <Option value="" disabled={true}>
-                Select a subject
-              </Option>
-              <Option value="Mathematics">Mathematics</Option>
-              <Option value="ELA">ELA</Option>
-              <Option value="Science">Science</Option>
-              <Option value="Social Studies">Social Studies</Option>
-              <Option value="Other Subjects">Other Subjects</Option>
-            </StyledFilterSelect>
-          ) : filtersColumn === "grades" ? (
-            <StyledFilterSelect
-              placeholder="Select a grade"
-              onChange={e => this.changeStatusValue(e, i)}
-              disabled={isFilterTextDisable}
-              value={filterStr}
-            >
-              {gradeOptions}
-            </StyledFilterSelect>
-          ) : filtersColumn === "active" ? (
-            <StyledFilterSelect
-              placeholder="Select a value"
-              onChange={e => this.changeStatusValue(e, i)}
-              disabled={isFilterTextDisable}
-              value={filterStr}
-            >
-              <Option value={1}>Active</Option>
-              <Option value={0}>Archived</Option>
+              {filterStrDD[filtersColumn].list.map(item => (
+                <Option value={item.value} disabled={item.disabled}>
+                  {item.title}
+                </Option>
+              ))}
             </StyledFilterSelect>
           ) : (
             <StyledFilterInput
@@ -650,7 +657,7 @@ class ClassesTable extends Component {
               + Add Filter
             </StyledFilterButton>
           )}
-          {filtersData.length > 1 && (
+          {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
             <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
             </StyledFilterButton>
@@ -675,7 +682,7 @@ class ClassesTable extends Component {
                 {
                   showActiveClassCheckbox: evt.target.checked
                 },
-                this.loadFilteredClassList
+                this.loadFilteredList
               )
             }
           >

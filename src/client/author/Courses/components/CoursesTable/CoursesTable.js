@@ -115,7 +115,7 @@ class CoursesTable extends React.Component {
       sortedInfo.order = "asc";
     }
     this.setState({ sortedInfo });
-    this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+    this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
   };
 
   onEditCourse = key => {
@@ -150,7 +150,7 @@ class CoursesTable extends React.Component {
 
     if (filtersData[key].filterAdded) {
       const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+      this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
     }
   };
 
@@ -161,7 +161,7 @@ class CoursesTable extends React.Component {
 
     if (filtersData[key].filterAdded) {
       const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+      this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
     }
   };
 
@@ -192,7 +192,7 @@ class CoursesTable extends React.Component {
 
     if (_filtersData[key].filterAdded) {
       const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredCourseList(_filtersData, sortedInfo, searchByName, currentPage);
+      this.loadFilteredList(_filtersData, sortedInfo, searchByName, currentPage);
     }
   };
 
@@ -213,7 +213,7 @@ class CoursesTable extends React.Component {
 
     if (filtersData[i].filterAdded) {
       const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+      this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
     }
   };
 
@@ -229,7 +229,7 @@ class CoursesTable extends React.Component {
         }
         return item;
       });
-      // this.loadFilteredCourseList([..._filtersData], sortedInfo, searchByName, currentPage);
+      // this.loadFilteredList([..._filtersData], sortedInfo, searchByName, currentPage);
       _filtersData.push({
         filterAdded: false,
         filtersColumn: "",
@@ -254,7 +254,7 @@ class CoursesTable extends React.Component {
       newFiltersData = filtersData.filter((item, index) => index != key);
     }
     this.setState({ filtersData: newFiltersData });
-    this.loadFilteredCourseList(newFiltersData, sortedInfo, searchByName, currentPage);
+    this.loadFilteredList(newFiltersData, sortedInfo, searchByName, currentPage);
   };
 
   changeActionMode = e => {
@@ -354,16 +354,16 @@ class CoursesTable extends React.Component {
   handleSearchName = value => {
     const { filtersData, sortedInfo, currentPage } = this.state;
     this.setState({ searchByName: value });
-    this.loadFilteredCourseList(filtersData, sortedInfo, value, currentPage);
+    this.loadFilteredList(filtersData, sortedInfo, value, currentPage);
   };
 
   changePagination = pageNumber => {
     const { filtersData, sortedInfo, searchByName } = this.state;
     this.setState({ currentPage: pageNumber });
-    this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, pageNumber);
+    this.loadFilteredList(filtersData, sortedInfo, searchByName, pageNumber);
   };
 
-  loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage, isActive) {
+  loadFilteredList(filtersData, sortedInfo, searchByName, currentPage, isActive) {
     const { loadCourseListData, userOrgId } = this.props;
     if (isActive === undefined) isActive = this.state.isShowActive;
 
@@ -400,7 +400,7 @@ class CoursesTable extends React.Component {
   changeShowActiveCourse = e => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     this.setState({ isShowActive: e.target.checked });
-    this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage, e.target.checked);
+    this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage, e.target.checked);
   };
 
   closeUploadCourseModal = () => {
@@ -574,14 +574,20 @@ class CoursesTable extends React.Component {
             innerRef={this.filterTextInputRef[i]}
           />
           {i < 2 && (
-            <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
+            <StyledFilterButton
+              type="primary"
+              onClick={e => this.addFilter(e, i)}
+              disabled={isAddFilterDisable || i < filtersData.length - 1}
+            >
               + Add Filter
             </StyledFilterButton>
           )}
 
-          <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-            - Remove Filter
-          </StyledFilterButton>
+          {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+              - Remove Filter
+            </StyledFilterButton>
+          )}
         </StyledControlDiv>
       );
     }

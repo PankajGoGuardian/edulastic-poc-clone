@@ -102,19 +102,19 @@ const initialState = {
   delete: null,
   deleting: false,
   deleteError: null,
-  searchName: "",
-  filtersColumn: "",
-  filtersValue: "",
-  filtersText: "",
+  // searchName: "",
+  // filtersColumn: "",
+  // filtersValue: "",
+  // filtersText: "",
   showActiveUsers: true,
-  pageNo: 1,
-  filters: {
-    other: {
-      type: "",
-      value: ""
-    }
-  },
-  role: ""
+  pageNo: 1
+  // filters: {
+  //   other: {
+  //     type: "",
+  //     value: ""
+  //   }
+  // },
+  // role: ""
 };
 
 export const reducer = createReducer(initialState, {

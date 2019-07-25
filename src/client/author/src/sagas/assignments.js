@@ -41,7 +41,7 @@ function* receiveAssignmentClassList({ payload = {} }) {
 function* receiveAssignmentsSummary({ payload = {} }) {
   try {
     // filtering should be false otherwise it will reset the current page to 1
-    const { districtId = "", filters = {}, filtering = false, sort } = payload;
+    const { districtId = "", filters = {}, sort } = payload;
     if (get(filters, "subject")) {
       set(filters, "Subject", get(filters, "subject"));
       unset(filters, "subject");
@@ -55,7 +55,7 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       });
       yield put({
         type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
-        payload: { entities: entities.result, filtering, total: entities.total }
+        payload: { entities: entities.result, total: entities.total }
       });
     }
   } catch (error) {

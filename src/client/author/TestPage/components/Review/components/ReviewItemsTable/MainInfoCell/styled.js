@@ -6,5 +6,8 @@ export const Stimulus = WithMathFormula(styled.div`
   color: #444444;
   margin-top: 3px;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   word-break: break-all;
 `);

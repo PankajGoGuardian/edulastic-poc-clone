@@ -57,7 +57,7 @@ class Scoring extends Component {
     };
 
     const isAutomarkChecked = get(questionData, "validation.automarkable", true);
-    const maxScore = get(questionData, "validation.max_score", 1);
+    const maxScore = get(questionData, "validation.valid_response.score", 1);
     const questionType = get(questionData, "type", "");
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
     const ColWrapper = props =>
@@ -194,7 +194,7 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {!isAutomarkChecked && (
+        {!isAutoMarkBtnVisible && (
           <Row gutter={60} center>
             <ColWrapper noPaddingLeft={noPaddingLeft}>
               <FormGroup center>
@@ -202,7 +202,8 @@ class Scoring extends Component {
                   data-cy="maxscore"
                   type="number"
                   value={maxScore}
-                  onChange={e => handleChangeValidation("max_score", +e.target.value)}
+                  min={1}
+                  onChange={e => handleChangeValidation("valid_response", { score: +e.target.value })}
                   size="large"
                   style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
                 />

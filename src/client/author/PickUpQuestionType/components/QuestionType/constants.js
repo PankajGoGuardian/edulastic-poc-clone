@@ -553,7 +553,11 @@ export const getCards = onSelectQuestionType => {
         line_color: [themeColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
-        validation: {},
+        validation: {
+          valid_response: {
+            score: 1
+          }
+        },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType

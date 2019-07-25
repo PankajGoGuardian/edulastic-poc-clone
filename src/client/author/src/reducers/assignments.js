@@ -56,7 +56,7 @@ const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         summaryEntities: entities,
         total,
-        filtering
+        filtering: false
       };
     }
     case RECEIVE_ASSIGNMENTS_SUMMARY_ERROR:

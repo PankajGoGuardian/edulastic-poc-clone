@@ -20,7 +20,7 @@ import {
   IconQuestion
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
-import { white, tabletWidth } from "@edulastic/colors";
+import { white, tabletWidth, largeDesktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
 
@@ -334,11 +334,23 @@ const SideBar = styled(Layout.Sider)`
   padding-bottom: 0;
 
   &.ant-layout-sider-collapsed .logoWrapper {
-    padding: 22.5px 20px;
+    padding: 12.5px 20px;
+
+    @media (min-width: ${extraDesktopWidthMax}) {
+      padding: 22.5px 20px;
+    }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      padding: 4.5px 20px;
+    }
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 100px;
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 90px;
+    }
   }
   &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
@@ -353,6 +365,13 @@ const SideBar = styled(Layout.Sider)`
 
     &:hover {
       background: #1890ff;
+    }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 47px;
+      height: 47px;
+      border-radius: 47px;
+      margin-bottom: 10px;
     }
   }
   &.ant-layout-sider-collapsed .userinfoBtn .ant-select-arrow {
@@ -379,6 +398,14 @@ const SideBar = styled(Layout.Sider)`
   .ant-select {
     width: 125px;
   }
+
+  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
+    flex: 0 0 90px !important;
+    max-width: 90px !important;
+    min-width: 90px !important;
+    width: 90px !important;
+  }
+
   @media (max-width: ${tabletWidth}) {
     flex: 0 0 0px;
     max-width: 0px;
@@ -436,7 +463,16 @@ const MenuWrapper = styled.div`
   justify-content: space-between;
   flex-direction: column;
   padding: 5px 0px 10px;
-  min-height: calc(100% - 100px);
+  min-height: calc(100% - 90px);
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    min-height: calc(100% - 100px);
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    min-height: calc(100% - 65px);
+    padding-bottom: 22px;
+  }
 
   @media (max-width: ${tabletWidth}) {
     min-height: 100%;
@@ -506,6 +542,10 @@ const Menu = styled(AntMenu)`
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
+    
+    @media(max-width: ${largeDesktopWidth}) {
+      width: 90px;
+    }
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
@@ -536,6 +576,11 @@ const Menu = styled(AntMenu)`
       opacity: 0;
       pointer-events: none;
       transition: all .3s ease;
+      
+      @media (max-width: ${largeDesktopWidth}) {
+        left: 13px;
+        right: 13px;
+      }
     }
   }
   .ant-menu-item:not(.ant-menu-item-selected) {
@@ -717,6 +762,10 @@ const UserInfoButton = styled.div`
     img {
       box-shadow: none;
     }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 47px;
+    }
   }
 
   img {
@@ -726,7 +775,13 @@ const UserInfoButton = styled.div`
     left: 0;
     border-radius: 50%;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
+    @media (max-width: ${largeDesktopWidth}) {
+      height: 47px;
+      width: 47px;
+    }
   }
+
   .ant-select-selection {
     background: transparent;
     border: 0px;
@@ -746,6 +801,10 @@ const UserInfoButton = styled.div`
       pointer-events: none;
       background: transparent;
     }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 47px;
   }
 `;
 
@@ -776,6 +835,10 @@ const DropdownBtn = styled(Dropdown)`
       width: 60px;
       margin: 0;
     }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    height: 47px;
   }
 `;
 

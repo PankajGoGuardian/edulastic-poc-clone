@@ -1,17 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { IconEdit, IconLayout, IconMath, IconNewList, IconSelection, IconTarget } from "@edulastic/icons";
 import { Container, AddNewButton, TextWrapper } from "./styled";
-import { isFirstQuestionSelector } from "../../../../ducks";
 
-const AddNew = ({ onClick, t, isFirstQuestion }) => (
+const AddNew = ({ onClick, t, isAddFirstPart }) => (
   <Container>
     <AddNewButton onClick={onClick}>
       <TextWrapper>
-        + {isFirstQuestion ? t("component.itemDetail.addFirstPart") : t("component.itemDetail.addNew")}
+        + {isAddFirstPart ? t("component.itemDetail.addFirstPart") : t("component.itemDetail.addNew")}
       </TextWrapper>
       <IconNewList />
       <IconSelection />
@@ -28,11 +26,6 @@ AddNew.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  withNamespaces("author"),
-  connect(state => ({
-    isFirstQuestion: isFirstQuestionSelector(state)
-  }))
-);
+const enhance = compose(withNamespaces("author"));
 
 export default enhance(AddNew);

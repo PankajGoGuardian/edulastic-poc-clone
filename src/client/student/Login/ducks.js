@@ -268,7 +268,12 @@ const checkEmailPolicy = (policy, role, email) => {
       ? policy.allowedDomainsForDistrict.map(item => item.toLocaleLowerCase())
       : [];
   }
-  if (allowedDomains.includes(inputDomain.toLocaleLowerCase())) {
+  if (
+    (role === "student"
+      ? !inputDomain || allowedDomains.includes(inputDomain.toLocaleLowerCase())
+      : allowedDomains.includes(inputDomain.toLocaleLowerCase())) ||
+    !allowedDomains.length
+  ) {
     return true;
   } else {
     return false;

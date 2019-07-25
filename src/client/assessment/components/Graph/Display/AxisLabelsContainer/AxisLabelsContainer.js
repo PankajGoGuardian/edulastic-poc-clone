@@ -17,7 +17,7 @@ import {
 import { makeBorder } from "../../Builder";
 import { AUTO_HEIGHT_VALUE, AUTO_VALUE } from "../../Builder/config/constants";
 
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import Tools from "../QuadrantsContainer/Tools";
 import { GraphWrapper, JSXBox } from "./styled";
@@ -183,6 +183,12 @@ class AxisLabelsContainer extends PureComponent {
         const conf = this._graph.getMarks();
         setValue(conf);
       }
+    }
+
+    const { disableResponse: prevDisableResponse } = prevProps;
+    if (disableResponse && prevDisableResponse != disableResponse) {
+      // reset the graph when editResponse is disabled
+      this._graph.reset();
     }
 
     if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {

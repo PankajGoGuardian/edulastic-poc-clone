@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 import styled, { ThemeProvider } from "styled-components";
 import { Layout } from "antd";
 import { connect } from "react-redux";
+import { tabletWidth, largeDesktopWidth } from "@edulastic/colors";
+
 import { themes } from "./themes";
 
 import Sidebar from "./Sidebar/SideMenu";
@@ -42,7 +44,7 @@ const StudentApp = ({ match, isSidebarCollapsed }) => (
             <Route path={`${match.url}/skill-report`} component={SkillReportContainer} />
             <Route path={`${match.url}/manage`} component={ManageClass} />
             <Route path={`${match.url}/profile`} component={Profile} />
-            <Route path={`${match.url}/class/:classId/testActivityReport/:id`} component={ReportList} />
+            <Route path={`${match.url}/class/:classId/test/:testId/testActivityReport/:id`} component={ReportList} />
             <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
           </Switch>
         </Wrapper>
@@ -63,6 +65,7 @@ StudentApp.propTypes = {
 const MainContainer = styled.div`
   padding-left: 100px;
   width: 100%;
+
   .fixed-header {
     position: fixed;
     top: 0;
@@ -70,6 +73,11 @@ const MainContainer = styled.div`
     left: 100px;
     z-index: 1;
   }
+
+  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
+    padding-left: 90px;
+  }
+
   @media (max-width: 768px) {
     padding-left: 0px;
     .fixed-header {

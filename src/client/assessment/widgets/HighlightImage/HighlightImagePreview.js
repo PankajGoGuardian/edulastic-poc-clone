@@ -198,7 +198,7 @@ const HighlightImagePreview = ({
         ref={canvasContainerRef}
         style={{
           minHeight: `${canvasDimensions.maxHeight}px`,
-          width: `${canvasContainerWidth}px`
+          width: disableResponse ? "auto" : `${canvasContainerWidth}px`
         }}
       >
         <CanvasContainer>

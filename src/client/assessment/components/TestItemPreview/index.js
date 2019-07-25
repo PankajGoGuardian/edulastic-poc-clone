@@ -64,6 +64,7 @@ class TestItemPreview extends Component {
       disableResponse,
       evaluation,
       previewTab,
+      LCBPreviewModal,
       ...restProps
     } = this.props;
     let questionCount = 0;
@@ -98,6 +99,7 @@ class TestItemPreview extends Component {
                 qIndex={qIndex}
                 student={student}
                 disableResponse={disableResponse}
+                LCBPreviewModal={LCBPreviewModal}
               />
             ))}
         </Container>

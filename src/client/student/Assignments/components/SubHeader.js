@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import React from "react";
 import { withNamespaces } from "@edulastic/localization";
-import { extraDesktopWidthMax } from "@edulastic/colors";
+import { extraDesktopWidthMax, largeDesktopWidth } from "@edulastic/colors";
 
 // actions
 import { setFilterAction } from "../../sharedDucks/AssignmentModule/ducks";
@@ -105,6 +105,13 @@ const FilterBtn = styled(Button)`
     font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
     font-weight: 600;
   }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    margin-left: 10px;
+    min-width: 85px;
+    font-size: 8px;
+  }
+
   @media screen and (max-width: 992px) {
     margin: 5px 10px 0px 0px;
     min-width: auto;

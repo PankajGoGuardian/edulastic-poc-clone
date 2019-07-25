@@ -5,7 +5,9 @@ export const fadedBlack = "rgba(0, 0, 0, 0.65)";
 export const themeColor = "#00AD50"; // green
 export const themeColorLight = "#42d184"; // light green
 export const themeColorLighter = "#5EB500"; // light green
+export const themeColorSecondaryLighter = "#26B96A"; // light green
 export const themeColorTagsBg = "#E1FBED";
+export const themeColorBreadcrumb = "#69727E";
 
 export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";
@@ -116,15 +118,16 @@ export const notStarted = "#bfbfbf";
 export const numBtnColors = { color: "#707070", borderColor: "#D9D9D9", backgroundColor: "#fff" };
 
 // Sizes
-export const mobileWidth = "480px";
-export const middleMobileWidth = "476px";
 export const smallMobileWidth = "325px";
+export const middleMobileWidth = "476px";
+export const mobileWidth = "480px";
+export const mobileWidthMax = "767px";
 export const tabletWidth = "768px";
 export const desktopWidth = "992px";
+export const smallDesktopWidth = "1024px";
 export const largeDesktopWidth = "1200px";
 export const extraDesktopWidth = "1440px";
 export const extraDesktopWidthMax = "1600px";
-export const mobileWidthMax = "767px";
 
 export const authorAssignment = {
   assignmentStatusBg: {

@@ -27,12 +27,17 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnswers, responseIds
         {!isEmpty(altAnswers) ? t("component.cloze.altAnswers") : t("component.cloze.correctAnswer")}
       </CorrectAnswerTitle>
       <div>
-        {responseIds.map(response => (
-          <div key={response.index} className="response-btn check-answer showanswer">
-            <span className="index">{response.index + 1}</span>
-            <span className="text">{getLabel(response.id)}</span>
-          </div>
-        ))}
+        {responseIds.map(response => {
+          const label = getLabel(response.id);
+          return (
+            label && (
+              <div key={response.index} className="response-btn check-answer showanswer">
+                <span className="index">{response.index + 1}</span>
+                <span className="text">{label}</span>
+              </div>
+            )
+          );
+        })}
       </div>
     </div>
   );

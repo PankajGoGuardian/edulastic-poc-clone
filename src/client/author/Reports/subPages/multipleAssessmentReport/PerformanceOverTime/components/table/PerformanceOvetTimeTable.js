@@ -18,7 +18,7 @@ const staticFields = [
   },
   {
     title: "Assessment Type",
-    dataIndex: "type"
+    dataIndex: "testType"
   },
   {
     title: "Assessment Date",

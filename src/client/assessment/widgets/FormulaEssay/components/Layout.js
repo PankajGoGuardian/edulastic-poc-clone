@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Select, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
 
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import FontSizeSelect from "../../../components/FontSizeSelect";
 import KeyPadOptions from "../../../components/KeyPadOptions";
@@ -16,31 +15,8 @@ import TypedList from "../../../components/TypedList";
 import { StyledRow } from "../styled/StyledRow";
 
 class Layout extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { onChange, item, advancedAreOpen, t } = this.props;
+    const { onChange, item, advancedAreOpen, fillSections, cleanSections, t } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -71,7 +47,13 @@ class Layout extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
 
         <StyledRow gutter={36}>
@@ -111,7 +93,7 @@ class Layout extends Component {
             />
           </Col>
         </StyledRow>
-      </Widget>
+      </Question>
     );
   }
 }

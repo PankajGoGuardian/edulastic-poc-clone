@@ -1,0 +1,20 @@
+[
+  {
+    "key": "schoolName",
+    "title": "School Name",
+    "dataIndex": "schoolName",
+    "hiddenFromRole": ["teacher"]
+  },
+  {
+    "key": "teacherName",
+    "title": "Teacher Name",
+    "dataIndex": "teacherName",
+    "hiddenFromRole": ["teacher"]
+  },
+  {
+    "key": "groupName",
+    "title": "Class Name",
+    "dataIndex": "groupName",
+    "hiddenFromRole": ["district-admin"]
+  }
+]

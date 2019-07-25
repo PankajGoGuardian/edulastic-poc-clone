@@ -1,7 +1,7 @@
-//@ts-check
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Button, Row, Select, message } from "antd";
+import { getUserName } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
 
@@ -19,22 +19,26 @@ const AddStudentsPopup = ({
   addStudents
 }) => {
   const [selectedStudents, setSelectedStudent] = useState([]);
+
   useEffect(() => {
     fetchGroupMembers({ classId: groupId });
   }, []);
+
   const submitAction = () => {
     if (!selectedStudents.length) message.warn("Select atleast one student to submit or press cancel");
     addStudents(assignmentId, groupId, selectedStudents, true);
+    closePopup();
   };
+
   return (
     <ConfirmationModal
       centered
       textAlign={"left"}
       title={"Add Students"}
       visible={open}
-      onCancel={() => closePopup()}
+      onCancel={closePopup}
       footer={[
-        <Button ghost key="cancel" onClick={() => closePopup()}>
+        <Button ghost key="cancel" onClick={closePopup}>
           CANCEL
         </Button>,
         <Button key="submit" onClick={submitAction}>
@@ -48,7 +52,7 @@ const AddStudentsPopup = ({
           <Select
             showSearch
             optionFilterProp="children"
-            filterOption={(input, option) => option.props.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+            filterOption={(input, option) => option.props.data.toLowerCase().indexOf(input.toLowerCase()) >= 0}
             mode="multiple"
             style={{ width: "100%" }}
             onChange={value => setSelectedStudent(value)}
@@ -59,9 +63,9 @@ const AddStudentsPopup = ({
                 key={x._id}
                 value={x._id}
                 disabled={disabledList.includes(x._id)}
-                data={`${x.firstName},${x.firstName},${x.username}, ${x.email}`}
+                data={`${x.firstName}${x.lastName}${x.email}${x.username}`}
               >
-                {x.username}
+                {getUserName(x)}
               </Select.Option>
             ))}
           </Select>

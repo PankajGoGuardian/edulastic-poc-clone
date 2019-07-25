@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
@@ -11,9 +10,9 @@ import { FroalaEditor } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
+import Question from "../../../components/Question";
 
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
 import { updateVariables } from "../../../utils/variables";
 
 class ComposeQuestion extends Component {
@@ -31,19 +30,6 @@ class ComposeQuestion extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.multiplechoice.composequestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -113,10 +99,17 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, toolbarId } = this.props;
+    const { t, item, toolbarId, fillSections, cleanSections } = this.props;
 
     return (
-      <Widget data-cy="questiontext" questionTextArea>
+      <Question
+        dataCy="questiontext"
+        questionTextArea
+        section="main"
+        label={t("component.multiplechoice.composequestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
         <FroalaEditor
           tag="textarea"
@@ -126,7 +119,7 @@ class ComposeQuestion extends Component {
           onChange={this.onChangeQuestion}
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

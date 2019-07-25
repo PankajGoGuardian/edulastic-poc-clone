@@ -38,7 +38,9 @@ class CorrectAnswer extends Component {
 
   updateScore = e => {
     const { onUpdatePoints } = this.props;
-    if (e.target.value < 0) e.target.value = 0;
+    if (!(e.target.value > 0)) {
+      return;
+    }
     this.setState({ responseScore: e.target.value });
     onUpdatePoints(parseFloat(e.target.value, 10));
   };

@@ -553,7 +553,11 @@ export const getCards = onSelectQuestionType => {
         line_color: [themeColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
-        validation: {},
+        validation: {
+          valid_response: {
+            score: 1
+          }
+        },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -1271,12 +1275,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1356,12 +1355,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1432,12 +1426,7 @@ export const getCards = onSelectQuestionType => {
           tools: [],
           default_tool: null
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         numberlineAxis: {
           leftArrow: true,
           rightArrow: true,
@@ -1558,12 +1547,7 @@ export const getCards = onSelectQuestionType => {
           controls: [],
           default_control: ""
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         validation: {
           graphType: "axisLabels",
           scoring_type: EXACT_MATCH,
@@ -1653,10 +1637,10 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      type: "video-passages",
+      type: "edit",
       cardImage: VPPassage,
       data: {
-        title: "Passage",
+        title: "Passage with Multiple parts",
         type: questionType.PASSAGE,
         heading: "Section 3",
         math_renderer: "",

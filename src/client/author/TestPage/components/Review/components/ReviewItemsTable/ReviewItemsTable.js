@@ -15,7 +15,6 @@ const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, is
     {
       title: "Main info",
       dataIndex: "data",
-      width: "100%",
       key: "main",
       render: data => (
         <>
@@ -70,6 +69,7 @@ const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, is
       type: getQuestionType(item),
       points: getPoints(item),
       item,
+      isPremium: !!item.collectionName,
       standards: standards[item._id],
       audio: audioStatus(item),
       dok:

@@ -28,7 +28,7 @@ import {
 import { makeBorder } from "../../Builder";
 import { CONSTANT, Colors } from "../../Builder/config";
 
-import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import SegmentsTools from "./SegmentsTools";
 import { GraphWrapper, JSXBox } from "./styled";
@@ -275,6 +275,10 @@ class AxisSegmentsContainer extends PureComponent {
       changePreviewTab,
       elements
     } = this.props;
+    const { disableResponse: prevDisableResponse } = prevProps;
+    if (disableResponse && prevDisableResponse != disableResponse) {
+      this.onReset();
+    }
 
     const { selectedTool } = this.state;
 
@@ -320,6 +324,10 @@ class AxisSegmentsContainer extends PureComponent {
       this.onRedo();
       return;
     }
+    if (name === "reset") {
+      this.onReset();
+      return;
+    }
 
     this.setState({ selectedTool: { name, index, groupIndex } });
     this._graph.setTool(name);
@@ -341,6 +349,11 @@ class AxisSegmentsContainer extends PureComponent {
       setValue(stash[id][stashIndex[id] + 1]);
       setStashIndex(stashIndex[id] + 1, id);
     }
+  }
+
+  onReset() {
+    this._graph.segmentsReset();
+    this.updateValues();
   }
 
   getStashId() {
@@ -482,6 +495,9 @@ class AxisSegmentsContainer extends PureComponent {
       },
       redo: () => {
         return "Redo";
+      },
+      reset: () => {
+        return "Reset";
       }
     };
 

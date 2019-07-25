@@ -1,7 +1,7 @@
 import { Pagination, Card, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, red, themeColor } from "@edulastic/colors";
+import { mobileWidth, largeDesktopWidth, smallDesktopWidth, tabletWidth, red, themeColor } from "@edulastic/colors";
 import { IconExclamationMark } from "@edulastic/icons";
 
 import { themes } from "../../../../student/themes";
@@ -56,27 +56,30 @@ export const StyledCard = styled(Card)`
   margin-right: 15px;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  max-width: calc((100% - 0px) / 4);
-  min-width: calc((100% - 45px) / 4);
-  &:nth-child(4n) {
-    margin-right: 0px;
-  }
   .ant-card-body {
     padding: 19px 22px;
   }
-  @media only screen and (max-width: 1024px) {
-    max-width: calc((100% - 30px) / 3);
-    min-width: calc((100% - 30px) / 3);
+  @media (min-width: 1201px) {
+    width: calc((100% - 45px) / 4);
+    &:nth-child(4n) {
+      margin-right: 0px;
+    }
+  }
+  @media only screen and (max-width: ${largeDesktopWidth}) and (min-width: 769px) {
+    width: calc((100% - 30px) / 3);
     &:nth-child(3n) {
       margin-right: 0px;
     }
   }
-  @media only screen and (max-width: ${mobileWidth}) {
-    max-width: calc((100% - 15px) / 2);
-    min-width: calc((100% - 15px) / 2);
+  @media only screen and (max-width: ${tabletWidth}) and (min-width: 481px) {
+    width: calc((100% - 15px) / 2);
     &:nth-child(2n) {
       margin-right: 0px;
     }
+  }
+  @media only screen and (max-width: ${mobileWidth}) {
+    width: 100%;
+    margin-right: 0px;
   }
 `;
 
@@ -93,6 +96,10 @@ export const PagInfo = styled.span`
   /* width: 50%; */
   cursor: pointer;
   user-select: none;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 10px;
+  }
   @media (max-width: ${mobileWidth}) {
     width: 100%;
     text-align: center;
@@ -191,6 +198,11 @@ export const StyledParaF = styled.p`
   font-weight: 600;
   margin-bottom: 5px;
   color: #434b5d;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 12px;
+    line-height: 12px;
+  }
 `;
 
 export const StyledParaS = styled.p`
@@ -201,6 +213,10 @@ export const StyledParaS = styled.p`
   text-transform: capitalize;
   display: flex;
   align-items: center;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 11px;
+  }
 `;
 
 export const StyledColorParaS = styled.p`

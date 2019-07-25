@@ -18,8 +18,8 @@ export const getYLabelString = analyzeBy => {
 };
 
 const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClickCB }) => {
-  const xDataKey = "testId";
-  const dataWithColors = addColors(data, selectedTests, "testId", "score");
+  const xDataKey = "uniqId";
+  const dataWithColors = addColors(data, selectedTests, xDataKey, "score");
 
   const yTickformatLabel = score => {
     switch (analyseBy) {
@@ -78,6 +78,7 @@ const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClick
       barsLabelFormatter={barsLabelFormatter}
       onBarClickCB={_onBarClickCB}
       onResetClickCB={onResetClickCB}
+      filter={selectedTests}
     />
   );
 };

@@ -5,7 +5,7 @@ import { FroalaEditor } from "@edulastic/common";
 import { IconTrashAlt } from "@edulastic/icons";
 import { greenDark, red } from "@edulastic/colors";
 import { Header, FroalaInput } from "./styled/styled_components";
-import { Container } from "../common/styled_components";
+import { Container } from "../Graph/common/styled_components";
 
 const DeleteButton = ({ onDelete, deleteToolStyles }) => (
   <Container style={deleteToolStyles}>

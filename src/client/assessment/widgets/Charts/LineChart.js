@@ -8,6 +8,7 @@ import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
 import Points from "./components/Points";
 import ArrowPair from "./components/ArrowPair";
+import ValueLabel from "./components/ValueLabel";
 import withGrid from "./HOC/withGrid";
 import {
   convertPxToUnit,
@@ -17,7 +18,7 @@ import {
   getGridVariables
 } from "./helpers";
 
-const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
+const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse, toggleBarDragging }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams);
@@ -30,7 +31,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   const [localData, setLocalData] = useState(data);
 
-  const paddingTop = 10;
+  const paddingTop = 15;
 
   useEffect(() => {
     if (!isEqual(data, localData)) {
@@ -50,6 +51,8 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
           [active].split(",")[index]
       : null;
 
+  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+
   const save = () => {
     if (cursorY === null) {
       return;
@@ -59,6 +62,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setInitY(null);
     setActive(null);
     setIsMouseDown(false);
+    toggleBarDragging(false);
     saveAnswer(localData);
   };
 
@@ -77,6 +81,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setActiveIndex(index);
     setInitY(localData[index].y);
     setIsMouseDown(true);
+    toggleBarDragging(true);
   };
 
   const onMouseUp = () => {
@@ -89,7 +94,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   return (
     <svg
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width}
       height={height}
       onMouseMove={onMouseMove}
@@ -107,6 +112,8 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
       <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
 
       <ArrowPair getActivePoint={getActivePoint} />
+
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
 
       <Points
         activeIndex={activeIndex}

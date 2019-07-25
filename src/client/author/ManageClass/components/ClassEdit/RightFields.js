@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { debounce, concat, find, isEmpty } from "lodash";
 
@@ -9,8 +8,6 @@ import { FieldLabel } from "./components";
 import { StyledFlexContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
-import { getSelectedSubject, setSubjectAction } from "../../ducks";
-import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { StandardsValidationMSG } from "../ClassCreate/styled";
 
 const { allGrades, allSubjects } = selectsData;
@@ -18,7 +15,6 @@ const { allGrades, allSubjects } = selectsData;
 const classStartDate = moment();
 const classEndDate = moment(); // .add("days", 7);
 
-// eslint-disable-next-line max-len
 const RightFields = ({
   courseList,
   searchCourse,
@@ -35,22 +31,16 @@ const RightFields = ({
   setSubject,
   filteredCurriculums,
   clearStandards,
-  setStandards,
   ...restProps
 }) => {
   const [startDate, setStartDate] = useState(moment(defaultStartDate || classStartDate));
+  useEffect(() => {
+    setSubject(defaultSubject || "");
+  }, []);
   const updateSubject = e => {
     setSubject(e);
     clearStandards();
   };
-
-  const updateStandards = e => {
-    setStandards(e);
-  };
-
-  useEffect(() => {
-    setSubject(defaultSubject || "");
-  }, []);
 
   const onStartDateChangeHandler = date => {
     setStartDate(date);
@@ -145,7 +135,6 @@ const RightFields = ({
           showSearch
           mode="multiple"
           optionFilterProp="children"
-          onChange={updateStandards}
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           placeholder="Select Standards"
         >
@@ -229,15 +218,4 @@ RightFields.defaultProps = {
   defaultStandardSets: []
 };
 
-export default connect(
-  state => {
-    const subject = getSelectedSubject(state);
-    return {
-      subject,
-      filteredCurriculums: getFormattedCurriculumsSelector(state, { subject })
-    };
-  },
-  {
-    setSubject: setSubjectAction
-  }
-)(RightFields);
+export default RightFields;

@@ -12,25 +12,11 @@ import { Subtitle } from "../../styled/Subtitle";
 
 import CorrectAnswer from "./CorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
-import ReactDOM from "react-dom";
 
 class CorrectAnswers extends Component {
   state = {
     value: 0
   };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   handleTabChange = value => {
     this.setState({ value });

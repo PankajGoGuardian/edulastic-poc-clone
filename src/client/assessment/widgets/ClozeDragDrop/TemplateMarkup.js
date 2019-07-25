@@ -2,7 +2,6 @@
 /* eslint-disable func-names */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -30,30 +29,6 @@ class TemplateMarkup extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
-
-    fillSections(
-      "main",
-      t("component.cloze.dragDrop.composequestion"),
-      node.offsetTop,
-      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
-      deskHeight === true,
-      deskHeight
-    );
-
-    this.onChangeMarkUp(helpers.reIndexResponses(item.stimulus));
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   onChangeMarkUp = stimulus => {
     const { item, setQuestionData } = this.props;

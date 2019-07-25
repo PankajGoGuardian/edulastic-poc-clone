@@ -74,6 +74,7 @@ class ClassesTable extends Component {
       showActiveClassCheckbox: true,
       disableActiveUsers: false
     };
+    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
   componentDidMount() {
@@ -187,80 +188,93 @@ class ClassesTable extends Component {
   };
 
   changeFilterValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filtersValue = value;
-    this.setState({ filtersData }, () => this.afterSetState(key));
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filtersValue: value
+        };
+      }
+      return item;
+    });
 
-    // if (
-    //   // (filtersData[key].filterAdded || key === 2) &&
-    //   filtersData[key].filtersColumn !== "" &&
-    //   filtersData[key].filterStr !== ""
-    // ) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
+    this.setState({ filtersData: _filtersData }, () => this.afterSetState(key));
   };
 
-  // onBlurFilterText = (key) => {
-  //   const filtersData = [...this.state.filtersData];
-  //   // filtersData[key].filterStr = e.target.value;
-  //   // this.setState({ filtersData });
+  onSearchFilter = (value, event, i) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === i) {
+        return {
+          ...item,
+          filterAdded: value ? true : false
+        };
+      }
+      return item;
+    });
 
-  //   if (
-  //     filtersData[key].filtersColumn !== "" &&
-  //     filtersData[key].filtersValue !== ""
-  //   ) {
-  //     const { sortedInfo, searchByName, currentPage } = this.state;
-  //     this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-  //   }
-  // };
+    // For some unknown reason till now calling blur() synchronously doesnt work.
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
+  };
+
+  onBlurFilterText = (event, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: event.target.value ? true : false
+        };
+      }
+      return item;
+    });
+    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredClassList);
+  };
 
   changeFilterText = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = e.target.value;
-    this.setState({ filtersData });
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
   };
 
   changeStatusValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = value;
-    this.setState({ filtersData }, () => this.afterSetState(key));
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: value,
+          filterAdded: value ? true : false
+        };
+      }
+      return item;
+    });
 
-    // if (
-    //   // filtersData[key].filterAdded || key === 2 &&
-    //   filtersData[key].filtersColumn !== "" &&
-    //   filtersData[key].filtersValue !== ""
-    // ) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
+    this.setState({ filtersData: _filtersData }, () => this.afterSetState(key));
   };
 
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    // if (filtersData[key].filterAdded && filtersData.length === 3) return;
-    // filtersData[key].filterAdded = true;
     if (filtersData.length < 3) {
-      // filtersData[key].filterAdded = true;
-      this.setState(state => ({
-        filtersData: [
-          ...state.filtersData,
-          {
-            filtersColumn: "",
-            filtersValue: "",
-            filterStr: "",
-            filterAdded: false
-          }
-        ]
-      }));
-      // filtersData.push({
-      //   filtersColumn: "",
-      //   filtersValue: "",
-      //   filterStr: "",
-      //   filterAdded: false
-      // });
+      this.setState(
+        state => ({
+          filtersData: [
+            ...state.filtersData,
+            {
+              filtersColumn: "",
+              filtersValue: "",
+              filterStr: "",
+              filterAdded: false
+            }
+          ]
+        }),
+        this.loadFilteredClassList
+      );
     }
-    // this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
   };
 
   removeFilter = (e, key) => {
@@ -302,7 +316,7 @@ class ClassesTable extends Component {
     // this.loadFilteredClassList(filtersData, sortedInfo, searchByName, pageNumber);
   };
 
-  loadFilteredClassList = () => {
+  getSearchQuery = () => {
     const { loadClassListData, userOrgId } = this.props;
     const { filtersData, searchByName, currentPage, showActiveClassCheckbox, disableActiveUsers } = this.state;
     const search = {};
@@ -325,7 +339,7 @@ class ClassesTable extends Component {
         if (filtersColumn === "active") {
           search[filtersColumn] = filterStr;
         } else {
-          if (!search.filtersColumn) {
+          if (!search[filtersColumn]) {
             search[filtersColumn] = [];
           }
           if (filtersColumn === "grades" || filtersColumn === "subjects") {
@@ -340,13 +354,17 @@ class ClassesTable extends Component {
         // search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
       }
     }
-
-    loadClassListData({
+    return {
       districtId: userOrgId,
       limit: 25,
       page: currentPage,
       search
-    });
+    };
+  };
+
+  loadFilteredClassList = () => {
+    const { loadClassListData } = this.props;
+    loadClassListData(this.getSearchQuery());
   };
 
   changeActionMode = e => {
@@ -423,23 +441,41 @@ class ClassesTable extends Component {
     this.setState({ archiveClassModalVisible: false });
   };
 
+  _bulkUpdateClasses = obj => {
+    let _obj = {
+      data: obj,
+      searchQuery: this.getSearchQuery()
+    };
+    this.props.bulkUpdateClasses(_obj);
+  };
+
   render() {
     const columnsData = [
       {
         title: "Class Name",
         dataIndex: "_source.name",
-        editable: true
+        editable: true,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.name.localeCompare(b._source.name)
       },
       {
         title: "Class Code",
         dataIndex: "_source.code",
-        editable: true
+        editable: true,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.code.localeCompare(b._source.code)
       },
       {
         title: "Course",
         dataIndex: "_source.course",
         editable: true,
-        render: course => (course ? course.name : "-")
+        render: course => (course ? course.name : "-"),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.course.name", "");
+          const next = get(b, "_source.course.name", "");
+          return next.localeCompare(prev);
+        }
       },
       {
         title: "Teacher",
@@ -450,13 +486,17 @@ class ClassesTable extends Component {
             <TeacherSpan key={`${owner.id}${index}`}>{owner.name}</TeacherSpan>
           ));
           return <React.Fragment>{teachers}</React.Fragment>;
-        }
+        },
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name)
       },
       {
         title: "Users",
         dataIndex: "_source.studentCount",
         editable: true,
-        render: (studentCount = 0) => studentCount
+        render: (studentCount = 0) => studentCount,
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => a._source.studentCount - b._source.studentCount
       },
       {
         dataIndex: "_id",
@@ -509,7 +549,6 @@ class ClassesTable extends Component {
     };
 
     const selectedClass = dataSource[editClassKey];
-
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit class">Edit Class</Menu.Item>
@@ -525,17 +564,17 @@ class ClassesTable extends Component {
 
     const SearchRows = [];
     for (let i = 0; i < filtersData.length; i++) {
-      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      const { filtersColumn, filtersValue, filterStr, filterAdded } = filtersData[i];
       const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
-      const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "";
+      const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
 
       const optValues = [];
       if (filtersColumn === "subjects" || filtersColumn === "grades" || filtersColumn === "active") {
         optValues.push(<Option value="eq">Equals</Option>);
       } else {
         optValues.push(<Option value="">Select a value</Option>);
-        optValues.push(<Option value="eq">Equals</Option>);
-        optValues.push(<Option value="cont">Contains</Option>);
+        optValues.push(<Option value="equals">Equals</Option>);
+        optValues.push(<Option value="contains">Contains</Option>);
       }
 
       SearchRows.push(
@@ -569,7 +608,9 @@ class ClassesTable extends Component {
               disabled={isFilterTextDisable}
               value={filterStr}
             >
-              <Option value="">Select a subject</Option>
+              <Option value="" disabled={true}>
+                Select a subject
+              </Option>
               <Option value="Mathematics">Mathematics</Option>
               <Option value="ELA">ELA</Option>
               <Option value="Science">Science</Option>
@@ -599,9 +640,11 @@ class ClassesTable extends Component {
             <StyledFilterInput
               placeholder="Enter text"
               onChange={e => this.changeFilterText(e, i)}
-              onSearch={this.loadFilteredClassList}
+              onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+              onBlur={e => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filterStr}
+              innerRef={this.filterTextInputRef[i]}
             />
           )}
           {i < 2 && (
@@ -621,7 +664,6 @@ class ClassesTable extends Component {
         </StyledControlDiv>
       );
     }
-
     return (
       <StyledTableContainer>
         <StyledControlDiv>
@@ -707,7 +749,7 @@ class ClassesTable extends Component {
           setBulkEditUpdateView={setBulkEditUpdateView}
           selectedIds={selectedRowKeys}
           selectedClasses={selectedRowKeys.map(_id => dataSource[_id])}
-          bulkUpdateClasses={bulkUpdateClasses}
+          bulkUpdateClasses={this._bulkUpdateClasses}
           searchCourseList={searchCourseList}
           coursesForDistrictList={coursesForDistrictList}
         />

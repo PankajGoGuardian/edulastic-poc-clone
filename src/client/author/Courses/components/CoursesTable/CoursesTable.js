@@ -67,6 +67,7 @@ class CoursesTable extends React.Component {
       isShowActive: true,
       searchData: {}
     };
+    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
   componentDidMount() {
@@ -164,21 +165,45 @@ class CoursesTable extends React.Component {
     }
   };
 
-  changeFilterText = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = e.target.value;
-    this.setState({ filtersData });
+  onSearchFilter = (value, event, i) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === i) {
+        return { ...item, filterAdded: !!value };
+      }
+      return item;
+    });
+
+    // For some unknown reason till now calling blur() synchronously doesnt work.
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
   };
 
   onBlurFilterText = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = e.target.value;
-    this.setState({ filtersData });
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value,
+          filterAdded: true
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
 
-    if (filtersData[key].filterAdded) {
+    if (_filtersData[key].filterAdded) {
       const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+      this.loadFilteredCourseList(_filtersData, sortedInfo, searchByName, currentPage);
     }
+  };
+
+  changeFilterText = (e, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return { ...item, filterStr: e.target.value };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
   };
 
   changeStatusValue = (value, key) => {
@@ -194,8 +219,25 @@ class CoursesTable extends React.Component {
 
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    filtersData[key].filterAdded = true;
-    this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+    if (filtersData.length < 3) {
+      const _filtersData = filtersData.map((item, index) => {
+        if (index === key) {
+          return {
+            ...item,
+            filterAdded: true
+          };
+        }
+        return item;
+      });
+      this.loadFilteredCourseList([..._filtersData], sortedInfo, searchByName, currentPage);
+      _filtersData.push({
+        filterAdded: false,
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: ""
+      });
+      this.setState({ filtersData: _filtersData });
+    }
   };
 
   removeFilter = (e, key) => {
@@ -309,14 +351,10 @@ class CoursesTable extends React.Component {
     });
   };
 
-  handleSearchName = e => {
-    this.setState({ searchByName: e.target.value });
-  };
-
-  onBlurSearchName = e => {
+  handleSearchName = value => {
     const { filtersData, sortedInfo, currentPage } = this.state;
-    this.setState({ searchByName: e.target.value });
-    this.loadFilteredCourseList(filtersData, sortedInfo, e.target.value, currentPage);
+    this.setState({ searchByName: value });
+    this.loadFilteredCourseList(filtersData, sortedInfo, value, currentPage);
   };
 
   changePagination = pageNumber => {
@@ -499,7 +537,10 @@ class CoursesTable extends React.Component {
     for (let i = 0; i < filtersData.length; i++) {
       const isFilterTextDisable = filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "";
       const isAddFilterDisable =
-        filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "" || filtersData[i].filterStr === "";
+        filtersData[i].filtersColumn === "" ||
+        filtersData[i].filtersValue === "" ||
+        filtersData[i].filterStr === "" ||
+        !filtersData[i].filterAdded;
 
       SearchRows.push(
         <StyledControlDiv key={`${filtersData[i].filtersColumn}${i}`}>
@@ -526,14 +567,17 @@ class CoursesTable extends React.Component {
           <StyledFilterInput
             placeholder="Enter text"
             onChange={e => this.changeFilterText(e, i)}
+            onSearch={(v, e) => this.onSearchFilter(v, e, i)}
             onBlur={e => this.onBlurFilterText(e, i)}
             disabled={isFilterTextDisable}
             value={filtersData[i].filterStr}
+            innerRef={this.filterTextInputRef[i]}
           />
-
-          <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
-            + Add Filter
-          </StyledFilterButton>
+          {i < 2 && (
+            <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
+              + Add Filter
+            </StyledFilterButton>
+          )}
 
           <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
             - Remove Filter
@@ -549,11 +593,7 @@ class CoursesTable extends React.Component {
             + Create Course
           </Button>
 
-          <StyledNameSearch
-            placeholder="Search by name"
-            onChange={this.handleSearchName}
-            onBlur={this.onBlurSearchName}
-          />
+          <StyledNameSearch placeholder="Search by name" onSearch={this.handleSearchName} />
           <StyledActiveCheckbox defaultChecked={isShowActive} onChange={this.changeShowActiveCourse}>
             Show active courses only
           </StyledActiveCheckbox>

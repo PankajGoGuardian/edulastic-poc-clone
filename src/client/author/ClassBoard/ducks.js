@@ -12,7 +12,8 @@ import {
   updateStudentActivityAction,
   setIsPausedAction,
   updateRemovedStudentsAction,
-  updateClassStudentsAction
+  updateClassStudentsAction,
+  setStudentsGradeBookAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -184,7 +185,8 @@ function* removeStudentsSaga({ payload }) {
 
 function* addStudentsSaga({ payload }) {
   try {
-    yield call(classBoardApi.addStudents, payload);
+    const { students = [] } = yield call(classBoardApi.addStudents, payload);
+    yield put(setStudentsGradeBookAction(students));
     yield call(message.success, "Successfully added");
   } catch (err) {
     yield call(message.error, "Add students failed");
@@ -296,7 +298,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
         skipped = false;
       }
 
-      if (graded === false && !notStarted && !skipped) {
+      if (graded === false && !notStarted && !skipped && !score) {
         questionMap[_id].manualGradedNum += 1;
       } else if (score === maxScore && !notStarted && score > 0) {
         questionMap[_id].correctNum += 1;
@@ -324,11 +326,6 @@ export const getAggregateByQuestion = (entities, studentId) => {
   return result;
 };
 
-export const getGradeBookSelector = createSelector(
-  stateTestActivitySelector,
-  state => getAggregateByQuestion(state.entities)
-);
-
 export const classStudentsSelector = createSelector(
   stateTestActivitySelector,
   state => state.classStudents
@@ -336,6 +333,15 @@ export const classStudentsSelector = createSelector(
 export const removedStudentsSelector = createSelector(
   stateTestActivitySelector,
   state => state.removedStudents
+);
+
+export const getGradeBookSelector = createSelector(
+  stateTestActivitySelector,
+  removedStudentsSelector,
+  (state, removedStudents) => {
+    const entities = state.entities.filter(item => !removedStudents.includes(item.studentId));
+    return getAggregateByQuestion(entities);
+  }
 );
 
 export const getTestActivitySelector = createSelector(

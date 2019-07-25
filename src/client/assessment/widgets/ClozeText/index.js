@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, isEqual, get, findIndex } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
-import { Paper, Checkbox, WithResources } from "@edulastic/common";
+import { Paper, Checkbox, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -18,8 +18,8 @@ import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import Display from "./Display";
 import { ContentArea } from "../../styled/ContentArea";
-import { Widget } from "../../styled/Widget";
-import { AnswerContext } from "@edulastic/common";
+import Question from "../../components/Question";
+
 const EmptyWrapper = styled.div``;
 
 class ClozeText extends Component {
@@ -212,7 +212,12 @@ class ClozeText extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
-                <Widget>
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
@@ -254,7 +259,7 @@ class ClozeText extends Component {
                       checked={!!mixAndMatch}
                     />
                   </div>
-                </Widget>
+                </Question>
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}

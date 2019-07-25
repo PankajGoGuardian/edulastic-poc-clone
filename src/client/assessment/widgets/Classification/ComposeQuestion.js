@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
@@ -15,24 +14,11 @@ import { updateVariables } from "../../utils/variables";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class ComposeQuestion extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.classification.composeQuestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount = () => {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  };
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const { stimulus } = item;
 
@@ -46,7 +32,12 @@ class ComposeQuestion extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.classification.composeQuestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.classification.composeQuestion")}</Subtitle>
 
         <QuestionTextArea
@@ -55,7 +46,7 @@ class ComposeQuestion extends Component {
           value={stimulus}
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

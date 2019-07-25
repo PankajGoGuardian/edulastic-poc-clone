@@ -29,7 +29,7 @@ import { setQuestionDataAction, setFirstMountAction } from "../../../author/Ques
 import GroupPossibleResponses from "./components/GroupPossibleResponses";
 import ClassificationPreview from "./ClassificationPreview";
 import Options from "./components/Options";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import ComposeQuestion from "./ComposeQuestion";
 import RowColumn from "./RowColumn";
@@ -478,7 +478,7 @@ const EditClassification = ({
     <Fragment>
       <Paper padding="0px" boxShadow="none">
         <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
-        <Widget>
+        <Question section="main" label="Background" fillSections={fillSections} cleanSections={cleanSections}>
           {item.imageUrl ? (
             <FlexContainer flexDirection="column">
               <DropContainer>
@@ -514,7 +514,7 @@ const EditClassification = ({
               <EduButton type="primary">{t("component.classification.addBackImage")}</EduButton>
             </Dragger>
           )}
-        </Widget>
+        </Question>
         <RowColumn
           item={item}
           theme={theme}
@@ -522,7 +522,12 @@ const EditClassification = ({
           cleanSections={cleanSections}
           toolbarSize="MD"
         />
-        <Widget>
+        <Question
+          section="main"
+          label={t("component.classification.possibleRespTitle")}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        >
           <GroupPossibleResponses
             checkboxChange={onGroupPossibleResp}
             checkboxVal={item.group_possible_responses}
@@ -572,7 +577,7 @@ const EditClassification = ({
               checked={!!transparent_background_image}
             />
           </div>
-        </Widget>
+        </Question>
         <CorrectAnswers
           onTabChange={setCorrectTab}
           correctTab={correctTab}

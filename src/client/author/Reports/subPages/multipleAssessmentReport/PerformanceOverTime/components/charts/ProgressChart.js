@@ -9,11 +9,11 @@ import BandChart from "./BandChart";
 const ProgressChart = ({ data, analyseBy, selectedItems, setSelectedItems, bandInfo }) => {
   const handleToggleSelectedBars = item => {
     const newSelectedTests = next(selectedItems, draftState => {
-      let index = indexOf(selectedItems, item.testId);
+      let index = indexOf(selectedItems, item.uniqId);
       if (-1 < index) {
         draftState.splice(index, 1);
       } else {
-        draftState.push(item.testId);
+        draftState.push(item.uniqId);
       }
     });
     setSelectedItems(newSelectedTests);

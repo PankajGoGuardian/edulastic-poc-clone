@@ -17,9 +17,9 @@ import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
 
 const OrderListReportItem = SortableElement(
-  ({ children, correctText, correct, showAnswers, ind, t, theme, columns }) => (
+  ({ children, correctText, correct, showAnswers, ind, t, theme, columns, styleType }) => (
     <Fragment>
-      <Container columns={columns} correct={correct}>
+      <Container styleType={styleType} columns={columns} correct={correct}>
         <Text>
           <FlexContainer>
             <Index>{ind}</Index>
@@ -62,13 +62,15 @@ OrderListReportItem.propTypes = {
   ind: PropTypes.number.isRequired,
   t: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
-  columns: PropTypes.number
+  columns: PropTypes.number,
+  styleType: PropTypes.string
 };
 
 OrderListReportItem.defaultProps = {
   showAnswers: false,
   correctText: "",
-  columns: 1
+  columns: 1,
+  styleType: "button"
 };
 
 const enhance = compose(

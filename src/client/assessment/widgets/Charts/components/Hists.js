@@ -81,7 +81,7 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
   return (
     <Fragment>
       {bars.map((dot, index) => (
-        <Fragment>
+        <Fragment key={`bar-${index}`}>
           {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
           <Bar
             onMouseEnter={() => setHoveredIndex(index)}

@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { isEmpty } from "lodash";
 
 import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tabs, Tab, FlexContainer } from "@edulastic/common";
-import { Widget } from "../../styled/Widget";
 
 import { Subtitle } from "../../styled/Subtitle";
+import Question from "../Question";
 
 import { IconClose } from "./styled/IconClose";
 
@@ -17,19 +16,6 @@ class CorrectAnswers extends Component {
   state = {
     tabs: 1
   };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   calcMaxAltLen = () => {
     const { validation } = this.props;
@@ -111,11 +97,16 @@ class CorrectAnswers extends Component {
   );
 
   render() {
-    const { t, onTabChange, children, correctTab, options } = this.props;
+    const { t, onTabChange, children, correctTab, options, fillSections, cleanSections } = this.props;
     const { tabs } = this.state;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.correctanswers.setcorrectanswers")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <FlexContainer>
           <Subtitle margin="0 0 6px">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
           {this.renderPlusButton()}
@@ -136,7 +127,7 @@ class CorrectAnswers extends Component {
           {children}
         </div>
         {options}
-      </Widget>
+      </Question>
     );
   }
 }

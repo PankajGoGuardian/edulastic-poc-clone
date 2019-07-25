@@ -93,8 +93,11 @@ class PreviewModal extends React.Component {
       preview,
       showEvaluationButtons
     } = this.props;
+
     const { scrollElement } = this.state;
     const questions = keyBy(get(item, "data.questions", []), "id");
+    const resources = keyBy(get(item, "data.resources", []), "id");
+    const allWidgets = { ...questions, ...resources };
     const { authors = [], rows, data = {} } = item;
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
     const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
@@ -164,7 +167,7 @@ class PreviewModal extends React.Component {
                 verticalDivider={item.verticalDivider}
                 scrolling={item.scrolling}
                 style={{ width: "100%" }}
-                questions={questions}
+                questions={allWidgets}
               />
             )}
           </QuestionWrapper>

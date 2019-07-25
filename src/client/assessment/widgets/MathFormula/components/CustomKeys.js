@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import { Input, Row, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton, FlexContainer } from "@edulastic/common";
 
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 
 import { IconTrash } from "../styled/IconTrash";
@@ -36,10 +36,16 @@ class CustomKeys extends Component {
   }
 
   render() {
-    const { blocks, onChange, onAdd, onDelete, advancedAreOpen, t } = this.props;
+    const { blocks, onChange, onAdd, onDelete, advancedAreOpen, t, fillSections, cleanSections } = this.props;
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Subtitle>{t("component.options.customkeys")}</Subtitle>
+      <Question
+        section="advanced"
+        label={t("component.options.textBlocks")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
+        <Subtitle>{t("component.options.textBlocks")}</Subtitle>
 
         <Row gutter={32}>
           {blocks.map((block, index) => (
@@ -60,7 +66,7 @@ class CustomKeys extends Component {
         <EduButton onClick={onAdd} type="primary">
           {t("component.options.addTextBlock")}
         </EduButton>
-      </Widget>
+      </Question>
     );
   }
 }

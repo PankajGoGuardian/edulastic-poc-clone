@@ -7,10 +7,10 @@ import styled from "styled-components";
 import Review from "../../styled/AssignmentCardButton";
 
 // show review button
-const ReviewButton = ({ testActivityId, title, t, attempted, activityReview, classId }) => (
+const ReviewButton = ({ testActivityId, title, t, attempted, activityReview, classId, testId }) => (
   <ReviewButtonLink
     to={{
-      pathname: `/home/class/${classId}/testActivityReport/${testActivityId}`,
+      pathname: `/home/class/${classId}/test/${testId}/testActivityReport/${testActivityId}`,
       testActivityId,
       title
     }}

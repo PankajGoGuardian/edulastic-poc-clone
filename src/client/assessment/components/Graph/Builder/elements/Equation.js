@@ -106,7 +106,7 @@ function createPoint(board, coords, params) {
   });
 }
 
-function createLine(board, points, params) {
+function createLine(board, points, params, handleSnapEnabled = true) {
   const newLine = board.$board.create("line", points, {
     ...getPropsByLineType(CONSTANT.TOOLS.LINE),
     ...Colors.default[CONSTANT.TOOLS.EQUATION],
@@ -115,12 +115,13 @@ function createLine(board, points, params) {
     fixed: params.fixed === null ? false : params.fixed
   });
 
-  handleSnap(
-    newLine,
-    Object.values(newLine.ancestors),
-    board,
-    calculateNewLineLatex(newLine, Object.values(newLine.ancestors))
-  );
+  handleSnapEnabled &&
+    handleSnap(
+      newLine,
+      Object.values(newLine.ancestors),
+      board,
+      calculateNewLineLatex(newLine, Object.values(newLine.ancestors))
+    );
 
   return newLine;
 }
@@ -158,12 +159,13 @@ function findLinePointsCoords(gridParams, equationLeft, equationRight) {
   const { xMin, yMax, xMax, yMin, stepX, stepY } = gridParams;
 
   const rightNumber = Number.parseFloat(equationRight);
+
   // vertical line
-  if (equationLeft === "x" && !Number.isNaN(rightNumber) && rightNumber % stepX === 0) {
+  if (equationLeft === "x" && !Number.isNaN(rightNumber)) {
     return [[rightNumber, yMin + stepY], [rightNumber, yMax - stepY]];
   }
   // horizontal line
-  if (equationLeft === "y" && !Number.isNaN(rightNumber) && rightNumber % stepY === 0) {
+  if (equationLeft === "y" && !Number.isNaN(rightNumber)) {
     return [[xMin + stepX, rightNumber], [xMax - stepX, rightNumber]];
   }
 
@@ -305,9 +307,34 @@ function renderElement(board, element, points, params) {
       } else if (isLine(gridParams.xMin, gridParams.xMax, equationLeft, equationRight)) {
         const coords = findLinePointsCoords(gridParams, equationLeft, equationRight);
         if (coords.length === 2) {
-          const point1 = createPoint(board, coords[0], params);
-          const point2 = createPoint(board, coords[1], params);
-          line = createLine(board, [point1, point2], params);
+          const coordIndex = equationLeft === "x" ? 0 : 1,
+            checkStep = equationLeft === "x" ? gridParams.stepX : gridParams.stepY,
+            firstPointIsDecimal = coords[0][coordIndex] % checkStep !== 0 ? true : false,
+            secondPointIsDecimal = coords[1][coordIndex] % checkStep !== 0 ? true : false,
+            handleSnapEnabled = coords.some(coord => coord[coordIndex] % checkStep !== 0);
+
+          const point1 = createPoint(board, coords[0], {
+            ...params,
+            visible: !firstPointIsDecimal,
+            fixed: firstPointIsDecimal,
+            snapToGrid: !firstPointIsDecimal
+          });
+          const point2 = createPoint(board, coords[1], {
+            ...params,
+            visible: !secondPointIsDecimal,
+            fixed: secondPointIsDecimal,
+            snapToGrid: !secondPointIsDecimal
+          });
+
+          line = createLine(
+            board,
+            [point1, point2],
+            {
+              ...params,
+              fixed: coords.some(coord => coord[coordIndex] % checkStep !== 0) ? true : false
+            },
+            !handleSnapEnabled
+          );
           subType = CONSTANT.TOOLS.LINE;
         }
       }

@@ -75,3 +75,11 @@ export const Cross = styled.path`
   fill: ${themeColorLight};
   stroke-width: 4;
 `;
+
+export const ValueBg = styled.rect`
+  fill: ${props => props.theme.widgets.chart.bgColor};
+  stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+  height: 24px;
+  rx: 4px;
+  ry: 4px;
+`;

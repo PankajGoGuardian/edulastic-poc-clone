@@ -20,6 +20,7 @@ import {
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
+import { isIncompleteQuestion } from "../questionUtils";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   getTestEntitySelector,
@@ -304,13 +305,6 @@ export const getItemDetailRowsSelector = createSelector(
   }
 );
 
-export const isFirstQuestionSelector = createSelector(
-  getItemDetailSelector,
-  item => {
-    // has no widgets at all!
-    return item.rows && item.rows.length === 1 && item.rows[0].widgets && item.rows[0].widgets.length === 0;
-  }
-);
 export const getItemDetailLoadingSelector = createSelector(
   stateSelector,
   state => state.loading
@@ -458,6 +452,9 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: { ...state.item, itemLevelScoring: !!payload } };
 
     case SET_ITEM_DETAIL_SCORE:
+      if (!(payload > 0)) {
+        return state;
+      }
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
 
     case UPDATE_QUESTION:
@@ -645,7 +642,7 @@ export function* updateItemSaga({ payload }) {
     };
 
     if (questions.length === 1) {
-      const [isIncomplete, errMsg] = helpers.isIncompleteQuestion(questions[0]);
+      const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
       if (isIncomplete) {
         return message.error(errMsg);
       }

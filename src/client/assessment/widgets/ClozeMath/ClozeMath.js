@@ -192,8 +192,7 @@ ClozeMath.defaultProps = {
 const enhance = compose(
   withTutorial("clozeMath"),
   connect(
-    (state, { item }) => ({
-      evaluation: state.evaluation[item.id],
+    state => ({
       isSidebarCollapsed: state.authorUi.isSidebarCollapsed
     }),
     {

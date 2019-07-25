@@ -319,7 +319,6 @@ class ClozeDragDropDisplay extends Component {
       onDropHandler: !disableResponse ? this.onDrop : () => {},
       cAnswers: get(item, "validation.valid_response.value", [])
     };
-
     const templateBoxLayoutContainer = (
       <PreWrapper>
         <div
@@ -360,15 +359,16 @@ class ClozeDragDropDisplay extends Component {
           userAnswers={validation.valid_response && validation.valid_response.value}
           btnStyle={btnStyle}
         />
-        {!isEmpty(item.validation.alt_responses) && (
-          <AlternateAnswerBoxLayout
+        {(item.validation.alt_responses || []).map((ele, ind) => (
+          <CorrectAnswerBoxLayout
+            hasGroupResponses={hasGroupResponses}
             fontSize={fontSize}
             groupResponses={options}
-            hasGroupResponses={hasGroupResponses}
-            altAnswers={validation.alt_responses}
+            userAnswers={ele.value}
+            altAnsIndex={ind + 1}
             btnStyle={btnStyle}
           />
-        )}
+        ))}
       </>
     ) : (
       <div />

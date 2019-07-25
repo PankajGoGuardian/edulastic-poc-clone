@@ -141,12 +141,6 @@ const ClassificationPreview = ({
     }
   }, [userAnswer, possible_responses]);
 
-  useEffect(() => {
-    if (previewTab === CHECK || previewTab === SHOW) {
-      changePreviewTab(CLEAR);
-    }
-  }, [userAnswer]);
-
   const boxes = createEmptyArrayOfArrays();
 
   const onDrop = (itemCurrent, itemTo) => {
@@ -195,6 +189,10 @@ const ClassificationPreview = ({
       setAnswers(uniq(ansArrays));
     }
     saveAnswer(uniq(ansArrays.map(ansArr => uniq(ansArr.map(ans => posResp.indexOf(ans))))));
+
+    if (previewTab === CHECK || previewTab === SHOW) {
+      changePreviewTab(CLEAR);
+    }
   };
 
   const drop = ({ flag, index }) => ({ flag, index });

@@ -87,7 +87,7 @@ const AssignmentsHeader = styled(Layout.Header)`
 
   @media (max-width: ${largeDesktopWidth}) {
     height: 60px;
-    padding: 0px 30px;
+    padding: 0px 19px 0 30px;
   }
 
   @media screen and (max-width: 768px) {
@@ -111,6 +111,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;

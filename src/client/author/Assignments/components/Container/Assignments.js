@@ -69,7 +69,6 @@ class Assignments extends Component {
     showFilter: false,
     selectedRows: [],
     filterState: initialFilterState,
-    defaultFilters: {},
     isPreviewModalVisible: false,
     currentTestId: ""
   };
@@ -84,30 +83,23 @@ class Assignments extends Component {
       defaultFilters,
       orgData
     } = this.props;
-    const { terms, defaultTermId } = orgData;
-    const { filterState } = this.state;
 
-    let filters = {};
+    const { defaultTermId, terms } = orgData;
+    const filters = {
+      ...defaultFilters,
+      testType: userRole === "district-admin" || userRole === "school-admin" ? "common" : ""
+    };
 
     if (defaultTermId) {
       const defaultTerm = find(terms, ({ _id }) => _id === defaultTermId) || {};
-      filters = { termId: defaultTerm._id || "" };
+      filters.termId = defaultTerm._id || "";
     }
-    filters = {
-      ...filters,
-      testType: userRole === ("district-admin" || userRole === "school-admin") ? "common" : "",
-      ...defaultFilters
-    };
+
     loadAssignments({ filters });
 
     loadFolders();
     loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
-    const newFilterState = {
-      ...filterState,
-      ...filters
-    };
-
-    this.setState({ filterState: newFilterState, defaultFilters: newFilterState });
+    this.setState({ filterState: filters });
   }
 
   setFilterState = filterState => {

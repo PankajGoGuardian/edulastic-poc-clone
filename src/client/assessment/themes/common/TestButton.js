@@ -8,11 +8,10 @@ import { white } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import ButtonLink from "./ButtonLink";
-import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
 const TestButton = ({
   t,
-  checkAnswerEvaluation,
+  checkAnswer,
   settings,
   answerChecksUsedForItem,
   isNonAutoGradable = false,
@@ -22,7 +21,7 @@ const TestButton = ({
   <Container>
     {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
       <StyledButton
-        onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswerEvaluation}
+        onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswer}
         data-cy="checkAnswer"
         title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
       >
@@ -52,17 +51,10 @@ const TestButton = ({
 );
 
 TestButton.propTypes = {
-  t: PropTypes.func.isRequired,
-  checkAnswerEvaluation: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired
 };
 
-const enhance = compose(
-  withNamespaces("student"),
-  connect(
-    null,
-    { checkAnswerEvaluation }
-  )
-);
+const enhance = compose(withNamespaces("student"));
 
 export default enhance(TestButton);
 

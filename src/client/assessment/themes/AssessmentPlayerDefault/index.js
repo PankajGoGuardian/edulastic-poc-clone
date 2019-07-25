@@ -40,7 +40,7 @@ import {
   IPAD_PORTRAIT_WIDTH,
   MAX_MOBILE_WIDTH
 } from "../../constants/others";
-import { checkAnswerAction } from "../../../author/src/actions/testItem";
+import { checkAnswerEvaluation } from "../../actions/checkanswer";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import SvgDraw from "./SvgDraw";
 import Tools from "./Tools";
@@ -105,12 +105,9 @@ class AssessmentPlayerDefault extends React.Component {
   changeTool = val => this.setState({ tool: val });
 
   changeTabItemState = value => {
-    const { checkAnswer, changePreview, answerChecksUsedForItem, settings } = this.props;
+    const { checkAnswer, answerChecksUsedForItem, settings } = this.props;
     if (answerChecksUsedForItem >= settings.maxAnswerChecks) return;
-
     checkAnswer();
-
-    changePreview(value);
     this.setState({ testItemState: value });
   };
 
@@ -255,7 +252,8 @@ class AssessmentPlayerDefault extends React.Component {
       bookmarksInOrder,
       skippedInOrder,
       currentGroupId,
-      LCBPreviewModal
+      LCBPreviewModal,
+      preview
     } = this.props;
 
     const {
@@ -290,8 +288,6 @@ class AssessmentPlayerDefault extends React.Component {
       });
     }
 
-    console.log("bookmarks in order", bookmarksInOrder);
-    console.log("skipped in order", skippedInOrder);
     const scratchPadMode = tool === 5;
     return (
       <ThemeProvider theme={theme}>
@@ -328,7 +324,7 @@ class AssessmentPlayerDefault extends React.Component {
             <ToolbarModal
               isVisible={isToolbarModalVisible}
               onClose={() => this.closeToolbarModal()}
-              checkanswer={() => this.changeTabItemState("check")}
+              checkAnswer={() => this.changeTabItemState("check")}
             />
           </FeaturesSwitch>
           {!previewPlayer && (
@@ -396,7 +392,7 @@ class AssessmentPlayerDefault extends React.Component {
                         answerChecksUsedForItem={answerChecksUsedForItem}
                         settings={settings}
                         isNonAutoGradable={isNonAutoGradable}
-                        checkAnwser={() => this.changeTabItemState("check")}
+                        checkAnswer={() => this.changeTabItemState("check")}
                         toggleBookmark={() => toggleBookmark(item._id)}
                         isBookmarked={isBookmarked}
                       />
@@ -431,6 +427,7 @@ class AssessmentPlayerDefault extends React.Component {
                 <TestItemPreview
                   cols={itemRows}
                   previewTab="check"
+                  preview={preview}
                   evaluation={evaluation}
                   verticalDivider={item.verticalDivider}
                   scrolling={item.scrolling}
@@ -473,12 +470,12 @@ const enhance = compose(
       currentGroupId: getCurrentGroupWithAllClasses(state)
     }),
     {
-      checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,
       saveScratchPad: saveScratchPadAction,
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
-      toggleBookmark: toggleBookmarkAction
+      toggleBookmark: toggleBookmarkAction,
+      checkAnswer: checkAnswerEvaluation
     }
   )
 );

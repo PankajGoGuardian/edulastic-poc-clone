@@ -18,7 +18,8 @@ const AutocompleteDropDown = ({
   selectCB,
   data = [],
   comData,
-  iconType = "caret-down"
+  iconType = "caret-down",
+  onSearch = () => {}
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -81,7 +82,8 @@ const AutocompleteDropDown = ({
     return arr;
   };
 
-  const onSearch = value => {
+  const _onSearch = value => {
+    onSearch(value);
     if (value.length > 2) {
       let regExp = new RegExp(`${value}`, "i");
       let searchedData = data.filter((item, index) => {
@@ -138,7 +140,7 @@ const AutocompleteDropDown = ({
         dataSource={dataSource}
         dropdownClassName={className}
         className={className}
-        onSearch={onSearch}
+        onSearch={_onSearch}
         onBlur={onBlur}
         onFocus={onFocus}
         onSelect={onSelect}

@@ -37,6 +37,10 @@ export const StyledFilterWrapper = styled.div`
     }
   }
 
+  .ant-select {
+    width: 100%;
+  }
+
   .ant-select-auto-complete.ant-select .ant-input {
     background-color: ${lightGreySecondary};
     border-radius: 3px;
@@ -68,6 +72,7 @@ export const StyledFilterWrapper = styled.div`
       font-size: 13px;
       font-weight: 600;
       max-width: 100%;
+      width: 100%;
 
       i {
         color: ${themeColor};

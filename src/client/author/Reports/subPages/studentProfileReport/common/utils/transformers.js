@@ -1,4 +1,4 @@
-import { groupBy, map } from "lodash";
+import { groupBy, map, find } from "lodash";
 
 const getCourses = classData => {
   const groupedByCourse = groupBy(classData, "courseId");
@@ -9,18 +9,22 @@ const getCourses = classData => {
   }));
 };
 
-const getTerms = classData => {
+const getTerms = (classData, terms) => {
   const groupedByTerm = groupBy(classData, "termId");
 
-  return map(groupedByTerm, (term, termId) => ({
-    title: termId,
-    key: termId
-  }));
+  return map(groupedByTerm, (term, termId) => {
+    const { name = "" } = find(terms, term => term._id == termId) || {};
+
+    return {
+      title: name,
+      key: termId
+    };
+  });
 };
 
-export const getFilterOptions = (classData = []) => {
+export const getFilterOptions = (classData = [], terms = []) => {
   const courseOptions = getCourses(classData);
-  const termOptions = getTerms(classData);
+  const termOptions = getTerms(classData, terms);
 
   return {
     courseOptions,

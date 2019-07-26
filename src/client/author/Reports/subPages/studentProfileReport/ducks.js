@@ -17,7 +17,7 @@ export const getReportsSPRSettings = createSelector(
 );
 
 const initialState = {
-  selectedStudent: { key: "5d11b3a138a00c59ea7be6db", title: "" },
+  selectedStudent: { key: "", title: "" },
   requestFilters: {
     termId: "",
     courseId: ""

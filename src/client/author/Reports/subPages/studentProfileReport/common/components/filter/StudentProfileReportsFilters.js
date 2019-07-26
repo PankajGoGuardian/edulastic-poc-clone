@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import qs from "query-string";
 import { connect } from "react-redux";
-import { Row, Col } from "antd";
-import { get, find, groupBy } from "lodash";
+import { Row, Col, AutoComplete } from "antd";
+import { get, find, groupBy, map } from "lodash";
 import { StyledFilterWrapper, PrintablePrefix, StyledGoButton } from "../../../../../common/styled";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
-import { getUserRole } from "../../../../../../src/selectors/user";
+import StudentAutoComplete from "./StudentAutoComplete";
+import { getUserRole, getOrgDataSelector } from "../../../../../../src/selectors/user";
+import { receiveStudentsListAction, getStudentsListSelector } from "../../../../../../Student/ducks.js";
 import {
   getFiltersSelector,
   getStudentSelector,
@@ -25,17 +27,25 @@ const StudentProfileReportsFilters = ({
   SARFilterData,
   location,
   loading,
+  orgData,
+  studentList,
   getSPRFilterDataRequestAction,
-  getStandardsBrowseStandardsRequestAction
+  getStandardsBrowseStandardsRequestAction,
+  receiveStudentsListAction
 }) => {
   const [termId, setTermId] = useState("");
   const [courseId, setCourseId] = useState("");
-  const [selectedStudent, setSelectedStudent] = useState({ key: "5d11b3a138a00c59ea7be6db" });
+  const [selectedStudent, setSelectedStudent] = useState({ key: "" });
 
   const { studentClassData = [] } = get(SARFilterData, "data.result", {});
-  const { termOptions = [], courseOptions = [] } = useMemo(() => {
-    return getFilterOptions(studentClassData);
-  }, [SARFilterData]);
+  const { terms = [] } = orgData;
+  const { termOptions = [], courseOptions = [] } = useMemo(() => getFilterOptions(studentClassData, terms), [
+    SARFilterData,
+    terms
+  ]);
+  const studentOptions = useMemo(() => map(studentList, student => `${student.firstName} ${student.lastName}`), [
+    studentList
+  ]);
 
   const selectedTerm = useMemo(() => find(termOptions, term => term.key === termId) || termOptions[0] || {}, [
     termId,
@@ -48,6 +58,21 @@ const StudentProfileReportsFilters = ({
   );
 
   useEffect(() => {
+    const splittedPath = location.pathname.split("/");
+    const studentId = splittedPath[splittedPath.length - 1];
+
+    const parsedQuery = qs.parse(location.search);
+    const { termId, courseId } = parsedQuery;
+
+    if (studentId) {
+      setTermId(termId);
+      setCourseId(courseId);
+      setSelectedStudent({ key: studentId });
+      onGoClick({ requestFilters: parsedQuery, selectedStudent: { key: studentId } });
+    }
+  }, []);
+
+  useEffect(() => {
     if (studentClassData.length) {
       const groupedGrades = groupBy(studentClassData, "grades");
 
@@ -57,45 +82,46 @@ const StudentProfileReportsFilters = ({
       };
 
       getStandardsBrowseStandardsRequestAction(q);
+
+      // if there is no student name for the selected name extract it from the class data
+      if (!selectedStudent.title) {
+        const classRecord = studentClassData[0];
+        setSelectedStudent({
+          ...selectedStudent,
+          title: `${classRecord.firstName} ${classRecord.lastName}`
+        });
+      }
     }
   }, [studentClassData]);
 
   useEffect(() => {
-    const parsedQuery = qs.parse(location.search);
-    const { termId, courseId } = parsedQuery;
-
-    if (termId || courseId) {
-      setTermId(termId);
-      setCourseId(courseId);
-      onGoClick({ requestFilters: parsedQuery, selectedStudent });
+    if (selectedStudent.key) {
+      const q = {
+        termId,
+        courseId,
+        studentId: selectedStudent.key
+      };
+      getSPRFilterDataRequestAction(q);
     }
-  }, []);
-
-  const fetchFilters = () => {
-    const q = {
-      termId,
-      courseId,
-      studentId: selectedStudent.key
-    };
-    getSPRFilterDataRequestAction(q);
-  };
-
-  useEffect(() => {
-    fetchFilters();
   }, [selectedStudent.key, termId]);
 
-  const onFilterApply = () => {
-    onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
-  };
-
+  const onFilterApply = () => onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
   const onUpdateTerm = ({ key }) => setTermId(key);
   const onUpdateCourse = ({ key }) => setCourseId(key);
+  const onStudentSelect = item => {
+    setSelectedStudent(item);
+    onGoClick({ requestFilters: { termId, courseId }, selectedStudent: item });
+  };
 
   return (
     <div className={className} style={style}>
       <StyledFilterWrapper>
         <Row type="flex" className="single-assessment-report-top-filter">
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
+            <PrintablePrefix>School Year</PrintablePrefix>
+            <StudentAutoComplete selectCB={onStudentSelect} selectedStudent={selectedStudent} />
+          </Col>
+          <Col xs={12} sm={12} md={7} lg={7} xl={7}>
             <PrintablePrefix>School Year</PrintablePrefix>
             <ControlDropDown
               by={selectedTerm}
@@ -105,7 +131,7 @@ const StudentProfileReportsFilters = ({
               showPrefixOnSelected={false}
             />
           </Col>
-          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          <Col xs={12} sm={12} md={8} lg={8} xl={8}>
             <PrintablePrefix>Subject</PrintablePrefix>
             <ControlDropDown
               by={selectedCourse}
@@ -115,7 +141,7 @@ const StudentProfileReportsFilters = ({
               showPrefixOnSelected={false}
             />
           </Col>
-          <Col>
+          <Col xs={12} sm={12} md={1} lg={1} xl={1}>
             <StyledGoButton type="primary" onClick={onFilterApply}>
               Go
             </StyledGoButton>
@@ -133,10 +159,13 @@ const enhance = connect(
     student: getStudentSelector(state),
     role: getUserRole(state),
     prevSARFilterData: getReportsPrevSPRFilterData(state),
-    loading: getReportsSPRFilterLoadingState(state)
+    loading: getReportsSPRFilterLoadingState(state),
+    orgData: getOrgDataSelector(state),
+    studentList: getStudentsListSelector(state)
   }),
   {
     getSPRFilterDataRequestAction,
+    receiveStudentsListAction,
     getStandardsBrowseStandardsRequestAction,
     setFiltersAction
   }

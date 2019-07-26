@@ -175,7 +175,7 @@ export const MainContainer = styled.div`
 
   .ant-select-selection {
     &__rendered {
-      margin-left: 0;
+      // margin-left: 0;
     }
     &__choice {
       height: 24px !important;

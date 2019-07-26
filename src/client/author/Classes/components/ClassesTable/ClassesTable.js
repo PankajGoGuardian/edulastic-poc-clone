@@ -95,7 +95,7 @@ class ClassesTable extends Component {
       },
       currentPage: 1,
       selectedArchiveClasses: [],
-      showActiveClassCheckbox: true,
+      showActive: true,
       disableActiveUsers: false
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
@@ -339,14 +339,14 @@ class ClassesTable extends Component {
 
   getSearchQuery = () => {
     const { loadClassListData, userOrgId } = this.props;
-    const { filtersData, searchByName, currentPage, showActiveClassCheckbox, disableActiveUsers } = this.state;
+    const { filtersData, searchByName, currentPage, showActive, disableActiveUsers } = this.state;
     const search = {};
 
     if (searchByName.length > 0) {
       search.name = searchByName;
     }
 
-    if (!disableActiveUsers && showActiveClassCheckbox) {
+    if (!disableActiveUsers && showActive) {
       search.active = 1;
     }
 
@@ -386,6 +386,10 @@ class ClassesTable extends Component {
   loadFilteredList = () => {
     const { loadClassListData } = this.props;
     loadClassListData(this.getSearchQuery());
+  };
+
+  onChangeShowActive = e => {
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
   changeActionMode = e => {
@@ -542,7 +546,7 @@ class ClassesTable extends Component {
       editClassKey,
       currentPage,
       selectedArchiveClasses,
-      showActiveClassCheckbox,
+      showActive,
       disableActiveUsers
     } = this.state;
 
@@ -676,15 +680,8 @@ class ClassesTable extends Component {
           <Checkbox
             disabled={disableActiveUsers}
             style={{ margin: "auto" }}
-            value={showActiveClassCheckbox}
-            onChange={evt =>
-              this.setState(
-                {
-                  showActiveClassCheckbox: evt.target.checked
-                },
-                this.loadFilteredList
-              )
-            }
+            value={showActive}
+            onChange={this.onChangeShowActive}
           >
             Show Active Classes
           </Checkbox>

@@ -67,6 +67,7 @@ class DistrictAdminTable extends Component {
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
 
+      showActive: 1,
       searchByName: "",
       filtersData: [
         {
@@ -115,9 +116,10 @@ class DistrictAdminTable extends Component {
   }
 
   componentDidMount() {
-    const { loadAdminData, setRole } = this.props;
-    setRole("district-admin");
-    loadAdminData();
+    // const { loadAdminData, setRole } = this.props;
+    // setRole("district-admin");
+    // loadAdminData();
+    this.loadFilteredList();
   }
 
   static getDerivedStateFromProps(nextProps, state) {
@@ -130,12 +132,12 @@ class DistrictAdminTable extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { loadAdminData, showActiveUsers, pageNo } = this.props;
-    // here when the showActiveUsers checkbox is toggled, or the page number changes,
-    // an api call is fired to get the data
-    if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
-      loadAdminData();
-    }
+    // const { loadAdminData, showActiveUsers, pageNo } = this.props;
+    // // here when the showActiveUsers checkbox is toggled, or the page number changes,
+    // // an api call is fired to get the data
+    // if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
+    //   loadAdminData();
+    // }
   }
 
   onEditDistrictAdmin = key => {
@@ -214,10 +216,10 @@ class DistrictAdminTable extends Component {
     });
   };
 
-  handleSearchName = evt => {
+  handleSearchName = value => {
     // const { setSearchName } = this.props;
     // setSearchName(evt.target.value);
-    this.setState({ searchByName: e }, this.loadFilteredList);
+    this.setState({ searchByName: value }, this.loadFilteredList);
   };
 
   // ************
@@ -283,21 +285,65 @@ class DistrictAdminTable extends Component {
   };
 
   changeFilterValue = (value, key) => {
+    console.log("value", value);
+    console.log("value", key);
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
           ...item,
-          filterValue: value
+          filtersValue: value
         };
       }
       return item;
     });
+    console.log("_filtersData", _filtersData);
     this.setState({ filtersData: _filtersData });
 
     // if (filtersData[key].filterAdded) {
     //   const { sortedInfo, searchByName, currentPage } = this.state;
     //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
     // }
+  };
+
+  onChangeShowActive = e => {
+    this.setState({ showActive: e.target.checked ? 1 : 0 }, this.loadFilteredList);
+  };
+
+  addFilter = (e, key) => {
+    const { filtersData } = this.state;
+    if (filtersData.length < 3) {
+      this.setState({
+        filtersData: [
+          ...filtersData,
+          {
+            filtersColumn: "",
+            filtersValue: "",
+            filterStr: "",
+            prevFilterStr: "",
+            filterAdded: false
+          }
+        ]
+      });
+    }
+  };
+
+  removeFilter = (e, key) => {
+    debugger;
+    console.log("e", e);
+    console.log("key", key);
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    let newFiltersData = [];
+    if (filtersData.length === 1) {
+      newFiltersData.push({
+        filterAdded: false,
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: ""
+      });
+    } else {
+      newFiltersData = filtersData.filter((item, index) => index != key);
+    }
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
   };
 
   getSearchQuery = () => {
@@ -307,16 +353,21 @@ class DistrictAdminTable extends Component {
     let search = {};
     for (let [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
-      search[filtersColumn] = { type: filtersValue, value: filterStr };
+      if (filterStr) {
+        search[filtersColumn] = { type: filtersValue, value: filterStr };
+      }
     }
-    search[name] = { type: "cont", value: searchByName };
+    if (searchByName) {
+      search["firstName"] = { type: "cont", value: searchByName };
+    }
 
     return {
       districtId: userOrgId,
-      role: "teacher",
+      role: "district-admin",
       limit: 25,
-      // page:
-      // status:
+      page: 1,
+      // uncomment after elastic search is fixed
+      // status: this.state.showActive,
       search
     };
   };
@@ -389,7 +440,7 @@ class DistrictAdminTable extends Component {
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
-          <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
+          <Checkbox checked={this.state.showActive} onChange={this.onChangeShowActive}>
             Show current users only
           </Checkbox>
           <StyledActionDropDown overlay={actionMenu}>
@@ -408,7 +459,7 @@ class DistrictAdminTable extends Component {
               <StyledFilterSelect
                 placeholder="Select a column"
                 onChange={e => this.changeFilterColumn(e, i)}
-                value={filtersColumn}
+                value={filtersColumn ? filtersColumn : undefined}
               >
                 <Option value="other" disabled={true}>
                   Select a column
@@ -418,8 +469,8 @@ class DistrictAdminTable extends Component {
               </StyledFilterSelect>
               <StyledFilterSelect
                 placeholder="Select a value"
-                onChange={e => changeFilterValue(e, i)}
-                value={filtersValue}
+                onChange={e => this.changeFilterValue(e, i)}
+                value={filtersValue ? filtersValue : undefined}
               >
                 <Option value="" disabled={true}>
                   Select a value
@@ -432,7 +483,7 @@ class DistrictAdminTable extends Component {
                 onChange={e => this.changeFilterText(e, i)}
                 onSearch={(v, e) => this.onSearchFilter(v, e, i)}
                 onBlur={e => this.onBlurFilterText(e, i)}
-                value={filterStr}
+                value={filterStr ? filterStr : undefined}
                 disabled={isFilterTextDisable}
                 innerRef={this.filterTextInputRef[i]}
                 // onSearch={loadAdminData}
@@ -440,7 +491,7 @@ class DistrictAdminTable extends Component {
               {i < 2 && (
                 <StyledAddFilterButton
                   type="primary"
-                  onClick={e => addFilter(e, i)}
+                  onClick={e => this.addFilter(e, i)}
                   disabled={isAddFilterDisable || i < filtersData.length - 1}
                 >
                   + Add Filter
@@ -450,7 +501,7 @@ class DistrictAdminTable extends Component {
                 <StyledAddFilterButton
                   type="primary"
                   onClick={e => {
-                    removeFilter(e, i);
+                    this.removeFilter(e, i);
                     // loadAdminData();
                   }}
                 >

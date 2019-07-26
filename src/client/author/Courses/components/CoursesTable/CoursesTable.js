@@ -64,7 +64,7 @@ class CoursesTable extends React.Component {
         order: "asc"
       },
       currentPage: 1,
-      isShowActive: true,
+      showActive: true,
       searchData: {}
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
@@ -302,7 +302,7 @@ class CoursesTable extends React.Component {
 
   updateCourse = updatedCourseData => {
     const { updateCourse, userOrgId } = this.props;
-    const { dataSource, editCourseKey, filtersData, sortedInfo, searchByName, currentPage, isShowActive } = this.state;
+    const { dataSource, editCourseKey, filtersData, sortedInfo, searchByName, currentPage, showActive } = this.state;
     const selectedSourceKey = dataSource.filter(item => item.key == editCourseKey);
 
     let search = {};
@@ -330,7 +330,7 @@ class CoursesTable extends React.Component {
       search
     };
 
-    if (isShowActive) loadListJsonData.active = 1;
+    if (showActive) loadListJsonData.active = 1;
 
     updateCourse({
       uploadCSVData: {
@@ -365,7 +365,7 @@ class CoursesTable extends React.Component {
 
   loadFilteredList(filtersData, sortedInfo, searchByName, currentPage, isActive) {
     const { loadCourseListData, userOrgId } = this.props;
-    if (isActive === undefined) isActive = this.state.isShowActive;
+    if (isActive === undefined) isActive = this.state.showActive;
 
     let search = {};
 
@@ -397,9 +397,9 @@ class CoursesTable extends React.Component {
     loadCourseListData(loadListJsonData);
   }
 
-  changeShowActiveCourse = e => {
+  onChangeShowActive = e => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    this.setState({ isShowActive: e.target.checked });
+    this.setState({ showActive: e.target.checked });
     this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage, e.target.checked);
   };
 
@@ -419,7 +419,7 @@ class CoursesTable extends React.Component {
       filtersData,
       sortedInfo,
       currentPage,
-      isShowActive,
+      showActive,
       searchData
     } = this.state;
 
@@ -600,7 +600,7 @@ class CoursesTable extends React.Component {
           </Button>
 
           <StyledNameSearch placeholder="Search by name" onSearch={this.handleSearchName} />
-          <StyledActiveCheckbox defaultChecked={isShowActive} onChange={this.changeShowActiveCourse}>
+          <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
             Show active courses only
           </StyledActiveCheckbox>
           <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>

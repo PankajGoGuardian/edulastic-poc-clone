@@ -5,11 +5,11 @@ import { get } from "lodash";
 import { Form, Icon, Collapse, Spin } from "antd";
 import { IconUser } from "@edulastic/icons";
 
+import { enrollmentApi } from "@edulastic/api";
 import BasicFields from "./BasicFields";
 import AdditionalFields from "./AdditionalFields";
 import { StyledModal, Title, ActionButton, PanelHeader } from "./styled";
 import { getUserOrgData } from "../../../../src/selectors/user";
-import { enrollmentApi } from "@edulastic/api";
 
 const { Panel } = Collapse;
 class AddStudentModal extends React.Component {
@@ -107,7 +107,7 @@ class AddStudentModal extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer}>
+      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer} textAlign="left">
         <Spin spinning={submitted}>
           <Form>
             <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">

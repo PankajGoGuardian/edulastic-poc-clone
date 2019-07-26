@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { get, isEmpty } from "lodash";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
+import { themeColorLight } from "@edulastic/colors";
+import { Spin, Modal, Input, message } from "antd";
 import {
   fetchStudentsByIdAction,
   syncClassUsingCodeAction,
@@ -12,7 +14,6 @@ import {
 } from "../../ducks";
 
 import { archiveClassAction } from "../../../Classes/ducks";
-import { Spin, Modal, Input, message } from "antd";
 
 import Header from "./Header";
 import SubHeader from "./SubHeader";
@@ -20,7 +21,6 @@ import ActionContainer from "./ActionContainer";
 import StudentsList from "./StudentsList";
 import MainInfo from "./MainInfo";
 import { Container, StyledDivider, ButtonWrapper, ButtonRightWrapper, StyledButton } from "./styled";
-import { themeColorLight } from "@edulastic/colors";
 
 const ClassDetails = ({
   selectedClass,

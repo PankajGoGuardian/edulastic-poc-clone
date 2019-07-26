@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import GoogleClassRoomImg from "../../../../../../assets/images/google-classroom.png";
 import { CreateCardBox, CreateClassButton, SyncClassDiv, SyncImg } from "./styled";
 import GoogleLogin from "react-google-login";
-const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassList }) => {
+const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassList, history }) => {
   const scopes = [
     "https://www.googleapis.com/auth/classroom.courses",
     "https://www.googleapis.com/auth/classroom.rosters",
@@ -20,6 +20,7 @@ const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassLis
 
   const handleLoginSucess = data => {
     fetchClassList({ data });
+    history.push("/author/manageClass");
   };
 
   const handleError = err => {

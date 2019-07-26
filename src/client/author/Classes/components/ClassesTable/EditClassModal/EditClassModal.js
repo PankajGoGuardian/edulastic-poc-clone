@@ -35,9 +35,8 @@ class EditClassModal extends Component {
 
   render() {
     const { modalVisible, selClassData, schoolsData, teacherList } = this.props;
-    const { _source: { owners = [], name, subject, institutionId, grades, tags, endDate } = {} } = selClassData;
+    const { _source: { owners = [], name, subject, institutionName, grades, tags, endDate } = {} } = selClassData;
     const ownersData = owners.map(row => row.id);
-
     const schoolsOptions = [];
     if (schoolsData.length !== undefined) {
       schoolsData.map((row, index) => {
@@ -180,7 +179,7 @@ class EditClassModal extends Component {
                     message: "Please select school"
                   }
                 ],
-                initialValue: institutionId
+                initialValue: institutionName
               })(<Select placeholder="Select School">{schoolsOptions}</Select>)}
             </ModalFormItem>
           </Col>

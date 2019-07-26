@@ -57,6 +57,7 @@ class CorrectAnswers extends Component {
           marginLeft: 20
         }}
         icon={<IconPlus fill="#fff" />}
+        disabled={validation.mixAndMatch}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           onAddAltResponses();
@@ -214,9 +215,9 @@ CorrectAnswers.propTypes = {
   hasGroupResponses: PropTypes.bool,
   onRemoveAltResponses: PropTypes.func,
   configureOptions: PropTypes.object.isRequired,
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.bool.isRequired,
   uiStyle: PropTypes.object,
-  fillSections: PropTypes.func,
-  cleanSections: PropTypes.func,
   responseIds: PropTypes.object
 };
 
@@ -234,9 +235,7 @@ CorrectAnswers.defaultProps = {
     widthpx: 0,
     heightpx: 0,
     placeholder: ""
-  },
-  fillSections: () => {},
-  cleanSections: () => {}
+  }
 };
 
 const enhance = compose(

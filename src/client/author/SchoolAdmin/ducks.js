@@ -102,19 +102,19 @@ const initialState = {
   delete: null,
   deleting: false,
   deleteError: null,
-  searchName: "",
-  filtersColumn: "",
-  filtersValue: "",
-  filtersText: "",
+  // searchName: "",
+  // filtersColumn: "",
+  // filtersValue: "",
+  // filtersText: "",
   showActiveUsers: true,
-  pageNo: 1,
-  filters: {
-    other: {
-      type: "",
-      value: ""
-    }
-  },
-  role: ""
+  pageNo: 1
+  // filters: {
+  //   other: {
+  //     type: "",
+  //     value: ""
+  //   }
+  // },
+  // role: ""
 };
 
 export const reducer = createReducer(initialState, {
@@ -205,34 +205,34 @@ export const reducer = createReducer(initialState, {
 });
 
 // sagas
-function* receiveSchoolAdminSaga() {
+function* receiveSchoolAdminSaga({ payload }) {
   try {
-    const showActiveUsers = yield select(getShowActiveUsersSelector);
-    const districtId = yield select(getUserOrgId);
-    const page = yield select(getPageNoSelector);
-    const role = yield select(getRoleSelector);
-    const { other, ...rest } = yield select(getFiltersSelector);
-    const searchValue = yield select(getSearchValueSelector);
-    const searchParams = searchValue
-      ? {
-          firstName: {
-            type: "cont",
-            value: searchValue
-          }
-        }
-      : {};
-    const statusParams = showActiveUsers ? { status: 1 } : {};
-    const payload = {
-      districtId,
-      role,
-      limit: 25,
-      page,
-      ...statusParams,
-      search: {
-        ...searchParams,
-        ...rest
-      }
-    };
+    // const showActiveUsers = yield select(getShowActiveUsersSelector);
+    // const districtId = yield select(getUserOrgId);
+    // const page = yield select(getPageNoSelector);
+    // const role = yield select(getRoleSelector);
+    // const { other, ...rest } = yield select(getFiltersSelector);
+    // const searchValue = yield select(getSearchValueSelector);
+    // const searchParams = searchValue
+    //   ? {
+    //       firstName: {
+    //         type: "cont",
+    //         value: searchValue
+    //       }
+    //     }
+    //   : {};
+    // const statusParams = showActiveUsers ? { status: 1 } : {};
+    // const payload = {
+    //   districtId,
+    //   role,
+    //   limit: 25,
+    //   page,
+    //   ...statusParams,
+    //   search: {
+    //     ...searchParams,
+    //     ...rest
+    //   }
+    // };
     const data = yield call(userApi.fetchUsers, payload);
     yield put(receiveSchoolAdminSuccessAction(data));
   } catch (err) {

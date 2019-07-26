@@ -46,6 +46,30 @@ import { receiveTeachersListAction, getTeachersListSelector } from "../../../Tea
 
 const { Option } = Select;
 
+const gradeOptions = [];
+gradeOptions.push({ title: "Kindergarten", value: "K", disabled: false });
+for (let i = 1; i <= 12; i++) gradeOptions.push({ title: `Grade ${i}`, value: i + "", disabled: false });
+gradeOptions.push({ title: "Other", value: "O", disabled: false });
+
+const filterStrDD = {
+  subjects: {
+    list: [
+      { title: "Select a subject", value: "", disabled: true },
+      { title: "Mathematics", value: "Mathematics", disabled: false },
+      { title: "ELA", value: "ELA", disabled: false },
+      { title: "Science", value: "Science", disabled: false },
+      { title: "Social Studies", value: "Social Studies", disabled: false },
+      { title: "Other Subjects", value: "Other Subjects", disabled: false }
+    ],
+    placeholder: "Select a subject"
+  },
+  grades: { list: gradeOptions, placeholder: "Select a grade" },
+  active: {
+    list: [{ title: "Active", value: 1, disabled: false }, { title: "Archived", value: 0, disabled: false }],
+    placeholder: "Select a value"
+  }
+};
+
 class ClassesTable extends Component {
   constructor(props) {
     super(props);
@@ -71,7 +95,7 @@ class ClassesTable extends Component {
       },
       currentPage: 1,
       selectedArchiveClasses: [],
-      showActiveClassCheckbox: true,
+      showActive: true,
       disableActiveUsers: false
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
@@ -103,7 +127,7 @@ class ClassesTable extends Component {
   //     sortedInfo.order = sortedInfo.columnKey === "status" ? "desc" : "asc";
   //   }
   //   this.setState({ sortedInfo });
-  //   this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
+  //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
   // };
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -155,25 +179,6 @@ class ClassesTable extends Component {
     });
   };
 
-  changeFilterColumn = (value, key) => {
-    // here we need to use cloneDeep since a simple spread operator mutates the state
-    const filtersData = cloneDeep(this.state.filtersData);
-    filtersData[key].filtersColumn = value;
-
-    if (value === "subjects" || value === "grades" || value === "active") filtersData[key].filtersValue = "eq";
-    // here we check if the filter chosen is active or if the previous value held by the select was active
-    // then according to this, we either disable or enable the checkbox
-    if (value === "active" || this.state.filtersData[key].filtersColumn === "active") {
-      this.setState(
-        {
-          disableActiveUsers: value === "active",
-          filtersData
-        },
-        () => this.afterSetState(key)
-      );
-    } else this.setState({ filtersData }, () => this.afterSetState(key)); // this is done so that we dont have multiple set states and we can avoid two renders
-  };
-
   afterSetState = key => {
     const { filtersColumn, filtersValue, filterStr } = this.state.filtersData[key];
     if (
@@ -183,188 +188,17 @@ class ClassesTable extends Component {
       filterStr !== "" // here because 0 can be a value too for "active" select
     ) {
       // const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredClassList();
+      this.loadFilteredList();
     }
-  };
-
-  changeFilterValue = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return {
-          ...item,
-          filtersValue: value
-        };
-      }
-      return item;
-    });
-
-    this.setState({ filtersData: _filtersData }, () => this.afterSetState(key));
-  };
-
-  onSearchFilter = (value, event, i) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === i) {
-        return {
-          ...item,
-          filterAdded: value ? true : false
-        };
-      }
-      return item;
-    });
-
-    // For some unknown reason till now calling blur() synchronously doesnt work.
-    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
-  };
-
-  onBlurFilterText = (event, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return {
-          ...item,
-          filterAdded: event.target.value ? true : false
-        };
-      }
-      return item;
-    });
-    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredClassList);
-  };
-
-  changeFilterText = (e, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return {
-          ...item,
-          filterStr: e.target.value
-        };
-      }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
-
-  changeStatusValue = (value, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return {
-          ...item,
-          filterStr: value,
-          filterAdded: value ? true : false
-        };
-      }
-      return item;
-    });
-
-    this.setState({ filtersData: _filtersData }, () => this.afterSetState(key));
-  };
-
-  addFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    if (filtersData.length < 3) {
-      this.setState(
-        state => ({
-          filtersData: [
-            ...state.filtersData,
-            {
-              filtersColumn: "",
-              filtersValue: "",
-              filterStr: "",
-              filterAdded: false
-            }
-          ]
-        }),
-        this.loadFilteredClassList
-      );
-    }
-  };
-
-  removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    let newFiltersData = [];
-    if (filtersData.length === 1) {
-      newFiltersData.push({
-        filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
-    } else {
-      newFiltersData = filtersData.filter((item, index) => index !== key);
-    }
-    // here we check if the filter we are removing is the active filter, then we enable the checkbox back
-    if (filtersData[key].filtersColumn === "active") {
-      this.setState(
-        {
-          filtersData: newFiltersData,
-          disableActiveUsers: false
-        },
-        this.loadFilteredClassList
-      );
-    } else this.setState({ filtersData: newFiltersData }, this.loadFilteredClassList);
-
-    // this.loadFilteredClassList(newFiltersData, sortedInfo, searchByName, currentPage);
-  };
-
-  handleSearchName = e => {
-    const { filtersData, sortedInfo, currentPage } = this.state;
-    this.setState({ searchByName: e }, this.loadFilteredClassList);
-    // this.loadFilteredClassList(filtersData, sortedInfo, e, currentPage);
   };
 
   changePagination = pageNumber => {
     const { filtersData, sortedInfo, searchByName } = this.state;
-    this.setState({ currentPage: pageNumber }, this.loadFilteredClassList);
-    // this.loadFilteredClassList(filtersData, sortedInfo, searchByName, pageNumber);
+    this.setState({ currentPage: pageNumber }, this.loadFilteredList);
   };
 
-  getSearchQuery = () => {
-    const { loadClassListData, userOrgId } = this.props;
-    const { filtersData, searchByName, currentPage, showActiveClassCheckbox, disableActiveUsers } = this.state;
-    const search = {};
-
-    if (searchByName.length > 0) {
-      search.name = searchByName;
-    }
-
-    if (!disableActiveUsers && showActiveClassCheckbox) {
-      search.active = 1;
-    }
-
-    for (let i = 0; i < filtersData.length; i++) {
-      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
-      if (
-        filtersColumn &&
-        filtersValue &&
-        filterStr !== "" // here because 0 can be a value too for "active" select
-      ) {
-        if (filtersColumn === "active") {
-          search[filtersColumn] = filterStr;
-        } else {
-          if (!search[filtersColumn]) {
-            search[filtersColumn] = [];
-          }
-          if (filtersColumn === "grades" || filtersColumn === "subjects") {
-            search[filtersColumn].push(filterStr);
-          } else {
-            search[filtersColumn].push({
-              type: filtersValue,
-              value: filterStr
-            });
-          }
-        }
-        // search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
-      }
-    }
-    return {
-      districtId: userOrgId,
-      limit: 25,
-      page: currentPage,
-      search
-    };
-  };
-
-  loadFilteredClassList = () => {
-    const { loadClassListData } = this.props;
-    loadClassListData(this.getSearchQuery());
+  onChangeShowActive = e => {
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
   changeActionMode = e => {
@@ -449,6 +283,195 @@ class ClassesTable extends Component {
     this.props.bulkUpdateClasses(_obj);
   };
 
+  // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+  handleSearchName = value => {
+    const { filtersData, sortedInfo, currentPage } = this.state;
+    this.setState({ searchByName: value }, this.loadFilteredList);
+  };
+
+  onSearchFilter = (value, event, i) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === i) {
+        return {
+          ...item,
+          filterAdded: value ? true : false
+        };
+      }
+      return item;
+    });
+
+    // For some unknown reason till now calling blur() synchronously doesnt work.
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
+  };
+
+  onBlurFilterText = (event, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: event.target.value ? true : false
+        };
+      }
+      return item;
+    });
+    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
+  };
+
+  changeStatusValue = (value, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: value,
+          filterAdded: value ? true : false
+        };
+      }
+      return item;
+    });
+
+    this.setState({ filtersData: _filtersData }, () => this.afterSetState(key));
+  };
+
+  changeFilterText = (e, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+  };
+
+  changeFilterColumn = (value, key) => {
+    // here we need to use cloneDeep since a simple spread operator mutates the state
+    const filtersData = cloneDeep(this.state.filtersData);
+    filtersData[key].filtersColumn = value;
+
+    if (value === "subjects" || value === "grades" || value === "active") filtersData[key].filtersValue = "eq";
+    // here we check if the filter chosen is active or if the previous value held by the select was active
+    // then according to this, we either disable or enable the checkbox
+    if (value === "active" || this.state.filtersData[key].filtersColumn === "active") {
+      this.setState(
+        {
+          disableActiveUsers: value === "active",
+          filtersData
+        },
+        () => this.afterSetState(key)
+      );
+    } else this.setState({ filtersData }, () => this.afterSetState(key)); // this is done so that we dont have multiple set states and we can avoid two renders
+  };
+
+  changeFilterValue = (value, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filtersValue: value
+        };
+      }
+      return item;
+    });
+
+    this.setState({ filtersData: _filtersData }, () => this.afterSetState(key));
+  };
+
+  addFilter = (e, key) => {
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    if (filtersData.length < 3) {
+      this.setState(state => ({
+        filtersData: [
+          ...state.filtersData,
+          {
+            filtersColumn: "",
+            filtersValue: "",
+            filterStr: "",
+            filterAdded: false
+          }
+        ]
+      }));
+    }
+  };
+
+  removeFilter = (e, key) => {
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    let newFiltersData = [];
+    if (filtersData.length === 1) {
+      newFiltersData.push({
+        filterAdded: false,
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: ""
+      });
+    } else {
+      newFiltersData = filtersData.filter((item, index) => index !== key);
+    }
+    // here we check if the filter we are removing is the active filter, then we enable the checkbox back
+    if (filtersData[key].filtersColumn === "active") {
+      this.setState(
+        {
+          filtersData: newFiltersData,
+          disableActiveUsers: false
+        },
+        this.loadFilteredList
+      );
+    } else this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
+  };
+
+  getSearchQuery = () => {
+    const { loadClassListData, userOrgId } = this.props;
+    const { filtersData, searchByName, currentPage, showActive, disableActiveUsers } = this.state;
+    const search = {};
+
+    if (searchByName.length > 0) {
+      search.name = searchByName;
+    }
+
+    if (!disableActiveUsers && showActive) {
+      search.active = 1;
+    }
+
+    for (let i = 0; i < filtersData.length; i++) {
+      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      if (
+        filtersColumn &&
+        filtersValue &&
+        filterStr !== "" // here because 0 can be a value too for "active" select
+      ) {
+        if (filtersColumn === "active") {
+          search[filtersColumn] = filterStr;
+        } else {
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = [];
+          }
+          if (filtersColumn === "grades" || filtersColumn === "subjects") {
+            search[filtersColumn].push(filterStr);
+          } else {
+            search[filtersColumn].push({
+              type: filtersValue,
+              value: filterStr
+            });
+          }
+        }
+        // search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+      }
+    }
+    return {
+      districtId: userOrgId,
+      limit: 25,
+      page: currentPage,
+      search
+    };
+  };
+
+  loadFilteredList = () => {
+    const { loadClassListData } = this.props;
+    loadClassListData(this.getSearchQuery());
+  };
+  // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
+
   render() {
     const columnsData = [
       {
@@ -525,7 +548,7 @@ class ClassesTable extends Component {
       editClassKey,
       currentPage,
       selectedArchiveClasses,
-      showActiveClassCheckbox,
+      showActive,
       disableActiveUsers
     } = this.state;
 
@@ -557,11 +580,6 @@ class ClassesTable extends Component {
       </Menu>
     );
 
-    const gradeOptions = [];
-    gradeOptions.push(<Option value={"K"}>Kindergarten</Option>);
-    for (let i = 1; i <= 12; i++) gradeOptions.push(<Option value={i.toString()}>Grade {i}</Option>);
-    gradeOptions.push(<Option value="O">Other</Option>);
-
     const SearchRows = [];
     for (let i = 0; i < filtersData.length; i++) {
       const { filtersColumn, filtersValue, filterStr, filterAdded } = filtersData[i];
@@ -572,7 +590,11 @@ class ClassesTable extends Component {
       if (filtersColumn === "subjects" || filtersColumn === "grades" || filtersColumn === "active") {
         optValues.push(<Option value="eq">Equals</Option>);
       } else {
-        optValues.push(<Option value="">Select a value</Option>);
+        optValues.push(
+          <Option value="" disabled={true}>
+            Select a value
+          </Option>
+        );
         optValues.push(<Option value="equals">Equals</Option>);
         optValues.push(<Option value="contains">Contains</Option>);
       }
@@ -584,7 +606,9 @@ class ClassesTable extends Component {
             onChange={e => this.changeFilterColumn(e, i)}
             value={filtersColumn}
           >
-            <Option value="">Select a column</Option>
+            <Option value="" disabled={true}>
+              Select a column
+            </Option>
             <Option value="codes">Class Code</Option>
             <Option value="courses">Course</Option>
             <Option value="teachers">Teacher</Option>
@@ -593,7 +617,6 @@ class ClassesTable extends Component {
             <Option value="institutionNames">School Name</Option>
             <Option value="active">Status</Option>
           </StyledFilterSelect>
-
           <StyledFilterSelect
             placeholder="Select a value"
             onChange={e => this.changeFilterValue(e, i)}
@@ -601,40 +624,18 @@ class ClassesTable extends Component {
           >
             {optValues}
           </StyledFilterSelect>
-          {filtersColumn === "subjects" ? (
+          {filterStrDD[filtersColumn] ? (
             <StyledFilterSelect
-              placeholder="Select a value"
+              placeholder={filterStrDD[filtersColumn].placeholder}
               onChange={e => this.changeStatusValue(e, i)}
               disabled={isFilterTextDisable}
               value={filterStr}
             >
-              <Option value="" disabled={true}>
-                Select a subject
-              </Option>
-              <Option value="Mathematics">Mathematics</Option>
-              <Option value="ELA">ELA</Option>
-              <Option value="Science">Science</Option>
-              <Option value="Social Studies">Social Studies</Option>
-              <Option value="Other Subjects">Other Subjects</Option>
-            </StyledFilterSelect>
-          ) : filtersColumn === "grades" ? (
-            <StyledFilterSelect
-              placeholder="Select a grade"
-              onChange={e => this.changeStatusValue(e, i)}
-              disabled={isFilterTextDisable}
-              value={filterStr}
-            >
-              {gradeOptions}
-            </StyledFilterSelect>
-          ) : filtersColumn === "active" ? (
-            <StyledFilterSelect
-              placeholder="Select a value"
-              onChange={e => this.changeStatusValue(e, i)}
-              disabled={isFilterTextDisable}
-              value={filterStr}
-            >
-              <Option value={1}>Active</Option>
-              <Option value={0}>Archived</Option>
+              {filterStrDD[filtersColumn].list.map(item => (
+                <Option value={item.value} disabled={item.disabled}>
+                  {item.title}
+                </Option>
+              ))}
             </StyledFilterSelect>
           ) : (
             <StyledFilterInput
@@ -656,7 +657,7 @@ class ClassesTable extends Component {
               + Add Filter
             </StyledFilterButton>
           )}
-          {filtersData.length > 1 && (
+          {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
             <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
             </StyledFilterButton>
@@ -675,15 +676,8 @@ class ClassesTable extends Component {
           <Checkbox
             disabled={disableActiveUsers}
             style={{ margin: "auto" }}
-            value={showActiveClassCheckbox}
-            onChange={evt =>
-              this.setState(
-                {
-                  showActiveClassCheckbox: evt.target.checked
-                },
-                this.loadFilteredClassList
-              )
-            }
+            value={showActive}
+            onChange={this.onChangeShowActive}
           >
             Show Active Classes
           </Checkbox>

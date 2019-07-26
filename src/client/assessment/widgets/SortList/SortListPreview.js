@@ -195,7 +195,8 @@ const SortListPreview = ({
     fontSize,
     padding: smallSize,
     boxShadow: smallSize ? "none" : "",
-    overflow: "auto"
+    overflowX: "auto",
+    overflowY: "hidden"
   };
 
   return (

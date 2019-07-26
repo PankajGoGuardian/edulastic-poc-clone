@@ -1,5 +1,6 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { Col, Select, Input } from "antd";
 import { isObject } from "lodash";
@@ -34,6 +35,31 @@ const defaultNumberPad = [
   "\\div"
 ];
 class KeyPadOptions extends Component {
+  componentDidMount = () => {
+    const { fillSections, t, setKeyPadOffest } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
+    setKeyPadOffest(node.offsetTop);
+  };
+
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t, setKeyPadOffest } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
+      setKeyPadOffest(node.offsetTop);
+    }
+  }
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
+
   getNumberPad = isCustom => {
     const { item, onChange, t } = this.props;
     if (!item.numberPad || !item.numberPad.length) {
@@ -171,6 +197,7 @@ KeyPadOptions.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  setKeyPadOffest: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { find, isEqual, isEmpty } from "lodash";
+import { find, isEqual, isEmpty, get } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
 
@@ -239,6 +239,7 @@ class ClozeMathInput extends React.Component {
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
+    const customKeys = get(item, "custom_keys", []);
 
     return (
       <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>
@@ -260,6 +261,7 @@ class ClozeMathInput extends React.Component {
               symbols={item.symbols}
               numberPad={item.numberPad}
               restrictKeys={this.restrictKeys}
+              customKeys={customKeys}
               showResponse={false}
             />
           </KeyboardWrapper>

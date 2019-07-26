@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
-import { pick } from "lodash";
+import { pick, get } from "lodash";
 import styled from "styled-components";
 import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
 
@@ -26,7 +26,15 @@ import {
 import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
-import { AllowedVariables, CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
+import {
+  AllowedVariables,
+  CheckOption,
+  DecimalSeparator,
+  Field,
+  SignificantDecimalPlaces,
+  Tolerance,
+  UnitsDropdown
+} from "./options";
 
 const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
 
@@ -50,11 +58,13 @@ const MathFormulaAnswerMethod = ({
   handleChangeAdditionals,
   onChangeKeypad,
   onChangeAllowedVars,
+  onChangeShowDropdown,
   answer,
   onAdd,
   onAddIndex,
   windowWidth,
   style = {},
+  keypadOffset,
   t
 }) => {
   useEffect(() => {
@@ -315,16 +325,19 @@ const MathFormulaAnswerMethod = ({
 
   const { allowedVariables } = item;
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  const customKeys = get(item, "custom_keys", []);
+  const isShowDropdown = item.isUnits && item.showDropdown;
 
   return (
     <Container data-cy="math-formula-answer">
-      <StyledRow gutter={60}>
+      <StyledRow gutter={8}>
         {!methodOptions.includes("noExpeced") && (
           <Col span={index === 0 ? 12 : 11}>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
-              symbols={item.symbols}
-              restrictKeys={restrictKeys}
+              symbols={isShowDropdown ? ["basic"] : item.symbols}
+              restrictKeys={isShowDropdown ? [] : restrictKeys}
+              customKeys={isShowDropdown ? [] : customKeys}
               style={style}
               numberPad={item.numberPad}
               onChangeKeypad={onChangeKeypad}
@@ -343,6 +356,20 @@ const MathFormulaAnswerMethod = ({
             {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
           </Col>
         ) : null}
+        {item.isUnits && (
+          <Col
+            span={index === 0 ? 12 : 11}
+            style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 25 : 5 }}
+          >
+            <UnitsDropdown
+              item={item}
+              options={options}
+              onChange={changeOptions}
+              keypadOffset={keypadOffset}
+              onChangeShowDropdown={onChangeShowDropdown}
+            />
+          </Col>
+        )}
       </StyledRow>
 
       {methodOptions.includes("field") && (
@@ -414,6 +441,7 @@ const MathFormulaAnswerMethod = ({
 
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onChangeShowDropdown: PropTypes.func.isRequired,
   onChangeAllowedVars: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
@@ -429,7 +457,8 @@ MathFormulaAnswerMethod.propTypes = {
   handleChangeAdditionals: PropTypes.func,
   answer: PropTypes.object.isRequired,
   onAddIndex: PropTypes.number.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  keypadOffset: PropTypes.number.isRequired
 };
 
 MathFormulaAnswerMethod.defaultProps = {

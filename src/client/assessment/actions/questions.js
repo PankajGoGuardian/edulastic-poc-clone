@@ -31,6 +31,7 @@ export const addAnswer = (qid, answer) => ({
   }
 });
 
-export const toggleAdvancedSections = () => ({
-  type: TOGGLE_ADVANCED_SECTIONS
+export const toggleAdvancedSections = ({ isOpen }) => ({
+  type: TOGGLE_ADVANCED_SECTIONS,
+  payload: { isOpen }
 });

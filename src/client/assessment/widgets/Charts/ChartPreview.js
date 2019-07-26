@@ -18,7 +18,6 @@ import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
 import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
 
-
 const ChartPreview = ({
   item,
   smallSize,

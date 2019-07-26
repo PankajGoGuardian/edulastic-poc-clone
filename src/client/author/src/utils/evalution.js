@@ -1,4 +1,4 @@
-import { isArray, trim, map, set, round } from "lodash";
+import { set, round } from "lodash";
 import produce from "immer";
 import evaluators from "./evaluators";
 import { replaceVariables } from "../../../assessment/utils/variables";
@@ -13,7 +13,7 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
   /* eslint-disable no-restricted-syntax */
   const questionsNum = Object.keys(validations).filter(x => validations[x].validation).length;
   for (const id of answerIds) {
-    const answer = answers[id];
+    let answer = answers[id];
 
     if (validations && validations[id]) {
       const validation = replaceVariables(validations[id]);
@@ -21,6 +21,17 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
       if (!evaluator) {
         results[id] = [];
       } else {
+        const { isUnits, is_math, showDropdown } = validations[id];
+        if (isUnits && is_math && showDropdown) {
+          const expression = answer.expression || "";
+          const unit = answer.unit ? answer.unit : "";
+          if (expression.search("=") === -1) {
+            answer = expression + unit;
+          } else {
+            answer = expression.replace(/=/gm, `${unit}=`);
+          }
+        }
+
         const { evaluation, score, maxScore } = await evaluator({
           userResponse: answer,
           hasGroupResponses: validation.hasGroupResponses,

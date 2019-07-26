@@ -17,10 +17,16 @@ class CorrectAnswer extends Component {
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
     hasGroupResponses: PropTypes.bool.isRequired,
-    template: PropTypes.string.isRequired,
+    view: PropTypes.string.isRequired,
+    previewTab: PropTypes.bool.isRequired,
     configureOptions: PropTypes.object.isRequired,
     responseIds: PropTypes.object.isRequired,
-    uiStyle: PropTypes.object.isRequired
+    uiStyle: PropTypes.object.isRequired,
+    mixAndMatch: PropTypes.bool
+  };
+
+  static defaultProps = {
+    mixAndMatch: false
   };
 
   static contextType = ItemLevelContext;
@@ -61,25 +67,27 @@ class CorrectAnswer extends Component {
       uiStyle,
       responseIds,
       view,
-      previewTab
+      previewTab,
+      mixAndMatch
     } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
-        {this.context || (
-          <CorrectAnswerHeader>
-            <CorrectAnswerPointField
-              type="number"
-              value={responseScore}
-              onChange={this.updateScore}
-              onBlur={this.updateScore}
-              disabled={false}
-              min={0}
-              step={0.5}
-            />
-            <span>{t("component.correctanswers.points")}</span>
-          </CorrectAnswerHeader>
-        )}
+        {!mixAndMatch &&
+          (this.context || (
+            <CorrectAnswerHeader>
+              <CorrectAnswerPointField
+                type="number"
+                value={responseScore}
+                onChange={this.updateScore}
+                onBlur={this.updateScore}
+                disabled={false}
+                min={0}
+                step={0.5}
+              />
+              <span>{t("component.correctanswers.points")}</span>
+            </CorrectAnswerHeader>
+          ))}
         <Display
           preview={false}
           setAnswers

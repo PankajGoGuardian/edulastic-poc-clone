@@ -164,6 +164,7 @@ class CorrectAnswers extends Component {
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
+                mixAndMatch={validation.mixAndMatch}
                 responseIds={responseIds}
                 view={view}
                 previewTab={previewTab}
@@ -187,6 +188,7 @@ class CorrectAnswers extends Component {
                       uiStyle={uiStyle}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                      mixAndMatch={validation.mixAndMatch}
                       view={view}
                       previewTab={previewTab}
                     />

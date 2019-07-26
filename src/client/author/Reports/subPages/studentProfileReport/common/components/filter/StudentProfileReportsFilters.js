@@ -91,7 +91,7 @@ const StudentProfileReportsFilters = ({
       getSPRFilterDataRequestAction(q);
       onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
     }
-  }, [selectedStudent.key]);
+  }, [selectedStudent]);
 
   const onFilterApply = () => onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
   const onUpdateTerm = ({ key }) => setTermId(key);

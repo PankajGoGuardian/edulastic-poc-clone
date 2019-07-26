@@ -9,6 +9,7 @@ import navigation from "../../common/static/json/navigation.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import StudentMasteryProfile from "./StudentMasteryProfile";
+import StudentAssessmentProfile from "./StudentAssessmentProfile";
 import StudentProfileReportsFilters from "./common/components/filter/StudentProfileReportsFilters";
 
 import { setSPRSettingsAction, getReportsSPRSettings } from "./ducks";
@@ -65,6 +66,11 @@ const StudentProfileReportContainer = props => {
           exact
           path={`/author/reports/student-mastery-profile/student/:studentId?`}
           render={_props => <StudentMasteryProfile {..._props} settings={settings} />}
+        />
+        <Route
+          exact
+          path={`/author/reports/student-assessment-profile/student/:studentId?`}
+          render={_props => <StudentAssessmentProfile {..._props} settings={settings} />}
         />
       </FeaturesSwitch>
     </>

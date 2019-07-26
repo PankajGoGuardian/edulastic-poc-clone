@@ -6,6 +6,12 @@ import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor }
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
+export const StyledCell = styled.div`
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+`;
+
 export const PrintablePrefix = styled.b`
   display: none;
   padding-left: 5px;
@@ -30,6 +36,7 @@ export const StyledFilterWrapper = styled.div`
   background-color: white;
   border-radius: 10px;
   padding: 15px 20px;
+  margin: 0px 8px;
 
   .ant-select-selection {
     &__rendered {

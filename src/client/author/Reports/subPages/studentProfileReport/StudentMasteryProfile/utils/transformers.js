@@ -1,22 +1,22 @@
-import { groupBy, map, intersection } from "lodash";
+import { groupBy, map, intersection, find, keys } from "lodash";
 
 export const getDomainOptions = domains => {};
 
 export const augumentDomainData = () => {};
 
-export const getDomains = (metricInfo = [], rawDomainData = []) => {
+export const getDomains = (metricInfo = [], skillInfo = []) => {
   const groupedByDomain = groupBy(metricInfo, "domainId");
-  const groupedRawDataByDomain = groupBy(rawDomainData, "tloId");
+  const groupedSkillsByDomain = groupBy(skillInfo, "domainId");
 
-  const domainWithInformation = intersection(Object.keys(groupedRawDataByDomain), Object.keys(groupedByDomain));
+  const validDomains = intersection(keys(groupedByDomain), keys(groupedSkillsByDomain));
 
-  const domains = map(domainWithInformation, domainId => {
-    const standardsInfo = groupedRawDataByDomain[domainId];
+  const domains = map(validDomains, domainId => {
+    const standardsInfo = groupedSkillsByDomain[domainId];
     const standards = groupedByDomain[domainId];
 
     const standardsWithInfo = map(standards, standard => {
-      return find(standardsInfo, standardInfo => standard.standardId == standardInfo.eloId) || {};
-    });
+      return find(standardsInfo, standardInfo => standard.standardId == standardInfo.standardId);
+    }).filter(standard => standard);
 
     return {
       domainId,
@@ -24,6 +24,8 @@ export const getDomains = (metricInfo = [], rawDomainData = []) => {
       standardsWithInfo
     };
   });
+
+  console.log(domains);
 
   return domains;
 };

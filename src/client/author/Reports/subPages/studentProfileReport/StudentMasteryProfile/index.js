@@ -7,21 +7,13 @@ import {
   getReportsStudentMasteryProfileLoader,
   getStudentMasteryProfileRequestAction
 } from "./ducks";
-import { getReportsStandardsBrowseStandards } from "../../standardsMasteryReport/common/filterDataDucks";
 
 import { getDomains } from "./utils/transformers";
 
-const StudentMasteryProfile = ({
-  match,
-  settings,
-  studentMasteryProfile,
-  browseStandards,
-  getStudentMasteryProfileRequestAction
-}) => {
-  const rawDomainData = get(browseStandards, "data.result", []);
-  const { metricInfo = [], studInfo = [] } = get(studentMasteryProfile, "data.result", {});
+const StudentMasteryProfile = ({ match, settings, studentMasteryProfile, getStudentMasteryProfileRequestAction }) => {
+  const { metricInfo = [], studInfo = [], skillInfo = [] } = get(studentMasteryProfile, "data.result", {});
 
-  const studentDomains = getDomains(metricInfo, rawDomainData);
+  const studentDomains = getDomains(metricInfo, skillInfo);
 
   useEffect(() => {
     const { selectedStudent, requestFilters } = settings;
@@ -39,7 +31,6 @@ const StudentMasteryProfile = ({
 const enhance = connect(
   state => ({
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
-    browseStandards: getReportsStandardsBrowseStandards(state),
     loading: getReportsStudentMasteryProfileLoader(state)
   }),
   {

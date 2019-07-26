@@ -2,20 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import next from "immer";
 import { indexOf, includes } from "lodash";
+import { toggleItem } from "../../../../../common/util";
 
 import ScoreChart from "./ScoreChart";
 import BandChart from "./BandChart";
 
 const ProgressChart = ({ data, analyseBy, selectedItems, setSelectedItems, bandInfo }) => {
   const handleToggleSelectedBars = item => {
-    const newSelectedTests = next(selectedItems, draftState => {
-      let index = indexOf(selectedItems, item.uniqId);
-      if (-1 < index) {
-        draftState.splice(index, 1);
-      } else {
-        draftState.push(item.uniqId);
-      }
-    });
+    const newSelectedTests = toggleItem(selectedItems, item.uniqId);
     setSelectedItems(newSelectedTests);
   };
 

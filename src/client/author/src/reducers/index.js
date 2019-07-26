@@ -23,6 +23,7 @@ import { reportPeerProgressAnalysisReducer } from "../../Reports/subPages/multip
 import { reportStudentProgressReducer } from "../../Reports/subPages/multipleAssessmentReport/StudentProgress/ducks";
 import { reportPerformanceOverTimeReducer } from "../../Reports/subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
 import { reportStudentMasteryProfileReducer } from "../../Reports/subPages/studentProfileReport/StudentMasteryProfile/ducks";
+import { reportStudentAssessmentProfileReducer } from "../../Reports/subPages/studentProfileReport/StudentAssessmentProfile/ducks";
 import { reportSPRSettingsReducer } from "../../Reports/subPages/studentProfileReport/ducks";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
@@ -96,6 +97,7 @@ const authorReducers = {
   reportStudentProgressReducer,
   reportPerformanceOverTimeReducer,
   reportStudentMasteryProfileReducer,
+  reportStudentAssessmentProfileReducer,
   authorTestAssignments: testAssignmentsReducer,
   author_classboard_gradebook,
   author_classboard_testActivity,

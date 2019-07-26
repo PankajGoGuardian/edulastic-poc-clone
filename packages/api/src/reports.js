@@ -179,6 +179,13 @@ const fetchStudentMasteryProfileReport = params => {
   });
 };
 
+const fetchStudentAssessmentProfileReport = params => {
+  return api.callApi({
+    url: `/report/student-assessment-performance`,
+    params
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -201,5 +208,6 @@ export default {
   fetchPeerProgressAnalysisReport,
   fetchStudentProgressReport,
   fetchPerformanceOverTimeReport,
-  fetchStudentMasteryProfileReport
+  fetchStudentMasteryProfileReport,
+  fetchStudentAssessmentProfileReport
 };

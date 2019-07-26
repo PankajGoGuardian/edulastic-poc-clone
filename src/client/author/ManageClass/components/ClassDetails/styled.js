@@ -261,10 +261,13 @@ export const NoConentDesc = styled.div`
 export const MenuItem = styled(Menu.Item)`
   display: flex;
   align-items: center;
-  color: ${themeColorLight};
+  color: ${titleColor};
+  &:hover {
+    background: ${themeColor}20;
+  }
 
   svg {
-    fill: ${themeColorLight};
+    fill: ${themeColor};
   }
 `;
 

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Modal, Table, Button } from "antd";
 import { FlexContainer } from "./styled";
 import { lightGrey, themeColor, white } from "@edulastic/colors";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
   // clear selected class while modal changes
@@ -36,7 +37,7 @@ const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
       onCancel={close}
       title="Google Sync Details"
       width={"70vw"}
-      bodyStyle={{ backgroundColor: lightGrey, height: "70vh", overflow: "auto" }}
+      bodyStyle={{ backgroundColor: lightGrey, height: "70vh" }}
       style={{}}
       footer={
         <FlexContainer style={{ alignItems: "center" }}>
@@ -51,27 +52,29 @@ const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
         </FlexContainer>
       }
     >
-      {Object.keys(syncClassResponse).map((group, index) => (
-        <FlexContainer style={{ margin: "0px 20px 40px", padding: "20px", background: white, borderRadius: "10px" }}>
-          <div>
-            <b> {`#${index + 1} `}</b>
-            {`The class section`} <b>{syncClassResponse[group].groupName}</b>
-            {` is synced with Google Class `}
-            <b>{group}</b>
-            {`. Below are the synced student details: `}
-          </div>
-          <Table
-            style={{ marginTop: "20px" }}
-            columns={columns}
-            dataSource={syncClassResponse[group].students}
-            bordered
-            pagination={{
-              defaultPageSize: (syncClassResponse[group].students && syncClassResponse[group].students.length) || 10,
-              hideOnSinglePage: true
-            }}
-          />
-        </FlexContainer>
-      ))}
+      <PerfectScrollbar>
+        {Object.keys(syncClassResponse).map((group, index) => (
+          <FlexContainer style={{ margin: "0px 20px 40px", padding: "20px", background: white, borderRadius: "10px" }}>
+            <div>
+              <b> {`#${index + 1} `}</b>
+              {`The class section`} <b>{syncClassResponse[group].groupName}</b>
+              {` is synced with Google Class `}
+              <b>{group}</b>
+              {`. Below are the synced student details: `}
+            </div>
+            <Table
+              style={{ marginTop: "20px" }}
+              columns={columns}
+              dataSource={syncClassResponse[group].students}
+              bordered
+              pagination={{
+                defaultPageSize: (syncClassResponse[group].students && syncClassResponse[group].students.length) || 10,
+                hideOnSinglePage: true
+              }}
+            />
+          </FlexContainer>
+        ))}
+      </PerfectScrollbar>
     </Modal>
   );
 };

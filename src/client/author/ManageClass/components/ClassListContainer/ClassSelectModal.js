@@ -5,6 +5,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledSelect } from "./styled";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { themeColorLight } from "@edulastic/colors";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 const ClassListModal = ({
   visible,
@@ -219,6 +220,7 @@ const ClassListModal = ({
       onOk={addGroups}
       title="Import Classes and Students from Google"
       width={"70vw"}
+      bodyStyle={{ height: "70vh" }}
       okText="Sync"
       okButtonProps={{
         style: { "background-color": themeColorLight, "border-color": themeColorLight },
@@ -227,20 +229,23 @@ const ClassListModal = ({
       }}
       cancelButtonProps={{ style: { "border-color": themeColorLight }, shape: "round" }}
     >
-      <p>The following classes will be imported from you Google Classroom account.</p>
-      <p>
-        Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
-        successful, Students accounts will be automatically created in Edulastic.{" "}
-      </p>
-      <Table
-        style={{ marginTop: "20px" }}
-        columns={columns}
-        dataSource={groups}
-        bordered
-        rowSelection={rowSelection}
-        scroll={{ y: "50vh" }}
-        pagination={{ defaultPageSize: (groups && groups.length) || 10, hideOnSinglePage: true }}
-      />
+      <PerfectScrollbar>
+        <>
+          <p>The following classes will be imported from you Google Classroom account.</p>
+          <p>
+            Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
+            successful, Students accounts will be automatically created in Edulastic.{" "}
+          </p>
+          <Table
+            style={{ marginTop: "20px" }}
+            columns={columns}
+            dataSource={groups}
+            bordered
+            rowSelection={rowSelection}
+            pagination={{ defaultPageSize: (groups && groups.length) || 10, hideOnSinglePage: true }}
+          />
+        </>
+      </PerfectScrollbar>
     </Modal>
   );
 };

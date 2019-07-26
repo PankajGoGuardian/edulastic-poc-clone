@@ -22,7 +22,7 @@ import Options from "./components/Options";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
-import ChoicesForResponse from "./ChoicesForResponse";
+import ChoicesForResponses from "./ChoicesForResponses";
 import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
@@ -182,16 +182,12 @@ class ClozeDropDown extends Component {
                     />
                   </CorrectAnswerOptions>
                 </Question>
-                {response_ids &&
-                  response_ids.map(response => (
-                    <ChoicesForResponse
-                      key={response.id}
-                      response={response}
-                      item={item}
-                      fillSections={fillSections}
-                      cleanSections={cleanSections}
-                    />
-                  ))}
+                <ChoicesForResponses
+                  responses={response_ids || []}
+                  item={item}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
               </div>
               <div style={{ marginTop: 35 }}>
                 <Options

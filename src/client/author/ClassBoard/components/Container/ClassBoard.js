@@ -339,11 +339,14 @@ class ClassBoard extends Component {
 
   handleShowMarkAsAbsentModal = () => {
     const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
-    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now())
+    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
       return message.warn("Assignment is not opened yet");
+    }
+
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length)
+    if (!selectedStudentKeys.length) {
       return message.warn("At least one student should be selected to be Marked as Absent.");
+    }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
       item =>
@@ -392,12 +395,17 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
-    const { assignmentStatus } = this.props;
+    const { assignmentStatus, additionalData, testActivity } = this.props;
     if (assignmentStatus === "DONE") {
       return message.warn(
         "Mismatch occurred with logged in class section, please navigate to assignments to select class section and try again."
       );
     }
+    // total count represents total students count in the class
+    if (additionalData.totalCount <= testActivity.length) {
+      return message.warn("This assessment is already assigned to all students in the class.");
+    }
+
     this.setState({ showAddStudentsPopup: true });
   };
 

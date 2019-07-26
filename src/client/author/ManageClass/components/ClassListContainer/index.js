@@ -4,6 +4,7 @@ import Header from "./Header";
 import ClassList from "./ClassList";
 import ClassSelectModal from "./ClassSelectModal";
 import { Spin } from "antd";
+import ShowSyncDetailsModal from "./ShowSyncDetailsModal";
 
 // eslint-disable-next-line max-len
 const ClassListContainer = ({
@@ -14,14 +15,19 @@ const ClassListContainer = ({
   courseList,
   allowGoogleLogin,
   closeModal,
+  syncClassResponse,
+  showBanner,
   isModalVisible,
+  setShowBanner,
+  showDetails,
+  setShowDetails,
   syncClassLoading = false,
   updateGoogleCourseList,
   syncClass,
   state
 }) => {
   const selectedGroups = groups.filter(i => !!i.googleCode).map(i => i.googleCode);
-  if (groupsLoading) return <Spin />;
+
   return (
     <React.Fragment>
       <Header allowGoogleLogin={allowGoogleLogin} />
@@ -31,13 +37,25 @@ const ClassListContainer = ({
         close={closeModal}
         groups={googleCourseList}
         state={state}
+        setShowBanner={setShowBanner}
         courseList={courseList}
         syncClassLoading={syncClassLoading}
         updateGoogleCourseList={updateGoogleCourseList}
         syncClass={syncClass}
         selectedGroups={selectedGroups}
       />
-      <ClassList groups={groups} archiveGroups={archiveGroups} />
+      <ShowSyncDetailsModal
+        syncClassResponse={syncClassResponse}
+        visible={showDetails}
+        close={() => setShowDetails(false)}
+      />
+      <ClassList
+        groups={groups}
+        setShowDetails={setShowDetails}
+        archiveGroups={archiveGroups}
+        syncClassLoading={syncClassLoading}
+        showBanner={showBanner}
+      />
     </React.Fragment>
   );
 };

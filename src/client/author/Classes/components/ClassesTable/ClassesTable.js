@@ -668,7 +668,7 @@ class ClassesTable extends Component {
       <StyledTableContainer>
         <StyledControlDiv>
           <Button type="primary" onClick={this.showAddClassModal}>
-            + Create Class
+            + Create new class
           </Button>
 
           <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} />

@@ -31,7 +31,7 @@ const CreateClassPage = ({ allowGoogleLogin, isUserGoogleLoggedIn, fetchClassLis
       <Link to={"/author/manageClass/createClass"}>
         <CreateClassButton>
           <Icon type="plus" />
-          <p>create class</p>
+          <p>Create new class</p>
         </CreateClassButton>
       </Link>
       {allowGoogleLogin !== false && (

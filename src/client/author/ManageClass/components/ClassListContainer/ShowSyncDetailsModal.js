@@ -6,9 +6,6 @@ import { lightGrey, themeColor, white } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 const ShowSyncDetailsModal = ({ syncClassResponse, visible, close }) => {
-  // clear selected class while modal changes
-  useEffect(() => {}, [visible]);
-
   const columns = [
     {
       title: "Name",

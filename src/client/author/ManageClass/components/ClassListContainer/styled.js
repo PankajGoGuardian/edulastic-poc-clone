@@ -163,6 +163,8 @@ export const BannerDiv = styled.div`
   width: 100%;
   margin-bottom: 10px;
   padding: 15px 15px;
+  background-color:${props => (props.syncClassLoading ? "#F5EE8B" : "#D3FEA6")}
+  color:${props => (props.syncClassLoading ? "#B5AA08" : "#77B833")}
   justify-content: center;
   border-radius: 10px;
 `;

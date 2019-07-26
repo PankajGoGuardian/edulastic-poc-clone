@@ -102,7 +102,7 @@ class Container extends PureComponent {
     if (location.hash === "#review") {
       this.handleNavChange("review", true)();
     } else if (createdItems.length > 0) {
-      this.handleNavChange("addItems", true)();
+      this.setState({ current: "addItems", editEnable: true });
       message.success(
         <span>
           {" "}

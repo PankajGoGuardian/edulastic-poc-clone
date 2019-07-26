@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -18,7 +17,6 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import SortableList from "../../components/SortableList/index";
-import { Widget } from "../../styled/Widget";
 import { defaultOptions } from "../../constants/constantsForQuestions";
 import Question from "../../components/Question";
 
@@ -113,8 +111,10 @@ class Response extends Component {
     const { item, setQuestionData, t } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.options[index] === undefined) draft.options[index] = [];
-        draft.options[index].push(t("component.cloze.imageDropDown.newChoice"));
+        if (draft.options[index] === undefined) {
+          draft.options[index] = [];
+        }
+        draft.options[index].push(`${t("component.cloze.imageDropDown.newChoice")} ${draft.options[index].length + 1}`);
       })
     );
   };

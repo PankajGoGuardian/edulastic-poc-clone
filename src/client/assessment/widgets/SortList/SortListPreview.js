@@ -276,7 +276,7 @@ const SortListPreview = ({
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
-                obj={disableResponse && userAnswer.length !== 0 ? validResponseCorrectList[i] : selectedItem}
+                obj={disableResponse && userAnswer.length !== 0 ? selectedItem : validResponseCorrectList[i]}
                 disableResponse={disableResponse}
                 changePreviewTab={changePreviewTab}
               />

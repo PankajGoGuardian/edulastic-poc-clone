@@ -102,7 +102,7 @@ class SubjectGrade extends React.Component {
     const { showAllStandards } = get(this, "props.userInfo.orgData", {});
     const formattedCurriculums = isEmpty(subjects)
       ? []
-      : getFormattedCurriculums(interestedCurriculums, curriculums, { subject: subjects, showAllStandards });
+      : getFormattedCurriculums(interestedCurriculums, curriculums, { subject: subjects }, showAllStandards);
     const { getFieldDecorator } = form;
     const filteredAllGrades = allGrades.filter(item => item.isContentGrade !== true);
     const _allSubjects = allSubjects.filter(item => item.value);

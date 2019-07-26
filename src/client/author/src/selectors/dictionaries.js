@@ -15,29 +15,28 @@ export const getCurriculumsListSelector = createSelector(
 
 export const getFormattedCurriculumsSelector = (state, props) => {
   const showAllStandards = getShowAllCurriculumsSelector(state);
-  Object.assign(props, { showAllStandards });
   const interestedCurriculums = getInterestedCurriculumsSelector(state);
   const allCurriculums = getCurriculumsListSelector(state);
-  return getFormattedCurriculums(interestedCurriculums, allCurriculums, props);
+  return getFormattedCurriculums(interestedCurriculums, allCurriculums, props, showAllStandards);
 };
 
-export const getFormattedCurriculums = (interestedCurriculums = [], allCurriculums, props) => {
-  const { showAllStandards = true } = props;
-  // removing showAllStandards, so that it will not propagate to item and test library filter
-  delete props.showAllStandards;
-  let { subject = [] } = props;
+export const getFormattedCurriculums = (interestedCurriculums = [], allCurriculums, props, showAllStandards = true) => {
+  let { subject } = props;
+  if (isEmpty(subject)) {
+    return [];
+  }
   subject = typeof subject === "string" ? [subject] : subject;
   const defaultStandard = [];
   const interestedCurriculumsForUser = [];
   const otherCurriculumsForUser = [];
   const defaultCurriculumsMap = {};
   forEach(defaultStandards, (val, key) => {
-    if (isEmpty(subject) || subject.includes(key)) {
+    if (subject.includes(key)) {
       defaultCurriculumsMap[val] = key;
     }
   });
   const interestedCurriculumsMap = interestedCurriculums.reduce((map, o) => {
-    if (isEmpty(subject) || subject.includes(o.subject)) {
+    if (subject.includes(o.subject)) {
       map[o.name] = o;
     }
     return map;
@@ -54,7 +53,7 @@ export const getFormattedCurriculums = (interestedCurriculums = [], allCurriculu
         interestedCurriculumsForUser.push(formattedData);
       } else if (isEmpty(interestedCurriculumsMap) && defaultCurriculumsMap[el.curriculum]) {
         defaultStandard.push(formattedData);
-      } else if (isEmpty(subject) || subject.includes(el.subject)) {
+      } else if (subject.includes(el.subject)) {
         otherCurriculumsForUser.push(formattedData);
       }
     });

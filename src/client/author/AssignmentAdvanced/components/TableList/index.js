@@ -11,7 +11,7 @@ import piechartIcon from "../../assets/pie-chart.svg";
 
 import { Container, Icon, TableData, TypeIcon, BtnStatus, ActionsWrapper } from "./styled";
 
-const testTypeToolTip = {
+export const testTypeToolTip = {
   assessment: "Class Assessment",
   "common assessment": "Common Assessment",
   practice: "Practice Assessment"

@@ -9,9 +9,9 @@ import {
   lightGreySecondary,
   white,
   authorAssignment,
-  themeColorLighter,
   themeColor,
-  title
+  title,
+  testTypeColor
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
@@ -254,7 +254,8 @@ export const TypeIcon = styled.span`
   width: 18px;
   height: 18px;
   max-width: 18px;
-  background: ${props => (props.type === "p" ? "#00A8FF" : props.type === "c" ? "#FF0088" : themeColorLighter)};
+  background: ${props =>
+    props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
   text-align: center;
   color: ${white};
   border-radius: 50%;

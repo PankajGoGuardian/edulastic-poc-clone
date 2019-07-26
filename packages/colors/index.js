@@ -129,6 +129,13 @@ export const largeDesktopWidth = "1200px";
 export const extraDesktopWidth = "1440px";
 export const extraDesktopWidthMax = "1600px";
 
+export const testTypeColor = {
+  assessment: "#5EB500",
+  common: "#FF9100",
+  practice: "#00A8FF",
+  "common assessment": "#FF9100"
+};
+
 export const authorAssignment = {
   assignmentStatusBg: {
     NOT_OPEN: "#95B0CD",

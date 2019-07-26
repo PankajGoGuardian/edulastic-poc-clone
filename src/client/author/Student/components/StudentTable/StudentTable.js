@@ -12,6 +12,7 @@ import {
   StyledControlDiv,
   StyledFilterSelect,
   StyledTableButton,
+  StyledTable,
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
@@ -428,7 +429,7 @@ class StudentTable extends Component {
             </StyledControlDiv>
           );
         })}
-        <Table
+        <StyledTable
           rowKey={record => record._id}
           rowSelection={rowSelection}
           dataSource={Object.values(result)}

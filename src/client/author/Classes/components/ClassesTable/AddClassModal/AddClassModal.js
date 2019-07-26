@@ -203,7 +203,14 @@ class AddClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Course">
-              {getFieldDecorator("courseId")(
+              {getFieldDecorator("courseId", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please select Course"
+                  }
+                ]
+              })(
                 <Select
                   showSearch
                   onSearch={this.fetchCoursesForDistrict}

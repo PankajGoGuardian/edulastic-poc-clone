@@ -263,6 +263,12 @@ export const beforeUpload = file => {
   return isAllowedType && withinSizeLimit;
 };
 
+export const calculateWordsCount = ele =>
+  $("<div>")
+    .html(ele)
+    .text()
+    .split(/\W/g)
+    .filter(i => !!i.trim()).length;
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -275,5 +281,6 @@ export default {
   reIndexResponses,
   sanitizeForReview,
   canInsert,
-  removeIndexFromTemplate
+  removeIndexFromTemplate,
+  calculateWordsCount
 };

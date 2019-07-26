@@ -713,6 +713,9 @@ class ClassesTable extends Component {
             closeModal={this.closeEditClassModal}
             schoolsData={schoolsData}
             teacherList={teacherList}
+            userOrgId={userOrgId}
+            searchCourseList={searchCourseList}
+            coursesForDistrictList={coursesForDistrictList}
           />
         )}
 

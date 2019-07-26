@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Select, Button, Modal, DatePicker } from "antd";
 import moment from "moment";
+import { debounce } from "lodash";
 const Option = Select.Option;
 import selectsData from "../../../../TestPage/components/common/selectsData";
 import { ModalFormItem } from "./styled";
@@ -29,12 +30,31 @@ class EditClassModal extends Component {
     });
   };
 
+  fetchCoursesForDistrict = debounce(value => {
+    const { userOrgId: districtId, searchCourseList } = this.props;
+    const searchTerms = {
+      districtId,
+      active: 1,
+      page: 0,
+      limit: 50
+    };
+    value &&
+      Object.assign(searchTerms, {
+        search: {
+          name: { type: "cont", value },
+          number: { type: "cont", value },
+          operator: "or"
+        }
+      });
+    searchCourseList(searchTerms);
+  }, 1000);
+
   onCloseModal = () => {
     this.props.closeModal();
   };
 
   render() {
-    const { modalVisible, selClassData, schoolsData, teacherList } = this.props;
+    const { modalVisible, selClassData, schoolsData, teacherList, coursesForDistrictList } = this.props;
     const { _source: { owners = [], name, subject, institutionName, grades, tags, endDate } = {} } = selClassData;
     const ownersData = owners.map(row => row.id);
     const schoolsOptions = [];
@@ -137,7 +157,18 @@ class EditClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Course">
-              {getFieldDecorator("courseId")(<Select showSearch placeholder="Please enter 1 or more characters" />)}
+              {getFieldDecorator("courseId")(
+                <Select
+                  showSearch
+                  placeholder="Please enter 1 or more characters"
+                  onSearch={this.fetchCoursesForDistrict}
+                  onFocus={this.fetchCoursesForDistrict}
+                >
+                  {coursesForDistrictList.map(course => (
+                    <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
+                  ))}
+                </Select>
+              )}
             </ModalFormItem>
           </Col>
         </Row>

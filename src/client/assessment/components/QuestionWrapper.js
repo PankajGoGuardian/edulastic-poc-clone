@@ -280,6 +280,7 @@ class QuestionWrapper extends Component {
       isStudentReport,
       showStudentWork,
       LCBPreviewModal,
+      showUserTTS,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -314,6 +315,7 @@ class QuestionWrapper extends Component {
     const canShowPlayer =
       (userRole === "student" || (userRole === "teacher" && !!LCBPreviewModal)) &&
       data.tts &&
+      showUserTTS === "yes" &&
       data.tts.taskStatus === "COMPLETED";
 
     const showAudioControls = userRole === "teacher" && !!LCBPreviewModal;
@@ -483,6 +485,7 @@ const enhance = compose(
     state => ({
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
+      showUserTTS: get(state, "user.user.tts", false),
       userRole: getUserRole(state)
     }),
     {

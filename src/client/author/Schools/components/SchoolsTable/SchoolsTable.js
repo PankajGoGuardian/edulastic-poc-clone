@@ -95,8 +95,7 @@ class SchoolsTable extends React.Component {
       sortedInfo.columnKey = colName;
       sortedInfo.order = sortedInfo.columnKey === "isApproved" ? "desc" : "asc";
     }
-    this.setState({ sortedInfo });
-    this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
+    this.setState({ sortedInfo }, this.loadFilteredList);
   };
 
   onEditSchool = key => {
@@ -139,132 +138,6 @@ class SchoolsTable extends React.Component {
     this.setState({
       createSchoolModalVisible: true
     });
-  };
-
-  changeFilterColumn = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    if (filtersData[key].filtersColumn === value) return;
-
-    filtersData[key].filtersColumn = value;
-    if (value === "isApproved") {
-      filtersData[key].filtersValue = "eq";
-      filtersData[key].filterStr = "";
-      filtersData[key].prevFilterStr = "";
-    }
-
-    this.setState({ filtersData });
-
-    if (filtersData[key].filtersValue !== "" && filtersData[key].filterStr !== "") {
-      const { sortedInfo, searchByName } = this.state;
-      this.loadFilteredList(filtersData, sortedInfo, searchByName);
-    }
-  };
-
-  changeFilterValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    if (filtersData[key].filtersValue === value) return;
-
-    filtersData[key].filtersValue = value;
-    this.setState({ filtersData });
-
-    if (
-      (filtersData[key].filterAdded || key == 2) &&
-      filtersData[key].filtersColumn !== "" &&
-      filtersData[key].filterStr !== ""
-    ) {
-      const { sortedInfo, searchByName } = this.state;
-      this.loadFilteredList(filtersData, sortedInfo, searchByName);
-    }
-  };
-
-  onSearchFilterText = (value, event, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return {
-          ...item,
-          filterAdded: !!value
-        };
-      }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[key].current.blur());
-  };
-
-  onBlurFilterText = (event, key) => {
-    const { sortedInfo, searchByName } = this.state;
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return {
-          ...item,
-          filterAdded: !!event.target.value
-        };
-      }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData }, () => this.loadFilteredList(_filtersData, sortedInfo, searchByName));
-  };
-
-  changeFilterText = (e, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return {
-          ...item,
-          filterStr: e.target.value
-        };
-      }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
-
-  changeStatusValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-
-    if (filtersData[key].filterStr === value) return;
-
-    filtersData[key].filterStr = value;
-    filtersData[key].filterAdded = true;
-    this.setState({ filtersData });
-
-    if (filtersData[key].filterAdded || key == 2) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredList(filtersData, sortedInfo, searchByName);
-    }
-  };
-
-  addFilter = (e, key) => {
-    const { filtersData } = this.state;
-    if (filtersData.length < 3) {
-      this.setState({
-        filtersData: [
-          ...filtersData,
-          {
-            filtersColumn: "",
-            filtersValue: "",
-            filterStr: "",
-            prevFilterStr: "",
-            filterAdded: false
-          }
-        ]
-      });
-    }
-  };
-
-  removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    let newFiltersData = [];
-    if (filtersData.length === 1) {
-      newFiltersData.push({
-        filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
-    } else {
-      newFiltersData = filtersData.filter((item, index) => index != key);
-    }
-    this.setState({ filtersData: newFiltersData });
-    this.loadFilteredList(newFiltersData, sortedInfo, searchByName, currentPage);
   };
 
   changeActionMode = e => {
@@ -355,16 +228,9 @@ class SchoolsTable extends React.Component {
     this.setState({ editSchoolModaVisible: false });
   };
 
-  handleSearchName = e => {
-    const { filtersData, sortedInfo } = this.state;
-    this.setState({ searchByName: e });
-    this.loadFilteredList(filtersData, sortedInfo, e);
-  };
-
   changePagination = pageNumber => {
     const { filtersData, sortedInfo, searchByName } = this.state;
-    this.setState({ currentPage: pageNumber });
-    this.loadFilteredList(filtersData, sortedInfo, searchByName, pageNumber);
+    this.setState({ currentPage: pageNumber }, this.loadFilteredList);
   };
 
   deactivateSchool = () => {
@@ -383,13 +249,123 @@ class SchoolsTable extends React.Component {
     this.setState({ deactivateSchoolModalVisible: false });
   };
 
-  loadFilteredList(filtersData, sortedInfo, searchByName, currentPage = 1) {
-    const { loadSchoolsData, userOrgId } = this.props;
-    let search = {};
+  // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+  handleSearchName = value => {
+    const { filtersData, sortedInfo } = this.state;
+    this.setState({ searchByName: value }, this.loadFilteredList);
+  };
 
-    if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
+  onSearchFilter = (value, event, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: !!value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[key].current.blur());
+  };
+
+  onBlurFilterText = (event, key) => {
+    const { sortedInfo, searchByName } = this.state;
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: !!event.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
+  };
+
+  changeStatusValue = (value, key) => {
+    const filtersData = [...this.state.filtersData];
+
+    if (filtersData[key].filterStr === value) return;
+
+    filtersData[key].filterStr = value;
+    filtersData[key].filterAdded = true;
+    this.setState({ filtersData }, this.loadFilteredList);
+  };
+
+  changeFilterText = (e, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+  };
+
+  changeFilterColumn = (value, key) => {
+    const filtersData = [...this.state.filtersData];
+    if (filtersData[key].filtersColumn === value) return;
+
+    filtersData[key].filtersColumn = value;
+    if (value === "isApproved") {
+      filtersData[key].filtersValue = "eq";
+      filtersData[key].filterStr = "";
+      filtersData[key].prevFilterStr = "";
     }
+
+    this.setState({ filtersData }, this.loadFilteredList);
+  };
+
+  changeFilterValue = (value, key) => {
+    const filtersData = [...this.state.filtersData];
+    if (filtersData[key].filtersValue === value) return;
+
+    filtersData[key].filtersValue = value;
+    this.setState({ filtersData }, this.loadFilteredList);
+  };
+
+  addFilter = (e, key) => {
+    const { filtersData } = this.state;
+    if (filtersData.length < 3) {
+      this.setState({
+        filtersData: [
+          ...filtersData,
+          {
+            filtersColumn: "",
+            filtersValue: "",
+            filterStr: "",
+            prevFilterStr: "",
+            filterAdded: false
+          }
+        ]
+      });
+    }
+  };
+
+  removeFilter = (e, key) => {
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    let newFiltersData = [];
+    if (filtersData.length === 1) {
+      newFiltersData.push({
+        filterAdded: false,
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: ""
+      });
+    } else {
+      newFiltersData = filtersData.filter((item, index) => index != key);
+    }
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
+  };
+
+  getSearchQuery = () => {
+    const { filtersData, sortedInfo, searchByName, currentPage = 1 } = this.state;
+    const { userOrgId } = this.props;
+
+    let search = {};
 
     for (let i = 0; i < filtersData.length; i++) {
       const { filtersColumn, filtersValue, filterStr } = filtersData[i];
@@ -398,7 +374,11 @@ class SchoolsTable extends React.Component {
       }
     }
 
-    loadSchoolsData({
+    if (searchByName.length > 0) {
+      search.name = { type: "cont", value: searchByName };
+    }
+
+    return {
       districtId: userOrgId,
       limit: 25,
       page: currentPage,
@@ -406,8 +386,14 @@ class SchoolsTable extends React.Component {
       order: sortedInfo.order,
       search,
       includeStats: true
-    });
+    };
+  };
+
+  loadFilteredList() {
+    const { loadSchoolsData } = this.props;
+    loadSchoolsData(this.getSearchQuery());
   }
+  // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
     const {
@@ -731,7 +717,7 @@ class SchoolsTable extends React.Component {
             <StyledFilterInput
               placeholder="Enter text"
               onChange={e => this.changeFilterText(e, i)}
-              onSearch={(v, e) => this.onSearchFilterText(v, e, i)}
+              onSearch={(v, e) => this.onSearchFilter(v, e, i)}
               onBlur={e => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filtersData[i].filterStr}

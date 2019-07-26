@@ -116,9 +116,6 @@ class DistrictAdminTable extends Component {
   }
 
   componentDidMount() {
-    // const { loadAdminData, setRole } = this.props;
-    // setRole("district-admin");
-    // loadAdminData();
     this.loadFilteredList();
   }
 
@@ -131,14 +128,7 @@ class DistrictAdminTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    // const { loadAdminData, showActiveUsers, pageNo } = this.props;
-    // // here when the showActiveUsers checkbox is toggled, or the page number changes,
-    // // an api call is fired to get the data
-    // if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
-    //   loadAdminData();
-    // }
-  }
+  componentDidUpdate(prevProps) {}
 
   onEditDistrictAdmin = key => {
     this.setState({
@@ -216,13 +206,11 @@ class DistrictAdminTable extends Component {
     });
   };
 
+  // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
   handleSearchName = value => {
-    // const { setSearchName } = this.props;
-    // setSearchName(evt.target.value);
     this.setState({ searchByName: value }, this.loadFilteredList);
   };
 
-  // ************
   onSearchFilter = (value, event, i) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === i) {
@@ -277,16 +265,9 @@ class DistrictAdminTable extends Component {
       return item;
     });
     this.setState({ filtersData: _filtersData });
-
-    // if (filtersData[key].filterAdded) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
   };
 
   changeFilterValue = (value, key) => {
-    console.log("value", value);
-    console.log("value", key);
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
         return {
@@ -296,13 +277,8 @@ class DistrictAdminTable extends Component {
       }
       return item;
     });
-    console.log("_filtersData", _filtersData);
-    this.setState({ filtersData: _filtersData });
 
-    // if (filtersData[key].filterAdded) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
+    this.setState({ filtersData: _filtersData });
   };
 
   onChangeShowActive = e => {
@@ -328,9 +304,6 @@ class DistrictAdminTable extends Component {
   };
 
   removeFilter = (e, key) => {
-    debugger;
-    console.log("e", e);
-    console.log("key", key);
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
@@ -377,7 +350,7 @@ class DistrictAdminTable extends Component {
     loadAdminData(this.getSearchQuery());
   };
 
-  // ************
+  // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
     const {
@@ -412,18 +385,12 @@ class DistrictAdminTable extends Component {
       addFilter,
       removeFilter
     } = this.props;
-
-    // const selectedDistrictAdmin = dataSource.filter(item => item._id === editDistrictAdminKey);
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit user">Update Selected User</Menu.Item>
         <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
       </Menu>
     );
-
-    // const filterKeysArray = Object.keys(filters);
-
-    // console.log("filters", filters);
 
     return (
       <StyledTableContainer>
@@ -486,7 +453,6 @@ class DistrictAdminTable extends Component {
                 value={filterStr ? filterStr : undefined}
                 disabled={isFilterTextDisable}
                 innerRef={this.filterTextInputRef[i]}
-                // onSearch={loadAdminData}
               />
               {i < 2 && (
                 <StyledAddFilterButton
@@ -498,13 +464,7 @@ class DistrictAdminTable extends Component {
                 </StyledAddFilterButton>
               )}
               {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                <StyledAddFilterButton
-                  type="primary"
-                  onClick={e => {
-                    this.removeFilter(e, i);
-                    // loadAdminData();
-                  }}
-                >
+                <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
                   - Remove Filter
                 </StyledAddFilterButton>
               )}

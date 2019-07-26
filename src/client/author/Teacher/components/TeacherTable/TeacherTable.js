@@ -129,9 +129,6 @@ class TeacherTable extends Component {
   }
 
   componentDidMount() {
-    // const { loadAdminData, setRole } = this.props;
-    // setRole("teacher");
-    // loadAdminData();
     this.loadFilteredList();
   }
 
@@ -144,14 +141,7 @@ class TeacherTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    // const { loadAdminData, showActiveUsers, pageNo } = this.props;
-    // // here when the showActiveUsers checkbox is toggled, or the page number changes,
-    // // an api call is fired to get the data
-    // if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
-    //   loadAdminData();
-    // }
-  }
+  componentDidUpdate(prevProps) {}
 
   onEditTeacher = key => {
     this.setState({
@@ -243,13 +233,11 @@ class TeacherTable extends Component {
     });
   };
 
+  // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
   handleSearchName = value => {
-    // const { setSearchName } = this.props;
-    // setSearchName(e);
     this.setState({ searchByName: value }, this.loadFilteredList);
   };
 
-  // ************
   onSearchFilter = (value, event, i) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === i) {
@@ -304,11 +292,6 @@ class TeacherTable extends Component {
       return item;
     });
     this.setState({ filtersData: _filtersData });
-
-    // if (filtersData[key].filterAdded) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
   };
 
   changeFilterValue = (value, key) => {
@@ -322,11 +305,6 @@ class TeacherTable extends Component {
       return item;
     });
     this.setState({ filtersData: _filtersData });
-
-    // if (filtersData[key].filterAdded) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
   };
 
   onChangeShowActive = e => {
@@ -352,9 +330,6 @@ class TeacherTable extends Component {
   };
 
   removeFilter = (e, key) => {
-    debugger;
-    console.log("e", e);
-    console.log("key", key);
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
@@ -385,7 +360,7 @@ class TeacherTable extends Component {
     if (searchByName) {
       search["firstName"] = { type: "cont", value: searchByName };
     }
-    console.log("search", search);
+
     return {
       districtId: userOrgId,
       role: "teacher",
@@ -402,7 +377,7 @@ class TeacherTable extends Component {
     loadAdminData(this.getSearchQuery());
   };
 
-  // ************
+  // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
     const {
@@ -446,10 +421,6 @@ class TeacherTable extends Component {
         <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
       </Menu>
     );
-
-    // const filterKeysArray = Object.keys(filters);
-
-    // console.log("filters", filters);
 
     return (
       <StyledTableContainer>
@@ -511,7 +482,6 @@ class TeacherTable extends Component {
                 value={filterStr ? filterStr : undefined}
                 disabled={isFilterTextDisable}
                 innerRef={this.filterTextInputRef[i]}
-                // onSearch={loadAdminData}
               />
               {i < 2 && (
                 <StyledAddFilterButton
@@ -523,13 +493,7 @@ class TeacherTable extends Component {
                 </StyledAddFilterButton>
               )}
               {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                <StyledAddFilterButton
-                  type="primary"
-                  onClick={e => {
-                    this.removeFilter(e, i);
-                    // loadAdminData();
-                  }}
-                >
+                <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
                   - Remove Filter
                 </StyledAddFilterButton>
               )}

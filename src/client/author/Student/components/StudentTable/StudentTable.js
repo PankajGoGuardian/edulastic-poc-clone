@@ -142,22 +142,6 @@ class StudentTable extends Component {
   }
 
   componentDidMount() {
-    // const { loadClassList, loadSchoolsData, loadAdminData, setRole, userOrgId } = this.props;
-    // setRole("student");
-    // loadAdminData();
-    // loadSchoolsData({
-    //   districtId: userOrgId
-    // });
-    // loadClassList({
-    //   districtId: userOrgId,
-    //   search: {
-    //     institutionIds: [],
-    //     codes: [],
-    //     subjects: [],
-    //     grades: [],
-    //     active: 1
-    //   }
-    // });
     this.loadFilteredList();
   }
 
@@ -170,14 +154,7 @@ class StudentTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    // const { loadAdminData, showActiveUsers, pageNo } = this.props;
-    // // here when the showActiveUsers checkbox is toggled, or the page number changes,
-    // // an api call is fired to get the data
-    // if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
-    //   loadAdminData();
-    // }
-  }
+  componentDidUpdate(prevProps) {}
 
   onEditStudent = key => {
     this.setState({
@@ -311,16 +288,15 @@ class StudentTable extends Component {
     this.props.setStudentsDetailsModalVisible(false);
   };
 
-  handleSearchName = value => {
-    // const { setSearchName } = this.props;
-    // setSearchName(e);
-    this.setState({ searchByName: value }, this.loadFilteredList);
-  };
   saveFormRef = node => {
     this.formRef = node;
   };
 
-  // ************
+  // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+  handleSearchName = value => {
+    this.setState({ searchByName: value }, this.loadFilteredList);
+  };
+
   onSearchFilter = (value, event, i) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === i) {
@@ -375,11 +351,6 @@ class StudentTable extends Component {
       return item;
     });
     this.setState({ filtersData: _filtersData });
-
-    // if (filtersData[key].filterAdded) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
   };
 
   changeFilterValue = (value, key) => {
@@ -393,11 +364,6 @@ class StudentTable extends Component {
       return item;
     });
     this.setState({ filtersData: _filtersData });
-
-    // if (filtersData[key].filterAdded) {
-    //   const { sortedInfo, searchByName, currentPage } = this.state;
-    //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    // }
   };
 
   onChangeShowActive = e => {
@@ -470,7 +436,7 @@ class StudentTable extends Component {
     loadAdminData(this.getSearchQuery());
   };
 
-  // ************
+  // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
     const {
@@ -523,10 +489,6 @@ class StudentTable extends Component {
         <Menu.Item key="addStudentsToAnotherClass">Add student(s) to another class</Menu.Item>
       </Menu>
     );
-
-    // const filterKeysArray = Object.keys(filters);
-
-    // console.log("filters", filters);
 
     return (
       <StyledTableContainer>
@@ -589,7 +551,6 @@ class StudentTable extends Component {
                 value={filterStr ? filterStr : undefined}
                 disabled={isFilterTextDisable}
                 innerRef={this.filterTextInputRef[i]}
-                // onSearch={loadAdminData}
               />
               {i < 2 && (
                 <StyledAddFilterButton
@@ -601,13 +562,7 @@ class StudentTable extends Component {
                 </StyledAddFilterButton>
               )}
               {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-                <StyledAddFilterButton
-                  type="primary"
-                  onClick={e => {
-                    this.removeFilter(e, i);
-                    // loadAdminData();
-                  }}
-                >
+                <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
                   - Remove Filter
                 </StyledAddFilterButton>
               )}

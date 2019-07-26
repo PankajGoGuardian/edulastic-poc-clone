@@ -114,8 +114,7 @@ class CoursesTable extends React.Component {
       sortedInfo.columnKey = colName;
       sortedInfo.order = "asc";
     }
-    this.setState({ sortedInfo });
-    this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
+    this.setState({ sortedInfo }, this.loadFilteredList);
   };
 
   onEditCourse = key => {
@@ -140,121 +139,6 @@ class CoursesTable extends React.Component {
     this.setState({
       addCourseModalVisible: true
     });
-  };
-
-  changeFilterColumn = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filtersColumn = value;
-    if (value === "status") filtersData[key].filtersValue = "eq";
-    this.setState({ filtersData });
-
-    if (filtersData[key].filterAdded) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    }
-  };
-
-  changeFilterValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filtersValue = value;
-    this.setState({ filtersData });
-
-    if (filtersData[key].filterAdded) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    }
-  };
-
-  onSearchFilter = (value, event, i) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === i) {
-        return { ...item, filterAdded: !!value };
-      }
-      return item;
-    });
-
-    // For some unknown reason till now calling blur() synchronously doesnt work.
-    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
-  };
-
-  onBlurFilterText = (e, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return {
-          ...item,
-          filterStr: e.target.value,
-          filterAdded: true
-        };
-      }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-
-    if (_filtersData[key].filterAdded) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredList(_filtersData, sortedInfo, searchByName, currentPage);
-    }
-  };
-
-  changeFilterText = (e, key) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
-      if (index === key) {
-        return { ...item, filterStr: e.target.value };
-      }
-      return item;
-    });
-    this.setState({ filtersData: _filtersData });
-  };
-
-  changeStatusValue = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = value;
-    this.setState({ filtersData });
-
-    if (filtersData[i].filterAdded) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
-    }
-  };
-
-  addFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    if (filtersData.length < 3) {
-      const _filtersData = filtersData.map((item, index) => {
-        if (index === key) {
-          return {
-            ...item,
-            filterAdded: true
-          };
-        }
-        return item;
-      });
-      // this.loadFilteredList([..._filtersData], sortedInfo, searchByName, currentPage);
-      _filtersData.push({
-        filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
-      this.setState({ filtersData: _filtersData });
-    }
-  };
-
-  removeFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    let newFiltersData = [];
-    if (filtersData.length === 1) {
-      newFiltersData.push({
-        filterAdded: false,
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: ""
-      });
-    } else {
-      newFiltersData = filtersData.filter((item, index) => index != key);
-    }
-    this.setState({ filtersData: newFiltersData });
-    this.loadFilteredList(newFiltersData, sortedInfo, searchByName, currentPage);
   };
 
   changeActionMode = e => {
@@ -351,28 +235,128 @@ class CoursesTable extends React.Component {
     });
   };
 
-  handleSearchName = value => {
-    const { filtersData, sortedInfo, currentPage } = this.state;
-    this.setState({ searchByName: value });
-    this.loadFilteredList(filtersData, sortedInfo, value, currentPage);
-  };
-
   changePagination = pageNumber => {
     const { filtersData, sortedInfo, searchByName } = this.state;
-    this.setState({ currentPage: pageNumber });
-    this.loadFilteredList(filtersData, sortedInfo, searchByName, pageNumber);
+    this.setState({ currentPage: pageNumber }, this.loadFilteredList);
   };
 
-  loadFilteredList(filtersData, sortedInfo, searchByName, currentPage, isActive) {
-    const { loadCourseListData, userOrgId } = this.props;
-    if (isActive === undefined) isActive = this.state.showActive;
+  onChangeShowActive = e => {
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
+  };
+
+  closeUploadCourseModal = () => {
+    this.setState({ uploadCourseModalVisible: false });
+    this.props.resetUploadModal();
+  };
+
+  // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+  handleSearchName = value => {
+    const { filtersData, sortedInfo, currentPage } = this.state;
+    this.setState({ searchByName: value }, this.loadFilteredList);
+  };
+
+  onSearchFilter = (value, event, i) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === i) {
+        return { ...item, filterAdded: !!value };
+      }
+      return item;
+    });
+
+    // For some unknown reason till now calling blur() synchronously doesnt work.
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
+  };
+
+  onBlurFilterText = (e, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value,
+          filterAdded: true
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
+  };
+
+  changeStatusValue = (value, key) => {
+    const filtersData = [...this.state.filtersData];
+    filtersData[key].filterStr = value;
+    this.setState({ filtersData }, this.loadFilteredList);
+  };
+
+  changeFilterText = (e, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return { ...item, filterStr: e.target.value };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+  };
+
+  changeFilterColumn = (value, key) => {
+    const filtersData = [...this.state.filtersData];
+    filtersData[key].filtersColumn = value;
+    if (value === "status") filtersData[key].filtersValue = "eq";
+    this.setState({ filtersData }, this.loadFilteredList);
+  };
+
+  changeFilterValue = (value, key) => {
+    const filtersData = [...this.state.filtersData];
+    filtersData[key].filtersValue = value;
+    this.setState({ filtersData }, this.loadFilteredList);
+  };
+
+  addFilter = (e, key) => {
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    if (filtersData.length < 3) {
+      const _filtersData = filtersData.map((item, index) => {
+        if (index === key) {
+          return {
+            ...item,
+            filterAdded: true
+          };
+        }
+        return item;
+      });
+
+      _filtersData.push({
+        filterAdded: false,
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: ""
+      });
+      this.setState({ filtersData: _filtersData });
+    }
+  };
+
+  removeFilter = (e, key) => {
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    let newFiltersData = [];
+    if (filtersData.length === 1) {
+      newFiltersData.push({
+        filterAdded: false,
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: ""
+      });
+    } else {
+      newFiltersData = filtersData.filter((item, index) => index != key);
+    }
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
+  };
+
+  getSearchQuery = () => {
+    const { filtersData, sortedInfo, searchByName, currentPage, showActive } = this.state;
+    const { userOrgId } = this.props;
+
+    // if (isActive === undefined) isActive = this.state.showActive;
 
     let search = {};
-
-    if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
-    }
-
     for (let i = 0; i < filtersData.length; i++) {
       if (
         filtersData[i].filtersColumn !== "" &&
@@ -383,6 +367,10 @@ class CoursesTable extends React.Component {
       }
     }
 
+    if (searchByName.length > 0) {
+      search.name = { type: "cont", value: searchByName };
+    }
+
     const loadListJsonData = {
       districtId: userOrgId,
       limit: 25,
@@ -391,22 +379,19 @@ class CoursesTable extends React.Component {
       order: sortedInfo.order,
       search
     };
+    if (showActive) loadListJsonData.active = 1;
 
-    if (isActive) loadListJsonData.active = 1;
+    // TO DO: remove this line after further investigation
     this.setState({ searchData: loadListJsonData });
-    loadCourseListData(loadListJsonData);
+
+    return loadListJsonData;
+  };
+
+  loadFilteredList() {
+    const { loadCourseListData } = this.props;
+    loadCourseListData(this.getSearchQuery());
   }
-
-  onChangeShowActive = e => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    this.setState({ showActive: e.target.checked });
-    this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage, e.target.checked);
-  };
-
-  closeUploadCourseModal = () => {
-    this.setState({ uploadCourseModalVisible: false });
-    this.props.resetUploadModal();
-  };
+  // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
     const {

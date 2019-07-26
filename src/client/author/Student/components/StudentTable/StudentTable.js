@@ -12,6 +12,7 @@ import {
   StyledControlDiv,
   StyledFilterSelect,
   StyledTableButton,
+  StyledTable,
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
@@ -370,7 +371,11 @@ class StudentTable extends Component {
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
-          <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
+          <Checkbox
+            checked={showActiveUsers}
+            style={{ margin: "auto" }}
+            onChange={evt => setShowActiveUsers(evt.target.checked)}
+          >
             Show current users only
           </Checkbox>
           <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
@@ -424,7 +429,7 @@ class StudentTable extends Component {
             </StyledControlDiv>
           );
         })}
-        <Table
+        <StyledTable
           rowKey={record => record._id}
           rowSelection={rowSelection}
           dataSource={Object.values(result)}

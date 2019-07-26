@@ -274,7 +274,11 @@ class SchoolAdminTable extends Component {
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
-          <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
+          <Checkbox
+            checked={showActiveUsers}
+            style={{ margin: "auto" }}
+            onChange={evt => setShowActiveUsers(evt.target.checked)}
+          >
             Show current users only
           </Checkbox>
           <StyledActionDropDown overlay={actionMenu}>

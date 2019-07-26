@@ -9,22 +9,17 @@ const getCourses = classData => {
   }));
 };
 
-const getTerms = (classData, terms) => {
-  const groupedByTerm = groupBy(classData, "termId");
-
-  return map(groupedByTerm, (term, termId) => {
-    const { name = "" } = find(terms, term => term._id == termId) || {};
-
+const getTerms = (terms = []) =>
+  map(terms, term => {
     return {
-      title: name,
-      key: termId
+      title: term.name,
+      key: term._id
     };
   });
-};
 
 export const getFilterOptions = (classData = [], terms = []) => {
   const courseOptions = getCourses(classData);
-  const termOptions = getTerms(classData, terms);
+  const termOptions = getTerms(terms);
 
   return {
     courseOptions,

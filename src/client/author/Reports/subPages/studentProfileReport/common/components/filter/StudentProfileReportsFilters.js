@@ -18,7 +18,6 @@ import {
   getReportsSPRFilterData
 } from "../../filterDataDucks";
 import { getFilterOptions } from "../../utils/transformers";
-import { getStandardsBrowseStandardsRequestAction } from "../../../../standardsMasteryReport/common/filterDataDucks";
 
 const StudentProfileReportsFilters = ({
   style,
@@ -30,10 +29,9 @@ const StudentProfileReportsFilters = ({
   orgData,
   studentList,
   getSPRFilterDataRequestAction,
-  getStandardsBrowseStandardsRequestAction,
   receiveStudentsListAction
 }) => {
-  const [termId, setTermId] = useState("");
+  const [termId, setTermId] = useState(orgData.defaultTermId);
   const [courseId, setCourseId] = useState("");
   const [selectedStudent, setSelectedStudent] = useState({ key: "" });
 
@@ -68,21 +66,11 @@ const StudentProfileReportsFilters = ({
       setTermId(termId);
       setCourseId(courseId);
       setSelectedStudent({ key: studentId });
-      onGoClick({ requestFilters: parsedQuery, selectedStudent: { key: studentId } });
     }
   }, []);
 
   useEffect(() => {
     if (studentClassData.length) {
-      const groupedGrades = groupBy(studentClassData, "grades");
-
-      const q = {
-        curriculumId: "4f9d3dc42b3fdb5c48389ed1",
-        grades: Object.keys(groupedGrades)
-      };
-
-      getStandardsBrowseStandardsRequestAction(q);
-
       // if there is no student name for the selected name extract it from the class data
       if (!selectedStudent.title) {
         const classRecord = studentClassData[0];
@@ -98,20 +86,17 @@ const StudentProfileReportsFilters = ({
     if (selectedStudent.key) {
       const q = {
         termId,
-        courseId,
         studentId: selectedStudent.key
       };
       getSPRFilterDataRequestAction(q);
+      onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
     }
-  }, [selectedStudent.key, termId]);
+  }, [selectedStudent.key]);
 
   const onFilterApply = () => onGoClick({ requestFilters: { termId, courseId }, selectedStudent });
   const onUpdateTerm = ({ key }) => setTermId(key);
   const onUpdateCourse = ({ key }) => setCourseId(key);
-  const onStudentSelect = item => {
-    setSelectedStudent(item);
-    onGoClick({ requestFilters: { termId, courseId }, selectedStudent: item });
-  };
+  const onStudentSelect = item => setSelectedStudent(item);
 
   return (
     <div className={className} style={style}>
@@ -166,7 +151,6 @@ const enhance = connect(
   {
     getSPRFilterDataRequestAction,
     receiveStudentsListAction,
-    getStandardsBrowseStandardsRequestAction,
     setFiltersAction
   }
 );

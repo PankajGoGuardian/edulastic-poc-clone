@@ -2057,3 +2057,7 @@ span.token.active-word {
   width: 100%;
   height: 100vh;
 }
+
+.ant-message-info .anticon {
+  color: #f9942d;
+}

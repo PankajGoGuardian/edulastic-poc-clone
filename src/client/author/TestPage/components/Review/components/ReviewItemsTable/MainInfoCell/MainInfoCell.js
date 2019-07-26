@@ -12,12 +12,13 @@ class MainInfoCell extends React.Component {
     const newHtml = helpers.sanitizeForReview(data.stimulus);
     return (
       <FlexContainer style={{ justifyContent: "space-between" }}>
-        <Stimulus
-          style={{ width: "75%" }}
-          onClick={() => handlePreview(data.id)}
-          dangerouslySetInnerHTML={{ __html: newHtml }}
-        />
-        <FlexContainer style={{ width: "15%" }} flexDirection="column" alignItems="flex-end" justifyContent="flex-end">
+        <Stimulus onClick={() => handlePreview(data.id)} dangerouslySetInnerHTML={{ __html: newHtml }} />
+        <FlexContainer
+          style={{ width: "200px" }}
+          flexDirection="column"
+          alignItems="flex-end"
+          justifyContent="flex-end"
+        >
           <FlexContainer flexDirection="column" style={{ margin: 0 }}>
             <PointsInput
               size="large"

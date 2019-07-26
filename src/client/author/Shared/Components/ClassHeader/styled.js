@@ -123,7 +123,7 @@ export const StyledTabs = styled.div`
   align-items: center;
   justify-content: center;
   @media (max-width: ${smallDesktopWidth}) {
-    min-width: 500px;
+    min-width: 480px;
   }
 `;
 
@@ -268,7 +268,7 @@ export const OpenCloseButton = styled(Button)`
   padding: 10px 30px;
   font-size: 12px;
   @media (max-width: ${smallDesktopWidth}) {
-    padding: 10px 18px;
+    padding: 10px 15px;
     font-size: 10px;
     margin-right: 2px;
   }

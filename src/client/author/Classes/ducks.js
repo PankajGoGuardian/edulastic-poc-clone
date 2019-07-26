@@ -246,6 +246,7 @@ function* createClassSaga({ payload }) {
   try {
     const createClass = yield call(groupApi.createGroup, payload);
     yield put(createClassSuccessAction(createClass));
+    yield call(message.success, "Class Created Successfully");
   } catch (err) {
     const errorMessage = "Create Class is failing";
     yield call(message.error, errorMessage);

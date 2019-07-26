@@ -52,6 +52,7 @@ const Points = ({
               {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
               {pointStyle === "cross" ? (
                 <Cross
+                  key={`cross-${index}`}
                   d={getCrossD(getCenterX(index), getCenterY(dot))}
                   onMouseEnter={handleMouseAction(index)}
                   onMouseLeave={handleMouseAction(null)}
@@ -59,6 +60,7 @@ const Points = ({
                 />
               ) : (
                 <Circle
+                  key={`circle-${index}`}
                   onMouseEnter={handleMouseAction(index)}
                   onMouseLeave={handleMouseAction(null)}
                   onMouseDown={onMouseDown(index)}

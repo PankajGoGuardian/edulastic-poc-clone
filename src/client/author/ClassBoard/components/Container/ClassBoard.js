@@ -36,7 +36,8 @@ import {
   stateStudentResponseSelector,
   showScoreSelector,
   getMarkAsDoneEnableSelector,
-  getQLabelsSelector
+  getQLabelsSelector,
+  removedStudentsSelector
 } from "../../ducks";
 
 import {
@@ -192,7 +193,7 @@ class ClassBoard extends Component {
   onSelectAllChange = e => {
     const { checked } = e.target;
     const { testActivity } = this.props;
-    const { studentSelect, studentUnselectAll, allStudents } = this.props;
+    const { studentSelect, studentUnselectAll, allStudents, removedStudents } = this.props;
     testActivity.map(student => {
       student.check = checked;
       return null;
@@ -202,7 +203,8 @@ class ClassBoard extends Component {
       nCountTrue: checked ? testActivity.length : 0
     });
     if (checked) {
-      studentSelect(allStudents.map(x => x._id));
+      const selectedAllstudents = allStudents.map(x => x._id).filter(item => !removedStudents.includes(item));
+      studentSelect(selectedAllstudents);
     } else {
       studentUnselectAll();
     }
@@ -337,11 +339,14 @@ class ClassBoard extends Component {
 
   handleShowMarkAsAbsentModal = () => {
     const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
-    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now())
+    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
       return message.warn("Assignment is not opened yet");
+    }
+
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length)
+    if (!selectedStudentKeys.length) {
       return message.warn("At least one student should be selected to be Marked as Absent.");
+    }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
       item =>
@@ -357,9 +362,16 @@ class ClassBoard extends Component {
   };
 
   handleShowRemoveStudentsModal = () => {
-    const { selectedStudents } = this.props;
+    const { selectedStudents, testActivity } = this.props;
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length) return message.warn("At least one student should be selected to be removed.");
+    if (!selectedStudentKeys.length) {
+      return message.warn("At least one student should be selected to be removed.");
+    }
+    const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
+    const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
+    if (isAnyBodyGraded) {
+      return message.warn("You will not be able to remove selected student(s) as the status is graded");
+    }
     this.setState({ showRemoveStudentsPopup: true, modalInputVal: "" });
   };
 
@@ -383,6 +395,17 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
+    const { assignmentStatus, additionalData, testActivity } = this.props;
+    if (assignmentStatus === "DONE") {
+      return message.warn(
+        "Mismatch occurred with logged in class section, please navigate to assignments to select class section and try again."
+      );
+    }
+    // total count represents total students count in the class
+    if (additionalData.totalCount <= testActivity.length) {
+      return message.warn("This assessment is already assigned to all students in the class.");
+    }
+
     this.setState({ showAddStudentsPopup: true });
   };
 
@@ -820,7 +843,8 @@ const enhance = compose(
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      labels: getQLabelsSelector(state)
+      labels: getQLabelsSelector(state),
+      removedStudents: removedStudentsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

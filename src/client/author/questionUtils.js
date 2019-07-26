@@ -1,7 +1,7 @@
 import { questionType, question } from "@edulastic/constants";
 import { get, isString } from "lodash";
 
-const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN } = questionType;
+const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE } = questionType;
 
 /**
  * check for options in "expressionMultipart" type.
@@ -48,7 +48,7 @@ const clozeDropDownOptionsCheck = item => {
  * deafult optsions check
  * @param {Object} item
  */
-const defaultOptionsCheck = ({ options = [] }) => {
+const multipleChoiceOptionsCheck = ({ options = [] }) => {
   // there should be atleast 1 option.
   if (options.length === 0) return true;
 
@@ -65,8 +65,10 @@ const hasEmptyOptions = item => {
       return expressionMultipartOptionsCheck(item);
     case CLOZE_DROP_DOWN:
       return clozeDropDownOptionsCheck(item);
+    case MULTIPLE_CHOICE:
+      return multipleChoiceOptionsCheck(item);
     default:
-      return defaultOptionsCheck(item);
+      return false;
   }
 };
 

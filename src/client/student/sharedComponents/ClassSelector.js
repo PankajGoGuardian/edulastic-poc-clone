@@ -3,7 +3,7 @@ import { Select } from "antd";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { extraDesktopWidthMax } from "@edulastic/colors";
+import { extraDesktopWidthMax, largeDesktopWidth } from "@edulastic/colors";
 
 import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
 
@@ -72,6 +72,11 @@ const ClassLabel = styled.span`
   align-items: center;
   letter-spacing: 0.2px;
 
+  @media (max-width: ${largeDesktopWidth}) {
+    font-size: 12px;
+    margin-right: 19px;
+  }
+
   @media (max-width: 768px) {
     width: 65px;
     width: auto;
@@ -89,19 +94,31 @@ const AssignmentSelectClass = styled.div`
     @media (min-width: ${extraDesktopWidthMax}) {
       width: 240px;
     }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      height: 37px;
+      width: 164px;
+    }
   }
+
   .ant-select-selection {
     border: 0px;
     background-color: ${props => props.theme.headerDropdownBgColor};
     color: ${props => props.theme.headerDropdownTextColor};
     font-size: ${props => props.theme.headerDropdownFontSize};
   }
+
   .ant-select-selection__rendered {
     height: 100%;
     align-items: center;
     display: flex !important;
     padding-left: 15px;
     font-size: 12px;
+
+    @media (max-width: ${largeDesktopWidth}) {
+      padding-left: 2px;
+      font-size: 11px;
+    }
   }
   .anticon-down {
     svg {

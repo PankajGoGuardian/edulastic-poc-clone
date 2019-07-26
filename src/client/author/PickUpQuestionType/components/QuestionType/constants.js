@@ -553,7 +553,11 @@ export const getCards = onSelectQuestionType => {
         line_color: [themeColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
-        validation: {},
+        validation: {
+          valid_response: {
+            score: 1
+          }
+        },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -1271,12 +1275,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1356,12 +1355,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1432,12 +1426,7 @@ export const getCards = onSelectQuestionType => {
           tools: [],
           default_tool: null
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         numberlineAxis: {
           leftArrow: true,
           rightArrow: true,
@@ -1558,12 +1547,7 @@ export const getCards = onSelectQuestionType => {
           controls: [],
           default_control: ""
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         validation: {
           graphType: "axisLabels",
           scoring_type: EXACT_MATCH,
@@ -1877,8 +1861,10 @@ export const getCards = onSelectQuestionType => {
         title: "Units",
         is_math: true,
         stimulus: "",
-        template: `${EMBED_RESPONSE} = 1m`,
-        templateDisplay: true,
+        template: EMBED_RESPONSE,
+        isUnits: true,
+        templateDisplay: false,
+        showDropdown: false,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
@@ -1895,32 +1881,12 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        text_blocks: [
-          "g",
-          "kg",
-          "mg",
-          "m",
-          "km",
-          "cm",
-          "mm",
-          "L",
-          "mL",
-          "s",
-          "ms",
-          "oz",
-          "lb",
-          "in",
-          "ft",
-          "mi",
-          "fl oz",
-          "pt",
-          "gal"
-        ],
+        custom_keys: ["m", "km", "cm", "mm"],
         ui_style: {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["units_si", "units_us", "qwerty"],
+        symbols: ["units_us", "units_si", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType

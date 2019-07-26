@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { Input, Row, Col } from "antd";
 
@@ -10,7 +11,30 @@ import { Subtitle } from "../../../styled/Subtitle";
 
 import { IconTrash } from "../styled/IconTrash";
 
-class TextBlocks extends Component {
+class CustomKeys extends Component {
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("advanced", t("component.options.customkeys"), node.offsetTop, node.scrollHeight);
+  };
+
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.customkeys"), node.offsetTop, node.scrollHeight);
+    }
+  }
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
+
   render() {
     const { blocks, onChange, onAdd, onDelete, advancedAreOpen, t, fillSections, cleanSections } = this.props;
     return (
@@ -25,7 +49,7 @@ class TextBlocks extends Component {
 
         <Row gutter={32}>
           {blocks.map((block, index) => (
-            <Col style={{ marginBottom: 15 }} span={12}>
+            <Col style={{ marginBottom: 15 }} span={12} key={index}>
               <FlexContainer>
                 <Input
                   style={{ width: "100%" }}
@@ -47,7 +71,7 @@ class TextBlocks extends Component {
   }
 }
 
-TextBlocks.propTypes = {
+CustomKeys.propTypes = {
   blocks: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
@@ -58,10 +82,10 @@ TextBlocks.propTypes = {
   cleanSections: PropTypes.func
 };
 
-TextBlocks.defaultProps = {
+CustomKeys.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };
 
-export default withNamespaces("assessment")(TextBlocks);
+export default withNamespaces("assessment")(CustomKeys);

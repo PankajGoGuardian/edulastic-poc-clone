@@ -55,7 +55,8 @@ export const MathInputStyles = styled.div`
   }
 
   .input__absolute__keyboard {
-    top: 70px;
+    position: absolute;
+    top: 42px;
     left: 0px;
     right: 0px;
     z-index: 999;

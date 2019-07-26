@@ -366,6 +366,13 @@ const SideBar = styled(Layout.Sider)`
     &:hover {
       background: #1890ff;
     }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 47px;
+      height: 47px;
+      border-radius: 47px;
+      margin-bottom: 10px;
+    }
   }
   &.ant-layout-sider-collapsed .userinfoBtn .ant-select-arrow {
     right: 15px;
@@ -460,6 +467,11 @@ const MenuWrapper = styled.div`
 
   @media (min-width: ${extraDesktopWidthMax}) {
     min-height: calc(100% - 100px);
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    min-height: calc(100% - 65px);
+    padding-bottom: 22px;
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -564,6 +576,11 @@ const Menu = styled(AntMenu)`
       opacity: 0;
       pointer-events: none;
       transition: all .3s ease;
+      
+      @media (max-width: ${largeDesktopWidth}) {
+        left: 13px;
+        right: 13px;
+      }
     }
   }
   .ant-menu-item:not(.ant-menu-item-selected) {
@@ -745,6 +762,10 @@ const UserInfoButton = styled.div`
     img {
       box-shadow: none;
     }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 47px;
+    }
   }
 
   img {
@@ -754,7 +775,13 @@ const UserInfoButton = styled.div`
     left: 0;
     border-radius: 50%;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
+    @media (max-width: ${largeDesktopWidth}) {
+      height: 47px;
+      width: 47px;
+    }
   }
+
   .ant-select-selection {
     background: transparent;
     border: 0px;
@@ -774,6 +801,10 @@ const UserInfoButton = styled.div`
       pointer-events: none;
       background: transparent;
     }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 47px;
   }
 `;
 
@@ -804,6 +835,10 @@ const DropdownBtn = styled(Dropdown)`
       width: 60px;
       margin: 0;
     }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    height: 47px;
   }
 `;
 

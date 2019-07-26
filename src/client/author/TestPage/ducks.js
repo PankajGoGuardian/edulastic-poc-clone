@@ -347,8 +347,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: {
-          ...state.entity,
-          testItems: payload
+          ...payload
         }
       };
     default:

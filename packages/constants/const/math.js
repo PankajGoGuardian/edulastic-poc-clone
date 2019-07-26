@@ -99,7 +99,8 @@ const methodOptions = {
     "setThousandsSeparator",
     "allowedVariables",
     "setEvaluation",
-    "compareSides"
+    "compareSides",
+    "unit"
   ],
   [methods.EQUIV_LITERAL]: [
     "ariaLabel",

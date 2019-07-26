@@ -494,7 +494,11 @@ class ClassesTable extends Component {
         editable: true,
         render: course => (course ? course.name : "-"),
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.course.name.localeCompare(b._source.course.name)
+        sorter: (a, b) => {
+          const prev = get(a, "_source.course.name", "");
+          const next = get(b, "_source.course.name", "");
+          return next.localeCompare(prev);
+        }
       },
       {
         title: "Teacher",
@@ -568,7 +572,6 @@ class ClassesTable extends Component {
     };
 
     const selectedClass = dataSource[editClassKey];
-
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit class">Edit Class</Menu.Item>
@@ -666,7 +669,7 @@ class ClassesTable extends Component {
       <StyledTableContainer>
         <StyledControlDiv>
           <Button type="primary" onClick={this.showAddClassModal}>
-            + Create Class
+            + Create new class
           </Button>
 
           <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} />
@@ -707,6 +710,9 @@ class ClassesTable extends Component {
             closeModal={this.closeEditClassModal}
             schoolsData={schoolsData}
             teacherList={teacherList}
+            userOrgId={userOrgId}
+            searchCourseList={searchCourseList}
+            coursesForDistrictList={coursesForDistrictList}
           />
         )}
 

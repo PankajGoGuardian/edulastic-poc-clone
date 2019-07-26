@@ -172,12 +172,12 @@ export const getResponsesCount = element => {
 
 export const reIndexResponses = htmlStr => {
   const parsedHTML = $("<div />").html(htmlStr);
-  if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response").length) {
+  if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response, paragraphnumber").length) {
     return htmlStr;
   }
 
   $(parsedHTML)
-    .find("textinput, mathinput, textdropdown, response")
+    .find("textinput, mathinput, textdropdown, response, paragraphnumber")
     .each(function(index) {
       $(this)
         .find("span")
@@ -190,6 +190,10 @@ export const reIndexResponses = htmlStr => {
 
       $(this).attr("responseIndex", index + 1);
       $(this).attr("contenteditable", false);
+
+      if ($(this).context.nodeName === "PARAGRAPHNUMBER") {
+        $(this).html(`<label>${index + 1}</label>`);
+      }
 
       const text = $("<div>")
         .append($(this).clone())
@@ -206,14 +210,28 @@ export const sanitizeForReview = stimulus => {
 
   const jqueryEl = $("<p>").append(stimulus);
 
+  //remove br tag also
   // eslint-disable-next-line func-names
-  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table", "response"];
+  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table", "response", "br"];
+  let tagFound = false;
   tagsToRemove.forEach(tagToRemove => {
     jqueryEl.find(tagToRemove).each(function() {
       $(this).replaceWith("...");
+      tagFound = true;
     });
   });
-  return sanitizeSelfClosingTags(jqueryEl.html());
+  //to remove any text after ...
+  let splitJquery = jqueryEl.html();
+  if (tagFound) {
+    const firstIndexOf = jqueryEl.html().indexOf("...");
+    if (firstIndexOf != -1) {
+      splitJquery = jqueryEl.html().substr(0, firstIndexOf + 3);
+    }
+    if (splitJquery.length === 0) {
+      splitJquery = question.DEFAULT_STIMULUS;
+    }
+  }
+  return sanitizeSelfClosingTags(splitJquery);
 };
 
 export const removeIndexFromTemplate = tmpl => {
@@ -245,6 +263,12 @@ export const beforeUpload = file => {
   return isAllowedType && withinSizeLimit;
 };
 
+export const calculateWordsCount = ele =>
+  $("<div>")
+    .html(ele)
+    .text()
+    .split(/\W/g)
+    .filter(i => !!i.trim()).length;
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -257,5 +281,6 @@ export default {
   reIndexResponses,
   sanitizeForReview,
   canInsert,
-  removeIndexFromTemplate
+  removeIndexFromTemplate,
+  calculateWordsCount
 };

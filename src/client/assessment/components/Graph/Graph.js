@@ -19,7 +19,7 @@ import { AxisSegments, GraphAxisLabels, GraphQuadrants } from "./Authoring";
 import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
 import { InstructorStimulus } from "./common/styled_components";
-import Annotations from "./Annotations/Annotations";
+import Annotations from "../Annotations/Annotations";
 import { AnswerContext } from "@edulastic/common";
 
 import Question from "../Question";
@@ -279,6 +279,7 @@ class Graph extends Component {
       ...restProps
     } = this.props;
     let previewTab = _previewTab;
+    let compact = false;
     if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
       /**
        * ideally wanted to be in CHECK mode.
@@ -288,9 +289,10 @@ class Graph extends Component {
       previewTab = "show";
     } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
       previewTab = "clear";
+      compact = true;
     }
 
-    const { extra_options, ui_style, validation, stimulus } = item;
+    const { ui_style, validation, stimulus } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -343,10 +345,7 @@ class Graph extends Component {
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
-          <Wrapper>
-            {extra_options && extra_options.instructor_stimulus && (
-              <InstructorStimulus>{extra_options.instructor_stimulus}</InstructorStimulus>
-            )}
+          <Wrapper className={compact ? "toolbar-compact" : ""}>
             <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
             {item.canvas && item.ui_style && (
               <GraphDisplay

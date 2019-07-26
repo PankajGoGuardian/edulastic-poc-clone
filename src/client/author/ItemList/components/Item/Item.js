@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-
+import { question } from "@edulastic/constants";
 import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
 import { getTestItemAuthorName, getQuestionType } from "../../../dataUtils";
 import { MAX_TAB_WIDTH } from "../../../src/constants/others";
@@ -79,7 +79,7 @@ class Item extends Component {
 
   get itemStimulus() {
     const { item } = this.props;
-    const stimulus = get(item, ["data", "questions", 0, "stimulus"], "<p>click here to view the question details</p>");
+    const stimulus = get(item, ["data", "questions", 0, "stimulus"], question.DEFAULT_STIMULUS);
     return helpers.sanitizeForReview(stimulus);
   }
 

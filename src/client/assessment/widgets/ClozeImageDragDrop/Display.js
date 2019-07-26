@@ -25,7 +25,7 @@ import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
 import AnswerContainer from "./AnswerContainer";
 
-import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
+import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 

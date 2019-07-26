@@ -13,6 +13,7 @@ const ClassListModal = ({
   courseList,
   syncClass,
   selectedGroups,
+  setShowBanner,
   syncClassLoading,
   updateGoogleCourseList,
   state
@@ -204,6 +205,8 @@ const ClassListModal = ({
 
     if (selected && selected.length) {
       syncClass(selected);
+      close();
+      setShowBanner(true);
     } else {
       message.error("Please select a class to Sync.");
     }
@@ -214,6 +217,7 @@ const ClassListModal = ({
       visible={visible}
       onCancel={close}
       onOk={addGroups}
+      title="Import Classes and Students from Google"
       width={"70vw"}
       okText="Sync"
       okButtonProps={{
@@ -223,12 +227,19 @@ const ClassListModal = ({
       }}
       cancelButtonProps={{ style: { "border-color": themeColorLight }, shape: "round" }}
     >
+      <p>The following classes will be imported from you Google Classroom account.</p>
+      <p>
+        Please enter/update class name, grade and subject to import and create classes in Edulastic. Once import is
+        successful, Students accounts will be automatically created in Edulastic.{" "}
+      </p>
       <Table
+        style={{ marginTop: "20px" }}
         columns={columns}
         dataSource={groups}
         bordered
         rowSelection={rowSelection}
-        pagination={(groups && groups.length > 10) || false}
+        scroll={{ y: "50vh" }}
+        pagination={{ defaultPageSize: (groups && groups.length) || 10, hideOnSinglePage: true }}
       />
     </Modal>
   );

@@ -44,7 +44,8 @@ const ManageClass = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const closeModal = () => setIsModalVisible(false);
-
+  const [showBanner, setShowBanner] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   useEffect(() => {
     if (!fetchClassListLoading) setIsModalVisible(true);
     else {
@@ -53,8 +54,10 @@ const ManageClass = ({
   }, [fetchClassListLoading]);
 
   useEffect(() => {
-    if (!syncClassLoading && isModalVisible) {
-      setIsModalVisible(false);
+    if (!syncClassLoading && showBanner === true) {
+      setTimeout(() => {
+        setShowBanner(false);
+      }, 5000);
     }
   }, [syncClassLoading]);
   useEffect(() => {
@@ -63,17 +66,22 @@ const ManageClass = ({
     getDictCurriculums();
     receiveSearchCourse({ districtId });
     setIsModalVisible(false);
+    setShowBanner(false);
   }, []);
 
   return (
     <ClassListContainer
       {...restProps}
       state={state}
+      setShowBanner={setShowBanner}
       syncClassLoading={syncClassLoading}
       isModalVisible={isModalVisible}
       closeModal={closeModal}
       allowGoogleLogin={allowGoogleLogin}
       groups={groups}
+      showBanner={showBanner}
+      showDetails={showDetails}
+      setShowDetails={setShowDetails}
       archiveGroups={archiveGroups}
       groupsLoading={isLoading}
     />
@@ -103,6 +111,7 @@ const enhance = compose(
       districtId: get(state, "user.user.orgData.districtId"),
       allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       isGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
+      syncClassResponse: get(state, "manageClass.syncClassResponse", {}),
       syncClassLoading: get(state, "manageClass.syncClassLoading", false),
       googleCourseList: getGoogleCourseListSelector(state)
     }),

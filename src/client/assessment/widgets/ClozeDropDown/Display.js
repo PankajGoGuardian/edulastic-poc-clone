@@ -120,6 +120,8 @@ class ClozeDropDownDisplay extends Component {
       disableResponse,
       showQuestionNumber,
       userSelections,
+      previewTab,
+      changePreviewTab,
       isReviewTab
     } = this.props;
     const { parsedTemplate } = this.state;
@@ -172,6 +174,8 @@ class ClozeDropDownDisplay extends Component {
       onChange: this.selectChange,
       responsecontainerindividuals,
       stemNumeration: stemnumeration,
+      previewTab,
+      changePreviewTab,
       userAnswers: userSelections || [],
       showIndex: showAnswer || checkAnswer,
       cAnswers: get(item, "validation.valid_response.value", []),

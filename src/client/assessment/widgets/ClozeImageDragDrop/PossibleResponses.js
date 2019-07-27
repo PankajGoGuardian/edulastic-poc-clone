@@ -1,7 +1,6 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
@@ -18,7 +17,7 @@ import { updateVariables } from "../../utils/variables";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class PossibleResponses extends Component {
   static propTypes = {
@@ -33,19 +32,6 @@ class PossibleResponses extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.cloze.imageDragDrop.possibleresponses"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -125,10 +111,16 @@ class PossibleResponses extends Component {
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, fillSections, cleanSections } = this.props;
 
     return (
-      <Widget data-cy="possibleResponses">
+      <Question
+        dataCy="possibleResponses"
+        section="main"
+        label={t("component.cloze.imageDragDrop.possibleresponses")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.cloze.imageDragDrop.possibleresponses")}</Subtitle>
         <QuillSortableList
           items={item.options}
@@ -142,7 +134,7 @@ class PossibleResponses extends Component {
             {t("component.cloze.imageDragDrop.addnewchoice")}
           </AddNewChoiceBtn>
         </div>
-      </Widget>
+      </Question>
     );
   }
 }

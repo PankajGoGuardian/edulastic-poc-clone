@@ -1,31 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 
 import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class ComposeQuestion extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.sortList.composeQuestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleItemChangeChange = (prop, uiStyle) => {
       setQuestionData(
@@ -37,7 +23,12 @@ class ComposeQuestion extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.sortList.composeQuestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.sortList.composeQuestion")}</Subtitle>
 
         <QuestionTextArea
@@ -46,7 +37,7 @@ class ComposeQuestion extends Component {
           value={item.stimulus}
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

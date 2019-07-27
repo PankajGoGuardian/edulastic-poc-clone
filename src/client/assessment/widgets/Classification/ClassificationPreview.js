@@ -110,14 +110,22 @@ const ClassificationPreview = ({
   const initialLength = (colCount || 2) * (rowCount || 1);
 
   const createEmptyArrayOfArrays = () => Array(...Array(initialLength)).map(() => []);
+  /*
+    Changes :
+    1. removing validArray mapping for initial answers as it is correct ans array and we need user response array.
+    2. Refactoring code for better readability of conditions.
+ */
+  const getInitialUserAnswers = () => {
+    if (userAnswer && userAnswer.some(arr => arr.length !== 0)) {
+      return userAnswer.map(arr => arr.map(ans => possible_responses[ans]));
+    }
+    return createEmptyArrayOfArrays();
+  };
 
-  const initialAnswers = disableResponse
-    ? validArray.map(arr => arr.map(ans => possible_responses[ans]))
-    : editCorrectAnswers.length > 0
-    ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
-    : userAnswer && userAnswer.some(arr => arr.length !== 0)
-    ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
-    : createEmptyArrayOfArrays();
+  const initialAnswers =
+    !disableResponse && editCorrectAnswers.length > 0
+      ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
+      : getInitialUserAnswers();
 
   const [answers, setAnswers] = useState(initialAnswers);
 
@@ -132,12 +140,6 @@ const ClassificationPreview = ({
       setDragItems(uniq(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))));
     }
   }, [userAnswer, possible_responses]);
-
-  useEffect(() => {
-    if (previewTab === CHECK || previewTab === SHOW) {
-      changePreviewTab(CLEAR);
-    }
-  }, [userAnswer]);
 
   const boxes = createEmptyArrayOfArrays();
 
@@ -187,6 +189,10 @@ const ClassificationPreview = ({
       setAnswers(uniq(ansArrays));
     }
     saveAnswer(uniq(ansArrays.map(ansArr => uniq(ansArr.map(ans => posResp.indexOf(ans))))));
+
+    if (previewTab === CHECK || previewTab === SHOW) {
+      changePreviewTab(CLEAR);
+    }
   };
 
   const drop = ({ flag, index }) => ({ flag, index });
@@ -269,6 +275,7 @@ const ClassificationPreview = ({
                   isResizable={view === EDIT}
                   item={item}
                   disableResponse={disableResponse}
+                  isReviewTab={isReviewTab}
                 />
               )
           )}

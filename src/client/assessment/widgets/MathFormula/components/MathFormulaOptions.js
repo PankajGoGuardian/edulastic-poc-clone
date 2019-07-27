@@ -9,7 +9,7 @@ import { evaluationType, questionType } from "@edulastic/constants";
 
 import Layout from "./Layout";
 import ResponseContainers from "./ResponseContainers";
-import TextBlocks from "./TextBlocks";
+import CustomKeys from "./CustomKeys";
 
 import WidgetOptions from "../../../containers/WidgetOptions";
 import Extras from "../../../containers/Extras";
@@ -22,21 +22,43 @@ class MathFormulaOptions extends Component {
       uiStyle,
       t,
       responseContainers,
-      textBlocks,
+      customKeys,
       item,
       fillSections,
       cleanSections,
-      advancedAreOpen
+      advancedAreOpen,
+      setKeyPadOffest
     } = this.props;
 
-    const changeResponseContainers = ({ index, prop, value }) => {
-      const newContainers = cloneDeep(responseContainers);
-      const ind = findIndex(newContainers, cont => cont.index === index);
-      if (ind !== -1) {
-        newContainers[ind][prop] = value;
-        onChange("response_containers", newContainers);
-      }
+    const changeCustomKey = ({ index, value }) => {
+      const newCustomKeys = cloneDeep(customKeys);
+      newCustomKeys[index] = value;
+      onChange("custom_keys", newCustomKeys);
     };
+
+    const addCustomKey = () => {
+      onChange("custom_keys", [...customKeys, ""]);
+    };
+
+    const deleteCustomKey = index => {
+      const newCustomKeys = cloneDeep(customKeys);
+      newCustomKeys.splice(index, 1);
+      onChange("custom_keys", newCustomKeys);
+    };
+
+    const scoringTypes = [
+      {
+        value: evaluationType.EXACT_MATCH,
+        label: t("component.math.exactMatch")
+      }
+    ];
+
+    if (item && item.type === questionType.EXPRESSION_MULTIPART) {
+      scoringTypes.push({
+        value: evaluationType.PARTIAL_MATCH,
+        label: t("component.math.partialMatch")
+      });
+    }
 
     const addResponseContainer = () => {
       const { response_ids: responseIds } = item;
@@ -56,41 +78,20 @@ class MathFormulaOptions extends Component {
       onChange("response_containers", [...responseContainers, obj]);
     };
 
+    const changeResponseContainers = ({ index, prop, value }) => {
+      const newContainers = cloneDeep(responseContainers);
+      const ind = findIndex(newContainers, cont => cont.index === index);
+      if (ind !== -1) {
+        newContainers[ind][prop] = value;
+        onChange("response_containers", newContainers);
+      }
+    };
+
     const deleteResponseContainer = index => {
       const newContainers = cloneDeep(responseContainers);
       newContainers.splice(index, 1);
       onChange("response_containers", newContainers);
     };
-
-    const changeTextBlock = ({ index, value }) => {
-      const newBlocks = cloneDeep(textBlocks);
-      newBlocks[index] = value;
-      onChange("text_blocks", newBlocks);
-    };
-
-    const addTextBlock = () => {
-      onChange("text_blocks", [...textBlocks, ""]);
-    };
-
-    const deleteTextBlock = index => {
-      const newBlocks = cloneDeep(textBlocks);
-      newBlocks.splice(index, 1);
-      onChange("text_blocks", newBlocks);
-    };
-
-    const scoringTypes = [
-      {
-        value: evaluationType.EXACT_MATCH,
-        label: t("component.math.exactMatch")
-      }
-    ];
-
-    if (item && item.type === questionType.EXPRESSION_MULTIPART) {
-      scoringTypes.push({
-        value: evaluationType.PARTIAL_MATCH,
-        label: t("component.math.partialMatch")
-      });
-    }
 
     return (
       <WidgetOptions
@@ -103,7 +104,6 @@ class MathFormulaOptions extends Component {
           onChange={onChange}
           uiStyle={uiStyle}
           responseContainers={responseContainers}
-          textBlocks={textBlocks}
           item={item}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
@@ -122,17 +122,18 @@ class MathFormulaOptions extends Component {
 
         <KeyPadOptions
           onChange={onChange}
+          setKeyPadOffest={setKeyPadOffest}
           item={item}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
           cleanSections={cleanSections}
         />
 
-        <TextBlocks
-          blocks={textBlocks}
-          onChange={changeTextBlock}
-          onAdd={addTextBlock}
-          onDelete={deleteTextBlock}
+        <CustomKeys
+          blocks={customKeys}
+          onChange={changeCustomKey}
+          onAdd={addCustomKey}
+          onDelete={deleteCustomKey}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
           cleanSections={cleanSections}
@@ -152,16 +153,17 @@ MathFormulaOptions.propTypes = {
   item: PropTypes.object.isRequired,
   responseContainers: PropTypes.array,
   t: PropTypes.func.isRequired,
-  textBlocks: PropTypes.array,
+  customKeys: PropTypes.array,
   uiStyle: PropTypes.object,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
+  setKeyPadOffest: PropTypes.func, // this needs only for units types
   cleanSections: PropTypes.func
 };
 
 MathFormulaOptions.defaultProps = {
   responseContainers: [],
-  textBlocks: [],
+  customKeys: [],
   uiStyle: {
     type: "standard",
     fontsize: "normal",
@@ -170,6 +172,7 @@ MathFormulaOptions.defaultProps = {
     choice_label: "number"
   },
   advancedAreOpen: false,
+  setKeyPadOffest: () => null,
   fillSections: () => {},
   cleanSections: () => {}
 };

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -12,33 +11,12 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
+import Question from "../../components/Question";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
 
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
 class ComposeQuestion extends Component {
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
-
-    fillSections(
-      "main",
-      t("component.multiplechoice.composequestion"),
-      node.offsetTop,
-      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
-      deskHeight === true,
-      deskHeight
-    );
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -50,10 +28,16 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { item, t } = this.props;
+    const { item, t, fillSections, cleanSections } = this.props;
 
     return (
-      <Widget data-cy="questiontext">
+      <Question
+        dataCy="questiontext"
+        section="main"
+        label={t("component.multiplechoice.composequestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
 
         <QuestionTextArea
@@ -62,7 +46,7 @@ class ComposeQuestion extends Component {
           value={item.stimulus ? item.stimulus : ""}
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

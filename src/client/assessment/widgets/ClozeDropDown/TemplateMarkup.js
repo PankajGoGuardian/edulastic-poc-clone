@@ -3,7 +3,6 @@
 /* eslint-disable no-undef */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -17,7 +16,7 @@ import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -32,28 +31,6 @@ class TemplateMarkup extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
-
-    fillSections(
-      "main",
-      t("component.cloze.dropDown.composequestion"),
-      node.offsetTop,
-      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
-      deskHeight === true,
-      deskHeight
-    );
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   onChangeMarkUp = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -148,10 +125,15 @@ class TemplateMarkup extends Component {
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, fillSections, cleanSections } = this.props;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.cloze.dropDown.composequestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.cloze.dropDown.composequestion")}</Subtitle>
 
         <FroalaEditor
@@ -163,7 +145,7 @@ class TemplateMarkup extends Component {
           onChange={this.onChangeMarkUp}
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

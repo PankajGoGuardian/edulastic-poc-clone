@@ -172,7 +172,7 @@ class AssignTest extends React.Component {
       _id,
       name: get(groupById, `${_id}.name`, ""),
       assignedCount: get(groupById, `${_id}.studentCount`, 0),
-      grade: get(groupById, `${_id}.grade`, ""),
+      grade: get(groupById, `${_id}.grades`, ""),
       subject: get(groupById, `${_id}.subject`, "")
     }));
 

@@ -78,12 +78,12 @@ const removeStudents = ({ assignmentId, classId, students }) =>
     })
     .then(response => response.data.result);
 
-const addStudents = ({ assignmentId, classId, students }) =>
+const addStudents = ({ assignmentId, classId, students, endDate }) =>
   api
     .callApi({
       method: "put",
       url: `${prefix}/${assignmentId}/add-students`,
-      data: { _id: classId, students, specificStudents: students.length > 0 }
+      data: { _id: classId, students, specificStudents: students.length > 0, endDate }
     })
     .then(response => response.data.result);
 

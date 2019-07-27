@@ -64,7 +64,19 @@ class SchoolAdminTable extends Component {
       editSchoolAdminModaVisible: false,
       editSchoolAdminKey: "",
       deactivateAdminModalVisible: false,
-      selectedAdminsForDeactivate: []
+      selectedAdminsForDeactivate: [],
+
+      showActive: 1,
+      searchByName: "",
+      filtersData: [
+        {
+          filtersColumn: "",
+          filtersValue: "",
+          filterStr: "",
+          filterAdded: false
+        }
+      ],
+      currentPage: 1
     };
     this.columns = [
       {
@@ -106,15 +118,12 @@ class SchoolAdminTable extends Component {
         )
       }
     ];
+
+    this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
   componentDidMount() {
-    const { loadAdminData, loadSchoolsData, userOrgId, setRole } = this.props;
-    loadSchoolsData({
-      districtId: userOrgId
-    });
-    setRole("school-admin");
-    loadAdminData();
+    this.loadFilteredList();
   }
 
   static getDerivedStateFromProps(nextProps, state) {
@@ -126,14 +135,7 @@ class SchoolAdminTable extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
-    const { loadAdminData, showActiveUsers, pageNo } = this.props;
-    // here when the showActiveUsers checkbox is toggled, or the page number changes,
-    // an api call is fired to get the data
-    if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
-      loadAdminData();
-    }
-  }
+  componentDidUpdate(prevProps) {}
 
   onEditSchoolAdmin = id => {
     this.setState({
@@ -210,10 +212,150 @@ class SchoolAdminTable extends Component {
     });
   };
 
-  searchByName = e => {
-    const { setSearchName } = this.props;
-    setSearchName(e);
+  // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+  handleSearchName = value => {
+    this.setState({ searchByName: value }, this.loadFilteredList);
   };
+
+  onSearchFilter = (value, event, i) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === i) {
+        return {
+          ...item,
+          filterAdded: value ? true : false
+        };
+      }
+      return item;
+    });
+
+    // For some unknown reason till now calling blur() synchronously doesnt work.
+    this.setState({ filtersData: _filtersData }, () => this.filterTextInputRef[i].current.blur());
+  };
+
+  onBlurFilterText = (event, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterAdded: event.target.value ? true : false
+        };
+      }
+      return item;
+    });
+    this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
+  };
+
+  changeFilterText = (e, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+  };
+
+  changeFilterColumn = (value, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (key === index) {
+        let _item = {
+          ...item,
+          filtersColumn: value
+        };
+        if (value === "status") _item.filtersValue = "eq";
+        return _item;
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+  };
+
+  changeFilterValue = (value, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filtersValue: value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
+  };
+
+  onChangeShowActive = e => {
+    this.setState({ showActive: e.target.checked ? 1 : 0 }, this.loadFilteredList);
+  };
+
+  addFilter = (e, key) => {
+    const { filtersData } = this.state;
+    if (filtersData.length < 3) {
+      this.setState({
+        filtersData: [
+          ...filtersData,
+          {
+            filtersColumn: "",
+            filtersValue: "",
+            filterStr: "",
+            prevFilterStr: "",
+            filterAdded: false
+          }
+        ]
+      });
+    }
+  };
+
+  removeFilter = (e, key) => {
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    let newFiltersData = [];
+    if (filtersData.length === 1) {
+      newFiltersData.push({
+        filterAdded: false,
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: ""
+      });
+    } else {
+      newFiltersData = filtersData.filter((item, index) => index != key);
+    }
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
+  };
+
+  getSearchQuery = () => {
+    const { userOrgId } = this.props;
+    const { filtersData, searchByName, currentPage } = this.state;
+
+    let search = {};
+    for (let [index, item] of filtersData.entries()) {
+      const { filtersColumn, filtersValue, filterStr } = item;
+      if (filterStr) {
+        search[filtersColumn] = { type: filtersValue, value: filterStr };
+      }
+    }
+    if (searchByName) {
+      search["firstName"] = { type: "cont", value: searchByName };
+    }
+
+    return {
+      districtId: userOrgId,
+      role: "school-admin",
+      limit: 25,
+      page: 1,
+      // uncomment after elastic search is fixed
+      // status: this.state.showActive,
+      search
+    };
+  };
+
+  loadFilteredList = () => {
+    const { loadAdminData } = this.props;
+    loadAdminData(this.getSearchQuery());
+  };
+
+  // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
   render() {
     const {
@@ -222,7 +364,9 @@ class SchoolAdminTable extends Component {
       editSchoolAdminModaVisible,
       editSchoolAdminKey,
       deactivateAdminModalVisible,
-      selectedAdminsForDeactivate
+      selectedAdminsForDeactivate,
+
+      filtersData
     } = this.state;
 
     const rowSelection = {
@@ -247,17 +391,12 @@ class SchoolAdminTable extends Component {
       addFilter,
       removeFilter
     } = this.props;
-    // const selectedSchoolAdmin = dataSource.filter(item => item.key == editSchoolAdminKey);
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit user">Update Selected User</Menu.Item>
         <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
       </Menu>
     );
-
-    // const isFilterTextDisable = filters.column === "" || filters.value === "";
-    // const isAddFilterDisable = filters.column === "" || filters.value === "" || filters.text === "";
-    const filterKeysArray = Object.keys(filters);
 
     return (
       <StyledTableContainer>
@@ -273,8 +412,8 @@ class SchoolAdminTable extends Component {
               userOrgId={userOrgId}
             />
           )}
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
-          <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
+          <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
+          <Checkbox checked={this.state.showActive} onChange={this.onChangeShowActive}>
             Show current users only
           </Checkbox>
           <StyledActionDropDown overlay={actionMenu}>
@@ -283,48 +422,59 @@ class SchoolAdminTable extends Component {
             </Button>
           </StyledActionDropDown>
         </StyledControlDiv>
-        {filterKeysArray.map(filterKey => {
-          const { type, value } = filters[filterKey];
+        {filtersData.map((item, i) => {
+          const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
+          const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+          const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
+
           return (
-            <StyledControlDiv key={filterKey}>
+            <StyledControlDiv key={i}>
               <StyledFilterSelect
                 placeholder="Select a column"
-                onChange={filterColumn => changeFilterColumn({ prevKey: filterKey, newKey: filterColumn })}
-                value={filterKey}
+                onChange={e => this.changeFilterColumn(e, i)}
+                value={filtersColumn ? filtersColumn : undefined}
+                style={{}}
               >
-                <Option value="other">Select a column</Option>
+                <Option value="other" disabled={true}>
+                  Select a column
+                </Option>
                 <Option value="username">Username</Option>
                 <Option value="email">Email</Option>
               </StyledFilterSelect>
               <StyledFilterSelect
                 placeholder="Select a value"
-                onChange={filterType => changeFilterType({ key: filterKey, value: filterType })}
-                value={type}
+                onChange={e => this.changeFilterValue(e, i)}
+                value={filtersValue ? filtersValue : undefined}
               >
-                <Option value="">Select a value</Option>
+                <Option value="" disabled={true}>
+                  Select a value
+                </Option>
                 <Option value="eq">Equals</Option>
                 <Option value="cont">Contains</Option>
               </StyledFilterSelect>
               <StyledFilterInput
                 placeholder="Enter text"
-                onChange={({ target }) => changeFilterValue({ key: filterKey, value: target.value })}
-                value={value}
-                disabled={!type}
-                onSearch={loadAdminData}
+                onChange={e => this.changeFilterText(e, i)}
+                onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                onBlur={e => this.onBlurFilterText(e, i)}
+                value={filterStr ? filterStr : undefined}
+                disabled={isFilterTextDisable}
+                innerRef={this.filterTextInputRef[i]}
               />
-              <StyledAddFilterButton type="primary" onClick={addFilter} disabled={!!filters.other}>
-                + Add Filter
-              </StyledAddFilterButton>
-              <StyledAddFilterButton
-                type="primary"
-                disabled={filterKey === "other" || filterKeysArray.length === 1}
-                onClick={() => {
-                  removeFilter(filterKey);
-                  loadAdminData();
-                }}
-              >
-                - Remove Filter
-              </StyledAddFilterButton>
+              {i < 2 && (
+                <StyledAddFilterButton
+                  type="primary"
+                  onClick={e => this.addFilter(e, i)}
+                  disabled={isAddFilterDisable || i < filtersData.length - 1}
+                >
+                  + Add Filter
+                </StyledAddFilterButton>
+              )}
+              {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
+                <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+                  - Remove Filter
+                </StyledAddFilterButton>
+              )}
             </StyledControlDiv>
           );
         })}

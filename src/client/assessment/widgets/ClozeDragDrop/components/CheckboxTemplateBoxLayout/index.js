@@ -97,7 +97,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       </CheckboxContainer>
     );
   };
-
   return (
     <CheckBoxTemplateBox>
       {showAnswer && hasGroupResponses && (
@@ -136,8 +135,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           </IconWrapper>
         </div>
       )}
-      <Droppable drop={() => ({ dropTargetIndex })}>
-        {!showAnswer && hasGroupResponses && (
+      {!showAnswer && hasGroupResponses && (
+        <Droppable drop={() => ({ dropTargetIndex })}>
           <Draggable
             onDrop={onDropHandler}
             data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
@@ -159,8 +158,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               </IconWrapper>
             </div>
           </Draggable>
-        )}
-        {!showAnswer && !hasGroupResponses && (
+        </Droppable>
+      )}
+      {!showAnswer && !hasGroupResponses && (
+        <Droppable drop={() => ({ dropTargetIndex })}>
           <Draggable onDrop={onDropHandler} data={`${getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}>
             <div
               className={`
@@ -178,8 +179,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               </IconWrapper>
             </div>
           </Draggable>
-        )}
-      </Droppable>
+        </Droppable>
+      )}
     </CheckBoxTemplateBox>
   );
 };

@@ -42,7 +42,6 @@ export const CREATE_CLASS_FAILED = "[manageClass] creat a class failed";
 export const UPDATE_CLASS_REQUEST = "[manageClass] update a class request";
 export const UPDATE_CLASS_SUCCESS = "[manageClass] update a class success";
 export const UPDATE_CLASS_FAILED = "[manageClass] update a class failed";
-export const UPDATE_CLASS_STANDARDS = "[manageClass] update class standards";
 
 export const FETCH_STUDENTS_BY_ID_REQUEST = "[manageClass] fetch students request by classId";
 export const FETCH_STUDENTS_BY_ID_SUCCESS = "[manageClass] fetch studnets success by classId";
@@ -76,6 +75,7 @@ export const UPDATE_GOOGLE_COURSE_LIST = "[manageClass] update google course lis
 export const SYNC_CLASS_LOADING = "[manageClass] sync class loading";
 export const SYNC_BY_CODE_MODAL = "[manageClass] sync by code modal";
 export const SET_SUBJECT = "[manageClass] set subject";
+export const SET_GROUP_SYNC_DETAILS = "[manageClass] sync google class response";
 
 // action creators
 
@@ -93,7 +93,6 @@ export const createClassSuccessAction = createAction(CREATE_CLASS_SUCCESS);
 export const updateClassAction = createAction(UPDATE_CLASS_REQUEST);
 export const updateClassSuccessAction = createAction(UPDATE_CLASS_SUCCESS);
 export const updateClassFailedAction = createAction(UPDATE_CLASS_FAILED);
-export const updateClassStandardsAction = createAction(UPDATE_CLASS_STANDARDS);
 
 export const fetchStudentsByIdAction = createAction(FETCH_STUDENTS_BY_ID_REQUEST);
 export const fetchStudentsByIdSuccessAction = createAction(FETCH_STUDENTS_BY_ID_SUCCESS);
@@ -127,6 +126,7 @@ export const updateGoogleCourseListAction = createAction(UPDATE_GOOGLE_COURSE_LI
 export const syncByCodeModalAction = createAction(SYNC_BY_CODE_MODAL);
 export const setSyncClassLoadingAction = createAction(SYNC_CLASS_LOADING);
 export const setSubjectAction = createAction(SET_SUBJECT);
+export const setGroupSyncDataAction = createAction(SET_GROUP_SYNC_DETAILS);
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -140,6 +140,7 @@ const initialState = {
   entity: {},
   submitted: false,
   added: false,
+  syncClassResponse: {},
   selectedSubject: "",
   classLoaded: false
 };
@@ -222,10 +223,6 @@ const updateClassFailed = (state, { payload }) => {
   state.error = payload;
 };
 
-const updateClassStandards = (state, { payload }) => {
-  state.entity.standardSets = payload;
-};
-
 const addStudentRequest = state => {
   state.submitted = true;
   state.added = false;
@@ -289,6 +286,10 @@ const setSyncClassLoading = (state, { payload }) => {
 const setFetchClassRequest = (state, { payload }) => {
   state.fetchClassListLoading = payload;
 };
+
+const setGroupSyncDetails = (state, { payload }) => {
+  state.syncClassResponse = payload;
+};
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -306,7 +307,6 @@ export default createReducer(initialState, {
   [UPDATE_CLASS_REQUEST]: updateClass,
   [UPDATE_CLASS_SUCCESS]: updateClassSuccess,
   [UPDATE_CLASS_FAILED]: updateClassFailed,
-  [UPDATE_CLASS_STANDARDS]: updateClassStandards,
   [ADD_STUDENT_REQUEST]: addStudentRequest,
   [ADD_STUDENT_SUCCESS]: addStudentSuccess,
   [ADD_STUDENT_FAILED]: addStudentFailed,
@@ -315,6 +315,7 @@ export default createReducer(initialState, {
   [SYNC_BY_CODE_MODAL]: openOrCloseModal,
   [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess,
   [SET_SUBJECT]: setSubject,
+  [SET_GROUP_SYNC_DETAILS]: setGroupSyncDetails,
   [USER_TTS_REQUEST_SUCCESS]: updateStudentsAfterTTSChange
 });
 
@@ -467,10 +468,16 @@ function* syncClass({ payload }) {
       return yield call(message.error, "Class name is missing for one of the selected class");
     }
     yield put(setSyncClassLoadingAction(true));
-    yield call(googleApi.syncClass, { classList: payload });
+    let response = yield call(googleApi.syncClass, { classList: payload });
+    if (response) {
+      Object.keys(response).forEach(gCode => {
+        const group = payload.find(o => o.enrollmentCode === gCode);
+        response[gCode]["groupName"] = group.name;
+      });
+      yield put(setGroupSyncDataAction(response));
+    }
     yield put(setSyncClassLoadingAction(false));
     yield put(fetchGroupsAction());
-    yield call(message.success, "Google Class import is Complete");
   } catch (e) {
     yield put(setSyncClassLoadingAction(false));
     yield call(message.error, "class sync failed");

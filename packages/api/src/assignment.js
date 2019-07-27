@@ -100,12 +100,12 @@ const redirect = (assignmentId, data) =>
     })
     .then(result => result.data.result);
 
-const fetchAssignmentsSummary = ({ districtId = "", filters }) =>
+const fetchAssignmentsSummary = ({ districtId = "", filters, sort }) =>
   api
     .callApi({
       url: `${prefix}/district/${districtId}`,
       method: "get",
-      params: filters
+      params: { ...filters, ...sort }
     })
     .then(result => result.data.result);
 

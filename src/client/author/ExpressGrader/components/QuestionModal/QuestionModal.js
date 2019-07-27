@@ -134,10 +134,17 @@ class QuestionModal extends React.Component {
     const { groupId, userResponse: _userResponse, allResponse, submitResponse } = this.props;
     const { testActivityId, testItemId: itemId } = question;
     if (!isEmpty(_userResponse)) {
-      const userResponse = allResponse.reduce((acc, cur) => {
-        acc[cur.qid] = cur.userResponse;
-        return acc;
-      }, {});
+      /**
+       * allResponse is empty when the questionActivity is empty.
+       * In that case only send currenytly attempted _userResponse
+       */
+      const userResponse =
+        allResponse.length > 0
+          ? allResponse.reduce((acc, cur) => {
+              acc[cur.qid] = cur.userResponse;
+              return acc;
+            }, {})
+          : _userResponse;
       submitResponse({ testActivityId, itemId, groupId, userResponse });
     }
   };

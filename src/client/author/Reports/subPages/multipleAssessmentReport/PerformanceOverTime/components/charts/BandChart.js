@@ -87,7 +87,7 @@ const getChartSpecifics = (analyseBy, bandInfo) => {
 };
 
 const BandChart = ({ data, bandInfo, selectedTests, analyseBy, onBarClickCB, onResetClickCB }) => {
-  const xAxisDataKey = "testId";
+  const xAxisDataKey = "uniqId";
 
   const orderedBandInfo = bandInfo.sort((a, b) => {
     return a.threshold - b.threshold;

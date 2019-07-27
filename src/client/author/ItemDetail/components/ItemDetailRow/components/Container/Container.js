@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-
+import { get } from "lodash";
 import { Tabs } from "@edulastic/common";
 import ItemDetailWidget from "../ItemDetailWidget/ItemDetailWidget";
 import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
@@ -102,9 +102,31 @@ class Container extends Component {
     );
   };
 
+  /**
+   * check if the row can have another part.
+   * @param {Object} row - row in displace
+   * @param {Number} rowIndex - index of the row.j
+   * @returns {Boolean}
+   *
+   *
+   */
+  canRowHaveAnotherPart = (row, rowIndex) => {
+    // if its not left most row, let it add
+    if (rowIndex !== 0) {
+      return true;
+    }
+    // if there is only 1 widget and, that is passage, then dont show the add
+    // another part button. Oh, also it should be left row.
+    const widgetCount = get(row, "widgets.length", 0);
+    return !(widgetCount === 1 && row.widgets[0].type === "passage");
+  };
+
   render() {
     const { row, onEditTabTitle, rowIndex, dragging, count, windowWidth } = this.props;
     const { tabIndex } = this.state;
+    const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
+    // adding first part?
+    const isAddFirstPart = row.widgets && row.widgets.length === 0;
     return (
       <Content
         value={tabIndex}
@@ -138,9 +160,11 @@ class Container extends Component {
         )}
         {this.renderWidgets()}
 
-        <AddButtonContainer justifyContent="center">
-          <AddNew onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
-        </AddButtonContainer>
+        {enableAnotherPart && (
+          <AddButtonContainer justifyContent="center">
+            <AddNew isAddFirstPart={isAddFirstPart} onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
+          </AddButtonContainer>
+        )}
       </Content>
     );
   }

@@ -1,9 +1,6 @@
 .graph-shape-label {
-  height: 40px;
   border-radius: 5px;
-  background-color: #ffffff;
   text-align: center;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -15,12 +12,12 @@
   letter-spacing: 0.2px;
   color: #444444;
   opacity: 1 !important;
-  transform: translate(-50%);
+  transform: translate(25%, 50%);
   width: unset;
 }
 
 .graph-shape-label .fr-wrapper {
-  padding: 5px 10px;
+  padding: 5px;
 }
 
 .graph-annotation {

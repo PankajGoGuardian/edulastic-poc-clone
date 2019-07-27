@@ -75,7 +75,14 @@ class ResetPwd extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer} destroyOnClose={true}>
+      <StyledModal
+        title={title}
+        visible={isOpen}
+        onCancel={handleCancel}
+        footer={footer}
+        destroyOnClose={true}
+        textAlign="left"
+      >
         <Form onSubmit={this.handleSubmit}>
           <Form.Item>
             {getFieldDecorator("password", {

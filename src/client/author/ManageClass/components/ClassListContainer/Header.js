@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Link } from "react-router-dom";
-import { white } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 import { GoogleLogin } from "react-google-login";
 import { get } from "lodash";
 // components
@@ -11,6 +11,7 @@ import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import { Title, IconManageClass, CreateClassButton, SyncButtons, CreateIcon, ButtonsWrapper } from "./styled";
 // ducks
 import { fetchClassListAction } from "../../ducks";
+import { IconGoogleClassroom } from "@edulastic/icons";
 
 const scopes = [
   "https://www.googleapis.com/auth/classroom.courses",
@@ -43,7 +44,12 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
           <GoogleLogin
             clientId={process.env.POI_APP_GOOGLE_CLIENT_ID}
             buttonText="Sync with Google Classroom"
-            render={renderProps => <SyncButtons onClick={renderProps.onClick}>Sync with Google Classroom</SyncButtons>}
+            render={renderProps => (
+              <SyncButtons onClick={renderProps.onClick}>
+                {" "}
+                <IconGoogleClassroom style={{ marginTop: "2px", marginRight: "10px" }} /> SYNC WITH GOOGLE CLASSROOM
+              </SyncButtons>
+            )}
             scope={scopes}
             onSuccess={handleLoginSucess}
             onFailure={handleError}
@@ -53,7 +59,7 @@ const Header = ({ fetchClassList, allowGoogleLogin, isUserGoogleLoggedIn }) => {
         )}
         <Link to={`/author/manageClass/createClass`}>
           <CreateClassButton>
-            <CreateIcon color={white} /> Create Class{" "}
+            <CreateIcon color={themeColor} /> Create Class{" "}
           </CreateClassButton>
         </Link>
       </ButtonsWrapper>

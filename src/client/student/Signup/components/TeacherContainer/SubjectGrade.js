@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { isEmpty, filter, map, pick, find, mapKeys } from "lodash";
+import { isEmpty, filter, map, pick, find, mapKeys, get } from "lodash";
 import { Row, Col, Select, Form, Button } from "antd";
 import styled from "styled-components";
 import { IconHeader } from "@edulastic/icons";
@@ -13,7 +13,12 @@ import selectsData from "../../../../author/TestPage/components/common/selectsDa
 import { getDictCurriculumsAction } from "../../../../author/src/actions/dictionaries";
 import { saveSubjectGradeAction, saveSubjectGradeloadingSelector } from "../../duck";
 // selectors
-import { getCurriculumsListSelector } from "../../../../author/src/selectors/dictionaries";
+import {
+  getCurriculumsListSelector,
+  getFormattedCurriculumsSelector,
+  getFormattedCurriculums
+} from "../../../../author/src/selectors/dictionaries";
+import { getInterestedCurriculumsSelector } from "../../../../author/src/selectors/user";
 
 const { allGrades, allSubjects, defaultStandards } = selectsData;
 
@@ -93,22 +98,11 @@ class SubjectGrade extends React.Component {
 
   render() {
     const { subjects } = this.state;
-    const { curriculums, form, saveSubjectGradeloading } = this.props;
-    const defaultStandardSets = [];
-    const standardSets = curriculums
-      .filter(el => {
-        const getSubjectDefault = subjects.find(subject => defaultStandards[subject] === el.curriculum);
-        if (getSubjectDefault) {
-          defaultStandardSets.push(el);
-          return false;
-        }
-        return subjects.includes(el.subject);
-      })
-      .sort((a, b) => (a.curriculum.toLowerCase() > b.curriculum.toLowerCase() ? 1 : -1));
-    const orderedStandards = [
-      ...defaultStandardSets.sort((a, b) => (a.curriculum.toLowerCase() > b.curriculum.toLowerCase() ? 1 : -1)),
-      ...standardSets
-    ];
+    const { interestedCurriculums, curriculums, form, saveSubjectGradeloading } = this.props;
+    const { showAllStandards } = get(this, "props.userInfo.orgData", {});
+    const formattedCurriculums = isEmpty(subjects)
+      ? []
+      : getFormattedCurriculums(interestedCurriculums, curriculums, { subject: subjects }, showAllStandards);
     const { getFieldDecorator } = form;
     const filteredAllGrades = allGrades.filter(item => item.isContentGrade !== true);
     const _allSubjects = allSubjects.filter(item => item.value);
@@ -176,17 +170,15 @@ class SubjectGrade extends React.Component {
                     })(
                       <GradeSelect
                         optionFilterProp="children"
-                        filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                        filterOption
                         size="large"
                         placeholder="Select your standard sets"
                         mode="multiple"
                         showArrow
                       >
-                        {orderedStandards.map(el => (
-                          <Option key={el._id} value={el._id}>
-                            {el.curriculum}
+                        {formattedCurriculums.map(({ value, text, disabled }) => (
+                          <Option key={value} value={value} disabled={disabled}>
+                            {text}
                           </Option>
                         ))}
                       </GradeSelect>
@@ -213,6 +205,7 @@ const enhance = compose(
   connect(
     state => ({
       curriculums: getCurriculumsListSelector(state),
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
       saveSubjectGradeloading: saveSubjectGradeloadingSelector(state)
     }),
     {

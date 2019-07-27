@@ -11,12 +11,18 @@ import piechartIcon from "../../assets/pie-chart.svg";
 
 import { Container, Icon, TableData, TypeIcon, BtnStatus, ActionsWrapper } from "./styled";
 
+export const testTypeToolTip = {
+  assessment: "Class Assessment",
+  "common assessment": "Common Assessment",
+  practice: "Practice Assessment"
+};
+
 const columns = [
   {
     title: "Class",
     dataIndex: "class",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.class.localeCompare(b.class, "en", { ignorePunctuation: true }),
     width: "16%",
     render: text => <div>{text}</div>
   },
@@ -24,15 +30,19 @@ const columns = [
     title: "Type",
     dataIndex: "type",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.type.localeCompare(b.type, "en", { ignorePunctuation: true }),
     width: "8%",
-    render: (text = test.type.ASSESSMENT) => <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
+    render: (text = test.type.ASSESSMENT) => (
+      <Tooltip placement="bottom" title={testTypeToolTip[text]}>
+        <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
+      </Tooltip>
+    )
   },
   {
     title: "Assigned by",
     dataIndex: "assigned",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.assigned.localeCompare(b.assigned, "en", { ignorePunctuation: true }),
     width: "16%",
     render: text => <div> {text} </div>
   },
@@ -40,7 +50,7 @@ const columns = [
     title: "Status",
     dataIndex: "status",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.status.localeCompare(b.status, "en", { ignorePunctuation: true }),
     width: "16%",
     render: text => (text ? <BtnStatus status={text}>{text}</BtnStatus> : "")
   },
@@ -48,7 +58,7 @@ const columns = [
     title: "Submitted",
     dataIndex: "submitted",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => parseInt(a.submitted.split("/")[0]) - parseInt(b.submitted.split("/")[0]),
     width: "16%",
     render: text => <div> {text} </div>
   },
@@ -56,7 +66,7 @@ const columns = [
     title: "Graded",
     dataIndex: "graded",
     sortDirections: ["descend", "ascend"],
-    sorter: true,
+    sorter: (a, b) => a.graded - b.graded,
     width: "16%",
     render: text => <div> {text} </div>
   },
@@ -91,9 +101,9 @@ class TableList extends Component {
   convertRowData = (data, index) => ({
     class: data.name,
     type: data.testType,
-    status: data.status,
+    status: data.isPaused && data.status !== "DONE" ? `${data.status} (PAUSED)` : data.status,
     assigned: data.assignedBy.name,
-    submitted: `${data.inGradingNumber}/${data.assignedCount}`,
+    submitted: `${data.inGradingNumber + data.gradedNumber}/${data.assignedCount}`,
     graded: data.gradedNumber,
     action: "",
     assignmentId: data.assignmentId,
@@ -102,8 +112,10 @@ class TableList extends Component {
   });
 
   render() {
-    const { classList } = this.props;
-    const rowData = classList.map((data, index) => this.convertRowData(data, index));
+    const { classList, filterStatus } = this.props;
+    const rowData = classList
+      .filter(o => (filterStatus ? o.status === filterStatus : true))
+      .map((data, index) => this.convertRowData(data, index));
     const showPagination = rowData.length > 10;
 
     return (

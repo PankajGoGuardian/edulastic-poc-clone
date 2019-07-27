@@ -12,7 +12,7 @@ import { updateVariables } from "../../utils/variables";
 
 import WordLimitAndCount from "../../components/WordLimitAndCount";
 import { ContentArea } from "../../styled/ContentArea";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import ComposeQuestion from "./ComposeQuestion";
 import FormattingOptions from "./FormattingOptions";
@@ -55,7 +55,12 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
         setQuestionData={setQuestionData}
       />
 
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="main"
+        label={t("component.options.scoring")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Scoring
           setQuestionData={setQuestionData}
           t={t}
@@ -81,7 +86,7 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
         >
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>
-      </Widget>
+      </Question>
 
       <Options
         item={item}

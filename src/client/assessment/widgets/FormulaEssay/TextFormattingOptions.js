@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { cloneDeep } from "lodash";
 import { compose } from "redux";
@@ -16,24 +15,11 @@ import { updateVariables } from "../../utils/variables";
 import TypedList from "../../components/TypedList";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class TextFormattingOptions extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.math.textFormattingOptions"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleAddOption = () => {
       setQuestionData(
@@ -84,7 +70,12 @@ class TextFormattingOptions extends Component {
     ];
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.math.textFormattingOptions")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.math.textFormattingOptions")}</Subtitle>
         <TypedList
           columns={2}
@@ -97,7 +88,7 @@ class TextFormattingOptions extends Component {
           onRemove={handleDeleteQuestion}
           onChange={handleQuestionsChange}
         />
-      </Widget>
+      </Question>
     );
   }
 }

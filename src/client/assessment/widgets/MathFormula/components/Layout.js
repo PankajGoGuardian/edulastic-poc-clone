@@ -1,19 +1,18 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Select, Checkbox, Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { math } from "@edulastic/constants";
+import { math, response } from "@edulastic/constants";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import FontSizeSelect from "../../../components/FontSizeSelect";
 
 class Layout extends Component {
@@ -21,37 +20,27 @@ class Layout extends Component {
     minWidth: 0
   };
 
-  componentDidMount = () => {
-    const { fillSections, t, uiStyle } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-
-    this.setState({ minWidth: uiStyle.min_width });
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
+  handleGlobalWidthBlur = e => {
+    const { minWidth, maxWidth } = response;
+    let val = e.target.value;
+    const { onChange, uiStyle } = this.props;
+    if (val < minWidth || val > maxWidth) {
+      val = val < minWidth ? minWidth : maxWidth;
     }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
+    this.setState({ minWidth: val }, () => {
+      onChange("ui_style", {
+        ...uiStyle,
+        min_width: +val
+      });
+    });
+  };
 
   onChangeMinWidth = e => {
     this.setState({ minWidth: e.target.value });
   };
 
   render() {
-    const { onChange, uiStyle, t, advancedAreOpen } = this.props;
+    const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections } = this.props;
     const { minWidth } = this.state;
 
     const changeUiStyle = (prop, value) => {
@@ -62,7 +51,13 @@ class Layout extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
 
         <Row gutter={60}>
@@ -86,13 +81,9 @@ class Layout extends Component {
             <Input
               type="number"
               size="large"
-              value={minWidth}
+              value={minWidth || uiStyle.min_width}
               onChange={this.onChangeMinWidth}
-              onBlur={e => {
-                const val = e.target.value > 400 ? 400 : e.target.value < 20 ? 20 : e.target.value;
-                this.setState({ minWidth: val });
-                return changeUiStyle("min_width", val);
-              }}
+              onBlur={this.handleGlobalWidthBlur}
               max={400}
               min={20}
             />
@@ -113,7 +104,7 @@ class Layout extends Component {
             </Checkbox>
           </Col>
         </Row>
-      </Widget>
+      </Question>
     );
   }
 }

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Modal, Menu } from "antd";
 import {
+  smallDesktopWidth,
   themeColor,
   fadedGrey,
   mainBgColor,
@@ -20,9 +21,13 @@ export const FilterContainer = styled.div`
     background: ${white};
     border: none;
     border-radius: 0px;
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 4px;
     box-shadow: 0px 0px 5px 1px ${fadedGrey};
+
+    @media (max-width: ${smallDesktopWidth}) {
+      padding: 2px 10px;
+    }
   }
   .ant-select,
   .ant-input,
@@ -263,6 +268,10 @@ export const ModalTitle = styled.div`
   font-size: 18px;
   font-weight: 600;
   color: ${title};
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 16px;
+  }
 `;
 
 export const DropMenu = styled(Menu)`

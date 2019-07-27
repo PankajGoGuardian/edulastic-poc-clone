@@ -11,41 +11,16 @@ import PerformanceByStudents from "./PerformanceByStudents";
 import QuestionAnalysis from "./QuestionAnalysis";
 
 import SingleAssessmentReportFilters from "./common/components/filters";
-import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-export const SingleAssessmentReportContainer = props => {
-  const [settings, setSettings] = useState({
-    selectedTest: { key: "", title: "" },
-    requestFilters: {
-      termId: "",
-      subject: "",
-      grade: "",
-      courseId: "",
-      groupId: "",
-      schoolId: "",
-      teacherId: "",
-      assessmentType: ""
-    }
-  });
+import { setSARSettingsAction, getReportsSARSettings } from "./ducks";
+import { connect } from "react-redux";
 
-  useEffect(() => {
-    if (settings.selectedTest.key) {
-      let arr = Object.keys(settings.requestFilters);
-      let obj = {};
-      arr.map((item, index) => {
-        let val = settings.requestFilters[item] === "" ? "All" : settings.requestFilters[item];
-        obj[item] = val;
-      });
-      let path = settings.selectedTest.key + "?" + qs.stringify(obj);
-      props.history.push(path);
-    }
-  }, [settings]);
-
-  let computedChartNavigatorLinks;
+const SingleAssessmentReportContainer = props => {
+  const { settings, setSARSettingsAction } = props;
 
   const computeChartNavigationLinks = (sel, filt) => {
     if (navigation.locToData[props.loc]) {
@@ -63,7 +38,21 @@ export const SingleAssessmentReportContainer = props => {
     }
   };
 
-  computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
+  useEffect(() => {
+    if (settings.selectedTest.key) {
+      let arr = Object.keys(settings.requestFilters);
+      let obj = {};
+      arr.map((item, index) => {
+        let val = settings.requestFilters[item] === "" ? "All" : settings.requestFilters[item];
+        obj[item] = val;
+      });
+      let path = settings.selectedTest.key + "?" + qs.stringify(obj);
+      props.history.push(path);
+    }
+
+    const navigationItems = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
+    props.updateNavigation(navigationItems);
+  }, [props.settings]);
 
   const onGoClick = _settings => {
     if (_settings.selectedTest.key) {
@@ -74,7 +63,7 @@ export const SingleAssessmentReportContainer = props => {
         obj[item] = val;
       });
 
-      setSettings({
+      setSARSettingsAction({
         selectedTest: _settings.selectedTest,
         requestFilters: obj
       });
@@ -92,7 +81,6 @@ export const SingleAssessmentReportContainer = props => {
           match={props.match}
           style={props.showFilter ? { display: "block" } : { display: "none" }}
         />
-        <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
         <Route
           exact
           path={`/author/reports/assessment-summary/test/:testId?`}
@@ -127,3 +115,10 @@ export const SingleAssessmentReportContainer = props => {
     </>
   );
 };
+
+const ConnectedSingleAssessmentReportContainer = connect(
+  state => ({ settings: getReportsSARSettings(state) }),
+  { setSARSettingsAction }
+)(SingleAssessmentReportContainer);
+
+export { ConnectedSingleAssessmentReportContainer as SingleAssessmentReportContainer };

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import PropTypes from "prop-types";
+import PropTypes, { element } from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
@@ -24,6 +24,7 @@ import { ValidList, qlToFroalaMapping } from "./constants/validList";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { Addon } from "../ShortText/styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
+import { getText, reIndexResponses, calculateWordsCount } from "@edulastic/common/src/helpers";
 
 const getToolBarButtons = item =>
   (item.formatting_options || [])
@@ -60,34 +61,23 @@ const EssayRichTextPreview = ({
 
   const minHeight = get(item, "ui_style.min_height", 200);
   const maxHeight = get(item, "ui_style.max_height", 300);
-
   const characterMap = get(item, "character_map", []);
-
-  const [wordCount, setWordCount] = useState(
-    Array.isArray(userAnswer)
-      ? 0
-      : typeof userAnswer === "string"
-      ? userAnswer.split(" ").filter(i => !!i.trim()).length
-      : 0
-  );
+  const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
     if (Array.isArray(userAnswer) || typeof userAnswer !== "string") {
       setText("");
       saveAnswer("");
       setWordCount(0);
+    } else if (typeof userAnswer === "string" && disableResponse) {
+      setWordCount(calculateWordsCount(userAnswer));
     }
   }, [userAnswer]);
 
   // TODO: if this is slooooooow, debounce or throttle it..
   const handleTextChange = val => {
     if (typeof val === "string") {
-      const wordsCount =
-        typeof val === "string"
-          ? stripTags(val)
-              .split(" ")
-              .filter(i => !!i.trim()).length
-          : 0;
+      const wordsCount = typeof val === "string" ? calculateWordsCount(val) : 0;
       const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
       setWordCount(wordsCount + mathInputCount);
       setText(val);
@@ -180,7 +170,7 @@ const EssayRichTextPreview = ({
           >
             <MathFormulaDisplay
               dangerouslySetInnerHTML={{
-                __html: !userAnswer ? "<p>Essay Editor Box</p>" : userAnswer
+                __html: userAnswer || ""
               }}
             />
           </FlexContainer>

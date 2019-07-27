@@ -236,6 +236,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
             !absent && (
               <ReviewButton
                 data-cy="review"
+                testId={testId}
                 testActivityId={lastAttempt._id}
                 title={test.title}
                 activityReview={activityReview}

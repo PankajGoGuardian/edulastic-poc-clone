@@ -9,15 +9,24 @@ import { withWindowSizes } from "@edulastic/common";
 
 class QuestionMenu extends Component {
   state = {
-    activeTab: 0,
-    recalcedOptions: []
+    activeTab: 0
   };
 
-  handleScroll = option =>
-    window.scrollTo({
-      top: option.offset - 115,
-      behavior: "smooth"
-    });
+  handleScroll = (option, e) => {
+    e.target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    if (option.el.clientHeight >= window.innerHeight / 2) {
+      window.scrollTo({
+        top: option.el.offsetTop - 111,
+        behavior: "smooth"
+      });
+    } else {
+      window.scrollTo({
+        top: option.el.offsetTop - 111 + option.el.clientHeight - window.innerHeight / 2,
+        behavior: "smooth"
+      });
+    }
+  };
 
   componentDidMount() {
     window.addEventListener("scroll", this.throttledFindActiveTab);
@@ -29,87 +38,53 @@ class QuestionMenu extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({ activeTab: nextProps.activeTab });
+    this.findActiveTab();
   }
 
-  calcScrollPosition = offset => {
-    const scrollYMax =
-      Math.max(
-        document.body.scrollHeight,
-        document.body.offsetHeight,
-        document.documentElement.clientHeight,
-        document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight
-      ) - window.innerHeight;
-    if (offset < scrollYMax) {
-      return window.scrollY + 125;
-    }
-    if (offset >= scrollYMax) {
-      return window.scrollY + 650;
-    }
-  };
-
   isActive = (index, options) => {
-    if (options[index].offset <= 115) return false;
+    const { activeTab } = this.state;
+    const { advancedAreOpen } = this.props;
 
-    const scrollPosition = this.calcScrollPosition(options[index].offset);
+    if ((!advancedAreOpen && options[index].section === "advanced") || !options[index].el) return false;
 
-    if (index === 0) {
-      if (scrollPosition <= options[index].offset + options[index].offsetBottom) {
-        return true;
-      }
-    } else if (index === options.length - 1) {
-      if (scrollPosition <= document.documentElement.scrollHeight && scrollPosition >= options[index].offset) {
-        return true;
-      }
-    } else if (
-      scrollPosition >= options[index].offset &&
-      scrollPosition <= options[index].offset + options[index].offsetBottom
+    const summaryScrollHeight = document.querySelector("#react-app").scrollHeight;
+    const { el } = options[index];
+    const activeOption = document.querySelector(".option.active");
+    const scrollBarOptions = document.querySelector(".option.active").parentNode.parentNode;
+
+    scrollBarOptions.scrollTo({
+      top: activeOption.offsetTop,
+      behavior: "smooth"
+    });
+
+    if (window.scrollY <= 40 && activeTab !== index && index === 0) {
+      return this.setState({ activeTab: 0 });
+    }
+
+    // last section
+    if (
+      window.scrollY + window.innerHeight >= summaryScrollHeight - 40 &&
+      activeTab !== index &&
+      index === options.length - 1
     ) {
-      return true;
+      return this.setState({ activeTab: options.length - 1 });
     }
 
-    return false;
-  };
-
-  recalcOptions = options => {
-    let additionalOffset = 0;
-
-    for (let i = 1; i < options.length; i++) {
-      if (options[i - 1].haveDesk) {
-        additionalOffset += options[i - 1].deskHeight;
-      }
-
-      options[i].offset += additionalOffset;
+    if (
+      window.scrollY + window.innerHeight / 3 >= el.offsetTop &&
+      window.scrollY + (window.innerHeight / 4) * 2 <= el.offsetTop + el.clientHeight &&
+      activeTab !== index
+    ) {
+      return this.setState({ activeTab: index });
     }
-
-    this.setState({ recalcedOptions: options });
   };
 
   findActiveTab = () => {
     const { main, advanced } = this.props;
-    const { activeTab, recalcedOptions } = this.state;
     const allOptions = main.concat(advanced);
 
-    if (recalcedOptions.length === 0) {
-      this.recalcOptions(allOptions);
-    }
-
-    if (recalcedOptions) {
-      for (let i = 0; i < recalcedOptions.length; i++) {
-        let activeTabs = false;
-
-        if (this.isActive(i, recalcedOptions)) {
-          activeTabs = true;
-
-          if (i !== activeTab) {
-            return this.setState({ activeTab: i });
-          }
-        }
-
-        if (activeTabs) {
-          return;
-        }
-      }
+    for (let i = 0; i < allOptions.length; i++) {
+      this.isActive(i, allOptions);
     }
   };
 
@@ -118,6 +93,7 @@ class QuestionMenu extends Component {
   render() {
     const { main, advanced, isSidebarCollapsed, advancedAreOpen, handleAdvancedOpen, windowWidth } = this.props;
     const { activeTab } = this.state;
+
     return (
       <Menu isSidebarCollapsed={isSidebarCollapsed}>
         <ScrollbarContainer>
@@ -126,8 +102,8 @@ class QuestionMenu extends Component {
               main.map((option, index) => (
                 <Option
                   key={index}
-                  onClick={() => this.handleScroll(option)}
-                  className={index === activeTab && "active"}
+                  onClick={e => this.handleScroll(option, e)}
+                  className={`option ${index === activeTab && "active"}`}
                 >
                   {option.label}
                 </Option>
@@ -143,8 +119,8 @@ class QuestionMenu extends Component {
                   {advanced.map((option, index) => (
                     <Option
                       key={index}
-                      onClick={() => this.handleScroll(option)}
-                      className={main.length + index === activeTab && "active"}
+                      onClick={e => this.handleScroll(option, e)}
+                      className={`option ${main.length + index === activeTab && "active"}`}
                     >
                       {option.label}
                     </Option>

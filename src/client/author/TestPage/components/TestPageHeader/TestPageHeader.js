@@ -1,6 +1,6 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
-import { white } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { FlexContainer, EduButton } from "@edulastic/common";
@@ -96,7 +96,9 @@ const TestPageHeader = ({
     <HeaderWrapper>
       <TitleWrapper>
         <Title title={title}>{title || "Untitled Test"} </Title>
-        <TestStatus className={isPlaylist ? "draft" : testStatus}>{isPlaylist ? "DRAFT" : testStatus}</TestStatus>
+        <TestStatus className={isPlaylist || editEnable ? "draft" : testStatus}>
+          {isPlaylist || editEnable ? "DRAFT" : testStatus}
+        </TestStatus>
       </TitleWrapper>
 
       <TestPageNav
@@ -107,31 +109,31 @@ const TestPageHeader = ({
         showPublishButton={!showShareButton || showPublishButton}
       />
 
-      <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
+      <FlexContainer justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
         {showShareButton && false && (
           <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
-            <IconSource color="#00AD50" style={{ stroke: "#00AD50", strokeWidth: 1 }} />
+            <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />
           </EduButton>
         )}
         {showShareButton && owner && (
-          <EduButton title={"Share"} data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
-            <IconShare color="#00AD50" />
+          <EduButton title="Share" data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
+            <IconShare color={themeColor} />
           </EduButton>
         )}
         {showShareButton && owner && showPublishButton && (
           <EduButton
-            title={"Save as Draft"}
+            title="Save as Draft"
             data-cy="save"
             style={{ width: 42, padding: 0 }}
             size="large"
             onClick={onSave}
           >
-            <IconDiskette color="#00AD50" />
+            <IconDiskette color={themeColor} />
           </EduButton>
         )}
         {showShareButton && owner && showPublishButton && (
           <EduButton
-            title={"Publish Test"}
+            title="Publish Test"
             data-cy="publish"
             style={{ width: 42, padding: 0 }}
             size="large"
@@ -139,19 +141,19 @@ const TestPageHeader = ({
               onPublish();
             }}
           >
-            <IconSend color="#00AD50" stroke="#00AD50" />
+            <IconSend color={themeColor} stroke={themeColor} />
           </EduButton>
         )}
         {showShareButton && showEditButton && (
           <EduButton
-            title={"Edit Test"}
+            title="Edit Test"
             disabled={editEnable}
             data-cy="edit"
             style={{ width: 42 }}
             size="large"
             onClick={onEnableEdit}
           >
-            <IconPencilEdit color="#00AD50" />
+            <IconPencilEdit color={themeColor} />
           </EduButton>
         )}
         {showShareButton && !isPlaylist && (

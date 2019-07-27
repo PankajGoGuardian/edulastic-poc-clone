@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -11,8 +10,8 @@ import { withNamespaces } from "@edulastic/localization";
 
 import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList";
+import Question from "../../components/Question";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
@@ -20,30 +19,8 @@ import { checkAnswerAction } from "../../../author/src/actions/testItem";
 const List = withAddButton(QuillSortableList);
 
 class MultipleChoiceOptions extends Component {
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
-
-    console.log(item);
-    fillSections(
-      "main",
-      t("component.matrix.multipleChoiceOptions"),
-      node.offsetTop,
-      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
-      deskHeight === true,
-      deskHeight
-    );
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleSortEndStems = ({ oldIndex, newIndex }) => {
       setQuestionData(
@@ -91,7 +68,12 @@ class MultipleChoiceOptions extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.matrix.multipleChoiceOptions")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.matrix.multipleChoiceOptions")}</Subtitle>
         <List
           items={item.stems}
@@ -103,7 +85,7 @@ class MultipleChoiceOptions extends Component {
           columns={1}
           prefix="list1"
         />
-      </Widget>
+      </Question>
     );
   }
 }

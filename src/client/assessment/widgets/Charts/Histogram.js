@@ -4,6 +4,7 @@ import { cloneDeep, isEqual } from "lodash";
 
 import HorizontalLines from "./components/HorizontalLines";
 import ArrowPair from "./components/ArrowPair";
+import ValueLabel from "./components/ValueLabel";
 import withGrid from "./HOC/withGrid";
 import {
   convertPxToUnit,
@@ -16,7 +17,7 @@ import Hists from "./components/Hists";
 
 import BarsAxises from "./components/BarsAxises";
 
-const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
+const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse, toggleBarDragging }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
@@ -50,6 +51,8 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
           [active].split(",")[index]
       : null;
 
+  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+
   const save = () => {
     if (cursorY === null) {
       return;
@@ -59,6 +62,7 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setInitY(null);
     setActive(null);
     setIsMouseDown(false);
+    toggleBarDragging(false);
     saveAnswer(localData);
   };
 
@@ -77,6 +81,7 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setActiveIndex(index);
     setInitY(localData[index].y);
     setIsMouseDown(true);
+    toggleBarDragging(true);
   };
 
   const onMouseUp = () => {
@@ -89,7 +94,7 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   return (
     <svg
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width}
       height={height + 40}
       onMouseMove={onMouseMove}
@@ -119,7 +124,10 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
         gridParams={gridParams}
         correct={correct}
       />
+
       <ArrowPair getActivePoint={getActivePoint} />
+
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
     </svg>
   );
 };

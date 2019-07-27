@@ -7,14 +7,13 @@ import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
-import { Checkbox, Paper, WithResources } from "@edulastic/common";
+import { Checkbox, Paper, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
-import { Widget } from "../../styled/Widget";
 
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
@@ -23,8 +22,8 @@ import Options from "./components/Options";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
-import ChoicesForResponse from "./ChoicesForResponse";
-import { AnswerContext } from "@edulastic/common";
+import ChoicesForResponses from "./ChoicesForResponses";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -151,7 +150,13 @@ class ClozeDropDown extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
-                <Widget position="unset">
+                <Question
+                  position="unset"
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     key="shuffleOptions"
                     validation={item.validation}
@@ -176,17 +181,13 @@ class ClozeDropDown extends Component {
                       checked={shuffleOptions}
                     />
                   </CorrectAnswerOptions>
-                </Widget>
-                {response_ids &&
-                  response_ids.map(response => (
-                    <ChoicesForResponse
-                      key={response.id}
-                      response={response}
-                      item={item}
-                      fillSections={fillSections}
-                      cleanSections={cleanSections}
-                    />
-                  ))}
+                </Question>
+                <ChoicesForResponses
+                  responses={response_ids || []}
+                  item={item}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
               </div>
               <div style={{ marginTop: 35 }}>
                 <Options

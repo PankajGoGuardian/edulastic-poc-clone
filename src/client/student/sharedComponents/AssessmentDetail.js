@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Col, Icon } from "antd";
-import { greenThird, red, white } from "@edulastic/colors";
+import { white, testTypeColor } from "@edulastic/colors";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
 import { formatTime } from "../utils";
 
@@ -237,7 +237,7 @@ const TestType = styled.span`
   font-family: ${props => props.theme.assignment.cardTitleFontFamily};
   width: 20px;
   height: 20px;
-  background: ${props => (props.type === PRACTICE ? red : greenThird)};
+  background: ${props => (props.type ? testTypeColor[props.type] : testTypeColor.assessment)};
   text-align: center;
   color: ${white};
   border-radius: 50%;

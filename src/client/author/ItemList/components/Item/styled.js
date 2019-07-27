@@ -464,8 +464,3 @@ export const Details = styled.div`
   position: relative;
   overflow: hidden;
 `;
-
-export const AudioIcon = styled.i`
-  color: ${props => (props.success ? green : red)};
-  font-size: 18px;
-`;

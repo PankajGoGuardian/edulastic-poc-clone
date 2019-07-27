@@ -1,4 +1,5 @@
 import { createAction } from "redux-starter-kit";
+import { uniqBy } from "lodash";
 import { produce } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
@@ -9,12 +10,13 @@ import {
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
   SET_IS_PAUSED,
-  UPDATE_STUDENT_ACTIVITY,
   UPDATE_REMOVED_STUDENTS_LIST,
   UPDATE_STUDENTS_LIST,
-  UPDATE_CLASS_STUDENTS_LIST
+  UPDATE_CLASS_STUDENTS_LIST,
+  SET_STUDENTS_GRADEBOOK
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
+import { createFakeData } from "../../ClassBoard/utils";
 
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD = "[gradebook] realtime test activity add";
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT = "[gradebook] realtime test activity submit";
@@ -228,12 +230,45 @@ const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_STUDENTS_LIST:
       return {
         ...state,
-        removedStudents: payload
+        removedStudents: [...state.removedStudents, ...payload]
       };
     case UPDATE_CLASS_STUDENTS_LIST:
       return {
         ...state,
         classStudents: payload
+      };
+    case SET_STUDENTS_GRADEBOOK:
+      //take out newly added students from class students
+      const pickClassStudentsObj = state.classStudents.filter(item => payload.includes(item._id));
+
+      //create presenttation data  for new students
+      const fakeData = createFakeData(pickClassStudentsObj.length);
+
+      //map students data as per test activity api students object structure
+      const studentsData = pickClassStudentsObj.map((student, index) => ({
+        _id: student._id,
+        firstName: student.firstName,
+        lastName: student.lastName,
+        email: student.email,
+        ...fakeData[index]
+      }));
+
+      const activeStudents = state.data.students.filter(item => !state.removedStudents.includes(item.studentId));
+      const dataToTransform = {
+        ...state.data,
+        students: [...activeStudents, ...studentsData]
+      };
+
+      return {
+        ...state,
+        //update if removed students are added again
+        removedStudents: state.removedStudents.filter(item => !payload.includes(item)),
+        data: {
+          ...state.data,
+          //merge newly added student to gradebook entity and student object
+          students: [...activeStudents, ...studentsData]
+        },
+        entities: uniqBy(transformGradeBookResponse(dataToTransform), "studentId")
       };
     default:
       return state;

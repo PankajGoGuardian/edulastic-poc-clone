@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Table, Button } from "antd";
 import { testActivity } from "@edulastic/constants";
-import { white, darkGrey, secondaryTextColor, authorAssignment, tabletWidth } from "@edulastic/colors";
+import { white, darkGrey, secondaryTextColor, authorAssignment, tabletWidth, testTypeColor } from "@edulastic/colors";
 
 const { assignmentStatusBg } = authorAssignment;
 const {
@@ -111,7 +111,8 @@ export const TypeIcon = styled.span`
   width: 18px;
   height: 18px;
   max-width: 18px;
-  background: ${props => (props.type === "p" ? "#00A8FF" : "#FF0088")};
+  background: ${props =>
+    props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
   text-align: center;
   color: ${white};
   border-radius: 50%;

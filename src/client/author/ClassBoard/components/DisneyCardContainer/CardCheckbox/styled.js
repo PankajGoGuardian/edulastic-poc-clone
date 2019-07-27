@@ -18,4 +18,7 @@ export const StyledCheckbox = styled(Checkbox)`
     background-color: ${props => props.theme.checkbox.checkboxCheckedColor};
     border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
   }
+  .ant-checkbox-inner::after {
+    left: 24%;
+  }
 `;

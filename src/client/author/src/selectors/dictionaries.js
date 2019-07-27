@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
-import { uniqBy, groupBy, isEmpty } from "lodash";
+import { uniqBy, groupBy, isEmpty, forEach } from "lodash";
 import selectData from "../../TestPage/components/common/selectsData";
-import { getInterestedCurriculumsSelector } from "../selectors/user";
+import { getInterestedCurriculumsSelector, getShowAllCurriculumsSelector } from "../selectors/user";
 const { defaultStandards } = selectData;
 export const stateSelector = state => state.dictionaries;
 export const curriculumsSelector = createSelector(
@@ -14,54 +14,59 @@ export const getCurriculumsListSelector = createSelector(
 );
 
 export const getFormattedCurriculumsSelector = (state, props) => {
-  const { subject = "" } = props;
-  let defaultStandard = {};
+  const showAllStandards = getShowAllCurriculumsSelector(state);
   const interestedCurriculums = getInterestedCurriculumsSelector(state);
-  const interestedCurriculumsBySubject = interestedCurriculums
-    .filter(item => (!subject ? true : item.subject === subject))
-    .sort((a, b) => (a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1));
   const allCurriculums = getCurriculumsListSelector(state);
-  const allCurriculumsBySubject = allCurriculums
-    .filter(item => {
-      if (!subject) return true;
-      /** Getting the default standard from curriculums while filtering based on subject.
-       * User should be able to see the default standard at the top of the standard set list
-       *  */
-      if (item.curriculum === defaultStandards[subject]) {
-        defaultStandard = item;
-        return false;
-      }
-      return item.subject === subject;
-    })
-    .sort((a, b) => (a.curriculum.toUpperCase() > b.curriculum.toUpperCase() ? 1 : -1));
-  const interestedCurriculumByOrgType = groupBy(interestedCurriculumsBySubject, curriculum => curriculum.orgType);
-  // return if teacher has selected curriculums
-  if (interestedCurriculumByOrgType.teacher && interestedCurriculumByOrgType.teacher.length) {
-    return uniqBy([
-      defaultStandard,
-      ...interestedCurriculumByOrgType.teacher.map(item => ({ value: item._id, text: item.name }))
-    ]).filter(item => item.value);
+  return getFormattedCurriculums(interestedCurriculums, allCurriculums, props, showAllStandards);
+};
+
+export const getFormattedCurriculums = (interestedCurriculums = [], allCurriculums, props, showAllStandards = true) => {
+  let { subject } = props;
+  if (isEmpty(subject)) {
+    return [];
   }
-  // break line only if interested curriculums are selected by admins and create uniq curriculums
-  const uniqCurriculums = interestedCurriculumsBySubject.length
-    ? uniqBy(
-        [
-          defaultStandard,
-          ...interestedCurriculumsBySubject,
-          { _id: "----------", name: "----------", disabled: true },
-          ...allCurriculumsBySubject
-        ],
-        "_id"
-      )
-    : [defaultStandard, ...allCurriculumsBySubject];
-  const mapCurriculumsByPropertyNameId = uniqCurriculums
-    .filter(item => !isEmpty(item))
-    .map(item => ({
-      value: item._id,
-      text: item.name || item.curriculum,
-      disabled: item.disabled || false
-    }));
-  return mapCurriculumsByPropertyNameId;
+  subject = typeof subject === "string" ? [subject] : subject;
+  const defaultStandard = [];
+  const interestedCurriculumsForUser = [];
+  const otherCurriculumsForUser = [];
+  const defaultCurriculumsMap = {};
+  forEach(defaultStandards, (val, key) => {
+    if (subject.includes(key)) {
+      defaultCurriculumsMap[val] = key;
+    }
+  });
+  const interestedCurriculumsMap = interestedCurriculums.reduce((map, o) => {
+    if (subject.includes(o.subject)) {
+      map[o.name] = o;
+    }
+    return map;
+  }, {});
+  allCurriculums
+    .sort((a, b) => (a.curriculum.toUpperCase() > b.curriculum.toUpperCase() ? 1 : -1))
+    .forEach(el => {
+      const formattedData = {
+        value: el._id,
+        text: el.name || el.curriculum,
+        disabled: el.disabled || false
+      };
+      if (!isEmpty(interestedCurriculumsMap) && interestedCurriculumsMap[el.curriculum]) {
+        interestedCurriculumsForUser.push(formattedData);
+      } else if (isEmpty(interestedCurriculumsMap) && defaultCurriculumsMap[el.curriculum]) {
+        defaultStandard.push(formattedData);
+      } else if (subject.includes(el.subject)) {
+        otherCurriculumsForUser.push(formattedData);
+      }
+    });
+  return showAllStandards
+    ? !isEmpty(interestedCurriculumsForUser) || !isEmpty(defaultStandard)
+      ? [
+          ...interestedCurriculumsForUser,
+          ...defaultStandard,
+          { value: "------", text: "--------------------", disabled: true },
+          ...otherCurriculumsForUser
+        ]
+      : [...otherCurriculumsForUser]
+    : [...interestedCurriculumsForUser];
 };
 
 export const getDictionariesAlignmentsSelector = createSelector(
@@ -81,5 +86,5 @@ export const getStandardsListSelector = createSelector(
 );
 export const getRecentStandardsListSelector = createSelector(
   stateSelector,
-  state => state.recentStandardsList
+  state => state.recentStandardsList || []
 );

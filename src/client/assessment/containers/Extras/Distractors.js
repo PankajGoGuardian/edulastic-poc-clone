@@ -12,12 +12,12 @@ import withAddButton from "../../components/HOC/withAddButton";
 
 import { change, remove, add, sort } from "./helpers";
 import { StyledRow } from "./styled/StyledRow";
-import { Widget } from "../../styled/Widget";
 import { Subtitle } from "../../styled/Subtitle";
+import Question from "../../components/Question";
 
 const SortableListWithAddButton = withAddButton(SortableList);
 
-const Distractors = ({ t, setQuestionData, item, advancedAreOpen }) => {
+const Distractors = ({ t, setQuestionData, item, advancedAreOpen, fillSections, cleanSections }) => {
   const prop = "distractor_rationale_response_level";
 
   const _change = change({ item, setQuestionData, prop });
@@ -26,7 +26,13 @@ const Distractors = ({ t, setQuestionData, item, advancedAreOpen }) => {
   const _sort = sort({ item, setQuestionData, prop });
 
   return (
-    <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+    <Question
+      section="advanced"
+      label={t("component.options.distractorTitle")}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+      advancedAreOpen={advancedAreOpen}
+    >
       <Fragment>
         <Subtitle>{t("component.options.distractorTitle")}</Subtitle>
         <StyledRow gutter={60}>
@@ -45,7 +51,7 @@ const Distractors = ({ t, setQuestionData, item, advancedAreOpen }) => {
           </Col>
         </StyledRow>
       </Fragment>
-    </Widget>
+    </Question>
   );
 };
 
@@ -53,10 +59,14 @@ Distractors.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool
 };
 
 Distractors.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {},
   advancedAreOpen: false
 };
 

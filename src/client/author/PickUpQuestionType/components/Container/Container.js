@@ -257,7 +257,7 @@ class Container extends Component {
             </Menu.Item>
             <Menu.Item key="edit">
               <EditIcon />
-              {"Written & Spoken"}
+              {"Reading & Comprehension"}
             </Menu.Item>
             <Menu.Item key="highlight">
               <TargetIcon />
@@ -285,7 +285,7 @@ class Container extends Component {
             </Menu.Item>
             <Menu.Item key="video-passages">
               <PlayIcon />
-              {"Video & Passages"}
+              {"Video & Text"}
             </Menu.Item>
             <Menu.Item key="rulers-calculators">
               <RulerIcon />
@@ -363,7 +363,7 @@ class Container extends Component {
               </Menu.Item>
               <Menu.Item key="edit" onClick={this.toggleCategories}>
                 <EditIcon />
-                {"Written & Spoken"}
+                {"Reading & Comprehension"}
               </Menu.Item>
               <Menu.Item key="highlight" onClick={this.toggleCategories}>
                 <TargetIcon />
@@ -391,7 +391,7 @@ class Container extends Component {
               </Menu.Item>
               <Menu.Item key="video-passages" onClick={this.toggleCategories}>
                 <PlayIcon />
-                {"Video & Passages"}
+                {"Video & Text"}
               </Menu.Item>
               <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
                 <RulerIcon />

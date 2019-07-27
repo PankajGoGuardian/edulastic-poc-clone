@@ -14,7 +14,8 @@ const StaticMath = ({
   numberPad,
   latex,
   innerValues,
-  restrictKeys
+  restrictKeys,
+  customKeys
 }) => {
   const [mathField, setMathField] = useState(null);
   const [currentInnerField, setCurrentInnerField] = useState(null);
@@ -167,6 +168,7 @@ const StaticMath = ({
     if (mathFieldRef.current) {
       try {
         setMathField(MQ.StaticMath(mathFieldRef.current));
+        // eslint-disable-next-line no-empty
       } catch (e) {}
       setLatex(latex);
       setTimeout(() => {
@@ -195,6 +197,7 @@ const StaticMath = ({
             <MathKeyboard
               symbols={symbols}
               restrictKeys={restrictKeys}
+              customKeys={customKeys}
               numberPad={numberPad}
               onInput={onInputKeyboard}
               showResponse={false}
@@ -215,12 +218,14 @@ StaticMath.propTypes = {
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
   latex: PropTypes.string.isRequired,
+  customKeys: PropTypes.array,
   restrictKeys: PropTypes.array,
   innerValues: PropTypes.array
 };
 
 StaticMath.defaultProps = {
   style: {},
+  customKeys: [],
   restrictKeys: [],
   innerValues: [],
   onInnerFieldClick: () => {}

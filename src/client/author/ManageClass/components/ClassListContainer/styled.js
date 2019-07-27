@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-import { white, themeColor, boxShadowDefault, lightBlue } from "@edulastic/colors";
+import { white, themeColor, boxShadowDefault, lightBlue, themeColorLight } from "@edulastic/colors";
 import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
 
@@ -87,25 +87,25 @@ export const CreateClassButton = styled(Button)`
   padding: 5px 20px;
   border: none;
   text-transform: uppercase;
-  color: ${white};
-  background: #42d184;
+  color: ${themeColor};
+  background: ${white};
   &:hover {
-    background: #42d184;
-    color: ${white};
+    background: ${themeColorLight};
+    color: ${themeColor};
   }
 `;
 
 export const SyncButtons = styled(Button)`
   ${ShareButtonStyle}
-  color: #ffffff;
+  color: ${themeColor};
   padding: 0px 25px;
-  background-color: #42d184;
+  background-color: ${white};
   border-color: #42d184;
   margin-right: 20px;
   font-size: 12px;
   &:hover {
-    color: #ffffff;
-    background-color: #42d184;
+    color: ${themeColor};
+    background-color: ${themeColorLight};
     border-color: #42d184;
   }
 `;
@@ -156,4 +156,20 @@ export const ClassListTable = styled(Table)`
 `;
 export const StyledSelect = styled(Select)`
   width: 100%;
+`;
+
+export const BannerDiv = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 15px 15px;
+  background-color:${props => (props.syncClassLoading ? "#F5EE8B" : "#D3FEA6")}
+  color:${props => (props.syncClassLoading ? "#B5AA08" : "#77B833")}
+  justify-content: center;
+  border-radius: 10px;
+`;
+
+export const FlexContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

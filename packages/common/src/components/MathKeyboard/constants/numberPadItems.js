@@ -35,7 +35,7 @@ export const NUMBER_PAD_ITEMS = [
     handler: "/",
     labelcy: "divide",
     value: "divide",
-    label: <CustomImage src={Group940} width={35} height={35} role="presentation" />,
+    label: <CustomImage src={Group940} width={22} height={65} role="presentation" />,
     types: ["all", "basic", "algebra"],
     command: "cmd"
   }

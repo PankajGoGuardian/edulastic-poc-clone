@@ -36,7 +36,8 @@ import {
   stateStudentResponseSelector,
   showScoreSelector,
   getMarkAsDoneEnableSelector,
-  getQLabelsSelector
+  getQLabelsSelector,
+  removedStudentsSelector
 } from "../../ducks";
 
 import {
@@ -192,7 +193,7 @@ class ClassBoard extends Component {
   onSelectAllChange = e => {
     const { checked } = e.target;
     const { testActivity } = this.props;
-    const { studentSelect, studentUnselectAll, allStudents } = this.props;
+    const { studentSelect, studentUnselectAll, allStudents, removedStudents } = this.props;
     testActivity.map(student => {
       student.check = checked;
       return null;
@@ -202,7 +203,8 @@ class ClassBoard extends Component {
       nCountTrue: checked ? testActivity.length : 0
     });
     if (checked) {
-      studentSelect(allStudents.map(x => x._id));
+      const selectedAllstudents = allStudents.map(x => x._id).filter(item => !removedStudents.includes(item));
+      studentSelect(selectedAllstudents);
     } else {
       studentUnselectAll();
     }
@@ -256,7 +258,11 @@ class ClassBoard extends Component {
   };
 
   handleRedirect = () => {
-    const { selectedStudents, testActivity } = this.props;
+    const { selectedStudents, testActivity, enrollmentStatus, additionalData = {}, assignmentStatus } = this.props;
+    if (additionalData.isPaused && assignmentStatus !== "DONE" && additionalData.endDate > Date.now()) {
+      return message.info("The class has been paused for this assessment.Please resume to continue with redirect.");
+    }
+
     const notStartedStudents = testActivity.filter(
       x =>
         selectedStudents[x.studentId] &&
@@ -267,6 +273,9 @@ class ClassBoard extends Component {
       message.warn("You can redirect only Submitted and Absent student(s).");
       return;
     }
+    const selectedStudentIds = Object.keys(selectedStudents);
+    if (selectedStudentIds.some(item => enrollmentStatus[item] === "0"))
+      return message.warn("You can not redirect to not enrolled student(s).");
     this.setState({ redirectPopup: true });
   };
 
@@ -330,11 +339,14 @@ class ClassBoard extends Component {
 
   handleShowMarkAsAbsentModal = () => {
     const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
-    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now())
+    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
       return message.warn("Assignment is not opened yet");
+    }
+
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length)
+    if (!selectedStudentKeys.length) {
       return message.warn("At least one student should be selected to be Marked as Absent.");
+    }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
       item =>
@@ -350,9 +362,16 @@ class ClassBoard extends Component {
   };
 
   handleShowRemoveStudentsModal = () => {
-    const { selectedStudents } = this.props;
+    const { selectedStudents, testActivity } = this.props;
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length) return message.warn("At least one student should be selected to be removed.");
+    if (!selectedStudentKeys.length) {
+      return message.warn("At least one student should be selected to be removed.");
+    }
+    const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
+    const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
+    if (isAnyBodyGraded) {
+      return message.warn("You will not be able to remove selected student(s) as the status is graded");
+    }
     this.setState({ showRemoveStudentsPopup: true, modalInputVal: "" });
   };
 
@@ -376,6 +395,17 @@ class ClassBoard extends Component {
   };
 
   handleShowAddStudentsPopup = () => {
+    const { assignmentStatus, additionalData, testActivity } = this.props;
+    if (assignmentStatus === "DONE") {
+      return message.warn(
+        "Mismatch occurred with logged in class section, please navigate to assignments to select class section and try again."
+      );
+    }
+    // total count represents total students count in the class
+    if (additionalData.totalCount <= testActivity.length) {
+      return message.warn("This assessment is already assigned to all students in the class.");
+    }
+
     this.setState({ showAddStudentsPopup: true });
   };
 
@@ -440,7 +470,8 @@ class ClassBoard extends Component {
       isPresentationMode,
       entities,
       labels,
-      assignmentStatus
+      assignmentStatus,
+      enrollmentStatus
     } = this.props;
     const {
       selectedTab,
@@ -689,7 +720,7 @@ class ClassBoard extends Component {
                     this.onTabChange(e, "Student", selected);
                   }}
                   isPresentationMode={isPresentationMode}
-                  enrollmentStatus={this.props.enrollmentStatus}
+                  enrollmentStatus={enrollmentStatus}
                 />
               ) : (
                 <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
@@ -702,6 +733,7 @@ class ClassBoard extends Component {
                 absentList={absentList}
                 selectedStudents={selectedStudents}
                 additionalData={additionalData}
+                enrollmentStatus={enrollmentStatus}
                 closePopup={() => {
                   this.setState({ redirectPopup: false });
                 }}
@@ -713,6 +745,7 @@ class ClassBoard extends Component {
                 <AddStudentsPopup
                   open={showAddStudentsPopup}
                   groupId={classId}
+                  closePolicy={additionalData.closePolicy}
                   assignmentId={assignmentId}
                   closePopup={this.handleHideAddStudentsPopup}
                   disabledList={existingStudents}
@@ -811,7 +844,8 @@ const enhance = compose(
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      labels: getQLabelsSelector(state)
+      labels: getQLabelsSelector(state),
+      removedStudents: removedStudentsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

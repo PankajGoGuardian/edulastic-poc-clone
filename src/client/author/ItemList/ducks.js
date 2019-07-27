@@ -47,7 +47,7 @@ export function* createTestFromCart({ payload: { testName = "Author Test" } }) {
   };
 
   yield call(message.info, "Creating a test with selected items");
-  yield put(createTestAction(updatedTest, true));
+  yield put(createTestAction(updatedTest, true, true));
 }
 
 export function* watcherSaga() {

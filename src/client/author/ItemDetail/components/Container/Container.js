@@ -105,7 +105,9 @@ class Container extends Component {
       });
     }
 
-    if (this.isPassage(rows)) {
+    // We want to call this only one time
+    // beside running it trough itPassage method
+    if (rows.length === 1 && this.isPassage(rows)) {
       this.handleApplySettings({ type: "50-50" });
     }
   }

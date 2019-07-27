@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -17,7 +16,8 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { WidgetWrapper, Widget } from "../../styled/Widget";
+import { WidgetWrapper } from "../../styled/Widget";
+import Question from "../../components/Question";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
 class ChoicesForDropDown extends Component {
@@ -37,43 +37,6 @@ class ChoicesForDropDown extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidUpdate(prevProps) {
-    const { item: prevItem } = prevProps;
-    const { item, fillSections, cleanSections } = this.props;
-    const {
-      response_ids: { dropDowns: current = [] }
-    } = item;
-    const {
-      response_ids: { dropDowns: prev = [] }
-    } = prevItem;
-
-    const { sectionId } = this.state;
-
-    if (current.length === 0) {
-      return cleanSections(sectionId);
-    }
-
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-    if (current.length === 1 && prev.length !== 1) {
-      fillSections(
-        "main",
-        "Choices for Dropdown(s)",
-        node.offsetTop,
-        node.scrollHeight,
-        undefined,
-        undefined,
-        sectionId
-      );
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-    const { sectionId } = this.state;
-    cleanSections(sectionId);
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -160,7 +123,7 @@ class ChoicesForDropDown extends Component {
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, fillSections, cleanSections } = this.props;
     const {
       response_ids: { dropDowns = [] },
       options,
@@ -170,7 +133,13 @@ class ChoicesForDropDown extends Component {
     return (
       <WidgetWrapper>
         {dropDowns.map(dropdown => (
-          <Widget data-cy={`choice-dropdown-${dropdown.index}`}>
+          <Question
+            section="main"
+            dataCy={`choice-dropdown-${dropdown.index}`}
+            label={`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          >
             <Subtitle>{`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}</Subtitle>
             <SortableList
               items={options[dropdown.id] || []}
@@ -186,7 +155,7 @@ class ChoicesForDropDown extends Component {
                 {t("component.cloze.dropDown.addnewchoice")}
               </AddNewChoiceBtn>
             </div>
-          </Widget>
+          </Question>
         ))}
       </WidgetWrapper>
     );

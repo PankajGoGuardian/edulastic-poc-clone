@@ -20,22 +20,24 @@ const ReportListContainer = ({
   location,
   loadTestActivityReport,
   setCurrentItem,
-  assignments,
+  testTitle,
   testFeedback
 }) => {
   const [assignmentItemTitle, setAssignmentItemTitle] = useState(null);
 
   useEffect(() => {
-    loadTestActivityReport({ testActivityId: match.params.id, groupId: match.params.classId });
+    loadTestActivityReport({
+      testId: match.params.testId,
+      testActivityId: match.params.id,
+      groupId: match.params.classId
+    });
     setCurrentItem(0);
   }, []);
 
   useEffect(() => {
     if (!testFeedback) return;
 
-    const { assignmentId } = testFeedback[0];
-    const [assignmentItem] = assignments.filter(item => item._id === assignmentId);
-    setAssignmentItemTitle(assignmentItem.title);
+    setAssignmentItemTitle(testTitle);
   }, [testFeedback]);
 
   return (
@@ -53,7 +55,7 @@ const enhance = compose(
     state => ({
       flag: state.ui.flag,
       testFeedback: get(state, "testFeedback", null),
-      assignments: getAssignmentsSelector(state)
+      testTitle: get(state, ["tests", "entity", "title"], "")
     }),
     {
       setCurrentItem: setCurrentItemAction,

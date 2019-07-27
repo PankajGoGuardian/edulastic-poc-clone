@@ -33,8 +33,8 @@ export const Wrapper = styled.div`
 
   @media screen and (max-width: ${mobileWidthMax}) {
     padding: 5px 20px;
-    margin: 16px 20px;
-    min-height: 65vh;
+    margin: 16px 26px;
+    min-height: 75vh;
     display: block;
   }
 `;
@@ -67,6 +67,10 @@ export const NoDataBox = styled.div`
       max-width: 48px;
       margin-bottom: 11px;
     }
+    @media screen and (max-width: ${mobileWidthMax}) {
+      max-width: 56px;
+      margin-top: 19px;
+    }
   }
 
   h4 {
@@ -84,6 +88,12 @@ export const NoDataBox = styled.div`
       font-size: 16px;
       margin-bottom: 12px;
     }
+
+    @media (max-width: ${mobileWidthMax}) {
+      font-size: 18px;
+      line-height: 24px;
+      margin-bottom: 6px;
+    }
   }
 
   p {
@@ -97,6 +107,13 @@ export const NoDataBox = styled.div`
       font-size: 12px;
       line-height: 22px;
       max-width: 224px;
+    }
+
+    @media (max-width: ${mobileWidthMax}) {
+      font-size: 13px;
+
+      line-height: 26px;
+      max-width: 100%;
     }
   }
 
@@ -113,9 +130,9 @@ export const NoDataBox = styled.div`
   }
 
   @media screen and (max-width: ${mobileWidthMax}) {
-    width: calc(100% - 50px);
-    min-height: 50vh;
-    padding: 36px 30px;
+    width: calc(100% - 63px);
+    min-height: 30vh;
+    padding: 36px 25px;
     height: auto;
   }
 `;

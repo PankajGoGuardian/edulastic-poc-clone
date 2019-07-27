@@ -1,35 +1,43 @@
-import React from "react";
+import React, { Fragment, useState } from "react";
 import { Select } from "antd";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { extraDesktopWidthMax, largeDesktopWidth } from "@edulastic/colors";
+import { green, extraDesktopWidthMax, largeDesktopWidth, mobileWidthMax } from "@edulastic/colors";
+import { IconFilterClass } from "@edulastic/icons";
 
 import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
 
 const ClassSelector = ({ t, classList, currentGroup, changeClass }) => {
+  const [isShown, setShown] = useState(false);
+
   return (
-    <AssignmentSelectClass id="class-dropdown-wrapper">
-      <ClassLabel>{t("common.classLabel")}</ClassLabel>
-      <Select
-        value={currentGroup}
-        getPopupContainer={() => document.getElementById("class-dropdown-wrapper")}
-        onChange={value => {
-          changeClass(value);
-        }}
-      >
-        {classList.length > 1 && (
-          <Select.Option key="all" value={""}>
-            All classes
-          </Select.Option>
-        )}
-        {classList.map((cl, i) => (
-          <Select.Option key={cl._id} value={cl._id}>
-            {cl.name}
-          </Select.Option>
-        ))}
-      </Select>
-    </AssignmentSelectClass>
+    <Fragment>
+      <AssignmentMobileButton onClick={() => setShown(!isShown)}>
+        <IconFilterClass />
+      </AssignmentMobileButton>
+      <AssignmentSelectClass id="class-dropdown-wrapper" isShown={isShown}>
+        <ClassLabel>{t("common.classLabel")}</ClassLabel>
+        <Select
+          value={currentGroup}
+          getPopupContainer={() => document.getElementById("class-dropdown-wrapper")}
+          onChange={value => {
+            changeClass(value);
+          }}
+        >
+          {classList.length > 1 && (
+            <Select.Option key="all" value="">
+              All classes
+            </Select.Option>
+          )}
+          {classList.map((cl, i) => (
+            <Select.Option key={cl._id} value={cl._id}>
+              {cl.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </AssignmentSelectClass>
+    </Fragment>
   );
 };
 
@@ -60,10 +68,8 @@ const ClassLabel = styled.span`
     margin-right: 19px;
   }
 
-  @media (max-width: 768px) {
-    width: 65px;
-    width: auto;
-    margin-right: 10px;
+  @media (max-width: ${mobileWidthMax}) {
+    display: none;
   }
 `;
 
@@ -108,14 +114,51 @@ const AssignmentSelectClass = styled.div`
       fill: ${props => props.theme.headerDropdownTextColor};
     }
   }
-  @media (max-width: 768px) {
+
+  @media (max-width: ${mobileWidthMax}) {
+    position: absolute;
+    top: calc(100% + 11px);
+    left: -70px;
+    width: 100vw !important;
+    padding: 16px 26px;
+    z-index: 1;
+    background: #fff;
     padding-top: 10px;
     width: 100%;
+    opacity: ${({ isShown }) => (isShown ? 1 : 0)};
+    pointer-events: ${({ isShown }) => (isShown ? "all" : "none")};
+
     .ant-select {
-      height: 32px;
+      height: 40px;
       flex: 1;
-      margin-right: 26px;
-      margin-left: 20px;
+      margin-right: 0;
+      margin-left: 0;
+      border: 1px solid #e1e1e1;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .ant-select-selection {
+      background: #f8f8f8;
+    }
+  }
+`;
+
+const AssignmentMobileButton = styled.div`
+  display: none;
+
+  @media (max-width: ${mobileWidthMax}) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 40px;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+
+    svg {
+      fill: ${green};
     }
   }
 `;

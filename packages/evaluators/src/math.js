@@ -18,7 +18,7 @@ export const getChecks = answer => {
     options = omitBy(options, f => f === false);
 
     let midRes = Object.keys(options).reduce((acc, key, i) => {
-      if (key === "allowedVariables" || key === "allowNumericOnly") {
+      if (key === "allowedVariables" || key === "allowNumericOnly" || key === "unit") {
         return acc;
       }
       const fieldVal = options[key];
@@ -81,7 +81,16 @@ const exactMatchEvaluator = async (userResponse, answers) => {
   try {
     const getAnswerCorrectMethods = answer => {
       if (answer.value && answer.value.length) {
-        return answer.value.map(val => val.value);
+        return answer.value.map(val => {
+          const { options = {} } = val;
+          if (options.unit) {
+            if (val.value.search("=") === -1) {
+              return val.value + options.unit;
+            }
+            return val.value.replace(/=/gm, `${options.unit}=`);
+          }
+          return val.value;
+        });
       }
       return [];
     };

@@ -98,10 +98,17 @@ class AddCoTeacher extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={() => handleCancel()} destroyOnClose={true}>
+      <StyledModal
+        title={title}
+        visible={isOpen}
+        footer={footer}
+        onCancel={() => handleCancel()}
+        destroyOnClose={true}
+        textAlign="left"
+      >
         <Description>
-          Invite your colleagues to view and manage your class. Co-teachers can manage enrollment, assign the assessment
-          and view reports of your class(es)
+          Invite your colleagues to view and manage your class. Co-teachers can manage enrollment, assign the Test and
+          view reports of your class(es)
         </Description>
         <Select
           placeholder="Search teacher by name, email or username."

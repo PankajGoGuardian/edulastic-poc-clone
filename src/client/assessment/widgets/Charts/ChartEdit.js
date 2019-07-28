@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
+import Annotations from "../../components/Annotations/Annotations";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import withPoints from "../../components/HOC/withPoints";
@@ -17,6 +18,7 @@ import PointsList from "./components/PointsList";
 import { getReCalculatedPoints } from "./helpers";
 
 import ComposeQuestion from "./ComposeQuestion";
+import { Widget } from "../../styled/Widget";
 
 const OptionsList = withPoints(ChartPreview);
 
@@ -202,6 +204,10 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         fillSections={fillSections}
         cleanSections={cleanSections}
       />
+
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Annotations editable />
+      </Widget>
 
       <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
     </Fragment>

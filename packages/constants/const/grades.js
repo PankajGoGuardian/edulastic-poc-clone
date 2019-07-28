@@ -54,6 +54,10 @@ const GRADES_LIST = [
   {
     label: "Grade 12",
     value: "12"
+  },
+  {
+    label: "Other",
+    value: "O"
   }
 ];
 

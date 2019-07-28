@@ -8,6 +8,9 @@ import { groupBy } from "lodash";
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST = "[reports] get reports sar filter data request";
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS = "[reports] get reports sar filter data request success";
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR = "[reports] get reports sar filter data request error";
+const RESET_REPORTS_SAR_FILTER_DATA = "[reports] reset reports sar filter data";
+
+const SET_REPORTS_PREV_SAR_FILTER_DATA = "[reports] set reports prev sar filter data";
 
 const SET_FILTERS = "[reports] set sar filters";
 const SET_TEST_ID = "[reports] set sar testId";
@@ -15,6 +18,8 @@ const SET_TEST_ID = "[reports] set sar testId";
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getSARFilterDataRequestAction = createAction(GET_REPORTS_SAR_FILTER_DATA_REQUEST);
+
+export const setPrevSARFilterDataAction = createAction(SET_REPORTS_PREV_SAR_FILTER_DATA);
 
 export const setFiltersAction = createAction(SET_FILTERS);
 export const setTestIdAction = createAction(SET_TEST_ID);
@@ -42,6 +47,16 @@ export const getTestIdSelector = createSelector(
   state => state.testId
 );
 
+export const getReportsPrevSARFilterData = createSelector(
+  stateSelector,
+  state => state.prevSARFilterData
+);
+
+export const getReportsSARFilterLoadingState = createSelector(
+  stateSelector,
+  state => state.loading
+);
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -50,6 +65,7 @@ export const getTestIdSelector = createSelector(
 
 const initialState = {
   SARFilterData: {},
+  prevSARFilterData: null,
   filters: {
     termId: "",
     subject: "All",
@@ -60,7 +76,8 @@ const initialState = {
     teacherId: "All",
     assessmentType: "All"
   },
-  testId: ""
+  testId: "",
+  loading: false
 };
 
 const setFiltersReducer = (state, { payload }) => {
@@ -116,7 +133,14 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
     state.error = payload.error;
   },
   [SET_FILTERS]: setFiltersReducer,
-  [SET_TEST_ID]: setTestIdReducer
+  [SET_TEST_ID]: setTestIdReducer,
+
+  [SET_REPORTS_PREV_SAR_FILTER_DATA]: (state, { payload }) => {
+    state.prevSARFilterData = payload;
+  },
+  [RESET_REPORTS_SAR_FILTER_DATA]: (state, { payload }) => {
+    state.SARFilterData = {};
+  }
 });
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
@@ -127,6 +151,7 @@ export const reportSARFilterDataReducer = createReducer(initialState, {
 
 function* getReportsSARFilterDataRequest({ payload }) {
   try {
+    yield put({ type: RESET_REPORTS_SAR_FILTER_DATA });
     const SARFilterData = yield call(reportsApi.fetchSARFilterData, payload);
 
     yield put({

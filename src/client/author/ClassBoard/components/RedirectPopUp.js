@@ -1,8 +1,8 @@
-//@ts-check
 import React, { useState, useCallback, useEffect } from "react";
-import { Button, Row, Col, Radio, Select, DatePicker, message } from "antd";
+import { Button, Row, Radio, Select, DatePicker, message } from "antd";
 import moment from "moment";
 import { assignmentApi } from "@edulastic/api";
+import { getUserName } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
 
@@ -28,6 +28,7 @@ const Option = Select.Option;
  */
 const RedirectPopUp = ({
   allStudents,
+  enrollmentStatus,
   selectedStudents,
   additionalData,
   open,
@@ -42,6 +43,7 @@ const RedirectPopUp = ({
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
+
   useEffect(() => {
     let setRedirectStudents = {};
     if (type === "absentStudents") {
@@ -94,12 +96,13 @@ const RedirectPopUp = ({
 
   return (
     <ConfirmationModal
+      centered
       textAlign="left"
       title="Redirect Assignment"
       visible={open}
-      onCancel={() => closePopup()}
+      onCancel={closePopup}
       footer={[
-        <Button ghost key="cancel" onClick={() => closePopup()}>
+        <Button ghost key="cancel" onClick={closePopup}>
           CANCEL
         </Button>,
         <Button loading={loading} key="submit" onClick={submitAction}>
@@ -141,16 +144,19 @@ const RedirectPopUp = ({
               setSelected(v);
             }}
           >
-            {allStudents.map(x => (
-              <Option
-                key={x._id}
-                value={x._id}
-                disabled={disabledList.includes(x._id)}
-                data={`${x.firstName},${x.email}`}
-              >
-                {x.firstName}
-              </Option>
-            ))}
+            {allStudents.map(
+              x =>
+                enrollmentStatus[x._id] === "1" && (
+                  <Option
+                    key={x._id}
+                    value={x._id}
+                    disabled={disabledList.includes(x._id)}
+                    data={`${x.firstName}${x.lastName}${x.email}${x.username}`}
+                  >
+                    {getUserName(x)}
+                  </Option>
+                )
+            )}
           </Select>
         </Row>
 

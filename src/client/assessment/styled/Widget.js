@@ -11,6 +11,8 @@ export const Widget = styled.div`
   padding: 30px;
   background: #f8f8fb;
   border-radius: 4px;
+  min-height: 250px;
+  display: ${({ advancedAreOpen }) => (advancedAreOpen !== null ? (advancedAreOpen ? "block" : "none") : "block")};
   ${({ visible }) =>
     typeof visible !== "undefined" &&
     !visible &&
@@ -122,6 +124,7 @@ export const Widget = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     padding: 20px;
+    min-height: 0;
     display: block !important;
 
     &:not(:first-child) {

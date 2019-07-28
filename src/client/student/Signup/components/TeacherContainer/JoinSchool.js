@@ -38,10 +38,14 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
           schoolLocation.state ? schoolLocation.state + ", " : ""
         } ${schoolLocation.zip ? schoolLocation.zip : ""}`}
       </SchoolInfo>
-      <DistrictInfo>
-        <span>District:</span>
-        {school.districtName}
-      </DistrictInfo>
+      {school.districtName ? (
+        <DistrictInfo>
+          <span>District: </span>
+          {school.districtName}
+        </DistrictInfo>
+      ) : (
+        ""
+      )}
     </OptionBody>
   );
 };
@@ -195,11 +199,13 @@ const JoinSchool = ({
                   {/* I want to home school removed temporarily */}
                   {/* <AnchorBtn> I want to homeschool</AnchorBtn> */}
                   {!isSignupUsingDaURL ? <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn> : null}
-                  {selected && (
+                  {selected && selected.districtName ? (
                     <DistrictName>
                       <span>District: </span>
                       {selected.districtName}
                     </DistrictName>
+                  ) : (
+                    ""
                   )}
                 </Actions>
 

@@ -2,6 +2,7 @@ import { delay } from "redux-saga";
 import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
 import { classResponseApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
+import { createAction } from "redux-starter-kit";
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -24,6 +25,12 @@ import {
   RECEIVE_CLASS_QUESTION_ERROR
 } from "../src/constants/actions";
 import { gradebookTestItemAddAction } from "../src/reducers/testActivity";
+
+// action
+export const UPDATE_STUDENT_ACTIVITY_SCORE = "[classResponse] update student activity score";
+
+// action creators
+export const updateStudentQuestionActivityScoreAction = createAction(UPDATE_STUDENT_ACTIVITY_SCORE);
 
 function* receiveClassResponseSaga({ payload }) {
   try {
@@ -97,22 +104,17 @@ function* receiveFeedbackResponseSaga({ payload }) {
       body: { groupId, score, feedback }
     } = payload;
 
-    const [scoreRes, feedbackResponse] = yield all([
-      call(testActivityApi.updateResponseEntryAndScore, {
-        testActivityId,
-        itemId,
-        groupId,
-        scores: { [questionId]: score }
-      }),
-      call(testActivityApi.updateQuestionFeedBack, { testActivityId, questionId, feedback, groupId, itemId })
-    ]);
-    const { questionActivities } = scoreRes;
-    for (const { qid: _id, score, maxScore, testActivityId } of questionActivities) {
-      yield put(gradebookTestItemAddAction([{ testActivityId, _id, score, maxScore }]));
-    }
+    const feedbackResponse = yield call(testActivityApi.updateQuestionFeedBack, {
+      testActivityId,
+      questionId,
+      feedback,
+      groupId,
+      itemId
+    });
 
     yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId } });
 
+    yield call(message.success("Feedback successully update"));
     yield put({
       type: RECEIVE_FEEDBACK_RESPONSE_SUCCESS,
       payload: feedbackResponse
@@ -173,6 +175,29 @@ function* receiveClassQuestionSaga({ payload }) {
   }
 }
 
+function* updateStudentScore({ payload }) {
+  try {
+    const { testActivityId, itemId, questionId, score: score, groupId } = payload;
+
+    const scoreRes = yield call(testActivityApi.updateResponseEntryAndScore, {
+      testActivityId,
+      itemId,
+      groupId,
+      scores: { [questionId]: score }
+    });
+
+    const { questionActivities } = scoreRes;
+    for (const { qid: _id, score, maxScore, testActivityId } of questionActivities) {
+      yield put(gradebookTestItemAddAction([{ testActivityId, _id, score, maxScore }]));
+    }
+
+    yield call(message.success("Score is successfully updated"));
+  } catch (e) {
+    console.log(e);
+    yield call(message.error, "Score updation failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_CLASS_RESPONSE_REQUEST, receiveClassResponseSaga),
@@ -180,6 +205,7 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST, receiveClassStudentResponseSaga),
     yield takeEvery(RECEIVE_CLASS_QUESTION_REQUEST, receiveClassQuestionSaga),
     yield takeEvery(RECEIVE_STUDENT_RESPONSE_REQUEST, receiveStudentResponseSaga),
-    yield takeLatest(RECEIVE_FEEDBACK_RESPONSE_REQUEST, receiveFeedbackResponseSaga)
+    yield takeLatest(RECEIVE_FEEDBACK_RESPONSE_REQUEST, receiveFeedbackResponseSaga),
+    yield takeLatest(UPDATE_STUDENT_ACTIVITY_SCORE, updateStudentScore)
   ]);
 }

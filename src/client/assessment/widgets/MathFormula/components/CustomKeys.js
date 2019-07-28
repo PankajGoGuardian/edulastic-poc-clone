@@ -1,22 +1,22 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import { Input, Row, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton, FlexContainer } from "@edulastic/common";
 
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import { Subtitle } from "../../../styled/Subtitle";
 
 import { IconTrash } from "../styled/IconTrash";
 
-class TextBlocks extends Component {
+class CustomKeys extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("advanced", t("component.options.textBlocks"), node.offsetTop, node.scrollHeight);
+    fillSections("advanced", t("component.options.customkeys"), node.offsetTop, node.scrollHeight);
   };
 
   componentDidUpdate(prevProps) {
@@ -25,7 +25,7 @@ class TextBlocks extends Component {
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.textBlocks"), node.offsetTop, node.scrollHeight);
+      fillSections("advanced", t("component.options.customkeys"), node.offsetTop, node.scrollHeight);
     }
   }
 
@@ -36,14 +36,20 @@ class TextBlocks extends Component {
   }
 
   render() {
-    const { blocks, onChange, onAdd, onDelete, advancedAreOpen, t } = this.props;
+    const { blocks, onChange, onAdd, onDelete, advancedAreOpen, t, fillSections, cleanSections } = this.props;
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.textBlocks")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.textBlocks")}</Subtitle>
 
         <Row gutter={32}>
           {blocks.map((block, index) => (
-            <Col style={{ marginBottom: 15 }} span={12}>
+            <Col style={{ marginBottom: 15 }} span={12} key={index}>
               <FlexContainer>
                 <Input
                   style={{ width: "100%" }}
@@ -60,12 +66,12 @@ class TextBlocks extends Component {
         <EduButton onClick={onAdd} type="primary">
           {t("component.options.addTextBlock")}
         </EduButton>
-      </Widget>
+      </Question>
     );
   }
 }
 
-TextBlocks.propTypes = {
+CustomKeys.propTypes = {
   blocks: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
@@ -76,10 +82,10 @@ TextBlocks.propTypes = {
   cleanSections: PropTypes.func
 };
 
-TextBlocks.defaultProps = {
+CustomKeys.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };
 
-export default withNamespaces("assessment")(TextBlocks);
+export default withNamespaces("assessment")(CustomKeys);

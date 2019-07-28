@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { get } from "lodash";
@@ -9,39 +8,22 @@ import FontSizeSelect from "../../../../containers/WidgetOptions/components/Font
 import OrientationSelect from "../../../../components/OrientationSelect";
 
 import { Layout } from "../../../../containers/WidgetOptions/components";
-import { Widget } from "../../../../styled/Widget";
+import Question from "../../../../components/Question";
 
 class LayoutWrapper extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { onUiChange, advancedAreOpen, item } = this.props;
+    const { onUiChange, advancedAreOpen, item, fillSections, cleanSections, t } = this.props;
     const fontsize = get(item, "ui_style.fontsize");
     const orientation = get(item, "ui_style.orientation");
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Layout>
           <Row gutter={60}>
             <Col md={12}>
@@ -63,7 +45,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
         </Layout>
-      </Widget>
+      </Question>
     );
   }
 }

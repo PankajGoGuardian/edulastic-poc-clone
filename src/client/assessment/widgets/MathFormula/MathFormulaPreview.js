@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import { isEmpty } from "lodash";
+import { isEmpty, get } from "lodash";
 
-import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay } from "@edulastic/common";
+import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay, FlexContainer } from "@edulastic/common";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
 import CorrectAnswerBox from "./components/CorrectAnswerBox/index";
 import MathInputStatus from "./components/MathInputStatus/index";
+import { UnitsDropdown } from "./components/MathFormulaAnswerMethod/options";
+
 import MathInputWrapper from "./styled/MathInputWrapper";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
@@ -25,6 +27,7 @@ class MathFormulaPreview extends Component {
     saveAnswer: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
     userAnswer: PropTypes.any,
+    disableResponse: PropTypes.bool.isRequired,
     testItem: PropTypes.bool,
     theme: PropTypes.object.isRequired,
     showQuestionNumber: PropTypes.bool
@@ -67,12 +70,21 @@ class MathFormulaPreview extends Component {
   }
 
   getValidLatex(props) {
-    const { studentTemplate, userAnswer } = props;
+    const { studentTemplate, userAnswer, item } = props;
     if (this.isStatic()) {
       return studentTemplate;
     }
+
     if (userAnswer) {
-      if (typeof userAnswer === "string") return userAnswer;
+      if (typeof userAnswer === "string") {
+        return userAnswer;
+      }
+
+      const { isUnits, showDropdown } = item;
+      if (isUnits && showDropdown && typeof userAnswer === "object") {
+        return userAnswer.expression;
+      }
+
       return userAnswer[0];
     }
     return studentTemplate;
@@ -106,20 +118,26 @@ class MathFormulaPreview extends Component {
   }
 
   onUserResponse(latexv) {
-    const { saveAnswer } = this.props;
+    const { saveAnswer, userAnswer, item } = this.props;
     // if (previewType === CHECK) return;
-    if (this.isStatic()) {
+    const { isUnits, showDropdown } = item;
+    if (isUnits && showDropdown) {
+      saveAnswer({ ...userAnswer, expression: latexv });
+    } else {
       saveAnswer(latexv);
-      return;
     }
-
-    saveAnswer(latexv);
   }
 
   onBlur(latexv) {
-    const { type: previewType, saveAnswer } = this.props;
+    const { type: previewType, saveAnswer, userAnswer, item } = this.props;
+    const { isUnits, showDropdown } = item;
+
     if (this.isStatic() && previewType !== CHECK) {
-      saveAnswer(latexv);
+      if (isUnits && showDropdown) {
+        saveAnswer({ ...userAnswer, expression: latexv });
+      } else {
+        saveAnswer(latexv);
+      }
     }
   }
 
@@ -150,10 +168,27 @@ class MathFormulaPreview extends Component {
     }
   }
 
+  selectUnitFromDropdown = unit => {
+    const { userAnswer, saveAnswer, type: previewType, changePreview, changePreviewTab, disableResponse } = this.props;
+    saveAnswer({ ...userAnswer, unit });
+    if ((previewType === SHOW || previewType === CHECK) && !disableResponse) {
+      changePreview(CLEAR); // Item level
+      changePreviewTab(CLEAR); // Question level
+    }
+  };
+
   get restrictKeys() {
     const { item } = this.props;
     const { allowedVariables } = item;
     return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  }
+
+  get selectedUnit() {
+    const { userAnswer } = this.props;
+    if (userAnswer) {
+      return userAnswer.unit;
+    }
+    return "";
   }
 
   render() {
@@ -182,10 +217,17 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
-
+    cssStyles.width = cssStyles.width || cssStyles.minWidth;
     const testItemCorrectValues = testItem
       ? item.validation.valid_response.value.map(validResponse => validResponse.value)
       : [];
+
+    const customKeys = get(item, "custom_keys", []);
+
+    // in Units type, this need when the show dropdown option is true
+    let correctUnit = item.validation.valid_response.value[0].options.unit;
+    correctUnit = !correctUnit ? "" : correctUnit;
+
     return (
       <div>
         <QuestionTitleWrapper>
@@ -200,53 +242,76 @@ class MathFormulaPreview extends Component {
         {testItem && <MathDisplay template={studentTemplate} innerValues={testItemCorrectValues} />}
 
         {!testItem && (
-          <MathInputWrapper>
-            {this.isStatic() && (
-              <StaticMath
-                symbols={item.symbols}
-                restrictKeys={this.restrictKeys}
-                numberPad={item.numberPad}
-                ref={this.studentRef}
-                onInput={latexv => this.onUserResponse(latexv)}
-                onBlur={latexv => this.onBlur(latexv)}
-                style={{ background: statusColor, ...cssStyles }}
-                latex={studentTemplate}
-                innerValues={innerValues}
-                onInnerFieldClick={() => this.onInnerFieldClick()}
-              />
-            )}
-            {!this.isStatic() && !disableResponse && (
-              <MathInput
-                symbols={item.symbols}
-                restrictKeys={this.restrictKeys}
-                numberPad={item.numberPad}
-                value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
-                onInput={latexv => this.onUserResponse(latexv)}
-                onBlur={latexv => this.onBlur(latexv)}
-                disabled={evaluation && !evaluation.some(ie => ie)}
-                onInnerFieldClick={() => this.onInnerFieldClick()}
-                style={{ background: statusColor, ...cssStyles }}
-              />
-            )}
-            {!this.isStatic() && disableResponse && (
-              <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
-                <MathSpanWrapper
-                  latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+          <FlexContainer alignItems="flex-start" justifyContent="flex-start">
+            <MathInputWrapper width={cssStyles.width}>
+              {this.isStatic() && (
+                <StaticMath
+                  symbols={item.symbols}
+                  restrictKeys={this.restrictKeys}
+                  customKeys={customKeys}
+                  numberPad={item.numberPad}
+                  ref={this.studentRef}
+                  onInput={latexv => this.onUserResponse(latexv)}
+                  onBlur={latexv => this.onBlur(latexv)}
+                  style={{ background: statusColor, ...cssStyles }}
+                  latex={studentTemplate}
+                  innerValues={innerValues}
+                  onInnerFieldClick={() => this.onInnerFieldClick()}
                 />
-              </MathInputSpan>
+              )}
+              {!this.isStatic() && !disableResponse && (
+                <MathInput
+                  symbols={item.symbols}
+                  restrictKeys={this.restrictKeys}
+                  customKeys={customKeys}
+                  numberPad={item.numberPad}
+                  value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+                  onInput={latexv => this.onUserResponse(latexv)}
+                  onBlur={latexv => this.onBlur(latexv)}
+                  disabled={evaluation && !evaluation.some(ie => ie)}
+                  onInnerFieldClick={() => this.onInnerFieldClick()}
+                  style={{ background: statusColor, ...cssStyles }}
+                />
+              )}
+              {!this.isStatic() && disableResponse && (
+                <MathInputSpan style={{ background: statusColor, ...cssStyles }}>
+                  <MathSpanWrapper
+                    latex={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+                  />
+                </MathInputSpan>
+              )}
+              {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+                <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+              )}
+            </MathInputWrapper>
+            {item.isUnits && item.showDropdown && (
+              <UnitsDropdown item={item} preview onChange={this.selectUnitFromDropdown} selected={this.selectedUnit} />
             )}
-            {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
-              <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
-            )}
-          </MathInputWrapper>
+          </FlexContainer>
         )}
 
         {!testItem && previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
-          <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
+          <CorrectAnswerBox>
+            {item.isUnits && item.showDropdown
+              ? item.validation.valid_response.value[0].value.search("=") === -1
+                ? item.validation.valid_response.value[0].value + correctUnit
+                : item.validation.valid_response.value[0].value.replace(/=/gm, `${correctUnit}=`)
+              : item.validation.valid_response.value[0].value}
+          </CorrectAnswerBox>
         )}
         {!testItem && hasAltAnswers && previewType === SHOW && (
           <CorrectAnswerBox altAnswers>
-            {item.validation.alt_responses.map(ans => ans.value[0].value).join(", ")}
+            {item.validation.alt_responses
+              .map(ans => {
+                if (item.isUnits && item.showDropdown) {
+                  const altUnit = !ans.value[0].options.unit ? "" : ans.value[0].options.unit;
+                  return ans.value[0].value.search("=") === -1
+                    ? ans.value[0].value + altUnit
+                    : ans.value[0].value.replace(/=/gm, `${altUnit}=`);
+                }
+                return ans.value[0].value;
+              })
+              .join(", ")}
           </CorrectAnswerBox>
         )}
       </div>
@@ -257,13 +322,13 @@ class MathFormulaPreview extends Component {
 export default withTheme(MathFormulaPreview);
 const MathInputSpan = styled.div`
   align-items: center;
-  min-width: 80px;
+  min-width: ${({ width }) => (width ? "unset" : "80px")};
   min-height: 42px;
   display: inline-flex;
-  width: 100%;
-  padding-right: 40px;
+  width: ${({ width }) => width || "100%"};
+  padding-right: ${({ width }) => (width ? "unset" : "40px")};
   position: relative;
   border-radius: 5px;
   border: 1px solid #dfdfdf;
-  padding: 5px 25px;
+  padding: ${({ width }) => (width ? "3px" : "5px 25px")};
 `;

@@ -9,10 +9,11 @@ import { compose } from "redux";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
+import { mobileWidth, smallDesktopWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
+import { updateStudentQuestionActivityScoreAction } from "../../author/sharedDucks/classResponses";
 import { getFeedbackResponseSelector, getStatus, getErrorResponse } from "../../author/src/selectors/feedback";
 
 const { TextArea } = Input;
@@ -35,18 +36,17 @@ class FeedbackRight extends Component {
 
   static getDerivedStateFromProps(
     {
-      successFullMessage,
-      waitingResponse,
-      errorMessage,
       widget: { activity }
     },
     preState
   ) {
     let newState = {};
     const { submitted, feedback, score, maxScore, changed } = preState || {};
-    if (!waitingResponse && successFullMessage && submitted) {
-      const [type, content] = successFullMessage ? ["success", successFullMessage] : ["error", errorMessage];
-      newState = showNotification(type, content);
+    if (submitted) {
+      newState = {
+        submitted: false,
+        changed: false
+      };
     }
 
     if (activity && isUndefined(changed)) {
@@ -65,13 +65,8 @@ class FeedbackRight extends Component {
     return newState;
   }
 
-  componentDidUpdate() {
-    //this.focusScoreInput();
-  }
-
-  onFeedbackSubmit() {
-    const { score, feedback, maxScore } = this.state;
-    console.log("score", { score }, "isNan", isNaN(score));
+  onScoreSubmit() {
+    const { score, maxScore } = this.state;
     if (isNaN(score)) {
       message.warn("Score should be a valid numerical");
       return;
@@ -81,6 +76,28 @@ class FeedbackRight extends Component {
       return;
     }
 
+    const {
+      user,
+      updateQuestionActivityScore,
+      widget: { id, activity = {} }
+    } = this.props;
+
+    const { testActivityId, groupId, testItemId } = activity;
+    if (!id || !user || !user.user || !testActivityId) {
+      return;
+    }
+
+    updateQuestionActivityScore({
+      score: _score,
+      testActivityId,
+      questionId: id,
+      itemId: testItemId,
+      groupId
+    });
+  }
+
+  onFeedbackSubmit() {
+    const { feedback } = this.state;
     const {
       user,
       loadFeedbackResponses,
@@ -93,7 +110,6 @@ class FeedbackRight extends Component {
     }
     loadFeedbackResponses({
       body: {
-        score: isNaN(_score) ? 0 : _score,
         feedback: {
           teacherId: user.user._id,
           teacherName: user.user.firstName,
@@ -114,6 +130,12 @@ class FeedbackRight extends Component {
     }
   };
 
+  submitScore = () => {
+    const { changed } = this.state;
+    if (changed) {
+      this.setState({ submitted: true }, this.onScoreSubmit);
+    }
+  };
   onChangeScore = e => {
     const value = e.target.value;
     if (!window.isNaN(value)) {
@@ -185,7 +207,7 @@ class FeedbackRight extends Component {
             <ScoreInput
               data-cy="scoreInput"
               onChange={this.onChangeScore}
-              onBlur={this.preCheckSubmit}
+              onBlur={this.submitScore}
               value={
                 activity && activity.graded === false && activity.score === 0 && !score ? "" : adaptiveRound(score)
               }
@@ -242,12 +264,12 @@ const enhance = compose(
   connect(
     state => ({
       user: getUserSelector(state),
-      successFullMessage: getFeedbackResponseSelector(state),
       waitingResponse: getStatus(state),
       errorMessage: getErrorResponse(state)
     }),
     {
-      loadFeedbackResponses: receiveFeedbackResponseAction
+      loadFeedbackResponses: receiveFeedbackResponseAction,
+      updateQuestionActivityScore: updateStudentQuestionActivityScoreAction
     }
   )
 );
@@ -275,6 +297,10 @@ const StyledCardTwo = styled(Card)`
     .ant-input-disabled {
       padding: 4px 22px;
     }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    max-width: 250px;
   }
   @media (max-width: ${mobileWidth}) {
     margin-left: 0px;

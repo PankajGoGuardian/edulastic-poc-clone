@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, Select, Input, Dropdown } from "antd";
+import { Button, Select, Input, Dropdown, Table } from "antd";
 
 const { Search } = Input;
 
@@ -33,8 +33,18 @@ export const StyledFilterSelect = styled(Select)`
 export const StyledAddFilterButton = styled(Button)`
   margin-left: 20px;
 `;
+export const StyledTable = styled(Table)`
+  .ant-table-row {
+    &: hover {
+      a {
+        visibility: visible;
+      }
+    }
+  }
+`;
 
 export const StyledTableButton = styled.a`
+  visibility: hidden;
   margin-right: 20px;
   font-size: 20px;
 `;

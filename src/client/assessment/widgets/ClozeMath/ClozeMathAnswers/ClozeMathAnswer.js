@@ -23,6 +23,10 @@ const AnswerContainer = styled.div`
     .ant-collapse-content {
       margin-top: 8px;
     }
+
+    .input__absolute__keyboard {
+      position: relative;
+    }
   }
 `;
 class ClozeMathAnswer extends Component {

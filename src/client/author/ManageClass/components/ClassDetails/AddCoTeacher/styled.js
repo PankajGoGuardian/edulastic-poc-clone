@@ -1,19 +1,18 @@
 import styled from "styled-components";
-import { Modal, Button } from "antd";
-import { lightGrey3, linkColor } from "@edulastic/colors";
+import { Button } from "antd";
+import { linkColor } from "@edulastic/colors";
+import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
 
-export const StyledModal = styled(Modal)`
-  .ant-modal-content,
-  .ant-modal-header {
-    background-color: ${lightGrey3};
+export const StyledModal = styled(ConfirmationModal)`
+.ant-modal-content
+  .ant-modal-body {
+    min-height: 150px;
+    .ant-select {
+      margin-top: 10px;
+      min-width: 100%;
+    }
   }
-  .ant-modal-footer {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .ant-select {
-    min-width: 100%;
-  }
+}
 `;
 
 export const ActionButton = styled(Button)`

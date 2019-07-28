@@ -4,6 +4,7 @@ import { cloneDeep, isEqual } from "lodash";
 
 import HorizontalLines from "./components/HorizontalLines";
 import ArrowPair from "./components/ArrowPair";
+import ValueLabel from "./components/ValueLabel";
 import withGrid from "./HOC/withGrid";
 import {
   convertPxToUnit,
@@ -15,7 +16,17 @@ import {
 import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
 
-const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
+const BarChart = ({
+  data,
+  previewTab,
+  saveAnswer,
+  gridParams,
+  view,
+  correct,
+  disableResponse,
+  toggleBarDragging,
+  checkAnnotationLeave
+}) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
@@ -48,6 +59,8 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
           [active].split(",")[index]
       : null;
 
+  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+
   const save = () => {
     if (cursorY === null) {
       return;
@@ -57,6 +70,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
     setInitY(null);
     setActive(null);
     setIsMouseDown(false);
+    toggleBarDragging(false);
     saveAnswer(localData);
   };
 
@@ -75,6 +89,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
     setActiveIndex(index);
     setInitY(localData[index].y);
     setIsMouseDown(true);
+    toggleBarDragging(true);
   };
 
   const onMouseUp = () => {
@@ -89,7 +104,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
 
   return (
     <svg
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width}
       height={height + heightAddition + 20}
       onMouseMove={onMouseMove}
@@ -120,7 +135,10 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
         gridParams={gridParams}
         correct={correct}
       />
+
       <ArrowPair getActivePoint={getActivePoint} />
+
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
     </svg>
   );
 };

@@ -11,25 +11,12 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 import { updateVariables } from "../../utils/variables";
 
 class ComposeQuestion extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.orderlist.composeQuestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, t, setQuestionData } = this.props;
+    const { item, t, setQuestionData, fillSections, cleanSections } = this.props;
 
     const handleQuestionChange = value => {
       const newData = cloneDeep(item);
@@ -41,11 +28,16 @@ class ComposeQuestion extends Component {
     if (!item) return null;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.orderlist.composeQuestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
 
         <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} border="border" />
-      </Widget>
+      </Question>
     );
   }
 }

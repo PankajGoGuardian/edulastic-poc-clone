@@ -6,5 +6,6 @@ export const saveScratchPadAction = payload => ({
 });
 
 export const loadScratchPadAction = payload => ({
-  type: LOAD_SCRATCH_PAD
+  type: LOAD_SCRATCH_PAD,
+  payload
 });

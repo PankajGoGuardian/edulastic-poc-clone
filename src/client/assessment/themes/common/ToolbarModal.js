@@ -1,14 +1,12 @@
 import React from "react";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button, Modal } from "antd";
-import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
 class ToolbarModal extends React.Component {
   checkAnswer = () => {
-    const { onClose, checkAnswerEvaluation } = this.props;
-    checkAnswerEvaluation();
+    const { onClose, checkanswer } = this.props;
+    checkanswer();
     onClose();
   };
 
@@ -85,10 +83,7 @@ ToolbarModal.propTypes = {
   checkanswer: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { checkAnswerEvaluation }
-)(ToolbarModal);
+export default ToolbarModal;
 
 const Container = styled.div`
   display: flex;

@@ -8,7 +8,7 @@ export const CreateClassButton = styled(Button)`
   border: 2px solid ${lightBlue} !important;
   border-radius: 50px;
   color: ${lightBlue};
-  width: 140px;
+  width: 160px;
   &:hover {
     background: ${lightBlue};
     color: ${white};

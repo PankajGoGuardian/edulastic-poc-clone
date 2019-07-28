@@ -83,7 +83,7 @@ const OrderList = ({
   }, [item, userAnswer]);
 
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
-  const styleType = get(item, "ui_style.type", "list");
+  const styleType = get(item, "ui_style.type", "button");
   const axis = styleType === "inline" ? "x" : "y";
   const columns = styleType === "inline" ? 3 : 1;
 
@@ -162,6 +162,7 @@ const OrderList = ({
       onSortEnd={handleCorrectSortEnd}
       useDragHandle
       columns={columns}
+      styleType={styleType}
       points={
         correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }
@@ -262,6 +263,7 @@ const OrderList = ({
               previewIndexesList={userAnswer}
               evaluation={evaluation || (item && item.activity ? item.activity.evaluation : evaluation)}
               listStyle={{ fontSize }}
+              styleType={styleType}
               axis={axis}
               columns={columns}
             />
@@ -269,20 +271,19 @@ const OrderList = ({
 
           {previewTab === SHOW || isReviewTab ? (
             <Fragment>
-              {!isReviewTab ? (
-                <OrderListReport
-                  onSortEnd={onSortPreviewEnd}
-                  questionsList={itemForPreview.list}
-                  previewIndexesList={userAnswer}
-                  evaluation={evaluationFromAnswers}
-                  validation={itemForPreview.validation}
-                  list={itemForPreview.list}
-                  listStyle={{ fontSize }}
-                  disableResponse={disableResponse}
-                  axis={axis}
-                  columns={columns}
-                />
-              ) : null}
+              <OrderListReport
+                onSortEnd={onSortPreviewEnd}
+                questionsList={itemForPreview.list}
+                previewIndexesList={userAnswer}
+                evaluation={evaluationFromAnswers}
+                validation={itemForPreview.validation}
+                list={itemForPreview.list}
+                styleType={styleType}
+                listStyle={{ fontSize }}
+                disableResponse={disableResponse}
+                axis={axis}
+                columns={columns}
+              />
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
                 {correctAnswers.map((correctAnswer, i) => (
                   <CorrectAnswerItem theme={theme}>
@@ -327,6 +328,7 @@ const OrderList = ({
               questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
               smallSize={smallSize}
               listStyle={{ fontSize }}
+              styleType={styleType}
               axis={axis}
               columns={columns}
               disableResponse={disableResponse}

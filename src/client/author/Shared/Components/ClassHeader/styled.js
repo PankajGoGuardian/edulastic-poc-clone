@@ -1,6 +1,6 @@
 import { Popconfirm, Switch, Button, Menu } from "antd";
 import styled, { css } from "styled-components";
-import { white, mobileWidth, themeColor, fadedBlue } from "@edulastic/colors";
+import { white, mobileWidth, smallDesktopWidth, extraDesktopWidth, themeColor, fadedBlue } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { themes } from "../../../../student/themes";
 import { StyledTable as Table } from "../../../Reports/common/styled";
@@ -11,6 +11,9 @@ export const RightSideButtonWrapper = styled.div`
   height: 45px;
   display: flex;
   margin-left: auto;
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 36px;
+  }
 `;
 
 export const Container = styled.div`
@@ -23,6 +26,9 @@ export const Container = styled.div`
   padding: 0px 30px;
   &:hover {
     background-color: darken(${props => props.theme.header.headerBgColor}, 10%);
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 60px;
   }
   @media (max-width: ${mobileWidth}) {
     height: 150px;
@@ -38,6 +44,10 @@ export const StyledTitle = styled.h1`
   font-weight: bold;
   margin: 20px 0;
   padding: 0;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 18px;
+    margin: 0px;
+  }
   @media (max-width: ${mobileWidth}) {
     margin: 5px 0;
   }
@@ -50,7 +60,14 @@ export const StyledLink = styled(Link)`
 `;
 
 export const StyledParaFirst = styled.p`
-  /* font-size: 0.9em; */
+  max-width: 130px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 18px;
+    max-width: 160px;
+  }
 `;
 
 export const LinkLabel = styled.div`
@@ -62,6 +79,17 @@ export const LinkLabel = styled.div`
 export const StyledParaSecond = styled.p`
   font-size: 13px;
   font-weight: 600;
+  div {
+    white-space: nowrap;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 10px;
+    white-space: nowrap;
+    div {
+      display: inline-block;
+      margin-left: 3px;
+    }
+  }
 `;
 
 export const StyledParaThird = styled.p`
@@ -94,6 +122,9 @@ export const StyledTabs = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media (max-width: ${smallDesktopWidth}) {
+    min-width: 480px;
+  }
 `;
 
 export const StyledAnchor = styled.div`
@@ -112,16 +143,24 @@ export const StyledAnchor = styled.div`
   background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
   -webkit-transition: background-color 0.3s;
   transition: background-color 0.3s;
-
-  @media (max-width: 1450px) {
-    font-size: 0.6em;
-  }
-  :hover {
+  &:hover {
     color: ${props => (props.isActive ? white : fadedBlue)};
     background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
   }
   a {
     color: ${props => (props.isActive ? white : fadedBlue)};
+  }
+
+  @media (max-width: ${extraDesktopWidth}) {
+    font-size: 10px;
+  }
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 0px;
+    margin: 0px 2px;
+    height: 36px;
+    svg {
+      display: none;
+    }
   }
 `;
 
@@ -225,9 +264,14 @@ export const HeaderMenuIcon = styled(Button)`
 `;
 export const OpenCloseButton = styled(Button)`
   ${commonButtonsCSS}
-  margin-right: 10px;
-  padding: 10px 40px;
+  margin-right: 5px;
+  padding: 10px 30px;
   font-size: 12px;
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 10px 15px;
+    font-size: 10px;
+    margin-right: 2px;
+  }
 `;
 
 export const MenuItems = styled(Menu.Item)`

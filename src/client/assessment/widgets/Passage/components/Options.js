@@ -122,6 +122,7 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
               placeholder={t("component.passage.enterPassageContentHere")}
               onChange={value => handleChange("content", value)}
               value={item.content}
+              additionalToolbarOptions={["paragraphNumber"]}
             />
           </Col>
         )}

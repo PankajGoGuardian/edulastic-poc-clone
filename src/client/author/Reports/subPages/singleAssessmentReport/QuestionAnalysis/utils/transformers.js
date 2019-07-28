@@ -24,12 +24,15 @@ export const getChartData = (rawData = []) => {
     const districtAvg = Math.round(groupedData[item][0].districtAvgPerf);
 
     const avgTime = _item.totalTimeSpent / groupedData[item].length;
+    const avgTimeSecs = Math.floor(avgTime / 1000);
     const avgTimeMins = getFormattedTimeInMins(avgTime);
+
     return {
       ...groupedData[item][0],
       avgPerformance,
       avgIncorrect,
       avgTime: Math.floor(avgTime),
+      avgTimeSecs,
       avgTimeMins,
       districtAvg,
       fill: getHSLFromRange1(avgPerformance)

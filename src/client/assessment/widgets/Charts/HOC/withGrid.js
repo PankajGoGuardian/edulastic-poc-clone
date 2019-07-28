@@ -18,7 +18,7 @@ const withGrid = WrappedComponent => {
     const padding = getPadding(yAxis);
 
     return (
-      <FlexContainer justifyContent="flex-start" style={{ background: theme.widgets.chart.bgColor }}>
+      <FlexContainer justifyContent="flex-start" style={{ background: theme.widgets.chart.bgColor, overflowX: "auto" }}>
         <FlexContainer style={{ transform: "rotate(-90deg)", width: 40, whiteSpace: "nowrap", marginTop: margin }}>
           {yAxisLabel}
         </FlexContainer>

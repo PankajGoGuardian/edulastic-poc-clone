@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { isObject } from "lodash";
+import { isObject, get } from "lodash";
 import { MathKeyboard } from "@edulastic/common";
 import CustomGroup from "./CustomGroup";
 
@@ -25,19 +25,32 @@ export default class KeyPad extends React.Component {
     onChange("symbols", data);
   };
 
-  keyboardButtons = symbol =>
-    symbol === "all"
-      ? MathKeyboard.KEYBOARD_BUTTONS_ALL
-      : MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
-          if (isObject(symbol) && symbol.value.includes(btn.handler)) {
-            btn.types.push(symbol.label);
-          }
+  keyboardButtons = symbol => {
+    const { item } = this.props;
+    const customKeys = get(item, "custom_keys", []);
 
-          return btn;
-        }).filter(btn => btn.types.includes(symbol));
+    const customKeysBtns = customKeys.map(key => ({
+      handler: key,
+      label: key,
+      types: [isObject(symbol) ? symbol.label : symbol],
+      command: "write"
+    }));
+
+    const defaultKeys =
+      symbol === "all"
+        ? MathKeyboard.KEYBOARD_BUTTONS_ALL
+        : MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
+            if (isObject(symbol) && symbol.value.includes(btn.handler)) {
+              btn.types.push(symbol.label);
+            }
+
+            return btn;
+          }).filter(btn => btn.types.includes(isObject(symbol) ? symbol.label : symbol));
+    return customKeysBtns.concat(defaultKeys);
+  };
 
   render() {
-    const { symbol, buttonStyle } = this.props;
+    const { symbol, buttonStyle, item } = this.props;
     let btns = this.keyboardButtons(symbol);
 
     let cols = btns.length / 4;
@@ -52,8 +65,16 @@ export default class KeyPad extends React.Component {
       btns = btns.concat(new Array(numOfBtns - btns.length).fill({ types: [symbol], label: "" }));
     }
     if (isObject(symbol)) {
+      const customKeys = get(item, "custom_keys", []);
+
       return (
-        <CustomGroup onRemove={() => null} onChange={this.handleChange} value={symbol} buttonStyle={buttonStyle} />
+        <CustomGroup
+          onRemove={() => null}
+          onChange={this.handleChange}
+          value={symbol}
+          buttonStyle={buttonStyle}
+          customKeys={customKeys}
+        />
       );
     }
 

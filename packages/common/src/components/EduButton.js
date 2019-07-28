@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { white, themeColorLight } from "@edulastic/colors";
+import { white, themeColorLight, themeColor } from "@edulastic/colors";
 
 const EduButton = ({ children, ...restProps }) => <StyledButton {...restProps}>{children}</StyledButton>;
 
@@ -13,7 +13,7 @@ const StyledButton = styled(Button)`
       fontWeight: 600,
       fontSize: "11px",
       textTransform: "uppercase",
-      color: "#00AD50"
+      color: themeColor
     };
     if (props.type === "secondary") {
       style = {
@@ -33,11 +33,11 @@ const StyledButton = styled(Button)`
       style = {
         ...style,
         ...{
-          background: "#00AD50",
+          background: themeColor,
           color: white,
           border: "none",
           ":hover, :focus": {
-            background: "#00AD50",
+            background: themeColor,
             color: white
           }
         }
@@ -48,8 +48,8 @@ const StyledButton = styled(Button)`
   }};
   &:hover,
   &:focus {
-    border-color: #00ad50;
-    outline-color: #00ad50;
-    color: ${({ type }) => (type === "primary" ? white : "#00ad50")};
+    border-color: ${themeColor};
+    outline-color: ${themeColor};
+    color: ${({ type }) => (type === "primary" ? white : themeColor)};
   }
 `;

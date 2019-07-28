@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { get, head } from "lodash";
+import { get, head, capitalize } from "lodash";
 import { connect } from "react-redux";
 import {
   getReportsPeerProgressAnalysis,
@@ -10,12 +10,13 @@ import { getUserRole } from "../../../../../student/Login/ducks";
 
 import { Placeholder } from "../../../common/components/loader";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
-import { parseTrendData, getCompareByOptions } from "../common/utils/trend";
+import { parseTrendData, getCompareByOptions, compareByMap } from "../common/utils/trend";
 
 import dropDownData from "./static/json/dropDownData.json";
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
 import Filters from "./components/table/Filters";
+import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -76,14 +77,19 @@ const PeerProgressAnalysis = ({
     );
   }
 
+  const studentColumn = {
+    key: "studentCount",
+    title: "Student#",
+    dataIndex: "studentCount"
+  };
+
   return (
     <>
-      <TrendStats trendCount={trendCount} selectedTrend={selectedTrend} onTrendSelect={onTrendSelect} />
-      <TrendTable
-        data={parsedData}
-        testData={testData}
-        compareBy={compareBy}
-        analyseBy={analyseBy}
+      <TrendStats
+        heading="Distribution of student subgroup as per progress trend ?"
+        trendCount={trendCount}
+        selectedTrend={selectedTrend}
+        onTrendSelect={onTrendSelect}
         renderFilters={() => (
           <Filters
             compareByOptions={compareByData}
@@ -92,6 +98,26 @@ const PeerProgressAnalysis = ({
             analyseBy={analyseBy}
           />
         )}
+      />
+      <TrendTable
+        heading="How well are student sub-groups progressing ?"
+        data={parsedData}
+        testData={testData}
+        compareBy={compareBy}
+        analyseBy={analyseBy}
+        rawMetric={metricInfo}
+        customColumns={[studentColumn]}
+        toolTipContent={(record, columnValue) => {
+          return (
+            <>
+              <TableTooltipRow title={"Student Count: "} value={record.studentCount} />
+              <TableTooltipRow
+                title={`${capitalize(compareBy.title)} : `}
+                value={record[compareByMap[compareBy.key]]}
+              />
+            </>
+          );
+        }}
       />
     </>
   );

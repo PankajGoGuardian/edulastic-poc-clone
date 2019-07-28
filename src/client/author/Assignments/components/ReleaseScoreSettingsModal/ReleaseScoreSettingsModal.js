@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Modal, Button, Radio, Row } from "antd";
 import { test } from "@edulastic/constants";
 import { getUserFeatures } from "../../../../student/Login/ducks";
+import { ReleaseGradesModal } from "./styled";
 
 const { releaseGradeTypes } = test;
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -19,11 +20,12 @@ const ReleaseScoreSettingsModal = ({
     _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]];
   }
   return (
-    <Modal
+    <ReleaseGradesModal
       visible={showReleaseGradeSettings}
       title="Release Grades"
       onOk={onCloseReleaseScoreSettings}
       onCancel={onCloseReleaseScoreSettings}
+      textAlign="left"
       footer={[
         <Button key="back" onClick={onCloseReleaseScoreSettings}>
           Cancel
@@ -46,7 +48,7 @@ const ReleaseScoreSettingsModal = ({
           </Row>
         ))}
       </Radio.Group>
-    </Modal>
+    </ReleaseGradesModal>
   );
 };
 

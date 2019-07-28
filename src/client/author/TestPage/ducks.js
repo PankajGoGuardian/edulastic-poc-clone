@@ -84,9 +84,15 @@ export const receiveTestByIdError = error => ({
   payload: { error }
 });
 
-export const createTestAction = (data, toReview = false) => ({
+/**
+ * To create a new test from the data passed.
+ * @param {object} data
+ * @param {boolean} toReview
+ * @param {boolean} isCartTest
+ */
+export const createTestAction = (data, toReview = false, isCartTest = false) => ({
   type: CREATE_TEST_REQUEST,
-  payload: { data, toReview }
+  payload: { data, toReview, isCartTest }
 });
 
 export const createTestSuccessAction = entity => ({
@@ -341,8 +347,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: {
-          ...state.entity,
-          testItems: payload
+          ...payload
         }
       };
     default:
@@ -401,7 +406,14 @@ function* createTestSaga({ payload }) {
     if (!requirePassword) {
       delete payload.data.assignmentPassword;
     }
-    const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
+
+    const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate", "testItems"]);
+    //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
+    if (!payload.isCartTest) {
+      dataToSend.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
+    } else {
+      dataToSend.testItems = payload.data.testItems;
+    }
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
     yield put({
@@ -454,6 +466,7 @@ function* updateTestSaga({ payload }) {
       yield call(message.error, "Please add a valid password.");
       return;
     }
+    payload.data.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;

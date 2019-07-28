@@ -16,7 +16,7 @@ const AssignmentButton = ({ startDate, t, startTest, attempted, resume, isPaused
       </span>
       <span data-cy="lockAssignment">
         {t("common.lockAssignment")}
-        {" (Paused)"}
+        {isPaused ? " (Paused)" : ""}
       </span>
     </NotAvailableButton>
   ) : (

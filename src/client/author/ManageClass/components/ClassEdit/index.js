@@ -10,10 +10,10 @@ import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
-import { updateClassAction, fetchStudentsByIdAction, updateClassStandardsAction } from "../../ducks";
+import { updateClassAction, fetchStudentsByIdAction, setSubjectAction } from "../../ducks";
 
 // selectors
-import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
+import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
 import { receiveSearchCourseAction } from "../../../Courses/ducks";
 
@@ -130,16 +130,19 @@ class ClassEdit extends React.Component {
     });
   };
 
-  setStandards = standardSets => {
-    const { form, updateClassStandards } = this.props;
-    form.setFieldsValue({
-      standardSets
-    });
-    updateClassStandards(standardSets);
-  };
-
   render() {
-    const { curriculums, form, courseList, isSearching, selctedClass, updating, classLoaded } = this.props;
+    const {
+      curriculums,
+      form,
+      courseList,
+      isSearching,
+      selctedClass,
+      updating,
+      classLoaded,
+      filteredCurriculums,
+      setSubject,
+      selectedSubject
+    } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
 
     const {
@@ -149,7 +152,7 @@ class ClassEdit extends React.Component {
       name,
       startDate,
       endDate,
-      grade,
+      grades,
       subject,
       standardSets,
       course,
@@ -178,7 +181,7 @@ class ClassEdit extends React.Component {
                   defaultName={name}
                   defaultStartDate={startDate}
                   defaultEndDate={endDate}
-                  defaultGrade={grade}
+                  defaultGrade={grades}
                   defaultSubject={subject}
                   defaultStandardSets={standardSets}
                   defaultCourse={course}
@@ -190,7 +193,9 @@ class ClassEdit extends React.Component {
                   searchCourse={this.searchCourse}
                   isSearching={isSearching}
                   clearStandards={this.clearStandards}
-                  setStandards={this.setStandards}
+                  filteredCurriculums={filteredCurriculums}
+                  setSubject={setSubject}
+                  subject={selectedSubject}
                 />
               </RightContainer>
             </FlexContainer>
@@ -207,22 +212,27 @@ const enhance = compose(
   withNamespaces("classEdit"),
   withRouter,
   connect(
-    state => ({
-      curriculums: getCurriculumsListSelector(state),
-      courseList: get(state, "coursesReducer.searchResult"),
-      isSearching: get(state, "coursesReducer.searching"),
-      userOrgData: getUserOrgData(state),
-      userId: get(state, "user.user._id"),
-      updating: get(state, "manageClass.updating"),
-      selctedClass: get(state, "manageClass.entity", {}),
-      classLoaded: get(state, "manageClass.classLoaded")
-    }),
+    state => {
+      const selectedSubject = get(state, "manageClass.selectedSubject", "");
+      return {
+        curriculums: getCurriculumsListSelector(state),
+        courseList: get(state, "coursesReducer.searchResult"),
+        isSearching: get(state, "coursesReducer.searching"),
+        userOrgData: getUserOrgData(state),
+        userId: get(state, "user.user._id"),
+        updating: get(state, "manageClass.updating"),
+        selctedClass: get(state, "manageClass.entity", {}),
+        classLoaded: get(state, "manageClass.classLoaded"),
+        filteredCurriculums: getFormattedCurriculumsSelector(state, { subject: selectedSubject }),
+        selectedSubject
+      };
+    },
     {
       getCurriculums: getDictCurriculumsAction,
       updateClass: updateClassAction,
-      updateClassStandards: updateClassStandardsAction,
       searchCourseList: receiveSearchCourseAction,
-      loadStudents: fetchStudentsByIdAction
+      loadStudents: fetchStudentsByIdAction,
+      setSubject: setSubjectAction
     }
   )
 );

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { isEqual, clamp } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { response as Dimensions } from "@edulastic/constants";
+
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -13,9 +14,7 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
-import { Widget } from "../../../../styled/Widget";
-
-import { response as Dimensions } from "@edulastic/constants";
+import Question from "../../../../components/Question";
 
 class Layout extends Component {
   state = {
@@ -24,29 +23,6 @@ class Layout extends Component {
   };
 
   globalHeight = React.createRef();
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   handleInputChange = e => {
     this.setState({
@@ -82,7 +58,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, advancedAreOpen, t } = this.props;
+    const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -181,7 +157,13 @@ class Layout extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
         <Row>
           {/* <Col md={6}>
@@ -327,7 +309,7 @@ class Layout extends Component {
             <AddNewChoiceBtn onClick={() => addIndividual()}>{t("component.options.add")}</AddNewChoiceBtn>
           </Col>
         </Row>
-      </Widget>
+      </Question>
     );
   }
 }

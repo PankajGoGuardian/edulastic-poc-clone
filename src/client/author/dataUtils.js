@@ -1,5 +1,8 @@
 import { get } from "lodash";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { questionType } from "@edulastic/constants";
+
+const { PASSAGE } = questionType;
 
 export const getTestAuthorName = item => {
   const { createdBy = {}, collectionName = "", authors = [] } = item;
@@ -42,6 +45,10 @@ export const getPlaylistAuthorName = item => {
 export const getQuestionType = item => {
   const questions = get(item, ["data", "questions"], []);
   const resources = get(item, ["data", "resources"], []);
+  const hasPassage = resources.some(item => item.type === PASSAGE);
+  if (hasPassage) {
+    return PASSAGE.toUpperCase();
+  }
   if (questions.length > 1 || resources.length) {
     return "MULTIPART";
   }

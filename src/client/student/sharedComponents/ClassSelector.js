@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { Select } from "antd";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -10,6 +10,23 @@ import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
 
 const ClassSelector = ({ t, classList, currentGroup, changeClass }) => {
   const [isShown, setShown] = useState(false);
+
+  useEffect(() => {
+    if (currentGroup === "" && classList.length === 1) {
+      //all classes. but really only one classes available
+      changeClass(classList[0]._id);
+    }
+    if (currentGroup != "") {
+      //not all classes
+      const currentGroupInList = classList.find(x => x._id === currentGroup);
+      if (!currentGroupInList) {
+        //currently selected class is not in the list. so selecting first available class
+        if (classList.length > 0) {
+          changeClass(classList[0]._id);
+        }
+      }
+    }
+  }, [classList, currentGroup]);
 
   return (
     <Fragment>

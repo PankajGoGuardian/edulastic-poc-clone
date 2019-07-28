@@ -62,6 +62,11 @@ export const getInterestedCurriculumsSelector = createSelector(
   state => _get(state, "interestedCurriculums", [])
 );
 
+export const getShowAllCurriculumsSelector = createSelector(
+  getOrgDataSelector,
+  state => _get(state, "showAllStandards", true)
+);
+
 export const getInterestedGradesSelector = createSelector(
   getOrgDataSelector,
   state => _get(state, "defaultGrades", [])

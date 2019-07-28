@@ -170,6 +170,9 @@ export default createReducer(initialState, {
   [DELETE_QUESTION]: deleteQuestion,
   [SET_QUESTION_SCORE]: (state, { payload }) => {
     const { qid, score } = payload;
+    if (!(score > 0)) {
+      return state;
+    }
     set(state.byId[qid], "validation.valid_response.score", score);
   },
   [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: (state, { payload }) => {

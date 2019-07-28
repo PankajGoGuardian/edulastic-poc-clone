@@ -31,7 +31,8 @@ const TableRow = ({
   theme,
   isResizable,
   item,
-  disableResponse
+  disableResponse,
+  isReviewTab
 }) => {
   const styles = {
     columnContainerStyle: {
@@ -86,7 +87,7 @@ const TableRow = ({
                 <DragItem
                   isTransparent={isTransparent}
                   dragHandle={dragHandle}
-                  valid={validArray && validArray[validIndex]}
+                  valid={isReviewTab ? true : validArray && validArray[validIndex]}
                   preview={preview}
                   key={answerIndex}
                   renderIndex={possible_responses.indexOf(answerValue)}

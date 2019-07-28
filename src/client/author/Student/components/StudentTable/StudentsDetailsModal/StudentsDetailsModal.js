@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 
 import { Row, Col, Button, Modal, Table } from "antd";
 import { StyledStatusIcon, StatusDiv } from "./styled";
@@ -11,9 +11,16 @@ class StudentsDetailsModal extends React.Component {
     super(props);
     this.columns = [
       {
+        title: "Name",
+        dataIndex: "fullName",
+        width: "50%",
+        render: fullName => <div>{isEmpty(fullName.trim()) ? "-" : fullName}</div>
+      },
+      {
         title: "Username",
-        dataIndex: "userName",
-        width: "50%"
+        dataIndex: "username",
+        width: "50%",
+        render: username => <div>{username}</div>
       },
       {
         title: "Status",
@@ -55,6 +62,13 @@ class StudentsDetailsModal extends React.Component {
 
   render() {
     const { dataSource, modalVisible } = this.props;
+    const modifiedDataSource = dataSource.map(item => {
+      const obj = {
+        ...item,
+        fullName: item.firstName + " " + item.lastName
+      };
+      return obj;
+    });
     return (
       <Modal
         visible={modalVisible}
@@ -71,7 +85,7 @@ class StudentsDetailsModal extends React.Component {
           <Col span={24}>
             <Table
               rowKey={record => record.userName}
-              dataSource={dataSource}
+              dataSource={modifiedDataSource}
               pagination={false}
               columns={this.columns}
             />

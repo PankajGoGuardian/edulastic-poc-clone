@@ -13,7 +13,11 @@ export const StyledTableContainer = styled.div`
     border: 1px solid #d9d9d9;
   }
 `;
-
+export const DeleteTermModalFooterDiv = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+`;
 export const StyledButton = styled.a`
   margin-right: 20px;
   font-size: 20px;

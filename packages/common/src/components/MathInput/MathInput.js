@@ -168,11 +168,12 @@ class MathInput extends React.PureComponent {
       numberPad,
       fullWidth,
       className,
-      restrictKeys
+      restrictKeys,
+      customKeys
     } = this.props;
 
     return (
-      <MathInputStyles fullWidth={fullWidth} className={className}>
+      <MathInputStyles fullWidth={fullWidth} width={style.width} className={className}>
         <div
           ref={this.containerRef}
           onFocus={() => {
@@ -190,6 +191,7 @@ class MathInput extends React.PureComponent {
                 symbols={symbols}
                 numberPad={numberPad}
                 restrictKeys={restrictKeys}
+                customKeys={customKeys}
                 showResponse={showResponse}
                 showDropdown={showDropdown}
                 onChangeKeypad={onChangeKeypad}
@@ -220,7 +222,8 @@ MathInput.propTypes = {
   onKeyDown: PropTypes.func,
   fullWidth: PropTypes.bool,
   className: PropTypes.string,
-  restrictKeys: PropTypes.array
+  restrictKeys: PropTypes.array,
+  customKeys: PropTypes.array
 };
 
 MathInput.defaultProps = {
@@ -230,6 +233,7 @@ MathInput.defaultProps = {
   showDropdown: false,
   showResponse: false,
   style: {},
+  customKeys: [],
   restrictKeys: [],
   onInnerFieldClick: () => {},
   onFocus: () => {},

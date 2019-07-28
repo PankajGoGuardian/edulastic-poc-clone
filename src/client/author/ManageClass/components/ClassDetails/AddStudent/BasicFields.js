@@ -19,6 +19,8 @@ const BasicFields = ({
   updateStudent,
   setFounduser,
   modalClose,
+  showClassCodeField,
+  fetchClassDetailsUsingCode,
   ...restProps
 }) => {
   if (!isEmpty(stds[0])) {
@@ -96,6 +98,16 @@ const BasicFields = ({
 
   return (
     <>
+      {showClassCodeField && (
+        <Field name="ClassCode">
+          <legend>Class Code</legend>
+          <Form.Item>
+            {getFieldDecorator("code", {
+              rules: [{ required: true, message: "Please input the destination class" }]
+            })(<Input onBlur={evt => fetchClassDetailsUsingCode(evt.target.value)} placeholder="Enter Class Code" />)}
+          </Form.Item>
+        </Field>
+      )}
       {!isEdit ? (
         <Field name="email">
           <legend>Username/Email</legend>
@@ -117,7 +129,12 @@ const BasicFields = ({
           </Form.Item>
         </Field>
       )}
-
+      {showClassCodeField && (
+        <Field name="role">
+          <legend>Role</legend>
+          <Form.Item>{getFieldDecorator("role", { initialValue: "student" })(<Input disabled={true} />)}</Form.Item>
+        </Field>
+      )}
       {!isEdit && (
         <Field name="fullName">
           <legend>Name of User</legend>

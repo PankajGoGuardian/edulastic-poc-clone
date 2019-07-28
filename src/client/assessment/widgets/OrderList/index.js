@@ -84,7 +84,7 @@ const OrderList = ({
 
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
   const styleType = get(item, "ui_style.type", "button");
-  const axis = styleType === "inline" ? "x" : "y";
+  const axis = styleType === "inline" ? "xy" : "y";
   const columns = styleType === "inline" ? 3 : 1;
 
   const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {

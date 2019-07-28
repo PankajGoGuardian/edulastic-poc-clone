@@ -11,7 +11,7 @@ import {
 
 export const Wrapper = styled.div`
   min-height: 78vh;
-  margin: 24px 46px 16px;
+  margin: 16px 46px 16px;
   border-radius: 10px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   background-color: ${props => props.theme.assignment.cardContainerBgColor};
@@ -140,8 +140,10 @@ export const NoDataBox = styled.div`
 export const BreadcrumbWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-left: 46px;
-  margin-right: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: calc(100% - 92px);
 
   .ant-breadcrumb-link {
     color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
@@ -155,13 +157,12 @@ export const BreadcrumbWrapper = styled.div`
   }
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
-    margin-left: 44px;
-    margin-right: 44px;
+    max-width: calc(100% - 88px);
   }
 
   @media (max-width: ${largeDesktopWidth}) {
+    max-width: calc(100% - 50px);
     margin-left: 30px;
-    margin-right: 30px;
 
     .ant-breadcrumb-link {
       font-size: 9px;

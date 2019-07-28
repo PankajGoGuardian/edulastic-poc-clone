@@ -3,6 +3,7 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Layout, Spin } from "antd";
+import { largeDesktopWidth } from "@edulastic/colors";
 
 import useInterval from "@use-it/interval";
 import { useRealtimeV2 } from "@edulastic/common";
@@ -107,11 +108,11 @@ const Content = ({
   );
 
   const renderAssignments = () => (
-    <div>
+    <AssignmentWrapper>
       {assignments.map((item, index) => (
         <AssignmentCard key={index} data={item} currentGroup={currentGroup} type="assignment" />
       ))}
-    </div>
+    </AssignmentWrapper>
   );
 
   const showLoader = () => <Spin size="small" />;
@@ -167,4 +168,10 @@ Content.defaultProps = {
 
 const LayoutContent = styled(Layout.Content)`
   width: 100%;
+`;
+
+const AssignmentWrapper = styled.div`
+  @media (max-width: ${largeDesktopWidth}) {
+    margin-top: -3px;
+  }
 `;

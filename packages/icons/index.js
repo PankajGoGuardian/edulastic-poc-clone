@@ -138,6 +138,7 @@ export { default as IconDown } from "./src/IconDown";
 export { default as IconPlay } from "./src/IconPlay";
 export { default as IconPlayFilled } from "./src/IconPlayFilled";
 export { default as IconStop } from "./src/IconStop";
+export { default as IconAudioPause } from "./src/IconAudioPause";
 export { default as IconRulerPencil } from "./src/IconRulerPencil";
 export { default as IconManageDistrict } from "./src/IconManageDistrict";
 export { default as IconSaveNew } from "./src/IconSaveNew";

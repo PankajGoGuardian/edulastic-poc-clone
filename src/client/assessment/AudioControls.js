@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { Howl, Howler } from "howler";
-import { IconPlayFilled, IconPause, IconStop } from "@edulastic/icons";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import { themeColor, white } from "@edulastic/colors";
+import { IconPlayFilled, IconAudioPause, IconStop } from "@edulastic/icons";
+
 import { curentPlayerDetailsSelector } from "./selectors/test";
 import { setCurrentAudioDetailsAction } from "./actions/test";
+
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const ControlButtons = styled(Button)`
@@ -14,6 +17,16 @@ const ControlButtons = styled(Button)`
   padding: 12px;
   margin-right: 10px;
   transition: none;
+  background: ${themeColor};
+  &.ant-btn[disabled] {
+    background: ${themeColor};
+  }
+  &:hover,
+  &:focus,
+  &:active {
+    background: ${themeColor};
+  }
+
   i {
     position: absolute;
     left: 13px;
@@ -149,10 +162,14 @@ const AudioControls = ({
     <AudioButtonsWrapper>
       <div style={{ display: showAudioControls ? "none" : "block" }}>
         <ControlButtons onClick={handlePlayPauseAudio} loading={loading} title={playPauseToolTip}>
-          {currentPlayingDetails.qId === qId ? <IconPause /> : !loading && <IconPlayFilled />}
+          {currentPlayingDetails.qId === qId ? (
+            <IconAudioPause color={white} />
+          ) : (
+            !loading && <IconPlayFilled color={white} />
+          )}
         </ControlButtons>
         <ControlButtons onClick={handleStopAudio} disabled={currentPlayingDetails.qId !== qId} title={"Stop"}>
-          <IconStop />
+          <IconStop color={white} />
         </ControlButtons>
       </div>
     </AudioButtonsWrapper>

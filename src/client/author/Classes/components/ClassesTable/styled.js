@@ -29,7 +29,17 @@ export const StyledFilterSelect = styled(Select)`
     margin-left: 0;
   }
 `;
-
+export const StyledFilterDiv = styled.div`
+  display: flex;
+  background: whitesmoke;
+  justify-content: space-between;
+  padding: 1rem;
+  align-items: center;
+`;
+export const RightFilterDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
 export const StyledTable = styled(Table)`
   .ant-table-row {
     &: hover {

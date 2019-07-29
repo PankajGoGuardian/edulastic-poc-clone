@@ -23,7 +23,17 @@ export const StyledControlDiv = styled.div`
   margin-bottom: 20px;
   align-items: center;
 `;
-
+export const StyledFilterDiv = styled.div`
+  display: flex;
+  background: whitesmoke;
+  justify-content: space-between;
+  padding: 1rem;
+  align-items: center;
+`;
+export const RightFilterDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
 export const StyledFilterSelect = styled(Select)`
   width: 300px;
   margin-left: 20px;

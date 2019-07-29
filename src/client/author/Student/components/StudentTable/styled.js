@@ -53,10 +53,14 @@ export const StyledPagination = styled(Pagination)`
 export const StyledFilterDiv = styled.div`
   display: flex;
   background: whitesmoke;
+  justify-content: space-between;
   padding: 1rem;
   align-items: center;
 `;
-
+export const RightFilterDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
 export const StyledTableButton = styled.a`
   visibility: hidden;
   margin-right: 20px;

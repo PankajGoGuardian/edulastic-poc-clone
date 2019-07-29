@@ -15,7 +15,8 @@ import {
   StyledAddFilterButton,
   StyledSchoolSearch,
   StyledActionDropDown,
-  StyledFilterDiv
+  StyledFilterDiv,
+  RightFilterDiv
 } from "./styled";
 
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
@@ -477,26 +478,31 @@ class SchoolAdminTable extends Component {
     return (
       <StyledTableContainer>
         <StyledFilterDiv>
-          <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
-            + Add School Admin
-          </Button>
-          <StyledSchoolSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <Checkbox
-            checked={this.state.showActive}
-            onChange={this.onChangeShowActive}
-            disabled={!!filtersData.find(item => item.filtersColumn === "status")}
-          >
-            Show current users only
-          </Checkbox>
-          <StyledActionDropDown overlay={actionMenu}>
-            <Button>
-              Actions <Icon type="down" />
+          <div>
+            <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
+              + Add School Admin
             </Button>
-          </StyledActionDropDown>
+            <StyledSchoolSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              checked={this.state.showActive}
+              onChange={this.onChangeShowActive}
+              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+            >
+              Show current users only
+            </Checkbox>
+            <StyledActionDropDown overlay={actionMenu}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
         </StyledFilterDiv>
         <StyledControlDiv>
           {createSchoolAdminModalVisible && (

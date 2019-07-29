@@ -21,10 +21,16 @@ export const StyledTableContainer = styled.div`
 `;
 export const StyledFilterDiv = styled.div`
   display: flex;
+  justify-content: space-between;
   background: whitesmoke;
   padding: 1rem;
   align-items: center;
   margin-top: 10px;
+`;
+
+export const RightFilterDiv = styled.div`
+  display: flex;
+  align-items: center;
 `;
 export const StyledControlDiv = styled.div`
   display: flex;

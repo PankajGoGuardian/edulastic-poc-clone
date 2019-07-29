@@ -19,7 +19,8 @@ import {
   StyledSchoolSearch,
   StyledActionDropDown,
   StyledClassName,
-  StyledFilterDiv
+  StyledFilterDiv,
+  RightFilterDiv
 } from "./styled";
 
 import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
@@ -570,26 +571,31 @@ class StudentTable extends Component {
     return (
       <StyledTableContainer>
         <StyledFilterDiv>
-          <Button type="primary" onClick={this.showInviteStudentModal}>
-            + Add Multiple Students
-          </Button>
-          <StyledSchoolSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <Checkbox
-            checked={this.state.showActive}
-            onChange={this.onChangeShowActive}
-            disabled={!!filtersData.find(item => item.filtersColumn === "status")}
-          >
-            Show current users only
-          </Checkbox>
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
+          <div>
+            <Button type="primary" onClick={this.showInviteStudentModal}>
+              + Add Multiple Students
             </Button>
-          </StyledActionDropDown>
+            <StyledSchoolSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              checked={this.state.showActive}
+              onChange={this.onChangeShowActive}
+              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+            >
+              Show current users only
+            </Checkbox>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
         </StyledFilterDiv>
         <StyledControlDiv>
           {inviteStudentModalVisible && (

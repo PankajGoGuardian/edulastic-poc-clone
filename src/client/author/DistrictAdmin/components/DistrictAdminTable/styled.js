@@ -36,8 +36,13 @@ export const StyledPagination = styled(Pagination)`
 `;
 export const StyledFilterDiv = styled.div`
   display: flex;
+  justify-content: space-between;
   background: whitesmoke;
   padding: 1rem;
+  align-items: center;
+`;
+export const RightFilterDiv = styled.div`
+  display: flex;
   align-items: center;
 `;
 

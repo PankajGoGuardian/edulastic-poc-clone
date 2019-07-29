@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { Modal, Form, Input, Row, Col, Button, Select } from "antd";
+import { states } from "../../../../../student/Signup/components/TeacherContainer/constants";
 import { StyledDescription, ModalFormItem, StyledSelect, StyledSpinContainer, StyledSpin } from "./styled";
-const Option = Select.Option;
 
 import { countryApi, schoolApi } from "@edulastic/api";
 
+const Option = Select.Option;
 class CreateSchoolModal extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +15,8 @@ class CreateSchoolModal extends Component {
       nameValidateStatus: "success",
       nameValidateMsg: "",
       showSpin: false,
-      countryValue: ""
+      countryValue: "",
+      stateList: []
     };
     this.onCreateSchool = this.onCreateSchool.bind(this);
   }
@@ -24,6 +26,7 @@ class CreateSchoolModal extends Component {
     const returnedCountryList = await countryApi.getCountries();
     this.setState({
       countryList: returnedCountryList,
+      stateList: states,
       showSpin: false
     });
   }
@@ -80,10 +83,19 @@ class CreateSchoolModal extends Component {
     }
   };
 
-  handleSearch = value => {
-    this.setState({
-      countryValue: value
-    });
+  changeCountryHandler = value => {
+    const { form } = this.props;
+    if (value !== "US") {
+      this.setState({
+        stateList: []
+      });
+      form.setFieldsValue({ state: "" });
+    } else {
+      this.setState({
+        stateList: states
+      });
+      form.setFieldsValue({ state: states[0] });
+    }
   };
 
   onCountryKeyDown = e => {
@@ -95,9 +107,9 @@ class CreateSchoolModal extends Component {
   };
 
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
     const { modalVisible } = this.props;
-    const { countryList, nameValidateStatus, nameValidateMsg, showSpin, countryValue } = this.state;
+    const { countryList, nameValidateStatus, nameValidateMsg, showSpin, countryValue, stateList } = this.state;
 
     const CountryOptions = [];
     Object.entries(countryList).map(([key, value]) => {
@@ -105,6 +117,12 @@ class CreateSchoolModal extends Component {
         CountryOptions.push(<Option value={key}>{value}</Option>);
       }
     });
+    const country = getFieldValue("country");
+    const stateOptions = stateList.map(state => (
+      <Option value={state} key={state}>
+        {state}
+      </Option>
+    ));
 
     return (
       <Modal
@@ -156,7 +174,15 @@ class CreateSchoolModal extends Component {
           </Col>
           <Col span={11} offset={2}>
             <ModalFormItem label="State">
-              {getFieldDecorator("state", {})(<Input placeholder="Enter State" />)}
+              {getFieldDecorator("state", { initialValue: states[0] })(
+                country === "US" ? (
+                  <Select showSearch placeholder="Select state" style={{ width: "100%" }}>
+                    {stateOptions}
+                  </Select>
+                ) : (
+                  <Input placeholder="Enter state" />
+                )
+              )}
             </ModalFormItem>
           </Col>
         </Row>
@@ -173,6 +199,7 @@ class CreateSchoolModal extends Component {
                   showArrow={false}
                   filterOption={false}
                   notFoundContent={null}
+                  onChange={this.changeCountryHandler}
                   onInputKeyDown={this.onCountryKeyDown}
                 >
                   {CountryOptions}

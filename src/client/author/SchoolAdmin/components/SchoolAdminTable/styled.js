@@ -62,6 +62,7 @@ export const StyledPagination = styled(Pagination)`
 
 export const StyledAddFilterButton = styled(Button)`
   margin-left: 20px;
+  color: white !important;
 `;
 
 export const StyledTableButton = styled.a`

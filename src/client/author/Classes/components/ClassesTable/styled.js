@@ -97,6 +97,7 @@ export const StyledPagination = styled(Pagination)`
 
 export const StyledFilterButton = styled(Button)`
   margin-left: 20px;
+  color: white !important;
 `;
 
 export const StyledHeaderColumn = styled.div`

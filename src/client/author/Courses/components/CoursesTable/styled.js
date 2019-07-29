@@ -62,6 +62,7 @@ export const StyledTable = styled(Table)`
 
 export const StyledFilterButton = styled(Button)`
   margin-left: 20px;
+  color: white !important;
 `;
 
 export const StyledTableButton = styled.a`

@@ -35,6 +35,7 @@ export const StyledFilterSelect = styled(Select)`
 
 export const StyledAddFilterButton = styled(Button)`
   margin-left: 20px;
+  color: white !important;
 `;
 export const StyledTable = styled(Table)`
   .ant-table-row {

@@ -172,11 +172,11 @@ const ClassificationPreview = ({
   const boxes = createEmptyArrayOfArrays();
 
   const onDrop = (itemCurrent, itemTo) => {
-    const columnCount = get(item, "max_response_per_cell", 4);
+    const columnCount = get(item, "max_response_per_cell", "");
 
     const dItems = cloneDeep(dragItems);
     const ansArrays = cloneDeep(answers);
-    if (ansArrays[itemTo.index] && ansArrays[itemTo.index].length >= columnCount) {
+    if (columnCount && ansArrays[itemTo.index] && ansArrays[itemTo.index].length >= columnCount) {
       return;
     }
 

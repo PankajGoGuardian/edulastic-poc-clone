@@ -350,20 +350,23 @@ const EditClassification = ({
   const handleAnswerChange = answer => {
     setQuestionData(
       produce(item, draft => {
-        let groupArray = item.group_possible_responses ? [] : item.possible_responses;
+        // work in progress will be done later
 
-        if (item.group_possible_responses) {
-          item.possible_response_groups.forEach(group => {
-            groupArray = uniq([...groupArray, ...group.responses].map(ans => uniq(ans)));
-          });
-        }
+        // let groupArray = item.group_possible_responses ? [] : item.possible_responses;
+
+        // if (item.group_possible_responses) {
+        //   item.possible_response_groups.forEach(group => {
+        //     groupArray = uniq([...groupArray, ...group.responses].map(ans => uniq(ans)));
+        //   });
+        // }
 
         if (correctTab === 0) {
           if (draft.validation && draft.validation.valid_response) {
-            draft.validation.valid_response.value = uniq([...answer].map(ans => uniq(ans)));
+            draft.validation.valid_response.value = answer;
           }
-        } else if (draft.validation && draft.validation.alt_responses && draft.validation.alt_responses[correctTab - 1])
-          draft.validation.alt_responses[correctTab - 1].value = uniq([...answer].map(ans => uniq(ans)));
+        }
+        // else if (draft.validation && draft.validation.alt_responses && draft.validation.alt_responses[correctTab - 1])
+        //   draft.validation.alt_responses[correctTab - 1].value = uniq([...answer].map(ans => uniq(ans)));
 
         updateVariables(draft);
       })
@@ -528,11 +531,13 @@ const EditClassification = ({
           fillSections={fillSections}
           cleanSections={cleanSections}
         >
-          <GroupPossibleResponses
+          {/*
+            WIP, will be taken later
+             <GroupPossibleResponses
             checkboxChange={onGroupPossibleResp}
             checkboxVal={item.group_possible_responses}
             items={
-              item.group_possible_responses ? item.possible_response_groups : item.possible_responses.map(ite => ite)
+              item.group_possible_responses ? item.possible_response_groups : item.possible_responses.map(ite => ite.value)
             }
             onAddInner={onAddInner}
             onTitleChange={onGroupTitleChange}
@@ -544,7 +549,8 @@ const EditClassification = ({
             onRemove={item.group_possible_responses ? handleGroupRemove : handleMainPossible(actions.REMOVE)}
             fillSections={fillSections}
             cleanSections={cleanSections}
-          />
+          /> 
+          */}
           <div style={{ marginTop: 20 }}>
             <Checkbox
               className="additional-options"

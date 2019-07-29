@@ -45,7 +45,6 @@ const TableRow = ({
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
   };
-
   const cols = [];
 
   let validIndex = -1;
@@ -83,6 +82,7 @@ const TableRow = ({
             // eslint-disable-next-line no-loop-func
             answers[index].map((answerValue, answerIndex) => {
               validIndex++;
+              const resp = item.possible_responses.find(resp => resp.id === answerValue);
               return (
                 <DragItem
                   isTransparent={isTransparent}
@@ -90,9 +90,9 @@ const TableRow = ({
                   valid={isReviewTab ? true : validArray && validArray[validIndex]}
                   preview={preview}
                   key={answerIndex}
-                  renderIndex={possible_responses.indexOf(answerValue)}
+                  renderIndex={item.possible_responses.findIndex(resp => resp.id === answerValue)}
                   onDrop={onDrop}
-                  item={answerValue}
+                  item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
                 />
               );

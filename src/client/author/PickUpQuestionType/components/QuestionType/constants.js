@@ -863,7 +863,24 @@ export const getCards = onSelectQuestionType => {
             responses: ["Choice B", "Choice C", "Choice A", "Choice D"]
           }
         ],
-        possible_responses: ["Choice B", "Choice C", "Choice A", "Choice D"],
+        possible_responses: [
+          {
+            id: uuid(),
+            value: "Choice B"
+          },
+          {
+            id: uuid(),
+            value: "Choice C"
+          },
+          {
+            id: uuid(),
+            value: "Choice A"
+          },
+          {
+            id: uuid(),
+            value: "Choice D"
+          }
+        ],
         stimulus: "Your question is here",
         type: questionType.CLASSIFICATION,
         ui_style: {

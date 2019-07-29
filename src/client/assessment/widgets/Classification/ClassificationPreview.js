@@ -104,7 +104,14 @@ const ClassificationPreview = ({
 
   const possible_responses =
     editCorrectAnswers.length > 0
-      ? posResp.filter(ite => ite && editCorrectAnswers.every(i => !i.includes(posResp.indexOf(ite))))
+      ? posResp.filter(ite => {
+          return (
+            ite &&
+            editCorrectAnswers.every(i => {
+              return !i.includes(posResp.find(resp => resp.id === ite.id).id);
+            })
+          );
+        })
       : posResp;
 
   const initialLength = (colCount || 2) * (rowCount || 1);
@@ -116,28 +123,49 @@ const ClassificationPreview = ({
     2. Refactoring code for better readability of conditions.
  */
   const getInitialUserAnswers = () => {
+    // it is called only in previewMode
+    console.log("userAnswer = ", JSON.stringify(userAnswer));
     if (userAnswer && userAnswer.some(arr => arr.length !== 0)) {
-      return userAnswer.map(arr => arr.map(ans => possible_responses[ans]));
+      return userAnswer;
     }
     return createEmptyArrayOfArrays();
   };
 
+  /**
+   * in edit mode
+   * edit correct answers basically follows up the same schema as validation.value
+   * it is passed from editClassification
+   *
+   * in preview mode
+   * getInitialUserAnswers() is called to get answers
+   * it also follows similar schema as of validation.value
+   */
   const initialAnswers =
-    !disableResponse && editCorrectAnswers.length > 0
-      ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
-      : getInitialUserAnswers();
+    !disableResponse && editCorrectAnswers.length > 0 ? editCorrectAnswers : getInitialUserAnswers();
 
   const [answers, setAnswers] = useState(initialAnswers);
-
   const [dragItems, setDragItems] = useState(possible_responses);
 
+  /**
+   * this is called in preview mode
+   * it is used to filter out responses from the bottom container and place in correct boxes
+   * it also used to clear out responses when clear is pressed
+   */
   useEffect(() => {
     if (
       !isEqual(answers, initialAnswers) ||
       (possible_responses.length !== dragItems.length || !isEqual(possible_responses, dragItems))
     ) {
       setAnswers(uniq(initialAnswers));
-      setDragItems(uniq(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))));
+      setDragItems(
+        uniq(
+          possible_responses.filter(resp => {
+            return initialAnswers.every(arr => {
+              return !arr.includes(resp.id);
+            });
+          })
+        )
+      );
     }
   }, [userAnswer, possible_responses]);
 
@@ -148,51 +176,49 @@ const ClassificationPreview = ({
 
     const dItems = cloneDeep(dragItems);
     const ansArrays = cloneDeep(answers);
-
     if (ansArrays[itemTo.index] && ansArrays[itemTo.index].length >= columnCount) {
       return;
     }
 
+    // this is called when responses are dragged back to the container from the columns
     if (itemTo.flag === "dragItems") {
       ansArrays.forEach(arr => {
-        if (arr.includes(itemCurrent.item)) {
-          arr.splice(arr.indexOf(itemCurrent.item), 1);
+        const obj = posResponses.find(ite => ite.value === itemCurrent.item);
+        if (arr.includes(obj.id)) {
+          arr.splice(arr.indexOf(obj.id), 1);
         }
-
-        arr = uniq(arr);
+        // arr = uniq(arr);
       });
 
-      if (!dItems.includes(itemCurrent.item)) {
-        dItems.push(itemCurrent.item);
+      if (!dItems.flatMap(ite => ite.value).includes(itemCurrent.item)) {
+        dItems.push(posResponses.find(resp => resp.value === itemCurrent.item));
         setDragItems(dItems);
       }
-    } else if (!duplicate_responses && dItems.includes(itemCurrent.item)) {
-      dItems.splice(dItems.indexOf(itemCurrent.item), 1);
+    } else if (!duplicate_responses && dItems.flatMap(obj => obj.value).includes(itemCurrent.item)) {
+      dItems.splice(dItems.findIndex(obj => obj.value === itemCurrent.item), 1);
       setDragItems(dItems);
     }
 
+    // this is called when responses are dragged from bottom container to columns
     if (itemTo.flag === "column") {
+      const obj = posResponses.find(ite => ite.value === itemCurrent.item);
       ansArrays.forEach((arr, i) => {
-        if (!duplicate_responses && arr.includes(itemCurrent.item)) {
-          arr.splice(arr.indexOf(itemCurrent.item), 1);
+        if (!duplicate_responses && arr.includes(obj.id)) {
+          arr.splice(arr.indexOf(obj.id), 1);
         }
 
         if (i === itemTo.index) {
-          arr.push(itemCurrent.item);
+          arr.push(obj.id);
         }
 
         arr = uniq(arr);
       });
     }
 
-    if (!isEqual(uniq(ansArrays), answers)) {
-      setAnswers(uniq(ansArrays));
+    if (!isEqual(ansArrays, answers)) {
+      setAnswers(ansArrays);
     }
-    saveAnswer(uniq(ansArrays.map(ansArr => uniq(ansArr.map(ans => posResp.indexOf(ans))))));
-
-    if (previewTab === CHECK || previewTab === SHOW) {
-      changePreviewTab(CLEAR);
-    }
+    saveAnswer(ansArrays);
   };
 
   const drop = ({ flag, index }) => ({ flag, index });
@@ -351,8 +377,8 @@ const ClassificationPreview = ({
                       justifyContent="flex-start"
                     >
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                        {verifiedDragItems.map((ite, ind) =>
-                          duplicate_responses ? (
+                        {verifiedDragItems.map((ite, ind) => {
+                          return duplicate_responses ? (
                             <DragItem
                               dragHandle={show_drag_handle}
                               key={ind}
@@ -360,7 +386,7 @@ const ClassificationPreview = ({
                               preview={preview}
                               renderIndex={possible_responses.indexOf(ite)}
                               onDrop={onDrop}
-                              item={ite}
+                              item={ite.value}
                               disableResponse={disableResponse}
                             />
                           ) : (
@@ -372,12 +398,12 @@ const ClassificationPreview = ({
                                 preview={preview}
                                 renderIndex={possible_responses.indexOf(ite)}
                                 onDrop={onDrop}
-                                item={ite}
+                                item={ite.value}
                                 disableResponse={disableResponse}
                               />
                             )
-                          )
-                        )}
+                          );
+                        })}
                       </FlexContainer>
                     </FlexContainer>
                   </Fragment>

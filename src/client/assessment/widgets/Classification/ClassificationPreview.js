@@ -296,6 +296,7 @@ const ClassificationPreview = ({
                   answers={answers}
                   validArray={evaluation}
                   preview={preview}
+                  previewTab={previewTab}
                   possible_responses={possible_responses}
                   onDrop={onDrop}
                   isResizable={view === EDIT}

@@ -10,6 +10,7 @@ import DragItem from "./DragItem";
 import { Column, ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
+import { SHOW, CHECK } from "../../../constants/constantsForQuestions";
 
 const TableRow = ({
   startIndex,
@@ -32,7 +33,8 @@ const TableRow = ({
   isResizable,
   item,
   disableResponse,
-  isReviewTab
+  isReviewTab,
+  previewTab
 }) => {
   const styles = {
     columnContainerStyle: {
@@ -65,7 +67,10 @@ const TableRow = ({
     cols.push(
       <ResponseRnd question={item} height="auto" index={index} isResizable={isResizable}>
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
-          <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
+          <ColumnLabel
+            transparent={previewTab === SHOW || previewTab === CHECK}
+            dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }}
+          />
         ) : null}
         <DropContainer
           style={{
@@ -123,7 +128,8 @@ TableRow.propTypes = {
   validArray: PropTypes.array.isRequired,
   theme: PropTypes.object.isRequired,
   isResizable: PropTypes.bool.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  previewTab: PropTypes.string.isRequired
 };
 
 export default withTheme(TableRow);

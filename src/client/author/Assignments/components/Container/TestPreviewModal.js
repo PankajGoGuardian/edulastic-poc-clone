@@ -4,33 +4,33 @@ import styled from "styled-components";
 import { Modal } from "antd";
 import AssessmentPlayer from "../../../../assessment";
 
-const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, hideModal, testId, test }) => {
-  return (
-    <StyledModal
-      visible={isModalVisible}
-      title="Test Preview"
-      onCancel={hideModal}
-      onOk={hideModal}
-      width="100%"
-      destroyOnClose={true}
-      footer={null}
-      header={null}
-      wrapClassName="test-preview-modal"
-      centered
-    >
-      <AssessmentPlayer LCBPreviewModal={LCBPreviewModal} testId={testId} test={test} preview />
-    </StyledModal>
-  );
-};
+const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, hideModal, testId, test }) => (
+  <StyledModal
+    visible={isModalVisible}
+    title="Test Preview"
+    onCancel={hideModal}
+    onOk={hideModal}
+    width="100%"
+    destroyOnClose
+    footer={null}
+    header={null}
+    wrapClassName="test-preview-modal"
+    centered
+  >
+    <AssessmentPlayer LCBPreviewModal={LCBPreviewModal} testId={testId} test={test} preview />
+  </StyledModal>
+);
 
 TestPreviewModal.propTypes = {
   isModalVisible: PropTypes.bool,
   LCBPreviewModal: PropTypes.bool,
+  test: PropTypes.object,
   hideModal: PropTypes.func.isRequired,
   testId: PropTypes.string.isRequired
 };
 
 TestPreviewModal.defaultProps = {
+  test: {},
   isModalVisible: false,
   LCBPreviewModal: false
 };
@@ -43,10 +43,10 @@ const StyledModal = styled(Modal)`
   }
   .ant-modal-body {
     padding: 0px;
+    position: relative;
     & > div {
       height: 100vh;
       padding-top: 56px;
-      position: relative;
       & > svg {
         height: 100%;
       }

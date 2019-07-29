@@ -23,7 +23,6 @@ class DragScroll extends Component {
     const { context } = this.props;
     const { getScrollElement } = context;
     const scrollContainer = getScrollElement();
-
     scrollContainer.scrollBy({
       top: scrollAmount,
       behavior: "smooth"
@@ -70,8 +69,6 @@ class DragScroll extends Component {
   };
 
   componentDidMount() {
-    const dragEnterEl = this.dragEnterRef.current;
-
     window.addEventListener("mousedown", this.handleMouseDown);
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("dragstart", this.handleIsDragging);
@@ -79,16 +76,9 @@ class DragScroll extends Component {
     window.addEventListener("focus", this.handleMouseUp);
     window.addEventListener("blur", this.handleMouseUp);
     window.addEventListener("contextmenu", this.handleMouseUp);
-
-    dragEnterEl.addEventListener("dragenter", this.handleDragEnter);
-    dragEnterEl.addEventListener("dragleave", this.handleDragLeave);
-    dragEnterEl.addEventListener("mouseenter", this.handleMouseEnter);
-    dragEnterEl.addEventListener("mouseleave", this.handleMouseLeave);
   }
 
   componentWillUnmount() {
-    const dragEnterEl = this.dragEnterRef.current;
-
     window.removeEventListener("mousedown", this.handleMouseDown);
     window.removeEventListener("mouseup", this.handleMouseUp);
     window.removeEventListener("dragstart", this.handleIsDragging);
@@ -96,11 +86,6 @@ class DragScroll extends Component {
     window.removeEventListener("focus", this.handleMouseUp);
     window.removeEventListener("blur", this.handleMouseUp);
     window.removeEventListener("contextmenu", this.handleMouseUp);
-
-    dragEnterEl.removeEventListener("dragenter", this.handleDragEnter);
-    dragEnterEl.removeEventListener("dragleave", this.handleDragLeave);
-    dragEnterEl.removeEventListener("mouseenter", this.handleMouseEnter);
-    dragEnterEl.removeEventListener("mouseleave", this.handleMouseLeave);
 
     clearInterval(this.intervalId);
     clearTimeout(this.timerId);
@@ -125,7 +110,7 @@ class DragScroll extends Component {
 
   render = () => {
     const { isDragging } = this.state;
-    const { style, ...restProps } = this.props;
+    const { style } = this.props;
     const { context } = this.props;
     const { getScrollElement } = context;
     const scrollContainer = getScrollElement();
@@ -139,7 +124,17 @@ class DragScroll extends Component {
 
     const key = scrollContainer.classList ? scrollContainer.classList.toString() : "window";
 
-    return <div key={key} ref={this.dragEnterRef} style={mergedStyle} />;
+    return (
+      <div
+        key={key}
+        ref={this.dragEnterRef}
+        style={mergedStyle}
+        onMouseEnter={this.handleMouseEnter}
+        onMouseLeave={this.handleMouseLeave}
+        onDragEnter={this.handleDragEnter}
+        onDragLeave={this.handleDragLeave}
+      />
+    );
   };
 }
 

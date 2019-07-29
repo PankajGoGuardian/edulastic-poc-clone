@@ -223,6 +223,7 @@ class MathFormulaPreview extends Component {
       : [];
 
     const customKeys = get(item, "custom_keys", []);
+    const allowNumericOnly = get(item, "allowNumericOnly", false);
 
     // in Units type, this need when the show dropdown option is true
     let correctUnit = item.validation.valid_response.value[0].options.unit;
@@ -248,6 +249,7 @@ class MathFormulaPreview extends Component {
                 <StaticMath
                   symbols={item.symbols}
                   restrictKeys={this.restrictKeys}
+                  allowNumericOnly={allowNumericOnly}
                   customKeys={customKeys}
                   numberPad={item.numberPad}
                   ref={this.studentRef}
@@ -263,6 +265,7 @@ class MathFormulaPreview extends Component {
                 <MathInput
                   symbols={item.symbols}
                   restrictKeys={this.restrictKeys}
+                  allowNumericOnly={allowNumericOnly}
                   customKeys={customKeys}
                   numberPad={item.numberPad}
                   value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}

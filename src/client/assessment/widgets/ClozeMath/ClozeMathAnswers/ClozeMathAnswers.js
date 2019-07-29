@@ -332,7 +332,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                 <MathFormulaAnswer
                   item={item}
                   onChange={_changeCorrectMethod}
-                  onChangeAllowedVars={handleAllowedVariables}
+                  onChangeAllowedOptions={handleAllowedVariables}
                   onAdd={_addCorrectMethod}
                   onDelete={_deleteCorrectMethod}
                   answers={[answer]}
@@ -349,7 +349,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                       key={i}
                       item={item}
                       onChange={_changeAltMethod(i)}
-                      onChangeAllowedVars={handleAllowedVariables}
+                      onChangeAllowedOptions={handleAllowedVariables}
                       onAdd={_addAltMethod(i)}
                       onDelete={_deleteAltMethod(i)}
                       answers={[altAnswer]}

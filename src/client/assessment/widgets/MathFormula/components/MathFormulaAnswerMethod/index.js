@@ -16,13 +16,7 @@ import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
 import { Rule } from "./options/Rule";
 import Units from "./options/Units";
-import {
-  AdditionalToggle,
-  AdditionalContainer,
-  AdditionalCompareUsing,
-  AdditionalAddRule,
-  AdditionalContainerRule
-} from "./styled/Additional";
+import { AdditionalToggle, AdditionalContainer, AdditionalCompareUsing } from "./styled/Additional";
 import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
@@ -57,11 +51,8 @@ const MathFormulaAnswerMethod = ({
   showAdditionals,
   handleChangeAdditionals,
   onChangeKeypad,
-  onChangeAllowedVars,
+  onChangeAllowedOptions,
   onChangeShowDropdown,
-  answer,
-  onAdd,
-  onAddIndex,
   windowWidth,
   style = {},
   keypadOffset,
@@ -301,13 +292,13 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={options}
-              onChange={changeOptions}
+              options={{ allowNumericOnly: item.allowNumericOnly }}
+              onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
           );
         case "allowedVariables":
-          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedVars} />;
+          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedOptions} />;
         case "setEvaluation":
           return (
             <CheckOption
@@ -442,7 +433,7 @@ const MathFormulaAnswerMethod = ({
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func.isRequired,
-  onChangeAllowedVars: PropTypes.func.isRequired,
+  onChangeAllowedOptions: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   item: PropTypes.object.isRequired,
@@ -453,10 +444,10 @@ MathFormulaAnswerMethod.propTypes = {
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
-  onAdd: PropTypes.func.isRequired,
   handleChangeAdditionals: PropTypes.func,
-  answer: PropTypes.object.isRequired,
-  onAddIndex: PropTypes.number.isRequired,
+  // onAdd: PropTypes.func.isRequired,
+  // answer: PropTypes.object.isRequired,
+  // onAddIndex: PropTypes.number.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired
 };

@@ -328,7 +328,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
 
 export const classStudentsSelector = createSelector(
   stateTestActivitySelector,
-  state => state.classStudents
+  state => state.classStudents.filter(student => student.enrollmentStatus !== "0" && student.status !== 0)
 );
 export const removedStudentsSelector = createSelector(
   stateTestActivitySelector,

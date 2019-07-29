@@ -4,6 +4,8 @@ import { DragSource } from "react-dnd";
 import { withTheme } from "styled-components";
 
 import { FlexContainer, MathFormulaDisplay } from "@edulastic/common";
+import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
+import { IMAGE_LIST_POSITION_LEFT, IMAGE_LIST_POSITION_RIGHT } from "@edulastic/constants/const/listPosition";
 import DragPreview from "../../../components/DragPreview";
 
 import { IconCheck } from "../styled/IconCheck";
@@ -83,6 +85,7 @@ const DragItemContainer = ({
   theme,
   isTransparent,
   dragHandle,
+  possibilityListPosition,
   ...restProps
 }) => {
   const dragItem = (
@@ -97,6 +100,12 @@ const DragItemContainer = ({
       item={item}
     />
   );
+
+  const itemWidth =
+    possibilityListPosition === IMAGE_LIST_POSITION_LEFT || possibilityListPosition === IMAGE_LIST_POSITION_RIGHT
+      ? IMAGE_LIST_DEFAULT_WIDTH
+      : null;
+
   return (
     item &&
     connectDragSource(
@@ -106,8 +115,8 @@ const DragItemContainer = ({
         style={{
           display: "flex",
           alignItems: "center",
-          margin: "10px 15px 10px 15px"
-          // opacity: isDragging ? 0 : 1
+          margin: "10px 15px 10px 15px",
+          width: itemWidth
         }}
       >
         <DragPreview {...restProps} isDragging={isDragging}>

@@ -339,6 +339,7 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
+                                possibilityListPosition={listPosition}
                               />
                             ) : (
                               dragItems.includes(ite) && (
@@ -351,6 +352,7 @@ const ClassificationPreview = ({
                                   onDrop={onDrop}
                                   item={ite}
                                   disableResponse={disableResponse}
+                                  possibilityListPosition={listPosition}
                                 />
                               )
                             )
@@ -389,6 +391,7 @@ const ClassificationPreview = ({
                               onDrop={onDrop}
                               item={ite.value}
                               disableResponse={disableResponse}
+                              possibilityListPosition={listPosition}
                             />
                           ) : (
                             dragItems.includes(ite) && (
@@ -401,6 +404,7 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
+                                possibilityListPosition={listPosition}
                               />
                             )
                           );

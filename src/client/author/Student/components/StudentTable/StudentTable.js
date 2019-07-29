@@ -18,7 +18,8 @@ import {
   StyledAddFilterButton,
   StyledSchoolSearch,
   StyledActionDropDown,
-  StyledClassName
+  StyledClassName,
+  StyledFilterDiv
 } from "./styled";
 
 import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
@@ -568,19 +569,10 @@ class StudentTable extends Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
+        <StyledFilterDiv>
           <Button type="primary" onClick={this.showInviteStudentModal}>
             + Add Multiple Students
           </Button>
-          {inviteStudentModalVisible && (
-            <InviteMultipleStudentModal
-              modalVisible={inviteStudentModalVisible}
-              inviteStudents={this.sendInviteStudent}
-              closeModal={this.closeInviteStudentModal}
-              features={features}
-              setProvider={setProvider}
-            />
-          )}
           <StyledSchoolSearch
             placeholder="Search by name"
             onSearch={this.handleSearchName}
@@ -598,6 +590,17 @@ class StudentTable extends Component {
               Actions <Icon type="down" />
             </Button>
           </StyledActionDropDown>
+        </StyledFilterDiv>
+        <StyledControlDiv>
+          {inviteStudentModalVisible && (
+            <InviteMultipleStudentModal
+              modalVisible={inviteStudentModalVisible}
+              inviteStudents={this.sendInviteStudent}
+              closeModal={this.closeInviteStudentModal}
+              features={features}
+              setProvider={setProvider}
+            />
+          )}
         </StyledControlDiv>
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
@@ -686,6 +689,13 @@ class StudentTable extends Component {
           total={totalUsers}
           onChange={page => this.setPageNo(page)}
           hideOnSinglePage={true}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
+          scroll={{ y: 400 }}
         />
         {editStudentModaVisible && (
           <EditStudentFormModal

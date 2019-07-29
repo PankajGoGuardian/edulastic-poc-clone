@@ -604,7 +604,13 @@ class CoursesTable extends React.Component {
           </StyledActionDropDown>
         </StyledControlDiv>
         {SearchRows}
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+        <StyledTable
+          rowSelection={rowSelection}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          scroll={{ y: 400 }}
+        />
         <StyledPagination
           current={currentPage}
           defaultCurrent={1}

@@ -9,6 +9,7 @@ export const StyledTableContainer = styled.div`
   flex-direction: column;
   width: 100%;
   margin-bottom: 20px;
+  margin-top: 140px;
 
   .ant-table-wrapper {
     width: 100%;
@@ -32,6 +33,12 @@ export const StyledTable = styled(Table)`
 export const StyledPagination = styled(Pagination)`
   margin-top: 15px;
   align-self: flex-end;
+`;
+export const StyledFilterDiv = styled.div`
+  display: flex;
+  background: whitesmoke;
+  padding: 1rem;
+  align-items: center;
 `;
 
 export const StyledControlDiv = styled.div`

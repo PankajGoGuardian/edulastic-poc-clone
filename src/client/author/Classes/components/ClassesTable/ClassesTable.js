@@ -674,6 +674,7 @@ class ClassesTable extends Component {
           dataSource={Object.values(dataSource)}
           columns={columnsData}
           pagination={false}
+          scroll={{ y: 400 }}
         />
         <StyledPagination
           defaultCurrent={1}

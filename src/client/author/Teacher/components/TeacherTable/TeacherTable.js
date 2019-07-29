@@ -18,7 +18,8 @@ import {
   StyledAddFilterButton,
   StyledSchoolSearch,
   StyledActionDropDown,
-  StyledClassName
+  StyledClassName,
+  StyledFilterDiv
 } from "./styled";
 
 import { UserFormModal as EditTeacherModal } from "../../../../common/components/UserFormModal/UserFormModal";
@@ -499,18 +500,10 @@ class TeacherTable extends Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
+        <StyledFilterDiv>
           <Button type="primary" onClick={this.showInviteTeacherModal}>
             + Invite Multiple Teachers
           </Button>
-          {inviteTeacherModalVisible && (
-            <InviteMultipleTeacherModal
-              modalVisible={inviteTeacherModalVisible}
-              closeModal={this.closeInviteTeacherModal}
-              addTeachers={this.addTeachers}
-              userOrgId={userOrgId}
-            />
-          )}
           <StyledSchoolSearch
             placeholder="Search by name"
             onSearch={this.handleSearchName}
@@ -528,6 +521,17 @@ class TeacherTable extends Component {
               Actions <Icon type="down" />
             </Button>
           </StyledActionDropDown>
+        </StyledFilterDiv>
+
+        <StyledControlDiv>
+          {inviteTeacherModalVisible && (
+            <InviteMultipleTeacherModal
+              modalVisible={inviteTeacherModalVisible}
+              inviteTeachers={this.sendInviteTeacher}
+              closeModal={this.closeInviteTeacherModal}
+              userOrgId={userOrgId}
+            />
+          )}
         </StyledControlDiv>
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
@@ -617,6 +621,13 @@ class TeacherTable extends Component {
           total={totalUsers}
           onChange={page => this.setPageNo(page)}
           hideOnSinglePage={true}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
+          scroll={{ y: 400 }}
         />
         {editTeacherModaVisible && (
           <EditTeacherModal

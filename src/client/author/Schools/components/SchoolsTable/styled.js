@@ -43,6 +43,12 @@ export const StyledTable = styled(Table)`
   }
 `;
 
+export const StyledFilterDiv = styled.div`
+  display: flex;
+  background: whitesmoke;
+  padding: 1rem;
+  align-items: center;
+`;
 export const StyledControlDiv = styled.div`
   display: flex;
   margin-bottom: 20px;
@@ -81,7 +87,7 @@ export const StyledSchoolSearch = styled(Search)`
 
 export const StyledHeaderColumn = styled.div`
   display: flex;
-  align-item: center;
+  align-items: center;
   cursor: pointer;
 `;
 

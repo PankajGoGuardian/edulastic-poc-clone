@@ -10,6 +10,7 @@ export const StyledTableContainer = styled.div`
   width: 100%;
   margin-bottom: 20px;
 
+  margin-top: 10px;
   .ant-table-wrapper {
     width: 100%;
   }
@@ -18,7 +19,13 @@ export const StyledTableContainer = styled.div`
     border: 1px solid #d9d9d9;
   }
 `;
-
+export const StyledFilterDiv = styled.div`
+  display: flex;
+  background: whitesmoke;
+  padding: 1rem;
+  align-items: center;
+  margin-top: 10px;
+`;
 export const StyledControlDiv = styled.div`
   display: flex;
   margin-bottom: 20px;

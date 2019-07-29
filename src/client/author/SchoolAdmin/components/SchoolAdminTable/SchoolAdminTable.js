@@ -14,7 +14,8 @@ import {
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
-  StyledActionDropDown
+  StyledActionDropDown,
+  StyledFilterDiv
 } from "./styled";
 
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
@@ -475,18 +476,10 @@ class SchoolAdminTable extends Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
+        <StyledFilterDiv>
           <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
             + Add School Admin
           </Button>
-          {createSchoolAdminModalVisible && (
-            <CreateSchoolAdminModal
-              modalVisible={createSchoolAdminModalVisible}
-              createSchoolAdmin={this.createUser}
-              closeModal={this.closeCreateUserModal}
-              userOrgId={userOrgId}
-            />
-          )}
           <StyledSchoolSearch
             placeholder="Search by name"
             onSearch={this.handleSearchName}
@@ -504,6 +497,16 @@ class SchoolAdminTable extends Component {
               Actions <Icon type="down" />
             </Button>
           </StyledActionDropDown>
+        </StyledFilterDiv>
+        <StyledControlDiv>
+          {createSchoolAdminModalVisible && (
+            <CreateSchoolAdminModal
+              modalVisible={createSchoolAdminModalVisible}
+              createSchoolAdmin={this.createSchoolAdmin}
+              closeModal={this.closeCreateSchoolAdminModal}
+              userOrgId={userOrgId}
+            />
+          )}
         </StyledControlDiv>
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
@@ -593,6 +596,13 @@ class SchoolAdminTable extends Component {
           total={totalUsers}
           onChange={page => this.setPageNo(page)}
           hideOnSinglePage={true}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
+          scroll={{ y: 400 }}
         />
         {editSchoolAdminModaVisible && (
           <EditSchoolAdminModal

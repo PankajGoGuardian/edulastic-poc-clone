@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { AdminHeaderContent, StyledTitle, StyledTabs, StyledTabPane, StyledSubMenu } from "./styled";
+import {
+  AdminHeaderContent,
+  StyledTitle,
+  StyledTabs,
+  StyledTabPane,
+  StyledSubMenu,
+  AdminHeaderWrapper,
+  Title
+} from "./styled";
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -83,9 +91,10 @@ class AdminHeader extends Component {
     const { title, active, count = 0 } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
-      <React.Fragment>
+      <AdminHeaderWrapper>
         <AdminHeaderContent>
-          <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
+          <Title>Manage District</Title>
+          <StyledTabs defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
             <StyledTabPane tab="District Profile" key={"District Profile"} />
             <StyledTabPane tab={SchoolTabtext} key={"Schools"} />
             <StyledTabPane tab="Users" key={"Users"} />
@@ -114,7 +123,7 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Student" key={"Student"} />
           </StyledSubMenu>
         )}
-      </React.Fragment>
+      </AdminHeaderWrapper>
     );
   }
 }

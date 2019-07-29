@@ -3,11 +3,14 @@ import { Layout, Spin } from "antd";
 
 const { Content } = Layout;
 
-export const DistrictProfileDiv = styled.div``;
+export const DistrictProfileDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 
 export const StyledContent = styled(Content)`
   width: 95%;
-  margin: 40px auto 0;
+  margin: 90px 20px 20px 20px;
 `;
 
 export const StyledLayout = styled(Layout)`

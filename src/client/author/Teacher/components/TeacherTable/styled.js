@@ -8,7 +8,7 @@ export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-bottom: 20px;
+  margin-top: 140px;
 
   .ant-table-wrapper {
     width: 100%;
@@ -31,7 +31,12 @@ export const StyledFilterSelect = styled(Select)`
     margin-left: 0;
   }
 `;
-
+export const StyledFilterDiv = styled.div`
+  display: flex;
+  background: whitesmoke;
+  padding: 1rem;
+  align-items: center;
+`;
 export const StyledTable = styled(Table)`
   .ant-table-row {
     &: hover {

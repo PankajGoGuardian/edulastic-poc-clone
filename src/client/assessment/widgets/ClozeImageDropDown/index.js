@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
-import { Checkbox, Paper } from "@edulastic/common";
+import { Checkbox, Paper, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -17,18 +17,18 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
 
 import Options from "./components/Options";
+import Question from "../../components/Question";
 import Display from "./Display";
 import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
 import { AdditionalContainer } from "./styled/AdditionalContainer";
-import Question from "../../components/Question";
-
 import { ContentArea } from "../../styled/ContentArea";
-import { AnswerContext } from "@edulastic/common";
+
 class ClozeImageDropDown extends Component {
   static contextType = AnswerContext;
+
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,

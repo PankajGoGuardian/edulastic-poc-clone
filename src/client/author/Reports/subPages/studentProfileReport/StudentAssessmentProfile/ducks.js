@@ -39,7 +39,7 @@ export const getReportsStudentAssessmentProfileLoader = createSelector(
 
 const initialState = {
   studentAssessmentProfile: {},
-  loading: true
+  loading: false
 };
 
 export const reportStudentAssessmentProfileReducer = createReducer(initialState, {

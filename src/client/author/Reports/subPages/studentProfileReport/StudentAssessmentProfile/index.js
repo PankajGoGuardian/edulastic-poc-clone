@@ -10,7 +10,7 @@ import {
   getReportsStudentAssessmentProfileLoader,
   getStudentAssessmentProfileRequestAction
 } from "./ducks";
-import { getData } from "./utils/transformers";
+import { getData } from "./common/utils/transformers";
 import { toggleItem } from "../../../common/util";
 import { Placeholder } from "../../../common/components/loader";
 

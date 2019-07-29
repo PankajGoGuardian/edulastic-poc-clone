@@ -1,6 +1,6 @@
 import moment from "moment";
 import { map, get, find, round, sumBy, groupBy, capitalize, reduce, values } from "lodash";
-import { percentage, getProficiencyBand } from "../../../../common/util";
+import { percentage, getProficiencyBand } from "../../../../../common/util";
 
 export const getData = (rawData = {}, bandInfo = []) => {
   const { districtAvg = [], groupAvg = [], metricInfo = [], schoolAvg = [] } = rawData;
@@ -9,9 +9,7 @@ export const getData = (rawData = {}, bandInfo = []) => {
     return [];
   }
 
-  const copyMetricInfo = metricInfo.concat(map(metricInfo, metric => ({ ...metric, testType: "subject" })));
-
-  const groupedByTest = groupBy(copyMetricInfo, "testId");
+  const groupedByTest = groupBy(metricInfo, "testId");
 
   const groupedTestsByType = reduce(
     groupedByTest,

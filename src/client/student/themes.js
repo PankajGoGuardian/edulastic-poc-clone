@@ -137,7 +137,7 @@ export const themes = {
     },
     headerFilters: {
       headerFilterTextSize: "10px",
-      headerFilterTextColor: "#00AD50",
+      headerFilterTextColor: themeColor,
       headerFilterBgColor: "#ffffff",
       headerFilterBgBorderColor: themeColor,
       headerFilterTextHoverColor: "#ffffff",

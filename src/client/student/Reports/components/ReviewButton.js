@@ -16,7 +16,7 @@ const ReviewButton = ({ testActivityId, title, t, attempted, activityReview, cla
     }}
   >
     {attempted && activityReview ? (
-      <Review title={isPaused ? "Assessment is Paused , Please check with your instructor." : ""} disabled={isPaused}>
+      <Review title={isPaused ? "Assignment is Paused , Please check with your instructor." : ""} disabled={isPaused}>
         <span data-cy="reviewButton">
           {t("common.review")}
           {isPaused ? " (PAUSED)" : ""}

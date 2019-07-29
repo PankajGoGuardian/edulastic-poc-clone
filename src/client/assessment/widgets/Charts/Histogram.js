@@ -17,7 +17,17 @@ import Hists from "./components/Hists";
 
 import BarsAxises from "./components/BarsAxises";
 
-const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse, toggleBarDragging }) => {
+const Histogram = ({
+  data,
+  previewTab,
+  saveAnswer,
+  gridParams,
+  view,
+  correct,
+  disableResponse,
+  toggleBarDragging,
+  deleteMode
+}) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
@@ -63,12 +73,12 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setActive(null);
     setIsMouseDown(false);
     toggleBarDragging(false);
-    saveAnswer(localData);
+    saveAnswer(localData, active);
   };
 
   const onMouseMove = e => {
     const newLocalData = cloneDeep(localData);
-    if (isMouseDown && cursorY) {
+    if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
       newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
 
@@ -115,6 +125,8 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
       />
 
       <Hists
+        saveAnswer={active => saveAnswer(localData, active)}
+        deleteMode={deleteMode}
         activeIndex={activeIndex}
         onPointOver={setActive}
         previewTab={previewTab}

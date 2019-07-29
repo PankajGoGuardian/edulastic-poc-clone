@@ -651,8 +651,20 @@ function* showAnswerSaga({ payload }) {
   try {
     const testItems = yield select(state => get(state, ["tests", "entity", "testItems"], []));
     const testItem = testItems.find(x => x._id === payload.id) || {};
-    const questions = _keyBy(testItem.data && testItem.data.questions, "id");
     const answers = yield select(state => get(state, "answers", {}));
+    let questions = _keyBy(testItem.data && testItem.data.questions, "id");
+
+    // when item is removed from the test, we get the question from the payload (i.e modal case)
+    if (!questions || Object.keys(questions).length === 0) {
+      const { item } = payload;
+
+      // eslint-disable-next-line prefer-destructuring
+      questions = item.data.questions.reduce((acc, curr) => {
+        acc[curr.id] = curr;
+        return acc;
+      }, {});
+    }
+
     const evaluation = yield createShowAnswerData(questions, answers);
     yield put({
       type: ADD_ITEM_EVALUATION,

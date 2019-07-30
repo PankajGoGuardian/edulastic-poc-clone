@@ -219,7 +219,7 @@ function* loadTest({ payload }) {
     });
   } catch (err) {
     if (err.status === 403 && preview) {
-      yield call(message.error, "You don't have the permission to view the test.Please contact the instructor.");
+      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
       Modal.destroyAll();
     }
     yield put({

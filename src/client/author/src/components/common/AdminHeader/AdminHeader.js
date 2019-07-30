@@ -6,7 +6,8 @@ import { AdminHeaderContent, StyledTitle, StyledTabs, StyledTabPane, StyledSubMe
 class AdminHeader extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    active: PropTypes.object.isRequired
+    active: PropTypes.object.isRequired,
+    count: PropTypes.number
   };
 
   onHeaderTabClick = (key, e) => {

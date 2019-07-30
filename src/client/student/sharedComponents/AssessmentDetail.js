@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Col, Icon } from "antd";
-import { white, testTypeColor } from "@edulastic/colors";
+import { white, testTypeColor, extraDesktopWidth, largeDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
 import { formatTime } from "../utils";
 
@@ -134,7 +134,16 @@ const ImageWrapper = styled.div`
   max-height: 90.5px;
   overflow: hidden;
   border-radius: 10px;
-  margin-right: 20px;
+  margin-right: 41px;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    margin-right: 22px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    margin-right: 17px;
+  }
+
   @media screen and (max-width: 767px) {
     max-width: 100%;
     margin: 0;
@@ -142,17 +151,34 @@ const ImageWrapper = styled.div`
 `;
 
 const Thumbnail = styled.img`
-  width: 170px;
+  width: 168px;
   border-radius: 10px;
-  height: 80px;
-  @media screen and (max-width: 767px) {
-    width: 100%;
-    height: 120px;
+  height: 90px;
+  object-fit: cover;
+  
+  @media(max-width: ${largeDesktopWidth}) {
+    width: 130px;
+    height: 77px;
+  }
+  
+  @media(max-width: ${mobileWidthMax}) {
+    width: calc(100% - 14px);
+    height: 20vw;
+    display: block;
+    margin: 0 auto;
   }	 
  }
 `;
 
 const CardDetails = styled(Col)`
+  @media (max-width: ${extraDesktopWidth}) {
+    width: 35vw;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    width: 100%;
+  }
+
   @media screen and (max-width: 767px) {
     display: flex;
     align-items: center;
@@ -171,7 +197,22 @@ const CardTitle = styled.div`
   letter-spacing: normal;
   text-align: left;
   color: ${props => props.theme.assignment.cardTitleColor};
-  padding-bottom: 6px;
+  padding-bottom: 7px;
+  padding-top: 6px;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    padding-top: 11px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    font-size: 12px;
+    padding-top: 8px;
+    padding-bottom: 0;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    font-size: 16px;
+  }
 `;
 
 const CardDate = styled.div`
@@ -185,9 +226,12 @@ const CardDate = styled.div`
   letter-spacing: normal;
   text-align: left;
   color: ${props => props.theme.assignment.cardTimeTextColor};
-  padding-bottom: 8px;
+  padding-bottom: 5px;
+
   i {
     color: ${props => props.theme.assignment.cardTimeIconColor};
+    position: relative;
+    top: -1px;
   }
 
   .anticon-clock-circle {
@@ -196,21 +240,29 @@ const CardDate = styled.div`
       height: 17px;
     }
   }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    font-size: 10px;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    font-size: 13px;
+    padding-bottom: 13px;
+  }
 `;
 
 const DueDetails = styled.span`
-  padding-left: 5px;
+  padding-left: 11px;
 `;
 const StatusWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
 const StatusButton = styled.div`
-  width: 135px;
+  width: 121px;
   height: 23.5px;
   border-radius: 5px;
   background-color: ${props => getStatusBgColor(props, "Bg")};
-  border: 1px solid ${props => getStatusBgColor(props, "Border")};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
@@ -222,7 +274,14 @@ const StatusButton = styled.div`
     top: -1px;
     color: ${props => getStatusBgColor(props, "Text")};
   }
-  @media screen and (max-width: 767px) {
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 94px;
+    font-size: 9px;
+    padding: 6px 14px;
+  }
+
+  @media screen and (max-width: ${mobileWidthMax}) {
     width: 100%;
   }
 `;

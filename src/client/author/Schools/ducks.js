@@ -60,8 +60,7 @@ export const reducer = createReducer(initialState, {
     state.loading = true;
   },
   [RECEIVE_SCHOOLS_SUCCESS]: (state, { payload }) => {
-    const schoolsData = [];
-    payload.data.map(row => {
+    const schoolsData = payload.data.map(row => {
       let school = {};
       school = { ...row };
 
@@ -90,7 +89,7 @@ export const reducer = createReducer(initialState, {
       school.address = get(school, "address", "");
       if (school.address == null) school.address = "";
       delete school._source;
-      schoolsData.push(school);
+      return school;
     });
 
     state.loading = false;

@@ -421,16 +421,12 @@ class ClassesTable extends Component {
   };
 
   getSearchQuery = () => {
-    const { loadClassListData, userOrgId } = this.props;
+    const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage, showActive, disableActiveUsers } = this.state;
     const search = {};
 
     if (searchByName.length > 0) {
       search.name = searchByName;
-    }
-
-    if (!disableActiveUsers && showActive) {
-      search.active = 1;
     }
 
     for (let i = 0; i < filtersData.length; i++) {
@@ -462,7 +458,11 @@ class ClassesTable extends Component {
       districtId: userOrgId,
       limit: 25,
       page: currentPage,
-      search
+      search,
+      search: {
+        ...search,
+        active: showActive ? 1 : 0
+      }
     };
   };
 
@@ -676,7 +676,7 @@ class ClassesTable extends Component {
           <Checkbox
             disabled={disableActiveUsers}
             style={{ margin: "auto" }}
-            value={showActive}
+            checked={showActive}
             onChange={this.onChangeShowActive}
           >
             Show Active Classes

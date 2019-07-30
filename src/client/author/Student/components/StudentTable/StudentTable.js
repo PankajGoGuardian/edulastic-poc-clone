@@ -45,6 +45,7 @@ import {
   deleteAdminUserAction,
   setSearchNameAction,
   getAdminUsersDataSelector,
+  getAdminUsersDataCountSelector,
   getShowActiveUsersSelector,
   setShowActiveUsersAction,
   getPageNoSelector,
@@ -61,6 +62,8 @@ import {
 import { receiveSchoolsAction } from "../../../Schools/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
+
+import { getFullNameFromString } from "../../../../common/utils/helpers";
 
 const { Option } = Select;
 
@@ -86,7 +89,7 @@ class StudentTable extends Component {
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
 
-      showActive: 1,
+      showActive: true,
       searchByName: "",
       filtersData: [
         {
@@ -148,9 +151,7 @@ class StudentTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const {
-      adminUsersData: { result }
-    } = nextProps;
+    const { adminUsersData: result } = nextProps;
     return {
       selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
     };
@@ -169,15 +170,6 @@ class StudentTable extends Component {
     this.setState({
       selectedAdminsForDeactivate: [id],
       deactivateAdminModalVisible: true
-    });
-  };
-
-  confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props;
-    const { selectedAdminsForDeactivate } = this.state;
-    deleteAdminUser({ userIds: selectedAdminsForDeactivate, role: "student" });
-    this.setState({
-      deactivateAdminModalVisible: false
     });
   };
 
@@ -223,43 +215,6 @@ class StudentTable extends Component {
     }
   };
 
-  addStudent = () => {
-    if (this.formRef) {
-      const { userOrgId: districtId, createAdminUser } = this.props;
-      const { form } = this.formRef.props;
-      form.validateFields((err, values) => {
-        if (!err) {
-          const { fullName, email, password } = values;
-          const tempName = split(fullName, " ");
-          const firstName = tempName[0];
-          const lastName = tempName[1];
-          values.districtId = districtId;
-          values.firstName = firstName;
-          values.lastName = lastName;
-
-          const contactEmails = get(values, "contactEmails");
-          if (contactEmails) {
-            values.contactEmails = [contactEmails];
-          }
-
-          if (values.dob) {
-            values.dob = moment(values.dob).format("x");
-          }
-          unset(values, ["confirmPassword"]);
-          unset(values, ["fullName"]);
-          createAdminUser(pickBy(values, identity));
-          this.setState({ addStudentModalVisible: false });
-        }
-      });
-    }
-  };
-
-  closeAddStudentModal = () => {
-    this.setState({
-      addStudentModalVisible: false
-    });
-  };
-
   closeEditStudentModal = () => {
     this.setState({
       editStudentModaVisible: false
@@ -293,6 +248,71 @@ class StudentTable extends Component {
   saveFormRef = node => {
     this.formRef = node;
   };
+
+  setPageNo = page => {
+    this.setState({ currentPage: page }, this.loadFilteredList);
+  };
+
+  // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
+
+  createUser = () => {
+    if (this.formRef) {
+      const { userOrgId: districtId, createAdminUser } = this.props;
+      const { form } = this.formRef.props;
+      form.validateFields((err, values) => {
+        if (!err) {
+          const { fullName, email, password } = values;
+
+          let name = getFullNameFromString(fullName);
+          values.firstName = name.firstName;
+          values.middleName = name.middleName;
+          values.lastName = name.lastName;
+
+          const contactEmails = get(values, "contactEmails");
+          if (contactEmails) {
+            values.contactEmails = [contactEmails];
+          }
+
+          if (values.dob) {
+            values.dob = moment(values.dob).format("x");
+          }
+          unset(values, ["confirmPassword"]);
+          unset(values, ["fullName"]);
+
+          let o = {
+            createReq: pickBy(values, identity),
+            listReq: this.getSearchQuery()
+          };
+
+          createAdminUser(o);
+          this.setState({ addStudentModalVisible: false });
+        }
+      });
+    }
+  };
+
+  closeAddUserModal = () => {
+    this.setState({
+      addStudentModalVisible: false
+    });
+  };
+
+  confirmDeactivate = () => {
+    const { deleteAdminUser } = this.props;
+    const { selectedAdminsForDeactivate } = this.state;
+
+    const o = {
+      deleteReq: { userIds: selectedAdminsForDeactivate, role: "student" },
+      listReq: this.getSearchQuery()
+    };
+
+    deleteAdminUser(o);
+    this.setState({
+      deactivateAdminModalVisible: false
+    });
+  };
+
+  // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
   handleSearchName = value => {
@@ -369,7 +389,7 @@ class StudentTable extends Component {
   };
 
   onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked ? 1 : 0 }, this.loadFilteredList);
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
   addFilter = (e, key) => {
@@ -426,9 +446,9 @@ class StudentTable extends Component {
       districtId: userOrgId,
       role: "student",
       limit: 25,
-      page: 1,
+      page: currentPage,
       // uncomment after elastic search is fixed
-      // status: this.state.showActive,
+      // status: this.state.showActive ? 1 : 0,
       search
     };
   };
@@ -450,7 +470,8 @@ class StudentTable extends Component {
       deactivateAdminModalVisible,
       selectedAdminsForDeactivate,
 
-      filtersData
+      filtersData,
+      currentPage
     } = this.state;
 
     const rowSelection = {
@@ -459,7 +480,8 @@ class StudentTable extends Component {
     };
 
     const {
-      adminUsersData: { result = {}, totalUsers },
+      adminUsersData: result,
+      totalUsers,
       userOrgId,
       setShowActiveUsers,
       showActiveUsers,
@@ -577,10 +599,10 @@ class StudentTable extends Component {
           dataSource={Object.values(result)}
           columns={this.columns}
           pagination={{
-            current: pageNo,
+            current: currentPage,
             total: totalUsers,
             pageSize: 25,
-            onChange: page => setPageNo(page)
+            onChange: page => this.setPageNo(page)
           }}
         />
         {editStudentModaVisible && (
@@ -597,8 +619,8 @@ class StudentTable extends Component {
         )}
         {addStudentModalVisible && (
           <AddStudentModal
-            handleAdd={this.addStudent}
-            handleCancel={this.closeAddStudentModal}
+            handleAdd={this.createUser}
+            handleCancel={this.closeAddUserModal}
             isOpen={addStudentModalVisible}
             submitted={false}
             wrappedComponentRef={this.saveFormRef}
@@ -650,6 +672,7 @@ const enhance = compose(
       // classList: get(state, ["classesReducer", "data"], []),
       studentDetailsModalVisible: get(state, ["studentReducer", "studentDetailsModalVisible"], false),
       adminUsersData: getAdminUsersDataSelector(state),
+      totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),

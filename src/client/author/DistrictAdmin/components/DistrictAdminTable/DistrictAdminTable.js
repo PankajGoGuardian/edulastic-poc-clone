@@ -29,6 +29,7 @@ import {
   deleteAdminUserAction,
   setSearchNameAction,
   getAdminUsersDataSelector,
+  getAdminUsersDataCountSelector,
   getShowActiveUsersSelector,
   setShowActiveUsersAction,
   getPageNoSelector,
@@ -67,7 +68,7 @@ class DistrictAdminTable extends Component {
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
 
-      showActive: 1,
+      showActive: true,
       searchByName: "",
       filtersData: [
         {
@@ -120,9 +121,7 @@ class DistrictAdminTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const {
-      adminUsersData: { result }
-    } = nextProps;
+    const { adminUsersData: result } = nextProps;
     return {
       selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
     };
@@ -141,15 +140,6 @@ class DistrictAdminTable extends Component {
     this.setState({
       selectedAdminsForDeactivate: [id],
       deactivateAdminModalVisible: true
-    });
-  };
-
-  confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props;
-    const { selectedAdminsForDeactivate } = this.state;
-    deleteAdminUser({ userIds: selectedAdminsForDeactivate, role: "district-admin" });
-    this.setState({
-      deactivateAdminModalVisible: false
     });
   };
 
@@ -186,25 +176,54 @@ class DistrictAdminTable extends Component {
     }
   };
 
-  createDistrictAdmin = newDistrictAdminData => {
-    const { userOrgId, createAdminUser } = this.props;
-    newDistrictAdminData.role = "district-admin";
-    newDistrictAdminData.districtId = userOrgId;
-    createAdminUser(newDistrictAdminData);
-    this.setState({ createDistrictAdminModalVisible: false });
-  };
-
-  closeCreateDistrictAdminModal = () => {
-    this.setState({
-      createDistrictAdminModalVisible: false
-    });
-  };
-
   closeEditDistrictAdminModal = () => {
     this.setState({
       editDistrictAdminModaVisible: false
     });
   };
+
+  setPageNo = page => {
+    this.setState({ currentPage: page }, this.loadFilteredList);
+  };
+
+  // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
+
+  createUser = createReq => {
+    const { userOrgId, createAdminUser } = this.props;
+    createReq.role = "district-admin";
+    createReq.districtId = userOrgId;
+
+    let o = {
+      createReq: createReq,
+      listReq: this.getSearchQuery()
+    };
+
+    createAdminUser(o);
+    this.setState({ createDistrictAdminModalVisible: false });
+  };
+
+  closeCreateUserModal = () => {
+    this.setState({
+      createDistrictAdminModalVisible: false
+    });
+  };
+
+  confirmDeactivate = () => {
+    const { deleteAdminUser } = this.props;
+    const { selectedAdminsForDeactivate } = this.state;
+
+    const o = {
+      deleteReq: { userIds: selectedAdminsForDeactivate, role: "district-admin" },
+      listReq: this.getSearchQuery()
+    };
+
+    deleteAdminUser(o);
+    this.setState({
+      deactivateAdminModalVisible: false
+    });
+  };
+
+  // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
   handleSearchName = value => {
@@ -282,7 +301,7 @@ class DistrictAdminTable extends Component {
   };
 
   onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked ? 1 : 0 }, this.loadFilteredList);
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
   addFilter = (e, key) => {
@@ -338,9 +357,9 @@ class DistrictAdminTable extends Component {
       districtId: userOrgId,
       role: "district-admin",
       limit: 25,
-      page: 1,
+      page: currentPage,
       // uncomment after elastic search is fixed
-      // status: this.state.showActive,
+      // status: this.state.showActive ? 1 : 0,
       search
     };
   };
@@ -361,7 +380,8 @@ class DistrictAdminTable extends Component {
       deactivateAdminModalVisible,
       selectedAdminsForDeactivate,
 
-      filtersData
+      filtersData,
+      currentPage
     } = this.state;
 
     const rowSelection = {
@@ -370,7 +390,8 @@ class DistrictAdminTable extends Component {
     };
 
     const {
-      adminUsersData: { result = {}, totalUsers },
+      adminUsersData: result,
+      totalUsers,
       userOrgId,
       setShowActiveUsers,
       showActiveUsers,
@@ -385,6 +406,7 @@ class DistrictAdminTable extends Component {
       addFilter,
       removeFilter
     } = this.props;
+
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit user">Update Selected User</Menu.Item>
@@ -401,8 +423,8 @@ class DistrictAdminTable extends Component {
           {createDistrictAdminModalVisible && (
             <CreateDistrictAdminModal
               modalVisible={createDistrictAdminModalVisible}
-              createDistrictAdmin={this.createDistrictAdmin}
-              closeModal={this.closeCreateDistrictAdminModal}
+              createDistrictAdmin={this.createUser}
+              closeModal={this.closeCreateUserModal}
               userOrgId={userOrgId}
             />
           )}
@@ -477,10 +499,10 @@ class DistrictAdminTable extends Component {
           dataSource={Object.values(result)}
           columns={this.columns}
           pagination={{
-            current: pageNo,
+            current: currentPage,
             total: totalUsers,
             pageSize: 25,
-            onChange: page => setPageNo(page)
+            onChange: page => this.setPageNo(page)
           }}
         />
         {editDistrictAdminModaVisible && (
@@ -524,6 +546,7 @@ const enhance = compose(
     state => ({
       userOrgId: getUserOrgId(state),
       adminUsersData: getAdminUsersDataSelector(state),
+      totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state)

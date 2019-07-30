@@ -34,6 +34,7 @@ import {
   deleteAdminUserAction,
   setSearchNameAction,
   getAdminUsersDataSelector,
+  getAdminUsersDataCountSelector,
   getShowActiveUsersSelector,
   setShowActiveUsersAction,
   getPageNoSelector,
@@ -75,7 +76,7 @@ class TeacherTable extends Component {
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
 
-      showActive: 1,
+      showActive: true,
       searchByName: "",
       filtersData: [
         {
@@ -137,9 +138,7 @@ class TeacherTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const {
-      adminUsersData: { result }
-    } = nextProps;
+    const { adminUsersData: result } = nextProps;
     return {
       selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
     };
@@ -158,15 +157,6 @@ class TeacherTable extends Component {
     this.setState({
       selectedAdminsForDeactivate: [id],
       deactivateAdminModalVisible: true
-    });
-  };
-
-  confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props;
-    const { selectedAdminsForDeactivate } = this.state;
-    deleteAdminUser({ userIds: selectedAdminsForDeactivate, role: "teacher" });
-    this.setState({
-      deactivateAdminModalVisible: false
     });
   };
 
@@ -199,20 +189,6 @@ class TeacherTable extends Component {
     }
   };
 
-  addTeacher = addTeacherData => {
-    const { userOrgId, createAdminUser } = this.props;
-    addTeacherData.role = "teacher";
-    addTeacherData.districtId = userOrgId;
-    createAdminUser(addTeacherData);
-    this.setState({ addTeacherModalVisible: false });
-  };
-
-  closeAddTeacherModal = () => {
-    this.setState({
-      addTeacherModalVisible: false
-    });
-  };
-
   closeEditTeacherModal = () => {
     this.setState({
       editTeacherModaVisible: false
@@ -230,6 +206,49 @@ class TeacherTable extends Component {
       inviteTeacherModalVisible: false
     });
   };
+
+  // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
+
+  createUser = createReq => {
+    const { userOrgId, createAdminUser } = this.props;
+    createReq.role = "teacher";
+    createReq.districtId = userOrgId;
+
+    let o = {
+      createReq: createReq,
+      listReq: this.getSearchQuery()
+    };
+
+    createAdminUser(o);
+    this.setState({ addTeacherModalVisible: false });
+  };
+
+  closeAddUserModal = () => {
+    this.setState({
+      addTeacherModalVisible: false
+    });
+  };
+
+  confirmDeactivate = () => {
+    const { deleteAdminUser } = this.props;
+    const { selectedAdminsForDeactivate } = this.state;
+
+    const o = {
+      deleteReq: { userIds: selectedAdminsForDeactivate, role: "teacher" },
+      listReq: this.getSearchQuery()
+    };
+
+    deleteAdminUser(o);
+    this.setState({
+      deactivateAdminModalVisible: false
+    });
+  };
+
+  setPageNo = page => {
+    this.setState({ currentPage: page }, this.loadFilteredList);
+  };
+
+  // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
   handleSearchName = value => {
@@ -306,7 +325,7 @@ class TeacherTable extends Component {
   };
 
   onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked ? 1 : 0 }, this.loadFilteredList);
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
   addFilter = (e, key) => {
@@ -363,9 +382,9 @@ class TeacherTable extends Component {
       districtId: userOrgId,
       role: "teacher",
       limit: 25,
-      page: 1,
+      page: currentPage,
       // uncomment after elastic search is fixed
-      // status: this.state.showActive,
+      // status: this.state.showActive ? 1 : 0,
       search
     };
   };
@@ -390,11 +409,13 @@ class TeacherTable extends Component {
       deactivateAdminModalVisible,
       selectedAdminsForDeactivate,
 
-      filtersData
+      filtersData,
+      currentPage
     } = this.state;
 
     const {
-      adminUsersData: { result = {}, totalUsers },
+      adminUsersData: result,
+      totalUsers,
       userOrgId,
       setShowActiveUsers,
       showActiveUsers,
@@ -509,10 +530,10 @@ class TeacherTable extends Component {
           dataSource={Object.values(result)}
           columns={this.columns}
           pagination={{
-            current: pageNo,
+            current: currentPage,
             total: totalUsers,
             pageSize: 25,
-            onChange: page => setPageNo(page)
+            onChange: page => this.setPageNo(page)
           }}
         />
         {editTeacherModaVisible && (
@@ -530,8 +551,8 @@ class TeacherTable extends Component {
         {addTeacherModalVisible && (
           <AddTeacherModal
             modalVisible={addTeacherModalVisible}
-            addTeacher={this.addTeacher}
-            closeModal={this.closeAddTeacherModal}
+            addTeacher={this.createUser}
+            closeModal={this.closeAddUserModal}
             userOrgId={userOrgId}
           />
         )}
@@ -575,6 +596,7 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       teachersList: getTeachersListSelector(state),
       adminUsersData: getAdminUsersDataSelector(state),
+      totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),

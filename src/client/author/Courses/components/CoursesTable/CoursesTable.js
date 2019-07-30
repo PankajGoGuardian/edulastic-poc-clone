@@ -217,7 +217,7 @@ class CoursesTable extends React.Component {
     if (showActive) loadListJsonData.active = 1;
 
     updateCourse({
-      uploadCSVData: {
+      updateData: {
         courseId: selectedSourceKey[0]._id,
         data: updatedCourseData
       },
@@ -354,8 +354,6 @@ class CoursesTable extends React.Component {
     const { filtersData, sortedInfo, searchByName, currentPage, showActive } = this.state;
     const { userOrgId } = this.props;
 
-    // if (isActive === undefined) isActive = this.state.showActive;
-
     let search = {};
     for (let i = 0; i < filtersData.length; i++) {
       if (
@@ -377,9 +375,9 @@ class CoursesTable extends React.Component {
       page: currentPage,
       sortField: sortedInfo.columnKey,
       order: sortedInfo.order,
+      active: showActive ? 1 : 0,
       search
     };
-    if (showActive) loadListJsonData.active = 1;
 
     // TO DO: remove this line after further investigation
     this.setState({ searchData: loadListJsonData });

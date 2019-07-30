@@ -80,7 +80,12 @@ const getSearchValueSelector = createSelector(
 
 export const getAdminUsersDataSelector = createSelector(
   stateSchoolAdminSelector,
-  state => state.data
+  state => state.data.result
+);
+
+export const getAdminUsersDataCountSelector = createSelector(
+  stateSchoolAdminSelector,
+  state => state.data.totalUsers
 );
 
 export const getShowActiveUsersSelector = createSelector(
@@ -137,8 +142,12 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_SCHOOLADMIN_SUCCESS]: (state, { payload: { result, totalUsers } }) => {
     state.loading = false;
-    state.data.result = keyBy(result, "_id");
-    state.data.totalUsers = totalUsers;
+    const _result = keyBy(result, "_id");
+
+    state.data = {
+      result: _result,
+      totalUsers
+    };
   },
   [RECEIVE_SCHOOLADMIN_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -150,7 +159,11 @@ export const reducer = createReducer(initialState, {
   [UPDATE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
     state.update = payload;
     state.updating = false;
-    // state.data = schoolAdminData;
+
+    state.data.result[payload._id]._source = {
+      ...state.data.result[payload._id]._source,
+      ...payload
+    };
   },
   [UPDATE_SCHOOLADMIN_ERROR]: (state, { payload }) => {
     state.updating = false;
@@ -238,32 +251,6 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* receiveSchoolAdminSaga({ payload }) {
   try {
-    // const showActiveUsers = yield select(getShowActiveUsersSelector);
-    // const districtId = yield select(getUserOrgId);
-    // const page = yield select(getPageNoSelector);
-    // const role = yield select(getRoleSelector);
-    // const { other, ...rest } = yield select(getFiltersSelector);
-    // const searchValue = yield select(getSearchValueSelector);
-    // const searchParams = searchValue
-    //   ? {
-    //       firstName: {
-    //         type: "cont",
-    //         value: searchValue
-    //       }
-    //     }
-    //   : {};
-    // const statusParams = showActiveUsers ? { status: 1 } : {};
-    // const payload = {
-    //   districtId,
-    //   role,
-    //   limit: 25,
-    //   page,
-    //   ...statusParams,
-    //   search: {
-    //     ...searchParams,
-    //     ...rest
-    //   }
-    // };
     const data = yield call(userApi.fetchUsers, payload);
     yield put(receiveSchoolAdminSuccessAction(data));
   } catch (err) {
@@ -278,8 +265,6 @@ function* updateSchoolAdminSaga({ payload }) {
     const updateSchoolAdmin = yield call(userApi.updateUser, payload);
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
     message.success("User updated successfully");
-    // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveAdminDataAction());
   } catch ({ data: { message: errMsg } }) {
     const errorMessage = "Update User is failing";
     message.error(errMsg || errorMessage);
@@ -289,13 +274,14 @@ function* updateSchoolAdminSaga({ payload }) {
 
 function* createSchoolAdminSaga({ payload }) {
   try {
-    const createSchoolAdmin = yield call(userApi.createUser, payload);
+    const createSchoolAdmin = yield call(userApi.createUser, payload.createReq);
     yield put(createSchoolAdminSuccessAction(createSchoolAdmin));
+
     // here after an update/delete/create, the new data is fetched back again
     const { role } = createSchoolAdmin;
     if (role === "teacher") yield call(message.success, "New user created successfully");
     else if (role === "student") yield call(message.success, "Student added successfully");
-    yield put(receiveAdminDataAction());
+    yield put(receiveAdminDataAction(payload.listReq));
   } catch (err) {
     const errorMessage = "Create SchoolAdmin is failing";
     yield call(message.error, errorMessage);
@@ -305,13 +291,12 @@ function* createSchoolAdminSaga({ payload }) {
 
 function* deleteSchoolAdminSaga({ payload }) {
   try {
-    // for (let i = 0; i < payload.length; i++) {
-    const { result } = yield call(userApi.deleteUser, payload);
-    // }
+    const { result } = yield call(userApi.deleteUser, payload.deleteReq);
     message.success(result);
-    yield put(deleteSchoolAdminSuccessAction(payload));
+    yield put(deleteSchoolAdminSuccessAction(payload.deleteReq));
+
     // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveAdminDataAction());
+    yield put(receiveAdminDataAction(payload.listReq));
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";
     yield call(message.error, errorMessage);

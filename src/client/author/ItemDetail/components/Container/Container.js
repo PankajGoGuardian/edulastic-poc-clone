@@ -331,8 +331,13 @@ class Container extends Component {
     const intersectionCount = intersection(questionsType, constantsQuestionType.manuallyGradableQn).length;
     const isAnswerBtnVisible = questionsType && intersectionCount < questionsType.length;
 
+    // NOTE: Where do we get allowed attempts at ItemDetail level?
+    // Currently hardcoded until the above question is answered.
+    const checkAttempts = 1;
+
     return (
       <ButtonAction
+        allowedAttempts={checkAttempts}
         onShowSource={this.handleShowSource}
         onShowSettings={this.handleShowSettings}
         onChangeView={this.handleChangeView}

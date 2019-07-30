@@ -6,8 +6,6 @@ import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox, Form } 
 import { test } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
 import { red, green, blueBorder } from "@edulastic/colors";
-import { IconCaretDown } from "@edulastic/icons";
-
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
 import ListCard from "../Card/Card";
@@ -23,7 +21,6 @@ import {
   Body,
   Title,
   Block,
-  AdvancedButton,
   AdvancedSettings,
   BlueText,
   Description,
@@ -38,8 +35,8 @@ import {
   MessageSpan,
   NavigationMenu
 } from "./styled";
-import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
 import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
+import StandardProficiencyTable from "./StandardProficiencyTable";
 
 const {
   settingCategories,
@@ -638,6 +635,10 @@ class MainSetting extends Component {
             ) : (
               ""
             )}
+            <Block id="performance-bands" smallSize={isSmallSize}>
+              <Title>Standard based grading scale</Title>
+              <StandardProficiencyTable />
+            </Block>
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
               <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>

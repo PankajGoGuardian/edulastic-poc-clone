@@ -61,18 +61,19 @@ class StudentsDetailsModal extends React.Component {
   };
 
   render() {
-    const { dataSource, modalVisible } = this.props;
-    const modifiedDataSource = dataSource.map(item => {
+    const { dataSource, teacherDataSource, role, modalVisible } = this.props;
+    const selectedDataSource = role === "teacher" ? teacherDataSource : dataSource;
+    const modifiedDataSource = selectedDataSource.map(item => {
       const obj = {
         ...item,
-        fullName: item.firstName + " " + item.lastName
+        fullName: get(item, "firstName", "") + " " + get(item, "lastName", "")
       };
       return obj;
     });
     return (
       <Modal
         visible={modalVisible}
-        title="Student Details"
+        title={role === "teacher" ? "Teacher Details" : "Student Details"}
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
@@ -98,7 +99,8 @@ class StudentsDetailsModal extends React.Component {
 
 const enhance = compose(
   connect(state => ({
-    dataSource: get(state, ["studentReducer", "multiStudents"], [])
+    dataSource: get(state, ["studentReducer", "multiStudents"], []),
+    teacherDataSource: get(state, ["schoolAdminReducer", "bulkTeacherData"], [])
   }))
 );
 

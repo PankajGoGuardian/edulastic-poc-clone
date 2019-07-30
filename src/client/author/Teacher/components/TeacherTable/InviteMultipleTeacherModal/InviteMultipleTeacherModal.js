@@ -11,9 +11,14 @@ class InviteMultipleTeacherModal extends Component {
   }
 
   onInviteTeachers = () => {
+    const { addTeachers, userOrgId: districtId, closeModal } = this.props;
+
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        this.props.inviteTeachers(row);
+        const { teachersList } = row;
+        const userDetails = teachersList.split(/;|\n/);
+        addTeachers({ districtId, userDetails });
+        closeModal();
       }
     });
   };
@@ -49,7 +54,7 @@ class InviteMultipleTeacherModal extends Component {
             To add multiple teachers, type or paste teacher emails below. Teachers will receive an email inviting them
             to select a school and create a pssword.
             <br />
-            Use seperate lines or emi-colons to add teachers.
+            Use seperate lines or semi-colons to add teachers.
           </Col>
         </Row>
         <Row>
@@ -64,7 +69,7 @@ class InviteMultipleTeacherModal extends Component {
                 <br />
                 ...
               </PlaceHolderText>
-              {getFieldDecorator("invite-teacher", {
+              {getFieldDecorator("teachersList", {
                 rules: [
                   {
                     required: true,

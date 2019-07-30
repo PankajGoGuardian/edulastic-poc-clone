@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
@@ -22,6 +23,7 @@ import {
 import { AddUserFormModal as EditTeacherModal } from "../../../../common/components/AddUserModal/AddUserModal";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
+import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 
 import { getTeachersListSelector } from "../../ducks";
 
@@ -42,7 +44,9 @@ import {
   changeFilterValueAction,
   addFilterAction,
   removeFilterAction,
-  setRoleAction
+  setRoleAction,
+  addBulkTeacherAdminAction,
+  setTeachersDetailsModalVisibleAction
 } from "../../../SchoolAdmin/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
@@ -221,12 +225,6 @@ class TeacherTable extends Component {
     });
   };
 
-  sendInviteTeacher = inviteTeacherList => {
-    this.setState({
-      inviteTeacherModalVisible: false
-    });
-  };
-
   closeInviteTeacherModal = () => {
     this.setState({
       inviteTeacherModalVisible: false
@@ -376,6 +374,9 @@ class TeacherTable extends Component {
     const { loadAdminData } = this.props;
     loadAdminData(this.getSearchQuery());
   };
+  closeTeachersDetailModal = () => {
+    this.props.setTeachersDetailsModalVisible(false);
+  };
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -406,9 +407,10 @@ class TeacherTable extends Component {
       changeFilterValue,
       loadAdminData,
       addFilter,
-      removeFilter
+      removeFilter,
+      addTeachers,
+      teacherDetailsModalVisible
     } = this.props;
-
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange
@@ -431,8 +433,9 @@ class TeacherTable extends Component {
           {inviteTeacherModalVisible && (
             <InviteMultipleTeacherModal
               modalVisible={inviteTeacherModalVisible}
-              inviteTeachers={this.sendInviteTeacher}
               closeModal={this.closeInviteTeacherModal}
+              addTeachers={addTeachers}
+              userOrgId={userOrgId}
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
@@ -554,6 +557,13 @@ class TeacherTable extends Component {
             }
           />
         )}
+        {teacherDetailsModalVisible && (
+          <StudentsDetailsModal
+            modalVisible={teacherDetailsModalVisible}
+            closeModal={this.closeTeachersDetailModal}
+            role="teacher"
+          />
+        )}
       </StyledTableContainer>
     );
   }
@@ -567,7 +577,8 @@ const enhance = compose(
       adminUsersData: getAdminUsersDataSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
-      filters: getFiltersSelector(state)
+      filters: getFiltersSelector(state),
+      teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false)
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -577,6 +588,8 @@ const enhance = compose(
       setSearchName: setSearchNameAction,
       setShowActiveUsers: setShowActiveUsersAction,
       setPageNo: setPageNoAction,
+      addTeachers: addBulkTeacherAdminAction,
+      setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction,
       /**
        * Action to set the filter Column.
        * @param {string} str1 The previous value held by the select.

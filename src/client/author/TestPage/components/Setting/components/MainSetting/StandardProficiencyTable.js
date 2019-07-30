@@ -5,45 +5,10 @@ import { get } from "lodash";
 import { getUserOrgId } from "../../../../../src/selectors/user";
 import { receiveStandardsProficiencyAction } from "../../../../../StandardsProficiency/ducks";
 
-const dataSource = [
-  {
-    _id: "5cf8eda6231158a3148f387d",
-    score: 4,
-    masteryLevel: "Exceeds Mastery1",
-    shortName: "E",
-    threshold: 90,
-    color: "#C8EB9B"
-  },
-  {
-    _id: "5cf8eda623115815a98f387c",
-    score: 3,
-    masteryLevel: "Mastered",
-    shortName: "M",
-    threshold: 80,
-    color: "#F3FCCF"
-  },
-  {
-    _id: "5cf8eda623115827538f387b",
-    score: 2,
-    masteryLevel: "Almost Mastered",
-    shortName: "A",
-    threshold: 70,
-    color: "#FDFDC8"
-  },
-  {
-    _id: "5cf8eda623115806668f387a",
-    score: 1,
-    masteryLevel: "Proficiency 1",
-    shortName: "P1",
-    threshold: 0,
-    color: "#D4E9FA"
-  }
-];
-
 const EditableContext = React.createContext();
 
-const EditableCell = ({ editing, dataIndex, title, record, index, children, dataSource, ...restProps }) => {
-  const checkPerThre = (rule, value = "", callback) => {
+const EditableCell = ({ editing, dataIndex, record, children, dataSource, ...restProps }) => {
+  const validateThreshold = (rule, value = "", callback) => {
     var isnum = /^\d+$/.test(value);
     if (value.length && !isnum) {
       return callback("Please input valid number.");
@@ -68,7 +33,6 @@ const EditableCell = ({ editing, dataIndex, title, record, index, children, data
     if (currentIndex > 0 && value > dataSource[currentIndex - 1].threshold) {
       return callback(`value should not be greater than ${dataSource[currentIndex - 1].masteryLevel}`);
     }
-    console.log(dataSource[currentIndex], "===");
     return callback();
   };
 
@@ -84,7 +48,7 @@ const EditableCell = ({ editing, dataIndex, title, record, index, children, data
                   message: `Please Input valid threshold!`
                 },
                 {
-                  validator: checkPerThre
+                  validator: validateThreshold
                 }
               ],
               initialValue: record[dataIndex]
@@ -99,14 +63,16 @@ const EditableCell = ({ editing, dataIndex, title, record, index, children, data
   return <EditableContext.Consumer>{renderCell}</EditableContext.Consumer>;
 };
 
-const StandardProficiencyTable = ({ form, loadStandardsProficiency, standardsData }) => {
+const StandardProficiencyTable = ({ form, loadStandardsProficiency, standardsData, userOrgId }) => {
   const [standardsProficiency, setStandardsProficiency] = useState([]);
   const [editingKey, setEditingKey] = useState("");
 
   useEffect(() => {
-    // loadStandardsProficiency();
-    setStandardsProficiency(dataSource.map(item => ({ ...item, key: item._id })));
+    loadStandardsProficiency({ orgId: userOrgId });
   }, []);
+  useEffect(() => {
+    setStandardsProficiency(standardsData.map(item => ({ ...item, key: item._id })));
+  }, [standardsData]);
 
   const isEditing = record => record._id === editingKey;
 
@@ -123,8 +89,6 @@ const StandardProficiencyTable = ({ form, loadStandardsProficiency, standardsDat
           ...item,
           ...row
         });
-      } else {
-        newData.push(row);
       }
       setStandardsProficiency(newData);
       setEditingKey("");
@@ -167,18 +131,12 @@ const StandardProficiencyTable = ({ form, loadStandardsProficiency, standardsDat
                 </a>
               )}
             </EditableContext.Consumer>
-            <Button onClick={() => setEditingKey("")}>
-              <a>Cancel</a>
-            </Button>
+            <a href="javascript:;" onClick={() => setEditingKey("")}>
+              Cancel
+            </a>
           </span>
         ) : (
-          <a
-            disabled={editingKey !== ""}
-            onClick={() => {
-              console.log(record);
-              setEditingKey(record.key);
-            }}
-          >
+          <a disabled={editingKey !== ""} onClick={() => setEditingKey(record.key)}>
             Edit
           </a>
         );
@@ -210,7 +168,7 @@ const StandardProficiencyTable = ({ form, loadStandardsProficiency, standardsDat
       })
     };
   });
-  console.log(editingKey, "=editingKey");
+
   return (
     <EditableContext.Provider value={form}>
       <Table components={components} dataSource={standardsProficiency} columns={columns} pagination={false} />

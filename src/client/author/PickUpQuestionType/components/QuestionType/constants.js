@@ -739,7 +739,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
@@ -763,7 +763,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
@@ -787,7 +787,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "True" }, { value: uuids[1], label: "False" }],
         validation: {

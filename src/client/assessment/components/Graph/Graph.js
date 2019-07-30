@@ -329,6 +329,7 @@ class Graph extends Component {
                   handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
                   getIgnoreRepeatedShapesOptions={getIgnoreRepeatedShapesOptions}
                   handleSelectIgnoreRepeatedShapes={this.handleSelectIgnoreRepeatedShapes}
+                  handleNumberlineChange={this.handleNumberlineChange}
                 />
               </Question>
               <Question

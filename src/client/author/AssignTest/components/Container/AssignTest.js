@@ -38,6 +38,7 @@ import {
 } from "./styled";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { receiveClassListAction } from "../../../Classes/ducks";
+import produce from "immer";
 
 const { ASSESSMENT, COMMON } = testConst;
 
@@ -46,8 +47,7 @@ const initAssignment = {
   openPolicy: "Automatically on Start Date",
   closePolicy: "Automatically on Due Date",
   class: [],
-  testType: ASSESSMENT,
-  specificStudents: false
+  testType: ASSESSMENT
 };
 
 const setTime = userRole => {
@@ -65,7 +65,8 @@ class AssignTest extends React.Component {
       assignment: {
         ...initAssignment,
         endDate: setTime(props.userRole)
-      }
+      },
+      specificStudents: false
     };
   }
 
@@ -166,14 +167,15 @@ class AssignTest extends React.Component {
   updateAssignment = assignment => this.setState({ assignment });
 
   onClassFieldChange = (value, group) => {
-    const { assignment } = this.state;
+    const { assignment, specificStudents } = this.state;
     const groupById = keyBy(group, "_id");
     const classData = value.map(_id => ({
       _id,
       name: get(groupById, `${_id}.name`, ""),
       assignedCount: get(groupById, `${_id}.studentCount`, 0),
       grade: get(groupById, `${_id}.grades`, ""),
-      subject: get(groupById, `${_id}.subject`, "")
+      subject: get(groupById, `${_id}.subject`, ""),
+      specificStudents: specificStudents
     }));
 
     let termId = "";
@@ -189,8 +191,21 @@ class AssignTest extends React.Component {
     };
   };
 
+  toggleSpecificStudents = specificStudents => {
+    const { assignment } = this.state;
+    const newAssignment = produce(assignment, assignmentCopy => {
+      if (assignmentCopy.class.length > 0) {
+        assignmentCopy.class.forEach(eachClass => {
+          eachClass.specificStudents = specificStudents;
+        });
+      }
+    });
+
+    this.setState({ specificStudents, assignment: newAssignment });
+  };
+
   render() {
-    const { isAdvancedView, assignment } = this.state;
+    const { isAdvancedView, assignment, specificStudents } = this.state;
     const { classList, fetchStudents, students, testSettings, testItem, isPlaylist, playlist } = this.props;
     const { title, _id } = isPlaylist ? playlist : testItem;
     return (
@@ -223,6 +238,8 @@ class AssignTest extends React.Component {
               updateOptions={this.updateAssignment}
               testSettings={testSettings}
               onClassFieldChange={this.onClassFieldChange}
+              specificStudents={specificStudents}
+              toggleSpecificStudents={this.toggleSpecificStudents}
             />
           ) : (
             <SimpleOptions
@@ -233,6 +250,8 @@ class AssignTest extends React.Component {
               testSettings={testSettings}
               updateOptions={this.updateAssignment}
               onClassFieldChange={this.onClassFieldChange}
+              specificStudents={specificStudents}
+              toggleSpecificStudents={this.toggleSpecificStudents}
             />
           )}
         </Container>

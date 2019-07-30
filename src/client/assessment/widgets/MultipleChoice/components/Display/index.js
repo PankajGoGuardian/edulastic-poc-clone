@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { InstructorStimulus, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import Options from "./components/Options";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/Label";
+import { QuestionTitleWrapper } from "./styled/Label";
 
 const Display = ({
   qIndex,
@@ -25,7 +25,7 @@ const Display = ({
       <>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel>}
           <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
       </>

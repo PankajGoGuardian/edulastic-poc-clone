@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep, flattenDeep, isUndefined, get, maxBy, minBy, findIndex } from "lodash";
 import { withTheme } from "styled-components";
-import { InstructorStimulus, Stimulus, MathSpan } from "@edulastic/common";
+import { InstructorStimulus, Stimulus, MathSpan, QuestionNumberLabel } from "@edulastic/common";
 import { response, clozeImage } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -12,7 +12,7 @@ import DragItem from "./components/DragItem";
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -643,7 +643,7 @@ class Display extends Component {
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         {responseposition === "top" && (

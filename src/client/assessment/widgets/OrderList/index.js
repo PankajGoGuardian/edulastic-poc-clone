@@ -13,7 +13,8 @@ import {
   InstructorStimulus,
   CorrectAnswersContainer,
   FlexContainer,
-  MathFormulaDisplay
+  MathFormulaDisplay,
+  QuestionNumberLabel
 } from "@edulastic/common";
 
 import { Text } from "./styled/Text";
@@ -42,11 +43,6 @@ const EmptyWrapper = styled.div``;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
 `;
 
 const OptionsList = withPoints(QuillSortableList);
@@ -248,7 +244,7 @@ const OrderList = ({
           <InstructorStimulus>{itemForPreview.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             <QuestionHeader
               qIndex={qIndex}
               smallSize={smallSize}

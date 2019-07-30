@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { MathFormulaDisplay } from "@edulastic/common";
+import { MathFormulaDisplay, QuestionNumberLabel } from "@edulastic/common";
 
 import { CLEAR } from "../../../constants/constantsForQuestions";
 import { MathEssayInputWrapper } from "./styled";
@@ -8,7 +8,7 @@ import { MathEssayInputWrapper } from "./styled";
 import MathEssayInput from "./MathEssayInput";
 
 import { InstructorStimulus } from "../styled/InstructorStimulus";
-import { QuestionTitleWrapper, QuestionNumber } from "../styled/QustionNumber";
+import { QuestionTitleWrapper } from "../styled/QustionNumber";
 
 const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLines, showQuestionNumber, qIndex }) => {
   useEffect(() => {
@@ -21,7 +21,7 @@ const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLi
     <MathEssayInputWrapper>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       </QuestionTitleWrapper>
 

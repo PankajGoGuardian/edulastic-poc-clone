@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { isEmpty, get } from "lodash";
 
-import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay, FlexContainer } from "@edulastic/common";
+import {
+  MathInput,
+  StaticMath,
+  MathFormulaDisplay,
+  MathDisplay,
+  FlexContainer,
+  QuestionNumberLabel
+} from "@edulastic/common";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
@@ -12,7 +19,7 @@ import MathInputStatus from "./components/MathInputStatus/index";
 import { UnitsDropdown } from "./components/MathFormulaAnswerMethod/options";
 
 import MathInputWrapper from "./styled/MathInputWrapper";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
@@ -230,7 +237,7 @@ class MathFormulaPreview extends Component {
     return (
       <div>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <MathFormulaDisplay
             data-cy="preview-header"
             style={{ marginBottom: 15 }}

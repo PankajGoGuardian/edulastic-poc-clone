@@ -20,9 +20,11 @@ class DragScroll extends Component {
   handleDragEnter = () => {
     const { scrollDelay, direction } = this.props;
     const scrollAmount = direction === UPWARDS ? -window.innerHeight / 2 : window.innerHeight / 2;
-    const { context } = this.props;
+    const { context, scrollElement } = this.props;
     const { getScrollElement } = context;
+
     const scrollContainer = getScrollElement();
+
     scrollContainer.scrollBy({
       top: scrollAmount,
       behavior: "smooth"
@@ -55,6 +57,7 @@ class DragScroll extends Component {
   };
 
   handleMouseEnter = () => {
+    console.log("mouse enter");
     const { handleDragEnter } = this;
     const { isMouseClicked } = this.state;
     if (isMouseClicked) {
@@ -63,6 +66,7 @@ class DragScroll extends Component {
   };
 
   handleMouseLeave = () => {
+    console.log("mouse leave");
     const { handleDragLeave } = this;
 
     handleDragLeave();
@@ -112,8 +116,8 @@ class DragScroll extends Component {
     const { isDragging } = this.state;
     const { style } = this.props;
     const { context } = this.props;
-    const { getScrollElement } = context;
-    const scrollContainer = getScrollElement();
+    const { getScrollElement, scrollElement } = context;
+    const scrollContainer = scrollElement || getScrollElement();
 
     const height = style.height || "auto";
 
@@ -122,7 +126,7 @@ class DragScroll extends Component {
       height: isDragging ? height : 0
     };
 
-    const key = scrollContainer.classList ? scrollContainer.classList.toString() : "window";
+    const key = scrollContainer && scrollContainer.classList ? scrollContainer.classList.toString() : "window";
 
     return (
       <div
@@ -142,13 +146,15 @@ DragScroll.propTypes = {
   scrollDelay: PropTypes.number,
   direction: PropTypes.string,
   style: PropTypes.object,
-  context: PropTypes.object.isRequired
+  context: PropTypes.object.isRequired,
+  scrollElement: PropTypes.object
 };
 
 DragScroll.defaultProps = {
   direction: UPWARDS,
   scrollDelay: 1500,
-  style: {}
+  style: {},
+  scrollElement: null
 };
 
 export default DragScroll;

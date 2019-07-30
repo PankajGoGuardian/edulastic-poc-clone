@@ -9,18 +9,33 @@ import { Placeholder } from "../../../common/components/loader";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import StudentMasteryTable from "./common/components/table/StudentMasteryTable";
 import StudentPerformanceSummary from "./common/components/table/StudentPerformanceSummary";
-import StudentPerformancePie from "./common/components/chart/StudentPerformancePie";
+import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
+import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
 import {
   getReportsStudentMasteryProfile,
   getReportsStudentMasteryProfileLoader,
   getStudentMasteryProfileRequestAction
 } from "./ducks";
 import { getReportsSPRFilterData } from "../common/filterDataDucks";
-import { getDomains, getDomainOptions, augmentStandardMetaInfo } from "./common/utils/transformers";
+import { augmentStandardMetaInfo } from "../common/utils/transformers.js";
+import { useGetStudentMasteryData } from "../common/hooks";
+import { getDomainOptions } from "./common/utils/transformers";
 import { toggleItem } from "../../../common/util";
 
 const usefilterRecords = (records, domain) => {
   return useMemo(() => filter(records, record => domain == "All" || record.domainId == domain), [records, domain]);
+};
+
+const getTooltip = payload => {
+  if (payload && payload.length) {
+    const { masteryName = "", percentage = 0 } = payload[0].payload;
+    return (
+      <div>
+        <BarTooltipRow title={`${masteryName} : `} value={`${percentage}%`} />
+      </div>
+    );
+  }
+  return false;
 };
 
 const StudentMasteryProfile = ({
@@ -38,12 +53,7 @@ const StudentMasteryProfile = ({
   const [selectedDomain, setSelectedDomain] = useState({ key: "All", title: "All" });
   const [selectedMastery, setSelectedMastery] = useState([]);
 
-  const [studentStandards, studentDomains] = useMemo(() => {
-    const standards = augmentStandardMetaInfo(metricInfo, skillInfo, scaleInfo);
-    const domains = getDomains(standards, scaleInfo);
-
-    return [standards, domains];
-  }, [metricInfo, skillInfo, scaleInfo]);
+  const [studentStandards, studentDomains] = useGetStudentMasteryData(metricInfo, skillInfo, scaleInfo);
 
   const filteredStandards = usefilterRecords(studentStandards, selectedDomain.key);
   const filteredDomains = usefilterRecords(studentDomains, selectedDomain.key);
@@ -86,9 +96,15 @@ const StudentMasteryProfile = ({
             <StyledIcon type="user" />
           </Col>
           <Col xs={24} sm={24} md={5} lg={5} xl={5}>
-            <p>Name: {selectedStudent.title}</p>
-            <p>Grade: {studentInformation.grades}</p>
-            <p>Subject: {studentInformation.subject}</p>
+            <p>
+              <b>Name</b>: {selectedStudent.title}
+            </p>
+            <p>
+              <b>Grade</b>: {studentInformation.grades}
+            </p>
+            <p>
+              <b>Subject</b>: {studentInformation.subject}
+            </p>
           </Col>
           <DropdownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
             <ControlDropDown by={selectedDomain} selectCB={onDomainSelect} data={domainOptions} prefix="Domain(s) - " />
@@ -103,6 +119,7 @@ const StudentMasteryProfile = ({
               data={filteredStandards}
               scaleInfo={scaleInfo}
               onSectionClick={onSectionClick}
+              getTooltip={getTooltip}
             />
           </Col>
           <Col xs={24} sm={24} md={16} lg={16} xl={16}>

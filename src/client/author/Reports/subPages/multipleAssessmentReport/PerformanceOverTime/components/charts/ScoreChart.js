@@ -17,7 +17,8 @@ export const getYLabelString = analyzeBy => {
   }
 };
 
-const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClickCB, xDataKey }) => {
+const ScoreChart = ({ data, analyseBy, onBarClickCB, selectedTests, onResetClickCB }) => {
+  const xDataKey = "uniqId";
   const dataWithColors = addColors(data, selectedTests, xDataKey, "score");
 
   const yTickformatLabel = score => {
@@ -87,15 +88,13 @@ ScoreChart.propTypes = {
   analyseBy: PropTypes.string.isRequired,
   onBarClickCB: PropTypes.func,
   onResetClickCB: PropTypes.func,
-  selectedTests: PropTypes.array,
-  xDataKey: PropTypes.string
+  selectedTests: PropTypes.array
 };
 
 ScoreChart.defaultProps = {
   onBarClickCB: () => {},
   onResetClickCB: () => {},
-  selectedTests: [],
-  xDataKey: "uniqId"
+  selectedTests: []
 };
 
 export default ScoreChart;

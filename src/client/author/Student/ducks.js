@@ -111,6 +111,11 @@ export const getAddStudentsToOtherClassSelector = createSelector(
   ({ addStudentsToOtherClass }) => addStudentsToOtherClass
 );
 
+export const getStudentsLoading = createSelector(
+  stateStudentSelector,
+  state => state.loading
+);
+
 // reducers
 const initialState = {
   data: [],

@@ -142,6 +142,45 @@
         }
       ],
       "group": "multipleAssessmentReport"
+    },
+    "student-profile-summary": {
+      "title": "Student Profile Summary",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT PROFILE SUMMARY"
+        }
+      ],
+      "group": "studentProfileReport"
+    },
+    "student-mastery-profile": {
+      "title": "Student Mastery Profile",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT MASTERY PROFILE"
+        }
+      ],
+      "group": "studentProfileReport"
+    },
+    "student-assessment-profile": {
+      "title": "Student Assessment Profile",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT ASSESSMENT PROFILE"
+        }
+      ],
+      "group": "studentProfileReport"
     }
   },
   "navigation": {
@@ -204,6 +243,23 @@
         "key": "student-progress",
         "title": "Student Progress",
         "location": "/author/reports/student-progress"
+      }
+    ],
+    "studentProfileReport": [
+      {
+        "key": "student-profile-summary",
+        "title": "Student Profile Summary",
+        "location": "/author/reports/student-profile-summary/student/"
+      },
+      {
+        "key": "student-mastery-profile",
+        "title": "Student Mastery Profile",
+        "location": "/author/reports/student-mastery-profile/student/"
+      },
+      {
+        "key": "student-assessment-profile",
+        "title": "Student Assessment Profile",
+        "location": "/author/reports/student-assessment-profile/student/"
       }
     ]
   }

@@ -1,8 +1,7 @@
 import next from "immer";
 import moment from "moment";
 import { groupBy, sumBy, round, maxBy, minBy, get, map, head, forEach, values, reduce, capitalize } from "lodash";
-import { percentage } from "../../../../common/util";
-import { getLeastProficiencyBand } from "../../common/utils/trend";
+import { percentage, getLeastProficiencyBand } from "../../../../common/util";
 
 export const convertToBandData = (metricInfo = [], bandInfo = []) => {
   const leastProficiency = getLeastProficiencyBand(bandInfo);

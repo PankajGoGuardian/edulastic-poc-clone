@@ -8,7 +8,7 @@ import { StyledTable, StyledCard, StyledH3 } from "../../../../../common/styled"
 
 import { getHSLFromRange1, stringCompare } from "../../../../../common/util";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
-import { StyledCell } from "../styled";
+import { StyledCell } from "../../../../../common/styled";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
 import TrendColumn from "./TrendColumn";
 import dropDownData from "../../static/json/dropDownData.json";

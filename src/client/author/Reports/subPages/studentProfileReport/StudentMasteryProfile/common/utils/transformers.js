@@ -18,7 +18,7 @@ export const getOverallMasteryPercentage = (records, maxScale) => {
   return percentage(masteredStandards.length, records.length);
 };
 
-const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInfo) => {
+export const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInfo) => {
   const groupedSkillsByStandard = groupBy(skillInfo, "standardId");
 
   const standardsWithInfo = map(standards, standard => {
@@ -45,13 +45,12 @@ const augmentStandardMetaInfo = (standards = [], skillInfo = [], scaleInfo) => {
   return standardsWithInfo;
 };
 
-export const getDomains = (metricInfo = [], skillInfo = [], scaleInfo = []) => {
+export const getDomains = (metricInfo = [], scaleInfo = []) => {
   if (!metricInfo.length) {
-    return [[], []];
+    return [];
   }
 
-  const metricWithStandardInfo = augmentStandardMetaInfo(metricInfo, skillInfo, scaleInfo);
-  const groupedByDomain = groupBy(metricWithStandardInfo, "domainId");
+  const groupedByDomain = groupBy(metricInfo, "domainId");
   const maxScale = getMaxScale(scaleInfo);
 
   const domains = map(keys(groupedByDomain), domainId => {
@@ -68,7 +67,7 @@ export const getDomains = (metricInfo = [], skillInfo = [], scaleInfo = []) => {
     };
   });
 
-  return [domains, metricWithStandardInfo];
+  return domains;
 };
 
 export const getStudentPerformancePieData = (metricInfo = [], scaleInfo = []) => {

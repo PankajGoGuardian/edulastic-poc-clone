@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
-import { get, filter } from "lodash";
+import { get, filter, includes, map } from "lodash";
 import { Row, Col, Icon } from "antd";
 import { Pie, PieChart, Cell } from "recharts";
 import { StyledCard, StyledH3 } from "../../../common/styled";
@@ -16,7 +16,12 @@ import {
   getStudentMasteryProfileRequestAction
 } from "./ducks";
 import { getReportsSPRFilterData } from "../common/filterDataDucks";
-import { getDomains, getDomainOptions } from "./common/utils/transformers";
+import { getDomains, getDomainOptions, augmentStandardMetaInfo } from "./common/utils/transformers";
+import { toggleItem } from "../../../common/util";
+
+const usefilterRecords = (records, domain) => {
+  return useMemo(() => filter(records, record => domain == "All" || record.domainId == domain), [records, domain]);
+};
 
 const StudentMasteryProfile = ({
   match,
@@ -31,26 +36,18 @@ const StudentMasteryProfile = ({
   const { selectedStudent = {} } = settings;
 
   const [selectedDomain, setSelectedDomain] = useState({ key: "All", title: "All" });
+  const [selectedMastery, setSelectedMastery] = useState([]);
 
-  const [studentDomains, studentStandards] = useMemo(() => {
-    return getDomains(metricInfo, skillInfo, scaleInfo);
+  const [studentStandards, studentDomains] = useMemo(() => {
+    const standards = augmentStandardMetaInfo(metricInfo, skillInfo, scaleInfo);
+    const domains = getDomains(standards, scaleInfo);
+
+    return [standards, domains];
   }, [metricInfo, skillInfo, scaleInfo]);
 
-  const filteredStandards = useMemo(() => {
-    if (selectedDomain.key == "All") {
-      return studentStandards;
-    } else {
-      return filter(studentStandards, standard => standard.domainId === selectedDomain.key);
-    }
-  }, [selectedDomain.key, studentStandards]);
-
-  const filteredDomains = useMemo(() => {
-    if (selectedDomain.key == "All") {
-      return studentDomains;
-    } else {
-      return filter(studentDomains, domain => domain.domainId === selectedDomain.key);
-    }
-  }, [selectedDomain.key, studentDomains]);
+  const filteredStandards = usefilterRecords(studentStandards, selectedDomain.key);
+  const filteredDomains = usefilterRecords(studentDomains, selectedDomain.key);
+  const domainOptions = getDomainOptions(studentDomains);
 
   useEffect(() => {
     const { selectedStudent, requestFilters } = settings;
@@ -62,9 +59,12 @@ const StudentMasteryProfile = ({
     }
   }, [settings]);
 
-  const onDomainSelect = (_, selected) => setSelectedDomain(selected);
+  useEffect(() => {
+    setSelectedMastery([]);
+  }, [selectedDomain.key]);
 
-  const domainOptions = getDomainOptions(studentDomains);
+  const onDomainSelect = (_, selected) => setSelectedDomain(selected);
+  const onSectionClick = item => setSelectedMastery(toggleItem(selectedMastery, item.masteryLabel));
 
   if (loading) {
     return (
@@ -98,14 +98,19 @@ const StudentMasteryProfile = ({
       <StyledCard>
         <Row type="flex">
           <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-            <StudentPerformancePie data={filteredStandards} scaleInfo={scaleInfo} />
+            <StudentPerformancePie
+              selectedMastery={selectedMastery}
+              data={filteredStandards}
+              scaleInfo={scaleInfo}
+              onSectionClick={onSectionClick}
+            />
           </Col>
           <Col xs={24} sm={24} md={16} lg={16} xl={16}>
-            <StudentPerformanceSummary data={filteredDomains} />
+            <StudentPerformanceSummary data={filteredDomains} selectedMastery={selectedMastery} />
           </Col>
         </Row>
       </StyledCard>
-      <StudentMasteryTable data={filteredStandards} />
+      <StudentMasteryTable data={filteredStandards} selectedMastery={selectedMastery} />
     </>
   );
 };

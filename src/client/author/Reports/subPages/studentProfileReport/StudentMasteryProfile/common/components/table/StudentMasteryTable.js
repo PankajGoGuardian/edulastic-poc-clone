@@ -1,4 +1,5 @@
 import React from "react";
+import { intersection, filter } from "lodash";
 import PropTypes from "prop-types";
 import { Row, Col } from "antd";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
@@ -79,13 +80,17 @@ const columns = [
   }
 ];
 
-const StudentMasteryTable = ({ data }) => {
+const StudentMasteryTable = ({ data, selectedMastery }) => {
+  const filteredStandards = filter(data, standard => {
+    return !selectedMastery.length || intersection([standard.scale.masteryLabel], selectedMastery).length;
+  });
+
   return (
     <StyledCard>
       <StyledH3>Standard Performance Details</StyledH3>
       <Row>
         <Col>
-          <StyledTable dataSource={data} columns={columns} colouredCellsNo={5} />
+          <StyledTable dataSource={filteredStandards} columns={columns} colouredCellsNo={5} />
         </Col>
       </Row>
     </StyledCard>
@@ -93,11 +98,13 @@ const StudentMasteryTable = ({ data }) => {
 };
 
 StudentMasteryTable.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  selectedMastery: PropTypes.array
 };
 
 StudentMasteryTable.defaultProps = {
-  data: []
+  data: [],
+  selectedMastery: []
 };
 
 export default StudentMasteryTable;

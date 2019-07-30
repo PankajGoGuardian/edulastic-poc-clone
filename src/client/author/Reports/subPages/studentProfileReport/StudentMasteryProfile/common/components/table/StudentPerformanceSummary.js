@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { round } from "lodash";
+import { round, intersection, filter, map } from "lodash";
 import { Row, Col } from "antd";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
@@ -29,6 +29,7 @@ const columns = [
     title: "Standards",
     key: "standards",
     dataIndex: "standards",
+    width: 335,
     render: (standards, record) => {
       return (
         <Row type="flex">
@@ -41,14 +42,23 @@ const columns = [
   }
 ];
 
-const StudentPerformanceSummary = ({ data }) => {
+const StudentPerformanceSummary = ({ data, selectedMastery }) => {
+  const filteredDomains = filter(data, domain => {
+    if (!selectedMastery.length) {
+      return data;
+    }
+
+    const domainStandardsMastery = map(domain.standards, standard => standard.scale.masteryLabel);
+    return intersection(domainStandardsMastery, selectedMastery).length;
+  });
+
   return (
     <>
       <StyledH3>Standard Performance Summary</StyledH3>
       <Row>
         <Col>
           <StyledTable
-            dataSource={data}
+            dataSource={filteredDomains}
             columns={columns}
             pagination={{
               pageSize: 5
@@ -61,11 +71,13 @@ const StudentPerformanceSummary = ({ data }) => {
 };
 
 StudentPerformanceSummary.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  selectedMastery: PropTypes.array
 };
 
 StudentPerformanceSummary.defaultProps = {
-  data: []
+  data: [],
+  selectedMastery: []
 };
 
 export default StudentPerformanceSummary;

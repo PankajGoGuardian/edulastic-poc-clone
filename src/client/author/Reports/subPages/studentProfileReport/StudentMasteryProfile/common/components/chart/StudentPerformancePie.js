@@ -1,11 +1,24 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { round } from "lodash";
+import next from "immer";
+import { round, includes, map } from "lodash";
 import { PieChart, Pie, Cell, Tooltip, Label } from "recharts";
 import { getStudentPerformancePieData, getOverallMasteryPercentage, getMaxScale } from "../../utils/transformers";
 import { StyledCustomChartTooltip as CustomChartTooltip, StyledH3 } from "../../../../../../common/styled";
 import BarTooltipRow from "../../../../../../common/components/tooltip/BarTooltipRow";
+
+const fillColors = (data, selectedMastery) => {
+  if (!selectedMastery.length) {
+    return data;
+  }
+
+  return map(data, item => {
+    return next(item, draftItem => {
+      draftItem.color = includes(selectedMastery, item.masteryLabel) ? item.color : "#cccccc";
+    });
+  });
+};
 
 const RADIAN = Math.PI / 180;
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, masteryLabel }) => {
@@ -31,10 +44,12 @@ const getTooltip = payload => {
   return false;
 };
 
-const StudentPerformancePie = ({ data, scaleInfo }) => {
+const StudentPerformancePie = ({ data, scaleInfo, onSectionClick, selectedMastery }) => {
   const pieData = getStudentPerformancePieData(data, scaleInfo);
   const maxScale = getMaxScale(scaleInfo);
   const overallMasteryPercentage = getOverallMasteryPercentage(data, maxScale);
+
+  const dataWithColors = fillColors(pieData, selectedMastery);
 
   return (
     <>
@@ -51,10 +66,10 @@ const StudentPerformancePie = ({ data, scaleInfo }) => {
           fill="#8884d8"
           dataKey="count"
           label={renderCustomizedLabel}
-          onClick={(...args) => console.log(args)}
+          onClick={onSectionClick}
         >
           <Label value={`Mastery ${round(overallMasteryPercentage)}%`} position="center" />
-          {pieData.map((entry, index) => (
+          {dataWithColors.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={entry.color} />
           ))}
         </Pie>
@@ -65,7 +80,14 @@ const StudentPerformancePie = ({ data, scaleInfo }) => {
 
 StudentPerformancePie.propTypes = {
   data: PropTypes.array.isRequired,
-  scaleInfo: PropTypes.array.isRequired
+  scaleInfo: PropTypes.array.isRequired,
+  onSectionClick: PropTypes.func,
+  selectedMastery: PropTypes.array
+};
+
+StudentPerformancePie.defaultProps = {
+  onSectionClick: () => {},
+  selectedMastery: []
 };
 
 export default StudentPerformancePie;

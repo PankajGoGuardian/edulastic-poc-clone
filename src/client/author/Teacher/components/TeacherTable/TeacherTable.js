@@ -42,7 +42,8 @@ import {
   changeFilterValueAction,
   addFilterAction,
   removeFilterAction,
-  setRoleAction
+  setRoleAction,
+  addBulkTeacherAdminAction
 } from "../../../SchoolAdmin/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
@@ -218,12 +219,6 @@ class TeacherTable extends Component {
   showInviteTeacherModal = () => {
     this.setState({
       inviteTeacherModalVisible: true
-    });
-  };
-
-  sendInviteTeacher = inviteTeacherList => {
-    this.setState({
-      inviteTeacherModalVisible: false
     });
   };
 
@@ -406,9 +401,9 @@ class TeacherTable extends Component {
       changeFilterValue,
       loadAdminData,
       addFilter,
-      removeFilter
+      removeFilter,
+      addTeachers
     } = this.props;
-
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange
@@ -431,8 +426,9 @@ class TeacherTable extends Component {
           {inviteTeacherModalVisible && (
             <InviteMultipleTeacherModal
               modalVisible={inviteTeacherModalVisible}
-              inviteTeachers={this.sendInviteTeacher}
               closeModal={this.closeInviteTeacherModal}
+              addTeachers={addTeachers}
+              userOrgId={userOrgId}
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
@@ -574,6 +570,7 @@ const enhance = compose(
       setSearchName: setSearchNameAction,
       setShowActiveUsers: setShowActiveUsersAction,
       setPageNo: setPageNoAction,
+      addTeachers: addBulkTeacherAdminAction,
       /**
        * Action to set the filter Column.
        * @param {string} str1 The previous value held by the select.

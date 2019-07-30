@@ -179,6 +179,15 @@ const resetUserPassword = data =>
     })
     .then(result => result.data.result);
 
+const adddBulkTeacher = ({ districtId, userDetails }) => {
+  return api.callApi({
+    url: `${prefix}/${districtId}/bulk-invite-teachers`,
+    data: {
+      userDetails
+    },
+    method: "POST"
+  });
+};
 export default {
   getUser,
   fetchUsers,
@@ -200,5 +209,6 @@ export default {
   checkClassCode,
   requestNewPassword,
   fetchResetPasswordUser,
-  resetUserPassword
+  resetUserPassword,
+  adddBulkTeacher
 };

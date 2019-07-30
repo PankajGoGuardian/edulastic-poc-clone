@@ -11,9 +11,14 @@ class InviteMultipleTeacherModal extends Component {
   }
 
   onInviteTeachers = () => {
+    const { addTeachers, userOrgId: districtId, closeModal } = this.props;
+
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        this.props.inviteTeachers(row);
+        const { teachersList } = row;
+        const userDetails = teachersList.split(/;|\n/);
+        addTeachers({ districtId, userDetails });
+        closeModal();
       }
     });
   };
@@ -64,7 +69,7 @@ class InviteMultipleTeacherModal extends Component {
                 <br />
                 ...
               </PlaceHolderText>
-              {getFieldDecorator("invite-teacher", {
+              {getFieldDecorator("teachersList", {
                 rules: [
                   {
                     required: true,

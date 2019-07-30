@@ -225,8 +225,7 @@ class MathFormulaPreview extends Component {
     const customKeys = get(item, "custom_keys", []);
 
     // in Units type, this need when the show dropdown option is true
-    let correctUnit = item.validation.valid_response.value[0].options.unit;
-    correctUnit = !correctUnit ? "" : correctUnit;
+    const correctUnit = get(item, "validation.valid_response.value[0].options.unit", "");
 
     return (
       <div>

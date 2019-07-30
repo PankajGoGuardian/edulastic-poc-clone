@@ -245,12 +245,12 @@ function* receiveSchoolAdminSaga({ payload }) {
 function* updateSchoolAdminSaga({ payload }) {
   try {
     const updateSchoolAdmin = yield call(userApi.updateUser, payload);
-    message.success("School admin updated successfully");
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
+    message.success("User updated successfully");
     // here after an update/delete/create, the new data is fetched back again
     yield put(receiveAdminDataAction());
   } catch ({ data: { message: errMsg } }) {
-    const errorMessage = "Update SchoolAdmin is failing";
+    const errorMessage = "Update User is failing";
     message.error(errMsg || errorMessage);
     yield put(updateSchoolAdminErrorAction({ error: errorMessage }));
   }

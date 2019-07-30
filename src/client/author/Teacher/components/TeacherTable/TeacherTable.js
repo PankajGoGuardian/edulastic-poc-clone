@@ -19,8 +19,8 @@ import {
   StyledClassName
 } from "./styled";
 
+import { AddUserFormModal as EditTeacherModal } from "../../../../common/components/AddUserModal/AddUserModal";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
-import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 
 import { getTeachersListSelector } from "../../ducks";
@@ -514,11 +514,14 @@ class TeacherTable extends Component {
         />
         {editTeacherModaVisible && (
           <EditTeacherModal
-            teacherData={result[editTeacherKey]}
-            modalVisible={editTeacherModaVisible}
-            saveTeacher={updateAdminUser}
-            closeModal={this.closeEditTeacherModal}
+            showModal={editTeacherModaVisible}
+            role="teacher"
+            formTitle="Update User"
+            showAdditionalFields={false}
             userOrgId={userOrgId}
+            modalData={result[editTeacherKey]}
+            modalFunc={updateAdminUser}
+            closeModal={this.closeEditTeacherModal}
           />
         )}
         {addTeacherModalVisible && (

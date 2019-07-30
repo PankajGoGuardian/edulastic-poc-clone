@@ -4,6 +4,7 @@ export const TableWrapper = styled.div`
   overflow: auto;
   height: 600px;
   width: 100%;
+  max-width: 700px;
   margin: auto;
   margin-top: 0;
   background: ${({ imageUrl }) => (imageUrl ? `url('${imageUrl}')` : "inherit")};

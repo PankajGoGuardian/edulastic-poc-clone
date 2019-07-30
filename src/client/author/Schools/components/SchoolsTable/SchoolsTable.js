@@ -787,6 +787,7 @@ class SchoolsTable extends React.Component {
           pageSize={25}
           total={totalSchoolsCount}
           onChange={this.changePagination}
+          hideOnSinglePage={true}
         />
 
         {editSchoolModaVisible && editSchoolKey !== "" && (

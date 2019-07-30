@@ -15,7 +15,6 @@ class CreateSchoolModal extends Component {
       nameValidateStatus: "success",
       nameValidateMsg: "",
       showSpin: false,
-      countryValue: "",
       stateList: []
     };
     this.onCreateSchool = this.onCreateSchool.bind(this);
@@ -109,14 +108,10 @@ class CreateSchoolModal extends Component {
   render() {
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { modalVisible } = this.props;
-    const { countryList, nameValidateStatus, nameValidateMsg, showSpin, countryValue, stateList } = this.state;
+    const { countryList, nameValidateStatus, nameValidateMsg, showSpin, stateList } = this.state;
 
-    const CountryOptions = [];
-    Object.entries(countryList).map(([key, value]) => {
-      if (value.toLowerCase().indexOf(countryValue.toLowerCase()) >= 0) {
-        CountryOptions.push(<Option value={key}>{value}</Option>);
-      }
-    });
+    const CountryOptions = Object.entries(countryList).map(([key, value]) => <Option value={key}>{value}</Option>);
+
     const country = getFieldValue("country");
     const stateOptions = stateList.map(state => (
       <Option value={state} key={state}>
@@ -176,7 +171,7 @@ class CreateSchoolModal extends Component {
             <ModalFormItem label="State">
               {getFieldDecorator("state", { initialValue: states[0] })(
                 country === "US" ? (
-                  <Select showSearch placeholder="Select state" style={{ width: "100%" }}>
+                  <Select showSearch showArrow={false} placeholder="Select state" style={{ width: "100%" }}>
                     {stateOptions}
                   </Select>
                 ) : (
@@ -195,9 +190,8 @@ class CreateSchoolModal extends Component {
                 <StyledSelect
                   showSearch
                   placeholder="Select Country"
-                  onSearch={this.handleSearch}
                   showArrow={false}
-                  filterOption={false}
+                  optionFilterProp={"children"}
                   notFoundContent={null}
                   onChange={this.changeCountryHandler}
                   onInputKeyDown={this.onCountryKeyDown}

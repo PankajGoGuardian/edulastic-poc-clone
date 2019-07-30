@@ -322,6 +322,8 @@ function* addBulkTeacherAdminSaga({ payload }) {
   try {
     const res = yield call(userApi.adddBulkTeacher, payload);
     yield put(addBulkTeacherAdminSuccessAction(res.data));
+    yield call(message.success, "Users Added Successfully");
+    yield put(receiveAdminDataAction());
   } catch (err) {
     const errorMessage = "Add Bulk Teacher is failing";
     yield call(message.error, errorMessage);

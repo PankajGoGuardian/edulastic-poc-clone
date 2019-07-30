@@ -229,7 +229,7 @@ const onHandler = board => {
     labels
   });
 
-  if (!showLabels) {
+  if (!showLabels && newAxis.ticks[1]) {
     newAxis.ticks[1].labels.forEach((label, index) => {
       if (parseInt(label.htmlStr, 10) === 0 && index !== 0 && !specificTicks.includes(+label.htmlStr)) {
         board.$board.removeObject(newAxis.ticks[1].labels[index]);
@@ -237,7 +237,7 @@ const onHandler = board => {
     });
   }
 
-  if (labelsFrequency) {
+  if (labelsFrequency && newAxis.ticks[1]) {
     newAxis.ticks[1].labels.forEach((label, index) => {
       if (index % labelsFrequency === 0 || specificTicks.includes(+label.htmlStr)) {
       } else if (index !== 0 && index !== labels.length - 1) {
@@ -246,7 +246,7 @@ const onHandler = board => {
     });
   }
 
-  if (!labelShowMin) {
+  if (!labelShowMin && newAxis.ticks[1]) {
     newAxis.ticks[1].labels.forEach((label, index) => {
       let compareValue = label.htmlStr;
 
@@ -260,7 +260,7 @@ const onHandler = board => {
     });
   }
 
-  if (!labelShowMax) {
+  if (!labelShowMax && newAxis.ticks[1]) {
     newAxis.ticks[1].labels.forEach((label, index) => {
       let compareValue = label.htmlStr;
 

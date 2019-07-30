@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { BarChart, Bar, Tooltip } from "recharts";
-import { StyledCell, StyledTrendIcon } from "../styled";
+import { StyledTrendIcon } from "../styled";
+import { StyledCell } from "../../../../../common/styled";
 import { trendTypes } from "../../utils/constants";
 
 const TrendColumn = ({ tests, type }) => {

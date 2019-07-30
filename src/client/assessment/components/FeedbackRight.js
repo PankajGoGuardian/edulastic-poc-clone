@@ -209,7 +209,9 @@ class FeedbackRight extends Component {
               onChange={this.onChangeScore}
               onBlur={this.submitScore}
               value={
-                activity && activity.graded === false && activity.score === 0 && !score ? "" : adaptiveRound(score)
+                activity && activity.graded === false && activity.score === 0 && !score && !this.state.changed
+                  ? ""
+                  : adaptiveRound(score)
               }
               disabled={!activity || isPresentationMode}
               innerRef={this.scoreInput}

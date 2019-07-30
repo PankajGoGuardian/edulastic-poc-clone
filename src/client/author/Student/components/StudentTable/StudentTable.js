@@ -20,8 +20,9 @@ import {
   StyledClassName
 } from "./styled";
 
+import { AddUserFormModal as EditUserFormModal } from "../../../../common/components/AddUserModal/AddUserModal";
+
 import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
-import EditStudentModal from "./EditStudentModal/EditStudentModal";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
 import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
 import AddStudentsToOtherClass from "./AddStudentToOtherClass";
@@ -583,11 +584,14 @@ class StudentTable extends Component {
           }}
         />
         {editStudentModaVisible && (
-          <EditStudentModal
+          <EditUserFormModal
+            showModal={editStudentModaVisible}
+            role="student"
+            formTitle="Update User"
+            showAdditionalFields={true}
             userOrgId={userOrgId}
-            studentData={result[editStudentKey]}
-            modalVisible={editStudentModaVisible}
-            saveStudent={updateAdminUser}
+            modalData={result[editStudentKey]}
+            modalFunc={updateAdminUser}
             closeModal={this.closeEditStudentModal}
           />
         )}

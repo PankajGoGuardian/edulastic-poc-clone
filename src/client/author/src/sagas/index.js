@@ -14,6 +14,7 @@ import assignmentsSaga from "./assignments";
 import { reportAssignmentsSaga } from "../../Reports/assignmentsDucks";
 import { reportSARFilterDataSaga } from "../../Reports/subPages/singleAssessmentReport/common/filterDataDucks";
 import { reportMARFilterDataSaga } from "../../Reports/subPages/multipleAssessmentReport/common/filterDataDucks";
+import { reportSPRFilterDataSaga } from "../../Reports/subPages/studentProfileReport/common/filterDataDucks";
 import { reportAssessmentSummarySaga } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
 import { reportResponseFrequencySaga } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
 import { reportStandardsPerformanceSummarySaga } from "../../Reports/subPages/standardsMasteryReport/standardsPerformance/ducks";
@@ -27,6 +28,8 @@ import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
 import { reportPeerProgressAnalysisSaga } from "../../Reports/subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
 import { reportStudentProgressSaga } from "../../Reports/subPages/multipleAssessmentReport/StudentProgress/ducks";
 import { reportPerformanceOverTimeSaga } from "../../Reports/subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
+import { reportStudentMasteryProfileSaga } from "../../Reports/subPages/studentProfileReport/StudentMasteryProfile/ducks";
+import { reportStudentAssessmentProfileSaga } from "../../Reports/subPages/studentProfileReport/StudentAssessmentProfile/ducks";
 import { authorRoutesWatcherSaga } from "../../sharedDucks/routes";
 import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
 import { assessmentPageSaga } from "../../AssessmentCreate";
@@ -62,6 +65,7 @@ const authorSagas = [
   reportAssignmentsSaga(),
   reportSARFilterDataSaga(),
   reportMARFilterDataSaga(),
+  reportSPRFilterDataSaga(),
   reportAssessmentSummarySaga(),
   reportResponseFrequencySaga(),
   reportPeerPerformanceSaga(),
@@ -73,6 +77,8 @@ const authorSagas = [
   reportPeerProgressAnalysisSaga(),
   reportStudentProgressSaga(),
   reportPerformanceOverTimeSaga(),
+  reportStudentMasteryProfileSaga(),
+  reportStudentAssessmentProfileSaga(),
   classResponsesSaga(),
   testsListSaga(),
   testPageSaga(),

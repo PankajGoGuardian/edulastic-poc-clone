@@ -55,11 +55,13 @@ const ClozeMathPreview = ({
   const _getAltMathAnswers = () =>
     get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
 
-  const _getDropDownAnswers = () => get(item, "validation.valid_dropdown.value", []);
-  const _getAltDropDownAnswers = () => get(item, "validation.alt_dropdowns", []).map(alt => get(alt, "value", []));
+  const _getDropDownAnswers = () => get(item, "validation.valid_response.dropdown.value", []);
+  const _getAltDropDownAnswers = () =>
+    get(item, "validation.alt_responses", []).map(alt => get(alt, "dropdown.value", []));
 
-  const _getTextInputAnswers = () => get(item, "validation.valid_inputs.value", []);
-  const _getAltInputsAnswers = () => get(item, "validation.alt_inputs", []).map(alt => get(alt, "value", []));
+  const _getTextInputAnswers = () => get(item, "validation.valid_response.textinput.value", []);
+  const _getAltInputsAnswers = () =>
+    get(item, "validation.alt_responses", []).map(alt => get(alt, "textinput.value", []));
 
   const handleAddAnswer = (answer, answerType, id) => {
     let newAnswers = cloneDeep(userAnswer);

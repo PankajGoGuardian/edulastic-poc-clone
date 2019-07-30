@@ -1,6 +1,6 @@
 import { map, forEach, find } from "lodash";
 import next from "immer";
-import { getProficiencyBand } from "../../common/utils/trend";
+import { getProficiencyBand } from "../../../../common/util";
 
 export const augmentWithBand = (metricInfo = [], bandInfo = []) =>
   map(metricInfo, metric => {

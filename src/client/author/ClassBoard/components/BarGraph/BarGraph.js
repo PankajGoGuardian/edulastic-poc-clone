@@ -110,7 +110,7 @@ export default class BarGraph extends Component {
           partialAttempts: item.partialNum || 0,
           incorrectAttemps: item.wrongNum,
           manualGradedNum: item.manualGradedNum,
-          avgTimeSpent: item.avgTimeSpent,
+          avgTimeSpent: item.avgTimeSpent || 0,
           itemLevelScoring: item.itemLevelScoring,
           skippedNum: item.skippedNum,
           itemId: item.itemId,

@@ -69,20 +69,6 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
   }
 };
 
-export const getLeastProficiencyBand = (bandInfo = []) =>
-  orderBy(bandInfo, "threshold", ["desc"])[bandInfo.length - 1] || {};
-
-export const getProficiencyBand = (score, bandInfo, field = "threshold") => {
-  const bandInfoWithColor = map(orderBy(bandInfo, "threshold"), (band, index) => {
-    return {
-      ...band,
-      color: getHSLFromRange1(round((100 / (bandInfo.length - 1)) * index))
-    };
-  });
-  const orderedScaleInfo = orderBy(bandInfoWithColor, "threshold", ["desc"]);
-  return find(orderedScaleInfo, info => ceil(score) >= info[field]) || getLeastProficiencyBand(orderedScaleInfo);
-};
-
 export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], selectedTrend = "") => {
   const groupedMetric = groupByCompareKey(metricInfo, compareBy);
 

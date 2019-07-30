@@ -70,7 +70,7 @@ class StudentsDetailsModal extends React.Component {
   };
 
   render() {
-    const { dataSource, teacherDataSource, role, modalVisible, dataProvider } = this.props;
+    const { dataSource, teacherDataSource, role, modalVisible, dataProvider, title } = this.props;
     const selectedDataSource = role === "teacher" ? teacherDataSource : dataSource;
     const modifiedDataSource = selectedDataSource.map(item => {
       const obj = {
@@ -84,7 +84,7 @@ class StudentsDetailsModal extends React.Component {
     return (
       <Modal
         visible={modalVisible}
-        title={role === "teacher" ? "Teacher Details" : "Student Details"}
+        title={title}
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[

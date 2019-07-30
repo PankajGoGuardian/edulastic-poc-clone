@@ -614,6 +614,7 @@ class StudentTable extends Component {
             modalVisible={studentDetailsModalVisible}
             closeModal={this.closeStudentsDetailModal}
             role="student"
+            title="Student Details"
           />
         )}
         {deactivateAdminModalVisible && (

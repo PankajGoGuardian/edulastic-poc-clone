@@ -54,7 +54,7 @@ class InviteMultipleTeacherModal extends Component {
             To add multiple teachers, type or paste teacher emails below. Teachers will receive an email inviting them
             to select a school and create a pssword.
             <br />
-            Use seperate lines or emi-colons to add teachers.
+            Use seperate lines or semi-colons to add teachers.
           </Col>
         </Row>
         <Row>

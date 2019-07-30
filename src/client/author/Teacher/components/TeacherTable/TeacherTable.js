@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
@@ -22,6 +23,7 @@ import {
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
 import EditTeacherModal from "./EditTeacherModal/EditTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
+import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
 
 import { getTeachersListSelector } from "../../ducks";
 
@@ -43,7 +45,8 @@ import {
   addFilterAction,
   removeFilterAction,
   setRoleAction,
-  addBulkTeacherAdminAction
+  addBulkTeacherAdminAction,
+  setTeachersDetailsModalVisibleAction
 } from "../../../SchoolAdmin/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
@@ -371,6 +374,9 @@ class TeacherTable extends Component {
     const { loadAdminData } = this.props;
     loadAdminData(this.getSearchQuery());
   };
+  closeTeachersDetailModal = () => {
+    this.props.setTeachersDetailsModalVisible(false);
+  };
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -402,7 +408,8 @@ class TeacherTable extends Component {
       loadAdminData,
       addFilter,
       removeFilter,
-      addTeachers
+      addTeachers,
+      teacherDetailsModalVisible
     } = this.props;
     const rowSelection = {
       selectedRowKeys,
@@ -547,6 +554,13 @@ class TeacherTable extends Component {
             }
           />
         )}
+        {teacherDetailsModalVisible && (
+          <StudentsDetailsModal
+            modalVisible={teacherDetailsModalVisible}
+            closeModal={this.closeTeachersDetailModal}
+            role="teacher"
+          />
+        )}
       </StyledTableContainer>
     );
   }
@@ -560,7 +574,8 @@ const enhance = compose(
       adminUsersData: getAdminUsersDataSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
-      filters: getFiltersSelector(state)
+      filters: getFiltersSelector(state),
+      teacherDetailsModalVisible: get(state, ["schoolAdminReducer", "teacherDetailsModalVisible"], false)
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -571,6 +586,7 @@ const enhance = compose(
       setShowActiveUsers: setShowActiveUsersAction,
       setPageNo: setPageNoAction,
       addTeachers: addBulkTeacherAdminAction,
+      setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction,
       /**
        * Action to set the filter Column.
        * @param {string} str1 The previous value held by the select.

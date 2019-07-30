@@ -34,6 +34,8 @@ const ADD_BULK_TEACHER_REQUEST = "[teacher] add bulk teacher request";
 const ADD_BULK_TEACHER_SUCCESS = "[teacher] add bulk teacher success";
 const ADD_BULK_TEACHER_ERROR = "[teacher] add bulk teacher error";
 
+const SET_TEACHERDETAIL_MODAL_VISIBLE = "[teacher] set teacher detail modal visible";
+
 export const receiveAdminDataAction = createAction(RECEIVE_SCHOOLADMIN_REQUEST);
 export const receiveSchoolAdminSuccessAction = createAction(RECEIVE_SCHOOLADMIN_SUCCESS);
 export const receiveSchoolAdminErrorAction = createAction(RECEIVE_SCHOOLADMIN_ERROR);
@@ -61,6 +63,8 @@ export const setRoleAction = createAction(SET_ROLE);
 export const addBulkTeacherAdminAction = createAction(ADD_BULK_TEACHER_REQUEST);
 export const addBulkTeacherAdminSuccessAction = createAction(ADD_BULK_TEACHER_SUCCESS);
 export const addBulkTeacherAdminErrorAction = createAction(ADD_BULK_TEACHER_ERROR);
+
+export const setTeachersDetailsModalVisibleAction = createAction(SET_TEACHERDETAIL_MODAL_VISIBLE);
 
 // selectors
 const stateSchoolAdminSelector = state => state.schoolAdminReducer;
@@ -116,7 +120,8 @@ const initialState = {
   // filtersText: "",
   showActiveUsers: true,
   pageNo: 1,
-  bulkTeacherData: {}
+  bulkTeacherData: {},
+  teacherDetailsModalVisible: false
   // filters: {
   //   other: {
   //     type: "",
@@ -212,16 +217,21 @@ export const reducer = createReducer(initialState, {
     state.role = role;
   },
   [ADD_BULK_TEACHER_REQUEST]: state => {
-    debugger;
     state.creating = true;
+    state.teacherDetailsModalVisible = false;
   },
   [ADD_BULK_TEACHER_SUCCESS]: (state, { payload }) => {
-    state.bulkTeacherData = payload;
+    state.bulkTeacherData = payload.result;
     state.creating = false;
+    state.teacherDetailsModalVisible = true;
   },
   [ADD_BULK_TEACHER_ERROR]: (state, { payload }) => {
     state.creating = false;
     state.addBulkTeacherError = payload.bulkAddError;
+    state.teacherDetailsModalVisible = false;
+  },
+  [SET_TEACHERDETAIL_MODAL_VISIBLE]: (state, { payload }) => {
+    state.teacherDetailsModalVisible = payload;
   }
 });
 

@@ -119,7 +119,9 @@ class InviteMultipleStudentModal extends Component {
   };
 
   handleChange = value => {
+    const { setProvider } = this.props;
     this.setState({ curSel: value });
+    setProvider(value);
   };
 
   handleSearch = async e => {

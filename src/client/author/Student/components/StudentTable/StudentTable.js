@@ -33,7 +33,8 @@ import {
   getAddStudentsToOtherClassSelector,
   setAddStudentsToOtherClassVisiblityAction,
   addStudentsToOtherClassAction,
-  fetchClassDetailsUsingCodeAction
+  fetchClassDetailsUsingCodeAction,
+  setMultiStudentsProviderAction
 } from "../../ducks";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
@@ -480,7 +481,8 @@ class StudentTable extends Component {
       setAddStudentsToOtherClassVisiblity,
       putStudentsToOtherClass,
       fetchClassDetailsUsingCode,
-      features
+      features,
+      setProvider
     } = this.props;
 
     const actionMenu = (
@@ -504,6 +506,7 @@ class StudentTable extends Component {
               inviteStudents={this.sendInviteStudent}
               closeModal={this.closeInviteStudentModal}
               features={features}
+              setProvider={setProvider}
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
@@ -607,7 +610,11 @@ class StudentTable extends Component {
           />
         )}
         {studentDetailsModalVisible && (
-          <StudentsDetailsModal modalVisible={studentDetailsModalVisible} closeModal={this.closeStudentsDetailModal} />
+          <StudentsDetailsModal
+            modalVisible={studentDetailsModalVisible}
+            closeModal={this.closeStudentsDetailModal}
+            role="student"
+          />
         )}
         {deactivateAdminModalVisible && (
           <TypeToConfirmModal
@@ -681,7 +688,8 @@ const enhance = compose(
       setRole: setRoleAction,
       setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
-      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction
+      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
+      setProvider: setMultiStudentsProviderAction
     }
   )
 );

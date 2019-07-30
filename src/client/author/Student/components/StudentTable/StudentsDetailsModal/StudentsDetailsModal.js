@@ -14,7 +14,16 @@ class StudentsDetailsModal extends React.Component {
         title: "Name",
         dataIndex: "fullName",
         width: "50%",
-        render: fullName => <div>{isEmpty(fullName.trim()) ? "-" : fullName}</div>
+        render: (fullName, { provider, role }) => {
+          if (role === "student") {
+            if (provider === "google" || provider === "mso") {
+              return <div>Student name will be auto-updated after first sign-in</div>;
+            } else {
+              return <div>{isEmpty(fullName.trim()) ? "-" : fullName}</div>;
+            }
+          }
+          if (role === "teacher") return <div>Teacher name will be updated after first sign-up</div>;
+        }
       },
       {
         title: "Username",
@@ -61,12 +70,14 @@ class StudentsDetailsModal extends React.Component {
   };
 
   render() {
-    const { dataSource, teacherDataSource, role, modalVisible } = this.props;
+    const { dataSource, teacherDataSource, role, modalVisible, dataProvider } = this.props;
     const selectedDataSource = role === "teacher" ? teacherDataSource : dataSource;
     const modifiedDataSource = selectedDataSource.map(item => {
       const obj = {
         ...item,
-        fullName: get(item, "firstName", "") + " " + get(item, "lastName", "")
+        fullName: get(item, "firstName", "") + " " + get(item, "lastName", ""),
+        provider: dataProvider,
+        role
       };
       return obj;
     });
@@ -100,7 +111,8 @@ class StudentsDetailsModal extends React.Component {
 const enhance = compose(
   connect(state => ({
     dataSource: get(state, ["studentReducer", "multiStudents"], []),
-    teacherDataSource: get(state, ["schoolAdminReducer", "bulkTeacherData"], [])
+    teacherDataSource: get(state, ["schoolAdminReducer", "bulkTeacherData"], []),
+    dataProvider: get(state, ["studentReducer", "mutliStudentsProvider"], "")
   }))
 );
 

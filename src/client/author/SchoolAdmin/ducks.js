@@ -120,7 +120,7 @@ const initialState = {
   // filtersText: "",
   showActiveUsers: true,
   pageNo: 1,
-  bulkTeacherData: {},
+  bulkTeacherData: [],
   teacherDetailsModalVisible: false
   // filters: {
   //   other: {
@@ -221,7 +221,7 @@ export const reducer = createReducer(initialState, {
     state.teacherDetailsModalVisible = false;
   },
   [ADD_BULK_TEACHER_SUCCESS]: (state, { payload }) => {
-    state.bulkTeacherData = payload.result;
+    state.bulkTeacherData = payload;
     state.creating = false;
     state.teacherDetailsModalVisible = true;
   },
@@ -321,8 +321,7 @@ function* deleteSchoolAdminSaga({ payload }) {
 function* addBulkTeacherAdminSaga({ payload }) {
   try {
     const res = yield call(userApi.adddBulkTeacher, payload);
-    yield put(addBulkTeacherAdminSuccessAction(res.data));
-    yield call(message.success, "Users Added Successfully");
+    yield put(addBulkTeacherAdminSuccessAction(res));
     yield put(receiveAdminDataAction());
   } catch (err) {
     const errorMessage = "Add Bulk Teacher is failing";

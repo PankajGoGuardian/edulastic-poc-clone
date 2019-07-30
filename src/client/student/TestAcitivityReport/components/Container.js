@@ -49,13 +49,11 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
   );
 };
 export default connect(
-  (state, props) => {
-    return {
-      item: getItemSelector(state),
-      hasUserWork: itemHasUserWorkSelector(state),
-      testActivityById: get(state, `[studentReport][byId][${props.reportId}]`, {})
-    };
-  },
+  (state, props) => ({
+    item: getItemSelector(state),
+    hasUserWork: itemHasUserWorkSelector(state),
+    testActivityById: get(state, `[studentReport][byId][${props.reportId}]`, {})
+  }),
   null
 )(ReportListContent);
 

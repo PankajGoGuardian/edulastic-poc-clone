@@ -14,12 +14,6 @@ class AddUserForm extends React.Component {
     keys: ["basic"]
   };
 
-  handleContactEmailsChange = value => {
-    this.setState({
-      ...this.state
-    });
-  };
-
   onProceed = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {

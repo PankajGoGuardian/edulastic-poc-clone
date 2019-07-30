@@ -81,10 +81,7 @@ const FilterBtn = styled(Button)`
   margin-left: 20px;
   min-width: 85px;
   font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
-  background: ${props =>
-    props.enabled
-      ? props.theme.headerFilters.headerSelectedFilterBgColor
-      : props.theme.headerFilters.headerFilterBgColor};
+  background: ${props => (props.enabled ? props.theme.headerFilters.headerSelectedFilterBgColor : "transparent")};
   &:focus,
   &:active {
     color: ${props =>

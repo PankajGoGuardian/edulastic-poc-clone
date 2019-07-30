@@ -165,5 +165,6 @@ export { default as IconPrint } from "./src/IconPrint";
 export { default as IconGoogleClassroom } from "./src/IconGoogleClassroom";
 export { default as IconMultipart } from "./src/IconMultipart";
 export { default as IconExclamationMark } from "./src/IconExclamationMark";
+export { default as IconFilterClass } from "./src/IconFilterClass";
 export { default as IconVolumeUp } from "./src/IconVolumeUp";
 export { default as IconNoVolume } from "./src/IconNoVolume";

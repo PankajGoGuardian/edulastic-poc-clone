@@ -11,7 +11,7 @@ import {
 
 export const Wrapper = styled.div`
   min-height: 78vh;
-  margin: 24px 46px 16px;
+  margin: 16px 46px 16px;
   border-radius: 10px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   background-color: ${props => props.theme.assignment.cardContainerBgColor};
@@ -33,8 +33,8 @@ export const Wrapper = styled.div`
 
   @media screen and (max-width: ${mobileWidthMax}) {
     padding: 5px 20px;
-    margin: 16px 20px;
-    min-height: 65vh;
+    margin: 16px 26px;
+    min-height: 75vh;
     display: block;
   }
 `;
@@ -67,6 +67,10 @@ export const NoDataBox = styled.div`
       max-width: 48px;
       margin-bottom: 11px;
     }
+    @media screen and (max-width: ${mobileWidthMax}) {
+      max-width: 56px;
+      margin-top: 19px;
+    }
   }
 
   h4 {
@@ -84,6 +88,12 @@ export const NoDataBox = styled.div`
       font-size: 16px;
       margin-bottom: 12px;
     }
+
+    @media (max-width: ${mobileWidthMax}) {
+      font-size: 18px;
+      line-height: 24px;
+      margin-bottom: 6px;
+    }
   }
 
   p {
@@ -97,6 +107,13 @@ export const NoDataBox = styled.div`
       font-size: 12px;
       line-height: 22px;
       max-width: 224px;
+    }
+
+    @media (max-width: ${mobileWidthMax}) {
+      font-size: 13px;
+
+      line-height: 26px;
+      max-width: 100%;
     }
   }
 
@@ -113,9 +130,9 @@ export const NoDataBox = styled.div`
   }
 
   @media screen and (max-width: ${mobileWidthMax}) {
-    width: calc(100% - 50px);
-    min-height: 50vh;
-    padding: 36px 30px;
+    width: calc(100% - 63px);
+    min-height: 30vh;
+    padding: 36px 25px;
     height: auto;
   }
 `;
@@ -123,8 +140,10 @@ export const NoDataBox = styled.div`
 export const BreadcrumbWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-left: 46px;
-  margin-right: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: calc(100% - 92px);
 
   .ant-breadcrumb-link {
     color: ${props => props.theme.breadcrumbs.breadcrumbTextColor};
@@ -138,13 +157,12 @@ export const BreadcrumbWrapper = styled.div`
   }
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
-    margin-left: 44px;
-    margin-right: 44px;
+    max-width: calc(100% - 88px);
   }
 
   @media (max-width: ${largeDesktopWidth}) {
+    max-width: calc(100% - 50px);
     margin-left: 30px;
-    margin-right: 30px;
 
     .ant-breadcrumb-link {
       font-size: 9px;

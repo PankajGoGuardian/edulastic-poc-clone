@@ -40,6 +40,14 @@ const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
         value={allowedVariables}
         readOnly={!allowAllowedVariables}
         onChange={onChangeHandler}
+        onBlur={e => {
+          onChange(
+            (e.target.value || "")
+              .split(",")
+              .filter(el => !!el)
+              .join()
+          );
+        }}
       />
     </FlexContainer>
   );

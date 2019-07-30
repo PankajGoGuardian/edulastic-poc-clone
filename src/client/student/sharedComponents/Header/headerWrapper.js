@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconMenuOpenClose } from "@edulastic/icons";
-import { tabletWidth, largeDesktopWidth, white, extraDesktopWidthMax } from "@edulastic/colors";
+import { tabletWidth, largeDesktopWidth, mobileWidthMax, white, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
@@ -47,10 +47,6 @@ const HeaderContainer = styled.div`
     padding-top: 60px;
     margin-bottom: 12px;
   }
-
-  @media screen and (max-width: 768px) {
-    padding-top: 95px;
-  }
 `;
 
 const FixedHeader = styled(Affix)`
@@ -66,7 +62,7 @@ const FixedHeader = styled(Affix)`
 
   @media (max-width: 768px) {
     left: 0;
-    padding-left: 60px;
+    padding-left: 70px;
     background: ${props => props.theme.headerBgColor};
   }
 `;
@@ -82,7 +78,7 @@ const AssignmentsHeader = styled(Layout.Header)`
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     padding: 0px 44px;
     height: 96px;
-    padding: 0px 30px;
+    padding: 0px 30px 0 40px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
@@ -90,10 +86,11 @@ const AssignmentsHeader = styled(Layout.Header)`
     padding: 0px 19px 0 30px;
   }
 
-  @media screen and (max-width: 768px) {
-    height: 104px;
-    padding: 0;
+  @media (max-width: ${mobileWidthMax}) {
+    height: 60px;
+    padding: 0 26px 0 0;
   }
+
   .ant-col-24 {
     align-items: center;
     line-height: 1.2;
@@ -127,7 +124,7 @@ const MenuIcon = styled(IconMenuOpenClose)`
   @media (max-width: ${tabletWidth}) {
     display: block;
     position: absolute;
-    top: 25px;
-    left: 20px;
+    top: 22px;
+    left: 26px;
   }
 `;

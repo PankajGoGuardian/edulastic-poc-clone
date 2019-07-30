@@ -55,7 +55,7 @@ class StudentsDetailsModal extends React.Component {
             statusText = (
               <StatusDiv>
                 <StyledStatusIcon type="close-circle" iconColor="#f5222d" />
-                Create User Failed
+                This email Id is not allowed in your district.
               </StatusDiv>
             );
           }

@@ -147,7 +147,6 @@ function* saveAssignment({ payload }) {
 
     // if updating, and releaseScore changes,remove the class level settings :D
     if (isUpdate) {
-      console.log("isUpdate", isUpdate);
       const currentData = yield select(getCurrentAssignmentSelector);
 
       if (currentData.releaseScore === payload.releaseScore) {

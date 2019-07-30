@@ -38,6 +38,7 @@ import {
 } from "./styled";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { receiveClassListAction } from "../../../Classes/ducks";
+import produce from "immer";
 
 const { ASSESSMENT, COMMON } = testConst;
 
@@ -192,13 +193,15 @@ class AssignTest extends React.Component {
 
   toggleSpecificStudents = specificStudents => {
     const { assignment } = this.state;
-    let assignmentCopy = { ...assignment };
-    if (assignmentCopy.class.length > 0) {
-      assignmentCopy.class.forEach(eachClass => {
-        eachClass.specificStudents = specificStudents;
-      });
-    }
-    this.setState({ specificStudents, assignment: assignmentCopy });
+    const newAssignment = produce(assignment, assignmentCopy => {
+      if (assignmentCopy.class.length > 0) {
+        assignmentCopy.class.forEach(eachClass => {
+          eachClass.specificStudents = specificStudents;
+        });
+      }
+    });
+
+    this.setState({ specificStudents, assignment: newAssignment });
   };
 
   render() {

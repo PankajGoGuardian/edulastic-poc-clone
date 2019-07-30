@@ -86,6 +86,7 @@ const DragItemContainer = ({
   isTransparent,
   dragHandle,
   possibilityListPosition,
+  isResetOffset = false,
   ...restProps
 }) => {
   const dragItem = (
@@ -119,7 +120,7 @@ const DragItemContainer = ({
           width: itemWidth
         }}
       >
-        <DragPreview {...restProps} isDragging={isDragging}>
+        <DragPreview {...restProps} isDragging={isDragging} isResetOffset={isResetOffset}>
           {dragItem}
         </DragPreview>
         <div

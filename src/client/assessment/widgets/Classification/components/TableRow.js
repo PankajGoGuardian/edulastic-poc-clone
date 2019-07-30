@@ -101,6 +101,7 @@ const TableRow = ({
                   onDrop={onDrop}
                   item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
+                  isResetOffset
                 />
               );
             })}

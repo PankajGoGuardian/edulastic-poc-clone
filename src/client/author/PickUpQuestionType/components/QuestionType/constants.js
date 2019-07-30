@@ -1931,7 +1931,6 @@ export const getCards = onSelectQuestionType => {
           min_width: 100
         },
         options: {},
-        inputs: {},
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1947,15 +1946,13 @@ export const getCards = onSelectQuestionType => {
                   }
                 }
               ]
-            ]
-          },
-          valid_dropdown: {
-            score: 1,
-            value: []
-          },
-          valid_inputs: {
-            score: 1,
-            value: []
+            ],
+            dropdown: {
+              value: []
+            },
+            textinput: {
+              value: []
+            }
           }
         },
         is_math: true,

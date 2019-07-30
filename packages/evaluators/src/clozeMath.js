@@ -37,65 +37,43 @@ const transformUserResponse = userResponse =>
   }));
 
 const normalEvaluator = async ({ userResponse = {}, validation }) => {
-  const {
-    valid_response,
-    valid_dropdown,
-    valid_inputs,
-    alt_responses = [],
-    alt_dropdowns = [],
-    alt_inputs = [],
-    scoring_type,
-    min_score_if_attempted,
-    penalty
-  } = validation;
+  const { valid_response, alt_responses = [], scoring_type, min_score_if_attempted, penalty } = validation;
 
   const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;
-
-  const mathAnswers = [valid_response, ...alt_responses];
-  const dropDownAnswers = [valid_dropdown, ...alt_dropdowns];
-  const textAnswers = [valid_inputs, ...alt_inputs];
   let score = 0;
   let maxScore = 0;
   const allEvaluations = [];
 
-  const alterAnswersCount = Math.max(mathAnswers.length, dropDownAnswers.length, textAnswers.length);
-  for (let i = 0; i < alterAnswersCount; i++) {
-    const dropDownValidation = dropDownAnswers[i];
-    const clozeTextValidation = textAnswers[i];
-    const mathValidation = mathAnswers[i];
-    const questionScore =
-      (textAnswers[i] && textAnswers[i].score) ||
-      (mathAnswers[i] && mathAnswers[i].score) ||
-      (dropDownAnswers[i] && dropDownAnswers[i].score) ||
-      1;
-    let currentScore = 0;
+  const validAnswers = [valid_response, ...alt_responses];
+  for (let i = 0; i < validAnswers.length; i++) {
     let evaluations = {};
-
+    let currentScore = 0;
+    const questionScore = (validAnswers[i] && validAnswers[i].score) || 1;
     maxScore = Math.max(questionScore, maxScore);
 
-    if (dropDownValidation) {
+    if (validAnswers[i].dropdown) {
       const dropDownEvaluation = clozeTextEvaluator({
         userResponse: transformUserResponse(dropDowns),
-        validation: { scoring_type: "exactMatch", valid_response: dropDownValidation }
+        validation: { scoring_type: "exactMatch", valid_response: { score: 1, ...validAnswers[i].dropdown } }
       }).evaluation;
 
       evaluations = { ...evaluations, ...dropDownEvaluation };
     }
 
-    if (clozeTextValidation) {
+    if (validAnswers[i].textinput) {
       const clozeTextEvaluation = clozeTextEvaluator({
         userResponse: transformUserResponse(inputs),
-        validation: { scoring_type: "exactMatch", valid_response: clozeTextValidation }
+        validation: { scoring_type: "exactMatch", valid_response: { score: 1, ...validAnswers[i].textinput } }
       }).evaluation;
       evaluations = { ...evaluations, ...clozeTextEvaluation };
     }
 
-    if (mathValidation) {
+    if (validAnswers[i].value) {
       const mathEvaluation = await mathEval({
         userResponse: maths,
         validation: {
           scoring_type: "exactMatch",
-          valid_response: mathValidation
+          valid_response: validAnswers[i]
         }
       });
       evaluations = { ...evaluations, ...mathEvaluation };
@@ -105,9 +83,9 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     const wrongCount = Object.values(evaluations).filter(x => !x).length;
 
     const answersCount =
-      get(dropDownValidation, ["value", "length"], 0) +
-      get(mathValidation, ["value", "length"], 0) +
-      get(clozeTextValidation, ["value", "length"], 0);
+      get(validAnswers[i].dropdown, ["value", "length"], 0) +
+      get(validAnswers[i], ["value", "length"], 0) +
+      get(validAnswers[i].textinput, ["value", "length"], 0);
 
     if (scoring_type === "partialMatch") {
       currentScore = questionScore * (correctCount / answersCount);
@@ -182,38 +160,32 @@ const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
 const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
   const {
     valid_response,
-    valid_dropdown,
-    valid_inputs,
     alt_responses = [],
-    alt_dropdowns = [],
-    alt_inputs = [],
-    scoring_type,
+    // scoring_type,
     min_score_if_attempted = 0,
     penalty
   } = validation;
 
   const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;
+  const alt_inputs = alt_responses.map(alt_res => ({ score: 1, ...alt_res.textinput }));
+  const alt_dropdowns = alt_responses.map(alt_res => ({ score: 1, ...alt_res.dropdown }));
 
-  const questionScore =
-    (valid_inputs && valid_inputs.score) ||
-    (valid_response && valid_response.score) ||
-    (valid_dropdown && valid_dropdown.score) ||
-    1;
+  const questionScore = (valid_response && valid_response.score) || 1;
 
   let score = 0;
   const optionCount =
+    get(valid_response.dropdown, ["value", "length"], 0) +
     get(valid_response, ["value", "length"], 0) +
-    get(valid_inputs, ["value", "length"], 0) +
-    get(valid_dropdown, ["value", "length"], 0);
+    get(valid_response.textinput, ["value", "length"], 0);
 
   // cloze-text evaluation!
   const clozeTextEvaluation =
-    (valid_inputs &&
+    (valid_response.textinput &&
       clozeTextEvaluator({
         userResponse: transformUserResponse(inputs),
         validation: {
           scoring_type: "exactMatch",
-          valid_response: valid_inputs,
+          valid_response: { score: 1, ...valid_response.textinput },
           alt_responses: alt_inputs,
           mixAndMatch: true
         }
@@ -222,12 +194,12 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
 
   // dropdown evaluation
   const dropDownEvaluation =
-    (valid_dropdown &&
+    (valid_response.dropdown &&
       clozeTextEvaluator({
         userResponse: transformUserResponse(dropDowns),
         validation: {
           scoring_type: "exactMatch",
-          valid_response: valid_dropdown,
+          valid_response: { score: 1, ...valid_response.dropdown },
           alt_responses: alt_dropdowns,
           mixAndMatch: true
         }

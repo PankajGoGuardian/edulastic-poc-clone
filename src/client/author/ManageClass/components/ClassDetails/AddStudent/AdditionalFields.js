@@ -81,8 +81,8 @@ const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => 
       {showTtsField && (
         <Field label="Enable Text to Speech" {...restProps} fiedlName="tts">
           <Select>
-            <Option value="active">Yes</Option>
-            <Option value="deActive">No</Option>
+            <Option value="yes">Yes</Option>
+            <Option value="no">No</Option>
           </Select>
         </Field>
       )}

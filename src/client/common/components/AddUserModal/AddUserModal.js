@@ -1,8 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import moment from "moment";
-import { get } from "lodash";
+import { get, split, unset, pickBy, identity } from "lodash";
 import { Form, Icon, Collapse, Spin, Input, Select, DatePicker } from "antd";
 import { IconUser } from "@edulastic/icons";
 
@@ -18,10 +16,18 @@ class AddUserForm extends React.Component {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { modalData, modalFunc, userOrgId: districtId } = this.props;
-        row.dob = moment(row.dob).format("x");
+        if (row.dob) {
+          row.dob = moment(row.dob).format("x");
+        }
+        const contactEmails = get(row, "contactEmails");
+        if (contactEmails) {
+          row.contactEmails = [contactEmails];
+        }
+        unset(row, ["confirmPassword"]);
+        const nRow = pickBy(row, identity);
         modalFunc({
           userId: modalData._id,
-          data: Object.assign(row, {
+          data: Object.assign(nRow, {
             districtId
           })
         });
@@ -91,7 +97,7 @@ class AddUserForm extends React.Component {
                   {getFieldDecorator("email", {
                     rules: [{ required: true, message: "Please input the destination class" }],
                     initialValue: get(_source, "username", get(_source, "email", ""))
-                  })(<Input placeholder="Enter Username/email" />)}
+                  })(<Input placeholder="Enter Username/email" disabled={true} />)}
                 </Form.Item>
               </Field>
               <Field name="firstName">
@@ -224,10 +230,7 @@ class AddUserForm extends React.Component {
                   <legend>Contact</legend>
                   <Form.Item>
                     {getFieldDecorator("contactEmails", { initialValue: get(_source, "contactEmails", "") })(
-                      <Select mode="multiple" placeholder="Enter Contact">
-                        {_source.contactEmails &&
-                          _source.contactEmails.map(email => <Select.Option key={email}>{email}</Select.Option>)}
-                      </Select>
+                      <Input placeholder="Enter Contact" />
                     )}
                   </Form.Item>
                 </Field>
@@ -236,8 +239,8 @@ class AddUserForm extends React.Component {
                   <Form.Item>
                     {getFieldDecorator("tts", { initialValue: get(_source, "tts", "") })(
                       <Select>
-                        <Option value="active">Yes</Option>
-                        <Option value="deActive">No</Option>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </Select>
                     )}
                   </Form.Item>

@@ -604,6 +604,7 @@ class StudentTable extends Component {
             wrappedComponentRef={this.saveFormRef}
             showClassCodeField={true}
             fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+            showTtsField={true}
           />
         )}
         {studentDetailsModalVisible && (

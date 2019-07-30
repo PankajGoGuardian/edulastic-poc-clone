@@ -63,7 +63,8 @@ class AddStudentModal extends React.Component {
       isEdit,
       foundUserId,
       showClassCodeField,
-      fetchClassDetailsUsingCode
+      fetchClassDetailsUsingCode,
+      showTtsField
     } = this.props;
     const { keys, isUpdate } = this.state;
     const { getFieldDecorator, getFieldValue, setFields, setFieldsValue } = form;
@@ -137,6 +138,7 @@ class AddStudentModal extends React.Component {
                   std={std}
                   isEdit={isEdit}
                   stds={stds}
+                  showTtsField={true}
                 />
               </Panel>
             </Collapse>

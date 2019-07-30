@@ -231,6 +231,17 @@ class AddUserForm extends React.Component {
                     )}
                   </Form.Item>
                 </Field>
+                <Field name="tts">
+                  <legend>Enable Text To Speech</legend>
+                  <Form.Item>
+                    {getFieldDecorator("tts", { initialValue: get(_source, "tts", "") })(
+                      <Select>
+                        <Option value="active">Yes</Option>
+                        <Option value="deActive">No</Option>
+                      </Select>
+                    )}
+                  </Form.Item>
+                </Field>
               </Panel>
             )}
           </Collapse>

@@ -6,7 +6,7 @@ import Field from "./CustomField";
 
 const { Option } = Select;
 
-const AdditionalFields = ({ std, stds, isEdit, ...restProps }) => {
+const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => {
   let { sisId, studentNumber, iepStatus, ellStatus, sedStatus, frlStatus, race, dob, gender, contactEmails } = std;
   if (isEdit && stds && stds.length) {
     const [studentDetails = {}] = stds;
@@ -77,6 +77,15 @@ const AdditionalFields = ({ std, stds, isEdit, ...restProps }) => {
       <Field label="Contact" {...restProps} fiedlName="contactEmails" initialValue={contactEmails}>
         <Input placeholder="Enter Contact" />
       </Field>
+
+      {showTtsField && (
+        <Field label="Enable Text to Speech" {...restProps} fiedlName="tts">
+          <Select>
+            <Option value="active">Yes</Option>
+            <Option value="deActive">No</Option>
+          </Select>
+        </Field>
+      )}
     </>
   );
 };

@@ -92,8 +92,7 @@ export const getCurrentAssignmentSelector = createSelector(
       endDate: moment().add("days", 7),
       openPolicy: "Automatically on Start Date",
       closePolicy: "Automatically on Due Date",
-      class: [],
-      specificStudents: false
+      class: []
     };
   }
 );
@@ -148,6 +147,7 @@ function* saveAssignment({ payload }) {
 
     // if updating, and releaseScore changes,remove the class level settings :D
     if (isUpdate) {
+      console.log("isUpdate", isUpdate);
       const currentData = yield select(getCurrentAssignmentSelector);
 
       if (currentData.releaseScore === payload.releaseScore) {
@@ -169,10 +169,6 @@ function* saveAssignment({ payload }) {
     const testType = get(payload, "testType", test.testType);
     let data = [];
 
-    payload.class.forEach(eachClass => {
-      eachClass.specificStudents = payload.specificStudents;
-    });
-
     data = testIds.map(testId =>
       omit(
         {
@@ -182,16 +178,7 @@ function* saveAssignment({ payload }) {
           testType: userRole !== "teacher" && testType === "assessment" ? "common assessment" : testType,
           testId
         },
-        [
-          "_id",
-          "__v",
-          "createdAt",
-          "updatedAt",
-          "students",
-          "scoreReleasedClasses",
-          "googleAssignmentIds",
-          "specificStudents"
-        ]
+        ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]
       )
     );
     const result = isUpdate

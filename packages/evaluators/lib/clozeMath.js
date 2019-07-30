@@ -149,6 +149,8 @@ var normalEvaluator =
           scoring_type,
           min_score_if_attempted,
           penalty,
+          _validation$ignoreCas,
+          ignoreCase,
           _userResponse$inputs,
           inputs,
           _userResponse$dropDow,
@@ -184,7 +186,9 @@ var normalEvaluator =
                   (alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo),
                   (scoring_type = validation.scoring_type),
                   (min_score_if_attempted = validation.min_score_if_attempted),
-                  (penalty = validation.penalty);
+                  (penalty = validation.penalty),
+                  (_validation$ignoreCas = validation.ignoreCase),
+                  (ignoreCase = _validation$ignoreCas === void 0 ? false : _validation$ignoreCas);
                 (_userResponse$inputs = userResponse.inputs),
                   (inputs = _userResponse$inputs === void 0 ? {} : _userResponse$inputs),
                   (_userResponse$dropDow = userResponse.dropDowns),
@@ -234,7 +238,8 @@ var normalEvaluator =
                           score: 1
                         },
                         validAnswers[i].textinput
-                      )
+                      ),
+                      ignoreCase: ignoreCase
                     }
                   }).evaluation;
                   evaluations = (0, _objectSpread2["default"])({}, evaluations, clozeTextEvaluation);
@@ -503,6 +508,8 @@ var mixAndMatchEvaluator =
           _validation$min_score,
           min_score_if_attempted,
           penalty,
+          _validation$ignoreCas2,
+          ignoreCase,
           _userResponse$inputs2,
           inputs,
           _userResponse$dropDow2,
@@ -532,7 +539,9 @@ var mixAndMatchEvaluator =
                   (alt_responses = _validation$alt_respo2 === void 0 ? [] : _validation$alt_respo2),
                   (_validation$min_score = validation.min_score_if_attempted),
                   (min_score_if_attempted = _validation$min_score === void 0 ? 0 : _validation$min_score),
-                  (penalty = validation.penalty);
+                  (penalty = validation.penalty),
+                  (_validation$ignoreCas2 = validation.ignoreCase),
+                  (ignoreCase = _validation$ignoreCas2 === void 0 ? false : _validation$ignoreCas2);
                 (_userResponse$inputs2 = userResponse.inputs),
                   (inputs = _userResponse$inputs2 === void 0 ? {} : _userResponse$inputs2),
                   (_userResponse$dropDow2 = userResponse.dropDowns),
@@ -557,7 +566,10 @@ var mixAndMatchEvaluator =
                 });
                 questionScore = (valid_response && valid_response.score) || 1;
                 score = 0;
-                optionCount = (0, _get2["default"])(valid_response, ["value", "length"], 0); // cloze-text evaluation!
+                optionCount =
+                  (0, _get2["default"])(valid_response.dropdown, ["value", "length"], 0) +
+                  (0, _get2["default"])(valid_response, ["value", "length"], 0) +
+                  (0, _get2["default"])(valid_response.textinput, ["value", "length"], 0); // cloze-text evaluation!
 
                 clozeTextEvaluation =
                   (valid_response.textinput &&
@@ -572,7 +584,8 @@ var mixAndMatchEvaluator =
                           valid_response.textinput
                         ),
                         alt_responses: alt_inputs,
-                        mixAndMatch: true
+                        mixAndMatch: true,
+                        ignoreCase: ignoreCase
                       }
                     }).evaluation) ||
                   {}; // dropdown evaluation

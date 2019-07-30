@@ -37,7 +37,14 @@ const transformUserResponse = userResponse =>
   }));
 
 const normalEvaluator = async ({ userResponse = {}, validation }) => {
-  const { valid_response, alt_responses = [], scoring_type, min_score_if_attempted, penalty } = validation;
+  const {
+    valid_response,
+    alt_responses = [],
+    scoring_type,
+    min_score_if_attempted,
+    penalty,
+    ignoreCase = false
+  } = validation;
 
   const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;
   let score = 0;
@@ -63,7 +70,11 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     if (validAnswers[i].textinput) {
       const clozeTextEvaluation = clozeTextEvaluator({
         userResponse: transformUserResponse(inputs),
-        validation: { scoring_type: "exactMatch", valid_response: { score: 1, ...validAnswers[i].textinput } }
+        validation: {
+          scoring_type: "exactMatch",
+          valid_response: { score: 1, ...validAnswers[i].textinput },
+          ignoreCase
+        }
       }).evaluation;
       evaluations = { ...evaluations, ...clozeTextEvaluation };
     }
@@ -163,7 +174,8 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
     alt_responses = [],
     // scoring_type,
     min_score_if_attempted = 0,
-    penalty
+    penalty,
+    ignoreCase = false
   } = validation;
 
   const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;
@@ -187,7 +199,8 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
           scoring_type: "exactMatch",
           valid_response: { score: 1, ...valid_response.textinput },
           alt_responses: alt_inputs,
-          mixAndMatch: true
+          mixAndMatch: true,
+          ignoreCase
         }
       }).evaluation) ||
     {};

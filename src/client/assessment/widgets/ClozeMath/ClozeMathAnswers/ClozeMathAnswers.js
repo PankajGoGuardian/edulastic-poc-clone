@@ -20,7 +20,7 @@ const initialMethod = {
   options: {}
 };
 
-const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, onChangeKeypad }) => {
+const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, onChangeKeypad, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const _addAnswer = () => {
@@ -366,8 +366,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       </CorrectAnswerContainer>
       <Checkbox
         className="additional-options"
+        onChange={() => handleValidationOptionsChange("ignoreCase", !item.validation.ignoreCase)}
+        label={t("component.multipart.ignoreCase")}
+        checked={!!item.validation.ignoreCase}
+      />
+      <Checkbox
+        className="additional-options"
         onChange={() => handleValidationOptionsChange("mixAndMatch", !item.validation.mixAndMatch)}
-        label="Mix-n-Match alternative answers"
+        label={t("component.multipart.mixNmatch")}
         checked={!!item.validation.mixAndMatch}
       />
     </CorrectAnswers>

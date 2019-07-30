@@ -41,6 +41,7 @@ const ClozeMath = ({
   instructorStimulus,
   showQuestionNumber,
   flowLayout,
+  t,
   ...restProps
 }) => {
   const answerContextConfig = useContext(AnswerContext);
@@ -122,6 +123,7 @@ const ClozeMath = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
             onChangeKeypad={handleKeypadMode}
+            t={t}
           />
           <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 

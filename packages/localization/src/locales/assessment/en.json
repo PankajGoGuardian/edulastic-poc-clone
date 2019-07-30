@@ -796,7 +796,9 @@
       "composequestion": "Question",
       "enterQuestion": "Enter Question",
       "enterContent": "Enter Question Contents",
-      "content": "Content"
+      "content": "Content",
+      "ignoreCase": "Ignore Case",
+      "mixNmatch": "Mix-n-Match alternative answers"
     }
   }
 }

@@ -124,7 +124,6 @@ const ClassificationPreview = ({
  */
   const getInitialUserAnswers = () => {
     // it is called only in previewMode
-    console.log("userAnswer = ", JSON.stringify(userAnswer));
     if (userAnswer && userAnswer.some(arr => arr.length !== 0)) {
       return userAnswer;
     }
@@ -147,25 +146,22 @@ const ClassificationPreview = ({
   const [dragItems, setDragItems] = useState(possible_responses);
 
   /**
-   * this is called in preview mode
    * it is used to filter out responses from the bottom container and place in correct boxes
    * it also used to clear out responses when clear is pressed
    */
   useEffect(() => {
     if (
       !isEqual(answers, initialAnswers) ||
-      (possible_responses.length !== dragItems.length || !isEqual(possible_responses, dragItems))
+      (!group_possible_responses &&
+        (possible_responses.length !== dragItems.length || !isEqual(possible_responses, dragItems)))
     ) {
-      setAnswers(uniq(initialAnswers));
-      setDragItems(
-        uniq(
-          possible_responses.filter(resp => {
-            return initialAnswers.every(arr => {
-              return !arr.includes(resp.id);
-            });
-          })
-        )
-      );
+      setAnswers(initialAnswers);
+      const abc = possible_responses.filter(resp => {
+        return initialAnswers.every(arr => {
+          return !arr.includes(resp.id);
+        });
+      });
+      setDragItems(abc);
     }
   }, [userAnswer, possible_responses]);
 
@@ -183,40 +179,43 @@ const ClassificationPreview = ({
     // this is called when responses are dragged back to the container from the columns
     if (itemTo.flag === "dragItems") {
       ansArrays.forEach(arr => {
-        const obj = posResponses.find(ite => ite.value === itemCurrent.item);
+        const obj = posResp.find(ite => ite.value === itemCurrent.item);
         if (arr.includes(obj.id)) {
           arr.splice(arr.indexOf(obj.id), 1);
         }
-        // arr = uniq(arr);
       });
 
       if (!dItems.flatMap(ite => ite.value).includes(itemCurrent.item)) {
         dItems.push(posResponses.find(resp => resp.value === itemCurrent.item));
         setDragItems(dItems);
       }
-    } else if (!duplicate_responses && dItems.flatMap(obj => obj.value).includes(itemCurrent.item)) {
-      dItems.splice(dItems.findIndex(obj => obj.value === itemCurrent.item), 1);
-      setDragItems(dItems);
     }
 
     // this is called when responses are dragged from bottom container to columns
-    if (itemTo.flag === "column") {
-      const obj = posResponses.find(ite => ite.value === itemCurrent.item);
-      ansArrays.forEach((arr, i) => {
-        if (!duplicate_responses && arr.includes(obj.id)) {
-          arr.splice(arr.indexOf(obj.id), 1);
+    else if (itemTo.flag === "column") {
+      const obj = posResp.find(ite => ite.value === itemCurrent.item);
+      if (obj) {
+        ansArrays.forEach((arr, i) => {
+          if (!duplicate_responses && arr.includes(obj.id)) {
+            arr.splice(arr.indexOf(obj.id), 1);
+          }
+
+          if (i === itemTo.index) {
+            arr.push(obj.id);
+          }
+        });
+      }
+
+      if (!duplicate_responses) {
+        const includes = posResp.flatMap(obj => obj.value).includes(itemCurrent.item);
+        if (includes) {
+          dItems.splice(dItems.findIndex(obj => obj.value === itemCurrent.item), 1);
+          setDragItems(dItems);
         }
-
-        if (i === itemTo.index) {
-          arr.push(obj.id);
-        }
-
-        arr = uniq(arr);
-      });
-    }
-
-    if (!isEqual(ansArrays, answers)) {
-      setAnswers(ansArrays);
+      }
+      if (!isEqual(ansArrays, answers)) {
+        setAnswers(ansArrays);
+      }
     }
     saveAnswer(ansArrays);
   };
@@ -261,9 +260,19 @@ const ClassificationPreview = ({
       : dragItems
   );
 
-  const verifiedGroupDragItems = possible_response_groups.map(obj =>
-    uniq(shuffle_options ? shuffle(obj.responses) : obj.responses)
-  );
+  /**
+   * It is in case of group_possbile_responses
+   * This takes care of filtering out draggable responses from the bottom container
+   */
+  const flattenAnswers = answers.flat();
+  const verifiedGroupDragItems = duplicate_responses
+    ? possible_response_groups.map(group => {
+        return shuffle_options ? shuffle(group.responses) : group.responses;
+      })
+    : possible_response_groups.map(group => {
+        const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
+        return shuffle_options ? shuffle(responses) : responses;
+      });
 
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -325,7 +334,7 @@ const ClassificationPreview = ({
                             color: theme.widgets.classification.previewSubtitleColor
                           }}
                         >
-                          {i.title}
+                          {get(item, `possible_response_groups[${index}].title`, "")}
                         </Subtitle>
                         <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                           {i.map((ite, ind) =>
@@ -337,24 +346,22 @@ const ClassificationPreview = ({
                                 preview={preview}
                                 renderIndex={possible_responses.indexOf(ite)}
                                 onDrop={onDrop}
-                                item={ite}
+                                item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
                               />
                             ) : (
-                              dragItems.includes(ite) && (
-                                <DragItem
-                                  dragHandle={show_drag_handle}
-                                  key={ind}
-                                  isTransparent={transparent_possible_responses}
-                                  preview={preview}
-                                  renderIndex={possible_responses.indexOf(ite)}
-                                  onDrop={onDrop}
-                                  item={ite}
-                                  disableResponse={disableResponse}
-                                  possibilityListPosition={listPosition}
-                                />
-                              )
+                              <DragItem
+                                dragHandle={show_drag_handle}
+                                key={ind}
+                                isTransparent={transparent_possible_responses}
+                                preview={preview}
+                                renderIndex={possible_responses.indexOf(ite)}
+                                onDrop={onDrop}
+                                item={ite.value}
+                                disableResponse={disableResponse}
+                                possibilityListPosition={listPosition}
+                              />
                             )
                           )}
                         </FlexContainer>
@@ -421,39 +428,15 @@ const ClassificationPreview = ({
 
       {previewTab === SHOW || isReviewTab ? (
         <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
-          {arrayOfCols.map((arr, i) => (
-            <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
-              <Subtitle style={styles.correctAnswersMargins}>
-                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
-              </Subtitle>
-              {arr.map(index => (
-                <div style={styles.itemContainerStyle} key={index}>
-                  <IndexBox preview={preview}>{index + 1}</IndexBox>
-                  <MathFormulaDisplay
-                    style={getStyles(
-                      false,
-                      false,
-                      theme.widgets.classification.boxBgColor,
-                      theme.widgets.classification.boxBorderColor,
-                      styles.previewItemStyle
-                    )}
-                    dangerouslySetInnerHTML={{ __html: posResp[index] }}
-                  />
-                </div>
-              ))}
-            </FlexContainer>
-          ))}
-          {arrayOfAltCols.map((arrays, ind) => (
-            <Fragment key={ind}>
-              <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>{`${t(
-                "component.classification.alternateAnswer"
-              )} ${ind + 1}`}</Subtitle>
-              {arrays.map((arr, i) => (
-                <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
-                  <Subtitle style={styles.correctAnswersMargins}>
-                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
-                  </Subtitle>
-                  {arr.map(index => (
+          {arrayOfCols.map((arr, i) => {
+            return (
+              <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+                <Subtitle style={styles.correctAnswersMargins}>
+                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+                </Subtitle>
+                {arr.map((id, index) => {
+                  const resp = posResp.find(resp => resp.id === id);
+                  return (
                     <div style={styles.itemContainerStyle} key={index}>
                       <IndexBox preview={preview}>{index + 1}</IndexBox>
                       <MathFormulaDisplay
@@ -464,12 +447,46 @@ const ClassificationPreview = ({
                           theme.widgets.classification.boxBorderColor,
                           styles.previewItemStyle
                         )}
-                        dangerouslySetInnerHTML={{ __html: posResp[index] }}
+                        dangerouslySetInnerHTML={{ __html: (resp && resp.value) || "" }}
                       />
                     </div>
-                  ))}
-                </FlexContainer>
-              ))}
+                  );
+                })}
+              </FlexContainer>
+            );
+          })}
+          {arrayOfAltCols.map((arrays, ind) => (
+            <Fragment key={ind}>
+              <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>{`${t(
+                "component.classification.alternateAnswer"
+              )} ${ind + 1}`}</Subtitle>
+              {arrays.map((arr, i) => {
+                return (
+                  <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+                    <Subtitle style={styles.correctAnswersMargins}>
+                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+                    </Subtitle>
+                    {arr.map((id, index) => {
+                      const resp = posResp.find(resp => resp.id === id);
+                      return (
+                        <div style={styles.itemContainerStyle} key={index}>
+                          <IndexBox preview={preview}>{index + 1}</IndexBox>
+                          <MathFormulaDisplay
+                            style={getStyles(
+                              false,
+                              false,
+                              theme.widgets.classification.boxBgColor,
+                              theme.widgets.classification.boxBorderColor,
+                              styles.previewItemStyle
+                            )}
+                            dangerouslySetInnerHTML={{ __html: (resp && resp.value) || "" }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </FlexContainer>
+                );
+              })}
             </Fragment>
           ))}
         </CorrectAnswersContainer>

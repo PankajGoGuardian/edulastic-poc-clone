@@ -84,7 +84,7 @@ export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
 
   // use it for ids of MCQ
-  const uuids = [uuid(), uuid(), uuid()];
+  const uuids = [uuid(), uuid(), uuid(), uuid()];
 
   const uuidsForFill = [uuid(), uuid(), uuid()];
 
@@ -857,27 +857,22 @@ export const getCards = onSelectQuestionType => {
         title: "Classification",
         firstMount: true,
         group_possible_responses: false,
-        possible_response_groups: [
-          {
-            title: "",
-            responses: ["Choice B", "Choice C", "Choice A", "Choice D"]
-          }
-        ],
+        possible_response_groups: [],
         possible_responses: [
           {
-            id: uuid(),
+            id: uuids[0],
             value: "Choice B"
           },
           {
-            id: uuid(),
+            id: uuids[1],
             value: "Choice C"
           },
           {
-            id: uuid(),
+            id: uuids[2],
             value: "Choice A"
           },
           {
-            id: uuid(),
+            id: uuids[3],
             value: "Choice D"
           }
         ],

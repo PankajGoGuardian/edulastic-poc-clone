@@ -116,7 +116,6 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     lastAttempt.graded && lastAttempt.graded.toLowerCase() === "in grading" ? "submitted" : lastAttempt.graded;
   let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
-  console.log("newReports", newReports);
   const { correct = 0, wrong = 0, maxScore = 0, score = 0, skipped = 0 } = last(newReports) || {};
   const attempted = !!(newReports && newReports.length);
   const attemptCount = newReports && newReports.length;

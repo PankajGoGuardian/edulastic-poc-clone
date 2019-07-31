@@ -1,10 +1,10 @@
 import React from "react";
 import moment from "moment";
 import { get, split, unset, pickBy, identity } from "lodash";
-import { Form, Icon, Collapse, Spin, Input, Select, DatePicker } from "antd";
+import { Icon, Collapse, Spin, Input, Select, DatePicker } from "antd";
 import { IconUser } from "@edulastic/icons";
 
-import { StyledModal, Title, ActionButton, PanelHeader, Field } from "./styled";
+import { StyledModal, Title, ActionButton, PanelHeader, Field, Form } from "./styled";
 
 const { Panel } = Collapse;
 class UserForm extends React.Component {

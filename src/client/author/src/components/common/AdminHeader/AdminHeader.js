@@ -6,7 +6,8 @@ import { AdminHeaderContent, StyledTitle, StyledTabs, StyledTabPane, StyledSubMe
 class AdminHeader extends Component {
   static propTypes = {
     history: PropTypes.object.isRequired,
-    active: PropTypes.object.isRequired
+    active: PropTypes.object.isRequired,
+    count: PropTypes.number
   };
 
   onHeaderTabClick = (key, e) => {
@@ -79,14 +80,14 @@ class AdminHeader extends Component {
   };
 
   render() {
-    const { title, active } = this.props;
-
+    const { title, active, count = 0 } = this.props;
+    const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
       <React.Fragment>
         <AdminHeaderContent>
           <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
             <StyledTabPane tab="District Profile" key={"District Profile"} />
-            <StyledTabPane tab="Schools" key={"Schools"} />
+            <StyledTabPane tab={SchoolTabtext} key={"Schools"} />
             <StyledTabPane tab="Users" key={"Users"} />
             <StyledTabPane tab="Classes" key={"Classes"} />
             <StyledTabPane tab="Courses" key={"Courses"} />

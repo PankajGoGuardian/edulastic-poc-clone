@@ -409,7 +409,6 @@ class SchoolsTable extends React.Component {
       currentPage
     } = this.state;
     const { userOrgId, totalSchoolsCount } = this.props;
-
     const columnsInfo = [
       {
         title: (
@@ -430,6 +429,7 @@ class SchoolsTable extends React.Component {
         dataIndex: "name",
         editable: true,
         width: "20%",
+        render: name => name || "-",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -457,6 +457,7 @@ class SchoolsTable extends React.Component {
         dataIndex: "city",
         editable: true,
         width: "15%",
+        render: city => city || "-",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -484,6 +485,7 @@ class SchoolsTable extends React.Component {
         dataIndex: "state",
         editable: true,
         width: "15%",
+        render: state => state || "-",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -511,6 +513,7 @@ class SchoolsTable extends React.Component {
         dataIndex: "zip",
         editable: true,
         width: "10%",
+        render: zip => zip || "-",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -787,6 +790,7 @@ class SchoolsTable extends React.Component {
           pageSize={25}
           total={totalSchoolsCount}
           onChange={this.changePagination}
+          hideOnSinglePage={true}
         />
 
         {editSchoolModaVisible && editSchoolKey !== "" && (

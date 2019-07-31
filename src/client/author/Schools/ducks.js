@@ -145,7 +145,7 @@ export const reducer = createReducer(initialState, {
 
     state.creating = false;
     state.create = createdSchoolData;
-
+    state.totalSchoolCount++;
     const searchData = payload.search;
     const keys = Object.keys(payload.search);
     let isFitFiltered = true;

@@ -22,6 +22,7 @@ import {
   MessageSpan,
   MaxAttemptIInput
 } from "./styled";
+import StandardProficiencyTable from "../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
@@ -427,6 +428,10 @@ const Settings = ({
           <StyledTable columns={columns} dataSource={performanceBand} pagination={false} isAdvanced={isAdvanced} />
         </StyledDiv>
       </FeaturesSwitch>
+      <StyledDiv>
+        <Col span={16}>Standard based grading scale</Col>
+        <StandardProficiencyTable />
+      </StyledDiv>
     </SettingsWrapper>
   );
 };

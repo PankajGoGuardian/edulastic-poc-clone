@@ -50,6 +50,7 @@ class AddUserForm extends React.Component {
       closeModal
     } = this.props;
     const { showModal, formTitle, role, showAdditionalFields, modalData: { _source } = {} } = this.props;
+    const dobValue = get(_source, "dob");
     const { keys } = this.state;
     const title = (
       <Title>
@@ -209,7 +210,7 @@ class AddUserForm extends React.Component {
                 <Field name="dob" optional>
                   <legend>DOB</legend>
                   <Form.Item>
-                    {getFieldDecorator("dob", { initialValue: moment(get(_source, "dob", "")) })(
+                    {getFieldDecorator("dob", { initialValue: dobValue ? moment(dobValue) : null })(
                       <DatePicker format="DD MMM, YYYY" />
                     )}
                   </Form.Item>

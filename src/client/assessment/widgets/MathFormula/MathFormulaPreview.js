@@ -289,7 +289,7 @@ class MathFormulaPreview extends Component {
                 preview
                 onChange={this.selectUnitFromDropdown}
                 selected={this.selectedUnit}
-                disabled={evaluation && !evaluation.some(ie => ie)}
+                disabled={disableResponse}
               />
             )}
           </FlexContainer>

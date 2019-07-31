@@ -5,19 +5,19 @@ import { compose } from "redux";
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { StyledComponents, TypeToConfirmModal } from "@edulastic/common";
 import {
-  StyledTableContainer,
   StyledPagination,
   StyledTable,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
-  StyledClassName,
-  StyledFilterInput,
+  StyledTableContainer,
   StyledAddFilterButton,
+  StyledFilterInput,
   StyledSchoolSearch,
   StyledActionDropDown,
-  StyledFilterDiv,
-  RightFilterDiv
-} from "./styled";
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
 
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
 import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";

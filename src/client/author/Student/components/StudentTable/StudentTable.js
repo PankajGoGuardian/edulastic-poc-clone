@@ -6,22 +6,19 @@ import * as moment from "moment";
 import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-
 import {
-  StyledTableContainer,
   StyledPagination,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
-  StyledTableButton,
-  StyledTable,
-  StyledFilterInput,
   StyledAddFilterButton,
+  StyledFilterInput,
   StyledSchoolSearch,
   StyledActionDropDown,
-  StyledClassName,
-  StyledFilterDiv,
-  RightFilterDiv
-} from "./styled";
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+import { StyledTableContainer, StyledTableButton, StyledTable } from "./styled";
 
 import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
 

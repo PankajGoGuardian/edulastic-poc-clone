@@ -6,22 +6,23 @@ import { get } from "lodash";
 
 import { Form, Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
-
+import {
+  StyledControlDiv,
+  StyledFilterDiv,
+  StyledFilterSelect,
+  StyledAddFilterButton,
+  StyledFilterInput,
+  StyledSchoolSearch,
+  StyledActionDropDown
+} from "../../../../admin/Common/StyledComponents";
 import {
   StyledTableContainer,
-  StyledControlDiv,
-  StyledFilterSelect,
   StyledTableButton,
-  StyledFilterInput,
-  StyledFilterButton,
-  StyledSchoolSearch,
   StyledTable,
   StyledHeaderColumn,
   StyledSortIconDiv,
   StyledSortIcon,
-  StyledPagination,
-  StyledActionDropDown,
-  StyledFilterDiv
+  StyledPagination
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
@@ -754,19 +755,19 @@ class SchoolsTable extends React.Component {
           )}
 
           {i < 2 && (
-            <StyledFilterButton
+            <StyledAddFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
 
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );

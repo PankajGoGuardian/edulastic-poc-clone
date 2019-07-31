@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import { Button, Select, Input, Dropdown, Pagination } from "antd";
-import { StyledTable as Table } from "../../../../common/styled";
-
-const Search = Input.Search;
+import { Table, Pagination } from "antd";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -10,6 +7,7 @@ export const StyledTableContainer = styled.div`
   width: 100%;
   margin-bottom: 20px;
   margin-top: 140px;
+  margin-top: 130px;
 
   .ant-table-wrapper {
     width: 100%;
@@ -30,40 +28,6 @@ export const StyledTable = styled(Table)`
   }
 `;
 
-export const StyledPagination = styled(Pagination)`
-  margin-top: 15px;
-  align-self: flex-end;
-`;
-export const StyledFilterDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  background: whitesmoke;
-  padding: 1rem;
-  align-items: center;
-`;
-export const RightFilterDiv = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-export const StyledControlDiv = styled.div`
-  display: flex;
-  margin-bottom: 20px;
-`;
-
-export const StyledFilterSelect = styled(Select)`
-  width: 300px;
-  margin-left: 20px;
-  &:first-child {
-    margin-left: 0;
-  }
-`;
-
-export const StyledAddFilterButton = styled(Button)`
-  margin-left: 20px;
-  color: white !important;
-`;
-
 export const StyledTableButton = styled.a`
   visibility: hidden;
   margin-right: 20px;
@@ -72,28 +36,7 @@ export const StyledTableButton = styled.a`
     margin-right: 0;
   }
 `;
-
-export const StyledFilterInput = styled(Search)`
-  margin-left: 20px;
-  width: 300px;
-`;
-
-export const StyledSchoolSearch = styled(Search)`
-  margin-left: 20px;
-  width: 465px;
-`;
-
-export const StyledActionDropDown = styled(Dropdown)`
-  margin-left: auto;
-  width: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-export const StyledClassName = styled.p`
-  text-align: center;
-  color: #1890ff;
-  font-weight: bold;
-  margin-bottom: 5px;
+export const StyledPagination = styled(Pagination)`
+  margin-top: 15px;
+  align-self: flex-end;
 `;

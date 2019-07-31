@@ -16,30 +16,6 @@ export const StyledTableContainer = styled.div`
     border: 1px solid #d9d9d9;
   }
 `;
-
-export const StyledControlDiv = styled.div`
-  display: flex;
-  margin-bottom: 20px;
-`;
-
-export const StyledFilterSelect = styled(Select)`
-  width: 300px;
-  margin-left: 20px;
-  &:first-child {
-    margin-left: 0;
-  }
-`;
-export const StyledFilterDiv = styled.div`
-  display: flex;
-  background: whitesmoke;
-  justify-content: space-between;
-  padding: 1rem;
-  align-items: center;
-`;
-export const RightFilterDiv = styled.div`
-  display: flex;
-  align-items: center;
-`;
 export const StyledTable = styled(Table)`
   .ant-table-row {
     &: hover {
@@ -64,24 +40,6 @@ export const StyledTableButton = styled.a`
   }
 `;
 
-export const StyledFilterInput = styled(Input.Search)`
-  margin-left: 20px;
-  width: 300px;
-`;
-
-export const StyledSearch = styled(Input.Search)`
-  margin-left: 20px;
-  width: 465px;
-`;
-
-export const StyledActionDropDown = styled(Dropdown)`
-  margin-left: auto;
-  width: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
 export const TeacherSpan = styled.span`
   margin-right: 10px;
 
@@ -97,12 +55,11 @@ export const StyledPagination = styled(Pagination)`
 
 export const StyledFilterButton = styled(Button)`
   margin-left: 20px;
-  color: white !important;
 `;
 
 export const StyledHeaderColumn = styled.div`
   display: flex;
-  align-item: center;
+  align-items: center;
   cursor: pointer;
 `;
 
@@ -125,11 +82,4 @@ export const StyledSortIcon = styled(Icon)`
   font-size: 11px;
   margin-top: 0.125em;
   color: ${props => (props.colorValue ? "#1890ff" : "#bfbfbf")};
-`;
-
-export const StyledClassName = styled.p`
-  text-align: center;
-  color: #1890ff;
-  font-weight: bold;
-  margin-bottom: 5px;
 `;

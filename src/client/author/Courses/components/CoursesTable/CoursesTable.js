@@ -10,24 +10,25 @@ const Option = Select.Option;
 import AddCourseModal from "./AddCourseModal/AddCourseModal";
 import EditCourseModal from "./EditCourseModal/EditCourseModal";
 import UploadCourseModal from "./UploadCourseModal";
-
+import {
+  StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
+  StyledFilterSelect,
+  StyledFilterInput,
+  StyledSchoolSearch as StyledNameSearch,
+  StyledActionDropDown
+} from "../../../../admin/Common/StyledComponents";
 import {
   StyledTableContainer,
-  StyledControlDiv,
-  StyledFilterSelect,
   StyledTable,
   StyledTableButton,
-  StyledFilterInput,
   StyledFilterButton,
-  StyledNameSearch,
-  StyledActionDropDown,
   StyledActiveCheckbox,
   StyledPagination,
   StyledHeaderColumn,
   StyledSortIconDiv,
-  StyledSortIcon,
-  StyledFilterDiv,
-  RightFilterDiv
+  StyledSortIcon
 } from "./styled";
 
 import {

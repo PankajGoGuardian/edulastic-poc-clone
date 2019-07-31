@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import { Button, Select, Input, Icon, Pagination, Dropdown } from "antd";
-import { StyledTable as Table } from "../../../../common/styled";
-const Search = Input.Search;
+import { Table, Icon, Pagination } from "antd";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -43,30 +41,6 @@ export const StyledTable = styled(Table)`
   }
 `;
 
-export const StyledFilterDiv = styled.div`
-  display: flex;
-  background: whitesmoke;
-  padding: 1rem;
-  align-items: center;
-`;
-export const StyledControlDiv = styled.div`
-  display: flex;
-  margin-bottom: 20px;
-`;
-
-export const StyledFilterSelect = styled(Select)`
-  width: 300px;
-  margin-left: 20px;
-  &:first-child {
-    margin-left: 0;
-  }
-`;
-
-export const StyledFilterButton = styled(Button)`
-  margin-left: 20px;
-  color: white !important;
-`;
-
 export const StyledTableButton = styled.a`
   opacity: 0;
   margin-right: 20px;
@@ -74,16 +48,6 @@ export const StyledTableButton = styled.a`
   &:last-child {
     margin-right: 0;
   }
-`;
-
-export const StyledFilterInput = styled(Input.Search)`
-  margin-left: 20px;
-  width: 300px;
-`;
-
-export const StyledSchoolSearch = styled(Search)`
-  margin-left: 20px;
-  width: 465px;
 `;
 
 export const StyledHeaderColumn = styled.div`
@@ -116,12 +80,4 @@ export const StyledSortIcon = styled(Icon)`
 export const StyledPagination = styled(Pagination)`
   align-self: flex-end;
   margin-top: 15px;
-`;
-
-export const StyledActionDropDown = styled(Dropdown)`
-  margin-left: auto;
-  width: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 `;

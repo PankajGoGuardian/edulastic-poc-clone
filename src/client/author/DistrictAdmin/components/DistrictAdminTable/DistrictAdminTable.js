@@ -7,20 +7,19 @@ import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
 
 import {
-  StyledTableContainer,
   StyledPagination,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
-  StyledTable,
-  StyledTableButton,
-  StyledFilterInput,
   StyledAddFilterButton,
+  StyledFilterInput,
   StyledSchoolSearch,
   StyledActionDropDown,
-  StyledClassName,
-  StyledFilterDiv,
-  RightFilterDiv
-} from "./styled";
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+
+import { StyledTableContainer, StyledTable, StyledTableButton } from "./styled";
 
 import CreateDistrictAdminModal from "./CreateDistrictAdminModal/CreateDistrictAdminModal";
 import EditDistrictAdminModal from "./EditDistrictAdminModal/EditDistrictAdminModal";

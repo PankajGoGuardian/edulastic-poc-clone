@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import { Button, Select, Input, Dropdown, Checkbox, Pagination, Icon } from "antd";
-import { StyledTable as Table } from "../../../../common/styled";
-const Search = Input.Search;
+import { Button, Table, Select, Checkbox, Pagination, Icon } from "antd";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -18,22 +16,6 @@ export const StyledTableContainer = styled.div`
   }
 `;
 
-export const StyledControlDiv = styled.div`
-  display: flex;
-  margin-bottom: 20px;
-  align-items: center;
-`;
-export const StyledFilterDiv = styled.div`
-  display: flex;
-  background: whitesmoke;
-  justify-content: space-between;
-  padding: 1rem;
-  align-items: center;
-`;
-export const RightFilterDiv = styled.div`
-  display: flex;
-  align-items: center;
-`;
 export const StyledFilterSelect = styled(Select)`
   width: 300px;
   margin-left: 20px;
@@ -62,7 +44,6 @@ export const StyledTable = styled(Table)`
 
 export const StyledFilterButton = styled(Button)`
   margin-left: 20px;
-  color: white !important;
 `;
 
 export const StyledTableButton = styled.a`
@@ -73,25 +54,6 @@ export const StyledTableButton = styled.a`
     margin-right: 0;
   }
 `;
-
-export const StyledFilterInput = styled(Input.Search)`
-  margin-left: 20px;
-  width: 300px;
-`;
-
-export const StyledNameSearch = styled(Search)`
-  margin-left: 20px;
-  width: 465px;
-`;
-
-export const StyledActionDropDown = styled(Dropdown)`
-  margin-left: 20px;
-  width: 200px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
 export const StyledActiveCheckbox = styled(Checkbox)`
   margin-left: auto;
 `;

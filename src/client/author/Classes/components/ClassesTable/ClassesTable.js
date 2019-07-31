@@ -5,22 +5,23 @@ import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
-
 import {
-  StyledClassName,
-  StyledTableContainer,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
+  StyledFilterInput,
+  StyledSchoolSearch as StyledSearch,
+  StyledActionDropDown,
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+import {
+  StyledTableContainer,
   StyledTable,
   StyledTableButton,
-  StyledFilterInput,
-  StyledSearch,
-  StyledActionDropDown,
+  StyledAddFilterButton,
   TeacherSpan,
-  StyledPagination,
-  StyledFilterButton,
-  StyledFilterDiv,
-  RightFilterDiv
+  StyledPagination
 } from "./styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
@@ -631,18 +632,18 @@ class ClassesTable extends Component {
             />
           )}
           {i < 2 && (
-            <StyledFilterButton
+            <StyledAddFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );

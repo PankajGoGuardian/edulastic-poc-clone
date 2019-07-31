@@ -120,10 +120,10 @@ class TeacherTable extends Component {
       {
         dataIndex: "_id",
         render: id => [
-          <StyledTableButton key={`${id}0`} onClick={() => this.onEditTeacher(id)}>
+          <StyledTableButton key={`${id}0`} onClick={() => this.onEditTeacher(id)} title="Edit">
             <Icon type="edit" theme="twoTone" />
           </StyledTableButton>,
-          <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)}>
+          <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
             <Icon type="delete" theme="twoTone" />
           </StyledTableButton>
         ]

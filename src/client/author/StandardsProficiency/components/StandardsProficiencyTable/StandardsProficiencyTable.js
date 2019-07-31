@@ -109,10 +109,14 @@ class StandardsProficiencyTable extends React.Component {
                 </span>
               ) : (
                 <React.Fragment>
-                  <StyledButton disabled={editingKey !== ""} onClick={() => this.edit(record.key)}>
+                  <StyledButton disabled={editingKey !== ""} onClick={() => this.edit(record.key)} title="Edit">
                     <Icon type="edit" theme="twoTone" />
                   </StyledButton>
-                  <StyledButton disabled={editingKey !== ""} onClick={() => this.handleDelete(record.key)}>
+                  <StyledButton
+                    disabled={editingKey !== ""}
+                    onClick={() => this.handleDelete(record.key)}
+                    title="Delete"
+                  >
                     <Icon type="delete" theme="twoTone" />
                   </StyledButton>
                 </React.Fragment>

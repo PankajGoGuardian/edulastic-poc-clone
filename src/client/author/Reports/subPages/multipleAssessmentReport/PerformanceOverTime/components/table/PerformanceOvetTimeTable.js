@@ -70,12 +70,12 @@ const getColumns = () => {
   const dynamicColumns = map(customFields, field => ({
     ...field,
     render: (text, record) => {
-      let value = text;
+      let value = text || 0;
       let color = "transparent";
 
       if (field.dataIndex === "score") {
-        color = getHSLFromRange1(text);
-        value = text ? `${text}%` : "";
+        color = getHSLFromRange1(value);
+        value = `${value}%`;
       }
 
       const toolTipText = () => (

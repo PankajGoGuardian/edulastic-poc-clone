@@ -1,25 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Modal } from "antd";
 import AssessmentPlayer from "../../../../assessment";
 
-const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, hideModal, testId, test }) => (
-  <StyledModal
-    visible={isModalVisible}
-    title="Test Preview"
-    onCancel={hideModal}
-    onOk={hideModal}
-    width="100%"
-    destroyOnClose
-    footer={null}
-    header={null}
-    wrapClassName="test-preview-modal"
-    centered
-  >
-    <AssessmentPlayer LCBPreviewModal={LCBPreviewModal} testId={testId} test={test} preview />
-  </StyledModal>
-);
+const TestPreviewModal = ({ isModalVisible, LCBPreviewModal, hideModal, testId, test, testLoadingStatus, error }) => {
+  useEffect(() => {
+    if (error) {
+      hideModal();
+    }
+  }, [error]);
+
+  return (
+    <StyledModal
+      visible={isModalVisible}
+      title="Test Preview"
+      onCancel={hideModal}
+      onOk={hideModal}
+      width="100%"
+      destroyOnClose
+      footer={null}
+      header={null}
+      wrapClassName="test-preview-modal"
+      centered
+    >
+      <AssessmentPlayer LCBPreviewModal={LCBPreviewModal} testId={testId} test={test} preview />
+    </StyledModal>
+  );
+};
 
 TestPreviewModal.propTypes = {
   isModalVisible: PropTypes.bool,

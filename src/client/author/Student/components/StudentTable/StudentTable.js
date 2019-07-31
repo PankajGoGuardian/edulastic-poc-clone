@@ -114,7 +114,8 @@ class StudentTable extends Component {
       },
       {
         title: "Username",
-        dataIndex: "_source.email",
+        dataIndex: "_source.username",
+        render: (text, record, index) => record._source.username || record._source.email,
         sorter: (a, b) => compareByAlph(a.email, b.email)
       },
       {

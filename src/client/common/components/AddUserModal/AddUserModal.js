@@ -209,7 +209,7 @@ class AddUserForm extends React.Component {
                 <Field name="dob" optional>
                   <legend>DOB</legend>
                   <Form.Item>
-                    {getFieldDecorator("dob", { initialValue: get(_source, "dob", "") })(
+                    {getFieldDecorator("dob", { initialValue: moment(get(_source, "dob", "")) })(
                       <DatePicker format="DD MMM, YYYY" />
                     )}
                   </Form.Item>
@@ -229,7 +229,7 @@ class AddUserForm extends React.Component {
                 <Field name="contactEmails">
                   <legend>Contact</legend>
                   <Form.Item>
-                    {getFieldDecorator("contactEmails", { initialValue: get(_source, "contactEmails", "") })(
+                    {getFieldDecorator("contactEmails", { initialValue: get(_source, "contactEmails", "").join(",") })(
                       <Input placeholder="Enter Contact" />
                     )}
                   </Form.Item>

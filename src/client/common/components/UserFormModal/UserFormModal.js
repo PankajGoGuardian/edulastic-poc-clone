@@ -7,7 +7,7 @@ import { IconUser } from "@edulastic/icons";
 import { StyledModal, Title, ActionButton, PanelHeader, Field } from "./styled";
 
 const { Panel } = Collapse;
-class AddUserForm extends React.Component {
+class UserForm extends React.Component {
   state = {
     keys: ["basic"]
   };
@@ -49,8 +49,9 @@ class AddUserForm extends React.Component {
       form: { getFieldDecorator },
       closeModal
     } = this.props;
-    const { showModal, formTitle, role, showAdditionalFields, modalData: { _source } = {} } = this.props;
+    const { showModal, formTitle, role, showAdditionalFields, modalData: { _source } = {}, buttonText } = this.props;
     const dobValue = get(_source, "dob");
+    const contactEmails = get(_source, "contactEmails");
     const { keys } = this.state;
     const title = (
       <Title>
@@ -66,7 +67,7 @@ class AddUserForm extends React.Component {
         </ActionButton>
 
         <ActionButton type="primary" onClick={() => this.onProceed()}>
-          yes
+          {buttonText || `Yes, Update`}
           <Icon type="right" />
         </ActionButton>
       </>
@@ -230,7 +231,7 @@ class AddUserForm extends React.Component {
                 <Field name="contactEmails">
                   <legend>Contact</legend>
                   <Form.Item>
-                    {getFieldDecorator("contactEmails", { initialValue: get(_source, "contactEmails", "").join(",") })(
+                    {getFieldDecorator("contactEmails", { initialValue: contactEmails ? contactEmails.join(",") : "" })(
                       <Input placeholder="Enter Contact" />
                     )}
                   </Form.Item>
@@ -254,4 +255,4 @@ class AddUserForm extends React.Component {
     );
   }
 }
-export const AddUserFormModal = Form.create({ name: "add_modal" })(AddUserForm);
+export const UserFormModal = Form.create({ name: "add_modal" })(UserForm);

@@ -197,16 +197,17 @@ const EditClassification = ({
   const handleGroupRemove = index => () => {
     setQuestionData(
       produce(item, draft => {
-        const colCount = draft.ui_style.column_count;
-        const rowCount = draft.ui_style.row_count;
-
-        const initialLength = (colCount || 2) * (rowCount || 1);
-        draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
-
-        draft.validation.alt_responses.forEach(ite => {
-          ite.value = Array(...Array(initialLength)).map(() => []);
+        const responses = draft.possible_response_groups[index].responses.flatMap(resp => resp.id);
+        responses.forEach(responseID => {
+          draft.validation.valid_response.value = draft.validation.valid_response.value.map(arr => {
+            return arr.filter(respID => respID !== responseID);
+          });
+          draft.validation.alt_responses.forEach(alt_response => {
+            alt_response.value = alt_response.value.map(arr => {
+              return arr.filter(respID => respID !== responseID);
+            });
+          });
         });
-
         draft.possible_response_groups.splice(index, 1);
         updateVariables(draft);
       })

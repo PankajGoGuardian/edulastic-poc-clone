@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { Table, Checkbox, Icon } from "antd";
 import styled, { css } from "styled-components";
-import { white, blue } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 import { setTestDataAction } from "../../../../ducks";
 import { receivePerformanceBandAction } from "../../../../../PerformanceBand/ducks";
 import { getUserOrgId } from "../../../../../src/selectors/user";
@@ -14,10 +14,12 @@ const PerformanceBands = ({ setTestData, fetchPerformanceBand, userOrgId, perfor
   }, []);
 
   const handleIsAbove = (isChecked, index) => {
-    const newPerformanceBands = [...performanceBandsData];
-    newPerformanceBands[index].aboveOrAtStandard = !isChecked;
+    const newPerformanceBands = performanceBandsData.map((item, i) =>
+      i === index ? { ...item, aboveOrAtStandard: !isChecked } : item
+    );
+
     setTestData({
-      performanceBands: newPerformanceBands
+      performanceBandsData: newPerformanceBands
     });
   };
 
@@ -172,7 +174,7 @@ const Disabled = css`
 
 const ChangeValueBtns = styled(Icon)`
   svg {
-    fill: ${blue};
+    fill: ${themeColor};
     font-size: 18px;
   }
   &.anticon[tabindex] {

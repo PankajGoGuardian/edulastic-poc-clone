@@ -6,7 +6,7 @@ import { lightGreySecondary, secondaryTextColor, dropZoneTitleColor, greenDark }
 
 export const Container = styled(Paper)`
   padding: 16px;
-  margin-top: 46px;
+  margin-top: 35px;
 `;
 
 export const SummaryInfoContainer = styled.div`

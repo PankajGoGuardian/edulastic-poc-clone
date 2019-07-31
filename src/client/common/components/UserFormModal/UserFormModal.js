@@ -1,8 +1,9 @@
 import React from "react";
 import moment from "moment";
-import { get, split, unset, pickBy, identity } from "lodash";
+import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
 import { Icon, Collapse, Spin, Input, Select, DatePicker } from "antd";
 import { IconUser } from "@edulastic/icons";
+import { userApi } from "@edulastic/api";
 
 import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
 
@@ -44,12 +45,30 @@ class UserForm extends React.Component {
       callback();
     }
   };
+
+  checkUser = async (rule, value, callback) => {
+    const email = this.props.form.getFieldValue("email");
+    const result = await userApi.checkUser({
+      username: value
+    });
+    if (!isEmpty(result)) {
+      callback("Email Already exists");
+    }
+  };
   render() {
     const {
       form: { getFieldDecorator },
       closeModal
     } = this.props;
-    const { showModal, formTitle, role, showAdditionalFields, modalData: { _source } = {}, buttonText } = this.props;
+    const {
+      showModal,
+      formTitle,
+      role,
+      showAdditionalFields,
+      modalData: { _source } = {},
+      buttonText,
+      isStudentEdit
+    } = this.props;
     const dobValue = get(_source, "dob");
     const contactEmails = get(_source, "contactEmails");
     const { keys } = this.state;
@@ -93,15 +112,27 @@ class UserForm extends React.Component {
         <Form>
           <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
             <Panel header={BasicDetailsHeader} key="basic">
-              <Field name="email">
-                <legend>Username/Email</legend>
-                <Form.Item>
-                  {getFieldDecorator("email", {
-                    rules: [{ required: true, message: "Please input the destination class" }],
-                    initialValue: get(_source, "username", get(_source, "email", ""))
-                  })(<Input placeholder="Enter Username/email" disabled={true} />)}
-                </Form.Item>
-              </Field>
+              {isStudentEdit && (
+                <Field name="email">
+                  <legend>Username</legend>
+                  <Form.Item>
+                    {getFieldDecorator("username", {
+                      initialValue: get(_source, "username", get(_source, "username", ""))
+                    })(<Input placeholder="Enter Username/email" disabled={true} />)}
+                  </Form.Item>
+                </Field>
+              )}
+              {!isStudentEdit && (
+                <Field name="email">
+                  <legend>Username/Email</legend>
+                  <Form.Item>
+                    {getFieldDecorator("email", {
+                      rules: [{ required: true, message: "Please enter valid username" }],
+                      initialValue: get(_source, "username", get(_source, "email", ""))
+                    })(<Input placeholder="Enter Username/email" disabled={true} />)}
+                  </Form.Item>
+                </Field>
+              )}
               <Field name="firstName">
                 <legend>First Name</legend>
                 <Form.Item>
@@ -122,6 +153,18 @@ class UserForm extends React.Component {
                   )}
                 </Form.Item>
               </Field>
+              {isStudentEdit && (
+                <Field name="email">
+                  <legend>Email</legend>
+                  <Form.Item>
+                    {getFieldDecorator("email", {
+                      validateTrigger: ["onBlur"],
+                      rules: [{ validator: this.checkUser }],
+                      initialValue: get(_source, "email", get(_source, "email", ""))
+                    })(<Input placeholder="Enter email" />)}
+                  </Form.Item>
+                </Field>
+              )}
               <Field name="password">
                 <legend>Password</legend>
                 <Form.Item>
@@ -255,4 +298,4 @@ class UserForm extends React.Component {
     );
   }
 }
-export const UserFormModal = Form.create({ name: "add_modal" })(UserForm);
+export const UserFormModal = Form.create({ name: "user_form_modal" })(UserForm);

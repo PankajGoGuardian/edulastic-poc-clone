@@ -594,6 +594,7 @@ class StudentTable extends Component {
             modalFunc={updateAdminUser}
             closeModal={this.closeEditStudentModal}
             buttonText="Yes, Update"
+            isStudentEdit={true}
           />
         )}
         {addStudentModalVisible && (

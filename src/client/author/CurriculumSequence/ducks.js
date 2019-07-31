@@ -22,6 +22,7 @@ import {
   getStudentsSelector,
   getGroupsSelector
 } from "../sharedDucks/groups";
+import { generateClassData } from "../TestPage/components/Assign/utils";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../Playlist/ducks";
 import produce from "immer";
 
@@ -85,6 +86,7 @@ export const setContentCurriculumAction = createAction(SET_CONTENT_CURRICULUM);
 export const saveGuideAlignmentAction = createAction(SAVE_GUIDE_ALIGNMENT);
 export const toggleCheckedUnitItemAction = createAction(TOGGLE_CHECKED_UNIT_ITEM);
 export const toggleAddContentAction = createAction(TOGGLE_ADD_CONTENT);
+export const createAssignmentAction = createAction(CREATE_ASSIGNMENT);
 export const createAssignmentNowAction = createAction(CREATE_ASSIGNMENT_NOW);
 export const setSelectedItemsForAssignAction = createAction(SET_SELECTED_ITEMS_FOR_ASSIGN_INIT);
 export const setDataForAssignAction = createAction(SET_DATA_FOR_ASSIGN_INIT);
@@ -92,6 +94,7 @@ export const addContentToCurriculumSequenceAction = createAction(ADD_CONTENT_TO_
 export const saveCurriculumSequenceAction = createAction(SAVE_CURRICULUM_SEQUENCE);
 export const addNewUnitAction = createAction(ADD_NEW_UNIT_INIT);
 export const removeUnitAction = createAction(REMOVE_UNIT_INIT);
+export const batchAssignAction = createAction(BATCH_ASSIGN);
 export const fetchAssignedAction = createAction(FETCH_ASSIGNED_REQUEST);
 export const useThisPlayListAction = createAction(USE_THIS_PLAYLIST);
 
@@ -263,6 +266,113 @@ function* saveGuideAlignment() {
   const state = yield select(getCurriculumSequenceState);
   const ids = [state.selectedGuide];
   yield call(makeApiRequest, ids);
+}
+
+function* createAssignment({ payload }) {
+  const currentAssignment = { ...payload };
+
+  // Make sure startDate and endDate are numbers
+  if (currentAssignment.startDate instanceof moment) {
+    currentAssignment.startDate = currentAssignment.startDate.valueOf();
+    currentAssignment.endDate = currentAssignment.endDate.valueOf();
+  }
+
+  const { user } = yield select(getUserSelector);
+
+  try {
+    const studentsList = yield select(getStudentsSelector);
+    const allGroups = yield select(getGroupsSelector);
+    // let testId = yield select(getTestIdSelector);
+    // const termId = yield select(getCurrentTerm);
+    currentAssignment.class = generateClassData(
+      payload.class,
+      payload.students,
+      studentsList,
+      payload.specificStudents,
+      keyBy(allGroups, "_id")
+    );
+  } catch (error) {
+    message.warn(error.message);
+    return error;
+  }
+
+  /** @type {String[]} */
+  const selectedItemsForAssign = yield select(getSelectedItemsForAssign);
+  const assignments = selectedItemsForAssign.filter(testId => testId).map(testId => ({ ...currentAssignment, testId }));
+
+  /** @type {State} */
+  const curriculumSequenceState = yield select(getCurriculumSequenceState);
+  const destinationCurriculumSequence = {
+    ...curriculumSequenceState.destinationCurriculumSequence
+  };
+
+  try {
+    /** @type {AssignData[]} */
+    const assignmentApiResponse = yield call(assignmentApi.create, { assignedBy: user._id, assignments });
+    const testIdsFromResponse = assignmentApiResponse.map(item => item.testId);
+
+    destinationCurriculumSequence.modules = [
+      ...destinationCurriculumSequence.modules.map(moduleItem => {
+        const updatedModule = { ...moduleItem };
+        const updatedModuleData = moduleItem.data.map(dataItem => {
+          const updatedDataItem = { ...dataItem };
+          if (testIdsFromResponse.indexOf(dataItem.testId) !== -1) {
+            updatedDataItem.assigned = true;
+          }
+          return updatedDataItem;
+        });
+
+        updatedModule.data = updatedModuleData;
+        return updatedModule;
+      })
+    ];
+
+    try {
+      yield curriculumSequencesApi.updateCurriculumSequence(
+        destinationCurriculumSequence._id,
+        destinationCurriculumSequence
+      );
+
+      yield put(updateCurriculumSequenceAction(destinationCurriculumSequence));
+    } catch (error) {
+      message.error("There was an error updating the curriculum sequence");
+      console.warn("There was an error updating the curriculum sequence", error);
+      return;
+    }
+
+    try {
+      yield put({ type: CREATE_ASSIGNMENT_OK, payload: assignmentApiResponse });
+    } catch (error) {
+      message.error("Assign was not successful, please try again");
+      console.warn("createAssignment error", error);
+    }
+  } catch (error) {
+    message.warn(error.message);
+    return error;
+  }
+}
+
+function* batchAssign({ payload }) {
+  const assignData = payload;
+  /** @type{any[]} */
+  const assignments = yield select(getSelectedItemsForAssign);
+
+  try {
+    const createAssignmentYield = yield all(
+      assignments.map(assignment => {
+        const assignmentWithData = { ...assignData, testId: assignment };
+        return call(createAssignment, { payload: assignmentWithData });
+      })
+    );
+
+    if (createAssignmentYield.filter(item => item instanceof Error).length) {
+      return createAssignmentYield;
+    }
+
+    message.success("Successfully assigned");
+  } catch (error) {
+    message.warn(error.message);
+  }
 }
 
 function* assign({ payload }) {
@@ -564,12 +674,14 @@ export function* watcherSaga() {
     yield takeLatest(SET_GUIDE, setGuide),
     yield takeLatest(SET_CONTENT_CURRICULUM, setContentCurriculum),
     yield takeLatest(SAVE_GUIDE_ALIGNMENT, saveGuideAlignment),
+    yield takeLatest(CREATE_ASSIGNMENT, createAssignment),
     yield takeLatest(CREATE_ASSIGNMENT_NOW, createAssignmentNow),
     yield takeLatest(SAVE_CURRICULUM_SEQUENCE, saveCurriculumSequence),
     yield takeLatest(SET_DATA_FOR_ASSIGN_INIT, setDataForAssign),
     yield takeLatest(SET_SELECTED_ITEMS_FOR_ASSIGN_INIT, setSelectedItemsForAssign),
     yield takeLatest(ADD_NEW_UNIT_INIT, addNewUnit),
     yield takeLatest(REMOVE_UNIT_INIT, removeUnit),
+    yield takeLatest(BATCH_ASSIGN, batchAssign),
     yield takeLatest(FETCH_ASSIGNED_REQUEST, fetchAssigned),
     yield takeLatest(ADD_CONTENT_TO_CURRICULUM_RESULT, moveContentToPlaylistSaga),
     yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga)

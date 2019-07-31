@@ -50,7 +50,8 @@ const generateAssignmentColumns = group => [
           openPolicy: record.openPolicy,
           closePolicy: record.closePolicy,
           class: record.class || [],
-          students: record.students || []
+          students: record.students || [],
+          specificStudents: record.specificStudents || false
         });
       return (
         <FlexContainer justifyContent="space-around">

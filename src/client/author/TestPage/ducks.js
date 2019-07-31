@@ -656,10 +656,9 @@ function* showAnswerSaga({ payload }) {
 
     // when item is removed from the test, we get the question from the payload (i.e modal case)
     if (!questions || Object.keys(questions).length === 0) {
-      const { item } = payload;
-
+      const data = (payload.item ? payload.item.data : payload.data) || { questions: [] };
       // eslint-disable-next-line prefer-destructuring
-      questions = item.data.questions.reduce((acc, curr) => {
+      questions = data.questions.reduce((acc, curr) => {
         acc[curr.id] = curr;
         return acc;
       }, {});

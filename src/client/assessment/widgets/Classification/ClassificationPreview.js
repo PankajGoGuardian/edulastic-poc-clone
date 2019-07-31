@@ -12,7 +12,8 @@ import {
   Subtitle,
   CenteredText,
   InstructorStimulus,
-  MathFormulaDisplay
+  MathFormulaDisplay,
+  QuestionNumberLabel
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -25,7 +26,7 @@ import TableRow from "./components/TableRow";
 import { getStyles } from "./utils";
 import { getFontSize, getDirection } from "../../utils/helpers";
 import { TableWrapper } from "./styled/TableWrapper";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 const ClassificationPreview = ({
   view,
@@ -279,7 +280,7 @@ const ClassificationPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {!smallSize && view === PREVIEW && (
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
         </QuestionTitleWrapper>
       )}

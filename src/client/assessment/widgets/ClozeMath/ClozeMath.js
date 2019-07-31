@@ -2,7 +2,7 @@
 /* eslint-disable no-undef */
 import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { Paper, WithResources, InstructorStimulus, AnswerContext } from "@edulastic/common";
+import { Paper, WithResources, InstructorStimulus, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -17,7 +17,7 @@ import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import { ContentArea } from "../../styled/ContentArea";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/Label";
+import { QuestionTitleWrapper } from "./styled/Label";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -98,7 +98,9 @@ const ClozeMath = ({
       {!flowLayout ? (
         <>
           <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-          <QuestionTitleWrapper>{showQuestionNumber && <QuestionNumber>{qLabel}</QuestionNumber>}</QuestionTitleWrapper>
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel>}
+          </QuestionTitleWrapper>
         </>
       ) : null}
 

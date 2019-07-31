@@ -4,7 +4,14 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus, CorrectAnswersContainer, AnswerContext } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  InstructorStimulus,
+  CorrectAnswersContainer,
+  AnswerContext,
+  QuestionNumberLabel
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 import { charts as checkAnswerMethod } from "@edulastic/evaluators";
@@ -18,7 +25,7 @@ import BarChart from "./BarChart";
 import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
+import { QuestionTitleWrapper } from "./styled/QuestionNumber";
 import { Tools } from "./components/Tools";
 import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
 
@@ -184,7 +191,7 @@ const ChartPreview = ({
         <Fragment>
           <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
           <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
           </QuestionTitleWrapper>
         </Fragment>

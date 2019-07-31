@@ -4,7 +4,14 @@ import { cloneDeep, get } from "lodash";
 import { compose } from "redux";
 import styled, { withTheme } from "styled-components";
 
-import { Paper, Stimulus, InstructorStimulus, MathSpan, CorrectAnswersContainer } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  InstructorStimulus,
+  MathSpan,
+  CorrectAnswersContainer,
+  QuestionNumberLabel
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
@@ -12,11 +19,6 @@ import { getFontSize } from "../../utils/helpers";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
 `;
 
 const TokenHighlightPreview = ({
@@ -170,7 +172,7 @@ const TokenHighlightPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 

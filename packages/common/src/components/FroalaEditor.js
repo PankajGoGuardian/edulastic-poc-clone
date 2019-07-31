@@ -464,7 +464,10 @@ const CustomEditor = ({
           return false;
         },
         "image.inserted": function($img, response) {
-          $img.css({ verticalAlign: "middle" });
+          $img.css({
+            verticalAlign: "middle",
+            width: $img[0].naturalWidth < imageDefaultWidth ? `${$img[0].naturalWidth}px` : `${imageDefaultWidth}px`
+          });
         },
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {

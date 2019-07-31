@@ -17,11 +17,7 @@ const EssayRichText = props => {
 
   return (
     <WithResources
-      resources={[
-        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-        "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css",
-        "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
-      ]}
+      resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
       fallBack={<span />}
     >
       <Fragment>

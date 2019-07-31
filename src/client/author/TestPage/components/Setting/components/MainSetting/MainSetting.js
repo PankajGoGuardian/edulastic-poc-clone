@@ -37,6 +37,7 @@ import {
 } from "./styled";
 import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
 import StandardProficiencyTable from "./StandardProficiencyTable";
+import PeformanceBand from "./PeformanceBand";
 
 const {
   settingCategories,
@@ -603,34 +604,7 @@ class MainSetting extends Component {
             )}
             {availableFeatures.includes("performanceBands") ? (
               <Block id="performance-bands" smallSize={isSmallSize}>
-                <Row style={{ marginBottom: 18, display: "flex", alignItems: "center" }}>
-                  <Col span={6}>
-                    <Title>Performance Bands</Title>
-                  </Col>
-                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                    <NormalText>Above or At Standard</NormalText>
-                  </Col>
-                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                    <NormalText>From</NormalText>
-                  </Col>
-                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                    <NormalText>To</NormalText>
-                  </Col>
-                </Row>
-                <List
-                  grid={{ column: 1 }}
-                  dataSource={Object.keys(performanceBandsData)}
-                  renderItem={item => (
-                    <List.Item>
-                      <ListCard
-                        item={performanceBandsData[item]}
-                        owner={owner}
-                        isEditable={isEditable}
-                        onPerformanceBandUpdate={() => this.onPerformanceBandUpdate(item)}
-                      />
-                    </List.Item>
-                  )}
-                />
+                <PeformanceBand />
               </Block>
             ) : (
               ""

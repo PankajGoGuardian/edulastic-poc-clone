@@ -48,8 +48,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case SET_ASSIGNMENT_FILTER:
       return { ...state, filter: { ...payload } };
     case RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST:
-      // need to make it empty as it was causing problem while rendering
-      return { ...state, loading: true, filtering: payload.filtering, summaryEntities: [] };
+      return { ...state, loading: true, filtering: payload.filtering };
     case RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS: {
       const { entities = [], total } = payload;
       return {

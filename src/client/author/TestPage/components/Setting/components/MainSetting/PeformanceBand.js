@@ -1,16 +1,14 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { get } from "lodash";
 import { Table, Checkbox, Icon } from "antd";
 import styled, { css } from "styled-components";
 import { white, blue } from "@edulastic/colors";
-import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
+import { setTestDataAction } from "../../../../ducks";
 import { receivePerformanceBandAction } from "../../../../../PerformanceBand/ducks";
 import { getUserOrgId } from "../../../../../src/selectors/user";
+import { performanceBandSelector } from "../../../../../AssignTest/duck";
 
-const PerformanceBands = ({ setTestData, entity, fetchPerformanceBand, userOrgId, performanceBandData }) => {
-  const { performanceBandsData = performanceBandData } = entity;
-
+const PerformanceBands = ({ setTestData, fetchPerformanceBand, userOrgId, performanceBandsData }) => {
   useEffect(() => {
     fetchPerformanceBand({ orgId: userOrgId });
   }, []);
@@ -23,17 +21,26 @@ const PerformanceBands = ({ setTestData, entity, fetchPerformanceBand, userOrgId
     });
   };
 
+  /**
+   *
+   * @param {*} index current row index
+   * @param {*} dir direction of the click (+ || -)
+   */
   const onPerformanceBandChange = (index, dir) => {
     let { to } = performanceBandsData[index];
     const previousBandTo = index ? performanceBandsData[index - 1].to : 100;
+    // We can decrease current band value only if the next band value has difference greater than one
     if (dir === "decrease" && to > performanceBandsData[index + 1].to + 1) {
       to--;
-    } else if (dir === "increase" && to < previousBandTo) {
+    }
+    // We can increase current band value only if the previous band value has difference greater than one
+    else if (dir === "increase" && to < previousBandTo) {
       to++;
     } else {
       return;
     }
     const newPerformanceBands = [...performanceBandsData];
+    // updated TO value will be assigned to next FROM value of the next band
     newPerformanceBands[index].to = newPerformanceBands[index + 1].from = to;
     setTestData({
       performanceBandsData: newPerformanceBands
@@ -95,8 +102,7 @@ const PerformanceBands = ({ setTestData, entity, fetchPerformanceBand, userOrgId
 
 export default connect(
   state => ({
-    entity: getTestEntitySelector(state),
-    performanceBandData: get(state, ["performanceBandReducer", "data", "performanceBand"], []),
+    performanceBandsData: performanceBandSelector(state),
     userOrgId: getUserOrgId(state)
   }),
   {

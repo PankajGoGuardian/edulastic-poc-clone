@@ -56,3 +56,16 @@ export const getTestEntitySelector = createSelector(
   testsSelector,
   state => state.entity
 );
+
+const statePerformanceBandSelector = state => state.performanceBandReducer;
+
+export const performanceBandSelector = createSelector(
+  getTestEntitySelector,
+  statePerformanceBandSelector,
+  (test, performanceBandDistrict) => {
+    if (test.performanceBandsData && test.performanceBandsData.length) {
+      return test.performanceBandsData;
+    }
+    return get(performanceBandDistrict, "data.performanceBand", []);
+  }
+);

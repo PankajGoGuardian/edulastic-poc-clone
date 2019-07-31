@@ -47,8 +47,7 @@ export const getCurrentAssignmentSelector = createSelector(
       endDate: moment().add("days", 7),
       openPolicy: "Automatically on Start Date",
       closePolicy: "Automatically on Due Date",
-      class: [],
-      specificStudents: false
+      class: []
     };
   }
 );

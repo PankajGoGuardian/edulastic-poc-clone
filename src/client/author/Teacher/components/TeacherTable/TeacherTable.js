@@ -583,6 +583,7 @@ class TeacherTable extends Component {
             modalVisible={teacherDetailsModalVisible}
             closeModal={this.closeTeachersDetailModal}
             role="teacher"
+            title="Teacher Details"
           />
         )}
       </StyledTableContainer>

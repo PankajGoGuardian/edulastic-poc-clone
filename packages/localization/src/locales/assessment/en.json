@@ -648,7 +648,8 @@
       "maxVal": "Maximum value",
       "responseNumAllowed": "Number of responses allowed",
       "correctAnswer": "Correct Answer",
-      "alternateAnswer": "Alternate Answer"
+      "alternateAnswer": "Alternate Answer",
+      "shuffleAnswerChoices": "Shuffle Answer Choices"
     },
     "math": {
       "enterQuestion": "Enter question",

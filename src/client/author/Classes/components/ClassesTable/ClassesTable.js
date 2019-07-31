@@ -479,14 +479,16 @@ class ClassesTable extends Component {
         dataIndex: "_source.name",
         editable: true,
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.name.localeCompare(b._source.name)
+        sorter: (a, b) => a._source.name.localeCompare(b._source.name),
+        width: 200
       },
       {
         title: "Class Code",
         dataIndex: "_source.code",
         editable: true,
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.code.localeCompare(b._source.code)
+        sorter: (a, b) => a._source.code.localeCompare(b._source.code),
+        width: 100
       },
       {
         title: "Course",
@@ -498,7 +500,8 @@ class ClassesTable extends Component {
           const prev = get(a, "_source.course.name", "");
           const next = get(b, "_source.course.name", "");
           return next.localeCompare(prev);
-        }
+        },
+        width: 200
       },
       {
         title: "Teacher",
@@ -511,7 +514,8 @@ class ClassesTable extends Component {
           return <React.Fragment>{teachers}</React.Fragment>;
         },
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name)
+        sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name),
+        width: 50
       },
       {
         title: "Users",
@@ -519,7 +523,8 @@ class ClassesTable extends Component {
         editable: true,
         render: (studentCount = 0) => studentCount,
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.studentCount - b._source.studentCount
+        sorter: (a, b) => a._source.studentCount - b._source.studentCount,
+        width: 50
       },
       {
         dataIndex: "_id",
@@ -534,7 +539,8 @@ class ClassesTable extends Component {
               </StyledTableButton>
             </React.Fragment>
           );
-        }
+        },
+        width: 100
       }
     ];
 

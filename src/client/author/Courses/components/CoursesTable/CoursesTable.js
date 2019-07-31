@@ -427,7 +427,7 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "name",
         editable: true,
-        width: "40%",
+        width: 200,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -454,7 +454,7 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "number",
         editable: true,
-        width: "30%",
+        width: 200,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -471,7 +471,7 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "classCount",
         editable: true,
-        width: "20%",
+        width: 100,
         render: (text, record) => {
           const strClassCount = record.classCount == 0 ? "-" : record.classCount;
           return <React.Fragment>{strClassCount}</React.Fragment>;
@@ -479,7 +479,7 @@ class CoursesTable extends React.Component {
       },
       {
         dataIndex: "operation",
-        width: "94px",
+        width: 100,
         render: (text, record) => {
           return (
             <React.Fragment>

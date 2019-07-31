@@ -428,7 +428,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "name",
         editable: true,
-        width: "20%",
+        width: 200,
         render: name => name || "-",
         onHeaderCell: column => {
           return {
@@ -456,7 +456,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "city",
         editable: true,
-        width: "15%",
+        width: 150,
         render: city => city || "-",
         onHeaderCell: column => {
           return {
@@ -484,7 +484,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "state",
         editable: true,
-        width: "15%",
+        width: 150,
         render: state => state || "-",
         onHeaderCell: column => {
           return {
@@ -512,7 +512,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "zip",
         editable: true,
-        width: "10%",
+        width: 100,
         render: zip => zip || "-",
         onHeaderCell: column => {
           return {
@@ -540,7 +540,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "isApproved",
         editable: true,
-        width: "15%",
+        width: 50,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -578,6 +578,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "teachersCount",
         editable: true,
+        width: 50,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -604,6 +605,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "studentsCount",
         editable: true,
+        width: 50,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -630,6 +632,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "sectionsCount",
         editable: true,
+        width: 50,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -640,7 +643,7 @@ class SchoolsTable extends React.Component {
       },
       {
         dataIndex: "operation",
-        width: "94px",
+        width: 100,
         render: (text, record) => {
           return (
             <React.Fragment>

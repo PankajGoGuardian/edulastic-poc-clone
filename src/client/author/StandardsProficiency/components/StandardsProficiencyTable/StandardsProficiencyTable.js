@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Form, Icon, Radio, Button, message } from "antd";
+import { Form, Icon, Radio, Button, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -8,6 +8,7 @@ import StandardsProficiencyEditableCell from "./StandardsProficiencyEditableCell
 
 import {
   StyledTableContainer,
+  StyledTable,
   TopDiv,
   InfoDiv,
   SaveButtonDiv,
@@ -320,7 +321,7 @@ class StandardsProficiencyTable extends React.Component {
         </TopDiv>
 
         <EditableContext.Provider value={this.props.form}>
-          <Table
+          <StyledTable
             components={components}
             dataSource={data}
             columns={columns}

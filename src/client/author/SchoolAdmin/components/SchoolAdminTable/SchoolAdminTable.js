@@ -6,6 +6,7 @@ import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { StyledComponents, TypeToConfirmModal } from "@edulastic/common";
 import {
   StyledTableContainer,
+  StyledTable,
   StyledControlDiv,
   StyledFilterSelect,
   StyledClassName,
@@ -509,7 +510,7 @@ class SchoolAdminTable extends Component {
             </StyledControlDiv>
           );
         })}
-        <OnHoverTable
+        <StyledTable
           rowKey={record => record._id}
           rowSelection={rowSelection}
           dataSource={Object.values(result)}

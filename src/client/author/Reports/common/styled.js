@@ -102,6 +102,9 @@ export const DropDownContainer = styled.div`
 `;
 
 export const StyledCard = styled(Card)`
+  // when u change this u have to change "StyledCard" in "src/client/common/styled.js" to make every css in sync
+  // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
+  // Import this and add USE CASE SPECIFIC CSS
   margin: ${props => (props.margin ? props.margin : "8px")};
 
   .ant-card-body {
@@ -152,6 +155,9 @@ export const StyledContainer = styled.div`
 `;
 
 export const StyledTable = styled(Table)`
+  // when u change this u have to change "StyledTable" in "src/client/common/styled.js" to make every css in sync
+  // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
+  // Import this and add USE CASE SPECIFIC CSS
   .ant-table-body {
     overflow: auto;
     table {

@@ -256,10 +256,19 @@ function* submitTest() {
     } else {
       yield put(push("/home/reports"));
     }
+    yield put({
+      type: SET_TEST_ACTIVITY_ID,
+      payload: { testActivityId: "" }
+    });
   } catch (err) {
     if (err.status === 403) {
       console.log(err);
       yield put(push("/home/assignments"));
+      yield put({
+        type: SET_TEST_ACTIVITY_ID,
+        payload: { testActivityId: "" }
+      });
+
       yield call(message.error, err.data);
     }
   }

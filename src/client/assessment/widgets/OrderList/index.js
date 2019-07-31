@@ -248,6 +248,7 @@ const OrderList = ({
             <QuestionHeader
               qIndex={qIndex}
               smallSize={smallSize}
+              padding="0px"
               dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
             />
           </QuestionTitleWrapper>

@@ -75,7 +75,8 @@ const PerformanceBands = ({ setTestData, entity, fetchPerformanceBand, userOrgId
       className: "action-wrapper",
       render: (text, row, index) => {
         const nextBandTo = index ? performanceBandsData[index - 1].to : 100;
-        const disableDecrease = row.to === 0 || row.from + 1 === row.to;
+        const previousBandTo = index < performanceBandsData.length - 1 ? performanceBandsData[index + 1].to : 0;
+        const disableDecrease = row.to === 0 || previousBandTo + 1 === row.to;
         const disableIncrease = row.to === 0 || row.to === 100 || nextBandTo === row.to + 1;
         return (
           <div>
@@ -174,7 +175,7 @@ const ChangeValueBtns = styled(Icon)`
     fill: ${blue};
     font-size: 18px;
   }
-  .anticon[tabindex] {
+  &.anticon[tabindex] {
     ${props => props.disabled && Disabled};
   }
 `;

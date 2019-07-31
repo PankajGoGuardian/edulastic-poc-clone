@@ -22,7 +22,8 @@ const UnitsDropdownPure = ({
   preview,
   selected,
   options,
-  onChangeShowDropdown
+  onChangeShowDropdown,
+  disabled
 }) => {
   const [offset, updateOffset] = useState(keypadOffset);
 
@@ -92,7 +93,11 @@ const UnitsDropdownPure = ({
   return (
     <FlexContainer alignItems="center" justifyContent="flex-start">
       {item.showDropdown && (
-        <UniteSelet value={preview ? selected : options ? options.unit : ""} onChange={handleChange}>
+        <UniteSelet
+          value={preview ? selected : options ? options.unit : ""}
+          onChange={handleChange}
+          disabled={disabled}
+        >
           {allBtns.map((btn, i) => (
             <Option value={btn.handler} key={i}>
               {getLabel(btn.handler)}
@@ -129,12 +134,14 @@ UnitsDropdownPure.propTypes = {
   selected: PropTypes.string,
   preview: PropTypes.bool,
   t: PropTypes.func.isRequired,
-  onChangeShowDropdown: PropTypes.func
+  onChangeShowDropdown: PropTypes.func,
+  disabled: PropTypes.bool
 };
 
 UnitsDropdownPure.defaultProps = {
   keypadOffset: 0,
   preview: false,
+  disabled: false,
   selected: "",
   onChangeShowDropdown: () => null
 };

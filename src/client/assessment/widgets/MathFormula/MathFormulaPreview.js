@@ -284,7 +284,13 @@ class MathFormulaPreview extends Component {
               )}
             </MathInputWrapper>
             {item.isUnits && item.showDropdown && (
-              <UnitsDropdown item={item} preview onChange={this.selectUnitFromDropdown} selected={this.selectedUnit} />
+              <UnitsDropdown
+                item={item}
+                preview
+                onChange={this.selectUnitFromDropdown}
+                selected={this.selectedUnit}
+                disabled={evaluation && !evaluation.some(ie => ie)}
+              />
             )}
           </FlexContainer>
         )}

@@ -44,6 +44,7 @@ import {
   setDataForAssignAction,
   saveCurriculumSequenceAction,
   addNewUnitAction,
+  batchAssignAction,
   useThisPlayListAction
 } from "../ducks";
 /* eslint-enable */
@@ -135,6 +136,7 @@ import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/Remov
  * @property {boolean} isContentExpanded
  * @property {function} setSelectedItemsForAssign
  * @property {any[]} selectedItemsForAssign
+ * @property {function} batchAssign
  * @property {import('./ducks').AssignData} dataForAssign
  */
 
@@ -158,7 +160,8 @@ class CurriculumSequence extends Component {
       endDate: moment(),
       openPolicy: "Automatically on Start Date",
       closePolicy: "Automatically on Due Date",
-      class: []
+      class: [],
+      specificStudents: false
     },
     showConfirmRemoveModal: false,
     isPlayListEdited: false
@@ -655,6 +658,7 @@ CurriculumSequence.propTypes = {
   onBeginDrag: PropTypes.func.isRequired,
   isContentExpanded: PropTypes.bool.isRequired,
   setSelectedItemsForAssign: PropTypes.func.isRequired,
+  batchAssign: PropTypes.func.isRequired,
   onShareClick: PropTypes.func,
   selectedItemsForAssign: PropTypes.array.isRequired,
   dataForAssign: PropTypes.object.isRequired,
@@ -1269,6 +1273,7 @@ const enhance = compose(
       saveGuideAlignment: saveGuideAlignmentAction,
       setSelectedItemsForAssign: setSelectedItemsForAssignAction,
       setDataForAssign: setDataForAssignAction,
+      batchAssign: batchAssignAction,
       saveCurriculumSequence: saveCurriculumSequenceAction,
       useThisPlayList: useThisPlayListAction,
       removeTestFromModule: removeTestFromModuleAction,

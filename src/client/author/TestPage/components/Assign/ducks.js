@@ -92,7 +92,8 @@ export const getCurrentAssignmentSelector = createSelector(
       endDate: moment().add("days", 7),
       openPolicy: "Automatically on Start Date",
       closePolicy: "Automatically on Due Date",
-      class: []
+      class: [],
+      specificStudents: false
     };
   }
 );
@@ -167,7 +168,6 @@ function* saveAssignment({ payload }) {
     let userRole = yield select(getUserRole);
     const testType = get(payload, "testType", test.testType);
     let data = [];
-
     data = testIds.map(testId =>
       omit(
         {

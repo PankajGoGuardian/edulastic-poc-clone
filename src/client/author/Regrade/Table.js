@@ -48,6 +48,7 @@ const AssignmentsTable = ({ assignments, handleSettingsChange, regradeType, regr
     _id: item._id,
     class: item.class,
     students: item.students,
+    specificStudents: item.specificStudents || false,
     openPolicy: item.openPolicy || "",
     closePolicy: item.closePolicy || "",
     openDate: item.startDate,

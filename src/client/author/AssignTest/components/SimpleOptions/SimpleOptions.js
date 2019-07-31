@@ -69,11 +69,7 @@ class SimpleOptions extends React.Component {
   };
 
   onChange = (field, value) => {
-    const { onClassFieldChange, group, assignment, updateOptions, toggleSpecificStudents } = this.props;
-    if (field === "specificStudents") {
-      toggleSpecificStudents(value);
-      return;
-    }
+    const { onClassFieldChange, group, assignment, updateOptions } = this.props;
     if (field === "class") {
       this.setState({ classIds: value }, () => {
         const { classData, termId } = onClassFieldChange(value, group);
@@ -115,7 +111,7 @@ class SimpleOptions extends React.Component {
     const selectedStudentsById = studentList.map(_id => studentById[_id]);
     const studentsByGroupId = groupBy(selectedStudentsById, "groupId");
     const classData = assignment.class.map(item => {
-      const { _id, specificStudents } = item;
+      const { _id } = item;
       if (!studentsByGroupId[_id]) return item;
       return {
         _id,
@@ -124,8 +120,7 @@ class SimpleOptions extends React.Component {
         students: studentsByGroupId[_id].map(item => item._id),
         grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
-        termId: get(groupById, `${_id}.termId`, ""),
-        specificStudents: specificStudents
+        termId: get(groupById, `${_id}.termId`, "")
       };
     });
     this.setState({ studentList }, () => {
@@ -138,16 +133,7 @@ class SimpleOptions extends React.Component {
 
   render() {
     const { showSettings, classIds, studentList, _releaseGradeKeys } = this.state;
-    const {
-      group,
-      fetchStudents,
-      students,
-      testSettings = {},
-      assignment,
-      updateOptions,
-      userRole,
-      specificStudents
-    } = this.props;
+    const { group, fetchStudents, students, testSettings = {}, assignment, updateOptions, userRole } = this.props;
     const changeField = curry(this.onChange);
     let openPolicy = selectsData.openPolicy;
     let closePolicy = selectsData.closePolicy;
@@ -171,7 +157,7 @@ class SimpleOptions extends React.Component {
             students={studentOfSelectedClass}
             updateStudents={this.updateStudents}
             onChange={this.onChange}
-            specificStudents={specificStudents}
+            specificStudents={assignment.specificStudents}
           />
 
           <DateSelector startDate={assignment.startDate} endDate={assignment.endDate} changeField={changeField} />

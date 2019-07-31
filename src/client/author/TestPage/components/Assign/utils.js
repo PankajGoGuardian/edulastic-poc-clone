@@ -14,12 +14,53 @@ export const getListOfStudents = (students, classes) => {
   return selected;
 };
 
+export const generateClassData = (
+  classes = [],
+  selectedStudents = [],
+  studentList = [],
+  specificStudents,
+  groupsData
+) => {
+  if (!specificStudents) {
+    return classes.map(_id => ({
+      _id,
+      name: get(groupsData, `${_id}.name`, ""),
+      assignedCount: get(groupsData, `${_id}.studentCount`, 0),
+      grade: get(groupsData, `${_id}.grades`, ""),
+      subject: get(groupsData, `${_id}.subject`, ""),
+      termId: get(groupsData, `${_id}.termId`, "")
+    }));
+  }
+
+  selectedStudents = studentList.filter(({ _id }) => selectedStudents.includes(_id));
+
+  const groupedByClass = _groupBy(selectedStudents, "groupId");
+
+  return (
+    classes
+      .map(classId => {
+        const tempStudents = uniq((groupedByClass[classId] || []).map(item => item._id));
+        return {
+          _id: classId,
+          name: groupsData[classId].name,
+          students: tempStudents,
+          assignedCount: tempStudents.length,
+          grade: groupsData[classId].grades,
+          subject: groupsData[classId].subject,
+          termId: groupsData[classId].termId
+        };
+      })
+      // remove classes without students
+      .filter(item => item.students && item.students.length)
+  );
+};
+
 export const formatAssignment = assignment => {
   let students = [];
   const scoreReleasedClasses = [];
   const googleAssignmentIds = {};
   const classes = (assignment.class || []).map(item => {
-    if (item.specificStudents) {
+    if (assignment.specificStudents) {
       students = [...students, ...item.students];
     }
 

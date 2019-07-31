@@ -483,10 +483,10 @@ class CoursesTable extends React.Component {
         render: (text, record) => {
           return (
             <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditCourse(record.key)}>
+              <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(record.key)}>
+              <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
                 <Icon type="delete" theme="twoTone" />
               </StyledTableButton>
             </React.Fragment>

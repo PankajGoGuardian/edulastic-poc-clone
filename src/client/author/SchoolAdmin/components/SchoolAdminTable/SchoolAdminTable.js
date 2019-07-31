@@ -111,10 +111,10 @@ class SchoolAdminTable extends Component {
         dataIndex: "_id",
         render: id => (
           <React.Fragment>
-            <OnHoverButton onClick={() => this.onEditSchoolAdmin(id)}>
+            <OnHoverButton onClick={() => this.onEditSchoolAdmin(id)} title="Edit">
               <Icon type="edit" theme="twoTone" />
             </OnHoverButton>
-            <OnHoverButton onClick={() => this.handleDeactivateAdmin(id)}>
+            <OnHoverButton onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
               <Icon type="delete" theme="twoTone" />
             </OnHoverButton>
           </React.Fragment>

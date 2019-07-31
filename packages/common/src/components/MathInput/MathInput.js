@@ -146,7 +146,10 @@ class MathInput extends React.PureComponent {
 
   onClickMathField = () => {
     const { onInnerFieldClick } = this.props;
-    this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+    const { mathFieldFocus } = this.state;
+    if (!mathFieldFocus) {
+      this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+    }
   };
 
   focus = () => {
@@ -181,9 +184,10 @@ class MathInput extends React.PureComponent {
             this.setState({ mathFieldFocus: true });
           }}
           className="input"
+          onClick={this.onClickMathField}
         >
           <div onKeyDown={onKeyDown} className="input__math" style={style} data-cy="answer-math-input-field">
-            <span className="input__math__field" ref={this.mathFieldRef} onClick={this.onClickMathField} />
+            <span className="input__math__field" ref={this.mathFieldRef} />
           </div>
           <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
             {(alwaysShowKeyboard || mathFieldFocus) && (

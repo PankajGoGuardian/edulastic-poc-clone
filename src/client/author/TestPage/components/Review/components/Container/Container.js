@@ -24,7 +24,7 @@ import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import { SecondHeader, ReviewPageContainer } from "./styled";
+import { SecondHeader, ReviewPageContainer, ReviewSummaryWrapper } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
@@ -276,7 +276,7 @@ class Review extends PureComponent {
     return (
       <ReviewPageContainer>
         <Row>
-          <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
+          <Col span={isSmallSize ? 18 : 24}>
             <div ref={this.secondHeaderRef}>
               <SecondHeader isMobileSize={isMobileSize}>
                 <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
@@ -327,12 +327,7 @@ class Review extends PureComponent {
               )}
             </Paper>
           </Col>
-          <Col
-            span={isSmallSize ? 6 : 24}
-            style={{
-              padding: isSmallSize ? "0 40px 0 0" : isMobileSize ? "10px 45px" : "10px 25px"
-            }}
-          >
+          <ReviewSummaryWrapper span={isSmallSize ? 6 : 24}>
             <ReviewSummary
               tableData={this.tableData}
               questionsCount={questionsCount}
@@ -347,7 +342,7 @@ class Review extends PureComponent {
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
             />
-          </Col>
+          </ReviewSummaryWrapper>
         </Row>
         <PreviewModal
           testId={get(this.props, "match.params.id", false)}

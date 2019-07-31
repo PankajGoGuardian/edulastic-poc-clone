@@ -1,22 +1,8 @@
 import styled from "styled-components";
-import {
-  IconBarChart,
-  IconEdit,
-  IconLayout,
-  IconLineChart,
-  IconMath,
-  IconMolecule,
-  IconMore,
-  IconNewList,
-  IconSelection,
-  IconTarget,
-  IconRulerPencil,
-  IconPlay,
-  IconMultipart
-} from "@edulastic/icons";
-import { mobileWidth, desktopWidth, themeColor, textColor } from "@edulastic/colors";
+import { mobileWidth, desktopWidth, smallDesktopWidth, themeColor, textColor } from "@edulastic/colors";
 import Modal from "react-responsive-modal";
 import { Link } from "react-router-dom";
+import { Menu } from "antd";
 
 export const Content = styled.div`
   display: flex;
@@ -42,16 +28,28 @@ export const Content = styled.div`
   }
 `;
 
+export const PickQuestionWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 126px 30px 30px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 90px 30px 30px;
+  }
+`;
+
 export const LeftSide = styled.div`
   height: 100vh;
   background-color: #f3f3f8;
-  width: 24.3%;
-  padding: 112px 46px 0;
+  width: 280px;
+  padding-right: 30px;
+  margin: 0px;
 
   .ant-menu-item:after {
     left: 0;
     right: auto;
-    border-right: 3px solid #4aac8b;
+    border-right: 4px solid #4aac8b;
   }
 
   .ant-menu-horizontal {
@@ -83,7 +81,7 @@ export const LeftSide = styled.div`
     color: #434b5d;
     display: flex;
     align-items: center;
-    padding-left: 21px !important;
+    padding: 0px 16px !important;
     text-transform: uppercase;
   }
 
@@ -103,7 +101,8 @@ export const LeftSide = styled.div`
   }
 
   .ant-menu-inline .ant-menu-item:not(:last-child) {
-    margin-bottom: 26px;
+    margin-bottom: 20px;
+    margin-top: 0px;
   }
   @media (max-width: ${mobileWidth}) {
     width: 100%;
@@ -113,12 +112,10 @@ export const LeftSide = styled.div`
 
 export const RightSide = styled.div`
   position: relative;
-  width: 75.7%;
-  padding-top: 96px;
+  width: calc(100% - 280px);
   margin-left: auto;
   background: #f3f3f8;
-  padding-right: 43px;
-  padding-bottom: 43px;
+  margin: 0px;
 
   .ant-breadcrumb {
     &-link,
@@ -145,95 +142,13 @@ export const RightSide = styled.div`
   }
 `;
 
-export const NewListIcon = styled(IconNewList)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const SelectionIcon = styled(IconSelection)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const LayoutIcon = styled(IconLayout)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const EditIcon = styled(IconEdit)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const MathIcon = styled(IconMath)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const MultipartIcon = styled(IconMultipart)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const MoleculeIcon = styled(IconMolecule)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const TargetIcon = styled(IconTarget)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const MoreIcon = styled(IconMore)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const RulerIcon = styled(IconRulerPencil)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const PlayIcon = styled(IconPlay)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const LineChartIcon = styled(IconLineChart)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
-`;
-
-export const BarChartIcon = styled(IconBarChart)`
-  fill: #434b5d;
-  width: 21px !important;
-  height: 21px !important;
-  margin-right: 27px;
+export const LeftMenuWrapper = styled(Menu)`
+  svg {
+    fill: #434b5d;
+    width: 21px !important;
+    height: 21px !important;
+    margin-right: 20px;
+  }
 `;
 
 export const MenuTitle = styled.div`

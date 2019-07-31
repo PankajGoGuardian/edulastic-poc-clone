@@ -14,10 +14,9 @@ import CreationOptions from "../CreationOptions/CreationOptions";
 import DropArea from "../DropArea/DropArea";
 import { receiveTestByIdAction, getTestsLoadingSelector } from "../../../TestPage/ducks";
 import { createAssessmentRequestAction, getAssessmentCreatingSelector } from "../../ducks";
+import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
 
 const breadcrumbStyle = {
-  marginLeft: "46px",
-  marginTop: "19px",
   position: "static"
 };
 
@@ -102,16 +101,18 @@ class Container extends React.Component {
         <HeaderWrapper>
           <Title>New Test</Title>
         </HeaderWrapper>
-        <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
-        {creating && <Spin />}
-        {!method && <CreationOptions />}
-        {method === creationMethods.PDF && (
-          <DropArea
-            loading={creating}
-            onUpload={this.handleUploadPDF}
-            onCreateBlank={this.handleCreateBlankAssessment}
-          />
-        )}
+        <ContainerWrapper>
+          <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
+          {creating && <Spin />}
+          {!method && <CreationOptions />}
+          {method === creationMethods.PDF && (
+            <DropArea
+              loading={creating}
+              onUpload={this.handleUploadPDF}
+              onCreateBlank={this.handleCreateBlankAssessment}
+            />
+          )}
+        </ContainerWrapper>
       </>
     );
   }

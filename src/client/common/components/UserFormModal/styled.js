@@ -74,3 +74,8 @@ export const Field = styled.fieldset`
     width: 100%;
   }
 `;
+export const FooterDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;

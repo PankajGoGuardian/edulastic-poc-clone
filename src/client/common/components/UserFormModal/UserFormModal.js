@@ -4,7 +4,7 @@ import { get, split, unset, pickBy, identity } from "lodash";
 import { Icon, Collapse, Spin, Input, Select, DatePicker } from "antd";
 import { IconUser } from "@edulastic/icons";
 
-import { StyledModal, Title, ActionButton, PanelHeader, Field, Form } from "./styled";
+import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
 
 const { Panel } = Collapse;
 class UserForm extends React.Component {
@@ -61,7 +61,7 @@ class UserForm extends React.Component {
     );
 
     const footer = (
-      <>
+      <FooterDiv>
         <ActionButton ghost type="primary" onClick={() => closeModal()}>
           No, Cancel
         </ActionButton>
@@ -70,7 +70,7 @@ class UserForm extends React.Component {
           {buttonText || `Yes, Update`}
           <Icon type="right" />
         </ActionButton>
-      </>
+      </FooterDiv>
     );
 
     const expandIcon = panelProps => (panelProps.isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />);

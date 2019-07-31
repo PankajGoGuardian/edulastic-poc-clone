@@ -4,13 +4,8 @@ import { connect } from "react-redux";
 import { isEmpty, get, keyBy } from "lodash";
 import * as moment from "moment";
 import { message } from "antd";
-import {
-  fetchGroupsAction,
-  getGroupsSelector,
-  fetchGroupMembersAction,
-  getStudentsSelector
-} from "../../../sharedDucks/groups";
-import { receivePerformanceBandAction } from "../../../PerformanceBand/ducks";
+import { fetchGroupMembersAction, getStudentsSelector } from "../../../sharedDucks/groups";
+
 import { receiveTestByIdAction, getTestSelector } from "../../../TestPage/ducks";
 
 import {
@@ -77,11 +72,11 @@ class AssignTest extends React.Component {
 
       assignments,
       match,
-      fetchPerformanceBand,
+
       userOrgId,
       isPlaylist,
       fetchPlaylistById,
-      performanceBandData,
+
       userRole
     } = this.props;
     const { testId } = match.params;
@@ -98,10 +93,6 @@ class AssignTest extends React.Component {
       page: 1,
       limit: 1000
     });
-    if (isEmpty(performanceBandData)) {
-      //TODO this api return permission Denied with 403 status until this getting adressed hiding from front-end
-      // fetchPerformanceBand({ orgId: userOrgId });
-    }
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
       this.setState(prevState => ({
@@ -249,7 +240,6 @@ export default connect(
     testSettings: getTestEntitySelector(state),
     userOrgId: getUserOrgId(state),
     playlist: getPlaylistSelector(state),
-    performanceBandData: get(state, ["performanceBandReducer", "data"], []),
     testItem: getTestSelector(state),
     userRole: getUserRole(state)
   }),
@@ -258,7 +248,6 @@ export default connect(
     fetchStudents: fetchGroupMembersAction,
     fetchAssignments: fetchAssignmentsAction,
     saveAssignment: saveAssignmentAction,
-    fetchPerformanceBand: receivePerformanceBandAction,
     fetchPlaylistById: receivePlaylistByIdAction,
     fetchTestByID: receiveTestByIdAction
   }
@@ -274,9 +263,7 @@ AssignTest.propTypes = {
   testSettings: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,
   saveAssignment: PropTypes.func.isRequired,
-  fetchPerformanceBand: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
-  performanceBandData: PropTypes.object.isRequired,
   testItem: PropTypes.object.isRequired,
   fetchTestByID: PropTypes.func.isRequired
 };

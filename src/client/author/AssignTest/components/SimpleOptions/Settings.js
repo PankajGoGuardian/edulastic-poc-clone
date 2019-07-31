@@ -1,8 +1,4 @@
-/* eslint-disable max-len */
-/* eslint-disable react/prop-types */
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { get } from "lodash";
 import { Col, Radio, Select, Icon, Checkbox, Input } from "antd";
 import { green, red, blueBorder } from "@edulastic/colors";
 import { test } from "@edulastic/constants";
@@ -23,6 +19,7 @@ import {
   MaxAttemptIInput
 } from "./styled";
 import StandardProficiencyTable from "../../../TestPage/components/Setting/components/MainSetting/StandardProficiencyTable";
+import PeformanceBand from "../../../TestPage/components/Setting/components/MainSetting/PeformanceBand";
 
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
 const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
@@ -34,7 +31,7 @@ const Settings = ({
   updateAssignmentSettings,
   isAdvanced,
   changeField,
-  performanceBandData,
+
   gradeSubject,
   _releaseGradeKeys
 }) => {
@@ -44,45 +41,6 @@ const Settings = ({
     color: blueBorder,
     message: ""
   });
-
-  const { performanceBand = [] } = performanceBandData;
-
-  const columns = [
-    {
-      title: "Performance Bands",
-      dataIndex: "name",
-      width: "35%",
-      key: "name"
-    },
-    {
-      title: "Above or At Standard",
-      dataIndex: "aboveOrAtStandard",
-      width: "25%",
-      key: "aboveOrAtStandard",
-      render: value => <Checkbox checked={value} />
-    },
-    {
-      title: "From",
-      dataIndex: "from",
-      width: "15%",
-      key: "from",
-      render: text => <span>{`${text}%`}</span>
-    },
-    {
-      title: "To",
-      width: "25%",
-      key: "to",
-      dataIndex: "to",
-      className: "action-wrapper",
-      render: text => (
-        <div>
-          <Icon type="minus-circle" />
-          {`${text}%`}
-          <Icon type="plus-circle" />
-        </div>
-      )
-    }
-  ];
 
   const passwordValidationStatus = assignmentPassword => {
     if (assignmentPassword.split(" ").length > 1) {
@@ -417,28 +375,23 @@ const Settings = ({
           </StyledRowSettings>
         </FeaturesSwitch>
         {/* Evaluation Method */}
-      </StyledDiv>
-      <FeaturesSwitch
-        inputFeatures="performanceBands"
-        actionOnInaccessible="hidden"
-        key="performanceBands"
-        gradeSubject={gradeSubject}
-      >
+        <FeaturesSwitch
+          inputFeatures="performanceBands"
+          actionOnInaccessible="hidden"
+          key="performanceBands"
+          gradeSubject={gradeSubject}
+        >
+          <StyledDiv>
+            <PeformanceBand />
+          </StyledDiv>
+        </FeaturesSwitch>
         <StyledDiv>
-          <StyledTable columns={columns} dataSource={performanceBand} pagination={false} isAdvanced={isAdvanced} />
+          <Col span={16}>Standard based grading scale</Col>
+          <StandardProficiencyTable />
         </StyledDiv>
-      </FeaturesSwitch>
-      <StyledDiv>
-        <Col span={16}>Standard based grading scale</Col>
-        <StandardProficiencyTable />
       </StyledDiv>
     </SettingsWrapper>
   );
 };
 
-export default connect(
-  state => ({
-    performanceBandData: get(state, ["performanceBandReducer", "data"], [])
-  }),
-  null
-)(Settings);
+export default Settings;

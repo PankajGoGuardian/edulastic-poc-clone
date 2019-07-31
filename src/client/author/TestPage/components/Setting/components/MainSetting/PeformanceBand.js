@@ -24,17 +24,11 @@ const PerformanceBands = ({ setTestData, entity, fetchPerformanceBand, userOrgId
   };
 
   const onPerformanceBandChange = (index, dir) => {
-    let to = performanceBandsData[index].to;
-    if (
-      dir === "decrease" &&
-      to < performanceBandsData[index].from + 1 &&
-      to > performanceBandsData[index + 1].to + 1
-    ) {
+    let { to } = performanceBandsData[index];
+    const previousBandTo = index ? performanceBandsData[index - 1].to : 100;
+    if (dir === "decrease" && to > performanceBandsData[index + 1].to + 1) {
       to--;
-    } else if (
-      dir === "increase" &&
-      ((index > 0 && to < performanceBandsData[index - 1].to - 1) || (!index && performanceBandsData[index].to < 99))
-    ) {
+    } else if (dir === "increase" && to < previousBandTo) {
       to++;
     } else {
       return;

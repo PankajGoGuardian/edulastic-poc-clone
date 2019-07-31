@@ -100,12 +100,12 @@ function* releaseScoreSaga({ payload }) {
 
 function* markAsDoneSaga({ payload }) {
   try {
-    const response = yield call(classBoardApi.markAsDone, payload);
+    yield call(classBoardApi.markAsDone, payload);
     yield put(updateAssignmentStatusAction("DONE"));
     yield call(message.success, "Successfully marked as done");
   } catch (err) {
-    if (err && err.status == 422) {
-      yield call(message.error, err.message);
+    if (err && err.status == 422 && err.data && err.data.message) {
+      yield call(message.error, err.data.message);
     } else {
       yield call(message.error, "Mark as done is failed");
     }

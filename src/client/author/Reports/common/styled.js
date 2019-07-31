@@ -175,6 +175,10 @@ export const StyledTable = styled(Table)`
             }
           }
 
+          th:nth-last-child(-n + ${props => props.rightAligned || 0}) {
+            text-align: right;
+          }
+
           @media only screen and (min-width: 1px) and (max-width: 600px) {
             th {
               padding: 4px;
@@ -218,6 +222,10 @@ export const StyledTable = styled(Table)`
 
           td:nth-last-child(-n + ${props => props.centerAligned || 0}) {
             text-align: center;
+          }
+
+          td:nth-last-child(-n + ${props => props.rightAligned || 0}) {
+            text-align: right;
           }
 
           td {

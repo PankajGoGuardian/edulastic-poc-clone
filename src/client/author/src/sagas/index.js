@@ -30,6 +30,7 @@ import { reportStudentProgressSaga } from "../../Reports/subPages/multipleAssess
 import { reportPerformanceOverTimeSaga } from "../../Reports/subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
 import { reportStudentMasteryProfileSaga } from "../../Reports/subPages/studentProfileReport/StudentMasteryProfile/ducks";
 import { reportStudentAssessmentProfileSaga } from "../../Reports/subPages/studentProfileReport/StudentAssessmentProfile/ducks";
+import { reportStudentProfileSummarySaga } from "../../Reports/subPages/studentProfileReport/StudentProfileSummary/ducks";
 import { authorRoutesWatcherSaga } from "../../sharedDucks/routes";
 import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
 import { assessmentPageSaga } from "../../AssessmentCreate";
@@ -79,6 +80,7 @@ const authorSagas = [
   reportPerformanceOverTimeSaga(),
   reportStudentMasteryProfileSaga(),
   reportStudentAssessmentProfileSaga(),
+  reportStudentProfileSummarySaga(),
   classResponsesSaga(),
   testsListSaga(),
   testPageSaga(),

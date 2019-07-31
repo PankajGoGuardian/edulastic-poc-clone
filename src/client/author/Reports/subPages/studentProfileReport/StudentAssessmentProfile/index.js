@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { get, includes, filter } from "lodash";
 import { StyledCard, StyledH3 } from "../../../common/styled";
 import AssessmentTable from "./common/components/table/AssessmentTable";
-import AssessmentChart from "./common/components/chart/AssessmentChart";
+import AssessmentChart from "../common/components/charts/AssessmentChart";
 import { getReportsSPRFilterData } from "../common/filterDataDucks";
 import {
   getReportsStudentAssessmentProfile,
@@ -11,6 +11,7 @@ import {
   getStudentAssessmentProfileRequestAction
 } from "./ducks";
 import { getData } from "./common/utils/transformers";
+import { augementAssessmentChartData } from "../common/utils/transformers";
 import { toggleItem } from "../../../common/util";
 import { Placeholder } from "../../../common/components/loader";
 
@@ -28,11 +29,12 @@ const StudentAssessmentProfile = ({
 
   const rawData = get(studentAssessmentProfile, "data.result", {});
   const { bandInfo = [] } = get(SARFilterData, "data.result", {});
-  const data = useMemo(() => getData(rawData, bandInfo), [rawData, bandInfo]);
 
-  const tableData = filter(data, test => {
-    return selectedTests.length ? includes(selectedTests, test.uniqId) : true;
-  });
+  const [chartData, tableData] = useMemo(() => {
+    const chartData = augementAssessmentChartData(rawData.metricInfo, bandInfo);
+    const tableData = getData(rawData, chartData, bandInfo);
+    return [chartData, tableData];
+  }, [rawData, bandInfo]);
 
   useEffect(() => {
     const { selectedStudent, requestFilters } = settings;
@@ -60,14 +62,14 @@ const StudentAssessmentProfile = ({
       <StyledCard>
         <StyledH3>Assessment Performance Details of {selectedStudent.title}</StyledH3>
         <AssessmentChart
-          data={data}
+          data={chartData}
           selectedTests={selectedTests}
           onBarClickCB={onTestSelect}
           onResetClickCB={() => setSelectedTests([])}
         />
       </StyledCard>
       <StyledCard>
-        <AssessmentTable data={tableData} studentName={selectedStudent.title} />
+        <AssessmentTable data={tableData} studentName={selectedStudent.title} selectedTests={selectedTests} />
       </StyledCard>
     </>
   );

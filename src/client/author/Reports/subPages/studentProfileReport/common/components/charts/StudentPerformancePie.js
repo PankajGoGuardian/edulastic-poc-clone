@@ -3,10 +3,10 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import next from "immer";
 import { round, includes, map } from "lodash";
-import { PieChart, Pie, Cell, Tooltip, Label } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Label, ResponsiveContainer } from "recharts";
 import { getStudentPerformancePieData, getOverallMasteryPercentage, getMaxScale } from "../../utils/transformers";
-import { StyledCustomChartTooltip as CustomChartTooltip, StyledH3 } from "../../../../../../common/styled";
-import BarTooltipRow from "../../../../../../common/components/tooltip/BarTooltipRow";
+import { StyledCustomChartTooltip as CustomChartTooltip, StyledH3 } from "../../../../../common/styled";
+import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
 const fillColors = (data, selectedMastery) => {
   if (!selectedMastery.length) {
@@ -32,19 +32,8 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, mas
     </text>
   );
 };
-const getTooltip = payload => {
-  if (payload && payload.length) {
-    const { masteryName = "", percentage = 0 } = payload[0].payload;
-    return (
-      <div>
-        <BarTooltipRow title={`${masteryName} : `} value={`${percentage}%`} />
-      </div>
-    );
-  }
-  return false;
-};
 
-const StudentPerformancePie = ({ data, scaleInfo, onSectionClick, selectedMastery }) => {
+const StudentPerformancePie = ({ data, scaleInfo, onSectionClick, selectedMastery, getTooltip, title }) => {
   const pieData = getStudentPerformancePieData(data, scaleInfo);
   const maxScale = getMaxScale(scaleInfo);
   const overallMasteryPercentage = getOverallMasteryPercentage(data, maxScale);
@@ -53,27 +42,29 @@ const StudentPerformancePie = ({ data, scaleInfo, onSectionClick, selectedMaster
 
   return (
     <>
-      <StyledH3>Overall Mastery</StyledH3>
-      <PieChart width={400} height={400}>
-        <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltip} />} />
-        <Pie
-          data={pieData}
-          labelLine={false}
-          outerRadius={150}
-          innerRadius={50}
-          cx={175}
-          cy={200}
-          fill="#8884d8"
-          dataKey="count"
-          label={renderCustomizedLabel}
-          onClick={onSectionClick}
-        >
-          <Label value={`Mastery ${round(overallMasteryPercentage)}%`} position="center" />
-          {dataWithColors.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={entry.color} />
-          ))}
-        </Pie>
-      </PieChart>
+      <StyledH3>{title}</StyledH3>
+      <ResponsiveContainer width={"100%"} height={400}>
+        <PieChart width={400} height={400}>
+          <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltip} />} />
+          <Pie
+            data={pieData}
+            labelLine={false}
+            outerRadius={150}
+            innerRadius={50}
+            cx={175}
+            cy={200}
+            fill="#8884d8"
+            dataKey="count"
+            label={renderCustomizedLabel}
+            onClick={onSectionClick}
+          >
+            <Label value={`Mastery ${round(overallMasteryPercentage)}%`} position="center" />
+            {dataWithColors.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+        </PieChart>
+      </ResponsiveContainer>
     </>
   );
 };
@@ -81,13 +72,17 @@ const StudentPerformancePie = ({ data, scaleInfo, onSectionClick, selectedMaster
 StudentPerformancePie.propTypes = {
   data: PropTypes.array.isRequired,
   scaleInfo: PropTypes.array.isRequired,
+  title: PropTypes.string,
   onSectionClick: PropTypes.func,
-  selectedMastery: PropTypes.array
+  selectedMastery: PropTypes.array,
+  getTooltip: PropTypes.func
 };
 
 StudentPerformancePie.defaultProps = {
   onSectionClick: () => {},
-  selectedMastery: []
+  getTooltip: () => null,
+  selectedMastery: [],
+  title: "Overall Mastery"
 };
 
 export default StudentPerformancePie;

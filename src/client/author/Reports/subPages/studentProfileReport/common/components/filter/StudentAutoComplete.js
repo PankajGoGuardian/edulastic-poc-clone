@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-import { map } from "lodash";
+import { map, debounce } from "lodash";
 import { AutoComplete, Input, Icon } from "antd";
 import {
   receiveStudentsListAction,
@@ -30,6 +30,24 @@ const StudentAutoComplete = ({
     title: `${student.firstName || ""} ${student.lastName || ""}`
   }));
 
+  const searchUser = (searchTerm, orgData) => {
+    const { districtId, institutionIds } = orgData;
+
+    const q = {
+      page: 0,
+      limit: 20,
+      search: {
+        username: { type: "cont", value: searchTerm }
+      },
+      districtId,
+      role: "student"
+    };
+
+    receiveStudentsListAction(q);
+  };
+
+  const debouncedSearchUser = useCallback(debounce(searchUser, delay), []);
+
   useEffect(() => {
     if (selectedStudent.title !== searchTerm) {
       setSelectedValue(selectedStudent.title);
@@ -40,25 +58,7 @@ const StudentAutoComplete = ({
     setSelectedValue(searchTerm);
 
     if (searchTerm) {
-      const timeoutHandler = setTimeout(() => {
-        const { districtId, institutionIds } = orgData;
-
-        const q = {
-          page: 0,
-          limit: 20,
-          search: {
-            username: { type: "cont", value: searchTerm }
-          },
-          districtId,
-          role: "student"
-        };
-
-        receiveStudentsListAction(q);
-      }, delay);
-
-      return () => {
-        clearTimeout(timeoutHandler);
-      };
+      debouncedSearchUser(searchTerm, orgData);
     }
   }, [searchTerm]);
 

@@ -697,9 +697,9 @@ export function* updateItemSaga({ payload }) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        put(push(`/author/tests/${payload.testId}`));
+        yield put(push(`/author/tests/${payload.testId}`));
       }
-      put(changeViewAction("edit"));
+      yield put(changeViewAction("edit"));
       return;
     }
   } catch (err) {

@@ -1,6 +1,6 @@
 import { IconHeader, IconLogoCompact } from "@edulastic/icons";
 import styled from "styled-components";
-import { Table as AntdTable, Select, Button as AntdButton, Input, Dropdown } from "antd";
+import { Table as AntdTable, Select, Button as AntdButton, Input, Dropdown, Pagination } from "antd";
 const { Search } = Input;
 
 export const Logo = styled(IconHeader)`
@@ -103,13 +103,23 @@ export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 140px;
   .ant-table-wrapper {
     width: 100%;
   }
 
   input {
     border: 1px solid #d9d9d9;
+  }
+`;
+
+export const StyledTable = styled(AntdTable)`
+  .ant-table-row {
+    &: hover {
+      a {
+        opacity: 100;
+      }
+    }
   }
 `;
 export const StyledAddFilterButton = styled(AntdButton)`
@@ -141,4 +151,8 @@ export const StyledClassName = styled.p`
   color: #1890ff;
   font-weight: bold;
   margin-bottom: 5px;
+`;
+export const StyledPagination = styled(Pagination)`
+  margin-top: 15px;
+  align-self: flex-end;
 `;

@@ -8,6 +8,7 @@ import { TypeToConfirmModal } from "@edulastic/common";
 
 import {
   StyledPagination,
+  StyledTableContainer,
   StyledControlDiv,
   StyledFilterDiv,
   RightFilterDiv,
@@ -19,7 +20,7 @@ import {
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
 
-import { StyledTableContainer, StyledTable, StyledTableButton } from "./styled";
+import { StyledTable, StyledTableButton } from "./styled";
 
 import CreateDistrictAdminModal from "./CreateDistrictAdminModal/CreateDistrictAdminModal";
 import EditDistrictAdminModal from "./EditDistrictAdminModal/EditDistrictAdminModal";

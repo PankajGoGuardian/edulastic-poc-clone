@@ -8,6 +8,8 @@ import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
 import {
   StyledPagination,
+  StyledTableContainer,
+  StyledTable,
   StyledControlDiv,
   StyledFilterDiv,
   RightFilterDiv,
@@ -18,7 +20,11 @@ import {
   StyledActionDropDown,
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
-import { StyledTableContainer, StyledTable, StyledTableButton } from "./styled";
+import {
+  // StyledTableContainer,
+  // StyledTable,
+  StyledTableButton
+} from "./styled";
 
 import { UserFormModal as EditTeacherModal } from "../../../../common/components/UserFormModal/UserFormModal";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";

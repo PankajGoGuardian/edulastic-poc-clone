@@ -11,13 +11,13 @@ import {
   StyledFilterDiv,
   RightFilterDiv,
   StyledFilterSelect,
-  StyledTableContainer,
   StyledAddFilterButton,
   StyledFilterInput,
   StyledSchoolSearch,
   StyledActionDropDown,
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
+import { StyledTableContainer } from "./styled";
 
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
 import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";

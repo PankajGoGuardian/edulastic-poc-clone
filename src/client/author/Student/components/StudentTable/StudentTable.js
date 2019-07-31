@@ -8,6 +8,7 @@ import { TypeToConfirmModal } from "@edulastic/common";
 import { getUserFeatures } from "../../../../student/Login/ducks";
 import {
   StyledPagination,
+  StyledTableContainer,
   StyledControlDiv,
   StyledFilterDiv,
   RightFilterDiv,
@@ -18,7 +19,7 @@ import {
   StyledActionDropDown,
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
-import { StyledTableContainer, StyledTableButton, StyledTable } from "./styled";
+import { StyledTableButton, StyledTable } from "./styled";
 
 import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
 

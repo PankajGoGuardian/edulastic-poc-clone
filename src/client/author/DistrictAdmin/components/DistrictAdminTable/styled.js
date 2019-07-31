@@ -1,28 +1,11 @@
 import styled from "styled-components";
 import { Table, Pagination } from "antd";
 
-export const StyledTableContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  margin-bottom: 20px;
-  margin-top: 140px;
-  margin-top: 130px;
-
-  .ant-table-wrapper {
-    width: 100%;
-  }
-
-  input {
-    border: 1px solid #d9d9d9;
-  }
-`;
-
 export const StyledTable = styled(Table)`
   .ant-table-row {
     &: hover {
       a {
-        visibility: visible;
+        visibility: hidden;
       }
     }
   }

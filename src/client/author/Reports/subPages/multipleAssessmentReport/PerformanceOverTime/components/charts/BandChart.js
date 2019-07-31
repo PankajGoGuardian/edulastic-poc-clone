@@ -99,7 +99,7 @@ const BandChart = ({ data, bandInfo, selectedTests, analyseBy, onBarClickCB, onR
   const getTooltipJSX = (payload, barIndex) => {
     if (payload && payload.length && barIndex !== null) {
       const { testName = "" } = payload[0].payload;
-      const currentPayload = payload[barIndex];
+      const currentPayload = payload[barIndex] || {};
       return (
         <div>
           <BarTooltipRow title="Assessment : " value={testName || "N/A"} />

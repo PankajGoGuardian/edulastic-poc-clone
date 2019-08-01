@@ -131,7 +131,10 @@ export const processTeacherIds = orgDataArr => {
 };
 
 export const getOverallScore = (metrics = []) =>
-  ceilingPercentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
+  ceilingPercentage(
+    sumBy(metrics, item => parseFloat(item.totalScore)),
+    sumBy(metrics, item => parseFloat(item.maxScore))
+  );
 
 export const filterAccordingToRole = (columns, role) =>
   filter(columns, column => !includes(column.hiddenFromRole, role));

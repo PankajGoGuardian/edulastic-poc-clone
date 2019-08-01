@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import { CorrectAnswersContainer, Paper, Stimulus } from "@edulastic/common";
+import { CorrectAnswersContainer, Paper, Stimulus, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
 
 import { compose } from "redux";
 import styled from "styled-components";
@@ -18,9 +18,8 @@ import AxisSmallSize from "./components/AxisSmallSize";
 import { AxisSegments, GraphAxisLabels, GraphQuadrants } from "./Authoring";
 import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
-import { InstructorStimulus } from "./common/styled_components";
+import { InstructorStimulus, QuestionTitleWrapper } from "./common/styled_components";
 import Annotations from "../Annotations/Annotations";
-import { AnswerContext } from "@edulastic/common";
 
 import Question from "../Question";
 
@@ -276,6 +275,8 @@ class Graph extends Component {
       advancedAreOpen,
       isSidebarCollapsed,
       disableResponse,
+      flowLayout,
+      showQuestionNumber,
       ...restProps
     } = this.props;
     let previewTab = _previewTab;
@@ -347,7 +348,10 @@ class Graph extends Component {
         )}
         {view === "preview" && smallSize === false && item && (
           <Wrapper className={compact ? "toolbar-compact" : ""}>
-            <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
+            <QuestionTitleWrapper>
+              {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
+              <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
+            </QuestionTitleWrapper>
             {item.canvas && item.ui_style && (
               <GraphDisplay
                 disableResponse={disableResponse}
@@ -438,7 +442,9 @@ Graph.propTypes = {
   isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  flowLayout: PropTypes.bool
 };
 
 Graph.defaultProps = {
@@ -448,7 +454,9 @@ Graph.defaultProps = {
   userAnswer: [],
   evaluation: null,
   advancedAreOpen: false,
-  disableResponse: false
+  disableResponse: false,
+  showQuestionNumber: false,
+  flowLayout: false
 };
 
 const enhance = compose(

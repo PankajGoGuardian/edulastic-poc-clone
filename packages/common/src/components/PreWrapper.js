@@ -5,7 +5,7 @@ const PreWrapper = styled.pre`
   white-space: pre-wrap;
 
   .template_box {
-    padding: 15px !important;
+    padding: ${props => (props.view === "preview" ? props.padding : "15px")} !important;
   }
 `;
 

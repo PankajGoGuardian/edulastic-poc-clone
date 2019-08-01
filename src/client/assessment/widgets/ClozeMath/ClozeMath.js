@@ -95,14 +95,29 @@ const ClozeMath = ({
       fallBack={<span />}
       onLoaded={() => {}}
     >
-      {!flowLayout ? (
-        <>
-          <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-          <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel>}
-          </QuestionTitleWrapper>
-        </>
-      ) : null}
+      <>
+        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+        <QuestionTitleWrapper>
+          {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel> : null}
+
+          {view === PREVIEW && (
+            <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
+              <ClozeMathPreview
+                type={actualPreviewMode}
+                item={itemForPreview}
+                stimulus={item.stimulus}
+                options={item.options || {}}
+                responseIds={item.response_ids}
+                saveAnswer={saveAnswer}
+                check={checkAnswer}
+                userAnswer={userAnswer}
+                evaluation={evaluation}
+                {...restProps}
+              />
+            </Paper>
+          )}
+        </QuestionTitleWrapper>
+      </>
 
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
@@ -143,22 +158,6 @@ const ClozeMath = ({
             cleanSections={cleanSections}
           />
         </ContentArea>
-      )}
-      {view === PREVIEW && (
-        <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
-          <ClozeMathPreview
-            type={actualPreviewMode}
-            item={itemForPreview}
-            stimulus={item.stimulus}
-            options={item.options || {}}
-            responseIds={item.response_ids}
-            saveAnswer={saveAnswer}
-            check={checkAnswer}
-            userAnswer={userAnswer}
-            evaluation={evaluation}
-            {...restProps}
-          />
-        </Paper>
       )}
     </WithResources>
   );

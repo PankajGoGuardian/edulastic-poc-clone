@@ -182,24 +182,29 @@ class ClozeDropDownDisplay extends Component {
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
+    const QuestionContent = () => (
+      <ContentWrapper fontSize={fontSize}>
+        <JsxParser
+          bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
+          showWarnings
+          components={{
+            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
+            mathspan: MathSpanWrapper
+          }}
+          jsx={parsedTemplate}
+        />
+      </ContentWrapper>
+    );
+
     return (
       <div>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          {!question && <QuestionContent />}
         </QuestionTitleWrapper>
-        <ContentWrapper fontSize={fontSize}>
-          <JsxParser
-            bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
-            showWarnings
-            components={{
-              textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
-              mathspan: MathSpanWrapper
-            }}
-            jsx={parsedTemplate}
-          />
-        </ContentWrapper>
+        {question && <QuestionContent />}
         {answerBox}
       </div>
     );

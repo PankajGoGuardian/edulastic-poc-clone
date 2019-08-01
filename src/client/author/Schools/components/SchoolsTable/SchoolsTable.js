@@ -68,14 +68,7 @@ class SchoolsTable extends React.Component {
 
   componentDidMount() {
     const { loadSchoolsData, userOrgId } = this.props;
-    loadSchoolsData({
-      districtId: userOrgId,
-      limit: 25,
-      page: 1,
-      sortField: "name",
-      order: "asc",
-      includeStats: true
-    });
+    this.loadFilteredList();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -250,6 +243,11 @@ class SchoolsTable extends React.Component {
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+
+  onChangeSearch = event => {
+    this.setState({ searchByName: event.currentTarget.value });
+  };
+
   handleSearchName = value => {
     const { filtersData, sortedInfo } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
@@ -370,22 +368,34 @@ class SchoolsTable extends React.Component {
     for (let i = 0; i < filtersData.length; i++) {
       const { filtersColumn, filtersValue, filterStr } = filtersData[i];
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
-        search[filtersColumn] = filtersColumn === "isApproved" ? filterStr : { type: filtersValue, value: filterStr };
+        if (filtersColumn === "isApproved" || filtersColumn === "status") {
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = [filterStr];
+          } else {
+            search[filtersColumn].push(filterStr);
+          }
+        } else {
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+          } else {
+            search[filtersColumn].value.push(filterStr);
+          }
+        }
       }
     }
 
     if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
+      search.name = { type: "cont", value: [searchByName] };
     }
 
     return {
+      search,
       districtId: userOrgId,
       limit: 25,
       page: currentPage,
+      includeStats: true,
       sortField: sortedInfo.columnKey,
-      order: sortedInfo.order,
-      search,
-      includeStats: true
+      order: sortedInfo.order
     };
   };
 
@@ -777,7 +787,11 @@ class SchoolsTable extends React.Component {
             />
           )}
 
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
+          <StyledSchoolSearch
+            placeholder="Search by name"
+            onSearch={this.handleSearchName}
+            onChange={this.onChangeSearch}
+          />
 
           <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
             <Button>

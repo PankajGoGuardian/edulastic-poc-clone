@@ -57,6 +57,17 @@ function compareByAlph(a, b) {
   return 0;
 }
 
+const filterStrDD = {
+  status: {
+    list: [
+      { title: "Select a value", value: undefined, disabled: true },
+      { title: "Active", value: 1, disabled: false },
+      { title: "Inactive", value: 0, disabled: false }
+    ],
+    placeholder: "Select a value"
+  }
+};
+
 class DistrictAdminTable extends Component {
   constructor(props) {
     super(props);
@@ -226,6 +237,11 @@ class DistrictAdminTable extends Component {
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+
+  onChangeSearch = event => {
+    this.setState({ searchByName: event.currentTarget.value });
+  };
+
   handleSearchName = value => {
     this.setState({ searchByName: value }, this.loadFilteredList);
   };
@@ -258,6 +274,21 @@ class DistrictAdminTable extends Component {
     this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
   };
 
+  changeStatusValue = (value, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: value,
+          filterAdded: value !== "" ? true : false
+        };
+      }
+      return item;
+    });
+
+    this.setState({ filtersData: _filtersData }, () => this.loadFilteredList(key));
+  };
+
   changeFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
@@ -283,7 +314,7 @@ class DistrictAdminTable extends Component {
       }
       return item;
     });
-    this.setState({ filtersData: _filtersData });
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
   };
 
   changeFilterValue = (value, key) => {
@@ -297,7 +328,7 @@ class DistrictAdminTable extends Component {
       return item;
     });
 
-    this.setState({ filtersData: _filtersData });
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
   };
 
   onChangeShowActive = e => {
@@ -341,26 +372,37 @@ class DistrictAdminTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
+    let showActive = this.state.showActive ? 1 : 0;
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
-      if (filterStr) {
-        search[filtersColumn] = { type: filtersValue, value: filterStr };
+      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
+        if (filtersColumn === "status") {
+          showActive = filterStr;
+          continue;
+        }
+        if (!search[filtersColumn]) {
+          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+        } else {
+          search[filtersColumn].value.push(filterStr);
+        }
       }
     }
     if (searchByName) {
-      search["firstName"] = { type: "cont", value: searchByName };
+      search["firstName"] = { type: "cont", value: [searchByName] };
     }
 
     return {
+      search,
       districtId: userOrgId,
       role: "district-admin",
       limit: 25,
       page: currentPage,
       // uncomment after elastic search is fixed
-      // status: this.state.showActive ? 1 : 0,
-      search
+      status: showActive
+      // sortField,
+      // order
     };
   };
 
@@ -428,8 +470,16 @@ class DistrictAdminTable extends Component {
               userOrgId={userOrgId}
             />
           )}
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
-          <Checkbox checked={this.state.showActive} onChange={this.onChangeShowActive}>
+          <StyledSchoolSearch
+            placeholder="Search by name"
+            onSearch={this.handleSearchName}
+            onChange={this.onChangeSearch}
+          />
+          <Checkbox
+            checked={this.state.showActive}
+            onChange={this.onChangeShowActive}
+            disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+          >
             Show current users only
           </Checkbox>
           <StyledActionDropDown overlay={actionMenu}>
@@ -455,6 +505,7 @@ class DistrictAdminTable extends Component {
                 </Option>
                 <Option value="username">Username</Option>
                 <Option value="email">Email</Option>
+                <Option value="status">Status</Option>
               </StyledFilterSelect>
               <StyledFilterSelect
                 placeholder="Select a value"
@@ -465,17 +516,31 @@ class DistrictAdminTable extends Component {
                   Select a value
                 </Option>
                 <Option value="eq">Equals</Option>
-                <Option value="cont">Contains</Option>
+                {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
               </StyledFilterSelect>
-              <StyledFilterInput
-                placeholder="Enter text"
-                onChange={e => this.changeFilterText(e, i)}
-                onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                onBlur={e => this.onBlurFilterText(e, i)}
-                value={filterStr ? filterStr : undefined}
-                disabled={isFilterTextDisable}
-                innerRef={this.filterTextInputRef[i]}
-              />
+              {!filterStrDD[filtersColumn] ? (
+                <StyledFilterInput
+                  placeholder="Enter text"
+                  onChange={e => this.changeFilterText(e, i)}
+                  onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                  onBlur={e => this.onBlurFilterText(e, i)}
+                  value={filterStr ? filterStr : undefined}
+                  disabled={isFilterTextDisable}
+                  innerRef={this.filterTextInputRef[i]}
+                />
+              ) : (
+                <StyledFilterSelect
+                  placeholder={filterStrDD[filtersColumn].placeholder}
+                  onChange={v => this.changeStatusValue(v, i)}
+                  value={filterStr !== "" ? filterStr : undefined}
+                >
+                  {filterStrDD[filtersColumn].list.map(item => (
+                    <Option key={item.title} value={item.value} disabled={item.disabled}>
+                      {item.title}
+                    </Option>
+                  ))}
+                </StyledFilterSelect>
+              )}
               {i < 2 && (
                 <StyledAddFilterButton
                   type="primary"

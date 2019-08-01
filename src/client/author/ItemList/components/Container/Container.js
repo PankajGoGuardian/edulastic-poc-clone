@@ -50,6 +50,7 @@ import {
 } from "../../../ItemDetail/ducks";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
+import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -355,7 +356,7 @@ class Contaier extends Component {
   };
 
   render() {
-    const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading } = this.props;
+    const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading, count } = this.props;
 
     const { search, isShowFilter, modalCreateTestVisible } = this.state;
 
@@ -396,6 +397,9 @@ class Contaier extends Component {
                 >
                   <Spin size="large" />
                 </SpinContainer>
+                <ItemsMenu>
+                  <QuestionsFound>{count} questions found</QuestionsFound>
+                </ItemsMenu>
                 <PerfectScrollbar
                   ref={e => {
                     this.itemsScrollBar = e;

@@ -1,9 +1,10 @@
 import React from "react";
 import moment from "moment";
 import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
-import { Icon, Collapse, Spin, Input, Select, DatePicker } from "antd";
+import { Icon, Collapse, Spin, Input, Select, DatePicker, message } from "antd";
 import { IconUser } from "@edulastic/icons";
 import { userApi } from "@edulastic/api";
+import { isEmailValid } from "../../utils/helpers";
 
 import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
 
@@ -14,6 +15,11 @@ class UserForm extends React.Component {
   };
 
   onProceed = () => {
+    const searchResult = this.props.userSearchResult;
+    if (!isEmpty(searchResult)) {
+      message.error("Email already exists");
+      return;
+    }
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { modalData, modalFunc, userOrgId: districtId } = this.props;
@@ -46,28 +52,19 @@ class UserForm extends React.Component {
     }
   };
 
-  checkUser = async (rule, value, callback) => {
-    const email = this.props.form.getFieldValue("email");
-    const result = await userApi.checkUser({
-      username: value
-    });
-    if (!isEmpty(result)) {
-      callback("Email Already exists");
-    }
-  };
   render() {
     const {
       form: { getFieldDecorator },
-      closeModal
-    } = this.props;
-    const {
+      closeModal,
+      userOrgId: districtId,
       showModal,
       formTitle,
       role,
       showAdditionalFields,
       modalData: { _source } = {},
       buttonText,
-      isStudentEdit
+      isStudentEdit,
+      searchUserRequest
     } = this.props;
     const dobValue = get(_source, "dob");
     const contactEmails = get(_source, "contactEmails");
@@ -113,7 +110,7 @@ class UserForm extends React.Component {
           <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
             <Panel header={BasicDetailsHeader} key="basic">
               {isStudentEdit && (
-                <Field name="email">
+                <Field name="Username">
                   <legend>Username</legend>
                   <Form.Item>
                     {getFieldDecorator("username", {
@@ -159,9 +156,19 @@ class UserForm extends React.Component {
                   <Form.Item>
                     {getFieldDecorator("email", {
                       validateTrigger: ["onBlur"],
-                      rules: [{ validator: this.checkUser }],
+                      rules: [
+                        {
+                          validator: (rule, value, callback) =>
+                            isEmailValid(rule, value, callback, "email", "Please enter valid email")
+                        }
+                      ],
                       initialValue: get(_source, "email", get(_source, "email", ""))
-                    })(<Input placeholder="Enter email" />)}
+                    })(
+                      <Input
+                        onBlur={evt => searchUserRequest({ username: evt.target.value, districtId })}
+                        placeholder="Enter email"
+                      />
+                    )}
                   </Form.Item>
                 </Field>
               )}

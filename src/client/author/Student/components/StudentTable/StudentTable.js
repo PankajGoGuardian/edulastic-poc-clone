@@ -35,6 +35,7 @@ import {
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction
 } from "../../ducks";
+import { searchUserRequestAction, getSearchResultSelector } from "../../../sharedDucks/userDetails";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
 
@@ -480,7 +481,9 @@ class StudentTable extends Component {
       setAddStudentsToOtherClassVisiblity,
       putStudentsToOtherClass,
       fetchClassDetailsUsingCode,
-      features
+      features,
+      searchUserRequest,
+      userSearchResult
     } = this.props;
 
     const actionMenu = (
@@ -595,6 +598,8 @@ class StudentTable extends Component {
             closeModal={this.closeEditStudentModal}
             buttonText="Yes, Update"
             isStudentEdit={true}
+            searchUserRequest={searchUserRequest}
+            userSearchResult={userSearchResult}
           />
         )}
         {addStudentModalVisible && (
@@ -657,7 +662,8 @@ const enhance = compose(
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      userSearchResult: getSearchResultSelector(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -684,7 +690,8 @@ const enhance = compose(
       setRole: setRoleAction,
       setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
-      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction
+      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
+      searchUserRequest: searchUserRequestAction
     }
   )
 );

@@ -22,8 +22,7 @@ class DragScroll extends Component {
     const scrollAmount = direction === UPWARDS ? -window.innerHeight / 2 : window.innerHeight / 2;
     const { context, scrollElement } = this.props;
     const { getScrollElement } = context;
-
-    const scrollContainer = getScrollElement();
+    const scrollContainer = scrollElement || getScrollElement();
 
     scrollContainer.scrollBy({
       top: scrollAmount,
@@ -57,7 +56,6 @@ class DragScroll extends Component {
   };
 
   handleMouseEnter = () => {
-    console.log("mouse enter");
     const { handleDragEnter } = this;
     const { isMouseClicked } = this.state;
     if (isMouseClicked) {
@@ -66,13 +64,14 @@ class DragScroll extends Component {
   };
 
   handleMouseLeave = () => {
-    console.log("mouse leave");
     const { handleDragLeave } = this;
 
     handleDragLeave();
   };
 
   componentDidMount() {
+    const dragEnterEl = this.dragEnterRef.current;
+
     window.addEventListener("mousedown", this.handleMouseDown);
     window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("dragstart", this.handleIsDragging);
@@ -80,9 +79,16 @@ class DragScroll extends Component {
     window.addEventListener("focus", this.handleMouseUp);
     window.addEventListener("blur", this.handleMouseUp);
     window.addEventListener("contextmenu", this.handleMouseUp);
+
+    dragEnterEl.addEventListener("dragenter", this.handleDragEnter);
+    dragEnterEl.addEventListener("dragleave", this.handleDragLeave);
+    dragEnterEl.addEventListener("mouseenter", this.handleMouseEnter);
+    dragEnterEl.addEventListener("mouseleave", this.handleMouseLeave);
   }
 
   componentWillUnmount() {
+    const dragEnterEl = this.dragEnterRef.current;
+
     window.removeEventListener("mousedown", this.handleMouseDown);
     window.removeEventListener("mouseup", this.handleMouseUp);
     window.removeEventListener("dragstart", this.handleIsDragging);
@@ -90,6 +96,11 @@ class DragScroll extends Component {
     window.removeEventListener("focus", this.handleMouseUp);
     window.removeEventListener("blur", this.handleMouseUp);
     window.removeEventListener("contextmenu", this.handleMouseUp);
+
+    dragEnterEl.removeEventListener("dragenter", this.handleDragEnter);
+    dragEnterEl.removeEventListener("dragleave", this.handleDragLeave);
+    dragEnterEl.removeEventListener("mouseenter", this.handleMouseEnter);
+    dragEnterEl.removeEventListener("mouseleave", this.handleMouseLeave);
 
     clearInterval(this.intervalId);
     clearTimeout(this.timerId);
@@ -128,17 +139,7 @@ class DragScroll extends Component {
 
     const key = scrollContainer && scrollContainer.classList ? scrollContainer.classList.toString() : "window";
 
-    return (
-      <div
-        key={key}
-        ref={this.dragEnterRef}
-        style={mergedStyle}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
-        onDragEnter={this.handleDragEnter}
-        onDragLeave={this.handleDragLeave}
-      />
-    );
+    return <div key={key} ref={this.dragEnterRef} style={mergedStyle} />;
   };
 }
 

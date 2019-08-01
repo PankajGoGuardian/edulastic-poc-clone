@@ -27,7 +27,8 @@ const Option = props => {
     validation,
     styleType,
     multipleResponses,
-    isReviewTab
+    isReviewTab,
+    testItem
   } = props;
   let className = "";
   let correctAnswers = [];
@@ -36,11 +37,11 @@ const Option = props => {
     correctAnswers = flatten([validation.valid_response.value, ...altResponses]);
   }
 
-  const isSelected = isReviewTab ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
+  const isSelected =
+    isReviewTab || testItem ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
 
-  const isCorrect = isReviewTab
-    ? correct[correctAnswers.indexOf(item.value)]
-    : correct[userSelections.indexOf(item.value)];
+  const isCorrect =
+    isReviewTab || testItem ? correct[correctAnswers.indexOf(item.value)] : correct[userSelections.indexOf(item.value)];
 
   const fontSize = getFontSize(uiStyle.fontsize);
 

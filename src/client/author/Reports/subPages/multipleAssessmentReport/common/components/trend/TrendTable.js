@@ -15,7 +15,7 @@ import dropDownData from "../../static/json/dropDownData.json";
 import { compareByMap } from "../../utils/trend";
 
 const formatText = (text, type) => {
-  if (!text) return "N/A";
+  if (text === null || typeof text === "undefined") return "N/A";
 
   if (type == "score") {
     return `${text}%`;
@@ -141,6 +141,7 @@ const getColumns = (
 const TrendTable = ({ data, rawMetric, testData, analyseBy, compareBy, customColumns, heading, toolTipContent }) => {
   const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent);
   const groupedAvailableTests = groupBy(rawMetric, "testId");
+
   return (
     <StyledCard>
       <Row>

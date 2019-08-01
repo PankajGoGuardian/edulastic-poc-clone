@@ -70,7 +70,6 @@ const StyledContainer = styled.div`
 const StyledTooltip = styled.div`
   min-width: 150px;
   max-width: 300px;
-  min-height: 75px;
   background-color: #f0f0f0;
   color: black;
   border: solid 1px #bebebe;

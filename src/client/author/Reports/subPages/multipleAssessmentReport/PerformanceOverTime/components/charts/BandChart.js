@@ -82,7 +82,7 @@ const getChartSpecifics = (analyseBy, bandInfo) => {
 
   return {
     barsData: barsData,
-    yAxisLabel: "Student %"
+    yAxisLabel: "Below Standard                Above Standard"
   };
 };
 

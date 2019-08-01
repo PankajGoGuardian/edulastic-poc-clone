@@ -486,7 +486,7 @@ class Display extends Component {
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
                     height: isWrapText ? "auto" : responseContainer.height || "auto", // responseContainer.height || "auto",
-                    width: isWrapText ? "auto" : responseContainer.width || "auto",
+                    width: responseContainer.width,
                     minHeight: responseContainer.height || "auto",
                     minWidth: responseContainer.width || "auto",
                     maxWidth: response.maxWidth

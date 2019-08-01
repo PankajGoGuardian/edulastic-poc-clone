@@ -138,7 +138,7 @@ class AddStudentModal extends React.Component {
                   std={std}
                   isEdit={isEdit}
                   stds={stds}
-                  showTtsField={true}
+                  showTtsField
                 />
               </Panel>
             </Collapse>

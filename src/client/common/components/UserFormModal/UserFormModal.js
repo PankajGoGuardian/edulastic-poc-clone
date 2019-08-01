@@ -15,11 +15,6 @@ class UserForm extends React.Component {
   };
 
   onProceed = () => {
-    const searchResult = this.props.userSearchResult;
-    if (!isEmpty(searchResult)) {
-      message.error("Email already exists");
-      return;
-    }
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { modalData, modalFunc, userOrgId: districtId } = this.props;
@@ -38,9 +33,9 @@ class UserForm extends React.Component {
             districtId
           })
         });
+        this.props.closeModal();
       }
     });
-    this.props.closeModal();
   };
 
   confirmPwdCheck = (rule, value, callback) => {
@@ -49,6 +44,28 @@ class UserForm extends React.Component {
       callback(rule.message);
     } else {
       callback();
+    }
+  };
+
+  validateEmailValue = async (rule, value, callback) => {
+    if (!isEmailValid(rule, value, callback, "email", "Please enter valid email")) return;
+    const {
+      userOrgId: districtId,
+      modalData: { _source }
+    } = this.props;
+    const email = get(_source, "email", "");
+    if (email !== value) {
+      try {
+        const res = await userApi.checkUser({
+          username: value,
+          districtId
+        });
+        if (!isEmpty(res)) {
+          return callback("Email Already exists");
+        }
+      } catch (err) {
+        console.log(error);
+      }
     }
   };
 
@@ -63,8 +80,7 @@ class UserForm extends React.Component {
       showAdditionalFields,
       modalData: { _source } = {},
       buttonText,
-      isStudentEdit,
-      searchUserRequest
+      isStudentEdit
     } = this.props;
     const dobValue = get(_source, "dob");
     const contactEmails = get(_source, "contactEmails");
@@ -156,19 +172,9 @@ class UserForm extends React.Component {
                   <Form.Item>
                     {getFieldDecorator("email", {
                       validateTrigger: ["onBlur"],
-                      rules: [
-                        {
-                          validator: (rule, value, callback) =>
-                            isEmailValid(rule, value, callback, "email", "Please enter valid email")
-                        }
-                      ],
+                      rules: [{ validator: this.validateEmailValue }],
                       initialValue: get(_source, "email", get(_source, "email", ""))
-                    })(
-                      <Input
-                        onBlur={evt => searchUserRequest({ username: evt.target.value, districtId })}
-                        placeholder="Enter email"
-                      />
-                    )}
+                    })(<Input placeholder="Enter email" />)}
                   </Form.Item>
                 </Field>
               )}

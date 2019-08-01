@@ -35,7 +35,6 @@ import {
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction
 } from "../../ducks";
-import { searchUserRequestAction, getSearchResultSelector } from "../../../sharedDucks/userDetails";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
 
@@ -481,9 +480,7 @@ class StudentTable extends Component {
       setAddStudentsToOtherClassVisiblity,
       putStudentsToOtherClass,
       fetchClassDetailsUsingCode,
-      features,
-      searchUserRequest,
-      userSearchResult
+      features
     } = this.props;
 
     const actionMenu = (
@@ -597,9 +594,7 @@ class StudentTable extends Component {
             modalFunc={updateAdminUser}
             closeModal={this.closeEditStudentModal}
             buttonText="Yes, Update"
-            isStudentEdit={true}
-            searchUserRequest={searchUserRequest}
-            userSearchResult={userSearchResult}
+            isStudentEdit
           />
         )}
         {addStudentModalVisible && (
@@ -611,7 +606,7 @@ class StudentTable extends Component {
             wrappedComponentRef={this.saveFormRef}
             showClassCodeField={true}
             fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
-            showTtsField={true}
+            showTtsField
           />
         )}
         {studentDetailsModalVisible && (
@@ -662,8 +657,7 @@ const enhance = compose(
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
-      features: getUserFeatures(state),
-      userSearchResult: getSearchResultSelector(state)
+      features: getUserFeatures(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -690,8 +684,7 @@ const enhance = compose(
       setRole: setRoleAction,
       setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
-      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
-      searchUserRequest: searchUserRequestAction
+      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction
     }
   )
 );

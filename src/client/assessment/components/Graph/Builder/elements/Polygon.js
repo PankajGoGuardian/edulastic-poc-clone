@@ -23,6 +23,7 @@ function create(board, polygonPoints, id = null) {
     label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON),
     id
   });
+  newPolygon.labelIsVisible = true;
   handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
   newPolygon.borders.forEach(border => {
     border.on("up", () => {
@@ -39,6 +40,9 @@ function create(board, polygonPoints, id = null) {
       board.dragged = true;
     });
   });
+
+  board.handleStackedElementsMouseEvents(newPolygon);
+
   return newPolygon;
 }
 
@@ -94,6 +98,7 @@ function getConfig(polygon) {
     type: CONSTANT.TOOLS.POLYGON,
     id: polygon.id,
     label: polygon.labelHTML || false,
+    labelIsVisible: polygon.labelIsVisible,
     points: Object.keys(polygon.ancestors)
       .sort()
       .map(n => Point.getConfig(polygon.ancestors[n]))

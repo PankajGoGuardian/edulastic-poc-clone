@@ -180,7 +180,8 @@ class GraphDisplay extends Component {
       bgShapes,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      advancedElementSettings
     } = this.props;
 
     const {
@@ -267,7 +268,8 @@ class GraphDisplay extends Component {
       previewTab,
       changePreviewTab,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      advancedElementSettings
     };
   };
 
@@ -531,6 +533,7 @@ GraphDisplay.propTypes = {
 GraphDisplay.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
+  advancedElementSettings: false,
   onChange: () => {},
   changePreviewTab: () => {},
   elements: [],

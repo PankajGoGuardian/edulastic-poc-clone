@@ -28,6 +28,8 @@ import {
   defaultGridParameters
 } from "../../Builder/settings";
 
+import { ElementSettingsMenu } from "../../components/ElementSettingsMenu";
+
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import {
@@ -150,7 +152,9 @@ class GraphContainer extends PureComponent {
 
     this.state = {
       selectedTool: this.getDefaultTool(),
-      selectedDrawingObject: null
+      selectedDrawingObject: null,
+      elementSettingsAreOpened: false,
+      elementId: null
     };
 
     this.onSelectTool = this.onSelectTool.bind(this);
@@ -168,6 +172,22 @@ class GraphContainer extends PureComponent {
       groupIndex: -1
     };
   }
+
+  handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
+  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility) => {
+    const { setValue, setElementsStash } = this.props;
+    const { elementId } = this.state;
+    const config = this._graph.getConfig();
+    const updateElement = config.filter(element => element.id === elementId)[0];
+
+    updateElement.label = labelText;
+    updateElement.pointIsVisible = pointVisibility;
+    updateElement.labelIsVisible = labelVisibility;
+
+    setValue(config);
+    setElementsStash(config, this.getStashId());
+    this.setState({ elementSettingsAreOpened: false });
+  };
 
   setDefaultToolState() {
     this.setState({ selectedTool: this.getDefaultTool() });
@@ -198,6 +218,9 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
+      if (!disableResponse) {
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+      }
       this._graph.setDisableResponse(disableResponse);
 
       this._graph.resizeContainer(layout.width, layout.height);
@@ -429,6 +452,7 @@ class GraphContainer extends PureComponent {
   updateValues() {
     const conf = this._graph.getConfig();
     const { setValue, setElementsStash } = this.props;
+
     setValue(conf);
     setElementsStash(conf, this.getStashId());
   }
@@ -617,12 +641,24 @@ class GraphContainer extends PureComponent {
   };
 
   render() {
-    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse, view } = this.props;
+    const {
+      toolbar,
+      layout,
+      annotation,
+      controls,
+      bgShapes,
+      elements,
+      questionId,
+      disableResponse,
+      view,
+      advancedElementSettings
+    } = this.props;
     const { tools } = toolbar;
-    const { selectedTool } = this.state;
+    const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
     const equations = elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION);
+
     return (
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
         <GraphWrapper>
@@ -670,6 +706,13 @@ class GraphContainer extends PureComponent {
                 margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
               />
               <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
+              {elementSettingsAreOpened && this._graph && (
+                <ElementSettingsMenu
+                  advancedElementSettings={advancedElementSettings}
+                  element={this._graph.getConfig().filter(element => element.id === elementId)[0]}
+                  handleClose={this.handleElementSettingsMenuClose}
+                />
+              )}
             </JSXBoxWrapper>
           </JSXBoxWithDrawingObjectsWrapper>
         </GraphWrapper>
@@ -710,6 +753,7 @@ GraphContainer.propTypes = {
 
 GraphContainer.defaultProps = {
   backgroundShapes: { values: [], showPoints: true },
+  advancedElementSettings: false,
   evaluation: null,
   annotation: null,
   controls: [],

@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Checkbox } from "@edulastic/common";
+import { Checkbox, TabContainer } from "@edulastic/common";
 import { Select } from "antd";
 
 import Extras from "../../../../containers/Extras";
@@ -559,13 +559,16 @@ class QuadrantsMoreOptions extends Component {
           <Subtitle>{t("component.graphing.background_shapes")}</Subtitle>
           <Row>
             <Col md={24}>
-              <GraphDisplay
-                graphData={graphData}
-                onChange={setBgShapes}
-                elements={graphData.background_shapes}
-                changePreviewTab={() => {}}
-                bgShapes
-              />
+              {advancedAreOpen && (
+                <GraphDisplay
+                  advancedElementSettings={true}
+                  graphData={graphData}
+                  onChange={setBgShapes}
+                  elements={graphData.background_shapes}
+                  changePreviewTab={() => {}}
+                  bgShapes
+                />
+              )}
             </Col>
           </Row>
         </Question>

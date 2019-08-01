@@ -171,6 +171,9 @@ var normalEvaluator =
           correctCount,
           wrongCount,
           answersCount,
+          scoreOfAnswer,
+          penaltyOfAnwer,
+          penaltyScore,
           negativeScore,
           selectedEvaluation;
 
@@ -203,7 +206,7 @@ var normalEvaluator =
 
               case 8:
                 if (!(i < validAnswers.length)) {
-                  _context3.next = 29;
+                  _context3.next = 32;
                   break;
                 }
 
@@ -264,6 +267,25 @@ var normalEvaluator =
                 evaluations = (0, _objectSpread2["default"])({}, evaluations, mathEvaluation);
 
               case 20:
+                /**
+                 * Total score should be equally distributed among each input type.
+                 * If total score is 9 points and there are three inputs, Each answer is worth 3 points.
+                 * In case student answers
+                 * If one correct - score should be 3/9
+                 * If two correct then 6/9,
+                 * If all three are correct 9/9.
+                 *
+                 * We will treat =>not-attempted = wrong attempt.
+                 * If there are three response blocks and score = 9 and penalty is 3.
+                 * "score per response" = score / numberOfResponseBlocks ( 9/3 )
+                 * "penalty per response" = penalty / numberOfResponseBlocks ( 3/3 )
+                 *
+                 * Only one is attempted and is correct attempts then score = 1/9 (calculation = 3 - 1 -1).
+                 * If two are attempted and are correct attempts then score = 5/9 (calculation = 3 + 3 -1).
+                 * If three are attempted and are correct attempts then score = 9/9 (calculation = 3 + 3 +3).
+                 * If three are attempted score will be and one attempt is correct and rest two are wrong
+                 * attempts score = 1/9 (calculation = 3 - 1 -1)
+                 */
                 correctCount = Object.values(evaluations).filter(_identity2["default"]).length;
                 wrongCount = Object.values(evaluations).filter(function(x) {
                   return !x;
@@ -272,6 +294,9 @@ var normalEvaluator =
                   (0, _get2["default"])(validAnswers[i].dropdown, ["value", "length"], 0) +
                   (0, _get2["default"])(validAnswers[i], ["value", "length"], 0) +
                   (0, _get2["default"])(validAnswers[i].textinput, ["value", "length"], 0);
+                scoreOfAnswer = maxScore / answersCount;
+                penaltyOfAnwer = penalty / answersCount;
+                penaltyScore = penaltyOfAnwer * (answersCount - correctCount);
 
                 if (scoring_type === "partialMatch") {
                   currentScore = questionScore * (correctCount / answersCount);
@@ -280,8 +305,8 @@ var normalEvaluator =
                     negativeScore = penalty * wrongCount;
                     currentScore -= negativeScore;
                   }
-                } else if (correctCount === answersCount) {
-                  currentScore = questionScore;
+                } else {
+                  currentScore = scoreOfAnswer * correctCount - penaltyScore;
                 }
 
                 score = Math.max(score, currentScore);
@@ -290,12 +315,12 @@ var normalEvaluator =
                   score: currentScore
                 });
 
-              case 26:
+              case 29:
                 i++;
                 _context3.next = 8;
                 break;
 
-              case 29:
+              case 32:
                 selectedEvaluation = (0, _maxBy2["default"])(allEvaluations, "score");
 
                 if (score === 0) {
@@ -318,7 +343,7 @@ var normalEvaluator =
                   maxScore: maxScore
                 });
 
-              case 34:
+              case 37:
               case "end":
                 return _context3.stop();
             }

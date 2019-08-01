@@ -11,12 +11,6 @@ import { InstructorStimulus } from "../styled/InstructorStimulus";
 import { QuestionTitleWrapper } from "../styled/QustionNumber";
 
 const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLines, showQuestionNumber, qIndex }) => {
-  useEffect(() => {
-    if (previewType === CLEAR) {
-      resetLines();
-    }
-  }, [previewType]);
-
   return (
     <MathEssayInputWrapper>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>

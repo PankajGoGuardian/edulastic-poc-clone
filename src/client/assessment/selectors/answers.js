@@ -11,7 +11,7 @@ export const getAnswerByQuestionIdSelector = questionId => answers => (questionI
 
 const getActivityFromPropsSelector = (state, props) => props.activity;
 
-const isReviewTabSelector = (state, props) => !!props.testItem;
+const isReviewTabSelector = (state, props) => !!props.isReviewTab;
 const getQuestionIdFromPropsSelector = (state, props) => {
   const {
     data: { id },
@@ -34,10 +34,10 @@ export const getUserAnswerSelector = createSelector(
     isReviewTabSelector,
     getQuestionSelector
   ],
-  (activity, questionId, answers, testItem, question) => {
+  (activity, questionId, answers, isReviewTab, question) => {
     if (!questionId) return undefined;
 
-    if (testItem) {
+    if (isReviewTab) {
       return get(question, ["validation", "valid_response", "value"]);
     }
 

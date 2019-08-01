@@ -67,7 +67,7 @@ const MatchListPreview = ({
   disableResponse,
   changePreviewTab,
   changePreview,
-  testItem
+  isReviewTab
 }) => {
   const {
     possible_responses: posResponses,
@@ -385,7 +385,7 @@ const MatchListPreview = ({
           checked={item.shuffleOptions}
         />
       )}
-      {previewTab === SHOW || testItem ? (
+      {previewTab === SHOW || isReviewTab ? (
         <Fragment>
           <CorrectAnswersContainer title={t("component.matchList.correctAnswers")} imageStyle={choicesImageStyle}>
             {list.map((ite, i) => (
@@ -434,7 +434,7 @@ MatchListPreview.propTypes = {
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
   changePreviewTab: PropTypes.func.isRequired,
-  testItem: PropTypes.bool
+  isReviewTab: PropTypes.bool
 };
 
 MatchListPreview.defaultProps = {
@@ -445,7 +445,7 @@ MatchListPreview.defaultProps = {
   showQuestionNumber: false,
   qIndex: null,
   disableResponse: false,
-  testItem: false
+  isReviewTab: false
 };
 
 const enhance = compose(

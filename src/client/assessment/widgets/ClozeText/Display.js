@@ -142,7 +142,7 @@ class ClozeTextDisplay extends Component {
       previewTab,
       changePreviewTab,
       responseIds,
-      testItem,
+      isReviewTab,
       view
     } = this.props;
 
@@ -167,7 +167,7 @@ class ClozeTextDisplay extends Component {
       previewTab,
       changePreviewTab,
       responseIds,
-      testItem,
+      isReviewTab,
       userSelections,
       disableResponse,
       style: btnStyle,
@@ -250,7 +250,7 @@ ClozeTextDisplay.propTypes = {
   item: PropTypes.object,
   disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
-  testItem: PropTypes.bool,
+  isReviewTab: PropTypes.bool,
   qIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
   stimulus: PropTypes.string.isRequired,
@@ -283,7 +283,7 @@ ClozeTextDisplay.defaultProps = {
   template: "",
   showQuestionNumber: false,
   disableResponse: false,
-  testItem: false,
+  isReviewTab: false,
   qIndex: null
 };
 

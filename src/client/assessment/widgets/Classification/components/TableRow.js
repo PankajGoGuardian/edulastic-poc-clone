@@ -33,7 +33,7 @@ const TableRow = ({
   isResizable,
   item,
   disableResponse,
-  testItem,
+  isReviewTab,
   previewTab
 }) => {
   const styles = {
@@ -94,7 +94,7 @@ const TableRow = ({
                 <DragItem
                   isTransparent={isTransparent}
                   dragHandle={dragHandle}
-                  valid={testItem ? true : validArray && validArray[validIndex]}
+                  valid={isReviewTab ? true : validArray && validArray[validIndex]}
                   preview={preview}
                   key={answerIndex}
                   renderIndex={responses.findIndex(resp => resp.id === answerValue)}

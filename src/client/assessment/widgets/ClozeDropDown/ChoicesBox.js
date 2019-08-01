@@ -23,7 +23,7 @@ const ChoicesBox = ({ resprops, id }) => {
     item,
     qIndex,
     disableResponse,
-    testItem,
+    isReviewTab,
     cAnswers
   } = resprops;
 
@@ -32,7 +32,7 @@ const ChoicesBox = ({ resprops, id }) => {
   const { index } = find(response_ids, response => response.id === id);
   let userAnswer = find(userAnswers, answer => (answer ? answer.id : "") === id);
 
-  if (testItem) {
+  if (isReviewTab) {
     userAnswer = find(cAnswers, answer => (answer ? answer.id : "") === id);
   }
 

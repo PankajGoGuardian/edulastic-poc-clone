@@ -122,7 +122,7 @@ class ClozeDropDownDisplay extends Component {
       userSelections,
       previewTab,
       changePreviewTab,
-      testItem
+      isReviewTab
     } = this.props;
     const { parsedTemplate } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -166,7 +166,7 @@ class ClozeDropDownDisplay extends Component {
       fontSize,
       btnStyle,
       showAnswer,
-      testItem,
+      isReviewTab,
       placeholder,
       disableResponse,
       responseBtnStyle,
@@ -223,7 +223,7 @@ ClozeDropDownDisplay.propTypes = {
   item: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
-  testItem: PropTypes.bool,
+  isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool
 };
 
@@ -250,7 +250,7 @@ ClozeDropDownDisplay.defaultProps = {
     responsecontainerindividuals: []
   },
   showQuestionNumber: false,
-  testItem: false,
+  isReviewTab: false,
   qIndex: null
 };
 

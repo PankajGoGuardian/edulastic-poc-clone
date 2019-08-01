@@ -27,7 +27,7 @@ const Option = props => {
     validation,
     styleType,
     multipleResponses,
-    testItem
+    isReviewTab
   } = props;
   let className = "";
   let correctAnswers = [];
@@ -36,9 +36,9 @@ const Option = props => {
     correctAnswers = flatten([validation.valid_response.value, ...altResponses]);
   }
 
-  const isSelected = testItem ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
+  const isSelected = isReviewTab ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
 
-  const isCorrect = testItem
+  const isCorrect = isReviewTab
     ? correct[correctAnswers.indexOf(item.value)]
     : correct[userSelections.indexOf(item.value)];
 
@@ -183,7 +183,7 @@ Option.propTypes = {
   correct: PropTypes.any.isRequired,
   styleType: PropTypes.string,
   multipleResponses: PropTypes.bool,
-  testItem: PropTypes.bool.isRequired
+  isReviewTab: PropTypes.bool.isRequired
 };
 
 Option.defaultProps = {

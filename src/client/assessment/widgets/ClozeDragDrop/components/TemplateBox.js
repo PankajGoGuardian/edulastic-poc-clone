@@ -20,7 +20,7 @@ const TemplateBox = ({ resprops, id }) => {
     userAnswers,
     onDrop,
     responseIDs,
-    testItem,
+    isReviewTab,
     cAnswers,
     globalSettings
   } = resprops;
@@ -45,7 +45,7 @@ const TemplateBox = ({ resprops, id }) => {
     maxWidth: globalSettings ? "400px" : "auto"
   };
   const getLabel = () => {
-    const answers = testItem ? cAnswers : userAnswers;
+    const answers = isReviewTab ? cAnswers : userAnswers;
     if (answers[dropTargetIndex]) {
       const foundedItem = options.find(option => option.value === answers[dropTargetIndex]);
       if (foundedItem) {
@@ -55,7 +55,7 @@ const TemplateBox = ({ resprops, id }) => {
   };
 
   const getLabelForGroup = () => {
-    const answers = testItem ? cAnswers : userAnswers;
+    const answers = isReviewTab ? cAnswers : userAnswers;
     if (answers[dropTargetIndex] && answers[dropTargetIndex].data) {
       const foundedGroup = options.find(option =>
         option.options.find(inOption => inOption.value === answers[dropTargetIndex].data)

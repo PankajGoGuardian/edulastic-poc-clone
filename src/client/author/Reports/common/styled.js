@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Row, Col, Button, Slider } from "antd";
 import { Table } from "antd";
-import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
+import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor, black } from "@edulastic/colors";
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
@@ -378,5 +378,16 @@ export const StyledDropDownContainer = styled(Col)`
     max-width: 100%;
     text-overflow: ellipsis;
     width: 100%;
+  }
+`;
+
+export const StyledAutocompleteDropDownContainer = styled.div`
+  margin: 0px 5px;
+  overflow: hidden;
+  button {
+    white-space: pre-wrap;
+  }
+  input {
+    cursor: pointer;
   }
 `;

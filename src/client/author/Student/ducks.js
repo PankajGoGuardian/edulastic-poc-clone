@@ -31,6 +31,8 @@ const ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS = "[student] ADD_STUDENTS_TO_OTHER_CLA
 const FETCH_CLASS_DETAILS_USING_CODE = "[student] FETCH_CLASS_DETAILS_USING_CODE";
 const FETCH_CLASS_DETAILS_SUCCESS = "[student] FETCH_CLASS_DETAILS_SUCCESS";
 
+const SET_MULTI_STUDENTS_PROVIDER = "[student] SET_MULTI_STUDENTS_PROVIDER";
+
 export const receiveStudentsListAction = createAction(RECEIVE_STUDENTLIST_REQUEST);
 export const receiveStudentsListSuccessAction = createAction(RECEIVE_STUDENTLIST_SUCCESS);
 export const receiveStudentsListErrorAction = createAction(RECEIVE_STUDENTLIST_ERROR);
@@ -55,6 +57,8 @@ export const addStudentsToOtherClassAction = createAction(ADD_STUDENTS_TO_OTHER_
 export const addStudentsToOtherClassSuccess = createAction(ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS);
 export const fetchClassDetailsUsingCodeAction = createAction(FETCH_CLASS_DETAILS_USING_CODE);
 export const fetchClassDetailsSuccess = createAction(FETCH_CLASS_DETAILS_SUCCESS);
+
+export const setMultiStudentsProviderAction = createAction(SET_MULTI_STUDENTS_PROVIDER);
 
 //selectors
 const stateStudentSelector = state => state.studentReducer;
@@ -111,6 +115,11 @@ export const getAddStudentsToOtherClassSelector = createSelector(
   ({ addStudentsToOtherClass }) => addStudentsToOtherClass
 );
 
+export const getStudentsLoading = createSelector(
+  stateStudentSelector,
+  state => state.loading
+);
+
 // reducers
 const initialState = {
   data: [],
@@ -138,7 +147,8 @@ const initialState = {
     destinationClassData: null,
     successData: null,
     loading: false
-  }
+  },
+  mutliStudentsProvider: "google"
 };
 
 export const reducer = createReducer(initialState, {
@@ -268,6 +278,9 @@ export const reducer = createReducer(initialState, {
     state.addStudentsToOtherClass.destinationClassData = payload;
     state.addStudentsToOtherClass.loading = false;
     state.addStudentsToOtherClass.successData = null;
+  },
+  [SET_MULTI_STUDENTS_PROVIDER]: (state, { payload }) => {
+    state.mutliStudentsProvider = payload;
   }
 });
 

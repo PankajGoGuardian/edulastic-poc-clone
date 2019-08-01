@@ -110,9 +110,9 @@ export const removeStudentAction = (assignmentId, classId, students) => ({
   payload: { assignmentId, classId, students }
 });
 
-export const addStudentsAction = (assignmentId, classId, students) => ({
+export const addStudentsAction = (assignmentId, classId, students, endDate) => ({
   type: ADD_STUDENTS,
-  payload: { assignmentId, classId, students }
+  payload: { assignmentId, classId, students, endDate }
 });
 
 export const updateRemovedStudentsAction = payload => ({

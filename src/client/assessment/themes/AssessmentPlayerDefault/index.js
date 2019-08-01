@@ -8,6 +8,7 @@ import { Affix } from "antd";
 import { ActionCreators } from "redux-undo";
 import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
+import { nonAutoGradableTypes } from "@edulastic/constants";
 import { playersTheme } from "../assessmentPlayersTheme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
@@ -16,7 +17,6 @@ import HeaderRightMenu from "../common/HeaderRightMenu";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
-import { nonAutoGradableTypes } from "@edulastic/constants";
 import { toggleBookmarkAction, bookmarksByIndexSelector } from "../../sharedDucks/bookmark";
 import { getSkippedAnswerSelector } from "../../selectors/answers";
 
@@ -291,7 +291,7 @@ class AssessmentPlayerDefault extends React.Component {
     const scratchPadMode = tool === 5;
     return (
       <ThemeProvider theme={theme}>
-        <Container>
+        <Container innerRef={this.scrollElementRef} data-cy="assessment-player-default-wrapper">
           <SvgDraw
             activeMode={activeMode}
             scratchPadMode={tool === 5}
@@ -415,7 +415,7 @@ class AssessmentPlayerDefault extends React.Component {
                 <FlexContainer />
               </HeaderMainMenu>
               <HeaderRightMenu skin />
-              <DragScrollContainer />
+              <DragScrollContainer scrollWrraper={previewPlayer ? this.scrollElementRef.current : null} />
             </Header>
           </Affix>
           <Main skin>

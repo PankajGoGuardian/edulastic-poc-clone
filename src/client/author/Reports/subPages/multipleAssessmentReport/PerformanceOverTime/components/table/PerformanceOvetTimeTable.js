@@ -1,9 +1,7 @@
 import React from "react";
 import { map } from "lodash";
 import PropTypes from "prop-types";
-import { StyledCard, StyledTable, StyledH3 } from "../../../../../common/styled";
-
-import { StyledCell } from "../../../common/components/styled";
+import { StyledCard, StyledTable, StyledH3, StyledCell } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
 import { getHSLFromRange1, stringCompare } from "../../../../../common/util";
@@ -72,12 +70,12 @@ const getColumns = () => {
   const dynamicColumns = map(customFields, field => ({
     ...field,
     render: (text, record) => {
-      let value = text;
+      let value = text || 0;
       let color = "transparent";
 
       if (field.dataIndex === "score") {
-        color = getHSLFromRange1(text);
-        value = text ? `${text}%` : "";
+        color = getHSLFromRange1(value);
+        value = `${value}%`;
       }
 
       const toolTipText = () => (

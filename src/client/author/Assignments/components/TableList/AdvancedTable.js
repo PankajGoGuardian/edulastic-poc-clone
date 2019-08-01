@@ -201,7 +201,7 @@ class AdvancedTable extends Component {
   };
 
   render() {
-    const { onSelectRow, assignmentsSummary, selectedRows, folderData, totalData } = this.props;
+    const { onSelectRow, assignmentsSummary, selectedRows, totalData, loading } = this.props;
     const { perPage, current, columns } = this.state;
 
     const rowSelection = {
@@ -213,27 +213,13 @@ class AdvancedTable extends Component {
       }
     };
 
-    let data = assignmentsSummary;
-    // folder filter doesnot work yet. we need to handle it in backend
-    if (!isEmpty(folderData)) {
-      const { content } = folderData;
-
-      const tempData = [];
-      content.forEach(({ _id }) => {
-        const temp = find(data, ({ testId }) => testId === _id);
-        if (temp) {
-          tempData.push(temp);
-        }
-      });
-      // data = tempData;
-    }
     return (
       <Container>
         <TableData
           columns={columns}
-          rowKey="testId"
+          loading={loading}
           rowSelection={rowSelection}
-          dataSource={data}
+          dataSource={assignmentsSummary}
           onRow={row => ({
             onClick: () => this.goToAdvancedView(row)
           })}
@@ -275,6 +261,7 @@ const enhance = compose(
       assignmentsSummary: getAssignmentsSummary(state),
       filtering: get(state, "author_assignments.filtering"),
       totalData: get(state, "author_assignments.total", 0),
+      loading: get(state, "author_assignments.loading"),
       folderData: getFolderSelector(state)
     }),
     {

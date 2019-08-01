@@ -4,7 +4,7 @@ import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash"
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, helpers, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
@@ -120,6 +120,8 @@ class ClozeDropDownDisplay extends Component {
       disableResponse,
       showQuestionNumber,
       userSelections,
+      previewTab,
+      changePreviewTab,
       isReviewTab
     } = this.props;
     const { parsedTemplate } = this.state;
@@ -172,30 +174,37 @@ class ClozeDropDownDisplay extends Component {
       onChange: this.selectChange,
       responsecontainerindividuals,
       stemNumeration: stemnumeration,
+      previewTab,
+      changePreviewTab,
       userAnswers: userSelections || [],
       showIndex: showAnswer || checkAnswer,
       cAnswers: get(item, "validation.valid_response.value", []),
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
+    const QuestionContent = () => (
+      <ContentWrapper fontSize={fontSize}>
+        <JsxParser
+          bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
+          showWarnings
+          components={{
+            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
+            mathspan: MathSpanWrapper
+          }}
+          jsx={parsedTemplate}
+        />
+      </ContentWrapper>
+    );
+
     return (
       <div>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          {!question && <QuestionContent />}
         </QuestionTitleWrapper>
-        <ContentWrapper fontSize={fontSize}>
-          <JsxParser
-            bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
-            showWarnings
-            components={{
-              textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
-              mathspan: MathSpanWrapper
-            }}
-            jsx={parsedTemplate}
-          />
-        </ContentWrapper>
+        {question && <QuestionContent />}
         {answerBox}
       </div>
     );
@@ -254,11 +263,6 @@ export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
 `;
 
 const ContentWrapper = styled.div`

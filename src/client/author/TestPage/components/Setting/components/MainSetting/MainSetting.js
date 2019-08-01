@@ -6,8 +6,6 @@ import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox, Form } 
 import { test } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
 import { red, green, blueBorder } from "@edulastic/colors";
-import { IconCaretDown } from "@edulastic/icons";
-
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
 import ListCard from "../Card/Card";
@@ -23,7 +21,6 @@ import {
   Body,
   Title,
   Block,
-  AdvancedButton,
   AdvancedSettings,
   BlueText,
   Description,
@@ -38,8 +35,9 @@ import {
   MessageSpan,
   NavigationMenu
 } from "./styled";
-import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
 import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
+import StandardProficiencyTable from "./StandardProficiencyTable";
+import PeformanceBand from "./PeformanceBand";
 
 const {
   settingCategories,
@@ -606,38 +604,15 @@ class MainSetting extends Component {
             )}
             {availableFeatures.includes("performanceBands") ? (
               <Block id="performance-bands" smallSize={isSmallSize}>
-                <Row style={{ marginBottom: 18, display: "flex", alignItems: "center" }}>
-                  <Col span={6}>
-                    <Title>Performance Bands</Title>
-                  </Col>
-                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                    <NormalText>Above or At Standard</NormalText>
-                  </Col>
-                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                    <NormalText>From</NormalText>
-                  </Col>
-                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                    <NormalText>To</NormalText>
-                  </Col>
-                </Row>
-                <List
-                  grid={{ column: 1 }}
-                  dataSource={Object.keys(performanceBandsData)}
-                  renderItem={item => (
-                    <List.Item>
-                      <ListCard
-                        item={performanceBandsData[item]}
-                        owner={owner}
-                        isEditable={isEditable}
-                        onPerformanceBandUpdate={() => this.onPerformanceBandUpdate(item)}
-                      />
-                    </List.Item>
-                  )}
-                />
+                <PeformanceBand />
               </Block>
             ) : (
               ""
             )}
+            <Block id="performance-bands" smallSize={isSmallSize}>
+              <Title>Standard based grading scale</Title>
+              <StandardProficiencyTable />
+            </Block>
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
               <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>

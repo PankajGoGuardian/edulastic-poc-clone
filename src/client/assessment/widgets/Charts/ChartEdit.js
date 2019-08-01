@@ -166,6 +166,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
       points={
         correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }
+      tab={correctTab}
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       userAnswer={

@@ -206,8 +206,8 @@ export const reIndexResponses = htmlStr => {
 };
 
 export const sanitizeForReview = stimulus => {
-  if (!stimulus || !window.$) return stimulus;
-
+  if (!window.$) return stimulus;
+  if (!stimulus) return question.DEFAULT_STIMULUS;
   const jqueryEl = $("<p>").append(stimulus);
 
   //remove br tag also
@@ -227,9 +227,12 @@ export const sanitizeForReview = stimulus => {
     if (firstIndexOf != -1) {
       splitJquery = jqueryEl.html().substr(0, firstIndexOf + 3);
     }
-    if (splitJquery.length === 0) {
+    if (splitJquery === "...") {
       splitJquery = question.DEFAULT_STIMULUS;
     }
+  }
+  if (splitJquery.includes("</p>")) {
+    splitJquery = `${splitJquery.substr(0, splitJquery.indexOf("</p>"))} ...</p>`;
   }
   return sanitizeSelfClosingTags(splitJquery);
 };

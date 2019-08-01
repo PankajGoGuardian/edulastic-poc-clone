@@ -40,10 +40,6 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 `;
 
 export const AssignmentTitle = styled.div`

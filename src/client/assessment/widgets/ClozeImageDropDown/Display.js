@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { shuffle, isUndefined, isEmpty, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
-import { Stimulus } from "@edulastic/common";
+import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AnswerDropdown from "./components/AnswerDropdown";
@@ -13,7 +13,7 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/helpers";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -330,7 +330,7 @@ class Display extends Component {
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <TemplateBoxContainer smallSize={smallSize} flexDirection="column">

@@ -3,12 +3,12 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { get, debounce, find, split } from "lodash";
-import { Row, Col, Select, message } from "antd";
+import { get, debounce, find } from "lodash";
+import { Row, Col } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeader } from "@edulastic/icons";
-import { themeColor, white, title, fadedGrey } from "@edulastic/colors";
+import { IconClose } from "@edulastic/icons";
+import { themeColor, white, title, fadedGreen, cardBg } from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
@@ -23,8 +23,6 @@ import {
 } from "../../duck";
 import { getUserIPZipCode } from "../../../../author/src/selectors/user";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
-
-const { Option } = Select;
 
 const SchoolDropDownItemTemplate = ({ itemData: school }) => {
   const { address, location } = school;
@@ -61,13 +59,9 @@ const JoinSchool = ({
   joinSchool,
   updateUserWithSchoolLoading,
   ipZipCode,
-  checkingPolicy,
   checkDistrictPolicy,
   districtId,
   isSignupUsingDaURL,
-  generalSettings,
-  districtPolicy,
-  districtShortName,
   t
 }) => {
   const { email, firstName, middleName, lastName } = userInfo;
@@ -181,20 +175,30 @@ const JoinSchool = ({
             </BannerText>
             <Col md={12}>
               <SelectForm>
-                <StyledRemoteAutocompleteDropDown
-                  by={""}
-                  data={dropdownSchoolData}
-                  onSearchTextChange={handleSearch}
-                  iconType={"down"}
-                  placeholder="Search school by Zip, name or City"
-                  ItemTemplate={SchoolDropDownItemTemplate}
-                  minHeight="70px"
-                  selectCB={changeSchool}
-                  filterKeys={["title", "zip", "city"]}
-                  isLoading={isSearching}
-                  _ref={autoCompleteRef}
-                  disabled={tempSelected ? true : false}
-                />
+                {selected ? (
+                  <SchoolSelected>
+                    <SelectedTag>
+                      <span>{selected.schoolName || ""}</span>
+                      <IconClose color={themeColor} onClick={() => setSchool(null)} />
+                    </SelectedTag>
+                  </SchoolSelected>
+                ) : (
+                  <StyledRemoteAutocompleteDropDown
+                    by={""}
+                    data={dropdownSchoolData}
+                    onSearchTextChange={handleSearch}
+                    iconType={"down"}
+                    placeholder="Search school by Zip, name or City"
+                    ItemTemplate={SchoolDropDownItemTemplate}
+                    minHeight="70px"
+                    selectCB={changeSchool}
+                    filterKeys={["title", "zip", "city"]}
+                    isLoading={isSearching}
+                    _ref={autoCompleteRef}
+                    disabled={tempSelected ? true : false}
+                  />
+                )}
+
                 <Actions>
                   {/* I want to home school removed temporarily */}
                   {/* <AnchorBtn> I want to homeschool</AnchorBtn> */}
@@ -244,7 +248,6 @@ const enhance = compose(
       isSearching: get(state, "signup.isSearching", false),
       schools: get(state, "signup.schools", []),
       newSchool: get(state, "signup.newSchool", {}),
-      checkingPolicy: get(state, "signup.checkingPolicy", false),
       checkDistrictPolicy: get(state, "signup.checkDistrictPolicy", false),
       updateUserWithSchoolLoading: updateUserWithSchoolLoadingSelector(state),
       ipZipCode: getUserIPZipCode(state)
@@ -289,9 +292,16 @@ const SelectForm = styled.div`
   max-width: 640px;
   margin: 0px auto;
   padding: 32px;
-  background: ${fadedGrey};
+  background: ${cardBg};
   border-radius: 8px;
   text-align: center;
+  .remote-autocomplete-dropdown {
+    box-shadow: 2px 2px 2px 2px rgba(201, 208, 219, 0.5);
+    background: ${white};
+  }
+  .ant-select-auto-complete.ant-select .ant-input {
+    border: none;
+  }
 `;
 
 const DistrictName = styled.div`
@@ -324,11 +334,32 @@ const SchoolIcon = styled.img`
   margin-bottom: 10px;
 `;
 
-const SchoolSelect = styled(Select)`
+const SchoolSelected = styled.div`
   width: 100%;
-  .ant-select-selection {
-    height: 32px;
-    overflow: hidden;
+  background: ${white};
+  border-radius: 2px;
+  box-shadow: 2px 2px 2px 2px rgba(201, 208, 219, 0.5);
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+  border-radius: 2px;
+`;
+
+const SelectedTag = styled.div`
+  background: ${fadedGreen};
+  border-radius: 8px;
+  display: flex;
+  padding: 2px 15px;
+  height: auto;
+  color: ${themeColor};
+  align-items: center;
+  span {
+    margin-right: 10px;
+  }
+  svg {
+    width: 10px;
+    height: 10px;
+    cursor: pointer;
   }
 `;
 

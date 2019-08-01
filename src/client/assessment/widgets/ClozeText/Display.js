@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, helpers, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -181,6 +181,18 @@ class ClozeTextDisplay extends Component {
       cAnswers: get(item, "validation.valid_response.value", [])
     };
 
+    const QuestionContent = () => (
+      <JsxParser
+        bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
+        showWarnings
+        components={{
+          textinput: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ClozeTextInput,
+          mathspan: MathSpanWrapper
+        }}
+        jsx={parsedTemplate}
+      />
+    );
+
     const answerBox = showAnswer ? (
       <>
         <CorrectAnswerBoxLayout
@@ -208,18 +220,11 @@ class ClozeTextDisplay extends Component {
           <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
         )}
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          {!question && <QuestionContent />}
         </QuestionTitleWrapper>
-        <JsxParser
-          bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
-          showWarnings
-          components={{
-            textinput: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ClozeTextInput,
-            mathspan: MathSpanWrapper
-          }}
-          jsx={parsedTemplate}
-        />
+        {question && <QuestionContent />}
         {answerBox}
       </div>
     );
@@ -286,9 +291,4 @@ export default ClozeTextDisplay;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
 `;

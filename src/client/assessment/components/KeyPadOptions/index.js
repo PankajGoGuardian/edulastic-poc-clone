@@ -197,7 +197,7 @@ KeyPadOptions.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
-  setKeyPadOffest: PropTypes.func.isRequired,
+  setKeyPadOffest: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
@@ -206,7 +206,8 @@ KeyPadOptions.propTypes = {
 KeyPadOptions.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  setKeyPadOffest: () => {}
 };
 
 export default withNamespaces("assessment")(KeyPadOptions);

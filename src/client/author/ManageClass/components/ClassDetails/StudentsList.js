@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Icon } from "antd";
+import { Icon, Spin } from "antd";
 import { get, isEmpty, size, pullAt } from "lodash";
-import { Spin } from "antd";
 import { lightBlue3 } from "@edulastic/colors";
 import { StudentContent, NoStudents, NoConentDesc, StyledIcon, CheckboxShowStudents, StudentsTable } from "./styled";
 import { selectStudentAction } from "../../ducks";

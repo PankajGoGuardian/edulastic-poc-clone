@@ -10,6 +10,7 @@ import DragItem from "./DragItem";
 import { Column, ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
+import { SHOW, CHECK } from "../../../constants/constantsForQuestions";
 
 const TableRow = ({
   startIndex,
@@ -32,7 +33,8 @@ const TableRow = ({
   isResizable,
   item,
   disableResponse,
-  isReviewTab
+  isReviewTab,
+  previewTab
 }) => {
   const styles = {
     columnContainerStyle: {
@@ -45,11 +47,12 @@ const TableRow = ({
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
   };
-
   const cols = [];
 
   let validIndex = -1;
-
+  const responses = item.group_possible_responses
+    ? item.possible_response_groups.flatMap(group => group.responses)
+    : item.possible_responses;
   for (let index = startIndex; index < startIndex + colCount; index++) {
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
@@ -66,7 +69,10 @@ const TableRow = ({
     cols.push(
       <ResponseRnd question={item} height="auto" index={index} isResizable={isResizable}>
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
-          <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
+          <ColumnLabel
+            transparent={previewTab === SHOW || previewTab === CHECK}
+            dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }}
+          />
         ) : null}
         <DropContainer
           style={{
@@ -83,6 +89,7 @@ const TableRow = ({
             // eslint-disable-next-line no-loop-func
             answers[index].map((answerValue, answerIndex) => {
               validIndex++;
+              const resp = responses.find(resp => resp.id === answerValue);
               return (
                 <DragItem
                   isTransparent={isTransparent}
@@ -90,10 +97,11 @@ const TableRow = ({
                   valid={isReviewTab ? true : validArray && validArray[validIndex]}
                   preview={preview}
                   key={answerIndex}
-                  renderIndex={possible_responses.indexOf(answerValue)}
+                  renderIndex={responses.findIndex(resp => resp.id === answerValue)}
                   onDrop={onDrop}
-                  item={answerValue}
+                  item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
+                  isResetOffset
                 />
               );
             })}
@@ -123,7 +131,8 @@ TableRow.propTypes = {
   validArray: PropTypes.array.isRequired,
   theme: PropTypes.object.isRequired,
   isResizable: PropTypes.bool.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  previewTab: PropTypes.string.isRequired
 };
 
 export default withTheme(TableRow);

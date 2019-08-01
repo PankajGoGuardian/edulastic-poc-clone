@@ -1,20 +1,9 @@
 import styled from "styled-components";
-import { Modal, Button, Input } from "antd";
-import { lightGrey3, linkColor, white, themeColor } from "@edulastic/colors";
+import { Button, Input } from "antd";
+import { linkColor, themeColor } from "@edulastic/colors";
+import { ConfirmationModal } from "../../../../src/components/common/ConfirmationModal";
 
-export const StyledModal = styled(Modal)`
-  .ant-modal-content,
-  .ant-modal-header {
-    background-color: ${lightGrey3};
-  }
-  .ant-modal-footer {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .ant-modal-body {
-    background-color: ${white};
-  }
+export const StyledModal = styled(ConfirmationModal)`
   .ant-form-item {
     text-align: center;
   }

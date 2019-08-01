@@ -104,7 +104,9 @@ const SubHeader = ({
           ))}
         {/* hiding icons as of now, after functinality is added these icons will be displayed */}
         {/* <StyledIcon type="user" fill={greenDark} />*/}
-        {active === 1 && <StyledIcon type="delete" fill={greyDarken} onClick={() => setShowModal(true)} />}
+        {active === 1 && (
+          <StyledIcon type="delete" title="Archive Class" fill={greyDarken} onClick={() => setShowModal(true)} />
+        )}
         {showModal && (
           <ConfirmationModal
             title="Archive Class"

@@ -11,7 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import ComposeQuestion from "./ComposeQuestion";
-import Response from "./Response";
+import Responses from "./Responses";
 
 class Authoring extends Component {
   static propTypes = {
@@ -43,16 +43,7 @@ class Authoring extends Component {
           maxHeight={maxHeight}
           maxWidth={maxWidth}
         />
-        {item.options.map((option, index) => (
-          <Response
-            key={index}
-            index={index}
-            option={option}
-            item={item}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          />
-        ))}
+        <Responses options={item.options || []} item={item} fillSections={fillSections} cleanSections={cleanSections} />
       </React.Fragment>
     );
   }

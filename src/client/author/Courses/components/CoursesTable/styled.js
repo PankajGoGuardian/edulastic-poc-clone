@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Dropdown, Checkbox, Pagination, Icon } from "antd";
+import { Button, Select, Input, Dropdown, Checkbox, Pagination, Icon } from "antd";
+import { StyledTable as Table } from "../../../../common/styled";
 const Search = Input.Search;
 
 export const StyledTableContainer = styled.div`

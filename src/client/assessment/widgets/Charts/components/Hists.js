@@ -9,7 +9,18 @@ import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestio
 import { Bar, ActiveBar, Text } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, correct }) => {
+const Hists = ({
+  bars,
+  onPointOver,
+  onMouseDown,
+  activeIndex,
+  view,
+  gridParams,
+  previewTab,
+  correct,
+  deleteMode,
+  saveAnswer
+}) => {
   const { margin, yAxisMin, height, multicolorBars } = gridParams;
 
   const { padding, step } = getGridVariables(bars, gridParams, true);
@@ -84,6 +95,7 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
         <Fragment key={`bar-${index}`}>
           {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
           <Bar
+            onClick={deleteMode ? () => saveAnswer(index) : () => {}}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
             x={getCenterX(index)}
@@ -100,6 +112,7 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
               x={getCenterX(index)}
               y={getCenterY(dot)}
               width={step - 2}
+              deleteMode={deleteMode}
               color={getColorForIndex(index)}
               hoverState={isHovered(index)}
               height={isHovered(index) ? 5 : 1}

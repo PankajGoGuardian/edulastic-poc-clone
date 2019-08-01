@@ -9,7 +9,7 @@ const { allGrades, allSubjects } = selectsData;
 class EditClassModal extends Component {
   onSaveClass = () => {
     this.props.form.validateFields((err, row) => {
-      const { selClassData: { _source: { parent, districtId } = {} } = {} } = this.props;
+      const { selClassData: { _source: { parent, districtId, standardSets } = {} } = {} } = this.props;
       if (!err) {
         const saveClassData = {
           name: row.name,
@@ -20,7 +20,9 @@ class EditClassModal extends Component {
           institutionId: row.institutionId,
           subject: row.subject,
           grades: row.grades,
-          tags: row.tags
+          tags: row.tags,
+          // not implemented in add model so sending empty if not present i.e. created in da settings
+          standardSets: standardSets || []
         };
         this.props.saveClass(saveClassData);
         if (row.endDate) {
@@ -55,13 +57,15 @@ class EditClassModal extends Component {
 
   render() {
     const { modalVisible, selClassData, schoolsData, teacherList, coursesForDistrictList } = this.props;
-    const { _source: { owners = [], name, subject, institutionName, grades, tags, endDate } = {} } = selClassData;
+    const {
+      _source: { owners = [], name, subject, institutionId, institutionName, grades, tags, endDate } = {}
+    } = selClassData;
     const ownersData = owners.map(row => row.id);
     const schoolsOptions = [];
     if (schoolsData.length !== undefined) {
       schoolsData.map((row, index) => {
         schoolsOptions.push(
-          <Option key={index} value={row._id}>
+          <Option key={row._id} value={row._id} title={row.name}>
             {row.name}
           </Option>
         );
@@ -210,7 +214,7 @@ class EditClassModal extends Component {
                     message: "Please select school"
                   }
                 ],
-                initialValue: institutionName
+                initialValue: institutionId
               })(<Select placeholder="Select School">{schoolsOptions}</Select>)}
             </ModalFormItem>
           </Col>

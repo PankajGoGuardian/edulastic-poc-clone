@@ -135,3 +135,35 @@ export const isEmailValid = (rule, value, callback, checks, message) => {
     callback(message);
   }
 };
+
+export const getFullNameFromAsString = obj => {
+  return obj.firstName + " " + (obj.middleName ? obj.middleName + " " : "") + obj.lastName;
+};
+
+export const getFullNameFromString = name => {
+  let nameList = name.split(" ");
+  nameList = nameList.filter(item => (item && item.trim() ? true : false));
+  if (!nameList.length) {
+    return false;
+  }
+
+  let firstName;
+  let lastName;
+  let middleName;
+  if (nameList.length === 1) {
+    firstName = nameList[0];
+  } else if (nameList.length === 2) {
+    firstName = nameList[0];
+    lastName = nameList[1];
+  } else if (nameList.length > 2) {
+    firstName = nameList[0];
+    middleName = nameList.slice(1, nameList.length - 1).join(" ");
+    lastName = last(nameList);
+  }
+
+  return {
+    firstName,
+    middleName,
+    lastName
+  };
+};

@@ -225,6 +225,7 @@ class ClozeDragDrop extends Component {
             {(previewTab === "check" ||
               (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
+                view={view}
                 item={item}
                 checkAnswer
                 hasGroupResponses={item.hasGroupResponses}
@@ -246,6 +247,7 @@ class ClozeDragDrop extends Component {
             )}
             {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
+                view={view}
                 showAnswer
                 item={item}
                 hasGroupResponses={item.hasGroupResponses}
@@ -268,6 +270,7 @@ class ClozeDragDrop extends Component {
             {(previewTab === "clear" ||
               (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
+                view={view}
                 item={item}
                 preview
                 hasGroupResponses={item.hasGroupResponses}

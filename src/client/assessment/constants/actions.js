@@ -19,6 +19,8 @@ export const LOAD_TEST_ITEMS = "[test] load test items";
 export const LOAD_PREVIOUS_RESPONSES = "[test] load previouls responses";
 export const SET_RESUME_STATUS = "[test] set resume status";
 export const SET_TEST_LOADING_STATUS = "[test] set loading status";
+export const SET_TEST_LOADING_ERROR = "[test] set loading status error";
+
 export const COUNT_CHECK_ANSWER = "[test] increase check answer count";
 export const SET_PASSWORD_VALIDATE_STATUS = "[test] set password validated status";
 export const GET_ASSIGNMENT_PASSWORD = "[test] get assignment password";

@@ -7,8 +7,3 @@ export const QuestionTitleWrapper = styled.div`
     white-space: pre-wrap;
   }
 `;
-
-export const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
-`;

@@ -84,7 +84,7 @@ export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
 
   // use it for ids of MCQ
-  const uuids = [uuid(), uuid(), uuid()];
+  const uuids = [uuid(), uuid(), uuid(), uuid()];
 
   const uuidsForFill = [uuid(), uuid(), uuid()];
 
@@ -739,7 +739,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
@@ -763,7 +763,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
@@ -787,7 +787,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "True" }, { value: uuids[1], label: "False" }],
         validation: {
@@ -857,13 +857,25 @@ export const getCards = onSelectQuestionType => {
         title: "Classification",
         firstMount: true,
         group_possible_responses: false,
-        possible_response_groups: [
+        possible_response_groups: [],
+        possible_responses: [
           {
-            title: "",
-            responses: ["Choice B", "Choice C", "Choice A", "Choice D"]
+            id: uuids[0],
+            value: "Choice B"
+          },
+          {
+            id: uuids[1],
+            value: "Choice C"
+          },
+          {
+            id: uuids[2],
+            value: "Choice A"
+          },
+          {
+            id: uuids[3],
+            value: "Choice D"
           }
         ],
-        possible_responses: ["Choice B", "Choice C", "Choice A", "Choice D"],
         stimulus: "Your question is here",
         type: questionType.CLASSIFICATION,
         ui_style: {
@@ -1130,8 +1142,6 @@ export const getCards = onSelectQuestionType => {
         stimulus: "Sample image background with an overlaid drop area(s)",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
-        keepAspectRatio: true,
-        isSnapFitValues: true,
         maxRespCount: 1,
         options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
@@ -1143,7 +1153,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responseLayout: {
-          showborder: true
+          keepAspectRatio: true,
+          showborder: true,
+          isSnapFitValues: true
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
@@ -1914,7 +1926,6 @@ export const getCards = onSelectQuestionType => {
           min_width: 100
         },
         options: {},
-        inputs: {},
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1930,15 +1941,13 @@ export const getCards = onSelectQuestionType => {
                   }
                 }
               ]
-            ]
-          },
-          valid_dropdown: {
-            score: 1,
-            value: []
-          },
-          valid_inputs: {
-            score: 1,
-            value: []
+            ],
+            dropdown: {
+              value: []
+            },
+            textinput: {
+              value: []
+            }
           }
         },
         is_math: true,

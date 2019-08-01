@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Dropdown, Pagination, Icon } from "antd";
+import { Button, Select, Input, Dropdown, Pagination, Icon } from "antd";
+import { StyledTable as Table } from "../../../../common/styled";
 
 export const StyledTableContainer = styled.div`
   display: flex;

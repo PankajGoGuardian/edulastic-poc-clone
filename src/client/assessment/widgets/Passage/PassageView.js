@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 import { Pagination } from "antd";
 import ReactQuill from "react-quill";
 
+import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
-import { Stimulus } from "@edulastic/common";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 const ContentsTitle = Heading;
 
@@ -30,7 +30,7 @@ const PassageView = ({ item, preview, showQuestionNumber, qIndex, flowLayout }) 
       )}
       {!flowLayout && (
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           {item.heading && <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />}
         </QuestionTitleWrapper>
       )}

@@ -21,7 +21,7 @@ const Preview = ({
   disableResponse,
   showQuestionNumber,
   qIndex,
-  isReviewTab,
+  testItem,
   changeView
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
@@ -71,7 +71,7 @@ const Preview = ({
         type={type}
         smallSize={smallSize}
         previewTab={previewTab}
-        isReviewTab={isReviewTab}
+        testItem={testItem}
       />
       {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
     </div>
@@ -88,7 +88,7 @@ Preview.propTypes = {
   smallSize: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  isReviewTab: PropTypes.bool,
+  testItem: PropTypes.bool,
   changeView: PropTypes.func.isRequired
 };
 
@@ -96,7 +96,7 @@ Preview.defaultProps = {
   smallSize: false,
   showQuestionNumber: false,
   qIndex: null,
-  isReviewTab: false
+  testItem: false
 };
 
 export default Preview;

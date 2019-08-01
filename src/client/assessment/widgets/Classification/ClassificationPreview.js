@@ -43,7 +43,7 @@ const ClassificationPreview = ({
   showQuestionNumber,
   disableResponse,
   changePreviewTab,
-  isReviewTab
+  testItem
 }) => {
   const styles = {
     itemContainerStyle: {
@@ -312,7 +312,7 @@ const ClassificationPreview = ({
                   isResizable={view === EDIT}
                   item={item}
                   disableResponse={disableResponse}
-                  isReviewTab={isReviewTab}
+                  testItem={testItem}
                 />
               )
           )}
@@ -427,7 +427,7 @@ const ClassificationPreview = ({
         )}
       </div>
 
-      {previewTab === SHOW || isReviewTab ? (
+      {previewTab === SHOW || testItem ? (
         <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
           {arrayOfCols.map((arr, i) => {
             return (
@@ -511,7 +511,7 @@ ClassificationPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   disableResponse: PropTypes.bool,
   changePreviewTab: PropTypes.func.isRequired,
-  isReviewTab: PropTypes.bool
+  testItem: PropTypes.bool
 };
 
 ClassificationPreview.defaultProps = {
@@ -521,7 +521,7 @@ ClassificationPreview.defaultProps = {
   showQuestionNumber: false,
   qIndex: null,
   disableResponse: false,
-  isReviewTab: false
+  testItem: false
 };
 
 const enhance = compose(

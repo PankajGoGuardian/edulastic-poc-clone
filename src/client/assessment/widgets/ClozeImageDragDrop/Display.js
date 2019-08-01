@@ -333,7 +333,7 @@ class Display extends Component {
       item,
       imageOptions,
       showBorder,
-      isReviewTab
+      testItem
     } = this.props;
 
     const questionId = item && item.id;
@@ -345,7 +345,7 @@ class Display extends Component {
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { isSnapFitValues } = item;
 
-    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
+    const userAnswers = testItem ? cAnswers : _uAnswers;
 
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = cloneDeep(possibleResponses);
@@ -634,7 +634,7 @@ class Display extends Component {
       <div />
     );
 
-    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer || testItem ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? "right" : responsecontainerposition;
@@ -756,7 +756,7 @@ Display.propTypes = {
   showQuestionNumber: PropTypes.bool,
   item: PropTypes.object,
   showBorder: PropTypes.bool,
-  isReviewTab: PropTypes.bool
+  testItem: PropTypes.bool
 };
 
 Display.defaultProps = {
@@ -798,7 +798,7 @@ Display.defaultProps = {
   showBorder: false,
   showQuestionNumber: false,
   item: {},
-  isReviewTab: false
+  testItem: false
 };
 
 export default withTheme(withCheckAnswerButton(Display));

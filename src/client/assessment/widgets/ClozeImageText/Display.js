@@ -155,13 +155,13 @@ class Display extends Component {
       showQuestionNumber,
       disableResponse,
       imageOptions,
-      isReviewTab
+      testItem
     } = this.props;
     const cAnswers = get(item, "validation.valid_response.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers: _uAnswers } = this.state;
 
-    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
+    const userAnswers = testItem ? cAnswers : _uAnswers;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { height, wordwrap, stemnumeration } = uiStyle;
@@ -350,7 +350,7 @@ Display.propTypes = {
   theme: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  isReviewTab: PropTypes.bool,
+  testItem: PropTypes.bool,
   changePreviewTab: PropTypes.func,
   imageOptions: PropTypes.object
 };
@@ -381,7 +381,7 @@ Display.defaultProps = {
   },
   showQuestionNumber: false,
   imageOptions: {},
-  isReviewTab: false
+  testItem: false
 };
 
 export default withTheme(Display);

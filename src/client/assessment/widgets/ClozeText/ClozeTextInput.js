@@ -84,7 +84,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     userAnswers,
     disableResponse,
     responseIds,
-    isReviewTab,
+    testItem,
     cAnswers,
     view,
     responsecontainerindividuals,
@@ -95,7 +95,7 @@ const ClozeTextInput = ({ resprops, id }) => {
   const { index } = find(responseIds, response => response.id === id);
   let { value } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
 
-  if (isReviewTab) {
+  if (testItem) {
     const { value: correctValue } = find(cAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
     value = correctValue;
   }

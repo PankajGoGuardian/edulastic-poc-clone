@@ -47,7 +47,7 @@ const SortListPreview = ({
   showQuestionNumber,
   disableResponse,
   changePreviewTab,
-  isReviewTab
+  testItem
 }) => {
   const answerContextConfig = useContext(AnswerContext);
   let previewTab = _previewTab;
@@ -282,7 +282,7 @@ const SortListPreview = ({
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
-                obj={userAnswer.length !== 0 ? selectedItem : isReviewTab === true ? validResponseCorrectList[i] : null}
+                obj={userAnswer.length !== 0 ? selectedItem : testItem === true ? validResponseCorrectList[i] : null}
                 disableResponse={disableResponse}
                 changePreviewTab={changePreviewTab}
               />
@@ -296,7 +296,7 @@ const SortListPreview = ({
         </FlexCol>
       </FlexContainer>
 
-      {(previewTab === SHOW || isReviewTab) && (
+      {(previewTab === SHOW || testItem) && (
         <ShowCorrect
           source={source}
           list={validResponseCorrectList}
@@ -320,7 +320,7 @@ SortListPreview.propTypes = {
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
   changePreviewTab: PropTypes.func.isRequired,
-  isReviewTab: PropTypes.bool
+  testItem: PropTypes.bool
 };
 
 SortListPreview.defaultProps = {
@@ -330,7 +330,7 @@ SortListPreview.defaultProps = {
   showQuestionNumber: false,
   qIndex: null,
   disableResponse: false,
-  isReviewTab: false
+  testItem: false
 };
 
 export default withNamespaces("assessment")(SortListPreview);

@@ -296,6 +296,7 @@ class MultipleChoice extends Component {
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
                   styleType="primary"
+                  testItem={testItem}
                   {...restProps}
                 />
               )}
@@ -318,6 +319,7 @@ class MultipleChoice extends Component {
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
                   styleType="primary"
+                  testItem={testItem}
                   {...restProps}
                 />
               )}
@@ -338,6 +340,7 @@ class MultipleChoice extends Component {
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
                   styleType="primary"
+                  testItem={testItem}
                   {...restProps}
                 />
               )}

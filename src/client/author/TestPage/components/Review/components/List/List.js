@@ -98,7 +98,6 @@ const SortableItem = SortableElement(
                   scrolling={item.scrolling}
                   questions={questions}
                   windowWidth="100%"
-                  isReviewTab
                   testItem
                 />
               </AnswerContext.Provider>
@@ -128,7 +127,7 @@ const SortableItem = SortableElement(
                       scrolling={item.scrolling}
                       questions={questions}
                       windowWidth="100%"
-                      isReviewTab
+                      testItem
                       testItem
                     />
                   </AnswerContext.Provider>

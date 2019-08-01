@@ -113,26 +113,31 @@ const ClozeMathPreview = ({
   const testUserAnswer = {};
   if (testItem) {
     const keynameMap = {
-      valid_inputs: "inputs",
-      valid_dropdown: "dropDowns",
-      valid_response: "maths"
+      textinput: "inputs",
+      dropdown: "dropDowns",
+      value: "maths"
     };
 
-    ["valid_inputs", "valid_dropdown", "valid_response"].forEach(propName => {
-      testUserAnswer[keynameMap[propName]] = {};
-      if (!item.validation[propName] || !item.validation[propName].value) return;
-      item.validation[propName].value.forEach(answerItem => {
-        if (propName === "valid_response") {
-          testUserAnswer[keynameMap[propName]][answerItem[0].id] = {
-            value: answerItem[0].value
-          };
-        } else {
-          testUserAnswer[keynameMap[propName]][answerItem.id] = {
-            value: answerItem.value
-          };
+    if (item.validation.valid_response) {
+      Object.keys(item.validation.valid_response).forEach(keyName => {
+        if (keynameMap[keyName]) {
+          testUserAnswer[keynameMap[keyName]] = {};
+          if (keyName !== "value") {
+            item.validation.valid_response[keyName].value.forEach(answerItem => {
+              testUserAnswer[keynameMap[keyName]][answerItem.id] = {
+                value: answerItem.value
+              };
+            });
+          } else {
+            item.validation.valid_response.value.forEach(answerItem => {
+              testUserAnswer[keynameMap[keyName]][answerItem[0].id] = {
+                value: answerItem[0].value
+              };
+            });
+          }
         }
       });
-    });
+    }
   }
 
   return (

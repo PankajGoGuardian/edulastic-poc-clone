@@ -109,7 +109,7 @@ const Matrix = props => {
     smallSize,
     theme,
     previewTab,
-    isReviewTab
+    testItem
   } = props;
   let correctAnswersMatrix;
 
@@ -124,7 +124,7 @@ const Matrix = props => {
     correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, type);
   }
 
-  if (isReviewTab) {
+  if (testItem) {
     const responses = getResponses(validation);
     const matrix = stems.map(() => options.map(() => false));
     correctAnswersMatrix = validatedAnswers(response.value, responses, matrix, "show");
@@ -151,7 +151,7 @@ const Matrix = props => {
       checked = data.value.includes(columnIndex);
     }
 
-    if (isReviewTab && correct === true) {
+    if (testItem && correct === true) {
       checked = true;
     }
 
@@ -289,7 +289,7 @@ Matrix.propTypes = {
   validation: PropTypes.object,
   type: PropTypes.string,
   theme: PropTypes.object.isRequired,
-  isReviewTab: PropTypes.bool
+  testItem: PropTypes.bool
 };
 
 Matrix.defaultProps = {
@@ -297,7 +297,7 @@ Matrix.defaultProps = {
   validation: null,
   type: "clear",
   smallSize: false,
-  isReviewTab: false,
+  testItem: false,
   uiStyle: {}
 };
 

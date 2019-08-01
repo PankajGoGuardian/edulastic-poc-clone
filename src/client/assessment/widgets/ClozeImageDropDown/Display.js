@@ -125,7 +125,7 @@ class Display extends Component {
       showQuestionNumber,
       disableResponse,
       imageOptions,
-      isReviewTab
+      testItem
     } = this.props;
 
     const { shuffleOptions } = configureOptions;
@@ -264,7 +264,7 @@ class Display extends Component {
                       backgroundColor={backgroundColor}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
-                      defaultValue={isReviewTab ? cAnswers[dropTargetIndex] : userSelections[dropTargetIndex]}
+                      defaultValue={testItem ? cAnswers[dropTargetIndex] : userSelections[dropTargetIndex]}
                     />
                   )}
                 </div>
@@ -368,7 +368,7 @@ Display.propTypes = {
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   imageOptions: PropTypes.object,
-  isReviewTab: PropTypes.bool
+  testItem: PropTypes.bool
 };
 
 Display.defaultProps = {
@@ -398,7 +398,7 @@ Display.defaultProps = {
   },
   showQuestionNumber: false,
   imageOptions: {},
-  isReviewTab: false
+  testItem: false
 };
 
 export default withTheme(Display);

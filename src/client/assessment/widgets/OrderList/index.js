@@ -66,8 +66,7 @@ const OrderList = ({
   theme,
   disableResponse,
   t,
-  changePreviewTab,
-  isReviewTab
+  changePreviewTab
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
@@ -265,7 +264,7 @@ const OrderList = ({
             />
           )}
 
-          {previewTab === SHOW || isReviewTab ? (
+          {previewTab === SHOW || testItem ? (
             <Fragment>
               <OrderListReport
                 onSortEnd={onSortPreviewEnd}
@@ -355,7 +354,7 @@ OrderList.propTypes = {
   theme: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool,
-  isReviewTab: PropTypes.bool
+  testItem: PropTypes.bool
 };
 
 OrderList.defaultProps = {
@@ -370,7 +369,7 @@ OrderList.defaultProps = {
   cleanSections: () => {},
   showQuestionNumber: false,
   disableResponse: false,
-  isReviewTab: false
+  testItem: false
 };
 
 const enhance = compose(

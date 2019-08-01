@@ -12,6 +12,7 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/
 import { Subtitle } from "../../styled/Subtitle";
 
 import CorrectAnswer from "./CorrectAnswer";
+import MixMatchCorrectAnswer from "./MixMatchCorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
 
 class CorrectAnswers extends Component {
@@ -46,6 +47,7 @@ class CorrectAnswers extends Component {
 
   renderPlusButton = () => {
     const { onAddAltResponses, validation } = this.props;
+    const { alt_responses = [] } = validation;
 
     return (
       <Button
@@ -57,7 +59,7 @@ class CorrectAnswers extends Component {
           marginLeft: 20
         }}
         icon={<IconPlus fill="#fff" />}
-        disabled={validation.mixAndMatch}
+        disabled={validation.mixAndMatch && alt_responses.length >= 1}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           onAddAltResponses();
@@ -155,7 +157,7 @@ class CorrectAnswers extends Component {
           </Tabs>
           {value === 0 && (
             <TabContainer>
-              <CorrectAnswer
+              {/* <CorrectAnswer
                 key={options}
                 response={validation.valid_response}
                 stimulus={stimulus}
@@ -169,7 +171,8 @@ class CorrectAnswers extends Component {
                 responseIds={responseIds}
                 view={view}
                 previewTab={previewTab}
-              />
+              /> */}
+              <MixMatchCorrectAnswer />
             </TabContainer>
           )}
           {validation.alt_responses &&

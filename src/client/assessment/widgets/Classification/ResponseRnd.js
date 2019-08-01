@@ -9,7 +9,7 @@ import { lightGrey } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const ResponseRnd = props => {
-  const { children, question, setQuestionData, isResizable, minHeight, width, height, index } = props;
+  const { children, question, setQuestionData, isResizable, minHeight, width, height, index, rowHasTitle } = props;
 
   const handleResponseDragStop = (evt, d) => {
     setQuestionData(
@@ -70,10 +70,10 @@ const ResponseRnd = props => {
     );
   };
 
-  const offset = 200;
-  const rndX = get(question, `responseOptions[${index}].x`, index * offset);
+  const offsetX = rowHasTitle ? 200 : 100;
+  const rndX = get(question, `responseOptions[${index}].x`, (index + 1) * offsetX);
   const rndY = get(question, `responseOptions[${index}].y`, 0);
-  const rndWidth = get(question, `responseOptions[${index}].width`, offset);
+  const rndWidth = get(question, `responseOptions[${index}].width`, 200);
   const rndHeight = get(question, `responseOptions[${index}].height`, height);
   return (
     <Rnd

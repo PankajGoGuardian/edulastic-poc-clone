@@ -97,7 +97,7 @@ const StandardsGradebook = ({
     setChartFilter(_chartFilter);
   };
 
-  const masteryScale = get(standardsFilters, "data.result.bandInfo", []);
+  const masteryScale = get(standardsFilters, "data.result.scaleInfo", []);
 
   return (
     <div>

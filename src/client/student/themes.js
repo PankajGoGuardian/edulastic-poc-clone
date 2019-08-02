@@ -75,8 +75,8 @@ export const themes = {
       cardInProgressLabelBgColor: "#daeee7",
       cardInProgressLabelTextColor: "#4aac8b",
       cardNotStartedLabelBorderColor: "#cbe5f0",
-      cardNotStartedLabelBgColor: "#cbeeff",
-      cardNotStartedLabelTextColor: "#0083be",
+      cardNotStartedLabelBgColor: "#D1F9EB",
+      cardNotStartedLabelTextColor: "#4AAC8B",
       cardSubmitedLabelBorderColor: "#dbcdf3",
       cardSubmitedLabelBgColor: "#eacbff",
       cardSubmitedLabelTextColor: "#7843a4",
@@ -137,7 +137,7 @@ export const themes = {
     },
     headerFilters: {
       headerFilterTextSize: "10px",
-      headerFilterTextColor: "#7C848E",
+      headerFilterTextColor: themeColor,
       headerFilterBgColor: "#ffffff",
       headerFilterBgBorderColor: themeColor,
       headerFilterTextHoverColor: "#ffffff",
@@ -238,7 +238,7 @@ export const themes = {
     },
     profile: {
       userHeadingTextSize: "22px",
-      userHeadingTextColor: "#434b5d",
+      userHeadingTextColor: "#434B5D",
       userHeadingTextWeight: "bold",
       userSubTitleTextSize: "13px",
       userSubTitleTextColor: "#434b5d",

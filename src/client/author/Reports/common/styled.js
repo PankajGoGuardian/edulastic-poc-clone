@@ -2,9 +2,25 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Row, Col, Button, Slider } from "antd";
 import { Table } from "antd";
-import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor } from "@edulastic/colors";
+import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor, black } from "@edulastic/colors";
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
+
+export const StyledCell = styled.div`
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+`;
+
+export const PrintablePrefix = styled.b`
+  display: none;
+  padding-left: 5px;
+  float: left;
+
+  @media print {
+    display: block;
+  }
+`;
 
 export const StyledGoButton = styled(Button)`
   font-size: 16px;
@@ -20,11 +36,16 @@ export const StyledFilterWrapper = styled.div`
   background-color: white;
   border-radius: 10px;
   padding: 15px 20px;
+  margin: 0px 8px;
 
   .ant-select-selection {
     &__rendered {
       padding-left: 0px;
     }
+  }
+
+  .ant-select {
+    width: 100%;
   }
 
   .ant-select-auto-complete.ant-select .ant-input {
@@ -57,6 +78,8 @@ export const StyledFilterWrapper = styled.div`
       height: auto;
       font-size: 13px;
       font-weight: 600;
+      max-width: 100%;
+      width: 100%;
 
       i {
         color: ${themeColor};
@@ -79,6 +102,9 @@ export const DropDownContainer = styled.div`
 `;
 
 export const StyledCard = styled(Card)`
+  // when u change this u have to change "StyledCard" in "src/client/common/styled.js" to make every css in sync
+  // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
+  // Import this and add USE CASE SPECIFIC CSS
   margin: ${props => (props.margin ? props.margin : "8px")};
 
   .ant-card-body {
@@ -129,6 +155,9 @@ export const StyledContainer = styled.div`
 `;
 
 export const StyledTable = styled(Table)`
+  // when u change this u have to change "StyledTable" in "src/client/common/styled.js" to make every css in sync
+  // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
+  // Import this and add USE CASE SPECIFIC CSS
   .ant-table-body {
     overflow: auto;
     table {
@@ -150,6 +179,10 @@ export const StyledTable = styled(Table)`
             .ant-table-column-sorter {
               right: 3px;
             }
+          }
+
+          th:nth-last-child(-n + ${props => props.rightAligned || 0}) {
+            text-align: right;
           }
 
           @media only screen and (min-width: 1px) and (max-width: 600px) {
@@ -195,6 +228,10 @@ export const StyledTable = styled(Table)`
 
           td:nth-last-child(-n + ${props => props.centerAligned || 0}) {
             text-align: center;
+          }
+
+          td:nth-last-child(-n + ${props => props.rightAligned || 0}) {
+            text-align: right;
           }
 
           td {
@@ -341,5 +378,16 @@ export const StyledDropDownContainer = styled(Col)`
     max-width: 100%;
     text-overflow: ellipsis;
     width: 100%;
+  }
+`;
+
+export const StyledAutocompleteDropDownContainer = styled.div`
+  margin: 0px 5px;
+  overflow: hidden;
+  button {
+    white-space: pre-wrap;
+  }
+  input {
+    cursor: pointer;
   }
 `;

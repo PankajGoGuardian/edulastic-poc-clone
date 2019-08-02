@@ -421,7 +421,8 @@ class GraphDisplay extends Component {
         minorTicks: numberlineAxis && parseFloat(numberlineAxis.minorTicks),
         showLabels: numberlineAxis && numberlineAxis.showLabels,
         labelShowMax: numberlineAxis && numberlineAxis.labelShowMax,
-        labelShowMin: numberlineAxis && numberlineAxis.labelShowMin
+        labelShowMin: numberlineAxis && numberlineAxis.labelShowMin,
+        shuffleAnswerChoices: numberlineAxis && numberlineAxis.shuffleAnswerChoices
       },
       layout: {
         width: ui_style.layout_width,

@@ -4,6 +4,18 @@ import { getOverallScore, filterAccordingToRole, getHSLFromRange1 } from "../../
 
 import dropDownData from "../static/json/dropDownData.json";
 
+const sanitizeNullNumberFields = (records, fields = []) => {
+  return map(records, record => {
+    return next(record, draftRecord => {
+      forEach(fields, field => {
+        if (record[field] === null || typeof record[field] === "undefined") {
+          draftRecord[field] = 0;
+        }
+      });
+    });
+  });
+};
+
 export const compareByMap = {
   school: "schoolName",
   teacher: "teacherName",
@@ -69,20 +81,6 @@ export const augmentWithData = (metricInfo = [], compareBy = "", dataSource = []
   }
 };
 
-export const getLeastProficiencyBand = (bandInfo = []) =>
-  orderBy(bandInfo, "threshold", ["desc"])[bandInfo.length - 1] || {};
-
-export const getProficiencyBand = (score, bandInfo, field = "threshold") => {
-  const bandInfoWithColor = map(orderBy(bandInfo, "threshold"), (band, index) => {
-    return {
-      ...band,
-      color: getHSLFromRange1(round((100 / (bandInfo.length - 1)) * index))
-    };
-  });
-  const orderedScaleInfo = orderBy(bandInfoWithColor, "threshold", ["desc"]);
-  return find(orderedScaleInfo, info => ceil(score) >= info[field]) || getLeastProficiencyBand(orderedScaleInfo);
-};
-
 export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], selectedTrend = "") => {
   const groupedMetric = groupByCompareKey(metricInfo, compareBy);
 
@@ -92,10 +90,11 @@ export const parseTrendData = (metricInfo = [], compareBy = "", orgData = [], se
 
     forEach(groupByTests, (value, key) => {
       const maxStudents = maxBy(value, item => parseInt(item.studentCount || 0)) || {};
+      const sanitizedRecords = sanitizeNullNumberFields(value, ["totalScore", "maxScore"]);
       tests[key] = {
         records: value,
-        score: getOverallScore(value),
-        rawScore: `${round(sumBy(value, "totalScore"), 2)} / ${sumBy(value, "maxScore")}`,
+        score: getOverallScore(sanitizedRecords),
+        rawScore: `${round(sumBy(sanitizedRecords, "totalScore"), 2)} / ${sumBy(sanitizedRecords, "maxScore")}`,
         studentCount: parseInt(maxStudents.studentCount) || 0
       };
     });

@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Button, Select, Input, Dropdown, Table } from "antd";
+import { Button, Select, Input, Dropdown } from "antd";
+import { StyledTable as Table } from "../../../../common/styled";
 
 const { Search } = Input;
 

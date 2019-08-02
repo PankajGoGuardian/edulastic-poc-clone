@@ -217,7 +217,7 @@ class CoursesTable extends React.Component {
     if (showActive) loadListJsonData.active = 1;
 
     updateCourse({
-      uploadCSVData: {
+      updateData: {
         courseId: selectedSourceKey[0]._id,
         data: updatedCourseData
       },
@@ -251,6 +251,11 @@ class CoursesTable extends React.Component {
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+
+  onChangeSearch = event => {
+    this.setState({ searchByName: event.currentTarget.value });
+  };
+
   handleSearchName = value => {
     const { filtersData, sortedInfo, currentPage } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
@@ -354,32 +359,32 @@ class CoursesTable extends React.Component {
     const { filtersData, sortedInfo, searchByName, currentPage, showActive } = this.state;
     const { userOrgId } = this.props;
 
-    // if (isActive === undefined) isActive = this.state.showActive;
-
     let search = {};
+
+    if (searchByName.length > 0) {
+      search.name = { type: "cont", value: [searchByName] };
+    }
+
     for (let i = 0; i < filtersData.length; i++) {
-      if (
-        filtersData[i].filtersColumn !== "" &&
-        filtersData[i].filtersValue !== "" &&
-        filtersData[i].filterStr !== ""
-      ) {
-        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+      let { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
+        if (!search[filtersColumn]) {
+          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+        } else {
+          search[filtersColumn].value.push(filterStr);
+        }
       }
     }
 
-    if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
-    }
-
     const loadListJsonData = {
+      search,
       districtId: userOrgId,
       limit: 25,
       page: currentPage,
       sortField: sortedInfo.columnKey,
       order: sortedInfo.order,
-      search
+      active: showActive ? 1 : 0
     };
-    if (showActive) loadListJsonData.active = 1;
 
     // TO DO: remove this line after further investigation
     this.setState({ searchData: loadListJsonData });
@@ -429,7 +434,7 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "name",
         editable: true,
-        width: "40%",
+        width: 200,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -456,7 +461,7 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "number",
         editable: true,
-        width: "30%",
+        width: 200,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -473,7 +478,7 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "classCount",
         editable: true,
-        width: "20%",
+        width: 100,
         render: (text, record) => {
           const strClassCount = record.classCount == 0 ? "-" : record.classCount;
           return <React.Fragment>{strClassCount}</React.Fragment>;
@@ -481,14 +486,14 @@ class CoursesTable extends React.Component {
       },
       {
         dataIndex: "operation",
-        width: "94px",
+        width: 100,
         render: (text, record) => {
           return (
             <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditCourse(record.key)}>
+              <StyledTableButton onClick={() => this.onEditCourse(record.key)} title="Edit">
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(record.key)}>
+              <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
                 <Icon type="delete" theme="twoTone" />
               </StyledTableButton>
             </React.Fragment>
@@ -584,7 +589,11 @@ class CoursesTable extends React.Component {
             + Create Course
           </Button>
 
-          <StyledNameSearch placeholder="Search by name" onSearch={this.handleSearchName} />
+          <StyledNameSearch
+            placeholder="Search by name"
+            onSearch={this.handleSearchName}
+            onChange={this.onChangeSearch}
+          />
           <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
             Show active courses only
           </StyledActiveCheckbox>

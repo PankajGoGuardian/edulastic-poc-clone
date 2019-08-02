@@ -75,16 +75,20 @@ const AddStudentsPopup = ({
             onChange={value => setSelectedStudent(value)}
             placeholder="Select the students"
           >
-            {studentsList.map(x => (
-              <Select.Option
-                key={x._id}
-                value={x._id}
-                disabled={disabledList.includes(x._id)}
-                data={`${x.firstName}${x.lastName}${x.email}${x.username}`}
-              >
-                {getUserName(x)}
-              </Select.Option>
-            ))}
+            {studentsList.map(
+              x =>
+                x.enrollmentStatus !== "0" &&
+                x.status !== 0 && (
+                  <Select.Option
+                    key={x._id}
+                    value={x._id}
+                    disabled={disabledList.includes(x._id)}
+                    data={`${x.firstName}${x.lastName}${x.email}${x.username}`}
+                  >
+                    {getUserName(x)}
+                  </Select.Option>
+                )
+            )}
           </Select>
         </Row>
         <h4>Close Date</h4>

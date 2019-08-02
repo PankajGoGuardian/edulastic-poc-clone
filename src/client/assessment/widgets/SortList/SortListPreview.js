@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import { isEqual, get } from "lodash";
 import produce from "immer";
 
-import { Paper, FlexContainer, Stimulus, InstructorStimulus } from "@edulastic/common";
+import {
+  Paper,
+  FlexContainer,
+  Stimulus,
+  InstructorStimulus,
+  QuestionNumberLabel,
+  AnswerContext
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { SHOW, CLEAR } from "../../constants/constantsForQuestions";
@@ -21,8 +28,7 @@ import { FlexCol } from "./styled/FlexCol";
 import { IconUp } from "./styled/IconUp";
 import { IconDown } from "./styled/IconDown";
 import { getFontSize } from "../../utils/helpers";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
-import { AnswerContext } from "@edulastic/common";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 const styles = {
   dropContainerStyles: smallSize => ({
@@ -204,7 +210,7 @@ const SortListPreview = ({
       <InstructorStimulus>{instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
       </QuestionTitleWrapper>
 
@@ -276,7 +282,7 @@ const SortListPreview = ({
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
-                obj={disableResponse && userAnswer.length !== 0 ? selectedItem : validResponseCorrectList[i]}
+                obj={userAnswer.length !== 0 ? selectedItem : isReviewTab === true ? validResponseCorrectList[i] : null}
                 disableResponse={disableResponse}
                 changePreviewTab={changePreviewTab}
               />

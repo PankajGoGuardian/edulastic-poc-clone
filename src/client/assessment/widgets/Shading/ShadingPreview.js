@@ -4,10 +4,17 @@ import { cloneDeep, get } from "lodash";
 import { Select, Input } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { Paper, Stimulus, FlexContainer, InstructorStimulus, CorrectAnswersContainer } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  FlexContainer,
+  InstructorStimulus,
+  CorrectAnswersContainer,
+  QuestionNumberLabel
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { AdaptiveSelect } from "./styled/AdaptiveSelect";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import {
   PREVIEW,
   BY_LOCATION_METHOD,
@@ -131,7 +138,7 @@ const ShadingPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && (
           <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         )}

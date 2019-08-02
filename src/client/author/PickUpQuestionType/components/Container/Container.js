@@ -8,11 +8,25 @@ import { questionType } from "@edulastic/constants";
 import { PaddingDiv, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router";
-import { IconClose } from "@edulastic/icons";
+import {
+  IconClose,
+  IconBarChart,
+  IconEdit,
+  IconLayout,
+  IconLineChart,
+  IconMath,
+  IconMolecule,
+  IconMore,
+  IconNewList,
+  IconSelection,
+  IconTarget,
+  IconRulerPencil,
+  IconPlay,
+  IconMultipart
+} from "@edulastic/icons";
 import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
-import Breadcrumb from "../../../src/components/Breadcrumb";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import { convertItemToMultipartAction } from "../../../ItemDetail/ducks";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
@@ -22,28 +36,18 @@ import { setQuestionCategory, setQuestionTab } from "../../../src/actions/pickUp
 import {
   Content,
   LeftSide,
-  BarChartIcon,
-  EditIcon,
-  LayoutIcon,
-  LineChartIcon,
-  MathIcon,
-  MoleculeIcon,
-  MoreIcon,
-  NewListIcon,
   RightSide,
-  SelectionIcon,
-  TargetIcon,
   MenuTitle,
   StyledModal,
   StyledModalContainer,
   MobileButtons,
   SelectWidget,
   BackLink,
-  RulerIcon,
-  PlayIcon,
-  MultipartIcon
+  PickQuestionWrapper,
+  LeftMenuWrapper
 } from "./styled";
 import { toggleCreateItemModalAction } from "../../../src/actions/testItem";
+import Breadcrumb from "../../../src/components/Breadcrumb";
 
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
@@ -219,116 +223,118 @@ class Container extends Component {
             )
           }
         />
-        <LeftSide>
-          <Menu
-            mode="horizontal"
-            selectedKeys={[selectedTab]}
-            onClick={this.handleChangeTab}
-            style={{
-              background: "transparent",
-              borderBottom: 0,
-              display: "none"
-            }}
-          >
-            <Menu.Item key="question-tab">{t("component.pickupcomponent.question")}</Menu.Item>
-            <Menu.Item key="feature-tab">{t("component.pickupcomponent.feature")}</Menu.Item>
-          </Menu>
-          <MenuTitle>{t("component.pickupcomponent.selectAType")}</MenuTitle>
-          <Menu
-            mode="inline"
-            style={{
-              background: "transparent",
-              border: 0
-            }}
-            selectedKeys={[selectedCategory]}
-            onClick={this.handleCategory}
-          >
-            <Menu.Item key="multiple-choice">
-              <NewListIcon />
-              {"Multiple Choice"}
-            </Menu.Item>
-            <Menu.Item key="fill-blanks">
-              <SelectionIcon />
-              {"Fill in the Blanks"}
-            </Menu.Item>
-            <Menu.Item key="classify">
-              <LayoutIcon />
-              {"Classify, Match & Order"}
-            </Menu.Item>
-            <Menu.Item key="edit">
-              <EditIcon />
-              {"Reading & Comprehension"}
-            </Menu.Item>
-            <Menu.Item key="highlight">
-              <TargetIcon />
-              {"Highlight"}
-            </Menu.Item>
-            <Menu.Item key="math">
-              <MathIcon />
-              {"Math"}
-            </Menu.Item>
-            <Menu.Item key="graphing">
-              <LineChartIcon />
-              {"Graphing"}
-            </Menu.Item>
-            <Menu.Item key="charts">
-              <BarChartIcon />
-              {"Charts"}
-            </Menu.Item>
-            <Menu.Item key="chemistry">
-              <MoleculeIcon />
-              {"Chemistry"}
-            </Menu.Item>
-            <Menu.Item key="multipart">
-              <MultipartIcon />
-              {"Multipart"}
-            </Menu.Item>
-            <Menu.Item key="video-passages">
-              <PlayIcon />
-              {"Video & Text"}
-            </Menu.Item>
-            <Menu.Item key="rulers-calculators">
-              <RulerIcon />
-              {"Rulers & Calculators"}
-            </Menu.Item>
-            <Menu.Item key="other">
-              <MoreIcon />
-              {"Other"}
-            </Menu.Item>
-          </Menu>
-        </LeftSide>
-        <RightSide>
-          <Breadcrumb
-            data={this.breadcrumb}
-            style={{
-              position: "relative",
-              top: 0,
-              padding: "17px 0px",
-              display: windowWidth > SMALL_DESKTOP_WIDTH ? "block" : "none"
-            }}
-          />
-          <MobileButtons>
-            <BackLink to={`/author/items/${window.location.pathname.split("/")[3]}/item-detail`}>
-              Back to Item Detail
-            </BackLink>
-            <SelectWidget onClick={this.toggleCategories}>Select widget</SelectWidget>
-          </MobileButtons>
-          <PaddingDiv
-            style={{
-              position: "relative",
-              top: 0,
-              overflow: "auto",
-              height: "auto",
-              background: "#fff",
-              borderRadius: "10px",
-              padding: windowWidth > SMALL_DESKTOP_WIDTH ? "34px" : "20px 15px 10px",
-              boxShadow: "0 2px 5px 0 rgba(0, 0, 0, 0.07)",
-              minHeight: "calc(100vh - 190px)"
-            }}
-          >
-            <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={selectedCategory} />
-          </PaddingDiv>
-        </RightSide>
+        <PickQuestionWrapper>
+          <LeftSide>
+            <Menu
+              mode="horizontal"
+              selectedKeys={[selectedTab]}
+              onClick={this.handleChangeTab}
+              style={{
+                background: "transparent",
+                borderBottom: 0,
+                display: "none"
+              }}
+            >
+              <Menu.Item key="question-tab">{t("component.pickupcomponent.question")}</Menu.Item>
+              <Menu.Item key="feature-tab">{t("component.pickupcomponent.feature")}</Menu.Item>
+            </Menu>
+            <MenuTitle>{t("component.pickupcomponent.selectAType")}</MenuTitle>
+            <LeftMenuWrapper
+              mode="inline"
+              style={{
+                background: "transparent",
+                border: 0
+              }}
+              selectedKeys={[selectedCategory]}
+              onClick={this.handleCategory}
+            >
+              <Menu.Item key="multiple-choice">
+                <IconNewList />
+                {"Multiple Choice"}
+              </Menu.Item>
+              <Menu.Item key="fill-blanks">
+                <IconSelection />
+                {"Fill in the Blanks"}
+              </Menu.Item>
+              <Menu.Item key="classify">
+                <IconLayout />
+                {"Classify, Match & Order"}
+              </Menu.Item>
+              <Menu.Item key="edit">
+                <IconEdit />
+                {"Reading & Comprehension"}
+              </Menu.Item>
+              <Menu.Item key="highlight">
+                <IconTarget />
+                {"Highlight"}
+              </Menu.Item>
+              <Menu.Item key="math">
+                <IconMath />
+                {"Math"}
+              </Menu.Item>
+              <Menu.Item key="graphing">
+                <IconLineChart />
+                {"Graphing"}
+              </Menu.Item>
+              <Menu.Item key="charts">
+                <IconBarChart />
+                {"Charts"}
+              </Menu.Item>
+              <Menu.Item key="chemistry">
+                <IconMolecule />
+                {"Chemistry"}
+              </Menu.Item>
+              <Menu.Item key="multipart">
+                <IconMultipart />
+                {"Multipart"}
+              </Menu.Item>
+              <Menu.Item key="video-passages">
+                <IconPlay />
+                {"Video & Text"}
+              </Menu.Item>
+              <Menu.Item key="rulers-calculators">
+                <IconRulerPencil />
+                {"Rulers & Calculators"}
+              </Menu.Item>
+              <Menu.Item key="other">
+                <IconMore />
+                {"Other"}
+              </Menu.Item>
+            </LeftMenuWrapper>
+          </LeftSide>
+          <RightSide>
+            <Breadcrumb
+              data={this.breadcrumb}
+              style={{
+                position: "relative",
+                top: 0,
+                padding: "0px 0px 15px",
+                display: windowWidth > SMALL_DESKTOP_WIDTH ? "block" : "none"
+              }}
+            />
+            <MobileButtons>
+              <BackLink to={`/author/items/${window.location.pathname.split("/")[3]}/item-detail`}>
+                Back to Item Detail
+              </BackLink>
+              <SelectWidget onClick={this.toggleCategories}>Select widget</SelectWidget>
+            </MobileButtons>
+            <PaddingDiv
+              style={{
+                position: "relative",
+                top: 0,
+                overflow: "auto",
+                height: "auto",
+                background: "#fff",
+                borderRadius: "10px",
+                padding: windowWidth > SMALL_DESKTOP_WIDTH ? "34px" : "20px 15px 10px",
+                boxShadow: "0 2px 5px 0 rgba(0, 0, 0, 0.07)",
+                minHeight: "calc(100vh - 190px)"
+              }}
+            >
+              <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={selectedCategory} />
+            </PaddingDiv>
+          </RightSide>
+        </PickQuestionWrapper>
 
         <StyledModal
           open={isShowCategories}
@@ -350,55 +356,55 @@ class Container extends Component {
               onClick={this.handleCategory}
             >
               <Menu.Item key="multiple-choice" onClick={this.toggleCategories}>
-                <NewListIcon />
+                <IconNewList />
                 {"Multiple Choice"}
               </Menu.Item>
               <Menu.Item key="fill-blanks" onClick={this.toggleCategories}>
-                <SelectionIcon />
+                <IconSelection />
                 {"Fill in the Blanks"}
               </Menu.Item>
               <Menu.Item key="classify" onClick={this.toggleCategories}>
-                <LayoutIcon />
+                <IconLayout />
                 {"Classify, Match & Order"}
               </Menu.Item>
               <Menu.Item key="edit" onClick={this.toggleCategories}>
-                <EditIcon />
+                <IconEdit />
                 {"Reading & Comprehension"}
               </Menu.Item>
               <Menu.Item key="highlight" onClick={this.toggleCategories}>
-                <TargetIcon />
+                <IconTarget />
                 {"Highlight"}
               </Menu.Item>
               <Menu.Item key="math" onClick={this.toggleCategories}>
-                <MathIcon />
+                <IconMath />
                 {"Math"}
               </Menu.Item>
               <Menu.Item key="graphing" onClick={this.toggleCategories}>
-                <LineChartIcon />
+                <IconLineChart />
                 {"Graphing"}
               </Menu.Item>
               <Menu.Item key="charts" onClick={this.toggleCategories}>
-                <BarChartIcon />
+                <IconBarChart />
                 {"Charts"}
               </Menu.Item>
               <Menu.Item key="chemistry" onClick={this.toggleCategories}>
-                <MoleculeIcon />
+                <IconMolecule />
                 {"Chemistry"}
               </Menu.Item>
               <Menu.Item key="multipart">
-                <MultipartIcon />
+                <IconMultipart />
                 {"Multipart"}
               </Menu.Item>
               <Menu.Item key="video-passages" onClick={this.toggleCategories}>
-                <PlayIcon />
+                <IconPlay />
                 {"Video & Text"}
               </Menu.Item>
               <Menu.Item key="rulers-calculators" onClick={this.toggleCategories}>
-                <RulerIcon />
+                <IconRulerPencil />
                 {"Rulers & Calculators"}
               </Menu.Item>
               <Menu.Item key="other" onClick={this.toggleCategories}>
-                <MoreIcon />
+                <IconMore />
                 {"Other"}
               </Menu.Item>
             </Menu>

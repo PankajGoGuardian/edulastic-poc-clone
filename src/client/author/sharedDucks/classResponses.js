@@ -187,8 +187,8 @@ function* updateStudentScore({ payload }) {
     });
 
     const { questionActivities } = scoreRes;
-    for (const { qid: _id, score, maxScore, testActivityId } of questionActivities) {
-      yield put(gradebookTestItemAddAction([{ testActivityId, _id, score, maxScore }]));
+    for (const { qid: _id, score, maxScore, testActivityId, graded, skipped } of questionActivities) {
+      yield put(gradebookTestItemAddAction([{ testActivityId, _id, score, maxScore, graded, skipped }]));
     }
 
     yield call(message.success("Score is successfully updated"));

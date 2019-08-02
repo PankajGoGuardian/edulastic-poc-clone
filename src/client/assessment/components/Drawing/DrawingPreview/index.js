@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Select } from "antd";
 
-import { Paper, Stimulus, FlexContainer } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { dashBorderColorOpacity, dashBorderColor, secondaryTextColor, greenDark } from "@edulastic/colors";
 
@@ -28,7 +28,7 @@ const DrawingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, t, show
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 
@@ -118,9 +118,4 @@ const Text = styled.div`
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
 `;

@@ -11,7 +11,7 @@ import { withRouter } from "react-router-dom";
 import { questionType } from "@edulastic/constants";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi } from "@edulastic/api";
-import { white } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
 import DragScrollContainer from "../../../../../assessment/components/DragScrollContainer";
 import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
@@ -109,7 +109,7 @@ class PreviewModal extends React.Component {
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 20 }}
-        width="80%"
+        width="60%"
         visible={isVisible}
         onCancel={this.closeModal}
         footer={null}
@@ -124,7 +124,7 @@ class PreviewModal extends React.Component {
                 {allowDuplicate && (
                   <EduButton
                     title="Duplicate"
-                    style={{ width: 42, padding: 0 }}
+                    style={{ width: 42, padding: 0, borderColor: themeColor }}
                     size="large"
                     onClick={this.handleDuplicateTestItem}
                   >
@@ -134,7 +134,7 @@ class PreviewModal extends React.Component {
                 {authorHasPermission && isEditable && (
                   <EduButton
                     title="Edit item"
-                    style={{ width: 42, padding: 0 }}
+                    style={{ width: 42, padding: 0, borderColor: themeColor }}
                     size="large"
                     onClick={this.editTestItem}
                   >
@@ -145,11 +145,29 @@ class PreviewModal extends React.Component {
               <ButtonsWrapper>
                 {isAnswerBtnVisible && (
                   <>
-                    <Button onClick={checkAnswer}> Check Answer </Button>
-                    <Button onClick={showAnswer}> Show Answer </Button>
+                    <Button
+                      onClick={checkAnswer}
+                      style={{ fontSize: "11px", height: "28px", borderColor: themeColor, color: themeColor }}
+                    >
+                      {" "}
+                      Check Answer{" "}
+                    </Button>
+                    <Button
+                      onClick={showAnswer}
+                      style={{ fontSize: "11px", height: "28px", borderColor: themeColor, color: themeColor }}
+                    >
+                      {" "}
+                      Show Answer{" "}
+                    </Button>
                   </>
                 )}
-                <Button onClick={this.clearView}> Clear </Button>
+                <Button
+                  onClick={this.clearView}
+                  style={{ fontSize: "11px", height: "28px", borderColor: themeColor, color: themeColor }}
+                >
+                  {" "}
+                  Clear{" "}
+                </Button>
               </ButtonsWrapper>
             </ButtonsContainer>
           )}
@@ -260,15 +278,14 @@ const ModalContentArea = styled.div`
 
 const ButtonsContainer = styled(FlexContainer)`
   background: ${white};
-  padding: 15px 15px 0px;
-  justify-content: flex-end;
+  padding: 15px 15px 0px 35px;
+  justify-content: space-between;
   flex-basis: 400px;
   border-radius: 10px 10px 0px 0px;
 `;
 
 const ButtonsWrapper = styled.div`
   display: flex;
-  margin-left: auto;
   justify-content: space-between;
   * {
     margin: 0 10px;

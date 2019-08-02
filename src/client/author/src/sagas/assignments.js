@@ -53,10 +53,18 @@ function* receiveAssignmentsSummary({ payload = {} }) {
         filters: pickBy(filters, identity),
         sort
       });
-      yield put({
-        type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
-        payload: { entities: entities.result, total: entities.total }
-      });
+      // handle zero assignments for current filter result
+      if (entities) {
+        yield put({
+          type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
+          payload: { entities: entities.result, total: entities.total }
+        });
+      } else {
+        yield put({
+          type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
+          payload: { entities: [], total: 0 }
+        });
+      }
     }
   } catch (error) {
     const errorMessage = "Receive tests is failing";

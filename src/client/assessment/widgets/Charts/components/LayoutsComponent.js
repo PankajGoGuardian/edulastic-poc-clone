@@ -139,7 +139,7 @@ class LayoutsComponent extends Component {
       >
         <Layout>
           {settings.map((setting, index) => (
-            <Fragment>
+            <Fragment key={`fragment-${index}`}>
               {index % 2 === 0 && (
                 <Row gutter={36}>
                   <Col md={12}>{settings[index]}</Col>

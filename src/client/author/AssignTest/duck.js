@@ -47,8 +47,7 @@ export const getCurrentAssignmentSelector = createSelector(
       endDate: moment().add("days", 7),
       openPolicy: "Automatically on Start Date",
       closePolicy: "Automatically on Due Date",
-      class: [],
-      specificStudents: false
+      class: []
     };
   }
 );
@@ -56,4 +55,17 @@ export const getCurrentAssignmentSelector = createSelector(
 export const getTestEntitySelector = createSelector(
   testsSelector,
   state => state.entity
+);
+
+const statePerformanceBandSelector = state => state.performanceBandReducer;
+
+export const performanceBandSelector = createSelector(
+  getTestEntitySelector,
+  statePerformanceBandSelector,
+  (test, performanceBandDistrict) => {
+    if (test.performanceBandsData && test.performanceBandsData.length) {
+      return test.performanceBandsData;
+    }
+    return get(performanceBandDistrict, "data.performanceBand", []);
+  }
 );

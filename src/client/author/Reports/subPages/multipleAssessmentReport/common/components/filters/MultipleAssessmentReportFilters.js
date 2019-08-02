@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Row, Col, Button } from "antd";
-import { get, isEmpty } from "lodash";
+import { get, isEmpty, map } from "lodash";
 import queryString from "query-string";
 
 import { AutocompleteDropDown } from "../../../../../common/components/widgets/autocompleteDropDown";
@@ -12,6 +12,7 @@ import { MultipleSelect } from "../../../../../common/components/widgets/Multipl
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
 import { getDropDownData, filteredDropDownData, processTestIds } from "../../utils/transformers";
+import { toggleItem } from "../../../../../common/util";
 import {
   getMARFilterDataRequestAction,
   getReportsMARFilterData,
@@ -254,16 +255,23 @@ const SingleAssessmentReportFilters = ({
     setFiltersAction(obj);
   };
 
-  const onTestIdChange = (selected, comData) => {
-    setTestIdAction(selected);
-  };
-
   const onGoClick = () => {
     let settings = {
       filters: { ...filters },
       selectedTest: testIds
     };
     _onGoClick(settings);
+  };
+
+  const onSelectTest = test => {
+    const items = toggleItem(map(testIds, test => test.key), test.key);
+    setTestIdAction(map(items, item => processedTestIds.testIds.find(test => test.key == item)));
+  };
+
+  const onChangeTest = items => {
+    if (!items.length) {
+      setTestIdAction([]);
+    }
   };
 
   return (
@@ -347,9 +355,11 @@ const SingleAssessmentReportFilters = ({
             <MultipleSelect
               containerClassName="single-assessment-report-test-autocomplete"
               data={processedTestIds.testIds ? processedTestIds.testIds : []}
+              valueToDisplay={testIds.length > 1 ? { key: "", title: "Multiple Assessment" } : testIds}
               by={testIds}
               prefix="Assessment Name"
-              selectCB={onTestIdChange}
+              onSelect={onSelectTest}
+              onChange={onChangeTest}
               placeholder="All Assessments"
             />
           </Col>

@@ -7,7 +7,7 @@ export const QuestionHeader = WithMathFormula(
     color: #434b5d;
     line-height: 1.63;
     margin-bottom: 10px;
-    padding: 10px 20px;
+    padding: ${props => (props.padding ? props.padding : "10px 20px")};
     label {
       font-size: 16px;
       font-weight: 700;

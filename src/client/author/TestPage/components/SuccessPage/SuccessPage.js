@@ -126,7 +126,7 @@ class SuccessPage extends React.Component {
     const { title, _id, status, thumbnail, scoring = {}, grades, subjects } = isPlaylist ? playlist : test;
     const shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
     const currentClass = (assignment.class && assignment.class[0]) || {};
-    const assignmentStatus = currentClass.startDate > Date.now() ? "NOT OPEN" : "IN PROGRESS";
+    const assignmentStatus = currentClass.startDate < Date.now() || currentClass.open ? "IN PROGRESS" : "NOT OPEN";
     const playlistBreadCrumbData = [
       {
         title: "PLAY LIST",

@@ -1,16 +1,21 @@
-import React from "react";
+import React, { createRef } from "react";
 import PropTypes from "prop-types";
 
 import Question from "../Question/Question";
-import { ModalWrapper, QuestionWrapper, BottomNavigationWrapper } from "./styled";
+import { ModalWrapper, QuestionWrapperStyled, BottomNavigationWrapper } from "./styled";
 import { submitResponseAction } from "../../ducks";
 import { stateExpressGraderAnswerSelector, getStudentQuestionSelector } from "../../../ClassBoard/ducks";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
 import { message } from "antd";
 import { get, isEmpty } from "lodash";
 import { connect } from "react-redux";
+import ModalDragScrollContainer from "../../../../assessment/components/ModalDragScrollContainer";
+
+const QuestionWrapper = React.forwardRef((props, ref) => <QuestionWrapperStyled {...props} innerRef={ref} />);
 
 class QuestionModal extends React.Component {
+  questionWrapperRef = createRef();
+
   constructor() {
     super();
     this.state = {
@@ -179,6 +184,8 @@ class QuestionModal extends React.Component {
     const { isVisibleModal, tableData, record, isPresentationMode } = this.props;
     const { rowIndex, colIndex, loaded, row, editResponse } = this.state;
 
+    const scrollContainer = this.questionWrapperRef && this.questionWrapperRef.current;
+
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`];
     }
@@ -200,9 +207,10 @@ class QuestionModal extends React.Component {
         visible={isVisibleModal}
         bodyStyle={{ background: "#f0f2f5", height: "100%", overflowY: "auto" }}
       >
+        <ModalDragScrollContainer scrollWrraper={scrollContainer} height={50} />
         {isVisibleModal && question && loaded && (
           <React.Fragment>
-            <QuestionWrapper style={{ marginBottom: "5%" }}>
+            <QuestionWrapper ref={this.questionWrapperRef} style={{ marginBottom: "5%" }}>
               <Question
                 record={question}
                 key={question.id}

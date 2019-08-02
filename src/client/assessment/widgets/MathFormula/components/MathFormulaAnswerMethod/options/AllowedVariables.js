@@ -16,7 +16,7 @@ const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
 
   const onChangeHandler = e => {
     const { value } = e.target;
-    onChange(value.replace(/[^a-zA-Z,]/g, ""));
+    onChange((value.match(/[a-zA-Z],?/g) || []).join(""));
   };
 
   return (
@@ -40,6 +40,14 @@ const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
         value={allowedVariables}
         readOnly={!allowAllowedVariables}
         onChange={onChangeHandler}
+        onBlur={e => {
+          onChange(
+            (e.target.value || "")
+              .split(",")
+              .filter(el => !!el)
+              .join()
+          );
+        }}
       />
     </FlexContainer>
   );

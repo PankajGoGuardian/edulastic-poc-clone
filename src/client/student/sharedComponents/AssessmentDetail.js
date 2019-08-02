@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Col, Icon } from "antd";
-import { white, testTypeColor } from "@edulastic/colors";
+import { white, testTypeColor, extraDesktopWidth, largeDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
 import { formatTime } from "../utils";
 
@@ -24,60 +24,70 @@ const AssessmentDetails = ({
   startDate,
   safeBrowser,
   graded = assignmentStatus.GRADED,
-  absent
-}) => (
-  <Wrapper>
-    <Col>
-      <ImageWrapper>
-        <Thumbnail src={thumbnail} alt="" />
-      </ImageWrapper>
-    </Col>
-    <CardDetails>
-      <CardTitle>
-        {title}
-        <TestType type={testType}>
-          {testType === PRACTICE
-            ? t("common.practice")
-            : testType === ASSESSMENT
-            ? t("common.assessment")
-            : t("common.common")}
-        </TestType>
-      </CardTitle>
-      <CardDate>
-        <Icon type={theme.assignment.cardTimeIconType} />
-        <DueDetails data-cy="date">
-          {type === "assignment"
-            ? new Date(startDate) > new Date()
-              ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
-              : t("common.dueOn")
-            : t("common.finishedIn")}{" "}
-          {formatTime(dueDate)}
-        </DueDetails>
-      </CardDate>
-      <StatusWrapper>
-        {type === "assignment" ? (
-          <React.Fragment>
-            <StatusButton isSubmitted={started || resume} assignment={type === "assignment"}>
-              <span data-cy="status">{started || resume ? t("common.inProgress") : t("common.notStartedTag")}</span>
+  absent,
+  isPaused
+}) => {
+  const getAssignmentStatus = () => {
+    if (started || resume) {
+      return `${t("common.inProgress")} ${isPaused ? " (PAUSED)" : ""}`;
+    }
+    return `${t("common.notStartedTag")} ${isPaused ? " (PAUSED)" : ""}`;
+  };
+
+  return (
+    <Wrapper>
+      <Col>
+        <ImageWrapper>
+          <Thumbnail src={thumbnail} alt="" />
+        </ImageWrapper>
+      </Col>
+      <CardDetails>
+        <CardTitle>
+          {title}
+          <TestType type={testType}>
+            {testType === PRACTICE
+              ? t("common.practice")
+              : testType === ASSESSMENT
+              ? t("common.assessment")
+              : t("common.common")}
+          </TestType>
+        </CardTitle>
+        <CardDate>
+          <Icon type={theme.assignment.cardTimeIconType} />
+          <DueDetails data-cy="date">
+            {type === "assignment"
+              ? new Date(startDate) > new Date()
+                ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
+                : t("common.dueOn")
+              : t("common.finishedIn")}{" "}
+            {formatTime(dueDate)}
+          </DueDetails>
+        </CardDate>
+        <StatusWrapper>
+          {type === "assignment" ? (
+            <React.Fragment>
+              <StatusButton isPaused={isPaused} isSubmitted={started || resume} assignment={type === "assignment"}>
+                <span data-cy="status">{getAssignmentStatus()}</span>
+              </StatusButton>
+              {safeBrowser && (
+                <SafeExamIcon
+                  src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
+                  title={t("common.safeExamToolTip")}
+                />
+              )}
+            </React.Fragment>
+          ) : (
+            <StatusButton isSubmitted={started} graded={graded} absent={absent}>
+              <span data-cy="status">
+                {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.absent")}
+              </span>
             </StatusButton>
-            {safeBrowser && (
-              <SafeExamIcon
-                src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
-                title={t("common.safeExamToolTip")}
-              />
-            )}
-          </React.Fragment>
-        ) : (
-          <StatusButton isSubmitted={started} graded={graded} absent={absent}>
-            <span data-cy="status">
-              {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.absent")}
-            </span>
-          </StatusButton>
-        )}
-      </StatusWrapper>
-    </CardDetails>
-  </Wrapper>
-);
+          )}
+        </StatusWrapper>
+      </CardDetails>
+    </Wrapper>
+  );
+};
 
 AssessmentDetails.propTypes = {
   test: PropTypes.object,
@@ -134,7 +144,16 @@ const ImageWrapper = styled.div`
   max-height: 90.5px;
   overflow: hidden;
   border-radius: 10px;
-  margin-right: 20px;
+  margin-right: 41px;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    margin-right: 22px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    margin-right: 17px;
+  }
+
   @media screen and (max-width: 767px) {
     max-width: 100%;
     margin: 0;
@@ -142,17 +161,34 @@ const ImageWrapper = styled.div`
 `;
 
 const Thumbnail = styled.img`
-  width: 170px;
+  width: 168px;
   border-radius: 10px;
-  height: 80px;
-  @media screen and (max-width: 767px) {
-    width: 100%;
-    height: 120px;
+  height: 90px;
+  object-fit: cover;
+  
+  @media(max-width: ${largeDesktopWidth}) {
+    width: 130px;
+    height: 77px;
+  }
+  
+  @media(max-width: ${mobileWidthMax}) {
+    width: calc(100% - 14px);
+    height: 20vw;
+    display: block;
+    margin: 0 auto;
   }	 
  }
 `;
 
 const CardDetails = styled(Col)`
+  @media (max-width: ${extraDesktopWidth}) {
+    width: 35vw;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    width: 100%;
+  }
+
   @media screen and (max-width: 767px) {
     display: flex;
     align-items: center;
@@ -171,7 +207,22 @@ const CardTitle = styled.div`
   letter-spacing: normal;
   text-align: left;
   color: ${props => props.theme.assignment.cardTitleColor};
-  padding-bottom: 6px;
+  padding-bottom: 7px;
+  padding-top: 6px;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    padding-top: 11px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    font-size: 12px;
+    padding-top: 8px;
+    padding-bottom: 0;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    font-size: 16px;
+  }
 `;
 
 const CardDate = styled.div`
@@ -185,9 +236,12 @@ const CardDate = styled.div`
   letter-spacing: normal;
   text-align: left;
   color: ${props => props.theme.assignment.cardTimeTextColor};
-  padding-bottom: 8px;
+  padding-bottom: 5px;
+
   i {
     color: ${props => props.theme.assignment.cardTimeIconColor};
+    position: relative;
+    top: -1px;
   }
 
   .anticon-clock-circle {
@@ -196,21 +250,29 @@ const CardDate = styled.div`
       height: 17px;
     }
   }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    font-size: 10px;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    font-size: 13px;
+    padding-bottom: 13px;
+  }
 `;
 
 const DueDetails = styled.span`
-  padding-left: 5px;
+  padding-left: 11px;
 `;
 const StatusWrapper = styled.div`
   display: flex;
   align-items: center;
 `;
 const StatusButton = styled.div`
-  width: 135px;
+  width: ${props => (props.isPaused ? "auto" : "121px")};
   height: 23.5px;
   border-radius: 5px;
   background-color: ${props => getStatusBgColor(props, "Bg")};
-  border: 1px solid ${props => getStatusBgColor(props, "Border")};
   font-size: ${props => props.theme.assignment.cardSubmitLabelFontSize};
   font-weight: bold;
   line-height: 1.38;
@@ -222,7 +284,14 @@ const StatusButton = styled.div`
     top: -1px;
     color: ${props => getStatusBgColor(props, "Text")};
   }
-  @media screen and (max-width: 767px) {
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 94px;
+    font-size: 9px;
+    padding: 6px 14px;
+  }
+
+  @media screen and (max-width: ${mobileWidthMax}) {
     width: 100%;
   }
 `;

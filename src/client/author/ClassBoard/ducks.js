@@ -100,12 +100,12 @@ function* releaseScoreSaga({ payload }) {
 
 function* markAsDoneSaga({ payload }) {
   try {
-    const response = yield call(classBoardApi.markAsDone, payload);
+    yield call(classBoardApi.markAsDone, payload);
     yield put(updateAssignmentStatusAction("DONE"));
     yield call(message.success, "Successfully marked as done");
   } catch (err) {
-    if (err && err.status == 422) {
-      yield call(message.error, err.message);
+    if (err && err.status == 422 && err.data && err.data.message) {
+      yield call(message.error, err.data.message);
     } else {
       yield call(message.error, "Mark as done is failed");
     }
@@ -328,7 +328,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
 
 export const classStudentsSelector = createSelector(
   stateTestActivitySelector,
-  state => state.classStudents
+  state => state.classStudents.filter(student => student.enrollmentStatus !== "0" && student.status !== 0)
 );
 export const removedStudentsSelector = createSelector(
   stateTestActivitySelector,

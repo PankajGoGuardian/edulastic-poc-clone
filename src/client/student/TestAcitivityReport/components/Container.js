@@ -16,6 +16,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
   const [showModal, setModal] = useState(false);
   const { releaseScore = "" } = testActivityById;
   const questions = keyBy([...get(item, "data.questions", []), ...get(item, "data.resources", [])], "id");
+  const showAnswerProps = releaseScore === releaseGradeLabels.WITH_ANSWERS ? { preview: "show" } : { view: "preview" };
 
   const closeModal = () => setModal(false);
 
@@ -26,7 +27,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
           {hasUserWork && <Button onClick={() => setModal(true)}> Show My Work </Button>}
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             <TestItemPreview
-              preview="show"
+              {...showAnswerProps}
               cols={item.rows || []}
               questions={questions}
               verticalDivider={item.verticalDivider}
@@ -49,10 +50,10 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
   );
 };
 export default connect(
-  (state, props) => ({
+  state => ({
     item: getItemSelector(state),
     hasUserWork: itemHasUserWorkSelector(state),
-    testActivityById: get(state, `[studentReport][byId][${props.reportId}]`, {})
+    testActivityById: get(state, `[studentReport][testActivity]`, {})
   }),
   null
 )(ReportListContent);

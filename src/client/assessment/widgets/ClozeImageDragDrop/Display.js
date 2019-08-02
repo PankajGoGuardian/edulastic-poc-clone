@@ -554,6 +554,7 @@ class Display extends Component {
                 top: smallSize ? responseContainer.top / 2 : responseContainer.top,
                 left: smallSize ? responseContainer.left / 2 : responseContainer.left,
                 height: smallSize ? responseContainer.height / 2 : responseContainer.height,
+                heightpx: smallSize ? responseContainer.height / 2 : responseContainer.height,
                 border: showDropItemBorder
                   ? showDashedBorder
                     ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
@@ -565,9 +566,11 @@ class Display extends Component {
                 // overflow: "hidden"
               };
               if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.widthpx = widthpx;
+                const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex];
+                btnStyle.width = individualW || btnStyle.width;
+                btnStyle.widthpx = individualW || btnStyle.widthpx;
+                btnStyle.height = individualH || btnStyle.height;
+                btnStyle.heightpx = individualH || btnStyle.heightpx;
               }
               if (btnStyle && btnStyle.width === 0) {
                 btnStyle.width = responseBtnStyle.widthpx;

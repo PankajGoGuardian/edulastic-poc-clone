@@ -1,4 +1,4 @@
-import React, { Component, useContext } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -130,7 +130,7 @@ class ClozeDragDrop extends Component {
       ...restProps
     } = this.props;
 
-    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, response_ids: responseIDs } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
 

@@ -146,11 +146,13 @@ Layout.propTypes = {
   item: PropTypes.object.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  responses: PropTypes.array
 };
 
 Layout.defaultProps = {
   advancedAreOpen: false,
+  responses: [],
   fillSections: () => {},
   cleanSections: () => {}
 };

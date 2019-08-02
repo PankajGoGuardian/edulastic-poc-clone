@@ -64,9 +64,6 @@ class ClozeDropDownDisplay extends Component {
 
   getBtnStyle = () => {
     const { uiStyle } = this.props;
-    const { placeholder } = uiStyle;
-    // responsecontainerindividuals;
-
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
       heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto"
@@ -76,8 +73,7 @@ class ClozeDropDownDisplay extends Component {
       width: 0,
       height: 0,
       widthpx: 0,
-      heightpx: 0,
-      placeholder
+      heightpx: 0
     };
     // if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
     //   const { widthpx, heightpx } = responsecontainerindividuals[dropTargetIndex];
@@ -96,9 +92,6 @@ class ClozeDropDownDisplay extends Component {
       btnStyle.height = responseBtnStyle.heightpx;
     } else {
       btnStyle.height = btnStyle.heightpx;
-    }
-    if (btnStyle && btnStyle.placeholder === undefined) {
-      btnStyle.placeholder = responseBtnStyle.placeholder;
     }
     return { btnStyle, responseBtnStyle };
   };
@@ -120,9 +113,10 @@ class ClozeDropDownDisplay extends Component {
       disableResponse,
       showQuestionNumber,
       userSelections,
+      isReviewTab,
+      theme,
       previewTab,
-      changePreviewTab,
-      isReviewTab
+      changePreviewTab
     } = this.props;
     const { parsedTemplate } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -131,7 +125,7 @@ class ClozeDropDownDisplay extends Component {
       responses = this.shuffleGroup(responses);
     }
     // Layout Options
-    const fontSize = getFontSize(this.props.theme.fontSize || "normal", true);
+    const fontSize = getFontSize(theme.fontSize || "normal", true);
     const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
@@ -229,11 +223,13 @@ ClozeDropDownDisplay.propTypes = {
   disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
   isReviewTab: PropTypes.bool,
-  showQuestionNumber: PropTypes.bool
+  showQuestionNumber: PropTypes.bool,
+  theme: PropTypes.object
 };
 
 ClozeDropDownDisplay.defaultProps = {
   options: {},
+  theme: {},
   onChange: () => {},
   preview: true,
   showAnswer: false,
@@ -267,6 +263,6 @@ const QuestionTitleWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   p {
-    font-size: ${({ fontSize }) => (fontSize ? fontSize : "auto")};
+    font-size: ${({ fontSize }) => fontSize || "auto"};
   }
 `;

@@ -49,7 +49,6 @@ import NoDataNotification from "../../../../common/components/NoDataNotification
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 
-
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
   { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },

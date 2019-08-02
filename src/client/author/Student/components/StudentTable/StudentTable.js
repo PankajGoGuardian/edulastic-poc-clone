@@ -245,7 +245,13 @@ class StudentTable extends Component {
       inviteStudentModalVisible: false
     });
     const { addMultiStudents, userOrgId } = this.props;
-    addMultiStudents({ districtId: userOrgId, data: inviteStudentList });
+
+    let o = {
+      addReq: { districtId: userOrgId, data: inviteStudentList },
+      listReq: this.getSearchQuery()
+    };
+
+    addMultiStudents(o);
   };
 
   closeInviteStudentModal = () => {

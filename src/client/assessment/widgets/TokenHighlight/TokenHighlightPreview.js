@@ -138,8 +138,8 @@ const TokenHighlightPreview = ({
 
   const rightAnswers = validate();
 
-  const getStyles = (index, disableResp = false) => {
-    const defaultAnswers = disableResp ? validArray : answers;
+  const getStyles = (index, disableResp = false, correctAnswers = []) => {
+    const defaultAnswers = disableResp ? validArray : correctAnswers;
     const condition =
       defaultAnswers.find(elem => elem.index === index) && defaultAnswers.find(elem => elem.index === index).selected;
 
@@ -161,6 +161,11 @@ const TokenHighlightPreview = ({
 
     return resultStyle;
   };
+
+  const allCorrectAnswers = [item.validation.valid_response.value];
+  item.validation.alt_responses.forEach(altAnswers => {
+    allCorrectAnswers.push(altAnswers.value);
+  }, []);
 
   return (
     <Paper
@@ -189,22 +194,30 @@ const TokenHighlightPreview = ({
           <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
         )
       )}
-      {previewTab === SHOW && (
-        <CorrectAnswersContainer title={t("component.sortList.correctAnswers")}>
-          {item.templeWithTokens.map((el, i) =>
-            el.active ? (
-              <MathSpan
-                onClick={() => {}}
-                dangerouslySetInnerHTML={{ __html: el.value }}
-                style={getStyles(i, true)}
-                key={i}
-              />
-            ) : (
-              <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-            )
-          )}
-        </CorrectAnswersContainer>
-      )}
+      {previewTab === SHOW &&
+        allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {
+          const title =
+            correctGroupIndex === 0
+              ? t("component.sortList.correctAnswers")
+              : `${t("component.sortList.alternateAnswer")} ${correctGroupIndex}`;
+          return (
+            <CorrectAnswersContainer key={correctGroupIndex} title={title}>
+              {correctAnswers.map((el, i) =>
+                el.selected ? (
+                  <MathSpan
+                    onClick={() => {}}
+                    dangerouslySetInnerHTML={{ __html: el.value }}
+                    style={getStyles(i, false, correctAnswers)}
+                    key={i}
+                    className={`mika-${el.selected}`}
+                  />
+                ) : (
+                  <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
+                )
+              )}
+            </CorrectAnswersContainer>
+          );
+        })}
     </Paper>
   );
 };

@@ -6,6 +6,7 @@ export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 20px;
 
   .ant-table-wrapper {
     width: 100%;

@@ -882,7 +882,7 @@ export const getCards = onSelectQuestionType => {
           column_count: 2,
           column_titles: ["COLUMN 1", "COLUMN 2"],
           row_count: 1,
-          row_titles: []
+          row_titles: ["ROW 1"]
         },
         validation: {
           scoring_type: EXACT_MATCH,

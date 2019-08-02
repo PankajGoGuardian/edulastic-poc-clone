@@ -256,6 +256,7 @@ class MathFormulaPreview extends Component {
                   restrictKeys={this.restrictKeys}
                   customKeys={customKeys}
                   numberPad={item.numberPad}
+                  hideKeypad={item.isUnits && item.showDropdown}
                   ref={this.studentRef}
                   onInput={latexv => this.onUserResponse(latexv)}
                   onBlur={latexv => this.onBlur(latexv)}
@@ -271,6 +272,7 @@ class MathFormulaPreview extends Component {
                   restrictKeys={this.restrictKeys}
                   customKeys={customKeys}
                   numberPad={item.numberPad}
+                  hideKeypad={item.isUnits && item.showDropdown}
                   value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                   onInput={latexv => this.onUserResponse(latexv)}
                   onBlur={latexv => this.onBlur(latexv)}
@@ -291,7 +293,13 @@ class MathFormulaPreview extends Component {
               )}
             </MathInputWrapper>
             {item.isUnits && item.showDropdown && (
-              <UnitsDropdown item={item} preview onChange={this.selectUnitFromDropdown} selected={this.selectedUnit} />
+              <UnitsDropdown
+                item={item}
+                preview
+                onChange={this.selectUnitFromDropdown}
+                selected={this.selectedUnit}
+                disabled={disableResponse}
+              />
             )}
           </FlexContainer>
         )}

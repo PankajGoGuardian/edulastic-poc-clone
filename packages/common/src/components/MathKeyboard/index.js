@@ -135,7 +135,7 @@ class MathKeyboard extends React.PureComponent {
 
   render() {
     const { dropdownOpened, type } = this.state;
-    const { onInput, showResponse, showDropdown } = this.props;
+    const { onInput, showResponse, showDropdown, hideKeypad } = this.props;
     const btns = this.keyboardButtons;
 
     let cols = btns.length / 4;
@@ -213,9 +213,11 @@ class MathKeyboard extends React.PureComponent {
                   );
                 })}
               </div>
-              <SymbolContainer cols={cols} isAll={type === "all"} className="keyboard__types3">
-                {this.renderButtons(numOfBtns)}
-              </SymbolContainer>
+              {!hideKeypad && (
+                <SymbolContainer cols={cols} isAll={type === "all"} className="keyboard__types3">
+                  {this.renderButtons(numOfBtns)}
+                </SymbolContainer>
+              )}
             </div>
           )}
         </div>
@@ -233,12 +235,14 @@ MathKeyboard.propTypes = {
   numberPad: PropTypes.array.isRequired,
   restrictKeys: PropTypes.array,
   customKeys: PropTypes.array,
+  hideKeypad: PropTypes.bool,
   showDropdown: PropTypes.bool
 };
 
 MathKeyboard.defaultProps = {
   showResponse: false,
   showDropdown: false,
+  hideKeypad: false,
   onClose: () => {},
   onChangeKeypad: () => {},
   restrictKeys: [],

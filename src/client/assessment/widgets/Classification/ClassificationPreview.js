@@ -16,6 +16,7 @@ import {
   QuestionNumberLabel
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import TableLayout from "./components/TableLayout";
 
 import DropContainer from "../../components/DropContainer";
 import { PREVIEW, SHOW, CLEAR, CHECK, EDIT } from "../../constants/constantsForQuestions";
@@ -275,6 +276,62 @@ const ClassificationPreview = ({
         return shuffle_options ? shuffle(responses) : responses;
       });
 
+  const dragLayout = boxes.map(
+    (n, ind) =>
+      arrayOfRows.has(ind) && (
+        <TableRow
+          colTitles={colTitles}
+          key={ind}
+          isBackgroundImageTransparent={transparent_background_image}
+          isTransparent={transparent_possible_responses}
+          startIndex={ind}
+          width={get(item, "ui_style.row_titles_width", "max-content")}
+          height={get(item, "ui_style.row_min_height", "85px")}
+          colCount={colCount}
+          arrayOfRows={arrayOfRows}
+          rowTitles={rowTitles}
+          drop={drop}
+          dragHandle={show_drag_handle}
+          answers={answers}
+          validArray={evaluation}
+          preview={preview}
+          previewTab={previewTab}
+          possible_responses={possible_responses}
+          onDrop={onDrop}
+          isResizable={view === EDIT}
+          item={item}
+          disableResponse={disableResponse}
+          isReviewTab={isReviewTab}
+          view={view}
+        />
+      )
+  );
+
+  const tableLayout = (
+    <TableLayout
+      colCount={colCount}
+      rowCount={rowCount}
+      rowTitles={rowTitles}
+      colTitles={colTitles}
+      width={get(item, "ui_style.row_titles_width", "max-content")}
+      minWidth="200px"
+      height={get(item, "ui_style.row_min_height", "85px")}
+      isBackgroundImageTransparent={transparent_background_image}
+      isTransparent={transparent_possible_responses}
+      answers={answers}
+      drop={drop}
+      dragHandle={show_drag_handle}
+      item={item}
+      isReviewTab={isReviewTab}
+      validArray={evaluation}
+      preview={preview}
+      onDrop={onDrop}
+      disableResponse={disableResponse}
+    />
+  );
+
+  const tableContent = rowCount > 1 ? tableLayout : dragLayout;
+
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
@@ -287,35 +344,7 @@ const ClassificationPreview = ({
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
         <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl}>
-          {boxes.map(
-            (n, ind) =>
-              arrayOfRows.has(ind) && (
-                <TableRow
-                  colTitles={colTitles}
-                  key={ind}
-                  isBackgroundImageTransparent={transparent_background_image}
-                  isTransparent={transparent_possible_responses}
-                  startIndex={ind}
-                  width={get(item, "ui_style.row_titles_width", "max-content")}
-                  height={get(item, "ui_style.row_min_height", "85px")}
-                  colCount={colCount}
-                  arrayOfRows={arrayOfRows}
-                  rowTitles={rowTitles}
-                  drop={drop}
-                  dragHandle={show_drag_handle}
-                  answers={answers}
-                  validArray={evaluation}
-                  preview={preview}
-                  previewTab={previewTab}
-                  possible_responses={possible_responses}
-                  onDrop={onDrop}
-                  isResizable={view === EDIT}
-                  item={item}
-                  disableResponse={disableResponse}
-                  isReviewTab={isReviewTab}
-                />
-              )
-          )}
+          {tableContent}
         </TableWrapper>
         {!disableResponse && (
           <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>

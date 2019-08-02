@@ -48,6 +48,10 @@ const specSource = {
       },
       itemTo.index
     );
+  },
+
+  canDrag(props) {
+    return !props.disable;
   }
 };
 class DragItem extends React.Component {

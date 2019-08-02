@@ -40,17 +40,15 @@ import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
-  getUserId
-} from "../../../src/selectors/user";
-import {
+  getUserId,
   getDefaultGradesSelector,
-  getDefaultSubjectSelector,
-  updateDefaultSubjectAction,
-  updateDefaultGradesAction
-} from "../../../ItemDetail/ducks";
+  getDefaultSubjectSelector
+} from "../../../src/selectors/user";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import NoDataNotification from "../../../../common/components/NoDataNotification";
 import { QuestionsFound, ItemsMenu } from "../../../TestPage/components/AddItems/styled";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },

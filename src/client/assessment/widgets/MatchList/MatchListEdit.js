@@ -46,13 +46,18 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleRemoveResp = index => {
     _setQuestionData(
       produce(item, draft => {
+        const responseMatchIndex = draft.validation.valid_response.value.indexOf(draft.possible_responses[index]);
         draft.validation.valid_response.value.splice(
-          draft.validation.valid_response.value.indexOf(draft.possible_responses[index]),
-          1
+          responseMatchIndex,
+          responseMatchIndex !== -1 ? 1 : 0 // remove only if there's a match
         );
 
         draft.validation.alt_responses.forEach(ite => {
-          ite.value.splice(ite.value.indexOf(draft.possible_responses[index]), 1);
+          const matchIndex = ite.value.indexOf(draft.possible_responses[index]);
+          ite.value.splice(
+            matchIndex,
+            matchIndex !== -1 ? 1 : 0 // remove only if there's a match
+          );
         });
 
         draft.possible_responses.splice(index, 1);
@@ -71,12 +76,15 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleChangeResp = (index, value) => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.value[
-          draft.validation.valid_response.value.indexOf(draft.possible_responses[index])
-        ] = value;
-        draft.validation.alt_responses.forEach(ite => {
-          ite.value[ite.value.indexOf(draft.possible_responses[index])] = value;
-        });
+        // make changes to item only if there's a match
+        if (draft.validation.valid_response.value.includes(draft.possible_responses[index])) {
+          draft.validation.valid_response.value[
+            draft.validation.valid_response.value.indexOf(draft.possible_responses[index])
+          ] = value;
+          draft.validation.alt_responses.forEach(ite => {
+            ite.value[ite.value.indexOf(draft.possible_responses[index])] = value;
+          });
+        }
 
         draft.possible_responses[index] = value;
       })

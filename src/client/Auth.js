@@ -7,6 +7,7 @@ import { connect } from "react-redux";
 import { SelectRolePopup } from "./student/SsoLogin/selectRolePopup";
 
 import { isLoggedInForPrivateRoute } from "./common/utils/helpers";
+import { removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 const GetStarted = lazy(() =>
   import(/* webpackChunkName: "getStarted" */ "./student/Signup/components/GetStartedContainer")
@@ -45,6 +46,9 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
       </>
     );
   }
+
+  removeFromLocalStorage("defaultGrades");
+  removeFromLocalStorage("defaultSubject");
 
   return location.hash === "#signup" ? (
     <GetStarted

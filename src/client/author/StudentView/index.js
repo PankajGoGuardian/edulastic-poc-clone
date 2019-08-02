@@ -111,7 +111,6 @@ class StudentViewContainer extends Component {
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const testActivityId = studentTestActivity && studentTestActivity._id;
     const feedback = this.feedbackRef.current.textAreaRef.value;
-    if (!feedback) return message.error("Please add your feedback before saving");
     saveOverallFeedback(testActivityId, assignmentIdClassId.classId, { text: feedback });
     updateOverallFeedback({ text: feedback });
     this.setState({ showFeedbackPopup: false });
@@ -185,7 +184,13 @@ class StudentViewContainer extends Component {
             ]}
           >
             <p>Leave a feedback!</p>
-            <Input.TextArea rows={6} defaultValue={initFeedbackValue} ref={this.feedbackRef} maxlength="250" />
+            <Input.TextArea
+              rows={6}
+              defaultValue={initFeedbackValue}
+              ref={this.feedbackRef}
+              maxlength="250"
+              autoFocus
+            />
           </Modal>
         )}
         <StyledFlexContainer justifyContent="space-between">

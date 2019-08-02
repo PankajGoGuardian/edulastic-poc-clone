@@ -882,7 +882,7 @@ export const getCards = onSelectQuestionType => {
           column_count: 2,
           column_titles: ["COLUMN 1", "COLUMN 2"],
           row_count: 1,
-          row_titles: []
+          row_titles: ["ROW 1"]
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1142,8 +1142,6 @@ export const getCards = onSelectQuestionType => {
         stimulus: "Sample image background with an overlaid drop area(s)",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
-        keepAspectRatio: true,
-        isSnapFitValues: true,
         maxRespCount: 1,
         options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
@@ -1155,7 +1153,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responseLayout: {
-          showborder: true
+          keepAspectRatio: true,
+          showborder: true,
+          isSnapFitValues: true
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },

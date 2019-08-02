@@ -251,6 +251,11 @@ class CoursesTable extends React.Component {
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+
+  onChangeSearch = event => {
+    this.setState({ searchByName: event.currentTarget.value });
+  };
+
   handleSearchName = value => {
     const { filtersData, sortedInfo, currentPage } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
@@ -355,28 +360,30 @@ class CoursesTable extends React.Component {
     const { userOrgId } = this.props;
 
     let search = {};
+
+    if (searchByName.length > 0) {
+      search.name = { type: "cont", value: [searchByName] };
+    }
+
     for (let i = 0; i < filtersData.length; i++) {
-      if (
-        filtersData[i].filtersColumn !== "" &&
-        filtersData[i].filtersValue !== "" &&
-        filtersData[i].filterStr !== ""
-      ) {
-        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+      let { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
+        if (!search[filtersColumn]) {
+          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+        } else {
+          search[filtersColumn].value.push(filterStr);
+        }
       }
     }
 
-    if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
-    }
-
     const loadListJsonData = {
+      search,
       districtId: userOrgId,
       limit: 25,
       page: currentPage,
       sortField: sortedInfo.columnKey,
       order: sortedInfo.order,
-      active: showActive ? 1 : 0,
-      search
+      active: showActive ? 1 : 0
     };
 
     // TO DO: remove this line after further investigation
@@ -582,7 +589,11 @@ class CoursesTable extends React.Component {
             + Create Course
           </Button>
 
-          <StyledNameSearch placeholder="Search by name" onSearch={this.handleSearchName} />
+          <StyledNameSearch
+            placeholder="Search by name"
+            onSearch={this.handleSearchName}
+            onChange={this.onChangeSearch}
+          />
           <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
             Show active courses only
           </StyledActiveCheckbox>

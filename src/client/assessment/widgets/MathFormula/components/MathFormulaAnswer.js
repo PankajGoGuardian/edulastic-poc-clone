@@ -68,6 +68,7 @@ class MathFormulaAnswer extends Component {
             clearAdditionals={clearAdditionals}
             onChangeKeypad={onChangeKeypad}
             onChangeAllowedVars={onChangeAllowedVars}
+            allowedVariables={item.allowedVariables || ""}
             onChangeShowDropdown={onChangeShowDropdown}
             onAdd={onAdd}
             keypadOffset={keypadOffset}

@@ -86,7 +86,6 @@ class AssignTest extends React.Component {
       districtId: userOrgId,
       search: {
         institutionIds: [],
-        codes: [],
         subjects: [],
         grades: [],
         active: [1]

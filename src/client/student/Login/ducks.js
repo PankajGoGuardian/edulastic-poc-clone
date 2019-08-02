@@ -47,6 +47,8 @@ export const RESET_PASSWORD_REQUEST_STATE = "[auth] reset password request state
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST = "[auth] student signup check classcode request";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup check classcode success";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
+export const UPDATE_DEFAULT_GRADES = "[user] update default grades";
+export const UPDATE_DEFAULT_SUBJECT = "[user] update default subject";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -72,6 +74,8 @@ export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST)
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
 export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
 export const resetPasswordRequestStateAction = createAction(RESET_PASSWORD_REQUEST_STATE);
+export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
+export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 
 const initialState = {
   isAuthenticated: false,
@@ -80,9 +84,19 @@ const initialState = {
 };
 
 const setUser = (state, { payload }) => {
+  const defaultGrades =
+    getFromLocalStorage("defaultGrades") != null
+      ? getFromLocalStorage("defaultGrades")
+        ? getFromLocalStorage("defaultGrades").split(",")
+        : []
+      : null;
+
+  const defaultSubject = getFromLocalStorage("defaultSubject");
   const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
   set(state.user, "orgData.defaultClass", defaultClass);
+  set(state.user, "orgData.selectedGrades", defaultGrades);
+  set(state.user, "orgData.selectedSubject", defaultSubject);
   state.isAuthenticated = true;
   state.authenticating = false;
   state.signupStatus = payload.currentSignUpState;
@@ -111,6 +125,12 @@ export default createReducer(initialState, {
       return state;
     }
     state.user.orgData.defaultClass = payload;
+  },
+  [UPDATE_DEFAULT_GRADES]: (state, { payload }) => {
+    state.user.orgData.selectedGrades = payload;
+  },
+  [UPDATE_DEFAULT_SUBJECT]: (state, { payload }) => {
+    state.user.orgData.selectedSubject = payload;
   },
   [FETCH_USER]: state => {
     state.isAuthenticated = false;

@@ -6,7 +6,8 @@ import {
   REMOVE_EXISTED_ALIGNMENT,
   UPDATE_RECENT_STANDARDS,
   CLEAR_DICT_ALIGNMENTS,
-  UPDATE_DICT_ALIGNMENT
+  UPDATE_DICT_ALIGNMENT,
+  UPDATE_DEFAULT_CURRICULUM
 } from "../constants/actions";
 
 export const getDictCurriculumsAction = () => ({
@@ -42,6 +43,11 @@ export const updateDictAlignmentAction = (alignmentIndex, payload) => ({
     index: alignmentIndex,
     changedFields: payload
   }
+});
+
+export const updateDefaultCurriculumAction = payload => ({
+  type: UPDATE_DEFAULT_CURRICULUM,
+  payload
 });
 
 export const updateRecentStandardsAction = payload => ({

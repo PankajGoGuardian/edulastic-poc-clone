@@ -238,10 +238,11 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
-  const handleAllowedVariables = variables => {
+  const handleAllowedVariables = mathInputIndex => variables => {
     setQuestionData(
       produce(item, draft => {
-        draft.allowedVariables = variables;
+        draft.allowedVariables = draft.allowedVariables || {};
+        draft.allowedVariables[mathInputIndex] = variables;
       })
     );
   };
@@ -384,6 +385,7 @@ ClozeMathAnswers.propTypes = {
   item: PropTypes.object.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };

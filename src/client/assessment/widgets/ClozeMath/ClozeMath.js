@@ -154,6 +154,7 @@ const ClozeMath = ({
             instructorStimulus={item.instructor_stimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
+            showResponseBoxes
             fillSections={fillSections}
             cleanSections={cleanSections}
           />

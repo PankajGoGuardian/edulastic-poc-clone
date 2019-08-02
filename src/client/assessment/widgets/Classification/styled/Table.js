@@ -5,7 +5,8 @@ const Table = styled.table`
   th,
   td {
     padding: 5px;
-    border: 1px solid blue;
+    border: none !important;
+    background: none !important;
     border-collapse: collapse;
   }
 `;

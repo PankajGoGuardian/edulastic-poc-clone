@@ -222,13 +222,7 @@ class PerformanceBandTable extends React.Component {
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <StyledButton onClick={e => this.onClickFromTo(e, record.key, "from", -1)}>
-                <StyledIcon type="minus" />
-              </StyledButton>
               <StyledProP>{record.from}%</StyledProP>
-              <StyledButton onClick={e => this.onClickFromTo(e, record.key, "from", 1)}>
-                <StyledIcon type="plus" />
-              </StyledButton>
             </StyledColFromTo>
           );
         }

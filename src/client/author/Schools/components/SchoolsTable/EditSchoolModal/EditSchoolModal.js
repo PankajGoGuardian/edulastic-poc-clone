@@ -30,7 +30,7 @@ class EditSchoolModal extends React.Component {
         search: {
           name: {
             type: "eq",
-            value: nameValidate.value
+            value: [nameValidate.value]
           }
         }
       });

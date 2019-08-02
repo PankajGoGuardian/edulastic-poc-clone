@@ -38,8 +38,8 @@ export const Element = styled.div`
   > div {
     position: relative;
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
+    padding-bottom: 40px;
 
     @media (max-width: ${mobileWidth}) {
       height: initial;

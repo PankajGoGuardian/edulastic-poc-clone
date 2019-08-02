@@ -611,6 +611,7 @@ class CoursesTable extends React.Component {
           pageSize={25}
           total={totalCourseCount}
           onChange={this.changePagination}
+          hideOnSinglePage={true}
         />
         {editCourseModalVisible && editCourseKey != "" && (
           <EditCourseModal

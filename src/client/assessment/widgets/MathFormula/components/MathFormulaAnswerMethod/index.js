@@ -51,7 +51,7 @@ const MathFormulaAnswerMethod = ({
   showAdditionals,
   handleChangeAdditionals,
   onChangeKeypad,
-  onChangeAllowedVars,
+  onChangeAllowedOptions,
   onChangeShowDropdown,
   windowWidth,
   style = {},
@@ -303,13 +303,13 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={options}
-              onChange={changeOptions}
+              options={{ allowNumericOnly: item.allowNumericOnly }}
+              onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
           );
         case "allowedVariables":
-          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedVars} />;
+          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedOptions} />;
         case "setEvaluation":
           return (
             <CheckOption
@@ -325,8 +325,7 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const { allowedVariables } = item;
-  const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  const restrictKeys = item.allowedVariables ? item.allowedVariables.split(",").map(segment => segment.trim()) : [];
   const customKeys = get(item, "custom_keys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
 
@@ -445,7 +444,7 @@ const MathFormulaAnswerMethod = ({
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func.isRequired,
-  onChangeAllowedVars: PropTypes.func.isRequired,
+  onChangeAllowedOptions: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   item: PropTypes.object.isRequired,
@@ -457,6 +456,7 @@ MathFormulaAnswerMethod.propTypes = {
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
   handleChangeAdditionals: PropTypes.func,
+  allowedVariables: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired
 };

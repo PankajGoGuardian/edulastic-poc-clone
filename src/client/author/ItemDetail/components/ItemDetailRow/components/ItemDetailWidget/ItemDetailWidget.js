@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -8,6 +8,7 @@ import { white } from "@edulastic/colors";
 import { DragSource } from "react-dnd";
 import { withNamespaces } from "@edulastic/localization";
 
+import ItemDetailContext, { COMPACT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import QuestionWrapper from "../../../../../../assessment/components/QuestionWrapper";
 import { Types } from "../../../../constants";
 import { setItemDetailDraggingAction, setItemLevelScoreAction, setItemLevelScoringAction } from "../../../../ducks";
@@ -33,6 +34,7 @@ const ItemDetailWidget = ({
   setQuestionScore,
   rowIndex
 }) => {
+  const { layoutType } = useContext(ItemDetailContext);
   const [showButtons, setShowButtons] = useState(!flowLayout);
   const onMouseEnterHander = () => {
     if (flowLayout) setShowButtons(true);
@@ -64,7 +66,7 @@ const ItemDetailWidget = ({
 
           {(!flowLayout || showButtons) && (
             <div style={{ flex: "1" }}>
-              <Buttons>
+              <Buttons compact={layoutType === COMPACT}>
                 {itemData.itemLevelScoring && widgetIndex === 0 && showPoints && (
                   <div className="points">
                     Points :{" "}

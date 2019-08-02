@@ -21,16 +21,27 @@ const ChoicesBox = ({ resprops, id }) => {
     options,
     onChange: changeAnswers,
     item,
-    qIndex,
     disableResponse,
     isReviewTab,
-    cAnswers
+    cAnswers,
+    responsecontainerindividuals
   } = resprops;
 
   if (!id) return null;
   const { response_ids } = item;
   const { index } = find(response_ids, response => response.id === id);
   let userAnswer = find(userAnswers, answer => (answer ? answer.id : "") === id);
+  const individualStyle = responsecontainerindividuals[index];
+
+  const heightpx = individualStyle && individualStyle.heightpx;
+  const widthpx = individualStyle && individualStyle.widthpx;
+  const individualPlacholder = individualStyle && individualStyle.placeholder;
+
+  const styles = {
+    ...btnStyle,
+    width: widthpx || btnStyle.width,
+    height: heightpx || btnStyle.height
+  };
 
   if (isReviewTab) {
     userAnswer = find(cAnswers, answer => (answer ? answer.id : "") === id);
@@ -47,18 +58,16 @@ const ChoicesBox = ({ resprops, id }) => {
       <Select
         value={userAnswer ? userAnswer.value : ""}
         style={{
-          ...btnStyle,
-          minWidth: 100,
+          ...styles,
+          minWidth: styles.width || 100,
           overflow: "hidden"
         }}
+        placeholder={individualPlacholder || placeholder}
         getPopupContainer={() => findDOMNode(selectWrapperRef.current)}
         data-cy="drop_down_select"
         disabled={disableResponse}
         onChange={selectChange}
       >
-        <Option value="**default_value**" disabled>
-          {placeholder}
-        </Option>
         {options &&
           options[id] &&
           options[id].map((response, respID) => (

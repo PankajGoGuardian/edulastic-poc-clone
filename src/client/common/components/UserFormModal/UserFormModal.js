@@ -1,15 +1,15 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import moment from "moment";
-import { get } from "lodash";
-import { Form, Icon, Collapse, Spin, Input, Select, DatePicker } from "antd";
+import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
+import { Icon, Collapse, Spin, Input, Select, DatePicker, message } from "antd";
 import { IconUser } from "@edulastic/icons";
+import { userApi } from "@edulastic/api";
+import { isEmailValid } from "../../utils/helpers";
 
-import { StyledModal, Title, ActionButton, PanelHeader, Field } from "./styled";
+import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
 
 const { Panel } = Collapse;
-class AddUserForm extends React.Component {
+class UserForm extends React.Component {
   state = {
     keys: ["basic"]
   };
@@ -18,16 +18,24 @@ class AddUserForm extends React.Component {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { modalData, modalFunc, userOrgId: districtId } = this.props;
-        row.dob = moment(row.dob).format("x");
+        if (row.dob) {
+          row.dob = moment(row.dob).format("x");
+        }
+        const contactEmails = get(row, "contactEmails");
+        if (contactEmails) {
+          row.contactEmails = [contactEmails];
+        }
+        unset(row, ["confirmPassword"]);
+        const nRow = pickBy(row, identity);
         modalFunc({
           userId: modalData._id,
-          data: Object.assign(row, {
+          data: Object.assign(nRow, {
             districtId
           })
         });
+        this.props.closeModal();
       }
     });
-    this.props.closeModal();
   };
 
   confirmPwdCheck = (rule, value, callback) => {
@@ -38,12 +46,44 @@ class AddUserForm extends React.Component {
       callback();
     }
   };
+
+  validateEmailValue = async (rule, value, callback) => {
+    if (!isEmailValid(rule, value, callback, "email", "Please enter valid email")) return;
+    const {
+      userOrgId: districtId,
+      modalData: { _source }
+    } = this.props;
+    const email = get(_source, "email", "");
+    if (email !== value) {
+      try {
+        const res = await userApi.checkUser({
+          username: value,
+          districtId
+        });
+        if (!isEmpty(res)) {
+          return callback("Email Already exists");
+        }
+      } catch (err) {
+        console.log(error);
+      }
+    }
+  };
+
   render() {
     const {
       form: { getFieldDecorator },
-      closeModal
+      closeModal,
+      userOrgId: districtId,
+      showModal,
+      formTitle,
+      role,
+      showAdditionalFields,
+      modalData: { _source } = {},
+      buttonText,
+      isStudentEdit
     } = this.props;
-    const { showModal, formTitle, role, showAdditionalFields, modalData: { _source } = {} } = this.props;
+    const dobValue = get(_source, "dob");
+    const contactEmails = get(_source, "contactEmails");
     const { keys } = this.state;
     const title = (
       <Title>
@@ -53,16 +93,16 @@ class AddUserForm extends React.Component {
     );
 
     const footer = (
-      <>
+      <FooterDiv>
         <ActionButton ghost type="primary" onClick={() => closeModal()}>
           No, Cancel
         </ActionButton>
 
         <ActionButton type="primary" onClick={() => this.onProceed()}>
-          yes
+          {buttonText || `Yes, Update`}
           <Icon type="right" />
         </ActionButton>
-      </>
+      </FooterDiv>
     );
 
     const expandIcon = panelProps => (panelProps.isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />);
@@ -85,15 +125,27 @@ class AddUserForm extends React.Component {
         <Form>
           <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
             <Panel header={BasicDetailsHeader} key="basic">
-              <Field name="email">
-                <legend>Username/Email</legend>
-                <Form.Item>
-                  {getFieldDecorator("email", {
-                    rules: [{ required: true, message: "Please input the destination class" }],
-                    initialValue: get(_source, "username", get(_source, "email", ""))
-                  })(<Input placeholder="Enter Username/email" />)}
-                </Form.Item>
-              </Field>
+              {isStudentEdit && (
+                <Field name="Username">
+                  <legend>Username</legend>
+                  <Form.Item>
+                    {getFieldDecorator("username", {
+                      initialValue: get(_source, "username", get(_source, "username", ""))
+                    })(<Input placeholder="Enter Username/email" disabled={true} />)}
+                  </Form.Item>
+                </Field>
+              )}
+              {!isStudentEdit && (
+                <Field name="email">
+                  <legend>Username/Email</legend>
+                  <Form.Item>
+                    {getFieldDecorator("email", {
+                      rules: [{ required: true, message: "Please enter valid username" }],
+                      initialValue: get(_source, "username", get(_source, "email", ""))
+                    })(<Input placeholder="Enter Username/email" disabled={true} />)}
+                  </Form.Item>
+                </Field>
+              )}
               <Field name="firstName">
                 <legend>First Name</legend>
                 <Form.Item>
@@ -114,6 +166,18 @@ class AddUserForm extends React.Component {
                   )}
                 </Form.Item>
               </Field>
+              {isStudentEdit && (
+                <Field name="email">
+                  <legend>Email</legend>
+                  <Form.Item>
+                    {getFieldDecorator("email", {
+                      validateTrigger: ["onBlur"],
+                      rules: [{ validator: this.validateEmailValue }],
+                      initialValue: get(_source, "email", get(_source, "email", ""))
+                    })(<Input placeholder="Enter email" />)}
+                  </Form.Item>
+                </Field>
+              )}
               <Field name="password">
                 <legend>Password</legend>
                 <Form.Item>
@@ -203,7 +267,7 @@ class AddUserForm extends React.Component {
                 <Field name="dob" optional>
                   <legend>DOB</legend>
                   <Form.Item>
-                    {getFieldDecorator("dob", { initialValue: get(_source, "dob", "") })(
+                    {getFieldDecorator("dob", { initialValue: dobValue ? moment(dobValue) : null })(
                       <DatePicker format="DD MMM, YYYY" />
                     )}
                   </Form.Item>
@@ -223,10 +287,18 @@ class AddUserForm extends React.Component {
                 <Field name="contactEmails">
                   <legend>Contact</legend>
                   <Form.Item>
-                    {getFieldDecorator("contactEmails", { initialValue: get(_source, "contactEmails", "") })(
-                      <Select mode="multiple" placeholder="Enter Contact">
-                        {_source.contactEmails &&
-                          _source.contactEmails.map(email => <Select.Option key={email}>{email}</Select.Option>)}
+                    {getFieldDecorator("contactEmails", { initialValue: contactEmails ? contactEmails.join(",") : "" })(
+                      <Input placeholder="Enter Contact" />
+                    )}
+                  </Form.Item>
+                </Field>
+                <Field name="tts">
+                  <legend>Enable Text To Speech</legend>
+                  <Form.Item>
+                    {getFieldDecorator("tts", { initialValue: get(_source, "tts", "") })(
+                      <Select>
+                        <Option value="Yes">Yes</Option>
+                        <Option value="No">No</Option>
                       </Select>
                     )}
                   </Form.Item>
@@ -239,4 +311,4 @@ class AddUserForm extends React.Component {
     );
   }
 }
-export const AddUserFormModal = Form.create({ name: "add_modal" })(AddUserForm);
+export const UserFormModal = Form.create({ name: "user_form_modal" })(UserForm);

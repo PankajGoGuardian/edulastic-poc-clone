@@ -224,12 +224,13 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
-    cssStyles.width = cssStyles.width || cssStyles.minWidth;
+    // cssStyles.width = cssStyles.width || cssStyles.minWidth;
     const testItemCorrectValues = testItem
       ? item.validation.valid_response.value.map(validResponse => validResponse.value)
       : [];
 
     const customKeys = get(item, "custom_keys", []);
+    const allowNumericOnly = get(item, "allowNumericOnly", false);
 
     // in Units type, this need when the show dropdown option is true
     const correctUnit = get(item, "validation.valid_response.value[0].options.unit", "");
@@ -254,6 +255,7 @@ class MathFormulaPreview extends Component {
                 <StaticMath
                   symbols={item.symbols}
                   restrictKeys={this.restrictKeys}
+                  allowNumericOnly={allowNumericOnly}
                   customKeys={customKeys}
                   numberPad={item.numberPad}
                   hideKeypad={item.isUnits && item.showDropdown}
@@ -270,6 +272,7 @@ class MathFormulaPreview extends Component {
                 <MathInput
                   symbols={item.symbols}
                   restrictKeys={this.restrictKeys}
+                  allowNumericOnly={allowNumericOnly}
                   customKeys={customKeys}
                   numberPad={item.numberPad}
                   hideKeypad={item.isUnits && item.showDropdown}

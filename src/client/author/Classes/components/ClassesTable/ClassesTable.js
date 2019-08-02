@@ -681,6 +681,7 @@ class ClassesTable extends Component {
           pageSize={25}
           total={totalClassCount}
           onChange={this.changePagination}
+          hideOnSinglePage={true}
         />
         {editClassModalVisible && (
           <EditClassModal

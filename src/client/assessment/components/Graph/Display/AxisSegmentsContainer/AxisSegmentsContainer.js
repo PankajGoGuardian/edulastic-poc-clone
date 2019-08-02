@@ -388,6 +388,7 @@ class AxisSegmentsContainer extends PureComponent {
     if (disableResponse) {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
+      this._graph.segmentsReset();
       this._graph.resetAnswers();
       this._graph.loadSegmentsAnswers(coloredElements);
       return;
@@ -397,6 +398,7 @@ class AxisSegmentsContainer extends PureComponent {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.segmentsReset();
+      this._graph.resetAnswers();
       this._graph.loadSegments(coloredElements);
       return;
     }
@@ -406,6 +408,7 @@ class AxisSegmentsContainer extends PureComponent {
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.segmentsReset();
+      this._graph.resetAnswers();
       this._graph.loadSegments(elements);
     }
   };

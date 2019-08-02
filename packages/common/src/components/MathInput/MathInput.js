@@ -85,7 +85,15 @@ class MathInput extends React.PureComponent {
   }
 
   handleKeypress = e => {
-    const { restrictKeys } = this.props;
+    const { restrictKeys, allowNumericOnly } = this.props;
+
+    if (allowNumericOnly) {
+      if (!e.key.match(/[^a-zA-Z]/g)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
       const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
@@ -177,7 +185,7 @@ class MathInput extends React.PureComponent {
     } = this.props;
 
     return (
-      <MathInputStyles fullWidth={fullWidth} width={style.width} className={className}>
+      <MathInputStyles fullWidth={fullWidth} width={style.width} height={style.height} className={className}>
         <div
           ref={this.containerRef}
           onFocus={() => {
@@ -229,6 +237,7 @@ MathInput.propTypes = {
   fullWidth: PropTypes.bool,
   className: PropTypes.string,
   restrictKeys: PropTypes.array,
+  allowNumericOnly: PropTypes.bool,
   customKeys: PropTypes.array,
   hideKeypad: PropTypes.bool
 };
@@ -237,6 +246,7 @@ MathInput.defaultProps = {
   alwaysShowKeyboard: false,
   defaultFocus: false,
   value: "",
+  allowNumericOnly: false,
   hideKeypad: false,
   showDropdown: false,
   showResponse: false,

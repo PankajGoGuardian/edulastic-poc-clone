@@ -14,12 +14,12 @@ const menuActive = { mainMenu: "Schools", subMenu: "" };
 
 class Schools extends Component {
   render() {
-    const { loading, updating, creating, deleting, history } = this.props;
+    const { loading, updating, creating, deleting, totalSchoolsCount, history } = this.props;
     const showSpin = loading || updating || creating || deleting;
 
     return (
       <SchoolsDiv>
-        <AdminHeader title={title} active={menuActive} history={history} />
+        <AdminHeader title={title} active={menuActive} history={history} count={totalSchoolsCount} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
             {showSpin && (
@@ -40,7 +40,8 @@ const enhance = compose(
     loading: get(state, ["schoolsReducer", "loading"], false),
     updating: get(state, ["schoolsReducer", "updating"], false),
     creating: get(state, ["schoolsReducer", "creating"], false),
-    deleting: get(state, ["schoolsReducer", "deleting"], false)
+    deleting: get(state, ["schoolsReducer", "deleting"], false),
+    totalSchoolsCount: get(state, ["schoolsReducer", "totalSchoolCount"], 0)
   }))
 );
 

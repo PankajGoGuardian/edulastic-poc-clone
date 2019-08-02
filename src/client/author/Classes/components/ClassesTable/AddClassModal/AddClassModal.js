@@ -39,7 +39,9 @@ class AddClassModal extends Component {
           tags,
           courseId,
           // here multiple grades has to be sent as a comma separated string
-          grades: grades
+          grades: grades,
+          // not implemented in add model so sending empty
+          standardSets: []
         };
         this.props.addClass(createClassData);
       }

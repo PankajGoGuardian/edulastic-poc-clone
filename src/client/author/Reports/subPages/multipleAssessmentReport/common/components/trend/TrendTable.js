@@ -14,22 +14,8 @@ import TrendColumn from "./TrendColumn";
 import dropDownData from "../../static/json/dropDownData.json";
 import { compareByMap } from "../../utils/trend";
 
-const getSorter = compareBy => {
-  switch (compareBy) {
-    case "school":
-    case "teacher":
-    case "group":
-      return (a, b) => {
-        const compareByKey = compareByMap[compareBy];
-        return stringCompare(a[compareByKey], b[compareByKey]);
-      };
-    case "student":
-      return (a, b) => stringCompare(a.lastName, b.lastName);
-  }
-};
-
 const formatText = (text, type) => {
-  if (!text) return "N/A";
+  if (text === null || typeof text === "undefined") return "N/A";
 
   if (type == "score") {
     return `${text}%`;
@@ -118,7 +104,6 @@ const getColumns = (
     {
       key: compareBy.key,
       title: capitalize(compareBy.title),
-      sorter: getSorter(compareBy.key),
       dataIndex: compareByMap[compareBy.key]
     },
     ...customColumns,
@@ -156,6 +141,7 @@ const getColumns = (
 const TrendTable = ({ data, rawMetric, testData, analyseBy, compareBy, customColumns, heading, toolTipContent }) => {
   const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent);
   const groupedAvailableTests = groupBy(rawMetric, "testId");
+
   return (
     <StyledCard>
       <Row>

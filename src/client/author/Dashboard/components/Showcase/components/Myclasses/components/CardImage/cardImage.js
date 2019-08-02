@@ -37,12 +37,17 @@ const CardImage = ({ data, history }) => {
             </Row>
             <RowWrapperGrade>
               <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
-                <SpanRightMargin>Grade</SpanRightMargin>
-                {grades.join(", ")}
+                {grades.length ? (
+                  <>
+                    <SpanRightMargin>Grade</SpanRightMargin> {grades.join(", ").replace(/O/i, " Other ")}
+                  </>
+                ) : (
+                  ""
+                )}
 
                 {subject ? (
                   <>
-                    <SpanLeftMargin>|</SpanLeftMargin>
+                    {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ""}
                     <Tooltip title={subject} placement="topLeft">
                       <SpanLeftMargin>{subject}</SpanLeftMargin>
                     </Tooltip>

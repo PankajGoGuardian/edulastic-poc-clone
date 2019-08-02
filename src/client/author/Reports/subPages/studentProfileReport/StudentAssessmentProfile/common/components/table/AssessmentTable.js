@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { filter, includes } from "lodash";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
 import { StyledTable, StyledCell } from "../../../../../../common/styled";
@@ -97,20 +98,26 @@ const getColumns = (studentName = "") => {
   ];
 };
 
-const AssessmentTable = ({ data, studentName }) => {
+const AssessmentTable = ({ data, studentName, selectedTests }) => {
   const columns = getColumns(studentName);
 
-  return <StyledTable dataSource={data} columns={columns} colouredCellsNo={1} />;
+  const filteredData = filter(data, test => {
+    return selectedTests.length ? includes(selectedTests, test.uniqId) : true;
+  });
+
+  return <StyledTable dataSource={filteredData} columns={columns} colouredCellsNo={1} />;
 };
 
 AssessmentTable.propTypes = {
   data: PropTypes.array,
-  studentName: PropTypes.string
+  studentName: PropTypes.string,
+  selectedTests: PropTypes.array
 };
 
 AssessmentTable.defaultProps = {
   data: [],
-  studentName: ""
+  studentName: "",
+  selectedTests: []
 };
 
 export default AssessmentTable;

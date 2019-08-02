@@ -38,7 +38,8 @@ const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analy
             <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-start">
               <CreatedByTitle style={{ marginRight: 0 }}>Created by:</CreatedByTitle>
               <CreatedByValue>
-                {createdBy && (createdBy.name || `${createdBy.firstName} ${createdBy.lastName}`)}
+                {createdBy &&
+                  (createdBy.name || `${createdBy.firstName} ${createdBy.lastName ? createdBy.lastName : ""}`)}
               </CreatedByValue>
             </FlexContainer>
           </FlexContainer>

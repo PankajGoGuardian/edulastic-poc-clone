@@ -4,7 +4,7 @@ import { Media, controls } from "react-media-player";
 
 import { videoTypes } from "@edulastic/constants";
 
-import { FlexContainer } from "@edulastic/common";
+import { FlexContainer, QuestionNumberLabel } from "@edulastic/common";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Player } from "./styled/Player";
@@ -13,14 +13,14 @@ import Fullscreen from "./styled/Fullscreen";
 import MuteUnmute from "./styled/MuteUnmute";
 import SeekBar from "./styled/SeekBar";
 import Volume from "./styled/Volume";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 const { CurrentTime, Duration } = controls;
 
 const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
   <div>
     <QuestionTitleWrapper>
-      {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+      {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
       {item.heading && <Subtitle>{item.heading}</Subtitle>}
     </QuestionTitleWrapper>
     {item.summary && <Label>{item.summary}</Label>}

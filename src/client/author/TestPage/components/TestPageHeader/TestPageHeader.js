@@ -109,7 +109,7 @@ const TestPageHeader = ({
         showPublishButton={!showShareButton || showPublishButton}
       />
 
-      <FlexContainer justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
+      <FlexContainer childMarginRight="5" justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
         {showShareButton && false && (
           <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
             <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />

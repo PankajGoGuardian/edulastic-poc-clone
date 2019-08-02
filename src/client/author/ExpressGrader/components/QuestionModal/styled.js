@@ -12,11 +12,14 @@ export const ModalWrapper = styled(Modal)`
       display: flex;
       flex-shrink: 1;
       flex-direction: column;
+      overflow-y: unset !important;
     }
   }
 `;
 
-export const QuestionWrapper = styled.div``;
+export const QuestionWrapperStyled = styled.div`
+  overflow-y: auto;
+`;
 
 export const BottomNavigationWrapper = styled.div`
   padding: 20px 0px;

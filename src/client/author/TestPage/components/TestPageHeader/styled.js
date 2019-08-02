@@ -42,6 +42,7 @@ export const Title = styled.div`
 
   @media screen and (max-width: ${smallDesktopWidth}) {
     font-size: 18px;
+    max-width: 170px;
   }
 `;
 

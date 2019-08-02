@@ -31,26 +31,25 @@ const CorrectAnswerBox = ({ children, t, altAnswers }) => {
 
 CorrectAnswerBox.propTypes = {
   children: PropTypes.any.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  altAnswers: PropTypes.bool.isRequired
 };
 
 const enhance = compose(withNamespaces("assessment"));
 
 const CorrectAnswerBoxComponent = enhance(CorrectAnswerBox);
 
-const CorrectAnswerBoxWithResources = ({ ...props }) => {
-  return (
-    <WithResources
-      resources={[
-        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
-        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
-      ]}
-      fallBack={<span />}
-    >
-      <CorrectAnswerBoxComponent {...props} />
-    </WithResources>
-  );
-};
+const CorrectAnswerBoxWithResources = ({ ...props }) => (
+  <WithResources
+    resources={[
+      "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
+      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+    ]}
+    fallBack={<span />}
+  >
+    <CorrectAnswerBoxComponent {...props} />
+  </WithResources>
+);
 
 export default CorrectAnswerBoxWithResources;

@@ -648,7 +648,8 @@
       "maxVal": "Maximum value",
       "responseNumAllowed": "Number of responses allowed",
       "correctAnswer": "Correct Answer",
-      "alternateAnswer": "Alternate Answer"
+      "alternateAnswer": "Alternate Answer",
+      "shuffleAnswerChoices": "Shuffle Answer Choices"
     },
     "math": {
       "enterQuestion": "Enter question",
@@ -796,7 +797,9 @@
       "composequestion": "Question",
       "enterQuestion": "Enter Question",
       "enterContent": "Enter Question Contents",
-      "content": "Content"
+      "content": "Content",
+      "ignoreCase": "Ignore Case",
+      "mixNmatch": "Mix-n-Match alternative answers"
     }
   }
 }

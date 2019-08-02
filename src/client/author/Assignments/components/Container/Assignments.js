@@ -175,6 +175,7 @@ class Assignments extends Component {
       toggleReleaseGradePopUp,
       assignmentsSummary,
       districtId,
+      error,
       isAdvancedView,
       currentAssignment
     } = this.props;
@@ -186,6 +187,7 @@ class Assignments extends Component {
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
+          error={error}
           hideModal={this.hidePreviewModal}
         />
         <ListHeader
@@ -306,6 +308,7 @@ const enhance = compose(
       districtId: getDistrictIdSelector(state),
       isAdvancedView: getAssignmentViewSelector(state),
       userRole: getUserRole(state),
+      error: get(state, "test.error", false),
       defaultFilters: getAssignmentFilterSelector(state),
       orgData: get(state, "user.user.orgData", {})
     }),

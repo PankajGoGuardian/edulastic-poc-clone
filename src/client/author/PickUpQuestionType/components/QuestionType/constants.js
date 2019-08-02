@@ -84,7 +84,7 @@ export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
 
   // use it for ids of MCQ
-  const uuids = [uuid(), uuid(), uuid()];
+  const uuids = [uuid(), uuid(), uuid(), uuid()];
 
   const uuidsForFill = [uuid(), uuid(), uuid()];
 
@@ -739,7 +739,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
@@ -763,7 +763,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
@@ -787,7 +787,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "True" }, { value: uuids[1], label: "False" }],
         validation: {
@@ -857,27 +857,22 @@ export const getCards = onSelectQuestionType => {
         title: "Classification",
         firstMount: true,
         group_possible_responses: false,
-        possible_response_groups: [
-          {
-            title: "",
-            responses: ["Choice B", "Choice C", "Choice A", "Choice D"]
-          }
-        ],
+        possible_response_groups: [],
         possible_responses: [
           {
-            id: uuid(),
+            id: uuids[0],
             value: "Choice B"
           },
           {
-            id: uuid(),
+            id: uuids[1],
             value: "Choice C"
           },
           {
-            id: uuid(),
+            id: uuids[2],
             value: "Choice A"
           },
           {
-            id: uuid(),
+            id: uuids[3],
             value: "Choice D"
           }
         ],
@@ -887,7 +882,7 @@ export const getCards = onSelectQuestionType => {
           column_count: 2,
           column_titles: ["COLUMN 1", "COLUMN 2"],
           row_count: 1,
-          row_titles: []
+          row_titles: ["ROW 1"]
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1147,8 +1142,6 @@ export const getCards = onSelectQuestionType => {
         stimulus: "Sample image background with an overlaid drop area(s)",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
-        keepAspectRatio: true,
-        isSnapFitValues: true,
         maxRespCount: 1,
         options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
@@ -1160,7 +1153,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responseLayout: {
-          showborder: true
+          keepAspectRatio: true,
+          showborder: true,
+          isSnapFitValues: true
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },

@@ -95,23 +95,14 @@ class ClassesTable extends Component {
       },
       currentPage: 1,
       selectedArchiveClasses: [],
-      showActive: true,
-      disableActiveUsers: false
+      showActive: true
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
   componentDidMount() {
     const { userOrgId, loadClassListData } = this.props;
-
-    loadClassListData({
-      districtId: userOrgId,
-      page: 1,
-      limit: 25,
-      search: {
-        active: 1
-      }
-    });
+    this.loadFilteredList();
   }
 
   // onHeaderCell = colName => {
@@ -284,6 +275,11 @@ class ClassesTable extends Component {
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+
+  onChangeSearch = event => {
+    this.setState({ searchByName: event.currentTarget.value });
+  };
+
   handleSearchName = value => {
     const { filtersData, sortedInfo, currentPage } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
@@ -351,17 +347,7 @@ class ClassesTable extends Component {
     filtersData[key].filtersColumn = value;
 
     if (value === "subjects" || value === "grades" || value === "active") filtersData[key].filtersValue = "eq";
-    // here we check if the filter chosen is active or if the previous value held by the select was active
-    // then according to this, we either disable or enable the checkbox
-    if (value === "active" || this.state.filtersData[key].filtersColumn === "active") {
-      this.setState(
-        {
-          disableActiveUsers: value === "active",
-          filtersData
-        },
-        () => this.afterSetState(key)
-      );
-    } else this.setState({ filtersData }, () => this.afterSetState(key)); // this is done so that we dont have multiple set states and we can avoid two renders
+    this.setState({ filtersData }, () => this.afterSetState(key)); // this is done so that we dont have multiple set states and we can avoid two renders
   };
 
   changeFilterValue = (value, key) => {
@@ -409,60 +395,49 @@ class ClassesTable extends Component {
       newFiltersData = filtersData.filter((item, index) => index !== key);
     }
     // here we check if the filter we are removing is the active filter, then we enable the checkbox back
-    if (filtersData[key].filtersColumn === "active") {
-      this.setState(
-        {
-          filtersData: newFiltersData,
-          disableActiveUsers: false
-        },
-        this.loadFilteredList
-      );
-    } else this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
   };
 
   getSearchQuery = () => {
-    const { loadClassListData, userOrgId } = this.props;
-    const { filtersData, searchByName, currentPage, showActive, disableActiveUsers } = this.state;
+    const { userOrgId } = this.props;
+    const { filtersData, searchByName, currentPage, showActive } = this.state;
     const search = {};
 
     if (searchByName.length > 0) {
-      search.name = searchByName;
+      search.name = [searchByName];
     }
 
-    if (!disableActiveUsers && showActive) {
-      search.active = 1;
+    if (!filtersData.find(item => item.filtersColumn === "active")) {
+      search.active = showActive ? [1] : [0];
     }
 
     for (let i = 0; i < filtersData.length; i++) {
-      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      let { filtersColumn, filtersValue, filterStr } = filtersData[i];
       if (
         filtersColumn &&
         filtersValue &&
         filterStr !== "" // here because 0 can be a value too for "active" select
       ) {
-        if (filtersColumn === "active") {
-          search[filtersColumn] = filterStr;
+        if (filtersColumn === "grades" || filtersColumn === "subjects" || filtersColumn === "active") {
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = [filterStr];
+          } else {
+            search[filtersColumn].push(filterStr);
+          }
         } else {
           if (!search[filtersColumn]) {
-            search[filtersColumn] = [];
-          }
-          if (filtersColumn === "grades" || filtersColumn === "subjects") {
-            search[filtersColumn].push(filterStr);
+            search[filtersColumn] = { type: filtersValue, value: [filterStr] };
           } else {
-            search[filtersColumn].push({
-              type: filtersValue,
-              value: filterStr
-            });
+            search[filtersColumn].value.push(filterStr);
           }
         }
-        // search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
       }
     }
     return {
+      search,
       districtId: userOrgId,
       limit: 25,
-      page: currentPage,
-      search
+      page: currentPage
     };
   };
 
@@ -479,14 +454,16 @@ class ClassesTable extends Component {
         dataIndex: "_source.name",
         editable: true,
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.name.localeCompare(b._source.name)
+        sorter: (a, b) => a._source.name.localeCompare(b._source.name),
+        width: 200
       },
       {
         title: "Class Code",
         dataIndex: "_source.code",
         editable: true,
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.code.localeCompare(b._source.code)
+        sorter: (a, b) => a._source.code.localeCompare(b._source.code),
+        width: 100
       },
       {
         title: "Course",
@@ -498,7 +475,8 @@ class ClassesTable extends Component {
           const prev = get(a, "_source.course.name", "");
           const next = get(b, "_source.course.name", "");
           return next.localeCompare(prev);
-        }
+        },
+        width: 200
       },
       {
         title: "Teacher",
@@ -511,7 +489,8 @@ class ClassesTable extends Component {
           return <React.Fragment>{teachers}</React.Fragment>;
         },
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name)
+        sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name),
+        width: 50
       },
       {
         title: "Users",
@@ -519,22 +498,24 @@ class ClassesTable extends Component {
         editable: true,
         render: (studentCount = 0) => studentCount,
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a._source.studentCount - b._source.studentCount
+        sorter: (a, b) => a._source.studentCount - b._source.studentCount,
+        width: 50
       },
       {
         dataIndex: "_id",
         render: id => {
           return (
             <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditClass(id)}>
+              <StyledTableButton onClick={() => this.onEditClass(id)} title="Edit">
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(id)}>
+              <StyledTableButton onClick={() => this.handleDelete(id)} title="Deactivate">
                 <Icon type="delete" theme="twoTone" />
               </StyledTableButton>
             </React.Fragment>
           );
-        }
+        },
+        width: 100
       }
     ];
 
@@ -548,8 +529,7 @@ class ClassesTable extends Component {
       editClassKey,
       currentPage,
       selectedArchiveClasses,
-      showActive,
-      disableActiveUsers
+      showActive
     } = this.state;
 
     const {
@@ -672,11 +652,11 @@ class ClassesTable extends Component {
             + Create new class
           </Button>
 
-          <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} />
+          <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} onChange={this.onChangeSearch} />
           <Checkbox
-            disabled={disableActiveUsers}
+            disabled={!!filtersData.find(item => item.filtersColumn === "active")}
             style={{ margin: "auto" }}
-            value={showActive}
+            checked={showActive}
             onChange={this.onChangeShowActive}
           >
             Show Active Classes

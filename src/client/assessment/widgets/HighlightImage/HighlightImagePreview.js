@@ -3,7 +3,13 @@ import PropTypes from "prop-types";
 import { Select } from "antd";
 import { get, isNaN } from "lodash";
 
-import { Stimulus, InstructorStimulus, withWindowSizes, ScratchPadContext } from "@edulastic/common";
+import {
+  Stimulus,
+  InstructorStimulus,
+  withWindowSizes,
+  ScratchPadContext,
+  QuestionNumberLabel
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconUndo, IconRedo, IconEraseText } from "@edulastic/icons";
 import { canvasDimensions } from "@edulastic/constants";
@@ -18,7 +24,7 @@ import { Text } from "./styled/Text";
 import { CanvasContainer } from "./styled/CanvasContainer";
 import { AdaptiveButtonList } from "./styled/AdaptiveButtonList";
 import { getFontSize } from "../../utils/helpers";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 const { Option } = Select;
 
@@ -204,7 +210,7 @@ const HighlightImagePreview = ({
         <CanvasContainer>
           <InstructorStimulus width="100%">{item.instructor_stimulus}</InstructorStimulus>
           <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
           {item.image && item.image.source && renderImage()}

@@ -189,6 +189,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         safeBrowser={safeBrowser}
         graded={graded}
         absent={absent}
+        isPaused={isPaused}
       />
       <ButtonAndDetail>
         <DetailContainer>

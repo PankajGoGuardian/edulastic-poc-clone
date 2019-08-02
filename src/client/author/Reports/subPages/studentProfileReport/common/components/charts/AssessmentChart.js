@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { round, get, find } from "lodash";
-import { addColors } from "../../../../../../common/util";
-import { SimpleStackedBarChart } from "../../../../../../common/components/charts/simpleStackedBarChart";
-import BarTooltipRow from "../../../../../../common/components/tooltip/BarTooltipRow";
+import { addColors } from "../../../../../common/util";
+import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
+import BarTooltipRow from "../../../../../common/components/tooltip/BarTooltipRow";
 
 const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB }) => {
   const xDataKey = "uniqId";

@@ -18,7 +18,7 @@ const RootComp = () => (
   <I18nextProvider i18n={i18n}>
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <App assessmentId="5b964cd2162eb42127b2253e" />
+        <App />
       </ConnectedRouter>
     </Provider>
   </I18nextProvider>

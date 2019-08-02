@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { mainBgColor } from "@edulastic/colors";
+import { smallDesktopWidth, mainBgColor } from "@edulastic/colors";
+import { Col } from "antd";
 
 export const ReviewPageContainer = styled.div`
-  padding-top: 16px;
+  padding: 20px 30px;
   .fixed-second-header {
     background: ${mainBgColor};
     top: 96px;
@@ -11,8 +12,7 @@ export const ReviewPageContainer = styled.div`
     right: 0;
     z-index: 2;
     box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
-    padding-right: 25%;
-    padding-top: 10px;
+    padding: 10px 24% 10px 10px;
     transition: top 1s ease-in;
     > div {
       margin: 0;
@@ -20,8 +20,16 @@ export const ReviewPageContainer = styled.div`
         display: none;
       }
     }
+    @media (max-width: ${smallDesktopWidth}) {
+      top: 60px;
+    }
   }
 `;
+
+export const ReviewSummaryWrapper = styled(Col)`
+  padding-left: 20px;
+`;
+
 export const SecondHeader = styled.div`
   display: flex;
   flex-direction: ${props => (props.isMobileSize ? "row" : "column")}

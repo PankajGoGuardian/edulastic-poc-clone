@@ -4,9 +4,9 @@ import styled from "styled-components";
 import { DragLayer } from "react-dnd";
 import { white, dashBorderColor } from "@edulastic/colors";
 
-function collect(monitor) {
+function collect(monitor, { isResetOffset }) {
   return {
-    sourceOffset: monitor.getSourceClientOffset()
+    sourceOffset: isResetOffset ? monitor.getDifferenceFromInitialOffset() : monitor.getSourceClientOffset()
   };
 }
 

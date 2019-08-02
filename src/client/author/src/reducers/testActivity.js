@@ -134,8 +134,6 @@ const reducer = (state = initialState, { type, payload }) => {
                 _st.entities[entityIndex].questionActivities[itemIndex] = {
                   ...oldQAct,
                   ...questionItem,
-                  skipped: false,
-                  graded: true,
                   score,
                   maxScore
                 };
@@ -215,7 +213,8 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         additionalData: {
           ...state.additionalData,
-          canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId)
+          canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId),
+          classesCanBeMarked: [...state.additionalData.classesCanBeMarked, payload.classId]
         }
       };
     case UPDATE_REMOVED_STUDENTS_LIST:

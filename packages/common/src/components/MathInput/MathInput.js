@@ -154,7 +154,10 @@ class MathInput extends React.PureComponent {
 
   onClickMathField = () => {
     const { onInnerFieldClick } = this.props;
-    this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+    const { mathFieldFocus } = this.state;
+    if (!mathFieldFocus) {
+      this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+    }
   };
 
   focus = () => {
@@ -177,7 +180,8 @@ class MathInput extends React.PureComponent {
       fullWidth,
       className,
       restrictKeys,
-      customKeys
+      customKeys,
+      hideKeypad
     } = this.props;
 
     return (
@@ -189,15 +193,17 @@ class MathInput extends React.PureComponent {
             this.setState({ mathFieldFocus: true });
           }}
           className="input"
+          onClick={this.onClickMathField}
         >
           <div onKeyDown={onKeyDown} className="input__math" style={style} data-cy="answer-math-input-field">
-            <span className="input__math__field" ref={this.mathFieldRef} onClick={this.onClickMathField} />
+            <span className="input__math__field" ref={this.mathFieldRef} />
           </div>
           <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
             {(alwaysShowKeyboard || mathFieldFocus) && (
               <MathKeyboard
                 symbols={symbols}
                 numberPad={numberPad}
+                hideKeypad={hideKeypad}
                 restrictKeys={restrictKeys}
                 customKeys={customKeys}
                 showResponse={showResponse}
@@ -232,7 +238,8 @@ MathInput.propTypes = {
   className: PropTypes.string,
   restrictKeys: PropTypes.array,
   allowNumericOnly: PropTypes.bool,
-  customKeys: PropTypes.array
+  customKeys: PropTypes.array,
+  hideKeypad: PropTypes.bool
 };
 
 MathInput.defaultProps = {
@@ -240,6 +247,7 @@ MathInput.defaultProps = {
   defaultFocus: false,
   value: "",
   allowNumericOnly: false,
+  hideKeypad: false,
   showDropdown: false,
   showResponse: false,
   style: {},

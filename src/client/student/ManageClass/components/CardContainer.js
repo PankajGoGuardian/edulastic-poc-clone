@@ -31,10 +31,14 @@ const ClassCard = ({ t, classItem }) => {
             <InfoContent span={16}>{instructorName}</InfoContent>
           </Col>
 
-          <Col span={24}>
-            <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
-            <InfoContent span={16}>{grades.join(", ")}</InfoContent>
-          </Col>
+          {grades.length ? (
+            <Col span={24}>
+              <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
+              <InfoContent span={16}>{grades.join(", ").replace(/O/i, " Other ")}</InfoContent>
+            </Col>
+          ) : (
+            ""
+          )}
 
           <Col span={24}>
             <InfoLabel span={8}>{t("common.subject")}</InfoLabel>

@@ -178,6 +178,10 @@ export const StyledDragHandle = styled.div`
   }
 `;
 
+export const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
 export const Item = styled.div`
   width: 100%;
   display: flex;

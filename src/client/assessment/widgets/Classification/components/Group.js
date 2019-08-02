@@ -29,20 +29,6 @@ const Group = ({
   theme
 }) => (
   <Fragment>
-    <div data-cy="group-choices" style={{ marginBottom: 30 }}>
-      <List
-        prefix={prefix}
-        items={item.responses}
-        firstFocus={firstFocus}
-        onAdd={onAddInner(index)}
-        onSortEnd={onSortEnd(index)}
-        onChange={onChange(index)}
-        onRemove={onRemoveInner(index)}
-        useDragHandle
-        columns={1}
-      />
-    </div>
-
     <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
       <Subtitle margin="20px 0px 0px">{`${groupHeadText}${index + 1}`}</Subtitle>
       <IconTrash onClick={onRemove(index)} />
@@ -56,6 +42,19 @@ const Group = ({
     </Subtitle>
     <div style={{ marginBottom: 20 }}>
       <Input size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
+    </div>
+    <div data-cy="group-choices" style={{ marginBottom: 30 }}>
+      <List
+        prefix={prefix}
+        items={item.responses}
+        firstFocus={firstFocus}
+        onAdd={onAddInner(index)}
+        onSortEnd={onSortEnd(index)}
+        onChange={onChange(index)}
+        onRemove={onRemoveInner(index)}
+        useDragHandle
+        columns={1}
+      />
     </div>
   </Fragment>
 );

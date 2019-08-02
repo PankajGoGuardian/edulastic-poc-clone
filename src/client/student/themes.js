@@ -238,7 +238,7 @@ export const themes = {
     },
     profile: {
       userHeadingTextSize: "22px",
-      userHeadingTextColor: "#434b5d",
+      userHeadingTextColor: "#434B5D",
       userHeadingTextWeight: "bold",
       userSubTitleTextSize: "13px",
       userSubTitleTextColor: "#434b5d",

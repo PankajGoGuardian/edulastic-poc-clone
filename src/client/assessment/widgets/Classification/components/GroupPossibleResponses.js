@@ -31,7 +31,6 @@ class GroupPossibleResponses extends Component {
 
   render() {
     const { checkboxChange, checkboxVal, items, t, firstFocus, onAdd, ...restProps } = this.props;
-
     return (
       <Fragment>
         <Subtitle margin="0 0 15px">{t("component.classification.possibleRespTitle")}</Subtitle>
@@ -82,6 +81,7 @@ class GroupPossibleResponses extends Component {
                   useDragHandle
                   columns={1}
                   imageDefaultWidth={IMAGE_LIST_DEFAULT_WIDTH}
+                  t={t}
                 />
               </Col>
             </Row>

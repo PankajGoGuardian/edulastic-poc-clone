@@ -28,12 +28,12 @@ class Template extends Component {
     } = this.props;
     const mode = item.tokenization;
 
-    const handleItemChangeChange = (prop, uiStyle) => {
+    const handleItemChangeChange = (prop, propData) => {
       setQuestionData(
         produce(item, draft => {
           if (prop === "template") {
             let resultArray = "";
-            const initialArray = uiStyle.replace(/(<p>|<\/p>)*/g, "").split('<p class="newline_section"><br>');
+            const initialArray = propData.replace(/(<p>|<\/p>)*/g, "").split('<p class="newline_section"><br>');
 
             const paragraphsArray = initialArray.map(el => ({
               value: `${el}<br/>`,
@@ -69,7 +69,7 @@ class Template extends Component {
             setTemplate(resultArray);
           }
 
-          draft[prop] = uiStyle;
+          draft[prop] = propData;
           updateVariables(draft);
         })
       );

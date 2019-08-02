@@ -33,7 +33,8 @@ import {
   getAddStudentsToOtherClassSelector,
   setAddStudentsToOtherClassVisiblityAction,
   addStudentsToOtherClassAction,
-  fetchClassDetailsUsingCodeAction
+  fetchClassDetailsUsingCodeAction,
+  setMultiStudentsProviderAction
 } from "../../ducks";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
@@ -45,6 +46,7 @@ import {
   deleteAdminUserAction,
   setSearchNameAction,
   getAdminUsersDataSelector,
+  getAdminUsersDataCountSelector,
   getShowActiveUsersSelector,
   setShowActiveUsersAction,
   getPageNoSelector,
@@ -62,6 +64,8 @@ import { receiveSchoolsAction } from "../../../Schools/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
 
+import { getFullNameFromString } from "../../../../common/utils/helpers";
+
 const { Option } = Select;
 
 function compareByAlph(a, b) {
@@ -73,6 +77,17 @@ function compareByAlph(a, b) {
   }
   return 0;
 }
+
+const filterStrDD = {
+  status: {
+    list: [
+      { title: "Select a value", value: undefined, disabled: true },
+      { title: "Active", value: 1, disabled: false },
+      { title: "Inactive", value: 0, disabled: false }
+    ],
+    placeholder: "Select a value"
+  }
+};
 
 class StudentTable extends Component {
   constructor(props) {
@@ -86,7 +101,7 @@ class StudentTable extends Component {
       selectedAdminsForDeactivate: [],
       deactivateAdminModalVisible: false,
 
-      showActive: 1,
+      showActive: true,
       searchByName: "",
       filtersData: [
         {
@@ -110,7 +125,8 @@ class StudentTable extends Component {
       },
       {
         title: "Username",
-        dataIndex: "_source.email",
+        dataIndex: "_source.username",
+        render: (text, record, index) => record._source.username || record._source.email,
         sorter: (a, b) => compareByAlph(a.email, b.email)
       },
       {
@@ -130,10 +146,10 @@ class StudentTable extends Component {
       {
         dataIndex: "_id",
         render: id => [
-          <StyledTableButton key={`${id}0`} onClick={() => this.onEditStudent(id)}>
+          <StyledTableButton key={`${id}0`} onClick={() => this.onEditStudent(id)} title="Edit">
             <Icon type="edit" theme="twoTone" />
           </StyledTableButton>,
-          <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)}>
+          <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
             <Icon type="delete" theme="twoTone" />
           </StyledTableButton>
         ]
@@ -148,9 +164,7 @@ class StudentTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const {
-      adminUsersData: { result }
-    } = nextProps;
+    const { adminUsersData: result } = nextProps;
     return {
       selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
     };
@@ -169,15 +183,6 @@ class StudentTable extends Component {
     this.setState({
       selectedAdminsForDeactivate: [id],
       deactivateAdminModalVisible: true
-    });
-  };
-
-  confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props;
-    const { selectedAdminsForDeactivate } = this.state;
-    deleteAdminUser({ userIds: selectedAdminsForDeactivate, role: "student" });
-    this.setState({
-      deactivateAdminModalVisible: false
     });
   };
 
@@ -223,43 +228,6 @@ class StudentTable extends Component {
     }
   };
 
-  addStudent = () => {
-    if (this.formRef) {
-      const { userOrgId: districtId, createAdminUser } = this.props;
-      const { form } = this.formRef.props;
-      form.validateFields((err, values) => {
-        if (!err) {
-          const { fullName, email, password } = values;
-          const tempName = split(fullName, " ");
-          const firstName = tempName[0];
-          const lastName = tempName[1];
-          values.districtId = districtId;
-          values.firstName = firstName;
-          values.lastName = lastName;
-
-          const contactEmails = get(values, "contactEmails");
-          if (contactEmails) {
-            values.contactEmails = [contactEmails];
-          }
-
-          if (values.dob) {
-            values.dob = moment(values.dob).format("x");
-          }
-          unset(values, ["confirmPassword"]);
-          unset(values, ["fullName"]);
-          createAdminUser(pickBy(values, identity));
-          this.setState({ addStudentModalVisible: false });
-        }
-      });
-    }
-  };
-
-  closeAddStudentModal = () => {
-    this.setState({
-      addStudentModalVisible: false
-    });
-  };
-
   closeEditStudentModal = () => {
     this.setState({
       editStudentModaVisible: false
@@ -294,7 +262,77 @@ class StudentTable extends Component {
     this.formRef = node;
   };
 
+  setPageNo = page => {
+    this.setState({ currentPage: page }, this.loadFilteredList);
+  };
+
+  // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
+
+  createUser = () => {
+    if (this.formRef) {
+      const { userOrgId: districtId, createAdminUser } = this.props;
+      const { form } = this.formRef.props;
+      form.validateFields((err, values) => {
+        if (!err) {
+          const { fullName, email, password } = values;
+
+          let name = getFullNameFromString(fullName);
+          values.firstName = name.firstName;
+          values.middleName = name.middleName;
+          values.lastName = name.lastName;
+
+          const contactEmails = get(values, "contactEmails");
+          if (contactEmails) {
+            values.contactEmails = [contactEmails];
+          }
+
+          if (values.dob) {
+            values.dob = moment(values.dob).format("x");
+          }
+          unset(values, ["confirmPassword"]);
+          unset(values, ["fullName"]);
+
+          let o = {
+            createReq: pickBy(values, identity),
+            listReq: this.getSearchQuery()
+          };
+
+          createAdminUser(o);
+          this.setState({ addStudentModalVisible: false });
+        }
+      });
+    }
+  };
+
+  closeAddUserModal = () => {
+    this.setState({
+      addStudentModalVisible: false
+    });
+  };
+
+  confirmDeactivate = () => {
+    const { deleteAdminUser } = this.props;
+    const { selectedAdminsForDeactivate } = this.state;
+
+    const o = {
+      deleteReq: { userIds: selectedAdminsForDeactivate, role: "student" },
+      listReq: this.getSearchQuery()
+    };
+
+    deleteAdminUser(o);
+    this.setState({
+      deactivateAdminModalVisible: false
+    });
+  };
+
+  // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
+
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+
+  onChangeSearch = event => {
+    this.setState({ searchByName: event.currentTarget.value });
+  };
+
   handleSearchName = value => {
     this.setState({ searchByName: value }, this.loadFilteredList);
   };
@@ -327,6 +365,21 @@ class StudentTable extends Component {
     this.setState(state => ({ filtersData: _filtersData }), this.loadFilteredList);
   };
 
+  changeStatusValue = (value, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: value,
+          filterAdded: value !== "" ? true : false
+        };
+      }
+      return item;
+    });
+
+    this.setState({ filtersData: _filtersData }, () => this.loadFilteredList(key));
+  };
+
   changeFilterText = (e, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
       if (index === key) {
@@ -352,7 +405,7 @@ class StudentTable extends Component {
       }
       return item;
     });
-    this.setState({ filtersData: _filtersData });
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
   };
 
   changeFilterValue = (value, key) => {
@@ -365,11 +418,11 @@ class StudentTable extends Component {
       }
       return item;
     });
-    this.setState({ filtersData: _filtersData });
+    this.setState({ filtersData: _filtersData }, this.loadFilteredList);
   };
 
   onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked ? 1 : 0 }, this.loadFilteredList);
+    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
   };
 
   addFilter = (e, key) => {
@@ -409,27 +462,38 @@ class StudentTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
+    let showActive = this.state.showActive ? 1 : 0;
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
-      if (filterStr) {
-        search[filtersColumn] = { type: filtersValue, value: filterStr };
+      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
+        if (filtersColumn === "status") {
+          showActive = filterStr;
+          continue;
+        }
+        if (!search[filtersColumn]) {
+          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+        } else {
+          search[filtersColumn].value.push(filterStr);
+        }
       }
     }
 
     if (searchByName) {
-      search["firstName"] = { type: "cont", value: searchByName };
+      search["firstName"] = { type: "cont", value: [searchByName] };
     }
 
     return {
+      search,
       districtId: userOrgId,
       role: "student",
       limit: 25,
-      page: 1,
+      page: currentPage,
       // uncomment after elastic search is fixed
-      // status: this.state.showActive,
-      search
+      status: showActive
+      // sortField,
+      // order
     };
   };
 
@@ -450,7 +514,8 @@ class StudentTable extends Component {
       deactivateAdminModalVisible,
       selectedAdminsForDeactivate,
 
-      filtersData
+      filtersData,
+      currentPage
     } = this.state;
 
     const rowSelection = {
@@ -459,7 +524,8 @@ class StudentTable extends Component {
     };
 
     const {
-      adminUsersData: { result = {}, totalUsers },
+      adminUsersData: result,
+      totalUsers,
       userOrgId,
       setShowActiveUsers,
       showActiveUsers,
@@ -480,7 +546,8 @@ class StudentTable extends Component {
       setAddStudentsToOtherClassVisiblity,
       putStudentsToOtherClass,
       fetchClassDetailsUsingCode,
-      features
+      features,
+      setProvider
     } = this.props;
 
     const actionMenu = (
@@ -504,10 +571,19 @@ class StudentTable extends Component {
               inviteStudents={this.sendInviteStudent}
               closeModal={this.closeInviteStudentModal}
               features={features}
+              setProvider={setProvider}
             />
           )}
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
-          <Checkbox checked={this.state.showActive} onChange={this.onChangeShowActive}>
+          <StyledSchoolSearch
+            placeholder="Search by name"
+            onSearch={this.handleSearchName}
+            onChange={this.onChangeSearch}
+          />
+          <Checkbox
+            checked={this.state.showActive}
+            onChange={this.onChangeShowActive}
+            disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+          >
             Show current users only
           </Checkbox>
           <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
@@ -533,6 +609,9 @@ class StudentTable extends Component {
                 </Option>
                 <Option value="username">Username</Option>
                 <Option value="email">Email</Option>
+                <Option value="status">Status</Option>
+                {/* TODO: Uncomment after backend is done */}
+                {/* <Option value="institutionNames">School</Option> */}
               </StyledFilterSelect>
               <StyledFilterSelect
                 placeholder="Select a value"
@@ -543,17 +622,31 @@ class StudentTable extends Component {
                   Select a value
                 </Option>
                 <Option value="eq">Equals</Option>
-                <Option value="cont">Contains</Option>
+                {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
               </StyledFilterSelect>
-              <StyledFilterInput
-                placeholder="Enter text"
-                onChange={e => this.changeFilterText(e, i)}
-                onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                onBlur={e => this.onBlurFilterText(e, i)}
-                value={filterStr ? filterStr : undefined}
-                disabled={isFilterTextDisable}
-                innerRef={this.filterTextInputRef[i]}
-              />
+              {!filterStrDD[filtersColumn] ? (
+                <StyledFilterInput
+                  placeholder="Enter text"
+                  onChange={e => this.changeFilterText(e, i)}
+                  onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                  onBlur={e => this.onBlurFilterText(e, i)}
+                  value={filterStr ? filterStr : undefined}
+                  disabled={isFilterTextDisable}
+                  innerRef={this.filterTextInputRef[i]}
+                />
+              ) : (
+                <StyledFilterSelect
+                  placeholder={filterStrDD[filtersColumn].placeholder}
+                  onChange={v => this.changeStatusValue(v, i)}
+                  value={filterStr !== "" ? filterStr : undefined}
+                >
+                  {filterStrDD[filtersColumn].list.map(item => (
+                    <Option key={item.title} value={item.value} disabled={item.disabled}>
+                      {item.title}
+                    </Option>
+                  ))}
+                </StyledFilterSelect>
+              )}
               {i < 2 && (
                 <StyledAddFilterButton
                   type="primary"
@@ -577,10 +670,10 @@ class StudentTable extends Component {
           dataSource={Object.values(result)}
           columns={this.columns}
           pagination={{
-            current: pageNo,
+            current: currentPage,
             total: totalUsers,
             pageSize: 25,
-            onChange: page => setPageNo(page)
+            onChange: page => this.setPageNo(page)
           }}
         />
         {editStudentModaVisible && (
@@ -597,8 +690,8 @@ class StudentTable extends Component {
         )}
         {addStudentModalVisible && (
           <AddStudentModal
-            handleAdd={this.addStudent}
-            handleCancel={this.closeAddStudentModal}
+            handleAdd={this.createUser}
+            handleCancel={this.closeAddUserModal}
             isOpen={addStudentModalVisible}
             submitted={false}
             wrappedComponentRef={this.saveFormRef}
@@ -607,7 +700,12 @@ class StudentTable extends Component {
           />
         )}
         {studentDetailsModalVisible && (
-          <StudentsDetailsModal modalVisible={studentDetailsModalVisible} closeModal={this.closeStudentsDetailModal} />
+          <StudentsDetailsModal
+            modalVisible={studentDetailsModalVisible}
+            closeModal={this.closeStudentsDetailModal}
+            role="student"
+            title="Student Details"
+          />
         )}
         {deactivateAdminModalVisible && (
           <TypeToConfirmModal
@@ -650,6 +748,7 @@ const enhance = compose(
       // classList: get(state, ["classesReducer", "data"], []),
       studentDetailsModalVisible: get(state, ["studentReducer", "studentDetailsModalVisible"], false),
       adminUsersData: getAdminUsersDataSelector(state),
+      totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
@@ -681,7 +780,8 @@ const enhance = compose(
       setRole: setRoleAction,
       setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
-      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction
+      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
+      setProvider: setMultiStudentsProviderAction
     }
   )
 );

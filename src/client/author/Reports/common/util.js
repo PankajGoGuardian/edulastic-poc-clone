@@ -2,6 +2,10 @@ import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, rou
 import next from "immer";
 
 export const percentage = (numerator, denominator, ceilCalculation = false) => {
+  if (numerator == 0 && denominator == 0) {
+    return 0;
+  }
+
   const calculatedPercentage = (numerator / denominator) * 100;
   return ceilCalculation ? ceil(calculatedPercentage) : calculatedPercentage;
 };
@@ -127,7 +131,10 @@ export const processTeacherIds = orgDataArr => {
 };
 
 export const getOverallScore = (metrics = []) =>
-  ceilingPercentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
+  ceilingPercentage(
+    sumBy(metrics, item => parseFloat(item.totalScore)),
+    sumBy(metrics, item => parseFloat(item.maxScore))
+  );
 
 export const filterAccordingToRole = (columns, role) =>
   filter(columns, column => !includes(column.hiddenFromRole, role));

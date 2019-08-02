@@ -71,6 +71,17 @@ const MathFormulaAnswerMethod = ({
     onChange("options", newOptions);
   }, [method]);
 
+  useEffect(() => {
+    let compareMethod = methodsConst.EQUIV_VALUE;
+    if (!item.showDropdown) {
+      compareMethod = methodsConst.EQUIV_SYMBOLIC;
+    }
+    onChange("method", compareMethod);
+    onChangeKeypad("units_us");
+    handleChangeAdditionals(`${method}_${index}`, "pop");
+    handleChangeAdditionals(`${compareMethod}_${index}`, "push");
+  }, [item.showDropdown]);
+
   const changeOptions = (prop, val) => {
     const newOptions = {
       ...options,
@@ -326,6 +337,7 @@ const MathFormulaAnswerMethod = ({
           <Col span={index === 0 ? 12 : 11}>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
+              hideKeypad={item.showDropdown}
               symbols={isShowDropdown ? ["basic"] : item.symbols}
               restrictKeys={isShowDropdown ? [] : restrictKeys}
               customKeys={isShowDropdown ? [] : customKeys}
@@ -445,9 +457,6 @@ MathFormulaAnswerMethod.propTypes = {
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
   handleChangeAdditionals: PropTypes.func,
-  // onAdd: PropTypes.func.isRequired,
-  // answer: PropTypes.object.isRequired,
-  // onAddIndex: PropTypes.number.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired
 };

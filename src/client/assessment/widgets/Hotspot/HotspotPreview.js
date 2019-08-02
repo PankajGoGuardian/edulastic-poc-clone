@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus, CorrectAnswersContainer } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, CorrectAnswersContainer, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
@@ -11,7 +11,7 @@ import BlockContainer from "./styled/BlockContainer";
 import { Svg } from "./styled/Svg";
 import { Polygon } from "./styled/Polygon";
 import { getFontSize } from "../../utils/helpers";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 const HotspotPreview = ({
   view,
@@ -65,7 +65,7 @@ const HotspotPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && (
           <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         )}

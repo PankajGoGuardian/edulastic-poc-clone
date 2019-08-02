@@ -19,6 +19,9 @@ const FlexContainer = styled.div`
   }
 
   @media (max-width: ${smallDesktopWidth}) {
+    & > * {
+      margin-right: 3px;
+    }
     svg {
       display: none;
     }

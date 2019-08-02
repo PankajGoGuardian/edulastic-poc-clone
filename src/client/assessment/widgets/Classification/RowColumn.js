@@ -19,7 +19,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import Question from "../../components/Question";
 
-const List = withAddButton(QuillSortableList);
+const List = QuillSortableList;
 const { Option } = Select;
 
 const actions = {
@@ -121,6 +121,15 @@ class RowColumn extends Component {
             draft.validation.alt_responses.forEach(ite => {
               ite.value = Array(...Array(initialLength)).map(() => []);
             });
+            if (prop === "column_count" && Array.isArray(draft.ui_style.column_titles)) {
+              draft.ui_style.column_titles = Array(val)
+                .fill("")
+                .map((el, i) => `COLUMN ${i + 1}`);
+            } else if (prop === "row_count" && Array.isArray(draft.ui_style.row_titles)) {
+              draft.ui_style.row_titles = Array(val)
+                .fill("")
+                .map((el, i) => `ROW ${i + 1}`);
+            }
           }
           draft.responseOptions = draft.responseOptions || [];
           draft.responseOptions = draft.responseOptions.map(option => null);

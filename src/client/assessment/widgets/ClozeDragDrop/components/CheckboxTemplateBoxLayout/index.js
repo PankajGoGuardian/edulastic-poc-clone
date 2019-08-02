@@ -161,9 +161,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             <div
               className={`
               response-btn 
-              ${choiceAttempted ? "check-answer" : ""} 
-              ${status}`}
-              style={btnStyle}
+              check-answer
+              ${choiceAttempted ? status : ""}`}
+              style={{ ...btnStyle, margin: "2px 4px" }}
             >
               <span className="index">{dropTargetIndex + 1}</span>
               <span className="text">{getLabel(dropTargetIndex)}</span>
@@ -182,9 +182,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             <div
               className={`
               response-btn 
-              ${choiceAttempted ? "check-answer" : ""}
-              ${status}`}
-              style={btnStyle}
+              check-answer
+              ${choiceAttempted ? status : ""}`}
+              style={{ ...btnStyle, margin: "2px 4px" }}
             >
               <span className="index">{dropTargetIndex + 1}</span>
               <span className="text">{getLabel(dropTargetIndex)}</span>

@@ -20,7 +20,7 @@ import {
   StyledClassName
 } from "./styled";
 
-import { AddUserFormModal as EditUserFormModal } from "../../../../common/components/AddUserModal/AddUserModal";
+import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
 
 import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
@@ -683,7 +683,7 @@ class StudentTable extends Component {
           }}
         />
         {editStudentModaVisible && (
-          <EditUserFormModal
+          <EditStudentFormModal
             showModal={editStudentModaVisible}
             role="student"
             formTitle="Update User"
@@ -692,6 +692,8 @@ class StudentTable extends Component {
             modalData={result[editStudentKey]}
             modalFunc={updateAdminUser}
             closeModal={this.closeEditStudentModal}
+            buttonText="Yes, Update"
+            isStudentEdit
           />
         )}
         {addStudentModalVisible && (
@@ -703,6 +705,7 @@ class StudentTable extends Component {
             wrappedComponentRef={this.saveFormRef}
             showClassCodeField={true}
             fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+            showTtsField
           />
         )}
         {studentDetailsModalVisible && (

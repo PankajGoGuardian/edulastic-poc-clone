@@ -20,7 +20,7 @@ import {
   StyledClassName
 } from "./styled";
 
-import { AddUserFormModal as EditTeacherModal } from "../../../../common/components/AddUserModal/AddUserModal";
+import { UserFormModal as EditTeacherModal } from "../../../../common/components/UserFormModal/UserFormModal";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";

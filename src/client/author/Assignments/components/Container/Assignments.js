@@ -62,7 +62,8 @@ const initialFilterState = {
   subject: "",
   termId: "",
   testType: "",
-  folderId: ""
+  folderId: "",
+  classId: ""
 };
 class Assignments extends Component {
   state = {

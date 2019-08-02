@@ -9,6 +9,7 @@ import { TypeToConfirmModal } from "@edulastic/common";
 
 import {
   StyledTableContainer,
+  StyledPagination,
   StyledControlDiv,
   StyledFilterSelect,
   StyledTable,
@@ -606,12 +607,16 @@ class TeacherTable extends Component {
           rowSelection={rowSelection}
           dataSource={Object.values(result)}
           columns={this.columns}
-          pagination={{
-            current: currentPage,
-            total: totalUsers,
-            pageSize: 25,
-            onChange: page => this.setPageNo(page)
-          }}
+          pagination={false}
+          hideOnSinglePage={true}
+        />
+        <StyledPagination
+          defaultCurrent={1}
+          current={currentPage}
+          pageSize={25}
+          total={totalUsers}
+          onChange={page => this.setPageNo(page)}
+          hideOnSinglePage={true}
         />
         {editTeacherModaVisible && (
           <EditTeacherModal

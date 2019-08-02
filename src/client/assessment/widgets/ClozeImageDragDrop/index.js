@@ -28,7 +28,9 @@ import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Annotations/Annotations";
 import Question from "../../components/Question";
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div`
+  overflow-x: auto;
+`;
 
 class ClozeImageDragDrop extends Component {
   static contextType = AnswerContext;

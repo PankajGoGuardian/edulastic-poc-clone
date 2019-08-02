@@ -24,7 +24,8 @@ const TableLayout = ({
   preview,
   onDrop,
   minWidth,
-  disableResponse
+  disableResponse,
+  rowHeader = ""
 }) => {
   let validIndex = -1;
   const styles = {
@@ -99,7 +100,9 @@ const TableLayout = ({
   return (
     <Table>
       <tr>
-        <th />
+        <th>
+          <CenteredText style={{ wordWrap: "break-word" }} dangerouslySetInnerHTML={{ __html: rowHeader }} />
+        </th>
         {columnTitles}
       </tr>
       {rows}

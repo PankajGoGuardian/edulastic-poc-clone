@@ -44,7 +44,8 @@ const ClassificationPreview = ({
   showQuestionNumber,
   disableResponse,
   changePreviewTab,
-  isReviewTab
+  isReviewTab,
+  setQuestionData
 }) => {
   const styles = {
     itemContainerStyle: {
@@ -303,6 +304,7 @@ const ClassificationPreview = ({
           disableResponse={disableResponse}
           isReviewTab={isReviewTab}
           view={view}
+          setQuestionData={setQuestionData}
         />
       )
   );
@@ -327,6 +329,7 @@ const ClassificationPreview = ({
       preview={preview}
       onDrop={onDrop}
       disableResponse={disableResponse}
+      rowHeader={rowHeader}
     />
   );
 

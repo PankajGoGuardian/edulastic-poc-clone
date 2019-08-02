@@ -4,7 +4,7 @@ import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash"
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, helpers, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
@@ -64,9 +64,6 @@ class ClozeDropDownDisplay extends Component {
 
   getBtnStyle = () => {
     const { uiStyle } = this.props;
-    const { placeholder } = uiStyle;
-    // responsecontainerindividuals;
-
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
       heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto"
@@ -76,8 +73,7 @@ class ClozeDropDownDisplay extends Component {
       width: 0,
       height: 0,
       widthpx: 0,
-      heightpx: 0,
-      placeholder
+      heightpx: 0
     };
     // if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
     //   const { widthpx, heightpx } = responsecontainerindividuals[dropTargetIndex];
@@ -96,9 +92,6 @@ class ClozeDropDownDisplay extends Component {
       btnStyle.height = responseBtnStyle.heightpx;
     } else {
       btnStyle.height = btnStyle.heightpx;
-    }
-    if (btnStyle && btnStyle.placeholder === undefined) {
-      btnStyle.placeholder = responseBtnStyle.placeholder;
     }
     return { btnStyle, responseBtnStyle };
   };
@@ -120,9 +113,10 @@ class ClozeDropDownDisplay extends Component {
       disableResponse,
       showQuestionNumber,
       userSelections,
+      isReviewTab,
+      theme,
       previewTab,
-      changePreviewTab,
-      isReviewTab
+      changePreviewTab
     } = this.props;
     const { parsedTemplate } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -131,7 +125,7 @@ class ClozeDropDownDisplay extends Component {
       responses = this.shuffleGroup(responses);
     }
     // Layout Options
-    const fontSize = getFontSize(this.props.theme.fontSize || "normal", true);
+    const fontSize = getFontSize(theme.fontSize || "normal", true);
     const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
@@ -182,24 +176,29 @@ class ClozeDropDownDisplay extends Component {
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
+    const QuestionContent = () => (
+      <ContentWrapper fontSize={fontSize}>
+        <JsxParser
+          bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
+          showWarnings
+          components={{
+            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
+            mathspan: MathSpanWrapper
+          }}
+          jsx={parsedTemplate}
+        />
+      </ContentWrapper>
+    );
+
     return (
       <div>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          {!question && <QuestionContent />}
         </QuestionTitleWrapper>
-        <ContentWrapper fontSize={fontSize}>
-          <JsxParser
-            bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
-            showWarnings
-            components={{
-              textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
-              mathspan: MathSpanWrapper
-            }}
-            jsx={parsedTemplate}
-          />
-        </ContentWrapper>
+        {question && <QuestionContent />}
         {answerBox}
       </div>
     );
@@ -224,11 +223,13 @@ ClozeDropDownDisplay.propTypes = {
   disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
   isReviewTab: PropTypes.bool,
-  showQuestionNumber: PropTypes.bool
+  showQuestionNumber: PropTypes.bool,
+  theme: PropTypes.object
 };
 
 ClozeDropDownDisplay.defaultProps = {
   options: {},
+  theme: {},
   onChange: () => {},
   preview: true,
   showAnswer: false,
@@ -260,13 +261,8 @@ const QuestionTitleWrapper = styled.div`
   display: flex;
 `;
 
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
-`;
-
 const ContentWrapper = styled.div`
   p {
-    font-size: ${({ fontSize }) => (fontSize ? fontSize : "auto")};
+    font-size: ${({ fontSize }) => fontSize || "auto"};
   }
 `;

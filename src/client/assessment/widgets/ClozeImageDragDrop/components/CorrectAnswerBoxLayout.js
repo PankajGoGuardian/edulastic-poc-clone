@@ -75,7 +75,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme, title }) => {
                   minWidth: "35px"
                 }}
               >
-                <MathSpan dangerouslySetInnerHTML={{ __html: result && result.join(", ") }} />
+                <MathSpan dangerouslySetInnerHTML={{ __html: result && result.value.join(", ") }} />
               </span>
             </div>
           </div>

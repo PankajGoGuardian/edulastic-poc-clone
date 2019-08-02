@@ -37,10 +37,6 @@ import {
   getPlaylistsLimitSelector,
   getPlaylistsPageSelector,
   receivePublishersAction,
-  getDefaultGradesSelector,
-  getDefaultSubjectSelector,
-  updateDefaultGradesAction,
-  updateDefaultSubjectAction,
   receiveRecentPlayListsAction
 } from "../../ducks";
 
@@ -51,8 +47,11 @@ import TestListFilters from "../../../TestList/components/Container/TestListFilt
 import {
   getInterestedCurriculumsSelector,
   getInterestedSubjectsSelector,
-  getInterestedGradesSelector
+  getInterestedGradesSelector,
+  getDefaultSubjectSelector,
+  getDefaultGradesSelector
 } from "../../../src/selectors/user";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 
 const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },

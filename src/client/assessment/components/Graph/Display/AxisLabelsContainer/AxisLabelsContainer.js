@@ -105,7 +105,8 @@ class AxisLabelsContainer extends PureComponent {
       graphType,
       setElementsStash,
       setCalculatedHeight,
-      disableResponse
+      disableResponse,
+      view
     } = this.props;
     this._graph = makeBorder(this._graphId, graphType);
 
@@ -142,7 +143,11 @@ class AxisLabelsContainer extends PureComponent {
         ...gridParams
       });
 
-      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, true, this.setMarks, setCalculatedHeight);
+      const _numberlineAxis = {
+        ...numberlineAxis,
+        shuffleAnswerChoices: view !== EDIT && numberlineAxis.shuffleAnswerChoices
+      };
+      this._graph.updateNumberlineSettings(canvas, _numberlineAxis, layout, true, this.setMarks, setCalculatedHeight);
 
       this._graph.setMarksDeleteHandler();
 
@@ -163,7 +168,8 @@ class AxisLabelsContainer extends PureComponent {
       disableResponse,
       previewTab,
       changePreviewTab,
-      elements
+      elements,
+      view
     } = this.props;
 
     if (this._graph) {
@@ -174,7 +180,18 @@ class AxisLabelsContainer extends PureComponent {
         !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
         !isEqual(layout, prevProps.layout)
       ) {
-        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, false, this.setMarks, setCalculatedHeight);
+        const _numberlineAxis = {
+          ...numberlineAxis,
+          shuffleAnswerChoices: view !== EDIT && numberlineAxis.shuffleAnswerChoices
+        };
+        this._graph.updateNumberlineSettings(
+          canvas,
+          _numberlineAxis,
+          layout,
+          false,
+          this.setMarks,
+          setCalculatedHeight
+        );
       }
 
       this.setElementsToGraph(prevProps);
@@ -219,6 +236,7 @@ class AxisLabelsContainer extends PureComponent {
     }
 
     if (disableResponse) {
+      this._graph.removeMarks();
       this._graph.removeMarksAnswers();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);
@@ -232,6 +250,7 @@ class AxisLabelsContainer extends PureComponent {
 
     if (previewTab === CHECK || previewTab === SHOW) {
       this._graph.removeMarks();
+      this._graph.removeMarksAnswers();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);
         const coloredElements = getColoredElems(elements, compareResult);
@@ -249,6 +268,7 @@ class AxisLabelsContainer extends PureComponent {
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.removeMarks();
+      this._graph.removeMarksAnswers();
       this._graph.renderMarks(list, elements);
     }
   };

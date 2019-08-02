@@ -55,11 +55,13 @@ const ClozeMathPreview = ({
   const _getAltMathAnswers = () =>
     get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
 
-  const _getDropDownAnswers = () => get(item, "validation.valid_dropdown.value", []);
-  const _getAltDropDownAnswers = () => get(item, "validation.alt_dropdowns", []).map(alt => get(alt, "value", []));
+  const _getDropDownAnswers = () => get(item, "validation.valid_response.dropdown.value", []);
+  const _getAltDropDownAnswers = () =>
+    get(item, "validation.alt_responses", []).map(alt => get(alt, "dropdown.value", []));
 
-  const _getTextInputAnswers = () => get(item, "validation.valid_inputs.value", []);
-  const _getAltInputsAnswers = () => get(item, "validation.alt_inputs", []).map(alt => get(alt, "value", []));
+  const _getTextInputAnswers = () => get(item, "validation.valid_response.textinput.value", []);
+  const _getAltInputsAnswers = () =>
+    get(item, "validation.alt_responses", []).map(alt => get(alt, "textinput.value", []));
 
   const handleAddAnswer = (answer, answerType, id) => {
     let newAnswers = cloneDeep(userAnswer);
@@ -111,26 +113,31 @@ const ClozeMathPreview = ({
   const testUserAnswer = {};
   if (testItem) {
     const keynameMap = {
-      valid_inputs: "inputs",
-      valid_dropdown: "dropDowns",
-      valid_response: "maths"
+      textinput: "inputs",
+      dropdown: "dropDowns",
+      value: "maths"
     };
 
-    ["valid_inputs", "valid_dropdown", "valid_response"].forEach(propName => {
-      testUserAnswer[keynameMap[propName]] = {};
-      if (!item.validation[propName] || !item.validation[propName].value) return;
-      item.validation[propName].value.forEach(answerItem => {
-        if (propName === "valid_response") {
-          testUserAnswer[keynameMap[propName]][answerItem[0].id] = {
-            value: answerItem[0].value
-          };
-        } else {
-          testUserAnswer[keynameMap[propName]][answerItem.id] = {
-            value: answerItem.value
-          };
+    if (item.validation.valid_response) {
+      Object.keys(item.validation.valid_response).forEach(keyName => {
+        if (keynameMap[keyName]) {
+          testUserAnswer[keynameMap[keyName]] = {};
+          if (keyName !== "value") {
+            item.validation.valid_response[keyName].value.forEach(answerItem => {
+              testUserAnswer[keynameMap[keyName]][answerItem.id] = {
+                value: answerItem.value
+              };
+            });
+          } else {
+            item.validation.valid_response.value.forEach(answerItem => {
+              testUserAnswer[keynameMap[keyName]][answerItem[0].id] = {
+                value: answerItem[0].value
+              };
+            });
+          }
         }
       });
-    });
+    }
   }
 
   return (

@@ -150,10 +150,10 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
-  const handleAllowedVariables = variables => {
+  const handleAllowedOptions = (option, variables) => {
     setQuestionData(
       produce(item, draft => {
-        draft.allowedVariables = variables;
+        draft[option] = variables;
         updateVariables(draft, latexKeys);
       })
     );
@@ -183,7 +183,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
           <MathFormulaWithPoints
             item={item}
             onChange={handleChangeCorrectMethod}
-            onChangeAllowedVars={handleAllowedVariables}
+            onChangeAllowedOptions={handleAllowedOptions}
             onChangeShowDropdown={handleShowDropdown}
             onAdd={handleAddCorrectMethod}
             onDelete={handleDeleteCorrectMethod}
@@ -203,7 +203,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
                   key={i}
                   item={item}
                   onChange={handleChangeAltMethod(i)}
-                  onChangeAllowedVars={handleAllowedVariables}
+                  onChangeAllowedOptions={handleAllowedOptions}
                   onChangeShowDropdown={handleShowDropdown}
                   onAdd={handleAddAltMethod(i)}
                   onDelete={handleDeleteAltMethod(i)}

@@ -48,7 +48,7 @@ import {
   MenuItems,
   CaretUp
 } from "./styled";
-import { getUserRole } from "../../../src/selectors/user";
+import { getUserRole, getGroupList } from "../../../src/selectors/user";
 
 const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
@@ -312,11 +312,14 @@ class LeftFilter extends React.Component {
   };
 
   render() {
-    const { termsData, selectedRows, folders, filterState, isAdvancedView, userRole } = this.props;
+    const { termsData, selectedRows, folders, filterState, isAdvancedView, userRole, classList } = this.props;
     const { visibleModal, folderName, selectedFolder } = this.state;
-    const { subject, grades, termId, testType } = filterState;
+    const { subject, grades, termId, testType, classId } = filterState;
     const roleBasedTestType = userRole === "teacher" ? testTypes : AdminTestTypes;
     const oldFolderName = selectedFolder ? folders.find(folder => selectedFolder === folder._id).folderName : "";
+    const classListByTerm = classList.filter(item => item.termId === termId || !termId);
+    const classListActive = classListByTerm.filter(item => item.active === 1);
+    const classListArchive = classListByTerm.filter(item => item.active === 0);
     return (
       <FilterContainer>
         <FolderActionModal
@@ -431,6 +434,35 @@ class LeftFilter extends React.Component {
                 </Select.Option>
               ))}
             </Select>
+            {userRole === "teacher" && (
+              <>
+                <StyledBoldText>Class</StyledBoldText>
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  mode="default"
+                  placeholder="All"
+                  value={classId}
+                  onChange={this.handleChange("classId")}
+                >
+                  <Select.Option key={"all"} value={""}>
+                    {"All classes"}
+                  </Select.Option>
+                  {classListActive.map(item => (
+                    <Select.Option key={item._id} value={item._id}>
+                      {item.name}
+                    </Select.Option>
+                  ))}
+                  {classListArchive.map(item => (
+                    <Select.Option key={item._id} value={item._id}>
+                      <span style={{ marginRight: "15px" }}>{item.name}</span>
+                      <i class="fa fa-archive" />
+                    </Select.Option>
+                  ))}
+                </Select>
+              </>
+            )}
+
             <NewFolderButton
               onClick={() => this.showModal("newFolder")}
               color="secondary"
@@ -483,7 +515,8 @@ export default connect(
     folders: getFoldersSelector(state),
     termsData: get(state, "user.user.orgData.terms", []),
     folderData: getFolderSelector(state),
-    userRole: getUserRole(state)
+    userRole: getUserRole(state),
+    classList: getGroupList(state)
   }),
   {
     loadAssignments: receiveAssignmentsAction,

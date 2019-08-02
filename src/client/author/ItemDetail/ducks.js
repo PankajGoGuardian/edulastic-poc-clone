@@ -73,8 +73,6 @@ export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
 export const ITEM_SET_REDIRECT_TEST = "[itemDetail] set redirect test id";
 export const ITEM_CLEAR_REDIRECT_TEST = "[itemDetail] clear redirect test id";
 export const DELETE_ITEM_DETAIL_WIDGET_APPLY = "[itemDetail] delete widget apply";
-export const UPDATE_DEFAULT_GRADES = "[itemDetail] update default grades";
-export const UPDATE_DEFAULT_SUBJECT = "[itemDetail] update default subject";
 
 export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing test id";
 export const SHOW_PUBLISH_WARNING_MODAL = "[itemDetail] show publish warning modal";
@@ -169,16 +167,6 @@ export const updateTestItemStatusAction = status => ({
   payload: status
 });
 
-export const updateDefaultSubjectAction = subject => ({
-  type: UPDATE_DEFAULT_SUBJECT,
-  payload: subject
-});
-
-export const updateDefaultGradesAction = grades => ({
-  type: UPDATE_DEFAULT_GRADES,
-  payload: grades
-});
-
 export const clearItemDetailAction = createAction(CLEAR_ITEM_DETAIL);
 
 export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
@@ -197,14 +185,6 @@ export const saveCurrentEditingTestIdAction = id => ({
 
 export const stateSelector = state => state.itemDetail;
 
-export const getDefaultGradesSelector = createSelector(
-  stateSelector,
-  state => state.defaultGrades
-);
-export const getDefaultSubjectSelector = createSelector(
-  stateSelector,
-  state => state.defaultSubject
-);
 export const getIsNewItemSelector = createSelector(
   stateSelector,
   state => !get(state, "item.version", 0)
@@ -351,13 +331,6 @@ const initialState = {
   updateError: null,
   dragging: false,
   redirectTestId: null,
-  defaultGrades:
-    getFromLocalStorage("defaultGrades") !== null
-      ? getFromLocalStorage("defaultGrades")
-        ? getFromLocalStorage("defaultGrades").split(",")
-        : []
-      : getFromLocalStorage("defaultGrades"),
-  defaultSubject: getFromLocalStorage("defaultSubject"),
   currentEditingTestId: null,
   showWarningModal: false
 };
@@ -525,16 +498,6 @@ export function reducer(state = initialState, { type, payload }) {
           status: payload
         }
       };
-    case UPDATE_DEFAULT_SUBJECT:
-      return {
-        ...state,
-        defaultSubject: payload
-      };
-    case UPDATE_DEFAULT_GRADES:
-      return {
-        ...state,
-        defaultGrades: payload
-      };
     case SAVE_CURRENT_EDITING_TEST_ID:
       return {
         ...state,
@@ -697,9 +660,9 @@ export function* updateItemSaga({ payload }) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        put(push(`/author/tests/${payload.testId}`));
+        yield put(push(`/author/tests/${payload.testId}`));
       }
-      put(changeViewAction("edit"));
+      yield put(changeViewAction("edit"));
       return;
     }
   } catch (err) {
@@ -769,7 +732,6 @@ function* publishTestItemSaga({ payload }) {
     yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
-    yield call(message.success, "Item created successfully");
 
     if (redirectTestId) {
       yield delay(1500);
@@ -779,6 +741,7 @@ function* publishTestItemSaga({ payload }) {
       // on publishing redirect to items bank.
       yield put(push("/author/items"));
     }
+    yield call(message.success, "Item created successfully");
   } catch (e) {
     console.log("publish error", e);
     const errorMessage = "publish failed";

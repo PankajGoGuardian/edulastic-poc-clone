@@ -1,6 +1,6 @@
 import React from "react";
-import styled from "styled-components";
-import { Select, Pagination } from "antd";
+import styled, { css } from "styled-components";
+import { Select } from "antd";
 import { themeColor } from "@edulastic/colors";
 
 import { connect } from "react-redux";
@@ -9,50 +9,38 @@ import { getCurrentItemSelector, getItemCountSelector, setCurrentItemAction } fr
 
 const { Option } = Select;
 
-/*
- * @params count {Number} - create options based on the count
- */
-const createOptions = count => {
-  const options = [];
-  for (let i = 1; i <= count; i++) {
-    options.push(`Question ${i}/${count}`);
-  }
-  return options;
-};
-
-const QuestionSelect = ({ count, current, setCurrentItem }) => {
-  const options = createOptions(count || 1);
-
-  const updatePagination = current => {
-    if (current > 0) {
-      setCurrentItem(current - 1);
-    }
-  };
-
-  return (
-    <QuestionListWrapper>
-      <Select
-        value={current}
-        onChange={val => {
-          setCurrentItem(val);
-        }}
-      >
-        {options.map((option, index) => (
-          <Option key={index} value={index}>
-            {option}
-          </Option>
-        ))}
-      </Select>
-      <Pagination
-        onChange={updatePagination}
-        current={current + 1}
-        total={options.length}
-        showTotal={total => <b>{`${current + 1} out of ${total} questions`}</b>}
-        pageSize={1}
-      />
-    </QuestionListWrapper>
-  );
-};
+const QuestionSelect = ({ count, current, setCurrentItem }) => (
+  <QuestionListWrapper>
+    <Select
+      value={current}
+      onChange={val => {
+        setCurrentItem(val);
+      }}
+    >
+      {[...new Array(count)].map((item, index) => (
+        <Option key={index} value={index}>
+          {`Question ${index + 1}/${count}`}
+        </Option>
+      ))}
+    </Select>
+    <Navcontainer>
+      {current > 0 ? (
+        <PreviousBtn onClick={() => setCurrentItem(current - 1)}>
+          <i class="fa fa-angle-left" />
+        </PreviousBtn>
+      ) : (
+        ""
+      )}
+      {current < count - 1 ? (
+        <NextBtn onClick={() => setCurrentItem(current + 1)}>
+          <i class="fa fa-angle-right" />
+        </NextBtn>
+      ) : (
+        ""
+      )}
+    </Navcontainer>
+  </QuestionListWrapper>
+);
 export default connect(
   state => ({
     current: getCurrentItemSelector(state),
@@ -103,4 +91,34 @@ const QuestionListWrapper = styled.div`
     align-items: center;
     margin-left: 10px;
   }
+`;
+
+const Navcontainer = styled.div``;
+
+const sharedBtnStyle = css`
+  background-color: rgba(101, 209, 135, 0.5);
+  position: fixed;
+  top: 48%;
+  z-index: 1;
+  font-size: 40px;
+  cursor: pointer;
+  color: #fff;
+  border-radius: 50%;
+  width: 160px;
+  height: 160px;
+  padding-top: 50px;
+  &:hover {
+    background-color: ${themeColor};
+  }
+`;
+const PreviousBtn = styled.nav`
+  ${sharedBtnStyle}
+  padding-left: 105px;
+  left: 10px;
+`;
+
+const NextBtn = styled.nav`
+  ${sharedBtnStyle}
+  right: -100px;
+  padding-left: 30px;
 `;

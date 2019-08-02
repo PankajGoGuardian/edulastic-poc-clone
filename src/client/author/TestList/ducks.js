@@ -10,15 +10,11 @@ import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 export const RECEIVE_TESTS_REQUEST = "[tests] receive list request";
 export const RECEIVE_TESTS_SUCCESS = "[tests] receive list success";
 export const RECEIVE_TESTS_ERROR = "[tests] receive list error";
-export const UPDATE_DEFAULT_GRADES = "[tests] update default grades";
-export const UPDATE_DEFAULT_SUBJECT = "[tests] update default subject";
 
 // actions
 export const receiveTestsAction = createAction(RECEIVE_TESTS_REQUEST);
 export const receiveTestSuccessAction = createAction(RECEIVE_TESTS_SUCCESS);
 export const receiveTestErrorAction = createAction(RECEIVE_TESTS_ERROR);
-export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
-export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 
 function* receiveTestsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
@@ -54,12 +50,6 @@ const initialState = {
   page: 1,
   limit: 20,
   count: 0,
-  defaultGrades: getFromLocalStorage("defaultGrades")
-    ? getFromLocalStorage("defaultGrades")
-      ? getFromLocalStorage("defaultGrades").split(",")
-      : []
-    : getFromLocalStorage("defaultGrades"),
-  defaultSubject: getFromLocalStorage("defaultSubject"),
   loading: false
 };
 
@@ -84,17 +74,6 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entities: [payload.entity, ...state.entities]
       };
-    case UPDATE_DEFAULT_SUBJECT:
-      return {
-        ...state,
-        defaultSubject: payload
-      };
-    case UPDATE_DEFAULT_GRADES:
-      return {
-        ...state,
-        defaultGrades: payload
-      };
-
     default:
       return state;
   }
@@ -122,12 +101,4 @@ export const getTestsLimitSelector = createSelector(
 export const getTestsCountSelector = createSelector(
   stateSelector,
   state => state.count
-);
-export const getDefaultGradesSelector = createSelector(
-  stateSelector,
-  state => state.defaultGrades
-);
-export const getDefaultSubjectSelector = createSelector(
-  stateSelector,
-  state => state.defaultSubject
 );

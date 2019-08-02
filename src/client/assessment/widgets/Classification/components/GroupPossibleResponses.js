@@ -11,6 +11,7 @@ import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
 
 import Group from "./Group";
+import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 
 const List = withAddButton(QuillSortableList);
 
@@ -30,7 +31,6 @@ class GroupPossibleResponses extends Component {
 
   render() {
     const { checkboxChange, checkboxVal, items, t, firstFocus, onAdd, ...restProps } = this.props;
-
     return (
       <Fragment>
         <Subtitle margin="0 0 15px">{t("component.classification.possibleRespTitle")}</Subtitle>
@@ -80,6 +80,8 @@ class GroupPossibleResponses extends Component {
                   onRemove={restProps.onRemove}
                   useDragHandle
                   columns={1}
+                  imageDefaultWidth={IMAGE_LIST_DEFAULT_WIDTH}
+                  t={t}
                 />
               </Col>
             </Row>

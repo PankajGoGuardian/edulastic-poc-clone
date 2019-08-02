@@ -18,7 +18,9 @@ const Draggable = ({
   showDashedBorder,
   transparentBackground,
   showIndex = true,
-  showBorder
+  showBorder,
+  responseHeight,
+  responseWidth
 }) => (
   <CustomRnd
     background={background}
@@ -30,7 +32,7 @@ const Draggable = ({
     onDrag={onDrag}
     onResize={onResize}
     position={{ x: response.left, y: response.top }}
-    size={{ width: response.width, height: response.height }}
+    size={{ width: responseWidth, height: responseHeight }}
   >
     <FlexContainer justifyContent="space-between" style={{ height: "100%" }}>
       {showIndex && <IndexBox isActive={response.active}>{index}</IndexBox>}
@@ -59,7 +61,9 @@ Draggable.propTypes = {
   transparentBackground: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   showBorder: PropTypes.bool,
-  showIndex: PropTypes.bool
+  showIndex: PropTypes.bool,
+  responseHeight: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired,
+  responseWidth: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired
 };
 
 Draggable.defaultProps = {

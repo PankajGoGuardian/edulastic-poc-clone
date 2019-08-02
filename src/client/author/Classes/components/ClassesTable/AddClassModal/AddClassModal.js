@@ -39,7 +39,9 @@ class AddClassModal extends Component {
           tags,
           courseId,
           // here multiple grades has to be sent as a comma separated string
-          grades: grades
+          grades: grades,
+          // not implemented in add model so sending empty
+          standardSets: []
         };
         this.props.addClass(createClassData);
       }
@@ -52,7 +54,7 @@ class AddClassModal extends Component {
 
   fetchSchool = async value => {
     // here searchParams is added only when value exists
-    const searchParam = value ? { search: { name: { type: "cont", value } } } : {};
+    const searchParam = value ? { search: { name: { type: "cont", value: [value] } } } : {};
     this.setState({ schoolList: [], fetchingSchool: true });
     const schoolListData = await schoolApi.getSchools({
       districtId: this.props.userOrgId,
@@ -106,7 +108,7 @@ class AddClassModal extends Component {
     value &&
       Object.assign(searchData, {
         search: {
-          username: { type: "cont", value }
+          username: { type: "cont", value: [value] }
         }
       });
 

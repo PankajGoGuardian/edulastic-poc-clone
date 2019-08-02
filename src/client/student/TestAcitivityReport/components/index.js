@@ -12,7 +12,6 @@ import MainContainer from "../../styled/mainContainer";
 //actions
 import { loadTestActivityReportAction } from "../ducks";
 import { setCurrentItemAction } from "../../sharedDucks/TestItem";
-import { getAssignmentsSelector } from "../../Reports/ducks";
 
 const ReportListContainer = ({
   flag,

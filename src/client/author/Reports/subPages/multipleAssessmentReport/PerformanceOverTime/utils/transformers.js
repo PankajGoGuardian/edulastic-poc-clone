@@ -1,21 +1,33 @@
 import next from "immer";
 import moment from "moment";
 import { groupBy, sumBy, round, maxBy, minBy, get, map, head, forEach, values, reduce, capitalize } from "lodash";
-import { percentage } from "../../../../common/util";
-import { getLeastProficiencyBand } from "../../common/utils/trend";
+import { percentage, getLeastProficiencyBand } from "../../../../common/util";
 
 export const convertToBandData = (metricInfo = [], bandInfo = []) => {
   const leastProficiency = getLeastProficiencyBand(bandInfo);
 
-  const convertedBandData = map(metricInfo, metric => {
-    let scaleData = {
+  // add default scale information
+  const defaultScaleData = reduce(
+    bandInfo,
+    (result, band) => {
+      result[band.name] = 0;
+      result[`${band.name} Percentage`] = 0;
+      return result;
+    },
+    {
       aboveStandard: 0,
-      belowStandard: 0
-    };
+      belowStandard: 0,
+      "aboveStandard Percentage": 0,
+      "belowStandard Percentage": 0
+    }
+  );
+
+  const convertedBandData = map(metricInfo, metric => {
+    let scaleData = { ...defaultScaleData };
 
     forEach(metric.records, record => {
       scaleData[record.bandName] = parseInt(record.totalAssigned);
-      const calculatedPercentage = round(percentage(parseInt(record.totalAssigned), metric.totalAssigned));
+      const calculatedPercentage = round(percentage(parseInt(record.totalAssigned), parseInt(metric.totalAssigned)));
       scaleData[`${record.bandName} Percentage`] =
         record.bandName == leastProficiency.name ? -calculatedPercentage : calculatedPercentage;
 
@@ -84,8 +96,9 @@ export const parseData = (rawData = {}) => {
   const parsedData = map(groupedTestsByType, records => {
     const { assessmentDate, testId, testType } = records[0];
     const totalAssigned = sumBy(records, test => parseInt(test.totalAssigned));
-    const totalScore = sumBy(records, "totalScore");
-    const totalMaxScore = sumBy(records, test => test.maxScore * parseInt(test.totalAssigned));
+    const totalScore = sumBy(records, test => parseFloat(test.totalScore || 0));
+    const totalMaxScore = sumBy(records, test => parseFloat(test.maxScore || 0) * parseInt(test.totalAssigned));
+
     const score = round(percentage(totalScore, totalMaxScore));
     const rawScore = totalScore / totalAssigned;
     const assessmentDateFormatted = assessmentDate ? moment(parseInt(assessmentDate)).format("MMMM DD, YYYY") : "N/A";

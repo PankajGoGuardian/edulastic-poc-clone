@@ -1,23 +1,27 @@
-import { white, mobileWidth, tabletWidth } from "@edulastic/colors";
+import { white, mobileWidth, tabletWidth, smallDesktopWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import { IconMenuOpenClose } from "@edulastic/icons";
 
 export const Container = styled.div`
-  position: absolute;
+  position: fixed;
   top: 0px;
-  left: 0px;
+  left: 100px;
   right: 0px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: ${props => props.theme.header.headerBgColor};
-  padding: 20px 30px;
+  padding: 0px 30px;
   height: 96px;
   z-index: 10;
 
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 60px;
+  }
   @media (max-width: ${mobileWidth}) {
     margin-bottom: 30px;
     padding: 25px 26px 0;
+    left: 0px;
   }
 `;
 
@@ -27,6 +31,9 @@ export const Title = styled.div`
   font-weight: bold;
   line-height: 1.36;
 
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 18px;
+  }
   @media (max-width: ${mobileWidth}) {
     padding-left: 0;
     margin-top: -5px;

@@ -119,7 +119,9 @@ class InviteMultipleStudentModal extends Component {
   };
 
   handleChange = value => {
+    const { setProvider } = this.props;
     this.setState({ curSel: value });
+    setProvider(value);
   };
 
   handleSearch = async e => {
@@ -134,7 +136,7 @@ class InviteMultipleStudentModal extends Component {
     searchKey &&
       Object.assign(searchData, {
         search: {
-          email: { type: "cont", value: searchKey }
+          email: { type: "cont", value: [searchKey] }
         }
       });
     if (searchKey.length > 0) {

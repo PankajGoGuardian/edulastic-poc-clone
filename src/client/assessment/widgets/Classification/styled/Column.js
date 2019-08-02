@@ -14,7 +14,7 @@ export const Column = styled.div`
 `;
 
 export const ColumnLabel = styled.div`
-  background-color: #ececec;
+  background-color: ${({ transparent }) => (transparent ? "transparent" : "#ececec")};
   font-weight: 600;
   text-align: center;
   border: 1px solid #ddd;

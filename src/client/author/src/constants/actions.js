@@ -120,6 +120,7 @@ export const REMOVE_EXISTED_ALIGNMENT = "[question alignment] remove existed ali
 export const SET_ALIGNMENT_FROM_QUESTION = "[question alignment] set alignment from question";
 export const UPDATE_DICT_ALIGNMENT = "[dictionaries] update alignment";
 export const UPDATE_RECENT_STANDARDS = "[dictionaries] update recent standards";
+export const UPDATE_DEFAULT_CURRICULUM = "[dictionaries] update default curriculum";
 
 // ClassResponse
 export const RECEIVE_CLASS_RESPONSE_REQUEST = "[classresponses] receive list request";

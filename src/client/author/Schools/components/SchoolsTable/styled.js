@@ -1,11 +1,13 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Icon, Pagination, Dropdown } from "antd";
+import { Button, Select, Input, Icon, Pagination, Dropdown } from "antd";
+import { StyledTable as Table } from "../../../../common/styled";
 const Search = Input.Search;
 
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 20px;
 
   .ant-table-wrapper {
     width: 100%;
@@ -25,10 +27,17 @@ export const StyledTable = styled(Table)`
     }
   }
   .ant-table {
+    table-layout: fixed;
     &-tbody,
     &-thead {
       & > tr :nth-last-of-type(-n + 4) {
         text-align: end;
+      }
+    }
+
+    .ant-table-thead,
+    .ant-table-tbody {
+      tr {
       }
     }
   }

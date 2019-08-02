@@ -8,6 +8,7 @@ import next from "immer";
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessmentReport";
 import { StandardsMasteryReportContainer } from "./subPages/standardsMasteryReport";
+import { StudentProfileReportContainer } from "./subPages/studentProfileReport";
 
 import { StyledContainer, StyledCard, PrintableScreen, StyledReportsContentContainer } from "./common/styled";
 
@@ -202,6 +203,39 @@ const Container = props => {
           path={`/author/reports/standards-performance-summary`}
           render={_props => (
             <StandardsMasteryReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/student-mastery-profile/student/`}
+          render={_props => (
+            <StudentProfileReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/student-assessment-profile/student/`}
+          render={_props => (
+            <StudentProfileReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/student-profile-summary/student/`}
+          render={_props => (
+            <StudentProfileReportContainer
               {..._props}
               showFilter={showFilter}
               loc={props.match.params.reportType}

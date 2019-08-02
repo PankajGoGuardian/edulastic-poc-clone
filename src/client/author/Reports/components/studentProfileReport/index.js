@@ -8,17 +8,17 @@ const links = [
   {
     key: "studentProfileSummary",
     title: "Student Profile Summary",
-    location: "/author/reports"
+    location: "/author/reports/student-profile-summary/student/"
   },
   {
     key: "studentMasteryProfile",
     title: "Student Mastery Profile",
-    location: "/author/reports"
+    location: "/author/reports/student-mastery-profile/student/"
   },
   {
     key: "studentAssessmentProfile",
     title: "Student Assessment Profile",
-    location: "/author/reports"
+    location: "/author/reports/student-assessment-profile/student/"
   }
 ];
 

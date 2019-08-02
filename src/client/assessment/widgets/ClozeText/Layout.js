@@ -264,7 +264,7 @@ class Layout extends Component {
               checked={!!uiStyle.globalSettings}
               onChange={e => changeUiStyle("globalSettings", e.target.checked)}
             >
-              {t("component.options.globalSettings")}
+              {t("component.options.autoexpandoninput")}
             </Checkbox>
           </Row>
           <Row gutter={20}>

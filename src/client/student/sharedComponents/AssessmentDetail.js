@@ -24,60 +24,70 @@ const AssessmentDetails = ({
   startDate,
   safeBrowser,
   graded = assignmentStatus.GRADED,
-  absent
-}) => (
-  <Wrapper>
-    <Col>
-      <ImageWrapper>
-        <Thumbnail src={thumbnail} alt="" />
-      </ImageWrapper>
-    </Col>
-    <CardDetails>
-      <CardTitle>
-        {title}
-        <TestType type={testType}>
-          {testType === PRACTICE
-            ? t("common.practice")
-            : testType === ASSESSMENT
-            ? t("common.assessment")
-            : t("common.common")}
-        </TestType>
-      </CardTitle>
-      <CardDate>
-        <Icon type={theme.assignment.cardTimeIconType} />
-        <DueDetails data-cy="date">
-          {type === "assignment"
-            ? new Date(startDate) > new Date()
-              ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
-              : t("common.dueOn")
-            : t("common.finishedIn")}{" "}
-          {formatTime(dueDate)}
-        </DueDetails>
-      </CardDate>
-      <StatusWrapper>
-        {type === "assignment" ? (
-          <React.Fragment>
-            <StatusButton isSubmitted={started || resume} assignment={type === "assignment"}>
-              <span data-cy="status">{started || resume ? t("common.inProgress") : t("common.notStartedTag")}</span>
+  absent,
+  isPaused
+}) => {
+  const getAssignmentStatus = () => {
+    if (started || resume) {
+      return `${t("common.inProgress")} ${isPaused ? " (PAUSED)" : ""}`;
+    }
+    return `${t("common.notStartedTag")} ${isPaused ? " (PAUSED)" : ""}`;
+  };
+
+  return (
+    <Wrapper>
+      <Col>
+        <ImageWrapper>
+          <Thumbnail src={thumbnail} alt="" />
+        </ImageWrapper>
+      </Col>
+      <CardDetails>
+        <CardTitle>
+          {title}
+          <TestType type={testType}>
+            {testType === PRACTICE
+              ? t("common.practice")
+              : testType === ASSESSMENT
+              ? t("common.assessment")
+              : t("common.common")}
+          </TestType>
+        </CardTitle>
+        <CardDate>
+          <Icon type={theme.assignment.cardTimeIconType} />
+          <DueDetails data-cy="date">
+            {type === "assignment"
+              ? new Date(startDate) > new Date()
+                ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
+                : t("common.dueOn")
+              : t("common.finishedIn")}{" "}
+            {formatTime(dueDate)}
+          </DueDetails>
+        </CardDate>
+        <StatusWrapper>
+          {type === "assignment" ? (
+            <React.Fragment>
+              <StatusButton isPaused={isPaused} isSubmitted={started || resume} assignment={type === "assignment"}>
+                <span data-cy="status">{getAssignmentStatus()}</span>
+              </StatusButton>
+              {safeBrowser && (
+                <SafeExamIcon
+                  src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
+                  title={t("common.safeExamToolTip")}
+                />
+              )}
+            </React.Fragment>
+          ) : (
+            <StatusButton isSubmitted={started} graded={graded} absent={absent}>
+              <span data-cy="status">
+                {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.absent")}
+              </span>
             </StatusButton>
-            {safeBrowser && (
-              <SafeExamIcon
-                src="http://cdn.edulastic.com/JS/webresources/images/as/seb.png"
-                title={t("common.safeExamToolTip")}
-              />
-            )}
-          </React.Fragment>
-        ) : (
-          <StatusButton isSubmitted={started} graded={graded} absent={absent}>
-            <span data-cy="status">
-              {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.absent")}
-            </span>
-          </StatusButton>
-        )}
-      </StatusWrapper>
-    </CardDetails>
-  </Wrapper>
-);
+          )}
+        </StatusWrapper>
+      </CardDetails>
+    </Wrapper>
+  );
+};
 
 AssessmentDetails.propTypes = {
   test: PropTypes.object,
@@ -259,7 +269,7 @@ const StatusWrapper = styled.div`
   align-items: center;
 `;
 const StatusButton = styled.div`
-  width: 121px;
+  width: ${props => (props.isPaused ? "auto" : "121px")};
   height: 23.5px;
   border-radius: 5px;
   background-color: ${props => getStatusBgColor(props, "Bg")};

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { dashBorderColor, themeColorLight, darkBlue } from "@edulastic/colors";
+import { dashBorderColor, themeColorLight, darkBlue, red } from "@edulastic/colors";
 import { IconTrash as Icon } from "@edulastic/icons";
 
 export const Line = styled.line`
@@ -25,13 +25,14 @@ export const Bar = styled.rect`
   transition: fill 0.25s linear;
 `;
 
-const getRightColor = (hoverState, color) => (hoverState ? darkBlue : color || themeColorLight);
+const getRightColor = (hoverState, color, deleteMode = false) =>
+  hoverState ? (deleteMode ? red : darkBlue) : color || themeColorLight;
 
 export const ActiveBar = styled.rect`
   cursor: pointer;
   z-index: 10;
-  stroke: ${({ hoverState, color }) => getRightColor(hoverState, color)};
-  fill: ${({ hoverState, color }) => getRightColor(hoverState, color)};
+  stroke: ${({ hoverState, color, deleteMode }) => getRightColor(hoverState, color, deleteMode)};
+  fill: ${({ hoverState, color, deleteMode }) => getRightColor(hoverState, color, deleteMode)};
   transition: fill 0.25s linear;
 `;
 

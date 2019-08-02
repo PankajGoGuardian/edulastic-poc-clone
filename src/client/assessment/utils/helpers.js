@@ -28,6 +28,12 @@ export const getStylesFromUiStyleToCssStyle = ui_style => {
       case "min_width":
         cssStyles.minWidth = `${value}px`;
         break;
+      case "widthpx":
+        cssStyles.width = `${value}px`;
+        break;
+      case "heightpx":
+        cssStyles.height = `${value}px`;
+        break;
       case "transparent_background":
         if (value) cssStyles.background = "transparent";
         break;

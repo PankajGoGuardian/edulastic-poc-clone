@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep, isUndefined, get, maxBy, minBy, findIndex } from "lodash";
+import { cloneDeep, flattenDeep, isUndefined, get, maxBy, minBy, uniqBy } from "lodash";
 import { withTheme } from "styled-components";
-import { InstructorStimulus, Stimulus, MathSpan } from "@edulastic/common";
+import { InstructorStimulus, Stimulus, MathSpan, QuestionNumberLabel } from "@edulastic/common";
 import { response, clozeImage } from "@edulastic/constants";
 import striptags from "striptags";
 
@@ -12,7 +12,7 @@ import DragItem from "./components/DragItem";
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -27,9 +27,25 @@ import AnswerContainer from "./AnswerContainer";
 
 import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
 
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+import { IconWrapper } from "./components/CheckboxTemplateBoxLayout/styled/IconWrapper";
+import { RightIcon } from "./components/CheckboxTemplateBoxLayout/styled/RightIcon";
+import { WrongIcon } from "./components/CheckboxTemplateBoxLayout/styled/WrongIcon";
 
-const isColliding = (responseRect, answerRect) => {
+const isColliding = (responseContainer, answer) => {
+  const { height, width, left: responseLeft, top: responseTop } = responseContainer;
+  const responseRect = {
+    left: responseLeft,
+    top: responseTop,
+    width: parseInt(width, 10),
+    height: parseInt(height, 10)
+  };
+  const answerRect = {
+    top: answer.rect.top,
+    left: answer.rect.left,
+    width: answer.rect.width,
+    height: answer.rect.height
+  };
+
   const responseDistanceFromTop = responseRect.top + responseRect.height;
   const responseDistanceFromLeft = responseRect.left + responseRect.width;
 
@@ -67,45 +83,60 @@ const findClosestResponseBoxIndex = (containers, answer) => {
   return shouldSeleted.index;
 };
 
-class Display extends Component {
-  constructor(props) {
-    super(props);
-    const userAnswers = new Array(props.responseContainers.length).fill(false);
-    props.userSelections.map((userSelection, index) => {
-      userAnswers[index] = userSelection;
-      return 0;
-    });
-    const possibleResponses = this.getInitialResponses(props);
-    this.previewContainerRef = React.createRef();
+const getInitialResponses = ({ options, userSelections, configureOptions }) => {
+  const { duplicatedResponses: isDuplicated } = configureOptions;
 
-    this.state = {
-      userAnswers,
-      possibleResponses,
-      snapItems: []
-    };
+  let possibleResps = [];
+  possibleResps = cloneDeep(options);
+  userSelections = flattenDeep(userSelections);
+  if (!isDuplicated) {
+    for (let j = 0; j < userSelections.length; j++) {
+      for (let i = 0; i < possibleResps.length; i++) {
+        if (userSelections[j] && userSelections[j].value.includes(possibleResps[i])) {
+          possibleResps.splice(i, 1);
+          break;
+        }
+      }
+    }
   }
+  return possibleResps;
+};
 
-  componentWillReceiveProps(nextProps) {
-    if (this.state !== undefined) {
-      const possibleResponses = this.getInitialResponses(nextProps);
-      this.setState({
+const getPossibleResps = (snapItems, possibleResps) => {
+  possibleResps = cloneDeep(possibleResps);
+  snapItems = flattenDeep(snapItems);
+  for (let j = 0; j < snapItems.length; j += 1) {
+    for (let i = 0; i < possibleResps.length; i += 1) {
+      if (snapItems[j].answer === possibleResps[i]) {
+        possibleResps.splice(i, 1);
+        break;
+      }
+    }
+  }
+  return possibleResps;
+};
+
+class Display extends Component {
+  previewContainerRef = React.createRef();
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState !== undefined) {
+      const {
+        item: { isSnapFitValues }
+      } = nextProps;
+      let possibleResponses = getInitialResponses(nextProps);
+
+      if (nextProps.previewTab === "check" || !isSnapFitValues) {
+        possibleResponses = getPossibleResps(nextProps.snapItems, possibleResponses);
+      }
+      return {
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses
-      });
+      };
     }
   }
 
-  onDropForSnapFit = (sourceData, fromContainerIndex, fromRespIndex, itemRect) => {
-    if (!this.previewContainerRef.current) {
-      return;
-    }
-    const { responseContainers, onChange, maxRespCount, userSelections } = this.props;
-    const { possibleResponses, snapItems } = this.state;
-
-    const newAnswers = [];
-    const newResponses = cloneDeep(possibleResponses);
-    const newSnapItems = cloneDeep(snapItems);
-
+  getAnswerRect = itemRect => {
     const containerRect = this.previewContainerRef.current.getBoundingClientRect();
     let top = itemRect.y - containerRect.top;
     let left = itemRect.x - containerRect.left;
@@ -118,70 +149,94 @@ class Display extends Component {
     left = diffW > 0 ? left - diffW : left;
     top = diffH > 0 ? top - diffH : top;
 
+    return { ...itemRect, top, left };
+  };
+
+  onDropForSnapFit = (sourceData, fromContainerIndex, fromRespIndex, itemRect) => {
+    if (!this.previewContainerRef.current || !itemRect.x || !itemRect.y) {
+      return;
+    }
+    const { responseContainers, onChange, maxRespCount } = this.props;
+    const { userAnswers, possibleResponses } = this.state;
+
+    let newAnswers = cloneDeep(userAnswers);
+    const newResponses = cloneDeep(possibleResponses);
+
+    const answerRect = this.getAnswerRect(itemRect);
+    const data = Array.isArray(sourceData) ? sourceData : [sourceData];
+
     if (fromContainerIndex !== fromRespIndex) {
-      newSnapItems.push({ answer: sourceData, rect: { ...itemRect, top, left } });
+      newAnswers.push({ value: data, rect: answerRect });
       newResponses.splice(fromRespIndex, 1);
+    } else if (typeof fromContainerIndex === "number") {
+      newAnswers[fromContainerIndex].rect = answerRect;
     } else {
-      newSnapItems[fromRespIndex].rect = { ...itemRect, top, left };
+      newAnswers[fromRespIndex].rect = answerRect;
     }
 
-    for (const snapItem of newSnapItems) {
+    for (let i = 0; i < newAnswers.length; i++) {
       const overlaps = [];
-      let containerIndex = 0;
-
-      for (const responseContainer of responseContainers) {
-        const { height, width, left: responseLeft, top: responseTop } = responseContainer;
-        const responseRect = {
-          left: responseLeft,
-          top: responseTop,
-          width: parseInt(width, 10),
-          height: parseInt(height, 10)
-        };
-        const answerRect = {
-          top: snapItem.rect.top,
-          left: snapItem.rect.left,
-          width: snapItem.rect.width,
-          height: snapItem.rect.height
-        };
-        if (isColliding(responseRect, answerRect)) {
-          overlaps.push({ ...responseContainer, containerIndex });
-        }
-        containerIndex += 1;
-      }
-
-      if (overlaps[0]) {
-        let index = overlaps[0].containerIndex;
-        if (overlaps.length > 1) {
-          index = findClosestResponseBoxIndex(overlaps, snapItem.rect);
-        }
-        let { answer } = snapItem;
-
-        if (newAnswers[index]) {
-          answer = sourceData;
-          const prevAnswerIndex = findIndex(snapItems, item => item.answer === userSelections[index][0]);
-          if (prevAnswerIndex >= 0) {
-            newResponses.push(newSnapItems[prevAnswerIndex].answer);
-            newSnapItems.splice(prevAnswerIndex, 1);
+      if (newAnswers[i]) {
+        for (let j = 0; j < responseContainers.length; j++) {
+          if (newAnswers[i] && isColliding(responseContainers[j], newAnswers[i])) {
+            overlaps.push({ ...responseContainers[j], containerIndex: j });
           }
         }
-        const data = Array.isArray(answer) ? answer : [answer];
-
-        newAnswers[index] = [...(newAnswers[index] || []), ...data];
-
-        if (maxRespCount && newAnswers[index].length > maxRespCount) {
-          newAnswers[index].splice(newAnswers[index].length - 2, 1);
+        if (overlaps[0]) {
+          let { containerIndex } = overlaps[0];
+          if (overlaps.length > 1) {
+            containerIndex = findClosestResponseBoxIndex(overlaps, newAnswers[i].rect);
+          }
+          newAnswers[i].responseBoxID = responseContainers[containerIndex].id;
+          newAnswers[i].containerIndex = containerIndex;
+        } else {
+          newAnswers[i].responseBoxID = null;
+          newAnswers[i].containerIndex = null;
         }
+      }
+    }
+
+    for (let i = 0; i < newAnswers.length; i++) {
+      if (newAnswers[i] && newAnswers[i].responseBoxID) {
+        // eslint-disable-next-line no-loop-func
+        const duplicated = newAnswers.filter(res => res && res.responseBoxID === newAnswers[i].responseBoxID);
+        if (duplicated.length > 1) {
+          newAnswers[i].value = data;
+        }
+      }
+      if (maxRespCount && newAnswers[i] && newAnswers[i].value.length > maxRespCount) {
+        const last = newAnswers[i].value.splice(newAnswers[i].value.length - 2, 1)[0];
+        newResponses.push(last);
+      }
+    }
+    const _arr1 = newAnswers.filter(res => res && !res.responseBoxID);
+    const _arr2 = uniqBy(newAnswers.filter(res => res && res.responseBoxID), "responseBoxID");
+    newAnswers = [];
+    for (let i = 0; i < responseContainers.length; i++) {
+      const userResponse = _arr2.find(res => res.responseBoxID === responseContainers[i].id);
+      if (userResponse) {
+        newAnswers[i] = userResponse;
+      } else {
+        newAnswers[i] = _arr1.pop();
       }
     }
 
     onChange(newAnswers);
-    this.setState({ snapItems: newSnapItems, possibleResponses: newResponses });
+    this.setState({ possibleResponses: newResponses });
+
+    const { changePreview, changePreviewTab, previewTab } = this.props;
+    if (previewTab !== "clear") {
+      if (changePreview) {
+        changePreview("clear");
+      }
+      changePreviewTab("clear");
+    }
   };
 
   onDrop = ({ item: sourceData, fromContainerIndex, fromRespIndex, itemRect }, index) => {
-    const { maxRespCount, onChange, item, preview } = this.props;
+    const { maxRespCount, onChange, item, preview, responseContainers } = this.props;
     const { userAnswers, possibleResponses } = this.state;
-    const { isSnapFitValues } = item;
+    const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
     if (!isSnapFitValues && preview) {
       return this.onDropForSnapFit(sourceData, fromContainerIndex, fromRespIndex, itemRect);
     }
@@ -194,25 +249,36 @@ class Display extends Component {
     const newResponses = cloneDeep(possibleResponses);
 
     const data = Array.isArray(sourceData) ? sourceData : [sourceData];
-    newAnswers[index] = [...(newAnswers[index] || []), ...data];
 
-    if (maxRespCount && newAnswers[index].length > maxRespCount) {
-      const last = newAnswers[index].splice(newAnswers[index].length - 2, 1)[0];
+    newAnswers[index] = {
+      responseBoxID: responseContainers[index] && responseContainers[index].id,
+      value: [...(newAnswers[index] ? newAnswers[index].value || [] : []), ...data],
+      containerIndex: index
+    };
+
+    if (maxRespCount && newAnswers[index].value.length > maxRespCount) {
+      const last = newAnswers[index].value.splice(newAnswers[index].value.length - 2, 1)[0];
       newResponses.push(last);
     }
 
     if (typeof fromContainerIndex === "number") {
-      newAnswers[fromContainerIndex] = newAnswers[fromContainerIndex].filter((_, i) => i !== fromRespIndex);
+      newAnswers[fromContainerIndex] = {
+        responseBoxID: responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
+        value: newAnswers[fromContainerIndex].value.filter((_, i) => i !== fromRespIndex),
+        containerIndex: index
+      };
     }
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     onChange(newAnswers);
 
-    const { changePreview, changePreviewTab } = this.props;
-    if (changePreview) {
-      changePreview("clear");
+    const { changePreview, changePreviewTab, previewTab } = this.props;
+    if (previewTab !== "clear") {
+      if (changePreview) {
+        changePreview("clear");
+      }
+      changePreviewTab("clear");
     }
-    changePreviewTab("clear");
   };
 
   shuffle = arr => {
@@ -228,25 +294,6 @@ class Display extends Component {
       arr.options = this.shuffle(arr.options);
       return arr;
     });
-
-  getInitialResponses = ({ options, userSelections, configureOptions }) => {
-    const { duplicatedResponses: isDuplicated } = configureOptions;
-
-    let possibleResps = [];
-    possibleResps = cloneDeep(options);
-    userSelections = flattenDeep(userSelections);
-    if (!isDuplicated) {
-      for (let j = 0; j < userSelections.length; j++) {
-        for (let i = 0; i < possibleResps.length; i++) {
-          if (possibleResps[i] === userSelections[j]) {
-            possibleResps.splice(i, 1);
-            break;
-          }
-        }
-      }
-    }
-    return possibleResps;
-  };
 
   getWidth = () => {
     const { item } = this.props;
@@ -272,7 +319,8 @@ class Display extends Component {
 
   getHeight = () => {
     const { item } = this.props;
-    const { imageHeight, keepAspectRatio, imageOriginalHeight, imageOriginalWidth } = item;
+    const { imageHeight, imageOriginalHeight, imageOriginalWidth } = item;
+    const keepAspectRatio = get(item, "responseLayout.keepAspectRatio", false);
     const { maxHeight } = clozeImage;
     const imageWidth = this.getWidth();
     // If image uploaded is smaller than the max width, keep it as-is
@@ -319,7 +367,6 @@ class Display extends Component {
       uiStyle,
       showAnswer,
       checkAnswer,
-      validation,
       evaluation,
       imageUrl,
       responseContainers,
@@ -338,12 +385,12 @@ class Display extends Component {
 
     const questionId = item && item.id;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
-    const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
+    const { userAnswers: _uAnswers, possibleResponses } = this.state;
     const cAnswers = get(item, "validation.valid_response.value", []);
 
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
-    const { isSnapFitValues } = item;
+    const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
 
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
 
@@ -420,6 +467,69 @@ class Display extends Component {
 
     const drop = data => data;
 
+    const renderSnapItems = () =>
+      !isSnapFitValues &&
+      (preview || showAnswer) && (
+        <DropContainer
+          index={0}
+          drop={drop}
+          data-cy="drop-container"
+          style={{ height: "100%" }}
+          className="imagelabeldragdrop-droppable active"
+        >
+          {userAnswers.map(
+            (userAnswer, index) =>
+              userAnswer &&
+              userAnswer.value &&
+              userAnswer.value.map(answer => {
+                const title = striptags(answer) || null;
+                const { rect } = userAnswer;
+                const status = evaluation[index];
+                const btnStyle = {
+                  top: smallSize ? rect.top / 2 : rect.top,
+                  left: smallSize ? rect.left / 2 : rect.left,
+                  border: showDashedBorder ? `dashed 2px` : `solid 1px`,
+                  position: "absolute",
+                  background: !showAnswer && !checkAnswer ? backgroundColor : status ? "#d3fea6" : "#fce0e8",
+                  borderRadius: 5,
+                  padding: "8px 30px 8px 20px",
+                  zIndex: 40,
+                  margin: 0,
+                  borderColor:
+                    showAnswer || checkAnswer
+                      ? status
+                        ? "#d3fea6"
+                        : "#fce0e8"
+                      : showDashedBorder
+                      ? theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor
+                      : theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor
+                  // overflow: "hidden"
+                };
+                return (
+                  <DragItem
+                    key={index}
+                    title={title}
+                    showDashedBorder={showDashedBorder}
+                    index={index}
+                    item={answer}
+                    data={`${answer}_${index}_${index}`}
+                    style={{
+                      ...dragItemStyle,
+                      ...btnStyle
+                    }}
+                    onDrop={this.onDrop}
+                  >
+                    <MathSpan dangerouslySetInnerHTML={{ __html: answer || "" }} />
+                    {(checkAnswer || showAnswer) && (
+                      <IconWrapper right={10}>{status ? <RightIcon /> : <WrongIcon />}</IconWrapper>
+                    )}
+                  </DragItem>
+                );
+              })
+          )}
+        </DropContainer>
+      );
+
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         smallSize={smallSize}
@@ -444,6 +554,7 @@ class Display extends Component {
                 top: smallSize ? responseContainer.top / 2 : responseContainer.top,
                 left: smallSize ? responseContainer.left / 2 : responseContainer.left,
                 height: smallSize ? responseContainer.height / 2 : responseContainer.height,
+                heightpx: smallSize ? responseContainer.height / 2 : responseContainer.height,
                 border: showDropItemBorder
                   ? showDashedBorder
                     ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
@@ -455,29 +566,18 @@ class Display extends Component {
                 // overflow: "hidden"
               };
               if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.widthpx = widthpx;
+                const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex];
+                btnStyle.width = individualW || btnStyle.width;
+                btnStyle.widthpx = individualW || btnStyle.widthpx;
+                btnStyle.height = individualH || btnStyle.height;
+                btnStyle.heightpx = individualH || btnStyle.heightpx;
               }
               if (btnStyle && btnStyle.width === 0) {
                 btnStyle.width = responseBtnStyle.widthpx;
               } else {
                 btnStyle.width = btnStyle.widthpx;
               }
-              // eslint-disable-next-line no-unused-vars
-              let indexStr = "";
-              switch (stemnumeration) {
-                case "lowercase": {
-                  indexStr = ALPHABET[dropTargetIndex];
-                  break;
-                }
-                case "uppercase": {
-                  indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-                  break;
-                }
-                default:
-                  indexStr = dropTargetIndex + 1;
-              }
+
               return (
                 <DropContainer
                   key={index}
@@ -486,7 +586,7 @@ class Display extends Component {
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
                     height: isWrapText ? "auto" : responseContainer.height || "auto", // responseContainer.height || "auto",
-                    width: isWrapText ? "auto" : responseContainer.width || "auto",
+                    width: responseContainer.width || "auto",
                     minHeight: responseContainer.height || "auto",
                     minWidth: responseContainer.width || "auto",
                     maxWidth: response.maxWidth
@@ -502,7 +602,8 @@ class Display extends Component {
                   )}
                   <div className="container">
                     {userAnswers[dropTargetIndex] &&
-                      userAnswers[dropTargetIndex].map((answer, item_index) => {
+                      userAnswers[dropTargetIndex].value &&
+                      userAnswers[dropTargetIndex].value.map((answer, item_index) => {
                         const title = striptags(answer) || null;
                         return (
                           <DragItem
@@ -532,79 +633,41 @@ class Display extends Component {
                 </DropContainer>
               );
             })}
-          {!isSnapFitValues && preview && (
-            <DropContainer
-              index={0}
-              drop={drop}
-              data-cy="drop-container"
-              style={{ height: "100%" }}
-              disableResponse={disableResponse}
-              className="imagelabeldragdrop-droppable active"
-            >
-              {snapItems.map((snap_item, index) => {
-                const title = striptags(snap_item.answer) || null;
-                const { rect } = snap_item;
-                const btnStyle = {
-                  top: smallSize ? rect.top / 2 : rect.top,
-                  left: smallSize ? rect.left / 2 : rect.left,
-                  border: showDashedBorder
-                    ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
-                    : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
-                  position: "absolute",
-                  background: backgroundColor,
-                  borderRadius: 5,
-                  padding: "8px 20px",
-                  margin: 0
-                  // overflow: "hidden"
-                };
-                return (
-                  <DragItem
-                    key={index}
-                    title={title}
-                    showDashedBorder={showDashedBorder}
-                    index={index}
-                    item={snap_item.answer}
-                    data={`${snap_item.answer}_${index}_${index}`}
-                    style={{
-                      ...dragItemStyle,
-                      ...btnStyle
-                    }}
-                    disableResponse={disableResponse}
-                    onDrop={this.onDrop}
-                  >
-                    <MathSpan dangerouslySetInnerHTML={{ __html: snap_item.answer || "" }} />
-                  </DragItem>
-                );
-              })}
-            </DropContainer>
-          )}
+          {renderSnapItems()}
         </StyledPreviewContainer>
       </StyledPreviewTemplateBox>
     );
 
     const checkboxTemplateBoxLayout = (
-      <CheckboxTemplateBoxLayout
-        responseContainers={responseContainers}
-        responsecontainerindividuals={responsecontainerindividuals}
-        responseBtnStyle={responseBtnStyle}
-        annotations={renderAnnotations()}
-        image={renderImage()}
-        canvasHeight={canvasHeight}
-        canvasWidth={canvasWidth}
-        stemnumeration={stemnumeration}
-        fontSize={fontSize}
-        showAnswer={showAnswer}
-        checkAnswer={checkAnswer}
-        userSelections={userAnswers}
-        evaluation={evaluation}
-        drop={drop}
-        onDropHandler={this.onDrop}
-        showBorder={showBorder}
-        disableResponse={disableResponse}
-        isWrapText={isWrapText}
-      />
+      <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+        <StyledPreviewContainer
+          width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
+          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+          innerRef={this.previewContainerRef}
+        >
+          <CheckboxTemplateBoxLayout
+            responseContainers={responseContainers}
+            responsecontainerindividuals={responsecontainerindividuals}
+            responseBtnStyle={responseBtnStyle}
+            annotations={renderAnnotations()}
+            image={renderImage()}
+            snapItems={renderSnapItems()}
+            stemnumeration={stemnumeration}
+            showAnswer={showAnswer}
+            checkAnswer={checkAnswer}
+            userSelections={userAnswers}
+            evaluation={evaluation}
+            drop={drop}
+            isSnapFitValues={isSnapFitValues}
+            onDropHandler={this.onDrop}
+            showBorder={showBorder}
+            showDropItemBorder={showDropItemBorder}
+          />
+        </StyledPreviewContainer>
+      </StyledPreviewTemplateBox>
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}
@@ -634,7 +697,7 @@ class Display extends Component {
       <div />
     );
 
-    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = isReviewTab || !responses.length ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? "right" : responsecontainerposition;
@@ -643,7 +706,7 @@ class Display extends Component {
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         {responseposition === "top" && (
@@ -736,13 +799,11 @@ Display.propTypes = {
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
   responseContainers: PropTypes.array,
-  userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
   question: PropTypes.string.isRequired,
   configureOptions: PropTypes.object,
-  validation: PropTypes.object,
   evaluation: PropTypes.array,
   backgroundColor: PropTypes.string,
   uiStyle: PropTypes.object,
@@ -756,7 +817,8 @@ Display.propTypes = {
   showQuestionNumber: PropTypes.bool,
   item: PropTypes.object,
   showBorder: PropTypes.bool,
-  isReviewTab: PropTypes.bool
+  isReviewTab: PropTypes.bool,
+  previewTab: PropTypes.string.isRequired
 };
 
 Display.defaultProps = {
@@ -769,12 +831,10 @@ Display.defaultProps = {
   showAnswer: false,
   evaluation: [],
   checkAnswer: false,
-  userSelections: [],
   responseContainers: [],
   showDashedBorder: false,
   smallSize: false,
   backgroundColor: "#fff",
-  validation: {},
   imageUrl: undefined,
   imageAlterText: "",
   maxRespCount: 1,

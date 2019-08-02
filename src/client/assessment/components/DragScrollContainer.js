@@ -5,7 +5,7 @@ import DragScroll, { UPWARDS, DOWNWARDS } from "@edulastic/common/src/components
 const DragScrollContainer = ({ scrollWrraper, height }) => (
   <>
     <DragScroll
-      context={{ getScrollElement: () => scrollWrraper }}
+      context={{ getScrollElement: () => scrollWrraper || window }}
       style={{
         position: "absolute",
         top: 0,
@@ -17,7 +17,7 @@ const DragScrollContainer = ({ scrollWrraper, height }) => (
       direction={UPWARDS}
     />
     <DragScroll
-      context={{ getScrollElement: () => scrollWrraper }}
+      context={{ getScrollElement: () => scrollWrraper || window }}
       style={{
         position: "fixed",
         bottom: 0,

@@ -117,14 +117,10 @@ export const reducer = createReducer(initialState, {
   [UPDATE_CLASS_SUCCESS]: (state, { payload }) => {
     state.update = payload;
     state.updating = false;
-    const sourceObj = {
-      _source: {
-        ...payload
-      }
-    };
-    state.data[payload._id] = {
-      ...state.data[payload._id],
-      ...sourceObj
+
+    state.data[payload._id]._source = {
+      ...state.data[payload._id]._source,
+      ...payload
     };
   },
   [UPDATE_CLASS_ERROR]: (state, { payload }) => {
@@ -265,7 +261,7 @@ function* deleteClassSaga({ payload }) {
         page: 1,
         limit: 25,
         search: {
-          active: 1
+          active: [1]
         },
         districtId: payload.districtId
       })

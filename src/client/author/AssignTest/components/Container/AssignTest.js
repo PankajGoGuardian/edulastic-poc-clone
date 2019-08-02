@@ -4,13 +4,8 @@ import { connect } from "react-redux";
 import { isEmpty, get, keyBy } from "lodash";
 import * as moment from "moment";
 import { message } from "antd";
-import {
-  fetchGroupsAction,
-  getGroupsSelector,
-  fetchGroupMembersAction,
-  getStudentsSelector
-} from "../../../sharedDucks/groups";
-import { receivePerformanceBandAction } from "../../../PerformanceBand/ducks";
+import { fetchGroupMembersAction, getStudentsSelector } from "../../../sharedDucks/groups";
+
 import { receiveTestByIdAction, getTestSelector } from "../../../TestPage/ducks";
 
 import {
@@ -38,6 +33,7 @@ import {
 } from "./styled";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import { receiveClassListAction } from "../../../Classes/ducks";
+import produce from "immer";
 
 const { ASSESSMENT, COMMON } = testConst;
 
@@ -46,8 +42,7 @@ const initAssignment = {
   openPolicy: "Automatically on Start Date",
   closePolicy: "Automatically on Due Date",
   class: [],
-  testType: ASSESSMENT,
-  specificStudents: false
+  testType: ASSESSMENT
 };
 
 const setTime = userRole => {
@@ -65,7 +60,8 @@ class AssignTest extends React.Component {
       assignment: {
         ...initAssignment,
         endDate: setTime(props.userRole)
-      }
+      },
+      specificStudents: false
     };
   }
 
@@ -77,11 +73,11 @@ class AssignTest extends React.Component {
 
       assignments,
       match,
-      fetchPerformanceBand,
+
       userOrgId,
       isPlaylist,
       fetchPlaylistById,
-      performanceBandData,
+
       userRole
     } = this.props;
     const { testId } = match.params;
@@ -90,18 +86,13 @@ class AssignTest extends React.Component {
       districtId: userOrgId,
       search: {
         institutionIds: [],
-        codes: [],
         subjects: [],
         grades: [],
-        active: 1
+        active: [1]
       },
       page: 1,
       limit: 1000
     });
-    if (isEmpty(performanceBandData)) {
-      //TODO this api return permission Denied with 403 status until this getting adressed hiding from front-end
-      // fetchPerformanceBand({ orgId: userOrgId });
-    }
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
       this.setState(prevState => ({
@@ -166,14 +157,15 @@ class AssignTest extends React.Component {
   updateAssignment = assignment => this.setState({ assignment });
 
   onClassFieldChange = (value, group) => {
-    const { assignment } = this.state;
+    const { assignment, specificStudents } = this.state;
     const groupById = keyBy(group, "_id");
     const classData = value.map(_id => ({
       _id,
       name: get(groupById, `${_id}.name`, ""),
       assignedCount: get(groupById, `${_id}.studentCount`, 0),
       grade: get(groupById, `${_id}.grades`, ""),
-      subject: get(groupById, `${_id}.subject`, "")
+      subject: get(groupById, `${_id}.subject`, ""),
+      specificStudents: specificStudents
     }));
 
     let termId = "";
@@ -189,8 +181,21 @@ class AssignTest extends React.Component {
     };
   };
 
+  toggleSpecificStudents = specificStudents => {
+    const { assignment } = this.state;
+    const newAssignment = produce(assignment, assignmentCopy => {
+      if (assignmentCopy.class.length > 0) {
+        assignmentCopy.class.forEach(eachClass => {
+          eachClass.specificStudents = specificStudents;
+        });
+      }
+    });
+
+    this.setState({ specificStudents, assignment: newAssignment });
+  };
+
   render() {
-    const { isAdvancedView, assignment } = this.state;
+    const { isAdvancedView, assignment, specificStudents } = this.state;
     const { classList, fetchStudents, students, testSettings, testItem, isPlaylist, playlist } = this.props;
     const { title, _id } = isPlaylist ? playlist : testItem;
     return (
@@ -223,6 +228,8 @@ class AssignTest extends React.Component {
               updateOptions={this.updateAssignment}
               testSettings={testSettings}
               onClassFieldChange={this.onClassFieldChange}
+              specificStudents={specificStudents}
+              toggleSpecificStudents={this.toggleSpecificStudents}
             />
           ) : (
             <SimpleOptions
@@ -233,6 +240,8 @@ class AssignTest extends React.Component {
               testSettings={testSettings}
               updateOptions={this.updateAssignment}
               onClassFieldChange={this.onClassFieldChange}
+              specificStudents={specificStudents}
+              toggleSpecificStudents={this.toggleSpecificStudents}
             />
           )}
         </Container>
@@ -249,7 +258,6 @@ export default connect(
     testSettings: getTestEntitySelector(state),
     userOrgId: getUserOrgId(state),
     playlist: getPlaylistSelector(state),
-    performanceBandData: get(state, ["performanceBandReducer", "data"], []),
     testItem: getTestSelector(state),
     userRole: getUserRole(state)
   }),
@@ -258,7 +266,6 @@ export default connect(
     fetchStudents: fetchGroupMembersAction,
     fetchAssignments: fetchAssignmentsAction,
     saveAssignment: saveAssignmentAction,
-    fetchPerformanceBand: receivePerformanceBandAction,
     fetchPlaylistById: receivePlaylistByIdAction,
     fetchTestByID: receiveTestByIdAction
   }
@@ -274,9 +281,7 @@ AssignTest.propTypes = {
   testSettings: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,
   saveAssignment: PropTypes.func.isRequired,
-  fetchPerformanceBand: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
-  performanceBandData: PropTypes.object.isRequired,
   testItem: PropTypes.object.isRequired,
   fetchTestByID: PropTypes.func.isRequired
 };

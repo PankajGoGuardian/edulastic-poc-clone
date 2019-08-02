@@ -21,13 +21,9 @@ export const FilterContainer = styled.div`
     background: ${white};
     border: none;
     border-radius: 0px;
-    padding: 5px 10px;
+    padding: 2px 3px;
     border-radius: 4px;
     box-shadow: 0px 0px 5px 1px ${fadedGrey};
-
-    @media (max-width: ${smallDesktopWidth}) {
-      padding: 2px 10px;
-    }
   }
   .ant-select,
   .ant-input,

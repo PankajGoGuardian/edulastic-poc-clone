@@ -364,7 +364,8 @@ class ComposeQuestion extends Component {
 
   getHeight = () => {
     const { item } = this.props;
-    const { imageOriginalWidth, imageOriginalHeight, imageHeight, keepAspectRatio } = item;
+    const { imageOriginalWidth, imageOriginalHeight, imageHeight, responseLayout } = item;
+    const keepAspectRatio = responseLayout && responseLayout.keepAspectRatio;
     const { maxHeight } = clozeImage;
     const imageWidth = this.getWidth();
 
@@ -485,16 +486,7 @@ class ComposeQuestion extends Component {
 
     const { maxWidth, maxHeight } = clozeImage;
 
-    const {
-      responseLayout,
-      background,
-      imageAlterText,
-      isEditAriaLabels,
-      responses,
-      isSnapFitValues,
-      imageOptions = {},
-      keepAspectRatio
-    } = item;
+    const { responseLayout, background, imageAlterText, isEditAriaLabels, responses, imageOptions = {} } = item;
 
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
@@ -582,8 +574,8 @@ class ComposeQuestion extends Component {
               <Checkbox
                 data-cy="drag-drop-image-aria-check"
                 defaultChecked={isEditAriaLabels}
-                checked={keepAspectRatio}
-                onChange={val => this.onItemPropChange("keepAspectRatio", val.target.checked)}
+                checked={responseLayout && responseLayout.keepAspectRatio}
+                onChange={val => this.onResponsePropChange("keepAspectRatio", val.target.checked)}
               >
                 {t("component.cloze.imageText.keepAspectRatio")}
               </Checkbox>
@@ -634,7 +626,7 @@ class ComposeQuestion extends Component {
             <ImageContainer
               data-cy="drag-drop-image-panel"
               imageUrl={item.imageUrl}
-              style={{ height: canvasHeight, width: canvasWidth, border: "1px solid lightgray" }}
+              style={{ height: canvasHeight, width: canvasWidth }}
               onDragStart={e => e.preventDefault()}
               onDoubleClick={toggleIsAnnotationBelow}
               onClick={this.addNewRespnose}
@@ -667,8 +659,8 @@ class ComposeQuestion extends Component {
                       topLeft: false,
                       topRight: false
                     }}
+                    lockAspectRatio={responseLayout && responseLayout.keepAspectRatio}
                     disableDragging={!isEditableResizeMove}
-                    lockAspectRatio={item.keepAspectRatio}
                     onDragStop={(evt, d) => handleDragStop(d)}
                     onDrag={(evt, d) => this.handleDragging(d)}
                     onResizeStop={(e, direction, ref) => this.handleResizeStop(ref)}
@@ -756,8 +748,8 @@ class ComposeQuestion extends Component {
           </Checkbox>
           <Checkbox
             data-cy="drag-drop-image-border-check"
-            defaultChecked={isSnapFitValues}
-            onChange={val => this.onItemPropChange("isSnapFitValues", val.target.checked)}
+            defaultChecked={responseLayout && responseLayout.isSnapFitValues}
+            onChange={val => this.onResponsePropChange("isSnapFitValues", val.target.checked)}
           >
             {t("component.cloze.imageDragDrop.snapfittodroparea")}
           </Checkbox>

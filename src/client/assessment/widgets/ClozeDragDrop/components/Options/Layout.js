@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 
 import { Select, TextField, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { cloneDeep, isEqual, clamp } from "lodash";
+import { isEqual, clamp } from "lodash";
 
+import { response as Dimensions } from "@edulastic/constants";
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -14,8 +15,6 @@ import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../../components/Question";
-
-import { response as Dimensions } from "@edulastic/constants";
 
 class Layout extends Component {
   state = {
@@ -212,7 +211,7 @@ class Layout extends Component {
           <Checkbox
             label={t("component.options.globalSettings")}
             checked={!!uiStyle.globalSettings}
-            onChange={e => changeUiStyle("globalSettings", !uiStyle.globalSettings)}
+            onChange={() => changeUiStyle("globalSettings", !uiStyle.globalSettings)}
           />
         </Row>
         <Row marginTop={13}>
@@ -326,6 +325,7 @@ class Layout extends Component {
 Layout.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
+  responseIDs: PropTypes.array,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
@@ -333,6 +333,7 @@ Layout.propTypes = {
 };
 
 Layout.defaultProps = {
+  responseIDs: PropTypes.array,
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",

@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { isEmpty, get } from "lodash";
 
-import { MathInput, StaticMath, MathFormulaDisplay, MathDisplay, FlexContainer } from "@edulastic/common";
+import {
+  MathInput,
+  StaticMath,
+  MathFormulaDisplay,
+  MathDisplay,
+  FlexContainer,
+  QuestionNumberLabel
+} from "@edulastic/common";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
@@ -12,7 +19,7 @@ import MathInputStatus from "./components/MathInputStatus/index";
 import { UnitsDropdown } from "./components/MathFormulaAnswerMethod/options";
 
 import MathInputWrapper from "./styled/MathInputWrapper";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
@@ -217,21 +224,21 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
-    cssStyles.width = cssStyles.width || cssStyles.minWidth;
+    // cssStyles.width = cssStyles.width || cssStyles.minWidth;
     const testItemCorrectValues = testItem
       ? item.validation.valid_response.value.map(validResponse => validResponse.value)
       : [];
 
     const customKeys = get(item, "custom_keys", []);
+    const allowNumericOnly = get(item, "allowNumericOnly", false);
 
     // in Units type, this need when the show dropdown option is true
-    let correctUnit = item.validation.valid_response.value[0].options.unit;
-    correctUnit = !correctUnit ? "" : correctUnit;
+    const correctUnit = get(item, "validation.valid_response.value[0].options.unit", "");
 
     return (
       <div>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <MathFormulaDisplay
             data-cy="preview-header"
             style={{ marginBottom: 15 }}
@@ -248,8 +255,10 @@ class MathFormulaPreview extends Component {
                 <StaticMath
                   symbols={item.symbols}
                   restrictKeys={this.restrictKeys}
+                  allowNumericOnly={allowNumericOnly}
                   customKeys={customKeys}
                   numberPad={item.numberPad}
+                  hideKeypad={item.isUnits && item.showDropdown}
                   ref={this.studentRef}
                   onInput={latexv => this.onUserResponse(latexv)}
                   onBlur={latexv => this.onBlur(latexv)}
@@ -263,8 +272,10 @@ class MathFormulaPreview extends Component {
                 <MathInput
                   symbols={item.symbols}
                   restrictKeys={this.restrictKeys}
+                  allowNumericOnly={allowNumericOnly}
                   customKeys={customKeys}
                   numberPad={item.numberPad}
+                  hideKeypad={item.isUnits && item.showDropdown}
                   value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
                   onInput={latexv => this.onUserResponse(latexv)}
                   onBlur={latexv => this.onBlur(latexv)}
@@ -285,7 +296,13 @@ class MathFormulaPreview extends Component {
               )}
             </MathInputWrapper>
             {item.isUnits && item.showDropdown && (
-              <UnitsDropdown item={item} preview onChange={this.selectUnitFromDropdown} selected={this.selectedUnit} />
+              <UnitsDropdown
+                item={item}
+                preview
+                onChange={this.selectUnitFromDropdown}
+                selected={this.selectedUnit}
+                disabled={disableResponse}
+              />
             )}
           </FlexContainer>
         )}

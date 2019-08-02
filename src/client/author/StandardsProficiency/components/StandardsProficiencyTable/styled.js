@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Select, Button, Radio, Input } from "antd";
+import { StyledTable as Table } from "../../../../common/styled";
 const RadioGroup = Radio.Group;
 
 export const StyledTableContainer = styled.div`
@@ -20,6 +21,16 @@ export const StyledTableContainer = styled.div`
   }
 `;
 
+export const StyledTable = styled(Table)`
+  .ant-table-row {
+    &: hover {
+      a {
+        opacity: 100;
+      }
+    }
+  }
+`;
+
 export const TopDiv = styled.div`
 	display: flex;
 	flex-direction: row;
@@ -37,6 +48,7 @@ export const StyledH3 = styled.h3``;
 export const StyledDescription = styled.p``;
 
 export const StyledButton = styled.a`
+  opacity: 0;
   margin-right: 20px;
   font-size: 20px;
 `;

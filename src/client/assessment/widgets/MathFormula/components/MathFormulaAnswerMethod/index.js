@@ -16,13 +16,7 @@ import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
 import { Rule } from "./options/Rule";
 import Units from "./options/Units";
-import {
-  AdditionalToggle,
-  AdditionalContainer,
-  AdditionalCompareUsing,
-  AdditionalAddRule,
-  AdditionalContainerRule
-} from "./styled/Additional";
+import { AdditionalToggle, AdditionalContainer, AdditionalCompareUsing } from "./styled/Additional";
 import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
@@ -57,11 +51,8 @@ const MathFormulaAnswerMethod = ({
   showAdditionals,
   handleChangeAdditionals,
   onChangeKeypad,
-  onChangeAllowedVars,
+  onChangeAllowedOptions,
   onChangeShowDropdown,
-  answer,
-  onAdd,
-  onAddIndex,
   windowWidth,
   style = {},
   keypadOffset,
@@ -79,6 +70,17 @@ const MathFormulaAnswerMethod = ({
 
     onChange("options", newOptions);
   }, [method]);
+
+  useEffect(() => {
+    let compareMethod = methodsConst.EQUIV_VALUE;
+    if (!item.showDropdown) {
+      compareMethod = methodsConst.EQUIV_SYMBOLIC;
+    }
+    onChange("method", compareMethod);
+    onChangeKeypad("units_us");
+    handleChangeAdditionals(`${method}_${index}`, "pop");
+    handleChangeAdditionals(`${compareMethod}_${index}`, "push");
+  }, [item.showDropdown]);
 
   const changeOptions = (prop, val) => {
     const newOptions = {
@@ -301,13 +303,13 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={options}
-              onChange={changeOptions}
+              options={{ allowNumericOnly: item.allowNumericOnly }}
+              onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
           );
         case "allowedVariables":
-          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedVars} />;
+          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedOptions} />;
         case "setEvaluation":
           return (
             <CheckOption
@@ -323,8 +325,7 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const { allowedVariables } = item;
-  const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  const restrictKeys = item.allowedVariables ? item.allowedVariables.split(",").map(segment => segment.trim()) : [];
   const customKeys = get(item, "custom_keys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
 
@@ -335,6 +336,7 @@ const MathFormulaAnswerMethod = ({
           <Col span={index === 0 ? 12 : 11}>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
+              hideKeypad={item.showDropdown}
               symbols={isShowDropdown ? ["basic"] : item.symbols}
               restrictKeys={isShowDropdown ? [] : restrictKeys}
               customKeys={isShowDropdown ? [] : customKeys}
@@ -442,7 +444,7 @@ const MathFormulaAnswerMethod = ({
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func.isRequired,
-  onChangeAllowedVars: PropTypes.func.isRequired,
+  onChangeAllowedOptions: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   item: PropTypes.object.isRequired,
@@ -453,10 +455,8 @@ MathFormulaAnswerMethod.propTypes = {
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
-  onAdd: PropTypes.func.isRequired,
   handleChangeAdditionals: PropTypes.func,
-  answer: PropTypes.object.isRequired,
-  onAddIndex: PropTypes.number.isRequired,
+  allowedVariables: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired
 };

@@ -24,8 +24,7 @@ class Response extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    index: PropTypes.number.isRequired,
-    option: PropTypes.object.isRequired,
+    options: PropTypes.array.isRequired,
     setQuestionData: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func
@@ -120,32 +119,36 @@ class Response extends Component {
   };
 
   render() {
-    const { t, index, option, fillSections, cleanSections } = this.props;
+    const { t, fillSections, cleanSections, options } = this.props;
 
     return (
       <Question
-        dataCy={`choice-response-${index}`}
+        dataCy="choice-response-container"
         section="main"
-        label={`${t("component.cloze.imageDropDown.response")} ${index + 1}`}
+        label="Responses"
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle style={{ paddingTop: index > 0 ? "30px" : "0px" }}>
-          {t("component.cloze.imageDropDown.response")} {index + 1}
-        </Subtitle>
-        <SortableList
-          items={option || []}
-          onSortEnd={params => this.onSortEnd(index, params)}
-          defaultOptions={defaultOptions}
-          useDragHandle
-          onRemove={itemIndex => this.remove(index, itemIndex)}
-          onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
-        />
-        <PaddingDiv top={6}>
-          <AddNewChoiceBtn data-cy={`add-new-ch-res-${index}`} onClick={() => this.addNewChoiceBtn(index)}>
-            {t("component.cloze.imageDropDown.addnewchoice")}
-          </AddNewChoiceBtn>
-        </PaddingDiv>
+        {options.map((option, index) => (
+          <>
+            <Subtitle style={{ paddingTop: index > 0 ? "30px" : "0px" }}>
+              {t("component.cloze.imageDropDown.response")} {index + 1}
+            </Subtitle>
+            <SortableList
+              items={option || []}
+              onSortEnd={params => this.onSortEnd(index, params)}
+              defaultOptions={defaultOptions}
+              useDragHandle
+              onRemove={itemIndex => this.remove(index, itemIndex)}
+              onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
+            />
+            <PaddingDiv top={6}>
+              <AddNewChoiceBtn data-cy={`add-new-ch-res-${index}`} onClick={() => this.addNewChoiceBtn(index)}>
+                {t("component.cloze.imageDropDown.addnewchoice")}
+              </AddNewChoiceBtn>
+            </PaddingDiv>
+          </>
+        ))}
       </Question>
     );
   }

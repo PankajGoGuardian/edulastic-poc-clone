@@ -189,6 +189,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         safeBrowser={safeBrowser}
         graded={graded}
         absent={absent}
+        isPaused={isPaused}
       />
       <ButtonAndDetail>
         <DetailContainer>
@@ -238,6 +239,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
               <ReviewButton
                 data-cy="review"
                 testId={testId}
+                isPaused={isPaused}
                 testActivityId={lastAttempt._id}
                 title={test.title}
                 activityReview={activityReview}

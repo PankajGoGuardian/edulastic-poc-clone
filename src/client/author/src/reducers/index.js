@@ -8,6 +8,7 @@ import { reportAssignmentsReducer } from "../../Reports/assignmentsDucks";
 import { reportSARSettingsReducer } from "../../Reports/subPages/singleAssessmentReport/ducks";
 import { reportSARFilterDataReducer } from "../../Reports/subPages/singleAssessmentReport/common/filterDataDucks";
 import { reportMARFilterDataReducer } from "../../Reports/subPages/multipleAssessmentReport/common/filterDataDucks";
+import { reportSPRFilterDataReducer } from "../../Reports/subPages/studentProfileReport/common/filterDataDucks";
 import { reportAssessmentSummaryReducer } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
 import { reportReducer } from "../../Reports/ducks";
 import { reportResponseFrequencyReducer } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
@@ -21,6 +22,10 @@ import { reportStandardsFilterDataReducer } from "../../Reports/subPages/standar
 import { reportPeerProgressAnalysisReducer } from "../../Reports/subPages/multipleAssessmentReport/PeerProgressAnalysis/ducks";
 import { reportStudentProgressReducer } from "../../Reports/subPages/multipleAssessmentReport/StudentProgress/ducks";
 import { reportPerformanceOverTimeReducer } from "../../Reports/subPages/multipleAssessmentReport/PerformanceOverTime/ducks";
+import { reportStudentMasteryProfileReducer } from "../../Reports/subPages/studentProfileReport/StudentMasteryProfile/ducks";
+import { reportStudentAssessmentProfileReducer } from "../../Reports/subPages/studentProfileReport/StudentAssessmentProfile/ducks";
+import { reportSPRSettingsReducer } from "../../Reports/subPages/studentProfileReport/ducks";
+import { reportStudentProfileSummaryReducer } from "../../Reports/subPages/studentProfileReport/StudentProfileSummary/ducks";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
 import authorGroups from "../../sharedDucks/groups";
@@ -76,8 +81,10 @@ const authorReducers = {
   author_assignments,
   reportAssignmentsReducer,
   reportSARSettingsReducer,
+  reportSPRSettingsReducer,
   reportSARFilterDataReducer,
   reportMARFilterDataReducer,
+  reportSPRFilterDataReducer,
   reportAssessmentSummaryReducer,
   reportReducer,
   reportResponseFrequencyReducer,
@@ -90,6 +97,9 @@ const authorReducers = {
   reportPeerProgressAnalysisReducer,
   reportStudentProgressReducer,
   reportPerformanceOverTimeReducer,
+  reportStudentMasteryProfileReducer,
+  reportStudentAssessmentProfileReducer,
+  reportStudentProfileSummaryReducer,
   authorTestAssignments: testAssignmentsReducer,
   author_classboard_gradebook,
   author_classboard_testActivity,

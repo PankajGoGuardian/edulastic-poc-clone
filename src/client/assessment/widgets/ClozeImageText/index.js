@@ -27,6 +27,7 @@ import Question from "../../components/Question";
 
 class ClozeImageText extends Component {
   static contextType = AnswerContext;
+
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,

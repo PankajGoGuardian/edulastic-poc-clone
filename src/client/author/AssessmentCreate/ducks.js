@@ -5,6 +5,7 @@ import { call, put, all, takeLatest, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import pdfjs from "pdfjs-dist";
 import { get, without } from "lodash";
+import moment from "moment";
 
 import { testsApi, testItemsApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
@@ -156,7 +157,7 @@ function* createAssessmentSaga({ payload }) {
       const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
       const newAssessment = {
         ...initialTestState,
-        title: "Author Test",
+        title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
         createdBy: {
           id: user._id,
           name

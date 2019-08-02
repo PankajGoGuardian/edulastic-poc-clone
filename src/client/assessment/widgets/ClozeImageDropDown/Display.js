@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { shuffle, isUndefined, isEmpty, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
-import { Stimulus } from "@edulastic/common";
+import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AnswerDropdown from "./components/AnswerDropdown";
@@ -13,10 +13,8 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/helpers";
-
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 class Display extends Component {
   selectChange = (value, index) => {
@@ -191,22 +189,13 @@ class Display extends Component {
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
               const dropTargetIndex = index;
+              const { widthpx: individualW, heightpx: individualH } =
+                responsecontainerindividuals[dropTargetIndex] || {};
               const btnStyle = {
-                widthpx: topAndLeftRatio(
-                  fromStringToNumberPx(responseContainer.width),
-                  imagescale,
-                  fontsize,
-                  smallSize
-                ),
-                width: topAndLeftRatio(fromStringToNumberPx(responseContainer.width), imagescale, fontsize, smallSize),
+                widthpx: topAndLeftRatio(fromStringToNumberPx(individualW), imagescale, fontsize, smallSize),
+                heightpx: topAndLeftRatio(fromStringToNumberPx(individualH), imagescale, fontsize, smallSize),
                 top: topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize),
                 left: topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize),
-                height: topAndLeftRatio(
-                  fromStringToNumberPx(responseContainer.height),
-                  imagescale,
-                  fontsize,
-                  smallSize
-                ),
                 border: showDropItemBorder
                   ? showDashedBorder
                     ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
@@ -215,41 +204,28 @@ class Display extends Component {
                 position: "absolute",
                 borderRadius: 5
               };
-              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.widthpx = widthpx;
-              }
-              if (btnStyle && btnStyle.width === 0) {
+
+              if (!btnStyle.widthpx) {
                 btnStyle.width = responseBtnStyle.widthpx;
               } else {
                 btnStyle.width = btnStyle.widthpx;
               }
-              // eslint-disable-next-line no-unused-vars
-              let indexStr = "";
-              switch (stemnumeration) {
-                case "lowercase": {
-                  indexStr = ALPHABET[dropTargetIndex];
-                  break;
-                }
-                case "uppercase": {
-                  indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-                  break;
-                }
-                default:
-                  indexStr = dropTargetIndex + 1;
+
+              if (!btnStyle.heightpx) {
+                btnStyle.height = responseBtnStyle.heightpx;
+              } else {
+                btnStyle.height = btnStyle.heightpx;
               }
+
               return (
                 <div
                   key={index}
                   style={{
                     ...btnStyle,
-                    borderStyle: smallSize ? "dashed" : "solid",
-                    width: `${parseInt(responseContainer.width, 10)}px`,
                     overflow: "hidden",
-                    height: `${parseInt(responseContainer.height, 10)}px`,
                     minWidth: response.minWidth,
-                    minHeight: response.minHeight
+                    minHeight: response.minHeight,
+                    borderStyle: smallSize ? "dashed" : "solid"
                   }}
                   className="imagelabeldragdrop-droppable active"
                 >
@@ -330,7 +306,7 @@ class Display extends Component {
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <TemplateBoxContainer smallSize={smallSize} flexDirection="column">

@@ -114,8 +114,8 @@ class ClassEdit extends React.Component {
     };
     if (key) {
       searchTerms["search"] = {
-        name: { type: "cont", value: key },
-        number: { type: "eq", value: key },
+        name: { type: "cont", value: [key] },
+        number: { type: "eq", value: [key] },
         operator: "or"
       };
     }

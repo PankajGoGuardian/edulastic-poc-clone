@@ -7,10 +7,8 @@ import { connect } from "react-redux";
 import { forEach, cloneDeep, get, findIndex } from "lodash";
 import "react-quill/dist/quill.snow.css";
 import produce from "immer";
-import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
-import { response } from "@edulastic/constants";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
@@ -27,10 +25,6 @@ class ChoicesForDropDown extends Component {
     setQuestionData: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func
-  };
-
-  state = {
-    sectionId: uuid()
   };
 
   static defaultProps = {
@@ -62,13 +56,13 @@ class ChoicesForDropDown extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[dropDownId].splice(itemIndex, 1);
-        const validDropDown = cloneDeep(draft.validation.valid_dropdown.value);
+        const validDropDown = cloneDeep(draft.validation.valid_response.dropdown.value);
         forEach(validDropDown, answer => {
           if (answer.id === dropDownId) {
             answer.value = "";
           }
         });
-        draft.validation.valid_dropdown.value = validDropDown;
+        draft.validation.valid_response.dropdown.value = validDropDown;
         updateVariables(draft);
       })
     );
@@ -76,7 +70,7 @@ class ChoicesForDropDown extends Component {
 
   editOptions = (dropDownId, itemIndex, e) => {
     const { item, setQuestionData } = this.props;
-    const prevDropDownAnswers = get(item, "validation.valid_dropdown.value", []);
+    const prevDropDownAnswers = get(item, "validation.valid_response.dropdown.value", []);
     const prevAnswerIndex = findIndex(prevDropDownAnswers, answer => answer.id === dropDownId);
 
     setQuestionData(
@@ -86,11 +80,11 @@ class ChoicesForDropDown extends Component {
         draft.options[dropDownId][itemIndex] = e.target.value;
         const splitWidth = Math.max(e.target.value.split("").length * 9, 100);
         const width = Math.min(splitWidth, 400);
-        const drpdwnIndex = findIndex(draft.response_ids["dropDowns"], drpdwn => drpdwn.id === dropDownId);
+        const drpdwnIndex = findIndex(draft.response_ids.dropDowns, drpdwn => drpdwn.id === dropDownId);
         const ind = findIndex(draft.response_containers, cont => cont.id === dropDownId);
         if (ind === -1) {
           draft.response_containers.push({
-            index: draft.response_ids["dropDowns"][drpdwnIndex].index,
+            index: draft.response_ids.dropDowns[drpdwnIndex].index,
             id: dropDownId,
             widthpx: width,
             type: "dropDowns"

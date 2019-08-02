@@ -18,7 +18,17 @@ import {
   getGridVariables
 } from "./helpers";
 
-const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse, toggleBarDragging }) => {
+const LineChart = ({
+  data,
+  previewTab,
+  saveAnswer,
+  gridParams,
+  view,
+  correct,
+  disableResponse,
+  toggleBarDragging,
+  deleteMode
+}) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams);
@@ -63,12 +73,12 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setActive(null);
     setIsMouseDown(false);
     toggleBarDragging(false);
-    saveAnswer(localData);
+    saveAnswer(localData, active);
   };
 
   const onMouseMove = e => {
     const newLocalData = cloneDeep(localData);
-    if (isMouseDown && cursorY) {
+    if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
       newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
 

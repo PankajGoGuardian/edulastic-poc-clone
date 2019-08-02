@@ -80,7 +80,6 @@ const testTypes = [
 const AdminTestTypes = [
   { value: "", text: "All" },
   { value: "common", text: "Common Assessments" },
-  { value: ASSESSMENT, text: "Class Assessments" },
   { value: PRACTICE, text: "Practice" }
 ];
 

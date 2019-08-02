@@ -7,6 +7,8 @@ import { useInternalEffect } from "../../hooks/useInternalEffect";
 
 import { black } from "@edulastic/colors";
 
+import { StyledAutocompleteDropDownContainer } from "../../styled";
+
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
 
@@ -133,7 +135,7 @@ const AutocompleteDropDown = ({
   const dataSource = buildDropDownData(dropDownData);
 
   return (
-    <StyledDiv className={`${containerClassName} autocomplete-dropdown`}>
+    <StyledAutocompleteDropDownContainer className={`${containerClassName} autocomplete-dropdown`}>
       <AutoComplete
         dataSource={dataSource}
         dropdownClassName={className}
@@ -148,46 +150,8 @@ const AutocompleteDropDown = ({
       >
         <Input suffix={<Icon type={iconType} className="" />} placeholder={selected.title} />
       </AutoComplete>
-    </StyledDiv>
+    </StyledAutocompleteDropDownContainer>
   );
 };
 
-const StyledDiv = styled.div`
-  margin: 0px 5px;
-  overflow: hidden;
-  button {
-    white-space: pre-wrap;
-  }
-  input {
-    cursor: pointer;
-  }
-`;
-
-const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
-  .ant-select-dropdown-menu {
-    display: flex;
-    flex-direction: column;
-    .ant-select-dropdown-menu-item-group {
-      display: flex;
-      flex-direction: column;
-      .ant-select-dropdown-menu-item-group-title {
-        font-weight: 900;
-        color: ${black};
-        cursor: default;
-      }
-
-      .ant-select-dropdown-menu-item-group-list {
-        flex: 1;
-        overflow: auto;
-      }
-    }
-  }
-
-  .ant-select-dropdown-menu-item-disabled {
-    font-weight: 900;
-    color: ${black};
-    cursor: default;
-  }
-`;
-
-export { StyledAutocompleteDropDown as AutocompleteDropDown };
+export { AutocompleteDropDown };

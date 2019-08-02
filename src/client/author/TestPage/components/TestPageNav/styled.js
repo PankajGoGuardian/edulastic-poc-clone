@@ -19,9 +19,8 @@ export const Container = styled.div`
 
 export const Link = styled.div`
   cursor: pointer;
-  width: 102px;
   color: ${white};
-  padding: 0 15px;
+  padding: 0 25px;
   text-transform: uppercase;
   font-size: 11px;
   font-weight: 600;
@@ -38,29 +37,29 @@ export const Link = styled.div`
   border-bottom: none;
   white-space: nowrap;
   border-radius: 5px;
+  margin: 0 5px;
+
+  &:last-child {
+    margin-right: 30px;
+  }
 
   svg {
-    fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")}
+    fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
   }
   &:hover {
     border-bottom: none;
 
     svg {
-      fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")}
+      fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
     }
   }
 
   @media screen and (max-width: ${smallDesktopWidth}) {
     margin: 0 3px;
-    width: auto;
+    padding: 0 20px;
     height: 36px;
     svg {
       display: none;
     }
   }
-
-  @media screen and (min-width: ${smallDesktopWidth}) {
-    margin: 0 7px;
-    width: 136px;
-    height: 45px;
 `;

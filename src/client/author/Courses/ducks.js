@@ -303,11 +303,9 @@ function* receiveCourseListSaga({ payload }) {
 
 function* updateCourseSaga({ payload }) {
   try {
-    const updateCourse = yield call(courseApi.editCourse, payload.uploadCSVData);
-    yield put(updateCourseSuccessAction(updateCourse));
+    const updateCourse = yield call(courseApi.editCourse, payload.updateData);
+    yield put(updateCourseSuccessAction(updateCourse.course));
     message.success("Course updated successfully");
-    yield call(delay, 1000);
-    yield put(receiveCourseListAction(payload.searchData));
   } catch (err) {
     const errorMessage = "Update Course is failing";
     yield call(message.error, errorMessage);

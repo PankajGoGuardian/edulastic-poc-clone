@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, green } from "@edulastic/colors";
+import { smallDesktopWidth, white, green } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const Container = styled.div`
@@ -135,6 +135,15 @@ export const RightSide = styled.div`
       font-size: 11px;
       text-transform: uppercase;
     }
+
+    @media (max-width: ${smallDesktopWidth}) {
+      height: 36px;
+      width: auto;
+      padding: 0px 20px;
+      div {
+        display: none;
+      }
+    }
   }
   .save-btn {
     width: 45px;
@@ -180,5 +189,9 @@ export const MenuItem = styled.li`
     svg {
       fill: #fff;
     }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 36px;
   }
 `;

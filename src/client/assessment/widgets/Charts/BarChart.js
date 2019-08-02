@@ -24,6 +24,7 @@ const BarChart = ({
   view,
   correct,
   disableResponse,
+  deleteMode,
   toggleBarDragging,
   checkAnnotationLeave
 }) => {
@@ -71,12 +72,12 @@ const BarChart = ({
     setActive(null);
     setIsMouseDown(false);
     toggleBarDragging(false);
-    saveAnswer(localData);
+    saveAnswer(localData, active);
   };
 
   const onMouseMove = e => {
     const newLocalData = cloneDeep(localData);
-    if (isMouseDown && cursorY) {
+    if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
       newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
 
@@ -126,6 +127,8 @@ const BarChart = ({
       />
 
       <Bars
+        saveAnswer={active => saveAnswer(localData, active)}
+        deleteMode={deleteMode}
         activeIndex={activeIndex}
         onPointOver={setActive}
         previewTab={previewTab}

@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, InstructorStimulus, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { COPY, CUT, PASTE, ON_LIMIT, ALWAYS, PREVIEW } from "../../constants/constantsForQuestions";
@@ -14,7 +14,7 @@ import { Toolbar } from "../../styled/Toolbar";
 import { Item } from "../../styled/Item";
 
 import { ToolbarItem } from "./styled/ToolbarItem";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { preventEvent, getFontSize, getSpellCheckAttributes } from "../../utils/helpers";
 import Character from "./components/Character";
 
@@ -133,7 +133,7 @@ const EssayPlainTextPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 

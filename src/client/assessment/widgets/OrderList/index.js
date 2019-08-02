@@ -13,7 +13,8 @@ import {
   InstructorStimulus,
   CorrectAnswersContainer,
   FlexContainer,
-  MathFormulaDisplay
+  MathFormulaDisplay,
+  QuestionNumberLabel
 } from "@edulastic/common";
 
 import { Text } from "./styled/Text";
@@ -42,11 +43,6 @@ const EmptyWrapper = styled.div``;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
 `;
 
 const OptionsList = withPoints(QuillSortableList);
@@ -84,7 +80,7 @@ const OrderList = ({
 
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
   const styleType = get(item, "ui_style.type", "button");
-  const axis = styleType === "inline" ? "x" : "y";
+  const axis = styleType === "inline" ? "xy" : "y";
   const columns = styleType === "inline" ? 3 : 1;
 
   const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
@@ -248,10 +244,11 @@ const OrderList = ({
           <InstructorStimulus>{itemForPreview.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             <QuestionHeader
               qIndex={qIndex}
               smallSize={smallSize}
+              padding="0px"
               dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
             />
           </QuestionTitleWrapper>

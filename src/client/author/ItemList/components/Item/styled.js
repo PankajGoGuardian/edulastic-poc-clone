@@ -14,12 +14,9 @@ import { Button } from "antd";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 
 export const Container = styled.div`
-  border-top: 0;
   padding: 30px 0 15px;
+  border-bottom: 1px solid #f6f6f6;
 
-  &:not(:first-child) {
-    border-top: 1px solid #f6f6f6;
-  }
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
     padding: 28px 28px 0 28px;

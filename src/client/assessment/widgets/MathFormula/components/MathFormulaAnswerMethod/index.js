@@ -52,6 +52,7 @@ const MathFormulaAnswerMethod = ({
   handleChangeAdditionals,
   onChangeKeypad,
   onChangeAllowedVars,
+  allowedVariables,
   onChangeShowDropdown,
   windowWidth,
   style = {},
@@ -309,7 +310,7 @@ const MathFormulaAnswerMethod = ({
             />
           );
         case "allowedVariables":
-          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedVars} />;
+          return <AllowedVariables allowedVariables={allowedVariables} onChange={onChangeAllowedVars} />;
         case "setEvaluation":
           return (
             <CheckOption
@@ -325,7 +326,6 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const { allowedVariables } = item;
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   const customKeys = get(item, "custom_keys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
@@ -457,6 +457,7 @@ MathFormulaAnswerMethod.propTypes = {
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
   handleChangeAdditionals: PropTypes.func,
+  allowedVariables: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired
 };

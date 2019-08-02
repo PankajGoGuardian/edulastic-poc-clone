@@ -16,6 +16,8 @@ import {
   IconGraphPolygon as IconPolygon
 } from "@edulastic/icons";
 
+import { WithResources } from "@edulastic/common";
+
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
@@ -154,7 +156,8 @@ class GraphContainer extends PureComponent {
       selectedTool: this.getDefaultTool(),
       selectedDrawingObject: null,
       elementSettingsAreOpened: false,
-      elementId: null
+      elementId: null,
+      resourcesLoaded: false
     };
 
     this.onSelectTool = this.onSelectTool.bind(this);
@@ -179,16 +182,16 @@ class GraphContainer extends PureComponent {
     const { setValue, setElementsStash } = this.props;
     const { elementId } = this.state;
     const config = this._graph.getConfig();
-    const updateElement = config.filter(
-      element => element.id === elementId && element.id !== null && elementId !== null
-    )[0];
+    const updateElement = config.filter(element => element.id === elementId)[0];
 
-    updateElement.label = labelText;
-    updateElement.pointIsVisible = pointVisibility;
-    updateElement.labelIsVisible = labelVisibility;
+    if (updateElement) {
+      updateElement.label = labelText;
+      updateElement.pointIsVisible = pointVisibility;
+      updateElement.labelIsVisible = labelVisibility;
 
-    setValue(config);
-    setElementsStash(config, this.getStashId());
+      setValue(config);
+      setElementsStash(config, this.getStashId());
+    }
 
     this.setState({ elementSettingsAreOpened: false });
   };
@@ -285,6 +288,9 @@ class GraphContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
+      if (prevProps.disableResponse && !disableResponse) {
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+      }
 
       if (
         canvas.xMin !== prevProps.canvas.xMin ||
@@ -474,6 +480,11 @@ class GraphContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
+    const { resourcesLoaded } = this.state;
+    if (!resourcesLoaded) {
+      return;
+    }
+
     const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
     // correct answers blocks
@@ -644,6 +655,15 @@ class GraphContainer extends PureComponent {
     this._graph.setDrawingObject(drawingObject);
   };
 
+  resourcesOnLoaded = () => {
+    const { resourcesLoaded } = this.state;
+    if (resourcesLoaded) {
+      return;
+    }
+    this.setState({ resourcesLoaded: true });
+    this.setElementsToGraph();
+  };
+
   render() {
     const {
       toolbar,
@@ -665,6 +685,16 @@ class GraphContainer extends PureComponent {
 
     return (
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
+        <WithResources
+          resources={[
+            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+          ]}
+          fallBack={<span />}
+          onLoaded={this.resourcesOnLoaded}
+        >
+          <span />
+        </WithResources>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (

@@ -1,6 +1,7 @@
 import JXG from "jsxgraph";
 import { CONSTANT } from "./config";
 import { defaultConfig as lineConfig } from "./elements/Line";
+import { EditButton } from "./elements";
 import rayConfig from "./elements/Ray";
 import segmentConfig from "./elements/Segment";
 import vectorConfig from "./elements/Vector";
@@ -156,7 +157,6 @@ export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = ()
     line.dragged = true;
     board.dragged = true;
   });
-
   points.forEach(point => {
     point.on("up", () => {
       if (point.dragged) {
@@ -171,6 +171,7 @@ export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = ()
       }
       point.dragged = true;
       board.dragged = true;
+      EditButton.cleanButton(board, point);
     });
   });
 };

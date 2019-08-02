@@ -1941,20 +1941,6 @@ class Board {
     point.labelIsVisible = props.label.visible;
     point.on("mouseover", event => this.handleElementMouseOver(point, event));
     point.on("mouseout", () => this.handleElementMouseOut(point));
-    point.on("up", () => {
-      if (point.dragged) {
-        point.dragged = false;
-        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
-      }
-    });
-    point.on("drag", e => {
-      if (e.movementX === 0 && e.movementY === 0) {
-        return;
-      }
-      point.dragged = true;
-      this.dragged = true;
-      EditButton.cleanButton(this, point);
-    });
     return point;
   }
 

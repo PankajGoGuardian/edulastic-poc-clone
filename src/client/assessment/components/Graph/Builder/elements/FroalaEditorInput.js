@@ -58,7 +58,7 @@ const FroalaEditorInput = (element, board) => ({
       readOnly
     );
 
-    element.labelHTML = content;
+    element.labelHTML = label;
   },
 
   setFocus() {
@@ -96,10 +96,6 @@ const FroalaEditorInput = (element, board) => ({
 
     const html = element.editor.html.get();
     const text = striptags(html);
-    const content = replaceLatexesWithMathHtml(html, latex => {
-      if (!katex) return latex;
-      return katex.renderToString(latex);
-    });
 
     if (element.labelHTML === html) {
       return;
@@ -123,7 +119,7 @@ const FroalaEditorInput = (element, board) => ({
         element.labelHTML = null;
       }
     } else {
-      element.labelHTML = content;
+      element.labelHTML = text;
       if (element.type === 99 && board.elements.findIndex(el => el.id === element.id) === -1) {
         board.elements.push(element);
       }

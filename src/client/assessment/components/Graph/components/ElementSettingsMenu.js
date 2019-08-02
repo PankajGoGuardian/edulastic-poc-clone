@@ -21,7 +21,7 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
     <Fragment>
       <div style={{ position: "absolute", top: "0", right: "0", left: "0", bottom: "0", zIndex: "9" }} />
       <Paper
-        style={{ position: "absolute", top: "125px", right: "41px", left: "0", zIndex: "10", padding: "20px 10px" }}
+        style={{ position: "absolute", top: "125px", right: "41px", left: "1px", zIndex: "10", padding: "20px 10px" }}
       >
         <Row style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "20px" }}>
           <Subtitle style={{ margin: 0 }}>{capitalizeFirstLetter(element.type)} settings</Subtitle>

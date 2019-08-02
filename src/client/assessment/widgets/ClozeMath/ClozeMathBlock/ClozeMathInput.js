@@ -227,7 +227,7 @@ class ClozeMathInput extends React.Component {
   get restrictKeys() {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
-    const { allowedVariables } = item;
+    const { allowedVariables = {} } = item;
     const {
       response_ids: { maths }
     } = item;

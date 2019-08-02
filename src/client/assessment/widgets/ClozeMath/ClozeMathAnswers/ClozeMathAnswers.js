@@ -247,6 +247,15 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
+  const handleAllowedOptions = mathInputIndex => (option, variables) => {
+    setQuestionData(
+      produce(item, draft => {
+        draft[option] = draft[option] || {};
+        draft[option][mathInputIndex] = variables;
+      })
+    );
+  };
+
   const mathAnswers = get(item, "validation.valid_response.value", []);
   const inputAnswers = get(item, "validation.valid_response.textinput.value", []);
   const dropDownAnswers = get(item, "validation.valid_response.dropdown.value", []);
@@ -317,7 +326,8 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   item={item}
                   key={index}
                   onChange={_changeCorrectMethod}
-                  onChangeAllowedOptions={handleAllowedVariables}
+                  // onChangeAllowedOptions={handleAllowedVariables}
+                  onChangeAllowedOptions={handleAllowedOptions(index)}
                   onAdd={_addCorrectMethod}
                   onDelete={_deleteCorrectMethod}
                   answers={[answer]}
@@ -333,7 +343,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   key={index}
                   item={item}
                   onChange={_changeAltMethod(correctTab - 1)}
-                  onChangeAllowedVars={handleAllowedVariables}
+                  onChangeAllowedOptions={handleAllowedOptions(index)}
                   onAdd={_addAltMethod(correctTab - 1)}
                   onDelete={_deleteAltMethod(correctTab - 1)}
                   answers={[altAnswer]}

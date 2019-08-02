@@ -7,6 +7,7 @@ import moment from "moment";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { IconDeskTopMonitor, IconBookMarkButton, IconNotes } from "@edulastic/icons";
+import { assignmentPolicyOptions } from "@edulastic/constants";
 
 import {
   Container,
@@ -46,6 +47,8 @@ import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assig
 import { toggleReleaseScoreSettingsAction } from "../../../src/actions/assignments";
 import { themeColor } from "@edulastic/colors";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
+
+const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions;
 
 class ClassHeader extends Component {
   constructor(props) {
@@ -108,8 +111,12 @@ class ClassHeader extends Component {
 
   handleOpenAssignment = () => {
     const { openAssignment, assignmentId, classId, additionalData, userRole } = this.props;
-    if (additionalData.testType === "common assessment" && userRole === "teacher") {
-      return message.error(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
+    if (
+      additionalData.openPolicy !== POLICY_OPEN_MANUALLY_BY_TEACHER &&
+      additionalData.testType === "common assessment" &&
+      userRole === "teacher"
+    ) {
+      return message.warn(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
     `);
     }
     openAssignment(assignmentId, classId);

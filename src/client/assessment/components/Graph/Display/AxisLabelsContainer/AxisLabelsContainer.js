@@ -236,6 +236,7 @@ class AxisLabelsContainer extends PureComponent {
     }
 
     if (disableResponse) {
+      this._graph.removeMarks();
       this._graph.removeMarksAnswers();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);
@@ -249,6 +250,7 @@ class AxisLabelsContainer extends PureComponent {
 
     if (previewTab === CHECK || previewTab === SHOW) {
       this._graph.removeMarks();
+      this._graph.removeMarksAnswers();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);
         const coloredElements = getColoredElems(elements, compareResult);
@@ -266,6 +268,7 @@ class AxisLabelsContainer extends PureComponent {
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.removeMarks();
+      this._graph.removeMarksAnswers();
       this._graph.renderMarks(list, elements);
     }
   };

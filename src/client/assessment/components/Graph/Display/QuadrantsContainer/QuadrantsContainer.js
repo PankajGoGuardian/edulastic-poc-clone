@@ -458,6 +458,7 @@ class GraphContainer extends PureComponent {
     if (disableResponse) {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
+      this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadAnswersFromConfig(coloredElements);
       return;
@@ -467,6 +468,7 @@ class GraphContainer extends PureComponent {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
+      this._graph.resetAnswers();
       this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
       return;
     }
@@ -476,6 +478,7 @@ class GraphContainer extends PureComponent {
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.reset();
+      this._graph.resetAnswers();
       this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible());
     }
   };

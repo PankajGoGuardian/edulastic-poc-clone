@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Checkbox, TabContainer } from "@edulastic/common";
+import { Checkbox } from "@edulastic/common";
 import { Select } from "antd";
 
 import Extras from "../../../../containers/Extras";

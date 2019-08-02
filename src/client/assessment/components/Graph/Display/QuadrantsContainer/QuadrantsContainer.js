@@ -174,11 +174,14 @@ class GraphContainer extends PureComponent {
   }
 
   handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
+
   handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility) => {
     const { setValue, setElementsStash } = this.props;
     const { elementId } = this.state;
     const config = this._graph.getConfig();
-    const updateElement = config.filter(element => element.id === elementId)[0];
+    const updateElement = config.filter(
+      element => element.id === elementId && element.id !== null && elementId !== null
+    )[0];
 
     updateElement.label = labelText;
     updateElement.pointIsVisible = pointVisibility;
@@ -186,6 +189,7 @@ class GraphContainer extends PureComponent {
 
     setValue(config);
     setElementsStash(config, this.getStashId());
+
     this.setState({ elementSettingsAreOpened: false });
   };
 
@@ -748,7 +752,8 @@ GraphContainer.propTypes = {
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
-  elementsIsCorrect: PropTypes.bool
+  elementsIsCorrect: PropTypes.bool,
+  advancedElementSettings: PropTypes.bool
 };
 
 GraphContainer.defaultProps = {

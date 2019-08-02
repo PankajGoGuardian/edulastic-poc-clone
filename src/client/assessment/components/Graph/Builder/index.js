@@ -1,6 +1,4 @@
 import JXG from "jsxgraph";
-// import striptags from "striptags";
-import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
 import { AUTO_VALUE, AUTO_HEIGHT_VALUE } from "./config/constants";
 import {
@@ -92,7 +90,7 @@ class Board {
 
     this.stacksUnderMouse = true;
 
-    this.disableCreatingHandler = false;
+    this.creatingHandlerIsDisabled = false;
 
     this.marksContainer = null;
 
@@ -321,7 +319,7 @@ class Board {
         return;
       }
 
-      if (this.disableCreatingHandler) {
+      if (this.creatingHandlerIsDisabled) {
         return;
       }
 
@@ -371,7 +369,7 @@ class Board {
       const {
         usrCoords: [, x, y]
       } = this.getCoords(coords);
-      EditButton.moveButton(this, [Math.round(x), Math.round(y)], element);
+      EditButton.moveButton(this, [x, y], element);
     }
   }
 
@@ -386,7 +384,7 @@ class Board {
       if (this.checkEditButtonCall(element)) {
         const pointsUnderMouse = this.$board
           .getAllObjectsUnderMouse(event)
-          .filter(element => element.elType === "point");
+          .filter(mouseElement => mouseElement.elType === "point");
 
         if (pointsUnderMouse.length === 0) {
           this.stacksUnderMouse = false;
@@ -787,9 +785,9 @@ class Board {
       },
       [CONSTANT.TOOLS.CIRCLE]: {
         ...defaultBgObjectParameters(),
-        ...Circle.parseConfig(),
-        strokeColor: "#ccc",
-        highlightStrokeColor: "#ccc"
+        fillColor: "transparent",
+        highlightFillColor: "transparent",
+        highlightStrokeWidth: 1
       },
       [CONSTANT.TOOLS.POLYGON]: {
         ...defaultBgObjectParameters(),
@@ -873,11 +871,7 @@ class Board {
         });
 
         if (el.labelIsVisible) {
-          let content = replaceLatexesWithMathHtml(el.label, latex => {
-            if (!katex) return latex;
-            return katex.renderToString(latex);
-          });
-          FroalaEditorInput(newElement, this).setLabel(content, true);
+          FroalaEditorInput(newElement, this).setLabel(el.label, true);
         }
         return newElement;
       })
@@ -945,12 +939,7 @@ class Board {
           ...el.colors
         });
 
-        let content = replaceLatexesWithMathHtml(el.label, latex => {
-          if (!katex) return latex;
-          return katex.renderToString(latex);
-        });
-        FroalaEditorInput(newElement, this).setLabel(content, labelIsReadOnly);
-
+        FroalaEditorInput(newElement, this).setLabel(el.label, labelIsReadOnly);
         return newElement;
       })
     );
@@ -976,11 +965,8 @@ class Board {
           ],
           ...el.colors
         });
-        let content = replaceLatexesWithMathHtml(el.label, latex => {
-          if (!katex) return latex;
-          return katex.renderToString(latex);
-        });
-        FroalaEditorInput(newElement, this).setLabel(content, true);
+
+        FroalaEditorInput(newElement, this).setLabel(el.label, true);
         return newElement;
       })
     );
@@ -1955,6 +1941,20 @@ class Board {
     point.labelIsVisible = props.label.visible;
     point.on("mouseover", event => this.handleElementMouseOver(point, event));
     point.on("mouseout", () => this.handleElementMouseOut(point));
+    point.on("up", () => {
+      if (point.dragged) {
+        point.dragged = false;
+        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+      }
+    });
+    point.on("drag", e => {
+      if (e.movementX === 0 && e.movementY === 0) {
+        return;
+      }
+      point.dragged = true;
+      this.dragged = true;
+      EditButton.cleanButton(this, point);
+    });
     return point;
   }
 

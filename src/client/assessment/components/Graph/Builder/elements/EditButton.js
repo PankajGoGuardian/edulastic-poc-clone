@@ -23,8 +23,6 @@ function createButton(board, menuHandler) {
     highlightFillOpacity: 1
   });
 
-  editButton.elType = "editButton";
-
   editButton.on("over", () => {
     if (buttonIsVisible) {
       window.clearTimeout(timeoutId);
@@ -43,12 +41,12 @@ function createButton(board, menuHandler) {
   });
 
   editButton.on("down", () => {
-    board.disableCreatingHandler = true;
+    board.creatingHandlerIsDisabled = true;
   });
 
   editButton.on("up", () => {
     menuHandler(currentElement.id);
-    board.disableCreatingHandler = false;
+    board.creatingHandlerIsDisabled = false;
     window.clearTimeout(timeoutId);
     board.editButton.setAttribute({ visible: false });
     buttonIsVisible = false;

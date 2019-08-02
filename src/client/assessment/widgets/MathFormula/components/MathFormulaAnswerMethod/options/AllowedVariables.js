@@ -16,7 +16,7 @@ const AllowedVariablesPure = ({ allowedVariables, onChange, t }) => {
 
   const onChangeHandler = e => {
     const { value } = e.target;
-    onChange("allowedVariables", value.replace(/[^a-zA-Z,]/g, ""));
+    onChange("allowedVariables", (value.match(/[a-zA-Z],?/g) || []).join(""));
   };
 
   return (

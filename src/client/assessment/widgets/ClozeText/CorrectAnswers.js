@@ -157,7 +157,7 @@ class CorrectAnswers extends Component {
           </Tabs>
           {value === 0 && (
             <TabContainer>
-              {/* <CorrectAnswer
+              <CorrectAnswer
                 key={options}
                 response={validation.valid_response}
                 stimulus={stimulus}
@@ -171,8 +171,7 @@ class CorrectAnswers extends Component {
                 responseIds={responseIds}
                 view={view}
                 previewTab={previewTab}
-              /> */}
-              <MixMatchCorrectAnswer />
+              />
             </TabContainer>
           )}
           {validation.alt_responses &&
@@ -181,21 +180,31 @@ class CorrectAnswers extends Component {
               if (i + 1 === value) {
                 return (
                   <TabContainer key={i}>
-                    <CorrectAnswer
-                      key={options}
-                      response={alter}
-                      stimulus={stimulus}
-                      options={options}
-                      configureOptions={configureOptions}
-                      responseIds={responseIds}
-                      hasGroupResponses={hasGroupResponses}
-                      uiStyle={uiStyle}
-                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
-                      onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                      mixAndMatch={validation.mixAndMatch}
-                      view={view}
-                      previewTab={previewTab}
-                    />
+                    {validation.mixAndMatch && (
+                      <MixMatchCorrectAnswer
+                        uiStyle={uiStyle}
+                        response={validation.valid_response}
+                        alternateResponse={alter}
+                        onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
+                      />
+                    )}
+                    {!validation.mixAndMatch && (
+                      <CorrectAnswer
+                        key={options}
+                        response={alter}
+                        stimulus={stimulus}
+                        options={options}
+                        configureOptions={configureOptions}
+                        responseIds={responseIds}
+                        hasGroupResponses={hasGroupResponses}
+                        uiStyle={uiStyle}
+                        onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
+                        onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                        mixAndMatch={validation.mixAndMatch}
+                        view={view}
+                        previewTab={previewTab}
+                      />
+                    )}
                   </TabContainer>
                 );
               }

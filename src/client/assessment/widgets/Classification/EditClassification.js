@@ -416,6 +416,7 @@ const EditClassification = ({
       editCorrectAnswers={
         correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
       }
+      setQuestionData={setQuestionData}
       view={EDIT}
     />
   );

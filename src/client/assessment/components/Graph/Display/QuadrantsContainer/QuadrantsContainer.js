@@ -30,8 +30,6 @@ import {
   defaultGridParameters
 } from "../../Builder/settings";
 
-import { ElementSettingsMenu } from "../../components/ElementSettingsMenu";
-
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import {
@@ -48,6 +46,7 @@ import {
 import Tools from "./Tools";
 import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
+import { ElementSettingsMenu } from "./ElementSettingsMenu";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -625,7 +624,7 @@ class GraphContainer extends PureComponent {
     "hyperbola",
     "polygon",
     "parabola",
-    "label",
+    // "label",
     "annotation",
     "area"
   ];

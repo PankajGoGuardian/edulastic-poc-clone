@@ -364,12 +364,15 @@ class Board {
     );
   }
 
-  handleElementMouseOver(element, coords) {
+  handleElementMouseOver(element, event) {
     if (this.checkEditButtonCall(element)) {
-      const {
-        usrCoords: [, x, y]
-      } = this.getCoords(coords);
-      EditButton.moveButton(this, [x, y], element);
+      let coords;
+      if (JXG.isPoint(element)) {
+        coords = element.coords;
+      } else {
+        coords = this.getCoords(event);
+      }
+      EditButton.moveButton(this, coords, element);
     }
   }
 
@@ -939,7 +942,7 @@ class Board {
           ...el.colors
         });
 
-        FroalaEditorInput(newElement, this).setLabel(el.label, labelIsReadOnly);
+        FroalaEditorInput(newElement, this).setLabel(el.label, true);
         return newElement;
       })
     );

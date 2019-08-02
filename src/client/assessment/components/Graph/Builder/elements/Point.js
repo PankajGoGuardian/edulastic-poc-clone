@@ -72,7 +72,7 @@ function create(board, usrCoords, id = null) {
   point.on("mouseout", () => board.handleElementMouseOut(point));
 
   if (board.drawingObject === null) {
-    FroalaEditorInput(point, board).setLabel(board.objectNameGenerator.next().value);
+    FroalaEditorInput(point, board).setLabel(board.objectNameGenerator.next().value, true);
   }
 
   return point;

@@ -1,3 +1,4 @@
+/* global katex */
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import striptags from "striptags";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
@@ -119,7 +120,7 @@ const FroalaEditorInput = (element, board) => ({
         element.labelHTML = null;
       }
     } else {
-      element.labelHTML = text;
+      element.labelHTML = html;
       if (element.type === 99 && board.elements.findIndex(el => el.id === element.id) === -1) {
         board.elements.push(element);
       }

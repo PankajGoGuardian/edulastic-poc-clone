@@ -68,8 +68,8 @@ function moveButton(board, coords, element) {
     }
   }
 
-  const x = parseFloat((coords[0] + 22.5 / board.$board.unitX).toFixed(3));
-  const y = parseFloat((coords[1] + 20 / board.$board.unitY).toFixed(3));
+  const x = parseFloat((coords.usrCoords[1] + 22.5 / board.$board.unitX).toFixed(3));
+  const y = parseFloat((coords.usrCoords[2] + 20 / board.$board.unitY).toFixed(3));
   board.editButton.setPosition(JXG.COORDS_BY_USER, [x, y]);
 
   if (element.label) {

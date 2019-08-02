@@ -89,7 +89,7 @@ class AssignTest extends React.Component {
         codes: [],
         subjects: [],
         grades: [],
-        active: 1
+        active: [1]
       },
       page: 1,
       limit: 1000

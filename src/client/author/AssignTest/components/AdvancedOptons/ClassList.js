@@ -58,7 +58,7 @@ class ClassList extends React.Component {
         codes: [],
         subjects: subjects.map(subject => lowerCase(subject)),
         grades,
-        active: 1
+        active: [1]
       }
     };
   }

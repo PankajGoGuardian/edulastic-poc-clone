@@ -251,7 +251,7 @@ class Display extends Component {
     const data = Array.isArray(sourceData) ? sourceData : [sourceData];
 
     newAnswers[index] = {
-      responseBoxID: responseContainers[index].id,
+      responseBoxID: responseContainers[index] && responseContainers[index].id,
       value: [...(newAnswers[index] ? newAnswers[index].value || [] : []), ...data],
       containerIndex: index
     };
@@ -263,7 +263,7 @@ class Display extends Component {
 
     if (typeof fromContainerIndex === "number") {
       newAnswers[fromContainerIndex] = {
-        responseBoxID: responseContainers[fromContainerIndex].id,
+        responseBoxID: responseContainers[fromContainerIndex] && responseContainers[fromContainerIndex].id,
         value: newAnswers[fromContainerIndex].value.filter((_, i) => i !== fromRespIndex),
         containerIndex: index
       };
@@ -694,7 +694,7 @@ class Display extends Component {
       <div />
     );
 
-    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = isReviewTab || !responses.length ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? "right" : responsecontainerposition;

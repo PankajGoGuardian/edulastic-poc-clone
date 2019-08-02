@@ -55,7 +55,6 @@ class ClassList extends React.Component {
     this.state = {
       searchTerms: {
         institutionIds: [],
-        codes: [],
         subjects: subjects.map(subject => lowerCase(subject)),
         grades,
         active: [1]

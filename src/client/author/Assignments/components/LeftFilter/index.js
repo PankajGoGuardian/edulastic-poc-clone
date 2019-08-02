@@ -318,6 +318,8 @@ class LeftFilter extends React.Component {
     const roleBasedTestType = userRole === "teacher" ? testTypes : AdminTestTypes;
     const oldFolderName = selectedFolder ? folders.find(folder => selectedFolder === folder._id).folderName : "";
     const classListByTerm = classList.filter(item => item.termId === termId || !termId);
+    const classListActive = classListByTerm.filter(item => item.active === 1);
+    const classListArchive = classListByTerm.filter(item => item.active === 0);
     return (
       <FilterContainer>
         <FolderActionModal
@@ -446,9 +448,15 @@ class LeftFilter extends React.Component {
                   <Select.Option key={"all"} value={""}>
                     {"All classes"}
                   </Select.Option>
-                  {classListByTerm.map(item => (
+                  {classListActive.map(item => (
                     <Select.Option key={item._id} value={item._id}>
                       {item.name}
+                    </Select.Option>
+                  ))}
+                  {classListArchive.map(item => (
+                    <Select.Option key={item._id} value={item._id}>
+                      <span style={{ marginRight: "15px" }}>{item.name}</span>
+                      <i class="fa fa-archive" />
                     </Select.Option>
                   ))}
                 </Select>

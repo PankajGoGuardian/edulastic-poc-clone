@@ -224,7 +224,7 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
-    cssStyles.width = cssStyles.width || cssStyles.minWidth;
+    // cssStyles.width = cssStyles.width || cssStyles.minWidth;
     const testItemCorrectValues = testItem
       ? item.validation.valid_response.value.map(validResponse => validResponse.value)
       : [];

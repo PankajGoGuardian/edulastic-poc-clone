@@ -1716,6 +1716,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1753,6 +1754,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1788,6 +1790,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1828,6 +1831,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1863,6 +1867,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1901,6 +1906,7 @@ export const getCards = onSelectQuestionType => {
         },
         custom_keys: ["m", "km", "cm", "mm"],
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1982,6 +1988,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         type: questionType.FORMULA_ESSAY,
         ui_style: {
+          widthpx: 140,
           default_mode: "math",
           fontsize: "",
           text_formatting_options: ["bold", "italic", "underline", "unorderedList"]

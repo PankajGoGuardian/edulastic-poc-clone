@@ -170,7 +170,7 @@ const ClassificationPreview = ({
 
   const boxes = createEmptyArrayOfArrays();
 
-  const onDrop = (itemCurrent, itemTo) => {
+  const onDrop = (itemCurrent, itemTo, from) => {
     const columnCount = get(item, "max_response_per_cell", "");
 
     const dItems = cloneDeep(dragItems);
@@ -200,6 +200,8 @@ const ClassificationPreview = ({
       if (obj) {
         ansArrays.forEach((arr, i) => {
           if (!duplicate_responses && arr.includes(obj.id)) {
+            arr.splice(arr.indexOf(obj.id), 1);
+          } else if (from === "column" && arr.includes(obj.id)) {
             arr.splice(arr.indexOf(obj.id), 1);
           }
 
@@ -382,6 +384,7 @@ const ClassificationPreview = ({
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             ) : (
                               <DragItem
@@ -394,6 +397,7 @@ const ClassificationPreview = ({
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             )
                           )}
@@ -432,6 +436,7 @@ const ClassificationPreview = ({
                               item={ite.value}
                               disableResponse={disableResponse}
                               possibilityListPosition={listPosition}
+                              from="container"
                             />
                           ) : (
                             dragItems.includes(ite) && (
@@ -445,6 +450,7 @@ const ClassificationPreview = ({
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             )
                           );

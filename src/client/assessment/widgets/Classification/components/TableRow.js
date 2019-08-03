@@ -176,6 +176,7 @@ const TableRow = ({
                   item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
                   isResetOffset
+                  from="column"
                 />
               );
             })}

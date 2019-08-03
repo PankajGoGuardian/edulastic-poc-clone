@@ -139,7 +139,8 @@ const TokenHighlightPreview = ({
   const rightAnswers = validate();
 
   const getStyles = (index, disableResp = false, correctAnswers = []) => {
-    const defaultAnswers = disableResp ? validArray : correctAnswers;
+    const _answers = correctAnswers.length > 0 ? correctAnswers : answers;
+    const defaultAnswers = disableResp ? validArray : _answers;
     const condition =
       defaultAnswers.find(elem => elem.index === index) && defaultAnswers.find(elem => elem.index === index).selected;
 
@@ -209,7 +210,6 @@ const TokenHighlightPreview = ({
                     dangerouslySetInnerHTML={{ __html: el.value }}
                     style={getStyles(i, false, correctAnswers)}
                     key={i}
-                    className={`mika-${el.selected}`}
                   />
                 ) : (
                   <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />

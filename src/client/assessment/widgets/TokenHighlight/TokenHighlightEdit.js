@@ -83,7 +83,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         updateVariables(draft);
       })
     );
-  }, [mode, item.template]);
+  }, [mode, item.template, correctTab]);
 
   const handleAddAnswer = () => {
     setQuestionData(

@@ -22,7 +22,8 @@ var ShapeTypes = {
   HYPERBOLA: "hyperbola",
   EXPONENT: "exponent",
   LOGARITHM: "logarithm",
-  POLYNOM: "polynom"
+  POLYNOM: "polynom",
+  DRAG_DROP: "drag_drop"
 };
 exports.ShapeTypes = ShapeTypes;
 var IgnoreRepeatedShapes = {

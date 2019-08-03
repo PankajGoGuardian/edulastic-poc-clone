@@ -8,6 +8,7 @@ import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { PlacementContainer } from "./PlacementContainer";
 
 const safeParseFloat = val => {
   if (val) {
@@ -131,13 +132,14 @@ class GraphDisplay extends Component {
         break;
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         this.validateQuadrants();
     }
   };
 
   getGraphContainer = () => {
-    const { graphData } = this.props;
+    const { graphData, bgShapes } = this.props;
     const { graphType } = graphData;
 
     switch (graphType) {
@@ -145,6 +147,8 @@ class GraphDisplay extends Component {
         return AxisSegmentsContainer;
       case "axisLabels":
         return AxisLabelsContainer;
+      case "quadrantsPlacement":
+        return !bgShapes ? PlacementContainer : QuadrantsContainer;
       case "quadrants":
       case "firstQuadrant":
       default:
@@ -163,6 +167,7 @@ class GraphDisplay extends Component {
         return this.getAxisLabelsProps();
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return this.getQuadrantsProps();
     }
@@ -192,7 +197,8 @@ class GraphDisplay extends Component {
       controlbar,
       annotation,
       id,
-      graphType
+      graphType,
+      list
     } = graphData;
 
     const { showGrid = true, xShowAxis = true, yShowAxis = true } = ui_style;
@@ -258,7 +264,7 @@ class GraphDisplay extends Component {
       controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
       elements,
-      graphType,
+      graphType: bgShapes && graphType === "quadrantsPlacement" ? "quadrants" : graphType,
       bgShapes,
       annotation,
       questionId: id,
@@ -267,7 +273,8 @@ class GraphDisplay extends Component {
       previewTab,
       changePreviewTab,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      list
     };
   };
 

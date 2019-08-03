@@ -10,7 +10,7 @@ import {
   ToolbarItem,
   ToolbarItemIcon,
   DropdownArrowWrapper
-} from "./styled";
+} from "./styled_components";
 import utils from "./utils";
 
 class Dropdown extends Component {

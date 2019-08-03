@@ -78,6 +78,7 @@ class Graph extends Component {
         return GraphAxisLabels;
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return GraphQuadrants;
     }
@@ -94,6 +95,7 @@ class Graph extends Component {
         return AxisLabelsOptions;
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return QuadrantsMoreOptions;
     }
@@ -110,6 +112,7 @@ class Graph extends Component {
         return this.getAxisLabelsOptionsProps();
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return this.getQuadrantsOptionsProps();
     }

@@ -26,7 +26,8 @@ import {
   Equation,
   Annotation,
   Area,
-  DrawingObject
+  DrawingObject,
+  DragDrop
 } from "./elements";
 import {
   mergeParams,
@@ -53,6 +54,7 @@ import _events from "./events";
 import "jsxgraph/distrib/jsxgraph.css";
 import "../common/FroalaEditorInput.css";
 import "../common/Mark.css";
+import "../common/DragDrop.css";
 
 /**
  * @see https://jsxgraph.org/docs/symbols/JXG.JSXGraph.html#.initBoard
@@ -120,6 +122,28 @@ class Board {
     this.setCreatingHandler();
 
     this.objectNameGenerator = nameGenerator();
+  }
+
+  addDragDropValue(value, x, y) {
+    const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], this.$board);
+    const [xMin, yMax, xMax, yMin] = this.$board.getBoundingBox();
+    if (
+      coords.usrCoords[1] < xMin ||
+      coords.usrCoords[1] > xMax ||
+      coords.usrCoords[2] < yMin ||
+      coords.usrCoords[2] > yMax
+    ) {
+      return false;
+    }
+
+    const element = {
+      ...value,
+      x: coords.usrCoords[1],
+      y: coords.usrCoords[2]
+    };
+
+    this.elements.push(DragDrop.renderElement(this, element, {}));
+    return true;
   }
 
   isAnyElementsHasFocus(withPrepare = false) {
@@ -446,6 +470,19 @@ class Board {
     });
   }
 
+  setDragDropDeleteHandler() {
+    this.$board.on("up", event => {
+      const dragDrop = this.elements.find(element => `drag-drop-delete-${element.id}` === event.target.id);
+      if (!dragDrop) {
+        return;
+      }
+
+      this.elements = this.elements.filter(element => element.id !== dragDrop.id);
+      this.removeObject(dragDrop);
+      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
+    });
+  }
+
   // Render marks
   renderMarks(marks, markCoords = []) {
     marks.forEach(mark => {
@@ -597,6 +634,8 @@ class Board {
             return Annotation.getConfig(e);
           case 100:
             return Area.getConfig(e);
+          case 101:
+            return DragDrop.getConfig(e);
           default:
             throw new Error("Unknown element type:", e.name, e.type);
         }
@@ -1383,6 +1422,18 @@ class Board {
             })
           );
           break;
+        case 101:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs =>
+                DragDrop.renderElement(this, {
+                  ...el,
+                  ...attrs
+                })
+            })
+          );
+          break;
         default:
           throw new Error("Unknown element:", el);
       }
@@ -1789,6 +1840,19 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => Area.renderElement(this, el, { ...attrs })
+            })
+          );
+          break;
+        case 101:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs =>
+                DragDrop.renderElement(this, {
+                  ...el,
+                  ...attrs,
+                  fixed: true
+                })
             })
           );
           break;

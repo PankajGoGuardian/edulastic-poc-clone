@@ -5,7 +5,7 @@ import striptags from "striptags";
 
 import { secondaryTextColor, white, whiteSmoke } from "@edulastic/colors";
 
-import utils from "./utils";
+import utils from "../../common/utils";
 
 class DrawingObjects extends Component {
   onClick = drawingObject => {

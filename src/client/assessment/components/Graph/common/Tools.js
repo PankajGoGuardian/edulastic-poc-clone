@@ -9,7 +9,7 @@ import {
   ToolbarItem,
   ToolbarItemLabel,
   ToolbarItemIcon
-} from "./styled";
+} from "./styled_components";
 import Dropdown from "./Dropdown";
 import utils from "./utils";
 

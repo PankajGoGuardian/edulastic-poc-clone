@@ -5,6 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Checkbox } from "@edulastic/common";
 import { Select } from "antd";
 
+import { EDIT } from "../../../../constants/constantsForQuestions";
 import Extras from "../../../../containers/Extras";
 import { MoreOptionsInput, MoreOptionsInputSmall } from "../../common/styled_components";
 
@@ -560,6 +561,7 @@ class QuadrantsMoreOptions extends Component {
           <Row>
             <Col md={24}>
               <GraphDisplay
+                view={EDIT}
                 graphData={graphData}
                 onChange={setBgShapes}
                 elements={graphData.background_shapes}
@@ -596,8 +598,6 @@ QuadrantsMoreOptions.propTypes = {
 };
 
 QuadrantsMoreOptions.defaultProps = {
-  fontSizeList: [],
-  stemNumerationList: [],
   advancedAreOpen: false
 };
 

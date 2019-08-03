@@ -19,7 +19,7 @@ import { AUTO_HEIGHT_VALUE, AUTO_VALUE } from "../../Builder/config/constants";
 
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
-import Tools from "../QuadrantsContainer/Tools";
+import Tools from "../../common/Tools";
 import { GraphWrapper, JSXBox } from "./styled";
 
 const getColoredElems = (elements, compareResult) => {

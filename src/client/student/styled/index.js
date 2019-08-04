@@ -6,7 +6,8 @@ import {
   extraDesktopWidthMax,
   mobileWidthMax,
   textColor,
-  titleColor
+  titleColor,
+  title
 } from "@edulastic/colors";
 
 export const Wrapper = styled.div`
@@ -172,4 +173,15 @@ export const BreadcrumbWrapper = styled.div`
   @media screen and (max-width: ${tabletWidth}) {
     flex-direction: column;
   }
+`;
+
+export const Title = styled.h3`
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 24px;
+  color: ${title};
+  display: block;
+  margin-top: 28px;
+  margin-left: 12px;
+  margin-bottom: 20px;
 `;

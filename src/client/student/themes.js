@@ -1,4 +1,4 @@
-import { themeColor, themeColorLight, themeColorBreadcrumb } from "@edulastic/colors";
+import { themeColor, themeColorLighter, themeColorLight, themeColorBreadcrumb } from "@edulastic/colors";
 import edulasticDefaultLogo from "./assets/logo.svg";
 
 export const themes = {
@@ -35,9 +35,9 @@ export const themes = {
       helpButtonBgColor: "#ffffff",
       helpButtonBgHoverColor: themeColor,
       helpButtonFontSize: "14px",
-      helpButtonTextColor: "#5EB500",
+      helpButtonTextColor: themeColorLighter,
       helpButtonTextHoverColor: "white",
-      helpIconColor: "#5EB500",
+      helpIconColor: themeColorLighter,
       helpIconHoverColor: "white",
       dropdownIconColor: "#333333",
       userInfoButtonBgColor: "#ffffff",

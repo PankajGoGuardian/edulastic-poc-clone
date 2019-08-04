@@ -6,7 +6,8 @@ import {
   extraDesktopWidthMax,
   mobileWidthMax,
   textColor,
-  titleColor
+  titleColor,
+  backgrounds
 } from "@edulastic/colors";
 
 export const Wrapper = styled.div`
@@ -40,7 +41,7 @@ export const Wrapper = styled.div`
 `;
 
 export const NoDataBox = styled.div`
-  background: #f3f3f3;
+  background: ${backgrounds.default};
   width: 396px;
   height: 351px;
   position: absolute;

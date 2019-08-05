@@ -3,7 +3,6 @@ import { Table, Button } from "antd";
 import { testActivity } from "@edulastic/constants";
 import {
   mobileWidth,
-  tabletWidth,
   smallDesktopWidth,
   darkGrey,
   lightGreySecondary,
@@ -177,9 +176,6 @@ export const TableData = styled(Table)`
     top: auto;
   }
 
-  @media (max-width: ${tabletWidth}) {
-    display: none;
-  }
   .ant-table-row-expand-icon {
     display: none;
   }

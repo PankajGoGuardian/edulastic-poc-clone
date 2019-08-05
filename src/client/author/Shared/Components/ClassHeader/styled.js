@@ -1,14 +1,6 @@
 import { Popconfirm, Switch, Button, Menu } from "antd";
 import styled, { css } from "styled-components";
-import {
-  white,
-  mobileWidth,
-  smallDesktopWidth,
-  mediumDesktopWidth,
-  extraDesktopWidth,
-  themeColor,
-  fadedBlue
-} from "@edulastic/colors";
+import { white, mobileWidth, mediumDesktopWidth, extraDesktopWidth, themeColor, fadedBlue } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { themes } from "../../../../student/themes";
 import { StyledTable as Table } from "../../../Reports/common/styled";
@@ -19,7 +11,7 @@ export const RightSideButtonWrapper = styled.div`
   height: 45px;
   display: flex;
   margin-left: auto;
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
   }
 `;
@@ -35,7 +27,7 @@ export const Container = styled.div`
   &:hover {
     background-color: darken(${props => props.theme.header.headerBgColor}, 10%);
   }
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 60px;
   }
   @media (max-width: ${mobileWidth}) {
@@ -52,7 +44,7 @@ export const StyledTitle = styled.h1`
   font-weight: bold;
   margin: 20px 0;
   padding: 0;
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
     margin: 0px;
   }
@@ -72,7 +64,7 @@ export const StyledParaFirst = styled.p`
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
     max-width: 160px;
   }
@@ -90,7 +82,7 @@ export const StyledParaSecond = styled.p`
   div {
     white-space: nowrap;
   }
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 10px;
     white-space: nowrap;
     div {
@@ -132,7 +124,7 @@ export const StyledTabs = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     min-width: 480px;
   }
 `;
@@ -164,7 +156,7 @@ export const StyledAnchor = styled.div`
   @media (max-width: ${extraDesktopWidth}) {
     font-size: 10px;
   }
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     padding: 0px;
     margin: 0px 2px;
     height: 36px;
@@ -277,7 +269,7 @@ export const OpenCloseButton = styled(Button)`
   margin-right: 5px;
   padding: 10px 30px;
   font-size: 12px;
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     padding: 10px 15px;
     font-size: 10px;
     margin-right: 2px;

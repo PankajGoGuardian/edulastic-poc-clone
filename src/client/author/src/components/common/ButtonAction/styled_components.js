@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileWidth, smallDesktopWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { mobileWidth, mediumDesktopWidth } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const Container = styled.div`
@@ -20,7 +20,7 @@ export const HeaderActionButton = styled(Button)`
   max-width: 45px;
   height: 45px;
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     max-width: 36px;
     height: 36px;
   }
@@ -51,7 +51,7 @@ export const PreviewBar = styled.div`
       margin: 0;
     }
 
-    @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+    @media (max-width: ${mediumDesktopWidth}) {
       width: auto;
       height: 36px;
     }

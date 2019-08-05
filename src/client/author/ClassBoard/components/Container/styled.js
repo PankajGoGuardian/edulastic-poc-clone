@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 import {
   mobileWidth,
-  smallDesktopWidth,
+  mediumDesktopWidth,
   themeColor,
   white,
   linkColor,
@@ -110,7 +110,7 @@ const StyledTabButton = styled.a`
     color: ${white};
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     padding: 6px 30px;
   }
 `;
@@ -159,7 +159,7 @@ export const RedirectButton = styled(StyledTabButton)`
     }
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     width: 130px;
   }
 `;

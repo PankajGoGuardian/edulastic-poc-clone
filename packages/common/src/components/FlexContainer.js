@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { smallDesktopWidth } from "@edulastic/colors";
+import { mediumDesktopWidth } from "@edulastic/colors";
 
 const FlexContainer = styled.div`
   display: flex;
@@ -18,7 +18,7 @@ const FlexContainer = styled.div`
     padding: 6px 0px;
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     & > * {
       margin-right: 3px;
     }

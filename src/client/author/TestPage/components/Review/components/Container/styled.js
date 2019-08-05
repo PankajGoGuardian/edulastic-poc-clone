@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { smallDesktopWidth, mainBgColor } from "@edulastic/colors";
+import { mediumDesktopWidth, mainBgColor } from "@edulastic/colors";
 import { Col } from "antd";
 
 export const ReviewPageContainer = styled.div`
@@ -20,7 +20,7 @@ export const ReviewPageContainer = styled.div`
         display: none;
       }
     }
-    @media (max-width: ${smallDesktopWidth}) {
+    @media (max-width: ${mediumDesktopWidth}) {
       top: 60px;
     }
   }

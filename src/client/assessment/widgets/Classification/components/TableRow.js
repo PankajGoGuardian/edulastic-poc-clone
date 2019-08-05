@@ -120,18 +120,6 @@ const TableRow = ({
           </RowTitleCol>
         </Rnd>
       );
-      // else {
-      //   cols.push(
-      //     <RowTitleCol key={index + startIndex + colCount} colCount={colCount}>
-      //       {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
-      //         <CenteredText
-      //           style={{ wordWrap: "break-word", textAlign: "left" }}
-      //           dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
-      //         />
-      //       ) : null}
-      //     </RowTitleCol>
-      //   );
-      // }
     }
     cols.push(
       <ResponseRnd
@@ -164,11 +152,12 @@ const TableRow = ({
             answers[index].map((answerValue, answerIndex) => {
               validIndex++;
               const resp = responses.find(resp => resp.id === answerValue);
+              const valid = get(validArray, [index, resp.id], undefined);
               return (
                 <DragItem
                   isTransparent={isTransparent}
                   dragHandle={dragHandle}
-                  valid={isReviewTab ? true : validArray && validArray[validIndex]}
+                  valid={isReviewTab ? true : valid}
                   preview={preview}
                   key={answerIndex}
                   renderIndex={responses.findIndex(resp => resp.id === answerValue)}
@@ -176,6 +165,7 @@ const TableRow = ({
                   item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
                   isResetOffset
+                  noPadding
                   from="column"
                 />
               );

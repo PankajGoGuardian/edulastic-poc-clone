@@ -2,6 +2,7 @@ import React from "react";
 import Table from "../styled/Table";
 import { CenteredText } from "@edulastic/common";
 import { withTheme } from "styled-components";
+import { get } from "lodash";
 
 import DropContainer from "../../../components/DropContainer";
 import DragItem from "./DragItem";
@@ -76,11 +77,12 @@ const TableLayout = ({
               Array.isArray(answers[validIndex]) &&
               answers[validIndex].map((ansId, answerIndex) => {
                 const resp = responses.find(resp => resp.id === ansId);
+                const valid = get(validArray, [validIndex, resp.id], undefined);
                 return (
                   <DragItem
                     isTransparent={isTransparent}
                     dragHandle={dragHandle}
-                    valid={isReviewTab ? true : validArray && validArray[validIndex]}
+                    valid={isReviewTab ? true : valid}
                     preview={preview}
                     key={answerIndex}
                     renderIndex={responses.findIndex(resp => resp.id === ansId)}

@@ -57,12 +57,7 @@ const Item = ({ valid, preview, theme, dragHandle, renderIndex, item }) => (
       </IndexBox>
     )}
     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
-    {preview && valid !== undefined && (
-      <div>
-        {valid && <IconCheck />}
-        {!valid && <IconClose />}
-      </div>
-    )}
+    {preview && valid !== undefined && <div>{valid ? <IconCheck /> : <IconClose />}</div>}
   </FlexContainer>
 );
 
@@ -87,6 +82,7 @@ const DragItemContainer = ({
   dragHandle,
   possibilityListPosition,
   isResetOffset = false,
+  noPadding,
   ...restProps
 }) => {
   const dragItem = (
@@ -139,7 +135,7 @@ const DragItemContainer = ({
               : theme.widgets.classification.dragItemBorderColor,
             preview && valid !== undefined
               ? {
-                  paddingRight: 15,
+                  padding: 0,
                   borderTopLeftRadius: 0,
                   borderBottomLeftRadius: 0
                 }

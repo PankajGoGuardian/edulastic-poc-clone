@@ -690,7 +690,15 @@ export function* updateItemSaga({ payload }) {
 
     // const questions = yield select(getQuestionsSelector);
     const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
-    const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
+    const rows = yield select(state => get(state, "itemDetail.item.rows"), []);
+    const testItemWidgetIds = rows.reduce((allIds, row = {}) => {
+      let widgetIds = (row.widgets || []).map(i => i.reference);
+      return [...allIds, ...widgetIds];
+    }, []);
+
+    const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {}))).filter(item =>
+      testItemWidgetIds.includes(item.id)
+    );
     const questions = widgets.filter(item => !resourceTypes.includes(item.type));
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
 

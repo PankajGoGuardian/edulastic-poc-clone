@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState, useEffect } from "react";
+import React, { Fragment, useMemo } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { isEmpty } from "lodash";
@@ -37,6 +37,7 @@ const FormulaEssay = ({
   fillSections,
   cleanSections,
   isSidebarCollapsed,
+  disableResponse,
   ...restProps
 }) => {
   const resetLines = () => {
@@ -88,6 +89,7 @@ const FormulaEssay = ({
       {view === PREVIEW && (
         <Wrapper style={{ height: "100%" }}>
           <FormulaEssayPreview
+            disableResponse={disableResponse}
             key={itemForPreview.id}
             setLines={handleSetLines}
             resetLines={resetLines}
@@ -119,10 +121,12 @@ FormulaEssay.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   saveAnswer: PropTypes.func.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  disableResponse: PropTypes.bool
 };
 
 FormulaEssay.defaultProps = {
+  disableResponse: false,
   previewTab: CLEAR,
   item: {},
   testItem: false,

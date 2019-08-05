@@ -16,6 +16,8 @@ import Options from "./components/Options";
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 
+import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray } from "./helpers";
+
 const OptionsList = withPoints(TokenHighlightPreview);
 
 const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedAreOpen }) => {
@@ -25,38 +27,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
 
   const mode = item.tokenization;
 
-  const initialArray = item.template
-    .replace(/<br\/>/g, "")
-    .replace(/(<p>)/g, "")
-    .replace(/(<\/p>)/g, "<br/>")
-    .split('<p class="newline_section">');
-
-  const paragraphsArray = (initialArray.join("").match(/(.*?)(<br\/>)+/g) || []).map(el => ({
-    value: `${el}`,
-    active: true
-  }));
-
-  const sentencesArray = (initialArray.join("").match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g) || [])
-    .map(el => ({ value: `${el}`, active: true }))
-    .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
-
-  const mathArray = initialArray.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
-  let i = 0;
-  const wordsArray = (
-    initialArray
-      .join("")
-      .replace("&nbsp;", " ")
-      .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
-      .match(/(.*?)(([\s]+([.]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
-  )
-    .map(el => {
-      if (mathArray && el.indexOf("<span></span>") !== -1) {
-        el = el.replace("<span></span>", mathArray[i]);
-        i++;
-      }
-      return el;
-    })
-    .map(el => ({ value: `${el}`, active: true }));
+  const initialArray = getInitialArray(item.template);
 
   const [template, setTemplate] = useState();
 
@@ -66,11 +37,11 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         if (template || draft.templeWithTokens.length === 0) {
           let resultArray = "";
           if (mode === WORD_MODE) {
-            resultArray = wordsArray;
+            resultArray = getWordsArray(initialArray);
           } else if (mode === PARAGRAPH_MODE) {
-            resultArray = paragraphsArray;
+            resultArray = getParagraphsArray(initialArray);
           } else {
-            resultArray = sentencesArray;
+            resultArray = getSentencesArray(initialArray);
           }
 
           draft.templeWithTokens = resultArray;

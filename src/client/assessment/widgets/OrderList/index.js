@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState, useEffect } from "react";
+import React, { Fragment, useMemo, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -14,7 +14,8 @@ import {
   CorrectAnswersContainer,
   FlexContainer,
   MathFormulaDisplay,
-  QuestionNumberLabel
+  QuestionNumberLabel,
+  AnswerContext
 } from "@edulastic/common";
 
 import { Text } from "./styled/Text";
@@ -71,6 +72,7 @@ const OrderList = ({
   isReviewTab
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
+  const answerContext = useContext(AnswerContext);
 
   useEffect(() => {
     if (userAnswer.length === 0) {
@@ -198,7 +200,13 @@ const OrderList = ({
       });
     });
   }
-  const initialAnswers = disableResponse ? correctAnswers : userAnswer;
+
+  let initialAnswers;
+  if (answerContext.expressGrader) {
+    initialAnswers = disableResponse ? correctAnswers : userAnswer;
+  } else {
+    initialAnswers = userAnswer.length > 0 ? userAnswer : correctAnswers;
+  }
 
   const evaluationFromAnswers = userAnswer.map((answer, index) => {
     if (answer === correctAnswers[index]) {

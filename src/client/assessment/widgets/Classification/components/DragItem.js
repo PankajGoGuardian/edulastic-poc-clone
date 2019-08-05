@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
 import { withTheme } from "styled-components";
@@ -108,48 +108,50 @@ const DragItemContainer = ({
       : null;
 
   return (
-    item &&
-    connectDragSource(
-      <div
-        className="drag-item"
-        data-cy={`drag-drop-item-${renderIndex}`}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          margin: "10px 15px 10px 15px",
-          width: itemWidth
-        }}
-      >
-        <DragPreview {...restProps} isDragging={isDragging} isResetOffset={isResetOffset}>
-          {dragItem}
-        </DragPreview>
-        <div
-          style={getStyles(
-            isDragging,
-            isTransparent,
-            valid && preview
-              ? theme.widgets.classification.dragItemValidBgColor
-              : preview && valid !== undefined
-              ? theme.widgets.classification.dragItemNotValidBgColor
-              : theme.widgets.classification.dragItemBgColor,
-            valid && preview
-              ? theme.widgets.classification.dragItemValidBorderColor
-              : preview && valid !== undefined
-              ? theme.widgets.classification.dragItemNotValidBorderColor
-              : theme.widgets.classification.dragItemBorderColor,
-            preview && valid !== undefined
-              ? {
-                  paddingRight: 15,
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0
-                }
-              : { borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }
-          )}
-        >
-          {dragItem}
-        </div>
-      </div>
-    )
+    <Fragment>
+      <DragPreview {...restProps} isDragging={isDragging} isResetOffset={isResetOffset}>
+        {dragItem}
+      </DragPreview>
+      {item &&
+        connectDragSource(
+          <div
+            className="drag-item"
+            data-cy={`drag-drop-item-${renderIndex}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              margin: "10px 15px 10px 15px",
+              width: itemWidth
+            }}
+          >
+            <div
+              style={getStyles(
+                isDragging,
+                isTransparent,
+                valid && preview
+                  ? theme.widgets.classification.dragItemValidBgColor
+                  : preview && valid !== undefined
+                  ? theme.widgets.classification.dragItemNotValidBgColor
+                  : theme.widgets.classification.dragItemBgColor,
+                valid && preview
+                  ? theme.widgets.classification.dragItemValidBorderColor
+                  : preview && valid !== undefined
+                  ? theme.widgets.classification.dragItemNotValidBorderColor
+                  : theme.widgets.classification.dragItemBorderColor,
+                preview && valid !== undefined
+                  ? {
+                      paddingRight: 15,
+                      borderTopLeftRadius: 0,
+                      borderBottomLeftRadius: 0
+                    }
+                  : { borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }
+              )}
+            >
+              {dragItem}
+            </div>
+          </div>
+        )}
+    </Fragment>
   );
 };
 export default withTheme(DragSource("item", specSource, collectSource)(DragItemContainer));

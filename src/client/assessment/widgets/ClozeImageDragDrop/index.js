@@ -255,7 +255,7 @@ class ClozeImageDragDrop extends Component {
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                 >
-                  <Annotations editable />
+                  <Annotations question={item} setQuestionData={setQuestionData} editable />
                 </Question>
               </div>
               <Options
@@ -304,6 +304,7 @@ class ClozeImageDragDrop extends Component {
                 evaluation={evaluation}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                setQuestionData={setQuestionData}
                 {...restProps}
               />
             )}
@@ -336,6 +337,7 @@ class ClozeImageDragDrop extends Component {
                 evaluation={evaluation}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                setQuestionData={setQuestionData}
                 {...restProps}
               />
             )}
@@ -372,6 +374,7 @@ class ClozeImageDragDrop extends Component {
                 onChange={this.handleAddAnswer}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                setQuestionData={setQuestionData}
                 {...restProps}
               />
             )}

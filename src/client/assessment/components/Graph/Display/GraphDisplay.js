@@ -181,7 +181,8 @@ class GraphDisplay extends Component {
       altAnswerId,
       disableResponse,
       elementsIsCorrect,
-      advancedElementSettings
+      advancedElementSettings,
+      setQuestionData
     } = this.props;
 
     const {
@@ -259,17 +260,17 @@ class GraphDisplay extends Component {
       controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
       elements,
-      graphType,
       bgShapes,
       annotation,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
       elementsIsCorrect,
-      advancedElementSettings
+      advancedElementSettings,
+      setQuestionData,
+      graphData
     };
   };
 
@@ -284,10 +285,11 @@ class GraphDisplay extends Component {
       elements,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData
     } = this.props;
 
-    const { uiStyle, canvas, toolbar, numberlineAxis, graphType, id } = graphData;
+    const { uiStyle, canvas, toolbar, numberlineAxis } = graphData;
 
     return {
       canvas: {
@@ -366,14 +368,14 @@ class GraphDisplay extends Component {
       tools: toolbar ? toolbar.tools : [],
       setValue: onChange,
       elements,
-      graphType,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData,
+      graphData
     };
   };
 
@@ -388,10 +390,11 @@ class GraphDisplay extends Component {
       elements,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData
     } = this.props;
 
-    const { uiStyle, canvas, numberlineAxis, list, graphType, id } = graphData;
+    const { uiStyle, canvas, numberlineAxis, list } = graphData;
 
     return {
       canvas: {
@@ -469,18 +472,18 @@ class GraphDisplay extends Component {
         showGrid: false
       },
       list,
-      graphType,
       evaluation,
       setValue: onChange,
       elements,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
       setCalculatedHeight: this.setCalculatedHeight,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData,
+      graphData
     };
   };
 

@@ -380,10 +380,10 @@ class Display extends Component {
       item,
       imageOptions,
       showBorder,
-      isReviewTab
+      isReviewTab,
+      setQuestionData
     } = this.props;
 
-    const questionId = item && item.id;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
     const cAnswers = get(item, "validation.validResponse.value", []);
@@ -444,7 +444,8 @@ class Display extends Component {
             boxShadow: "none",
             border: preview ? null : "1px solid lightgray"
           }}
-          questionId={questionId}
+          question={item}
+          setQuestionData={setQuestionData}
         />
       </div>
     );
@@ -792,6 +793,7 @@ class Display extends Component {
 }
 
 Display.propTypes = {
+  setQuestionData: PropTypes.func.isRequired,
   options: PropTypes.array,
   changePreviewTab: PropTypes.func,
   changePreview: PropTypes.func,

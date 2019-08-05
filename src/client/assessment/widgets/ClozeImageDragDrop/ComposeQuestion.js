@@ -634,7 +634,8 @@ class ComposeQuestion extends Component {
             >
               <AnnotationRnd
                 style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                questionId={item.id}
+                question={item}
+                setQuestionData={setQuestionData}
                 disableDragging={false}
                 isAbove={!isAnnotationBelow}
                 onDoubleClick={toggleIsAnnotationBelow}

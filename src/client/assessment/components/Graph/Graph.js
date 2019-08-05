@@ -277,6 +277,7 @@ class Graph extends Component {
       disableResponse,
       flowLayout,
       showQuestionNumber,
+      setQuestionData,
       ...restProps
     } = this.props;
     let previewTab = _previewTab;
@@ -340,7 +341,7 @@ class Graph extends Component {
                 fillSections={fillSections}
                 advancedAreOpen
               >
-                <Annotations editable />
+                <Annotations question={item} setQuestionData={setQuestionData} editable />
               </Question>
               <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>

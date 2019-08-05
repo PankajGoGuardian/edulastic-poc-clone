@@ -211,13 +211,13 @@ class GraphContainer extends PureComponent {
       backgroundShapes,
       toolbar,
       setElementsStash,
-      graphType,
+      graphData,
       disableResponse
     } = this.props;
 
     const { tools } = toolbar;
 
-    this._graph = makeBorder(this._graphId, graphType);
+    this._graph = makeBorder(this._graphId, graphData.graphType);
 
     if (!this.drawingObjectsAreVisible()) {
       this._graph.setTool(tools[0]);
@@ -438,9 +438,9 @@ class GraphContainer extends PureComponent {
   }
 
   getStashId() {
-    const { questionId, altAnswerId, view, bgShapes } = this.props;
+    const { graphData, altAnswerId, view, bgShapes } = this.props;
     const type = bgShapes ? "bgShapes" : altAnswerId || view;
-    return `${questionId}_${type}`;
+    return `${graphData.id}_${type}`;
   }
 
   getHandlerByControlName = control => {
@@ -674,10 +674,11 @@ class GraphContainer extends PureComponent {
       controls,
       bgShapes,
       elements,
-      questionId,
       disableResponse,
       view,
-      advancedElementSettings
+      advancedElementSettings,
+      graphData,
+      setQuestionData
     } = this.props;
     const { tools } = toolbar;
     const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
@@ -741,7 +742,7 @@ class GraphContainer extends PureComponent {
                 className="jxgbox"
                 margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
               />
-              <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
+              <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
               {elementSettingsAreOpened && this._graph && (
                 <ElementSettingsMenu
                   advancedElementSettings={advancedElementSettings}
@@ -768,7 +769,6 @@ GraphContainer.propTypes = {
   backgroundShapes: PropTypes.object,
   evaluation: PropTypes.any,
   toolbar: PropTypes.object,
-  graphType: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
   elements: PropTypes.array.isRequired,
   bgShapes: PropTypes.bool.isRequired,
@@ -779,7 +779,8 @@ GraphContainer.propTypes = {
   setStashIndex: PropTypes.func.isRequired,
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
-  questionId: PropTypes.string.isRequired,
+  graphData: PropTypes.string.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   altAnswerId: PropTypes.string,
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,

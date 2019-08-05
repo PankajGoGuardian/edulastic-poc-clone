@@ -37,10 +37,9 @@ const SvgDeleteContainer = React.memo(({ itemData, width, height, imageSrc, setQ
   };
 
   return (
-    <div id="svg-control-block">
+    <div id="svg-control-block" style={{ position: "relative", height, width }}>
+      <ImageContainer src={imageSrc} width={width} height={height} preserveAspectRatio="none" x={0} y={0} />
       <Svg width={width} height={height}>
-        <ImageContainer href={imageSrc} width={width} height={height} preserveAspectRatio="none" x={0} y={0} />
-
         {Array.isArray(areas) &&
           areas.length > 0 &&
           areas.map((area, i) => (

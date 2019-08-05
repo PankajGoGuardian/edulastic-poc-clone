@@ -76,9 +76,15 @@ const HotspotPreview = ({
       </QuestionTitleWrapper>
 
       {!smallSize ? (
-        <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
+        <BlockContainer
+          data-cy="hotspotMap"
+          style={{ maxWidth }}
+          justifyContent="center"
+          width={+width}
+          height={+height}
+        >
+          <ImageContainer src={source} width={+width} height={+height} preserveAspectRatio="none" left={0} top={0} />
           <Svg data-cy="answer-container" width={+width} height={+height}>
-            <ImageContainer href={source} width={+width} height={+height} preserveAspectRatio="none" x={0} y={0} />
             {areas &&
               areas.map((area, i) => (
                 <Polygon
@@ -107,8 +113,8 @@ const HotspotPreview = ({
         </BlockContainer>
       ) : (
         <BlockContainer justifyContent="center">
+          <ImageContainer src={source} width={320} height={170} preserveAspectRatio="none" left={0} top={0} />
           <Svg data-cy="answer-container" width={320} height={170}>
-            <image href={source} width={320} height={170} preserveAspectRatio="none" x={0} y={0} />
             {previewAreas.map((areaPreviewPoints, i) => (
               <Polygon
                 key={i}

@@ -43,7 +43,7 @@ var mathEval =
               case 0:
                 (userResponse = _ref.userResponse), (validation = _ref.validation);
                 validResponses = (0, _groupBy2["default"])(
-                  (0, _flatten2["default"])(validation.valid_response.value),
+                  (0, _flatten2["default"])(validation.validResponse.value),
                   "id"
                 );
                 evaluation = {}; // parallelize network request!!
@@ -143,11 +143,11 @@ var normalEvaluator =
         var _ref3$userResponse,
           userResponse,
           validation,
-          valid_response,
-          _validation$alt_respo,
-          alt_responses,
-          scoring_type,
-          min_score_if_attempted,
+          validResponse,
+          _validation$altRespon,
+          altResponses,
+          scoringType,
+          minScoreIfAttempted,
           penalty,
           _validation$ignoreCas,
           ignoreCase,
@@ -181,11 +181,11 @@ var normalEvaluator =
                 (_ref3$userResponse = _ref3.userResponse),
                   (userResponse = _ref3$userResponse === void 0 ? {} : _ref3$userResponse),
                   (validation = _ref3.validation);
-                (valid_response = validation.valid_response),
-                  (_validation$alt_respo = validation.alt_responses),
-                  (alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo),
-                  (scoring_type = validation.scoring_type),
-                  (min_score_if_attempted = validation.min_score_if_attempted),
+                (validResponse = validation.validResponse),
+                  (_validation$altRespon = validation.altResponses),
+                  (altResponses = _validation$altRespon === void 0 ? [] : _validation$altRespon),
+                  (scoringType = validation.scoringType),
+                  (minScoreIfAttempted = validation.minScoreIfAttempted),
                   (penalty = validation.penalty),
                   (_validation$ignoreCas = validation.ignoreCase),
                   (ignoreCase = _validation$ignoreCas === void 0 ? false : _validation$ignoreCas);
@@ -198,7 +198,7 @@ var normalEvaluator =
                 score = 0;
                 maxScore = 0;
                 allEvaluations = [];
-                validAnswers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
+                validAnswers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
                 i = 0;
 
               case 8:
@@ -216,8 +216,8 @@ var normalEvaluator =
                   dropDownEvaluation = (0, _clozeText["default"])({
                     userResponse: transformUserResponse(dropDowns),
                     validation: {
-                      scoring_type: "exactMatch",
-                      valid_response: (0, _objectSpread2["default"])(
+                      scoringType: "exactMatch",
+                      validResponse: (0, _objectSpread2["default"])(
                         {
                           score: 1
                         },
@@ -232,8 +232,8 @@ var normalEvaluator =
                   clozeTextEvaluation = (0, _clozeText["default"])({
                     userResponse: transformUserResponse(inputs),
                     validation: {
-                      scoring_type: "exactMatch",
-                      valid_response: (0, _objectSpread2["default"])(
+                      scoringType: "exactMatch",
+                      validResponse: (0, _objectSpread2["default"])(
                         {
                           score: 1
                         },
@@ -254,8 +254,8 @@ var normalEvaluator =
                 return mathEval({
                   userResponse: maths,
                   validation: {
-                    scoring_type: "exactMatch",
-                    valid_response: validAnswers[i]
+                    scoringType: "exactMatch",
+                    validResponse: validAnswers[i]
                   }
                 });
 
@@ -273,7 +273,7 @@ var normalEvaluator =
                   (0, _get2["default"])(validAnswers[i], ["value", "length"], 0) +
                   (0, _get2["default"])(validAnswers[i].textinput, ["value", "length"], 0);
 
-                if (scoring_type === "partialMatch") {
+                if (scoringType === "partialMatch") {
                   currentScore = questionScore * (correctCount / answersCount);
 
                   if (penalty) {
@@ -308,8 +308,8 @@ var normalEvaluator =
                   score = 0;
                 }
 
-                if (min_score_if_attempted && score < min_score_if_attempted) {
-                  score = min_score_if_attempted;
+                if (minScoreIfAttempted && score < minScoreIfAttempted) {
+                  score = minScoreIfAttempted;
                 }
 
                 return _context3.abrupt("return", {
@@ -363,14 +363,14 @@ var mixAndMatchMathEvaluator =
               switch ((_context5.prev = _context5.next)) {
                 case 0:
                   (userResponse = _ref5.userResponse), (validation = _ref5.validation);
-                  answersArray = (0, _toConsumableArray2["default"])(validation.valid_response.value || []);
+                  answersArray = (0, _toConsumableArray2["default"])(validation.validResponse.value || []);
                   _iteratorNormalCompletion = true;
                   _didIteratorError = false;
                   _iteratorError = undefined;
                   _context5.prev = 5;
 
                   for (
-                    _iterator = validation.alt_responses[Symbol.iterator]();
+                    _iterator = validation.altResponses[Symbol.iterator]();
                     !(_iteratorNormalCompletion = (_step = _iterator.next()).done);
                     _iteratorNormalCompletion = true
                   ) {
@@ -502,11 +502,11 @@ var mixAndMatchEvaluator =
       _regenerator["default"].mark(function _callee4(_ref7) {
         var userResponse,
           validation,
-          valid_response,
-          _validation$alt_respo2,
-          alt_responses,
-          _validation$min_score,
-          min_score_if_attempted,
+          validResponse,
+          _validation$altRespon2,
+          altResponses,
+          _validation$minScoreI,
+          minScoreIfAttempted,
           penalty,
           _validation$ignoreCas2,
           ignoreCase,
@@ -534,11 +534,11 @@ var mixAndMatchEvaluator =
             switch ((_context6.prev = _context6.next)) {
               case 0:
                 (userResponse = _ref7.userResponse), (validation = _ref7.validation);
-                (valid_response = validation.valid_response),
-                  (_validation$alt_respo2 = validation.alt_responses),
-                  (alt_responses = _validation$alt_respo2 === void 0 ? [] : _validation$alt_respo2),
-                  (_validation$min_score = validation.min_score_if_attempted),
-                  (min_score_if_attempted = _validation$min_score === void 0 ? 0 : _validation$min_score),
+                (validResponse = validation.validResponse),
+                  (_validation$altRespon2 = validation.altResponses),
+                  (altResponses = _validation$altRespon2 === void 0 ? [] : _validation$altRespon2),
+                  (_validation$minScoreI = validation.minScoreIfAttempted),
+                  (minScoreIfAttempted = _validation$minScoreI === void 0 ? 0 : _validation$minScoreI),
                   (penalty = validation.penalty),
                   (_validation$ignoreCas2 = validation.ignoreCase),
                   (ignoreCase = _validation$ignoreCas2 === void 0 ? false : _validation$ignoreCas2);
@@ -548,7 +548,7 @@ var mixAndMatchEvaluator =
                   (dropDowns = _userResponse$dropDow2 === void 0 ? {} : _userResponse$dropDow2),
                   (_userResponse$maths2 = userResponse.maths),
                   (maths = _userResponse$maths2 === void 0 ? {} : _userResponse$maths2);
-                alt_inputs = alt_responses.map(function(alt_res) {
+                alt_inputs = altResponses.map(function(alt_res) {
                   return (0, _objectSpread2["default"])(
                     {
                       score: 1
@@ -556,7 +556,7 @@ var mixAndMatchEvaluator =
                     alt_res.textinput
                   );
                 });
-                alt_dropdowns = alt_responses.map(function(alt_res) {
+                alt_dropdowns = altResponses.map(function(alt_res) {
                   return (0, _objectSpread2["default"])(
                     {
                       score: 1
@@ -564,26 +564,26 @@ var mixAndMatchEvaluator =
                     alt_res.dropdown
                   );
                 });
-                questionScore = (valid_response && valid_response.score) || 1;
+                questionScore = (validResponse && validResponse.score) || 1;
                 score = 0;
                 optionCount =
-                  (0, _get2["default"])(valid_response.dropdown, ["value", "length"], 0) +
-                  (0, _get2["default"])(valid_response, ["value", "length"], 0) +
-                  (0, _get2["default"])(valid_response.textinput, ["value", "length"], 0); // cloze-text evaluation!
+                  (0, _get2["default"])(validResponse.dropdown, ["value", "length"], 0) +
+                  (0, _get2["default"])(validResponse, ["value", "length"], 0) +
+                  (0, _get2["default"])(validResponse.textinput, ["value", "length"], 0); // cloze-text evaluation!
 
                 clozeTextEvaluation =
-                  (valid_response.textinput &&
+                  (validResponse.textinput &&
                     (0, _clozeText["default"])({
                       userResponse: transformUserResponse(inputs),
                       validation: {
-                        scoring_type: "exactMatch",
-                        valid_response: (0, _objectSpread2["default"])(
+                        scoringType: "exactMatch",
+                        validResponse: (0, _objectSpread2["default"])(
                           {
                             score: 1
                           },
-                          valid_response.textinput
+                          validResponse.textinput
                         ),
-                        alt_responses: alt_inputs,
+                        altResponses: alt_inputs,
                         mixAndMatch: true,
                         ignoreCase: ignoreCase
                       }
@@ -591,24 +591,24 @@ var mixAndMatchEvaluator =
                   {}; // dropdown evaluation
 
                 dropDownEvaluation =
-                  (valid_response.dropdown &&
+                  (validResponse.dropdown &&
                     (0, _clozeText["default"])({
                       userResponse: transformUserResponse(dropDowns),
                       validation: {
-                        scoring_type: "exactMatch",
-                        valid_response: (0, _objectSpread2["default"])(
+                        scoringType: "exactMatch",
+                        validResponse: (0, _objectSpread2["default"])(
                           {
                             score: 1
                           },
-                          valid_response.dropdown
+                          validResponse.dropdown
                         ),
-                        alt_responses: alt_dropdowns,
+                        altResponses: alt_dropdowns,
                         mixAndMatch: true
                       }
                     }).evaluation) ||
                   {}; // math evaluations
 
-                _context6.t1 = valid_response;
+                _context6.t1 = validResponse;
 
                 if (!_context6.t1) {
                   _context6.next = 15;
@@ -619,8 +619,8 @@ var mixAndMatchEvaluator =
                 return mixAndMatchMathEvaluator({
                   userResponse: maths,
                   validation: {
-                    valid_response: valid_response,
-                    alt_responses: alt_responses
+                    validResponse: validResponse,
+                    altResponses: altResponses
                   }
                 });
 
@@ -650,7 +650,7 @@ var mixAndMatchEvaluator =
                   return !i;
                 }).length;
 
-                if (validation.scoring_type === "partialMatch") {
+                if (validation.scoringType === "partialMatch") {
                   score = (correctAnswerCount / optionCount) * questionScore;
 
                   if (validation.penalty) {
@@ -661,7 +661,7 @@ var mixAndMatchEvaluator =
                   score = questionScore;
                 }
 
-                score = Math.max(score, 0, min_score_if_attempted);
+                score = Math.max(score, 0, minScoreIfAttempted);
                 return _context6.abrupt("return", {
                   score: score,
                   evaluation: evaluation,

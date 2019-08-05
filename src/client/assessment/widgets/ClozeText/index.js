@@ -28,22 +28,22 @@ class ClozeText extends Component {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
     let {
-      ui_style: { responsecontainerindividuals: responses = [], globalSettings }
+      uiStyle: { responsecontainerindividuals: responses = [], globalSettings }
     } = newItem;
     if (!isEqual(prevProps.item.validation, newItem.validation)) {
       let maxLength = 0;
 
-      newItem.validation.valid_response.value.forEach(resp => {
+      newItem.validation.validResponse.value.forEach(resp => {
         maxLength = Math.max(maxLength, resp.length);
       });
 
-      newItem.validation.alt_responses.forEach(arr => {
+      newItem.validation.altResponses.forEach(arr => {
         arr.value.forEach(resp => {
           maxLength = Math.max(maxLength, resp.length);
         });
       });
       const finalWidth = 30 + maxLength * 7;
-      newItem.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+      newItem.uiStyle.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
 
       setQuestionData(newItem);
     }
@@ -55,7 +55,7 @@ class ClozeText extends Component {
           ...response,
           previewWidth: null
         }));
-        newItem.ui_style.responsecontainerindividuals = responses;
+        newItem.uiStyle.responsecontainerindividuals = responses;
         setQuestionData(newItem);
       }
     }
@@ -88,7 +88,7 @@ class ClozeText extends Component {
       previewDisplayOptions,
       itemForEdit,
       itemForPreview,
-      uiStyle: item.ui_style
+      uiStyle: item.uiStyle
     };
   };
 
@@ -96,12 +96,12 @@ class ClozeText extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        const validAnswers = cloneDeep(draft.validation.valid_response.value);
+        const validAnswers = cloneDeep(draft.validation.validResponse.value);
         validAnswers.map(answer => {
           answer.value = "";
           return answer;
         });
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
           value: validAnswers
         });
@@ -113,8 +113,8 @@ class ClozeText extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses = draft.validation.alt_responses.filter((response, i) => i !== index);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
         }
       })
     );
@@ -142,7 +142,7 @@ class ClozeText extends Component {
 
   handleAddAnswer = userAnswer => {
     const { saveAnswer, setQuestionData, item } = this.props;
-    const { ui_style: uiStyle } = item;
+    const { uiStyle: uiStyle } = item;
     let newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
     if (uiStyle.globalSettings) {
@@ -153,16 +153,16 @@ class ClozeText extends Component {
             const { id, value, index } = ans;
             const splitWidth = Math.max(value.split("").length * 9, 100);
             const width = Math.min(splitWidth, 400);
-            const ind = findIndex(draft.ui_style.responsecontainerindividuals, container => container.id === id);
+            const ind = findIndex(draft.uiStyle.responsecontainerindividuals, container => container.id === id);
             if (ind === -1) {
-              draft.ui_style.responsecontainerindividuals.push({
+              draft.uiStyle.responsecontainerindividuals.push({
                 id,
                 index,
                 previewWidth: width
               });
             } else {
-              draft.ui_style.responsecontainerindividuals[ind] = {
-                ...draft.ui_style.responsecontainerindividuals[ind],
+              draft.uiStyle.responsecontainerindividuals[ind] = {
+                ...draft.uiStyle.responsecontainerindividuals[ind],
                 previewWidth: width
               };
             }
@@ -227,7 +227,7 @@ class ClozeText extends Component {
                     options={previewDisplayOptions}
                     stimulus={previewStimulus}
                     uiStyle={uiStyle}
-                    responseIds={item.response_ids}
+                    responseIds={item.responseIds}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                     cleanSections={cleanSections}
@@ -268,7 +268,7 @@ class ClozeText extends Component {
                   advancedAreOpen={advancedAreOpen}
                   cleanSections={cleanSections}
                   fillSections={fillSections}
-                  responseIds={item.response_ids}
+                  responseIds={item.responseIds}
                   outerStyle={{
                     padding: "30px 0px"
                   }}
@@ -293,9 +293,9 @@ class ClozeText extends Component {
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
-                instructorStimulus={itemForPreview.instructor_stimulus}
+                instructorStimulus={itemForPreview.instructorStimulus}
                 item={itemForPreview}
-                responseIds={item.response_ids}
+                responseIds={item.responseIds}
                 showIndex
                 view={view}
                 previewTab={previewTab}
@@ -316,9 +316,9 @@ class ClozeText extends Component {
                 validation={itemForPreview.validation}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
-                instructorStimulus={itemForPreview.instructor_stimulus}
+                instructorStimulus={itemForPreview.instructorStimulus}
                 item={itemForPreview}
-                responseIds={item.response_ids}
+                responseIds={item.responseIds}
                 showIndex
                 {...restProps}
                 view={view}
@@ -339,9 +339,9 @@ class ClozeText extends Component {
                 uiStyle={uiStyle}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
-                instructorStimulus={itemForPreview.instructor_stimulus}
+                instructorStimulus={itemForPreview.instructorStimulus}
                 item={itemForPreview}
-                responseIds={item.response_ids}
+                responseIds={item.responseIds}
                 showIndex={false}
                 view={view}
                 previewTab={previewTab}

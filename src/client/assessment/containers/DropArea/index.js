@@ -41,8 +41,8 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
       setQuestionData(
         produce(item, draft => {
           draft.responses.splice(deletedIndex, 1);
-          draft.validation.valid_response.value.splice(deletedIndex, 1);
-          draft.validation.alt_responses = draft.validation.alt_responses.map(resp => {
+          draft.validation.validResponse.value.splice(deletedIndex, 1);
+          draft.validation.altResponses = draft.validation.altResponses.map(resp => {
             resp.value.splice(deletedIndex, 1);
             return resp;
           });
@@ -69,7 +69,7 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
   };
 
   const getIndex = index => {
-    const stemNumeration = get(item, "ui_style.stemnumeration");
+    const stemNumeration = get(item, "uiStyle.stemnumeration");
     return helpers.getNumeration(index, stemNumeration);
   };
 
@@ -123,7 +123,7 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
     }
   };
 
-  const { ui_style: uiStyles = {} } = item;
+  const { uiStyle: uiStyles = {} } = item;
   const { responsecontainerindividuals = {} } = uiStyles;
 
   return item.responses.map((response, i) => {

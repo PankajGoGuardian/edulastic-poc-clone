@@ -28,9 +28,9 @@ class Layout extends Component {
     const val = clamp(e.target.value, minWidth, maxWidth);
     const { onChange, uiStyle } = this.props;
     this.setState({ widthpx: val }, () => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
-        min_width: +val
+        minWidth: +val
       });
     });
   };
@@ -41,7 +41,7 @@ class Layout extends Component {
     const { onChange, uiStyle } = this.props;
 
     this.setState({ heightpx: val }, () => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         heightpx: +val
       });
@@ -62,13 +62,13 @@ class Layout extends Component {
     const ind = findIndex(newContainers, cont => cont.index === index);
     if (ind !== -1) {
       newContainers[ind][prop] = value;
-      onChange("response_containers", newContainers);
+      onChange("responseContainers", newContainers);
     }
   };
 
   addResponseContainer = () => {
     const { item, responseContainers, onChange } = this.props;
-    const { response_ids: responseIds } = item;
+    const { responseIds: responseIds } = item;
     const ind = responseContainers.length;
     let obj = {};
     // eslint-disable-next-line no-labels
@@ -85,14 +85,14 @@ class Layout extends Component {
         }
       }
     }
-    onChange("response_containers", [...responseContainers, obj]);
+    onChange("responseContainers", [...responseContainers, obj]);
   };
 
   deleteResponseContainer = index => {
     const { responseContainers, onChange } = this.props;
     const newContainers = cloneDeep(responseContainers);
     newContainers.splice(index, 1);
-    onChange("response_containers", newContainers);
+    onChange("responseContainers", newContainers);
   };
 
   render() {
@@ -109,7 +109,7 @@ class Layout extends Component {
     const { widthpx, heightpx } = this.state;
 
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });
@@ -130,9 +130,9 @@ class Layout extends Component {
             <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
-              value={uiStyle.response_font_scale}
+              value={uiStyle.responseFontScale}
               style={{ width: "100%" }}
-              onChange={val => changeUiStyle("response_font_scale", val)}
+              onChange={val => changeUiStyle("responseFontScale", val)}
             >
               {math.templateFontScaleOption.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
@@ -178,8 +178,8 @@ class Layout extends Component {
 
           <Col md={12}>
             <Checkbox
-              checked={uiStyle.transparent_background}
-              onChange={e => changeUiStyle("transparent_background", e.target.checked)}
+              checked={uiStyle.transparentBackground}
+              onChange={e => changeUiStyle("transparentBackground", e.target.checked)}
             >
               {t("component.options.transparentBackground")}
             </Checkbox>
@@ -219,7 +219,7 @@ Layout.defaultProps = {
     fontsize: "normal",
     columns: 0,
     orientation: "horizontal",
-    choice_label: "number"
+    choiceLabel: "number"
   },
   responseContainers: [],
   advancedAreOpen: false,

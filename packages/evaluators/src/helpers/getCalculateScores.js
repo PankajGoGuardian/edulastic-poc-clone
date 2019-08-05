@@ -1,16 +1,16 @@
 // eslint-disable-next-line max-len
-const getCalculateScores = (score, maxScore, { min_score_if_attempted, automarkable, max_score }) => {
+const getCalculateScores = (score, mScore, { minScoreIfAttempted, automarkable, maxScore }) => {
   let newScore = score;
-  let newMaxScore = maxScore;
+  let newMaxScore = mScore;
 
   if (automarkable) {
-    if (min_score_if_attempted) {
-      newMaxScore = Math.max(maxScore, min_score_if_attempted);
-      newScore = Math.max(min_score_if_attempted, score);
+    if (minScoreIfAttempted) {
+      newMaxScore = Math.max(mScore, minScoreIfAttempted);
+      newScore = Math.max(minScoreIfAttempted, score);
     }
-  } else if (max_score) {
+  } else if (maxScore) {
     newScore = 0;
-    newMaxScore = Math.max(max_score, maxScore);
+    newMaxScore = Math.max(mScore, maxScore);
   }
 
   return {

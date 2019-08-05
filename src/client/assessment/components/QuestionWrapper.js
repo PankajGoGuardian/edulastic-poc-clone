@@ -337,7 +337,7 @@ class QuestionWrapper extends Component {
         ]}
         fallBack={<span />}
       >
-        <ThemeProvider theme={{ ...themes.default, fontSize: get(data, "ui_style.fontsize", "normal") }}>
+        <ThemeProvider theme={{ ...themes.default, fontSize: get(data, "uiStyle.fontsize", "normal") }}>
           <>
             {canShowPlayer ? (
               <AudioControls

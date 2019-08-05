@@ -49,8 +49,8 @@ const defaultQuestionOptions = {
 };
 
 const mathData = {
-  is_math: true,
-  ui_style: {
+  isMath: true,
+  uiStyle: {
     type: "floating-keyboard"
   },
   numberPad: [
@@ -80,7 +80,7 @@ const mathData = {
 };
 
 const multipleChoiceData = {
-  ui_style: { type: "horizontal" }
+  uiStyle: { type: "horizontal" }
 };
 
 const createQuestion = (type, index) => ({
@@ -90,14 +90,14 @@ const createQuestion = (type, index) => ({
   type,
   options: defaultQuestionOptions[type],
   validation: {
-    scoring_type: "exactMatch",
-    valid_response: {
+    scoringType: "exactMatch",
+    validResponse: {
       score: 1,
       value: defaultQuestionValue[type]
     },
-    alt_responses: []
+    altResponses: []
   },
-  multiple_responses: false,
+  multipleResponses: false,
   stimulus: "",
   smallSize: true,
   alignment: [],
@@ -128,25 +128,25 @@ const updateMultipleChoice = optionsValue => {
       value: index + 1
     })),
     validation: {
-      scoring_type: "exactMatch",
-      valid_response: {
+      scoringType: "exactMatch",
+      validResponse: {
         score: 1,
         value: []
       },
-      alt_responses: []
+      altResponses: []
     }
   };
 };
 
 const updateShortText = value => ({
   validation: {
-    scoring_type: EXACT_MATCH,
-    valid_response: {
+    scoringType: EXACT_MATCH,
+    validResponse: {
       score: 1,
-      matching_rule: EXACT_MATCH,
+      matchingRule: EXACT_MATCH,
       value
     },
-    alt_responses: []
+    altResponses: []
   }
 });
 

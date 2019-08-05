@@ -380,14 +380,13 @@ class Display extends Component {
       item,
       imageOptions,
       showBorder,
-      isReviewTab
+      isReviewTab,
+      setQuestionData
     } = this.props;
 
-    const questionId = item && item.id;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
-    const { userAnswers: _uAnswers, possibleResponses } = this.state;
-    const cAnswers = get(item, "validation.valid_response.value", []);
-
+    const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
+    const cAnswers = get(item, "validation.validResponse.value", []);
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
@@ -444,7 +443,8 @@ class Display extends Component {
             boxShadow: "none",
             border: preview ? null : "1px solid lightgray"
           }}
-          questionId={questionId}
+          question={item}
+          setQuestionData={setQuestionData}
         />
       </div>
     );
@@ -680,8 +680,8 @@ class Display extends Component {
       />
     );
 
-    const validAnswers = get(item, "validation.valid_response.value", []);
-    const altAnswers = get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
+    const validAnswers = get(item, "validation.validResponse.value", []);
+    const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
     const allAnswers = [validAnswers, ...altAnswers];
 
     const correctAnswerBoxLayout = showAnswer ? (
@@ -792,6 +792,7 @@ class Display extends Component {
 }
 
 Display.propTypes = {
+  setQuestionData: PropTypes.func.isRequired,
   options: PropTypes.array,
   changePreviewTab: PropTypes.func,
   changePreview: PropTypes.func,

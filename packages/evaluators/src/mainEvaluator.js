@@ -5,9 +5,9 @@ import exactMatchTemplate from "./helpers/exactMatchTemplate";
 import countExactMatchScores from "./helpers/countExactMatchScores";
 
 const evaluator = evaluatorType => ({ userResponse = [], validation }) => {
-  const { valid_response, alt_responses, scoring_type } = validation;
-  const answers = [valid_response, ...alt_responses];
-  switch (scoring_type) {
+  const { validResponse, altResponses, scoringType } = validation;
+  const answers = [validResponse, ...altResponses];
+  switch (scoringType) {
     case ScoringType.EXACT_MATCH:
       return exactMatchTemplate(countExactMatchScores(evaluatorType), {
         userResponse,

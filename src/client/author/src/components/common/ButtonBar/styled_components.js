@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { smallDesktopWidth, white, green } from "@edulastic/colors";
+import { mediumDesktopWidth, white, green } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const Container = styled.div`
@@ -129,6 +129,9 @@ export const RightSide = styled.div`
     height: 45px;
     background: #fff;
     margin-left: 5px;
+    &.save-btn {
+      padding: 0px 10px;
+    }
 
     span {
       color: #00ad50;
@@ -136,7 +139,7 @@ export const RightSide = styled.div`
       text-transform: uppercase;
     }
 
-    @media (max-width: ${smallDesktopWidth}) {
+    @media (max-width: ${mediumDesktopWidth}) {
       height: 36px;
       width: auto;
       padding: 0px 20px;
@@ -191,7 +194,7 @@ export const MenuItem = styled.li`
     }
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
   }
 `;

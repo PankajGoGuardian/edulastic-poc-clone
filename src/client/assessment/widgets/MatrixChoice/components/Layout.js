@@ -26,7 +26,7 @@ class Layout extends Component {
     };
 
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });
@@ -75,8 +75,8 @@ class Layout extends Component {
               <Select
                 size="large"
                 style={{ width: "100%" }}
-                onChange={val => changeUiStyle("stem_numeration", val)}
-                value={uiStyle.stem_numeration}
+                onChange={val => changeUiStyle("stemNumeration", val)}
+                value={uiStyle.stemNumeration}
                 data-cy="stemNum"
               >
                 {stemNumerationLayout.map(option => (
@@ -95,9 +95,9 @@ class Layout extends Component {
             <CustomQuillComponent
               toolbarId="stemColumnTitle"
               style={inputStyle}
-              onChange={value => changeUiStyle("stem_title", value)}
+              onChange={value => changeUiStyle("stemTitle", value)}
               showResponseBtn={false}
-              value={uiStyle.stem_title || ""}
+              value={uiStyle.stemTitle || ""}
             />
           </Col>
           <Col md={12}>
@@ -105,9 +105,9 @@ class Layout extends Component {
             <CustomQuillComponent
               toolbarId="optionRowTitle"
               style={inputStyle}
-              onChange={value => changeUiStyle("option_row_title", value)}
+              onChange={value => changeUiStyle("optionRowTitle", value)}
               showResponseBtn={false}
-              value={uiStyle.option_row_title || ""}
+              value={uiStyle.optionRowTitle || ""}
             />
           </Col>
         </Row>
@@ -119,9 +119,9 @@ class Layout extends Component {
               data-cy="stemWidth"
               size="large"
               type="number"
-              onChange={e => changeUiStyle("stem_width", +e.target.value)}
+              onChange={e => changeUiStyle("stemWidth", +e.target.value)}
               showResponseBtn={false}
-              value={uiStyle.stem_width}
+              value={uiStyle.stemWidth}
             />
           </Col>
           <Col md={12}>
@@ -130,9 +130,9 @@ class Layout extends Component {
               data-cy="optionWidth"
               size="large"
               type="number"
-              onChange={e => changeUiStyle("option_width", +e.target.value)}
+              onChange={e => changeUiStyle("optionWidth", +e.target.value)}
               showResponseBtn={false}
-              value={uiStyle.option_width}
+              value={uiStyle.optionWidth}
             />
           </Col>
         </Row>
@@ -145,8 +145,8 @@ class Layout extends Component {
             <Checkbox
               data-cy="dividersCheckbox"
               size="large"
-              checked={uiStyle.horizontal_lines}
-              onChange={e => changeUiStyle("horizontal_lines", e.target.checked)}
+              checked={uiStyle.horizontalLines}
+              onChange={e => changeUiStyle("horizontalLines", e.target.checked)}
             >
               {t("component.options.dividers")}
             </Checkbox>
@@ -172,7 +172,7 @@ Layout.defaultProps = {
     fontsize: "normal",
     columns: 0,
     orientation: "horizontal",
-    choice_label: "number"
+    choiceLabel: "number"
   },
   advancedAreOpen: false,
   fillSections: () => {},

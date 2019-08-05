@@ -509,7 +509,7 @@ class ClassesTable extends Component {
               <StyledTableButton onClick={() => this.onEditClass(id)} title="Edit">
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(id)} title="Deactivate">
+              <StyledTableButton onClick={() => this.handleDelete(id)} title="Archive">
                 <Icon type="delete" theme="twoTone" />
               </StyledTableButton>
             </React.Fragment>

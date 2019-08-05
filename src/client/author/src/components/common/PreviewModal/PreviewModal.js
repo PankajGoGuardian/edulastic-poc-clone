@@ -128,7 +128,7 @@ class PreviewModal extends React.Component {
                     size="large"
                     onClick={this.handleDuplicateTestItem}
                   >
-                    <IconDuplicate color="#00AD50" />
+                    <IconDuplicate color={themeColor} />
                   </EduButton>
                 )}
                 {authorHasPermission && isEditable && (
@@ -138,7 +138,7 @@ class PreviewModal extends React.Component {
                     size="large"
                     onClick={this.editTestItem}
                   >
-                    <IconPencilEdit color="#00AD50" />
+                    <IconPencilEdit color={themeColor} />
                   </EduButton>
                 )}
               </ButtonsWrapper>

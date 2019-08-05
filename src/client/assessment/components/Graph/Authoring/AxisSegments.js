@@ -85,8 +85,8 @@ class AxisSegments extends Component {
               <Label>{t("component.graphing.minVal")}</Label>
               <StyledTextField
                 type="number"
-                name="x_min"
-                value={canvas.x_min}
+                name="xMin"
+                value={canvas.xMin}
                 onChange={this.handleCanvasChange}
                 onBlur={event => this.handleCanvasBlur(event, 0)}
                 disabled={false}
@@ -100,8 +100,8 @@ class AxisSegments extends Component {
               <Label>{t("component.graphing.maxVal")}</Label>
               <StyledTextField
                 type="number"
-                name="x_max"
-                value={canvas.x_max}
+                name="xMax"
+                value={canvas.xMax}
                 onChange={this.handleCanvasChange}
                 onBlur={event => this.handleCanvasBlur(event, 10)}
                 disabled={false}

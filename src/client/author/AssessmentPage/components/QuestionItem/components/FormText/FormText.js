@@ -41,7 +41,7 @@ export default class FormText extends React.Component {
     if (!validation) return this.renderForm();
 
     const {
-      valid_response: { value }
+      validResponse: { value }
     } = validation;
 
     if (!value || !value.length) return this.renderAnswerCreateForm();

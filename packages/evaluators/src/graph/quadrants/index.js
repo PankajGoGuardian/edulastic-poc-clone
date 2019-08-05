@@ -154,22 +154,22 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) =
 };
 
 const evaluator = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses, ignore_repeated_shapes, ignore_labels } = validation;
+  const { validResponse, altResponses, ignore_repeated_shapes, ignoreLabels } = validation;
 
   let score = 0;
   let maxScore = 1;
 
   const evaluation = {};
 
-  let answers = [valid_response];
-  if (alt_responses) {
-    answers = answers.concat([...alt_responses]);
+  let answers = [validResponse];
+  if (altResponses) {
+    answers = answers.concat([...altResponses]);
   }
 
   let result = {};
 
   answers.forEach((answer, index) => {
-    result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignore_labels);
+    result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
     if (result.commonResult) {
       score = Math.max(answer.score, score);
     }

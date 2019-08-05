@@ -39,7 +39,7 @@ const Preview = ({
 
     if (!checked && value) {
       value.splice(findIndex, 1);
-    } else if (!value || !item.multiple_responses) {
+    } else if (!value || !item.multipleResponses) {
       value = [];
       value.push(columnIndex);
     } else {
@@ -53,7 +53,7 @@ const Preview = ({
 
   return (
     <div>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -63,9 +63,9 @@ const Preview = ({
       <Matrix
         stems={item.stems}
         options={item.options}
-        uiStyle={item.ui_style}
+        uiStyle={item.uiStyle}
         response={userAnswer}
-        isMultiple={item.multiple_responses}
+        isMultiple={item.multipleResponses}
         onCheck={!disableResponse ? handleCheck : () => {}}
         validation={item.validation}
         type={type}

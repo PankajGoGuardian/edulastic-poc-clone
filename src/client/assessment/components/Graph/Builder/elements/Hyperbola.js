@@ -17,7 +17,10 @@ function create(board, hypPoints, id = null) {
     id
   });
   newLine.type = jxgType;
+  newLine.labelIsVisible = true;
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -50,6 +53,7 @@ function getConfig(hyperbola) {
     type: CONSTANT.TOOLS.HYPERBOLA,
     id: hyperbola.id,
     label: hyperbola.labelHTML || false,
+    labelIsVisible: hyperbola.labelIsVisible,
     points: Object.keys(hyperbola.ancestors)
       .sort()
       .map(n => Point.getConfig(hyperbola.ancestors[n]))

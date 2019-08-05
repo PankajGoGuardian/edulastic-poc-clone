@@ -5,10 +5,12 @@ import { Pagination, Spin } from "antd";
 import { debounce, uniq } from "lodash";
 
 import { Paper, withWindowSizes } from "@edulastic/common";
+import { white, themeColor } from "@edulastic/colors";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { Container, Element, ListItems, SpinContainer, PaginationContainer } from "./styled";
+import { IconFilter } from "@edulastic/icons";
+import { Container, Element, ListItems, SpinContainer, PaginationContainer, ShowLeftFilterButton } from "./styled";
 import Item from "../Item/Item";
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
@@ -35,7 +37,7 @@ import { getTestItemCreatingSelector } from "../../../src/selectors/testItem";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { addItemToCartAction } from "../../ducks";
 import FilterButton from "../FilterButton/FilterButton";
-import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
+import { SMALL_DESKTOP_WIDTH, MEDIUM_DESKTOP_WIDTH } from "../../../src/constants/others";
 import {
   getInterestedCurriculumsSelector,
   getInterestedGradesSelector,
@@ -74,7 +76,7 @@ export const getClearSearchState = () => ({
 class Contaier extends Component {
   state = {
     search: getClearSearchState(),
-    isShowFilter: false,
+    isShowFilter: true,
     modalCreateTestVisible: false
   };
 
@@ -343,15 +345,6 @@ class Contaier extends Component {
 
   renderCartButton = () => <CartButton onClick={this.handleToggleModalCreateTest(true)} />;
 
-  renderFilterButton = () => {
-    const { windowWidth, t } = this.props;
-    const { isShowFilter } = this.state;
-
-    return (
-      <FilterButton toggleFilter={this.toggleFilter} isShowFilter={isShowFilter} windowWidth={windowWidth} t={t} />
-    );
-  };
-
   render() {
     const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading, count } = this.props;
 
@@ -365,26 +358,30 @@ class Contaier extends Component {
           windowWidth={windowWidth}
           title={t("component.itemlist.header.itemlist")}
           renderExtra={this.renderCartButton}
-          renderFilter={this.renderFilterButton}
         />
         <Container>
-          <ItemFilter
-            onSearchFieldChange={this.handleSearchFieldChange}
-            onSearchInputChange={this.handleSearchInputChange}
-            onSearch={this.handleSearch}
-            onClearSearch={this.handleClearSearch}
-            onLabelSearch={this.handleLabelSearch}
-            windowWidth={windowWidth}
-            search={search}
-            getCurriculumStandards={getCurriculumStandards}
-            curriculumStandards={curriculumStandards}
-            items={filterMenuItems}
-            t={t}
-            toggleFilter={this.toggleFilter}
-            isShowFilter={isShowFilter}
-          />
-          <ListItems>
+          {isShowFilter && (
+            <ItemFilter
+              onSearchFieldChange={this.handleSearchFieldChange}
+              onSearchInputChange={this.handleSearchInputChange}
+              onSearch={this.handleSearch}
+              onClearSearch={this.handleClearSearch}
+              onLabelSearch={this.handleLabelSearch}
+              windowWidth={windowWidth}
+              search={search}
+              getCurriculumStandards={getCurriculumStandards}
+              curriculumStandards={curriculumStandards}
+              items={filterMenuItems}
+              t={t}
+            />
+          )}
+          <ListItems isShowFilter={isShowFilter}>
             <Element>
+              {windowWidth < MEDIUM_DESKTOP_WIDTH && (
+                <ShowLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
+                  <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
+                </ShowLeftFilterButton>
+              )}
               <Paper borderRadius="0px" padding="0px">
                 <SpinContainer
                   ref={e => {

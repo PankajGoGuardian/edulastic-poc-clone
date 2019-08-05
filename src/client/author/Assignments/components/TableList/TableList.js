@@ -198,6 +198,7 @@ class TableList extends Component {
       t,
       onSelectRow,
       selectedRows,
+      toggleEditModal,
       folderData,
       showPreviewModal,
       showFilter
@@ -214,7 +215,7 @@ class TableList extends Component {
         className: "assignment-name",
         render: (text, row) => (
           <Tooltip placement="bottom" title={<div>{text}</div>}>
-            <FlexContainer style={{ marginLeft: 0 }} justifyContent={"left"}>
+            <FlexContainer style={{ marginLeft: 0 }} justifyContent="left">
               <div>
                 <TestThumbnail src={row.thumbnail} />
               </div>
@@ -284,7 +285,13 @@ class TableList extends Component {
         render: (_, row) => (
           <ActionDiv>
             <Dropdown
-              overlay={ActionMenu(onOpenReleaseScoreSettings, row.currentAssignment, history, showPreviewModal)}
+              overlay={ActionMenu(
+                onOpenReleaseScoreSettings,
+                row.currentAssignment,
+                history,
+                showPreviewModal,
+                toggleEditModal
+              )}
               placement="bottomCenter"
               trigger={["click"]}
               onClick={e => e.stopPropagation()}
@@ -349,6 +356,7 @@ TableList.propTypes = {
   onOpenReleaseScoreSettings: PropTypes.func,
   folderData: PropTypes.object.isRequired,
   onSelectRow: PropTypes.func,
+  showPreviewModal: PropTypes.func,
   selectedRows: PropTypes.array.isRequired,
   renderFilter: PropTypes.func,
   history: PropTypes.object,
@@ -360,8 +368,10 @@ TableList.defaultProps = {
   onOpenReleaseScoreSettings: () => {},
   renderFilter: () => {},
   onSelectRow: () => {},
+  showPreviewModal: () => {},
   history: {},
-  tests: []
+  tests: [],
+  showFilter: false
 };
 
 const enhance = compose(

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Card, Table, Tag } from "antd";
-import { secondaryTextColor, smallDesktopWidth, greenDark, lightGreen, green, title } from "@edulastic/colors";
+import { secondaryTextColor, mediumDesktopWidth, greenDark, lightGreen, green, title } from "@edulastic/colors";
 
 export const StyledCard = styled(Card)`
   margin-bottom: 20px;
@@ -18,7 +18,7 @@ export const TableTitle = styled.div`
   font-size: 18px;
   line-height: 30px;
   font-weight: bold;
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 14px;
   }
 `;

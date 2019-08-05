@@ -70,7 +70,7 @@ const ShortTextPreview = ({
 
   const style = {
     paddingRight: 35,
-    fontSize: getFontSize(get(item, "ui_style.fontsize")),
+    fontSize: getFontSize(get(item, "uiStyle.fontsize")),
     ...(preview
       ? evaluation
         ? { background: theme.widgets.shortText.correctInputBgColor }
@@ -82,7 +82,7 @@ const ShortTextPreview = ({
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -105,7 +105,7 @@ const ShortTextPreview = ({
           onChange={handleTextChange}
           onSelect={handleSelect}
           placeholder={item.placeholder || ""}
-          type={get(item, "ui_style.input_type", "text")}
+          type={get(item, "uiStyle.input_type", "text")}
           size="large"
           {...getSpellCheckAttributes(item.spellcheck)}
         />
@@ -127,7 +127,7 @@ const ShortTextPreview = ({
 
       {previewTab === SHOW && (
         <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
-          {item.validation.valid_response.value}
+          {item.validation.validResponse.value}
         </CorrectAnswersContainer>
       )}
     </Paper>

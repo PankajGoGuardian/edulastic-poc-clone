@@ -37,9 +37,9 @@ class ClozeDropDownDisplay extends Component {
       changeAnswers(newAnswers);
     } else {
       const {
-        item: { response_ids }
+        item: { responseIds }
       } = this.props;
-      const response = find(response_ids, res => res.id === id);
+      const response = find(responseIds, res => res.id === id);
       newAnswers[response.index] = { value, index, id };
       changeAnswers(newAnswers);
     }
@@ -132,22 +132,22 @@ class ClozeDropDownDisplay extends Component {
     let maxLineHeight = smallSize ? 50 : 40;
     maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
 
-    const hasAltAnswers = item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;
+    const hasAltAnswers = item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
 
     const answerBox = showAnswer ? (
       <React.Fragment>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
           groupResponses={options}
-          userAnswers={item.validation.valid_response && item.validation.valid_response.value}
-          responseIds={item.response_ids}
+          userAnswers={item.validation.validResponse && item.validation.validResponse.value}
+          responseIds={item.responseIds}
         />
         {hasAltAnswers && (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
-            altResponses={item.validation.alt_responses}
-            responseIds={item.response_ids}
+            altResponses={item.validation.altResponses}
+            responseIds={item.responseIds}
           />
         )}
       </React.Fragment>
@@ -172,7 +172,7 @@ class ClozeDropDownDisplay extends Component {
       changePreviewTab,
       userAnswers: userSelections || [],
       showIndex: showAnswer || checkAnswer,
-      cAnswers: get(item, "validation.valid_response.value", []),
+      cAnswers: get(item, "validation.validResponse.value", []),
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };

@@ -17,6 +17,7 @@ const FORMULA_ESSAY = "formulaessay";
 const CLOZE_MATH = "clozemath";
 const EXPRESSION_MULTIPART = "expressionMultipart";
 const COMBINATION_MULTIPART = "combinationMultipart";
+const PASSAGE_WITH_QUESTIONS = "passageWithQuestions";
 const ORDER_LIST = "orderList";
 const MULTIPLE_CHOICE = "multipleChoice";
 const CLOZE_TEXT = "clozeText";
@@ -67,7 +68,8 @@ const selectsData = [
   { value: DOT_PLOT, text: "Dot plot" },
   { value: LINE_PLOT, text: "Line plot" },
   { value: GRAPH, text: "Graph" },
-  { value: COMBINATION_MULTIPART, text: "Combination Multipart" }
+  { value: COMBINATION_MULTIPART, text: "Combination Multipart" },
+  { value: PASSAGE_WITH_QUESTIONS, text: "Passage with Questions" }
 ];
 
 const manuallyGradableQn = [FORMULA_ESSAY, HIGHLIGHT_IMAGE, ESSAY_RICH_TEXT, ESSAY_PLAIN_TEXT];
@@ -107,5 +109,6 @@ module.exports = {
   LINE_PLOT,
   GRAPH,
   selectsData,
-  manuallyGradableQn
+  manuallyGradableQn,
+  PASSAGE_WITH_QUESTIONS
 };

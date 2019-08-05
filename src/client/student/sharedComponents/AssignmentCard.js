@@ -161,7 +161,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
       {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
         <AnswerAndScore>
           <span data-cy="score">
-            {correct}/{totalQuestions}
+            {score}/{maxScore}
           </span>
           <Title>{t("common.correctAnswer")}</Title>
         </AnswerAndScore>

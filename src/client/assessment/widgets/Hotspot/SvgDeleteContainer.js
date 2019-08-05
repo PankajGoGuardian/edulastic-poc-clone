@@ -3,12 +3,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks';
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { Svg } from "./styled/Svg";
 import { Polygon } from "./styled/Polygon";
 import { G } from "./styled/G";
 import { Rect } from "./styled/Rect";
 import { Text } from "./styled/Text";
+import { ImageContainer } from "./styled/ImageContainer";
 
 const SvgDeleteContainer = React.memo(({ itemData, width, height, imageSrc, setQuestionData, history, theme }) => {
   const [areas, setAreas] = useState([]);
@@ -36,10 +37,9 @@ const SvgDeleteContainer = React.memo(({ itemData, width, height, imageSrc, setQ
   };
 
   return (
-    <div id="svg-control-block">
+    <div id="svg-control-block" style={{ position: "relative", height, width }}>
+      <ImageContainer src={imageSrc} width={width} height={height} preserveAspectRatio="none" x={0} y={0} />
       <Svg width={width} height={height}>
-        <image href={imageSrc} width={width} height={height} preserveAspectRatio="none" x={0} y={0} />
-
         {Array.isArray(areas) &&
           areas.length > 0 &&
           areas.map((area, i) => (

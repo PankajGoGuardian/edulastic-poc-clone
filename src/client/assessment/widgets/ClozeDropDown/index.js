@@ -57,9 +57,9 @@ class ClozeDropDown extends Component {
       previewDisplayOptions,
       itemForEdit,
       itemForPreview,
-      uiStyle: item.ui_style,
+      uiStyle: item.uiStyle,
       instantFeedback: item.instant_feedback,
-      instructorStimulus: item.instructor_stimulus
+      instructorStimulus: item.instructorStimulus
     };
   };
 
@@ -67,12 +67,12 @@ class ClozeDropDown extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        const validAnswers = cloneDeep(draft.validation.valid_response.value);
+        const validAnswers = cloneDeep(draft.validation.validResponse.value);
         validAnswers.map(answer => {
           answer.value = "";
           return answer;
         });
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
           value: validAnswers
         });
@@ -84,8 +84,8 @@ class ClozeDropDown extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.validation && draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.splice(index, 1);
+        if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.splice(index, 1);
           setQuestionData(draft);
         }
       })
@@ -135,7 +135,7 @@ class ClozeDropDown extends Component {
       instructorStimulus
     } = this.getRenderData();
 
-    const { shuffleOptions, response_ids } = item;
+    const { shuffleOptions, responseIds } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -183,7 +183,7 @@ class ClozeDropDown extends Component {
                   </CorrectAnswerOptions>
                 </Question>
                 <ChoicesForResponses
-                  responses={response_ids || []}
+                  responses={responseIds || []}
                   item={item}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
@@ -199,7 +199,7 @@ class ClozeDropDown extends Component {
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                   advancedAreOpen={advancedAreOpen}
-                  responseIDs={response_ids}
+                  responseIDs={responseIds}
                 />
               </div>
             </React.Fragment>

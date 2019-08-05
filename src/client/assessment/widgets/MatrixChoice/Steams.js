@@ -48,12 +48,12 @@ class Steams extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.options.splice(index, 1);
-          draft.validation.valid_response.value = draft.validation.valid_response.value.map(val =>
+          draft.validation.validResponse.value = draft.validation.validResponse.value.map(val =>
             reduceResponseValue(val, index)
           );
 
-          if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-            draft.validation.alt_responses.map(res => {
+          if (draft.validation.altResponses && draft.validation.altResponses.length) {
+            draft.validation.altResponses.map(res => {
               res.value = res.value.map(val => reduceResponseValue(val, index));
               return res;
             });

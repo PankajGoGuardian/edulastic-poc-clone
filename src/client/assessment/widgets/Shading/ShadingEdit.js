@@ -28,25 +28,25 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
-          value: { ...draft.validation.valid_response.value, value: [] }
+          value: { ...draft.validation.validResponse.value, value: [] }
         });
       })
     );
-    setCorrectTab(item.validation.alt_responses.length + 1);
+    setCorrectTab(item.validation.altResponses.length + 1);
   };
 
   const handlePointsChange = val => {
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
 
         updateVariables(draft);
@@ -60,17 +60,17 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
         if (method) {
           if (correctTab === 0) {
             const val = ans === BY_COUNT_METHOD ? [1] : [];
-            draft.validation.valid_response.value.method = ans;
-            draft.validation.valid_response.value.value = val;
+            draft.validation.validResponse.value.method = ans;
+            draft.validation.validResponse.value.value = val;
           } else {
             const val = ans === BY_COUNT_METHOD ? [1] : [];
-            draft.validation.alt_responses[correctTab - 1].value.method = ans;
-            draft.validation.alt_responses[correctTab - 1].value.value = val;
+            draft.validation.altResponses[correctTab - 1].value.method = ans;
+            draft.validation.altResponses[correctTab - 1].value.value = val;
           }
         } else if (correctTab === 0) {
-          draft.validation.valid_response.value.value = [...ans];
+          draft.validation.validResponse.value.value = [...ans];
         } else {
-          draft.validation.alt_responses[correctTab - 1].value.value = [...ans];
+          draft.validation.altResponses[correctTab - 1].value.value = [...ans];
         }
 
         updateVariables(draft);
@@ -81,7 +81,7 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
 
         setCorrectTab(0);
         updateVariables(draft);
@@ -93,19 +93,19 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
     <OptionsList
       item={item}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       method={
         correctTab === 0
-          ? item.validation.valid_response.value.method
-          : item.validation.alt_responses[correctTab - 1].value.method
+          ? item.validation.validResponse.value.method
+          : item.validation.altResponses[correctTab - 1].value.method
       }
       userAnswer={
         correctTab === 0
-          ? item.validation.valid_response.value.value
-          : item.validation.alt_responses[correctTab - 1].value.value
+          ? item.validation.validResponse.value.value
+          : item.validation.altResponses[correctTab - 1].value.value
       }
       view={EDIT}
     />

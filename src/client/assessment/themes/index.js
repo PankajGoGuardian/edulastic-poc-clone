@@ -59,6 +59,7 @@ const AssessmentContainer = ({
   answers,
   answersById,
   loading,
+  passages,
   preview,
   LCBPreviewModal
 }) => {
@@ -118,7 +119,12 @@ const AssessmentContainer = ({
     if (!isFirst()) gotoQuestion(Number(currentItem) - 1);
   };
 
-  const itemRows = items[currentItem] && items[currentItem].rows;
+  const testItem = items[currentItem] || {};
+  let itemRows = testItem.rows;
+  if (testItem.passageId) {
+    let passage = passages.find(p => p._id === testItem.passageId);
+    itemRows = [passage.structure, ...itemRows];
+  }
 
   const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows]);
 
@@ -198,6 +204,7 @@ const enhance = compose(
     state => ({
       view: state.view.preview,
       items: state.test.items,
+      passages: state.test.passages,
       title: state.test.title,
       docUrl: state.test.docUrl,
       annotations: state.test.annotations,

@@ -69,7 +69,7 @@ const MathFormulaOptions = ({
   }
 
   const addResponseContainer = () => {
-    const { response_ids: responseIds } = item;
+    const { responseIds } = item;
     const ind = responseContainers.length;
     let obj = {};
     // eslint-disable-next-line no-labels
@@ -86,7 +86,7 @@ const MathFormulaOptions = ({
         }
       }
     }
-    onChange("response_containers", [...responseContainers, obj]);
+    onChange("responseContainers", [...responseContainers, obj]);
   };
 
   const changeResponseContainers = ({ index, prop, value }) => {
@@ -94,14 +94,14 @@ const MathFormulaOptions = ({
     const ind = findIndex(newContainers, cont => cont.index === index);
     if (ind !== -1) {
       newContainers[ind][prop] = value;
-      onChange("response_containers", newContainers);
+      onChange("responseContainers", newContainers);
     }
   };
 
   const deleteResponseContainer = index => {
     const newContainers = cloneDeep(responseContainers);
     newContainers.splice(index, 1);
-    onChange("response_containers", newContainers);
+    onChange("responseContainers", newContainers);
   };
   return (
     <WidgetOptions

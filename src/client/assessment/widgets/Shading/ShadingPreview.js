@@ -47,14 +47,14 @@ const ShadingPreview = ({
   evaluation
 }) => {
   const { canvas, validation } = item;
-  const fontSize = getFontSize(get(item, "ui_style.fontsize"));
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
 
   const [isCheck, setIsCheck] = useState(false);
 
   const cell_width = canvas ? canvas.cell_width : 1;
   const cell_height = canvas ? canvas.cell_height : 1;
-  const row_count = canvas ? canvas.row_count : 1;
-  const column_count = canvas ? canvas.column_count : 1;
+  const rowCount = canvas ? canvas.rowCount : 1;
+  const columnCount = canvas ? canvas.columnCount : 1;
   const shaded = canvas ? canvas.shaded : [];
   const read_only_author_cells = canvas ? canvas.read_only_author_cells : false;
 
@@ -119,8 +119,8 @@ const ShadingPreview = ({
     marginTop: smallSize ? 10 : 0,
     cellWidth: smallSize ? 1 : cell_width,
     cellHeight: smallSize ? 1 : cell_height,
-    rowCount: smallSize ? 3 : row_count,
-    colCount: smallSize ? 8 : column_count,
+    rowCount: smallSize ? 3 : rowCount,
+    colCount: smallSize ? 8 : columnCount,
     border: item.border,
     hover: item.hover,
     hidden: get(item, "canvas.hidden", [])
@@ -135,7 +135,7 @@ const ShadingPreview = ({
 
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -186,7 +186,7 @@ const ShadingPreview = ({
             onCellClick={disableResponse ? () => {} : handleCellClick}
             shaded={
               disableResponse
-                ? validation.valid_response && validation.valid_response.value && validation.valid_response.value.value
+                ? validation.validResponse && validation.validResponse.value && validation.validResponse.value.value
                 : Array.isArray(userAnswer)
                 ? userAnswer
                 : []
@@ -198,22 +198,22 @@ const ShadingPreview = ({
         {previewTab === SHOW && (
           <Fragment>
             <CorrectAnswersContainer title={t("component.shading.correctAnswer")}>
-              {validation.valid_response.value.method === BY_LOCATION_METHOD ? (
+              {validation.validResponse.value.method === BY_LOCATION_METHOD ? (
                 <ShadesView
                   {...renderProps}
-                  correctAnswers={validation.valid_response.value.value}
+                  correctAnswers={validation.validResponse.value.value}
                   showAnswers
                   onCellClick={() => {}}
                   shaded={[]}
                   lockedCells={read_only_author_cells ? shaded : undefined}
                 />
               ) : (
-                <Fragment>Any {validation.valid_response.value.value} cells</Fragment>
+                <Fragment>Any {validation.validResponse.value.value} cells</Fragment>
               )}
             </CorrectAnswersContainer>
 
-            {validation.alt_responses &&
-              validation.alt_responses.map((altAnswer, i) => (
+            {validation.altResponses &&
+              validation.altResponses.map((altAnswer, i) => (
                 <CorrectAnswersContainer title={`${t("component.shading.alternateAnswer")} ${i + 1}`}>
                   {altAnswer.value.method === BY_LOCATION_METHOD ? (
                     <ShadesView

@@ -26,7 +26,7 @@ import Options from "./components/Options";
 const OptionsList = withPoints(HotspotPreview);
 
 const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSections, cleanSections }) => {
-  const { area_attributes, multiple_responses } = item;
+  const { areaAttributes, multipleResponses } = item;
 
   const [loading, setLoading] = useState(false);
 
@@ -44,12 +44,12 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
 
   const [customizeTab, setCustomizeTab] = useState(0);
   const [correctTab, setCorrectTab] = useState(0);
-  const [selectedIndexes, setSelectedIndexes] = useState(getAreaIndexes(area_attributes.local));
+  const [selectedIndexes, setSelectedIndexes] = useState(getAreaIndexes(areaAttributes.local));
 
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
 
         setCorrectTab(0);
         updateVariables(draft);
@@ -60,14 +60,14 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
   const handleResponseMode = () => {
     setQuestionData(
       produce(item, draft => {
-        if (multiple_responses) {
-          draft.validation.valid_response.value.splice(1);
-          draft.validation.alt_responses.forEach(alt => {
+        if (multipleResponses) {
+          draft.validation.validResponse.value.splice(1);
+          draft.validation.altResponses.forEach(alt => {
             alt.value.splice(1);
           });
         }
 
-        draft.multiple_responses = !multiple_responses;
+        draft.multipleResponses = !multipleResponses;
         updateVariables(draft);
       })
     );
@@ -76,26 +76,26 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
           value: []
         });
         updateVariables(draft);
       })
     );
-    setCorrectTab(item.validation.alt_responses.length + 1);
+    setCorrectTab(item.validation.altResponses.length + 1);
   };
 
   const handlePointsChange = val => {
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
         updateVariables(draft);
       })
@@ -106,9 +106,9 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.value = ans;
+          draft.validation.validResponse.value = ans;
         } else {
-          draft.validation.alt_responses[correctTab - 1].value = ans;
+          draft.validation.altResponses[correctTab - 1].value = ans;
         }
         updateVariables(draft);
       })
@@ -119,12 +119,12 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
     <OptionsList
       item={item}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       userAnswer={
-        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
     />
@@ -165,7 +165,7 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <StyledCheckbox onChange={handleResponseMode} defaultChecked={multiple_responses} style={{ marginBottom: 30 }}>
+        <StyledCheckbox onChange={handleResponseMode} defaultChecked={multipleResponses} style={{ marginBottom: 30 }}>
           {t("component.hotspot.multipleResponses")}
         </StyledCheckbox>
       </CorrectAnswers>

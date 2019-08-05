@@ -215,12 +215,12 @@ class AxisSegmentsContainer extends PureComponent {
       yAxesParameters,
       layout,
       gridParams,
-      graphType,
+      graphData,
       setElementsStash,
       disableResponse
     } = this.props;
 
-    this._graph = makeBorder(this._graphId, graphType);
+    this._graph = makeBorder(this._graphId, graphData.graphType);
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
@@ -357,9 +357,9 @@ class AxisSegmentsContainer extends PureComponent {
   }
 
   getStashId() {
-    const { questionId, altAnswerId, view } = this.props;
+    const { graphData, altAnswerId, view } = this.props;
     const type = altAnswerId || view;
-    return `${questionId}_${type}`;
+    return `${graphData.id}_${type}`;
   }
 
   updateValues() {
@@ -508,7 +508,7 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, canvas, elements, tools, questionId, disableResponse, view } = this.props;
+    const { layout, canvas, elements, tools, disableResponse, view, graphData, setQuestionData } = this.props;
     const { selectedTool } = this.state;
 
     return (
@@ -516,7 +516,7 @@ class AxisSegmentsContainer extends PureComponent {
         <GraphWrapper>
           <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-            <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
+            <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
           </div>
           {!disableResponse && (
             <SegmentsTools
@@ -547,13 +547,13 @@ AxisSegmentsContainer.propTypes = {
   setValue: PropTypes.func.isRequired,
   elements: PropTypes.array.isRequired,
   tools: PropTypes.array.isRequired,
-  graphType: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   setElementsStash: PropTypes.func.isRequired,
   setStashIndex: PropTypes.func.isRequired,
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
-  questionId: PropTypes.string.isRequired,
+  graphData: PropTypes.string.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   altAnswerId: PropTypes.string,
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,

@@ -121,10 +121,6 @@ const RightFields = ({
             <Select.Option key="subject_first" value="subject_first" disabled>
               <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
             </Select.Option>
-          ) : isEmpty(filteredCurriculums) ? (
-            <Select.Option key="loading" value="loading" disabled>
-              <StandardsValidationMSG>Loading data...</StandardsValidationMSG>
-            </Select.Option>
           ) : (
             filteredCurriculums.map(el => (
               <Select.Option key={el.value} value={el.value} disabled={el.disabled}>

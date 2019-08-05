@@ -14,12 +14,12 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../Question";
 
-const X_RATIO = "x_ratio";
-const Y_RATIO = "y_ratio";
-const X_MIN = "x_min";
-const X_MAX = "x_max";
-const Y_MIN = "y_min";
-const Y_MAX = "y_max";
+const X_RATIO = "xRatio";
+const Y_RATIO = "yRatio";
+const X_MIN = "xMin";
+const X_MAX = "xMax";
+const Y_MIN = "yMin";
+const Y_MAX = "yMax";
 
 class GraphQuadrants extends Component {
   onChangeQuestion = stimulus => {
@@ -91,8 +91,8 @@ class GraphQuadrants extends Component {
     { value: "logarithm", label: "Logarithm" },
     { value: "hyperbola", label: "Hyperbola" },
     { value: "polygon", label: "Polygon" },
-    { value: "area", label: "Area" },
-    { value: "label", label: "Label" }
+    { value: "area", label: "Area" }
+    // { value: "label", label: "Label" }
   ];
 
   getDrawingPromptOptions = () => [

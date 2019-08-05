@@ -28,8 +28,8 @@ const CheckBoxedMathBox = ({ value, style }) => {
 };
 
 const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick }) => {
-  const { response_ids } = item;
-  const { index } = find(response_ids[type], res => res.id === id);
+  const { responseIds } = item;
+  const { index } = find(responseIds[type], res => res.id === id);
 
   let checkBoxClass = "";
 

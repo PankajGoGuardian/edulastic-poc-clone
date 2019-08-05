@@ -33,7 +33,10 @@ function create(board, logPoints, id = null) {
     [logPoints[0].id]: logPoints[0],
     [logPoints[1].id]: logPoints[1]
   };
+  newLine.labelIsVisible = true;
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -65,6 +68,7 @@ function getConfig(logarithm) {
     type: CONSTANT.TOOLS.LOGARITHM,
     id: logarithm.id,
     label: logarithm.labelHTML || false,
+    labelIsVisible: logarithm.labelIsVisible,
     points: Object.keys(logarithm.ancestors)
       .sort()
       .map(n => Point.getConfig(logarithm.ancestors[n]))

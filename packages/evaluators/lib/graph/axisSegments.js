@@ -158,21 +158,21 @@ var partialMatchEvaluator = function partialMatchEvaluator(userResponse, answers
 var evaluator = function evaluator(_ref) {
   var userResponse = _ref.userResponse,
     validation = _ref.validation;
-  var valid_response = validation.valid_response,
-    alt_responses = validation.alt_responses,
-    scoring_type = validation.scoring_type,
+  var validResponse = validation.validResponse,
+    altResponses = validation.altResponses,
+    scoringType = validation.scoringType,
     rounding = validation.rounding,
     _validation$penalty = validation.penalty,
     penalty = _validation$penalty === void 0 ? 0 : _validation$penalty;
-  var answers = [valid_response];
+  var answers = [validResponse];
 
-  if (alt_responses) {
-    answers = answers.concat((0, _toConsumableArray2["default"])(alt_responses));
+  if (altResponses) {
+    answers = answers.concat((0, _toConsumableArray2["default"])(altResponses));
   }
 
   var roundingIsNone = rounding && rounding === "none";
 
-  switch (scoring_type) {
+  switch (scoringType) {
     case _scoring.ScoringType.PARTIAL_MATCH:
       return partialMatchEvaluator(userResponse, answers, roundingIsNone, penalty);
 

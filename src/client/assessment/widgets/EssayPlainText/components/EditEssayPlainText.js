@@ -46,8 +46,8 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
       >
         <WordLimitAndCount
           onChange={handleItemChangeChange}
-          selectValue={item.show_word_limit}
-          inputValue={item.max_word}
+          selectValue={item.showWordLimit}
+          inputValue={item.maxWord}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
           cleanSections={cleanSections}
@@ -56,8 +56,8 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
 
         <Checkbox
           style={{ marginTop: 32 }}
-          defaultChecked={item.show_word_count}
-          onChange={e => handleItemChangeChange("show_word_count", e.target.checked)}
+          defaultChecked={item.showWordCount}
+          onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
         >
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>

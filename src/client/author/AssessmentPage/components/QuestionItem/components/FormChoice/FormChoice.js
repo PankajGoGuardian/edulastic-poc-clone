@@ -31,7 +31,7 @@ export default class FormChoice extends React.Component {
   handleSelect = nextValue => () => {
     const { currentValue } = this.state;
     const {
-      question: { multiple_responses: multipleResponses }
+      question: { multipleResponses: multipleResponses }
     } = this.props;
 
     if (!multipleResponses) {
@@ -62,7 +62,7 @@ export default class FormChoice extends React.Component {
 
   renderView = () => {
     const {
-      question: { options, multiple_responses: multipleResponses }
+      question: { options, multipleResponses: multipleResponses }
     } = this.props;
 
     if (!options.length) return this.renderOptionsCreateForm();
@@ -83,7 +83,7 @@ export default class FormChoice extends React.Component {
   renderForm = () => {
     const { currentValue } = this.state;
     const {
-      question: { options, multiple_responses: multipleResponses },
+      question: { options, multipleResponses: multipleResponses },
       evaluation,
       view
     } = this.props;

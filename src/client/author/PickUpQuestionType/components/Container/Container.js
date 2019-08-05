@@ -28,7 +28,7 @@ import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
 import Header from "../Header/Header";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
-import { convertItemToMultipartAction } from "../../../ItemDetail/ducks";
+import { convertItemToMultipartAction, convertItemToPassageWithQuestionsAction } from "../../../ItemDetail/ducks";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
@@ -67,15 +67,24 @@ class Container extends Component {
       t,
       modalItemId,
       navigateToQuestionEdit,
-      isTestFlow
+      isTestFlow,
+      convertToPassageWithQuestions
     } = this.props;
 
     const { testId, itemId, id } = match.params;
 
+    // in case of combination multipart
     if (data.type === questionType.COMBINATION_MULTIPART) {
       convertToMultipart({ isTestFlow, itemId: itemId || id, testId });
       return;
     }
+
+    // handle case of passage with questions
+    if (data.type === questionType.PASSAGE_WITH_QUESTIONS) {
+      convertToPassageWithQuestions({ isTestFlow, itemId: itemId || id, testId });
+      return;
+    }
+
     // FIXME: Weird! connect not working properly. setQuestion not available as a prop
     // TODO: found the issue because of an indirect circular dependency. Found all the possible locations and eventually need to be fixed all the circular dependency issues
 
@@ -434,7 +443,8 @@ const enhance = compose(
       setCategory: setQuestionCategory,
       setTab: setQuestionTab,
       toggleModalAction: toggleCreateItemModalAction,
-      convertToMultipart: convertItemToMultipartAction
+      convertToMultipart: convertItemToMultipartAction,
+      convertToPassageWithQuestions: convertItemToPassageWithQuestionsAction
     }
   )
 );

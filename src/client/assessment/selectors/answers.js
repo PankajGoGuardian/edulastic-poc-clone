@@ -38,7 +38,7 @@ export const getUserAnswerSelector = createSelector(
     if (!questionId) return undefined;
 
     if (isReviewTab) {
-      return get(question, ["validation", "valid_response", "value"]);
+      return get(question, ["validation", "validResponse", "value"]);
     }
 
     let userAnswer;

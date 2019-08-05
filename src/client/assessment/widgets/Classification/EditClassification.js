@@ -71,12 +71,12 @@ const EditClassification = ({
 }) => {
   const {
     firstMount,
-    shuffle_options,
-    transparent_possible_responses,
-    transparent_background_image = true,
-    duplicate_responses,
+    shuffleOptions,
+    transparentPossibleResponses,
+    transparentBackgroundImage = true,
+    duplicateResponses,
     imageOptions,
-    ui_style: { show_drag_handle }
+    uiStyle: { showDragHandle }
   } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
@@ -142,13 +142,13 @@ const EditClassification = ({
     setQuestionData(
       produce(item, draft => {
         draft[prop] = uiStyle;
-        if (prop === "duplicate_responses" && uiStyle === false) {
-          const colCount = draft.ui_style.column_count;
-          const rowCount = draft.ui_style.row_count;
+        if (prop === "duplicateResponses" && uiStyle === false) {
+          const colCount = draft.uiStyle.columnCount;
+          const rowCount = draft.uiStyle.rowCount;
           const initialLength = (colCount || 2) * (rowCount || 1);
-          draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+          draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
 
-          draft.validation.alt_responses.forEach(ite => {
+          draft.validation.altResponses.forEach(ite => {
             ite.value = Array(...Array(initialLength)).map(() => []);
           });
         }
@@ -170,14 +170,14 @@ const EditClassification = ({
   const onGroupPossibleResp = e => {
     setQuestionData(
       produce(item, draft => {
-        draft.group_possible_responses = e.target.checked;
-        const colCount = draft.ui_style.column_count;
-        const rowCount = draft.ui_style.row_count;
+        draft.groupPossibleResponses = e.target.checked;
+        const colCount = draft.uiStyle.columnCount;
+        const rowCount = draft.uiStyle.rowCount;
 
         const initialLength = (colCount || 2) * (rowCount || 1);
-        draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+        draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
 
-        draft.validation.alt_responses.forEach(ite => {
+        draft.validation.altResponses.forEach(ite => {
           ite.value = Array(...Array(initialLength)).map(() => []);
         });
         updateVariables(draft);
@@ -188,7 +188,7 @@ const EditClassification = ({
   const handleGroupAdd = () => {
     setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups.push({ title: "", responses: [] });
+        draft.possibleResponseGroups.push({ title: "", responses: [] });
         updateVariables(draft);
       })
     );
@@ -197,18 +197,18 @@ const EditClassification = ({
   const handleGroupRemove = index => () => {
     setQuestionData(
       produce(item, draft => {
-        const responses = draft.possible_response_groups[index].responses.flatMap(resp => resp.id);
+        const responses = draft.possibleResponseGroups[index].responses.flatMap(resp => resp.id);
         responses.forEach(responseID => {
-          draft.validation.valid_response.value = draft.validation.valid_response.value.map(arr => {
+          draft.validation.validResponse.value = draft.validation.validResponse.value.map(arr => {
             return arr.filter(respID => respID !== responseID);
           });
-          draft.validation.alt_responses.forEach(alt_response => {
+          draft.validation.altResponses.forEach(alt_response => {
             alt_response.value = alt_response.value.map(arr => {
               return arr.filter(respID => respID !== responseID);
             });
           });
         });
-        draft.possible_response_groups.splice(index, 1);
+        draft.possibleResponseGroups.splice(index, 1);
         updateVariables(draft);
       })
     );
@@ -217,7 +217,7 @@ const EditClassification = ({
   const onAddInner = index => () => {
     setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups[index].responses.push({ id: uuid(), value: "" });
+        draft.possibleResponseGroups[index].responses.push({ id: uuid(), value: "" });
         updateVariables(draft);
       })
     );
@@ -226,15 +226,15 @@ const EditClassification = ({
   const onRemoveInner = groupIndex => respIndex => {
     setQuestionData(
       produce(item, draft => {
-        const response = get(draft, `possible_response_groups[${groupIndex}][responses][${respIndex}]`);
+        const response = get(draft, `possibleResponseGroups[${groupIndex}][responses][${respIndex}]`);
         if (response) {
-          draft.validation.valid_response.value = draft.validation.valid_response.value.map(resp => {
+          draft.validation.validResponse.value = draft.validation.validResponse.value.map(resp => {
             if (resp.includes(response.id)) {
               resp.splice(resp.indexOf(response.id), 1);
             }
             return resp;
           });
-          draft.validation.alt_responses = draft.validation.alt_responses.map(alt_response => {
+          draft.validation.altResponses = draft.validation.altResponses.map(alt_response => {
             alt_response.value = alt_response.value.map(resp => {
               if (resp.includes(response.id)) {
                 resp.splice(resp.indexOf(response.id), 1);
@@ -243,7 +243,7 @@ const EditClassification = ({
             });
             return alt_response;
           });
-          draft.possible_response_groups[groupIndex].responses.splice(respIndex, 1);
+          draft.possibleResponseGroups[groupIndex].responses.splice(respIndex, 1);
           updateVariables(draft);
         }
       })
@@ -253,7 +253,7 @@ const EditClassification = ({
   const onGroupTitleChange = (index, value) => {
     setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups[index].title = value;
+        draft.possibleResponseGroups[index].title = value;
         updateVariables(draft);
       })
     );
@@ -262,8 +262,8 @@ const EditClassification = ({
   const handleGroupSortEnd = index => ({ oldIndex, newIndex }) => {
     setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups[index].responses = arrayMove(
-          draft.possible_response_groups[index].responses,
+        draft.possibleResponseGroups[index].responses = arrayMove(
+          draft.possibleResponseGroups[index].responses,
           oldIndex,
           newIndex
         );
@@ -275,7 +275,7 @@ const EditClassification = ({
   const handleGroupChange = ind => (index, value) => {
     setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups[ind].responses[index].value = value;
+        draft.possibleResponseGroups[ind].responses[index].value = value;
         updateVariables(draft);
       })
     );
@@ -286,28 +286,28 @@ const EditClassification = ({
       produce(item, draft => {
         switch (action) {
           case actions.ADD:
-            draft.possible_responses.push({ id: uuid(), value: "" });
+            draft.possibleResponses.push({ id: uuid(), value: "" });
             break;
 
           case actions.REMOVE:
-            const respID = get(draft, `possible_responses[${restProp}].id`, "");
-            draft.validation.valid_response.value.forEach(arr => {
+            const respID = get(draft, `possibleResponses[${restProp}].id`, "");
+            draft.validation.validResponse.value.forEach(arr => {
               if (arr.includes(respID)) {
                 arr.splice(arr.indexOf(respID), 1);
               }
             });
-            draft.validation.alt_responses.forEach(alt_response => {
+            draft.validation.altResponses.forEach(alt_response => {
               alt_response.value.forEach(arr => {
                 if (arr.includes(respID)) {
                   arr.splice(arr.indexOf(respID), 1);
                 }
               });
             });
-            draft.possible_responses.splice(restProp, 1);
+            draft.possibleResponses.splice(restProp, 1);
             break;
 
           case actions.SORTEND:
-            draft.possible_responses = arrayMove(item.possible_responses, restProp.oldIndex, restProp.newIndex);
+            draft.possibleResponses = arrayMove(item.possibleResponses, restProp.oldIndex, restProp.newIndex);
             break;
 
           default:
@@ -321,7 +321,7 @@ const EditClassification = ({
   const handleChangePossible = () => (index, value) => {
     setQuestionData(
       produce(item, draft => {
-        draft.possible_responses[index].value = value;
+        draft.possibleResponses[index].value = value;
         updateVariables(draft);
       })
     );
@@ -330,10 +330,10 @@ const EditClassification = ({
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
           value: []
         });
@@ -347,7 +347,7 @@ const EditClassification = ({
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
         updateVariables(draft);
       })
     );
@@ -358,9 +358,9 @@ const EditClassification = ({
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
         updateVariables(draft);
       })
@@ -371,11 +371,11 @@ const EditClassification = ({
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          if (draft.validation && draft.validation.valid_response) {
-            draft.validation.valid_response.value = answer;
+          if (draft.validation && draft.validation.validResponse) {
+            draft.validation.validResponse.value = answer;
           }
-        } else if (draft.validation && draft.validation.alt_responses && draft.validation.alt_responses[correctTab - 1])
-          draft.validation.alt_responses[correctTab - 1].value = answer;
+        } else if (draft.validation && draft.validation.altResponses && draft.validation.altResponses[correctTab - 1])
+          draft.validation.altResponses[correctTab - 1].value = answer;
 
         updateVariables(draft);
       })
@@ -385,17 +385,17 @@ const EditClassification = ({
   const onUiChange = prop => val => {
     setQuestionData(
       produce(item, draft => {
-        draft.ui_style[prop] = val;
+        draft.uiStyle[prop] = val;
 
-        const colCount = draft.ui_style.column_count;
-        const rowCount = draft.ui_style.row_count;
+        const colCount = draft.uiStyle.columnCount;
+        const rowCount = draft.uiStyle.rowCount;
 
         const initialLength = (colCount || 2) * (rowCount || 1);
 
-        if (prop === "column_count" || prop === "row_count") {
-          draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+        if (prop === "columnCount" || prop === "rowCount") {
+          draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
 
-          draft.validation.alt_responses.forEach(ite => {
+          draft.validation.altResponses.forEach(ite => {
             ite.value = Array(...Array(initialLength)).map(() => []);
           });
         }
@@ -409,12 +409,12 @@ const EditClassification = ({
     <OptionsList
       item={item}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       setQuestionData={setQuestionData}
       view={EDIT}
@@ -542,25 +542,25 @@ const EditClassification = ({
         >
           <GroupPossibleResponses
             checkboxChange={onGroupPossibleResp}
-            checkboxVal={item.group_possible_responses}
+            checkboxVal={item.groupPossibleResponses}
             items={
-              item.group_possible_responses
-                ? item.possible_response_groups.map(it => {
+              item.groupPossibleResponses
+                ? item.possibleResponseGroups.map(it => {
                     return {
                       title: it.title,
                       responses: it.responses.map(resp => resp.value)
                     };
                   })
-                : item.possible_responses.map(ite => ite.value)
+                : item.possibleResponses.map(ite => ite.value)
             }
             onAddInner={onAddInner}
             onTitleChange={onGroupTitleChange}
-            onAdd={item.group_possible_responses ? handleGroupAdd : handleMainPossible(actions.ADD)}
-            onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)}
+            onAdd={item.groupPossibleResponses ? handleGroupAdd : handleMainPossible(actions.ADD)}
+            onSortEnd={item.groupPossibleResponses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)}
             firstFocus={firstMount}
-            onChange={item.group_possible_responses ? handleGroupChange : handleChangePossible()}
+            onChange={item.groupPossibleResponses ? handleGroupChange : handleChangePossible()}
             onRemoveInner={onRemoveInner}
-            onRemove={item.group_possible_responses ? handleGroupRemove : handleMainPossible(actions.REMOVE)}
+            onRemove={item.groupPossibleResponses ? handleGroupRemove : handleMainPossible(actions.REMOVE)}
             fillSections={fillSections}
             cleanSections={cleanSections}
             t={t}
@@ -569,33 +569,33 @@ const EditClassification = ({
           <div style={{ marginTop: 20 }}>
             <Checkbox
               className="additional-options"
-              onChange={() => onUiChange("show_drag_handle")(!show_drag_handle)}
+              onChange={() => onUiChange("showDragHandle")(!showDragHandle)}
               label={t("component.cloze.imageDragDrop.showdraghandle")}
-              checked={!!show_drag_handle}
+              checked={!!showDragHandle}
             />
             <Checkbox
               className="additional-options"
-              onChange={() => handleItemChangeChange("duplicate_responses", !duplicate_responses)}
+              onChange={() => handleItemChangeChange("duplicateResponses", !duplicateResponses)}
               label={t("component.cloze.imageDragDrop.duplicatedresponses")}
-              checked={!!duplicate_responses}
+              checked={!!duplicateResponses}
             />
             <Checkbox
               className="additional-options"
-              onChange={() => handleItemChangeChange("shuffle_options", !shuffle_options)}
+              onChange={() => handleItemChangeChange("shuffleOptions", !shuffleOptions)}
               label={t("component.cloze.imageDragDrop.shuffleoptions")}
-              checked={!!shuffle_options}
+              checked={!!shuffleOptions}
             />
             <Checkbox
               className="additional-options"
-              onChange={() => handleItemChangeChange("transparent_possible_responses", !transparent_possible_responses)}
+              onChange={() => handleItemChangeChange("transparentPossibleResponses", !transparentPossibleResponses)}
               label={t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-              checked={!!transparent_possible_responses}
+              checked={!!transparentPossibleResponses}
             />
             <Checkbox
               className="additional-options"
-              onChange={() => handleItemChangeChange("transparent_background_image", !transparent_background_image)}
+              onChange={() => handleItemChangeChange("transparentBackgroundImage", !transparentBackgroundImage)}
               label={t("component.cloze.imageDragDrop.transparentbackgroundimage")}
-              checked={!!transparent_background_image}
+              checked={!!transparentBackgroundImage}
             />
           </div>
         </Question>

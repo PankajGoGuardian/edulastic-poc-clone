@@ -28,7 +28,7 @@ import CharacterMap from "../../components/CharacterMap";
 import { getText, reIndexResponses, calculateWordsCount } from "@edulastic/common/src/helpers";
 
 const getToolBarButtons = item =>
-  (item.formatting_options || [])
+  (item.formattingOptions || [])
     .filter(x => x.active)
     .map(x => {
       const key = `${x.value}${x.param ? x.param : ""}`;
@@ -60,8 +60,8 @@ const EssayRichTextPreview = ({
   const [text, setText] = useState("");
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
-  const minHeight = get(item, "ui_style.min_height", 200);
-  const maxHeight = get(item, "ui_style.max_height", 300);
+  const minHeight = get(item, "uiStyle.minHeight", 200);
+  const maxHeight = get(item, "uiStyle.max_height", 300);
   const characterMap = get(item, "character_map", []);
   const [wordCount, setWordCount] = useState(0);
 
@@ -98,17 +98,17 @@ const EssayRichTextPreview = ({
     });
   };
 
-  const showLimitAlways = item.show_word_limit === ALWAYS;
+  const showLimitAlways = item.showWordLimit === ALWAYS;
 
-  const showOnLimit = item.show_word_limit === ON_LIMIT;
+  const showOnLimit = item.showWordLimit === ON_LIMIT;
 
   const displayWordCount =
-    (showOnLimit && item.max_word < wordCount) || showLimitAlways
-      ? `${wordCount} / ${item.max_word} ${t("component.essayText.wordsLimitTitle")}`
+    (showOnLimit && item.maxWord < wordCount) || showLimitAlways
+      ? `${wordCount} / ${item.maxWord} ${t("component.essayText.wordsLimitTitle")}`
       : `${wordCount} ${t("component.essayText.wordsTitle")}`;
 
   const wordCountStyle =
-    (showLimitAlways || showOnLimit) && item.max_word < wordCount
+    (showLimitAlways || showOnLimit) && item.maxWord < wordCount
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
@@ -121,7 +121,7 @@ const EssayRichTextPreview = ({
 
   return item.id ? (
     <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -142,7 +142,7 @@ const EssayRichTextPreview = ({
         {!Array.isArray(userAnswer) && !isReadOnly && (
           <FroalaEditor
             backgroundColor={
-              item.max_word < wordCount
+              item.maxWord < wordCount
                 ? theme.widgets.essayRichText.quillLimitedBgColor
                 : theme.widgets.essayRichText.quillBgColor
             }
@@ -177,7 +177,7 @@ const EssayRichTextPreview = ({
           </FlexContainer>
         )}
 
-        {item.show_word_count && (userAnswer || !isReadOnly) && (
+        {item.showWordCount && (userAnswer || !isReadOnly) && (
           <Toolbar borderRadiusOnlyBottom>
             <FlexContainer />
             <Item style={wordCountStyle}>{displayWordCount}</Item>

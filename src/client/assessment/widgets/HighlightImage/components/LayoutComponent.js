@@ -29,11 +29,11 @@ class LayoutComponent extends Component {
     const _uiChange = (prop, val) => {
       setQuestionData(
         produce(item, draft => {
-          if (!draft.ui_style) {
-            draft.ui_style = {};
+          if (!draft.uiStyle) {
+            draft.uiStyle = {};
           }
 
-          draft.ui_style[prop] = val;
+          draft.uiStyle[prop] = val;
         })
       );
     };
@@ -57,7 +57,7 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <FontSizeOption
                 onChange={val => _uiChange("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
+                value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
           </Row>

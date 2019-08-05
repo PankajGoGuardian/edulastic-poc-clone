@@ -264,6 +264,7 @@ const OrderList = ({
               styleType={styleType}
               axis={axis}
               columns={columns}
+              helperClass="sortableHelper"
             />
           )}
 
@@ -281,6 +282,7 @@ const OrderList = ({
                 disableResponse={disableResponse}
                 axis={axis}
                 columns={columns}
+                helperClass="sortableHelper"
               />
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
                 <ItemsWrapper styleType={styleType}>
@@ -332,6 +334,7 @@ const OrderList = ({
               axis={axis}
               columns={columns}
               disableResponse={disableResponse}
+              helperClass="sortableHelper"
             />
           )}
         </Wrapper>

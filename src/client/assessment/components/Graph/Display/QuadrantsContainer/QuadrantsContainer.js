@@ -16,6 +16,8 @@ import {
   IconGraphPolygon as IconPolygon
 } from "@edulastic/icons";
 
+import { WithResources } from "@edulastic/common";
+
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
@@ -44,6 +46,7 @@ import {
 import Tools from "./Tools";
 import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
+import { ElementSettingsMenu } from "./ElementSettingsMenu";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -150,7 +153,10 @@ class GraphContainer extends PureComponent {
 
     this.state = {
       selectedTool: this.getDefaultTool(),
-      selectedDrawingObject: null
+      selectedDrawingObject: null,
+      elementSettingsAreOpened: false,
+      elementId: null,
+      resourcesLoaded: false
     };
 
     this.onSelectTool = this.onSelectTool.bind(this);
@@ -168,6 +174,26 @@ class GraphContainer extends PureComponent {
       groupIndex: -1
     };
   }
+
+  handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
+
+  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility) => {
+    const { setValue, setElementsStash } = this.props;
+    const { elementId } = this.state;
+    const config = this._graph.getConfig();
+    const updateElement = config.filter(element => element.id === elementId)[0];
+
+    if (updateElement) {
+      updateElement.label = labelText;
+      updateElement.pointIsVisible = pointVisibility;
+      updateElement.labelIsVisible = labelVisibility;
+
+      setValue(config);
+      setElementsStash(config, this.getStashId());
+    }
+
+    this.setState({ elementSettingsAreOpened: false });
+  };
 
   setDefaultToolState() {
     this.setState({ selectedTool: this.getDefaultTool() });
@@ -198,6 +224,9 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
+      if (!disableResponse) {
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+      }
       this._graph.setDisableResponse(disableResponse);
 
       this._graph.resizeContainer(layout.width, layout.height);
@@ -258,6 +287,9 @@ class GraphContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
+      if (prevProps.disableResponse && !disableResponse) {
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+      }
 
       if (
         canvas.xMin !== prevProps.canvas.xMin ||
@@ -429,6 +461,7 @@ class GraphContainer extends PureComponent {
   updateValues() {
     const conf = this._graph.getConfig();
     const { setValue, setElementsStash } = this.props;
+
     setValue(conf);
     setElementsStash(conf, this.getStashId());
   }
@@ -446,6 +479,11 @@ class GraphContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
+    const { resourcesLoaded } = this.state;
+    if (!resourcesLoaded) {
+      return;
+    }
+
     const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
     // correct answers blocks
@@ -589,7 +627,7 @@ class GraphContainer extends PureComponent {
     "hyperbola",
     "polygon",
     "parabola",
-    "label",
+    // "label",
     "annotation",
     "area"
   ];
@@ -619,15 +657,46 @@ class GraphContainer extends PureComponent {
     this._graph.setDrawingObject(drawingObject);
   };
 
+  resourcesOnLoaded = () => {
+    const { resourcesLoaded } = this.state;
+    if (resourcesLoaded) {
+      return;
+    }
+    this.setState({ resourcesLoaded: true });
+    this.setElementsToGraph();
+  };
+
   render() {
-    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse, view } = this.props;
+    const {
+      toolbar,
+      layout,
+      annotation,
+      controls,
+      bgShapes,
+      elements,
+      questionId,
+      disableResponse,
+      view,
+      advancedElementSettings
+    } = this.props;
     const { tools } = toolbar;
-    const { selectedTool } = this.state;
+    const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
     const equations = elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION);
+
     return (
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
+        <WithResources
+          resources={[
+            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+          ]}
+          fallBack={<span />}
+          onLoaded={this.resourcesOnLoaded}
+        >
+          <span />
+        </WithResources>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
@@ -673,6 +742,13 @@ class GraphContainer extends PureComponent {
                 margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
               />
               <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
+              {elementSettingsAreOpened && this._graph && (
+                <ElementSettingsMenu
+                  advancedElementSettings={advancedElementSettings}
+                  element={this._graph.getConfig().filter(element => element.id === elementId)[0]}
+                  handleClose={this.handleElementSettingsMenuClose}
+                />
+              )}
             </JSXBoxWrapper>
           </JSXBoxWithDrawingObjectsWrapper>
         </GraphWrapper>
@@ -708,11 +784,13 @@ GraphContainer.propTypes = {
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
-  elementsIsCorrect: PropTypes.bool
+  elementsIsCorrect: PropTypes.bool,
+  advancedElementSettings: PropTypes.bool
 };
 
 GraphContainer.defaultProps = {
   backgroundShapes: { values: [], showPoints: true },
+  advancedElementSettings: false,
   evaluation: null,
   annotation: null,
   controls: [],

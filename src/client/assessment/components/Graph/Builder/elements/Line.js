@@ -18,7 +18,10 @@ function create(board, linePoints, type, id = null) {
     label: getLabelParameters(JXG.OBJECT_TYPE_LINE),
     id
   });
+  newLine.labelIsVisible = true;
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -51,6 +54,7 @@ function getConfig(line) {
     type: getLineTypeByProp(line.getAttributes()),
     id: line.id,
     label: line.labelHTML || false,
+    labelIsVisible: line.labelIsVisible,
     points: Object.keys(line.ancestors)
       .sort()
       .map(n => Point.getConfig(line.ancestors[n]))

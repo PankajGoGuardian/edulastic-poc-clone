@@ -91,8 +91,8 @@ class GraphQuadrants extends Component {
     { value: "logarithm", label: "Logarithm" },
     { value: "hyperbola", label: "Hyperbola" },
     { value: "polygon", label: "Polygon" },
-    { value: "area", label: "Area" },
-    { value: "label", label: "Label" }
+    { value: "area", label: "Area" }
+    // { value: "label", label: "Label" }
   ];
 
   getDrawingPromptOptions = () => [

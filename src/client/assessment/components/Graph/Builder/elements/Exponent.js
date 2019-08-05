@@ -27,6 +27,7 @@ function create(board, expPoints, id = null) {
     label: getLabelParameters(jxgType),
     id
   });
+  newLine.labelIsVisible = true;
   newLine.type = jxgType;
   newLine.addParents(expPoints);
   newLine.ancestors = {
@@ -34,6 +35,8 @@ function create(board, expPoints, id = null) {
     [expPoints[1].id]: expPoints[1]
   };
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -66,6 +69,7 @@ function getConfig(exponent) {
     type: CONSTANT.TOOLS.EXPONENT,
     id: exponent.id,
     label: exponent.labelHTML || false,
+    labelIsVisible: exponent.labelIsVisible,
     points: Object.keys(exponent.ancestors)
       .sort()
       .map(n => Point.getConfig(exponent.ancestors[n]))

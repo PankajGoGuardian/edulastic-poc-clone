@@ -1,0 +1,15 @@
+.edit-button {
+  cursor: pointer;
+  fill: #000;
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.edit-button svg {
+  height: 20px !important;
+  width: 20px !important;
+}
+
+.edit-button:hover {
+  fill: green;
+}

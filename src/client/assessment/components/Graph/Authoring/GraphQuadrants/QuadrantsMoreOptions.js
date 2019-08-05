@@ -559,13 +559,16 @@ class QuadrantsMoreOptions extends Component {
           <Subtitle>{t("component.graphing.background_shapes")}</Subtitle>
           <Row>
             <Col md={24}>
-              <GraphDisplay
-                graphData={graphData}
-                onChange={setBgShapes}
-                elements={graphData.background_shapes}
-                changePreviewTab={() => {}}
-                bgShapes
-              />
+              {advancedAreOpen && (
+                <GraphDisplay
+                  advancedElementSettings={true}
+                  graphData={graphData}
+                  onChange={setBgShapes}
+                  elements={graphData.background_shapes}
+                  changePreviewTab={() => {}}
+                  bgShapes
+                />
+              )}
             </Col>
           </Row>
         </Question>

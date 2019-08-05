@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { Layout, Form, Input, Button } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { extraDesktopWidth, largeDesktopWidth, desktopWidth } from "@edulastic/colors";
+import { extraDesktopWidth, largeDesktopWidth, desktopWidth, borders, backgrounds } from "@edulastic/colors";
 
 import ProfileImage from "../../assets/Profile.png";
 import cameraIcon from "../../assets/photo-camera.svg";
@@ -157,7 +157,7 @@ const ProfileContentWrapper = styled.div`
 
 const UserDetail = styled.div`
   padding: 42px 0rem 54px;
-  border-bottom: 1px solid #f2f2f2;
+  border-bottom: 1px solid ${borders.default};
 
   @media (max-width: ${largeDesktopWidth}) {
     padding: 25px 0 30px;
@@ -270,8 +270,8 @@ const FormWrapper = styled(Form)`
 
   .ant-input {
     height: 40px;
-    background: #f8f8f8;
-    border: 1px solid #e6e6e6;
+    background: ${backgrounds.primary};
+    border: 1px solid ${borders.secondary};
     padding: 0 24px;
   }
 

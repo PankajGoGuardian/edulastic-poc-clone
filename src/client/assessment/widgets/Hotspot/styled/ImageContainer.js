@@ -8,7 +8,8 @@ export const ImageContainer = styled.img.attrs({
     left: `${left || 0}px`
   })
 })`
-  position: absolute;
+  position: absolute !important;
+  z-index: 0 !important;
   max-height: 600px;
   max-width: 700px;
   margin-right: 0px;

@@ -72,7 +72,7 @@ const HotspotPreview = ({
         )}
       </QuestionTitleWrapper>
 
-      <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
+      <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} width={+width} height={+height} justifyContent="center">
         <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
         <Svg data-cy="answer-container" width={+width} height={+height}>
           {areas &&
@@ -93,7 +93,13 @@ const HotspotPreview = ({
       {previewTab === "show" && !smallSize && (
         <Fragment>
           <CorrectAnswersContainer title={t("component.graphing.correctAnswer")}>
-            <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
+            <BlockContainer
+              data-cy="hotspotMap"
+              style={{ maxWidth }}
+              width={+width}
+              height={+height}
+              justifyContent="center"
+            >
               <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
               <Svg data-cy="answer-container" width={+width} height={+height}>
                 {areas &&
@@ -114,7 +120,13 @@ const HotspotPreview = ({
           {altAnswers &&
             altAnswers.map((altAnswer, i) => (
               <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
-                <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
+                <BlockContainer
+                  data-cy="hotspotMap"
+                  style={{ maxWidth }}
+                  width={+width}
+                  height={+height}
+                  justifyContent="center"
+                >
                   <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
                   <Svg data-cy="answer-container" width={+width} height={+height}>
                     {areas &&
@@ -136,7 +148,7 @@ const HotspotPreview = ({
         </Fragment>
       )}
       {smallSize && (
-        <BlockContainer justifyContent="center">
+        <BlockContainer width={320} height={170} justifyContent="center">
           <ImageContainer src={source} width={320} height={170} left={0} top={0} />
           <Svg data-cy="answer-container" width={320} height={170}>
             {previewAreas.map((areaPreviewPoints, i) => (

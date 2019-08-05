@@ -519,7 +519,7 @@ class Container extends PureComponent {
           testStatus={testStatus}
           showShareButton={showShareButton}
           editEnable={editEnable}
-          assignmentsCount={test.assignmentsCount}
+          isUsed={test.isUsed}
           onEnableEdit={this.onEnableEdit}
           onShowSource={this.handleNavChange("source")}
           onAssign={this.handleAssign}

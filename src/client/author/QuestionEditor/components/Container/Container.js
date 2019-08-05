@@ -20,13 +20,15 @@ import { ButtonBar, SecondHeadBar, ButtonAction } from "../../../src/components/
 import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
 import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
+
 import ItemHeader from "../ItemHeader/ItemHeader";
 import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import {
   getItemIdSelector,
   getItemLevelScoringSelector,
   getItemSelector,
-  proceedPublishingItemAction
+  proceedPublishingItemAction,
+  savePassageAction
 } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
@@ -106,8 +108,23 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { saveQuestion, removeAnswers, setAuthoredByMeFilter, match, isEditFlow, isTestFlow } = this.props;
+    const {
+      saveQuestion,
+      savePassage,
+      removeAnswers,
+      setAuthoredByMeFilter,
+      match,
+      history,
+      isEditFlow,
+      isTestFlow
+    } = this.props;
     const { testId } = match.params;
+
+    const isPassageWithQuestions = get(history, "location.state.isPassageWithQuestions", false);
+    if (isPassageWithQuestions) {
+      return savePassage({ isTestFlow, isEditFlow, testId });
+    }
+
     saveQuestion(testId, isTestFlow, isEditFlow);
     removeAnswers();
     if (setAuthoredByMeFilter) setAuthoredByMeFilter();
@@ -447,7 +464,8 @@ const enhance = compose(
       changePreview: changePreviewAction,
       removeAnswers: removeUserAnswerAction,
       toggleModalAction: toggleCreateItemModalAction,
-      onSaveScrollTop: saveScrollTop
+      onSaveScrollTop: saveScrollTop,
+      savePassage: savePassageAction
     }
   )
 );

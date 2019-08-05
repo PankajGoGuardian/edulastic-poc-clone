@@ -1669,6 +1669,15 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
+      type: "edit",
+      cardImage: VPPassage,
+      data: {
+        title: "Passage with Questions",
+        type: questionType.PASSAGE_WITH_QUESTIONS
+      },
+      onSelectQuestionType
+    },
+    {
       type: "video-passages",
       cardImage: VPVideoPlayer,
       stimulus: "",

@@ -98,7 +98,7 @@ class ClozeMathAnswer extends Component {
                     style={{ width, height }}
                     onChangeKeypad={onChangeKeypad}
                     onChangeAllowedOptions={onChangeAllowedOptions}
-                    allowedVariables={allowedVariables[answer.index]}
+                    allowedVariables={allowedVariables[answer.index] || ""}
                     {...method}
                   />
                 ))}

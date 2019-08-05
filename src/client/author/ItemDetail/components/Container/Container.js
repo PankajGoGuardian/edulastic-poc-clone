@@ -9,17 +9,23 @@ import { questionType as constantsQuestionType } from "@edulastic/constants";
 import { Progress, withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
-import { Row, Col, Switch, Input, Layout } from "antd";
+import { Row, Col, Switch, Input, Layout, Select, Button } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector, getPreviewSelector } from "../../../src/selectors/view";
-import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
+import {
+  checkAnswerAction,
+  showAnswerAction,
+  toggleCreateItemModalAction,
+  createTestItemAction
+} from "../../../src/actions/testItem";
 import {
   getItemDetailByIdAction,
   updateItemDetailByIdAction,
   setItemDetailDataAction,
   updateItemDetailDimensionAction,
   deleteWidgetAction,
+  deleteWidgetFromPassageAction,
   updateTabTitleAction,
   useTabsAction,
   useFlowLayoutAction,
@@ -32,7 +38,10 @@ import {
   clearRedirectTestAction,
   setRedirectTestAction,
   setItemLevelScoringAction,
-  setItemLevelScoreAction
+  setItemLevelScoreAction,
+  getPassageSelector,
+  addWidgetToPassageAction,
+  deleteItemAction
 } from "../../ducks";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
@@ -56,6 +65,18 @@ const testItemStatusConstants = {
   DRAFT: "draft",
   PUBLISHED: "published",
   ARCHIVED: "archived"
+};
+
+const defaultEmptyItem = {
+  rows: [
+    {
+      tabs: [],
+      dimension: "100%",
+      widgets: [],
+      flowLayout: false,
+      content: ""
+    }
+  ]
 };
 
 class Container extends Component {
@@ -193,8 +214,19 @@ class Container extends Component {
         backUrl: match.url,
         rowIndex,
         tabIndex,
-        testItemId: isTestFlow ? match.params.itemId : match.params._id
+        testItemId: isTestFlow ? match.params.itemId : match.params.id
       }
+    });
+  };
+
+  handleAddToPassage = type => {
+    const { isTestFlow, match, addWidgetToPassage } = this.props;
+    addWidgetToPassage({
+      isTestFlow,
+      itemId: isTestFlow ? match.params.itemId : match.params.id,
+      testId: match.params.testId,
+      type,
+      tabIndex: 0 // TODO: fix mulitple tab case
     });
   };
 
@@ -236,6 +268,11 @@ class Container extends Component {
   handleDeleteWidget = i => widgetIndex => {
     const { deleteWidget } = this.props;
     deleteWidget(i, widgetIndex);
+  };
+
+  handleDeletePassageWidget = widgetIndex => {
+    const { deleteWidgetFromPassage } = this.props;
+    deleteWidgetFromPassage(widgetIndex);
   };
 
   handleVerticalDividerChange = () => {
@@ -284,12 +321,14 @@ class Container extends Component {
   }
 
   renderPreview = () => {
-    const { rows, preview, questions, item: itemProps } = this.props;
+    const { rows, preview, questions, item: itemProps, passage } = this.props;
     const item = itemProps || {};
+
+    let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
     return (
       <PreviewContent>
         <TestItemPreview
-          cols={rows}
+          cols={allRows}
           previewTab={preview}
           preview={preview}
           verticalDivider={item.verticalDivider}
@@ -335,7 +374,6 @@ class Container extends Component {
 
     return (
       <ButtonAction
-        allowedAttempts
         onShowSource={this.handleShowSource}
         onShowSettings={this.handleShowSettings}
         onChangeView={this.handleChangeView}
@@ -350,6 +388,31 @@ class Container extends Component {
         showCheckButton={isAnswerBtnVisible}
       />
     );
+  };
+
+  addItemToPassage = () => {
+    const { passage } = this.props;
+    /**
+     * assuming this method is going to be called only when type is passageWithQuestions
+     */
+    const data = { ...defaultEmptyItem, isPassageWithQuestions: true, multipartItem: true, passageId: passage._id };
+    this.props.createItem(data);
+  };
+
+  deleteItemFromPassage = () => {
+    const { item, passage } = this.props;
+    const id = item._id;
+    const { testItems } = passage;
+    const originalIndex = testItems.indexOf(id);
+    const removedArray = [...testItems].filter(x => x != id);
+    const redirectId = removedArray[originalIndex]
+      ? removedArray[originalIndex]
+      : removedArray[removedArray.length - 1];
+    this.props.deleteItem({ id: item._id, redirectId });
+  };
+
+  goToItem = id => {
+    this.props.history.push(`/author/items/${id}/item-detail`);
   };
 
   render() {
@@ -371,13 +434,18 @@ class Container extends Component {
       toggleSideBar,
       history,
       setItemLevelScoring,
-      view,
       isTestFlow,
+      passage,
       preview,
       saveItem,
+      view,
       showPublishButton,
       hasAuthorPermission
     } = this.props;
+
+    const passageTestItems = get(passage, "testItems", []);
+    const currentPassageIndex = passageTestItems.indexOf(item._id);
+
     const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
 
     const { testId } = match.params;
@@ -391,6 +459,14 @@ class Container extends Component {
         to: `/author/tests/${testId}#review`
       }
     ];
+
+    const isPassageQuestion = !!item.passageId;
+    const useTabsLeft = isPassageQuestion
+      ? !!get(passage, ["structure", "tabs", "length"], 0)
+      : !!get(rows, [0, "tabs", "length"], 0);
+    const useTabsRight = isPassageQuestion
+      ? !!get(rows, [0, "tabs", "length"], 0)
+      : !!get(rows, [1, "tabs", "length"], 0);
 
     const isPassage = rows
       .flatMap(row => row.widgets.map(widget => widget.type))
@@ -412,8 +488,8 @@ class Container extends Component {
               onCancel={this.handleCancelSettings}
               onApply={this.handleApplySettings}
               useTabs={useTabs}
-              useTabsLeft={!!rows[0].tabs.length}
-              useTabsRight={!!rows[1] && !!rows[1].tabs.length}
+              useTabsLeft={useTabsLeft}
+              useTabsRight={useTabsRight}
               useFlowLayout={useFlowLayout}
               useFlowLayoutLeft={rows[0].flowLayout}
               useFlowLayoutRight={rows[1] && rows[1].flowLayout}
@@ -423,6 +499,7 @@ class Container extends Component {
               scrolling={item.scrolling}
               itemLevelScoring={item.itemLevelScoring}
               setItemLevelScoring={setItemLevelScoring}
+              isPassageQuestion={isPassageQuestion}
             />
           )}
           <ItemHeader
@@ -463,6 +540,44 @@ class Container extends Component {
             <Col md={view === "preview" ? 12 : 24}>
               {windowWidth > MAX_MOBILE_WIDTH ? (
                 <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
+                  {passage && (
+                    <Row type="flex" style={{ width: 145 }} justify="end">
+                      <Col span={12}>
+                        {passageTestItems.length > 0 && (
+                          <Select
+                            value={item._id}
+                            onChange={v => {
+                              this.goToItem(v);
+                            }}
+                          >
+                            {passage.testItems.map((v, ind) => (
+                              <Select.Option value={v}>{ind + 1}</Select.Option>
+                            ))}
+                          </Select>
+                        )}
+                      </Col>
+                      <Col span={12}>
+                        <Button.Group>
+                          <Button
+                            disabled={this.props.itemDeleting}
+                            onClick={this.addItemToPassage}
+                            style={{ display: "inline" }}
+                            size="small"
+                          >
+                            +
+                          </Button>
+                          <Button
+                            disabled={this.props.itemDeleting}
+                            onClick={this.deleteItemFromPassage}
+                            style={{ display: "inline" }}
+                            size="small"
+                          >
+                            -
+                          </Button>
+                        </Button.Group>
+                      </Col>
+                    </Row>
+                  )}
                   {item && view !== "preview" && qLength > 1 && (
                     <Row type="flex" justify="end" style={{ width: 250 }}>
                       <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
@@ -492,10 +607,23 @@ class Container extends Component {
           {view === "edit" && (
             <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
               <ItemDetailWrapper>
+                {!!item.passageId && (
+                  <ItemDetailRow
+                    row={passage.structure}
+                    key="0"
+                    view={view}
+                    rowIndex="0"
+                    itemData={passage}
+                    count={1}
+                    isPassageQuestion
+                    handleAddToPassage={this.handleAddToPassage}
+                    onDeleteWidget={this.handleDeletePassageWidget}
+                  />
+                )}
                 {rows &&
                   rows.map((row, i) => (
                     <ItemDetailRow
-                      key={i}
+                      key={passage ? i + 1 : i}
                       row={row}
                       view={view}
                       rowIndex={i}
@@ -587,8 +715,10 @@ const enhance = compose(
       type: getItemDetailDimensionTypeSelector(state),
       questions: getQuestionsSelector(state),
       testItemStatus: getTestItemStatusSelector(state),
+      passage: getPassageSelector(state),
       preview: state.view.preview,
       currentAuthorId: get(state, ["user", "user", "_id"]),
+      itemDeleting: get(state, "itemDetail.deleting", false),
       view: getViewSelector(state)
     }),
     {
@@ -612,7 +742,11 @@ const enhance = compose(
       setItemLevelScoring: setItemLevelScoringAction,
       setItemLevelScore: setItemLevelScoreAction,
       clearAnswers: clearAnswersAction,
-      changePreviewTab: changePreviewTabAction
+      changePreviewTab: changePreviewTabAction,
+      addWidgetToPassage: addWidgetToPassageAction,
+      createItem: createTestItemAction,
+      deleteItem: deleteItemAction,
+      deleteWidgetFromPassage: deleteWidgetFromPassageAction
     }
   )
 );
@@ -620,7 +754,7 @@ const enhance = compose(
 export default enhance(Container);
 
 const BreadCrumbBar = styled(Row)`
-  padding: 10px 30px 10px 0px;
+  padding: 5px 0px;
 `;
 
 const RightActionButtons = styled(Col)`

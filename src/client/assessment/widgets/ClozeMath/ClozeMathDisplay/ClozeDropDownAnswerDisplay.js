@@ -7,12 +7,12 @@ import { Select } from "antd";
 const { Option } = Select;
 
 const ClozeDropDownAnswerDisplay = ({ resprops = {}, id }) => {
-  const { options, answers = {}, item, response_containers, uiStyles = {} } = resprops;
+  const { options, answers = {}, item, responseContainers, uiStyles = {} } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
 
   const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
-  const responseContainer = find(response_containers || [], cont => cont.id === id);
-  const width = (responseContainer ? responseContainer.widthpx : item.ui_style.min_width) || "auto";
+  const responseContainer = find(responseContainers || [], cont => cont.id === id);
+  const width = (responseContainer ? responseContainer.widthpx : item.uiStyle.minWidth) || "auto";
 
   return (
     <SelectWrapper>

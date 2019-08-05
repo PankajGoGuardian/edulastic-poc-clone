@@ -18,7 +18,7 @@ import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, A
 
 const { duplicateAssignment } = assignmentApi;
 
-const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, showPreviewModal) => {
+const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, showPreviewModal, toggleEditPopup) => {
   const currentTestId = currentAssignment.testId;
   const currentAssignmentId = currentAssignment._id;
   const createDuplicateAssignment = () => {
@@ -67,11 +67,11 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
           </StyledLink>
         </Menu.Item>
         <Menu.Item key="edit-Assignment">
-          <Link style={{ marginTop: 2 }} to={`/author/tests/${currentAssignment.testId}/editAssigned`}>
+          <span style={{ marginTop: 2 }} onClick={() => toggleEditPopup(true, currentAssignment.testId)}>
             <img alt="icon" src={classIcon} />
             <SpaceElement />
             Edit Assessment
-          </Link>
+          </span>
         </Menu.Item>
       </StyledMenu>
     </Container>

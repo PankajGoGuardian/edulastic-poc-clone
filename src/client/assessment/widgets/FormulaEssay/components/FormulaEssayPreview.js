@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { MathFormulaDisplay, QuestionNumberLabel } from "@edulastic/common";
 
-import { CLEAR } from "../../../constants/constantsForQuestions";
 import { MathEssayInputWrapper } from "./styled";
 
 import MathEssayInput from "./MathEssayInput";
@@ -10,19 +9,28 @@ import MathEssayInput from "./MathEssayInput";
 import { InstructorStimulus } from "../styled/InstructorStimulus";
 import { QuestionTitleWrapper } from "../styled/QustionNumber";
 
-const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLines, showQuestionNumber, qIndex }) => {
+const FormulaEssayPreview = ({
+  item,
+  type: previewType,
+  lines,
+  setLines,
+  resetLines,
+  showQuestionNumber,
+  qIndex,
+  disableResponse
+}) => {
   return (
     <MathEssayInputWrapper>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       </QuestionTitleWrapper>
-
       <MathEssayInput
+        disableResponse={disableResponse}
         item={item}
-        textFormattingOptions={item.ui_style && item.ui_style.text_formatting_options}
-        uiStyle={item.ui_style}
+        textFormattingOptions={item.uiStyle && item.uiStyle.textFormattingOptions}
+        uiStyle={item.uiStyle}
         value={item.template}
         lines={lines}
         setLines={setLines}
@@ -40,9 +48,11 @@ FormulaEssayPreview.propTypes = {
   resetLines: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  disableResponse: PropTypes.bool
 };
 FormulaEssayPreview.defaultProps = {
+  disableResponse: false,
   showQuestionNumber: false,
   qIndex: null
 };

@@ -34,7 +34,7 @@ const scoreOfItem = item => {
     return item.itemLevelScore;
   }
   return get(item, "data.questions", []).reduce(
-    (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
+    (acc, q) => acc + get(q, ["validation", "validResponse", "score"], 0),
     0
   );
 };
@@ -44,7 +44,7 @@ const getTotalScore = testItems => testItems.map(item => scoreOfItem(item)).redu
 const getStandardWiseSummary = question => {
   let standardSummary;
   if (question) {
-    const points = get(question, "validation.valid_response.score", 1);
+    const points = get(question, "validation.validResponse.score", 1);
     const alignment = get(question, "alignment", []);
     standardSummary = flatMap(alignment, ({ domains, isEquivalentStandard = false, curriculumId }) =>
       flatMap(domains, ({ standards }) =>

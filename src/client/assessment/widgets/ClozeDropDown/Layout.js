@@ -21,7 +21,7 @@ class Layout extends Component {
   render() {
     const { onChange, uiStyle, t } = this.props;
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });
@@ -46,7 +46,7 @@ class Layout extends Component {
       });
       item[prop] = value;
       responsecontainerindividuals[index] = item;
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });
@@ -59,7 +59,7 @@ class Layout extends Component {
         heightpx: 0,
         placeholder: ""
       });
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });
@@ -68,7 +68,7 @@ class Layout extends Component {
     const removeIndividual = index => {
       const { responsecontainerindividuals } = uiStyle;
       responsecontainerindividuals.splice(index, 1);
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });

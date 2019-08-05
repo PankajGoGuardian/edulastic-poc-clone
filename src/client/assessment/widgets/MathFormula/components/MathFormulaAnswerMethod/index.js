@@ -56,6 +56,7 @@ const MathFormulaAnswerMethod = ({
   windowWidth,
   style = {},
   keypadOffset,
+  allowedVariables,
   t
 }) => {
   useEffect(() => {
@@ -309,7 +310,7 @@ const MathFormulaAnswerMethod = ({
             />
           );
         case "allowedVariables":
-          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedOptions} />;
+          return <AllowedVariables allowedVariables={allowedVariables} onChange={onChangeAllowedOptions} />;
         case "setEvaluation":
           return (
             <CheckOption
@@ -325,7 +326,7 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const restrictKeys = item.allowedVariables ? item.allowedVariables.split(",").map(segment => segment.trim()) : [];
+  const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   const customKeys = get(item, "custom_keys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
 

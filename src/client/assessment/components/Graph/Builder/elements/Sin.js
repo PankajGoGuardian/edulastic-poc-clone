@@ -27,6 +27,7 @@ function create(board, sinPoints, id = null) {
     label: getLabelParameters(jxgType),
     id
   });
+  newLine.labelIsVisible = true;
   newLine.type = jxgType;
   newLine.addParents(sinPoints);
   newLine.ancestors = {
@@ -34,6 +35,8 @@ function create(board, sinPoints, id = null) {
     [sinPoints[1].id]: sinPoints[1]
   };
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -66,6 +69,7 @@ function getConfig(sine) {
     type: CONSTANT.TOOLS.SIN,
     id: sine.id,
     label: sine.labelHTML || false,
+    labelIsVisible: sine.labelIsVisible,
     points: Object.keys(sine.ancestors)
       .sort()
       .map(n => Point.getConfig(sine.ancestors[n]))

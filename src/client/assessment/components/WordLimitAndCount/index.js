@@ -59,7 +59,7 @@ class WordLimitAndCount extends Component {
               style={{ width: "100%", marginTop: 10 }}
               size="large"
               value={selectValue}
-              onChange={val => onChange("show_word_limit", val)}
+              onChange={val => onChange("showWordLimit", val)}
             >
               {options.map((item, i) => {
                 const { label, value } = item;
@@ -77,7 +77,7 @@ class WordLimitAndCount extends Component {
                 size="large"
                 style={{ width: 120 }}
                 value={inputValue}
-                onChange={e => onChange("max_word", e.target.value)}
+                onChange={e => onChange("maxWord", e.target.value)}
               />
               <LabelText>{t("component.essayText.wordsLimitTitle")}</LabelText>
             </FlexContainer>

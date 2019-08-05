@@ -37,10 +37,10 @@ class CorrectAnswers extends Component {
   renderAltResponses = () => {
     const { validation, t, onRemoveAltResponses } = this.props;
 
-    if (validation.alt_responses && validation.alt_responses.length) {
-      this.updateCountTabs(validation.alt_responses.length + 1);
+    if (validation.altResponses && validation.altResponses.length) {
+      this.updateCountTabs(validation.altResponses.length + 1);
 
-      return validation.alt_responses.map((res, i) => (
+      return validation.altResponses.map((res, i) => (
         <Tab
           IconPosition="right"
           key={i}
@@ -50,7 +50,7 @@ class CorrectAnswers extends Component {
             event.stopPropagation();
             onRemoveAltResponses(i);
             this.handleTabChange(i);
-            this.updateCountTabs(validation.alt_responses.length);
+            this.updateCountTabs(validation.altResponses.length);
           }}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />
@@ -73,7 +73,7 @@ class CorrectAnswers extends Component {
           marginLeft: "auto"
         }}
         onClick={() => {
-          this.handleTabChange(validation.alt_responses.length + 1);
+          this.handleTabChange(validation.altResponses.length + 1);
           onAddAltResponses();
         }}
         color="primary"
@@ -90,12 +90,12 @@ class CorrectAnswers extends Component {
     const newData = cloneDeep(question);
     const updatedValidation = {
       ...question.data,
-      valid_response: {
-        score: question.validation.valid_response.score,
+      validResponse: {
+        score: question.validation.validResponse.score,
         value: answers
       }
     };
-    newData.validation.valid_response = updatedValidation.valid_response;
+    newData.validation.validResponse = updatedValidation.validResponse;
     setQuestionData(newData);
   };
 
@@ -103,13 +103,13 @@ class CorrectAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    const updatedAltResponses = newData.validation.alt_responses;
+    const updatedAltResponses = newData.validation.altResponses;
     updatedAltResponses[tabIndex] = {
-      score: newData.validation.alt_responses[tabIndex].score,
+      score: newData.validation.altResponses[tabIndex].score,
       value: answers
     };
 
-    newData.validation.alt_responses = updatedAltResponses;
+    newData.validation.altResponses = updatedAltResponses;
     setQuestionData(newData);
   };
 
@@ -117,7 +117,7 @@ class CorrectAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    newData.validation.valid_response.score = points;
+    newData.validation.validResponse.score = points;
 
     setQuestionData(newData);
   };
@@ -126,7 +126,7 @@ class CorrectAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    newData.validation.alt_responses[i].score = points;
+    newData.validation.altResponses[i].score = points;
 
     setQuestionData(newData);
   };
@@ -154,7 +154,7 @@ class CorrectAnswers extends Component {
             <TabContainer>
               <CorrectAnswer
                 uiStyle={uiStyle}
-                response={validation.valid_response}
+                response={validation.validResponse}
                 stimulus={stimulus}
                 multipleResponses={multipleResponses}
                 options={options}
@@ -164,9 +164,9 @@ class CorrectAnswers extends Component {
               />
             </TabContainer>
           )}
-          {validation.alt_responses &&
-            !!validation.alt_responses.length &&
-            validation.alt_responses.map((alter, i) => {
+          {validation.altResponses &&
+            !!validation.altResponses.length &&
+            validation.altResponses.map((alter, i) => {
               if (i + 1 === value) {
                 return (
                   <TabContainer key={i}>

@@ -1,15 +1,11 @@
-/* eslint-disable react/destructuring-assignment */
 import React, { Component, Fragment } from "react";
-import { connect } from "react-redux";
-import { compose } from "redux";
 import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
-import { FroalaEditor } from "@edulastic/common";
-import { FroalaInput } from "./styled/styled_components";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { getViewSelector } from "../../../author/src/selectors/view";
-import { getQuestionByIdSelector, getCurrentQuestionSelector } from "../../../author/sharedDucks/questions";
 import produce from "immer";
+
+import { FroalaEditor } from "@edulastic/common";
+
+import { FroalaInput } from "./styled/styled_components";
 
 const resizeDisable = {
   bottom: false,
@@ -34,7 +30,7 @@ const resizeEnable = {
 };
 
 class AnnotationsRnd extends Component {
-  handleAnnotationPosition = (d, annotationIndex, disableDragging) => {
+  handleAnnotationPosition = (d, annotationIndex) => {
     const { setQuestionData, question } = this.props;
     setQuestionData(
       produce(question, draft => {
@@ -99,16 +95,14 @@ class AnnotationsRnd extends Component {
   };
 
   componentDidUpdate() {
+    const { question } = this.props;
     // Resize annotation box to accomodate content (by changing its height)
-    if (this.props.question && this.props.question.annotations) {
-      const { question } = this.props;
-      if (!question || !question.annotations) return null;
-
+    if (question && question.annotations) {
       const annotations = question.annotations || [];
 
       annotations
         .filter(a => a.value)
-        .forEach((annotation, i) => {
+        .forEach(annotation => {
           const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
           const { value } = annotation;
 
@@ -125,7 +119,7 @@ class AnnotationsRnd extends Component {
   }
 
   render() {
-    const { question, view, disableDragging, isAbove } = this.props;
+    const { question, disableDragging, isAbove } = this.props;
     if (!question || !question.annotations) return null;
 
     const { updateAnnotation } = this;
@@ -136,7 +130,7 @@ class AnnotationsRnd extends Component {
         {annotations
           .filter(a => a.value)
           .map((annotation, i) => {
-            let { x, y } = annotation.position || { x: i * 50, y: 0 };
+            const { x, y } = annotation.position || { x: i * 50, y: 0 };
             const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
             const { value } = annotation;
 
@@ -180,28 +174,13 @@ class AnnotationsRnd extends Component {
 AnnotationsRnd.propTypes = {
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  view: PropTypes.string.isRequired,
-  questionId: PropTypes.string,
   disableDragging: PropTypes.bool,
   isAbove: PropTypes.bool
 };
 
 AnnotationsRnd.defaultProps = {
-  questionId: "",
   disableDragging: true,
   isAbove: true
 };
 
-const enhance = compose(
-  connect(
-    (state, ownProps) => ({
-      question: !ownProps.questionId
-        ? getCurrentQuestionSelector(state)
-        : getQuestionByIdSelector(state, ownProps.questionId),
-      view: getViewSelector(state)
-    }),
-    { setQuestionData: setQuestionDataAction }
-  )
-);
-
-export default enhance(AnnotationsRnd);
+export default AnnotationsRnd;

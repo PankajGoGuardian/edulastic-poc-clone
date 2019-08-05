@@ -39,7 +39,7 @@ const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, is
     }
 
     return get(item, ["data", "questions"], []).reduce(
-      (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "valid_response", "score"], 0)),
+      (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "validResponse", "score"], 0)),
       0
     );
   };

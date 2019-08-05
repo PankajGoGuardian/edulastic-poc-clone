@@ -22,7 +22,7 @@ class ListComponent extends Component {
   render() {
     const { item, t, setQuestionData, fillSections, cleanSections, saveAnswer } = this.props;
 
-    const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
+    const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
     const onSortOrderListEnd = ({ oldIndex, newIndex }) => {
       const newData = cloneDeep(item);
@@ -47,9 +47,9 @@ class ListComponent extends Component {
 
           const indexList = draft.list.map((val, i) => i);
 
-          draft.validation.valid_response.value = indexList;
+          draft.validation.validResponse.value = indexList;
 
-          draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
+          draft.validation.altResponses = draft.validation.altResponses.map(res => {
             res.value = indexList;
             return res;
           });
@@ -64,13 +64,13 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list = [...item.list, ""];
-          draft.validation.valid_response.value = [
-            ...draft.validation.valid_response.value,
-            draft.validation.valid_response.value.length
+          draft.validation.validResponse.value = [
+            ...draft.validation.validResponse.value,
+            draft.validation.validResponse.value.length
           ];
 
-          if (draft.validation.alt_responses.length) {
-            draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
+          if (draft.validation.altResponses.length) {
+            draft.validation.altResponses = draft.validation.altResponses.map(res => {
               res.value.push(res.value.length);
               return res;
             });

@@ -70,20 +70,20 @@ class Layout extends Component {
         previewWidth: null
       }));
       if (width < minWidth || width > maxWidth) {
-        onChange("ui_style", {
+        onChange("uiStyle", {
           ...uiStyle,
           widthpx: clamp(width, minWidth, maxWidth),
           responsecontainerindividuals: responses
         });
       } else {
-        onChange("ui_style", {
+        onChange("uiStyle", {
           ...uiStyle,
           responsecontainerindividuals: responses
         });
       }
     }
     if (width < minWidth || width > maxWidth) {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         widthpx: clamp(width, minWidth, maxWidth),
         responsecontainerindividuals: responses
@@ -96,7 +96,7 @@ class Layout extends Component {
     const { minHeight, maxHeight } = response;
     const { heightpx: height } = uiStyle;
     if (height < minHeight || height > maxHeight) {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         heightpx: clamp(height, minHeight, maxHeight)
       });
@@ -111,7 +111,7 @@ class Layout extends Component {
     if (height && (height < minHeight || height > maxHeight)) {
       height = clamp(height, minHeight, maxHeight);
       resp[index].heightpx = height;
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals: resp
       });
@@ -122,7 +122,7 @@ class Layout extends Component {
     const { onChange, uiStyle, multipleLine, advancedAreOpen, t, fillSections, cleanSections } = this.props;
 
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });
@@ -134,7 +134,7 @@ class Layout extends Component {
       if (ind !== -1) {
         styleArr[ind][prop] = value;
       }
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals: styleArr
       });
@@ -152,7 +152,7 @@ class Layout extends Component {
         heightpx: 0,
         placeholder: ""
       });
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });
@@ -161,7 +161,7 @@ class Layout extends Component {
     const removeIndividual = index => {
       const { responsecontainerindividuals } = uiStyle;
       responsecontainerindividuals.splice(index, 1);
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });

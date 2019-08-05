@@ -35,13 +35,13 @@ export default class QuestionText extends React.Component {
   setDefaultState = question => {
     const { validation } = question;
     const {
-      valid_response: { value, score, matching_rule }
+      validResponse: { value, score, matchingRule }
     } = validation;
 
     this.setState({
       answer: value,
       score,
-      allow: matching_rule || EXACT_MATCH
+      allow: matchingRule || EXACT_MATCH
     });
   };
 
@@ -52,13 +52,13 @@ export default class QuestionText extends React.Component {
     this.setState({ answer: value }, () => {
       const data = {
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             value,
             score,
-            matching_rule: allow
+            matchingRule: allow
           },
-          alt_responses: []
+          altResponses: []
         }
       };
 
@@ -73,13 +73,13 @@ export default class QuestionText extends React.Component {
     this.setState({ score }, () => {
       const data = {
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             value: answer,
             score,
-            matching_rule: allow
+            matchingRule: allow
           },
-          alt_responses: []
+          altResponses: []
         }
       };
 
@@ -94,13 +94,13 @@ export default class QuestionText extends React.Component {
     this.setState({ allow }, () => {
       const data = {
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             value: answer,
             score,
-            matching_rule: allow
+            matchingRule: allow
           },
-          alt_responses: []
+          altResponses: []
         }
       };
 

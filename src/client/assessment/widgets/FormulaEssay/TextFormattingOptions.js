@@ -24,25 +24,21 @@ class TextFormattingOptions extends Component {
     const handleAddOption = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style.text_formatting_options.push("");
+          draft.uiStyle.textFormattingOptions.push("");
         })
       );
     };
 
     const onSortOrderListEnd = ({ oldIndex, newIndex }) => {
       const newData = cloneDeep(item);
-      newData.ui_style.text_formatting_options = arrayMove(
-        newData.ui_style.text_formatting_options,
-        oldIndex,
-        newIndex
-      );
+      newData.uiStyle.textFormattingOptions = arrayMove(newData.uiStyle.textFormattingOptions, oldIndex, newIndex);
       setQuestionData(newData);
     };
 
     const handleDeleteQuestion = index => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style.text_formatting_options.splice(index, 1);
+          draft.uiStyle.textFormattingOptions.splice(index, 1);
           updateVariables(draft);
         })
       );
@@ -51,7 +47,7 @@ class TextFormattingOptions extends Component {
     const handleQuestionsChange = (index, value) => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style.text_formatting_options[index] = value;
+          draft.uiStyle.textFormattingOptions[index] = value;
           updateVariables(draft);
         })
       );
@@ -83,7 +79,7 @@ class TextFormattingOptions extends Component {
           selectData={selectData}
           type={typedListTypes.SELECT}
           onAdd={handleAddOption}
-          items={item.ui_style.text_formatting_options}
+          items={item.uiStyle.textFormattingOptions}
           onSortEnd={onSortOrderListEnd}
           onRemove={handleDeleteQuestion}
           onChange={handleQuestionsChange}

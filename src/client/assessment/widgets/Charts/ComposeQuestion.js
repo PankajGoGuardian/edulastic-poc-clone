@@ -28,7 +28,7 @@ class ComposeQuestion extends Component {
 
     const {
       item: {
-        ui_style: { yAxisMax, yAxisMin, snapTo }
+        uiStyle: { yAxisMax, yAxisMin, snapTo }
       }
     } = props;
     this.state = {
@@ -41,7 +41,7 @@ class ComposeQuestion extends Component {
   render() {
     const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
     const {
-      ui_style: { chart_type, fractionFormat }
+      uiStyle: { chartType, fractionFormat }
     } = item;
 
     const { localMaxValue, localMinValue, localSnapTo } = this.state;
@@ -69,10 +69,10 @@ class ComposeQuestion extends Component {
               this.setState({ localSnapTo: val });
               break;
             case "stepSize":
-              draft.ui_style[prop] = val < 1 ? 1 : val;
+              draft.uiStyle[prop] = val < 1 ? 1 : val;
               break;
             default:
-              draft.ui_style[prop] = val;
+              draft.uiStyle[prop] = val;
           }
         })
       );
@@ -81,7 +81,7 @@ class ComposeQuestion extends Component {
     const onMaxValueBlur = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style.yAxisMax = localMaxValue;
+          draft.uiStyle.yAxisMax = localMaxValue;
         })
       );
     };
@@ -89,7 +89,7 @@ class ComposeQuestion extends Component {
     const onMinValueBlur = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style.yAxisMin = localMinValue;
+          draft.uiStyle.yAxisMin = localMinValue;
         })
       );
     };
@@ -97,7 +97,7 @@ class ComposeQuestion extends Component {
     const onSnapToBlur = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style.snapTo = localSnapTo;
+          draft.uiStyle.snapTo = localSnapTo;
         })
       );
     };
@@ -113,13 +113,13 @@ class ComposeQuestion extends Component {
     const onFractionFormatChange = value => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style.fractionFormat = value;
+          draft.uiStyle.fractionFormat = value;
         })
       );
     };
 
     const fractionFormatIsAllowed = () =>
-      [questionType.BAR_CHART, questionType.LINE_CHART, questionType.HISTOGRAM].includes(chart_type);
+      [questionType.BAR_CHART, questionType.LINE_CHART, questionType.HISTOGRAM].includes(chartType);
 
     return (
       <Question
@@ -149,8 +149,8 @@ class ComposeQuestion extends Component {
           secondInputType="text"
           firstAttr="xAxisLabel"
           secondAttr="yAxisLabel"
-          firstFieldValue={item.ui_style.xAxisLabel}
-          secondFieldValue={item.ui_style.yAxisLabel}
+          firstFieldValue={item.uiStyle.xAxisLabel}
+          secondFieldValue={item.uiStyle.yAxisLabel}
           t={t}
         />
 
@@ -170,7 +170,7 @@ class ComposeQuestion extends Component {
           firstAttr="stepSize"
           secondAttr="snapTo"
           onBlurSecondInput={onSnapToBlur}
-          firstFieldValue={item.ui_style.stepSize}
+          firstFieldValue={item.uiStyle.stepSize}
           secondFieldValue={localSnapTo}
           t={t}
         />

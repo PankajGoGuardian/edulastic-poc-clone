@@ -23,12 +23,12 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
-          matching_rule: EXACT_MATCH,
+          matchingRule: EXACT_MATCH,
           value: ""
         });
       })
@@ -39,7 +39,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
 
         setCorrectTab(0);
         updateVariables(draft);
@@ -51,9 +51,9 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
 
         updateVariables(draft);
@@ -65,9 +65,9 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.matching_rule = value;
+          draft.validation.validResponse.matchingRule = value;
         } else {
-          draft.validation.alt_responses[correctTab - 1].matching_rule = value;
+          draft.validation.altResponses[correctTab - 1].matchingRule = value;
         }
 
         updateVariables(draft);
@@ -79,9 +79,9 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.value = value;
+          draft.validation.validResponse.value = value;
         } else {
-          draft.validation.alt_responses[correctTab - 1].value = value;
+          draft.validation.altResponses[correctTab - 1].value = value;
         }
 
         updateVariables(draft);
@@ -92,7 +92,7 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
   const renderOptions = () => (
     <OptionsList
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onSelectChange={handleScoringTypeChange}
       onChange={handleValueChange}
@@ -102,11 +102,11 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
       ]}
       selectValue={
         correctTab === 0
-          ? item.validation.valid_response.matching_rule
-          : item.validation.alt_responses[correctTab - 1].matching_rule
+          ? item.validation.validResponse.matchingRule
+          : item.validation.altResponses[correctTab - 1].matchingRule
       }
       inputValue={
-        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       onChangePoints={handlePointsChange}
     />

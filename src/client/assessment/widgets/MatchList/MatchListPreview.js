@@ -70,9 +70,9 @@ const MatchListPreview = ({
   isReviewTab
 }) => {
   const {
-    possible_responses: posResponses,
-    possible_response_groups,
-    group_possible_responses,
+    possibleResponses: posResponses,
+    possibleResponseGroups,
+    groupPossibleResponses,
     stimulus,
     list,
     validation,
@@ -80,8 +80,8 @@ const MatchListPreview = ({
   } = item;
 
   const alternateAnswers = {};
-  if (validation && validation.alt_responses && validation.alt_responses.length > 0) {
-    const { alt_responses: altAnswers } = validation;
+  if (validation && validation.altResponses && validation.altResponses.length > 0) {
+    const { altResponses: altAnswers } = validation;
     altAnswers.forEach(altAnswer => {
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
@@ -95,16 +95,16 @@ const MatchListPreview = ({
   const hasAlternateAnswers = Object.keys(alternateAnswers).length > 0;
 
   const itemValidation = item.validation || {};
-  let validArray = itemValidation.valid_response && itemValidation.valid_response.value;
+  let validArray = itemValidation.validResponse && itemValidation.validResponse.value;
   validArray = validArray || [];
-  const altArray = itemValidation.alt_responses || [];
+  const altArray = itemValidation.altResponses || [];
   let groupArrays = [];
 
-  possible_response_groups.forEach(o => {
+  possibleResponseGroups.forEach(o => {
     groupArrays = [...groupArrays, ...o.responses];
   });
 
-  const possible_responses = group_possible_responses ? groupArrays : posResponses;
+  const possibleResponses = groupPossibleResponses ? groupArrays : posResponses;
 
   const [ans, setAns] = useState(
     Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
@@ -113,16 +113,16 @@ const MatchListPreview = ({
   );
 
   let [dragItems, setDragItems] = useState(
-    possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
+    possibleResponses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
   );
 
   if (editCorrectAnswers.length > 0) {
     if (
       !isEqual(ans, editCorrectAnswers) ||
-      !isEqual(dragItems, possible_responses.filter(ite => !editCorrectAnswers.includes(ite)))
+      !isEqual(dragItems, possibleResponses.filter(ite => !editCorrectAnswers.includes(ite)))
     ) {
       setAns(editCorrectAnswers);
-      setDragItems(possible_responses.filter(ite => !editCorrectAnswers.includes(ite)));
+      setDragItems(possibleResponses.filter(ite => !editCorrectAnswers.includes(ite)));
     }
   }
 
@@ -132,7 +132,7 @@ const MatchListPreview = ({
         ? userAnswer
         : Array.from({ length: list.length }).fill(null)
     );
-    setDragItems(possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
+    setDragItems(possibleResponses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
   }, [userAnswer]);
 
   const preview = previewTab === CHECK || previewTab === SHOW;
@@ -221,8 +221,8 @@ const MatchListPreview = ({
     }
   });
 
-  const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
-  const listPosition = get(item, "ui_style.possibility_list_position", "bottom");
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
+  const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
 
   const wrapperStyle = {
     display: "flex",
@@ -242,7 +242,7 @@ const MatchListPreview = ({
 
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -299,8 +299,8 @@ const MatchListPreview = ({
           <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")} imageStyle={choicesImageStyle}>
             <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
-                {group_possible_responses ? (
-                  possible_response_groups.map((i, index) => (
+                {groupPossibleResponses ? (
+                  possibleResponseGroups.map((i, index) => (
                     <Fragment key={index}>
                       <FlexContainer
                         style={{ flex: 1 }}
@@ -331,7 +331,7 @@ const MatchListPreview = ({
                           )}
                         </FlexContainer>
                       </FlexContainer>
-                      {index !== possible_response_groups.length - 1 && (
+                      {index !== possibleResponseGroups.length - 1 && (
                         <div
                           style={{
                             width: 0,

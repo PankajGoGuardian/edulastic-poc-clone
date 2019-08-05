@@ -1,12 +1,12 @@
 import { isEqual } from "lodash";
 
 const clozeImageDragDropEvaluation = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses } = validation;
-  const altResponses = alt_responses.map(res => res.value);
-  altResponses.push(valid_response.value);
+  const { validResponse, altResponses } = validation;
+  const alternateResponses = altResponses.map(res => res.value);
+  alternateResponses.push(validResponse.value);
   const evaluation = userResponse.map((userResp, index) => {
-    for (let i = 0; i < altResponses.length; i++) {
-      if (isEqual(userResp, altResponses[i][index])) {
+    for (let i = 0; i < alternateResponses.length; i++) {
+      if (isEqual(userResp, alternateResponses[i][index])) {
         return true;
       }
     }

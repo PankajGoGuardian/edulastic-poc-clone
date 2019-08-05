@@ -1,6 +1,7 @@
 import JXG from "jsxgraph";
 import { CONSTANT } from "./config";
 import { defaultConfig as lineConfig } from "./elements/Line";
+import { EditButton } from "./elements";
 import rayConfig from "./elements/Ray";
 import segmentConfig from "./elements/Segment";
 import vectorConfig from "./elements/Vector";
@@ -156,7 +157,6 @@ export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = ()
     line.dragged = true;
     board.dragged = true;
   });
-
   points.forEach(point => {
     point.on("up", () => {
       if (point.dragged) {
@@ -171,6 +171,7 @@ export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = ()
       }
       point.dragged = true;
       board.dragged = true;
+      EditButton.cleanButton(board, point);
     });
   });
 };
@@ -323,6 +324,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       _type: element._type,
       id: element.id,
       label: element.label,
+      labelIsVisible: element.labelIsVisible,
       text: element.text
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
@@ -366,6 +368,7 @@ export function flat2nestedConfig(config) {
           _type: element._type,
           colors: element.colors || null,
           label: element.label,
+          labelIsVisible: element.labelIsVisible,
           latex,
           subType,
           text
@@ -379,6 +382,10 @@ export function flat2nestedConfig(config) {
         ) {
           acc[id].x = element.x;
           acc[id].y = element.y;
+          if (type === CONSTANT.TOOLS.POINT) {
+            acc[id].pointIsVisible = element.pointIsVisible;
+            acc[id].labelIsVisible = element.labelIsVisible;
+          }
         } else {
           acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
         }

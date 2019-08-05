@@ -76,7 +76,7 @@ class GroupResponses extends React.Component {
          */
 
         // const finalWidth = 40 + maxLength * 7;
-        // draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+        // draft.uiStyle.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
         updateVariables(draft);
       })
     );

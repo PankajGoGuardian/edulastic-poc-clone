@@ -179,7 +179,9 @@ class Item extends Component {
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (
             <ViewButton>
-              <ViewButtonStyled onClick={this.previewItem}>{t("component.item.view")}</ViewButtonStyled>
+              <ViewButtonStyled onClick={this.previewItem}>
+                <IconEye /> {t("component.item.view")}
+              </ViewButtonStyled>
               <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
                 {selectedToCart ? "Remove" : <IconPlus />}
               </AddButtonStyled>

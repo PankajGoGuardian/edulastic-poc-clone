@@ -341,10 +341,10 @@ var evaluator =
       _regenerator["default"].mark(function _callee2(_ref3) {
         var userResponse,
           validation,
-          valid_response,
-          _validation$alt_respo,
-          alt_responses,
-          scoring_type,
+          validResponse,
+          _validation$altRespon,
+          altResponses,
+          scoringType,
           attemptScore,
           answers,
           result;
@@ -354,13 +354,13 @@ var evaluator =
             switch ((_context2.prev = _context2.next)) {
               case 0:
                 (userResponse = _ref3.userResponse), (validation = _ref3.validation);
-                (valid_response = validation.valid_response),
-                  (_validation$alt_respo = validation.alt_responses),
-                  (alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo),
-                  (scoring_type = validation.scoring_type),
-                  (attemptScore = validation.min_score_if_attempted);
-                answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-                _context2.t0 = scoring_type;
+                (validResponse = validation.validResponse),
+                  (_validation$altRespon = validation.altResponses),
+                  (altResponses = _validation$altRespon === void 0 ? [] : _validation$altRespon),
+                  (scoringType = validation.scoringType),
+                  (attemptScore = validation.minScoreIfAttempted);
+                answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
+                _context2.t0 = scoringType;
                 _context2.next = _context2.t0 === _scoring.ScoringType.EXACT_MATCH ? 6 : 6;
                 break;
 

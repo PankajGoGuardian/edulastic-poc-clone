@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import { lightGrey, tabletWidth } from "@edulastic/colors";
-
-import { TextField } from "@edulastic/common";
+import { tabletWidth } from "@edulastic/colors";
 
 export const FroalaInput = styled.div`
   border-radius: 4px;
@@ -45,30 +43,18 @@ export const Header = styled.div`
   }
 `;
 
-export const PointField = styled(TextField)`
-  width: 170px;
-  max-height: 40px;
-  min-height: 40px;
-  line-height: 40px;
-  padding: 0 15px;
-  margin-right: 25px;
-  border: 1px solid #e1e1e1;
-`;
-
-export const FormulaWrapper = styled.div`
-  display: inline-block;
-`;
-FormulaWrapper.displayName = "FormulaWrapper";
-
-export const DragHolder = styled.div`
-  display: flex;
-  align-items: center;
-  min-height: 65px;
-  background-color: #efefef;
-  overflow: hidden;
-  flex-wrap: wrap;
-`;
-
 export const AnnotationsStyle = styled.div`
   margin-top: 30px;
+`;
+
+export const Container = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0;
+  width: 50%;
+
+  @media (max-width: ${tabletWidth}) {
+    flex-direction: column;
+  }
 `;

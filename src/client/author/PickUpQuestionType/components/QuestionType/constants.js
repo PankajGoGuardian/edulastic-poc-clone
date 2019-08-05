@@ -126,7 +126,7 @@ export const getCards = onSelectQuestionType => {
           ],
           name: "Chart title"
         },
-        ui_style: {
+        uiStyle: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
           yAxisMax: 10,
@@ -136,12 +136,12 @@ export const getCards = onSelectQuestionType => {
           margin: 40,
           stepSize: 1,
           snapTo: 1,
-          chart_type: "linePlot",
+          chartType: "linePlot",
           showGridlines: "y_only"
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [
               {
@@ -170,10 +170,10 @@ export const getCards = onSelectQuestionType => {
               }
             ]
           },
-          alt_responses: []
+          altResponses: []
         },
-        x_axis_label: "X Axis",
-        y_axis_label: "Y Axis",
+        xAxisLabel: "X Axis",
+        yAxisLabel: "Y Axis",
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -215,7 +215,7 @@ export const getCards = onSelectQuestionType => {
           ],
           name: "Chart title"
         },
-        ui_style: {
+        uiStyle: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
           yAxisMax: 10,
@@ -225,12 +225,12 @@ export const getCards = onSelectQuestionType => {
           margin: 40,
           stepSize: 1,
           snapTo: 1,
-          chart_type: "dots",
+          chartType: "dots",
           showGridlines: "both"
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [
               {
@@ -259,10 +259,10 @@ export const getCards = onSelectQuestionType => {
               }
             ]
           },
-          alt_responses: []
+          altResponses: []
         },
-        x_axis_label: "X Axis",
-        y_axis_label: "Y Axis",
+        xAxisLabel: "X Axis",
+        yAxisLabel: "Y Axis",
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -304,7 +304,7 @@ export const getCards = onSelectQuestionType => {
           ],
           name: "Chart title"
         },
-        ui_style: {
+        uiStyle: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
           yAxisMax: 70,
@@ -314,14 +314,14 @@ export const getCards = onSelectQuestionType => {
           margin: 40,
           stepSize: 5,
           snapTo: 5,
-          chart_type: "histogram",
+          chartType: "histogram",
           fractionFormat: "Decimal",
           multicolorBars: true,
           showGridlines: "y_only"
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [
               {
@@ -350,10 +350,10 @@ export const getCards = onSelectQuestionType => {
               }
             ]
           },
-          alt_responses: []
+          altResponses: []
         },
-        x_axis_label: "X Axis",
-        y_axis_label: "Y Axis",
+        xAxisLabel: "X Axis",
+        yAxisLabel: "Y Axis",
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -395,7 +395,7 @@ export const getCards = onSelectQuestionType => {
           ],
           name: "Chart title"
         },
-        ui_style: {
+        uiStyle: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
           yAxisMax: 70,
@@ -405,13 +405,13 @@ export const getCards = onSelectQuestionType => {
           margin: 40,
           stepSize: 5,
           snapTo: 5,
-          chart_type: "bar",
+          chartType: "bar",
           fractionFormat: "Decimal",
           showGridlines: "both"
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [
               {
@@ -440,10 +440,10 @@ export const getCards = onSelectQuestionType => {
               }
             ]
           },
-          alt_responses: []
+          altResponses: []
         },
-        x_axis_label: "X Axis",
-        y_axis_label: "Y Axis",
+        xAxisLabel: "X Axis",
+        yAxisLabel: "Y Axis",
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -485,7 +485,7 @@ export const getCards = onSelectQuestionType => {
           ],
           name: "Chart title"
         },
-        ui_style: {
+        uiStyle: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
           yAxisMax: 70,
@@ -495,14 +495,14 @@ export const getCards = onSelectQuestionType => {
           margin: 40,
           stepSize: 5,
           snapTo: 5,
-          chart_type: "line",
+          chartType: "line",
           fractionFormat: "Decimal",
           pointStyle: "dot",
           showGridlines: "both"
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [
               {
@@ -531,10 +531,10 @@ export const getCards = onSelectQuestionType => {
               }
             ]
           },
-          alt_responses: []
+          altResponses: []
         },
-        x_axis_label: "X Axis",
-        y_axis_label: "Y Axis",
+        xAxisLabel: "X Axis",
+        yAxisLabel: "Y Axis",
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -554,7 +554,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
         validation: {
-          valid_response: {
+          validResponse: {
             score: 1
           }
         },
@@ -570,23 +570,23 @@ export const getCards = onSelectQuestionType => {
         canvas: {
           cell_height: 2,
           cell_width: 2,
-          column_count: 6,
-          row_count: 1,
+          columnCount: 6,
+          rowCount: 1,
           shaded: [],
           read_only_author_cells: false
         },
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.SHADING,
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: {
               method: BY_LOCATION_METHOD,
               value: []
             }
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -607,7 +607,7 @@ export const getCards = onSelectQuestionType => {
         },
         areas: [],
         previewAreas,
-        area_attributes: {
+        areaAttributes: {
           global: {
             fill: svgMapFillColor,
             stroke: svgMapStrokeColor
@@ -615,14 +615,14 @@ export const getCards = onSelectQuestionType => {
           local: []
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: []
+          altResponses: []
         },
-        multiple_responses: false,
+        multipleResponses: false,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -639,12 +639,12 @@ export const getCards = onSelectQuestionType => {
         tokenization: SENTENCE_MODE,
         type: questionType.TOKEN_HIGHLIGHT,
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -657,11 +657,11 @@ export const getCards = onSelectQuestionType => {
         title: "Essay with rich text",
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.ESSAY_RICH_TEXT,
-        show_word_count: true,
-        max_word: 1000,
-        show_word_limit: ON_LIMIT,
-        validation: { valid_response: { score: 1 }, max_score: 1 },
-        formatting_options: [
+        showWordCount: true,
+        maxWord: 1000,
+        showWordLimit: ON_LIMIT,
+        validation: { validResponse: { score: 1 }, maxScore: 1 },
+        formattingOptions: [
           { id: "test1", value: "bold", active: true },
           { id: "test2", value: "italic", active: true },
           { id: "test3", value: "underline", active: true },
@@ -699,14 +699,14 @@ export const getCards = onSelectQuestionType => {
         title: "Essay with plain text",
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.ESSAY_PLAIN_TEXT,
-        show_copy: true,
-        show_cut: true,
-        show_paste: true,
-        max_word: 1000,
-        show_word_limit: ON_LIMIT,
-        show_word_count: true,
-        ui_style: { min_height: 300 },
-        validation: { valid_response: { score: 1 }, max_score: 1 },
+        showCopy: true,
+        showCut: true,
+        showPaste: true,
+        maxWord: 1000,
+        showWordLimit: ON_LIMIT,
+        showWordCount: true,
+        uiStyle: { minHeight: 300 },
+        validation: { validResponse: { score: 1 }, maxScore: 1 },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -719,13 +719,13 @@ export const getCards = onSelectQuestionType => {
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.SHORT_TEXT,
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
-            matching_rule: EXACT_MATCH,
+            matchingRule: EXACT_MATCH,
             value: ""
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -738,19 +738,19 @@ export const getCards = onSelectQuestionType => {
         title: "Multiple choice - standard",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
-        ui_style: {
+        uiStyle: {
           type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [uuids[0]]
           },
-          alt_responses: []
+          altResponses: []
         },
-        multiple_responses: false,
+        multipleResponses: false,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -762,19 +762,19 @@ export const getCards = onSelectQuestionType => {
         title: "Multiple choice - multiple response",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
-        ui_style: {
+        uiStyle: {
           type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [uuids[1]]
           },
-          alt_responses: []
+          altResponses: []
         },
-        multiple_responses: true,
+        multipleResponses: true,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -786,19 +786,19 @@ export const getCards = onSelectQuestionType => {
         title: "True or false",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
-        ui_style: {
+        uiStyle: {
           type: "standard"
         },
         options: [{ value: uuids[0], label: "True" }, { value: uuids[1], label: "False" }],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [uuids[0]]
           },
-          alt_responses: []
+          altResponses: []
         },
-        multiple_responses: false,
+        multipleResponses: false,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -810,20 +810,20 @@ export const getCards = onSelectQuestionType => {
         title: "Multiple choice - block layout",
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
-        ui_style: {
+        uiStyle: {
           type: "block",
-          choice_label: "upper-alpha"
+          choiceLabel: "upper-alpha"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [uuids[0]]
           },
-          alt_responses: []
+          altResponses: []
         },
-        multiple_responses: true,
+        multipleResponses: true,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -836,15 +836,15 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         type: questionType.SORT_LIST,
         stimulus: "Sort the sine and cosine values from lower to higher.",
-        ui_style: {},
+        uiStyle: {},
         source: ["Item A", "Item B", "Item C", "Item D"],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [1, 2, 0, 3]
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -856,9 +856,9 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Classification",
         firstMount: true,
-        group_possible_responses: false,
-        possible_response_groups: [],
-        possible_responses: [
+        groupPossibleResponses: false,
+        possibleResponseGroups: [],
+        possibleResponses: [
           {
             id: uuids[0],
             value: "Choice B"
@@ -878,19 +878,19 @@ export const getCards = onSelectQuestionType => {
         ],
         stimulus: "Your question is here",
         type: questionType.CLASSIFICATION,
-        ui_style: {
-          column_count: 2,
-          column_titles: ["COLUMN 1", "COLUMN 2"],
-          row_count: 1,
-          row_titles: ["ROW 1"]
+        uiStyle: {
+          columnCount: 2,
+          columnTitles: ["COLUMN 1", "COLUMN 2"],
+          rowCount: 1,
+          rowTitles: ["ROW1"]
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [[], []]
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -902,24 +902,24 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Match list",
         firstMount: true,
-        group_possible_responses: false,
-        possible_response_groups: [
+        groupPossibleResponses: false,
+        possibleResponseGroups: [
           {
             title: "",
             responses: ["Choice B", "Choice C", "Choice A"]
           }
         ],
-        possible_responses: ["Choice A", "Choice B", "Choice C"],
+        possibleResponses: ["Choice A", "Choice B", "Choice C"],
         type: questionType.MATCH_LIST,
         stimulus: "<p>This is the stem.</p>",
         list: ["Stem 1", "Stem 2", "Stem 3"],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [null, null, null]
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -934,12 +934,12 @@ export const getCards = onSelectQuestionType => {
         stimulus: "Which color has the smallest walvelenght?",
         list: ["Item A", "Item B", "Item C"],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [0, 1, 2]
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -953,21 +953,21 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         type: questionType.CHOICE_MATRIX,
         stimulus: "This is the stem.",
-        ui_style: {
+        uiStyle: {
           type: "table",
-          horizontal_lines: false
+          horizontalLines: false
         },
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
         options: ["True", "False"],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [null, null, null, null]
           },
-          alt_responses: []
+          altResponses: []
         },
-        multiple_responses: false,
+        multipleResponses: false,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -982,17 +982,17 @@ export const getCards = onSelectQuestionType => {
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
         stimulus: "This is the stem.",
         type: questionType.CHOICE_MATRIX,
-        ui_style: {
+        uiStyle: {
           type: "inline",
-          horizontal_lines: false
+          horizontalLines: false
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [null, null, null, null]
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -1008,18 +1008,18 @@ export const getCards = onSelectQuestionType => {
         stems: ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
         stimulus: "This is the stem.",
         type: questionType.CHOICE_MATRIX,
-        ui_style: {
-          stem_numeration: "upper-alpha",
+        uiStyle: {
+          stemNumeration: "upper-alpha",
           type: "table",
-          horizontal_lines: false
+          horizontalLines: false
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: [null, null, null, null]
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -1033,7 +1033,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drag & Drop",
         stimulus: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
-        ui_style: {
+        uiStyle: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
           stemnumeration: "",
@@ -1048,12 +1048,12 @@ export const getCards = onSelectQuestionType => {
           { value: uuidsForFill[2], label: "Option 3" }
         ],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -1071,8 +1071,8 @@ export const getCards = onSelectQuestionType => {
         } contenteditable="false"></textdropdown>&nbsp;and&nbsp;<textdropdown responseindex="2" id=${
           uuids[1]
         } contenteditable="false"></textdropdown>&nbsp;</p>`,
-        response_ids: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
-        ui_style: {
+        responseIds: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
+        uiStyle: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
           stemnumeration: "",
@@ -1086,12 +1086,12 @@ export const getCards = onSelectQuestionType => {
           [uuids[1]]: [defaultOptions[2], defaultOptions[3]]
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -1109,7 +1109,7 @@ export const getCards = onSelectQuestionType => {
         } contenteditable="false" /></textinput>&nbsp;and<textinput responseindex="2" contenteditable="false" id=${
           uuids[1]
         }/></textinput>&nbsp;</p>`,
-        ui_style: {
+        uiStyle: {
           fontsize: "normal",
           heightpx: 35,
           placeholder: "",
@@ -1118,14 +1118,14 @@ export const getCards = onSelectQuestionType => {
           stemnumeration: "",
           widthpx: 140
         },
-        response_ids: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
+        responseIds: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
         validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
+          scoringType: "exactMatch",
+          validResponse: {
             score: 1,
             value: [{ id: uuids[0], index: 0, value: "Answer 1" }, { id: uuids[1], index: 1, value: "Answer 2" }]
           },
-          alt_responses: []
+          altResponses: []
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
@@ -1145,19 +1145,19 @@ export const getCards = onSelectQuestionType => {
         maxRespCount: 1,
         options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: []
+          altResponses: []
         },
         responseLayout: {
           keepAspectRatio: true,
           showborder: true,
           isSnapFitValues: true
         },
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom"
@@ -1175,7 +1175,7 @@ export const getCards = onSelectQuestionType => {
       type: "fill-blanks",
       cardImage: FBClozeImgDropDown,
       stimulus: "",
-      ui_style: {
+      uiStyle: {
         background: "#0288d1"
       },
       data: {
@@ -1188,12 +1188,12 @@ export const getCards = onSelectQuestionType => {
         keepAspectRatio: true,
         options: [[defaultOptions[0], defaultOptions[1]], [defaultOptions[2], defaultOptions[3]]],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: []
+          altResponses: []
         },
         responseLayout: {
           showborder: true
@@ -1202,7 +1202,7 @@ export const getCards = onSelectQuestionType => {
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
           { top: 100, left: 120, width: 220, height: 40, id: uuids[1] }
         ],
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           responsecontainerindividuals: []
         },
@@ -1227,17 +1227,17 @@ export const getCards = onSelectQuestionType => {
         options: [],
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
-        ui_style: {
+        uiStyle: {
           width: 140,
           responsecontainerindividuals: []
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: []
+          altResponses: []
         },
         responseLayout: {
           showborder: true
@@ -1267,34 +1267,34 @@ export const getCards = onSelectQuestionType => {
         stimulus: "[This is the stem]",
         firstMount: true,
         canvas: {
-          x_max: 10.4,
-          x_min: -10.4,
-          y_max: 10.4,
-          y_min: -10.4,
-          x_ratio: 1,
-          y_ratio: 1
+          xMax: 10.4,
+          xMin: -10.4,
+          yMax: 10.4,
+          yMin: -10.4,
+          xRatio: 1,
+          yRatio: 1
         },
         controlbar: {
           controls: ["undo", "redo"],
-          default_control: "undo"
+          defaultControl: "undo"
         },
         toolbar: {
           tools: ["point", "line"],
-          default_tool: "point",
+          defaultTool: "point",
           drawingPrompt: "byTools",
           drawingObjects: []
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: [],
-          ignore_labels: "yes"
+          altResponses: [],
+          ignoreLabels: "yes"
         },
         sampleAnswer: "",
-        ui_style: {
+        uiStyle: {
           drawLabelZero: false,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
@@ -1315,14 +1315,14 @@ export const getCards = onSelectQuestionType => {
           yDistance: 1,
           xTickDistance: 1,
           yTickDistance: 1,
-          layout_width: 600,
-          layout_height: 600,
-          layout_margin: 0,
-          layout_snapto: "grid",
+          layoutWidth: 600,
+          layoutHeight: 600,
+          layoutMargin: 0,
+          layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y"
         },
-        background_image: {
+        backgroundImage: {
           src: "",
           x: 0,
           y: 0,
@@ -1332,7 +1332,7 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: true
         },
         background_shapes: [],
-        multiple_responses: false,
+        multipleResponses: false,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -1347,34 +1347,34 @@ export const getCards = onSelectQuestionType => {
         stimulus: "[This is the stem]",
         firstMount: true,
         canvas: {
-          x_max: 10.4,
-          x_min: -0.8,
-          y_max: 10.4,
-          y_min: -0.8,
-          x_ratio: 1,
-          y_ratio: 1
+          xMax: 10.4,
+          xMin: -0.8,
+          yMax: 10.4,
+          yMin: -0.8,
+          xRatio: 1,
+          yRatio: 1
         },
         controlbar: {
           controls: ["undo", "redo"],
-          default_control: "undo"
+          defaultControl: "undo"
         },
         toolbar: {
           tools: ["point", "line"],
-          default_tool: "point",
+          defaultTool: "point",
           drawingPrompt: "byTools",
           drawingObjects: []
         },
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: [],
-          ignore_labels: "yes"
+          altResponses: [],
+          ignoreLabels: "yes"
         },
         sampleAnswer: "",
-        ui_style: {
+        uiStyle: {
           drawLabelZero: false,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
@@ -1395,14 +1395,14 @@ export const getCards = onSelectQuestionType => {
           yDistance: 1,
           xTickDistance: 1,
           yTickDistance: 1,
-          layout_width: 600,
-          layout_height: 600,
-          layout_margin: 0,
-          layout_snapto: "grid",
+          layoutWidth: 600,
+          layoutHeight: 600,
+          layoutMargin: 0,
+          layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y"
         },
-        background_image: {
+        backgroundImage: {
           src: "",
           x: 0,
           y: 0,
@@ -1412,7 +1412,7 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: true
         },
         background_shapes: [],
-        multiple_responses: false,
+        multipleResponses: false,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -1518,10 +1518,10 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         graphType: "axisSegments",
         canvas: {
-          x_max: 10,
-          x_min: 0,
-          y_max: 0.5,
-          y_min: -0.5,
+          xMax: 10,
+          xMin: 0,
+          yMax: 0.5,
+          yMin: -0.5,
           numberline: true,
           margin: 75,
           responsesAllowed: 1,
@@ -1529,11 +1529,11 @@ export const getCards = onSelectQuestionType => {
         },
         controlbar: {
           controls: ["undo", "redo", "reset"],
-          default_control: "undo"
+          defaultControl: "undo"
         },
         toolbar: {
           tools: [],
-          default_tool: null
+          defaultTool: null
         },
         sampleAnswer: "",
         numberlineAxis: {
@@ -1554,7 +1554,7 @@ export const getCards = onSelectQuestionType => {
           renderingBase: "min-value-based",
           specificPoints: ""
         },
-        ui_style: {
+        uiStyle: {
           gridVisible: false,
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1577,17 +1577,17 @@ export const getCards = onSelectQuestionType => {
           yDistance: 0,
           xTickDistance: 1,
           yTickDistance: 0,
-          layout_width: 600,
-          layout_height: 150,
-          layout_margin: 0,
-          layout_snapto: "grid",
+          layoutWidth: 600,
+          layoutHeight: 150,
+          layoutMargin: 0,
+          layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y",
-          title_position: 15,
-          line_position: 50,
-          point_box_position: 60
+          titlePosition: 15,
+          linePosition: 50,
+          pointBoxPosition: 60
         },
-        background_image: {
+        backgroundImage: {
           src: "",
           x: 0,
           y: 0,
@@ -1597,15 +1597,15 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: false
         },
         background_shapes: [],
-        multiple_responses: false,
+        multipleResponses: false,
         validation: {
           graphType: "axisSegments",
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: [],
+          altResponses: [],
           rounding: "none"
         },
         hints: [{ value: uuids[0], label: "Hint A" }]
@@ -1654,24 +1654,24 @@ export const getCards = onSelectQuestionType => {
         ],
         toolbar: {
           controls: [],
-          default_control: ""
+          defaultControl: ""
         },
         sampleAnswer: "",
         validation: {
           graphType: "axisLabels",
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: [],
+          altResponses: [],
           rounding: "none"
         },
         canvas: {
-          x_max: 10,
-          x_min: 0,
-          y_max: 1,
-          y_min: -1.75,
+          xMax: 10,
+          xMin: 0,
+          yMax: 1,
+          yMin: -1.75,
           numberline: true,
           margin: 75,
           title: ""
@@ -1696,7 +1696,7 @@ export const getCards = onSelectQuestionType => {
           specificPoints: "",
           fractionsFormat: "not-normalized-fractions"
         },
-        ui_style: {
+        uiStyle: {
           gridVisible: false,
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1720,17 +1720,17 @@ export const getCards = onSelectQuestionType => {
           yDistance: 0,
           xTickDistance: 1,
           yTickDistance: 0,
-          layout_width: 600,
-          layout_height: "auto",
-          layout_margin: 0,
-          layout_snapto: "grid",
+          layoutWidth: 600,
+          layoutHeight: "auto",
+          layoutMargin: 0,
+          layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y",
-          title_position: 55,
-          line_position: 34,
-          point_box_position: 60
+          titlePosition: 55,
+          linePosition: 34,
+          pointBoxPosition: 60
         },
-        background_image: {
+        backgroundImage: {
           src: "",
           x: 0,
           y: 0,
@@ -1740,7 +1740,7 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: false
         },
         background_shapes: [],
-        multiple_responses: false,
+        multipleResponses: false,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -1760,6 +1760,15 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
+      type: "edit",
+      cardImage: VPPassage,
+      data: {
+        title: "Passage with Questions",
+        type: questionType.PASSAGE_WITH_QUESTIONS
+      },
+      onSelectQuestionType
+    },
+    {
       type: "video-passages",
       cardImage: VPVideoPlayer,
       stimulus: "",
@@ -1771,7 +1780,7 @@ export const getCards = onSelectQuestionType => {
         heading: "",
         summary: "",
         transcript: "",
-        ui_style: {
+        uiStyle: {
           width: 480,
           height: 270,
           posterImage: "",
@@ -1788,12 +1797,12 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Expression & Formula",
-        is_math: true,
+        isMath: true,
         stimulus: "",
         type: questionType.MATH,
         validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
+          scoringType: "exactMatch",
+          validResponse: {
             score: 1,
             value: [
               {
@@ -1806,7 +1815,7 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           type: "floating-keyboard"
         },
@@ -1824,14 +1833,14 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Numeric Entry",
-        is_math: true,
+        isMath: true,
         stimulus: "",
         template: EMBED_RESPONSE,
         templateDisplay: false,
         type: questionType.MATH,
         validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
+          scoringType: "exactMatch",
+          validResponse: {
             score: 1,
             value: [
               {
@@ -1844,7 +1853,7 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           type: "floating-keyboard"
         },
@@ -1860,14 +1869,14 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Complete the Equation",
-        is_math: true,
+        isMath: true,
         stimulus: "",
         template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} = ${EMBED_RESPONSE}`,
         templateDisplay: true,
         type: questionType.MATH,
         validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
+          scoringType: "exactMatch",
+          validResponse: {
             score: 1,
             value: [
               {
@@ -1880,7 +1889,7 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           type: "floating-keyboard"
         },
@@ -1896,8 +1905,8 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Equations & Inequalities",
-        is_math: true,
-        response_containers: [
+        isMath: true,
+        responseContainers: [
           {
             width: "60px"
           }
@@ -1907,8 +1916,8 @@ export const getCards = onSelectQuestionType => {
         template: EMBED_RESPONSE,
         templateDisplay: false,
         validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
+          scoringType: "exactMatch",
+          validResponse: {
             score: 1,
             value: [
               {
@@ -1921,7 +1930,7 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           type: "floating-keyboard"
         },
@@ -1937,14 +1946,14 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Matrices",
-        is_math: true,
+        isMath: true,
         stimulus: "",
         template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times2=${EMBED_RESPONSE}`,
         templateDisplay: true,
         type: questionType.MATH,
         validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
+          scoringType: "exactMatch",
+          validResponse: {
             score: 1,
             value: [
               {
@@ -1957,7 +1966,7 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           type: "floating-keyboard"
         },
@@ -1973,7 +1982,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Units",
-        is_math: true,
+        isMath: true,
         stimulus: "",
         template: EMBED_RESPONSE,
         isUnits: true,
@@ -1981,8 +1990,8 @@ export const getCards = onSelectQuestionType => {
         showDropdown: false,
         type: questionType.MATH,
         validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
+          scoringType: "exactMatch",
+          validResponse: {
             score: 1,
             value: [
               {
@@ -1996,7 +2005,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         custom_keys: ["m", "km", "cm", "mm"],
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           type: "floating-keyboard"
         },
@@ -2016,22 +2025,22 @@ export const getCards = onSelectQuestionType => {
           '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
         templateDisplay: true,
         type: questionType.EXPRESSION_MULTIPART,
-        response_ids: {
+        responseIds: {
           inputs: [],
           maths: [],
           dropDowns: []
         },
-        response_container: {
+        responseContainer: {
           template: ""
         },
-        ui_style: {
+        uiStyle: {
           type: "floating-keyboard",
-          min_width: 100
+          minWidth: 100
         },
         options: {},
         validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
+          scoringType: "exactMatch",
+          validResponse: {
             score: 1,
             value: [
               [
@@ -2053,8 +2062,8 @@ export const getCards = onSelectQuestionType => {
             }
           }
         },
-        is_math: true,
-        response_containers: [],
+        isMath: true,
+        responseContainers: [],
         symbols: ["basic", "qwerty"],
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         hints: [{ value: uuids[0], label: "Hint A" }]
@@ -2078,20 +2087,19 @@ export const getCards = onSelectQuestionType => {
         title: "Math essay",
         stimulus: "",
         type: questionType.FORMULA_ESSAY,
-        ui_style: {
-          widthpx: 140,
-          default_mode: "math",
+        uiStyle: {
+          defaultMode: "math",
           fontsize: "",
-          text_formatting_options: ["bold", "italic", "underline", "unorderedList"]
+          textFormattingOptions: ["bold", "italic", "underline", "unorderedList"]
         },
         validation: {
-          valid_response: {
+          validResponse: {
             score: 1
           }
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         metadata: {},
-        is_math: true,
+        isMath: true,
         symbols: ["basic", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },

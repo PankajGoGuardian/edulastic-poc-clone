@@ -25,8 +25,8 @@ class CorrectAnswers extends Component {
   renderAltResponses = () => {
     const { validation, t, onRemoveAltResponses } = this.props;
 
-    if (validation.alt_responses && validation.alt_responses.length) {
-      return validation.alt_responses.map((res, i) => (
+    if (validation.altResponses && validation.altResponses.length) {
+      return validation.altResponses.map((res, i) => (
         <Tab
           close
           key={i}
@@ -54,7 +54,7 @@ class CorrectAnswers extends Component {
         }}
         icon={<IconPlus data-cy="alternate" />}
         onClick={() => {
-          this.handleTabChange(validation.alt_responses.length + 1);
+          this.handleTabChange(validation.altResponses.length + 1);
           onAddAltResponses();
         }}
         color="primary"
@@ -65,17 +65,17 @@ class CorrectAnswers extends Component {
 
   updateResponseBoxWidth = newData => {
     let maxLength = 0;
-    newData.validation.valid_response.value.forEach(resp => {
+    newData.validation.validResponse.value.forEach(resp => {
       maxLength = Math.max(maxLength, resp ? resp.length : 0);
     });
 
-    newData.validation.alt_responses.forEach(arr => {
+    newData.validation.altResponses.forEach(arr => {
       arr.value.forEach(resp => {
         maxLength = Math.max(maxLength, resp ? resp.length : 0);
       });
     });
     const finalWidth = 40 + maxLength * 7;
-    newData.ui_style.width = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+    newData.uiStyle.width = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
     return newData;
   };
 
@@ -84,12 +84,12 @@ class CorrectAnswers extends Component {
     const newData = cloneDeep(question);
     const updatedValidation = {
       ...question.data,
-      valid_response: {
-        score: question.validation.valid_response.score,
+      validResponse: {
+        score: question.validation.validResponse.score,
         value: answers
       }
     };
-    newData.validation.valid_response = updatedValidation.valid_response;
+    newData.validation.validResponse = updatedValidation.validResponse;
     const updatedData = this.updateResponseBoxWidth(newData);
     setQuestionData(updatedData);
   };
@@ -98,13 +98,13 @@ class CorrectAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    const updatedAltResponses = newData.validation.alt_responses;
+    const updatedAltResponses = newData.validation.altResponses;
     updatedAltResponses[tabIndex] = {
-      score: newData.validation.alt_responses[tabIndex].score,
+      score: newData.validation.altResponses[tabIndex].score,
       value: answers
     };
 
-    newData.validation.alt_responses = updatedAltResponses;
+    newData.validation.altResponses = updatedAltResponses;
     const updatedData = this.updateResponseBoxWidth(newData);
     setQuestionData(updatedData);
   };
@@ -113,7 +113,7 @@ class CorrectAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    newData.validation.valid_response.score = points;
+    newData.validation.validResponse.score = points;
 
     setQuestionData(newData);
   };
@@ -122,7 +122,7 @@ class CorrectAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    newData.validation.alt_responses[i].score = points;
+    newData.validation.altResponses[i].score = points;
 
     setQuestionData(newData);
   };
@@ -158,7 +158,7 @@ class CorrectAnswers extends Component {
             <TabContainer>
               <CorrectAnswer
                 key={options}
-                response={validation.valid_response}
+                response={validation.validResponse}
                 stimulus={stimulus}
                 options={options}
                 uiStyle={uiStyle}
@@ -176,9 +176,9 @@ class CorrectAnswers extends Component {
               />
             </TabContainer>
           )}
-          {validation.alt_responses &&
-            !!validation.alt_responses.length &&
-            validation.alt_responses.map((alter, i) => {
+          {validation.altResponses &&
+            !!validation.altResponses.length &&
+            validation.altResponses.map((alter, i) => {
               if (i + 1 === value) {
                 return (
                   <TabContainer key={i}>

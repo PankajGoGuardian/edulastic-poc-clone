@@ -50,18 +50,18 @@ const ClozeMathPreview = ({
 }) => {
   const [newHtml, setNewHtml] = useState("");
 
-  const _getMathAnswers = () => get(item, "validation.valid_response.value", []);
+  const _getMathAnswers = () => get(item, "validation.validResponse.value", []);
 
   const _getAltMathAnswers = () =>
-    get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
+    get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
 
-  const _getDropDownAnswers = () => get(item, "validation.valid_response.dropdown.value", []);
+  const _getDropDownAnswers = () => get(item, "validation.validResponse.dropdown.value", []);
   const _getAltDropDownAnswers = () =>
-    get(item, "validation.alt_responses", []).map(alt => get(alt, "dropdown.value", []));
+    get(item, "validation.altResponses", []).map(alt => get(alt, "dropdown.value", []));
 
-  const _getTextInputAnswers = () => get(item, "validation.valid_response.textinput.value", []);
+  const _getTextInputAnswers = () => get(item, "validation.validResponse.textinput.value", []);
   const _getAltInputsAnswers = () =>
-    get(item, "validation.alt_responses", []).map(alt => get(alt, "textinput.value", []));
+    get(item, "validation.altResponses", []).map(alt => get(alt, "textinput.value", []));
 
   const handleAddAnswer = (answer, answerType, id) => {
     let newAnswers = cloneDeep(userAnswer);
@@ -86,14 +86,14 @@ const ClozeMathPreview = ({
 
   const getStyles = () => {
     const uiStyles = {};
-    const { ui_style = {} } = item;
-    if (ui_style.fontsize) {
-      uiStyles.fontSize = getFontSize(ui_style.fontsize);
+    const { uiStyle = {} } = item;
+    if (uiStyle.fontsize) {
+      uiStyles.fontSize = getFontSize(uiStyle.fontsize);
     }
 
-    if (ui_style.min_width) {
-      uiStyles.width = `${ui_style.min_width}px`;
-      if (parseInt(ui_style.min_width, 10) < 25) {
+    if (uiStyle.minWidth) {
+      uiStyles.width = `${uiStyle.minWidth}px`;
+      if (parseInt(uiStyle.minWidth, 10) < 25) {
         uiStyles.padding = "4px 2px";
       }
     } else {
@@ -118,18 +118,18 @@ const ClozeMathPreview = ({
       value: "maths"
     };
 
-    if (item.validation.valid_response) {
-      Object.keys(item.validation.valid_response).forEach(keyName => {
+    if (item.validation.validResponse) {
+      Object.keys(item.validation.validResponse).forEach(keyName => {
         if (keynameMap[keyName]) {
           testUserAnswer[keynameMap[keyName]] = {};
           if (keyName !== "value") {
-            item.validation.valid_response[keyName].value.forEach(answerItem => {
+            item.validation.validResponse[keyName].value.forEach(answerItem => {
               testUserAnswer[keynameMap[keyName]][answerItem.id] = {
                 value: answerItem.value
               };
             });
           } else {
-            item.validation.valid_response.value.forEach(answerItem => {
+            item.validation.validResponse.value.forEach(answerItem => {
               testUserAnswer[keynameMap[keyName]][answerItem[0].id] = {
                 value: answerItem[0].value
               };
@@ -153,7 +153,7 @@ const ClozeMathPreview = ({
             checked: type === CHECK || type === SHOW,
             onInnerClick,
             uiStyles,
-            response_containers: item.response_containers
+            responseContainers: item.responseContainers
           }
         }}
         showWarnings

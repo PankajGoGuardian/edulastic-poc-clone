@@ -34,7 +34,7 @@ class ComposeQuestion extends Component {
     const { fillSections, t, item } = this.props;
     // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
+    const deskHeight = item.uiStyle.layoutHeight;
 
     fillSections(
       "main",

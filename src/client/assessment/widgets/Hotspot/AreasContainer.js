@@ -100,7 +100,7 @@ const AreasContainer = ({ itemData, areas, width, imageSrc, height, t, setQuesti
             <AreaText>{t("component.hotspot.clear")}</AreaText>
           </Button>
         </Container>
-        <FlexContainer childMarginRight={0} alignItems="stretch">
+        <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="flex-start">
           <SideBar>
             <ButtonWithShadow
               data-cy="area-draw-mode"

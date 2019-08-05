@@ -82,7 +82,7 @@ class Layout extends Component {
     const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, responses } = this.props;
     const { responsecontainerindividuals = [] } = uiStyle;
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });
@@ -100,7 +100,7 @@ class Layout extends Component {
           placeholder: "",
           id: _response.id
         };
-        onChange("ui_style", {
+        onChange("uiStyle", {
           ...uiStyle,
           responsecontainerindividuals
         });
@@ -111,7 +111,7 @@ class Layout extends Component {
       const item = responsecontainerindividuals[index];
       item[prop] = value;
       responsecontainerindividuals[index] = item;
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });
@@ -119,7 +119,7 @@ class Layout extends Component {
 
     const removeIndividual = index => {
       responsecontainerindividuals[index] = {};
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });

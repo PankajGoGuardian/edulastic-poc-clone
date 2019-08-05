@@ -9,7 +9,7 @@ const { Option } = Select;
 
 const ClozeDropDown = ({ resprops = {}, id }) => {
   const {
-    response_containers,
+    responseContainers,
     save,
     options,
     answers = {},
@@ -23,11 +23,11 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
 
   const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
   const {
-    response_ids: { dropDowns }
+    responseIds: { dropDowns }
   } = item;
   const { index } = find(dropDowns, res => res.id === id) || {};
-  const response = find(response_containers || [], cont => cont.id === id);
-  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+  const response = find(responseContainers || [], cont => cont.id === id);
+  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
   const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
 
   return checked ? (

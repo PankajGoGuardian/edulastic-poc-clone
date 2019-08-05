@@ -45,7 +45,7 @@ class Scoring extends Component {
       }
 
       if (
-        (param === "max_score" || param === "penalty" || param === "min_score_if_attempted" || param === "") &&
+        (param === "maxScore" || param === "penalty" || param === "minScoreIfAttempted" || param === "") &&
         value < 0
       ) {
         newData.validation[param] = 0;
@@ -57,7 +57,7 @@ class Scoring extends Component {
     };
 
     const isAutomarkChecked = get(questionData, "validation.automarkable", true);
-    const maxScore = get(questionData, "validation.valid_response.score", 1);
+    const maxScore = get(questionData, "validation.validResponse.score", 1);
     const questionType = get(questionData, "type", "");
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
     const ColWrapper = props =>
@@ -129,8 +129,8 @@ class Scoring extends Component {
                   data-cy="minscore"
                   type="number"
                   disabled={questionData.validation.unscored}
-                  value={questionData.validation.min_score_if_attempted}
-                  onChange={e => handleChangeValidation("min_score_if_attempted", +e.target.value)}
+                  value={questionData.validation.minScoreIfAttempted}
+                  onChange={e => handleChangeValidation("minScoreIfAttempted", +e.target.value)}
                   size="large"
                   style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
                 />
@@ -149,8 +149,8 @@ class Scoring extends Component {
               <SelectWrapper
                 size="large"
                 data-cy="scoringType"
-                value={questionData.validation.scoring_type}
-                onChange={value => handleChangeValidation("scoring_type", value)}
+                value={questionData.validation.scoringType}
+                onChange={value => handleChangeValidation("scoringType", value)}
               >
                 {scoringTypes.map(({ value: val, label }) => (
                   <Select.Option data-cy={val} key={val} value={val}>
@@ -166,8 +166,8 @@ class Scoring extends Component {
                   data-cy="minscore"
                   type="number"
                   disabled={questionData.validation.unscored}
-                  value={questionData.validation.min_score_if_attempted}
-                  onChange={e => handleChangeValidation("min_score_if_attempted", +e.target.value)}
+                  value={questionData.validation.minScoreIfAttempted}
+                  onChange={e => handleChangeValidation("minScoreIfAttempted", +e.target.value)}
                   size="large"
                   style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
                 />
@@ -175,7 +175,7 @@ class Scoring extends Component {
               </FormGroup>
             </Col>
 
-            {questionData.validation.scoring_type === evaluationType.PARTIAL_MATCH && (
+            {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
               <Col md={12}>
                 <Label>{t("component.options.rounding")}</Label>
                 <SelectWrapper
@@ -203,7 +203,7 @@ class Scoring extends Component {
                   type="number"
                   value={maxScore}
                   min={1}
-                  onChange={e => handleChangeValidation("valid_response", { score: +e.target.value })}
+                  onChange={e => handleChangeValidation("validResponse", { score: +e.target.value })}
                   size="large"
                   style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
                 />

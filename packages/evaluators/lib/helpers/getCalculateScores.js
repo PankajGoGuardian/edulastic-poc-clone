@@ -6,21 +6,21 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = void 0;
 
 // eslint-disable-next-line max-len
-var getCalculateScores = function getCalculateScores(score, maxScore, _ref) {
-  var min_score_if_attempted = _ref.min_score_if_attempted,
+var getCalculateScores = function getCalculateScores(score, mScore, _ref) {
+  var minScoreIfAttempted = _ref.minScoreIfAttempted,
     automarkable = _ref.automarkable,
-    max_score = _ref.max_score;
+    maxScore = _ref.maxScore;
   var newScore = score;
-  var newMaxScore = maxScore;
+  var newMaxScore = mScore;
 
   if (automarkable) {
-    if (min_score_if_attempted) {
-      newMaxScore = Math.max(maxScore, min_score_if_attempted);
-      newScore = Math.max(min_score_if_attempted, score);
+    if (minScoreIfAttempted) {
+      newMaxScore = Math.max(mScore, minScoreIfAttempted);
+      newScore = Math.max(minScoreIfAttempted, score);
     }
-  } else if (max_score) {
+  } else if (maxScore) {
     newScore = 0;
-    newMaxScore = Math.max(max_score, maxScore);
+    newMaxScore = Math.max(mScore, maxScore);
   }
 
   return {

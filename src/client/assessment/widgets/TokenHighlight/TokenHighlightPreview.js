@@ -41,12 +41,12 @@ const TokenHighlightPreview = ({
     selected: !!smallSize
   }));
 
-  const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"), true);
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"), true);
 
   const validArray =
-    (item && item.validation && item.validation.valid_response && item.validation.valid_response.value) || [];
+    (item && item.validation && item.validation.validResponse && item.validation.validResponse.value) || [];
 
-  const altArray = (item && item.validation && item.validation.alt_responses) || [];
+  const altArray = (item && item.validation && item.validation.altResponses) || [];
 
   const [answers, setAnswers] = useState(userAnswer.length !== 0 ? userAnswer : initialArray);
 
@@ -169,7 +169,7 @@ const TokenHighlightPreview = ({
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}

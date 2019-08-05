@@ -90,7 +90,7 @@ const ItemDetailWidget = ({
                       className="ant-input"
                       type="number"
                       min={1}
-                      value={get(question, "validation.valid_response.score", 0)}
+                      value={get(question, "validation.validResponse.score", 0)}
                       onChange={e => {
                         const v = parseFloat(e.target.value);
                         setQuestionScore({ score: v, qid: question.id });

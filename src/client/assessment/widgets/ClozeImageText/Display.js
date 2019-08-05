@@ -157,7 +157,7 @@ class Display extends Component {
       imageOptions,
       isReviewTab
     } = this.props;
-    const cAnswers = get(item, "validation.valid_response.value", []);
+    const cAnswers = get(item, "validation.validResponse.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers: _uAnswers } = this.state;
 
@@ -291,13 +291,13 @@ class Display extends Component {
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
-    const altResponses = validation.alt_responses || [];
+    const altResponses = validation.altResponses || [];
     const correctAnswerBoxLayout = showAnswer ? (
       <React.Fragment>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
           groupResponses={options}
-          userAnswers={validation.valid_response && validation.valid_response.value}
+          userAnswers={validation.validResponse && validation.validResponse.value}
         />
         {altResponses.map((altResponse, index) => (
           <CorrectAnswerBoxLayout

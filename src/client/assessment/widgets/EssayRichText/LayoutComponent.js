@@ -86,14 +86,14 @@ class LayoutComponent extends Component {
           <Row gutter={36}>
             <Col md={12}>
               <MinHeightOption
-                onChange={val => changeUIStyle("min_height", +val)}
-                value={get(item, "ui_style.min_height", 300)}
+                onChange={val => changeUIStyle("minHeight", +val)}
+                value={get(item, "uiStyle.minHeight", 300)}
               />
             </Col>
             <Col md={12}>
               <MaxHeightOption
                 onChange={val => changeUIStyle("max_height", +val)}
-                value={get(item, "ui_style.max_height", 0)}
+                value={get(item, "uiStyle.max_height", 0)}
               />
             </Col>
           </Row>
@@ -117,15 +117,15 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
+                value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
           </Row>
 
           <Checkbox
             style={{ marginTop: 16, marginBottom: 16 }}
-            defaultChecked={item && item.validation && item.validation.submit_over_limit}
-            onChange={e => handleValidationChange("submit_over_limit", e.target.checked)}
+            defaultChecked={item && item.validation && item.validation.submitOverLimit}
+            onChange={e => handleValidationChange("submitOverLimit", e.target.checked)}
           >
             {t("component.essayText.submitOverLimit")}
           </Checkbox>

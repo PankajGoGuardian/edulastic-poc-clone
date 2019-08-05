@@ -1,5 +1,5 @@
 const orderlistEvaluator = ({ userResponse, validation }) => {
-  const answer = validation.valid_response.value;
+  const answer = validation.validResponse.value;
   const result = {};
   userResponse.forEach((resp, index) => {
     result[resp] = answer[index] === resp;

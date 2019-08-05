@@ -8,6 +8,7 @@ import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
 import Points from "./components/Points";
 import ArrowPair from "./components/ArrowPair";
+import ValueLabel from "./components/ValueLabel";
 import withGrid from "./HOC/withGrid";
 import {
   convertPxToUnit,
@@ -17,7 +18,17 @@ import {
   getGridVariables
 } from "./helpers";
 
-const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
+const LineChart = ({
+  data,
+  previewTab,
+  saveAnswer,
+  gridParams,
+  view,
+  correct,
+  disableResponse,
+  toggleBarDragging,
+  deleteMode
+}) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams);
@@ -30,6 +41,8 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   const [localData, setLocalData] = useState(data);
 
+  const paddingTop = 15;
+
   useEffect(() => {
     if (!isEqual(data, localData)) {
       setLocalData(data);
@@ -38,7 +51,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   const getPolylinePoints = () =>
     localData
-      .map((dot, index) => `${step * index + margin / 2 + padding},${convertUnitToPx(dot.y, gridParams)}`)
+      .map((dot, index) => `${step * index + margin / 2 + padding},${convertUnitToPx(dot.y, gridParams) + paddingTop}`)
       .join(" ");
 
   const getActivePoint = index =>
@@ -47,6 +60,8 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
           .split(" ")
           [active].split(",")[index]
       : null;
+
+  const getActivePointValue = () => (active !== null ? localData[active].y : null);
 
   const save = () => {
     if (cursorY === null) {
@@ -57,12 +72,13 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setInitY(null);
     setActive(null);
     setIsMouseDown(false);
-    saveAnswer(localData);
+    toggleBarDragging(false);
+    saveAnswer(localData, active);
   };
 
   const onMouseMove = e => {
     const newLocalData = cloneDeep(localData);
-    if (isMouseDown && cursorY) {
+    if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
       newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
 
@@ -75,6 +91,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     setActiveIndex(index);
     setInitY(localData[index].y);
     setIsMouseDown(true);
+    toggleBarDragging(true);
   };
 
   const onMouseUp = () => {
@@ -87,7 +104,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
   return (
     <svg
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width}
       height={height}
       onMouseMove={onMouseMove}
@@ -96,11 +113,17 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
     >
       <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
 
-      <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
+      <HorizontalLines
+        gridParams={gridParams}
+        displayGridlines={displayHorizontalLines(showGridlines)}
+        paddingTop={paddingTop}
+      />
 
       <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
 
       <ArrowPair getActivePoint={getActivePoint} />
+
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
 
       <Points
         activeIndex={activeIndex}
@@ -111,6 +134,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
         onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
         correct={correct}
+        paddingTop={paddingTop}
       />
     </svg>
   );

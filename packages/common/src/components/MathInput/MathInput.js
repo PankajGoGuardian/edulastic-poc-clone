@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { isEmpty } from "lodash";
 
 import { MathKeyboard } from "@edulastic/common";
 import { math } from "@edulastic/constants";
@@ -77,17 +78,41 @@ class MathInput extends React.PureComponent {
         const textarea = mathField.el().querySelector(".mq-textarea textarea");
         textarea.setAttribute("data-cy", `answer-input-math-textarea`);
         textarea.addEventListener("keyup", this.handleChangeField);
+        textarea.addEventListener("keypress", this.handleKeypress);
         document.addEventListener("click", this.handleClick, false);
       }
     );
   }
 
+  handleKeypress = e => {
+    const { restrictKeys, allowNumericOnly } = this.props;
+
+    if (allowNumericOnly) {
+      if (!e.key.match(/[^a-zA-Z]/g)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
+
+    if (!isEmpty(restrictKeys)) {
+      const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
+      const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
+      if (!(isSpecialChar || isArrowOrShift) && !isEmpty(restrictKeys)) {
+        const isValidKey = restrictKeys.includes(e.key);
+        if (!isValidKey) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }
+    }
+  };
+
   handleChangeField = () => {
-    const { onInput } = this.props;
+    const { onInput: saveAnswer } = this.props;
     const { mathField } = this.state;
 
     const text = mathField.latex();
-    onInput(text);
+    saveAnswer(text);
   };
 
   onInput = (key, command = "cmd") => {
@@ -129,7 +154,10 @@ class MathInput extends React.PureComponent {
 
   onClickMathField = () => {
     const { onInnerFieldClick } = this.props;
-    this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+    const { mathFieldFocus } = this.state;
+    if (!mathFieldFocus) {
+      this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+    }
   };
 
   focus = () => {
@@ -151,11 +179,13 @@ class MathInput extends React.PureComponent {
       numberPad,
       fullWidth,
       className,
-      restrictKeys
+      restrictKeys,
+      customKeys,
+      hideKeypad
     } = this.props;
 
     return (
-      <MathInputStyles fullWidth={fullWidth} className={className}>
+      <MathInputStyles fullWidth={fullWidth} width={style.width} height={style.height} className={className}>
         <div
           ref={this.containerRef}
           onFocus={() => {
@@ -163,16 +193,19 @@ class MathInput extends React.PureComponent {
             this.setState({ mathFieldFocus: true });
           }}
           className="input"
+          onClick={this.onClickMathField}
         >
           <div onKeyDown={onKeyDown} className="input__math" style={style} data-cy="answer-math-input-field">
-            <span className="input__math__field" ref={this.mathFieldRef} onClick={this.onClickMathField} />
+            <span className="input__math__field" ref={this.mathFieldRef} />
           </div>
           <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
             {(alwaysShowKeyboard || mathFieldFocus) && (
               <MathKeyboard
                 symbols={symbols}
                 numberPad={numberPad}
+                hideKeypad={hideKeypad}
                 restrictKeys={restrictKeys}
+                customKeys={customKeys}
                 showResponse={showResponse}
                 showDropdown={showDropdown}
                 onChangeKeypad={onChangeKeypad}
@@ -203,16 +236,22 @@ MathInput.propTypes = {
   onKeyDown: PropTypes.func,
   fullWidth: PropTypes.bool,
   className: PropTypes.string,
-  restrictKeys: PropTypes.array
+  restrictKeys: PropTypes.array,
+  allowNumericOnly: PropTypes.bool,
+  customKeys: PropTypes.array,
+  hideKeypad: PropTypes.bool
 };
 
 MathInput.defaultProps = {
   alwaysShowKeyboard: false,
   defaultFocus: false,
   value: "",
+  allowNumericOnly: false,
+  hideKeypad: false,
   showDropdown: false,
   showResponse: false,
   style: {},
+  customKeys: [],
   restrictKeys: [],
   onInnerFieldClick: () => {},
   onFocus: () => {},

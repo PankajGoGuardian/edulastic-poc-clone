@@ -9,23 +9,30 @@ import { IndexBox, CustomRnd, Pointer } from "../styled";
 const Draggable = ({
   response,
   onDragStop,
+  onDrag,
   onResize,
   onDelete,
   onClick,
   index,
   background,
   showDashedBorder,
-  showIndex = true
+  transparentBackground,
+  showIndex = true,
+  showBorder,
+  responseHeight,
+  responseWidth
 }) => (
   <CustomRnd
     background={background}
     showDashedBorder={showDashedBorder}
-    bounds="parent"
+    showBorder={showBorder}
+    transparentBackground={transparentBackground}
     onClick={onClick}
     onDragStop={onDragStop}
+    onDrag={onDrag}
     onResize={onResize}
     position={{ x: response.left, y: response.top }}
-    size={{ width: response.width, height: response.height }}
+    size={{ width: responseWidth, height: responseHeight }}
   >
     <FlexContainer justifyContent="space-between" style={{ height: "100%" }}>
       {showIndex && <IndexBox isActive={response.active}>{index}</IndexBox>}
@@ -44,20 +51,27 @@ const Draggable = ({
 
 Draggable.propTypes = {
   response: PropTypes.object.isRequired,
+  onDrag: PropTypes.func.isRequired,
   onDragStop: PropTypes.func.isRequired,
   onResize: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   background: PropTypes.string,
+  transparentBackground: PropTypes.bool,
   showDashedBorder: PropTypes.bool,
-  showIndex: PropTypes.bool
+  showBorder: PropTypes.bool,
+  showIndex: PropTypes.bool,
+  responseHeight: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired,
+  responseWidth: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired
 };
 
 Draggable.defaultProps = {
   background: white,
+  transparentBackground: false,
   showDashedBorder: false,
-  showIndex: false
+  showIndex: false,
+  showBorder: true
 };
 
 export default Draggable;

@@ -20,9 +20,9 @@ import Display from "./components/Display";
 import CorrectAnswers from "./CorrectAnswers";
 import { replaceVariables, replaceValues } from "../../utils/variables";
 
-import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 import { changePreviewAction } from "../../../author/src/actions/view";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -225,7 +225,12 @@ class MultipleChoice extends Component {
             <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
               <React.Fragment>
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
-                <Widget>
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     uiStyle={uiStyle}
                     options={previewDisplayOptions}
@@ -257,7 +262,7 @@ class MultipleChoice extends Component {
                   >
                     {t("component.multiplechoice.shuffleOptions")}
                   </Checkbox>
-                </Widget>
+                </Question>
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}
@@ -290,6 +295,7 @@ class MultipleChoice extends Component {
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
+                  testItem={testItem}
                   styleType="primary"
                   {...restProps}
                 />
@@ -312,6 +318,7 @@ class MultipleChoice extends Component {
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
+                  testItem={testItem}
                   styleType="primary"
                   {...restProps}
                 />
@@ -332,6 +339,7 @@ class MultipleChoice extends Component {
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
+                  testItem={testItem}
                   styleType="primary"
                   {...restProps}
                 />

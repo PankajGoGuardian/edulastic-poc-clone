@@ -61,12 +61,41 @@ const markAbsent = ({ assignmentId, classId, students }) =>
     })
     .then(result => result.data);
 
+const togglePause = ({ assignmentId, classId, value }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${assignmentId}/toggle-pause?groupId=${classId}&value=${value}`
+    })
+    .then(result => result.data);
+
+const removeStudents = ({ assignmentId, classId, students }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${assignmentId}/remove-students`,
+      data: { _id: classId, students }
+    })
+    .then(response => response.data.result);
+
+const addStudents = ({ assignmentId, classId, students, endDate }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${assignmentId}/add-students`,
+      data: { _id: classId, students, specificStudents: students.length > 0, endDate }
+    })
+    .then(response => response.data.result);
+
 export default {
   gradebook,
   testActivity,
   releaseScore,
   markAsDone,
+  togglePause,
   openAssignment,
   closeAssignment,
-  markAbsent
+  markAbsent,
+  removeStudents,
+  addStudents
 };

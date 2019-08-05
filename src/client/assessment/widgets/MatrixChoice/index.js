@@ -22,6 +22,7 @@ import Steams from "./Steams";
 import Answers from "./Answers";
 import { ContentArea } from "../../styled/ContentArea";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
+import { changePreviewAction } from "../../../author/src/actions/view";
 
 const EmptyWrapper = styled.div``;
 
@@ -40,6 +41,7 @@ const MatrixChoice = ({
   isSidebarCollapsed,
   advancedAreOpen,
   disableResponse,
+  changeView,
   ...restProps
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
@@ -128,6 +130,7 @@ const MatrixChoice = ({
               onCheckAnswer={_checkAnswer}
               previewTab={previewTab}
               disableResponse={disableResponse}
+              changeView={changeView}
               {...restProps}
             />
           )}
@@ -142,6 +145,7 @@ const MatrixChoice = ({
               onCheckAnswer={_checkAnswer}
               previewTab={previewTab}
               disableResponse={disableResponse}
+              changeView={changeView}
               {...restProps}
             />
           )}
@@ -157,6 +161,7 @@ const MatrixChoice = ({
               onCheckAnswer={_checkAnswer}
               previewTab={previewTab}
               disableResponse={disableResponse}
+              changeView={changeView}
               {...restProps}
             />
           )}
@@ -180,7 +185,8 @@ MatrixChoice.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  changeView: PropTypes.func.isRequired
 };
 
 MatrixChoice.defaultProps = {
@@ -202,7 +208,8 @@ const enhance = compose(
     ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
     {
       setQuestionData: setQuestionDataAction,
-      checkAnswer: checkAnswerAction
+      checkAnswer: checkAnswerAction,
+      changeView: changePreviewAction
     }
   )
 );

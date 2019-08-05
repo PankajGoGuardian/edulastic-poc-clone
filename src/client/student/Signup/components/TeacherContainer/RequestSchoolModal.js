@@ -37,7 +37,6 @@ class RequestSchool extends React.Component {
   async componentDidMount() {
     const countryList = await countryApi.getCountries();
     this.setState({
-      ...this.state,
       countryList,
       stateList: states
     });
@@ -45,8 +44,7 @@ class RequestSchool extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { form, handleCancel, districts, createAndJoinSchoolRequestAction } = this.props;
-    const { keyword } = this.state;
+    const { form, districts, createAndJoinSchoolRequestAction } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
         const { name, districtId, address, city, country, state, zip } = values;
@@ -106,10 +104,26 @@ class RequestSchool extends React.Component {
     }
   };
 
+  changeCountryHandler = value => {
+    const { form } = this.props;
+    if (value !== "US") {
+      this.setState({
+        stateList: []
+      });
+      form.setFieldsValue({ state: "" });
+    } else {
+      this.setState({
+        stateList: states
+      });
+      form.setFieldsValue({ state: states[0] });
+    }
+  };
+
   render() {
-    const { isOpen, handleCancel, form, districts, isSearching, autocompleteDistricts } = this.props;
+    const { isOpen, handleCancel, form, isSearching, autocompleteDistricts } = this.props;
     const { getFieldDecorator } = form;
     const { keyword, countryList, stateList } = this.state;
+    const country = form.getFieldValue("country");
 
     const title = (
       <Title>
@@ -136,19 +150,6 @@ class RequestSchool extends React.Component {
       }
     };
 
-    const changeCountryHandler = value => {
-      if (value !== "US") {
-        this.setState({
-          ...this.state,
-          stateList: []
-        });
-      } else {
-        this.setState({
-          ...this.state,
-          stateList: states
-        });
-      }
-    };
     const countryOptions = Object.entries(countryList).map(([key, value]) => (
       <Option value={key} key={key}>
         {value}
@@ -225,11 +226,15 @@ class RequestSchool extends React.Component {
             <Form.Item label="State">
               {getFieldDecorator("state", {
                 rules: [{ required: false, message: "Please provide a valid state." }],
-                initialValue: "Alaska"
+                initialValue: states[0]
               })(
-                <Select showSearch placeholder="Select state">
-                  {stateOptions}
-                </Select>
+                country === "US" ? (
+                  <Select showSearch placeholder="Select state">
+                    {stateOptions}
+                  </Select>
+                ) : (
+                  <Input placeholder="Enter state" />
+                )
               )}
             </Form.Item>
           </FlexItems>
@@ -244,7 +249,7 @@ class RequestSchool extends React.Component {
                 placeholder="Select a country"
                 optionFilterProp="children"
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                onChange={value => changeCountryHandler(value)}
+                onChange={value => this.changeCountryHandler(value)}
               >
                 {countryOptions}
               </Select>
@@ -373,6 +378,9 @@ const FlexItems = styled.div`
   .ant-form-item:nth-child(1) {
     width: 50%;
     margin-right: 5px;
+  }
+  .ant-form-item-control {
+    line-height: initial;
   }
 `;
 

@@ -16,6 +16,7 @@ const MATH = "math";
 const FORMULA_ESSAY = "formulaessay";
 const CLOZE_MATH = "clozemath";
 const EXPRESSION_MULTIPART = "expressionMultipart";
+const COMBINATION_MULTIPART = "combinationMultipart";
 const ORDER_LIST = "orderList";
 const MULTIPLE_CHOICE = "multipleChoice";
 const CLOZE_TEXT = "clozeText";
@@ -46,7 +47,7 @@ const selectsData = [
   { value: CLOZE_IMAGE_DROP_DOWN, text: "Cloze Image Drop Down" },
   { value: CLOZE_IMAGE_TEXT, text: "Cloze Image Text" },
   { value: PROTRACTOR, text: "Protractor" },
-  { value: PASSAGE, text: "Passage" },
+  { value: PASSAGE, text: "Passage with Multiple parts" },
   { value: VIDEO, text: "Video" },
   { value: MATH, text: "Math" },
   { value: FORMULA_ESSAY, text: "Formula Essay" },
@@ -65,7 +66,8 @@ const selectsData = [
   { value: HISTOGRAM, text: "Histogram" },
   { value: DOT_PLOT, text: "Dot plot" },
   { value: LINE_PLOT, text: "Line plot" },
-  { value: GRAPH, text: "Graph" }
+  { value: GRAPH, text: "Graph" },
+  { value: COMBINATION_MULTIPART, text: "Combination Multipart" }
 ];
 
 const manuallyGradableQn = [FORMULA_ESSAY, HIGHLIGHT_IMAGE, ESSAY_RICH_TEXT, ESSAY_PLAIN_TEXT];

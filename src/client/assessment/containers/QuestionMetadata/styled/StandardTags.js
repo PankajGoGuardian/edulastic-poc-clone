@@ -4,7 +4,7 @@ import { Tag } from "antd";
 
 const StandardTags = styled(Tag)`
   color: ${white};
-  margin: 0px 3px;
+  margin: 3px;
   font-size: 12px;
   cursor: pointer;
 `;

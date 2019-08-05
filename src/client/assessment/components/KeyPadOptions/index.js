@@ -1,7 +1,7 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import { Col, Select, Input } from "antd";
 import { isObject } from "lodash";
 import { math } from "@edulastic/constants";
@@ -11,7 +11,7 @@ import { numBtnColors } from "@edulastic/colors";
 
 import NumberPad from "../NumberPad";
 import KeyPad from "../KeyPad";
-import { Widget } from "../../styled/Widget";
+import Question from "../Question";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { StyledRow } from "./styled/StyledRow";
@@ -36,19 +36,21 @@ const defaultNumberPad = [
 ];
 class KeyPadOptions extends Component {
   componentDidMount = () => {
-    const { fillSections, t } = this.props;
+    const { fillSections, t, setKeyPadOffest } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
     fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
+    setKeyPadOffest(node.offsetTop);
   };
 
   componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
+    const { advancedAreOpen, fillSections, t, setKeyPadOffest } = this.props;
 
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
       fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
+      setKeyPadOffest(node.offsetTop);
     }
   }
 
@@ -110,7 +112,7 @@ class KeyPadOptions extends Component {
   };
 
   render() {
-    const { item, onChange, advancedAreOpen, t } = this.props;
+    const { item, onChange, advancedAreOpen, fillSections, cleanSections, t, renderExtra } = this.props;
     const symbol = item.symbols[0];
     const isCustom = isObject(symbol);
 
@@ -125,7 +127,13 @@ class KeyPadOptions extends Component {
       : {};
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.keypad")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.keypad")}</Subtitle>
 
         <StyledRow gutter={60}>
@@ -173,14 +181,18 @@ class KeyPadOptions extends Component {
                     items={this.getNumberPad(isCustom)}
                     buttonStyle={btnStyle}
                   />
-                  <KeyPad symbol={symbol} onChange={onChange} item={item} buttonStyle={btnStyle} />
+                  {!item.showDropdown && (
+                    <KeyPad symbol={symbol} onChange={onChange} item={item} buttonStyle={btnStyle} />
+                  )}
                 </>
               )}
             </FlexContainer>
           </Col>
           <Col span={12} />
         </StyledRow>
-      </Widget>
+
+        {renderExtra}
+      </Question>
     );
   }
 }
@@ -189,15 +201,19 @@ KeyPadOptions.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  setKeyPadOffest: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  renderExtra: PropTypes.node
 };
 
 KeyPadOptions.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  setKeyPadOffest: () => {},
+  renderExtra: null
 };
 
 export default withNamespaces("assessment")(KeyPadOptions);

@@ -2,9 +2,95 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Row, Col, Button, Slider } from "antd";
 import { Table } from "antd";
-import { darkGrey, grey, fadedBlack, fadedGrey, black } from "@edulastic/colors";
+import { darkGrey, grey, fadedBlack, fadedGrey, lightGreySecondary, themeColor, black } from "@edulastic/colors";
 import { Text } from "@vx/text";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
+
+export const StyledCell = styled.div`
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+`;
+
+export const PrintablePrefix = styled.b`
+  display: none;
+  padding-left: 5px;
+  float: left;
+
+  @media print {
+    display: block;
+  }
+`;
+
+export const StyledGoButton = styled(Button)`
+  font-size: 16px;
+  padding-right: 11px;
+  padding-left: 11px;
+  height: 37px;
+  border-radius: 3px;
+  background-color: ${themeColor} !important;
+  border-color: transparent;
+`;
+
+export const StyledFilterWrapper = styled.div`
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin: 0px 8px;
+
+  .ant-select-selection {
+    &__rendered {
+      padding-left: 0px;
+    }
+  }
+
+  .ant-select {
+    width: 100%;
+  }
+
+  .ant-select-auto-complete.ant-select .ant-input {
+    background-color: ${lightGreySecondary};
+    border-radius: 3px;
+    padding: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    &:focus {
+      outline: 0px;
+      box-shadow: none;
+      border-color: ${themeColor};
+    }
+  }
+
+  .ant-input-affix-wrapper .ant-input-suffix {
+    right: 18px;
+    i {
+      svg {
+        color: ${themeColor};
+      }
+    }
+  }
+
+  .control-dropdown {
+    button {
+      background-color: ${lightGreySecondary};
+      border-radius: 3px;
+      padding: 8.5px 18px;
+      height: auto;
+      font-size: 13px;
+      font-weight: 600;
+      max-width: 100%;
+      width: 100%;
+
+      i {
+        color: ${themeColor};
+      }
+    }
+  }
+`;
+
+export const StyledReportsContentContainer = styled.div`
+  padding: 0px 20px;
+`;
 
 export const DropDownContainer = styled.div`
   .dropdown-container {
@@ -16,6 +102,9 @@ export const DropDownContainer = styled.div`
 `;
 
 export const StyledCard = styled(Card)`
+  // when u change this u have to change "StyledCard" in "src/client/common/styled.js" to make every css in sync
+  // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
+  // Import this and add USE CASE SPECIFIC CSS
   margin: ${props => (props.margin ? props.margin : "8px")};
 
   .ant-card-body {
@@ -66,6 +155,9 @@ export const StyledContainer = styled.div`
 `;
 
 export const StyledTable = styled(Table)`
+  // when u change this u have to change "StyledTable" in "src/client/common/styled.js" to make every css in sync
+  // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
+  // Import this and add USE CASE SPECIFIC CSS
   .ant-table-body {
     overflow: auto;
     table {
@@ -87,6 +179,10 @@ export const StyledTable = styled(Table)`
             .ant-table-column-sorter {
               right: 3px;
             }
+          }
+
+          th:nth-last-child(-n + ${props => props.rightAligned || 0}) {
+            text-align: right;
           }
 
           @media only screen and (min-width: 1px) and (max-width: 600px) {
@@ -132,6 +228,10 @@ export const StyledTable = styled(Table)`
 
           td:nth-last-child(-n + ${props => props.centerAligned || 0}) {
             text-align: center;
+          }
+
+          td:nth-last-child(-n + ${props => props.rightAligned || 0}) {
+            text-align: right;
           }
 
           td {
@@ -261,12 +361,33 @@ export const PrintableScreen = styled.div`
   }
 `;
 
-export const StyledSignedBarContainer = styled(StyledCard)`
+export const StyledSignedBarContainer = styled.div`
   .recharts-default-legend {
     .recharts-legend-item {
       &:nth-child(1) {
         padding-left: 90px;
       }
     }
+  }
+`;
+
+export const StyledDropDownContainer = styled(Col)`
+  .ant-btn.ant-dropdown-trigger {
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
+    text-overflow: ellipsis;
+    width: 100%;
+  }
+`;
+
+export const StyledAutocompleteDropDownContainer = styled.div`
+  margin: 0px 5px;
+  overflow: hidden;
+  button {
+    white-space: pre-wrap;
+  }
+  input {
+    cursor: pointer;
   }
 `;

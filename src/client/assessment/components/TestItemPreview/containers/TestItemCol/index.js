@@ -41,7 +41,17 @@ class TestItemCol extends Component {
   };
 
   renderTabContent = (widget, flowLayout) => {
-    const { preview, showFeedback, multiple, questions, qIndex, evaluation, previewTab, ...restProps } = this.props;
+    const {
+      preview,
+      LCBPreviewModal,
+      showFeedback,
+      multiple,
+      questions,
+      qIndex,
+      evaluation,
+      previewTab,
+      ...restProps
+    } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
     const question = questions[widget.reference];
@@ -56,7 +66,6 @@ class TestItemCol extends Component {
     return (
       <Tabs.TabContainer>
         <QuestionWrapper
-          testItem
           showFeedback={showFeedback}
           evaluation={evaluation}
           multiple={multiple}
@@ -71,6 +80,7 @@ class TestItemCol extends Component {
           noBoxShadow
           isFlex
           flowLayout={flowLayout}
+          LCBPreviewModal={LCBPreviewModal}
           {...restProps}
         />
       </Tabs.TabContainer>

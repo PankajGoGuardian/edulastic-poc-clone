@@ -22,7 +22,7 @@ const initialMethod = {
   value: ""
 };
 
-const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections }) => {
+const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections, keypadOffset }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleAddAnswer = () => {
@@ -150,6 +150,24 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
+  const handleAllowedOptions = (option, variables) => {
+    setQuestionData(
+      produce(item, draft => {
+        draft[option] = variables;
+        updateVariables(draft, latexKeys);
+      })
+    );
+  };
+
+  const handleShowDropdown = v => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.showDropdown = v;
+        updateVariables(draft, latexKeys);
+      })
+    );
+  };
+
   return (
     <CorrectAnswers
       onTabChange={setCorrectTab}
@@ -165,12 +183,15 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
           <MathFormulaWithPoints
             item={item}
             onChange={handleChangeCorrectMethod}
+            onChangeAllowedOptions={handleAllowedOptions}
+            onChangeShowDropdown={handleShowDropdown}
             onAdd={handleAddCorrectMethod}
             onDelete={handleDeleteCorrectMethod}
             answer={item.validation.valid_response.value}
             points={item.validation.valid_response.score}
             onChangePoints={points => handleChangeCorrectPoints(points)}
             onChangeKeypad={handleKeypadMode}
+            keypadOffset={keypadOffset}
           />
         )}
         {item.validation.alt_responses &&
@@ -182,12 +203,15 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
                   key={i}
                   item={item}
                   onChange={handleChangeAltMethod(i)}
+                  onChangeAllowedOptions={handleAllowedOptions}
+                  onChangeShowDropdown={handleShowDropdown}
                   onAdd={handleAddAltMethod(i)}
                   onDelete={handleDeleteAltMethod(i)}
                   answer={alter.value}
                   points={alter.score}
                   onChangePoints={points => handleChangeAltPoints(points, i)}
                   onChangeKeypad={handleKeypadMode}
+                  keypadOffset={keypadOffset}
                 />
               );
             }
@@ -201,6 +225,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
 MathFormulaAnswers.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  keypadOffset: PropTypes.number.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };

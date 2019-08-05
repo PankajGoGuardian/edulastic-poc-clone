@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Row, Col, Button } from "antd";
 import { get, isEmpty } from "lodash";
 import queryString from "query-string";
+import qs from "qs";
 
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
@@ -16,13 +17,17 @@ import {
   getFiltersSelector,
   setFiltersAction,
   getTestIdSelector,
-  setTestIdAction
+  setTestIdAction,
+  getReportsPrevSARFilterData,
+  setPrevSARFilterDataAction,
+  getReportsSARFilterLoadingState
 } from "../filterDataDucks";
 import { getUserRole } from "../../../../../src/selectors/user";
 import { getUser } from "../../../../../src/selectors/user";
 
 import staticDropDownData from "../static/staticDropDownData";
 import school from "@edulastic/api/src/school";
+import { StyledFilterWrapper, StyledGoButton } from "../../../../common/styled";
 
 const getTestIdFromURL = url => {
   if (url.length > 16) {
@@ -48,10 +53,12 @@ const SingleAssessmentReportFilters = ({
   onGoClick: _onGoClick,
   location,
   className,
-  style
+  style,
+  history,
+  setPrevSARFilterDataAction,
+  prevSARFilterData,
+  loading
 }) => {
-  const [prevSARFilterData, setPrevSARFilterData] = useState(null);
-
   const getTitleByTestId = testId => {
     let arr = get(SARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
@@ -74,10 +81,15 @@ const SingleAssessmentReportFilters = ({
   });
 
   useEffect(() => {
-    let q = {
-      termId: schoolYear.length ? schoolYear[0].key : ""
-    };
-    getSARFilterDataRequestAction(q);
+    if (SARFilterData !== prevSARFilterData) {
+      const search = queryString.parse(location.search);
+      const termId =
+        search.termId || get(user, "orgData.defaultTermId", "") || (schoolYear.length ? schoolYear[0].key : "");
+      let q = {
+        termId
+      };
+      getSARFilterDataRequestAction(q);
+    }
   }, []);
 
   let processedTestIds;
@@ -87,9 +99,10 @@ const SingleAssessmentReportFilters = ({
     search.testId = getTestIdFromURL(location.pathname);
 
     dropDownData = getDropDownData(SARFilterData, user);
-
+    const defaultTermId = get(user, "orgData.defaultTermId", "");
     const urlSchoolYear =
       schoolYear.find((item, index) => item.key === search.termId) ||
+      schoolYear.find((item, index) => item.key === defaultTermId) ||
       (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
     const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || {
       key: "All",
@@ -146,7 +159,6 @@ const SingleAssessmentReportFilters = ({
     processedTestIds = processTestIds(dropDownData, obtainedFilters, urlTestId.key, role);
 
     let urlParams = { ...obtainedFilters };
-
     let filteredUrlTestId = urlTestId.key;
     if (urlTestId.key !== processedTestIds.validTestId || urlTestId.key === "") {
       filteredUrlTestId = processedTestIds.testIds.length ? processedTestIds.testIds[0].key : "";
@@ -155,7 +167,6 @@ const SingleAssessmentReportFilters = ({
       delete urlParams.schoolId;
       delete urlParams.teacherId;
     }
-
     setFiltersAction(urlParams);
     setTestIdAction(filteredUrlTestId);
 
@@ -164,7 +175,7 @@ const SingleAssessmentReportFilters = ({
       filters: urlParams
     });
 
-    setPrevSARFilterData(SARFilterData);
+    setPrevSARFilterDataAction(SARFilterData);
   }
 
   dropDownData = useMemo(() => filteredDropDownData(SARFilterData, user, { ...filters }), [SARFilterData, filters]);
@@ -192,11 +203,18 @@ const SingleAssessmentReportFilters = ({
   }
 
   const updateSchoolYearDropDownCB = selected => {
-    let obj = {
-      ...filters,
+    let pathname = location.pathname;
+    let splitted = pathname.split("/");
+    splitted.splice(splitted.length - 1);
+    let newPathname = splitted.join("/") + "/";
+    let _filters = { ...filters };
+    _filters.termId = selected.key;
+    history.push(newPathname + "?" + qs.stringify(_filters));
+
+    let q = {
       termId: selected.key
     };
-    setFiltersAction(obj);
+    getSARFilterDataRequestAction(q);
   };
   const updateSubjectDropDownCB = selected => {
     let obj = {
@@ -271,106 +289,108 @@ const SingleAssessmentReportFilters = ({
 
   return (
     <div className={className} style={style}>
-      <Row type="flex" className="single-assessment-report-top-filter">
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <PrintablePrefix>School Year</PrintablePrefix>
-          <ControlDropDown
-            by={filters.termId}
-            selectCB={updateSchoolYearDropDownCB}
-            data={dropDownData.schoolYear}
-            prefix="School Year"
-            showPrefixOnSelected={false}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <PrintablePrefix>Subject</PrintablePrefix>
-          <ControlDropDown
-            by={filters.subject}
-            selectCB={updateSubjectDropDownCB}
-            data={staticDropDownData.subjects}
-            prefix="Subject"
-            showPrefixOnSelected={false}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <PrintablePrefix>Grade</PrintablePrefix>
-          <AutocompleteDropDown
-            prefix="Grade"
-            className="custom-1-scrollbar"
-            by={filters.grade}
-            selectCB={updateGradeDropDownCB}
-            data={staticDropDownData.grades}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <PrintablePrefix>Course</PrintablePrefix>
-          <AutocompleteDropDown
-            prefix="Course"
-            by={filters.courseId}
-            selectCB={updateCourseDropDownCB}
-            data={dropDownData.courses}
-          />
-        </Col>
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <PrintablePrefix>Class</PrintablePrefix>
-          <AutocompleteDropDown
-            prefix="Class"
-            by={filters.groupId}
-            selectCB={updateClassesDropDownCB}
-            data={dropDownData.groups}
-          />
-        </Col>
-        {role !== "teacher" ? (
-          <>
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <PrintablePrefix>School</PrintablePrefix>
-              <AutocompleteDropDown
-                prefix="School"
-                by={filters.schoolId}
-                selectCB={updateSchoolsDropDownCB}
-                data={dropDownData.schools}
-              />
-            </Col>
-            <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-              <PrintablePrefix>Teacher</PrintablePrefix>
-              <AutocompleteDropDown
-                prefix="Teacher"
-                by={filters.teacherId}
-                selectCB={updateTeachersDropDownCB}
-                data={dropDownData.teachers}
-              />
-            </Col>
-          </>
-        ) : null}
-        <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <PrintablePrefix>Assessment Type</PrintablePrefix>
-          <AutocompleteDropDown
-            prefix="Assessment Type"
-            by={filters.assessmentType}
-            selectCB={updateAssessmentTypeDropDownCB}
-            data={staticDropDownData.assessmentType}
-          />
-        </Col>
-      </Row>
-      <Row type="flex" className="single-assessment-report-bottom-filter">
-        <Col className="single-assessment-report-test-autocomplete-container">
-          <div>
-            <PrintablePrefix>Assessment Name</PrintablePrefix>
-          </div>
-          <AutocompleteDropDown
-            containerClassName="single-assessment-report-test-autocomplete"
-            data={processedTestIds.testIds ? processedTestIds.testIds : []}
-            by={testId}
-            prefix="Assessment Name"
-            selectCB={onTestIdChange}
-          />
-        </Col>
-        <Col className={"single-assessment-report-go-button-container"}>
-          <Button type="primary" shape="round" onClick={onGoClick}>
-            Go
-          </Button>
-        </Col>
-      </Row>
+      <StyledFilterWrapper>
+        <Row type="flex" className="single-assessment-report-top-filter">
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <PrintablePrefix>School Year</PrintablePrefix>
+            <ControlDropDown
+              by={filters.termId}
+              selectCB={updateSchoolYearDropDownCB}
+              data={dropDownData.schoolYear}
+              prefix="School Year"
+              showPrefixOnSelected={false}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <PrintablePrefix>Subject</PrintablePrefix>
+            <ControlDropDown
+              by={filters.subject}
+              selectCB={updateSubjectDropDownCB}
+              data={staticDropDownData.subjects}
+              prefix="Subject"
+              showPrefixOnSelected={false}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <PrintablePrefix>Grade</PrintablePrefix>
+            <AutocompleteDropDown
+              prefix="Grade"
+              className="custom-1-scrollbar"
+              by={filters.grade}
+              selectCB={updateGradeDropDownCB}
+              data={staticDropDownData.grades}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <PrintablePrefix>Course</PrintablePrefix>
+            <AutocompleteDropDown
+              prefix="Course"
+              by={filters.courseId}
+              selectCB={updateCourseDropDownCB}
+              data={dropDownData.courses}
+            />
+          </Col>
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <PrintablePrefix>Class</PrintablePrefix>
+            <AutocompleteDropDown
+              prefix="Class"
+              by={filters.groupId}
+              selectCB={updateClassesDropDownCB}
+              data={dropDownData.groups}
+            />
+          </Col>
+          {role !== "teacher" ? (
+            <>
+              <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+                <PrintablePrefix>School</PrintablePrefix>
+                <AutocompleteDropDown
+                  prefix="School"
+                  by={filters.schoolId}
+                  selectCB={updateSchoolsDropDownCB}
+                  data={dropDownData.schools}
+                />
+              </Col>
+              <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+                <PrintablePrefix>Teacher</PrintablePrefix>
+                <AutocompleteDropDown
+                  prefix="Teacher"
+                  by={filters.teacherId}
+                  selectCB={updateTeachersDropDownCB}
+                  data={dropDownData.teachers}
+                />
+              </Col>
+            </>
+          ) : null}
+          <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+            <PrintablePrefix>Assessment Type</PrintablePrefix>
+            <AutocompleteDropDown
+              prefix="Assessment Type"
+              by={filters.assessmentType}
+              selectCB={updateAssessmentTypeDropDownCB}
+              data={staticDropDownData.assessmentType}
+            />
+          </Col>
+        </Row>
+        <Row type="flex" className="single-assessment-report-bottom-filter">
+          <Col className="single-assessment-report-test-autocomplete-container">
+            <div>
+              <PrintablePrefix>Assessment Name</PrintablePrefix>
+            </div>
+            <AutocompleteDropDown
+              containerClassName="single-assessment-report-test-autocomplete"
+              data={processedTestIds.testIds ? processedTestIds.testIds : []}
+              by={testId}
+              prefix="Assessment Name"
+              selectCB={onTestIdChange}
+            />
+          </Col>
+          <Col className={"single-assessment-report-go-button-container"}>
+            <StyledGoButton type="primary" onClick={onGoClick}>
+              Go
+            </StyledGoButton>
+          </Col>
+        </Row>
+      </StyledFilterWrapper>
     </div>
   );
 };
@@ -382,12 +402,15 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       testId: getTestIdSelector(state),
       role: getUserRole(state),
-      user: getUser(state)
+      user: getUser(state),
+      prevSARFilterData: getReportsPrevSARFilterData(state),
+      loading: getReportsSARFilterLoadingState(state)
     }),
     {
       getSARFilterDataRequestAction: getSARFilterDataRequestAction,
       setFiltersAction: setFiltersAction,
-      setTestIdAction: setTestIdAction
+      setTestIdAction: setTestIdAction,
+      setPrevSARFilterDataAction
     }
   )
 );

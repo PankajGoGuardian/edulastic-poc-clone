@@ -31,7 +31,8 @@ import {
   StyledName,
   StyledParaSS,
   StyledParaSSS,
-  RightAlignedCol
+  RightAlignedCol,
+  ExclamationMark
 } from "./styled";
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName, getFirstName } from "../../Transformer";
@@ -136,7 +137,14 @@ class DisneyCardContainer extends Component {
         /**
          * for differentiating archived students
          */
-        const enrollMentFlag = enrollmentStatus[student.studentId] == 0 ? " ! " : "";
+        const enrollMentFlag =
+          enrollmentStatus[student.studentId] == 0 ? (
+            <span title="Not Enrolled">
+              <ExclamationMark />
+            </span>
+          ) : (
+            ""
+          );
         const studentData = (
           <StyledCard data-cy={`student-card-${name}`} bordered={false} key={index}>
             <PaginationInfoF>
@@ -191,23 +199,25 @@ class DisneyCardContainer extends Component {
               </RightAlignedCol>
             </PaginationInfoF>
             <PaginationInfoS>
-              <StyledParaFF>Performance</StyledParaFF>
               <PerfomanceSection>
                 <StyledFlexDiv>
-                  <StyledParaSS data-cy="studentScore">
-                    {round(student.score, 2) || 0} / {student.maxScore || 0}
-                  </StyledParaSS>
+                  <StyledParaFF>Performance</StyledParaFF>
                   <StyledParaSSS data-cy="studentPerformance">
                     {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                   </StyledParaSSS>
                 </StyledFlexDiv>
-                {student.testActivityId && status.status !== "Absent" && (
-                  <PagInfo data-cy="viewResponse" onClick={e => viewResponses(e, student.studentId)}>
-                    {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
-                    VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
-                    {/* </Link> */}
-                  </PagInfo>
-                )}
+                <StyledFlexDiv>
+                  <StyledParaSS data-cy="studentScore">
+                    {round(student.score, 2) || 0} / {student.maxScore || 0}
+                  </StyledParaSS>
+                  {student.testActivityId && status.status !== "Absent" && (
+                    <PagInfo data-cy="viewResponse" onClick={e => viewResponses(e, student.studentId)}>
+                      {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
+                      VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
+                      {/* </Link> */}
+                    </PagInfo>
+                  )}
+                </StyledFlexDiv>
               </PerfomanceSection>
             </PaginationInfoS>
             <PaginationInfoT data-cy="questions">

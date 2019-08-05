@@ -74,7 +74,7 @@ class ClassCreate extends React.Component {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { createClass, curriculums } = this.props;
-        const { standardSets, endDate, startDate, courseId, grade, subject } = values;
+        const { standardSets, endDate, startDate, courseId, grades, subject } = values;
 
         const updatedStandardsSets = standardSets.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
@@ -94,13 +94,20 @@ class ClassCreate extends React.Component {
         values.endDate = moment(endDate).format("x");
         values.startDate = moment(startDate).format("x");
         values.courseId = isEmpty(courseId) ? "" : courseId;
-        values.grade = isEmpty(grade) ? "Other" : grade;
+        values.grades = isEmpty(grades) ? "Other" : grades;
         values.subject = isEmpty(subject) ? "Other Subjects" : subject;
 
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true });
         createClass(pickBy(values, identity));
       }
+    });
+  };
+
+  clearStandards = () => {
+    const { form } = this.props;
+    form.setFieldsValue({
+      standardSets: []
     });
   };
 
@@ -117,8 +124,8 @@ class ClassCreate extends React.Component {
       searchTerms = {
         districtId,
         search: {
-          name: { type: "cont", value: key },
-          number: { type: "eq", value: key },
+          name: { type: "cont", value: [key] },
+          number: { type: "eq", value: [key] },
           operator: "or"
         }
       };
@@ -173,6 +180,7 @@ class ClassCreate extends React.Component {
                   isSearching={isSearching}
                   setSubject={setSubject}
                   userOrgData={userOrgData}
+                  clearStandards={this.clearStandards}
                 />
               </RightContainer>
             </FlexContainer>

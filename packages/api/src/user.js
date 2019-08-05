@@ -113,7 +113,8 @@ const checkUser = payload => {
     .callApi({
       url: `${prefix}/username-email/`,
       params: {
-        username: `${payload.username}`
+        username: `${payload.username}`,
+        districtId: `${payload.districtId}`
       },
       method: "get"
     })
@@ -178,6 +179,17 @@ const resetUserPassword = data =>
     })
     .then(result => result.data.result);
 
+const adddBulkTeacher = ({ districtId, userDetails }) =>
+  api
+    .callApi({
+      url: `${prefix}/${districtId}/bulk-invite-teachers`,
+      data: {
+        userDetails
+      },
+      method: "POST"
+    })
+    .then(result => result.data.result);
+
 export default {
   getUser,
   fetchUsers,
@@ -199,5 +211,6 @@ export default {
   checkClassCode,
   requestNewPassword,
   fetchResetPasswordUser,
-  resetUserPassword
+  resetUserPassword,
+  adddBulkTeacher
 };

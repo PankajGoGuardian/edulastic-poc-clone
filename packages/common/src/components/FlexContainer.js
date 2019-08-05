@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { smallDesktopWidth } from "@edulastic/colors";
 
 const FlexContainer = styled.div`
   display: flex;
@@ -15,6 +16,18 @@ const FlexContainer = styled.div`
   }
   div:not(.fr-element.fr-view) p {
     padding: 6px 0px;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    & > * {
+      margin-right: 3px;
+    }
+    svg {
+      display: none;
+    }
+    button svg {
+      display: inline-block;
+    }
   }
 `;
 

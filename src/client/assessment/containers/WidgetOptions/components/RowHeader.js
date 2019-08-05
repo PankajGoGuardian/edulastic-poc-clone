@@ -3,12 +3,15 @@ import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../styled/WidgetOptions/Label";
-import CommonQuillInput from "./common/CommonQuillInput";
+import { WidgetFRInput } from "../../../styled/Widget";
+import QuestionTextArea from "../../../components/QuestionTextArea";
 
 const RowHeader = ({ t, onChange, value, size, ...restProps }) => (
   <Fragment>
     <Label data-cy="rowHeaderInput">{t("component.options.rowHeader")}</Label>
-    <CommonQuillInput toolbarId="row_header" onChange={onChange} showResponseBtn={false} value={value} {...restProps} />
+    <WidgetFRInput>
+      <QuestionTextArea toolbarId="row_header" toolbarSize="SM" placeholder={""} onChange={onChange} value={value} />
+    </WidgetFRInput>
   </Fragment>
 );
 

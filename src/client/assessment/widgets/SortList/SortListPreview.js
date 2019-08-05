@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { isEqual, get } from "lodash";
 import produce from "immer";
 
-import { Paper, FlexContainer, Stimulus, InstructorStimulus } from "@edulastic/common";
+import {
+  Paper,
+  FlexContainer,
+  Stimulus,
+  InstructorStimulus,
+  QuestionNumberLabel,
+  AnswerContext
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { SHOW, CLEAR } from "../../constants/constantsForQuestions";
@@ -21,7 +28,7 @@ import { FlexCol } from "./styled/FlexCol";
 import { IconUp } from "./styled/IconUp";
 import { IconDown } from "./styled/IconDown";
 import { getFontSize } from "../../utils/helpers";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 
 const styles = {
   dropContainerStyles: smallSize => ({
@@ -31,7 +38,7 @@ const styles = {
   wrapperStyles: smallSize => ({ marginTop: smallSize ? 0 : 40 })
 };
 const SortListPreview = ({
-  previewTab,
+  previewTab: _previewTab,
   t,
   smallSize,
   item,
@@ -39,8 +46,22 @@ const SortListPreview = ({
   saveAnswer,
   showQuestionNumber,
   disableResponse,
-  changePreviewTab
+  changePreviewTab,
+  isReviewTab
 }) => {
+  const answerContextConfig = useContext(AnswerContext);
+  let previewTab = _previewTab;
+  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+    /**
+     * ideally wanted to be in CHECK mode.
+     * But this component seems to be
+     * written to work with only SHOW & CLEAR
+     */
+    previewTab = SHOW;
+  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+    previewTab = CLEAR;
+  }
+
   const { source = [], instructor_stimulus, stimulus } = item;
 
   const getItemsFromUserAnswer = () =>
@@ -82,7 +103,12 @@ const SortListPreview = ({
   };
 
   const setActiveItem = activeItem => {
-    setActive(typeof activeItem === "string" ? activeItem : "");
+    if (previewTab === CLEAR) {
+      setActive(typeof activeItem === "string" ? activeItem : "");
+    } else {
+      changePreviewTab(CLEAR);
+      setActive(typeof activeItem === "string" ? activeItem : "");
+    }
   };
 
   const onRightLeftClick = () => {
@@ -99,6 +125,13 @@ const SortListPreview = ({
         saveAnswer(draft.selected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
       }
     });
+
+    // we want users to be able to interact with the items,
+    // when in other modes user can't do that
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
+
     setItems(newItems);
     setSelected(newSelected);
   };
@@ -125,6 +158,12 @@ const SortListPreview = ({
         }
       })
     );
+
+    // we want users to be able to interact with the items,
+    // when in other modes user can't do that
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
   };
 
   const drop = ({ obj, index, flag }) => ({ obj, index, flag });
@@ -140,7 +179,10 @@ const SortListPreview = ({
   let alt_responses = validation && validation.alt_responses && validation.alt_responses;
   alt_responses = alt_responses || [];
 
-  const inCorrectList = source.map((ans, i) => source[valid_response[i]]);
+  const validResponseCorrectList = source.map((ans, i) => source[valid_response[i]]);
+  const altResponseCorrectList = alt_responses.map((altResponse, arIndex) =>
+    source.map((ans, i) => source[alt_responses[arIndex].value[i]])
+  );
 
   const validRespCorrect = selected.filter(
     (selectedItem, i) => selectedItem && selectedItem === source[valid_response[i]]
@@ -159,7 +201,8 @@ const SortListPreview = ({
     fontSize,
     padding: smallSize,
     boxShadow: smallSize ? "none" : "",
-    overflow: "auto"
+    overflowX: "auto",
+    overflowY: "hidden"
   };
 
   return (
@@ -167,7 +210,7 @@ const SortListPreview = ({
       <InstructorStimulus>{instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
       </QuestionTitleWrapper>
 
@@ -204,9 +247,18 @@ const SortListPreview = ({
           ))}
         </FullWidthContainer>
 
-        <FlexWithMargins smallSize={smallSize}>
-          <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
-          <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+        <FlexWithMargins smallSize={smallSize} flexDirection={flexDirection}>
+          {orientation === "vertical" ? (
+            <>
+              <IconUp smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+              <IconDown smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+            </>
+          ) : (
+            <>
+              <IconLeft smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+              <IconRight smallSize={smallSize} onClick={!disableResponse ? onRightLeftClick : () => {}} />
+            </>
+          )}
         </FlexWithMargins>
 
         <FullWidthContainer>
@@ -230,7 +282,7 @@ const SortListPreview = ({
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
-                obj={disableResponse && userAnswer.length !== 0 ? inCorrectList[i] : selectedItem}
+                obj={userAnswer.length !== 0 ? selectedItem : isReviewTab === true ? validResponseCorrectList[i] : null}
                 disableResponse={disableResponse}
                 changePreviewTab={changePreviewTab}
               />
@@ -244,8 +296,14 @@ const SortListPreview = ({
         </FlexCol>
       </FlexContainer>
 
-      {previewTab === SHOW && (
-        <ShowCorrect source={source} list={inCorrectList} altResponses={alt_responses} correctList={valid_response} />
+      {(previewTab === SHOW || isReviewTab) && (
+        <ShowCorrect
+          source={source}
+          list={validResponseCorrectList}
+          altList={altResponseCorrectList}
+          altResponses={alt_responses}
+          correctList={valid_response}
+        />
       )}
     </Paper>
   );
@@ -261,7 +319,8 @@ SortListPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
-  changePreviewTab: PropTypes.func.isRequired
+  changePreviewTab: PropTypes.func.isRequired,
+  isReviewTab: PropTypes.bool
 };
 
 SortListPreview.defaultProps = {
@@ -270,7 +329,8 @@ SortListPreview.defaultProps = {
   item: {},
   showQuestionNumber: false,
   qIndex: null,
-  disableResponse: false
+  disableResponse: false,
+  isReviewTab: false
 };
 
 export default withNamespaces("assessment")(SortListPreview);

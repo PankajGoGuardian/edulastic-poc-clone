@@ -2,7 +2,16 @@ import { Link } from "react-router-dom";
 import { Card, Checkbox, Button, Menu } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, themeColor, white, linkColor, tabGrey, mainTextColor, title } from "@edulastic/colors";
+import {
+  mobileWidth,
+  smallDesktopWidth,
+  themeColor,
+  white,
+  linkColor,
+  tabGrey,
+  mainTextColor,
+  title
+} from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
@@ -56,18 +65,18 @@ export const CardDetailsContainer = styled.div`
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
-  margin-bottom: ${({ marginBottom }) => marginBottom || "20px"};
+  margin-bottom: ${({ marginBottom }) => marginBottom || "15px"};
   padding-right: ${({ paddingRight }) => paddingRight || "0px"};
 `;
 
 export const GraphContainer = styled(FlexContainer)`
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 `;
 
 export const StudentGrapContainer = styled(FlexContainer)`
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 `;
 
 export const StyledCard = styled(Card)`
@@ -75,7 +84,7 @@ export const StyledCard = styled(Card)`
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   .ant-card-body {
-    padding: 30px 30px 15px 30px;
+    padding: 20px 30px;
     padding-top: ${({ paddingTop }) => paddingTop}px;
   }
 `;
@@ -99,6 +108,10 @@ const StyledTabButton = styled.a`
   &:hover {
     background-color: ${themeColor};
     color: ${white};
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    padding: 6px 30px;
   }
 `;
 export const BothButton = styled(StyledTabButton)`
@@ -144,6 +157,10 @@ export const RedirectButton = styled(StyledTabButton)`
     circle {
       fill: ${themeColor};
     }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 130px;
   }
 `;
 

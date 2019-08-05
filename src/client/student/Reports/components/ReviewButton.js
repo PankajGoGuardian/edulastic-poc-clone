@@ -7,17 +7,20 @@ import styled from "styled-components";
 import Review from "../../styled/AssignmentCardButton";
 
 // show review button
-const ReviewButton = ({ testActivityId, title, t, attempted, activityReview, classId }) => (
+const ReviewButton = ({ testActivityId, title, t, attempted, activityReview, classId, testId, isPaused }) => (
   <ReviewButtonLink
     to={{
-      pathname: `/home/class/${classId}/testActivityReport/${testActivityId}`,
+      pathname: `/home/class/${classId}/test/${testId}/testActivityReport/${testActivityId}`,
       testActivityId,
       title
     }}
   >
     {attempted && activityReview ? (
-      <Review>
-        <span data-cy="reviewButton">{t("common.review")}</span>
+      <Review title={isPaused ? "Assignment is Paused , Please check with your instructor." : ""} disabled={isPaused}>
+        <span data-cy="reviewButton">
+          {t("common.review")}
+          {isPaused ? " (PAUSED)" : ""}
+        </span>
       </Review>
     ) : (
       ""

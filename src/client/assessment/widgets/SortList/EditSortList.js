@@ -90,6 +90,7 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
     <OptionsList
       prefix="options"
       readOnly
+      canDelete={false}
       items={
         correctTab === 0
           ? item.validation.valid_response.value.map(ind => item.source[ind])

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 
@@ -12,26 +11,13 @@ import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import { latexKeys } from "./constants";
 
 class ComposeQuestion extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.math.composeQuestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
 
     const handleItemChangeChange = (prop, uiStyle) => {
       setQuestionData(
@@ -43,7 +29,12 @@ class ComposeQuestion extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.math.composeQuestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.math.composeQuestion")}</Subtitle>
 
         <QuestionTextArea
@@ -52,7 +43,7 @@ class ComposeQuestion extends Component {
           value={item.stimulus}
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

@@ -17,6 +17,7 @@
     "hint": "Hint",
     "addANewHint": "Add a new hint",
     "options": {
+      "autoexpandoninput": "AUTO EXPAND ON INPUT",
       "instant_feedback": "Check answer button",
       "check_answer": "Check answer",
       "feedback_attempts": "Check answer attempts",
@@ -58,11 +59,13 @@
       "labelType": "Label type",
       "uppercase": "Uppercase alphabet",
       "lowercase": "Lowercase alphabet",
-      "responsecontainerposition": "Response Container Position",
+      "responsecontainerposition": "Response Box Position",
       "stemNumerationReviewOnly": "Stem numeration (review only)",
       "stemNumeration": "Stem numeration",
       "fontsize": "Font Size",
-      "responsecontainerglobal": "Response Container (global)",
+      "responsecontainerglobal": "Response Box (global)",
+      "responseBox": "Response Box",
+      "responseBoxOverride": "Box Sizes (override)",
       "widthpx": "Width (px)",
       "heightpx": "Height (px)",
       "lineWidth": "Line width (px)",
@@ -81,18 +84,21 @@
       "number": "number",
       "inputtype": "Input Type",
       "addnewresponsecontainer": "Add New Response Container",
-      "responsecontainerindividual": "Response Container",
-      "globalSettings": "Global Settings",
-      "responsecontainerindividuals": "Response container (individual)",
+      "responsecontainerindividual": "Response Box",
+      "globalSettings": "Default Settings",
+      "responsecontainerindividuals": "Individual Response Box",
       "newcurriculum": "New Curriculum",
       "newAligment": "New Aligment",
       "save": "Save",
       "templateFontScale": "Template font scale",
       "responseMinimumWidth": "Response minimum width (px)",
+      "defaultWidth": "Default Response Box Width (px)",
+      "defaultHeight": "Default Response Box Height (px)",
       "transparentBackground": "Transparent background",
       "responseContainer": "Response container",
       "response": "Response",
       "textBlocks": "Text Blocks",
+      "customkeys": "Custom Keys",
       "addTextBlock": "Add new text block",
       "addResponseContainer": "Add new response container",
       "additionalOptions": "Additional Options",
@@ -450,7 +456,12 @@
         "fileUploadedSuccessfully": "file uploaded successfully",
         "fileUploadFailed": "file upload failed",
         "yourOwnImage": "YOUR OWN Image",
-        "orBrowse": "OR BROWSE"
+        "orBrowse": "OR BROWSE",
+        "transparentbackground": "Transparent Background",
+        "showborder": "Show drop area border",
+        "snapfittodroparea": "Snap fit to drop Area",
+        "annotations": "Annotations",
+        "wrapTextToFitDropArea": "Wrap text to fit drop area"
       },
       "imageDropDown": {
         "composequestion": "Question",
@@ -489,7 +500,8 @@
         "yourOwnImage": "YOUR OWN Image",
         "orBrowse": "OR BROWSE",
         "shuffleoptions": "Shuffle Options",
-        "dragAndDrop": "Drag & Drop"
+        "dragAndDrop": "Drag & Drop",
+        "showborder": "Show drop area border"
       },
       "imageText": {
         "composequestion": "Question",
@@ -522,7 +534,8 @@
         "yourOwnImage": "YOUR OWN Image",
         "orBrowse": "OR BROWSE",
         "shuffleoptions": "Shuffle Options",
-        "dragAndDrop": "Drag & Drop"
+        "dragAndDrop": "Drag & Drop",
+        "showborder": "Show drop area border"
       },
       "dropDown": {
         "templatemarkup": "Template Markup",
@@ -640,7 +653,8 @@
       "maxVal": "Maximum value",
       "responseNumAllowed": "Number of responses allowed",
       "correctAnswer": "Correct Answer",
-      "alternateAnswer": "Alternate Answer"
+      "alternateAnswer": "Alternate Answer",
+      "shuffleAnswerChoices": "Shuffle Answer Choices"
     },
     "math": {
       "enterQuestion": "Enter question",
@@ -658,6 +672,8 @@
       "correctAnswers": "Correct Answer",
       "alternateAnswers": "Alternate Answer",
       "dot": "Dot",
+      "dropdown": "Dropdown",
+      "keypad": "Keypad",
       "comma": "Comma",
       "space": "Space",
       "decimal": "Decimal",
@@ -679,6 +695,8 @@
       "ignoreOrder": "Ignore order",
       "allowNumericOnly": "Restrict to numeric input",
       "allowedVariables": "Restrict variables used to",
+      "showDropdown": "Show units in",
+      "customizeunits": "Customize Units",
       "allowInterval": "Allow interval",
       "ignoreTrailingZeros": "Ignore trailing zeros in a decimal",
       "ignoreCoefficientOfOne": "Ignore a \"1\" in front of a variable",
@@ -720,7 +738,7 @@
       "choicesfordropdown": "Choices for Text Dropdown",
       "additionalOptions": "Additional Options",
       "setThousandsSeparator": "Set Thousands Separator",
-      "setEvaluation": "Set Evaluation",
+      "setEvaluation": "Interpret Response as Set",
       "setDecimalSeparator": "Set Decimal Separator"
     },
     "matrix": {
@@ -784,7 +802,9 @@
       "composequestion": "Question",
       "enterQuestion": "Enter Question",
       "enterContent": "Enter Question Contents",
-      "content": "Content"
+      "content": "Content",
+      "ignoreCase": "Ignore Case",
+      "mixNmatch": "Mix-n-Match alternative answers"
     }
   }
 }

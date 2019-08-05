@@ -4,22 +4,20 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { FeedbackByQIdSelector } from "../../sharedDucks/TestItem";
 //TODO user  response to show in UI
-const StudentFeedback = ({ question, qId, index }) => {
-  const currentQuestionReport = question[qId];
+const StudentFeedback = ({ question, qId, qLabel }) => {
+  const { score, maxScore, feedback } = question[qId] || {};
   return (
     <FeedbackWrapper>
       <FeedbackText>
-        <QuestionText>Q{index + 1}</QuestionText> - Teacher Feedback
+        <QuestionText>{qLabel}</QuestionText> - Teacher Feedback
       </FeedbackText>
       <FeedbackContainer>
         <ScoreWrapper>
-          <Score>{currentQuestionReport && currentQuestionReport.score}</Score>
-          <Total>{currentQuestionReport && currentQuestionReport.maxScore}</Total>
+          <Score>{score || score === 0 ? parseFloat(score.toFixed(2)) : "-"}</Score>
+          <Total>{maxScore}</Total>
         </ScoreWrapper>
         <Feedback>
-          <FeedbackGiven>
-            {currentQuestionReport && currentQuestionReport.feedback && currentQuestionReport.feedback.text}
-          </FeedbackGiven>
+          <FeedbackGiven>{feedback && feedback.text}</FeedbackGiven>
         </Feedback>
       </FeedbackContainer>
     </FeedbackWrapper>
@@ -28,7 +26,6 @@ const StudentFeedback = ({ question, qId, index }) => {
 
 StudentFeedback.propTypes = {
   question: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired,
   qId: PropTypes.number.isRequired
 };
 

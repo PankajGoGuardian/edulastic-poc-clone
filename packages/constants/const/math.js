@@ -99,7 +99,8 @@ const methodOptions = {
     "setThousandsSeparator",
     "allowedVariables",
     "setEvaluation",
-    "compareSides"
+    "compareSides",
+    "unit"
   ],
   [methods.EQUIV_LITERAL]: [
     "ariaLabel",
@@ -117,7 +118,6 @@ const methodOptions = {
     "inverseResult",
     "isMixedFraction",
     "isSimpleFraction",
-    "ignoreTrailingZeros",
     "ignoreText",
     "isUnit",
     "tolerance",

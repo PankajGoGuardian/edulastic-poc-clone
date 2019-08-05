@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
-import { isEqual, clamp } from "lodash";
+import { isEqual, clamp, differenceBy } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { response as Dimensions } from "@edulastic/constants";
+
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -13,9 +14,7 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
 import { Subtitle } from "../../../../styled/Subtitle";
-import { Widget } from "../../../../styled/Widget";
-
-import { response as Dimensions } from "@edulastic/constants";
+import Question from "../../../../components/Question";
 
 class Layout extends Component {
   state = {
@@ -24,29 +23,6 @@ class Layout extends Component {
   };
 
   globalHeight = React.createRef();
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   handleInputChange = e => {
     this.setState({
@@ -61,7 +37,7 @@ class Layout extends Component {
       const height = clamp(uiStyle.heightpx, minHeight, maxHeight);
       onChange("ui_style", {
         ...uiStyle,
-        heightpx: height
+        heightpx: parseInt(height, 10)
       });
     }
   };
@@ -82,7 +58,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, advancedAreOpen, t } = this.props;
+    const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -93,21 +69,7 @@ class Layout extends Component {
 
     const changeIndividualUiStyle = (prop, value, index) => {
       const { responsecontainerindividuals } = uiStyle;
-      const item = {};
-      Object.defineProperties(item, {
-        widthpx: {
-          value: responsecontainerindividuals[index].widthpx,
-          writable: true
-        },
-        heightpx: {
-          value: responsecontainerindividuals[index].heightpx,
-          writable: true
-        },
-        placeholder: {
-          value: responsecontainerindividuals[index].placeholder,
-          writable: true
-        }
-      });
+      const item = responsecontainerindividuals[index];
       item[prop] = value;
       responsecontainerindividuals[index] = item;
       onChange("ui_style", {
@@ -118,20 +80,27 @@ class Layout extends Component {
 
     const addIndividual = () => {
       const { responsecontainerindividuals } = uiStyle;
-      responsecontainerindividuals.push({
-        widthpx: 0,
-        heightpx: 0,
-        placeholder: ""
-      });
-      onChange("ui_style", {
-        ...uiStyle,
-        responsecontainerindividuals
-      });
+      const { responseIDs } = this.props;
+      const diff = differenceBy(responseIDs, responsecontainerindividuals, "id");
+      const response = diff[0];
+      if (response) {
+        responsecontainerindividuals[response.index] = {
+          id: response.id,
+          index: response.index,
+          widthpx: 0,
+          heightpx: 0,
+          placeholder: ""
+        };
+        onChange("ui_style", {
+          ...uiStyle,
+          responsecontainerindividuals
+        });
+      }
     };
 
     const removeIndividual = index => {
       const { responsecontainerindividuals } = uiStyle;
-      responsecontainerindividuals.splice(index, 1);
+      responsecontainerindividuals[index] = {};
       onChange("ui_style", {
         ...uiStyle,
         responsecontainerindividuals
@@ -154,16 +123,15 @@ class Layout extends Component {
       this.setState({ input: 0, focused: null });
     };
 
-    const getIndividualWidthInputValue = (responsecontainerindividual, index) =>
-      // eslint-disable-next-line react/destructuring-assignment
-      isEqual(this[`individualWidth${index}`], this.state.focused)
-        ? // eslint-disable-next-line react/destructuring-assignment
-          this.state.input || 0
-        : responsecontainerindividual.widthpx;
+    const getIndividualWidthInputValue = (responsecontainerindividual, index) => {
+      const { focused, input } = this.state;
+      return isEqual(this[`individualWidth${index}`], focused) ? input || 0 : responsecontainerindividual.widthpx;
+    };
 
-    const getMainWidthInputValue = () =>
-      // eslint-disable-next-line react/destructuring-assignment
-      isEqual(this.widthInput, this.state.focused) ? this.state.input || 0 : uiStyle.widthpx;
+    const getMainWidthInputValue = () => {
+      const { focused, input } = this.state;
+      return isEqual(this.widthInput, focused) ? input || 0 : uiStyle.widthpx;
+    };
 
     const onFocusHandler = (responsecontainerindividual, index) => () => {
       if (responsecontainerindividual !== undefined && index !== undefined) {
@@ -181,28 +149,15 @@ class Layout extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
         <Row>
-          {/* <Col md={6}>
-            <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
-            <Select
-              style={{ width: "80%" }}
-              onChange={val => changeUiStyle("stemnumeration", val)}
-              options={[
-                { value: "numerical", label: t("component.options.numerical") },
-                {
-                  value: "uppercase",
-                  label: t("component.options.uppercasealphabet")
-                },
-                {
-                  value: "lowercase",
-                  label: t("component.options.lowercasealphabet")
-                }
-              ]}
-              value={uiStyle.stemnumeration}
-            />
-          </Col> */}
           <Col md={6}>
             <Label>{t("component.options.fontSize")}</Label>
             <Select
@@ -254,80 +209,77 @@ class Layout extends Component {
               value={uiStyle.heightpx}
             />
           </Col>
-          {/* <Col md={6}>
-            <Label>{t("component.options.placeholder")}</Label>
-            <TextField
-              disabled={false}
-              containerStyle={{ width: 350 }}
-              style={textFieldStyles}
-              onChange={e => changeUiStyle("placeholder", e.target.value)}
-              value={uiStyle.placeholder}
-            />
-          </Col> */}
         </Row>
         <Row marginTop={13}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerindividuals")}</Label>
           </Col>
         </Row>
-        {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
-          <Container key={index}>
-            <Row>
-              <Col md={18}>
-                <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
-              </Col>
-              <Col md={6}>
-                <Delete onClick={() => removeIndividual(index)}>X</Delete>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Label>{t("component.options.widthpx")}</Label>
-                <TextField
-                  ref={ref => {
-                    this[`individualWidth${index}`] = ref;
-                  }}
-                  type="number"
-                  disabled={false}
-                  containerStyle={{ width: 350 }}
-                  style={textFieldStyles}
-                  onFocus={onFocusHandler(responsecontainerindividual, index)}
-                  onBlur={onWidthInputBlur(index)}
-                  onChange={this.handleInputChange}
-                  value={getIndividualWidthInputValue(responsecontainerindividual, index)}
-                />
-              </Col>
-              <Col md={6}>
-                <Label>{t("component.options.heightpx")}</Label>
-                <TextField
-                  type="number"
-                  disabled={false}
-                  containerStyle={{ width: 350 }}
-                  style={textFieldStyles}
-                  onBlur={() => this.handleBlurIndividualHeight(index)}
-                  onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
-                  value={responsecontainerindividual.heightpx}
-                />
-              </Col>
-              <Col md={6}>
-                <Label>{t("component.options.placeholder")}</Label>
-                <TextField
-                  disabled={false}
-                  containerStyle={{ width: 350 }}
-                  style={textFieldStyles}
-                  onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
-                  value={uiStyle.placeholder}
-                />
-              </Col>
-            </Row>
-          </Container>
-        ))}
+        {uiStyle.responsecontainerindividuals.map(responsecontainerindividual => {
+          if (!responsecontainerindividual.id) {
+            return null;
+          }
+          const respIndex = responsecontainerindividual.index;
+
+          return (
+            <Container key={responsecontainerindividual.id}>
+              <Row>
+                <Col md={18}>
+                  <Label>{`${t("component.options.responsecontainerindividual")} ${respIndex + 1}`}</Label>
+                </Col>
+                <Col md={6}>
+                  <Delete onClick={() => removeIndividual(respIndex)}>X</Delete>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={6}>
+                  <Label>{t("component.options.widthpx")}</Label>
+                  <TextField
+                    ref={ref => {
+                      this[`individualWidth${respIndex}`] = ref;
+                    }}
+                    type="number"
+                    disabled={false}
+                    containerStyle={{ width: 350 }}
+                    style={textFieldStyles}
+                    onFocus={onFocusHandler(responsecontainerindividual, respIndex)}
+                    onBlur={onWidthInputBlur(respIndex)}
+                    onChange={this.handleInputChange}
+                    value={getIndividualWidthInputValue(responsecontainerindividual, respIndex)}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Label>{t("component.options.heightpx")}</Label>
+                  <TextField
+                    type="number"
+                    disabled={false}
+                    containerStyle={{ width: 350 }}
+                    style={textFieldStyles}
+                    onBlur={() => this.handleBlurIndividualHeight(respIndex)}
+                    onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, respIndex)}
+                    value={responsecontainerindividual.heightpx}
+                  />
+                </Col>
+                <Col md={6}>
+                  <Label>{t("component.options.placeholder")}</Label>
+                  <TextField
+                    disabled={false}
+                    containerStyle={{ width: 350 }}
+                    style={textFieldStyles}
+                    onChange={e => changeIndividualUiStyle("placeholder", e.target.value, respIndex)}
+                    value={responsecontainerindividual.placeholder}
+                  />
+                </Col>
+              </Row>
+            </Container>
+          );
+        })}
         <Row>
           <Col md={12}>
-            <AddNewChoiceBtn onClick={() => addIndividual()}>{t("component.options.add")}</AddNewChoiceBtn>
+            <AddNewChoiceBtn onClick={addIndividual}>{t("component.options.add")}</AddNewChoiceBtn>
           </Col>
         </Row>
-      </Widget>
+      </Question>
     );
   }
 }
@@ -336,14 +288,13 @@ Layout.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   t: PropTypes.func.isRequired,
-  outerStyle: PropTypes.object,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  responseIDs: PropTypes.array
 };
 
 Layout.defaultProps = {
-  outerStyle: {},
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
@@ -353,6 +304,7 @@ Layout.defaultProps = {
     placeholder: "",
     responsecontainerindividuals: []
   },
+  responseIDs: [],
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

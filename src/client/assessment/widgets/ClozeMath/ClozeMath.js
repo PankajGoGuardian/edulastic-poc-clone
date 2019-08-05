@@ -1,8 +1,8 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
-import { Paper, WithResources, InstructorStimulus } from "@edulastic/common";
+import { Paper, WithResources, InstructorStimulus, AnswerContext, QuestionNumberLabel } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -17,7 +17,7 @@ import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { changePreviewAction } from "../../../author/src/actions/view";
 import { ContentArea } from "../../styled/ContentArea";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/Label";
+import { QuestionTitleWrapper } from "./styled/Label";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -41,8 +41,17 @@ const ClozeMath = ({
   instructorStimulus,
   showQuestionNumber,
   flowLayout,
+  t,
   ...restProps
 }) => {
+  const answerContextConfig = useContext(AnswerContext);
+  let actualPreviewMode = previewTab;
+  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+    actualPreviewMode = "check";
+  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+    actualPreviewMode = "clear";
+  }
+
   const { col } = restProps;
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
@@ -86,12 +95,29 @@ const ClozeMath = ({
       fallBack={<span />}
       onLoaded={() => {}}
     >
-      {!flowLayout ? (
-        <>
-          <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-          <QuestionTitleWrapper>{showQuestionNumber && <QuestionNumber>{qLabel}</QuestionNumber>}</QuestionTitleWrapper>
-        </>
-      ) : null}
+      <>
+        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+        <QuestionTitleWrapper>
+          {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel> : null}
+
+          {view === PREVIEW && (
+            <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
+              <ClozeMathPreview
+                type={actualPreviewMode}
+                item={itemForPreview}
+                stimulus={item.stimulus}
+                options={item.options || {}}
+                responseIds={item.response_ids}
+                saveAnswer={saveAnswer}
+                check={checkAnswer}
+                userAnswer={userAnswer}
+                evaluation={evaluation}
+                {...restProps}
+              />
+            </Paper>
+          )}
+        </QuestionTitleWrapper>
+      </>
 
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
@@ -114,6 +140,7 @@ const ClozeMath = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
             onChangeKeypad={handleKeypadMode}
+            t={t}
           />
           <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
@@ -127,26 +154,11 @@ const ClozeMath = ({
             instructorStimulus={item.instructor_stimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
+            showResponseBoxes
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
         </ContentArea>
-      )}
-      {view === PREVIEW && (
-        <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
-          <ClozeMathPreview
-            type={previewTab}
-            item={itemForPreview}
-            stimulus={item.stimulus}
-            options={item.options || {}}
-            responseIds={item.response_ids}
-            saveAnswer={saveAnswer}
-            check={checkAnswer}
-            userAnswer={userAnswer}
-            evaluation={evaluation}
-            {...restProps}
-          />
-        </Paper>
       )}
     </WithResources>
   );
@@ -184,8 +196,7 @@ ClozeMath.defaultProps = {
 const enhance = compose(
   withTutorial("clozeMath"),
   connect(
-    (state, { item }) => ({
-      evaluation: state.evaluation[item.id],
+    state => ({
       isSidebarCollapsed: state.authorUi.isSidebarCollapsed
     }),
     {

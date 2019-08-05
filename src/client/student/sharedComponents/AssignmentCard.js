@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { extraDesktopWidth, mobileWidthMax } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
@@ -74,6 +75,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     close = false,
     _id: assignmentId,
     safeBrowser,
+    isPaused = false,
     testType,
     class: clazz = [],
     maxAttempts = 1,
@@ -91,6 +93,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     close = maxCurrentClass.close;
     startDate = maxCurrentClass.startDate;
     endDate = maxCurrentClass.endDate;
+    isPaused = maxCurrentClass.isPaused;
   }
   if (!startDate && open) {
     const maxCurrentClass =
@@ -98,6 +101,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         ? maxBy(currentClassList, "openDate") || currentClassList[currentClassList.length - 1]
         : {};
     startDate = maxCurrentClass.openDate;
+    isPaused = maxCurrentClass.isPaused;
   }
   if (!endDate && close) {
     endDate = (currentClass && currentClass.length > 0
@@ -185,6 +189,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         safeBrowser={safeBrowser}
         graded={graded}
         absent={absent}
+        isPaused={isPaused}
       />
       <ButtonAndDetail>
         <DetailContainer>
@@ -222,6 +227,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
                 safeBrowser={safeBrowser}
                 startDate={startDate}
                 t={t}
+                isPaused={isPaused}
                 startTest={startTest}
                 attempted={attempted}
                 resume={resume}
@@ -232,6 +238,8 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
             !absent && (
               <ReviewButton
                 data-cy="review"
+                testId={testId}
+                isPaused={isPaused}
                 testActivityId={lastAttempt._id}
                 title={test.title}
                 activityReview={activityReview}
@@ -289,14 +297,20 @@ AssignmentCard.propTypes = {
 
 const CardWrapper = styled(Row)`
   display: flex;
-  padding: 28px 0;
+  padding: 28px 10px 28px 18px;
   border-bottom: 1px solid #f2f2f2;
+
   &:last-child {
     border-bottom: 0px;
   }
-  @media screen and (max-width: 767px) {
+
+  @media (max-width: ${extraDesktopWidth}) {
+    padding: 20px 10px 20px 11px;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
-    padding: 10px 0;
+    padding: 24px 0;
   }
 `;
 
@@ -342,7 +356,8 @@ const DetailContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  @media screen and (max-width: 1024px) {
+
+  @media screen and (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
 `;

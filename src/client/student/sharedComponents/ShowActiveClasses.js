@@ -3,21 +3,40 @@ import { Select } from "antd";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-// TODO: remove static data
-const options = ["ARCHIVE (0)", "ACTIVE (0)"];
+import { extraDesktopWidthMax } from "@edulastic/colors";
 
-const ShowActiveClasses = ({ t }) => (
-  <ManageActiveClasses id="active-class-dropdown">
-    <ClassLabel>{t("common.showLabel")}</ClassLabel>
-    <Select getPopupContainer={() => document.getElementById("active-class-dropdown")} defaultValue="ACTIVE (0)">
-      {options.map((option, i) => (
-        <Select.Option key={i} value={option}>
-          {option}
-        </Select.Option>
-      ))}
-    </Select>
-  </ManageActiveClasses>
-);
+const ShowActiveClasses = ({ t, classList, setClassList, setShowClass }) => {
+  const activeClasses = classList.filter(c => c.active === 1);
+  const archiveClasses = classList.filter(c => c.active === 0);
+  const options = [`ACTIVE (${activeClasses.length})`, `ARCHIVE (${archiveClasses.length})`];
+  const showClassHandler = val => {
+    const key = val.split(" ")[0];
+    if (key === "ACTIVE") {
+      setClassList(activeClasses);
+      setShowClass("ACTIVE");
+    } else if (key === "ARCHIVE") {
+      setClassList(archiveClasses);
+      setShowClass("INACTIVE");
+    }
+  };
+
+  return (
+    <ManageActiveClasses id="active-class-dropdown">
+      <ClassLabel>{t("common.showLabel")}</ClassLabel>
+      <Select
+        getPopupContainer={() => document.getElementById("active-class-dropdown")}
+        defaultValue={options[0]}
+        onChange={value => showClassHandler(value)}
+      >
+        {options.map((option, i) => (
+          <Select.Option key={i} value={option}>
+            {option}
+          </Select.Option>
+        ))}
+      </Select>
+    </ManageActiveClasses>
+  );
+};
 
 ShowActiveClasses.propTypes = {
   t: PropTypes.func.isRequired
@@ -30,7 +49,11 @@ const ManageActiveClasses = styled.div`
 
   .ant-select {
     height: 40px;
-    width: 240px;
+    width: 190px;
+
+    @media (min-width: ${extraDesktopWidthMax}) {
+      width: 240px;
+    }
   }
   .ant-select-selection {
     border: 0px;

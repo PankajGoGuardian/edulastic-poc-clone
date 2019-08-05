@@ -1,12 +1,12 @@
 import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Rnd } from "react-rnd";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { cloneDeep, isUndefined, maxBy } from "lodash";
+import uuidv4 from "uuid/v4";
+import { isUndefined, maxBy, get } from "lodash";
 import produce from "immer";
 import { themeColor } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
@@ -16,7 +16,7 @@ import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 // import { API_CONFIG, TokenStorage } from "@edulastic/api";
-import { PaddingDiv, EduButton } from "@edulastic/common";
+import { PaddingDiv, EduButton, beforeUpload } from "@edulastic/common";
 
 import { clozeImage, aws } from "@edulastic/constants";
 import { updateVariables } from "../../utils/variables";
@@ -45,10 +45,9 @@ import { FieldWrapper } from "./styled/FieldWrapper";
 import { FieldLabel } from "./styled/FieldLabel";
 import { ResponsTextInputWrapper } from "./styled/ResponsTextInputWrapper";
 import { UploadButton } from "./styled/UploadButton";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
-import { beforeUpload } from "@edulastic/common";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -80,23 +79,9 @@ class ComposeQuestion extends Component {
   };
 
   state = {
-    isEditableResizeMove: false
+    isEditableResizeMove: false,
+    isResizingImage: false
   };
-
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    if (item.imageUrl) this.getImageDimensions(item.imageUrl);
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.cloze.imageDropDown.composequestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -150,6 +135,18 @@ class ComposeQuestion extends Component {
 
         newItem[prop] = value;
         updateVariables(newItem);
+      })
+    );
+  };
+
+  onResponsePropChange = (prop, value) => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.responseLayout = draft.responseLayout || {};
+        draft.responseLayout[prop] = value;
+
+        updateVariables(draft);
       })
     );
   };
@@ -229,10 +226,7 @@ class ComposeQuestion extends Component {
     try {
       const { t } = this.props;
       const { file } = info;
-      if (!file.type.match(/image/g)) {
-        message.error("Please upload files in image format");
-        return;
-      } else if (!beforeUpload(file)) {
+      if (!beforeUpload(file)) {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
@@ -284,28 +278,26 @@ class ComposeQuestion extends Component {
 
   changeImageLeft = left => {
     const { item, setQuestionData } = this.props;
-    const oldImageOption = cloneDeep(item.imageOptions);
 
     setQuestionData(
       produce(item, draft => {
-        draft.imageOptions = { ...oldImageOption, x: left };
+        draft.imageOptions = { ...draft.imageOptions, x: left };
       })
     );
   };
 
   chnageImageTop = top => {
     const { item, setQuestionData } = this.props;
-    const oldImageOption = cloneDeep(item.imageOptions);
 
     setQuestionData(
       produce(item, draft => {
-        draft.imageOptions = { ...oldImageOption, y: top };
+        draft.imageOptions = { ...draft.imageOptions, y: top };
       })
     );
   };
 
-  toggleIsMoveResizeEditable = () => {
-    this.setState(prevState => ({ isEditableResizeMove: !prevState.isEditableResizeMove }));
+  toggleIsMoveResizeEditable = isAvaiable => () => {
+    this.setState({ isEditableResizeMove: isAvaiable });
   };
 
   handleDragStop = d => {
@@ -345,6 +337,10 @@ class ComposeQuestion extends Component {
     this.canvasRef.current.style.height = `${canvasH}px`;
   };
 
+  handleResizeStart = () => {
+    this.setState({ isResizingImage: true });
+  };
+
   handleResizeStop = resizeRef => {
     const { width } = resizeRef.style;
     const { height } = resizeRef.style;
@@ -359,6 +355,10 @@ class ComposeQuestion extends Component {
         draft.imageWidth = _width;
       })
     );
+
+    setTimeout(() => {
+      this.setState({ isResizingImage: false });
+    });
   };
 
   handleResizing = resizeRef => {
@@ -438,20 +438,72 @@ class ComposeQuestion extends Component {
     const {
       item: { responses }
     } = this.props;
-    const maxTop = maxBy(responses, res => res.top);
-    const maxLeft = maxBy(responses, res => res.left);
-    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+
+    if (responses.length > 0) {
+      const maxTop = maxBy(responses, res => res.top);
+      const maxLeft = maxBy(responses, res => res.left);
+      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+    }
+
+    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
+  };
+
+  addNewRespnose = e => {
+    if (!this.canvasRef.current) {
+      return;
+    }
+
+    const isContainer = e.target === this.canvasRef.current;
+    const isDragItem = e.target.classList.contains("react-draggable");
+    const { isEditableResizeMove, isResizingImage } = this.state;
+
+    if ((!isContainer && !isDragItem) || isEditableResizeMove || isResizingImage) {
+      return;
+    }
+    const { item, setQuestionData } = this.props;
+
+    const newResponseContainer = {};
+    const elemRect = this.canvasRef.current.getBoundingClientRect();
+    const _width = get(item, "ui_style.width", 150);
+    const _height = get(item, "ui_style.height", 40);
+
+    newResponseContainer.top = e.clientY - elemRect.top;
+    newResponseContainer.left = e.clientX - elemRect.left;
+    newResponseContainer.width = _width;
+    newResponseContainer.height = _height;
+    newResponseContainer.active = true;
+    newResponseContainer.id = uuidv4();
+
+    setQuestionData(
+      produce(item, draft => {
+        draft.responses = draft.responses.map(res => {
+          res.active = false;
+          return res;
+        });
+
+        draft.responses.push(newResponseContainer);
+        draft.options.push([]);
+
+        updateVariables(draft);
+      })
+    );
   };
 
   render() {
-    const { t, item, theme, setQuestionData } = this.props;
-    const { background, imageAlterText, isEditAriaLabels, responses, keepAspectRatio } = item;
+    const { t, item, theme, setQuestionData, fillSections, cleanSections } = this.props;
+    const {
+      background,
+      imageAlterText,
+      isEditAriaLabels,
+      responses,
+      keepAspectRatio,
+      responseLayout,
+      imageOptions = {}
+    } = item;
     const { isEditableResizeMove } = this.state;
 
     const { toggleIsMoveResizeEditable, handleDragStop } = this;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
-
-    const { imageOptions = {} } = item;
 
     const { maxHeight, maxWidth } = clozeImage;
 
@@ -492,7 +544,12 @@ class ComposeQuestion extends Component {
     return (
       <div>
         <PaddingDiv>
-          <Widget>
+          <Question
+            section="main"
+            label={t("component.cloze.imageDropDown.composequestion")}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          >
             <Subtitle>{t("component.cloze.imageDropDown.composequestion")}</Subtitle>
 
             <QuestionTextArea
@@ -598,6 +655,7 @@ class ComposeQuestion extends Component {
                   imageUrl={item.imageUrl}
                   style={{ height: canvasHeight, width: canvasWidth }}
                   onDragStart={e => e.preventDefault()}
+                  onClick={this.addNewRespnose}
                   innerRef={this.canvasRef}
                 >
                   {item.imageUrl && (
@@ -620,22 +678,23 @@ class ComposeQuestion extends Component {
                           topLeft: false,
                           topRight: false
                         }}
+                        disableDragging={!isEditableResizeMove}
                         lockAspectRatio={item.keepAspectRatio}
                         onDragStop={(evt, d) => handleDragStop(d)}
                         onDrag={(evt, d) => this.handleDragging(d)}
                         onResizeStop={(e, direction, ref) => this.handleResizeStop(ref)}
                         onResize={(e, direction, ref) => this.handleResizing(ref)}
+                        onResizeStart={this.handleResizeStart}
                       >
-                        {isEditableResizeMove && (
-                          <MoveControlButton
-                            onClick={toggleIsMoveResizeEditable}
-                            style={{
-                              boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
-                            }}
-                          >
-                            <IconMoveResize />
-                          </MoveControlButton>
-                        )}
+                        <MoveControlButton
+                          onMouseEnter={toggleIsMoveResizeEditable(true)}
+                          onMouseLeave={toggleIsMoveResizeEditable(false)}
+                          style={{
+                            boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
+                          }}
+                        >
+                          <IconMoveResize />
+                        </MoveControlButton>
                         <PreviewImage
                           style={{ width: imageWidth, height: imageHeight }}
                           maxWidth={maxWidth}
@@ -646,13 +705,13 @@ class ComposeQuestion extends Component {
                         />
                       </Rnd>
                       <DropArea
+                        isDropDown
+                        item={item}
+                        showIndex={false}
                         disable={isEditableResizeMove}
                         setQuestionData={setQuestionData}
                         updateData={this.updateData}
-                        item={item}
-                        width="100%"
-                        showIndex={false}
-                        isDropDown
+                        containerRef={this.canvasRef}
                       />
                     </React.Fragment>
                   )}
@@ -677,18 +736,6 @@ class ComposeQuestion extends Component {
                       </p>
                     </Dragger>
                   )}
-                  {!isEditableResizeMove && (
-                    <MoveControlButton
-                      onClick={toggleIsMoveResizeEditable}
-                      top={imageTop + imageHeight - 14}
-                      left={imageLeft + imageWidth - 14}
-                      style={{
-                        boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
-                      }}
-                    >
-                      <IconMoveResize />
-                    </MoveControlButton>
-                  )}
                 </ImageContainer>
               </ImageFlexView>
             </FlexContainer>
@@ -705,6 +752,13 @@ class ComposeQuestion extends Component {
                   onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
                 >
                   {t("component.cloze.imageDropDown.editAriaLabels")}
+                </Checkbox>
+                <Checkbox
+                  data-cy="drag-drop-image-border-check"
+                  defaultChecked={responseLayout && responseLayout.showborder}
+                  onChange={val => this.onResponsePropChange("showborder", val.target.checked)}
+                >
+                  {t("component.cloze.imageDropDown.showborder")}
                 </Checkbox>
               </CheckContainer>
             </FlexContainer>
@@ -736,7 +790,7 @@ class ComposeQuestion extends Component {
                 </React.Fragment>
               )}
             </PaddingDiv>
-          </Widget>
+          </Question>
         </PaddingDiv>
       </div>
     );

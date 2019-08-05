@@ -13,7 +13,8 @@ import {
   InstructorStimulus,
   CorrectAnswersContainer,
   FlexContainer,
-  MathFormulaDisplay
+  MathFormulaDisplay,
+  QuestionNumberLabel
 } from "@edulastic/common";
 
 import { Text } from "./styled/Text";
@@ -44,11 +45,6 @@ const QuestionTitleWrapper = styled.div`
   display: flex;
 `;
 
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
-`;
-
 const OptionsList = withPoints(QuillSortableList);
 
 const OrderList = ({
@@ -70,7 +66,8 @@ const OrderList = ({
   theme,
   disableResponse,
   t,
-  changePreviewTab
+  changePreviewTab,
+  isReviewTab
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
@@ -82,8 +79,8 @@ const OrderList = ({
   }, [item, userAnswer]);
 
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
-  const styleType = get(item, "ui_style.type", "list");
-  const axis = styleType === "inline" ? "x" : "y";
+  const styleType = get(item, "ui_style.type", "button");
+  const axis = styleType === "inline" ? "xy" : "y";
   const columns = styleType === "inline" ? 3 : 1;
 
   const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
@@ -161,6 +158,7 @@ const OrderList = ({
       onSortEnd={handleCorrectSortEnd}
       useDragHandle
       columns={columns}
+      styleType={styleType}
       points={
         correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }
@@ -246,10 +244,11 @@ const OrderList = ({
           <InstructorStimulus>{itemForPreview.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             <QuestionHeader
               qIndex={qIndex}
               smallSize={smallSize}
+              padding="0px"
               dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
             />
           </QuestionTitleWrapper>
@@ -261,12 +260,13 @@ const OrderList = ({
               previewIndexesList={userAnswer}
               evaluation={evaluation || (item && item.activity ? item.activity.evaluation : evaluation)}
               listStyle={{ fontSize }}
+              styleType={styleType}
               axis={axis}
               columns={columns}
             />
           )}
 
-          {previewTab === SHOW && (
+          {previewTab === SHOW || isReviewTab ? (
             <Fragment>
               <OrderListReport
                 onSortEnd={onSortPreviewEnd}
@@ -275,6 +275,7 @@ const OrderList = ({
                 evaluation={evaluationFromAnswers}
                 validation={itemForPreview.validation}
                 list={itemForPreview.list}
+                styleType={styleType}
                 listStyle={{ fontSize }}
                 disableResponse={disableResponse}
                 axis={axis}
@@ -316,7 +317,7 @@ const OrderList = ({
                 </CorrectAnswersContainer>
               )}
             </Fragment>
-          )}
+          ) : null}
 
           {previewTab === CLEAR && (
             <OrderListPreview
@@ -324,6 +325,7 @@ const OrderList = ({
               questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
               smallSize={smallSize}
               listStyle={{ fontSize }}
+              styleType={styleType}
               axis={axis}
               columns={columns}
               disableResponse={disableResponse}
@@ -353,7 +355,8 @@ OrderList.propTypes = {
   showQuestionNumber: PropTypes.bool,
   theme: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  isReviewTab: PropTypes.bool
 };
 
 OrderList.defaultProps = {
@@ -367,7 +370,8 @@ OrderList.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
   showQuestionNumber: false,
-  disableResponse: false
+  disableResponse: false,
+  isReviewTab: false
 };
 
 const enhance = compose(

@@ -5,8 +5,8 @@ import PropTypes from "prop-types";
 import { Button, Tag, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, MoveLink, PremiumTag } from "@edulastic/common";
-import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
-import { greenDark } from "@edulastic/colors";
+import { IconShare, IconHeart, IconUser, IconHash, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
+import { greenDark, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { cloneDeep, uniq as _uniq } from "lodash";
 
@@ -27,7 +27,6 @@ import {
   getTestItemsSelector
 } from "../../AddItems/ducks";
 
-import { AudioIcon } from "../../../../ItemList/components/Item/styled";
 import { getUserId } from "../../../../src/selectors/user";
 
 class MetaInfoCell extends Component {
@@ -113,7 +112,7 @@ class MetaInfoCell extends Component {
       subjects: _uniq([...subjects, ...questionSubjects]),
       grades: _uniq([...grades, ...questionGrades])
     });
-    if (!test._id) {
+    if (!test._id && testItems.length === 1) {
       setDataAndSave(newTest);
     } else {
       setTestData(newTest);
@@ -168,8 +167,8 @@ class MetaInfoCell extends Component {
         <StyledButton
           onClick={() => this.handleSelection(data)}
           style={{
-            border: this.isAddOrRemove ? "1px solid #00b0ff" : "1px solid #ee1658",
-            color: this.isAddOrRemove ? "#00b0ff" : "#ee1658",
+            border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+            color: this.isAddOrRemove ? themeColor : "#ff0099",
             marginTop: 15,
             width: "100%"
           }}
@@ -203,8 +202,8 @@ class MetaInfoCell extends Component {
             <StyledButton
               onClick={() => this.handleSelection(data)}
               style={{
-                border: "none",
-                color: this.isAddOrRemove ? "#00b0ff" : "#ff0099"
+                border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+                color: this.isAddOrRemove ? themeColor : "#ff0099"
               }}
             >
               {this.isAddOrRemove ? "ADD" : "REMOVE"}
@@ -247,9 +246,7 @@ class MetaInfoCell extends Component {
                   <FirstText>{data.likes}</FirstText>
                 </MetaWrapper>
                 {data.audio.hasOwnProperty("ttsSuccess") ? (
-                  <MetaWrapper>
-                    <AudioIcon className="fa fa-volume-up" success={data.audio.ttsSuccess} />
-                  </MetaWrapper>
+                  <MetaWrapper>{data.audio.ttsSuccess ? <IconVolumeUp /> : <IconNoVolume />}</MetaWrapper>
                 ) : (
                   ""
                 )}

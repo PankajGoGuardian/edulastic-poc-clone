@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 
 import { withNamespaces } from "@edulastic/localization";
 
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import withAddButton from "../../../components/HOC/withAddButton";
 
 import ColorPickers from "./ColorPickers";
@@ -14,21 +13,8 @@ import ColorPickers from "./ColorPickers";
 const LineColors = withAddButton(ColorPickers);
 
 class LineColorOptionsSubtitle extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.highlightImage.lineColorOptionsSubtitle"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, line_color, t } = this.props;
+    const { item, setQuestionData, line_color, t, fillSections, cleanSections } = this.props;
 
     const hexToRGB = (hex, alpha) => {
       const r = parseInt(hex.slice(1, 3), 16);
@@ -68,7 +54,12 @@ class LineColorOptionsSubtitle extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.highlightImage.lineColorOptionsSubtitle")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.highlightImage.lineColorOptionsSubtitle")}</Subtitle>
 
         <LineColors
@@ -78,7 +69,7 @@ class LineColorOptionsSubtitle extends Component {
           buttonText={t("component.highlightImage.addButtonText")}
           onAdd={handleAddLineColor}
         />
-      </Widget>
+      </Question>
     );
   }
 }

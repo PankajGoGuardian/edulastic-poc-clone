@@ -48,11 +48,11 @@ const fetchAssigned = groupId =>
 
 const fetchTeacherAssignments = ({
   groupId = "",
-  filters: { grades = [], subject = "", termId = "", testType = "" }
+  filters: { grades = [], subject = "", termId = "", testType = "", classId = "" }
 }) =>
   api
     .callApi({
-      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}`,
+      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}&classId=${classId}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -100,12 +100,12 @@ const redirect = (assignmentId, data) =>
     })
     .then(result => result.data.result);
 
-const fetchAssignmentsSummary = ({ districtId = "", filters }) =>
+const fetchAssignmentsSummary = ({ districtId = "", filters, sort }) =>
   api
     .callApi({
       url: `${prefix}/district/${districtId}`,
       method: "get",
-      params: filters
+      params: { ...filters, ...sort }
     })
     .then(result => result.data.result);
 

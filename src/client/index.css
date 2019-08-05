@@ -911,7 +911,17 @@ textinput {
   min-height: 35px;
   white-space: nowrap;
 }
-
+paragraphnumber {
+  padding: 0 5px;
+  margin-right: 10px;
+  min-height: 10px;
+  color: #fff;
+  line-height: 1.5;
+  background-color: #70ce70;
+  cursor: pointer;
+  position: relative;
+  min-width: 20px;
+}
 response {
   min-width: 120px;
   min-height: 30px;
@@ -1016,7 +1026,7 @@ textinput::before {
   display: flex;
   align-items: center;
   border-radius: 5px;
-  z-index: 9;
+  z-index: 30;
 }
 
 .imagelabeldragdrop-droppable .index-box {
@@ -1889,6 +1899,10 @@ span.token.active-word {
   font-weight: 400;
 }
 
+.katex .mfrac .frac-line {
+  min-height: 1vh !important;
+}
+
 @media (max-width: 992px) {
   .jsx-parser p {
     font-size: 14px;
@@ -2013,6 +2027,11 @@ span.token.active-word {
   border-color: #00ad50;
 }
 
+.ant-btn:hover,
+.ant-btn:focus {
+  border-color: #00ad50;
+}
+
 .ant-tabs-nav .ant-tabs-tab-active,
 .ant-tabs-nav .ant-tabs-tab:hover {
   color: #00ad50;
@@ -2020,4 +2039,25 @@ span.token.active-word {
 
 .ant-tabs-ink-bar {
   background-color: #00ad50;
+}
+
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on,
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on {
+  color: #00ad50;
+}
+
+.ant-select-focused .ant-select-selection,
+.ant-select-selection:focus,
+.ant-select-selection:active {
+  box-shadow: 0px 0px 1px 1px #5eb50066;
+}
+
+.ant-modal-wrap.test-preview-modal {
+  overflow: unset;
+  width: 100%;
+  height: 100vh;
+}
+
+.ant-message-info .anticon {
+  color: #f9942d;
 }

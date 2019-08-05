@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
 import { isUndefined, get, maxBy } from "lodash";
-import { helpers, Stimulus } from "@edulastic/common";
+import { helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import { clozeImage } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
@@ -17,7 +17,7 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import ClozeTextInput from "../../components/ClozeTextInput";
 import { Pointer } from "../../styled/Pointer";
@@ -119,9 +119,13 @@ class Display extends Component {
 
   getResponseBoxMaxValues = () => {
     const { responseContainers } = this.props;
-    const maxTop = maxBy(responseContainers, response => response.top);
-    const maxLeft = maxBy(responseContainers, response => response.left);
-    return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+    if (responseContainers.length > 0) {
+      const maxTop = maxBy(responseContainers, res => res.top);
+      const maxLeft = maxBy(responseContainers, res => res.left);
+      return { responseBoxMaxTop: maxTop.top + maxTop.height, responseBoxMaxLeft: maxLeft.left + maxLeft.width };
+    }
+
+    return { responseBoxMaxTop: 0, responseBoxMaxLeft: 0 };
   };
 
   onClickCheckboxHandler = () => {
@@ -154,12 +158,13 @@ class Display extends Component {
       isReviewTab
     } = this.props;
     const cAnswers = get(item, "validation.valid_response.value", []);
+    const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers: _uAnswers } = this.state;
 
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { height, wordwrap, stemnumeration } = uiStyle;
+    const { height, wordwrap, stemnumeration, responsecontainerindividuals } = uiStyle;
 
     const responseBtnStyle = {
       width: uiStyle.width !== 0 ? uiStyle.width : "auto",
@@ -202,15 +207,19 @@ class Display extends Component {
           />
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
+            const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex] || {};
+
             const btnStyle = {
               fontSize,
-              width: `${uiStyle.widthpx}px` || responseContainer.width,
+              width: individualW || uiStyle.widthpx || responseContainer.width,
+              height: individualH || uiStyle.height || responseContainer.height,
               top: uiStyle.top || responseContainer.top,
               left: uiStyle.left || responseContainer.left,
-              height: uiStyle.height || responseContainer.height,
-              border: showDashedBorder
-                ? `dashed 2px ${theme.widgets.clozeImageText.responseContainerDashedBorderColor}`
-                : `solid 1px ${theme.widgets.clozeImageText.responseContainerSolidBorderColor}`,
+              border: showDropItemBorder
+                ? showDashedBorder
+                  ? `dashed 2px ${theme.widgets.clozeImageText.responseContainerDashedBorderColor}`
+                  : `solid 1px ${theme.widgets.clozeImageText.responseContainerSolidBorderColor}`
+                : 0,
               position: "absolute",
               background: backgroundColor,
               borderRadius: 5,
@@ -230,11 +239,7 @@ class Display extends Component {
                       : null
                     : null
                 }
-                style={{
-                  ...btnStyle,
-                  height: `${parseInt(responseContainer.height, 10)}px`,
-                  width: `${parseInt(responseContainer.width, 10)}px`
-                }}
+                style={{ ...btnStyle }}
               >
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
@@ -246,7 +251,7 @@ class Display extends Component {
                   noIndent={responseWidth < 30}
                   lessPadding={responseWidth <= 43}
                   resprops={{
-                    btnStyle: {},
+                    btnStyle: { border: btnStyle.border },
                     item,
                     onChange: ({ value }) => this.selectChange(value, dropTargetIndex),
                     placeholder: uiStyle.placeholder,
@@ -286,12 +291,23 @@ class Display extends Component {
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+    const altResponses = validation.alt_responses || [];
     const correctAnswerBoxLayout = showAnswer ? (
-      <CorrectAnswerBoxLayout
-        fontSize={fontSize}
-        groupResponses={options}
-        userAnswers={validation.valid_response && validation.valid_response.value}
-      />
+      <React.Fragment>
+        <CorrectAnswerBoxLayout
+          fontSize={fontSize}
+          groupResponses={options}
+          userAnswers={validation.valid_response && validation.valid_response.value}
+        />
+        {altResponses.map((altResponse, index) => (
+          <CorrectAnswerBoxLayout
+            fontSize={fontSize}
+            groupResponses={options}
+            userAnswers={altResponse.value}
+            altAnsIndex={index + 1}
+          />
+        ))}
+      </React.Fragment>
     ) : (
       <div />
     );
@@ -299,7 +315,7 @@ class Display extends Component {
     return (
       <StyledDisplayContainer fontSize={fontSize}>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <TemplateBoxContainer flexDirection="column">

@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, isEqual, get, findIndex } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
-import { Paper, Checkbox, WithResources } from "@edulastic/common";
+import { Paper, Checkbox, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -18,14 +18,18 @@ import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import Display from "./Display";
 import { ContentArea } from "../../styled/ContentArea";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 const EmptyWrapper = styled.div``;
 
 class ClozeText extends Component {
+  static contextType = AnswerContext;
   componentDidUpdate(prevProps) {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
+    let {
+      ui_style: { responsecontainerindividuals: responses = [], globalSettings }
+    } = newItem;
     if (!isEqual(prevProps.item.validation, newItem.validation)) {
       let maxLength = 0;
 
@@ -38,11 +42,22 @@ class ClozeText extends Component {
           maxLength = Math.max(maxLength, resp.length);
         });
       });
-
       const finalWidth = 30 + maxLength * 7;
       newItem.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
 
       setQuestionData(newItem);
+    }
+    if (globalSettings && responses.length) {
+      const previewTabChange = prevProps.previewTab !== this.props.previewTab && this.props.previewTab === "clear";
+      const tabChange = prevProps.view !== this.props.view;
+      if (tabChange || previewTabChange) {
+        responses = responses.map(response => ({
+          ...response,
+          previewWidth: null
+        }));
+        newItem.ui_style.responsecontainerindividuals = responses;
+        setQuestionData(newItem);
+      }
     }
   }
 
@@ -158,6 +173,7 @@ class ClozeText extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       view,
       previewTab,
@@ -196,7 +212,12 @@ class ClozeText extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
-                <Widget>
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
@@ -238,7 +259,7 @@ class ClozeText extends Component {
                       checked={!!mixAndMatch}
                     />
                   </div>
-                </Widget>
+                </Question>
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}
@@ -258,7 +279,8 @@ class ClozeText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
               <Display
                 checkAnswer
                 configureOptions={{
@@ -277,9 +299,10 @@ class ClozeText extends Component {
                 showIndex
                 view={view}
                 previewTab={previewTab}
+                {...restProps}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
               <Display
                 showAnswer
                 configureOptions={{
@@ -302,7 +325,8 @@ class ClozeText extends Component {
                 previewTab={previewTab}
               />
             )}
-            {previewTab === "clear" && (
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
               <Display
                 preview={false}
                 configureOptions={{

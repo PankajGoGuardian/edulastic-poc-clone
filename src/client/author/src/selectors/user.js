@@ -14,9 +14,22 @@ export const getUserSelector = createSelector(
   state => state
 );
 
+export const getDefaultGradesSelector = createSelector(
+  stateSelector,
+  state => state.user.orgData.selectedGrades
+);
+
+export const getDefaultSubjectSelector = createSelector(
+  stateSelector,
+  state => state.user.orgData.selectedSubject
+);
+
 export const getUserNameSelector = createSelector(
   stateSelector,
-  state => (state.user && state.user.firstName) || "Anonymous"
+  state =>
+    state.user
+      ? `${state.user.firstName ? state.user.firstName : ""} ${state.user.lastName ? state.user.lastName : ""}`
+      : "Anonymous"
 );
 
 export const getOrgDataSelector = createSelector(
@@ -57,6 +70,11 @@ export const getCurrentTerm = createSelector(
 export const getInterestedCurriculumsSelector = createSelector(
   getOrgDataSelector,
   state => _get(state, "interestedCurriculums", [])
+);
+
+export const getShowAllCurriculumsSelector = createSelector(
+  getOrgDataSelector,
+  state => _get(state, "showAllStandards", true)
 );
 
 export const getInterestedGradesSelector = createSelector(

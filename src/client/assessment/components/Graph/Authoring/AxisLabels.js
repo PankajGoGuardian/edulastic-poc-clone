@@ -14,7 +14,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import QuillSortableList from "../../QuillSortableList";
-import { QuestionSection } from "./";
+import Question from "../../Question";
 
 class GraphAxisLabels extends Component {
   onChangeQuestion = stimulus => {
@@ -86,7 +86,7 @@ class GraphAxisLabels extends Component {
 
     return (
       <div>
-        <QuestionSection
+        <Question
           section="main"
           label="Compose Question"
           cleanSections={cleanSections}
@@ -102,9 +102,9 @@ class GraphAxisLabels extends Component {
             firstFocus={firstMount}
             border="border"
           />
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="main"
           label="Line"
           cleanSections={cleanSections}
@@ -144,9 +144,9 @@ class GraphAxisLabels extends Component {
               />
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="main"
           label="Title"
           cleanSections={cleanSections}
@@ -157,9 +157,9 @@ class GraphAxisLabels extends Component {
             <Subtitle>{t("component.graphing.title")}</Subtitle>
             <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
           </PaddingDiv>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="main"
           label="Possible Responses"
           cleanSections={cleanSections}
@@ -186,7 +186,7 @@ class GraphAxisLabels extends Component {
               {t("component.graphing.addnewpossibleresponsebtn")}
             </Button>
           </PaddingDiv>
-        </QuestionSection>
+        </Question>
       </div>
     );
   }

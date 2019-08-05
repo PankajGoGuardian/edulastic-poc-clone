@@ -103,38 +103,116 @@
         }
       ],
       "group": "standardsMasteryReport"
+    },
+    "performance-over-time": {
+      "title": "Performance Over Time",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "PERFORMANCE OVER TIME"
+        }
+      ],
+      "group": "multipleAssessmentReport"
+    },
+    "peer-progress-analysis": {
+      "title": "Peer Progress Analysis",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "PEER PROGRESS ANALYSIS"
+        }
+      ],
+      "group": "multipleAssessmentReport"
+    },
+    "student-progress": {
+      "title": "Student progress",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT PROGRESS"
+        }
+      ],
+      "group": "multipleAssessmentReport"
+    },
+    "student-profile-summary": {
+      "title": "Student Profile Summary",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT PROFILE SUMMARY"
+        }
+      ],
+      "group": "studentProfileReport"
+    },
+    "student-mastery-profile": {
+      "title": "Student Mastery Profile",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT MASTERY PROFILE"
+        }
+      ],
+      "group": "studentProfileReport"
+    },
+    "student-assessment-profile": {
+      "title": "Student Assessment Profile",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT ASSESSMENT PROFILE"
+        }
+      ],
+      "group": "studentProfileReport"
     }
   },
   "navigation": {
     "singleAssessmentReport": [
       {
         "key": "assessment-summary",
-        "title": "Assessment Summary",
+        "title": "SUMMARY",
         "location": "/author/reports/assessment-summary/test/"
       },
       {
         "key": "peer-performance",
-        "title": "Peer Performance",
+        "title": "PERFORMANCE",
         "location": "/author/reports/peer-performance/test/"
       },
       {
         "key": "question-analysis",
-        "title": "Question Analysis",
+        "title": "ANALYSIS",
         "location": "/author/reports/question-analysis/test/"
       },
       {
         "key": "response-frequency",
-        "title": "Response Frequency",
+        "title": "FREQUENCY",
         "location": "/author/reports/response-frequency/test/"
       },
       {
         "key": "performance-by-standards",
-        "title": "Performance by Standards",
+        "title": "STANDARDS",
         "location": "/author/reports/performance-by-standards/test/"
       },
       {
         "key": "performance-by-students",
-        "title": "Performance by Students",
+        "title": "STUDENTS",
         "location": "/author/reports/performance-by-students/test/"
       }
     ],
@@ -148,6 +226,40 @@
         "key": "standards-gradebook",
         "title": "Standards Gradebook",
         "location": "/author/reports/standards-gradebook"
+      }
+    ],
+    "multipleAssessmentReport": [
+      {
+        "key": "performance-over-time",
+        "title": "Performance Over Time",
+        "location": "/author/reports/performance-over-time"
+      },
+      {
+        "key": "peer-progress-analysis",
+        "title": "Peer Progress Analysis",
+        "location": "/author/reports/peer-progress-analysis"
+      },
+      {
+        "key": "student-progress",
+        "title": "Student Progress",
+        "location": "/author/reports/student-progress"
+      }
+    ],
+    "studentProfileReport": [
+      {
+        "key": "student-profile-summary",
+        "title": "Student Profile Summary",
+        "location": "/author/reports/student-profile-summary/student/"
+      },
+      {
+        "key": "student-mastery-profile",
+        "title": "Student Mastery Profile",
+        "location": "/author/reports/student-mastery-profile/student/"
+      },
+      {
+        "key": "student-assessment-profile",
+        "title": "Student Assessment Profile",
+        "location": "/author/reports/student-assessment-profile/student/"
       }
     ]
   }

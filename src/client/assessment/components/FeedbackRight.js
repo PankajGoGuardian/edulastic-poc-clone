@@ -2,21 +2,23 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
-import { get, isUndefined, toNumber, isNaN } from "lodash";
+import { get, isUndefined, toNumber, round, isNaN } from "lodash";
 import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { round } from "lodash";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth, themeColor } from "@edulastic/colors";
+import { mobileWidth, smallDesktopWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
+import { updateStudentQuestionActivityScoreAction } from "../../author/sharedDucks/classResponses";
 import { getFeedbackResponseSelector, getStatus, getErrorResponse } from "../../author/src/selectors/feedback";
 
 const { TextArea } = Input;
+
+const adaptiveRound = x => (x && x.endsWith ? (x.endsWith(".") ? x : round(x, 2)) : round(x, 2));
 
 const showNotification = (type, msg) => {
   message.open({ type, content: msg });
@@ -34,19 +36,17 @@ class FeedbackRight extends Component {
 
   static getDerivedStateFromProps(
     {
-      successFullMessage,
-      waitingResponse,
-      errorMessage,
       widget: { activity }
     },
     preState
   ) {
     let newState = {};
     const { submitted, feedback, score, maxScore, changed } = preState || {};
-
-    if (!waitingResponse && successFullMessage && submitted) {
-      const [type, content] = successFullMessage ? ["success", successFullMessage] : ["error", errorMessage];
-      newState = showNotification(type, content);
+    if (submitted) {
+      newState = {
+        submitted: false,
+        changed: false
+      };
     }
 
     if (activity && isUndefined(changed)) {
@@ -65,13 +65,8 @@ class FeedbackRight extends Component {
     return newState;
   }
 
-  componentDidUpdate() {
-    //this.focusScoreInput();
-  }
-
-  onFeedbackSubmit() {
-    const { score, feedback, maxScore } = this.state;
-    console.log("score", { score }, "isNan", isNaN(score));
+  onScoreSubmit() {
+    const { score, maxScore } = this.state;
     if (isNaN(score)) {
       message.warn("Score should be a valid numerical");
       return;
@@ -81,6 +76,28 @@ class FeedbackRight extends Component {
       return;
     }
 
+    const {
+      user,
+      updateQuestionActivityScore,
+      widget: { id, activity = {} }
+    } = this.props;
+
+    const { testActivityId, groupId, testItemId } = activity;
+    if (!id || !user || !user.user || !testActivityId) {
+      return;
+    }
+
+    updateQuestionActivityScore({
+      score: _score,
+      testActivityId,
+      questionId: id,
+      itemId: testItemId,
+      groupId
+    });
+  }
+
+  onFeedbackSubmit() {
+    const { feedback } = this.state;
     const {
       user,
       loadFeedbackResponses,
@@ -93,7 +110,6 @@ class FeedbackRight extends Component {
     }
     loadFeedbackResponses({
       body: {
-        score: isNaN(_score) ? 0 : _score,
         feedback: {
           teacherId: user.user._id,
           teacherName: user.user.firstName,
@@ -114,6 +130,12 @@ class FeedbackRight extends Component {
     }
   };
 
+  submitScore = () => {
+    const { changed } = this.state;
+    if (changed) {
+      this.setState({ submitted: true }, this.onScoreSubmit);
+    }
+  };
   onChangeScore = e => {
     const value = e.target.value;
     if (!window.isNaN(value)) {
@@ -164,13 +186,11 @@ class FeedbackRight extends Component {
 
     if (isStudentName) {
       title = (
-        <TitleDiv data-cy="studentName" style={{ marginTop: 0, fontWeight: "bold" }}>
+        <TitleDiv data-cy="studentName">
           {isPresentationMode ? (
             <i className={`fa fa-${icon}`} style={{ color, fontSize: "32px" }} />
           ) : (
-            <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: themeColor }} size={34}>
-              {studentName.charAt(0)}
-            </Avatar>
+            <UserAvatar>{studentName.charAt(0)}</UserAvatar>
           )}
           &nbsp;
           {studentName}
@@ -187,8 +207,12 @@ class FeedbackRight extends Component {
             <ScoreInput
               data-cy="scoreInput"
               onChange={this.onChangeScore}
-              onBlur={this.preCheckSubmit}
-              value={activity && activity.graded === false ? "" : round(score, 2)}
+              onBlur={this.submitScore}
+              value={
+                activity && activity.graded === false && activity.score === 0 && !score && !this.state.changed
+                  ? ""
+                  : adaptiveRound(score)
+              }
               disabled={!activity || isPresentationMode}
               innerRef={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
@@ -197,7 +221,7 @@ class FeedbackRight extends Component {
             <TextPara>{maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
-        <LeaveDiv>{isError ? "Score is to large" : "Leave a feedback!"}</LeaveDiv>
+        <LeaveDiv>{isError ? "Score is too large" : "Leave a feedback!"}</LeaveDiv>
         {!isError && (
           <Fragment>
             <FeedbackInput
@@ -210,9 +234,6 @@ class FeedbackRight extends Component {
             />
           </Fragment>
         )}
-        <UpdateButton data-cy="updateButton" disabled={!activity || submitted} onClick={this.preCheckSubmit}>
-          UPDATE
-        </UpdateButton>
       </StyledCardTwo>
     );
   }
@@ -245,12 +266,12 @@ const enhance = compose(
   connect(
     state => ({
       user: getUserSelector(state),
-      successFullMessage: getFeedbackResponseSelector(state),
       waitingResponse: getStatus(state),
       errorMessage: getErrorResponse(state)
     }),
     {
-      loadFeedbackResponses: receiveFeedbackResponseAction
+      loadFeedbackResponses: receiveFeedbackResponseAction,
+      updateQuestionActivityScore: updateStudentQuestionActivityScoreAction
     }
   )
 );
@@ -268,6 +289,9 @@ const StyledCardTwo = styled(Card)`
   .ant-card-head {
     height: 60px;
   }
+  .ant-card-head-title {
+    padding: 13px 0px;
+  }
   .ant-card-body {
     display: flex;
     flex-direction: column;
@@ -275,6 +299,10 @@ const StyledCardTwo = styled(Card)`
     .ant-input-disabled {
       padding: 4px 22px;
     }
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    max-width: 250px;
   }
   @media (max-width: ${mobileWidth}) {
     margin-left: 0px;
@@ -321,15 +349,15 @@ const TextPara = styled.p`
 `;
 
 const LeaveDiv = styled.div`
-  margin: 20px 0px;
+  margin: 20px 0px 10px;
   font-weight: 600;
-  color: #7c848e;
+  color: ${tabGrey};
   font-size: 13px;
 `;
 
 const TitleDiv = styled.div`
-  font-weight: 600;
-  color: #7c848e;
+  font-weight: 400;
+  color: ${tabGrey};
   font-size: 13px;
   display: flex;
   align-items: center;
@@ -359,4 +387,18 @@ const UpdateButton = styled(Button)`
     background-color: ${themeColor};
     border-color: ${themeColor};
   }
+`;
+
+const UserAvatar = styled(Avatar)`
+  background-color: ${themeColorTagsBg};
+  width: 34px;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  border-radius: 50%;
+  color: ${themeColor};
+  font-weight: 600;
+  margin-right: 10px;
+  font-size: 14px;
+  text-transform: uppercase;
 `;

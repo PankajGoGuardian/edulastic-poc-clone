@@ -222,13 +222,7 @@ class PerformanceBandTable extends React.Component {
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <StyledButton onClick={e => this.onClickFromTo(e, record.key, "from", -1)}>
-                <StyledIcon type="minus" />
-              </StyledButton>
               <StyledProP>{record.from}%</StyledProP>
-              <StyledButton onClick={e => this.onClickFromTo(e, record.key, "from", 1)}>
-                <StyledIcon type="plus" />
-              </StyledButton>
             </StyledColFromTo>
           );
         }
@@ -275,8 +269,7 @@ class PerformanceBandTable extends React.Component {
 
   componentDidMount() {
     const { loadPerformanceBand, userOrgId } = this.props;
-    //TODO this api return permission Denied with 403 status until this getting adressed hiding from front-end
-    // fetchPerformanceBand({ orgId: userOrgId });
+    loadPerformanceBand({ orgId: userOrgId });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {

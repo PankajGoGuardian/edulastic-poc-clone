@@ -19,7 +19,16 @@ import {
   SAVE_OVERALL_FEEDBACK,
   UPDATE_OVERALL_FEEDBACK,
   MARK_AS_ABSENT,
-  UPDATE_STUDENT_ACTIVITY
+  TOGGLE_PAUSE_ASSIGNMENT,
+  SET_IS_PAUSED,
+  UPDATE_STUDENT_ACTIVITY,
+  UPDATE_REMOVED_STUDENTS_LIST,
+  REMOVE_STUDENTS,
+  UPDATE_STUDENTS_LIST,
+  UPDATE_CLASS_STUDENTS_LIST,
+  FETCH_STUDENTS,
+  ADD_STUDENTS,
+  SET_STUDENTS_GRADEBOOK
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -92,7 +101,37 @@ export const markAbsentAction = (assignmentId, classId, students) => ({
 });
 
 export const updateStudentActivityAction = payload => ({
-  type: UPDATE_STUDENT_ACTIVITY,
+  type: UPDATE_REMOVED_STUDENTS_LIST,
+  payload
+});
+
+export const removeStudentAction = (assignmentId, classId, students) => ({
+  type: REMOVE_STUDENTS,
+  payload: { assignmentId, classId, students }
+});
+
+export const addStudentsAction = (assignmentId, classId, students, endDate) => ({
+  type: ADD_STUDENTS,
+  payload: { assignmentId, classId, students, endDate }
+});
+
+export const updateRemovedStudentsAction = payload => ({
+  type: UPDATE_STUDENTS_LIST,
+  payload
+});
+
+export const setStudentsGradeBookAction = payload => ({
+  type: SET_STUDENTS_GRADEBOOK,
+  payload
+});
+
+export const updateClassStudentsAction = payload => ({
+  type: UPDATE_CLASS_STUDENTS_LIST,
+  payload
+});
+
+export const fetchClassStudentsAction = payload => ({
+  type: FETCH_STUDENTS,
   payload
 });
 
@@ -118,5 +157,15 @@ export const saveOverallFeedbackAction = (testActivityId, groupId, feedback) => 
 
 export const updateOverallFeedbackAction = payload => ({
   type: UPDATE_OVERALL_FEEDBACK,
+  payload
+});
+
+export const togglePauseAssignmentAction = payload => ({
+  type: TOGGLE_PAUSE_ASSIGNMENT,
+  payload
+});
+
+export const setIsPausedAction = payload => ({
+  type: SET_IS_PAUSED,
   payload
 });

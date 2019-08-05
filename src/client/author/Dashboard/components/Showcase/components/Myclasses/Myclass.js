@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { Row, Col, Spin } from "antd";
-import { TextWrapper, LinkWrapper } from "../../../styledComponents";
-import { CardsContainer, CardBox } from "./styled";
+import { TextWrapper } from "../../../styledComponents";
+import { Container, CardBox } from "./styled";
+import { withRouter } from "react-router-dom";
+import { get } from "lodash";
 import CardImage from "./components/CardImage/cardImage";
 import CardTextContent from "./components/CardTextContent/cardTextContent";
 import { receiveTeacherDashboardAction } from "../../../../duck";
 import CreateClassPage from "./components/CreateClassPage/createClassPage";
+import { fetchClassListAction } from "../../../../../ManageClass/ducks";
+import { getDictCurriculumsAction } from "../../../../../src/actions/dictionaries";
+import { receiveSearchCourseAction } from "../../../../../Courses/ducks";
+import { compose } from "redux";
+
 const Card = ({ data }) => {
   return (
     <CardBox>
@@ -20,9 +27,24 @@ const Card = ({ data }) => {
   );
 };
 
-const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
+const MyClasses = ({
+  getTeacherDashboard,
+  classData,
+  loading,
+  fetchClassList,
+  history,
+  isUserGoogleLoggedIn,
+  getDictCurriculums,
+  receiveSearchCourse,
+  districtId,
+  allowGoogleLogin
+}) => {
+  const [showAllCards, setShowAllCards] = useState(false);
+
   useEffect(() => {
     getTeacherDashboard();
+    getDictCurriculums();
+    receiveSearchCourse({ districtId });
   }, []);
 
   const sortableClasses = classData
@@ -39,27 +61,42 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   ));
 
   return (
-    <CardsContainer>
-      <TextWrapper size="20px" color="#434B5D">
+    <Container>
+      <TextWrapper size="20px" color="#434B5D" style={{ marginBottom: "1rem" }}>
         My classes
       </TextWrapper>
       {loading ? (
-        <Spin style={{ marginTop: "120px" }} />
+        <Spin style={{ marginTop: "80px" }} />
       ) : classData.length == 0 ? (
-        <CreateClassPage />
+        <CreateClassPage
+          fetchClassList={fetchClassList}
+          history={history}
+          isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+          allowGoogleLogin={allowGoogleLogin}
+        />
       ) : (
         <Row gutter={20}>{ClassCards}</Row>
       )}
-    </CardsContainer>
+    </Container>
   );
 };
 
-export default connect(
-  state => ({
-    classData: state.dashboardTeacher.data,
-    loading: state.dashboardTeacher.loading
-  }),
-  {
-    getTeacherDashboard: receiveTeacherDashboardAction
-  }
+export default compose(
+  withRouter,
+  connect(
+    state => ({
+      classData: state.dashboardTeacher.data,
+      isUserGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
+      allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
+      fetchClassListLoading: state.manageClass.fetchClassListLoading,
+      districtId: get(state, "user.user.orgData.districtId"),
+      loading: state.dashboardTeacher.loading
+    }),
+    {
+      fetchClassList: fetchClassListAction,
+      receiveSearchCourse: receiveSearchCourseAction,
+      getDictCurriculums: getDictCurriculumsAction,
+      getTeacherDashboard: receiveTeacherDashboardAction
+    }
+  )
 )(MyClasses);

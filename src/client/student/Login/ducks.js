@@ -26,6 +26,7 @@ export const GET_USER_DATA = "[auth] get user data from sso response";
 export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
 export const SINGUP_SUCCESS = "[auth] signup success";
+export const SIGNUP_SET_POLICY_VIOLATION = "[auth] signup set policy violation";
 export const FETCH_USER = "[auth] fetch user";
 export const FETCH_V1_REDIRECT = "[v1 redirect] fetch";
 export const LOGOUT = "[auth] logout";
@@ -42,6 +43,12 @@ export const RESET_PASSWORD_USER_SUCCESS = "[auth] reset password user success";
 export const RESET_PASSWORD_REQUEST = "[auth] reset password request";
 export const RESET_PASSWORD_FAILED = "[auth] reset password failed";
 export const RESET_PASSWORD_SUCCESS = "[auth] reset password success";
+export const RESET_PASSWORD_REQUEST_STATE = "[auth] reset password request state variable";
+export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST = "[auth] student signup check classcode request";
+export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup check classcode success";
+export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
+export const UPDATE_DEFAULT_GRADES = "[user] update default grades";
+export const UPDATE_DEFAULT_SUBJECT = "[user] update default subject";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -55,6 +62,7 @@ export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN);
 export const setUserAction = createAction(SET_USER);
 export const signupAction = createAction(SIGNUP);
 export const signupSuccessAction = createAction(SINGUP_SUCCESS);
+export const signupSetPolicyViolationAction = createAction(SIGNUP_SET_POLICY_VIOLATION);
 export const fetchUserAction = createAction(FETCH_USER);
 export const fetchV1RedirectAction = createAction(FETCH_V1_REDIRECT);
 export const logoutAction = createAction(LOGOUT);
@@ -64,6 +72,10 @@ export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
 export const requestNewPasswordAction = createAction(REQUEST_NEW_PASSWORD_REQUEST);
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
+export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
+export const resetPasswordRequestStateAction = createAction(RESET_PASSWORD_REQUEST_STATE);
+export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
+export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 
 const initialState = {
   isAuthenticated: false,
@@ -72,9 +84,19 @@ const initialState = {
 };
 
 const setUser = (state, { payload }) => {
+  const defaultGrades =
+    getFromLocalStorage("defaultGrades") != null
+      ? getFromLocalStorage("defaultGrades")
+        ? getFromLocalStorage("defaultGrades").split(",")
+        : []
+      : null;
+
+  const defaultSubject = getFromLocalStorage("defaultSubject");
   const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
   set(state.user, "orgData.defaultClass", defaultClass);
+  set(state.user, "orgData.selectedGrades", defaultGrades);
+  set(state.user, "orgData.selectedSubject", defaultSubject);
   state.isAuthenticated = true;
   state.authenticating = false;
   state.signupStatus = payload.currentSignUpState;
@@ -104,6 +126,12 @@ export default createReducer(initialState, {
     }
     state.user.orgData.defaultClass = payload;
   },
+  [UPDATE_DEFAULT_GRADES]: (state, { payload }) => {
+    state.user.orgData.selectedGrades = payload;
+  },
+  [UPDATE_DEFAULT_SUBJECT]: (state, { payload }) => {
+    state.user.orgData.selectedSubject = payload;
+  },
   [FETCH_USER]: state => {
     state.isAuthenticated = false;
     state.authenticating = true;
@@ -115,7 +143,22 @@ export default createReducer(initialState, {
   [SET_USER_GOOGLE_LOGGED_IN]: (state, { payload }) => {
     state.user.isUserGoogleLoggedIn = payload;
   },
+  [SIGNUP]: state => {
+    state.signupPolicyViolation = "";
+  },
   [SINGUP_SUCCESS]: setUser,
+  [SIGNUP_SET_POLICY_VIOLATION]: (state, { payload }) => {
+    state.signupPolicyViolation = payload;
+  },
+  [STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST]: (state, { payload }) => {
+    state.signupPolicyViolation = "";
+  },
+  [STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS]: (state, { payload }) => {
+    state.signupPolicyViolation = "";
+  },
+  [STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED]: (state, { payload }) => {
+    state.signupPolicyViolation = payload;
+  },
   [REQUEST_NEW_PASSWORD_REQUEST]: state => {
     state.requestingNewPassword = true;
     state.requestNewPasswordSuccess = false;
@@ -126,6 +169,9 @@ export default createReducer(initialState, {
   [REQUEST_NEW_PASSWORD_SUCCESS]: state => {
     state.requestingNewPassword = false;
     state.requestNewPasswordSuccess = true;
+  },
+  [RESET_PASSWORD_REQUEST_STATE]: state => {
+    state.requestNewPasswordSuccess = false;
   },
   [RESET_PASSWORD_USER_SUCCESS]: (state, { payload }) => {
     state.resetPasswordUser = payload;
@@ -242,7 +288,12 @@ const checkEmailPolicy = (policy, role, email) => {
       ? policy.allowedDomainsForDistrict.map(item => item.toLocaleLowerCase())
       : [];
   }
-  if (allowedDomains.includes(inputDomain.toLocaleLowerCase())) {
+  if (
+    (role === "student"
+      ? !inputDomain || allowedDomains.includes(inputDomain.toLocaleLowerCase())
+      : allowedDomains.includes(inputDomain.toLocaleLowerCase())) ||
+    !allowedDomains.length
+  ) {
     return true;
   } else {
     return false;
@@ -313,7 +364,11 @@ function* signup({ payload }) {
     const msg1 = get(err, "data.message", "");
     const msg2 = get(err, "message", "");
     const msg = msg1 || msg2 || errorMessage;
-    yield call(message.error, msg);
+    if (msg === "Please provide a valid class code.") {
+      yield put(signupSetPolicyViolationAction(msg));
+    } else {
+      yield call(message.error, msg);
+    }
   }
 }
 
@@ -466,7 +521,7 @@ function* googleSSOLogin({ payload }) {
     const res = yield call(authApi.googleSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    yield call(message.error, "Google Login failed");
+    yield call(message.error, get(e, "data.message", "Google Login failed"));
     yield put(push("/login"));
   }
 }
@@ -492,7 +547,7 @@ function* msoLogin({ payload }) {
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
   } catch (e) {
-    yield call(message.error, e.data && e.data.message ? e.data.message : "MSO Login failed");
+    yield call(message.error, get(e, "data.message", "MSO Login failed"));
   }
 }
 
@@ -507,7 +562,7 @@ function* msoSSOLogin({ payload }) {
     const res = yield call(authApi.msoSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
-    yield call(message.error, "MSO Login failed");
+    yield call(message.error, get(e, "data.message", "MSO Login failed"));
     yield put(push("/login"));
   }
 }
@@ -581,7 +636,7 @@ function* updateUserRoleSaga({ payload }) {
     TokenStorage.selectAccessToken(_user._id, _user.role);
     yield put(signupSuccessAction(_user));
   } catch (e) {
-    yield call(message.error, "Failed to update user please try again.");
+    yield call(message.error, get(e, "data.message", "Failed to update user please try again."));
   }
 }
 
@@ -626,6 +681,21 @@ function* resetPasswordRequestSaga({ payload }) {
   }
 }
 
+function* studentSignupCheckClasscodeSaga({ payload }) {
+  try {
+    const result = yield call(authApi.validateClassCode, payload);
+    yield put({
+      type: STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS
+    });
+  } catch (e) {
+    console.log(e);
+    yield put({
+      type: STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED,
+      payload: e.data.message
+    });
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
@@ -644,4 +714,5 @@ export function* watcherSaga() {
   yield takeLatest(REQUEST_NEW_PASSWORD_REQUEST, requestNewPasswordSaga);
   yield takeLatest(RESET_PASSWORD_USER_REQUEST, resetPasswordUserSaga);
   yield takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga);
+  yield takeLatest(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST, studentSignupCheckClasscodeSaga);
 }

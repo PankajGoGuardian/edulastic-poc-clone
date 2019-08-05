@@ -3,10 +3,10 @@ export const getStyles = (isDragging, isTransparent, backgroundColor, borderColo
   alignItems: "center",
   justifyContent: "center",
   opacity: isDragging ? 0 : 1,
-  minWidth: 136,
   minHeight: 40,
   borderRadius: 5,
-  border: `1px solid ${borderColor}`,
+  border: `2px ${borderColor} dotted`,
+  padding: "8px 20px",
   backgroundColor: isTransparent ? "transparent" : backgroundColor,
   cursor: "pointer",
   ...styles

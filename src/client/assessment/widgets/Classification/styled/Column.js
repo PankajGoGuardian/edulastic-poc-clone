@@ -8,12 +8,13 @@ export const Column = styled.div`
   img {
     max-height: 120px;
   }
+  position: absolute;
   width: ${({ rowTitles, colCount }) =>
     rowTitles.length > 0 ? 100 / colCount - 100 / colCount / 5 / colCount : 100 / colCount}%;
 `;
 
 export const ColumnLabel = styled.div`
-  background-color: #ececec;
+  background-color: ${({ transparent }) => (transparent ? "transparent" : "#ececec")};
   font-weight: 600;
   text-align: center;
   border: 1px solid #ddd;

@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
+import { get } from "lodash";
 //components
 import TestAcivityHeader from "../../sharedComponents/Header";
 import TestActivitySubHeader from "./SubHeader";
@@ -12,16 +13,37 @@ import MainContainer from "../../styled/mainContainer";
 import { loadTestActivityReportAction } from "../ducks";
 import { setCurrentItemAction } from "../../sharedDucks/TestItem";
 
-const ReportListContainer = ({ flag, match, location, loadTestActivityReport, setCurrentItem }) => {
+const ReportListContainer = ({
+  flag,
+  match,
+  location,
+  loadTestActivityReport,
+  setCurrentItem,
+  testTitle,
+  testFeedback
+}) => {
+  const [assignmentItemTitle, setAssignmentItemTitle] = useState(null);
+
   useEffect(() => {
-    loadTestActivityReport({ testActivityId: match.params.id, groupId: match.params.classId });
+    loadTestActivityReport({
+      testId: match.params.testId,
+      testActivityId: match.params.id,
+      groupId: match.params.classId
+    });
     setCurrentItem(0);
   }, []);
+
+  useEffect(() => {
+    if (!testFeedback) return;
+
+    setAssignmentItemTitle(testTitle);
+  }, [testFeedback]);
+
   return (
     <MainContainer flag={flag}>
       <TestAcivityHeader titleText="common.reportsTitle" />
-      <TestActivitySubHeader title={location.title} />
-      <ReportListContent title={location.title} reportId={match.params.id} />
+      <TestActivitySubHeader title={assignmentItemTitle} />
+      <ReportListContent title={assignmentItemTitle} reportId={match.params.id} />
     </MainContainer>
   );
 };
@@ -29,8 +51,10 @@ const ReportListContainer = ({ flag, match, location, loadTestActivityReport, se
 const enhance = compose(
   withRouter,
   connect(
-    ({ ui }) => ({
-      flag: ui.flag
+    state => ({
+      flag: state.ui.flag,
+      testFeedback: get(state, "testFeedback", null),
+      testTitle: get(state, ["tests", "entity", "title"], "")
     }),
     {
       setCurrentItem: setCurrentItemAction,
@@ -43,5 +67,7 @@ export default enhance(ReportListContainer);
 
 ReportListContainer.propTypes = {
   flag: PropTypes.bool.isRequired,
-  location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired,
+  assignments: PropTypes.array.isRequired,
+  testFeedback: PropTypes.array.isRequired
 };

@@ -96,7 +96,8 @@ const onHandler = (board, coords, data) => {
     id: coords && coords.fixed ? null : data.id,
     anchorX: "middle",
     anchorY: "bottom",
-    fixed: coords && coords.fixed
+    fixed: coords && coords.fixed,
+    cssClass: "fr-box mark"
   });
 
   if (!coords || !coords.fixed) {
@@ -148,7 +149,7 @@ const getConfig = mark => ({
 
 const alignMarks = board => {
   const {
-    numberlineAxis: { separationDistanceX, separationDistanceY },
+    numberlineAxis: { separationDistanceX, separationDistanceY, shuffleAnswerChoices },
     canvas,
     layout: { linePosition, pointBoxPosition, height: layoutHeight },
     setCalculatedHeight
@@ -167,6 +168,14 @@ const alignMarks = board => {
   let offsetX = xMin; // right side of previous mark
   let offsetY = containerY; // bottom side of previous marks line
   let minY = 10; // y position of lowest mark
+
+  function shuffle(array) {
+    array.sort(() => Math.random() - 0.5);
+  }
+  if (shuffleAnswerChoices) {
+    shuffle(board.elements);
+  }
+
   board.elements.forEach(mark => {
     if (mark.Y() === lineY) {
       return;

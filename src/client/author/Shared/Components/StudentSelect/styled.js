@@ -17,6 +17,7 @@ export const Container = styled.div`
       }
     }
     .ant-select-selection {
+      border: 0px;
       .ant-select-arrow {
         right: 0px;
         .ant-select-arrow-icon {
@@ -28,27 +29,11 @@ export const Container = styled.div`
     }
   }
 
-  svg {
-    margin-right: 23px;
-    width: 18px !important;
-  }
-
   .ant-select-selection__rendered {
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.2px;
     color: #434b5d;
-  }
-
-  .ant-select-selection {
-    border: 0px;
-  }
-
-  .ant-select-arrow-icon {
-    svg {
-      fill: ${themeColor};
-      margin-right: 0px;
-    }
   }
 `;
 

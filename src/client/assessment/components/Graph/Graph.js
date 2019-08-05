@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import { CorrectAnswersContainer, Paper } from "@edulastic/common";
+import { CorrectAnswersContainer, Paper, Stimulus, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
 
 import { compose } from "redux";
 import styled from "styled-components";
@@ -15,11 +15,13 @@ import AxisSegmentsOptions from "./Authoring/AxisSegmentsOptions";
 import AxisLabelsOptions from "./Authoring/AxisLabelsLayoutSettings/AxisLabelsOptions";
 import QuadrantsSmallSize from "./components/QuadrantsSmallSize";
 import AxisSmallSize from "./components/AxisSmallSize";
-import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from "./Authoring";
+import { AxisSegments, GraphAxisLabels, GraphQuadrants } from "./Authoring";
 import GraphAnswers from "./GraphAnswers";
 import { GraphDisplay } from "./Display";
-import { InstructorStimulus } from "./common/styled_components";
-import Annotations from "./Annotations/Annotations";
+import { InstructorStimulus, QuestionTitleWrapper } from "./common/styled_components";
+import Annotations from "../Annotations/Annotations";
+
+import Question from "../Question";
 
 const EmptyWrapper = styled.div``;
 
@@ -63,6 +65,8 @@ const getStemNumerationList = () => [
 ];
 
 class Graph extends Component {
+  static contextType = AnswerContext;
+
   getOptionsComponent = () => {
     const { item } = this.props;
     const { graphType } = item;
@@ -256,13 +260,14 @@ class Graph extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       t,
       view,
       item,
       smallSize,
       testItem,
-      previewTab,
+      previewTab: _previewTab,
       userAnswer,
       evaluation,
       fillSections,
@@ -270,9 +275,25 @@ class Graph extends Component {
       advancedAreOpen,
       isSidebarCollapsed,
       disableResponse,
+      flowLayout,
+      showQuestionNumber,
       ...restProps
     } = this.props;
-    const { extra_options, ui_style, validation } = item;
+    let previewTab = _previewTab;
+    let compact = false;
+    if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+      /**
+       * ideally wanted to be in CHECK mode.
+       * But this component seems to be
+       * written to work with only SHOW & CLEAR
+       */
+      previewTab = "show";
+    } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+      previewTab = "clear";
+      compact = true;
+    }
+
+    const { ui_style, validation, stimulus } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -291,7 +312,7 @@ class Graph extends Component {
                 advancedAreOpen
                 setCanvas={this.handleCanvasChange}
               />
-              <QuestionSection
+              <Question
                 section="main"
                 label="Set Correct Answer"
                 cleanSections={cleanSections}
@@ -309,9 +330,10 @@ class Graph extends Component {
                   handleSelectIgnoreLabels={this.handleSelectIgnoreLabels}
                   getIgnoreRepeatedShapesOptions={getIgnoreRepeatedShapesOptions}
                   handleSelectIgnoreRepeatedShapes={this.handleSelectIgnoreRepeatedShapes}
+                  handleNumberlineChange={this.handleNumberlineChange}
                 />
-              </QuestionSection>
-              <QuestionSection
+              </Question>
+              <Question
                 section="main"
                 label="Annotations"
                 cleanSections={cleanSections}
@@ -319,20 +341,20 @@ class Graph extends Component {
                 advancedAreOpen
               >
                 <Annotations editable />
-              </QuestionSection>
+              </Question>
               <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
-          <Wrapper>
-            {extra_options && extra_options.instructor_stimulus && (
-              <InstructorStimulus>{extra_options.instructor_stimulus}</InstructorStimulus>
-            )}
-            {previewTab === "check" && item.canvas && item.ui_style && (
+          <Wrapper className={compact ? "toolbar-compact" : ""}>
+            <QuestionTitleWrapper>
+              {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
+              <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
+            </QuestionTitleWrapper>
+            {item.canvas && item.ui_style && (
               <GraphDisplay
                 disableResponse={disableResponse}
-                checkAnswer
                 graphData={item}
                 view={view}
                 previewTab={previewTab}
@@ -344,28 +366,15 @@ class Graph extends Component {
             )}
             {previewTab === "show" && item.canvas && item.ui_style && (
               <Fragment>
-                <GraphDisplay
-                  disableResponse={disableResponse}
-                  checkAnswer
-                  graphData={item}
-                  view={view}
-                  previewTab={previewTab}
-                  onChange={this.handleAddAnswer}
-                  elements={userAnswer}
-                  evaluation={evaluation}
-                  {...restProps}
-                />
-
                 <CorrectAnswersContainer title={t("component.graphing.correctAnswer")}>
                   <GraphDisplay
                     disableResponse
-                    showAnswer
                     graphData={item}
                     view={view}
                     previewTab={previewTab}
-                    onChange={this.handleAddAnswer}
                     elements={validation.valid_response.value}
                     evaluation={evaluation}
+                    elementsIsCorrect
                     {...restProps}
                   />
                 </CorrectAnswersContainer>
@@ -375,31 +384,17 @@ class Graph extends Component {
                     <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
                       <GraphDisplay
                         disableResponse
-                        showAnswer
                         graphData={item}
                         view={view}
                         previewTab={previewTab}
-                        onChange={this.handleAddAnswer}
                         elements={altAnswer.value}
                         evaluation={evaluation}
+                        elementsIsCorrect
                         {...restProps}
                       />
                     </CorrectAnswersContainer>
                   ))}
               </Fragment>
-            )}
-            {previewTab === "clear" && item.canvas && item.ui_style && (
-              <GraphDisplay
-                disableResponse={disableResponse}
-                clearAnswer
-                graphData={item}
-                view={view}
-                previewTab={previewTab}
-                onChange={this.handleAddAnswer}
-                elements={userAnswer}
-                evaluation={evaluation}
-                {...restProps}
-              />
             )}
           </Wrapper>
         )}
@@ -447,7 +442,9 @@ Graph.propTypes = {
   isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  flowLayout: PropTypes.bool
 };
 
 Graph.defaultProps = {
@@ -457,7 +454,9 @@ Graph.defaultProps = {
   userAnswer: [],
   evaluation: null,
   advancedAreOpen: false,
-  disableResponse: false
+  disableResponse: false,
+  showQuestionNumber: false,
+  flowLayout: false
 };
 
 const enhance = compose(

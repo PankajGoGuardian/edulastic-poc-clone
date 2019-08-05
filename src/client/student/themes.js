@@ -1,4 +1,4 @@
-import { themeColor, themeColorLight } from "@edulastic/colors";
+import { themeColor, themeColorLight, themeColorBreadcrumb } from "@edulastic/colors";
 import edulasticDefaultLogo from "./assets/logo.svg";
 
 export const themes = {
@@ -75,8 +75,8 @@ export const themes = {
       cardInProgressLabelBgColor: "#daeee7",
       cardInProgressLabelTextColor: "#4aac8b",
       cardNotStartedLabelBorderColor: "#cbe5f0",
-      cardNotStartedLabelBgColor: "#cbeeff",
-      cardNotStartedLabelTextColor: "#0083be",
+      cardNotStartedLabelBgColor: "#D1F9EB",
+      cardNotStartedLabelTextColor: "#4AAC8B",
       cardSubmitedLabelBorderColor: "#dbcdf3",
       cardSubmitedLabelBgColor: "#eacbff",
       cardSubmitedLabelTextColor: "#7843a4",
@@ -102,7 +102,7 @@ export const themes = {
       cardDefaultBtnBgHoverColor: themeColor,
       cardDefaultBtnTextColor: themeColor,
       cardDefaultBtnTextHoverColor: "white",
-      cardAttemptLinkTextColor: "#12a6e8",
+      cardAttemptLinkTextColor: themeColor,
       cardAttemptLinkFontSize: "12px",
       cardResponseBoxLabelsColor: "#434b5d",
       cardResponseBoxLabelsFontSize: "12px",
@@ -137,7 +137,7 @@ export const themes = {
     },
     headerFilters: {
       headerFilterTextSize: "10px",
-      headerFilterTextColor: "#7C848E",
+      headerFilterTextColor: themeColor,
       headerFilterBgColor: "#ffffff",
       headerFilterBgBorderColor: themeColor,
       headerFilterTextHoverColor: "#ffffff",
@@ -148,12 +148,12 @@ export const themes = {
       headerSelectedFilterBgBorderColor: themeColor
     },
     breadcrumbs: {
-      breadcrumbTextColor: themeColorLight,
+      breadcrumbTextColor: themeColorBreadcrumb,
       breadcrumbTextSize: "10px",
       breadcrumbLinkColor: themeColorLight
     },
     reportList: {
-      reportListTitleColor: "#12a6e8",
+      reportListTitleColor: themeColor,
       reportListTitleTextSize: "16px",
       reportListBackButtonBgColor: "transparent",
       reportListBackButtonBgBorderColor: themeColorLight,
@@ -238,7 +238,7 @@ export const themes = {
     },
     profile: {
       userHeadingTextSize: "22px",
-      userHeadingTextColor: "#434b5d",
+      userHeadingTextColor: "#434B5D",
       userHeadingTextWeight: "bold",
       userSubTitleTextSize: "13px",
       userSubTitleTextColor: "#434b5d",
@@ -247,9 +247,9 @@ export const themes = {
       formInputLabelColor: "rgba(0, 0, 0, 0.65)",
       saveButtonTextSize: "11px",
       saveButtonTextColor: "white",
-      saveButtonBgColor: "#12a6e8",
-      saveButtonBorderColor: "#12a6e8",
-      cancelButtonTextColor: "#12a6e8",
+      saveButtonBgColor: themeColor,
+      saveButtonBorderColor: themeColor,
+      cancelButtonTextColor: themeColor,
       cancelButtonBgColor: "white"
     },
     confirmation: {

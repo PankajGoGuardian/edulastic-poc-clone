@@ -1,8 +1,61 @@
 import styled, { css } from "styled-components";
 
-import { white, themeColor, boxShadowDefault } from "@edulastic/colors";
-import { Button, Table, Select } from "antd";
+import { white, themeColor, boxShadowDefault, lightBlue, themeColorLight } from "@edulastic/colors";
+import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
+
+export const ClassCreateContainer = styled.div`
+  background: white;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 60vh;
+  font-style: italic;
+`;
+export const ButtonsContainer = styled.div`
+  display: flex;
+  margin: 1rem;
+  justify-content: space-between;
+`;
+
+export const IconEdit = styled(Icon)`
+  color: ${themeColor};
+  margin-left: 0.3rem;
+  cursor: pointer;
+`;
+export const IconQuestion = styled(Icon)`
+  color: ${themeColor};
+  padding: 0.2rem;
+  font-size: 20px;
+`;
+export const SyncClassDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  color: ${themeColor};
+  font-size: 15px;
+  cursor: pointer;
+`;
+export const SyncImg = styled.img`
+  margin-right: 0.5rem;
+  width: 30px;
+  height: 30px;
+  margin-left: 0.5rem;
+`;
+export const CreateClassBtn = styled(Button)`
+  display: flex;
+  align-items: center;
+  border: 2px solid ${themeColor} !important;
+  background-color: transparent;
+  border-radius: 50px;
+  color: ${themeColor};
+  margin-right: 0.5rem;
+  &:hover {
+    background: ${themeColor};
+    color: ${white};
+  }
+`;
 
 export const Title = styled.div`
   font-size: 22px;
@@ -34,25 +87,25 @@ export const CreateClassButton = styled(Button)`
   padding: 5px 20px;
   border: none;
   text-transform: uppercase;
-  color: ${white};
-  background: #42d184;
+  color: ${themeColor};
+  background: ${white};
   &:hover {
-    background: #42d184;
-    color: ${white};
+    background: ${themeColorLight};
+    color: ${themeColor};
   }
 `;
 
 export const SyncButtons = styled(Button)`
   ${ShareButtonStyle}
-  color: #ffffff;
+  color: ${themeColor};
   padding: 0px 25px;
-  background-color: #42d184;
+  background-color: ${white};
   border-color: #42d184;
   margin-right: 20px;
   font-size: 12px;
   &:hover {
-    color: #ffffff;
-    background-color: #42d184;
+    color: ${themeColor};
+    background-color: ${themeColorLight};
     border-color: #42d184;
   }
 `;
@@ -76,7 +129,7 @@ export const ClassSelect = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   font-weight: bold;
   button {
     &:hover,
@@ -92,7 +145,31 @@ export const ClassListTable = styled(Table)`
   .ant-table-tbody > tr {
     cursor: pointer;
   }
+  .ant-table {
+    &-tbody,
+    &-thead {
+      & > tr :nth-last-of-type(-n + 2) {
+        text-align: end;
+      }
+    }
+  }
 `;
 export const StyledSelect = styled(Select)`
   width: 100%;
+`;
+
+export const BannerDiv = styled.div`
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 15px 15px;
+  background-color:${props => (props.syncClassLoading ? "#F5EE8B" : "#D3FEA6")}
+  color:${props => (props.syncClassLoading ? "#B5AA08" : "#77B833")}
+  justify-content: center;
+  border-radius: 10px;
+`;
+
+export const FlexContainer = styled.div`
+  display: flex;
+  flex-direction: column;
 `;

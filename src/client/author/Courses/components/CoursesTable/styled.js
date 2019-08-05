@@ -1,11 +1,13 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Dropdown, Checkbox, Pagination, Icon } from "antd";
+import { Button, Select, Input, Dropdown, Checkbox, Pagination, Icon } from "antd";
+import { StyledTable as Table } from "../../../../common/styled";
 const Search = Input.Search;
 
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 20px;
 
   .ant-table-wrapper {
     width: 100%;
@@ -38,6 +40,14 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+  .ant-table {
+    &-tbody,
+    &-thead {
+      & > tr :nth-last-of-type(-n + 2) {
+        text-align: end;
+      }
+    }
+  }
 `;
 
 export const StyledFilterButton = styled(Button)`
@@ -53,7 +63,7 @@ export const StyledTableButton = styled.a`
   }
 `;
 
-export const StyledFilterInput = styled(Input)`
+export const StyledFilterInput = styled(Input.Search)`
   margin-left: 20px;
   width: 300px;
 `;
@@ -82,7 +92,7 @@ export const StyledPagination = styled(Pagination)`
 
 export const StyledHeaderColumn = styled.div`
   display: flex;
-  align-item: center;
+  align-items: center;
   cursor: pointer;
 `;
 

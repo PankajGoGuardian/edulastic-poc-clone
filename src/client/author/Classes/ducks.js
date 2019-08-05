@@ -1,6 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
+import { push } from "connected-react-router";
 import { groupApi, userApi } from "@edulastic/api";
 import { message } from "antd";
 import { keyBy } from "lodash";
@@ -27,6 +28,10 @@ const RECEIVE_TEACHERLIST_REQUEST = "[teacher] receive data request";
 const RECEIVE_TEACHERLIST_SUCCESS = "[teacher] receive data success";
 const RECEIVE_TEACHERLIST_ERROR = "[teacher] receive data error";
 
+const ARCHIVE_CLASS_REQUEST = "[class] archive class request";
+const ARCHIVE_CLASS_SUCCESS = "[class] archive class success";
+const ARCHIVE_CLASS_ERROR = "[class ] archive class error";
+
 export const receiveClassListAction = createAction(RECEIVE_CLASSLIST_REQUEST);
 export const receiveClassListSuccessAction = createAction(RECEIVE_CLASSLIST_SUCCESS);
 export const receiveClassListErrorAction = createAction(RECEIVE_CLASSLIST_ERROR);
@@ -48,6 +53,11 @@ export const setBulkEditModeAction = createAction(SET_BULK_EDIT_MODE);
 export const setBulkEditUpdateViewAction = createAction(SET_BULK_EDIT_UPDATE_VIEW);
 export const bulkUpdateClassesAction = createAction(BULK_UPDATE_CLASSES);
 export const bulkUpdateClassesSuccessAction = createAction(BULK_UPDATE_CLASSES_SUCCESS);
+
+export const archiveClassAction = createAction(ARCHIVE_CLASS_REQUEST);
+export const archiveClassSuccessAction = createAction(ARCHIVE_CLASS_SUCCESS);
+export const archiveClassErrorAction = createAction(ARCHIVE_CLASS_ERROR);
+
 // selectors
 const stateClassSelector = state => state.classesReducer;
 export const getClassListSelector = createSelector(
@@ -82,7 +92,10 @@ const initialState = {
     showModal: false,
     updateMode: "course",
     updateView: false
-  }
+  },
+  archiving: false,
+  archiveError: null,
+  archiveSuccess: null
 };
 
 export const reducer = createReducer(initialState, {
@@ -104,14 +117,10 @@ export const reducer = createReducer(initialState, {
   [UPDATE_CLASS_SUCCESS]: (state, { payload }) => {
     state.update = payload;
     state.updating = false;
-    const sourceObj = {
-      _source: {
-        ...payload
-      }
-    };
-    state.data[payload._id] = {
-      ...state.data[payload._id],
-      ...sourceObj
+
+    state.data[payload._id]._source = {
+      ...state.data[payload._id]._source,
+      ...payload
     };
   },
   [UPDATE_CLASS_ERROR]: (state, { payload }) => {
@@ -192,6 +201,17 @@ export const reducer = createReducer(initialState, {
       updateMode: "course",
       updateView: false
     };
+  },
+  [ARCHIVE_CLASS_REQUEST]: state => {
+    state.archiving = true;
+  },
+  [ARCHIVE_CLASS_SUCCESS]: (state, { payload }) => {
+    state.archiving = false;
+    state.archiveSuccess = payload.archiveSuccess;
+  },
+  [ARCHIVE_CLASS_ERROR]: (state, { payload }) => {
+    state.archiving = false;
+    state.archiveError = payload.archiveError;
   }
 });
 
@@ -222,6 +242,7 @@ function* createClassSaga({ payload }) {
   try {
     const createClass = yield call(groupApi.createGroup, payload);
     yield put(createClassSuccessAction(createClass));
+    yield call(message.success, "Class Created Successfully");
   } catch (err) {
     const errorMessage = "Create Class is failing";
     yield call(message.error, errorMessage);
@@ -240,7 +261,7 @@ function* deleteClassSaga({ payload }) {
         page: 1,
         limit: 25,
         search: {
-          active: 1
+          active: [1]
         },
         districtId: payload.districtId
       })
@@ -265,12 +286,27 @@ function* receiveTeachersListSaga({ payload }) {
 
 function* bulkUpdateClassesSaga({ payload }) {
   try {
-    const { result } = yield call(groupApi.bulkUpdateClasses, payload);
+    const { result } = yield call(groupApi.bulkUpdateClasses, payload.data);
+    yield put(receiveClassListAction(payload.searchQuery));
     yield put(bulkUpdateClassesSuccessAction(result));
     message.success(result.message);
   } catch (err) {
     const errorMessage = "Something went wrong. Please try again!";
     message.error(errorMessage);
+  }
+}
+
+function* archiveClassSaga({ payload }) {
+  try {
+    yield call(groupApi.archiveGroup, payload);
+    const successMessage = "Class Archived Successfully";
+    yield call(message.success, successMessage);
+    yield put(archiveClassSuccessAction({ archiveSuccess: successMessage }));
+    yield put(push("/author/manageClass"));
+  } catch (err) {
+    const errorMessage = "Archive Class is failing";
+    yield call(message.error, errorMessage);
+    yield put(archiveClassErrorAction({ archiveError: errorMessage }));
   }
 }
 
@@ -281,4 +317,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(DELETE_CLASS_REQUEST, deleteClassSaga)]);
   yield all([yield takeEvery(RECEIVE_TEACHERLIST_REQUEST, receiveTeachersListSaga)]);
   yield all([yield takeEvery(BULK_UPDATE_CLASSES, bulkUpdateClassesSaga)]);
+  yield all([yield takeEvery(ARCHIVE_CLASS_REQUEST, archiveClassSaga)]);
 }

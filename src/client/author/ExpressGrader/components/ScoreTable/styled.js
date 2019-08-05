@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Card, Table, Tag } from "antd";
-import { secondaryTextColor, greenDark, lightGreen, green } from "@edulastic/colors";
+import { secondaryTextColor, smallDesktopWidth, greenDark, lightGreen, green, title } from "@edulastic/colors";
 
 export const StyledCard = styled(Card)`
   margin-bottom: 20px;
@@ -14,10 +14,13 @@ export const StyledCard = styled(Card)`
 `;
 
 export const TableTitle = styled.div`
-  color: #434b5d;
-  font-size: 21px;
+  color: ${title};
+  font-size: 18px;
   line-height: 30px;
   font-weight: bold;
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 14px;
+  }
 `;
 
 export const TableData = styled(Table)`
@@ -25,25 +28,35 @@ export const TableData = styled(Table)`
   .ant-table td {
     white-space: nowrap;
   }
-  .ant-table-thead > tr > th {
-    background-color: white;
-    text-align: center;
-    font-size: 16px;
-    line-height: 22px;
-    color: #434b5d;
-    font-weight: bold;
-    /* padding: 16px 16px; */
+  .ant-table-thead > tr {
+    &:nth-child(1) th:nth-child(1),
+    &:nth-child(2) th:nth-child(1) {
+      text-align: left;
+      width: 200px;
+    }
+    &:nth-child(2) th:nth-child(2) {
+      width: 130px;
+    }
+    & > th {
+      background-color: white;
+      text-align: center;
+      font-size: 16px;
+      line-height: 22px;
+      color: ${title};
+      font-weight: bold;
+      /* padding: 16px 16px; */
+    }
   }
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
-    padding: 13px 16px;
+    padding: 10px 16px;
     border-bottom: 0px;
   }
   .ant-table-tbody > tr > td {
     background-color: #f8f8f8;
   }
   .ant-table-tbody > tr {
-    border-bottom: 20px white solid;
+    border-bottom: 10px white solid;
     &:last-child {
       border-bottom: 0px;
     }
@@ -60,7 +73,7 @@ export const TableData = styled(Table)`
     background-color: #f8f8f8 !important;
   }
   th.th-border-bottom {
-    border-bottom: 20px white solid !important;
+    border-bottom: 10px white solid !important;
   }
 
   .ant-table-thead > tr > th .ant-table-column-sorters {
@@ -70,8 +83,14 @@ export const TableData = styled(Table)`
   }
   .ant-table-thead > tr > th .ant-table-column-sorter {
     position: relative;
-    top: 3px;
-    left: 10px;
+    top: 0px;
+    left: 5px;
+    .ant-table-column-sorter-inner {
+      .ant-table-column-sorter-up,
+      .ant-table-column-sorter-down {
+        font-size: 10px;
+      }
+    }
   }
 `;
 
@@ -96,13 +115,20 @@ export const StyledDivColor = styled.span`
 `;
 
 export const StyledDivMid = styled.div`
-  width: 100px;
+  min-width: 35px;
   font-size: 14px;
-  color: #434b5d;
+  color: ${title};
   font-weight: 600;
   text-align: center;
   img {
     margin-left: 18px;
+  }
+  &.name-col {
+    max-width: 160px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    padding-left: 0px;
   }
 `;
 
@@ -144,7 +170,6 @@ export const StyledText = styled.span`
   font-family: Open Sans;
   font-weight: 600;
   font-size: 14px;
-  margin-right: 7px;
   color: ${props => props.color};
 `;
 

@@ -4,19 +4,31 @@ import { testActivity } from "@edulastic/constants";
 import {
   mobileWidth,
   tabletWidth,
-  red,
+  smallDesktopWidth,
   darkGrey,
   lightGreySecondary,
   white,
   authorAssignment,
-  greenThird,
-  themeColor
+  themeColor,
+  title,
+  testTypeColor
 } from "@edulastic/colors";
 
 const { assignmentStatusBg, lightBlue } = authorAssignment;
 const {
   authorAssignmentConstants: {
-    assignmentStatus: { NOT_OPEN, IN_PROGRESS, IN_GRADING, NOT_GRADED, GRADES_HELD, DONE }
+    assignmentStatus: {
+      NOT_OPEN,
+      IN_PROGRESS,
+      IN_GRADING,
+      NOT_GRADED,
+      GRADES_HELD,
+      DONE,
+      IN_PROGRESS_PAUSED,
+      IN_GRADING_PAUSED,
+      NOT_GRADED_PAUSED,
+      GRADES_HELD_PAUSED
+    }
   }
 } = testActivity;
 
@@ -26,11 +38,19 @@ const defineStatusBg = status => {
       return assignmentStatusBg.NOT_OPEN;
     case IN_PROGRESS:
       return assignmentStatusBg.IN_PROGRESS;
+    case IN_PROGRESS_PAUSED:
+      return assignmentStatusBg.IN_PROGRESS;
     case IN_GRADING:
+      return assignmentStatusBg.IN_GRADING;
+    case IN_GRADING_PAUSED:
       return assignmentStatusBg.IN_GRADING;
     case NOT_GRADED:
       return assignmentStatusBg.NOT_GRADED;
+    case NOT_GRADED_PAUSED:
+      return assignmentStatusBg.NOT_GRADED;
     case GRADES_HELD:
+      return assignmentStatusBg.GRADES_HELD;
+    case GRADES_HELD_PAUSED:
       return assignmentStatusBg.GRADES_HELD;
     case DONE:
       return assignmentStatusBg.DONE;
@@ -62,35 +82,57 @@ export const TableData = styled(Table)`
   text-align: center;
   width: auto;
 
-  .ant-table-thead > tr {
-    th {
-      .ant-table-column-sorters {
-        display: flex;
-        justify-content: center;
-      }
-
-      &:first-child {
-        text-align: center;
-      }
-
-      &:nth-child(2) {
-        .ant-table-column-sorters {
-          justify-content: flex-start;
-        }
-      }
-    }
+  .ant-spin-nested-loading,
+  .ant-spin-container {
+    position: static;
   }
 
-  .ant-table-thead th {
-    border-bottom: none;
+  .ant-table-body {
+    .ant-table-thead > tr {
+      & > th {
+        background: ${white};
+        padding: 10px 15px 20px;
+        border-bottom: none;
+        font-weight: bold;
+        font-size: 12px;
+        text-transform: uppercase;
+        color: ${darkGrey};
+        white-space: nowrap;
+        text-align: center;
 
-    &:hover {
-      background: transparent !important;
-    }
+        @media (max-width: ${smallDesktopWidth}) {
+          font-size: 10px;
+        }
 
-    &.assignment-name {
-      text-align: left !important;
-      padding-left: 0;
+        &.assignment-name {
+          text-align: left !important;
+          padding-left: 0;
+        }
+        &.ant-table-column-has-actions.ant-table-column-has-sorters:hover,
+        & .ant-table-header-column .ant-table-column-sorters::before {
+          background: ${white};
+        }
+        &.ant-table-column-has-actions.ant-table-column-has-filters
+          &.ant-table-column-has-actions.ant-table-column-has-sorters {
+          text-align: center;
+        }
+        .ant-table-column-sorters {
+          display: flex;
+          justify-content: center;
+
+          .ant-table-column-sorter-inner {
+            &.ant-table-column-sorter-inner-full {
+              margin-top: 0em;
+            }
+            .ant-table-column-sorter {
+              &-up,
+              &-down {
+                font-size: 10px;
+              }
+            }
+          }
+        }
+      }
     }
   }
 
@@ -103,27 +145,14 @@ export const TableData = styled(Table)`
     margin: 0;
   }
 
-  .ant-table-thead > tr > th {
-    font-weight: bold;
-    font-size: 12px;
-    text-transform: uppercase;
-    color: ${darkGrey};
-    white-space: nowrap;
-    padding: 10px;
-    text-align: center;
-  }
-
-  .ant-table-thead > tr > th > .ant-table-column-has-actions > .ant-table-column-sorters {
-    padding: 0;
-  }
-
   .ant-table-tbody {
-    .ant-table-expanded-row td {
-      text-align: center;
-      padding: 9px 0px 9px 5px;
+    text-align: center;
+    & > tr:hover:not(.ant-table-expanded-row) > td {
+      background: ${themeColor}15;
     }
-
-    tr {
+    .ant-table-expanded-row > td {
+      text-align: center;
+      padding: 0px 0px 10px;
     }
 
     td {
@@ -131,28 +160,21 @@ export const TableData = styled(Table)`
       font-weight: 600;
 
       &.ant-table-selection-column {
-        padding: 8px;
+        padding: 10px 15px;
       }
     }
   }
 
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-sorters,
-  .ant-table-thead > tr > th.ant-table-column-has-actions.ant-table-column-has-filters {
-    text-align: center;
-  }
-  .ant-table-tbody {
-    text-align: center;
-  }
   .ant-table-tbody > tr > td {
     border-bottom: none;
   }
 
-  .ant-table-thead > tr > th {
-    background: transparent;
-  }
-
   .ant-pagination {
     margin-bottom: 0;
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    top: auto;
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -171,65 +193,54 @@ export const TableData = styled(Table)`
       padding-right: 0px;
     }
   }
-  @media (max-width: 1170px) {
+  @media (max-width: ${smallDesktopWidth}) {
     .ant-table-thead > tr > th {
       font-size: 10px;
     }
     .ant-table-tbody > tr > td {
-      font-size: 9px;
-    }
-  }
-  @media (max-width: 1170px) {
-    .ant-table-thead > tr > th {
-      font-size: 9px;
-    }
-    .ant-table-tbody > tr > td {
-      font-size: 9px;
+      font-size: 11px;
     }
   }
 `;
 
 export const TestThumbnail = styled.img`
-  border: 1px solid ${darkGrey};
-  border-radius: 5px;
-  width: 71px;
-  height: 23px;
+  border-radius: 4px;
+  width: 50px;
+  height: 24px;
+  @media (max-width: ${smallDesktopWidth}) {
+    width: 32px;
+  }
 `;
 
 export const AssignmentTD = styled.div`
   text-align: left;
   padding-left: 0px !important;
   padding-right: 0px !important;
-  width: 150px;
+  width: ${({ showFilter }) => (showFilter ? "94px" : "150px")};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 `;
 
 export const IconArrowDown = styled.img`
-  color: #00ad50;
+  color: ${themeColor};
   margin-right: 5px;
   width: 6px;
 `;
 
 export const BtnAction = styled(Button)`
-  color: #00ad50;
+  color: ${themeColor};
   border: none;
   box-shadow: 0px 2px 4px 0 rgba(201, 208, 219, 0.5);
   height: 28px;
-  font-size: 0.7em;
+  font-size: 11px;
   font-weight: 600;
   width: 100%;
   padding: 0px 20px;
   text-align: center;
-
-  :active {
-    background-color: #00ad50;
-    color: ${white};
-  }
-
-  :hover {
-    background-color: #00ad50;
+  &:hover,
+  &:focus {
+    background-color: ${themeColor};
     color: ${white};
   }
 `;
@@ -243,12 +254,13 @@ export const TypeIcon = styled.span`
   width: 18px;
   height: 18px;
   max-width: 18px;
-  background: ${props => (props.type === "practice" ? red : greenThird)};
+  background: ${props =>
+    props.type === "p" ? testTypeColor.practice : props.type === "c" ? testTypeColor.common : testTypeColor.assessment};
   text-align: center;
   color: ${white};
   border-radius: 50%;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 17px;
   padding-left: 1px;
 `;
@@ -256,6 +268,7 @@ export const TypeIcon = styled.span`
 export const ExpandDivdier = styled.div`
   color: ${themeColor};
   cursor: pointer;
+  font-size: 14px;
 `;
 
 export const BtnStatus = styled(Button)`
@@ -263,11 +276,17 @@ export const BtnStatus = styled(Button)`
   border: 0px;
   font-size: 0.7em;
   font-weight: bold;
-  width: 90px;
+  min-width: 90px;
   height: 26px;
   text-align: center;
-  border-radius: 8px;
+  border-radius: 5px;
   background-color: ${props => defineStatusBg(props.status)};
+
+  @media (max-width: ${smallDesktopWidth}) {
+    height: 20px;
+    line-height: 20px;
+    font-size: 9px;
+  }
 `;
 
 export const TitleCase = styled.div`
@@ -280,21 +299,18 @@ export const ActionDiv = styled.div`
   justify-content: space-between;
   text-align: center;
   flex: 1;
-  padding-right: 7px;
+  padding-right: 15px;
 `;
 
 export const ActionsWrapper = styled.div`
-  a {
-    margin-right: 20px;
-    &:last-child {
-      margin-right: 0px;
-    }
-  }
+  display: flex;
+  justify-content: space-around;
+  padding-right: 15px;
 `;
 
 export const GreyFont = styled.div`
-  color: grey;
-  font-size: 14px;
+  color: ${title};
+  font-size: 13px;
   position: relative;
   left: ${({ left }) => left || 0}px;
   white-space: nowrap;
@@ -302,8 +318,11 @@ export const GreyFont = styled.div`
   text-overflow: ellipsis;
   width: 100%;
   &.class-column {
-    text-align: right;
     white-space: initial;
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 11px;
   }
 `;
 

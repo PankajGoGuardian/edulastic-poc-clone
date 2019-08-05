@@ -113,8 +113,6 @@ class Board {
 
     this.drawingObject = null;
 
-    this.elementsAreEvaluated = false;
-
     this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
 
@@ -340,8 +338,8 @@ class Board {
     });
   }
 
-  setDisableResponse() {
-    this.disableResponse = true;
+  setDisableResponse(value) {
+    this.disableResponse = value;
   }
 
   resetOutOfLineMarks() {
@@ -449,8 +447,7 @@ class Board {
   }
 
   // Render marks
-  renderMarks(marks, markCoords = [], elementsAreEvaluated) {
-    this.elementsAreEvaluated = elementsAreEvaluated;
+  renderMarks(marks, markCoords = []) {
     marks.forEach(mark => {
       const markCoord = markCoords.find(el => el.id === mark.id);
       this.elements.push(Mark.onHandler(this, markCoord, mark));
@@ -843,9 +840,7 @@ class Board {
     );
   }
 
-  loadFromConfig(flatCfg, labelIsReadOnly, elementsAreEvaluated) {
-    this.elementsAreEvaluated = elementsAreEvaluated;
-
+  loadFromConfig(flatCfg, labelIsReadOnly) {
     // get name of the last object by label and reset objectNameGenerator with it
     flatCfg.sort(objectLabelComparator);
     if (typeof flatCfg[0] === "object") {
@@ -903,8 +898,7 @@ class Board {
     );
   }
 
-  loadSegments(elements, elementsAreEvaluated) {
-    this.elementsAreEvaluated = elementsAreEvaluated;
+  loadSegments(elements) {
     this.elements.push(
       ...elements.map(element => {
         switch (element.type) {

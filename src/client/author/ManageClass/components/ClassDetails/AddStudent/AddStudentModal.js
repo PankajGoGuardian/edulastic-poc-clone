@@ -5,11 +5,11 @@ import { get } from "lodash";
 import { Form, Icon, Collapse, Spin } from "antd";
 import { IconUser } from "@edulastic/icons";
 
+import { enrollmentApi } from "@edulastic/api";
 import BasicFields from "./BasicFields";
 import AdditionalFields from "./AdditionalFields";
 import { StyledModal, Title, ActionButton, PanelHeader } from "./styled";
 import { getUserOrgData } from "../../../../src/selectors/user";
-import { enrollmentApi } from "@edulastic/api";
 
 const { Panel } = Collapse;
 class AddStudentModal extends React.Component {
@@ -53,7 +53,19 @@ class AddStudentModal extends React.Component {
   };
 
   render() {
-    const { form, handleCancel, handleAdd, isOpen, submitted, stds, isEdit, foundUserId } = this.props;
+    const {
+      form,
+      handleCancel,
+      handleAdd,
+      isOpen,
+      submitted,
+      stds,
+      isEdit,
+      foundUserId,
+      showClassCodeField,
+      fetchClassDetailsUsingCode,
+      showTtsField
+    } = this.props;
     const { keys, isUpdate } = this.state;
     const { getFieldDecorator, getFieldValue, setFields, setFieldsValue } = form;
     const std = {};
@@ -72,7 +84,7 @@ class AddStudentModal extends React.Component {
         </ActionButton>
 
         <ActionButton onClick={isUpdate ? this.enrollStudent : handleAdd} type="primary">
-          {isUpdate ? "Yes, Enroll Student" : "Yes, Add Student"}
+          {isUpdate ? "Yes, Enroll Student" : isEdit ? "Yes, Update" : "Yes, Add Student"}
 
           <Icon type="right" />
         </ActionButton>
@@ -96,7 +108,7 @@ class AddStudentModal extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer}>
+      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer} textAlign="left">
         <Spin spinning={submitted}>
           <Form>
             <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
@@ -115,6 +127,8 @@ class AddStudentModal extends React.Component {
                   setFounduser={this.setFounduser}
                   foundUserId={foundUserId}
                   modalClose={handleCancel}
+                  showClassCodeField={showClassCodeField}
+                  fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
                 />
               </Panel>
               <Panel header={AdditionalDetailsHeader} key="additional">
@@ -123,6 +137,8 @@ class AddStudentModal extends React.Component {
                   getFieldValue={getFieldValue}
                   std={std}
                   isEdit={isEdit}
+                  stds={stds}
+                  showTtsField
                 />
               </Panel>
             </Collapse>

@@ -1,15 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { isEmpty } from "lodash";
 
 import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tabs, Tab, FlexContainer } from "@edulastic/common";
-import { Widget } from "../../styled/Widget";
 
 import { Subtitle } from "../../styled/Subtitle";
+import Question from "../Question";
 
 import { IconClose } from "./styled/IconClose";
 
@@ -18,27 +17,10 @@ class CorrectAnswers extends Component {
     tabs: 1
   };
 
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   calcMaxAltLen = () => {
     const { validation } = this.props;
 
-    return Math.max(
-      validation.alt_responses ? validation.alt_responses.length : 0,
-      validation.alt_inputs ? validation.alt_inputs.length : 0,
-      validation.alt_dropdowns ? validation.alt_dropdowns.length : 0
-    );
+    return validation.alt_responses ? validation.alt_responses.length : 0;
   };
 
   updateCountTabs = newCount => {
@@ -73,8 +55,7 @@ class CorrectAnswers extends Component {
   renderAltResponses = () => {
     const { validation } = this.props;
 
-    const isAlt =
-      !isEmpty(validation.alt_responses) || !isEmpty(validation.alt_inputs) || !isEmpty(validation.alt_dropdowns);
+    const isAlt = !isEmpty(validation.alt_responses);
 
     if (isAlt) {
       this.updateCountTabs(this.calcMaxAltLen() + 1);
@@ -96,8 +77,7 @@ class CorrectAnswers extends Component {
         padding: 0,
         boxShadow: "none",
         marginLeft: "auto",
-        minHeight: 28,
-        marginBottom: this.props.marginBottom
+        minHeight: 28
       }}
       onClick={() => {
         this.props.onTabChange();
@@ -112,15 +92,22 @@ class CorrectAnswers extends Component {
   );
 
   render() {
-    const { t, onTabChange, children, correctTab, options } = this.props;
+    const { t, onTabChange, children, correctTab, options, fillSections, cleanSections } = this.props;
     const { tabs } = this.state;
 
     return (
-      <Widget>
-        <Subtitle margin="0 0 6px">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
-
+      <Question
+        section="main"
+        label={t("component.correctanswers.setcorrectanswers")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
+        <FlexContainer>
+          <Subtitle margin="0 0 6px">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+          {this.renderPlusButton()}
+        </FlexContainer>
         <div>
-          <Tabs value={correctTab} onChange={onTabChange} extra={this.renderPlusButton()} style={{ marginBottom: 10 }}>
+          <Tabs value={correctTab} onChange={onTabChange} style={{ marginBottom: 10 }}>
             {tabs > 1 && (
               <Tab
                 type="primary"
@@ -135,7 +122,7 @@ class CorrectAnswers extends Component {
           {children}
         </div>
         {options}
-      </Widget>
+      </Question>
     );
   }
 }

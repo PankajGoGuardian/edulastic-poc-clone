@@ -5,10 +5,30 @@ import { Input, Select, DatePicker } from "antd";
 import Field from "./CustomField";
 
 const { Option } = Select;
-const initDOB = moment().add(-10, "years");
 
-const AdditionalFields = ({ std, ...restProps }) => {
-  const { sisId, studentNumber, iepStatus, ellStatus, sedStatus, frlStatus, race, dob, gender, contactEmails } = std;
+const AdditionalFields = ({ std, stds, isEdit, showTtsField, ...restProps }) => {
+  let { sisId, studentNumber, iepStatus, ellStatus, sedStatus, frlStatus, race, dob, gender, contactEmails } = std;
+  if (isEdit && stds && stds.length) {
+    const [studentDetails = {}] = stds;
+    ({
+      sisId,
+      studentNumber,
+      iepStatus,
+      ellStatus,
+      sedStatus,
+      frlStatus,
+      race,
+      dob,
+      gender,
+      contactEmails
+    } = studentDetails);
+    contactEmails = contactEmails.join(",");
+  }
+
+  const dateProps = {};
+  if (dob) {
+    dateProps.initialValue = moment(dob);
+  }
   return (
     <>
       <Field label="SIS ID" {...restProps} fiedlName="sisId" initialValue={sisId}>
@@ -44,8 +64,8 @@ const AdditionalFields = ({ std, ...restProps }) => {
       <Field label="Race" {...restProps} fiedlName="race" initialValue={race}>
         <Input placeholder="Race" />
       </Field>
-      <Field label="DOB" optional {...restProps} fiedlName="dob" initialValue={moment(dob || initDOB)}>
-        <DatePicker data-cy="endDate" format="DD MMM, YYYY" placeholder="End Date" />
+      <Field label="DOB" optional {...restProps} fiedlName="dob" {...dateProps}>
+        <DatePicker format="DD MMM, YYYY" />
       </Field>
       <Field label="Gender" {...restProps} fiedlName="gender" initialValue={gender}>
         <Select>
@@ -57,6 +77,15 @@ const AdditionalFields = ({ std, ...restProps }) => {
       <Field label="Contact" {...restProps} fiedlName="contactEmails" initialValue={contactEmails}>
         <Input placeholder="Enter Contact" />
       </Field>
+
+      {showTtsField && (
+        <Field label="Enable Text to Speech" {...restProps} fiedlName="tts">
+          <Select>
+            <Option value="yes">Yes</Option>
+            <Option value="no">No</Option>
+          </Select>
+        </Field>
+      )}
     </>
   );
 };

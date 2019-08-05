@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconMenuOpenClose } from "@edulastic/icons";
-import { tabletWidth, white } from "@edulastic/colors";
+import { tabletWidth, largeDesktopWidth, mobileWidthMax, white, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
@@ -36,10 +36,16 @@ export default connect(
 )(HeaderWrapper);
 
 const HeaderContainer = styled.div`
-  padding-top: 62px;
-  margin-bottom: 10px;
-  @media screen and (max-width: 768px) {
-    padding-top: 95px;
+  padding-top: 76px;
+  margin-bottom: 16px;
+
+  @media screen and (min-width: ${extraDesktopWidthMax}) {
+    padding-top: 96px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    padding-top: 60px;
+    margin-bottom: 12px;
   }
 `;
 
@@ -49,9 +55,14 @@ const FixedHeader = styled(Affix)`
   position: fixed;
   z-index: 2;
   left: 100px;
+
+  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
+    left: 90px;
+  }
+
   @media (max-width: 768px) {
     left: 0;
-    padding-left: 60px;
+    padding-left: 70px;
     background: ${props => props.theme.headerBgColor};
   }
 `;
@@ -61,12 +72,25 @@ const AssignmentsHeader = styled(Layout.Header)`
   color: ${props => props.theme.headerTitleTextColor};
   display: flex;
   align-items: center;
-  height: 62px;
-  padding: 0px 15px;
-  @media screen and (max-width: 768px) {
-    height: 104px;
-    padding: 0;
+  height: 76px;
+  padding: 0px 46px;
+
+  @media screen and (min-width: ${extraDesktopWidthMax}) {
+    padding: 0px 44px;
+    height: 96px;
+    padding: 0px 30px 0 40px;
   }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    height: 60px;
+    padding: 0px 19px 0 30px;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    height: 60px;
+    padding: 0 26px 0 0;
+  }
+
   .ant-col-24 {
     align-items: center;
     line-height: 1.2;
@@ -84,6 +108,7 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
+
   @media (max-width: 768px) {
     flex-direction: column;
     align-items: flex-start;
@@ -99,7 +124,7 @@ const MenuIcon = styled(IconMenuOpenClose)`
   @media (max-width: ${tabletWidth}) {
     display: block;
     position: absolute;
-    top: 25px;
-    left: 20px;
+    top: 22px;
+    left: 26px;
   }
 `;

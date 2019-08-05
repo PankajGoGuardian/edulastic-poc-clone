@@ -2,11 +2,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
+import { Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isUndefined, round } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth, desktopWidth } from "@edulastic/colors";
+import { mobileWidth, desktopWidth, themeColor } from "@edulastic/colors";
 import { withWindowSizes, WithResources } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
@@ -49,6 +50,8 @@ import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
+
+import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -109,6 +112,14 @@ const QuestionContainer = styled.div`
   }
   .ql-indent-9.ql-direction-rtl.ql-align-right {
     padding-right: 27em;
+  }
+`;
+
+const ShowStudentWorkBtn = styled(Button)`
+  margin-right: 15px;
+  &:hover,
+  &:focus {
+    color: ${themeColor};
   }
 `;
 
@@ -201,6 +212,8 @@ const getQuestion = type => {
 };
 
 class QuestionWrapper extends Component {
+  static contextType = ItemDetailContext;
+
   state = {
     main: [],
     advanced: [],
@@ -212,29 +225,26 @@ class QuestionWrapper extends Component {
     this.setState({ shuffledOptsOrder });
   };
 
-  fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight, id) => {
+  fillSections = (section, label, el) => {
     this.setState(state => {
       const sectionState = state[section];
-      const found = sectionState.filter(el => el.label === label && el.offset !== offset);
+      const found = sectionState.filter(block => block.label === label);
 
       if (found.length) {
         // update of section offset in array
         return {
-          [section]: sectionState.filter(el => {
+          [section]: sectionState.filter(block => {
             if (el.label === label) {
-              el.offset = offset;
-              el.offsetBottom = offsetBottom;
-              el.haveDesk = haveDesk;
-              el.deskHeight = deskHeight;
+              block.el = el;
             }
-            return el;
+            return block;
           })
         };
       }
 
       // push of section to array
       return {
-        [section]: sectionState.concat({ label, offset, offsetBottom, haveDesk, deskHeight, id })
+        [section]: sectionState.concat({ section, label, el })
       };
     });
   };
@@ -272,13 +282,18 @@ class QuestionWrapper extends Component {
       userRole,
       disableResponse,
       isStudentReport,
+      showStudentWork,
+      LCBPreviewModal,
+      showUserTTS,
       ...restProps
     } = this.props;
+
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
+    const { layoutType } = this.context;
 
     const isV1Multipart = get(this.props, "col.isV1Multipart", false);
     const studentName = data.activity && data.activity.studentName;
@@ -303,7 +318,12 @@ class QuestionWrapper extends Component {
        */
       userAnswerProps.key = data.id;
     }
-    const canShowPlayer = userRole === "student" && data.tts && data.tts.taskStatus === "COMPLETED";
+    const canShowPlayer =
+      ((showUserTTS === "yes" && userRole === "student") || (userRole === "teacher" && !!LCBPreviewModal)) &&
+      data.tts &&
+      data.tts.taskStatus === "COMPLETED";
+
+    const showAudioControls = userRole === "teacher" && !!LCBPreviewModal;
 
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
@@ -320,7 +340,13 @@ class QuestionWrapper extends Component {
         <ThemeProvider theme={{ ...themes.default, fontSize: get(data, "ui_style.fontsize", "normal") }}>
           <>
             {canShowPlayer ? (
-              <AudioControls key={data.id} item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} />
+              <AudioControls
+                showAudioControls={showAudioControls}
+                key={data.id}
+                item={data}
+                qId={data.id}
+                audioSrc={data.tts.titleAudioURL}
+              />
             ) : (
               ""
             )}
@@ -332,13 +358,14 @@ class QuestionWrapper extends Component {
               data-cy="question-container"
             >
               <PaperWrapper
-                className="question-wrapper"
+                // className="question-wrapper" // this style not working with test item layout columns settings (when > 1 columns)
                 disabled={disabled}
                 isV1Multipart={isV1Multipart}
                 style={{
                   width: "-webkit-fill-available",
                   display: "flex",
-                  boxShadow: "none"
+                  boxShadow: "none",
+                  paddingRight: layoutType === COMPACT ? "100px" : null
                 }}
                 flowLayout={flowLayout}
               >
@@ -368,10 +395,15 @@ class QuestionWrapper extends Component {
                     {...userAnswerProps}
                   />
                   {showFeedback && timeSpent ? (
-                    <TimeSpentWrapper>
-                      <i className="fa fa-clock-o" aria-hidden="true" />
-                      {round(timeSpent / 1000, 1)}s
-                    </TimeSpentWrapper>
+                    <>
+                      <TimeSpentWrapper>
+                        {!!showStudentWork && (
+                          <ShowStudentWorkBtn onClick={showStudentWork}> Show student work</ShowStudentWorkBtn>
+                        )}
+                        <i className="fa fa-clock-o" aria-hidden="true" />
+                        {round(timeSpent / 1000, 1)}s
+                      </TimeSpentWrapper>
+                    </>
                   ) : (
                     ""
                   )}
@@ -395,7 +427,7 @@ class QuestionWrapper extends Component {
                   />
                 ))}
               {/* STUDENT REPORT PAGE FEEDBACK */}
-              {studentReportFeedbackVisible && <StudentReportFeedback index={qIndex} qId={data.id} />}
+              {studentReportFeedbackVisible && <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />}
             </QuestionContainer>
           </>
         </ThemeProvider>
@@ -426,7 +458,8 @@ QuestionWrapper.propTypes = {
   handleAdvancedOpen: PropTypes.func,
   userRole: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
-  clearAnswers: PropTypes.func.isRequired
+  clearAnswers: PropTypes.func.isRequired,
+  LCBPreviewModal: PropTypes.any.isRequired
 };
 
 QuestionWrapper.defaultProps = {
@@ -458,6 +491,7 @@ const enhance = compose(
     state => ({
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
+      showUserTTS: get(state, "user.user.tts", "no"),
       userRole: getUserRole(state)
     }),
     {

@@ -18,14 +18,14 @@ class AddClassModal extends Component {
       fetchingTeacher: []
     };
     this.fetchSchool = debounce(this.fetchSchool, 1000);
-    this.fetchTeacher = debounce(this.fetchTeacher, 1000);
+    this.fetchTeacher = debounce(this._fetchTeacher, 1000);
     this.fetchCoursesForDistrict = debounce(this.fetchCoursesForDistrict, 1000);
   }
 
   onAddClass = () => {
     this.props.form.validateFieldsAndScroll((err, user) => {
       if (!err) {
-        const { teacher, name, institutionId, subject, tags, courseId, grade } = user;
+        const { teacher, name, institutionId, subject, tags, courseId, grades } = user;
         const teacherArr = [];
         for (let i = 0; i < teacher.length; i++) {
           teacherArr.push(teacher[i].key);
@@ -39,7 +39,9 @@ class AddClassModal extends Component {
           tags,
           courseId,
           // here multiple grades has to be sent as a comma separated string
-          grade: grade.join(",")
+          grades: grades,
+          // not implemented in add model so sending empty
+          standardSets: []
         };
         this.props.addClass(createClassData);
       }
@@ -52,7 +54,7 @@ class AddClassModal extends Component {
 
   fetchSchool = async value => {
     // here searchParams is added only when value exists
-    const searchParam = value ? { search: { name: { type: "cont", value } } } : {};
+    const searchParam = value ? { search: { name: { type: "cont", value: [value] } } } : {};
     this.setState({ schoolList: [], fetchingSchool: true });
     const schoolListData = await schoolApi.getSchools({
       districtId: this.props.userOrgId,
@@ -94,7 +96,7 @@ class AddClassModal extends Component {
     searchCourseList(searchTerms);
   };
 
-  fetchTeacher = async value => {
+  _fetchTeacher = async value => {
     this.setState({ teacherList: [], fetchingTeacher: true });
     const searchData = {
       districtId: this.props.userOrgId,
@@ -102,12 +104,14 @@ class AddClassModal extends Component {
       page: 1,
       role: "teacher"
     };
+
     value &&
       Object.assign(searchData, {
         search: {
-          username: { type: "con", value }
+          username: { type: "cont", value: [value] }
         }
       });
+
     const { result: teacherListData } = await userApi.fetchUsers(searchData);
     this.setState({ teacherList: teacherListData, fetchingTeacher: false });
   };
@@ -179,7 +183,7 @@ class AddClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Grades">
-              {getFieldDecorator("grade", {
+              {getFieldDecorator("grades", {
                 rules: [
                   {
                     required: true,
@@ -247,7 +251,7 @@ class AddClassModal extends Component {
                 >
                   {teacherList.map(teacher => (
                     <Option key={teacher._id} value={teacher._id}>
-                      {`${get(teacher, ["_source", "firstName"], "")} ${get(teacher, ["_source", "lastName"], "")}`}
+                      {`${get(teacher, ["_source", "username"], "")}`}
                     </Option>
                   ))}
                 </Select>

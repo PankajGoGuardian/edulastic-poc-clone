@@ -1,15 +1,12 @@
 import React from "react";
-import Modal from "react-responsive-modal";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button } from "antd";
-import { checkAnswerEvaluation } from "../../actions/checkanswer";
+import { Button, Modal } from "antd";
 
 class ToolbarModal extends React.Component {
   checkAnswer = () => {
-    const { onClose, checkAnswerEvaluation } = this.props;
-    checkAnswerEvaluation();
+    const { onClose, checkanswer } = this.props;
+    checkanswer();
     onClose();
   };
 
@@ -56,7 +53,14 @@ class ToolbarModal extends React.Component {
   render() {
     const { isVisible, onClose } = this.props;
     return (
-      <Modal open={isVisible} onClose={onClose} showCloseIcon={false} styles={{ modal: { borderRadius: 4 } }} center>
+      <Modal
+        visible={isVisible}
+        onCancel={onClose}
+        closable={false}
+        bodyStyle={{ padding: 20 }}
+        footer={null}
+        width="390px"
+      >
         <Container>
           <StyledButton onClick={() => this.checkAnswer()}>Check Answer</StyledButton>
           <StyledButton onClick={() => this.hint()}>Hint</StyledButton>
@@ -79,10 +83,7 @@ ToolbarModal.propTypes = {
   checkanswer: PropTypes.func.isRequired
 };
 
-export default connect(
-  null,
-  { checkAnswerEvaluation }
-)(ToolbarModal);
+export default ToolbarModal;
 
 const Container = styled.div`
   display: flex;

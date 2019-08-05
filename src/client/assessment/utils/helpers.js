@@ -1,5 +1,4 @@
 import { groupBy, difference, isEmpty } from "lodash";
-import { MathKeyboard } from "@edulastic/common";
 
 export const getFontSize = (fontSize, withRem = false) => {
   switch (fontSize) {
@@ -28,6 +27,12 @@ export const getStylesFromUiStyleToCssStyle = ui_style => {
         break;
       case "min_width":
         cssStyles.minWidth = `${value}px`;
+        break;
+      case "widthpx":
+        cssStyles.width = `${value}px`;
+        break;
+      case "heightpx":
+        cssStyles.height = `${value}px`;
         break;
       case "transparent_background":
         if (value) cssStyles.background = "transparent";
@@ -230,10 +235,6 @@ export const getDirection = pos => {
 /**
  * User is able to enter  only variables used in 'RESTRICT VARIABLES USED TO'
  */
-export const isKeyboard = str => {
-  const isExist = MathKeyboard.KEYBOARD_BUTTONS_ALL.find(key => key.handler.includes(str));
-  return !!isExist;
-};
 
 export const mathValidateVariables = (val, options) => {
   if (!options || (!options.allowedVariables && !options.allowNumericOnly) || !val) return val;
@@ -257,10 +258,7 @@ export const mathValidateVariables = (val, options) => {
   do {
     m = varReg.exec(newVal);
     if (m) {
-      const isExist = isKeyboard(m[0]);
-      if (!isExist) {
-        foundVars.push({ str: m[0], segments: m[0].split("") });
-      }
+      foundVars.push({ str: m[0], segments: m[0].split("") });
     }
   } while (m);
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { DragSource } from "react-dnd";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import striptags from "striptags";
 
@@ -13,12 +14,16 @@ function collectSource(connector, monitor) {
 }
 
 const specSource = {
+  canDrag(props) {
+    return !props.disableResponse;
+  },
+
   beginDrag(props) {
     const item = { item: props.obj, index: props.index };
     return item;
   },
 
-  endDrag(props, monitor) {
+  endDrag(props, monitor, component) {
     if (!monitor.didDrop()) {
       return;
     }
@@ -29,32 +34,46 @@ const specSource = {
     let [, fromContainerIndex, fromRespIndex] = data.split("_");
     fromContainerIndex = parseInt(fromContainerIndex, 10);
     fromRespIndex = parseInt(fromRespIndex, 10);
+
+    const node = ReactDOM.findDOMNode(component);
+    const { height, width } = node.getBoundingClientRect();
+
     props.onDrop(
       {
         fromContainerIndex: Number.isNaN(fromContainerIndex) ? undefined : fromContainerIndex,
         fromRespIndex: Number.isNaN(fromRespIndex) ? undefined : fromRespIndex,
         item: props.item,
-        index: itemCurrent.index
+        index: itemCurrent.index,
+        itemRect: { height, width, ...itemTo.position }
       },
       itemTo.index
     );
+  },
+
+  canDrag(props) {
+    return !props.disable;
   }
 };
-
-const DragItem = ({ connectDragSource, data, children, style, title, ...restProps }) =>
-  data &&
-  connectDragSource(
-    <div
-      title={!title ? null : title}
-      style={{
-        ...style
-      }}
-      draggable
-    >
-      <DragPreview {...restProps}>{children}</DragPreview>
-      {children}
-    </div>
-  );
+class DragItem extends React.Component {
+  render() {
+    const { connectDragSource, data, children, style, title, ...restProps } = this.props;
+    return (
+      data &&
+      connectDragSource(
+        <div
+          title={!title ? null : title}
+          style={{
+            ...style
+          }}
+          draggable={!this.props.disableResponse}
+        >
+          {!this.props.disableResponse && <DragPreview {...restProps}>{children}</DragPreview>}
+          {children}
+        </div>
+      )
+    );
+  }
+}
 
 DragItem.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
@@ -63,11 +82,13 @@ DragItem.propTypes = {
   children: PropTypes.any.isRequired,
   active: PropTypes.bool.isRequired,
   smallSize: PropTypes.bool.isRequired,
-  style: PropTypes.object.isRequired
+  style: PropTypes.object.isRequired,
+  title: PropTypes.string
 };
 
 DragItem.defaultProps = {
-  data: null
+  data: null,
+  title: ""
 };
 
 export default DragSource("metal", specSource, collectSource)(DragItem);

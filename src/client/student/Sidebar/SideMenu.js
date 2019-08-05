@@ -6,7 +6,8 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { withNamespaces } from "@edulastic/localization";
 import { Link, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown } from "antd";
+import { get } from "lodash";
+import { Layout, Menu as AntMenu, Row, Col, Icon as AntIcon, Dropdown, Tooltip } from "antd";
 import styled, { css } from "styled-components";
 import {
   IconAssignment,
@@ -19,7 +20,7 @@ import {
   IconQuestion
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
-import { white, tabletWidth } from "@edulastic/colors";
+import { white, tabletWidth, largeDesktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
 
@@ -123,7 +124,8 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, currentPath, firstName, logout, isSidebarCollapsed, t } = this.props;
+    const { windowWidth, currentPath, firstName, middleName, lastName, logout, isSidebarCollapsed, t } = this.props;
+    const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
     const menuIndex = getIndex(page, menuItems);
     const isMobile = windowWidth <= parseFloat(tabletWidth);
@@ -239,10 +241,13 @@ class SideMenu extends Component {
                   >
                     <div>
                       <img src={Profile} alt="Profile" />
-                      <div style={{ paddingLeft: 11 }}>
-                        {!isSidebarCollapsed && <UserName>{firstName || "Zack Oliver"}</UserName>}
-                        {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
-                      </div>
+                      <Tooltip title={userName}>
+                        <div style={{ paddingLeft: 11 }}>
+                          {!isSidebarCollapsed && <UserName>{userName || "Zack Oliver"}</UserName>}
+                          {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
+                        </div>
+                      </Tooltip>
+
                       {!isSidebarCollapsed && !isMobile && (
                         <IconDropdown
                           style={{ fontSize: 20, pointerEvents: "none" }}
@@ -280,7 +285,9 @@ const enhance = compose(
   connect(
     ({ router, user, ui }) => ({
       currentPath: router.location.pathname,
-      firstName: (user.user && user.user.firstName) || "",
+      firstName: get(user, "user.firstName", ""),
+      middleName: get(user, "user.middleName", ""),
+      lastName: get(user, "user.lastName", ""),
       isSidebarCollapsed: ui.isSidebarCollapsed
     }),
     { logout: logoutAction, toggleSideBar: toggleSideBarAction }
@@ -327,11 +334,23 @@ const SideBar = styled(Layout.Sider)`
   padding-bottom: 0;
 
   &.ant-layout-sider-collapsed .logoWrapper {
-    padding: 22.5px 20px;
+    padding: 12.5px 20px;
+
+    @media (min-width: ${extraDesktopWidthMax}) {
+      padding: 22.5px 20px;
+    }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      padding: 4.5px 20px;
+    }
   }
   &.ant-layout-sider-collapsed .footerBottom {
     padding: 8px 8px 0px;
     width: 100px;
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 90px;
+    }
   }
   &.ant-layout-sider-collapsed .questionBtn {
     width: 60px;
@@ -346,6 +365,13 @@ const SideBar = styled(Layout.Sider)`
 
     &:hover {
       background: #1890ff;
+    }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 47px;
+      height: 47px;
+      border-radius: 47px;
+      margin-bottom: 10px;
     }
   }
   &.ant-layout-sider-collapsed .userinfoBtn .ant-select-arrow {
@@ -372,6 +398,14 @@ const SideBar = styled(Layout.Sider)`
   .ant-select {
     width: 125px;
   }
+
+  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
+    flex: 0 0 90px !important;
+    max-width: 90px !important;
+    min-width: 90px !important;
+    width: 90px !important;
+  }
+
   @media (max-width: ${tabletWidth}) {
     flex: 0 0 0px;
     max-width: 0px;
@@ -428,8 +462,17 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 9px 0px 10px;
-  min-height: calc(100% - 100px);
+  padding: 5px 0px 10px;
+  min-height: calc(100% - 90px);
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    min-height: calc(100% - 100px);
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    min-height: calc(100% - 65px);
+    padding-bottom: 22px;
+  }
 
   @media (max-width: ${tabletWidth}) {
     min-height: 100%;
@@ -492,13 +535,17 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    height: 48px;
+    height: 38px;
     padding: 10px 39px !important;
     max-width: 100%;
     
   }
   &.ant-menu-inline-collapsed {
     width: 100px;
+    
+    @media(max-width: ${largeDesktopWidth}) {
+      width: 90px;
+    }
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
@@ -506,7 +553,7 @@ const Menu = styled(AntMenu)`
     justify-content: center;
     margin-top: 14px;
     padding: 10px 18px !important;
-    height: 48px;
+    height: 38px;
     width: 100%;
   }
   &.ant-menu-inline > .ant-menu-item {
@@ -529,6 +576,11 @@ const Menu = styled(AntMenu)`
       opacity: 0;
       pointer-events: none;
       transition: all .3s ease;
+      
+      @media (max-width: ${largeDesktopWidth}) {
+        left: 13px;
+        right: 13px;
+      }
     }
   }
   .ant-menu-item:not(.ant-menu-item-selected) {
@@ -710,6 +762,10 @@ const UserInfoButton = styled.div`
     img {
       box-shadow: none;
     }
+
+    @media (max-width: ${largeDesktopWidth}) {
+      width: 47px;
+    }
   }
 
   img {
@@ -719,7 +775,13 @@ const UserInfoButton = styled.div`
     left: 0;
     border-radius: 50%;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+
+    @media (max-width: ${largeDesktopWidth}) {
+      height: 47px;
+      width: 47px;
+    }
   }
+
   .ant-select-selection {
     background: transparent;
     border: 0px;
@@ -739,6 +801,10 @@ const UserInfoButton = styled.div`
       pointer-events: none;
       background: transparent;
     }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 47px;
   }
 `;
 
@@ -769,6 +835,10 @@ const DropdownBtn = styled(Dropdown)`
       width: 60px;
       margin: 0;
     }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    height: 47px;
   }
 `;
 

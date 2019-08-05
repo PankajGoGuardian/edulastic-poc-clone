@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Table } from "antd";
+import { Modal, Table, Button } from "antd";
 const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, infoModalData, setInfoModalData }) => {
   const handleCancel = () => {
     setinfoModelVisible(false);
@@ -8,13 +8,18 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
 
   const newInfoModalData = infoModalData.map(user => ({
     ...user,
-    fullName: `${user.firstName} ${user.lastName}`
+    msg:
+      user.status == "FAILED_DOMAIN_RESTRICTED"
+        ? " -"
+        : user.firstName === ""
+        ? "Student name will be auto-updated after first sign-in"
+        : `${user.firstName} ${user.lastName || ""}`
   }));
   const columns = [
     {
       title: "Name",
-      dataIndex: "fullName",
-      key: "fullName"
+      dataIndex: "msg",
+      key: "msg"
     },
     {
       title: "Username",
@@ -28,7 +33,17 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
     }
   ];
   return (
-    <Modal title="Student details" footer={null} visible={infoModelVisible} onCancel={handleCancel} width={700}>
+    <Modal
+      title="Student details"
+      visible={infoModelVisible}
+      onCancel={handleCancel}
+      width={700}
+      footer={
+        <Button type="primary" onClick={handleCancel}>
+          Done
+        </Button>
+      }
+    >
       <Table dataSource={newInfoModalData} columns={columns} pagination={false} />
     </Modal>
   );

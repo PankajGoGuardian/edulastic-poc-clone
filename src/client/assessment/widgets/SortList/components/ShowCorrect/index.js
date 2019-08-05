@@ -9,7 +9,7 @@ import { Item } from "./styled/Item";
 import { Index } from "./styled/Index";
 import { Content } from "./styled/Content";
 
-const ShowCorrect = ({ list, correctList, altResponses, source, t }) => (
+const ShowCorrect = ({ list, altList, correctList, altResponses, source, t }) => (
   <CorrectAnswersContainer title={t("component.sortList.correctAnswers")}>
     <FlexRow>
       {list.map((item, i) => (
@@ -26,8 +26,8 @@ const ShowCorrect = ({ list, correctList, altResponses, source, t }) => (
         <FlexRow>
           {ans.value.map((answer, index) => (
             <Item key={index}>
-              <Index>{answer + 1}</Index>
-              <Content dangerouslySetInnerHTML={{ __html: list[index] }} />
+              <Index>{index + 1}</Index>
+              <Content dangerouslySetInnerHTML={{ __html: altList[i][index] }} />
             </Item>
           ))}
         </FlexRow>
@@ -38,6 +38,7 @@ const ShowCorrect = ({ list, correctList, altResponses, source, t }) => (
 
 ShowCorrect.propTypes = {
   list: PropTypes.array.isRequired,
+  altList: PropTypes.array.isRequired,
   altResponses: PropTypes.array.isRequired,
   correctList: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,

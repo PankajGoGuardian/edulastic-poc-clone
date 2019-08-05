@@ -1,6 +1,6 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
-import { takeEvery, call, put, all, select } from "redux-saga/effects";
+import { takeEvery, takeLatest, call, put, all, select } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
 import { keyBy } from "lodash";
 import { message } from "antd";
@@ -30,6 +30,12 @@ const ADD_FILTER_ACTION = "[schooladmin] add filter";
 const REMOVE_FILTER = "[schooladmin] remove filter";
 const SET_ROLE = "[schooladmin] set role";
 
+const ADD_BULK_TEACHER_REQUEST = "[teacher] add bulk teacher request";
+const ADD_BULK_TEACHER_SUCCESS = "[teacher] add bulk teacher success";
+const ADD_BULK_TEACHER_ERROR = "[teacher] add bulk teacher error";
+
+const SET_TEACHERDETAIL_MODAL_VISIBLE = "[teacher] set teacher detail modal visible";
+
 export const receiveAdminDataAction = createAction(RECEIVE_SCHOOLADMIN_REQUEST);
 export const receiveSchoolAdminSuccessAction = createAction(RECEIVE_SCHOOLADMIN_SUCCESS);
 export const receiveSchoolAdminErrorAction = createAction(RECEIVE_SCHOOLADMIN_ERROR);
@@ -54,6 +60,12 @@ export const addFilterAction = createAction(ADD_FILTER_ACTION);
 export const removeFilterAction = createAction(REMOVE_FILTER);
 export const setRoleAction = createAction(SET_ROLE);
 
+export const addBulkTeacherAdminAction = createAction(ADD_BULK_TEACHER_REQUEST);
+export const addBulkTeacherAdminSuccessAction = createAction(ADD_BULK_TEACHER_SUCCESS);
+export const addBulkTeacherAdminErrorAction = createAction(ADD_BULK_TEACHER_ERROR);
+
+export const setTeachersDetailsModalVisibleAction = createAction(SET_TEACHERDETAIL_MODAL_VISIBLE);
+
 // selectors
 const stateSchoolAdminSelector = state => state.schoolAdminReducer;
 const filterSelector = state => state.schoolAdminReducer.filters;
@@ -68,7 +80,12 @@ const getSearchValueSelector = createSelector(
 
 export const getAdminUsersDataSelector = createSelector(
   stateSchoolAdminSelector,
-  state => state.data
+  state => state.data.result
+);
+
+export const getAdminUsersDataCountSelector = createSelector(
+  stateSchoolAdminSelector,
+  state => state.data.totalUsers
 );
 
 export const getShowActiveUsersSelector = createSelector(
@@ -102,19 +119,21 @@ const initialState = {
   delete: null,
   deleting: false,
   deleteError: null,
-  searchName: "",
-  filtersColumn: "",
-  filtersValue: "",
-  filtersText: "",
+  // searchName: "",
+  // filtersColumn: "",
+  // filtersValue: "",
+  // filtersText: "",
   showActiveUsers: true,
   pageNo: 1,
-  filters: {
-    other: {
-      type: "",
-      value: ""
-    }
-  },
-  role: ""
+  bulkTeacherData: [],
+  teacherDetailsModalVisible: false
+  // filters: {
+  //   other: {
+  //     type: "",
+  //     value: ""
+  //   }
+  // },
+  // role: ""
 };
 
 export const reducer = createReducer(initialState, {
@@ -123,8 +142,12 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_SCHOOLADMIN_SUCCESS]: (state, { payload: { result, totalUsers } }) => {
     state.loading = false;
-    state.data.result = keyBy(result, "_id");
-    state.data.totalUsers = totalUsers;
+    const _result = keyBy(result, "_id");
+
+    state.data = {
+      result: _result,
+      totalUsers
+    };
   },
   [RECEIVE_SCHOOLADMIN_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -136,7 +159,11 @@ export const reducer = createReducer(initialState, {
   [UPDATE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
     state.update = payload;
     state.updating = false;
-    // state.data = schoolAdminData;
+
+    state.data.result[payload._id]._source = {
+      ...state.data.result[payload._id]._source,
+      ...payload
+    };
   },
   [UPDATE_SCHOOLADMIN_ERROR]: (state, { payload }) => {
     state.updating = false;
@@ -201,38 +228,29 @@ export const reducer = createReducer(initialState, {
   },
   [SET_ROLE]: (state, { payload: role }) => {
     state.role = role;
+  },
+  [ADD_BULK_TEACHER_REQUEST]: state => {
+    state.creating = true;
+    state.teacherDetailsModalVisible = false;
+  },
+  [ADD_BULK_TEACHER_SUCCESS]: (state, { payload }) => {
+    state.bulkTeacherData = payload;
+    state.creating = false;
+    state.teacherDetailsModalVisible = true;
+  },
+  [ADD_BULK_TEACHER_ERROR]: (state, { payload }) => {
+    state.creating = false;
+    state.addBulkTeacherError = payload.bulkAddError;
+    state.teacherDetailsModalVisible = false;
+  },
+  [SET_TEACHERDETAIL_MODAL_VISIBLE]: (state, { payload }) => {
+    state.teacherDetailsModalVisible = payload;
   }
 });
 
 // sagas
-function* receiveSchoolAdminSaga() {
+function* receiveSchoolAdminSaga({ payload }) {
   try {
-    const showActiveUsers = yield select(getShowActiveUsersSelector);
-    const districtId = yield select(getUserOrgId);
-    const page = yield select(getPageNoSelector);
-    const role = yield select(getRoleSelector);
-    const { other, ...rest } = yield select(getFiltersSelector);
-    const searchValue = yield select(getSearchValueSelector);
-    const searchParams = searchValue
-      ? {
-          firstName: {
-            type: "cont",
-            value: searchValue
-          }
-        }
-      : {};
-    const statusParams = showActiveUsers ? { status: 1 } : {};
-    const payload = {
-      districtId,
-      role,
-      limit: 25,
-      page,
-      ...statusParams,
-      search: {
-        ...searchParams,
-        ...rest
-      }
-    };
     const data = yield call(userApi.fetchUsers, payload);
     yield put(receiveSchoolAdminSuccessAction(data));
   } catch (err) {
@@ -245,12 +263,10 @@ function* receiveSchoolAdminSaga() {
 function* updateSchoolAdminSaga({ payload }) {
   try {
     const updateSchoolAdmin = yield call(userApi.updateUser, payload);
-    message.success("School admin updated successfully");
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
-    // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveAdminDataAction());
+    message.success("User updated successfully");
   } catch ({ data: { message: errMsg } }) {
-    const errorMessage = "Update SchoolAdmin is failing";
+    const errorMessage = "Update User is failing";
     message.error(errMsg || errorMessage);
     yield put(updateSchoolAdminErrorAction({ error: errorMessage }));
   }
@@ -258,10 +274,14 @@ function* updateSchoolAdminSaga({ payload }) {
 
 function* createSchoolAdminSaga({ payload }) {
   try {
-    const createSchoolAdmin = yield call(userApi.createUser, payload);
+    const createSchoolAdmin = yield call(userApi.createUser, payload.createReq);
     yield put(createSchoolAdminSuccessAction(createSchoolAdmin));
+
     // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveAdminDataAction());
+    const { role } = createSchoolAdmin;
+    if (role === "teacher") yield call(message.success, "New user created successfully");
+    else if (role === "student") yield call(message.success, "Student added successfully");
+    yield put(receiveAdminDataAction(payload.listReq));
   } catch (err) {
     const errorMessage = "Create SchoolAdmin is failing";
     yield call(message.error, errorMessage);
@@ -271,17 +291,27 @@ function* createSchoolAdminSaga({ payload }) {
 
 function* deleteSchoolAdminSaga({ payload }) {
   try {
-    // for (let i = 0; i < payload.length; i++) {
-    const { result } = yield call(userApi.deleteUser, payload);
-    // }
+    const { result } = yield call(userApi.deleteUser, payload.deleteReq);
     message.success(result);
-    yield put(deleteSchoolAdminSuccessAction(payload));
+    yield put(deleteSchoolAdminSuccessAction(payload.deleteReq));
+
     // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveAdminDataAction());
+    yield put(receiveAdminDataAction(payload.listReq));
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";
     yield call(message.error, errorMessage);
     yield put(deleteSchoolAdminErrorAction({ deleteError: errorMessage }));
+  }
+}
+function* addBulkTeacherAdminSaga({ payload }) {
+  try {
+    const res = yield call(userApi.adddBulkTeacher, payload.addReq);
+    yield put(addBulkTeacherAdminSuccessAction(res));
+    yield put(receiveAdminDataAction(payload.listReq));
+  } catch (err) {
+    const errorMessage = "Add Bulk Teacher is failing";
+    yield call(message.error, errorMessage);
+    yield put(addBulkTeacherAdminErrorAction({ bulkAddError: errorMessage }));
   }
 }
 
@@ -290,4 +320,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(UPDATE_SCHOOLADMIN_REQUEST, updateSchoolAdminSaga)]);
   yield all([yield takeEvery(CREATE_SCHOOLADMIN_REQUEST, createSchoolAdminSaga)]);
   yield all([yield takeEvery(DELETE_SCHOOLADMIN_REQUEST, deleteSchoolAdminSaga)]);
+  yield all([yield takeLatest(ADD_BULK_TEACHER_REQUEST, addBulkTeacherAdminSaga)]);
 }

@@ -155,7 +155,7 @@ class AddTeacherModal extends React.Component {
       page: 1,
       sortField: "name",
       order: "asc",
-      search: { name: { type: "cont", value } }
+      search: { name: { type: "cont", value: [value] } }
     });
 
     this.setState({

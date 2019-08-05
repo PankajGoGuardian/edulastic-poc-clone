@@ -16,17 +16,19 @@ import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
 import { Rule } from "./options/Rule";
 import Units from "./options/Units";
-import {
-  AdditionalToggle,
-  AdditionalContainer,
-  AdditionalCompareUsing,
-  AdditionalAddRule,
-  AdditionalContainerRule
-} from "./styled/Additional";
+import { AdditionalToggle, AdditionalContainer, AdditionalCompareUsing } from "./styled/Additional";
 import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
-import { AllowedVariables, CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
+import {
+  AllowedVariables,
+  CheckOption,
+  DecimalSeparator,
+  Field,
+  SignificantDecimalPlaces,
+  Tolerance,
+  UnitsDropdown
+} from "./options";
 
 const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
 
@@ -49,11 +51,11 @@ const MathFormulaAnswerMethod = ({
   showAdditionals,
   handleChangeAdditionals,
   onChangeKeypad,
-  answer,
-  onAdd,
-  onAddIndex,
+  onChangeAllowedOptions,
+  onChangeShowDropdown,
   windowWidth,
   style = {},
+  keypadOffset,
   t
 }) => {
   useEffect(() => {
@@ -68,6 +70,17 @@ const MathFormulaAnswerMethod = ({
 
     onChange("options", newOptions);
   }, [method]);
+
+  useEffect(() => {
+    let compareMethod = methodsConst.EQUIV_VALUE;
+    if (!item.showDropdown) {
+      compareMethod = methodsConst.EQUIV_SYMBOLIC;
+    }
+    onChange("method", compareMethod);
+    onChangeKeypad("units_us");
+    handleChangeAdditionals(`${method}_${index}`, "pop");
+    handleChangeAdditionals(`${compareMethod}_${index}`, "push");
+  }, [item.showDropdown]);
 
   const changeOptions = (prop, val) => {
     const newOptions = {
@@ -290,13 +303,13 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={options}
-              onChange={changeOptions}
+              options={{ allowNumericOnly: item.allowNumericOnly }}
+              onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
           );
         case "allowedVariables":
-          return <AllowedVariables options={options} onChange={changeOptions} />;
+          return <AllowedVariables allowedVariables={item.allowedVariables} onChange={onChangeAllowedOptions} />;
         case "setEvaluation":
           return (
             <CheckOption
@@ -312,20 +325,21 @@ const MathFormulaAnswerMethod = ({
       }
     });
 
-  const { options: validVariable = {} } = get(item, ["validation", "valid_response", "value", 0], {});
-  const { allowedVariables } = validVariable;
-
-  const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
+  const restrictKeys = item.allowedVariables ? item.allowedVariables.split(",").map(segment => segment.trim()) : [];
+  const customKeys = get(item, "custom_keys", []);
+  const isShowDropdown = item.isUnits && item.showDropdown;
 
   return (
     <Container data-cy="math-formula-answer">
-      <StyledRow gutter={60}>
+      <StyledRow gutter={8}>
         {!methodOptions.includes("noExpeced") && (
           <Col span={index === 0 ? 12 : 11}>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
-              symbols={item.symbols}
-              restrictKeys={restrictKeys}
+              hideKeypad={item.showDropdown}
+              symbols={isShowDropdown ? ["basic"] : item.symbols}
+              restrictKeys={isShowDropdown ? [] : restrictKeys}
+              customKeys={isShowDropdown ? [] : customKeys}
               style={style}
               numberPad={item.numberPad}
               onChangeKeypad={onChangeKeypad}
@@ -344,6 +358,20 @@ const MathFormulaAnswerMethod = ({
             {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
           </Col>
         ) : null}
+        {item.isUnits && (
+          <Col
+            span={index === 0 ? 12 : 11}
+            style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 25 : 5 }}
+          >
+            <UnitsDropdown
+              item={item}
+              options={options}
+              onChange={changeOptions}
+              keypadOffset={keypadOffset}
+              onChangeShowDropdown={onChangeShowDropdown}
+            />
+          </Col>
+        )}
       </StyledRow>
 
       {methodOptions.includes("field") && (
@@ -369,30 +397,28 @@ const MathFormulaAnswerMethod = ({
         <AdditionalContainer>
           <FlexContainer justifyContent="space-between" alignItems="none">
             <AdditionalCompareUsing>
-              <Col spn={index === 0 ? 12 : 11}>
-                <Label>{t("component.math.compareUsing")}</Label>
-                <Select
-                  data-cy="method-selection-dropdown"
-                  size="large"
-                  value={method}
-                  style={{ width: "100%", height: 42 }}
-                  onChange={val => {
-                    onChange("method", val);
-                    handleChangeAdditionals(`${method}_${index}`, "pop");
-                    handleChangeAdditionals(`${val}_${index}`, "push");
-                  }}
-                >
-                  {methods.map(methodKey => (
-                    <Select.Option
-                      data-cy={`method-selection-dropdown-list-${methodKey}`}
-                      key={methodKey}
-                      value={methodsConst[methodKey]}
-                    >
-                      {t(`component.math.${methodsConst[methodKey]}`)}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Col>
+              <Label marginBottom="7px !important">{t("component.math.compareUsing")}</Label>
+              <Select
+                data-cy="method-selection-dropdown"
+                size="large"
+                value={method}
+                style={{ width: "100%", height: 42 }}
+                onChange={val => {
+                  onChange("method", val);
+                  handleChangeAdditionals(`${method}_${index}`, "pop");
+                  handleChangeAdditionals(`${val}_${index}`, "push");
+                }}
+              >
+                {methods.map(methodKey => (
+                  <Select.Option
+                    data-cy={`method-selection-dropdown-list-${methodKey}`}
+                    key={methodKey}
+                    value={methodsConst[methodKey]}
+                  >
+                    {t(`component.math.${methodsConst[methodKey]}`)}
+                  </Select.Option>
+                ))}
+              </Select>
             </AdditionalCompareUsing>
             {methodOptions.includes("rule") && (
               <RuleContainer>
@@ -402,13 +428,13 @@ const MathFormulaAnswerMethod = ({
           </FlexContainer>
           <WidgetMethods>{renderMethodsOptions()}</WidgetMethods>
 
-          {index + 1 === answer.length && (
+          {/* {index + 1 === answer.length && (
             <AdditionalContainerRule>
               <AdditionalAddRule onClick={onAddIndex >= 0 ? () => onAdd(onAddIndex) : onAdd} data-cy="add-new-method">
                 {`+ ${t("component.math.chainAnotherEvaluationRule")}`}
               </AdditionalAddRule>
             </AdditionalContainerRule>
-          )}
+          )} */}
         </AdditionalContainer>
       ) : null}
     </Container>
@@ -417,25 +443,28 @@ const MathFormulaAnswerMethod = ({
 
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onChangeShowDropdown: PropTypes.func.isRequired,
+  onChangeAllowedOptions: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   item: PropTypes.object.isRequired,
   options: PropTypes.object,
   value: PropTypes.string,
   method: PropTypes.string,
+  style: PropTypes.object,
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
-  onAdd: PropTypes.func.isRequired,
   handleChangeAdditionals: PropTypes.func,
-  answer: PropTypes.object.isRequired,
-  onAddIndex: PropTypes.number.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  allowedVariables: PropTypes.string.isRequired,
+  windowWidth: PropTypes.number.isRequired,
+  keypadOffset: PropTypes.number.isRequired
 };
 
 MathFormulaAnswerMethod.defaultProps = {
   value: "",
   method: "",
+  style: {},
   options: {},
   onDelete: undefined,
   showAdditionals: [],

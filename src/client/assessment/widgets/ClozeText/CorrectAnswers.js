@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, findIndex } from "lodash";
@@ -13,25 +12,12 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/
 import { Subtitle } from "../../styled/Subtitle";
 
 import CorrectAnswer from "./CorrectAnswer";
+import MixMatchCorrectAnswer from "./MixMatchCorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
 
 class CorrectAnswers extends Component {
   state = {
     value: 0
-  };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount = () => {
-    const { cleanSections } = this.props;
-
-    cleanSections();
   };
 
   handleTabChange = value => {
@@ -61,6 +47,7 @@ class CorrectAnswers extends Component {
 
   renderPlusButton = () => {
     const { onAddAltResponses, validation } = this.props;
+    const { alt_responses = [] } = validation;
 
     return (
       <Button
@@ -72,6 +59,7 @@ class CorrectAnswers extends Component {
           marginLeft: 20
         }}
         icon={<IconPlus fill="#fff" />}
+        disabled={validation.mixAndMatch && alt_responses.length >= 1}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           onAddAltResponses();
@@ -179,6 +167,7 @@ class CorrectAnswers extends Component {
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
+                mixAndMatch={validation.mixAndMatch}
                 responseIds={responseIds}
                 view={view}
                 previewTab={previewTab}
@@ -191,20 +180,31 @@ class CorrectAnswers extends Component {
               if (i + 1 === value) {
                 return (
                   <TabContainer key={i}>
-                    <CorrectAnswer
-                      key={options}
-                      response={alter}
-                      stimulus={stimulus}
-                      options={options}
-                      configureOptions={configureOptions}
-                      responseIds={responseIds}
-                      hasGroupResponses={hasGroupResponses}
-                      uiStyle={uiStyle}
-                      onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
-                      onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                      view={view}
-                      previewTab={previewTab}
-                    />
+                    {validation.mixAndMatch && (
+                      <MixMatchCorrectAnswer
+                        uiStyle={uiStyle}
+                        response={validation.valid_response}
+                        alternateResponse={alter}
+                        onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
+                      />
+                    )}
+                    {!validation.mixAndMatch && (
+                      <CorrectAnswer
+                        key={options}
+                        response={alter}
+                        stimulus={stimulus}
+                        options={options}
+                        configureOptions={configureOptions}
+                        responseIds={responseIds}
+                        hasGroupResponses={hasGroupResponses}
+                        uiStyle={uiStyle}
+                        onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
+                        onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                        mixAndMatch={validation.mixAndMatch}
+                        view={view}
+                        previewTab={previewTab}
+                      />
+                    )}
                   </TabContainer>
                 );
               }
@@ -227,9 +227,9 @@ CorrectAnswers.propTypes = {
   hasGroupResponses: PropTypes.bool,
   onRemoveAltResponses: PropTypes.func,
   configureOptions: PropTypes.object.isRequired,
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.bool.isRequired,
   uiStyle: PropTypes.object,
-  fillSections: PropTypes.func,
-  cleanSections: PropTypes.func,
   responseIds: PropTypes.object
 };
 
@@ -247,9 +247,7 @@ CorrectAnswers.defaultProps = {
     widthpx: 0,
     heightpx: 0,
     placeholder: ""
-  },
-  fillSections: () => {},
-  cleanSections: () => {}
+  }
 };
 
 const enhance = compose(

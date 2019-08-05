@@ -1,58 +1,112 @@
 /* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { Select, Checkbox, Input } from "antd";
 import { compose } from "redux";
+import { cloneDeep, findIndex, clamp } from "lodash";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { math } from "@edulastic/constants";
+import { math, response } from "@edulastic/constants";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import FontSizeSelect from "../../../components/FontSizeSelect";
+import ResponseContainers from "./ResponseContainers";
 
 class Layout extends Component {
   state = {
-    minWidth: 0
+    widthpx: 0,
+    heightpx: 0
   };
 
-  componentDidMount = () => {
-    const { fillSections, t, uiStyle } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-
-    this.setState({ minWidth: uiStyle.min_width });
+  handleDefaultWidthBlur = e => {
+    const { minWidth, maxWidth } = response;
+    const val = clamp(e.target.value, minWidth, maxWidth);
+    const { onChange, uiStyle } = this.props;
+    this.setState({ widthpx: val }, () => {
+      onChange("ui_style", {
+        ...uiStyle,
+        min_width: +val
+      });
+    });
   };
 
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
+  handleDefaultHeightBlur = e => {
+    const { minHeight, maxHeight } = response;
+    const val = clamp(e.target.value, minHeight, maxHeight);
+    const { onChange, uiStyle } = this.props;
 
-    const node = ReactDOM.findDOMNode(this);
+    this.setState({ heightpx: val }, () => {
+      onChange("ui_style", {
+        ...uiStyle,
+        heightpx: +val
+      });
+    });
+  };
 
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
+  onChangeWidthPx = e => {
+    this.setState({ widthpx: e.target.value });
+  };
+
+  onChangeHeightPx = e => {
+    this.setState({ heightpx: e.target.value });
+  };
+
+  changeResponseContainers = ({ index, prop, value }) => {
+    const { responseContainers, onChange } = this.props;
+    const newContainers = cloneDeep(responseContainers);
+    const ind = findIndex(newContainers, cont => cont.index === index);
+    if (ind !== -1) {
+      newContainers[ind][prop] = value;
+      onChange("response_containers", newContainers);
     }
-  }
+  };
 
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
+  addResponseContainer = () => {
+    const { item, responseContainers, onChange } = this.props;
+    const { response_ids: responseIds } = item;
+    const ind = responseContainers.length;
+    let obj = {};
+    // eslint-disable-next-line no-labels
+    outerLoop: if (responseIds) {
+      // eslint-disable-next-line guard-for-in
+      for (const key in responseIds) {
+        const responses = responseIds[key];
+        for (const _response of responses) {
+          if (_response.index === ind) {
+            obj = { ..._response };
+            // eslint-disable-next-line no-labels
+            break outerLoop;
+          }
+        }
+      }
+    }
+    onChange("response_containers", [...responseContainers, obj]);
+  };
 
-    cleanSections();
-  }
-
-  onChangeMinWidth = e => {
-    this.setState({ minWidth: e.target.value });
+  deleteResponseContainer = index => {
+    const { responseContainers, onChange } = this.props;
+    const newContainers = cloneDeep(responseContainers);
+    newContainers.splice(index, 1);
+    onChange("response_containers", newContainers);
   };
 
   render() {
-    const { onChange, uiStyle, t, advancedAreOpen } = this.props;
-    const { minWidth } = this.state;
+    const {
+      onChange,
+      uiStyle,
+      t,
+      advancedAreOpen,
+      fillSections,
+      cleanSections,
+      responseContainers,
+      showResponseBoxes
+    } = this.props;
+    const { widthpx, heightpx } = this.state;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -62,7 +116,13 @@ class Layout extends Component {
     };
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
 
         <Row gutter={60}>
@@ -81,24 +141,36 @@ class Layout extends Component {
               ))}
             </Select>
           </Col>
+
           <Col md={12}>
-            <Label>{t("component.options.responseMinimumWidth")}</Label>
-            <Input
-              type="number"
-              size="large"
-              value={minWidth}
-              onChange={this.onChangeMinWidth}
-              onBlur={e => {
-                const val = e.target.value > 400 ? 400 : e.target.value < 20 ? 20 : e.target.value;
-                this.setState({ minWidth: val });
-                return changeUiStyle("min_width", val);
-              }}
-              max={400}
-              min={20}
-            />
+            <Row gutter={8}>
+              <Col md={12}>
+                <Label>{t("component.options.defaultWidth")}</Label>
+                <Input
+                  type="number"
+                  size="large"
+                  value={widthpx || uiStyle.widthpx}
+                  onChange={this.onChangeWidthPx}
+                  onBlur={this.handleDefaultWidthBlur}
+                  max={400}
+                  min={20}
+                />
+              </Col>
+              <Col md={12}>
+                <Label>{t("component.options.defaultHeight")}</Label>
+                <Input
+                  type="number"
+                  size="large"
+                  value={heightpx || uiStyle.heightpx}
+                  onChange={this.onChangeHeightPx}
+                  onBlur={this.handleDefaultHeightBlur}
+                  max={400}
+                  min={20}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
-
         <Row gutter={60}>
           <Col md={12}>
             <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
@@ -113,7 +185,17 @@ class Layout extends Component {
             </Checkbox>
           </Col>
         </Row>
-      </Widget>
+        {showResponseBoxes && (
+          <Row>
+            <ResponseContainers
+              containers={responseContainers}
+              onChange={this.changeResponseContainers}
+              onAdd={this.addResponseContainer}
+              onDelete={this.deleteResponseContainer}
+            />
+          </Row>
+        )}
+      </Question>
     );
   }
 }
@@ -121,13 +203,17 @@ class Layout extends Component {
 Layout.propTypes = {
   onChange: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  item: PropTypes.object,
+  responseContainers: PropTypes.array,
   uiStyle: PropTypes.object,
   advancedAreOpen: PropTypes.bool,
+  showResponseBoxes: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
 
 Layout.defaultProps = {
+  item: {},
   uiStyle: {
     type: "standard",
     fontsize: "normal",
@@ -135,7 +221,9 @@ Layout.defaultProps = {
     orientation: "horizontal",
     choice_label: "number"
   },
+  responseContainers: [],
   advancedAreOpen: false,
+  showResponseBoxes: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

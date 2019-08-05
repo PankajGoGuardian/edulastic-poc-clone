@@ -64,6 +64,7 @@ FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="custom-toolbar-bt
 FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">Text Input</span>`);
 FroalaEditor.DefineIconTemplate("textdropdown", `<span class="custom-toolbar-btn">Text Dropdown</span>`);
 FroalaEditor.DefineIconTemplate("mathinput", `<span class="custom-toolbar-btn">Math Input</span>`);
+FroalaEditor.DefineIconTemplate("paragraphNumber", `<span class="custom-toolbar-btn">PN</span>`);
 
 const symbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
 const numberPad = ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"];
@@ -188,7 +189,7 @@ export const ToolbarContainer = styled.div.attrs({
   toolbarId: props => props.toolbarId
 })`
   position: absolute;
-  top: -50px;
+  bottom: 105%;
   left: 0;
   right: 0;
   z-index: 1000;
@@ -257,6 +258,8 @@ const CustomEditor = ({
   initOnClick,
   theme,
   border,
+  imageDefaultWidth,
+  placeholder,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -282,6 +285,7 @@ const CustomEditor = ({
       key: process.env.POI_APP_FROALA_KEY,
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
+      imageDefaultWidth: imageDefaultWidth,
       initOnClick,
       toolbarButtons,
       toolbarButtonsMD,
@@ -292,7 +296,7 @@ const CustomEditor = ({
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
-      placeholderText: null,
+      placeholderText: placeholder,
       htmlAllowedEmptyTags: [
         "textarea",
         "a",
@@ -308,6 +312,7 @@ const CustomEditor = ({
         "textinput",
         "textdropdown",
         "mathinput",
+        "paragraphnumber",
         "response",
         "specialCharacters"
       ],
@@ -410,7 +415,9 @@ const CustomEditor = ({
               const cursorEl = parent.childNodes[range.startOffset - 1];
               if (!cursorEl || !cursorEl.tagName) return;
 
-              if (["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT"].includes(cursorEl.tagName)) {
+              if (
+                ["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT", "PARAGRAPHNUMBER"].includes(cursorEl.tagName)
+              ) {
                 cursorEl.remove();
                 this.selection.save();
                 const updatedHtml = reIndexResponses(this.html.get(true));
@@ -457,7 +464,10 @@ const CustomEditor = ({
           return false;
         },
         "image.inserted": function($img, response) {
-          $img.css({ verticalAlign: "middle" });
+          $img.css({
+            verticalAlign: "middle",
+            width: $img[0].naturalWidth < imageDefaultWidth ? `${$img[0].naturalWidth}px` : `${imageDefaultWidth}px`
+          });
         },
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
@@ -495,7 +505,13 @@ const CustomEditor = ({
             setToolbarExpanded(this.toolbarExpanded);
             return;
           }
-          if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput" || cmd === "response") {
+          if (
+            cmd === "textinput" ||
+            cmd === "textdropdown" ||
+            cmd === "mathinput" ||
+            cmd === "response" ||
+            cmd === "paragraphNumber"
+          ) {
             this.selection.save();
             const updatedHtml = reIndexResponses(this.html.get(true));
             if (updatedHtml) {
@@ -659,6 +675,18 @@ const CustomEditor = ({
       }
     });
 
+    FroalaEditor.DefineIcon("paragraphNumber", { NAME: "paragraphNumber", template: "paragraphNumber" });
+    FroalaEditor.RegisterCommand("paragraphNumber", {
+      title: "paragraphNumber",
+      focus: false,
+      undo: true,
+      refreshAfterCallback: true,
+      callback: function() {
+        this.html.insert(`<ParagraphNumber></ParagraphNumber>`);
+        this.undo.saveStep();
+      }
+    });
+
     if (toolbarId) {
       const onScroll = debounce(e => {
         const toolbarPosInfo = getFixedPostion(toolbarContainerRef.current);
@@ -709,7 +737,6 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
-  const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>
       <MathModal
@@ -730,11 +757,7 @@ const CustomEditor = ({
         theme={theme}
       >
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
-        {showPlaceholder && (
-          <Placeholder toolbarExpanded={toolbarExpanded} border={border} showMargin={!tag}>
-            {config.placeholder}
-          </Placeholder>
-        )}
+
         <Editor
           tag={tag}
           model={content}
@@ -758,6 +781,7 @@ CustomEditor.propTypes = {
   toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
   readOnly: PropTypes.bool,
+  imageDefaultWidth: PropTypes.number,
   initOnClick: PropTypes.bool,
   border: PropTypes.string
 };
@@ -769,6 +793,7 @@ CustomEditor.defaultProps = {
   toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false,
+  imageDefaultWidth: 300,
   border: "none"
 };
 

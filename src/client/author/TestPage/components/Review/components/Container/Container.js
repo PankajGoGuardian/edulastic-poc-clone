@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq } from "lodash";
+import { cloneDeep, get, uniq as _uniq, flatMap, map } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -11,19 +11,20 @@ import HeaderBar from "../HeaderBar/HeaderBar";
 import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
-import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
+import { getStandardsSelector } from "../../ducks";
 import {
   setTestDataAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
-  getDefaultThumbnailSelector
+  getDefaultThumbnailSelector,
+  updateDefaultThumbnailAction
 } from "../../../../ducks";
 import { clearAnswersAction } from "../../../../../src/actions/answers";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
-import { SecondHeader } from "./styled";
+import { SecondHeader, ReviewPageContainer, ReviewSummaryWrapper } from "./styled";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
@@ -31,16 +32,57 @@ import TestPreviewModal from "../../../../../Assignments/components/Container/Te
 const scoreOfItem = item => {
   if (item.itemLevelScoring) {
     return item.itemLevelScore;
-  } else {
-    return get(item, "data.questions", []).reduce(
-      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
-      0
-    );
   }
+  return get(item, "data.questions", []).reduce(
+    (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
+    0
+  );
 };
 
 const getTotalScore = testItems => testItems.map(item => scoreOfItem(item)).reduce((total, s) => total + s, 0);
 
+const getStandardWiseSummary = question => {
+  let standardSummary;
+  if (question) {
+    const points = get(question, "validation.valid_response.score", 1);
+    const alignment = get(question, "alignment", []);
+    standardSummary = flatMap(alignment, ({ domains, isEquivalentStandard = false, curriculumId }) =>
+      flatMap(domains, ({ standards }) =>
+        map(standards, ({ name }) => ({
+          curriculumId: `${curriculumId}`,
+          identifier: name,
+          totalPoints: points,
+          totalQuestions: 1,
+          isEquivalentStandard
+        }))
+      )
+    );
+  }
+  return standardSummary;
+};
+
+export const createSummaryData = items => {
+  const summary = {
+    totalPoints: 0,
+    totalQuestions: 0,
+    standards: []
+  };
+  for (const item of items) {
+    const { itemLevelScoring, maxScore, itemLevelScore } = item;
+    const itemPoints = (itemLevelScoring === true && itemLevelScore) || maxScore;
+    const questions = get(item, "data.questions", []);
+    const itemTotalQuestions = questions.length;
+    for (const question of questions) {
+      const standardSummary = getStandardWiseSummary(question);
+      if (standardSummary) {
+        summary.standards.push(...standardSummary);
+      }
+    }
+    summary.totalPoints += itemPoints;
+    summary.totalQuestions += itemTotalQuestions;
+  }
+  return summary;
+};
 // TODO rewrite into  class component and mobile view
 class Review extends PureComponent {
   static propTypes = {
@@ -49,21 +91,29 @@ class Review extends PureComponent {
     onChangeSubjects: PropTypes.func.isRequired,
     rows: PropTypes.array.isRequired,
     setData: PropTypes.func.isRequired,
-    types: PropTypes.any.isRequired,
     standards: PropTypes.object.isRequired,
     summary: PropTypes.array.isRequired,
     current: PropTypes.string.isRequired,
     windowWidth: PropTypes.number.isRequired
   };
 
+  secondHeaderRef = React.createRef();
+
   state = {
     isCollapse: true,
     isModalVisible: false,
-    questionCreateType: "Duplicate",
     item: [],
     isTestPreviewModalVisible: false,
     currentTestId: ""
   };
+
+  componentWillUnmount() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
+
+  componentDidMount() {
+    window.addEventListener("scroll", this.handleScroll);
+  }
 
   setSelected = values => {
     const { test, setData } = this.props;
@@ -105,15 +155,16 @@ class Review extends PureComponent {
       const foundItem = test.testItems.find(({ id }) => id === item._id);
       return !(foundItem && foundItem.selected);
     });
-
+    newData.summary = createSummaryData(newData.testItems);
     this.setSelected([]);
     setData(newData);
-    message.success("Selected testItems removed successfully");
+    message.success("Selected item(s) removed successfully");
   };
 
   handleCollapse = () => {
+    const { isCollapse } = this.state;
     this.setState({
-      isCollapse: !this.state.isCollapse
+      isCollapse: !isCollapse
     });
   };
 
@@ -188,7 +239,10 @@ class Review extends PureComponent {
   }
 
   handleChangeField = (field, value) => {
-    const { setData } = this.props;
+    const { setData, updateDefaultThumbnail } = this.props;
+    if (field === "thumbnail") {
+      updateDefaultThumbnail("");
+    }
     setData({ [field]: value });
   };
 
@@ -202,6 +256,16 @@ class Review extends PureComponent {
     this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id });
   };
 
+  handleScroll = e => {
+    if (this.secondHeaderRef.current) {
+      if (window.scrollY > 50) {
+        this.secondHeaderRef.current.classList.add("fixed-second-header");
+      } else {
+        this.secondHeaderRef.current.classList.remove("fixed-second-header");
+      }
+    }
+  };
+
   render() {
     const {
       test,
@@ -209,27 +273,17 @@ class Review extends PureComponent {
       windowWidth,
       rows,
       standards,
-      types,
       onChangeGrade,
       onChangeSubjects,
       questions,
       owner,
       defaultThumbnail,
       isEditable = false,
-      createTestItemModalVisible,
       itemsSubjectAndGrade,
       checkAnswer,
       showAnswer
     } = this.props;
-    const {
-      isCollapse,
-      isModalVisible,
-      item,
-      questionCreateType,
-      isTestPreviewModalVisible,
-      currentTestId
-    } = this.state;
-    const totalPoints = test.scoring.total;
+    const { isCollapse, isModalVisible, item, isTestPreviewModalVisible, currentTestId } = this.state;
 
     const questionsCount = test.testItems.length;
 
@@ -262,25 +316,27 @@ class Review extends PureComponent {
     const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
     return (
-      <div style={{ paddingTop: 16 }}>
+      <ReviewPageContainer>
         <Row>
-          <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
-            <SecondHeader isMobileSize={isMobileSize}>
-              <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-              <HeaderBar
-                onSelectAll={this.handleSelectAll}
-                itemTotal={test.testItems.length}
-                selectedItems={selected}
-                onRemoveSelected={this.handleRemoveSelected}
-                onCollapse={this.handleCollapse}
-                onMoveTo={this.handleMoveTo}
-                owner={owner}
-                isEditable={isEditable}
-                windowWidth={windowWidth}
-                setCollapse={isCollapse}
-                onShowTestPreview={this.showTestPreviewModal}
-              />
-            </SecondHeader>
+          <Col span={isSmallSize ? 18 : 24}>
+            <div ref={this.secondHeaderRef}>
+              <SecondHeader isMobileSize={isMobileSize}>
+                <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+                <HeaderBar
+                  onSelectAll={this.handleSelectAll}
+                  itemTotal={test.testItems.length}
+                  selectedItems={selected}
+                  onRemoveSelected={this.handleRemoveSelected}
+                  onCollapse={this.handleCollapse}
+                  onMoveTo={this.handleMoveTo}
+                  owner={owner}
+                  isEditable={isEditable}
+                  windowWidth={windowWidth}
+                  setCollapse={isCollapse}
+                  onShowTestPreview={this.showTestPreviewModal}
+                />
+              </SecondHeader>
+            </div>
             <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable
@@ -288,6 +344,9 @@ class Review extends PureComponent {
                   setSelected={this.setSelected}
                   selected={selected}
                   isEditable={isEditable}
+                  owner={owner}
+                  scoring={test.scoring}
+                  onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
                 />
               ) : (
@@ -300,7 +359,6 @@ class Review extends PureComponent {
                   selected={selected}
                   setSelected={this.setSelected}
                   onSortEnd={this.moveTestItems}
-                  types={types}
                   owner={owner}
                   isEditable={isEditable}
                   scoring={test.scoring}
@@ -311,12 +369,7 @@ class Review extends PureComponent {
               )}
             </Paper>
           </Col>
-          <Col
-            span={isSmallSize ? 6 : 24}
-            style={{
-              padding: isSmallSize ? "0 40px 0 0" : isMobileSize ? "10px 45px" : "10px 25px"
-            }}
-          >
+          <ReviewSummaryWrapper span={isSmallSize ? 6 : 24}>
             <ReviewSummary
               tableData={this.tableData}
               questionsCount={questionsCount}
@@ -331,13 +384,13 @@ class Review extends PureComponent {
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
             />
-          </Col>
+          </ReviewSummaryWrapper>
         </Row>
         <PreviewModal
           testId={get(this.props, "match.params.id", false)}
           isVisible={isModalVisible}
           onClose={this.closeModal}
-          showModal={true}
+          showModal
           isEditable={isEditable}
           owner={owner}
           addDuplicate={this.handleDuplicateItem}
@@ -354,7 +407,7 @@ class Review extends PureComponent {
           test={test}
           hideModal={this.hidePreviewModal}
         />
-      </div>
+      </ReviewPageContainer>
     );
   }
 }
@@ -365,14 +418,26 @@ Review.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
   rows: PropTypes.array.isRequired,
   setData: PropTypes.func.isRequired,
-  types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
+  clearDictAlignment: PropTypes.func.isRequired,
   owner: PropTypes.bool,
   onSaveTestId: PropTypes.func,
   current: PropTypes.string.isRequired,
+  history: PropTypes.any.isRequired,
+  clearAnswer: PropTypes.func.isRequired,
+  checkAnswer: PropTypes.func.isRequired,
+  showAnswer: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  questions: PropTypes.object.isRequired
+  questions: PropTypes.object.isRequired,
+  itemsSubjectAndGrade: PropTypes.any.isRequired,
+  isEditable: PropTypes.bool.isRequired,
+  defaultThumbnail: PropTypes.any.isRequired
+};
+
+Review.defaultProps = {
+  owner: false,
+  onSaveTestId: () => {}
 };
 
 const enhance = compose(
@@ -380,7 +445,6 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state),
       summary: getSummarySelector(state),
       createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
@@ -390,6 +454,7 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
+      updateDefaultThumbnail: updateDefaultThumbnailAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,

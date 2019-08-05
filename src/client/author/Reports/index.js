@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useMemo } from "react";
+import styled from "styled-components";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Row, Col } from "antd";
 import next from "immer";
 
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
+import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessmentReport";
 import { StandardsMasteryReportContainer } from "./subPages/standardsMasteryReport";
+import { StudentProfileReportContainer } from "./subPages/studentProfileReport";
 
-import { StyledContainer, StyledCard, PrintableScreen } from "./common/styled";
+import { StyledContainer, StyledCard, PrintableScreen, StyledReportsContentContainer } from "./common/styled";
 
 import { SingleAssessmentReport } from "./components/singleAssessmentReport";
 import { StudentProfileReport } from "./components/studentProfileReport";
@@ -22,6 +25,7 @@ import { getPrintingState, setPrintingStateAction } from "./ducks";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
+  const [navigationItems, setNavigationItems] = useState([]);
 
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS BEGIN |-----|-----|-----|-----|----- //
 
@@ -61,7 +65,8 @@ const Container = props => {
         onPrintClickCB: onPrintClickCB,
         onDownloadCSVClickCB: onDownloadCSVClickCB,
         onRefineResultsCB: onRefineResultsCB,
-        breadcrumbData: navigation.locToData[loc].breadcrumb
+        breadcrumbData: navigation.locToData[loc].breadcrumb,
+        navigationItems
       };
     } else {
       return { title: "Reports" };
@@ -79,56 +84,166 @@ const Container = props => {
         onPrintClickCB={headerSettings.onPrintClickCB}
         onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
         onRefineResultsCB={headerSettings.onRefineResultsCB}
+        navigationItems={headerSettings.navigationItems}
+        activeNavigationKey={props.match.params.reportType}
       />
-      {!props.match.params.reportType ? <Route exact path={props.match.path} component={Reports} /> : null}
-      <Route
-        path={`/author/reports/assessment-summary/test/`}
-        render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
-        )}
-      />
-      <Route
-        path={`/author/reports/peer-performance/test/`}
-        render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
-        )}
-      />
-      <Route
-        path={`/author/reports/question-analysis/test/`}
-        render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
-        )}
-      />
-      <Route
-        path={`/author/reports/response-frequency/test/`}
-        render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
-        )}
-      />
-      <Route
-        path={`/author/reports/performance-by-standards/test/`}
-        render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
-        )}
-      />
-      <Route
-        path={`/author/reports/performance-by-students/test/`}
-        render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
-        )}
-      />
-      <Route
-        path={`/author/reports/standards-gradebook`}
-        render={_props => (
-          <StandardsMasteryReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
-        )}
-      />
-      <Route
-        path={`/author/reports/standards-performance-summary`}
-        render={_props => (
-          <StandardsMasteryReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
-        )}
-      />
+      <StyledReportsContentContainer>
+        {!props.match.params.reportType ? <Route exact path={props.match.path} component={Reports} /> : null}
+        <Route
+          path={`/author/reports/assessment-summary/test/`}
+          render={_props => (
+            <SingleAssessmentReportContainer
+              {..._props}
+              showFilter={expandFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/peer-performance/test/`}
+          render={_props => (
+            <SingleAssessmentReportContainer
+              {..._props}
+              showFilter={expandFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/question-analysis/test/`}
+          render={_props => (
+            <SingleAssessmentReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/response-frequency/test/`}
+          render={_props => (
+            <SingleAssessmentReportContainer
+              {..._props}
+              showFilter={expandFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/performance-by-standards/test/`}
+          render={_props => (
+            <SingleAssessmentReportContainer
+              {..._props}
+              showFilter={expandFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/performance-by-students/test/`}
+          render={_props => (
+            <SingleAssessmentReportContainer
+              {..._props}
+              showFilter={expandFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/peer-progress-analysis`}
+          render={_props => (
+            <MultipleAssessmentReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/student-progress`}
+          render={_props => (
+            <MultipleAssessmentReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/performance-over-time`}
+          render={_props => (
+            <MultipleAssessmentReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/standards-gradebook`}
+          render={_props => (
+            <StandardsMasteryReportContainer
+              {..._props}
+              showFilter={expandFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/standards-performance-summary`}
+          render={_props => (
+            <StandardsMasteryReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/student-mastery-profile/student/`}
+          render={_props => (
+            <StudentProfileReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/student-assessment-profile/student/`}
+          render={_props => (
+            <StudentProfileReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+        <Route
+          path={`/author/reports/student-profile-summary/student/`}
+          render={_props => (
+            <StudentProfileReportContainer
+              {..._props}
+              showFilter={showFilter}
+              loc={props.match.params.reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
+      </StyledReportsContentContainer>
     </PrintableScreen>
   );
 };

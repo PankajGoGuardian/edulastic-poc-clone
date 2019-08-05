@@ -1,7 +1,16 @@
 import { Radio, Switch } from "antd";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { mobileWidth, tabletWidth, linkColor, greyDarken, lightGreen1, themeColor, white } from "@edulastic/colors";
+import {
+  mobileWidth,
+  tabletWidth,
+  linkColor,
+  greyDarken,
+  lightGreen1,
+  themeColor,
+  white,
+  themeColorLight
+} from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
@@ -33,9 +42,9 @@ export const AssignButton = styled(Button)`
   margin-left: 20px;
   &:hover,
   &:focus {
-    background: ${themeColor};
+    background: ${themeColorLight};
     color: ${white};
-    border-color: ${themeColor};
+    border-color: ${themeColorLight};
   }
 `;
 

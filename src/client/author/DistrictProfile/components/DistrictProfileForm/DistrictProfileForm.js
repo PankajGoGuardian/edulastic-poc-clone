@@ -89,9 +89,13 @@ class DistrictProfileForm extends React.Component {
     const { updateDistrictProfile, createDistrictProfile, userOrgId } = this.props;
     let enableSave = true;
     for (let i = 0; i < this.childRefArr.length; i++) {
-      if (districtProfile[this.childRefArr[i].name].length == 0) {
-        this.childRefArr[i].component.current.setRequiredStatus();
-        enableSave = false;
+      if (!districtProfile[this.childRefArr[i].name] || districtProfile[this.childRefArr[i].name].length == 0) {
+        if (this.childRefArr[i].component.current.setRequiredStatus) {
+          this.childRefArr[i].component.current.setRequiredStatus();
+        } else {
+          this.childRefArr[i].component.current.wrappedInstance.setRequiredStatus();
+        }
+        if (i === 0) enableSave = false;
       }
     }
 
@@ -102,15 +106,15 @@ class DistrictProfileForm extends React.Component {
         const saveDistrictData = {
           orgType: "district",
           orgId: userOrgId,
-          logo: districtProfile.logo,
-          pageBackground: districtProfile.pageBackground,
+          logo: districtProfile.logo ? districtProfile.logo : undefined,
+          pageBackground: districtProfile.pageBackground ? districtProfile.pageBackground : undefined,
           name: districtProfile.name,
-          shortName: districtProfile.shortName,
-          city: districtProfile.city,
-          state: districtProfile.state,
-          zip: districtProfile.zip,
-          nces: districtProfile.nces,
-          announcement: districtProfile.announcement
+          shortName: districtProfile.shortName ? districtProfile.shortName : undefined,
+          city: districtProfile.city ? districtProfile.city : undefined,
+          state: districtProfile.state ? districtProfile.state : undefined,
+          zip: districtProfile.zip ? districtProfile.zip : undefined,
+          nces: districtProfile.nces ? districtProfile.nces : undefined,
+          announcement: districtProfile.announcement ? districtProfile.announcement : undefined
         };
 
         if (districtProfile._id === undefined) {
@@ -205,6 +209,7 @@ class DistrictProfileForm extends React.Component {
               height={"180px"}
               labelStr={"page background"}
               ref={this.childRefArr[6].component}
+              requiredStatus={false}
             />
           </StyledDivBg>
           <StyledDivMain>
@@ -222,7 +227,7 @@ class DistrictProfileForm extends React.Component {
                 value={districtProfile.shortName}
                 valueName={"District Short Name"}
                 maxLength={10}
-                requiredStatus={true}
+                requiredStatus={false}
                 setProfileValue={this.updateProfileValue}
                 updateEditing={this.setEditing}
                 type={"text"}
@@ -245,7 +250,7 @@ class DistrictProfileForm extends React.Component {
                 value={districtProfile.city}
                 valueName={"City"}
                 maxLength={40}
-                requiredStatus={true}
+                requiredStatus={false}
                 setProfileValue={this.updateProfileValue}
                 updateEditing={this.setEditing}
                 type={"text"}
@@ -258,7 +263,7 @@ class DistrictProfileForm extends React.Component {
                 value={districtProfile.state}
                 valueName={"State"}
                 maxLength={40}
-                requiredStatus={true}
+                requiredStatus={false}
                 setProfileValue={this.updateProfileValue}
                 updateEditing={this.setEditing}
                 type={"text"}
@@ -271,7 +276,7 @@ class DistrictProfileForm extends React.Component {
                 value={districtProfile.zip}
                 valueName={"Zip"}
                 maxLength={20}
-                requiredStatus={true}
+                requiredStatus={false}
                 setProfileValue={this.updateProfileValue}
                 updateEditing={this.setEditing}
                 type={"text"}
@@ -284,7 +289,7 @@ class DistrictProfileForm extends React.Component {
                 value={districtProfile.nces}
                 valueName={"NCES Code"}
                 maxLength={100}
-                requiredStatus={true}
+                requiredStatus={false}
                 setProfileValue={this.updateProfileValue}
                 updateEditing={this.setEditing}
                 type={"text"}
@@ -302,6 +307,7 @@ class DistrictProfileForm extends React.Component {
                 updateImgUrl={this.updateImgSrc}
                 labelStr={"logo image"}
                 ref={this.childRefArr[7].component}
+                requiredStatus={false}
               />
             </StyledRowLogo>
             <StyledRowAnn>
@@ -309,7 +315,7 @@ class DistrictProfileForm extends React.Component {
               <FormItem>
                 {getFieldDecorator("announcement", {
                   initialValue: districtProfile.announcement,
-                  rules: [{ required: true, message: "Please input your announcement" }]
+                  rules: [{ required: false, message: "Please input your announcement" }]
                 })(<StyledTextArea rows={6} onChange={this.changeAnnouncement} />)}
               </FormItem>
             </StyledRowAnn>

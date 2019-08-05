@@ -144,37 +144,27 @@ var normalEvaluator =
           userResponse,
           validation,
           valid_response,
-          valid_dropdown,
-          valid_inputs,
           _validation$alt_respo,
           alt_responses,
-          _validation$alt_dropd,
-          alt_dropdowns,
-          _validation$alt_input,
-          alt_inputs,
           scoring_type,
           min_score_if_attempted,
           penalty,
+          _validation$ignoreCas,
+          ignoreCase,
           _userResponse$inputs,
           inputs,
           _userResponse$dropDow,
           dropDowns,
           _userResponse$maths,
           maths,
-          mathAnswers,
-          dropDownAnswers,
-          textAnswers,
           score,
           maxScore,
           allEvaluations,
-          alterAnswersCount,
+          validAnswers,
           i,
-          dropDownValidation,
-          clozeTextValidation,
-          mathValidation,
-          questionScore,
-          currentScore,
           evaluations,
+          currentScore,
+          questionScore,
           dropDownEvaluation,
           clozeTextEvaluation,
           mathEvaluation,
@@ -192,99 +182,96 @@ var normalEvaluator =
                   (userResponse = _ref3$userResponse === void 0 ? {} : _ref3$userResponse),
                   (validation = _ref3.validation);
                 (valid_response = validation.valid_response),
-                  (valid_dropdown = validation.valid_dropdown),
-                  (valid_inputs = validation.valid_inputs),
                   (_validation$alt_respo = validation.alt_responses),
                   (alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo),
-                  (_validation$alt_dropd = validation.alt_dropdowns),
-                  (alt_dropdowns = _validation$alt_dropd === void 0 ? [] : _validation$alt_dropd),
-                  (_validation$alt_input = validation.alt_inputs),
-                  (alt_inputs = _validation$alt_input === void 0 ? [] : _validation$alt_input),
                   (scoring_type = validation.scoring_type),
                   (min_score_if_attempted = validation.min_score_if_attempted),
-                  (penalty = validation.penalty);
+                  (penalty = validation.penalty),
+                  (_validation$ignoreCas = validation.ignoreCase),
+                  (ignoreCase = _validation$ignoreCas === void 0 ? false : _validation$ignoreCas);
                 (_userResponse$inputs = userResponse.inputs),
                   (inputs = _userResponse$inputs === void 0 ? {} : _userResponse$inputs),
                   (_userResponse$dropDow = userResponse.dropDowns),
                   (dropDowns = _userResponse$dropDow === void 0 ? {} : _userResponse$dropDow),
                   (_userResponse$maths = userResponse.maths),
                   (maths = _userResponse$maths === void 0 ? {} : _userResponse$maths);
-                mathAnswers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-                dropDownAnswers = [valid_dropdown].concat((0, _toConsumableArray2["default"])(alt_dropdowns));
-                textAnswers = [valid_inputs].concat((0, _toConsumableArray2["default"])(alt_inputs));
                 score = 0;
                 maxScore = 0;
                 allEvaluations = [];
-                alterAnswersCount = Math.max(mathAnswers.length, dropDownAnswers.length, textAnswers.length);
+                validAnswers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
                 i = 0;
 
-              case 11:
-                if (!(i < alterAnswersCount)) {
-                  _context3.next = 35;
+              case 8:
+                if (!(i < validAnswers.length)) {
+                  _context3.next = 29;
                   break;
                 }
 
-                dropDownValidation = dropDownAnswers[i];
-                clozeTextValidation = textAnswers[i];
-                mathValidation = mathAnswers[i];
-                questionScore =
-                  (textAnswers[i] && textAnswers[i].score) ||
-                  (mathAnswers[i] && mathAnswers[i].score) ||
-                  (dropDownAnswers[i] && dropDownAnswers[i].score) ||
-                  1;
-                currentScore = 0;
                 evaluations = {};
+                currentScore = 0;
+                questionScore = (validAnswers[i] && validAnswers[i].score) || 1;
                 maxScore = Math.max(questionScore, maxScore);
 
-                if (dropDownValidation) {
+                if (validAnswers[i].dropdown) {
                   dropDownEvaluation = (0, _clozeText["default"])({
                     userResponse: transformUserResponse(dropDowns),
                     validation: {
                       scoring_type: "exactMatch",
-                      valid_response: dropDownValidation
+                      valid_response: (0, _objectSpread2["default"])(
+                        {
+                          score: 1
+                        },
+                        validAnswers[i].dropdown
+                      )
                     }
                   }).evaluation;
                   evaluations = (0, _objectSpread2["default"])({}, evaluations, dropDownEvaluation);
                 }
 
-                if (clozeTextValidation) {
+                if (validAnswers[i].textinput) {
                   clozeTextEvaluation = (0, _clozeText["default"])({
                     userResponse: transformUserResponse(inputs),
                     validation: {
                       scoring_type: "exactMatch",
-                      valid_response: clozeTextValidation
+                      valid_response: (0, _objectSpread2["default"])(
+                        {
+                          score: 1
+                        },
+                        validAnswers[i].textinput
+                      ),
+                      ignoreCase: ignoreCase
                     }
                   }).evaluation;
                   evaluations = (0, _objectSpread2["default"])({}, evaluations, clozeTextEvaluation);
                 }
 
-                if (!mathValidation) {
-                  _context3.next = 26;
+                if (!validAnswers[i].value) {
+                  _context3.next = 20;
                   break;
                 }
 
-                _context3.next = 24;
+                _context3.next = 18;
                 return mathEval({
                   userResponse: maths,
                   validation: {
                     scoring_type: "exactMatch",
-                    valid_response: mathValidation
+                    valid_response: validAnswers[i]
                   }
                 });
 
-              case 24:
+              case 18:
                 mathEvaluation = _context3.sent;
                 evaluations = (0, _objectSpread2["default"])({}, evaluations, mathEvaluation);
 
-              case 26:
+              case 20:
                 correctCount = Object.values(evaluations).filter(_identity2["default"]).length;
                 wrongCount = Object.values(evaluations).filter(function(x) {
                   return !x;
                 }).length;
                 answersCount =
-                  (0, _get2["default"])(dropDownValidation, ["value", "length"], 0) +
-                  (0, _get2["default"])(mathValidation, ["value", "length"], 0) +
-                  (0, _get2["default"])(clozeTextValidation, ["value", "length"], 0);
+                  (0, _get2["default"])(validAnswers[i].dropdown, ["value", "length"], 0) +
+                  (0, _get2["default"])(validAnswers[i], ["value", "length"], 0) +
+                  (0, _get2["default"])(validAnswers[i].textinput, ["value", "length"], 0);
 
                 if (scoring_type === "partialMatch") {
                   currentScore = questionScore * (correctCount / answersCount);
@@ -303,12 +290,12 @@ var normalEvaluator =
                   score: currentScore
                 });
 
-              case 32:
+              case 26:
                 i++;
-                _context3.next = 11;
+                _context3.next = 8;
                 break;
 
-              case 35:
+              case 29:
                 selectedEvaluation = (0, _maxBy2["default"])(allEvaluations, "score");
 
                 if (score === 0) {
@@ -331,7 +318,7 @@ var normalEvaluator =
                   maxScore: maxScore
                 });
 
-              case 40:
+              case 34:
               case "end":
                 return _context3.stop();
             }
@@ -516,24 +503,21 @@ var mixAndMatchEvaluator =
         var userResponse,
           validation,
           valid_response,
-          valid_dropdown,
-          valid_inputs,
           _validation$alt_respo2,
           alt_responses,
-          _validation$alt_dropd2,
-          alt_dropdowns,
-          _validation$alt_input2,
-          alt_inputs,
-          scoring_type,
           _validation$min_score,
           min_score_if_attempted,
           penalty,
+          _validation$ignoreCas2,
+          ignoreCase,
           _userResponse$inputs2,
           inputs,
           _userResponse$dropDow2,
           dropDowns,
           _userResponse$maths2,
           maths,
+          alt_inputs,
+          alt_dropdowns,
           questionScore,
           score,
           optionCount,
@@ -551,62 +535,87 @@ var mixAndMatchEvaluator =
               case 0:
                 (userResponse = _ref7.userResponse), (validation = _ref7.validation);
                 (valid_response = validation.valid_response),
-                  (valid_dropdown = validation.valid_dropdown),
-                  (valid_inputs = validation.valid_inputs),
                   (_validation$alt_respo2 = validation.alt_responses),
                   (alt_responses = _validation$alt_respo2 === void 0 ? [] : _validation$alt_respo2),
-                  (_validation$alt_dropd2 = validation.alt_dropdowns),
-                  (alt_dropdowns = _validation$alt_dropd2 === void 0 ? [] : _validation$alt_dropd2),
-                  (_validation$alt_input2 = validation.alt_inputs),
-                  (alt_inputs = _validation$alt_input2 === void 0 ? [] : _validation$alt_input2),
-                  (scoring_type = validation.scoring_type),
                   (_validation$min_score = validation.min_score_if_attempted),
                   (min_score_if_attempted = _validation$min_score === void 0 ? 0 : _validation$min_score),
-                  (penalty = validation.penalty);
+                  (penalty = validation.penalty),
+                  (_validation$ignoreCas2 = validation.ignoreCase),
+                  (ignoreCase = _validation$ignoreCas2 === void 0 ? false : _validation$ignoreCas2);
                 (_userResponse$inputs2 = userResponse.inputs),
                   (inputs = _userResponse$inputs2 === void 0 ? {} : _userResponse$inputs2),
                   (_userResponse$dropDow2 = userResponse.dropDowns),
                   (dropDowns = _userResponse$dropDow2 === void 0 ? {} : _userResponse$dropDow2),
                   (_userResponse$maths2 = userResponse.maths),
                   (maths = _userResponse$maths2 === void 0 ? {} : _userResponse$maths2);
-                questionScore =
-                  (valid_inputs && valid_inputs.score) ||
-                  (valid_response && valid_response.score) ||
-                  (valid_dropdown && valid_dropdown.score) ||
-                  1;
+                alt_inputs = alt_responses.map(function(alt_res) {
+                  return (0, _objectSpread2["default"])(
+                    {
+                      score: 1
+                    },
+                    alt_res.textinput
+                  );
+                });
+                alt_dropdowns = alt_responses.map(function(alt_res) {
+                  return (0, _objectSpread2["default"])(
+                    {
+                      score: 1
+                    },
+                    alt_res.dropdown
+                  );
+                });
+                questionScore = (valid_response && valid_response.score) || 1;
                 score = 0;
                 optionCount =
+                  (0, _get2["default"])(valid_response.dropdown, ["value", "length"], 0) +
                   (0, _get2["default"])(valid_response, ["value", "length"], 0) +
-                  (0, _get2["default"])(valid_inputs, ["value", "length"], 0) +
-                  (0, _get2["default"])(valid_dropdown, ["value", "length"], 0); // cloze-text evaluation!
+                  (0, _get2["default"])(valid_response.textinput, ["value", "length"], 0); // cloze-text evaluation!
 
                 clozeTextEvaluation =
-                  (valid_inputs &&
+                  (valid_response.textinput &&
                     (0, _clozeText["default"])({
                       userResponse: transformUserResponse(inputs),
                       validation: {
                         scoring_type: "exactMatch",
-                        valid_response: valid_inputs,
+                        valid_response: (0, _objectSpread2["default"])(
+                          {
+                            score: 1
+                          },
+                          valid_response.textinput
+                        ),
                         alt_responses: alt_inputs,
-                        mixAndMatch: true
+                        mixAndMatch: true,
+                        ignoreCase: ignoreCase
                       }
                     }).evaluation) ||
                   {}; // dropdown evaluation
 
                 dropDownEvaluation =
-                  (valid_dropdown &&
+                  (valid_response.dropdown &&
                     (0, _clozeText["default"])({
                       userResponse: transformUserResponse(dropDowns),
                       validation: {
                         scoring_type: "exactMatch",
-                        valid_response: valid_dropdown,
+                        valid_response: (0, _objectSpread2["default"])(
+                          {
+                            score: 1
+                          },
+                          valid_response.dropdown
+                        ),
                         alt_responses: alt_dropdowns,
                         mixAndMatch: true
                       }
                     }).evaluation) ||
                   {}; // math evaluations
 
-                _context6.next = 10;
+                _context6.t1 = valid_response;
+
+                if (!_context6.t1) {
+                  _context6.next = 15;
+                  break;
+                }
+
+                _context6.next = 14;
                 return mixAndMatchMathEvaluator({
                   userResponse: maths,
                   validation: {
@@ -615,8 +624,21 @@ var mixAndMatchEvaluator =
                   }
                 });
 
-              case 10:
-                mathEvaluation = _context6.sent;
+              case 14:
+                _context6.t1 = _context6.sent;
+
+              case 15:
+                _context6.t0 = _context6.t1;
+
+                if (_context6.t0) {
+                  _context6.next = 18;
+                  break;
+                }
+
+                _context6.t0 = {};
+
+              case 18:
+                mathEvaluation = _context6.t0;
                 evaluation = (0, _objectSpread2["default"])(
                   {},
                   dropDownEvaluation,
@@ -646,7 +668,7 @@ var mixAndMatchEvaluator =
                   maxScore: questionScore
                 });
 
-              case 17:
+              case 25:
               case "end":
                 return _context6.stop();
             }
@@ -661,7 +683,8 @@ var mixAndMatchEvaluator =
   })();
 
 var _default = function _default(_ref9) {
-  var userResponse = _ref9.userResponse,
+  var _ref9$userResponse = _ref9.userResponse,
+    userResponse = _ref9$userResponse === void 0 ? {} : _ref9$userResponse,
     validation = _ref9.validation;
   return validation.mixAndMatch
     ? mixAndMatchEvaluator({

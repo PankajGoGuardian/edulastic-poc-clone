@@ -3,18 +3,26 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get, keyBy } from "lodash";
-import moment from "moment";
-import { message, Dropdown, Menu } from "antd";
+import { message, Dropdown } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { IconMarkAsAbsent, IconStudentReportCard, IconMoreHorizontal, IconRedirect, IconPrint } from "@edulastic/icons";
+import {
+  IconMarkAsAbsent,
+  IconStudentReportCard,
+  IconMoreHorizontal,
+  IconRedirect,
+  IconPrint,
+  IconAddStudents,
+  IconRemove
+} from "@edulastic/icons";
 // actions
 import {
   receiveTestActivitydAction,
   receiveClassResponseAction,
   releaseScoreAction,
   markAsDoneAction,
-  markAbsentAction
+  markAbsentAction,
+  removeStudentAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
@@ -28,7 +36,8 @@ import {
   stateStudentResponseSelector,
   showScoreSelector,
   getMarkAsDoneEnableSelector,
-  getQLabelsSelector
+  getQLabelsSelector,
+  removedStudentsSelector
 } from "../../ducks";
 
 import {
@@ -83,6 +92,7 @@ import {
   CardDetailsContainer
 } from "./styled";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
+import AddStudentsPopup from "../AddStudentsPopup";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -108,7 +118,9 @@ class ClassBoard extends Component {
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {},
-      showModal: false,
+      showMarkAbsentPopup: false,
+      showRemoveStudentsPopup: false,
+      showAddStudentsPopup: false,
       modalInputVal: "",
       selectedNotStartedStudents: []
     };
@@ -181,7 +193,7 @@ class ClassBoard extends Component {
   onSelectAllChange = e => {
     const { checked } = e.target;
     const { testActivity } = this.props;
-    const { studentSelect, studentUnselectAll, allStudents } = this.props;
+    const { studentSelect, studentUnselectAll, allStudents, removedStudents } = this.props;
     testActivity.map(student => {
       student.check = checked;
       return null;
@@ -191,7 +203,8 @@ class ClassBoard extends Component {
       nCountTrue: checked ? testActivity.length : 0
     });
     if (checked) {
-      studentSelect(allStudents.map(x => x._id));
+      const selectedAllstudents = allStudents.map(x => x._id).filter(item => !removedStudents.includes(item));
+      studentSelect(selectedAllstudents);
     } else {
       studentUnselectAll();
     }
@@ -245,7 +258,11 @@ class ClassBoard extends Component {
   };
 
   handleRedirect = () => {
-    const { selectedStudents, testActivity } = this.props;
+    const { selectedStudents, testActivity, enrollmentStatus, additionalData = {}, assignmentStatus } = this.props;
+    if (additionalData.isPaused && assignmentStatus !== "DONE" && additionalData.endDate > Date.now()) {
+      return message.info("The class has been paused for this assessment.Please resume to continue with redirect.");
+    }
+
     const notStartedStudents = testActivity.filter(
       x =>
         selectedStudents[x.studentId] &&
@@ -256,6 +273,9 @@ class ClassBoard extends Component {
       message.warn("You can redirect only Submitted and Absent student(s).");
       return;
     }
+    const selectedStudentIds = Object.keys(selectedStudents);
+    if (selectedStudentIds.some(item => enrollmentStatus[item] === "0"))
+      return message.warn("You can not redirect to not enrolled student(s).");
     this.setState({ redirectPopup: true });
   };
 
@@ -319,11 +339,14 @@ class ClassBoard extends Component {
 
   handleShowMarkAsAbsentModal = () => {
     const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
-    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now())
+    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now()) {
       return message.warn("Assignment is not opened yet");
+    }
+
     const selectedStudentKeys = Object.keys(selectedStudents);
-    if (!selectedStudentKeys.length)
+    if (!selectedStudentKeys.length) {
       return message.warn("At least one student should be selected to be Marked as Absent.");
+    }
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
       item =>
@@ -335,7 +358,30 @@ class ClassBoard extends Component {
         `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`
       );
     }
-    this.setState({ showModal: true, selectedNotStartedStudents, modalInputVal: "" });
+    this.setState({ showMarkAbsentPopup: true, selectedNotStartedStudents, modalInputVal: "" });
+  };
+
+  handleShowRemoveStudentsModal = () => {
+    const { selectedStudents, testActivity } = this.props;
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    if (!selectedStudentKeys.length) {
+      return message.warn("At least one student should be selected to be removed.");
+    }
+    const selectedStudentsEntity = testActivity.filter(item => selectedStudentKeys.includes(item.studentId));
+    const isAnyBodyGraded = selectedStudentsEntity.some(item => item.status === "submitted" && item.graded);
+    if (isAnyBodyGraded) {
+      return message.warn("You will not be able to remove selected student(s) as the status is graded");
+    }
+    this.setState({ showRemoveStudentsPopup: true, modalInputVal: "" });
+  };
+
+  handleRemoveStudents = () => {
+    const { selectedStudents, studentUnselectAll, removeStudent, match } = this.props;
+    const { assignmentId, classId } = match.params;
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    removeStudent(assignmentId, classId, selectedStudentKeys);
+    studentUnselectAll();
+    this.setState({ showRemoveStudentsPopup: false });
   };
 
   handleMarkAbsent = () => {
@@ -345,11 +391,33 @@ class ClassBoard extends Component {
     if (!selectedNotStartedStudents.length) return message.warn("No students selected");
     markAbsent(assignmentId, classId, selectedNotStartedStudents);
     studentUnselectAll();
-    this.setState({ showModal: false });
+    this.setState({ showMarkAbsentPopup: false });
   };
 
+  handleShowAddStudentsPopup = () => {
+    const { assignmentStatus, additionalData, testActivity } = this.props;
+    if (assignmentStatus === "DONE") {
+      return message.warn(
+        "Mismatch occurred with logged in class section, please navigate to assignments to select class section and try again."
+      );
+    }
+    // total count represents total students count in the class
+    if (additionalData.totalCount <= testActivity.length) {
+      return message.warn("This assessment is already assigned to all students in the class.");
+    }
+
+    this.setState({ showAddStudentsPopup: true });
+  };
+
+  handleHideAddStudentsPopup = () => {
+    this.setState({ showAddStudentsPopup: false });
+  };
   handleCancelMarkAbsent = () => {
-    this.setState({ showModal: false });
+    this.setState({ showMarkAbsentPopup: false });
+  };
+
+  handleCancelRemove = () => {
+    this.setState({ showRemoveStudentsPopup: false });
   };
 
   handleValidateInput = e => {
@@ -402,7 +470,8 @@ class ClassBoard extends Component {
       isPresentationMode,
       entities,
       labels,
-      assignmentStatus
+      assignmentStatus,
+      enrollmentStatus
     } = this.props;
     const {
       selectedTab,
@@ -420,7 +489,9 @@ class ClassBoard extends Component {
       selectAll,
       nCountTrue,
       modalInputVal,
-      showModal
+      showMarkAbsentPopup,
+      showRemoveStudentsPopup,
+      showAddStudentsPopup
     } = this.state;
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
@@ -438,12 +509,13 @@ class ClassBoard extends Component {
     const disableMarkAbsent =
       (assignmentStatus.toLowerCase() == "not open" && additionalData.startDate > Date.now()) ||
       assignmentStatus.toLowerCase() === "graded";
+    const existingStudents = testActivity.map(item => item.studentId);
     return (
       <div>
-        {showModal ? (
+        {showMarkAbsentPopup ? (
           <ConfirmationModal
             title="Absent"
-            show={showModal}
+            show={showMarkAbsentPopup}
             onOk={this.handleMarkAbsent}
             onCancel={this.handleCancelMarkAbsent}
             inputVal={modalInputVal}
@@ -453,6 +525,23 @@ class ClassBoard extends Component {
               "You are about to Mark the selected student(s) as Absent. Student's response if present will be deleted. Do you still want to proceed?"
             }
             okText="Yes,Absent"
+          />
+        ) : (
+          ""
+        )}
+        {showRemoveStudentsPopup ? (
+          <ConfirmationModal
+            title="Remove"
+            show={showRemoveStudentsPopup}
+            onOk={this.handleRemoveStudents}
+            onCancel={this.handleCancelRemove}
+            inputVal={modalInputVal}
+            onInputChange={this.handleValidateInput}
+            expectedVal="REMOVE"
+            bodyText={
+              "You are about to remove the selected student(s) from this assessment. Student's responses will be deleted. Do you still want to proceed?"
+            }
+            okText="Yes,Remove"
           />
         ) : (
           ""
@@ -566,6 +655,14 @@ class ClassBoard extends Component {
                               <IconMarkAsAbsent />
                               <span>Mark as Absent</span>
                             </MenuItems>
+                            <MenuItems onClick={this.handleShowAddStudentsPopup}>
+                              <IconAddStudents />
+                              <span>Add Students</span>
+                            </MenuItems>
+                            <MenuItems onClick={this.handleShowRemoveStudentsModal}>
+                              <IconRemove />
+                              <span>Remove Students</span>
+                            </MenuItems>
                             <MenuItems onClick={this.onStudentReportCardsClick}>
                               <IconStudentReportCard />
                               <span>Student Report Cards</span>
@@ -623,7 +720,7 @@ class ClassBoard extends Component {
                     this.onTabChange(e, "Student", selected);
                   }}
                   isPresentationMode={isPresentationMode}
-                  enrollmentStatus={this.props.enrollmentStatus}
+                  enrollmentStatus={enrollmentStatus}
                 />
               ) : (
                 <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
@@ -636,6 +733,7 @@ class ClassBoard extends Component {
                 absentList={absentList}
                 selectedStudents={selectedStudents}
                 additionalData={additionalData}
+                enrollmentStatus={enrollmentStatus}
                 closePopup={() => {
                   this.setState({ redirectPopup: false });
                 }}
@@ -643,6 +741,16 @@ class ClassBoard extends Component {
                 assignmentId={assignmentId}
                 groupId={classId}
               />
+              {showAddStudentsPopup && (
+                <AddStudentsPopup
+                  open={showAddStudentsPopup}
+                  groupId={classId}
+                  closePolicy={additionalData.closePolicy}
+                  assignmentId={assignmentId}
+                  closePopup={this.handleHideAddStudentsPopup}
+                  disabledList={existingStudents}
+                />
+              )}
             </React.Fragment>
           )}
 
@@ -736,7 +844,8 @@ const enhance = compose(
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      labels: getQLabelsSelector(state)
+      labels: getQLabelsSelector(state),
+      removedStudents: removedStudentsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -747,7 +856,8 @@ const enhance = compose(
       setSelected: gradebookSetSelectedAction,
       setReleaseScore: releaseScoreAction,
       setMarkAsDone: markAsDoneAction,
-      markAbsent: markAbsentAction
+      markAbsent: markAbsentAction,
+      removeStudent: removeStudentAction
     }
   )
 );

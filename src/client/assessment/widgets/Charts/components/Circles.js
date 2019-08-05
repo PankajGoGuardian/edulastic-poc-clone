@@ -9,7 +9,18 @@ import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestio
 import { Bar, ActiveBar, Text, Circle, StrokedRect } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, correct }) => {
+const Circles = ({
+  bars,
+  onPointOver,
+  onMouseDown,
+  activeIndex,
+  view,
+  gridParams,
+  previewTab,
+  correct,
+  saveAnswer,
+  deleteMode
+}) => {
   const { height, margin, yAxisMin } = gridParams;
 
   const { yAxisStep, step } = getGridVariables(bars, gridParams, true);
@@ -47,7 +58,7 @@ const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
   return (
     <Fragment>
       {bars.map((dot, index) => (
-        <Fragment>
+        <Fragment key={`bar-${index}`}>
           {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
           {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
@@ -57,6 +68,7 @@ const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
             />
           ))}
           <Bar
+            onClick={deleteMode ? () => saveAnswer(index) : () => {}}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
             x={getCenterX(index)}
@@ -81,6 +93,7 @@ const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
                 x={getCenterX(index)}
                 y={getCenterY(dot) - 4}
                 width={step - 2}
+                deleteMode={deleteMode}
                 color={dot.y === 0 ? themeColorLight : "transparent"}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}

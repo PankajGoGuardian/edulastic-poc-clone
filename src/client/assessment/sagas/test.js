@@ -1,7 +1,8 @@
 import { testActivityApi, testsApi, assignmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
+import { Modal, message } from "antd";
 import { push } from "react-router-redux";
-import { keyBy as _keyBy, groupBy } from "lodash";
+import { keyBy as _keyBy, groupBy, get } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
@@ -16,7 +17,8 @@ import {
   LOAD_SCRATCH_PAD,
   SET_TEST_LOADING_STATUS,
   GET_ASSIGNMENT_PASSWORD,
-  TEST_ACTIVITY_LOADING
+  TEST_ACTIVITY_LOADING,
+  SET_TEST_LOADING_ERROR
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
 import { loadBookmarkAction } from "../sharedDucks/bookmark";
@@ -38,6 +40,8 @@ const getQuestions = (testItems = []) => {
 };
 
 function* loadTest({ payload }) {
+  const { testActivityId, testId, preview = false, demo = false, test: testData = {} } = payload;
+
   try {
     yield put({
       type: SET_TEST_LOADING_STATUS,
@@ -49,7 +53,6 @@ function* loadTest({ payload }) {
     });
     yield put(setPasswordValidateStatusAction(false));
 
-    const { testActivityId, testId, preview = false, demo = false, test: testData = {} } = payload;
     yield put({
       type: SET_TEST_ID,
       payload: {
@@ -65,7 +68,8 @@ function* loadTest({ payload }) {
       : call(testsApi.getPublicTest, testId);
     const [testActivity] = yield all([getTestActivity]);
     if (!preview) {
-      let passwordValidated = !testActivity.assignmentSettings.requirePassword;
+      const isFromSummary = yield select(state => get(state, "router.location.state.fromSummary", false));
+      let passwordValidated = !testActivity.assignmentSettings.requirePassword || isFromSummary;
       if (passwordValidated) {
         yield put(setPasswordValidateStatusAction(true));
       }
@@ -214,6 +218,13 @@ function* loadTest({ payload }) {
       payload: false
     });
   } catch (err) {
+    if (err.status === 403 && preview) {
+      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
+      Modal.destroyAll();
+    }
+    yield put({
+      type: SET_TEST_LOADING_ERROR
+    });
     console.error(err);
   }
 }
@@ -245,8 +256,21 @@ function* submitTest() {
     } else {
       yield put(push("/home/reports"));
     }
+    yield put({
+      type: SET_TEST_ACTIVITY_ID,
+      payload: { testActivityId: "" }
+    });
   } catch (err) {
-    console.log(err);
+    if (err.status === 403) {
+      console.log(err);
+      yield put(push("/home/assignments"));
+      yield put({
+        type: SET_TEST_ACTIVITY_ID,
+        payload: { testActivityId: "" }
+      });
+
+      yield call(message.error, err.data);
+    }
   }
 }
 

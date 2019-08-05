@@ -41,6 +41,7 @@ const QuestionAnalysis = ({ questionAnalysis, getQuestionAnalysisRequestAction, 
   }, [questionAnalysis, compareBy]);
 
   const compareByDropDownData = dropDownData.compareByDropDownData;
+  const dropDownKeyToLabel = dropDownData.dropDownKeyToLabel;
 
   const updateCompareByCB = (event, selected, comData) => {
     setCompareBy(selected.key);
@@ -90,7 +91,10 @@ const QuestionAnalysis = ({ questionAnalysis, getQuestionAnalysisRequestAction, 
                 <Col className={"top-row-container"}>
                   <Row type="flex" justify="space-between" className="top-row">
                     <Col>
-                      <StyledH3>Detailed Performance Analysis By | {questionAnalysis.assessmentName}</StyledH3>
+                      <StyledH3>
+                        Detailed Performance Analysis {role !== "teacher" ? "By " + dropDownKeyToLabel[compareBy] : ""}{" "}
+                        | {questionAnalysis.assessmentName}
+                      </StyledH3>
                     </Col>
                     <Col>
                       {role !== "teacher" ? (
@@ -105,7 +109,7 @@ const QuestionAnalysis = ({ questionAnalysis, getQuestionAnalysisRequestAction, 
                   </Row>
                 </Col>
                 <Col className={"bottom-table-container"}>
-                  <QuestionAnalysisTable tableData={tableData} compareBy={compareBy} filter={chartFilter} />
+                  <QuestionAnalysisTable tableData={tableData} compareBy={compareBy} filter={chartFilter} role={role} />
                 </Col>
               </Row>
             </StyledCard>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, desktopWidth } from "@edulastic/colors";
+import { white, desktopWidth, smallDesktopWidth } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -19,9 +19,8 @@ export const Container = styled.div`
 
 export const Link = styled.div`
   cursor: pointer;
-  width: 102px;
   color: ${white};
-  padding: 0 15px;
+  padding: 0 25px;
   text-transform: uppercase;
   font-size: 11px;
   font-weight: 600;
@@ -34,43 +33,33 @@ export const Link = styled.div`
   border-radius: 0;
   background: #0288d1;
   background: ${props => (props.active === "true" ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
+  color: ${props => (props.active === "true" ? white : "rgba(255, 255, 255, 0.75)")};
   border-bottom: none;
   white-space: nowrap;
+  border-radius: 5px;
+  margin: 0 5px;
 
-  :first-child {
-    @media screen and (min-width: ${desktopWidth}) {
-      margin-left: 120px;
+  &:last-child {
+    margin-right: 30px;
+  }
+
+  svg {
+    fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
+  }
+  &:hover {
+    border-bottom: none;
+
+    svg {
+      fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
     }
   }
 
-  @media screen and (max-width: ${desktopWidth}) {
+  @media screen and (max-width: ${smallDesktopWidth}) {
+    margin: 0 3px;
+    padding: 0 20px;
+    height: 36px;
     svg {
       display: none;
     }
   }
-
-  @media screen and (min-width: ${desktopWidth}) {
-    margin: 0 7px;
-    width: 136px;
-    height: 45px;
-    border-radius: 5px;
-    background: ${props => (props.active === "true" ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
-    color: ${props => (props.active === "true" ? white : "rgba(255, 255, 255, 0.75)")};
-    border-bottom: none;
-
-    svg {
-      fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")}
-    }
-
-    :hover {
-      border-bottom: none;
-
-       svg {
-        fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")}
-      }
-    }
-
-    :first-child {
-      margin-left: 0;
-    }
 `;

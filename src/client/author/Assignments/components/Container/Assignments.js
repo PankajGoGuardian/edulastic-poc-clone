@@ -48,7 +48,9 @@ import {
   SwitchWrapper,
   SwitchLabel,
   FilterButton,
-  TableWrapper
+  TableWrapper,
+  LeftWrapper,
+  FixedWrapper
 } from "./styled";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getUserRole } from "../../../src/selectors/user";
@@ -60,14 +62,14 @@ const initialFilterState = {
   subject: "",
   termId: "",
   testType: "",
-  folderId: ""
+  folderId: "",
+  classId: ""
 };
 class Assignments extends Component {
   state = {
     showFilter: false,
     selectedRows: [],
     filterState: initialFilterState,
-    defaultFilters: {},
     isPreviewModalVisible: false,
     currentTestId: ""
   };
@@ -82,30 +84,22 @@ class Assignments extends Component {
       defaultFilters,
       orgData
     } = this.props;
-    const { terms, defaultTermId } = orgData;
-    const { filterState } = this.state;
 
-    let filters = {};
-
-    if (defaultTermId) {
-      const defaultTerm = find(terms, ({ _id }) => _id === defaultTermId) || {};
-      filters = { termId: defaultTerm._id || "" };
-    }
-    filters = {
-      ...filters,
-      testType: userRole !== "teacher" ? type.COMMON : "",
-      ...defaultFilters
+    const { defaultTermId, terms } = orgData;
+    const filters = {
+      ...defaultFilters,
+      testType: userRole === "district-admin" || userRole === "school-admin" ? "common" : ""
     };
+    if (defaultTermId && !defaultFilters.hasOwnProperty("termId")) {
+      const defaultTerm = find(terms, ({ _id }) => _id === defaultTermId) || {};
+      filters.termId = defaultTerm._id || "";
+    }
+
     loadAssignments({ filters });
 
     loadFolders();
     loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
-    const newFilterState = {
-      ...filterState,
-      ...filters
-    };
-
-    this.setState({ filterState: newFilterState, defaultFilters: newFilterState });
+    this.setState({ filterState: filters });
   }
 
   setFilterState = filterState => {
@@ -182,6 +176,7 @@ class Assignments extends Component {
       toggleReleaseGradePopUp,
       assignmentsSummary,
       districtId,
+      error,
       isAdvancedView,
       currentAssignment
     } = this.props;
@@ -193,6 +188,7 @@ class Assignments extends Component {
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
+          error={error}
           hideModal={this.hidePreviewModal}
         />
         <ListHeader
@@ -200,7 +196,6 @@ class Assignments extends Component {
           createAssignment={true}
           title={t("common.assignmentsTitle")}
           btnTitle="AUTHOR TEST"
-          renderFilter={this.renderSwitch}
           isAdvancedView={isAdvancedView}
         />
         <Container>
@@ -209,15 +204,19 @@ class Assignments extends Component {
               {window.innerWidth >= tabletWidth && (
                 <>
                   {showFilter && (
-                    <PerfectScrollbar option={{ suppressScrollX: true }}>
-                      <LeftFilter
-                        selectedRows={selectedRows}
-                        onSetFilter={this.setFilterState}
-                        filterState={filterState}
-                        isAdvancedView={isAdvancedView}
-                        clearSelectedRow={() => this.onSelectRow([])}
-                      />
-                    </PerfectScrollbar>
+                    <LeftWrapper>
+                      <FixedWrapper>
+                        <PerfectScrollbar option={{ suppressScrollX: true }}>
+                          <LeftFilter
+                            selectedRows={selectedRows}
+                            onSetFilter={this.setFilterState}
+                            filterState={filterState}
+                            isAdvancedView={isAdvancedView}
+                            clearSelectedRow={() => this.onSelectRow([])}
+                          />
+                        </PerfectScrollbar>
+                      </FixedWrapper>
+                    </LeftWrapper>
                   )}
                   <TableWrapper>
                     <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
@@ -233,6 +232,7 @@ class Assignments extends Component {
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           filters={filterState}
                           showPreviewModal={this.showPreviewModal}
+                          showFilter={showFilter}
                         />
                       ) : (
                         <TableList
@@ -242,6 +242,7 @@ class Assignments extends Component {
                           selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           showPreviewModal={this.showPreviewModal}
+                          showFilter={showFilter}
                         />
                       )}
                     </StyledCard>
@@ -308,6 +309,7 @@ const enhance = compose(
       districtId: getDistrictIdSelector(state),
       isAdvancedView: getAssignmentViewSelector(state),
       userRole: getUserRole(state),
+      error: get(state, "test.error", false),
       defaultFilters: getAssignmentFilterSelector(state),
       orgData: get(state, "user.user.orgData", {})
     }),

@@ -1,7 +1,8 @@
 import { Pagination, Card, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, red, themeColor } from "@edulastic/colors";
+import { mobileWidth, largeDesktopWidth, smallDesktopWidth, tabletWidth, red, themeColor } from "@edulastic/colors";
+import { IconExclamationMark } from "@edulastic/icons";
 
 import { themes } from "../../../../student/themes";
 
@@ -10,6 +11,12 @@ const classBoardTheme = themes.default.classboard;
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
   margin: 0px auto;
+`;
+
+export const ExclamationMark = styled(IconExclamationMark)`
+  margin-right: 5px;
+  width: 13px;
+  height: 13px;
 `;
 
 export const StyledCardContiner = styled(FlexContainer)`
@@ -40,47 +47,39 @@ export const MainDivLeft = styled.div`
   }
 `;
 
-export const PerfomanceSection = styled(StyledFlexContainer)`
-  align-items: baseline;
-  justify-content: space-between;
-  @media (max-width: ${mobileWidth}) {
-    flex-direction: column;
-    align-items: center;
-  }
+export const PerfomanceSection = styled.div`
+  width: 100%;
 `;
 
 export const StyledCard = styled(Card)`
-  margin-top: 20px;
-  margin-right: 20px;
+  margin-top: 15px;
+  margin-right: 15px;
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
-  max-width: calc((100% - 0px) / 4);
-  min-width: calc((100% - 60px) / 4);
   .ant-card-body {
     padding: 19px 22px;
   }
-  @media only screen and (min-width: 1440px) {
+  @media (min-width: 1201px) {
+    width: calc((100% - 45px) / 4);
     &:nth-child(4n) {
       margin-right: 0px;
     }
   }
-  @media only screen and (max-width: 1440px) {
-    max-width: calc((100% - 40px) / 3);
-    min-width: calc((100% - 40px) / 3);
+  @media only screen and (max-width: ${largeDesktopWidth}) and (min-width: 769px) {
+    width: calc((100% - 30px) / 3);
     &:nth-child(3n) {
       margin-right: 0px;
     }
   }
-  @media only screen and (max-width: 1024px) {
-    max-width: calc((100% - 20px) / 2);
-    min-width: calc((100% - 20px) / 2);
+  @media only screen and (max-width: ${tabletWidth}) and (min-width: 481px) {
+    width: calc((100% - 15px) / 2);
     &:nth-child(2n) {
       margin-right: 0px;
     }
   }
   @media only screen and (max-width: ${mobileWidth}) {
-    max-width: calc((100% - 20px) / 2);
-    min-width: calc((100% - 20px) / 2);
+    width: 100%;
+    margin-right: 0px;
   }
 `;
 
@@ -97,6 +96,10 @@ export const PagInfo = styled.span`
   /* width: 50%; */
   cursor: pointer;
   user-select: none;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 10px;
+  }
   @media (max-width: ${mobileWidth}) {
     width: 100%;
     text-align: center;
@@ -139,14 +142,10 @@ export const CircularDiv = styled.div`
 
 export const StyledFlexDiv = styled.div`
   display: flex;
-  align-items: baseline;
-  text-overflow: ellipsis;
-  width: 52%;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
   margin-right: 0px;
-  @media (max-width: ${mobileWidth}) {
-    width: 100%;
-    text-align: center;
-  }
 `;
 
 export const StyledName = styled.div`
@@ -199,6 +198,11 @@ export const StyledParaF = styled.p`
   font-weight: 600;
   margin-bottom: 5px;
   color: #434b5d;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 12px;
+    line-height: 12px;
+  }
 `;
 
 export const StyledParaS = styled.p`
@@ -207,6 +211,12 @@ export const StyledParaS = styled.p`
   font-weight: bold;
   color: ${({ color }) => color || classBoardTheme.CardCircularColor};
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    font-size: 11px;
+  }
 `;
 
 export const StyledColorParaS = styled.p`
@@ -214,10 +224,12 @@ export const StyledColorParaS = styled.p`
   font-weight: bold;
   color: ${red};
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
 `;
 
 export const StyledParaFF = styled.p`
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #7c848e;
 `;
@@ -230,7 +242,6 @@ export const StyledParaSS = styled.p`
   font-weight: bold;
   color: #434b5d;
   text-overflow: ellipsis;
-  width: 85%;
   font-size: 16px;
 `;
 
@@ -240,7 +251,6 @@ export const StyledParaSSS = styled.p`
   margin-left: 18px;
   color: #5eb500;
   text-overflow: ellipsis;
-  width: 50%;
   @media (max-width: ${mobileWidth}) {
     margin-left: 0px;
   }

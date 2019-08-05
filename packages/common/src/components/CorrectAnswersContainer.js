@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { dashBorderColor } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
-const CorrectAnswersContainer = ({ title, children }) => (
-  <Container>
+const CorrectAnswersContainer = ({ title, children, imageStyle }) => (
+  <Container imageStyle={imageStyle}>
     <Subtitle style={{ marginBottom: 30 }}>{title}</Subtitle>
     {children}
   </Container>
@@ -14,11 +14,13 @@ const CorrectAnswersContainer = ({ title, children }) => (
 
 CorrectAnswersContainer.propTypes = {
   title: PropTypes.string.isRequired,
-  children: PropTypes.any
+  children: PropTypes.any,
+  imageStyle: PropTypes.object
 };
 
 CorrectAnswersContainer.defaultProps = {
-  children: null
+  children: null,
+  imageStyle: {}
 };
 
 export default CorrectAnswersContainer;
@@ -34,5 +36,6 @@ const Container = styled.div`
     width: 220px;
     z-index: 100;
     position: relative;
+    ${({ imageStyle }) => imageStyle}
   }
 `;

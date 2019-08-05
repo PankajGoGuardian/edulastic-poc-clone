@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import { Button, Col } from "antd";
-import { white, fadedGrey, themeColorLight, themeColor } from "@edulastic/colors";
-import { IconBarChart } from "@edulastic/icons";
+import { Button, Col, Icon } from "antd";
+import { themeColor } from "@edulastic/colors";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import HeaderNavigation from "./Header/HeaderNavigation";
 
 export const CustomizedHeaderWrapper = ({
   breadcrumbsData,
@@ -13,7 +13,9 @@ export const CustomizedHeaderWrapper = ({
   onShareClickCB,
   onPrintClickCB,
   onDownloadCSVClickCB,
-  onRefineResultsCB
+  onRefineResultsCB,
+  navigationItems = [],
+  activeNavigationKey = ""
 }) => {
   const [refineButtonActive, setRefineButtonActive] = useState(false);
 
@@ -34,49 +36,49 @@ export const CustomizedHeaderWrapper = ({
     onRefineResultsCB(event, !refineButtonActive);
   };
 
-  const ReportHeader = (
-    <h1>
-      <IconBarChart /> Reports
-    </h1>
-  );
-
   return (
-    <HeaderWrapper>
-      <HeaderTitle>
-        {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : ReportHeader}
-      </HeaderTitle>
-      <StyledCol>
-        <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
-          {onShareClickCB ? (
-            <StyledButton shape="round" icon="share-alt" onClick={_onShareClickCB}>
-              Share
-            </StyledButton>
-          ) : null}
-        </FeaturesSwitch>
-        {onPrintClickCB ? (
-          <StyledButton shape="round" icon="printer" onClick={_onPrintClickCB}>
-            Print
-          </StyledButton>
+    <div>
+      <HeaderWrapper>
+        <HeaderTitle>
+          <h1>Reports</h1>
+        </HeaderTitle>
+        {navigationItems.length ? (
+          <HeaderNavigation navigationItems={navigationItems} activeItemKey={activeNavigationKey} />
         ) : null}
-        <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
-          {onDownloadCSVClickCB ? (
-            <StyledButton shape="round" icon="download" onClick={_onDownloadCSVClickCB}>
-              Download CSV
-            </StyledButton>
+        <StyledCol>
+          <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
+            {onShareClickCB ? (
+              <IconButton shape="round" onClick={_onShareClickCB}>
+                <Icon type="share-alt" />
+              </IconButton>
+            ) : null}
+          </FeaturesSwitch>
+          {onPrintClickCB ? (
+            <IconButton shape="round" onClick={_onPrintClickCB}>
+              <Icon type="printer" />
+            </IconButton>
           ) : null}
-        </FeaturesSwitch>
+          <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
+            {onDownloadCSVClickCB ? (
+              <IconButton shape="round" onClick={_onDownloadCSVClickCB}>
+                <Icon type="download" />
+              </IconButton>
+            ) : null}
+          </FeaturesSwitch>
+        </StyledCol>
+      </HeaderWrapper>
+      <SecondaryHeader>
+        <HeaderTitle>
+          {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : null}
+        </HeaderTitle>
         {onRefineResultsCB ? (
-          <StyledButton
-            type={refineButtonActive ? "primary" : "default"}
-            shape="round"
-            icon="filter"
-            onClick={_onRefineResultsCB}
-          >
-            Refine results
+          <StyledButton type={"default"} shape="round" icon="filter" onClick={_onRefineResultsCB}>
+            REFINE RESULTS
+            <Icon type={refineButtonActive ? "up" : "down"} />
           </StyledButton>
         ) : null}
-      </StyledCol>
-    </HeaderWrapper>
+      </SecondaryHeader>
+    </div>
   );
 };
 
@@ -85,31 +87,32 @@ const StyledCol = styled(Col)`
 `;
 
 const StyledButton = styled(Button)`
-  margin-left: 10px;
-  font-size: 14px;
-  text-shadow: none;
-  font-weight: 400;
-  &.ant-btn-primary {
-    background: ${themeColorLight};
-    color: ${white};
+  &.ant-btn {
+    margin-left: 10px;
+    font-size: 14px;
+    text-shadow: none;
     font-weight: 400;
-    &:hover,
-    &:focus {
-      background: ${themeColorLight};
-      color: ${white};
-    }
-  }
-  &:hover,
-  &:focus {
-    border-color: ${themeColor};
+    border-radius: 3px;
+    border-color: transparent;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
     color: ${themeColor};
+    &:hover,
+    &:active,
+    &:focus {
+      color: ${themeColor};
+      border-color: transparent;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    }
+    &::after {
+      display: none !important;
+    }
   }
 `;
 
 const HeaderTitle = styled.div`
   h1 {
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 25px;
+    font-weight: bold;
     color: white;
     margin: 0px;
     display: flex;
@@ -121,16 +124,20 @@ const HeaderTitle = styled.div`
       margin-right: 10px;
     }
   }
-  .ant-breadcrumb {
-    .ant-breadcrumb-link {
-      color: ${white};
-      a {
-        color: ${white};
-      }
-    }
-    .ant-breadcrumb-separator {
-      font-weight: normal;
-      color: ${fadedGrey};
-    }
+`;
+
+const SecondaryHeader = styled.div`
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  @media print {
+    display: none;
   }
+`;
+const IconButton = styled(StyledButton)`
+  font-size: 16px;
+  padding-right: 11px;
+  padding-left: 11px;
+  height: 40px;
 `;

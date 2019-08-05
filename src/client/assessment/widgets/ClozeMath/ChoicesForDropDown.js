@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -8,16 +7,15 @@ import { connect } from "react-redux";
 import { forEach, cloneDeep, get, findIndex } from "lodash";
 import "react-quill/dist/quill.snow.css";
 import produce from "immer";
-import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
-import { response } from "@edulastic/constants";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { WidgetWrapper, Widget } from "../../styled/Widget";
+import { WidgetWrapper } from "../../styled/Widget";
+import Question from "../../components/Question";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
 class ChoicesForDropDown extends Component {
@@ -29,51 +27,10 @@ class ChoicesForDropDown extends Component {
     cleanSections: PropTypes.func
   };
 
-  state = {
-    sectionId: uuid()
-  };
-
   static defaultProps = {
     fillSections: () => {},
     cleanSections: () => {}
   };
-
-  componentDidUpdate(prevProps) {
-    const { item: prevItem } = prevProps;
-    const { item, fillSections, cleanSections } = this.props;
-    const {
-      response_ids: { dropDowns: current = [] }
-    } = item;
-    const {
-      response_ids: { dropDowns: prev = [] }
-    } = prevItem;
-
-    const { sectionId } = this.state;
-
-    if (current.length === 0) {
-      return cleanSections(sectionId);
-    }
-
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
-    if (current.length === 1 && prev.length !== 1) {
-      fillSections(
-        "main",
-        "Choices for Dropdown(s)",
-        node.offsetTop,
-        node.scrollHeight,
-        undefined,
-        undefined,
-        sectionId
-      );
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-    const { sectionId } = this.state;
-    cleanSections(sectionId);
-  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -99,13 +56,13 @@ class ChoicesForDropDown extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[dropDownId].splice(itemIndex, 1);
-        const validDropDown = cloneDeep(draft.validation.valid_dropdown.value);
+        const validDropDown = cloneDeep(draft.validation.valid_response.dropdown.value);
         forEach(validDropDown, answer => {
           if (answer.id === dropDownId) {
             answer.value = "";
           }
         });
-        draft.validation.valid_dropdown.value = validDropDown;
+        draft.validation.valid_response.dropdown.value = validDropDown;
         updateVariables(draft);
       })
     );
@@ -113,7 +70,7 @@ class ChoicesForDropDown extends Component {
 
   editOptions = (dropDownId, itemIndex, e) => {
     const { item, setQuestionData } = this.props;
-    const prevDropDownAnswers = get(item, "validation.valid_dropdown.value", []);
+    const prevDropDownAnswers = get(item, "validation.valid_response.dropdown.value", []);
     const prevAnswerIndex = findIndex(prevDropDownAnswers, answer => answer.id === dropDownId);
 
     setQuestionData(
@@ -123,11 +80,11 @@ class ChoicesForDropDown extends Component {
         draft.options[dropDownId][itemIndex] = e.target.value;
         const splitWidth = Math.max(e.target.value.split("").length * 9, 100);
         const width = Math.min(splitWidth, 400);
-        const drpdwnIndex = findIndex(draft.response_ids["dropDowns"], drpdwn => drpdwn.id === dropDownId);
+        const drpdwnIndex = findIndex(draft.response_ids.dropDowns, drpdwn => drpdwn.id === dropDownId);
         const ind = findIndex(draft.response_containers, cont => cont.id === dropDownId);
         if (ind === -1) {
           draft.response_containers.push({
-            index: draft.response_ids["dropDowns"][drpdwnIndex].index,
+            index: draft.response_ids.dropDowns[drpdwnIndex].index,
             id: dropDownId,
             widthpx: width,
             type: "dropDowns"
@@ -160,7 +117,7 @@ class ChoicesForDropDown extends Component {
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, fillSections, cleanSections } = this.props;
     const {
       response_ids: { dropDowns = [] },
       options,
@@ -170,7 +127,13 @@ class ChoicesForDropDown extends Component {
     return (
       <WidgetWrapper>
         {dropDowns.map(dropdown => (
-          <Widget data-cy={`choice-dropdown-${dropdown.index}`}>
+          <Question
+            section="main"
+            dataCy={`choice-dropdown-${dropdown.index}`}
+            label={`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          >
             <Subtitle>{`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}</Subtitle>
             <SortableList
               items={options[dropdown.id] || []}
@@ -186,7 +149,7 @@ class ChoicesForDropDown extends Component {
                 {t("component.cloze.dropDown.addnewchoice")}
               </AddNewChoiceBtn>
             </div>
-          </Widget>
+          </Question>
         ))}
       </WidgetWrapper>
     );

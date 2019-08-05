@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 
 import { Select, TextField, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { cloneDeep, isEqual, clamp } from "lodash";
+import { isEqual, clamp } from "lodash";
 
+import { response as Dimensions } from "@edulastic/constants";
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -13,39 +13,14 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 
 import { Container } from "./styled/Container";
 import { Delete } from "./styled/Delete";
-import { Widget } from "../../../../styled/Widget";
 import { Subtitle } from "../../../../styled/Subtitle";
-
-import { response as Dimensions } from "@edulastic/constants";
+import Question from "../../../../components/Question";
 
 class Layout extends Component {
   state = {
     focused: null,
     input: 0
   };
-
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
 
   handleInputChange = e => {
     this.setState({
@@ -81,7 +56,7 @@ class Layout extends Component {
   };
 
   render() {
-    const { onChange, uiStyle, t, advancedAreOpen } = this.props;
+    const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -107,9 +82,12 @@ class Layout extends Component {
       const { responseIDs } = this.props;
       const ind = responsecontainerindividuals.length;
       const response = responseIDs.find(resp => resp.index === ind);
+      if (!response) {
+        return;
+      }
       responsecontainerindividuals.push({
-        id: !!response ? response.id : "",
-        index: !!response ? response.index : "",
+        id: response.id,
+        index: response.index,
         widthpx: 0,
         heightpx: 0,
         wordwrap: false
@@ -171,7 +149,13 @@ class Layout extends Component {
       maxWidth: 280
     };
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Question
+        section="advanced"
+        label={t("component.options.display")}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.options.display")}</Subtitle>
         <Row>
           <Col md={6}>
@@ -227,7 +211,7 @@ class Layout extends Component {
           <Checkbox
             label={t("component.options.globalSettings")}
             checked={!!uiStyle.globalSettings}
-            onChange={e => changeUiStyle("globalSettings", !uiStyle.globalSettings)}
+            onChange={() => changeUiStyle("globalSettings", !uiStyle.globalSettings)}
           />
         </Row>
         <Row marginTop={13}>
@@ -333,7 +317,7 @@ class Layout extends Component {
             <AddNewChoiceBtn onClick={() => addIndividual()}>{t("component.options.add")}</AddNewChoiceBtn>
           </Col>
         </Row>
-      </Widget>
+      </Question>
     );
   }
 }
@@ -341,6 +325,7 @@ class Layout extends Component {
 Layout.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
+  responseIDs: PropTypes.array,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
@@ -348,6 +333,7 @@ Layout.propTypes = {
 };
 
 Layout.defaultProps = {
+  responseIDs: PropTypes.array,
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",

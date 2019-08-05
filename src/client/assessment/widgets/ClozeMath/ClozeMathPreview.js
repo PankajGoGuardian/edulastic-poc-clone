@@ -13,6 +13,9 @@ import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButto
 import ClozeDropDown from "./ClozeMathBlock/ClozeDropDown";
 import ClozeInput from "./ClozeMathBlock/ClozeInput";
 import ClozeMathInput from "./ClozeMathBlock/ClozeMathInput";
+import ClozeDropDownAnswerDisplay from "./ClozeMathDisplay/ClozeDropDownAnswerDisplay";
+import ClozeInputAnswerDisplay from "./ClozeMathDisplay/ClozeInputAnswerDisplay";
+import ClozeMathAnswerDisplay from "./ClozeMathDisplay/ClozeMathAnswerDisplay";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
 const getFontSize = size => {
@@ -39,6 +42,7 @@ const ClozeMathPreview = ({
   userAnswer,
   saveAnswer,
   evaluation,
+  testItem,
   options,
   responseIds,
   changePreviewTab, // Question level
@@ -51,11 +55,13 @@ const ClozeMathPreview = ({
   const _getAltMathAnswers = () =>
     get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
 
-  const _getDropDownAnswers = () => get(item, "validation.valid_dropdown.value", []);
-  const _getAltDropDownAnswers = () => get(item, "validation.alt_dropdowns", []).map(alt => get(alt, "value", []));
+  const _getDropDownAnswers = () => get(item, "validation.valid_response.dropdown.value", []);
+  const _getAltDropDownAnswers = () =>
+    get(item, "validation.alt_responses", []).map(alt => get(alt, "dropdown.value", []));
 
-  const _getTextInputAnswers = () => get(item, "validation.valid_inputs.value", []);
-  const _getAltInputsAnswers = () => get(item, "validation.alt_inputs", []).map(alt => get(alt, "value", []));
+  const _getTextInputAnswers = () => get(item, "validation.valid_response.textinput.value", []);
+  const _getAltInputsAnswers = () =>
+    get(item, "validation.alt_responses", []).map(alt => get(alt, "textinput.value", []));
 
   const handleAddAnswer = (answer, answerType, id) => {
     let newAnswers = cloneDeep(userAnswer);
@@ -104,6 +110,36 @@ const ClozeMathPreview = ({
   }, [stimulus]);
 
   const uiStyles = getStyles();
+  const testUserAnswer = {};
+  if (testItem) {
+    const keynameMap = {
+      textinput: "inputs",
+      dropdown: "dropDowns",
+      value: "maths"
+    };
+
+    if (item.validation.valid_response) {
+      Object.keys(item.validation.valid_response).forEach(keyName => {
+        if (keynameMap[keyName]) {
+          testUserAnswer[keynameMap[keyName]] = {};
+          if (keyName !== "value") {
+            item.validation.valid_response[keyName].value.forEach(answerItem => {
+              testUserAnswer[keynameMap[keyName]][answerItem.id] = {
+                value: answerItem.value
+              };
+            });
+          } else {
+            item.validation.valid_response.value.forEach(answerItem => {
+              testUserAnswer[keynameMap[keyName]][answerItem[0].id] = {
+                value: answerItem[0].value
+              };
+            });
+          }
+        }
+      });
+    }
+  }
+
   return (
     <QuestionWrapper>
       <JsxParser
@@ -112,7 +148,7 @@ const ClozeMathPreview = ({
             options,
             evaluation,
             save: handleAddAnswer,
-            answers: userAnswer,
+            answers: testItem ? testUserAnswer : userAnswer,
             item,
             checked: type === CHECK || type === SHOW,
             onInnerClick,
@@ -123,14 +159,14 @@ const ClozeMathPreview = ({
         showWarnings
         components={{
           mathspan: MathSpanWrapper,
-          textdropdown: ClozeDropDown,
-          textinput: ClozeInput,
-          mathinput: ClozeMathInput
+          textdropdown: testItem ? ClozeDropDownAnswerDisplay : ClozeDropDown,
+          textinput: testItem ? ClozeInputAnswerDisplay : ClozeInput,
+          mathinput: testItem ? ClozeMathAnswerDisplay : ClozeMathInput
         }}
         jsx={newHtml}
       />
 
-      {type === SHOW && (
+      {!testItem && type === SHOW && (
         <AnswerBox
           mathAnswers={_getMathAnswers()}
           dropdownAnswers={_getDropDownAnswers()}
@@ -155,10 +191,14 @@ ClozeMathPreview.propTypes = {
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
   responseIds: PropTypes.object.isRequired,
-  changePreview: PropTypes.func.isRequired
+  changePreview: PropTypes.func,
+  testItem: PropTypes.bool
 };
 
-ClozeMathPreview.defaultProps = {};
+ClozeMathPreview.defaultProps = {
+  changePreview: () => {},
+  testItem: false
+};
 
 export default withCheckAnswerButton(ClozeMathPreview);
 

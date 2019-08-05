@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from "react";
-import ReactDOM from "react-dom";
 import { Checkbox, Row, Col } from "antd";
 import PropTypes from "prop-types";
 
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton } from "@edulastic/common";
 
+import { IMAGE_RESPONSE_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
 import { Subtitle } from "../../../styled/Subtitle";
 import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
@@ -15,17 +15,6 @@ import Group from "./Group";
 const List = withAddButton(QuillSortableList);
 
 class GroupPossibleResponses extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-    fillSections("main", t("component.classification.possibleRespTitle"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount = () => {
-    const { cleanSections } = this.props;
-    cleanSections();
-  };
-
   render() {
     const { checkboxChange, checkboxVal, firstFocus, items, t, onAdd, ...restProps } = this.props;
 
@@ -78,6 +67,7 @@ class GroupPossibleResponses extends Component {
                   onRemove={restProps.onRemove}
                   useDragHandle
                   columns={1}
+                  imageDefaultWidth={IMAGE_RESPONSE_DEFAULT_WIDTH}
                 />
               </Col>
             </Row>

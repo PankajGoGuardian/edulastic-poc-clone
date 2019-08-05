@@ -10,7 +10,8 @@ import {
   SET_PASSWORD_VALIDATE_STATUS,
   TEST_ACTIVITY_LOADING,
   SET_PASSWORD_STATUS_MESSAGE,
-  UPDATE_CURRENT_AUDIO_DEATILS
+  UPDATE_CURRENT_AUDIO_DEATILS,
+  SET_TEST_LOADING_ERROR
 } from "../constants/actions";
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
   items: [],
   currentItem: 0,
   title: "",
+  error: false,
   loading: true,
   settings: {},
   answerCheckByItemId: {},
@@ -73,9 +75,17 @@ const test = (state = initialState, { payload, type }) => {
         ...state,
         resume: payload
       };
+
+    case SET_TEST_LOADING_ERROR:
+      return {
+        ...state,
+        error: true
+      };
+
     case SET_TEST_LOADING_STATUS:
       return {
         ...state,
+        error: false,
         loading: payload
       };
     case COUNT_CHECK_ANSWER:

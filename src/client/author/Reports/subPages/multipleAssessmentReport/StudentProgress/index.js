@@ -1,0 +1,121 @@
+import React, { useState } from "react";
+import { get, head, capitalize } from "lodash";
+import { connect } from "react-redux";
+import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
+import { getReportsMARFilterData } from "../common/filterDataDucks";
+import { getUserRole } from "../../../../src/selectors/user";
+
+import TrendStats from "../common/components/trend/TrendStats";
+import TrendTable from "../common/components/trend/TrendTable";
+import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
+import { Placeholder } from "../../../common/components/loader";
+
+import dropDownData from "./static/json/dropDownData.json";
+import tableColumns from "./static/json/tableColumns.json";
+
+import { usefetchProgressHook } from "../common/hooks";
+import { useGetBandData } from "./hooks";
+import { filterAccordingToRole } from "../../../common/util";
+import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
+
+const DefaultBandInfo = [
+  {
+    threshold: 70,
+    aboveStandard: 1,
+    name: "Proficient"
+  },
+  {
+    threshold: 50,
+    aboveStandard: 1,
+    name: "Basic"
+  },
+  {
+    threshold: 0,
+    aboveStandard: 0,
+    name: "Below Basic"
+  }
+];
+
+const compareBy = {
+  key: "student",
+  title: "Student"
+};
+
+const StudentProgress = ({
+  getStudentProgressRequestAction,
+  studentProgress,
+  MARFilterData,
+  settings,
+  loading,
+  role
+}) => {
+  usefetchProgressHook(settings, getStudentProgressRequestAction);
+  const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData));
+  const [selectedTrend, setSelectedTrend] = useState("");
+
+  const { metricInfo = [] } = get(studentProgress, "data.result", {});
+  const { orgData = [], testData = [], bandInfo = DefaultBandInfo } = get(MARFilterData, "data.result", {});
+  const [data, trendCount] = useGetBandData(metricInfo, compareBy.key, orgData, selectedTrend, bandInfo);
+
+  if (loading) {
+    return (
+      <>
+        <Placeholder />
+        <Placeholder />
+      </>
+    );
+  }
+
+  const customTableColumns = filterAccordingToRole(tableColumns, role);
+
+  const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
+
+  return (
+    <>
+      <TrendStats
+        heading="How well are students progressing ?"
+        trendCount={trendCount}
+        selectedTrend={selectedTrend}
+        onTrendSelect={onTrendSelect}
+        renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
+      />
+      <TrendTable
+        data={data}
+        testData={testData}
+        compareBy={compareBy}
+        analyseBy={analyseBy}
+        rawMetric={metricInfo}
+        customColumns={customTableColumns}
+        toolTipContent={(record, columnValue) => {
+          return (
+            <>
+              <TableTooltipRow title={`Student Name : `} value={record.studentName} />
+              {role === "teacher" ? (
+                <TableTooltipRow title={`Class Name : `} value={record.groupName} />
+              ) : (
+                <>
+                  <TableTooltipRow title={`School Name : `} value={record.schoolName} />
+                  <TableTooltipRow title={`Teacher Name : `} value={record.teacherName} />
+                </>
+              )}
+            </>
+          );
+        }}
+      />
+    </>
+  );
+};
+
+const enhance = connect(
+  state => ({
+    studentProgress: getReportsStudentProgress(state),
+    loading: getReportsStudentProgressLoader(state),
+    MARFilterData: getReportsMARFilterData(state),
+    role: getUserRole(state)
+  }),
+  {
+    getStudentProgressRequestAction
+  }
+);
+
+export default enhance(StudentProgress);

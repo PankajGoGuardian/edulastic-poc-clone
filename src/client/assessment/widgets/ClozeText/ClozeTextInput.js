@@ -79,7 +79,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     onChange,
     style,
     placeholder,
-    type,
+    type = "text",
     showIndex = true,
     userAnswers,
     disableResponse,
@@ -99,7 +99,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     const { value: correctValue } = find(cAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
     value = correctValue;
   }
-  const [selection, setSelection] = useState({ start: 0, end: 0 });
+  const [input, setInput] = useState({ id, value });
 
   const _getValue = val => {
     const newStr = value.split("");
@@ -118,15 +118,11 @@ const ClozeTextInput = ({ resprops, id }) => {
     return make(characterMapButtons);
   };
 
-  const _change = data => {
+  const handleInputChange = data => {
     if (type === "number" && Number.isNaN(+data.value)) {
       return;
     }
-
-    onChange({
-      ...data,
-      type
-    });
+    setInput(data);
   };
   let width = style.width || "auto";
   let height = style.height || "auto";
@@ -150,34 +146,31 @@ const ClozeTextInput = ({ resprops, id }) => {
   }
   return (
     <CustomInput
-      style={{ ...style, width: `${width}px` || "auto", height: `${height}px` || "auto" }}
+      key={`input_${index}`}
+      style={{ ...style, width: "max-content", height: "auto" }}
       title={value.length ? value : null}
     >
       {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
-        onChange={e =>
-          _change({
-            value: e.target.value,
-            id
-          })
-        }
+        type={type}
+        onChange={e => handleInputChange({ value: e.target.value, id })}
+        onBlur={_ => onChange(input)}
         disabled={disableResponse}
-        onSelect={e => setSelection(getInputSelection(e.currentTarget))}
         wrap={item.multiple_line ? "" : "off"}
-        value={value}
+        value={input.value || ""}
         key={`input_${index}`}
         style={{
           ...style,
           resize: "none",
-          height: "100%",
-          width: "100%",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           fontSize: style.fontSize,
           background: item.background,
-          padding: width <= 50 ? "3px" : null
+          padding: width <= 50 ? "3px" : null,
+          width: `${width}px` || "auto",
+          height: `${height}px` || "auto"
         }}
         placeholder={placeholder}
       />
@@ -222,4 +215,6 @@ const IndexBox = styled.div`
   background: #878282;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+  align-self: stretch;
+  height: auto;
 `;

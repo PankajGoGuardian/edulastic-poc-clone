@@ -7,7 +7,7 @@ import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, PreWrapper, helpers, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, PreWrapper, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
@@ -16,7 +16,7 @@ import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import TemplateBox from "./components/TemplateBox";
 import { AnswerContainer } from "./styled/AnswerContainer";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
@@ -276,7 +276,9 @@ class ClozeDragDropDisplay extends Component {
       disableResponse,
       isReviewTab,
       flowLayout,
-      showQuestionNumber
+      showQuestionNumber,
+      question,
+      view
     } = this.props;
 
     const { userAnswers, possibleResponses, parsedTemplate } = this.state;
@@ -319,9 +321,8 @@ class ClozeDragDropDisplay extends Component {
       onDropHandler: !disableResponse ? this.onDrop : () => {},
       cAnswers: get(item, "validation.valid_response.value", [])
     };
-
     const templateBoxLayoutContainer = (
-      <PreWrapper>
+      <PreWrapper view={view} padding="0px">
         <div
           className={`template_box ${smallSize ? "small" : ""}`}
           style={{
@@ -360,98 +361,97 @@ class ClozeDragDropDisplay extends Component {
           userAnswers={validation.valid_response && validation.valid_response.value}
           btnStyle={btnStyle}
         />
-        {!isEmpty(item.validation.alt_responses) && (
-          <AlternateAnswerBoxLayout
+        {(item.validation.alt_responses || []).map((ele, ind) => (
+          <CorrectAnswerBoxLayout
+            hasGroupResponses={hasGroupResponses}
             fontSize={fontSize}
             groupResponses={options}
-            hasGroupResponses={hasGroupResponses}
-            altAnswers={validation.alt_responses}
+            userAnswers={ele.value}
+            altAnsIndex={ind + 1}
             btnStyle={btnStyle}
           />
-        )}
+        ))}
       </>
     ) : (
       <div />
     );
     const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+    const QuestionContent = () => (
+      <div>
+        {responsecontainerposition === "top" && (
+          <React.Fragment>
+            <div style={{ marginBottom: 15, borderRadius: 10 }}>{responseBoxLayout}</div>
+            <div style={{ borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
+          </React.Fragment>
+        )}
+        {responsecontainerposition === "bottom" && (
+          <React.Fragment>
+            <div
+              style={{
+                borderRadius: smallSize ? 0 : 10
+              }}
+            >
+              {templateBoxLayoutContainer}
+            </div>
+            <div
+              style={{
+                marginTop: 15,
+                borderRadius: smallSize ? 0 : 10
+              }}
+            >
+              {responseBoxLayout}
+            </div>
+          </React.Fragment>
+        )}
+        {responsecontainerposition === "left" && (
+          <AnswerContainer position={responsecontainerposition}>
+            <div
+              hidden={checkAnswer || showAnswer}
+              style={{
+                height: "100%",
+                maxWidth: "30%",
+                marginRight: 15,
+                borderRadius: 10,
+                background: theme.widgets.clozeDragDrop.responseBoxBgColor,
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              {responseBoxLayout}
+            </div>
+            <div style={{ borderRadius: 10, flex: 1 }}>{templateBoxLayoutContainer}</div>
+          </AnswerContainer>
+        )}
+        {responsecontainerposition === "right" && (
+          <AnswerContainer position={responsecontainerposition}>
+            <div style={{ flex: 1, borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
+            <div
+              hidden={checkAnswer || showAnswer}
+              style={{
+                height: "100%",
+                maxWidth: "30%",
+                marginLeft: 15,
+                borderRadius: 10,
+                background: theme.widgets.clozeDragDrop.responseBoxBgColor,
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              {responseBoxLayout}
+            </div>
+          </AnswerContainer>
+        )}
+      </div>
+    );
 
     return (
       <div style={{ fontSize }}>
-        {showQuestionNumber && !flowLayout ? (
-          <QuestionTitleWrapper>
-            <QuestionNumber>{item.qLabel}</QuestionNumber>
-            <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-          </QuestionTitleWrapper>
-        ) : null}
-        <div>
-          {responsecontainerposition === "top" && (
-            <React.Fragment>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
-            </React.Fragment>
-          )}
-          {responsecontainerposition === "bottom" && (
-            <React.Fragment>
-              <div
-                style={{
-                  margin: smallSize ? "-18px -20px 10px" : "15px 0",
-                  borderRadius: smallSize ? 0 : 10
-                }}
-              >
-                <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-
-                {templateBoxLayoutContainer}
-              </div>
-              <div
-                style={{
-                  margin: smallSize ? "0 -40px -20px" : "15px 0",
-                  borderRadius: smallSize ? 0 : 10
-                }}
-              >
-                {responseBoxLayout}
-              </div>
-            </React.Fragment>
-          )}
-          {responsecontainerposition === "left" && (
-            <AnswerContainer position={responsecontainerposition}>
-              <div
-                hidden={checkAnswer || showAnswer}
-                style={{
-                  height: "100%",
-                  maxWidth: "30%",
-                  margin: "15px 0",
-                  borderRadius: 10,
-                  background: theme.widgets.clozeDragDrop.responseBoxBgColor,
-                  display: "flex",
-                  justifyContent: "center"
-                }}
-              >
-                {responseBoxLayout}
-              </div>
-              <div style={{ margin: 15, borderRadius: 10, flex: 1 }}>{templateBoxLayoutContainer}</div>
-            </AnswerContainer>
-          )}
-          {responsecontainerposition === "right" && (
-            <AnswerContainer position={responsecontainerposition}>
-              <div style={{ flex: 1, margin: 15, borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
-              <div
-                hidden={checkAnswer || showAnswer}
-                style={{
-                  height: "100%",
-                  maxWidth: "30%",
-                  margin: "15px 0",
-                  borderRadius: 10,
-                  background: theme.widgets.clozeDragDrop.responseBoxBgColor,
-                  display: "flex",
-                  justifyContent: "center"
-                }}
-              >
-                {responseBoxLayout}
-              </div>
-            </AnswerContainer>
-          )}
-        </div>
+        <QuestionTitleWrapper>
+          {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
+          {!question && <QuestionContent />}
+        </QuestionTitleWrapper>
+        {question && <QuestionContent />}
         {answerBox}
       </div>
     );
@@ -469,7 +469,7 @@ ClozeDragDropDisplay.propTypes = {
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   stimulus: PropTypes.string,
-  // question: PropTypes.string.isRequired,
+  question: PropTypes.string.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object,
   validation: PropTypes.object,

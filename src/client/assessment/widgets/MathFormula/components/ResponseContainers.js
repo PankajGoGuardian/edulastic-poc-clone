@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
+import styled from "styled-components";
 import { Input } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { EduButton, FlexContainer } from "@edulastic/common";
 
-import { Widget } from "../../../styled/Widget";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
@@ -15,65 +14,40 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled/IconTrash";
 
 class ResponseContainers extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.responseContainer"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.responseContainer"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { containers, onChange, onAdd, onDelete, advancedAreOpen, t } = this.props;
+    const { containers, onChange, onAdd, onDelete, t } = this.props;
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Subtitle>{t("component.options.responseContainer")}</Subtitle>
+      <Container>
+        <Subtitle>{t("component.options.responseBoxOverride")}</Subtitle>
 
         {containers.map((container, index) => (
           <Fragment>
-            <Row>
-              <Col md={12}>
+            <Row gutter={30}>
+              <Col md={24}>
                 <FlexContainer justifyContent="space-between">
                   <Label>
-                    {t("component.options.responseContainer")} {index + 1}
+                    {t("component.options.responseBox")} {index + 1}
                   </Label>
                   <IconTrash onClick={() => onDelete(index)} />
                 </FlexContainer>
               </Col>
             </Row>
 
-            <Row>
-              <Col md={6}>
+            <Row gutter={30}>
+              <Col md={12}>
                 <Label>{t("component.options.widthpx")}</Label>
                 <Input
                   type="number"
                   size="large"
-                  style={{ width: "80%" }}
                   value={container.widthpx || 0}
                   onChange={e => onChange({ index, prop: "widthpx", value: +e.target.value })}
                 />
               </Col>
-              <Col md={6}>
+              <Col md={12}>
                 <Label>{t("component.options.heightpx")}</Label>
                 <Input
                   type="number"
                   size="large"
-                  style={{ width: "80%" }}
                   value={container.heightpx || 0}
                   onChange={e => onChange({ index, prop: "heightpx", value: +e.target.value })}
                 />
@@ -85,7 +59,7 @@ class ResponseContainers extends Component {
         <EduButton onClick={onAdd} type="primary">
           {t("component.options.addResponseContainer")}
         </EduButton>
-      </Widget>
+      </Container>
     );
   }
 }
@@ -95,16 +69,13 @@ ResponseContainers.propTypes = {
   onChange: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  advancedAreOpen: PropTypes.bool,
-  fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  t: PropTypes.func.isRequired
 };
 
-ResponseContainers.defaultProps = {
-  advancedAreOpen: false,
-  fillSections: () => {},
-  cleanSections: () => {}
-};
+ResponseContainers.defaultProps = {};
 
 export default withNamespaces("assessment")(ResponseContainers);
+
+const Container = styled.div`
+  margin-top: 32px;
+`;

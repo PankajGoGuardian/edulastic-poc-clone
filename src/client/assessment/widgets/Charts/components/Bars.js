@@ -9,7 +9,18 @@ import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestio
 import { Bar, ActiveBar } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, correct }) => {
+const Bars = ({
+  bars,
+  onPointOver,
+  onMouseDown,
+  activeIndex,
+  view,
+  gridParams,
+  previewTab,
+  correct,
+  deleteMode,
+  saveAnswer
+}) => {
   const { margin, yAxisMin } = gridParams;
 
   const { padding, step } = getGridVariables(bars, gridParams, true);
@@ -45,9 +56,10 @@ const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, p
   return (
     <Fragment>
       {bars.map((dot, index) => (
-        <Fragment>
+        <Fragment key={`bar-${index}`}>
           {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
           <Bar
+            onClick={deleteMode ? () => saveAnswer(index) : () => {}}
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
             x={getCenterX(index)}
@@ -57,12 +69,14 @@ const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, p
           />
           {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
             <ActiveBar
+              onClick={deleteMode ? () => saveAnswer(index) : () => {}}
               onMouseEnter={handleMouse(index)}
               onMouseLeave={handleMouse(null)}
               onMouseDown={onMouseDown(index)}
               x={getCenterX(index)}
               y={getCenterY(dot)}
               width={step * 0.8}
+              deleteMode={deleteMode}
               hoverState={isHovered(index)}
               height={isHovered(index) ? 5 : 1}
             />

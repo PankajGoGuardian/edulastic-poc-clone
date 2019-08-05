@@ -20,13 +20,15 @@ const QuillSortableItem = SortableElement(
     rOnly,
     onChange,
     columns,
+    styleType,
     indx,
     label,
     fontSize,
     canDelete,
-    placeholder
+    placeholder,
+    imageDefaultWidth
   }) => (
-    <SortableItemContainer fontSize={fontSize} columns={columns}>
+    <SortableItemContainer styleType={styleType} fontSize={fontSize} columns={columns}>
       {label && <Label>{label}</Label>}
       <FlexContainer style={{ flex: 1 }}>
         <div className="main" data-cy="quillSortableItem">
@@ -40,6 +42,7 @@ const QuillSortableItem = SortableElement(
             style={{ width: "100%" }}
             readOnly={rOnly}
             toolbarSize={toolbarSize}
+            imageDefaultWidth={imageDefaultWidth}
           />
         </div>
         {canDelete && onRemove && (
@@ -53,18 +56,22 @@ const QuillSortableItem = SortableElement(
 QuillSortableItem.propTypes = {
   t: PropTypes.func.isRequired,
   toolbarId: PropTypes.string,
+  styleType: PropTypes.string,
   columns: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
   rOnly: PropTypes.bool,
   firstFocus: PropTypes.bool,
-  style: PropTypes.object
+  style: PropTypes.object,
+  imageDefaultWidth: PropTypes.number
 };
 
 QuillSortableItem.defaultProps = {
   toolbarId: "quill-sortable-item",
   rOnly: false,
   firstFocus: false,
-  style: {}
+  styleType: "button",
+  style: {},
+  imageDefaultWidth: 300
 };
 
 export default memo(QuillSortableItem);

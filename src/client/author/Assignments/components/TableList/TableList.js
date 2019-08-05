@@ -59,7 +59,10 @@ const convertExpandTableData = (data, testItem, index) => ({
   assignmentId: data._id,
   class: data.className,
   assigned: data.assignedBy.name,
-  status: data.status === "NOT OPEN" && data.startDate && data.startDate < Date.now() ? "IN PROGRESS" : data.status,
+  status:
+    data.status === "NOT OPEN" && data.startDate && data.startDate < Date.now()
+      ? `IN PROGRESS${data.isPaused ? " (PAUSED)" : ""}`
+      : `${data.status}${data.isPaused && data.status !== "DONE" ? " (PAUSED)" : ""}`,
   submitted: `${(data.submittedCount || 0) + (data.gradedCount || 0)} of ${data.totalNumber || 0}`,
   graded: data.gradedCount,
   action: "",
@@ -73,6 +76,7 @@ class TableList extends Component {
   };
 
   state = {
+    expandedRows: ["0", "1", "2"],
     details: true
   };
 
@@ -81,13 +85,19 @@ class TableList extends Component {
       {
         title: <Checkbox />,
         dataIndex: "checkbox",
-        width: "3%",
+        width: "5%",
         className: "select-row",
         render: () => <GreyFont style={{ display: "block" }} />
       },
       {
+        title: "",
+        dataIndex: "",
+        width: "20%",
+        className: ""
+      },
+      {
         dataIndex: "class",
-        width: "30%",
+        width: "10%",
         render: text => (
           <GreyFont className="class-column">
             <Tooltip placement="bottom" title={text}>
@@ -98,24 +108,24 @@ class TableList extends Component {
       },
       {
         dataIndex: "testType",
-        width: "14%",
+        width: "10%",
         render: (_, row) =>
           row && row.testType === test.type.PRACTICE ? (
-            <TypeIcon type="practice">P</TypeIcon>
+            <TypeIcon type="p">P</TypeIcon>
           ) : row.testType === test.type.ASSESSMENT ? (
             <TypeIcon>A</TypeIcon>
           ) : (
-            <TypeIcon>C</TypeIcon>
+            <TypeIcon type="c">C</TypeIcon>
           )
       },
       {
         dataIndex: "assigned",
-        width: "10%",
+        width: "11%",
         render: text => <GreyFont>{text}</GreyFont>
       },
       {
         dataIndex: "status",
-        width: "10%",
+        width: "14%",
         render: text => (text ? <BtnStatus status={text}>{text}</BtnStatus> : "")
       },
       {
@@ -125,7 +135,7 @@ class TableList extends Component {
       },
       {
         dataIndex: "graded",
-        width: "13%",
+        width: "10%",
         render: text => <GreyFont>{text}</GreyFont>
       },
       {
@@ -174,6 +184,10 @@ class TableList extends Component {
 
   disableExtend = () => this.setState({ details: true });
 
+  handleExpandedRowsChange = expandedRows => {
+    this.setState({ expandedRows });
+  };
+
   render() {
     const {
       assignmentsByTestId = {},
@@ -185,16 +199,17 @@ class TableList extends Component {
       onSelectRow,
       selectedRows,
       folderData,
-      showPreviewModal
+      showPreviewModal,
+      showFilter
     } = this.props;
 
-    const { details } = this.state;
+    const { details, expandedRows } = this.state;
     const columns = [
       {
         title: "Assignment Name",
         dataIndex: "name",
         sortDirections: ["descend", "ascend"],
-        sorter: (a, b) => a.name.localeCompare(b.name, "fr", { ignorePunctuation: true }),
+        sorter: (a, b) => a.name.localeCompare(b.name, "en", { ignorePunctuation: true }),
         width: "20%",
         className: "assignment-name",
         render: (text, row) => (
@@ -203,7 +218,7 @@ class TableList extends Component {
               <div>
                 <TestThumbnail src={row.thumbnail} />
               </div>
-              <AssignmentTD>{text}</AssignmentTD>
+              <AssignmentTD showFilter={showFilter}>{text}</AssignmentTD>
             </FlexContainer>
           </Tooltip>
         )
@@ -214,9 +229,13 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.class - b.class,
         width: "10%",
-        render: text => (
+        render: (text, row) => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
-            <IconArrowDown onclick={() => false} src={arrowUpIcon} />
+            <IconArrowDown
+              onclick={() => false}
+              src={arrowUpIcon}
+              style={{ transform: expandedRows.includes(`${row.key}`) ? "rotate(180deg)" : "" }}
+            />
             {text}
           </ExpandDivdier>
         )
@@ -226,21 +245,21 @@ class TableList extends Component {
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.testType.localeCompare(b.testType),
-        width: "14%",
+        width: "10%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
       {
         title: "Assigned by",
         dataIndex: "assigned",
         sortDirections: ["descend", "ascend"],
-        width: "10%",
+        width: "11%",
         render: text => <GreyFont> {text} </GreyFont>
       },
       {
         title: "Status",
         dataIndex: "status",
         sortDirections: ["descend", "ascend"],
-        width: "10%",
+        width: "14%",
         render: () => <GreyFont>{t("common.assigned")} </GreyFont>
       },
       {
@@ -255,7 +274,7 @@ class TableList extends Component {
         dataIndex: "graded",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a.graded - b.graded,
-        width: "13%",
+        width: "10%",
         render: text => <GreyFont> {text} </GreyFont>
       },
       {
@@ -299,12 +318,12 @@ class TableList extends Component {
 
       const tempData = [];
       content.forEach(({ _id }) => {
-        const temp = find(data, ({ testId }) => testId === _id);
+        const temp = find(tests, ({ _id: testId }) => testId === _id);
         if (temp) {
           tempData.push(temp);
         }
       });
-      data = tempData;
+      data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
     }
 
     return (
@@ -317,7 +336,8 @@ class TableList extends Component {
           expandedRowRender={this.expandedRowRender}
           dataSource={data}
           expandRowByClick={details}
-          defaultExpandedRowKeys={["0", "1", "2"]}
+          onExpandedRowsChange={this.handleExpandedRowsChange}
+          defaultExpandedRowKeys={expandedRows}
         />
       </Container>
     );
@@ -332,7 +352,8 @@ TableList.propTypes = {
   selectedRows: PropTypes.array.isRequired,
   renderFilter: PropTypes.func,
   history: PropTypes.object,
-  tests: PropTypes.array
+  tests: PropTypes.array,
+  showFilter: PropTypes.bool
 };
 
 TableList.defaultProps = {

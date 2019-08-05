@@ -3,12 +3,23 @@ import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
 import ArrowPair from "./components/ArrowPair";
+import ValueLabel from "./components/ValueLabel";
 import Circles from "./components/Circles";
 import withGrid from "./HOC/withGrid";
 import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 import { Line } from "./styled";
 
-const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disableResponse }) => {
+const DotPlot = ({
+  data,
+  saveAnswer,
+  previewTab,
+  gridParams,
+  view,
+  correct,
+  disableResponse,
+  toggleBarDragging,
+  deleteMode
+}) => {
   const { width, height, margin } = gridParams;
 
   const { step } = getGridVariables(data, gridParams, true);
@@ -39,6 +50,8 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disa
           [active].split(",")[index]
       : null;
 
+  const getActivePointValue = () => (active !== null ? localData[active].y : null);
+
   const save = () => {
     if (cursorY === null) {
       return;
@@ -48,12 +61,13 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disa
     setInitY(null);
     setActive(null);
     setIsMouseDown(false);
-    saveAnswer(localData);
+    toggleBarDragging(false);
+    saveAnswer(localData, active);
   };
 
   const onMouseMove = e => {
     const newLocalData = cloneDeep(localData);
-    if (isMouseDown && cursorY) {
+    if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
       newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
 
@@ -66,6 +80,7 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disa
     setActiveIndex(index);
     setInitY(localData[index].y);
     setIsMouseDown(true);
+    toggleBarDragging(true);
   };
 
   const onMouseUp = () => {
@@ -78,7 +93,7 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disa
 
   return (
     <svg
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none", position: "relative", zIndex: "15" }}
       width={width}
       height={height + 40}
       onMouseMove={onMouseMove}
@@ -88,6 +103,8 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disa
       <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
 
       <Circles
+        saveAnswer={active => saveAnswer(localData, active)}
+        deleteMode={deleteMode}
         activeIndex={activeIndex}
         onPointOver={setActive}
         previewTab={previewTab}
@@ -97,7 +114,10 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disa
         gridParams={gridParams}
         correct={correct}
       />
+
       <ArrowPair getActivePoint={getActivePoint} />
+
+      <ValueLabel getActivePoint={getActivePoint} getActivePointValue={getActivePointValue} active={active} />
     </svg>
   );
 };

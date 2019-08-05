@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import Dropzone from "react-dropzone";
 
@@ -9,37 +8,22 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
-import { Image as Img } from "@edulastic/common";
+import { Image as Img, uploadToS3, beforeUpload } from "@edulastic/common";
+import { canvasDimensions, aws } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../../utils/variables";
 
 import QuestionTextArea from "../../../components/QuestionTextArea";
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
+import Question from "../../../components/Question";
 import DropZoneToolbar from "../../../components/DropZoneToolbar";
 import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
 
-import { canvasDimensions, aws } from "@edulastic/constants";
-import { uploadToS3, beforeUpload } from "@edulastic/common";
-
 class ComposeQuestion extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.highlightImage.composeQuestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, loading, setLoading, t } = this.props;
+    const { item, setQuestionData, loading, setLoading, t, fillSections, cleanSections } = this.props;
     const { image } = item;
     const { maxWidth, maxHeight } = canvasDimensions;
 
@@ -81,7 +65,9 @@ class ComposeQuestion extends Component {
 
     const getImageDimensions = url => {
       const uploadedImage = new Image();
+      // eslint-disable-next-line func-names
       uploadedImage.addEventListener("load", function() {
+        // eslint-disable-next-line
         let height, width;
         if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
           const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
@@ -129,7 +115,12 @@ class ComposeQuestion extends Component {
     const thumb = image[SOURCE] && <Img width={width} height={height} src={image[SOURCE]} alt={altText} />;
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.highlightImage.composeQuestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.highlightImage.composeQuestion")}</Subtitle>
 
         <QuestionTextArea
@@ -176,7 +167,7 @@ class ComposeQuestion extends Component {
             </div>
           )}
         </Dropzone>
-      </Widget>
+      </Question>
     );
   }
 }

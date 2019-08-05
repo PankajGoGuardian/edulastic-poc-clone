@@ -18,26 +18,22 @@ import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 
 const _yTickFormatter = val => {
-  if (val !== 0) {
-    return val + "%";
-  } else {
-    return "";
-  }
+  return val + "%";
 };
 
 const LabelText = props => {
-  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave } = props;
+  let { x, y, width, height, value, formatter, onBarMouseOver, onBarMouseLeave, index, startIndex } = props;
   return (
     <g class="asd-asd" onMouseOver={onBarMouseOver()} onMouseLeave={onBarMouseLeave()}>
       <text x={x + width / 2} y={y + height} textAnchor="middle" dominantBaseline="text-after-edge">
-        {formatter(value)}
+        {formatter(value, index, startIndex)}
       </text>
     </g>
   );
 };
 
 export const SimpleStackedBarChart = ({
-  margin = { top: 0, right: 0, left: 0, bottom: 0 },
+  margin = { top: 0, right: 20, left: 20, bottom: 0 },
   pageSize,
   data = [],
   yDomain = [0, 110],
@@ -214,6 +210,7 @@ export const SimpleStackedBarChart = ({
               onMouseLeave={onBarMouseLeave(null)}
               content={
                 <LabelText
+                  startIndex={pagination.startIndex}
                   onBarMouseOver={onBarMouseOver}
                   onBarMouseLeave={onBarMouseLeave}
                   formatter={barsLabelFormatter}
@@ -235,7 +232,7 @@ export const SimpleStackedBarChart = ({
             />
           ) : null}
           {lineChartDataKey ? (
-            <Line yAxisId="lineChart" type="monotone" dataKey={lineChartDataKey} {...lineProps} />
+            <Line yAxisId="lineChart" type="linear" dataKey={lineChartDataKey} {...lineProps} />
           ) : null}
           {referenceLineY > 0 ? <ReferenceLine yAxisId={"barChart"} y={referenceLineY} stroke="#010101" /> : null}
           <Tooltip

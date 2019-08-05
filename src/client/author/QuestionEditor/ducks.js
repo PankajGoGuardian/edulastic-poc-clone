@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { testItemsApi, evaluateApi, questionsApi } from "@edulastic/api";
-import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
-import { cloneDeep, values, get, omit, set } from "lodash";
+import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
+import { cloneDeep, values, get, omit, set, uniqBy } from "lodash";
 import produce from "immer";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
@@ -9,13 +9,15 @@ import { helpers } from "@edulastic/common";
 import { push } from "connected-react-router";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
 
-import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
 import {
-  setTestDataAction,
-  getTestEntitySelector,
-  setTestDataAndUpdateAction,
-  setCreatedItemToTestAction
-} from "../TestPage/ducks";
+  getItemDetailSelector,
+  UPDATE_ITEM_DETAIL_SUCCESS,
+  setRedirectTestAction,
+  hasStandards,
+  PROCEED_PUBLISH_ACTION,
+  togglePublishWarningModalAction
+} from "../ItemDetail/ducks";
+import { getTestEntitySelector, setTestDataAndUpdateAction, setCreatedItemToTestAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   UPDATE_QUESTION,
@@ -28,7 +30,11 @@ import {
 import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
+import { isIncompleteQuestion } from "../questionUtils";
 import changeViewAction from "../src/actions/view";
+import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
+import { updateRecentStandardsAction } from "../src/actions/dictionaries";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 // constants
 export const resourceTypeQuestions = {
@@ -221,7 +227,7 @@ export const getQuestionDataSelector = createSelector(
 );
 export const getQuestionAlignmentSelector = createSelector(
   getCurrentQuestionSelector,
-  state => state.alignment || []
+  state => get(state, "alignment", [])
 );
 
 export const getValidationSelector = createSelector(
@@ -275,8 +281,34 @@ export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTe
 
 function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } }) {
   try {
+    if (isTestFlow) {
+      const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
+      const standardPresent = questions.some(hasStandards);
+
+      // if alignment data is not present, set the flag to open the modal, and wait for
+      // an action from the modal.!
+      if (!standardPresent) {
+        yield put(togglePublishWarningModalAction(true));
+        // action dispatched by the modal.
+        const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
+        yield put(togglePublishWarningModalAction(false));
+
+        // if he wishes to add some just close the modal, and go to metadata.
+        // else continue the normal flow.
+        if (!publishItem) {
+          yield put(changeViewAction("metadata"));
+          return;
+        }
+      }
+    }
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
+
+    const [isIncomplete, errMsg] = isIncompleteQuestion(question);
+    if (isIncomplete) {
+      return message.error(errMsg);
+    }
+
     const locationState = yield select(state => state.router.location.state);
     let currentQuestionIds = getQuestionIds(itemDetail);
     const { rowIndex, tabIndex } = locationState || { rowIndex: 0, tabIndex: 1 };
@@ -367,8 +399,15 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
+    yield call(message.success, "Item is saved as draft", 2);
 
-    yield call(message.success, "Update item by id is success", "Success");
+    const alignments = yield select(getDictionariesAlignmentsSelector);
+    const { standards = [] } = alignments[0];
+    // to update recent standards used in local storage and store
+    let recentStandardsList = yield select(getRecentStandardsListSelector);
+    recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
+    yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
+    storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
 
     if (isTestFlow) {
       // add item to test entity
@@ -383,13 +422,12 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
+      yield put(setCreatedItemToTestAction(item));
       if (!tId || tId === "undefined") {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
-        yield put(setCreatedItemToTestAction(item));
-        yield put(push(!isEditFlow ? `/author/tests/${tId}#review` : `/author/tests/${tId}/createItem/${item._id}`));
+        yield put(push(!isEditFlow ? `/author/tests/${tId}` : `/author/tests/${tId}/createItem/${item._id}`));
       }
-      yield put(toggleCreateItemModalAction(false));
       yield put(changeViewAction("edit"));
       return;
     }

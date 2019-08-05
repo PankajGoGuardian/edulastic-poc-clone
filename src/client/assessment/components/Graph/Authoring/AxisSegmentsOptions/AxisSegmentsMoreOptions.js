@@ -16,7 +16,8 @@ import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 
-import { QuestionSection, ScoreSettings, SegmentsToolsSettings } from "..";
+import { ScoreSettings, SegmentsToolsSettings } from "..";
+import Question from "../../../Question";
 
 class AxisSegmentsMoreOptions extends Component {
   constructor(props) {
@@ -225,7 +226,7 @@ class AxisSegmentsMoreOptions extends Component {
 
     return (
       <Fragment>
-        <QuestionSection
+        <Question
           padding="0px"
           section="advanced"
           label="Scoring"
@@ -239,9 +240,9 @@ class AxisSegmentsMoreOptions extends Component {
             graphData={graphData}
             advancedAreOpen={advancedAreOpen}
           />
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label={t("component.graphing.display")}
           cleanSections={cleanSections}
@@ -366,9 +367,9 @@ class AxisSegmentsMoreOptions extends Component {
               </Select>
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Toolbar"
           cleanSections={cleanSections}
@@ -376,9 +377,9 @@ class AxisSegmentsMoreOptions extends Component {
           advancedAreOpen={advancedAreOpen}
         >
           <SegmentsToolsSettings onChange={setControls} toolbar={toolbar} />
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Ticks"
           cleanSections={cleanSections}
@@ -478,9 +479,9 @@ class AxisSegmentsMoreOptions extends Component {
               </Row>
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
-        <QuestionSection
+        <Question
           section="advanced"
           label="Labels"
           cleanSections={cleanSections}
@@ -525,7 +526,7 @@ class AxisSegmentsMoreOptions extends Component {
               />
             </Col>
           </Row>
-        </QuestionSection>
+        </Question>
 
         <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
           <Extras.Distractors />

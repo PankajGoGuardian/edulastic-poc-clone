@@ -67,8 +67,8 @@ const renderBodyContent = () => {
     }
   ];
 
-  return content.map(element => (
-    <RadioWrapper>
+  return content.map((element, index) => (
+    <RadioWrapper key={`RadioWrapper_${index}`}>
       <RowWrapper>
         <Col span={8}>
           <CommonText>{element.label}</CommonText>
@@ -87,8 +87,10 @@ const renderBodyContent = () => {
                 dropdownClassName={element.selectOptions.length === 1 ? "ant-select-dropdown-hidden" : ""}
                 getPopupContainer={() => document.getElementById("select-area")}
               >
-                {element.selectOptions.map(option => (
-                  <Select.Option value={option.value}>{option.text}</Select.Option>
+                {element.selectOptions.map((option, indexOption) => (
+                  <Select.Option value={option.value} key={`SelectOption_${indexOption}`}>
+                    {option.text}
+                  </Select.Option>
                 ))}
               </Select>
             </SelectWrapper>

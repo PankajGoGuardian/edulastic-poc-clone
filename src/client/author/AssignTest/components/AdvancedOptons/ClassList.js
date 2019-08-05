@@ -28,7 +28,7 @@ const convertTableData = row => ({
   className: row.name,
   teacher: findTeacherName(row),
   subject: row.subject,
-  grades: row.grade
+  grades: row.grades
 });
 
 class ClassList extends React.Component {
@@ -55,10 +55,9 @@ class ClassList extends React.Component {
     this.state = {
       searchTerms: {
         institutionIds: [],
-        codes: [],
         subjects: subjects.map(subject => lowerCase(subject)),
         grades,
-        active: 1
+        active: [1]
       }
     };
   }
@@ -145,7 +144,7 @@ class ClassList extends React.Component {
         sortDirections: ["descend", "ascend"]
       },
       {
-        title: "GRADE",
+        title: "GRADES",
         width: "15%",
         key: "grades",
         dataIndex: "grades",
@@ -169,7 +168,7 @@ class ClassList extends React.Component {
           </StyledRowLabel>
 
           <StyledRowLabel>
-            Grade
+            Grades
             <Select
               mode="multiple"
               value={searchTerms.grades}

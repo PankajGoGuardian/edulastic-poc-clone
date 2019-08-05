@@ -7,6 +7,7 @@ import {
   RECEIVE_DICT_STANDARDS_ERROR,
   CLEAR_DICT_STANDARDS,
   CLEAR_DICT_ALIGNMENTS,
+  UPDATE_DEFAULT_CURRICULUM,
   ADD_DICT_ALIGNMENT,
   SET_ALIGNMENT_FROM_QUESTION,
   REMOVE_DICT_ALINMENT,
@@ -16,10 +17,10 @@ import {
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 export const getNewAlignmentState = () => ({
-  curriculum: getFromLocalStorage("defaultCurriculumSelected") || "",
-  curriculumId: getFromLocalStorage("defaultCurriculumIdSelected") || "",
-  subject: getFromLocalStorage("defaultSubject") || "",
-  grades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : [],
+  curriculum: "",
+  curriculumId: "",
+  subject: "",
+  grades: [],
   domains: []
 });
 
@@ -35,6 +36,8 @@ const initialItemsState = {
     loading: false,
     error: null
   },
+  defaultCurriculumName: getFromLocalStorage("defaultCurriculumName"),
+  defaultCurriculumId: getFromLocalStorage("defaultCurriculumId"),
   recentStandardsList: getFromLocalStorage("recentStandards") ? JSON.parse(getFromLocalStorage("recentStandards")) : [],
   alignments: [getNewAlignmentState()]
 };
@@ -49,6 +52,14 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
           loading: true
         }
       };
+
+    case UPDATE_DEFAULT_CURRICULUM: {
+      return {
+        ...state,
+        defaultCurriculumId: payload.defaultCurriculumId,
+        defaultCurriculumName: payload.defaultCurriculumName
+      };
+    }
     case RECEIVE_DICT_CURRICULUMS_SUCCESS:
       return {
         ...state,

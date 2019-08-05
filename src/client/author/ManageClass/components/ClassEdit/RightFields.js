@@ -1,21 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { filter, debounce, concat, find, isEmpty } from "lodash";
+import { debounce, concat, find, isEmpty } from "lodash";
 
 import * as moment from "moment";
 import { Input, Select, DatePicker } from "antd";
 import { FieldLabel } from "./components";
 import { StyledFlexContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { StandardsValidationMSG } from "../ClassCreate/styled";
 
 const { allGrades, allSubjects } = selectsData;
 
 const classStartDate = moment();
 const classEndDate = moment(); // .add("days", 7);
 
-// eslint-disable-next-line max-len
 const RightFields = ({
-  curriculums,
   courseList,
   searchCourse,
   isSearching,
@@ -27,12 +27,19 @@ const RightFields = ({
   defaultStandardSets = [],
   defaultCourse = {},
   defaultSchool,
+  subject,
+  setSubject,
+  filteredCurriculums,
+  clearStandards,
   ...restProps
 }) => {
-  const [subject, setSubject] = useState(defaultSubject || "");
   const [startDate, setStartDate] = useState(moment(defaultStartDate || classStartDate));
+  useEffect(() => {
+    setSubject(defaultSubject || "");
+  }, []);
   const updateSubject = e => {
     setSubject(e);
+    clearStandards();
   };
 
   const onStartDateChangeHandler = date => {
@@ -42,7 +49,6 @@ const RightFields = ({
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
   const handleFocus = debounce((keyword = "") => searchCourse(keyword), 500);
   const defaultStandardSetIds = defaultStandardSets.map(({ _id }) => _id);
-  const standardSets = filter(curriculums, el => el.subject === subject);
   const isExist = find(courseList, ({ _id }) => _id === defaultCourse.id);
   let courseOptions = [];
   if (!isExist && !isEmpty(defaultCourse)) {
@@ -99,8 +105,8 @@ const RightFields = ({
       </StyledFlexContainer>
 
       <StyledFlexContainer>
-        <FieldLabel label="Grade" {...restProps} fiedlName="grade" initialValue={defaultGrade}>
-          <Select placeholder="Select Grade">
+        <FieldLabel label="Grades" {...restProps} fiedlName="grades" initialValue={defaultGrade}>
+          <Select placeholder="Select Grades" mode="multiple">
             {allGrades.map(el => (
               <Select.Option key={el.value} value={el.value}>
                 {el.text}
@@ -121,9 +127,9 @@ const RightFields = ({
 
       <FieldLabel
         label="Standards Set"
-        {...restProps}
         fiedlName="standardSets"
         initialValue={defaultStandardSetIds || []}
+        {...restProps}
       >
         <Select
           showSearch
@@ -132,32 +138,45 @@ const RightFields = ({
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           placeholder="Select Standards"
         >
-          {standardSets.map(el => (
-            <Select.Option key={el._id} value={el._id}>
-              {el.curriculum}
+          {!subject ? (
+            <Select.Option key="subject_first" value="subject_first" disabled>
+              <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
             </Select.Option>
-          ))}
+          ) : isEmpty(filteredCurriculums) ? (
+            <Select.Option key="loading" value="loading" disabled>
+              <StandardsValidationMSG>Loading data...</StandardsValidationMSG>
+            </Select.Option>
+          ) : (
+            filteredCurriculums.map(el => (
+              <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                {el.text}
+              </Select.Option>
+            ))
+          )}
         </Select>
       </FieldLabel>
-
-      <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={defaultCourse.id || ""}>
-        <Select
-          placeholder="Select Course"
-          showSearch
-          defaultActiveFirstOption={false}
-          showArrow={false}
-          filterOption={false}
-          onSearch={handleSearch}
-          onFocus={handleFocus}
-          notFoundContent={null}
-          loading={isSearching}
-        >
-          {courseOptions.map(el => (
-            <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number || ""}`}</Select.Option>
-          ))}
-        </Select>
-      </FieldLabel>
-
+      {/* TODO: feature switch should be removed and simple show hide should be here
+        show course flag will be available in district policy
+      */}
+      <FeaturesSwitch inputFeatures="selectCourse" actionOnInaccessible="hidden" key="selectCourse">
+        <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={defaultCourse.id || ""}>
+          <Select
+            placeholder="Select Course"
+            showSearch
+            defaultActiveFirstOption={false}
+            showArrow={false}
+            filterOption={false}
+            onSearch={handleSearch}
+            onFocus={handleFocus}
+            notFoundContent={null}
+            loading={isSearching}
+          >
+            {courseOptions.map(el => (
+              <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number || ""}`}</Select.Option>
+            ))}
+          </Select>
+        </FieldLabel>
+      </FeaturesSwitch>
       <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool}>
         <input type="hidden" />
       </FieldLabel>
@@ -166,12 +185,11 @@ const RightFields = ({
 };
 
 RightFields.propTypes = {
-  curriculums: PropTypes.arrayOf(
+  filteredCurriculums: PropTypes.arrayOf(
     PropTypes.shape({
       _id: PropTypes.string.isRequired,
-      curriculum: PropTypes.string.isRequired,
-      grades: PropTypes.array.isRequired,
-      subject: PropTypes.string.isRequired
+      text: PropTypes.string.isRequired,
+      disabled: PropTypes.bool
     })
   ).isRequired,
   courseList: PropTypes.array.isRequired,
@@ -181,18 +199,20 @@ RightFields.propTypes = {
   defaultName: PropTypes.string.isRequired,
   defaultStartDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
   defaultEndDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
-  defaultGrade: PropTypes.string,
+  defaultGrade: PropTypes.array,
   defaultSubject: PropTypes.string,
   defaultStandardSets: PropTypes.array,
   defaultCourse: PropTypes.object,
-  defaultSchool: PropTypes.string
+  defaultSchool: PropTypes.string,
+  subject: PropTypes.string,
+  setSubject: PropTypes.func.isRequired
 };
 
 RightFields.defaultProps = {
   defaultStartDate: classStartDate,
   defaultEndDate: classEndDate,
   defaultCourse: {},
-  defaultGrade: "",
+  defaultGrade: [],
   defaultSubject: "",
   defaultSchool: "",
   defaultStandardSets: []

@@ -3,6 +3,7 @@ import { Row, Col } from "antd";
 import { get, keyBy, isEmpty } from "lodash";
 import next from "immer";
 
+import { roleuser } from "@edulastic/constants";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { StyledTable } from "../styled";
@@ -37,31 +38,31 @@ const sortNumbers = (compareByType, index, key) => (a, b) => {
   return _a - _b;
 };
 
-export const QuestionAnalysisTable = ({ tableData, compareBy, filter }) => {
+export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role }) => {
   const colouredCells = (compareByType, index) => (text, record) => {
-    const tooltipText = (compareByType, record, index) => {
+    const tooltipText = (_compareByType, _record, _index) => {
       return (
         <div>
           <Row type="flex" justify="center">
-            <Col className="custom-table-tooltip-value">{record.qLabel}</Col>
+            <Col className="custom-table-tooltip-value">{_record.qLabel}</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[compareByType].name}: </Col>
+            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].name}: </Col>
             <Col className="custom-table-tooltip-value">
-              {record[compareByType][index][comparedByToToolTipLabel[compareByType].nameKey]}
+              {_record[_compareByType][_index][comparedByToToolTipLabel[_compareByType].nameKey]}
             </Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[compareByType].type}: </Col>
-            <Col className="custom-table-tooltip-value">{record[compareByType][index].avgPerformance}%</Col>
+            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].type}: </Col>
+            <Col className="custom-table-tooltip-value">{_record[_compareByType][_index].avgPerformance}%</Col>
           </Row>
           <Row type="flex" justify="start">
-            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[compareByType].all}: </Col>
-            <Col className="custom-table-tooltip-value">{record.avgPerformance}%</Col>
+            <Col className="custom-table-tooltip-key">{comparedByToToolTipLabel[_compareByType].all}: </Col>
+            <Col className="custom-table-tooltip-value">{_record.avgPerformance}%</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="custom-table-tooltip-key">District (% Score): </Col>
-            <Col className="custom-table-tooltip-value">{record.districtAvg}%</Col>
+            <Col className="custom-table-tooltip-value">{_record.districtAvg}%</Col>
           </Row>
         </div>
       );
@@ -105,10 +106,18 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter }) => {
     rawColumns[3].render = (text, record, _index) => {
       return text + "%";
     };
-    rawColumns[4].title = `All ${compareByToPluralName[compareBy]} (Score %)`;
-    rawColumns[4].render = (text, record, _index) => {
-      return text + "%";
-    };
+
+    if (roleuser.TEACHER === role) {
+      rawColumns.push({
+        title: `All ${compareByToPluralName[compareBy]} (Score %)`,
+        dataIndex: "avgPerformance",
+        key: "avgPerformance",
+        width: 100,
+        render: (text, record, _index) => {
+          return text + "%";
+        }
+      });
+    }
     if (!tableData.length) {
       return;
     }
@@ -162,5 +171,12 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter }) => {
     });
   }, [filter]);
 
-  return <StyledTable columns={_columns} dataSource={_tableData} rowKey={"questionId"} />;
+  return (
+    <StyledTable
+      columns={_columns}
+      dataSource={_tableData}
+      rowKey={"questionId"}
+      colorCellStart={role === roleuser.TEACHER ? 6 : 5}
+    />
+  );
 };

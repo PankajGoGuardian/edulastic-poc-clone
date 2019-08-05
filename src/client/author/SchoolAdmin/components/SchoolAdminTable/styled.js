@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Dropdown } from "antd";
+import { Button, Select, Input, Dropdown, Pagination } from "antd";
+import { StyledTable as Table } from "../../../../common/styled";
 
 const { Search } = Input;
 
@@ -7,6 +8,7 @@ export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  margin-bottom: 20px;
 
   .ant-table-wrapper {
     width: 100%;
@@ -30,7 +32,20 @@ export const StyledFilterSelect = styled(Select)`
   }
 `;
 
-export const StyledTable = styled(Table)``;
+export const StyledTable = styled(Table)`
+  .ant-table-row {
+    &: hover {
+      button#onHoverVisible {
+        opacity: 100;
+      }
+    }
+  }
+`;
+
+export const StyledPagination = styled(Pagination)`
+  margin-top: 15px;
+  align-self: flex-end;
+`;
 
 export const StyledAddFilterButton = styled(Button)`
   margin-left: 20px;

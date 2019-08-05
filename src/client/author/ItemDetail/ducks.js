@@ -1,10 +1,11 @@
 import { createSelector } from "reselect";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
+import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
-import { call, put, all, takeEvery, select } from "redux-saga/effects";
-import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { call, put, all, takeEvery, takeLatest, select, take } from "redux-saga/effects";
+import { getFromLocalStorage, storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
@@ -14,10 +15,12 @@ import {
   addItemsQuestionAction,
   deleteQuestionAction,
   SET_QUESTION_SCORE,
-  changeCurrentQuestionAction
+  changeCurrentQuestionAction,
+  UPDATE_QUESTION
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
+import { isIncompleteQuestion } from "../questionUtils";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   getTestEntitySelector,
@@ -27,6 +30,12 @@ import {
 } from "../TestPage/ducks";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
+
+import { setQuestionCategory } from "../src/actions/pickUpQuestion";
+import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
+import { getNewAlignmentState } from "../src/reducers/dictionaries";
+import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
+import { updateRecentStandardsAction } from "../src/actions/dictionaries";
 
 // constants
 const testItemStatusConstants = {
@@ -64,11 +73,19 @@ export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
 export const ITEM_SET_REDIRECT_TEST = "[itemDetail] set redirect test id";
 export const ITEM_CLEAR_REDIRECT_TEST = "[itemDetail] clear redirect test id";
 export const DELETE_ITEM_DETAIL_WIDGET_APPLY = "[itemDetail] delete widget apply";
-export const UPDATE_DEFAULT_GRADES = "[itemDetail] update default grades";
-export const UPDATE_DEFAULT_SUBJECT = "[itemDetail] update default subject";
 
 export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing test id";
+export const SHOW_PUBLISH_WARNING_MODAL = "[itemDetail] show publish warning modal";
+export const PROCEED_PUBLISH_ACTION = "[itemDeatil] goto metadata page";
+export const SAVE_CURRENT_TEST_ITEM = "[itemDetail] save current test item";
+export const CONVERT_TO_MULTIPART = "[itemDetail] convert item to multipart";
 // actions
+
+//
+export const togglePublishWarningModalAction = createAction(SHOW_PUBLISH_WARNING_MODAL);
+export const proceedPublishingItemAction = createAction(PROCEED_PUBLISH_ACTION);
+export const saveCurrentTestItemAction = createAction(SAVE_CURRENT_TEST_ITEM);
+export const convertItemToMultipartAction = createAction(CONVERT_TO_MULTIPART);
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
@@ -150,16 +167,6 @@ export const updateTestItemStatusAction = status => ({
   payload: status
 });
 
-export const updateDefaultSubjectAction = subject => ({
-  type: UPDATE_DEFAULT_SUBJECT,
-  payload: subject
-});
-
-export const updateDefaultGradesAction = grades => ({
-  type: UPDATE_DEFAULT_GRADES,
-  payload: grades
-});
-
 export const clearItemDetailAction = createAction(CLEAR_ITEM_DETAIL);
 
 export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
@@ -178,13 +185,9 @@ export const saveCurrentEditingTestIdAction = id => ({
 
 export const stateSelector = state => state.itemDetail;
 
-export const getDefaultGradesSelector = createSelector(
+export const getIsNewItemSelector = createSelector(
   stateSelector,
-  state => state.defaultGrades
-);
-export const getDefaultSubjectSelector = createSelector(
-  stateSelector,
-  state => state.defaultSubject
+  state => !get(state, "item.version", 0)
 );
 
 export const getItemDetailSelector = createSelector(
@@ -192,10 +195,16 @@ export const getItemDetailSelector = createSelector(
   state => state.item || {}
 );
 
+export const getItemSelector = createSelector(
+  stateSelector,
+  state => state.item
+);
+
 export const isSingleQuestionViewSelector = createSelector(
   getItemDetailSelector,
   (item = {}) => {
     const { resources = [], questions = [] } = item.data || {};
+
     return resources.length === 0 && questions.length === 1;
   }
 );
@@ -322,14 +331,8 @@ const initialState = {
   updateError: null,
   dragging: false,
   redirectTestId: null,
-  defaultGrades:
-    getFromLocalStorage("defaultGrades") !== null
-      ? getFromLocalStorage("defaultGrades")
-        ? getFromLocalStorage("defaultGrades").split(",")
-        : []
-      : getFromLocalStorage("defaultGrades"),
-  defaultSubject: getFromLocalStorage("defaultSubject"),
-  currentEditingTestId: null
+  currentEditingTestId: null,
+  showWarningModal: false
 };
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
@@ -422,7 +425,33 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: { ...state.item, itemLevelScoring: !!payload } };
 
     case SET_ITEM_DETAIL_SCORE:
+      if (!(payload > 0)) {
+        return state;
+      }
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
+
+    case UPDATE_QUESTION:
+      /**
+       * since we are enabling scoring block on single
+       * questions even with itemLevelScoring
+       *  we need to update the itemLevel score on scoring block change.
+       * But only need to do under certain conditions
+       */
+      const itemLevelScoring = get(state, "item.itemLevelScoring");
+      const updatingScore = get(payload, "validation.valid_response.score");
+      const newQuestionTobeAdded = !get(state, "item.data.questions", []).find(x => x.id === payload.id);
+      let canUpdateItemLevelScore = false;
+      const questionsLength = get(state, "item.data.questions.length", 0);
+      if (questionsLength === 0) {
+        canUpdateItemLevelScore = true;
+      } else if (questionsLength === 1 && !newQuestionTobeAdded) {
+        canUpdateItemLevelScore = true;
+      }
+      if (itemLevelScoring && canUpdateItemLevelScore) {
+        return { ...state, item: { ...state.item, itemLevelScore: updatingScore } };
+      } else {
+        return state;
+      }
 
     case ADD_QUESTION:
       if (!payload.validation) return state; // do not set itemLevelScore for resources
@@ -469,16 +498,6 @@ export function reducer(state = initialState, { type, payload }) {
           status: payload
         }
       };
-    case UPDATE_DEFAULT_SUBJECT:
-      return {
-        ...state,
-        defaultSubject: payload
-      };
-    case UPDATE_DEFAULT_GRADES:
-      return {
-        ...state,
-        defaultGrades: payload
-      };
     case SAVE_CURRENT_EDITING_TEST_ID:
       return {
         ...state,
@@ -486,6 +505,19 @@ export function reducer(state = initialState, { type, payload }) {
       };
     case CLEAR_ITEM_DETAIL:
       return initialState;
+    case SHOW_PUBLISH_WARNING_MODAL:
+      return {
+        ...state,
+        showWarningModal: payload
+      };
+    case CONVERT_TO_MULTIPART:
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          multipartItem: true
+        }
+      };
     default:
       return state;
   }
@@ -532,6 +564,12 @@ function* receiveItemSaga({ payload }) {
     yield put({
       type: CLEAR_DICT_ALIGNMENTS
     });
+
+    let alignments = yield select(getAlignmentFromQuestionSelector);
+    if (!alignments.length) {
+      alignments = [getNewAlignmentState()];
+    }
+    yield put(setDictAlignmentFromQuestion(alignments));
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive item by id is failing";
@@ -566,6 +604,12 @@ export function* updateItemSaga({ payload }) {
       resources
     };
 
+    if (questions.length === 1) {
+      const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0]);
+      if (isIncomplete) {
+        return message.error(errMsg);
+      }
+    }
     // return;
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
     // on update, if there is only question.. set it as the questionId, since we are changing the view
@@ -590,7 +634,14 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_SUCCESS,
       payload: { item }
     });
-    yield call(message.success, "Update item by id is success", "Success");
+    const alignments = yield select(getDictionariesAlignmentsSelector);
+    const { standards = [] } = alignments[0];
+    // to update recent standards used in local storage and store
+    let recentStandardsList = yield select(getRecentStandardsListSelector);
+    recentStandardsList = uniqBy([...standards, ...recentStandardsList], i => i._id).slice(0, 10);
+    yield put(updateRecentStandardsAction({ recentStandards: recentStandardsList }));
+    storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
+    yield call(message.success, "Item is saved as draft", 2);
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
@@ -604,19 +655,19 @@ export function* updateItemSaga({ payload }) {
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
+
       if (!payload.testId) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(`/author/tests/${payload.testId}#review`));
+        yield put(push(`/author/tests/${payload.testId}`));
       }
-      yield put(toggleCreateItemModalAction(false));
       yield put(changeViewAction("edit"));
       return;
     }
   } catch (err) {
     console.error(err);
-    const errorMessage = "Update item by id is failing";
+    const errorMessage = "Item save is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: UPDATE_ITEM_DETAIL_ERROR,
@@ -625,19 +676,74 @@ export function* updateItemSaga({ payload }) {
   }
 }
 
+export const hasStandards = question => {
+  const alignments = get(question, "alignment", []);
+  if (!alignments.length) return false;
+  const hasDomain = alignments.some(i => i.domains && i.domains.length);
+  return !!hasDomain;
+};
+
+/**
+ * save the test item, but not strictly update the store, because it will have
+ *  the same data. This is mainly used during publish item, or whlie converting
+ *  to a multipart question type.
+ */
+function* saveTestItemSaga() {
+  const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+  const data = yield select(getItemDetailSelector);
+  const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
+  const questions = widgets.filter(item => !resourceTypes.includes(item.type));
+  const resources = widgets.filter(item => resourceTypes.includes(item.type));
+
+  data.data = {
+    questions,
+    resources
+  };
+  const redirectTestId = yield select(getRedirectTestSelector);
+  const newTestItem = yield call(testItemsApi.updateById, data._id, data, redirectTestId);
+  yield put({
+    type: UPDATE_ITEM_DETAIL_SUCCESS,
+    payload: { item: newTestItem }
+  });
+}
+
 function* publishTestItemSaga({ payload }) {
   try {
+    const questions = Object.values(yield select(state => get(state, ["authorQuestions", "byId"], {})));
+    const standardPresent = questions.some(hasStandards);
+
+    // if alignment data is not present, set the flag to open the modal, and wait for
+    // an action from the modal.!
+    if (!standardPresent) {
+      yield put(togglePublishWarningModalAction(true));
+      // action dispatched by the modal.
+      const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
+      yield put(togglePublishWarningModalAction(false));
+
+      // if they wishes to add some just close the modal and switch to metadata tab!
+      // else continue the normal flow.
+      if (!publishItem) {
+        yield put(changeViewAction("metadata"));
+        return;
+      }
+    }
+
+    yield saveTestItemSaga();
     yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
+
     if (redirectTestId) {
       yield delay(1500);
       yield put(push(`/author/tests/${redirectTestId}`));
       yield put(clearRedirectTestAction());
+    } else {
+      // on publishing redirect to items bank.
+      yield put(push("/author/items"));
     }
-    yield call(message.success, "Successfully published");
+    yield call(message.success, "Item created successfully");
   } catch (e) {
-    console.error("publish error", e, e.stack);
+    console.log("publish error", e);
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
   }
@@ -652,11 +758,29 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex } }) {
   yield put(deleteQuestionAction(targetId));
 }
 
+function* convertToMultipartSaga({ payload }) {
+  try {
+    const { isTestFlow = false, itemId, testId } = payload;
+
+    yield saveTestItemSaga();
+    const nextPageUrl = isTestFlow
+      ? `/author/tests/${testId}/createItem/${itemId}`
+      : `/author/items/${itemId}/item-detail`;
+    yield put(setQuestionCategory("multiple-choice"));
+    yield put(push(nextPageUrl));
+  } catch (e) {
+    console.log("error", e);
+    yield call(message.error, e);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
     yield takeEvery(UPDATE_ITEM_DETAIL_REQUEST, updateItemSaga),
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
-    yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga)
+    yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),
+    yield takeLatest(SAVE_CURRENT_TEST_ITEM, saveTestItemSaga),
+    yield takeLatest(CONVERT_TO_MULTIPART, convertToMultipartSaga)
   ]);
 }

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useEffect, useContext } from "react";
+import PropTypes, { element } from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
 import stripTags from "striptags";
+import { AnswerContext } from "@edulastic/common";
 
 import {
   Paper,
@@ -11,7 +12,8 @@ import {
   FlexContainer,
   InstructorStimulus,
   FroalaEditor,
-  MathFormulaDisplay
+  MathFormulaDisplay,
+  QuestionNumberLabel
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -20,9 +22,10 @@ import { Item } from "../../styled/Item";
 import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
 
 import { ValidList, qlToFroalaMapping } from "./constants/validList";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { Addon } from "../ShortText/styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
+import { getText, reIndexResponses, calculateWordsCount } from "@edulastic/common/src/helpers";
 
 const getToolBarButtons = item =>
   (item.formatting_options || [])
@@ -52,41 +55,30 @@ const EssayRichTextPreview = ({
   previewTab
 }) => {
   const toolbarButtons = getToolBarButtons(item);
-
+  const answerContextConfig = useContext(AnswerContext);
   const [showCharacters, setShowCharacters] = useState(false);
   const [text, setText] = useState("");
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
   const minHeight = get(item, "ui_style.min_height", 200);
   const maxHeight = get(item, "ui_style.max_height", 300);
-
   const characterMap = get(item, "character_map", []);
-
-  const [wordCount, setWordCount] = useState(
-    Array.isArray(userAnswer)
-      ? 0
-      : typeof userAnswer === "string"
-      ? userAnswer.split(" ").filter(i => !!i.trim()).length
-      : 0
-  );
+  const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
     if (Array.isArray(userAnswer) || typeof userAnswer !== "string") {
       setText("");
       saveAnswer("");
       setWordCount(0);
+    } else if (typeof userAnswer === "string" && disableResponse) {
+      setWordCount(calculateWordsCount(userAnswer));
     }
   }, [userAnswer]);
 
   // TODO: if this is slooooooow, debounce or throttle it..
   const handleTextChange = val => {
     if (typeof val === "string") {
-      const wordsCount =
-        typeof val === "string"
-          ? stripTags(val)
-              .split(" ")
-              .filter(i => !!i.trim()).length
-          : 0;
+      const wordsCount = typeof val === "string" ? calculateWordsCount(val) : 0;
       const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
       setWordCount(wordsCount + mathInputCount);
       setText(val);
@@ -122,14 +114,17 @@ const EssayRichTextPreview = ({
 
   const isV1Multipart = get(col, "isV1Multipart", false);
 
-  const isReadOnly = (previewTab === "show" || disableResponse) && !location.pathname.includes("student");
+  /**
+   * if answerContextConfig comes from LCB/EG pages
+   */
+  const isReadOnly = (previewTab === "show" && !answerContextConfig.isAnswerModifiable) || disableResponse;
 
   return item.id ? (
     <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 
@@ -176,7 +171,7 @@ const EssayRichTextPreview = ({
           >
             <MathFormulaDisplay
               dangerouslySetInnerHTML={{
-                __html: !userAnswer ? "<p>Essay Editor Box</p>" : userAnswer
+                __html: userAnswer || ""
               }}
             />
           </FlexContainer>

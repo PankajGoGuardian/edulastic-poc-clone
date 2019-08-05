@@ -9,15 +9,15 @@ import styled, { withTheme } from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, PaddingDiv } from "@edulastic/common";
+import { Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
+import { getSnapItemsByIdSelector } from "../../selectors/snapItems";
 import { EDIT } from "../../constants/constantsForQuestions";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
-import { Widget } from "../../styled/Widget";
 
 import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
@@ -25,17 +25,24 @@ import Display from "./Display";
 import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
 import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
-import Annotations from "../../components/Graph/Annotations/Annotations";
+import Annotations from "../../components/Annotations/Annotations";
+import Question from "../../components/Question";
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div`
+  overflow-x: auto;
+`;
 
 class ClozeImageDragDrop extends Component {
+  static contextType = AnswerContext;
+
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
     showDraghandle: false,
     transparentResponses: false
   };
+
+  static contextType = AnswerContext;
 
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
@@ -123,6 +130,7 @@ class ClozeImageDragDrop extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       view,
       previewTab,
@@ -161,7 +169,12 @@ class ClozeImageDragDrop extends Component {
                   cleanSections={cleanSections}
                   setQuestionData={setQuestionData}
                 />
-                <Widget>
+                <Question
+                  section="main"
+                  label={t("component.correctanswers.setcorrectanswers")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <CorrectAnswers
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
@@ -188,53 +201,62 @@ class ClozeImageDragDrop extends Component {
                     questionId={item.id}
                     imageOptions={item.imageOptions}
                     item={item}
-                  />
-                  <CorrectAnswerOptions>
-                    <Checkbox
-                      data-cy="multi-check"
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
-                      defaultChecked={duplicatedResponses}
-                    >
-                      {t("component.cloze.imageDragDrop.duplicatedresponses")}
-                    </Checkbox>
-                    <Checkbox
-                      data-cy="drag-check"
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
-                      defaultChecked={showDraghandle}
-                    >
-                      {t("component.cloze.imageDragDrop.showdraghandle")}
-                    </Checkbox>
-                    <Checkbox
-                      data-cy="shuffle-check"
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                      defaultChecked={shuffleOptions}
-                    >
-                      {t("component.cloze.imageDragDrop.shuffleoptions")}
-                    </Checkbox>
-                    <Checkbox
-                      data-cy="transparent-check"
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
-                      defaultChecked={transparentResponses}
-                    >
-                      {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-                    </Checkbox>
-                  </CorrectAnswerOptions>
-                  <MaxRespCountWrapper>
-                    <MaxRespCountInput
-                      data-cy="drag-drop-image-max-res"
-                      min={1}
-                      max={10}
-                      defaultValue={item.maxRespCount}
-                      onChange={val => this.handleOptionsChange("maxRespCount", val)}
-                    />
-                    <PaddingDiv>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
-                  </MaxRespCountWrapper>
+                  >
+                    <CorrectAnswerOptions>
+                      <Checkbox
+                        data-cy="multi-check"
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
+                        defaultChecked={duplicatedResponses}
+                      >
+                        {t("component.cloze.imageDragDrop.duplicatedresponses")}
+                      </Checkbox>
+                      <Checkbox
+                        data-cy="drag-check"
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
+                        defaultChecked={showDraghandle}
+                      >
+                        {t("component.cloze.imageDragDrop.showdraghandle")}
+                      </Checkbox>
+                      <Checkbox
+                        data-cy="shuffle-check"
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                        defaultChecked={shuffleOptions}
+                      >
+                        {t("component.cloze.imageDragDrop.shuffleoptions")}
+                      </Checkbox>
+                      <Checkbox
+                        data-cy="transparent-check"
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
+                        defaultChecked={transparentResponses}
+                      >
+                        {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
+                      </Checkbox>
+                    </CorrectAnswerOptions>
+                    <MaxRespCountWrapper>
+                      <MaxRespCountInput
+                        data-cy="drag-drop-image-max-res"
+                        min={1}
+                        max={10}
+                        defaultValue={item.maxRespCount}
+                        onChange={val => this.handleOptionsChange("maxRespCount", val)}
+                      />
+                      <PaddingDiv>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
+                    </MaxRespCountWrapper>
+                  </CorrectAnswers>
+                </Question>
+
+                <Question
+                  section="main"
+                  label={t("component.cloze.imageDragDrop.annotations")}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                >
                   <Annotations editable />
-                </Widget>
+                </Question>
               </div>
               <Options
                 onChange={this.handleOptionsChange}
@@ -252,105 +274,39 @@ class ClozeImageDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {previewTab === "check" && (
-              <Display
-                checkAnswer
-                item={itemForPreview}
-                options={previewDisplayOptions}
-                instructorStimulus={itemForPreview.instructor_stimulus}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
-                userAnswer={userAnswer}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                maxRespCount={item.maxRespCount}
-                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                imageAlterText={item.imageAlterText}
-                imageTitle={item.imageTitle}
-                responseContainers={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                imageHeight={item.imageHeight}
-                evaluation={evaluation}
-                imageOptions={item.imageOptions}
-                showBorder={false}
-                {...restProps}
-              />
-            )}
-            {previewTab === "show" && (
-              <Display
-                showAnswer
-                item={itemForPreview}
-                instructorStimulus={itemForPreview.instructor_stimulus}
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
-                maxRespCount={item.maxRespCount}
-                userAnswer={userAnswer}
-                userSelections={userAnswer}
-                validation={itemForPreview.validation}
-                showDashedBorder={itemForPreview.responseLayout && itemForPreview.responseLayout.showdashedborder}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                imageAlterText={item.imageAlterText}
-                imageTitle={item.imageTitle}
-                responseContainers={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                imageHeight={item.imageHeight}
-                evaluation={evaluation}
-                imageOptions={item.imageOptions}
-                showBorder={false}
-                {...restProps}
-              />
-            )}
-            {previewTab === "clear" && (
-              <Display
-                preview
-                item={itemForPreview}
-                responses={item.responses}
-                instructorStimulus={itemForPreview.instructor_stimulus}
-                validation={itemForPreview.validation}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                options={previewDisplayOptions}
-                imageAlterText={item.imageAlterText}
-                imageTitle={item.imageTitle}
-                responseContainers={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                imageHeight={item.imageHeight}
-                question={previewStimulus}
-                maxRespCount={item.maxRespCount}
-                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                uiStyle={uiStyle}
-                backgroundColor={item.background}
-                smallSize={smallSize}
-                templateMarkUp={itemForPreview.templateMarkUp}
-                userSelections={userAnswer}
-                userAnswer={userAnswer}
-                onChange={this.handleAddAnswer}
-                imageOptions={item.imageOptions}
-                showBorder={false}
-                {...restProps}
-              />
-            )}
+            <Display
+              checkAnswer={
+                previewTab === "check" || (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)
+              }
+              showAnswer={previewTab === "show" && !answerContextConfig.expressGrader}
+              preview={
+                previewTab === "clear" || (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)
+              }
+              item={itemForPreview}
+              options={previewDisplayOptions}
+              instructorStimulus={itemForPreview.instructor_stimulus}
+              question={previewStimulus}
+              uiStyle={uiStyle}
+              userSelections={userAnswer}
+              onChange={this.handleAddAnswer}
+              maxRespCount={item.maxRespCount}
+              showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+              configureOptions={{
+                duplicatedResponses,
+                showDraghandle,
+                shuffleOptions,
+                transparentResponses
+              }}
+              imageAlterText={item.imageAlterText}
+              responseContainers={item.responses}
+              imageUrl={item.imageUrl}
+              evaluation={evaluation}
+              imageOptions={item.imageOptions}
+              backgroundColor={item.background}
+              smallSize={smallSize}
+              previewTab={previewTab}
+              {...restProps}
+            />
           </Wrapper>
         )}
       </div>
@@ -375,7 +331,8 @@ ClozeImageDragDrop.propTypes = {
   cleanSections: PropTypes.func,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool,
-  changePreview: PropTypes.func.isRequired
+  changePreview: PropTypes.func.isRequired,
+  snapItems: PropTypes.array
 };
 
 ClozeImageDragDrop.defaultProps = {
@@ -386,6 +343,7 @@ ClozeImageDragDrop.defaultProps = {
   smallSize: false,
   history: {},
   userAnswer: [],
+  snapItems: [],
   testItem: false,
   advancedAreOpen: false,
   evaluation: [],
@@ -398,7 +356,10 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    (state, { item }) => ({
+      isSidebarCollapsed: state.authorUi.isSidebarCollapsed,
+      snapItems: getSnapItemsByIdSelector(state, item.id)
+    }),
     { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { dashBorderColor, themeColorLight, darkBlue } from "@edulastic/colors";
+import { dashBorderColor, themeColorLight, darkBlue, red } from "@edulastic/colors";
 import { IconTrash as Icon } from "@edulastic/icons";
 
 export const Line = styled.line`
@@ -25,13 +25,14 @@ export const Bar = styled.rect`
   transition: fill 0.25s linear;
 `;
 
-const getRightColor = (hoverState, color) => (hoverState ? darkBlue : color || themeColorLight);
+const getRightColor = (hoverState, color, deleteMode = false) =>
+  hoverState ? (deleteMode ? red : darkBlue) : color || themeColorLight;
 
 export const ActiveBar = styled.rect`
   cursor: pointer;
   z-index: 10;
-  stroke: ${({ hoverState, color }) => getRightColor(hoverState, color)};
-  fill: ${({ hoverState, color }) => getRightColor(hoverState, color)};
+  stroke: ${({ hoverState, color, deleteMode }) => getRightColor(hoverState, color, deleteMode)};
+  fill: ${({ hoverState, color, deleteMode }) => getRightColor(hoverState, color, deleteMode)};
   transition: fill 0.25s linear;
 `;
 
@@ -76,6 +77,10 @@ export const Cross = styled.path`
   stroke-width: 4;
 `;
 
-export const CorrectAnswerWrapper = styled.div`
-  margin-top: 50px;
+export const ValueBg = styled.rect`
+  fill: ${props => props.theme.widgets.chart.bgColor};
+  stroke: ${props => props.theme.widgets.chart.labelStrokeColor};
+  height: 24px;
+  rx: 4px;
+  ry: 4px;
 `;

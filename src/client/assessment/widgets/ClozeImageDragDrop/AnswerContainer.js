@@ -13,6 +13,7 @@ const convertNumToPixel = val => {
 };
 
 const Container = styled.div`
+  width: 100%;
   img {
     height: ${({ height }) => `${convertNumToPixel(height)} !important`};
     width: ${({ width }) => `${convertNumToPixel(width)} !important`};

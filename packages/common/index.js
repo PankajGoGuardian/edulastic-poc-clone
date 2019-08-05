@@ -2,6 +2,7 @@ import * as StyledComponents from "./src/components/StyledComponents";
 
 export { default as Paper } from "./src/components/Paper";
 export { default as Select } from "./src/components/Select";
+export { default as QuestionNumberLabel } from "./src/components/QuestionNumberLabel";
 export { default as Progress } from "./src/components/Progress";
 export { default as Pagination } from "./src/components/Pagination";
 export { default as FlexContainer } from "./src/components/FlexContainer";
@@ -19,6 +20,7 @@ export { default as MathKeyboard } from "./src/components/MathKeyboard";
 export { default as Keyboard } from "./src/components/Keyboard";
 export { default as MathInput } from "./src/components/MathInput";
 export { default as StaticMath } from "./src/components/MathInput/StaticMath";
+export { default as MathDisplay } from "./src/components/MathInput/MathDisplay";
 export { default as MathFormulaDisplay } from "./src/components/MathFormulaDisplay";
 export { default as MathSpan } from "./src/components/MathSpan";
 export { default as Stimulus } from "./src/components/Stimulus";
@@ -38,6 +40,7 @@ export { default as TypeToConfirmModal } from "./src/components/TypeToConfirmMod
 export { default as PremiumTag } from "./src/components/PremiumTag/PremiumTag";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
+export { default as withWindowScroll } from "./src/HOC/withWindowScroll";
 export { WithResources, useResources } from "./src/HOC/withResources";
 export { withMathFormula as WithMathFormula } from "./src/HOC/withMathFormula";
 export { scrollTo, offset } from "./src/utils/DomUtils";
@@ -45,6 +48,6 @@ export { default as helpers, beforeUpload, uploadToS3 } from "./src/helpers";
 
 // contexts
 export { default as AnswerContext } from "./src/contexts/AnswerContext";
-
+export { default as ScratchPadContext } from "./src/contexts/ScratchPadContext";
 // realtime hook
 export { default as useRealtimeV2 } from "./src/useRealtimeV2";

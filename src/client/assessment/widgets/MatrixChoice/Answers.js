@@ -1,6 +1,5 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { Checkbox } from "antd";
 
@@ -19,33 +18,12 @@ class Answers extends Component {
     correctTab: 0
   };
 
-  componentDidMount = () => {
-    const { fillSections, t, item } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
-
-    fillSections(
-      "main",
-      t("component.correctanswers.setcorrectanswers"),
-      node.offsetTop,
-      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
-      deskHeight === true,
-      deskHeight
-    );
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   setCorrectTab = tabNumber => {
     this.setState({ correctTab: tabNumber });
   };
 
   render() {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
     const { correctTab } = this.state;
 
     const handleAddAnswer = () => {
@@ -172,6 +150,8 @@ class Answers extends Component {
         validation={item.validation}
         options={renderOptions()}
         onCloseTab={handleCloseTab}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
       >
         <Fragment>
           {correctTab === 0 && (

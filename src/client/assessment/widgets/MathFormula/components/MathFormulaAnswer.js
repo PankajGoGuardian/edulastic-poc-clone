@@ -11,7 +11,17 @@ class MathFormulaAnswer extends Component {
   };
 
   render() {
-    const { answer, onChange, onAdd, onDelete, item, onChangeKeypad } = this.props;
+    const {
+      answer,
+      onChange,
+      onAdd,
+      onDelete,
+      item,
+      onChangeKeypad,
+      onChangeAllowedOptions,
+      keypadOffset,
+      onChangeShowDropdown
+    } = this.props;
 
     const { showAdditionals } = this.state;
 
@@ -57,7 +67,11 @@ class MathFormulaAnswer extends Component {
             handleChangeAdditionals={handleChangeAdditionals}
             clearAdditionals={clearAdditionals}
             onChangeKeypad={onChangeKeypad}
+            onChangeAllowedOptions={onChangeAllowedOptions}
+            allowedVariables={item.allowedVariables || ""}
+            onChangeShowDropdown={onChangeShowDropdown}
             onAdd={onAdd}
+            keypadOffset={keypadOffset}
             {...method}
           />
         ))}
@@ -70,7 +84,10 @@ MathFormulaAnswer.propTypes = {
   answer: PropTypes.array.isRequired,
   onAdd: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
+  onChangeAllowedOptions: PropTypes.func.isRequired,
+  onChangeShowDropdown: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
+  keypadOffset: PropTypes.number.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired

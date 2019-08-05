@@ -15,6 +15,10 @@ import { getUserRole } from "../../../src/selectors/user";
 import * as moment from "moment";
 import TestTypeSelector from "./TestTypeSelector";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { isFeatureAccessible } from "../../../../features/components/FeaturesSwitch";
+import { getUserFeatures } from "../../../../student/Login/ducks";
+export const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
+export const nonPremiumReleaseGradeKeys = ["DONT_RELEASE", "WITH_ANSWERS"];
 
 class SimpleOptions extends React.Component {
   static propTypes = {
@@ -31,8 +35,32 @@ class SimpleOptions extends React.Component {
     this.state = {
       showSettings: false,
       classIds: [],
-      studentList: []
+      studentList: [],
+      _releaseGradeKeys: nonPremiumReleaseGradeKeys
     };
+  }
+
+  static getDerivedStateFromProps(nextProps, nextState) {
+    const { features, testSettings } = nextProps;
+    const { grades, subjects } = testSettings || {};
+    if (
+      features["assessmentSuperPowersReleaseScorePremium"] ||
+      (grades &&
+        subjects &&
+        isFeatureAccessible({
+          features: features,
+          inputFeatures: "assessmentSuperPowersReleaseScorePremium",
+          gradeSubject: { grades, subjects }
+        }))
+    ) {
+      return {
+        _releaseGradeKeys: releaseGradeKeys
+      };
+    } else {
+      return {
+        _releaseGradeKeys: nonPremiumReleaseGradeKeys
+      };
+    }
   }
 
   toggleSettings = () => {
@@ -41,7 +69,11 @@ class SimpleOptions extends React.Component {
   };
 
   onChange = (field, value) => {
-    const { onClassFieldChange, group, assignment, updateOptions } = this.props;
+    const { onClassFieldChange, group, assignment, updateOptions, toggleSpecificStudents } = this.props;
+    if (field === "specificStudents") {
+      toggleSpecificStudents(value);
+      return;
+    }
     if (field === "class") {
       this.setState({ classIds: value }, () => {
         const { classData, termId } = onClassFieldChange(value, group);
@@ -83,16 +115,17 @@ class SimpleOptions extends React.Component {
     const selectedStudentsById = studentList.map(_id => studentById[_id]);
     const studentsByGroupId = groupBy(selectedStudentsById, "groupId");
     const classData = assignment.class.map(item => {
-      const { _id } = item;
+      const { _id, specificStudents } = item;
       if (!studentsByGroupId[_id]) return item;
       return {
         _id,
         name: get(groupById, `${_id}.name`, ""),
         assignedCount: studentsByGroupId[_id].length,
         students: studentsByGroupId[_id].map(item => item._id),
-        grade: get(groupById, `${_id}.grade`, ""),
+        grade: get(groupById, `${_id}.grades`, ""),
         subject: get(groupById, `${_id}.subject`, ""),
-        termId: get(groupById, `${_id}.termId`, "")
+        termId: get(groupById, `${_id}.termId`, ""),
+        specificStudents: specificStudents
       };
     });
     this.setState({ studentList }, () => {
@@ -104,8 +137,17 @@ class SimpleOptions extends React.Component {
   };
 
   render() {
-    const { showSettings, classIds, studentList } = this.state;
-    const { group, fetchStudents, students, testSettings = {}, assignment, updateOptions, userRole } = this.props;
+    const { showSettings, classIds, studentList, _releaseGradeKeys } = this.state;
+    const {
+      group,
+      fetchStudents,
+      students,
+      testSettings = {},
+      assignment,
+      updateOptions,
+      userRole,
+      specificStudents
+    } = this.props;
     const changeField = curry(this.onChange);
     let openPolicy = selectsData.openPolicy;
     let closePolicy = selectsData.closePolicy;
@@ -129,7 +171,7 @@ class SimpleOptions extends React.Component {
             students={studentOfSelectedClass}
             updateStudents={this.updateStudents}
             onChange={this.onChange}
-            specificStudents={assignment.specificStudents}
+            specificStudents={specificStudents}
           />
 
           <DateSelector startDate={assignment.startDate} endDate={assignment.endDate} changeField={changeField} />
@@ -171,27 +213,26 @@ class SimpleOptions extends React.Component {
               </StyledSelect>
             </Col>
           </Row>
-
-          <TestTypeSelector
-            userRole={userRole}
-            testType={testSettings.testType}
-            onAssignmentTypeChange={changeField("testType")}
-          />
           <FeaturesSwitch
-            inputFeatures="addCoTeacher"
+            inputFeatures="selectTestType"
             actionOnInaccessible="hidden"
-            key="addCoTeacher"
+            key="selectTestType"
             gradeSubject={gradeSubject}
           >
-            <StyledRowButton gutter={16}>
-              <Col>
-                <SettingsBtn onClick={this.toggleSettings}>
-                  OVERRIDE TEST SETTINGS
-                  {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
-                </SettingsBtn>
-              </Col>
-            </StyledRowButton>
+            <TestTypeSelector
+              userRole={userRole}
+              testType={testSettings.testType}
+              onAssignmentTypeChange={changeField("testType")}
+            />
           </FeaturesSwitch>
+          <StyledRowButton gutter={16}>
+            <Col>
+              <SettingsBtn onClick={this.toggleSettings}>
+                OVERRIDE TEST SETTINGS
+                {showSettings ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
+              </SettingsBtn>
+            </Col>
+          </StyledRowButton>
 
           {showSettings && (
             <Settings
@@ -199,6 +240,8 @@ class SimpleOptions extends React.Component {
               updateAssignmentSettings={updateOptions}
               changeField={changeField}
               testSettings={testSettings}
+              gradeSubject={gradeSubject}
+              _releaseGradeKeys={_releaseGradeKeys}
             />
           )}
         </InitOptions>
@@ -208,5 +251,6 @@ class SimpleOptions extends React.Component {
 }
 
 export default connect(state => ({
-  userRole: getUserRole(state)
+  userRole: getUserRole(state),
+  features: getUserFeatures(state)
 }))(SimpleOptions);

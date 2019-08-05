@@ -24,7 +24,7 @@ import ClassQuestions from "../ClassResponses/components/Container/ClassQuestion
 import { receiveAnswersAction } from "../src/actions/classBoard";
 // selectors
 import { getAssignmentClassIdSelector, getClassQuestionSelector, getQLabelsSelector } from "../ClassBoard/ducks";
-import { scrollTo } from "@edulastic/common";
+import { scrollTo, AnswerContext } from "@edulastic/common";
 
 /**
  * @param {string} studentId
@@ -241,7 +241,8 @@ class QuestionViewContainer extends Component {
                     value: "AVG TIME (SECONDS)",
                     angle: -90,
                     fill: greyGraphstroke,
-                    dx: 10
+                    dx: 10,
+                    fontSize: "10px"
                   }}
                   orientation="right"
                   stroke={greyGraphstroke}
@@ -311,15 +312,17 @@ class QuestionViewContainer extends Component {
               return null;
             }
             return (
-              <ClassQuestions
-                key={index}
-                qIndex={qIndex}
-                currentStudent={student}
-                classResponse={{ testItems: filterdItems, ...others }}
-                questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
-                isPresentationMode={isPresentationMode}
-                labels={this.props.labels}
-              />
+              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                <ClassQuestions
+                  key={index}
+                  qIndex={qIndex}
+                  currentStudent={student}
+                  classResponse={{ testItems: filterdItems, ...others }}
+                  questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
+                  isPresentationMode={isPresentationMode}
+                  labels={this.props.labels}
+                />
+              </AnswerContext.Provider>
             );
           })}
       </React.Fragment>

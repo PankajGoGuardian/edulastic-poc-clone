@@ -16,7 +16,7 @@ export const StyledTable = styled(Table)`
 
     thead {
       tr:not(:last-child) > th[colspan] {
-        display: none;
+        display: ${({ hasOptionRow }) => (!hasOptionRow ? "none" : null)};
       }
     }
 

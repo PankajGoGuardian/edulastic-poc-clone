@@ -56,8 +56,9 @@ import MTText from "../../../src/assets/math/math-text.svg";
 import MTMatrices from "../../../src/assets/math/math-matrices.svg";
 import MTUnits from "../../../src/assets/math/math-units.svg";
 import MTEssay from "../../../src/assets/math/math-essay.svg";
-import MTClozeMath from "../../../src/assets/math/cloze-math.svg";
-// import MTClozeMathWithImage from '../../assets/math/cloze-math-img.svg';
+// import MTClozeMath from "../../../src/assets/math/cloze-math.svg";
+import MTCombinationClozeText from "../../../src/assets/math/math-multipart-cloze.svg";
+import MTCombinationMulti from "../../../src/assets/math/math-multipart-combination.svg";
 
 // Graphing
 import GRGraphing from "../../../src/assets/graphing/graphing.svg";
@@ -83,7 +84,7 @@ export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
 
   // use it for ids of MCQ
-  const uuids = [uuid(), uuid(), uuid()];
+  const uuids = [uuid(), uuid(), uuid(), uuid()];
 
   const uuidsForFill = [uuid(), uuid(), uuid()];
 
@@ -552,7 +553,11 @@ export const getCards = onSelectQuestionType => {
         line_color: [themeColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
-        validation: {},
+        validation: {
+          valid_response: {
+            score: 1
+          }
+        },
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
@@ -734,7 +739,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
@@ -758,7 +763,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "" }, { value: uuids[1], label: "" }, { value: uuids[2], label: "" }],
         validation: {
@@ -782,7 +787,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.MULTIPLE_CHOICE,
         stimulus: "",
         ui_style: {
-          type: "horizontal"
+          type: "standard"
         },
         options: [{ value: uuids[0], label: "True" }, { value: uuids[1], label: "False" }],
         validation: {
@@ -852,20 +857,32 @@ export const getCards = onSelectQuestionType => {
         title: "Classification",
         firstMount: true,
         group_possible_responses: false,
-        possible_response_groups: [
+        possible_response_groups: [],
+        possible_responses: [
           {
-            title: "",
-            responses: ["Choice B", "Choice C", "Choice A", "Choice D"]
+            id: uuids[0],
+            value: "Choice B"
+          },
+          {
+            id: uuids[1],
+            value: "Choice C"
+          },
+          {
+            id: uuids[2],
+            value: "Choice A"
+          },
+          {
+            id: uuids[3],
+            value: "Choice D"
           }
         ],
-        possible_responses: ["Choice B", "Choice C", "Choice A", "Choice D"],
         stimulus: "Your question is here",
         type: questionType.CLASSIFICATION,
         ui_style: {
           column_count: 2,
           column_titles: ["COLUMN 1", "COLUMN 2"],
           row_count: 1,
-          row_titles: []
+          row_titles: ["ROW 1"]
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1125,7 +1142,6 @@ export const getCards = onSelectQuestionType => {
         stimulus: "Sample image background with an overlaid drop area(s)",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
-        keepAspectRatio: true,
         maxRespCount: 1,
         options: [defaultOptions[0], defaultOptions[1], defaultOptions[2]],
         validation: {
@@ -1135,6 +1151,16 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
+        },
+        responseLayout: {
+          keepAspectRatio: true,
+          showborder: true,
+          isSnapFitValues: true
+        },
+        ui_style: {
+          widthpx: 140,
+          responsecontainerindividuals: [],
+          responsecontainerposition: "bottom"
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
@@ -1169,6 +1195,9 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
+        responseLayout: {
+          showborder: true
+        },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
           { top: 100, left: 120, width: 220, height: 40, id: uuids[1] }
@@ -1199,7 +1228,8 @@ export const getCards = onSelectQuestionType => {
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
         ui_style: {
-          width: 140
+          width: 140,
+          responsecontainerindividuals: []
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1208,6 +1238,9 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
+        },
+        responseLayout: {
+          showborder: true
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
@@ -1260,12 +1293,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1345,12 +1373,7 @@ export const getCards = onSelectQuestionType => {
           alt_responses: [],
           ignore_labels: "yes"
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         ui_style: {
           drawLabelZero: false,
           displayPositionOnHover: false,
@@ -1421,12 +1444,7 @@ export const getCards = onSelectQuestionType => {
           tools: [],
           default_tool: null
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         numberlineAxis: {
           leftArrow: true,
           rightArrow: true,
@@ -1547,12 +1565,7 @@ export const getCards = onSelectQuestionType => {
           controls: [],
           default_control: ""
         },
-        extra_options: {
-          rubric_reference: "",
-          sample_answer: "",
-          stimulus_review: "",
-          instructor_stimulus: ""
-        },
+        sampleAnswer: "",
         validation: {
           graphType: "axisLabels",
           scoring_type: EXACT_MATCH,
@@ -1642,10 +1655,10 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      type: "video-passages",
+      type: "edit",
       cardImage: VPPassage,
       data: {
-        title: "Passage",
+        title: "Passage with Multiple parts",
         type: questionType.PASSAGE,
         heading: "Section 3",
         math_renderer: "",
@@ -1703,6 +1716,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1740,6 +1754,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1775,6 +1790,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1815,6 +1831,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1850,6 +1867,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
@@ -1866,8 +1884,10 @@ export const getCards = onSelectQuestionType => {
         title: "Units",
         is_math: true,
         stimulus: "",
-        template: `${EMBED_RESPONSE} = 1m`,
-        templateDisplay: true,
+        template: EMBED_RESPONSE,
+        isUnits: true,
+        templateDisplay: false,
+        showDropdown: false,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
@@ -1884,42 +1904,23 @@ export const getCards = onSelectQuestionType => {
             ]
           }
         },
-        text_blocks: [
-          "g",
-          "kg",
-          "mg",
-          "m",
-          "km",
-          "cm",
-          "mm",
-          "L",
-          "mL",
-          "s",
-          "ms",
-          "oz",
-          "lb",
-          "in",
-          "ft",
-          "mi",
-          "fl oz",
-          "pt",
-          "gal"
-        ],
+        custom_keys: ["m", "km", "cm", "mm"],
         ui_style: {
+          widthpx: 140,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["units_si", "units_us", "qwerty"],
+        symbols: ["units_us", "units_si", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
     {
-      type: "math",
-      cardImage: MTClozeMath,
+      type: "multipart",
+      cardImage: MTCombinationClozeText,
       stimulus: "",
       data: {
-        title: "Expression Multipart",
+        title: "Math, Text & Dropdown",
         stimulus:
           '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
         templateDisplay: true,
@@ -1937,7 +1938,6 @@ export const getCards = onSelectQuestionType => {
           min_width: 100
         },
         options: {},
-        inputs: {},
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1953,15 +1953,13 @@ export const getCards = onSelectQuestionType => {
                   }
                 }
               ]
-            ]
-          },
-          valid_dropdown: {
-            score: 1,
-            value: []
-          },
-          valid_inputs: {
-            score: 1,
-            value: []
+            ],
+            dropdown: {
+              value: []
+            },
+            textinput: {
+              value: []
+            }
           }
         },
         is_math: true,
@@ -1969,6 +1967,15 @@ export const getCards = onSelectQuestionType => {
         symbols: ["basic", "qwerty"],
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         hints: [{ value: uuids[0], label: "Hint A" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "multipart",
+      cardImage: MTCombinationMulti,
+      data: {
+        title: "Combination Multipart",
+        type: questionType.COMBINATION_MULTIPART
       },
       onSelectQuestionType
     },
@@ -1981,6 +1988,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         type: questionType.FORMULA_ESSAY,
         ui_style: {
+          widthpx: 140,
           default_mode: "math",
           fontsize: "",
           text_formatting_options: ["bold", "italic", "underline", "unorderedList"]

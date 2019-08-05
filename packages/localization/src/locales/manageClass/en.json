@@ -2,6 +2,8 @@
   "common": {
     "noClassesTitle": "No archived classes",
     "noClassesSubTitle": "You have no archived classes available",
+    "noActiveClassesTitle": "No active classes",
+    "noActiveClassesSubTitle": "You have no active classes available",
     "active": "ACTIVE",
     "archive": "ARCHIVE",
     "visitClass": "VISIT CLASS",

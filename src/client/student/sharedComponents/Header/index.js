@@ -8,12 +8,14 @@ import HeaderWrapper from "./headerWrapper";
 import ClassSelect from "../ClassSelector";
 import ShowActiveClass from "../ShowActiveClasses";
 
-const Header = ({ t, titleText, classSelect = true, showActiveClass = false }) => (
+const Header = ({ t, titleText, classList, classSelect, showActiveClass, setClassList, setShowClass }) => (
   <HeaderWrapper>
     <Wrapper>
       <AssignmentTitle>{t(titleText)}</AssignmentTitle>
-      {classSelect && <ClassSelect t={t} />}
-      {showActiveClass && <ShowActiveClass t={t} />}
+      {classSelect && <ClassSelect t={t} classList={classList} />}
+      {showActiveClass && (
+        <ShowActiveClass t={t} classList={classList} setClassList={setClassList} setShowClass={setShowClass} />
+      )}
     </Wrapper>
   </HeaderWrapper>
 );
@@ -38,10 +40,6 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 17px;
-  @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-  }
 `;
 
 export const AssignmentTitle = styled.div`

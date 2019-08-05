@@ -4,6 +4,7 @@ import { fadedBlack } from "@edulastic/colors";
 export const CustomChartCursor = props => {
   const { right, height, width, payload, points, lineYDomain, direction } = props;
   const lineYPlotPoint = points[0].y + (height * (lineYDomain[1] - payload[2].value)) / lineYDomain[1];
+
   return (
     <>
       <line

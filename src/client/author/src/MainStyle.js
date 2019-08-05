@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tabletWidth, secondaryTextColor } from "@edulastic/colors";
+import { tabletWidth, secondaryTextColor, title, themeColor } from "@edulastic/colors";
 
 export const MainContainer = styled.div`
   padding-left: ${props => {
@@ -23,6 +23,7 @@ export const MainContainer = styled.div`
       background: #00ad50;
     }
   }
+
   .ant-btn {
     border-color: ${props => props.theme.themeColor};
     &:hover,
@@ -41,6 +42,7 @@ export const MainContainer = styled.div`
       border-color: ${props => props.theme.themeColor};
     }
   }
+
   .ant-select-open,
   .ant-select-focused {
     .ant-select-selection {
@@ -104,9 +106,16 @@ export const MainContainer = styled.div`
       border: none;
     }
     .ant-pagination {
-      &-prev .ant-pagination-item-link,
-      &-next .ant-pagination-item-link {
-        border: none;
+      &-prev,
+      &-next {
+        .ant-pagination-item-link {
+          border: none;
+        }
+        &:hover {
+          .ant-pagination-item-link {
+            color: ${themeColor};
+          }
+        }
       }
       &-item {
         box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
@@ -114,7 +123,7 @@ export const MainContainer = styled.div`
         line-height: 35px;
         background: white;
         a {
-          color: ${props => props.theme.themeColor};
+          color: ${title};
         }
         &:hover,
         &:focus {
@@ -153,9 +162,45 @@ export const MainContainer = styled.div`
       }
     }
   }
+
   .ant-table-thead > tr > th.ant-table-selection-column,
   .ant-table-tbody > tr > td.ant-table-selection-column {
     width: 50px;
     max-width: 50px;
+  }
+
+  .ant-select-disabled .ant-select-selection--multiple .ant-select-selection__choice {
+    background: ${themeColor}20;
+  }
+
+  .ant-select-selection {
+    &__rendered {
+      // margin-left: 0;
+    }
+    &__choice {
+      height: 24px !important;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      background: ${themeColor}20;
+      color: ${themeColor};
+      font-weight: 600;
+      margin: 6px 5px 0px 3px !important;
+      &__content {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.2px;
+        color: ${themeColor};
+        font-weight: bold;
+        height: 24px;
+        display: flex;
+        align-items: center;
+      }
+      .ant-select-remove-icon svg {
+        fill: ${themeColor};
+        width: 12px;
+        height: 12px;
+      }
+    }
   }
 `;

@@ -9,7 +9,8 @@ import {
   fetchGroupsAction,
   fetchArchiveGroupsAction,
   getGroupsSelector,
-  getArchiveGroupsSelector
+  getArchiveGroupsSelector,
+  groupsLoadingSelector
 } from "../../sharedDucks/groups";
 import {
   setModalAction,
@@ -32,6 +33,7 @@ const ManageClass = ({
   districtId,
   fetchArchiveGroups,
   groups,
+  isLoading,
   state,
   syncClassLoading,
   allowGoogleLogin,
@@ -42,7 +44,8 @@ const ManageClass = ({
 }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const closeModal = () => setIsModalVisible(false);
-
+  const [showBanner, setShowBanner] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   useEffect(() => {
     if (!fetchClassListLoading) setIsModalVisible(true);
     else {
@@ -51,8 +54,10 @@ const ManageClass = ({
   }, [fetchClassListLoading]);
 
   useEffect(() => {
-    if (!syncClassLoading && isModalVisible) {
-      setIsModalVisible(false);
+    if (!syncClassLoading && showBanner === true) {
+      setTimeout(() => {
+        setShowBanner(false);
+      }, 5000);
     }
   }, [syncClassLoading]);
   useEffect(() => {
@@ -61,18 +66,24 @@ const ManageClass = ({
     getDictCurriculums();
     receiveSearchCourse({ districtId });
     setIsModalVisible(false);
+    setShowBanner(false);
   }, []);
 
   return (
     <ClassListContainer
       {...restProps}
       state={state}
+      setShowBanner={setShowBanner}
       syncClassLoading={syncClassLoading}
       isModalVisible={isModalVisible}
       closeModal={closeModal}
       allowGoogleLogin={allowGoogleLogin}
       groups={groups}
+      showBanner={showBanner}
+      showDetails={showDetails}
+      setShowDetails={setShowDetails}
       archiveGroups={archiveGroups}
+      groupsLoading={isLoading}
     />
   );
 };
@@ -93,12 +104,14 @@ const enhance = compose(
     state => ({
       groups: getGroupsSelector(state),
       archiveGroups: getArchiveGroupsSelector(state),
+      isLoading: groupsLoadingSelector(state),
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       state: state,
       courseList: get(state, "coursesReducer.searchResult"),
       districtId: get(state, "user.user.orgData.districtId"),
       allowGoogleLogin: get(state, "user.user.orgData.allowGoogleClassroom"),
       isGoogleLoggedIn: get(state, "user.user.isUserGoogleLoggedIn"),
+      syncClassResponse: get(state, "manageClass.syncClassResponse", {}),
       syncClassLoading: get(state, "manageClass.syncClassLoading", false),
       googleCourseList: getGoogleCourseListSelector(state)
     }),

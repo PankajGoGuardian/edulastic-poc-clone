@@ -5,7 +5,8 @@ import PropTypes from "prop-types";
 import { Select } from "antd";
 import { cloneDeep } from "lodash";
 
-import { TabContainer } from "@edulastic/common";
+import { Checkbox, TabContainer } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
 import CorrectAnswers from "../CorrectAnswers";
 import withPoints from "../HOC/withPoints";
@@ -113,16 +114,18 @@ class GraphAnswers extends Component {
 
   renderOptions = () => {
     const {
+      t,
       getIgnoreLabelsOptions,
       graphData,
       handleSelectIgnoreLabels,
       getIgnoreRepeatedShapesOptions,
-      handleSelectIgnoreRepeatedShapes
+      handleSelectIgnoreRepeatedShapes,
+      handleNumberlineChange
     } = this.props;
 
     if (graphData.graphType === "quadrants" || graphData.graphType === "firstQuadrant") {
       return (
-        <React.Fragment>
+        <Fragment>
           <Select
             data-cy="ignoreRepeatedShapes"
             style={{
@@ -159,7 +162,24 @@ class GraphAnswers extends Component {
             ))}
           </Select>{" "}
           Ignore labels
-        </React.Fragment>
+        </Fragment>
+      );
+    }
+
+    if (graphData.graphType === "axisLabels") {
+      const { numberlineAxis } = graphData;
+      return (
+        <Checkbox
+          label={t("component.graphing.shuffleAnswerChoices")}
+          name="shuffleAnswerChoices"
+          onChange={() =>
+            handleNumberlineChange({
+              ...numberlineAxis,
+              shuffleAnswerChoices: !numberlineAxis.shuffleAnswerChoices
+            })
+          }
+          checked={numberlineAxis.shuffleAnswerChoices}
+        />
       );
     }
   };
@@ -225,6 +245,7 @@ class GraphAnswers extends Component {
 }
 
 GraphAnswers.propTypes = {
+  t: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   onAddAltResponses: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
@@ -235,10 +256,12 @@ GraphAnswers.propTypes = {
   getIgnoreLabelsOptions: PropTypes.func.isRequired,
   handleSelectIgnoreLabels: PropTypes.func.isRequired,
   getIgnoreRepeatedShapesOptions: PropTypes.func.isRequired,
-  handleSelectIgnoreRepeatedShapes: PropTypes.func.isRequired
+  handleSelectIgnoreRepeatedShapes: PropTypes.func.isRequired,
+  handleNumberlineChange: PropTypes.func.isRequired
 };
 
 const enhance = compose(
+  withNamespaces("assessment"),
   connect(
     state => ({
       question: getQuestionDataSelector(state)

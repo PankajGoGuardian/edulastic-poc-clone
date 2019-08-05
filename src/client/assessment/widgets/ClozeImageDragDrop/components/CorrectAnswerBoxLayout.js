@@ -1,29 +1,42 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
 import { MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { green } from "@edulastic/colors";
 
-const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
+const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme, title }) => {
   const results = userAnswers;
   return (
     <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
       <b style={{ fontSize }}>
-        <span
-          style={{
-            color: theme.widgets.clozeImageDragDrop.correctAnswerBoxTitleColor
-          }}
-        >
-          {t("component.cloze.imageDragDrop.draganddrop")}&nbsp;&nbsp;
-        </span>
-        <span
-          style={{
-            color: theme.widgets.clozeImageDragDrop.correctAnswerBoxSubtitleColor
-          }}
-        >
-          {t("component.cloze.imageDragDrop.theanswer")}
-        </span>
+        {title ? (
+          <span
+            style={{
+              color: theme.widgets.clozeImageDragDrop.correctAnswerBoxSubtitleColor
+            }}
+          >
+            {title}
+          </span>
+        ) : (
+          <Fragment>
+            <span
+              style={{
+                color: theme.widgets.clozeImageDragDrop.correctAnswerBoxTitleColor
+              }}
+            >
+              {t("component.cloze.imageDragDrop.draganddrop")}&nbsp;&nbsp;
+            </span>
+            <span
+              style={{
+                color: theme.widgets.clozeImageDragDrop.correctAnswerBoxSubtitleColor
+              }}
+            >
+              {t("component.cloze.imageDragDrop.theanswer")}
+            </span>
+          </Fragment>
+        )}
       </b>
       <div style={{ marginTop: 10 }}>
         {results.map((result, index) => (
@@ -45,7 +58,8 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
                   alignItems: "center",
                   justifyContent: "center",
                   alignSelf: "stretch",
-                  height: "auto"
+                  height: "auto",
+                  backgroundColor: green
                 }}
               >
                 {index + 1}
@@ -61,7 +75,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
                   minWidth: "35px"
                 }}
               >
-                <MathSpan dangerouslySetInnerHTML={{ __html: result && result.join(", ") }} />
+                <MathSpan dangerouslySetInnerHTML={{ __html: result && result.value.join(", ") }} />
               </span>
             </div>
           </div>
@@ -75,12 +89,14 @@ CorrectAnswerBoxLayout.propTypes = {
   fontSize: PropTypes.string,
   userAnswers: PropTypes.array,
   t: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  title: PropTypes.string
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
   fontSize: "13px",
-  userAnswers: []
+  userAnswers: [],
+  title: ""
 };
 
 export default withTheme(React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout)));

@@ -1,6 +1,6 @@
-import { groupBy, keyBy, isEmpty, get, values } from "lodash";
+import { groupBy, keyBy, isEmpty, get, values, round } from "lodash";
 import group from "@edulastic/api/src/group";
-import { getHSLFromRange1 } from "../../../../common/util";
+import { getHSLFromRange1, getProficiencyBand } from "../../../../common/util";
 import { white } from "@edulastic/colors";
 
 export const idToLabel = {
@@ -254,7 +254,11 @@ export const getChartData = (denormalizedData, masteryScale, filters, role) => {
     let tempMasteryCountHelper = { ...masteryCountHelper };
 
     for (let _item of groupedStandardIds[item]) {
-      tempMasteryCountHelper[Math.round(_item.fm)]++;
+      if (tempMasteryCountHelper[Math.round(_item.fm)]) {
+        tempMasteryCountHelper[Math.round(_item.fm)]++;
+      } else {
+        tempMasteryCountHelper[Math.round(_item.fm)] = 1;
+      }
     }
 
     obj.totalStudents = totalStudents;
@@ -263,17 +267,20 @@ export const getChartData = (denormalizedData, masteryScale, filters, role) => {
     obj.standardName = groupedStandardIds[item][0].standardName;
 
     let masteryLabelInfo = {};
+
     Object.keys(tempMasteryCountHelper).map((item, index) => {
-      let masteryPercentage = (tempMasteryCountHelper[item] / totalStudents) * 100;
-      // V1 Color code
-      // obj["fill_" + index] = masteryMap[item].color;
-      // V2 Color code
-      obj["fill_" + index] = getHSLFromRange1(((item - 1) / masteryScale.length) * 100);
-      masteryLabelInfo[masteryMap[item].masteryLabel] = masteryMap[item].masteryName;
-      if (item == 1) {
-        obj[masteryMap[item].masteryLabel] = -masteryPercentage;
-      } else {
-        obj[masteryMap[item].masteryLabel] = masteryPercentage;
+      if (masteryMap[item]) {
+        let masteryPercentage = round((tempMasteryCountHelper[item] / totalStudents) * 100);
+        // V1 Color code
+        // obj["fill_" + index] = masteryMap[item].color;
+        // V2 Color code
+        obj["fill_" + index] = getHSLFromRange1(((item - 1) / masteryScale.length) * 100);
+        masteryLabelInfo[masteryMap[item].masteryLabel] = masteryMap[item].masteryName;
+        if (item == 1) {
+          obj[masteryMap[item].masteryLabel] = -masteryPercentage;
+        } else {
+          obj[masteryMap[item].masteryLabel] = masteryPercentage;
+        }
       }
     });
     obj.masteryLabelInfo = masteryLabelInfo;
@@ -310,9 +317,10 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
     let fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0;
     let masteryLevel = "N/A";
     let masteryName = "N/A";
+
     if (fm) {
-      masteryLevel = masteryMap[Math.round(fm)].masteryLabel;
-      masteryName = masteryMap[Math.round(fm)].masteryName;
+      masteryLevel = getProficiencyBand(Math.round(fm), masteryScale, "score").masteryLabel;
+      masteryName = getProficiencyBand(Math.round(fm), masteryScale, "score").masteryName;
     }
 
     let groupedStandardIds = groupBy(groupedData[item], "standardId");
@@ -340,9 +348,10 @@ const getAnalysedData = (groupedData, compareBy, masteryScale) => {
       let fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0;
       let masteryLevel = "N/A";
       let masteryName = "N/A";
+
       if (fm) {
-        masteryLevel = masteryMap[Math.round(fm)].masteryLabel;
-        masteryName = masteryMap[Math.round(fm)].masteryName;
+        masteryLevel = getProficiencyBand(Math.round(fm), masteryScale, "score").masteryLabel;
+        masteryName = getProficiencyBand(Math.round(fm), masteryScale, "score").masteryName;
       }
 
       ___item = {

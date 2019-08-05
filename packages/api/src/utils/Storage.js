@@ -38,3 +38,9 @@ export function getFromLocalStorage(key) {
     return window.localStorage.getItem(key);
   }
 }
+
+export function removeFromLocalStorage(key) {
+  if (window && window.localStorage) {
+    return window.localStorage.removeItem(key);
+  }
+}

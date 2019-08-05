@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { Select, Row, Col, Input } from "antd";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { differenceBy, findIndex } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
+import { response } from "@edulastic/constants";
 import styled from "styled-components";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
@@ -20,55 +21,30 @@ import Delete from "./styled/Delete";
 
 import { Block } from "../../../styled/WidgetOptions/Block";
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
-
-import { response } from "@edulastic/constants";
+import Question from "../../../components/Question";
 
 class Layout extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props;
-
-    const node = ReactDOM.findDOMNode(this);
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   handleWidthChange = () => {
     const { onChange, uiStyle, responses } = this.props;
     const { minWidth, maxWidth } = response;
-    const width = parseInt(uiStyle.widthpx);
+    const width = parseInt(uiStyle.widthpx, 10);
     let updatedResponses;
     if (width < minWidth) {
-      updatedResponses = responses.map(response => ({
-        ...response,
+      updatedResponses = responses.map(_response => ({
+        ..._response,
         width: minWidth
       }));
     }
 
     if (width > maxWidth) {
-      updatedResponses = responses.map(response => ({
-        ...response,
+      updatedResponses = responses.map(_response => ({
+        ..._response,
         width: maxWidth
       }));
     }
 
-    updatedResponses = responses.map(response => ({
-      ...response,
+    updatedResponses = responses.map(_response => ({
+      ..._response,
       width
     }));
     onChange("responses", updatedResponses);
@@ -77,36 +53,36 @@ class Layout extends Component {
   handleHeightChange = () => {
     const { onChange, uiStyle, responses } = this.props;
     const { minHeight, maxHeight } = response;
-    const height = parseInt(uiStyle.heightpx);
+    const height = parseInt(uiStyle.heightpx, 10);
     let updatedResponses;
 
     if (height < minHeight) {
-      updatedResponses = responses.map(response => ({
-        ...response,
+      updatedResponses = responses.map(_response => ({
+        ..._response,
         height: minHeight
       }));
     }
 
     if (height > maxHeight) {
-      updatedResponses = responses.map(response => ({
-        ...response,
+      updatedResponses = responses.map(_response => ({
+        ..._response,
         height: maxHeight
       }));
     }
 
-    updatedResponses = responses.map(response => ({
-      ...response,
+    updatedResponses = responses.map(_response => ({
+      ..._response,
       height
     }));
     onChange("responses", updatedResponses);
   };
 
   render() {
-    const { questionData, onChange, uiStyle, advancedAreOpen, t } = this.props;
+    const { questionData, onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, responses } = this.props;
 
     const changeUiStyle = (prop, value) => {
       const { maxHeight, maxWidth } = response;
-      console.log("prop", prop, "value", value);
+
       let newValue = value;
       if (prop === "widthpx") {
         if (+value > maxWidth) {
@@ -126,21 +102,7 @@ class Layout extends Component {
 
     const changeIndividualUiStyle = (prop, value, index) => {
       const { responsecontainerindividuals } = uiStyle;
-      const item = {};
-      Object.defineProperties(item, {
-        widthpx: {
-          value: responsecontainerindividuals[index].widthpx,
-          writable: true
-        },
-        heightpx: {
-          value: responsecontainerindividuals[index].heightpx,
-          writable: true
-        },
-        placeholder: {
-          value: responsecontainerindividuals[index].placeholder,
-          writable: true
-        }
-      });
+      const item = responsecontainerindividuals[index];
       item[prop] = value;
       responsecontainerindividuals[index] = item;
       onChange("ui_style", {
@@ -151,7 +113,7 @@ class Layout extends Component {
 
     const removeIndividual = index => {
       const { responsecontainerindividuals } = uiStyle;
-      responsecontainerindividuals.splice(index, 1);
+      responsecontainerindividuals[index] = {};
       onChange("ui_style", {
         ...uiStyle,
         responsecontainerindividuals
@@ -160,15 +122,22 @@ class Layout extends Component {
 
     const addNewResponseContainer = () => {
       const { responsecontainerindividuals } = uiStyle;
-      responsecontainerindividuals.push({
-        widthpx: 0,
-        heightpx: 0,
-        placeholder: ""
-      });
-      onChange("ui_style", {
-        ...uiStyle,
-        responsecontainerindividuals
-      });
+      const diff = differenceBy(responses, responsecontainerindividuals, "id");
+      const _response = diff[0];
+      if (_response) {
+        const index = findIndex(responses, res => res.id === _response.id);
+        responsecontainerindividuals[index] = {
+          index,
+          widthpx: 0,
+          heightpx: 0,
+          placeholder: "",
+          id: _response.id
+        };
+        onChange("ui_style", {
+          ...uiStyle,
+          responsecontainerindividuals
+        });
+      }
     };
 
     const stemnumerationOptions = [
@@ -199,7 +168,13 @@ class Layout extends Component {
 
     return (
       <React.Fragment>
-        <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Question
+          section="advanced"
+          label={t("component.options.display")}
+          advancedAreOpen={advancedAreOpen}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        >
           <Block style={{ paddingTop: 0 }}>
             <Subtitle>{t("component.options.display")}</Subtitle>
             <MarginRow gutter={20}>
@@ -330,62 +305,68 @@ class Layout extends Component {
               </Col>
             </MarginRow>
             {uiStyle.responsecontainerindividuals &&
-              uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
-                <Container key={index}>
-                  <MarginRow gutter={20}>
-                    <Col md={12}>
-                      <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
-                    </Col>
-                    <Col md={12}>
-                      <Delete onClick={() => removeIndividual(index)}>X</Delete>
-                    </Col>
-                  </MarginRow>
-                  <MarginRow gutter={20}>
-                    <Col md={8}>
-                      <Label>{t("component.options.widthpx")}</Label>
-                      <Input
-                        type="number"
-                        size="large"
-                        disabled={false}
-                        containerStyle={{ width: 350 }}
-                        onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
-                        value={responsecontainerindividual.widthpx}
-                      />
-                    </Col>
-                    <Col md={8}>
-                      <Label>{t("component.options.heightpx")}</Label>
-                      <Input
-                        type="number"
-                        size="large"
-                        disabled={false}
-                        containerStyle={{ width: 350 }}
-                        onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
-                        value={responsecontainerindividual.heightpx}
-                      />
-                    </Col>
-                    <Col md={8}>
-                      <Label>{t("component.options.placeholder")}</Label>
-                      <Input
-                        size="large"
-                        disabled={false}
-                        containerStyle={{ width: 350 }}
-                        onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
-                        value={uiStyle.placeholder}
-                      />
-                    </Col>
-                  </MarginRow>
-                </Container>
-              ))}
+              uiStyle.responsecontainerindividuals.map(responsecontainerindividual => {
+                if (!responsecontainerindividual.id) {
+                  return null;
+                }
+                const resIndex = responsecontainerindividual.index;
+                return (
+                  <Container key={resIndex}>
+                    <MarginRow gutter={20}>
+                      <Col md={12}>
+                        <Label>{`${t("component.options.responsecontainerindividual")} ${resIndex + 1}`}</Label>
+                      </Col>
+                      <Col md={12}>
+                        <Delete onClick={() => removeIndividual(resIndex)}>X</Delete>
+                      </Col>
+                    </MarginRow>
+                    <MarginRow gutter={20}>
+                      <Col md={8}>
+                        <Label>{t("component.options.widthpx")}</Label>
+                        <Input
+                          type="number"
+                          size="large"
+                          disabled={false}
+                          containerStyle={{ width: 350 }}
+                          onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, resIndex)}
+                          value={responsecontainerindividual.widthpx}
+                        />
+                      </Col>
+                      <Col md={8}>
+                        <Label>{t("component.options.heightpx")}</Label>
+                        <Input
+                          type="number"
+                          size="large"
+                          disabled={false}
+                          containerStyle={{ width: 350 }}
+                          onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, resIndex)}
+                          value={responsecontainerindividual.heightpx}
+                        />
+                      </Col>
+                      <Col md={8}>
+                        <Label>{t("component.options.placeholder")}</Label>
+                        <Input
+                          size="large"
+                          disabled={false}
+                          containerStyle={{ width: 350 }}
+                          onChange={e => changeIndividualUiStyle("placeholder", e.target.value, resIndex)}
+                          value={responsecontainerindividual.placeholder}
+                        />
+                      </Col>
+                    </MarginRow>
+                  </Container>
+                );
+              })}
             <MarginRow gutter={20}>
               <Col md={6}>
-                <Label>{t("component.options.responsecontainerindividual")}</Label>
-                <AddNewChoiceBtn onClick={() => addNewResponseContainer()}>
+                <Label>{t("component.options.responsecontainerindividuals")}</Label>
+                <AddNewChoiceBtn onClick={addNewResponseContainer}>
                   {t("component.options.addnewresponsecontainer")}
                 </AddNewChoiceBtn>
               </Col>
             </MarginRow>
           </Block>
-        </Widget>
+        </Question>
       </React.Fragment>
     );
   }
@@ -398,7 +379,8 @@ Layout.propTypes = {
   t: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  responses: PropTypes.array
 };
 
 Layout.defaultProps = {
@@ -412,6 +394,7 @@ Layout.defaultProps = {
     responsecontainerindividuals: []
   },
   advancedAreOpen: false,
+  responses: [],
   fillSections: () => {},
   cleanSections: () => {}
 };

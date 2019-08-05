@@ -49,6 +49,8 @@ import TestItemMetadata from "../../../../assessment/components/TestItemMetadata
 import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
+import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
+import { questionType } from "@edulastic/constants";
 
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -70,7 +72,18 @@ class Container extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match, rows, history, t, loading, redirectOnEmptyItem, isTestFlow } = this.props;
+    const {
+      getItemDetailById,
+      match,
+      rows,
+      history,
+      t,
+      loading,
+      redirectOnEmptyItem,
+      isTestFlow,
+      isMultipart,
+      item
+    } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
     const { itemId, testId } = match.params;
@@ -79,7 +92,7 @@ class Container extends Component {
       getItemDetailById(newId, { data: true, validation: true });
     }
 
-    if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
+    if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && !item.multipartItem) {
       history.replace({
         pathname: isTestFlow
           ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
@@ -94,7 +107,9 @@ class Container extends Component {
       });
     }
 
-    if (this.isPassage(rows)) {
+    // We want to call this only one time
+    // beside running it trough itPassage method
+    if (rows.length === 1 && this.isPassage(rows)) {
       this.handleApplySettings({ type: "50-50" });
     }
   }
@@ -320,6 +335,7 @@ class Container extends Component {
 
     return (
       <ButtonAction
+        allowedAttempts
         onShowSource={this.handleShowSource}
         onShowSettings={this.handleShowSettings}
         onChangeView={this.handleChangeView}
@@ -375,121 +391,130 @@ class Container extends Component {
         to: `/author/tests/${testId}#review`
       }
     ];
+
+    const isPassage = rows
+      .flatMap(row => row.widgets.map(widget => widget.type))
+      .some(widgetType => widgetType === questionType.PASSAGE);
+
+    const layoutType = isPassage ? COMPACT : DEFAULT;
+
     return (
-      <Layout>
-        {showModal && item && (
-          <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-            {JSON.stringify(item, null, 4)}
-          </SourceModal>
-        )}
-        {showSettings && (
-          <SettingsBar
-            type={type}
-            onCancel={this.handleCancelSettings}
-            onApply={this.handleApplySettings}
-            useTabs={useTabs}
-            useTabsLeft={!!rows[0].tabs.length}
-            useTabsRight={!!rows[1] && !!rows[1].tabs.length}
-            useFlowLayout={useFlowLayout}
-            useFlowLayoutLeft={rows[0].flowLayout}
-            useFlowLayoutRight={rows[1] && rows[1].flowLayout}
-            onVerticalDividerChange={this.handleVerticalDividerChange}
-            onScrollingChange={this.handleScrollingChange}
-            verticalDivider={item.verticalDivider}
-            scrolling={item.scrolling}
-            itemLevelScoring={item.itemLevelScoring}
-            setItemLevelScoring={setItemLevelScoring}
-          />
-        )}
-        <ItemHeader
-          showIcon
-          title={t("component.itemDetail.itemDetail")}
-          reference={match.params._id}
-          windowWidth={windowWidth}
-          toggleSideBar={toggleSideBar}
-        >
-          <ButtonBar
-            onShowSource={this.handleShowSource}
-            onShowSettings={this.handleShowSettings}
-            onChangeView={this.handleChangeView}
-            changePreview={changePreview}
-            changePreviewTab={this.handleChangePreviewTab}
-            onSave={saveItem}
-            onPublishTestItem={this.handlePublishTestItem}
-            saving={updating}
-            view={view}
-            previewTab={preview}
-            isTestFlow={isTestFlow}
-            onEnableEdit={this.handleEnableEdit}
-            showPublishButton={showPublishButton}
-            hasAuthorPermission={hasAuthorPermission}
-            itemStatus={item && item.status}
-            withLabels
-            renderExtra={() =>
-              modalItemId && (
-                <ButtonClose onClick={onModalClose}>
-                  <IconClose />
-                </ButtonClose>
-              )
-            }
-            renderRightSide={view === "edit" ? this.renderButtons : () => {}}
-          />
-        </ItemHeader>
-        <BreadCrumbBar>
-          <Col md={view === "preview" ? 12 : 24}>
-            {windowWidth > MAX_MOBILE_WIDTH ? (
-              <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
-                {item && view !== "preview" && qLength > 1 && (
-                  <Row type="flex" justify="end" style={{ width: 250 }}>
-                    <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
-                    <Col>
-                      <Switch
-                        checked={item.itemLevelScoring}
-                        checkedChildren="on"
-                        unCheckedChildren="off"
-                        onChange={v => {
-                          setItemLevelScoring(v);
-                        }}
-                      />
-                    </Col>
-                  </Row>
-                )}
-              </SecondHeadBar>
-            ) : (
-              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-            )}
-          </Col>
-          {view === "preview" && (
-            <RightActionButtons col={12}>
-              <div>{this.renderButtons()}</div>
-            </RightActionButtons>
+      <ItemDetailContext.Provider value={{ layoutType }}>
+        <Layout>
+          {showModal && item && (
+            <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
+              {JSON.stringify(item, null, 4)}
+            </SourceModal>
           )}
-        </BreadCrumbBar>
-        {view === "edit" && (
-          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-            <ItemDetailWrapper>
-              {rows &&
-                rows.map((row, i) => (
-                  <ItemDetailRow
-                    key={i}
-                    row={row}
-                    view={view}
-                    rowIndex={i}
-                    itemData={item}
-                    count={rows.length}
-                    onAdd={this.handleAdd}
-                    windowWidth={windowWidth}
-                    onDeleteWidget={this.handleDeleteWidget(i)}
-                    onEditWidget={this.handleEditWidget}
-                    onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
-                  />
-                ))}
-            </ItemDetailWrapper>
-          </AnswerContext.Provider>
-        )}
-        {view === "preview" && this.renderPreview()}
-        {view === "metadata" && this.renderMetadata()}
-      </Layout>
+          {showSettings && (
+            <SettingsBar
+              type={type}
+              onCancel={this.handleCancelSettings}
+              onApply={this.handleApplySettings}
+              useTabs={useTabs}
+              useTabsLeft={!!rows[0].tabs.length}
+              useTabsRight={!!rows[1] && !!rows[1].tabs.length}
+              useFlowLayout={useFlowLayout}
+              useFlowLayoutLeft={rows[0].flowLayout}
+              useFlowLayoutRight={rows[1] && rows[1].flowLayout}
+              onVerticalDividerChange={this.handleVerticalDividerChange}
+              onScrollingChange={this.handleScrollingChange}
+              verticalDivider={item.verticalDivider}
+              scrolling={item.scrolling}
+              itemLevelScoring={item.itemLevelScoring}
+              setItemLevelScoring={setItemLevelScoring}
+            />
+          )}
+          <ItemHeader
+            showIcon
+            title={t("component.itemDetail.itemDetail")}
+            reference={match.params._id}
+            windowWidth={windowWidth}
+            toggleSideBar={toggleSideBar}
+          >
+            <ButtonBar
+              onShowSource={this.handleShowSource}
+              onShowSettings={this.handleShowSettings}
+              onChangeView={this.handleChangeView}
+              changePreview={changePreview}
+              changePreviewTab={this.handleChangePreviewTab}
+              onSave={saveItem}
+              onPublishTestItem={this.handlePublishTestItem}
+              saving={updating}
+              view={view}
+              previewTab={preview}
+              isTestFlow={isTestFlow}
+              onEnableEdit={this.handleEnableEdit}
+              showPublishButton={showPublishButton}
+              hasAuthorPermission={hasAuthorPermission}
+              itemStatus={item && item.status}
+              withLabels
+              renderExtra={() =>
+                modalItemId && (
+                  <ButtonClose onClick={onModalClose}>
+                    <IconClose />
+                  </ButtonClose>
+                )
+              }
+              renderRightSide={view === "edit" ? this.renderButtons : () => {}}
+            />
+          </ItemHeader>
+          <BreadCrumbBar>
+            <Col md={view === "preview" ? 12 : 24}>
+              {windowWidth > MAX_MOBILE_WIDTH ? (
+                <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
+                  {item && view !== "preview" && qLength > 1 && (
+                    <Row type="flex" justify="end" style={{ width: 250 }}>
+                      <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
+                      <Col>
+                        <Switch
+                          checked={item.itemLevelScoring}
+                          checkedChildren="on"
+                          unCheckedChildren="off"
+                          onChange={v => {
+                            setItemLevelScoring(v);
+                          }}
+                        />
+                      </Col>
+                    </Row>
+                  )}
+                </SecondHeadBar>
+              ) : (
+                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              )}
+            </Col>
+            {view === "preview" && (
+              <RightActionButtons col={12}>
+                <div>{this.renderButtons()}</div>
+              </RightActionButtons>
+            )}
+          </BreadCrumbBar>
+          {view === "edit" && (
+            <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+              <ItemDetailWrapper>
+                {rows &&
+                  rows.map((row, i) => (
+                    <ItemDetailRow
+                      key={i}
+                      row={row}
+                      view={view}
+                      rowIndex={i}
+                      itemData={item}
+                      count={rows.length}
+                      onAdd={this.handleAdd}
+                      windowWidth={windowWidth}
+                      onDeleteWidget={this.handleDeleteWidget(i)}
+                      onEditWidget={this.handleEditWidget}
+                      onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                    />
+                  ))}
+              </ItemDetailWrapper>
+            </AnswerContext.Provider>
+          )}
+          {view === "preview" && this.renderPreview()}
+          {view === "metadata" && this.renderMetadata()}
+        </Layout>
+      </ItemDetailContext.Provider>
     );
   }
 }

@@ -4,21 +4,23 @@ import { get } from "lodash";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
-import { Tooltip } from "antd";
+import { Tooltip, Spin } from "antd";
 import { find } from "lodash";
 import ClassSelector from "./ClassSelector";
 import selectsData from "../../../TestPage/components/common/selectsData";
-
+import ClassCreatePage from "./ClassCreatePage";
 import { TableWrapper, ClassListTable } from "./styled";
 import { fetchStudentsByIdAction } from "../../ducks";
+import GoogleBanner from "./GoogleBanner";
 
 const { allGrades, allSubjects } = selectsData;
 
-const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
-  const findGrade = _grade => find(allGrades, item => item.value === _grade) || { text: _grade };
+const ClassList = ({ groups, archiveGroups, loadStudents, setShowDetails, syncClassLoading, showBanner, history }) => {
+  const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
   // eslint-disable-next-line max-len
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
-  const [classGroups, setClassGroups] = useState(groups);
+  const [filterClass, setFilterClass] = useState(null);
+  const [classGroups, setClassGroups] = useState([]);
 
   useEffect(() => {
     setClassGroups(groups);
@@ -44,13 +46,13 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
     },
     {
       title: "Grades",
-      dataIndex: "grade",
+      dataIndex: "grades",
       render: (_, row) => {
-        const grade = findGrade(row.grade);
-        const gradeValue = grade.value || grade.text;
+        const grades = findGrade(row.grades);
+        const gradeValue = grades.value || grades.text;
         return (
-          <Tooltip title={gradeValue} placement="bottom">
-            {gradeValue}
+          <Tooltip title={` ${grades}`} placement="bottom">
+            {` ${grades}`}
           </Tooltip>
         );
       }
@@ -100,14 +102,25 @@ const ClassList = ({ groups, archiveGroups, loadStudents, history }) => {
 
   return (
     <TableWrapper>
-      <ClassSelector groups={groups} archiveGroups={archiveGroups} setClassGroups={setClassGroups} />
-      <ClassListTable
-        columns={columns}
-        dataSource={classGroups}
-        rowKey={rowKey}
-        onRow={onRow}
-        pagination={classGroups.length > 10}
+      <GoogleBanner syncClassLoading={syncClassLoading} showBanner={showBanner} setShowDetails={setShowDetails} />
+      <ClassSelector
+        groups={groups}
+        archiveGroups={archiveGroups}
+        setClassGroups={setClassGroups}
+        filterClass={filterClass}
+        setFilterClass={setFilterClass}
       />
+      {classGroups.length > 0 ? (
+        <ClassListTable
+          columns={columns}
+          dataSource={classGroups}
+          rowKey={rowKey}
+          onRow={onRow}
+          pagination={classGroups.length > 10}
+        />
+      ) : (
+        <ClassCreatePage filterClass={filterClass} />
+      )}
     </TableWrapper>
   );
 };

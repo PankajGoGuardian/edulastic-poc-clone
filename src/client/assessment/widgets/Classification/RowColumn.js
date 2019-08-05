@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
 import { arrayMove } from "react-sortable-hoc";
 import { connect } from "react-redux";
@@ -18,9 +17,9 @@ import { updateVariables } from "../../utils/variables";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
-const List = withAddButton(QuillSortableList);
+const List = QuillSortableList;
 const { Option } = Select;
 
 const actions = {
@@ -30,19 +29,8 @@ const actions = {
 };
 
 class RowColumn extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-    fillSections("main", t("component.classification.rowsSubtitle"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount = () => {
-    const { cleanSections } = this.props;
-    cleanSections();
-  };
-
   render() {
-    const { item, setQuestionData, theme, t, toolbarSize } = this.props;
+    const { item, setQuestionData, theme, t, toolbarSize, fillSections, cleanSections } = this.props;
     const { ui_style, firstMount } = item;
 
     const handleMain = (action, prop) => restProp => {
@@ -133,15 +121,30 @@ class RowColumn extends Component {
             draft.validation.alt_responses.forEach(ite => {
               ite.value = Array(...Array(initialLength)).map(() => []);
             });
+            if (prop === "column_count" && Array.isArray(draft.ui_style.column_titles)) {
+              draft.ui_style.column_titles = Array(val)
+                .fill("")
+                .map((el, i) => `COLUMN ${i + 1}`);
+            } else if (prop === "row_count" && Array.isArray(draft.ui_style.row_titles)) {
+              draft.ui_style.row_titles = Array(val)
+                .fill("")
+                .map((el, i) => `ROW ${i + 1}`);
+            }
           }
-
+          draft.responseOptions = draft.responseOptions || [];
+          draft.responseOptions = draft.responseOptions.map(option => null);
           updateVariables(draft);
         })
       );
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.classification.rowsSubtitle")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Row gutter={60}>
           <Col data-cy="row-container" span={12}>
             <Subtitle>{t("component.classification.rowsSubtitle")}</Subtitle>
@@ -237,7 +240,7 @@ class RowColumn extends Component {
             />
           </Col>
         </Row>
-      </Widget>
+      </Question>
     );
   }
 }

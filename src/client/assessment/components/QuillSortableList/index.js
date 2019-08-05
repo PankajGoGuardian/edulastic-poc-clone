@@ -17,8 +17,10 @@ const QuillSortableList = SortableContainer(
     prefix = "prefix",
     columns = 1,
     label = "",
+    styleType = "",
     canDelete = true,
-    t
+    t,
+    imageDefaultWidth
   }) => (
     <div data-cy="sortable-list-container" style={{ fontSize }}>
       {items.map((value, index) => (
@@ -34,9 +36,11 @@ const QuillSortableList = SortableContainer(
           rOnly={readOnly}
           canDelete={canDelete}
           columns={columns}
+          styleType={styleType}
           onRemove={() => onRemove(index)}
           onChange={val => (typeof onChange === "function" ? onChange(index, val) : () => {})}
           toolbarSize={toolbarSize}
+          imageDefaultWidth={imageDefaultWidth}
         />
       ))}
     </div>

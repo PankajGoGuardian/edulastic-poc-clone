@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep } from "lodash";
-import { InstructorStimulus, MathFormulaDisplay } from "@edulastic/common";
+import { InstructorStimulus, MathFormulaDisplay, QuestionNumberLabel } from "@edulastic/common";
 
 import Matrix from "./Matrix";
 import CheckAnswerButton from "../../../themes/common/CheckAnswerButton";
@@ -21,12 +21,14 @@ const Preview = ({
   disableResponse,
   showQuestionNumber,
   qIndex,
-  isReviewTab
+  isReviewTab,
+  changeView
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
     if (previewTab !== CLEAR) {
       changePreviewTab(CLEAR);
+      changeView(CLEAR);
     }
     let value = newAnswer.value[rowIndex];
     let findIndex;
@@ -54,7 +56,7 @@ const Preview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       </QuestionTitleWrapper>
 
@@ -86,7 +88,8 @@ Preview.propTypes = {
   smallSize: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  isReviewTab: PropTypes.bool
+  isReviewTab: PropTypes.bool,
+  changeView: PropTypes.func.isRequired
 };
 
 Preview.defaultProps = {
@@ -100,9 +103,4 @@ export default Preview;
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
 `;

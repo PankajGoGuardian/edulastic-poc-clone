@@ -1,11 +1,19 @@
-import { partialRight, ceil, groupBy } from "lodash";
+import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, round, find, indexOf } from "lodash";
+import next from "immer";
 
 export const percentage = (numerator, denominator, ceilCalculation = false) => {
+  if (numerator == 0 && denominator == 0) {
+    return 0;
+  }
+
   const calculatedPercentage = (numerator / denominator) * 100;
   return ceilCalculation ? ceil(calculatedPercentage) : calculatedPercentage;
 };
 
 export const ceilingPercentage = partialRight(percentage, true);
+
+export const stringCompare = (a_string = "", b_string = "") =>
+  (a_string || "").toLowerCase().localeCompare((b_string || "").toLowerCase());
 
 export const getVariance = arr => {
   let sum = 0;
@@ -121,3 +129,45 @@ export const processTeacherIds = orgDataArr => {
 
   return teacherIdArr;
 };
+
+export const getOverallScore = (metrics = []) =>
+  ceilingPercentage(
+    sumBy(metrics, item => parseFloat(item.totalScore)),
+    sumBy(metrics, item => parseFloat(item.maxScore))
+  );
+
+export const filterAccordingToRole = (columns, role) =>
+  filter(columns, column => !includes(column.hiddenFromRole, role));
+
+export const addColors = (data = [], selectedData, xDataKey, scoreKey = "avgScore") => {
+  return map(data, item =>
+    next(item, draft => {
+      draft.fill =
+        includes(selectedData, item[xDataKey]) || !selectedData.length ? getHSLFromRange1(item[scoreKey]) : "#cccccc";
+    })
+  );
+};
+
+export const getLeastProficiencyBand = (bandInfo = []) =>
+  orderBy(bandInfo, "threshold", ["desc"])[bandInfo.length - 1] || {};
+
+export const getProficiencyBand = (score, bandInfo, field = "threshold") => {
+  const bandInfoWithColor = map(orderBy(bandInfo, "threshold"), (band, index) => {
+    return {
+      ...band,
+      color: band.color ? band.color : getHSLFromRange1(round((100 / (bandInfo.length - 1)) * index))
+    };
+  });
+  const orderedScaleInfo = orderBy(bandInfoWithColor, "threshold", ["desc"]);
+  return find(orderedScaleInfo, info => ceil(score) >= info[field]) || getLeastProficiencyBand(orderedScaleInfo);
+};
+
+export const toggleItem = (items, item) =>
+  next(items, draftState => {
+    let index = indexOf(items, item);
+    if (-1 < index) {
+      draftState.splice(index, 1);
+    } else {
+      draftState.push(item);
+    }
+  });

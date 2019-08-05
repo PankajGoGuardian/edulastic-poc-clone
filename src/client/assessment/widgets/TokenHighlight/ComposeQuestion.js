@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import ReactDOM from "react-dom";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -10,24 +9,11 @@ import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import Question from "../../components/Question";
 
 class ComposeQuestion extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.tokenHighlight.composeQuestion"), node.offsetTop, node.scrollHeight);
-  };
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props;
-
-    cleanSections();
-  }
-
   render() {
-    const { item, setQuestionData, setTemplate, t } = this.props;
+    const { item, setQuestionData, setTemplate, t, fillSections, cleanSections } = this.props;
 
     const mode = item.tokenization;
 
@@ -71,7 +57,12 @@ class ComposeQuestion extends Component {
     };
 
     return (
-      <Widget>
+      <Question
+        section="main"
+        label={t("component.tokenHighlight.composeQuestion")}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Subtitle>{t("component.tokenHighlight.composeQuestion")}</Subtitle>
 
         <QuestionTextArea
@@ -81,7 +72,7 @@ class ComposeQuestion extends Component {
           toolbarId="compose-question"
           border="border"
         />
-      </Widget>
+      </Question>
     );
   }
 }

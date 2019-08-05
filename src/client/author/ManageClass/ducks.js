@@ -75,6 +75,7 @@ export const UPDATE_GOOGLE_COURSE_LIST = "[manageClass] update google course lis
 export const SYNC_CLASS_LOADING = "[manageClass] sync class loading";
 export const SYNC_BY_CODE_MODAL = "[manageClass] sync by code modal";
 export const SET_SUBJECT = "[manageClass] set subject";
+export const SET_GROUP_SYNC_DETAILS = "[manageClass] sync google class response";
 
 // action creators
 
@@ -125,6 +126,7 @@ export const updateGoogleCourseListAction = createAction(UPDATE_GOOGLE_COURSE_LI
 export const syncByCodeModalAction = createAction(SYNC_BY_CODE_MODAL);
 export const setSyncClassLoadingAction = createAction(SYNC_CLASS_LOADING);
 export const setSubjectAction = createAction(SET_SUBJECT);
+export const setGroupSyncDataAction = createAction(SET_GROUP_SYNC_DETAILS);
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -138,6 +140,7 @@ const initialState = {
   entity: {},
   submitted: false,
   added: false,
+  syncClassResponse: {},
   selectedSubject: "",
   classLoaded: false
 };
@@ -283,6 +286,10 @@ const setSyncClassLoading = (state, { payload }) => {
 const setFetchClassRequest = (state, { payload }) => {
   state.fetchClassListLoading = payload;
 };
+
+const setGroupSyncDetails = (state, { payload }) => {
+  state.syncClassResponse = payload;
+};
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -308,6 +315,7 @@ export default createReducer(initialState, {
   [SYNC_BY_CODE_MODAL]: openOrCloseModal,
   [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess,
   [SET_SUBJECT]: setSubject,
+  [SET_GROUP_SYNC_DETAILS]: setGroupSyncDetails,
   [USER_TTS_REQUEST_SUCCESS]: updateStudentsAfterTTSChange
 });
 
@@ -368,12 +376,14 @@ function* receiveAddStudentRequest({ payload }) {
     const result = yield call(enrollmentApi.addStudent, payload);
     const student = get(result, "data.result");
     if (student) {
+      const newStudent = {
+        ...student,
+        _id: student.userId,
+        enrollmentStatus: "1"
+      };
+      yield put(addStudentSuccessAction(newStudent));
       const successMsg = "Student added to class successfully.";
       yield call(message.success, successMsg);
-      let newStudent = Object.assign({}, student);
-      newStudent._id = student.userId;
-      delete newStudent.userId;
-      yield put(addStudentSuccessAction(newStudent));
     } else {
       const msg = get(result, "data.message", "Student already part of this class section");
       message.error(msg);
@@ -436,10 +446,14 @@ function* updateStudentRequest({ payload }) {
   try {
     const { userId, data } = payload;
     const result = yield call(userApi.updateUser, { userId, data });
-    const msg = "Successfully Updated student.";
-
-    message.success(msg);
     yield put(updateStudentSuccessAction(result));
+    const updatedStudent = {
+      ...result,
+      enrollmentStatus: "1"
+    };
+    yield put(updateStudentSuccessAction(updatedStudent));
+    const msg = "Successfully Updated student.";
+    message.success(msg);
   } catch (error) {
     message.error("Update a student request failing");
     yield put(updateStudentFaildedAction());
@@ -454,10 +468,16 @@ function* syncClass({ payload }) {
       return yield call(message.error, "Class name is missing for one of the selected class");
     }
     yield put(setSyncClassLoadingAction(true));
-    yield call(googleApi.syncClass, { classList: payload });
+    let response = yield call(googleApi.syncClass, { classList: payload });
+    if (response) {
+      Object.keys(response).forEach(gCode => {
+        const group = payload.find(o => o.enrollmentCode === gCode);
+        response[gCode]["groupName"] = group.name;
+      });
+      yield put(setGroupSyncDataAction(response));
+    }
     yield put(setSyncClassLoadingAction(false));
     yield put(fetchGroupsAction());
-    yield call(message.success, "Google Class import is Complete");
   } catch (e) {
     yield put(setSyncClassLoadingAction(false));
     yield call(message.error, "class sync failed");

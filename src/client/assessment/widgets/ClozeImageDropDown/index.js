@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
-import { Checkbox, Paper } from "@edulastic/common";
+import { Checkbox, Paper, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -17,17 +17,18 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
 
 import Options from "./components/Options";
+import Question from "../../components/Question";
 import Display from "./Display";
 import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
 import { AdditionalContainer } from "./styled/AdditionalContainer";
-import { Widget } from "../../styled/Widget";
-
 import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeImageDropDown extends Component {
+  static contextType = AnswerContext;
+
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -157,6 +158,7 @@ class ClozeImageDropDown extends Component {
   };
 
   render() {
+    const answerContextConfig = this.context;
     const {
       qIndex,
       view,
@@ -196,7 +198,12 @@ class ClozeImageDropDown extends Component {
                     fillSections={fillSections}
                     cleanSections={cleanSections}
                   />
-                  <Widget>
+                  <Question
+                    section="main"
+                    label={t("component.correctanswers.setcorrectanswers")}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                  >
                     <CorrectAnswers
                       key={duplicatedResponses || showDraghandle || shuffleOptions}
                       validation={item.validation}
@@ -235,7 +242,7 @@ class ClozeImageDropDown extends Component {
                         />
                       </CorrectAnswerOptions>
                     </AdditionalContainer>
-                  </Widget>
+                  </Question>
                 </div>
               </EditorContainer>
               <OptionsContainer>
@@ -255,9 +262,13 @@ class ClozeImageDropDown extends Component {
         {view === "preview" && (
           <Wrapper>
             <Display
-              preview={previewTab === "clear"}
-              showAnswer={previewTab === "show"}
-              checkAnswer={previewTab === "check"}
+              preview={
+                previewTab === "clear" || (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)
+              }
+              showAnswer={previewTab === "show" && !answerContextConfig.expressGrader}
+              checkAnswer={
+                previewTab === "check" || (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)
+              }
               validation={itemForPreview.validation}
               configureOptions={{
                 duplicatedResponses,

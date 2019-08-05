@@ -1,0 +1,26 @@
+{
+  "result": {
+    "orgData": [
+      {
+        "groupId": "5c9f16c59fcf2d57d7344534",
+        "teacherId": "5c9f141f9fcf2d57d73363cc",
+        "schoolId": "5c9f141a9fcf2d57d73360b5",
+        "groupName": "Course XO1 - Teacher 7 - 1",
+        "teacherName": "Pankaj Teacher 7",
+        "schoolName": "Clever School of Pankaj",
+        "courseId": "5c25ed65fdf48502f8958727",
+        "courseName": "Course XO1",
+        "grade": "6",
+        "termId": "5c9f141f9fcf2d57d73363f7",
+        "subject": "Mathematics"
+      }
+    ],
+    "testData": [
+      {
+        "testId": "5cb5cfe42d5cf2267e2ebe65",
+        "testName": "Data flow test #5",
+        "groupId": "5c9f16c59fcf2d57d7344534"
+      }
+    ]
+  }
+}

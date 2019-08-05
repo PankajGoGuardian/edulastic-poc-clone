@@ -10,10 +10,29 @@ import {
   darkGrey,
   titleColor
 } from "@edulastic/colors";
-import { Button, Icon, Divider, Menu } from "antd";
+import { Button, Icon, Divider, Menu, Checkbox, Table } from "antd";
 import { IconManage } from "@edulastic/icons";
 
 import { Paper } from "@edulastic/common";
+
+export const StudentsTable = styled(Table)`
+  .ant-table-tbody > tr > td {
+    text-align: center;
+  }
+  .ant-table-thead > tr > th {
+    text-align: center;
+  }
+`;
+
+export const CheckboxShowStudents = styled(Checkbox)`
+  margin-bottom: 1rem;
+  .ant-checkbox .ant-checkbox-inner {
+    padding: 0.5rem;
+  }
+  .ant-checkbox + span {
+    font-size: 15px;
+  }
+`;
 
 export const Title = styled.div`
   font-size: 22px;
@@ -96,7 +115,7 @@ export const Container = styled(Paper)`
   margin: 15px auto 0 auto;
   padding: 30px 15px;
   border-radius: 0px;
-  width: 80%;
+  width: 90%;
 `;
 
 export const ContainerHeader = styled.div`
@@ -214,6 +233,12 @@ export const FieldValue = styled.div`
   }
 `;
 
+export const FieldLabel = styled.section`
+  min-width: 150px;
+  text-align: right;
+  margin-right: 15px;
+`;
+
 export const StudentContent = styled.div``;
 
 export const NoStudents = styled.div`
@@ -236,15 +261,14 @@ export const NoConentDesc = styled.div`
 export const MenuItem = styled(Menu.Item)`
   display: flex;
   align-items: center;
-  color: ${themeColorLight};
+  color: ${titleColor};
+  &:hover {
+    background: ${themeColor}20;
+  }
 
   svg {
-    fill: ${themeColorLight};
+    fill: ${themeColor};
   }
-`;
-
-export const TableDataSpan = styled.span`
-  margin-left: 2rem;
 `;
 
 export const ButtonWrapper = styled.div`

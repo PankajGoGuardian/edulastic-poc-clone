@@ -1,12 +1,22 @@
-import React from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { get } from "lodash";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { get, cloneDeep } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus, Subtitle } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  InstructorStimulus,
+  CorrectAnswersContainer,
+  AnswerContext,
+  QuestionNumberLabel
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
 import { charts as checkAnswerMethod } from "@edulastic/evaluators";
 
+import { setElementsStashAction, setStashIndexAction } from "../../actions/graphTools";
 import { CLEAR, PREVIEW, CHECK, SHOW, EDIT } from "../../constants/constantsForQuestions";
 
 import { getFontSize } from "../../utils/helpers";
@@ -15,29 +25,51 @@ import BarChart from "./BarChart";
 import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
-import { CorrectAnswerWrapper } from "./styled";
+import { QuestionTitleWrapper } from "./styled/QuestionNumber";
+import { Tools } from "./components/Tools";
+import AnnotationRnd from "../../components/Annotations/AnnotationRnd";
 
 const ChartPreview = ({
   item,
   smallSize,
   saveAnswer,
   userAnswer,
-  previewTab,
+  previewTab: _previewTab,
   view,
   showQuestionNumber,
   disableResponse,
   evaluation,
   t,
   metaData,
-  changePreviewTab
+  tab,
+  changePreviewTab,
+  stash,
+  stashIndex,
+  setElementsStash,
+  setStashIndex
 }) => {
+  const answerContextConfig = useContext(AnswerContext);
+  const [barIsDragging, toggleBarDragging] = useState(false);
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const chartType = get(item, "ui_style.chart_type");
+  let previewTab = _previewTab;
+  if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
+    previewTab = CHECK;
+  } else if (answerContextConfig.expressGrader && answerContextConfig.isAnswerModifiable) {
+    previewTab = CLEAR;
+  }
 
   const { chart_data = {}, validation, ui_style } = item;
   const { data = [] } = chart_data;
   let CurrentChart = null;
+
+  const [tool, setTool] = useState(0);
+
+  const getStashId = () => (tab === 0 ? `${item.id}_${view}` : `alt-${tab}-${item.id}_${view}`);
+
+  useEffect(() => {
+    setElementsStash(data, getStashId());
+  }, []);
 
   switch (chartType) {
     case questionType.LINE_CHART:
@@ -94,69 +126,132 @@ const ChartPreview = ({
         }).evaluation
       : [];
 
-  const saveAnswerHandler = ans => {
+  const saveAnswerHandler = (ans, index) => {
     changePreviewTab(CLEAR);
-    saveAnswer(ans);
+
+    if (tool === 3 && index >= 0) {
+      const newAnswer = cloneDeep(ans);
+      newAnswer[index].y = ui_style.yAxisMin;
+      setTool(0);
+      saveAnswer(newAnswer);
+      setElementsStash(newAnswer, getStashId());
+    } else {
+      saveAnswer(ans);
+      setElementsStash(ans, getStashId());
+    }
   };
 
   const calculatedParams = {
-    ...ui_style,
-    width:
-      document.querySelector(`[data-cy="${metaData}"]`) !== null &&
-      ui_style.width > document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
-        ? document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
-        : ui_style.width
+    ...ui_style
   };
 
+  const onReset = () => {
+    setTool(0);
+    saveAnswerHandler(data);
+  };
+
+  const onUndo = () => {
+    const id = getStashId();
+    if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
+      saveAnswer(stash[id][stashIndex[id] - 1]);
+      setStashIndex(stashIndex[id] - 1, id);
+    }
+  };
+
+  const onRedo = () => {
+    const id = getStashId();
+    if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
+      saveAnswer(stash[id][stashIndex[id] + 1]);
+      setStashIndex(stashIndex[id] + 1, id);
+    }
+  };
+
+  const getHandlerByControlName = control => {
+    switch (control) {
+      case "undo":
+        return onUndo();
+      case "redo":
+        return onRedo();
+      case "reset":
+        return onReset();
+      default:
+        return () => {};
+    }
+  };
+
+  const allControls = ["undo", "redo", "reset", "delete"];
+
+  const renderTools = () => (
+    <Tools setTool={setTool} tool={tool} controls={allControls} getHandlerByControlName={getHandlerByControlName} />
+  );
+
   return (
-    <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      </QuestionTitleWrapper>
+    <Paper className="chart-wrapper" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+      {view === PREVIEW && (
+        <Fragment>
+          <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
+            <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+          </QuestionTitleWrapper>
+        </Fragment>
+      )}
+      {!disableResponse && renderTools()}
       <CurrentChart
         {...passData}
         gridParams={calculatedParams}
+        deleteMode={tool === 3}
         view={view}
+        toggleBarDragging={toggleBarDragging}
         disableResponse={disableResponse}
         previewTab={previewTab}
         saveAnswer={saveAnswerHandler}
         correct={correct}
       />
+      <AnnotationRnd
+        style={{
+          backgroundColor: "transparent",
+          boxShadow: "none",
+          border: view === EDIT ? "1px solid lightgray" : "none"
+        }}
+        questionId={item.id}
+        disableDragging={view !== EDIT}
+        isAbove={view === EDIT ? !barIsDragging : false}
+        onDoubleClick={() => toggleBarDragging(!barIsDragging)}
+      />
       {view === PREVIEW && previewTab === SHOW && (
-        <CorrectAnswerWrapper>
-          <Subtitle>{t("component.chart.correctAnswer")}</Subtitle>
+        <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
           <CurrentChart
             {...passData}
             data={answerData}
             gridParams={calculatedParams}
+            deleteMode={tool === 3}
             view={view}
             disableResponse
             previewTab={previewTab}
             saveAnswer={saveAnswerHandler}
             correct={answerCorrect}
           />
-        </CorrectAnswerWrapper>
+        </CorrectAnswersContainer>
       )}
 
       {view === PREVIEW &&
         previewTab === SHOW &&
-        altAnswerData.length &&
+        altAnswerData.length > 0 &&
         altAnswerData.map((ans, index) => (
-          <CorrectAnswerWrapper key={index}>
-            <Subtitle>{`${t("component.chart.alternateAnswer")} ${index + 1}`}</Subtitle>
+          <CorrectAnswersContainer title={`${t("component.chart.alternateAnswer")} ${index + 1}`}>
             <CurrentChart
               {...passData}
               data={ans.value}
               gridParams={calculatedParams}
+              deleteMode={tool === 3}
               view={view}
               disableResponse
               previewTab={previewTab}
               saveAnswer={saveAnswerHandler}
               correct={altAnswerCorrect[index]}
             />
-          </CorrectAnswerWrapper>
+          </CorrectAnswersContainer>
         ))}
     </Paper>
   );
@@ -176,7 +271,12 @@ ChartPreview.propTypes = {
   qIndex: PropTypes.number,
   evaluation: PropTypes.any,
   changePreviewTab: PropTypes.func,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  setElementsStash: PropTypes.func.isRequired,
+  setStashIndex: PropTypes.func.isRequired,
+  stash: PropTypes.object,
+  stashIndex: PropTypes.object,
+  tab: PropTypes.number
 };
 
 ChartPreview.defaultProps = {
@@ -188,7 +288,24 @@ ChartPreview.defaultProps = {
   showQuestionNumber: false,
   evaluation: null,
   disableResponse: false,
-  changePreviewTab: () => {}
+  changePreviewTab: () => {},
+  stash: {},
+  stashIndex: {},
+  tab: 0
 };
 
-export default withNamespaces("assessment")(ChartPreview);
+const enhance = compose(
+  withNamespaces("assessment"),
+  connect(
+    state => ({
+      stash: state.graphTools.stash,
+      stashIndex: state.graphTools.stashIndex
+    }),
+    {
+      setElementsStash: setElementsStashAction,
+      setStashIndex: setStashIndexAction
+    }
+  )
+);
+
+export default enhance(ChartPreview);

@@ -1,8 +1,10 @@
 /* eslint-disable */
 import uuid from "uuid/v4";
+import { isString, get } from "lodash";
 import { fileApi } from "@edulastic/api";
-import { aws } from "@edulastic/constants";
+import { aws, question, questionType } from "@edulastic/constants";
 import { message } from "antd";
+import { empty } from "rxjs";
 
 export const ALPHABET = [
   "A",
@@ -98,12 +100,18 @@ function addProps() {
   $(this).replaceWith(text);
 }
 
-const sanitizeSelfClosingTags = inputString =>
-  inputString &&
-  inputString
-    .replace(/<hr>/g, "<hr/>")
-    .replace(/<br>/g, "<br/>")
-    .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+const sanitizeSelfClosingTags = inputString => {
+  let _inputString = typeof inputString === "number" ? inputString.toString() : inputString;
+
+  const sanitizedString =
+    _inputString &&
+    _inputString
+      .replace(/<hr>/g, "<hr/>")
+      .replace(/<br>/g, "<br/>")
+      .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+
+  return sanitizedString;
+};
 
 const replaceForJsxParser = inputString =>
   inputString &&
@@ -164,12 +172,12 @@ export const getResponsesCount = element => {
 
 export const reIndexResponses = htmlStr => {
   const parsedHTML = $("<div />").html(htmlStr);
-  if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response").length) {
+  if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response, paragraphnumber").length) {
     return htmlStr;
   }
 
   $(parsedHTML)
-    .find("textinput, mathinput, textdropdown, response")
+    .find("textinput, mathinput, textdropdown, response, paragraphnumber")
     .each(function(index) {
       $(this)
         .find("span")
@@ -183,6 +191,10 @@ export const reIndexResponses = htmlStr => {
       $(this).attr("responseIndex", index + 1);
       $(this).attr("contenteditable", false);
 
+      if ($(this).context.nodeName === "PARAGRAPHNUMBER") {
+        $(this).html(`<label>${index + 1}</label>`);
+      }
+
       const text = $("<div>")
         .append($(this).clone())
         .html();
@@ -191,6 +203,38 @@ export const reIndexResponses = htmlStr => {
     });
 
   return $(parsedHTML).html();
+};
+
+export const sanitizeForReview = stimulus => {
+  if (!window.$) return stimulus;
+  if (!stimulus) return question.DEFAULT_STIMULUS;
+  const jqueryEl = $("<p>").append(stimulus);
+
+  //remove br tag also
+  // eslint-disable-next-line func-names
+  const tagsToRemove = ["mathinput", "textinput", "textdropdown", "img", "table", "response", "br"];
+  let tagFound = false;
+  tagsToRemove.forEach(tagToRemove => {
+    jqueryEl.find(tagToRemove).each(function() {
+      $(this).replaceWith("...");
+      tagFound = true;
+    });
+  });
+  //to remove any text after ...
+  let splitJquery = jqueryEl.html();
+  if (tagFound) {
+    const firstIndexOf = jqueryEl.html().indexOf("...");
+    if (firstIndexOf != -1) {
+      splitJquery = jqueryEl.html().substr(0, firstIndexOf + 3);
+    }
+    if (splitJquery === "...") {
+      splitJquery = question.DEFAULT_STIMULUS;
+    }
+  }
+  if (splitJquery.includes("</p>")) {
+    splitJquery = `${splitJquery.substr(0, splitJquery.indexOf("</p>"))} ...</p>`;
+  }
+  return sanitizeSelfClosingTags(splitJquery);
 };
 
 export const removeIndexFromTemplate = tmpl => {
@@ -222,6 +266,12 @@ export const beforeUpload = file => {
   return isAllowedType && withinSizeLimit;
 };
 
+export const calculateWordsCount = ele =>
+  $("<div>")
+    .html(ele)
+    .text()
+    .split(/\W/g)
+    .filter(i => !!i.trim()).length;
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -232,6 +282,8 @@ export default {
   uploadToS3,
   parseTemplate,
   reIndexResponses,
+  sanitizeForReview,
   canInsert,
-  removeIndexFromTemplate
+  removeIndexFromTemplate,
+  calculateWordsCount
 };

@@ -6,6 +6,7 @@ module.exports = {
   },
   settingCategories: [
     { id: "test-type", title: "Test Type" },
+    { id: "maximum-attempts-allowed", title: "Maximum Attempts Allowed" },
     { id: "mark-as-done", title: "Mark as Done" },
     { id: "release-scores", title: "Release Scores Automatically" },
     { id: "require-safe-exame-browser", title: "Require Safe Exame Browser" },
@@ -25,9 +26,10 @@ module.exports = {
     { id: "administration", title: "Administration" }
   ],
   settingCategoriesFeatureMap: {
-    "test-type": "free",
+    "test-type": "selectTestType",
+    "maximum-attempts-allowed": "maxAttemptAllowed",
     "mark-as-done": "assessmentSuperPowersMarkAsDone",
-    "release-scores": "free",
+    "release-scores": "releaseScore",
     "require-safe-exame-browser": "assessmentSuperPowersRequireSafeExamBrowser",
     // below "show-questions" is sth that I dont know and is not rendered in the settings so havent render it on the feature map by making it undefined
     "show-questions": "undefined",

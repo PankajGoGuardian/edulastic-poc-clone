@@ -1,0 +1,14 @@
+{
+  "baseUrl": "https://edulastic-poc.snapwiz.net",
+  "API_URL": "https://edulastic-poc.snapwiz.net/api",
+  "defaultCommandTimeout": 20000,
+  "integrationFolder": "cypress/e2e/visual-regression-suites",
+  "modifyObstructiveCode": false,
+  "requestTimeout": 30000,
+  "reporter": "mocha-multi-reporters",
+  "reporterOptions": {
+    "configFile": "cypress/config/reporter-config.json"
+  },
+  "video": false,
+  "SCREEN_SIZES": [[1920, 1080], [1366, 768], [1024, 768], [375, 650]]
+}

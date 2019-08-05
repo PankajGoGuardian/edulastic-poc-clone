@@ -33,11 +33,7 @@ import {
   getTestsLoadingSelector,
   getTestsCountSelector,
   getTestsLimitSelector,
-  getTestsPageSelector,
-  getDefaultGradesSelector,
-  getDefaultSubjectSelector,
-  updateDefaultGradesAction,
-  updateDefaultSubjectAction
+  getTestsPageSelector
 } from "../../ducks";
 import { getTestsCreatingSelector, clearTestDataAction, clearCreatedItemsAction } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
@@ -63,9 +59,13 @@ import NoDataNotification from "../../../../common/components/NoDataNotification
 import {
   getInterestedCurriculumsSelector,
   getInterestedSubjectsSelector,
-  getInterestedGradesSelector
+  getInterestedGradesSelector,
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector
 } from "../../../src/selectors/user";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { getInterestedStandards } from "../../../dataUtils";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -285,7 +285,17 @@ class TestList extends Component {
 
   handleFiltersChange = (name, value) => {
     const { search } = this.state;
-    const { receiveTests, clearDictStandards, history, limit, page, mode, getCurriculumStandards } = this.props;
+    const {
+      receiveTests,
+      clearDictStandards,
+      history,
+      limit,
+      page,
+      mode,
+      getCurriculumStandards,
+      updateDefaultGrades,
+      updateDefaultSubject
+    } = this.props;
     let updatedKeys = {};
     if (name === "curriculumId") {
       clearDictStandards();
@@ -302,7 +312,7 @@ class TestList extends Component {
         [name]: value,
         curriculumId: ""
       };
-      updateDefaultSubjectAction(value);
+      updateDefaultSubject(value);
       storeInLocalStorage("defaultSubject", value);
       clearDictStandards();
     } else {
@@ -312,7 +322,7 @@ class TestList extends Component {
       };
     }
     if (name === "grades") {
-      updateDefaultGradesAction(value);
+      updateDefaultGrades(value);
       storeInLocalStorage("defaultGrades", value);
     }
     this.setState(
@@ -496,7 +506,7 @@ class TestList extends Component {
   searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
-    const { loading, tests, windowWidth, history, match, userId, mode } = this.props;
+    const { loading, tests, windowWidth, history, match, userId, mode, interestedCurriculums } = this.props;
     const { blockStyle, selectedTests } = this.state;
 
     if (loading) {
@@ -528,21 +538,21 @@ class TestList extends Component {
 
     return (
       <Row>
-        {tests.length &&
-          tests.map((item, index) => (
-            <CardWrapper
-              key={index}
-              owner={item.authors && item.authors.some(x => x._id === userId)}
-              item={item}
-              windowWidth={windowWidth}
-              history={history}
-              match={match}
-              mode={mode}
-              removeTestFromPlaylist={this.handleRemoveTest}
-              isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
-              addTestToPlaylist={this.handleAddTests}
-            />
-          ))}
+        {tests.map((item, index) => (
+          <CardWrapper
+            key={index}
+            owner={item.authors && item.authors.some(x => x._id === userId)}
+            item={item}
+            windowWidth={windowWidth}
+            history={history}
+            match={match}
+            mode={mode}
+            removeTestFromPlaylist={this.handleRemoveTest}
+            isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
+            addTestToPlaylist={this.handleAddTests}
+            standards={getInterestedStandards(item.summary, interestedCurriculums)}
+          />
+        ))}
       </Row>
     );
   };

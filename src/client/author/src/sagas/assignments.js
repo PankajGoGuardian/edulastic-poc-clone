@@ -40,7 +40,8 @@ function* receiveAssignmentClassList({ payload = {} }) {
 
 function* receiveAssignmentsSummary({ payload = {} }) {
   try {
-    const { districtId = "", filters = {}, filtering } = payload;
+    // filtering should be false otherwise it will reset the current page to 1
+    const { districtId = "", filters = {}, sort } = payload;
     if (get(filters, "subject")) {
       set(filters, "Subject", get(filters, "subject"));
       unset(filters, "subject");
@@ -49,12 +50,21 @@ function* receiveAssignmentsSummary({ payload = {} }) {
     if (userRole === "district-admin" || userRole === "school-admin") {
       const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
         districtId,
-        filters: pickBy(filters, identity)
+        filters: pickBy(filters, identity),
+        sort
       });
-      yield put({
-        type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
-        payload: { entities, filtering }
-      });
+      // handle zero assignments for current filter result
+      if (entities) {
+        yield put({
+          type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
+          payload: { entities: entities.result, total: entities.total }
+        });
+      } else {
+        yield put({
+          type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
+          payload: { entities: [], total: 0 }
+        });
+      }
     }
   } catch (error) {
     const errorMessage = "Receive tests is failing";
@@ -111,10 +121,6 @@ function* receiveAssignmentByAssignmentIdSaga({ payload }) {
     yield put({
       type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
       payload: data
-    });
-    yield put({
-      type: TOGGLE_RELEASE_GRADE_SETTINGS,
-      payload: true
     });
   } catch (e) {
     yield put({

@@ -3,7 +3,8 @@ import styled from "styled-components";
 export const TableWrapper = styled.div`
   overflow: auto;
   height: 600px;
-  width: 700px;
+  width: 100%;
+  max-width: 700px;
   margin: auto;
   margin-top: 0;
   background: ${({ imageUrl }) => (imageUrl ? `url('${imageUrl}')` : "inherit")};
@@ -12,4 +13,5 @@ export const TableWrapper = styled.div`
     `${imageOptions.width}px ${imageOptions.height}px`};
   background-position: ${({ imageOptions }) => (imageOptions ? `${imageOptions.x}px ${imageOptions.y}px` : "inherit")};
   padding-bottom: 20px;
+  position: relative;
 `;

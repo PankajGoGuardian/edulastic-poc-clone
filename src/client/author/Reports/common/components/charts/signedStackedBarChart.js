@@ -18,7 +18,7 @@ import { StyledCustomChartTooltip, StyledChartNavButton } from "../../styled";
 import { CustomChartXTick } from "./chartUtils/customChartXTick";
 import { YAxisLabel } from "./chartUtils/yAxisLabel";
 
-const _yTickFormatter = val => {
+const _barsLabelFormatter = val => {
   if (val !== 0) {
     return val + "%";
   } else {
@@ -38,6 +38,7 @@ const LabelText = props => {
 };
 
 export const SignedStackedBarChart = ({
+  margin = { top: 0, right: 20, left: 20, bottom: 0 },
   pageSize,
   barsData,
   data = [],
@@ -49,8 +50,8 @@ export const SignedStackedBarChart = ({
   getXTickText,
   getTooltipJSX,
   yAxisLabel = "",
-  yTickFormatter = _yTickFormatter,
-  barsLabelFormatter = _yTickFormatter,
+  yTickFormatter = val => val + "%",
+  barsLabelFormatter = _barsLabelFormatter,
   referenceLine = 0,
   filter = {}
 }) => {
@@ -158,7 +159,7 @@ export const SignedStackedBarChart = ({
         }}
       />
       <ResponsiveContainer width={"100%"} height={400}>
-        <BarChart width={730} height={400} data={renderData} stackOffset="sign">
+        <BarChart width={730} height={400} data={renderData} stackOffset="sign" margin={margin}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis
             dataKey={xAxisDataKey}
@@ -189,7 +190,6 @@ export const SignedStackedBarChart = ({
                 barSize={70}
                 onMouseOver={onBarMouseOver(bdIndex)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
-                minPointSize={20}
               >
                 <LabelList
                   dataKey={bdItem.key}

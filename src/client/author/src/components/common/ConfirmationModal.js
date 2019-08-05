@@ -32,6 +32,7 @@ export const ConfirmationModal = styled(Modal)`
         font-size: 16px;
         color: ${titleColor};
       }
+      margin-top: ${props => (!props.title ? "30px" : 0)};
     }
     .ant-modal-footer {
       border: none;

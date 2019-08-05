@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, difference, get } from "lodash";
+import { cloneDeep, get, difference } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, QuestionNumberLabel } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, CLEAR, CHECK, SHOW, EDIT } from "../../constants/constantsForQuestions";
@@ -11,7 +11,7 @@ import BlockContainer from "./styled/BlockContainer";
 import { Svg } from "./styled/Svg";
 import { Polygon } from "./styled/Polygon";
 import { getFontSize } from "../../utils/helpers";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper } from "./styled/QustionNumber";
 import { ImageContainer } from "./styled/ImageContainer";
 
 const HotspotPreview = ({
@@ -22,29 +22,16 @@ const HotspotPreview = ({
   userAnswer,
   previewTab,
   showQuestionNumber,
-  qIndex,
-  disableResponse
+  disableResponse,
+  changePreviewTab
 }) => {
   const { areas, area_attributes, image, validation, multiple_responses, previewAreas } = item;
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const maxWidth = get(item, "max_width", 900);
 
-  const [isCheck, setIsCheck] = useState(false);
-
   const width = image ? image.width : 900;
   const height = image ? image.height : 470;
   const source = image ? image.source : "";
-
-  useEffect(() => {
-    if (previewTab === CLEAR && view !== EDIT && isCheck) {
-      saveAnswer([]);
-    }
-    if (previewTab === CHECK) {
-      setIsCheck(true);
-    } else {
-      setIsCheck(false);
-    }
-  }, [previewTab]);
 
   const handleClick = i => () => {
     const newAnswer = cloneDeep(userAnswer);
@@ -53,8 +40,11 @@ const HotspotPreview = ({
     } else {
       newAnswer.push(i);
     }
-
     saveAnswer(multiple_responses ? (newAnswer.length > 0 ? newAnswer : userAnswer) : [i]);
+
+    if (previewTab === CHECK || previewTab === SHOW) {
+      changePreviewTab(CLEAR);
+    }
   };
 
   const validAnswer = validation && validation.valid_response && validation.valid_response.value;
@@ -79,7 +69,7 @@ const HotspotPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         {view === PREVIEW && !smallSize && (
           <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         )}
@@ -143,8 +133,8 @@ HotspotPreview.propTypes = {
   previewTab: PropTypes.string,
   userAnswer: PropTypes.array,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 HotspotPreview.defaultProps = {
@@ -152,7 +142,6 @@ HotspotPreview.defaultProps = {
   smallSize: false,
   userAnswer: [],
   showQuestionNumber: false,
-  qIndex: null,
   disableResponse: false
 };
 

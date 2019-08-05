@@ -1,7 +1,7 @@
 import { takeEvery, put, all, select, call } from "redux-saga/effects";
 import { message } from "antd";
 import { testItemsApi } from "@edulastic/api";
-import { getCurrentGroup } from "../../student/Login/ducks";
+import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 
 import { getQuestionIds } from "./items";
 // actions
@@ -9,10 +9,10 @@ import {
   CHECK_ANSWER_EVALUATION,
   ADD_ITEM_EVALUATION,
   CLEAR_ITEM_EVALUATION,
-  CHANGE_PREVIEW,
   COUNT_CHECK_ANSWER
 } from "../constants/actions";
 import { itemQuestionsSelector, answersForCheck } from "../selectors/test";
+import { CHANGE_PREVIEW, CHANGE_VIEW } from "../../author/src/constants/actions";
 
 function* evaluateAnswers() {
   try {
@@ -24,7 +24,7 @@ function* evaluateAnswers() {
     const allAnswers = yield select(answersForCheck);
     const answerIds = Object.keys(allAnswers);
     const userResponse = {};
-    const groupId = yield select(getCurrentGroup);
+    const groupId = yield select(getCurrentGroupWithAllClasses);
     const testActivityId = yield select(state => state.test && state.test.testActivityId);
     answerIds.forEach(id => {
       if (questionIds.includes(id)) {
@@ -53,7 +53,7 @@ function* evaluateAnswers() {
       //TODO timeSpent:{}
     };
     if (userWork) activity.userWork = userWork;
-    const result = yield call(testItemsApi.evaluation, testItemId, activity);
+    const { evaluations } = yield call(testItemsApi.evaluation, testItemId, activity);
 
     yield put({
       type: CHANGE_PREVIEW,
@@ -61,28 +61,26 @@ function* evaluateAnswers() {
         view: "check"
       }
     });
-
     yield put({
-      type: ADD_ITEM_EVALUATION,
+      type: CHANGE_VIEW,
       payload: {
-        ...result
+        view: "preview"
       }
     });
 
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
-        ...result.evaluations
+        ...evaluations
       }
     });
+
     yield put({
       type: COUNT_CHECK_ANSWER,
       payload: {
         itemId: testItemId
       }
     });
-    const msg = `score: ${+result.score.toFixed(2)} / ${result.maxScore}`;
-    yield call(message.success, msg, 0.5);
   } catch (err) {
     if (err.status === 403) message.error("Check answer limit exceeded for the item");
     else message.error("Check answer failed");

@@ -1,13 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { IconEdit, IconLayout, IconMath, IconNewList, IconSelection, IconTarget } from "@edulastic/icons";
 import { Container, AddNewButton, TextWrapper } from "./styled";
 
-const AddNew = ({ onClick, t }) => (
+const AddNew = ({ onClick, t, isAddFirstPart }) => (
   <Container>
     <AddNewButton onClick={onClick}>
-      <TextWrapper>+ {t("component.itemDetail.addNew")}</TextWrapper>
+      <TextWrapper>
+        + {isAddFirstPart ? t("component.itemDetail.addFirstPart") : t("component.itemDetail.addNew")}
+      </TextWrapper>
       <IconNewList />
       <IconSelection />
       <IconLayout />
@@ -23,4 +26,6 @@ AddNew.propTypes = {
   t: PropTypes.func.isRequired
 };
 
-export default withNamespaces("author")(AddNew);
+const enhance = compose(withNamespaces("author"));
+
+export default enhance(AddNew);

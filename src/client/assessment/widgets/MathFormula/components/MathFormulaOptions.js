@@ -1,167 +1,179 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { cloneDeep, findIndex } from "lodash";
+import { cloneDeep, findIndex, isObject } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { evaluationType, questionType } from "@edulastic/constants";
+import { MathKeyboard } from "@edulastic/common";
 
 import Layout from "./Layout";
 import ResponseContainers from "./ResponseContainers";
-import TextBlocks from "./TextBlocks";
+import CustomKeys from "./CustomKeys";
 
 import WidgetOptions from "../../../containers/WidgetOptions";
 import Extras from "../../../containers/Extras";
 import KeyPadOptions from "../../../components/KeyPadOptions";
 
-class MathFormulaOptions extends Component {
-  render() {
-    const {
-      onChange,
-      uiStyle,
-      t,
-      responseContainers,
-      textBlocks,
-      item,
-      fillSections,
-      cleanSections,
-      advancedAreOpen
-    } = this.props;
-
-    const changeResponseContainers = ({ index, prop, value }) => {
-      const newContainers = cloneDeep(responseContainers);
-      const ind = findIndex(newContainers, cont => cont.index === index);
-      if (ind !== -1) {
-        newContainers[ind][prop] = value;
-        onChange("response_containers", newContainers);
+const MathFormulaOptions = ({
+  onChange,
+  uiStyle,
+  t,
+  responseContainers,
+  customKeys,
+  item,
+  fillSections,
+  cleanSections,
+  advancedAreOpen,
+  setKeyPadOffest
+}) => {
+  useEffect(() => {
+    if (item.showDropdown) {
+      const keypadMode = item.symbols[0];
+      if (isObject(keypadMode)) {
+        return;
       }
-    };
+      const _keys = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(btn => btn.label);
+      onChange("custom_keys", _keys);
+    }
+  }, [item.showDropdown, item.symbols]);
+  const changeCustomKey = ({ index, value }) => {
+    const newCustomKeys = cloneDeep(customKeys);
+    newCustomKeys[index] = value;
+    onChange("custom_keys", newCustomKeys);
+  };
 
-    const addResponseContainer = () => {
-      const { response_ids: responseIds } = item;
-      const ind = responseContainers.length;
-      let obj = {};
-      outerLoop: if (!!responseIds) {
-        for (const key in responseIds) {
-          const responses = responseIds[key];
-          for (const response of responses) {
-            if (response.index === ind) {
-              obj = { ...response };
-              break outerLoop;
-            }
+  const addCustomKey = () => {
+    onChange("custom_keys", [...customKeys, ""]);
+  };
+
+  const deleteCustomKey = index => {
+    const newCustomKeys = cloneDeep(customKeys);
+    newCustomKeys.splice(index, 1);
+    onChange("custom_keys", newCustomKeys);
+  };
+
+  const scoringTypes = [
+    {
+      value: evaluationType.EXACT_MATCH,
+      label: t("component.math.exactMatch")
+    }
+  ];
+
+  if (item && item.type === questionType.EXPRESSION_MULTIPART) {
+    scoringTypes.push({
+      value: evaluationType.PARTIAL_MATCH,
+      label: t("component.math.partialMatch")
+    });
+  }
+
+  const addResponseContainer = () => {
+    const { response_ids: responseIds } = item;
+    const ind = responseContainers.length;
+    let obj = {};
+    // eslint-disable-next-line no-labels
+    outerLoop: if (responseIds) {
+      // eslint-disable-next-line guard-for-in
+      for (const key in responseIds) {
+        const responses = responseIds[key];
+        for (const response of responses) {
+          if (response.index === ind) {
+            obj = { ...response };
+            // eslint-disable-next-line no-labels
+            break outerLoop;
           }
         }
       }
-      onChange("response_containers", [...responseContainers, obj]);
-    };
-
-    const deleteResponseContainer = index => {
-      const newContainers = cloneDeep(responseContainers);
-      newContainers.splice(index, 1);
-      onChange("response_containers", newContainers);
-    };
-
-    const changeTextBlock = ({ index, value }) => {
-      const newBlocks = cloneDeep(textBlocks);
-      newBlocks[index] = value;
-      onChange("text_blocks", newBlocks);
-    };
-
-    const addTextBlock = () => {
-      onChange("text_blocks", [...textBlocks, ""]);
-    };
-
-    const deleteTextBlock = index => {
-      const newBlocks = cloneDeep(textBlocks);
-      newBlocks.splice(index, 1);
-      onChange("text_blocks", newBlocks);
-    };
-
-    const scoringTypes = [
-      {
-        value: evaluationType.EXACT_MATCH,
-        label: t("component.math.exactMatch")
-      }
-    ];
-
-    if (item && item.type === questionType.EXPRESSION_MULTIPART) {
-      scoringTypes.push({
-        value: evaluationType.PARTIAL_MATCH,
-        label: t("component.math.partialMatch")
-      });
     }
+    onChange("response_containers", [...responseContainers, obj]);
+  };
 
-    return (
-      <WidgetOptions
-        scoringTypes={scoringTypes}
+  const changeResponseContainers = ({ index, prop, value }) => {
+    const newContainers = cloneDeep(responseContainers);
+    const ind = findIndex(newContainers, cont => cont.index === index);
+    if (ind !== -1) {
+      newContainers[ind][prop] = value;
+      onChange("response_containers", newContainers);
+    }
+  };
+
+  const deleteResponseContainer = index => {
+    const newContainers = cloneDeep(responseContainers);
+    newContainers.splice(index, 1);
+    onChange("response_containers", newContainers);
+  };
+  return (
+    <WidgetOptions
+      scoringTypes={scoringTypes}
+      advancedAreOpen={advancedAreOpen}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+    >
+      <Layout
+        onChange={onChange}
+        uiStyle={uiStyle}
+        responseContainers={responseContainers}
+        item={item}
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
-      >
-        <Layout
-          onChange={onChange}
-          uiStyle={uiStyle}
-          responseContainers={responseContainers}
-          textBlocks={textBlocks}
-          item={item}
-          advancedAreOpen={advancedAreOpen}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
+      />
 
-        <ResponseContainers
-          containers={responseContainers}
-          onChange={changeResponseContainers}
-          onAdd={addResponseContainer}
-          onDelete={deleteResponseContainer}
-          advancedAreOpen={advancedAreOpen}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
+      <ResponseContainers
+        containers={responseContainers}
+        onChange={changeResponseContainers}
+        onAdd={addResponseContainer}
+        onDelete={deleteResponseContainer}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-        <KeyPadOptions
-          onChange={onChange}
-          item={item}
-          advancedAreOpen={advancedAreOpen}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
+      <KeyPadOptions
+        onChange={onChange}
+        setKeyPadOffest={setKeyPadOffest}
+        item={item}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        renderExtra={
+          <CustomKeys
+            blocks={customKeys}
+            onChange={changeCustomKey}
+            onAdd={addCustomKey}
+            onDelete={deleteCustomKey}
+            advancedAreOpen={advancedAreOpen}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+        }
+      />
 
-        <TextBlocks
-          blocks={textBlocks}
-          onChange={changeTextBlock}
-          onAdd={addTextBlock}
-          onDelete={deleteTextBlock}
-          advancedAreOpen={advancedAreOpen}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
-
-        <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
-      </WidgetOptions>
-    );
-  }
-}
+      <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
+        <Extras.Distractors />
+        <Extras.Hints />
+      </Extras>
+    </WidgetOptions>
+  );
+};
 
 MathFormulaOptions.propTypes = {
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   responseContainers: PropTypes.array,
   t: PropTypes.func.isRequired,
-  textBlocks: PropTypes.array,
+  customKeys: PropTypes.array,
   uiStyle: PropTypes.object,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
+  setKeyPadOffest: PropTypes.func, // this needs only for units types
   cleanSections: PropTypes.func
 };
 
 MathFormulaOptions.defaultProps = {
   responseContainers: [],
-  textBlocks: [],
+  customKeys: [],
   uiStyle: {
     type: "standard",
     fontsize: "normal",
@@ -170,6 +182,7 @@ MathFormulaOptions.defaultProps = {
     choice_label: "number"
   },
   advancedAreOpen: false,
+  setKeyPadOffest: () => null,
   fillSections: () => {},
   cleanSections: () => {}
 };

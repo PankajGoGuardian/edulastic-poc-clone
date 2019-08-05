@@ -137,6 +137,62 @@ const fetchQuestionAnalysisReport = params => {
   });
 };
 
+const fetchMARFilterData = params => {
+  return api.callApi({
+    url: `/report/filter/multiple-assessment`,
+    params
+  });
+};
+
+const fetchPeerProgressAnalysisReport = params => {
+  return api.callApi({
+    url: `/report/peer-progress-analysis`,
+    params
+  });
+};
+
+const fetchStudentProgressReport = params => {
+  return api.callApi({
+    url: `/report/student-progress`,
+    params
+  });
+};
+
+const fetchPerformanceOverTimeReport = params => {
+  return api.callApi({
+    url: `/report/performance-over-time`,
+    params
+  });
+};
+
+const fetchSPRFilterData = params => {
+  return api.callApi({
+    url: `/report/filter/student-profile`,
+    params
+  });
+};
+
+const fetchStudentMasteryProfileReport = params => {
+  return api.callApi({
+    url: `/report/student-mastery-profile`,
+    params
+  });
+};
+
+const fetchStudentAssessmentProfileReport = params => {
+  return api.callApi({
+    url: `/report/student-assessment-performance`,
+    params
+  });
+};
+
+const fetchStudentProfileSummaryReport = params => {
+  return api.callApi({
+    url: `/report/student-profile-summary`,
+    params
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -149,9 +205,17 @@ export default {
   fetchPerformanceByStandard,
   fetchPerformanceByStudentsReport,
   fetchSARFilterData,
+  fetchMARFilterData,
+  fetchSPRFilterData,
   fetchStandardsGradebookReport,
   fetchStandardsPerformanceSummaryReport,
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,
-  fetchQuestionAnalysisReport
+  fetchQuestionAnalysisReport,
+  fetchPeerProgressAnalysisReport,
+  fetchStudentProgressReport,
+  fetchPerformanceOverTimeReport,
+  fetchStudentMasteryProfileReport,
+  fetchStudentAssessmentProfileReport,
+  fetchStudentProfileSummaryReport
 };

@@ -980,7 +980,7 @@ function* addWidgetToPassage({ payload }) {
             heading: "",
             summary: "",
             transcript: "",
-            ui_style: {
+            uiStyle: {
               width: 480,
               height: 270,
               posterImage: "",

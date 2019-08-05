@@ -1157,7 +1157,7 @@ export const getCards = onSelectQuestionType => {
           showborder: true,
           isSnapFitValues: true
         },
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom"

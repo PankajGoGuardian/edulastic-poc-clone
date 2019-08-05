@@ -42,8 +42,8 @@ const TableLayout = ({
     }
   };
   const responses = item.group_possible_responses
-    ? item.possible_response_groups.flatMap(group => group.responses)
-    : item.possible_responses;
+    ? item.possibleResponseGroups.flatMap(group => group.responses)
+    : item.possibleResponses;
   const columnTitles = [];
   for (let index = 0; index < colCount; index++) {
     columnTitles.push(

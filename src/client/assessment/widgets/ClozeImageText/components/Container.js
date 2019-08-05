@@ -39,7 +39,7 @@ const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
         placeholder: "",
         id: _response.id
       };
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });
@@ -50,7 +50,7 @@ const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
     const item = responsecontainerindividuals[index];
     item[prop] = value;
     responsecontainerindividuals[index] = item;
-    onChange("ui_style", {
+    onChange("uiStyle", {
       ...uiStyle,
       responsecontainerindividuals
     });
@@ -58,7 +58,7 @@ const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
 
   const removeIndividual = index => {
     responsecontainerindividuals[index] = {};
-    onChange("ui_style", {
+    onChange("uiStyle", {
       ...uiStyle,
       responsecontainerindividuals
     });

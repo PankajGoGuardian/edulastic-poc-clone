@@ -72,11 +72,11 @@ const EditClassification = ({
   const {
     firstMount,
     shuffleOptions,
-    transparent_possible_responses,
-    transparent_background_image = true,
-    duplicate_responses,
+    transparentPossibleResponses,
+    transparentBackgroundImage = true,
+    duplicateResponses,
     imageOptions,
-    uiStyle: { show_drag_handle }
+    uiStyle: { showDragHandle }
   } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
@@ -142,7 +142,7 @@ const EditClassification = ({
     setQuestionData(
       produce(item, draft => {
         draft[prop] = uiStyle;
-        if (prop === "duplicate_responses" && uiStyle === false) {
+        if (prop === "duplicateResponses" && uiStyle === false) {
           const colCount = draft.uiStyle.columnCount;
           const rowCount = draft.uiStyle.rowCount;
           const initialLength = (colCount || 2) * (rowCount || 1);
@@ -569,15 +569,15 @@ const EditClassification = ({
           <div style={{ marginTop: 20 }}>
             <Checkbox
               className="additional-options"
-              onChange={() => onUiChange("show_drag_handle")(!show_drag_handle)}
+              onChange={() => onUiChange("showDragHandle")(!showDragHandle)}
               label={t("component.cloze.imageDragDrop.showdraghandle")}
-              checked={!!show_drag_handle}
+              checked={!!showDragHandle}
             />
             <Checkbox
               className="additional-options"
-              onChange={() => handleItemChangeChange("duplicate_responses", !duplicate_responses)}
+              onChange={() => handleItemChangeChange("duplicateResponses", !duplicateResponses)}
               label={t("component.cloze.imageDragDrop.duplicatedresponses")}
-              checked={!!duplicate_responses}
+              checked={!!duplicateResponses}
             />
             <Checkbox
               className="additional-options"
@@ -587,15 +587,15 @@ const EditClassification = ({
             />
             <Checkbox
               className="additional-options"
-              onChange={() => handleItemChangeChange("transparent_possible_responses", !transparent_possible_responses)}
+              onChange={() => handleItemChangeChange("transparentPossibleResponses", !transparentPossibleResponses)}
               label={t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-              checked={!!transparent_possible_responses}
+              checked={!!transparentPossibleResponses}
             />
             <Checkbox
               className="additional-options"
-              onChange={() => handleItemChangeChange("transparent_background_image", !transparent_background_image)}
+              onChange={() => handleItemChangeChange("transparentBackgroundImage", !transparentBackgroundImage)}
               label={t("component.cloze.imageDragDrop.transparentbackgroundimage")}
-              checked={!!transparent_background_image}
+              checked={!!transparentBackgroundImage}
             />
           </div>
         </Question>

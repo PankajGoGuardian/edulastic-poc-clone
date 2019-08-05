@@ -48,7 +48,6 @@ class ClozeImageDragDrop extends Component {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);
     const item = view === EDIT ? templateItem : itemForPreview;
-
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
     const previewDisplayOptions = item.options;
@@ -66,6 +65,7 @@ class ClozeImageDragDrop extends Component {
         validation: templateItem.validation
       };
     }
+
     return {
       previewStimulus,
       previewDisplayOptions,

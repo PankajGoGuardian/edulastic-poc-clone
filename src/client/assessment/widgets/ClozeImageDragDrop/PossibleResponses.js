@@ -57,8 +57,8 @@ class PossibleResponses extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.validation.validResponse.value.forEach(arr => {
-          if (arr.includes(draft.options[index])) {
-            arr.splice(arr.indexOf(draft.options[index]), 1);
+          if (arr.value.includes(draft.options[index])) {
+            arr.value.splice(arr.value.indexOf(draft.options[index]), 1);
           }
         });
 
@@ -82,15 +82,15 @@ class PossibleResponses extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.validation.validResponse.value.forEach(arr => {
-          if (arr.includes(draft.options[index])) {
-            arr.splice(arr.indexOf(draft.options[index]), 1);
+          if (arr.value.includes(draft.options[index])) {
+            arr.value.splice(arr.value.indexOf(draft.options[index]), 1);
           }
         });
 
         draft.validation.altResponses.forEach(overArr => {
           overArr.value.forEach(arr => {
             if (arr.value.includes(draft.options[index])) {
-              arr.value.splice(arr.indexOf(draft.options[index]), 1, value);
+              arr.value.splice(arr.value.indexOf(draft.options[index]), 1, value);
             }
           });
         });

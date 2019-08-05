@@ -387,7 +387,6 @@ class Display extends Component {
     const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
     const cAnswers = get(item, "validation.validResponse.value", []);
-
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);

@@ -29,12 +29,12 @@ class Answers extends Component {
     const handleAddAnswer = () => {
       setQuestionData(
         produce(item, draft => {
-          if (!draft.validation.alt_responses) {
-            draft.validation.alt_responses = [];
+          if (!draft.validation.altResponses) {
+            draft.validation.altResponses = [];
           }
-          draft.validation.alt_responses.push({
+          draft.validation.altResponses.push({
             score: 1,
-            value: item.validation.valid_response.value.map(() => null)
+            value: item.validation.validResponse.value.map(() => null)
           });
         })
       );
@@ -47,12 +47,12 @@ class Answers extends Component {
           let findIndex;
           let value;
 
-          if (field === "valid_response") {
-            value = draft.validation.valid_response.value[rowIndex];
+          if (field === "validResponse") {
+            value = draft.validation.validResponse.value[rowIndex];
           }
 
-          if (field === "alt_responses") {
-            value = draft.validation.alt_responses[altIndex].value[rowIndex];
+          if (field === "altResponses") {
+            value = draft.validation.altResponses[altIndex].value[rowIndex];
           }
 
           if (value) {
@@ -61,19 +61,19 @@ class Answers extends Component {
 
           if (!checked) {
             value.splice(findIndex, 1);
-          } else if (!value || !draft.multiple_responses) {
+          } else if (!value || !draft.multipleResponses) {
             value = [];
             value.push(columnIndex);
           } else {
             value.push(columnIndex);
           }
 
-          if (field === "valid_response") {
-            draft.validation.valid_response.value[rowIndex] = value;
+          if (field === "validResponse") {
+            draft.validation.validResponse.value[rowIndex] = value;
           }
 
-          if (field === "alt_responses") {
-            draft.validation.alt_responses[altIndex].value[rowIndex] = value;
+          if (field === "altResponses") {
+            draft.validation.altResponses[altIndex].value[rowIndex] = value;
           }
         })
       );
@@ -82,7 +82,7 @@ class Answers extends Component {
     const handleChangeValidPoints = points => {
       setQuestionData(
         produce(item, draft => {
-          draft.validation.valid_response.score = points;
+          draft.validation.validResponse.score = points;
         })
       );
     };
@@ -90,7 +90,7 @@ class Answers extends Component {
     const handleChangeAltPoints = (points, i) => {
       setQuestionData(
         produce(item, draft => {
-          draft.validation.alt_responses[i].score = points;
+          draft.validation.altResponses[i].score = points;
         })
       );
     };
@@ -108,13 +108,13 @@ class Answers extends Component {
       const { checked } = e.target;
       setQuestionData(
         produce(item, draft => {
-          draft.multiple_responses = checked;
+          draft.multipleResponses = checked;
 
           if (!checked) {
-            draft.validation.valid_response.value = reduceResponse(draft.validation.valid_response.value);
+            draft.validation.validResponse.value = reduceResponse(draft.validation.validResponse.value);
 
-            if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-              draft.validation.alt_responses.map(res => {
+            if (draft.validation.altResponses && draft.validation.altResponses.length) {
+              draft.validation.altResponses.map(res => {
                 res.value = reduceResponse(res.value);
                 return res;
               });
@@ -127,7 +127,7 @@ class Answers extends Component {
     const handleCloseTab = tabIndex => {
       setQuestionData(
         produce(item, draft => {
-          draft.validation.alt_responses.splice(tabIndex, 1);
+          draft.validation.altResponses.splice(tabIndex, 1);
         })
       );
 
@@ -136,7 +136,7 @@ class Answers extends Component {
 
     const renderOptions = () => (
       <FlexContainer style={{ marginTop: 20 }}>
-        <Checkbox data-cy="multi" onChange={handleChangeMultiple} checked={item.multiple_responses}>
+        <Checkbox data-cy="multi" onChange={handleChangeMultiple} checked={item.multipleResponses}>
           {t("component.matrix.multipleResponses")}
         </Checkbox>
       </FlexContainer>
@@ -159,30 +159,30 @@ class Answers extends Component {
               <MatrixWithPoints
                 stems={item.stems}
                 options={item.options}
-                uiStyle={item.ui_style}
-                response={item.validation.valid_response}
-                isMultiple={item.multiple_responses}
-                onCheck={handleCheck("valid_response")}
-                points={item.validation.valid_response.score}
+                uiStyle={item.uiStyle}
+                response={item.validation.validResponse}
+                isMultiple={item.multipleResponses}
+                onCheck={handleCheck("validResponse")}
+                points={item.validation.validResponse.score}
                 onChangePoints={points => handleChangeValidPoints(points)}
                 data-cy="points"
               />
             </div>
           )}
-          {item.validation.alt_responses &&
-            !!item.validation.alt_responses.length &&
-            item.validation.alt_responses.map((alter, i) => {
+          {item.validation.altResponses &&
+            !!item.validation.altResponses.length &&
+            item.validation.altResponses.map((alter, i) => {
               if (i + 1 === correctTab) {
                 return (
                   <MatrixWithPoints
                     key={i}
                     stems={item.stems}
                     options={item.options}
-                    uiStyle={item.ui_style}
-                    response={item.validation.alt_responses[i]}
-                    isMultiple={item.multiple_responses}
-                    onCheck={handleCheck("alt_responses", i)}
-                    points={item.validation.alt_responses[i].score}
+                    uiStyle={item.uiStyle}
+                    response={item.validation.altResponses[i]}
+                    isMultiple={item.multipleResponses}
+                    onCheck={handleCheck("altResponses", i)}
+                    points={item.validation.altResponses[i].score}
                     onChangePoints={points => handleChangeAltPoints(points, i)}
                   />
                 );

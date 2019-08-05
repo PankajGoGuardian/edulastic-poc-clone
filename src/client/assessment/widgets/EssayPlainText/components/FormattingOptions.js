@@ -34,20 +34,20 @@ class FormattingOptions extends Component {
         <Subtitle>{t("component.essayText.plain.formattingOptions")}</Subtitle>
         <FlexContainer childMarginRight={100}>
           <AdaptiveCheckbox
-            defaultChecked={item.show_copy}
-            onChange={e => handleItemChangeChange("show_copy", e.target.checked)}
+            defaultChecked={item.showCopy}
+            onChange={e => handleItemChangeChange("showCopy", e.target.checked)}
           >
             {t("component.essayText.copy")}
           </AdaptiveCheckbox>
           <AdaptiveCheckbox
-            defaultChecked={item.show_cut}
-            onChange={e => handleItemChangeChange("show_cut", e.target.checked)}
+            defaultChecked={item.showCut}
+            onChange={e => handleItemChangeChange("showCut", e.target.checked)}
           >
             {t("component.essayText.cut")}
           </AdaptiveCheckbox>
           <AdaptiveCheckbox
-            defaultChecked={item.show_paste}
-            onChange={e => handleItemChangeChange("show_paste", e.target.checked)}
+            defaultChecked={item.showPaste}
+            onChange={e => handleItemChangeChange("showPaste", e.target.checked)}
           >
             {t("component.essayText.paste")}
           </AdaptiveCheckbox>

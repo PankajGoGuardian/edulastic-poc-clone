@@ -26,8 +26,8 @@ const HotspotPreview = ({
   evaluation,
   changePreviewTab
 }) => {
-  const { areas, area_attributes, image, validation, multiple_responses, previewAreas } = item;
-  const fontSize = getFontSize(get(item, "ui_style.fontsize"));
+  const { areas, areaAttributes, image, validation, multipleResponses, previewAreas } = item;
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
   const maxWidth = get(item, "max_width", 900);
 
   const width = image ? image.width : 900;
@@ -41,28 +41,28 @@ const HotspotPreview = ({
     } else {
       newAnswer.push(i);
     }
-    saveAnswer(multiple_responses ? (newAnswer.length > 0 ? newAnswer : userAnswer) : [i]);
+    saveAnswer(multipleResponses ? (newAnswer.length > 0 ? newAnswer : userAnswer) : [i]);
 
     if (previewTab === CHECK || previewTab === SHOW) {
       changePreviewTab(CLEAR);
     }
   };
 
-  const validAnswer = validation && validation.valid_response && validation.valid_response.value;
-  const altAnswers = (validation && validation.alt_responses) || [];
+  const validAnswer = validation && validation.validResponse && validation.validResponse.value;
+  const altAnswers = (validation && validation.altResponses) || [];
 
   const getStyles = i => ({
-    fill: area_attributes.local.find(attr => attr.area === i)
-      ? area_attributes.local.find(attr => attr.area === i).fill
-      : area_attributes.global.fill,
-    stroke: area_attributes.local.find(attr => attr.area === i)
-      ? area_attributes.local.find(attr => attr.area === i).stroke
-      : area_attributes.global.stroke
+    fill: areaAttributes.local.find(attr => attr.area === i)
+      ? areaAttributes.local.find(attr => attr.area === i).fill
+      : areaAttributes.global.fill,
+    stroke: areaAttributes.local.find(attr => attr.area === i)
+      ? areaAttributes.local.find(attr => attr.area === i).stroke
+      : areaAttributes.global.stroke
   });
 
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -143,8 +143,8 @@ const HotspotPreview = ({
                 key={i}
                 onClick={handleClick(i)}
                 points={areaPreviewPoints.map(point => `${point.x},${point.y}`).join(" ")}
-                fill={area_attributes.global.fill}
-                stroke={area_attributes.global.stroke}
+                fill={areaAttributes.global.fill}
+                stroke={areaAttributes.global.stroke}
               />
             ))}
           </Svg>

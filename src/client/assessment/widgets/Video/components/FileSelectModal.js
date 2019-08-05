@@ -13,7 +13,7 @@ import { uploadToS3, beforeUpload } from "@edulastic/common";
 
 const FileSelectModal = ({
   onCancel,
-  item: { ui_style: uiStyle },
+  item: { uiStyle: uiStyle },
   item,
   setQuestionData,
   modalSettings: { modalName },
@@ -150,7 +150,7 @@ FileSelectModal.propTypes = {
     heading: PropTypes.string.isRequired,
     summary: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
-    ui_style: PropTypes.shape({
+    uiStyle: PropTypes.shape({
       width: PropTypes.number.isRequired,
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,

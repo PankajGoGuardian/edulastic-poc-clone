@@ -34,9 +34,9 @@ class MultipleChoiceOptions extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.stems.splice(index, 1);
-          draft.validation.valid_response.value.splice(index, 1);
+          draft.validation.validResponse.value.splice(index, 1);
 
-          draft.validation.alt_responses = draft.validation.alt_responses.map(ans => {
+          draft.validation.altResponses = draft.validation.altResponses.map(ans => {
             ans.value.splice(index, 1);
             return ans;
           });
@@ -57,9 +57,9 @@ class MultipleChoiceOptions extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.stems.push("");
-          draft.validation.valid_response.value.push(null);
+          draft.validation.validResponse.value.push(null);
 
-          draft.validation.alt_responses = draft.validation.alt_responses.map(ans => {
+          draft.validation.altResponses = draft.validation.altResponses.map(ans => {
             ans.value.push(null);
             return ans;
           });

@@ -13,7 +13,7 @@ import { QuestionTitleWrapper } from "../styled/QustionNumber";
 const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLines, showQuestionNumber, qIndex }) => {
   return (
     <MathEssayInputWrapper>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
         <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
@@ -21,8 +21,8 @@ const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLi
 
       <MathEssayInput
         item={item}
-        textFormattingOptions={item.ui_style && item.ui_style.text_formatting_options}
-        uiStyle={item.ui_style}
+        textFormattingOptions={item.uiStyle && item.uiStyle.textFormattingOptions}
+        uiStyle={item.uiStyle}
         value={item.template}
         lines={lines}
         setLines={setLines}

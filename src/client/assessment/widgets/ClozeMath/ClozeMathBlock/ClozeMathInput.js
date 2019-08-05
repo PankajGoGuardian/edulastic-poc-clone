@@ -204,7 +204,7 @@ class ClozeMathInput extends React.Component {
     const { maths: _userAnwers = [] } = answers;
 
     const {
-      response_ids: { maths }
+      responseIds: { maths }
     } = item;
     const { index } = find(maths, res => res.id === id) || {};
 
@@ -240,7 +240,7 @@ class ClozeMathInput extends React.Component {
     const { response_containers, item, uiStyles = {} } = resprops;
     const { showKeyboard, keyboardStyles } = this.state;
     const response = find(response_containers, cont => cont.id === id);
-    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "custom_keys", []);
@@ -279,7 +279,7 @@ const MathInput = ({ resprops = {}, id }) => {
   const { response_containers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(response_containers, cont => cont.id === id);
-  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
   const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
 
   return checked ? (

@@ -45,13 +45,13 @@ const groupChoiceById = answers => {
 const mixAndMatchEvaluator = ({ userResponse, validation }) => {
   const responses = createAnswerObject(userResponse);
 
-  const answers = [validation.valid_response, ...(validation.alt_responses || [])];
+  const answers = [validation.validResponse, ...(validation.altResponses || [])];
   const maxScore = max(answers.map(i => i.score));
   const evaluation = {};
   const answersById = groupChoiceById(answers);
-  const optionCount = get(validation, "valid_response.value.length", 0);
+  const optionCount = get(validation, "validResponse.value.length", 0);
   let score = 0;
-  const questionScore = get(validation, "valid_response.score", 1);
+  const questionScore = get(validation, "validResponse.score", 1);
   for (const id of Object.keys(responses)) {
     const answerSet = answersById[id];
     const userResp = responses[id];
@@ -64,7 +64,7 @@ const mixAndMatchEvaluator = ({ userResponse, validation }) => {
   const correctAnswerCount = Object.values(evaluation).filter(identity).length;
   const wrongAnswerCount = Object.values(evaluation).filter(i => !i).length;
 
-  if (validation.scoring_type === "partialMatch") {
+  if (validation.scoringType === "partialMatch") {
     score = (correctAnswerCount / optionCount) * questionScore;
     if (validation.penalty) {
       const penalty = validation.penalty * wrongAnswerCount;
@@ -86,7 +86,7 @@ const mixAndMatchEvaluator = ({ userResponse, validation }) => {
 const normalEvaluator = ({ userResponse, validation }) => {
   const responses = createAnswerObject(userResponse);
 
-  const answers = [validation.valid_response, ...(validation.alt_responses || [])];
+  const answers = [validation.validResponse, ...(validation.altResponses || [])];
   const evaluations = [];
   const maxScore = max(answers.map(i => i.score));
 
@@ -107,7 +107,7 @@ const normalEvaluator = ({ userResponse, validation }) => {
     const correctAnswerCount = Object.values(currentEvaluation).filter(identity).length;
 
     // if scoring type is "partialMatch", calculate the partial score
-    if (validation.scoring_type === "partialMatch") {
+    if (validation.scoringType === "partialMatch") {
       const questionScore = answer.score;
       currentScore = questionScore * (correctAnswerCount / answer.value.length);
       // if penalty is present
@@ -132,8 +132,8 @@ const normalEvaluator = ({ userResponse, validation }) => {
   const evaluation = correct.score === 0 ? evaluations[0] : correct;
 
   // if score for attempting is present
-  if (validation.min_score_if_attempted && evaluation.score < validation.min_score_if_attempted) {
-    evaluation.score = validation.min_score_if_attempted;
+  if (validation.minScoreIfAttempted && evaluation.score < validation.minScoreIfAttempted) {
+    evaluation.score = validation.minScoreIfAttempted;
   }
 
   return {

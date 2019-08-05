@@ -82,7 +82,7 @@ class Layout extends Component {
     const { onChange, uiStyle, advancedAreOpen, t, fillSections, cleanSections, responses } = this.props;
     const { responsecontainerindividuals = [] } = uiStyle;
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });

@@ -58,7 +58,7 @@ class TemplateMarkup extends Component {
     const reudceValidations = (responseIds, validation) => {
       const _validation = cloneDeep(validation);
       const _responseIds = cloneDeep(responseIds);
-      const validResponses = _validation.valid_response.value;
+      const validResponses = _validation.validResponse.value;
 
       // remove deleted dropdown answer
       validResponses.map((answer, i) => {
@@ -83,13 +83,13 @@ class TemplateMarkup extends Component {
         }
       });
       validResponses.sort((a, b) => a.index - b.index);
-      _validation.valid_response.value = validResponses;
+      _validation.validResponse.value = validResponses;
 
       // reduce alternate answers
-      if (isArray(_validation.alt_responses)) {
-        _validation.alt_responses.map(altAnswers => {
-          if (_validation.valid_response.value.length > altAnswers.value.length) {
-            altAnswers.value.push(last(_validation.valid_response.value));
+      if (isArray(_validation.altResponses)) {
+        _validation.altResponses.map(altAnswers => {
+          if (_validation.validResponse.value.length > altAnswers.value.length) {
+            altAnswers.value.push(last(_validation.validResponse.value));
           }
           altAnswers.value.map((altAnswer, index) => {
             const isExist = find(_responseIds, response => response.id === altAnswer.id);
@@ -107,8 +107,8 @@ class TemplateMarkup extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.stimulus = stimulus;
-        draft.response_ids = reduceResponseIds(stimulus);
-        draft.validation = reudceValidations(draft.response_ids, draft.validation);
+        draft.responseIds = reduceResponseIds(stimulus);
+        draft.validation = reudceValidations(draft.responseIds, draft.validation);
         updateVariables(draft);
       })
     );

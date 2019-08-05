@@ -9,8 +9,8 @@ const createShowAnswerResult = async (questions, answers) => {
     const evaluator = evaluators[question.type];
     let answer = answers[id];
     if (evaluator && question && answer) {
-      const { isUnits, is_math, showDropdown } = question;
-      if (isUnits && is_math && showDropdown) {
+      const { isUnits, isMath, showDropdown } = question;
+      if (isUnits && isMath && showDropdown) {
         const expression = answer.expression || "";
         const unit = answer.unit ? answer.unit : "";
         if (expression.search("=") === -1) {

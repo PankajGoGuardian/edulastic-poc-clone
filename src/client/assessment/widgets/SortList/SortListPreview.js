@@ -62,7 +62,7 @@ const SortListPreview = ({
     previewTab = CLEAR;
   }
 
-  const { source = [], instructor_stimulus, stimulus } = item;
+  const { source = [], instructorStimulus, stimulus } = item;
 
   const getItemsFromUserAnswer = () =>
     source.map((sourceItem, i) => {
@@ -170,27 +170,27 @@ const SortListPreview = ({
 
   const { validation } = item;
 
-  const fontSize = getFontSize(get(item, "ui_style.fontsize"));
-  const orientation = get(item, "ui_style.orientation");
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
+  const orientation = get(item, "uiStyle.orientation");
   const flexDirection = orientation === "vertical" ? "column" : "row";
 
-  let valid_response = validation && validation.valid_response && validation.valid_response.value;
-  valid_response = valid_response || [];
-  let alt_responses = validation && validation.alt_responses && validation.alt_responses;
-  alt_responses = alt_responses || [];
+  let validResponse = validation && validation.validResponse && validation.validResponse.value;
+  validResponse = validResponse || [];
+  let altResponses = validation && validation.altResponses && validation.altResponses;
+  altResponses = altResponses || [];
 
-  const validResponseCorrectList = source.map((ans, i) => source[valid_response[i]]);
-  const altResponseCorrectList = alt_responses.map((altResponse, arIndex) =>
-    source.map((ans, i) => source[alt_responses[arIndex].value[i]])
+  const validResponseCorrectList = source.map((ans, i) => source[validResponse[i]]);
+  const altResponseCorrectList = altResponses.map((altResponse, arIndex) =>
+    source.map((ans, i) => source[altResponses[arIndex].value[i]])
   );
 
   const validRespCorrect = selected.filter(
-    (selectedItem, i) => selectedItem && selectedItem === source[valid_response[i]]
+    (selectedItem, i) => selectedItem && selectedItem === source[validResponse[i]]
   );
 
   let altRespCorrect = [...validRespCorrect];
 
-  alt_responses.forEach(ob => {
+  altResponses.forEach(ob => {
     const alt = selected.filter((selectedItem, i) => selectedItem && selectedItem === source[ob.value[i]]);
     if (alt.length > altRespCorrect.length) {
       altRespCorrect = [...alt];
@@ -207,7 +207,7 @@ const SortListPreview = ({
 
   return (
     <Paper data-cy="sortListPreview" style={paperStyle}>
-      <InstructorStimulus>{instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -301,8 +301,8 @@ const SortListPreview = ({
           source={source}
           list={validResponseCorrectList}
           altList={altResponseCorrectList}
-          altResponses={alt_responses}
-          correctList={valid_response}
+          altResponses={altResponses}
+          correctList={validResponse}
         />
       )}
     </Paper>

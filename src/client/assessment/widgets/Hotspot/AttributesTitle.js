@@ -34,7 +34,7 @@ class AttributesTitle extends Component {
       cleanSections
     } = this.props;
 
-    const { areas, area_attributes } = item;
+    const { areas, areaAttributes } = item;
 
     const getAreaIndexes = arr => {
       const newIndexes = [];
@@ -51,9 +51,9 @@ class AttributesTitle extends Component {
     const handleSelectChange = value => {
       setQuestionData(
         produce(item, draft => {
-          draft.area_attributes.local[customizeTab - 1].area = value;
+          draft.areaAttributes.local[customizeTab - 1].area = value;
 
-          setSelectedIndexes(getAreaIndexes(draft.area_attributes.local));
+          setSelectedIndexes(getAreaIndexes(draft.areaAttributes.local));
           updateVariables(draft);
         })
       );
@@ -62,7 +62,7 @@ class AttributesTitle extends Component {
     const changeHandler = prop => obj => {
       setQuestionData(
         produce(item, draft => {
-          draft.area_attributes.global[prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
+          draft.areaAttributes.global[prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
         })
       );
     };
@@ -71,9 +71,9 @@ class AttributesTitle extends Component {
       e.stopPropagation();
       setQuestionData(
         produce(item, draft => {
-          draft.area_attributes.local.splice(index, 1);
+          draft.areaAttributes.local.splice(index, 1);
 
-          setSelectedIndexes(getAreaIndexes(draft.area_attributes.local));
+          setSelectedIndexes(getAreaIndexes(draft.areaAttributes.local));
 
           setCustomizeTab(0);
           updateVariables(draft);
@@ -84,15 +84,15 @@ class AttributesTitle extends Component {
     const handleAddAttr = () => {
       setQuestionData(
         produce(item, draft => {
-          draft.area_attributes.local.push({
+          draft.areaAttributes.local.push({
             area: "",
-            fill: area_attributes.global.fill,
-            stroke: area_attributes.global.stroke
+            fill: areaAttributes.global.fill,
+            stroke: areaAttributes.global.stroke
           });
 
-          setSelectedIndexes(getAreaIndexes(draft.area_attributes.local));
+          setSelectedIndexes(getAreaIndexes(draft.areaAttributes.local));
 
-          setCustomizeTab(draft.area_attributes.local.length);
+          setCustomizeTab(draft.areaAttributes.local.length);
           updateVariables(draft);
         })
       );
@@ -101,7 +101,7 @@ class AttributesTitle extends Component {
     const handleLocalColorChange = prop => obj => {
       setQuestionData(
         produce(item, draft => {
-          draft.area_attributes.local[customizeTab - 1][prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
+          draft.areaAttributes.local[customizeTab - 1][prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
           updateVariables(draft);
         })
       );
@@ -133,8 +133,8 @@ class AttributesTitle extends Component {
     );
 
     const renderAltResponses = () => {
-      if (area_attributes && area_attributes.local && area_attributes.local.length) {
-        return area_attributes.local.map((res, i) => (
+      if (areaAttributes && areaAttributes.local && areaAttributes.local.length) {
+        return areaAttributes.local.map((res, i) => (
           <Tab key={i} label={renderLabel(i)} type="primary" IconPosition="right" />
         ));
       }
@@ -153,7 +153,7 @@ class AttributesTitle extends Component {
 
         <Tabs style={{ marginBottom: 15 }} value={customizeTab} onChange={setCustomizeTab} extra={renderPlusButton()}>
           <Tab
-            style={{ borderRadius: area_attributes.local <= 1 ? "4px" : "4px 0 0 4px" }}
+            style={{ borderRadius: areaAttributes.local <= 1 ? "4px" : "4px 0 0 4px" }}
             label={t("component.hotspot.global")}
             type="primary"
           />
@@ -167,8 +167,8 @@ class AttributesTitle extends Component {
               </Subtitle>
               <ColorPicker
                 animation="slide-up"
-                color={area_attributes.global.fill}
-                alpha={getAlpha(area_attributes.global.fill)}
+                color={areaAttributes.global.fill}
+                alpha={getAlpha(areaAttributes.global.fill)}
                 onChange={changeHandler("fill")}
               />
             </Col>
@@ -178,8 +178,8 @@ class AttributesTitle extends Component {
               </Subtitle>
               <ColorPicker
                 animation="slide-up"
-                color={area_attributes.global.stroke}
-                alpha={getAlpha(area_attributes.global.stroke)}
+                color={areaAttributes.global.stroke}
+                alpha={getAlpha(areaAttributes.global.stroke)}
                 onChange={changeHandler("stroke")}
               />
             </Col>
@@ -187,12 +187,12 @@ class AttributesTitle extends Component {
         ) : (
           <LocalColorPickers
             onLocalColorChange={handleLocalColorChange}
-            attributes={area_attributes.local[customizeTab - 1]}
+            attributes={areaAttributes.local[customizeTab - 1]}
             handleSelectChange={handleSelectChange}
             areaIndexes={areas
               .map((area, i) => i)
               .filter(
-                index => !selectedIndexes.includes(index) || index === area_attributes.local[customizeTab - 1].area
+                index => !selectedIndexes.includes(index) || index === areaAttributes.local[customizeTab - 1].area
               )}
           />
         )}

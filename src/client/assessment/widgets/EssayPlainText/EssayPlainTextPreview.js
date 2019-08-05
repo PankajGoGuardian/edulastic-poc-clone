@@ -109,28 +109,28 @@ const EssayPlainTextPreview = ({
     }
   };
 
-  const showLimitAlways = item.show_word_limit === ALWAYS;
+  const showLimitAlways = item.showWordLimit === ALWAYS;
 
-  const showOnLimit = item.show_word_limit === ON_LIMIT;
+  const showOnLimit = item.showWordLimit === ON_LIMIT;
 
   const displayWordCount =
-    (showOnLimit && item.max_word < wordCount) || showLimitAlways
-      ? `${wordCount} / ${item.max_word} ${t("component.essayText.wordsLimitTitle")}`
+    (showOnLimit && item.maxWord < wordCount) || showLimitAlways
+      ? `${wordCount} / ${item.maxWord} ${t("component.essayText.wordsLimitTitle")}`
       : `${wordCount} ${t("component.essayText.wordsTitle")}`;
 
   const wordCountStyle =
-    (showLimitAlways || showOnLimit) && item.max_word < wordCount
+    (showLimitAlways || showOnLimit) && item.maxWord < wordCount
       ? { color: theme.widgets.essayPlainText.wordCountLimitedColor }
       : {};
 
-  const minHeight = get(item, "ui_style.min_height", "inherit");
-  const maxHeight = get(item, "ui_style.max_height", "inherit");
+  const minHeight = get(item, "uiStyle.minHeight", "inherit");
+  const maxHeight = get(item, "uiStyle.max_height", "inherit");
   const isV1Multipart = get(col, "isV1Multipart", false);
-  const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
   return (
     <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -139,9 +139,9 @@ const EssayPlainTextPreview = ({
 
       <Toolbar borderRadiusOnlyTop style={{ borderBottom: 0 }}>
         <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">
-          {item.show_copy && <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>}
-          {item.show_cut && <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>}
-          {item.show_paste && <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>}
+          {item.showCopy && <ToolbarItem onClick={handleAction(COPY)}>{t("component.essayText.copy")}</ToolbarItem>}
+          {item.showCut && <ToolbarItem onClick={handleAction(CUT)}>{t("component.essayText.cut")}</ToolbarItem>}
+          {item.showPaste && <ToolbarItem onClick={handleAction(PASTE)}>{t("component.essayText.paste")}</ToolbarItem>}
           {Array.isArray(item.character_map) && (
             <Character
               onSelect={char => {
@@ -167,7 +167,7 @@ const EssayPlainTextPreview = ({
           maxHeight,
           fontSize,
           background:
-            item.max_word < wordCount
+            item.maxWord < wordCount
               ? theme.widgets.essayPlainText.textInputLimitedBgColor
               : theme.widgets.essayPlainText.textInputBgColor
         }}
@@ -184,7 +184,7 @@ const EssayPlainTextPreview = ({
         {...getSpellCheckAttributes(item.spellcheck)}
       />
 
-      {item.show_word_count && (
+      {item.showWordCount && (
         <Toolbar borderRadiusOnlyBottom style={{ borderTop: 0 }}>
           <FlexContainer alignItems="stretch" justifyContent="space-between" />
 

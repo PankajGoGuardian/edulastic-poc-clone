@@ -187,7 +187,7 @@ class Graph extends Component {
 
   handleOptionsChange = options => {
     const { setQuestionData, item } = this.props;
-    setQuestionData({ ...item, ui_style: options });
+    setQuestionData({ ...item, uiStyle: options });
   };
 
   handleAnnotationChange = options => {
@@ -202,7 +202,7 @@ class Graph extends Component {
 
   handleBgImgChange = bgImgOptions => {
     const { setQuestionData, item } = this.props;
-    setQuestionData({ ...item, background_image: bgImgOptions });
+    setQuestionData({ ...item, backgroundImage: bgImgOptions });
   };
 
   handleBgShapesChange = bgShapes => {
@@ -220,10 +220,10 @@ class Graph extends Component {
       value: []
     };
 
-    if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
-      newItem.validation.alt_responses.push(response);
+    if (newItem.validation.altResponses && newItem.validation.altResponses.length) {
+      newItem.validation.altResponses.push(response);
     } else {
-      newItem.validation.alt_responses = [response];
+      newItem.validation.altResponses = [response];
     }
 
     setQuestionData(newItem);
@@ -233,8 +233,8 @@ class Graph extends Component {
     const { setQuestionData, item } = this.props;
     const newItem = cloneDeep(item);
 
-    if (newItem.validation.alt_responses && newItem.validation.alt_responses.length) {
-      newItem.validation.alt_responses = newItem.validation.alt_responses.filter((response, i) => i !== index);
+    if (newItem.validation.altResponses && newItem.validation.altResponses.length) {
+      newItem.validation.altResponses = newItem.validation.altResponses.filter((response, i) => i !== index);
     }
 
     setQuestionData(newItem);
@@ -255,7 +255,7 @@ class Graph extends Component {
   handleSelectIgnoreLabels = value => {
     const { item, setQuestionData } = this.props;
     const newItem = cloneDeep(item);
-    newItem.validation.ignore_labels = value;
+    newItem.validation.ignoreLabels = value;
     setQuestionData({ ...newItem });
   };
 
@@ -293,7 +293,7 @@ class Graph extends Component {
       compact = true;
     }
 
-    const { ui_style, validation, stimulus } = item;
+    const { uiStyle, validation, stimulus } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -317,7 +317,7 @@ class Graph extends Component {
                 label="Set Correct Answer"
                 cleanSections={cleanSections}
                 fillSections={fillSections}
-                deskHeight={ui_style.layout_height}
+                deskHeight={uiStyle.layoutHeight}
                 advancedAreOpen
               >
                 <GraphAnswers
@@ -352,7 +352,7 @@ class Graph extends Component {
               {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
               <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
             </QuestionTitleWrapper>
-            {item.canvas && item.ui_style && (
+            {item.canvas && item.uiStyle && (
               <GraphDisplay
                 disableResponse={disableResponse}
                 graphData={item}
@@ -364,7 +364,7 @@ class Graph extends Component {
                 {...restProps}
               />
             )}
-            {previewTab === "show" && item.canvas && item.ui_style && (
+            {previewTab === "show" && item.canvas && item.uiStyle && (
               <Fragment>
                 <CorrectAnswersContainer title={t("component.graphing.correctAnswer")}>
                   <GraphDisplay
@@ -372,15 +372,15 @@ class Graph extends Component {
                     graphData={item}
                     view={view}
                     previewTab={previewTab}
-                    elements={validation.valid_response.value}
+                    elements={validation.validResponse.value}
                     evaluation={evaluation}
                     elementsIsCorrect
                     {...restProps}
                   />
                 </CorrectAnswersContainer>
 
-                {validation.alt_responses &&
-                  validation.alt_responses.map((altAnswer, i) => (
+                {validation.altResponses &&
+                  validation.altResponses.map((altAnswer, i) => (
                     <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
                       <GraphDisplay
                         disableResponse

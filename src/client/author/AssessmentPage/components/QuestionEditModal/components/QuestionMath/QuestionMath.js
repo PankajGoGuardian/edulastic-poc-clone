@@ -26,13 +26,13 @@ export default class QuestionMath extends React.Component {
     } = this.props;
     const nextValidation = cloneDeep(validation);
 
-    nextValidation.valid_response.value[0][prop] = value;
+    nextValidation.validResponse.value[0][prop] = value;
 
     if (prop === "value") {
       const isNumeric = v => /^\d+$/.test(v);
 
       if (!isNumeric(value)) {
-        delete nextValidation.valid_response.value[0].options.significantDecimalPlaces;
+        delete nextValidation.validResponse.value[0].options.significantDecimalPlaces;
       }
     }
 
@@ -43,9 +43,9 @@ export default class QuestionMath extends React.Component {
         methods.IS_EXPANDED,
         methods.IS_TRUE,
         methods.EQUIV_SYNTAX
-      ].includes(nextValidation.valid_response.value[0].method)
+      ].includes(nextValidation.validResponse.value[0].method)
     ) {
-      delete nextValidation.valid_response.value[0].value;
+      delete nextValidation.validResponse.value[0].value;
     }
 
     const data = {
@@ -58,19 +58,19 @@ export default class QuestionMath extends React.Component {
   handleScoreChange = score => {
     const {
       question: {
-        validation: { valid_response }
+        validation: { validResponse }
       }
     } = this.props;
     const { onUpdate } = this.props;
 
     const data = {
       validation: {
-        scoring_type: EXACT_MATCH,
-        valid_response: {
-          ...valid_response,
+        scoringType: EXACT_MATCH,
+        validResponse: {
+          ...validResponse,
           score
         },
-        alt_responses: []
+        altResponses: []
       }
     };
 
@@ -79,7 +79,7 @@ export default class QuestionMath extends React.Component {
 
   render() {
     const { question } = this.props;
-    const { valid_response: validResponse } = question.validation;
+    const { validResponse: validResponse } = question.validation;
     const { score } = validResponse;
     const value = validResponse.value[0];
 

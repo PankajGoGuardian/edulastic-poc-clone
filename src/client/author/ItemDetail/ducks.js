@@ -438,7 +438,7 @@ export function reducer(state = initialState, { type, payload }) {
        * But only need to do under certain conditions
        */
       const itemLevelScoring = get(state, "item.itemLevelScoring");
-      const updatingScore = get(payload, "validation.valid_response.score");
+      const updatingScore = get(payload, "validation.validResponse.score");
       const newQuestionTobeAdded = !get(state, "item.data.questions", []).find(x => x.id === payload.id);
       let canUpdateItemLevelScore = false;
       const questionsLength = get(state, "item.data.questions.length", 0);

@@ -49,11 +49,11 @@ class LayoutComponent extends Component {
     const handleUIStyleChange = (prop, val) => {
       setQuestionData(
         produce(item, draft => {
-          if (!draft.ui_style) {
-            draft.ui_style = {};
+          if (!draft.uiStyle) {
+            draft.uiStyle = {};
           }
 
-          draft.ui_style[prop] = val;
+          draft.uiStyle[prop] = val;
           updateVariables(draft);
         })
       );
@@ -103,14 +103,14 @@ class LayoutComponent extends Component {
           <Row gutter={36}>
             <Col md={12}>
               <MinHeightOption
-                onChange={val => handleUIStyleChange("min_height", +val)}
-                value={get(item, "ui_style.min_height", 0)}
+                onChange={val => handleUIStyleChange("minHeight", +val)}
+                value={get(item, "uiStyle.minHeight", 0)}
               />
             </Col>
             <Col md={12}>
               <MaxHeightOption
                 onChange={val => handleUIStyleChange("max_height", +val)}
-                value={get(item, "ui_style.max_height", 0)}
+                value={get(item, "uiStyle.max_height", 0)}
               />
             </Col>
           </Row>
@@ -125,7 +125,7 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <FontSizeOption
                 onChange={val => handleUIStyleChange("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
+                value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
           </Row>
@@ -133,8 +133,8 @@ class LayoutComponent extends Component {
 
         <Checkbox
           style={{ marginTop: 16, marginBottom: 16 }}
-          defaultChecked={item && item.validation && item.validation.submit_over_limit}
-          onChange={e => handleValidationChange("submit_over_limit", e.target.checked)}
+          defaultChecked={item && item.validation && item.validation.submitOverLimit}
+          onChange={e => handleValidationChange("submitOverLimit", e.target.checked)}
         >
           {t("component.essayText.submitOverLimit")}
         </Checkbox>

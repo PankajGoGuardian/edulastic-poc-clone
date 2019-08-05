@@ -32,7 +32,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 const ClassificationPreview = ({
   view,
   saveAnswer,
-  item = { ui_style: {} },
+  item = { uiStyle: {} },
   t,
   evaluation,
   userAnswer,
@@ -73,39 +73,39 @@ const ClassificationPreview = ({
   };
 
   const {
-    possible_responses: posResponses = [],
-    group_possible_responses,
-    possible_response_groups = [],
+    possibleResponses: posResponses = [],
+    groupPossibleResponses,
+    possibleResponseGroups = [],
     stimulus,
     imageUrl,
     imageOptions,
-    shuffle_options,
+    shuffleOptions,
     transparent_possible_responses,
     transparent_background_image = true,
     duplicate_responses,
-    ui_style: {
-      column_count: colCount,
-      column_titles: colTitles = [],
-      row_count: rowCount,
-      row_titles: rowTitles = [],
+    uiStyle: {
+      columnCount: colCount,
+      columnTitles: colTitles = [],
+      rowCount: rowCount,
+      rowTitles: rowTitles = [],
       show_drag_handle
     }
   } = item;
 
   const itemValidation = item.validation || {};
-  let validArray = itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
-  let altArrays = itemValidation && itemValidation.alt_responses;
+  let validArray = itemValidation && itemValidation.validResponse && itemValidation.validResponse.value;
+  let altArrays = itemValidation && itemValidation.altResponses;
   validArray = validArray || [];
   altArrays = altArrays ? altArrays.map(arr => arr.value || []) : [];
   let groupArrays = [];
 
-  possible_response_groups.forEach(o => {
+  possibleResponseGroups.forEach(o => {
     groupArrays = [...groupArrays, ...o.responses];
   });
 
-  const posResp = group_possible_responses ? groupArrays : posResponses;
+  const posResp = groupPossibleResponses ? groupArrays : posResponses;
 
-  const possible_responses =
+  const possibleResponses =
     editCorrectAnswers.length > 0
       ? posResp.filter(ite => {
           return (
@@ -146,7 +146,7 @@ const ClassificationPreview = ({
     !disableResponse && editCorrectAnswers.length > 0 ? editCorrectAnswers : getInitialUserAnswers();
 
   const [answers, setAnswers] = useState(initialAnswers);
-  const [dragItems, setDragItems] = useState(possible_responses);
+  const [dragItems, setDragItems] = useState(possibleResponses);
 
   /**
    * it is used to filter out responses from the bottom container and place in correct boxes
@@ -155,18 +155,18 @@ const ClassificationPreview = ({
   useEffect(() => {
     if (
       !isEqual(answers, initialAnswers) ||
-      (!group_possible_responses &&
-        (possible_responses.length !== dragItems.length || !isEqual(possible_responses, dragItems)))
+      (!groupPossibleResponses &&
+        (possibleResponses.length !== dragItems.length || !isEqual(possibleResponses, dragItems)))
     ) {
       setAnswers(initialAnswers);
-      const abc = possible_responses.filter(resp => {
+      const abc = possibleResponses.filter(resp => {
         return initialAnswers.every(arr => {
           return !arr.includes(resp.id);
         });
       });
       setDragItems(abc);
     }
-  }, [userAnswer, possible_responses]);
+  }, [userAnswer, possibleResponses]);
 
   const boxes = createEmptyArrayOfArrays();
 
@@ -246,9 +246,9 @@ const ClassificationPreview = ({
   const arrayOfCols = transformArray(validArray);
   const arrayOfAltCols = altArrays.map(altArray => transformArray(altArray));
 
-  const listPosition = get(item, "ui_style.possibility_list_position", "bottom");
-  const rowHeader = get(item, "ui_style.row_header", null);
-  const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
+  const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
+  const rowHeader = get(item, "uiStyle.rowHeader", null);
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
   const wrapperStyle = {
     display: "flex",
@@ -256,7 +256,7 @@ const ClassificationPreview = ({
   };
 
   const verifiedDragItems = uniq(
-    shuffle_options
+    shuffleOptions
       ? shuffle(duplicate_responses ? posResponses : dragItems)
       : duplicate_responses
       ? posResponses
@@ -269,12 +269,12 @@ const ClassificationPreview = ({
    */
   const flattenAnswers = answers.flat();
   const verifiedGroupDragItems = duplicate_responses
-    ? possible_response_groups.map(group => {
-        return shuffle_options ? shuffle(group.responses) : group.responses;
+    ? possibleResponseGroups.map(group => {
+        return shuffleOptions ? shuffle(group.responses) : group.responses;
       })
-    : possible_response_groups.map(group => {
+    : possibleResponseGroups.map(group => {
         const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
-        return shuffle_options ? shuffle(responses) : responses;
+        return shuffleOptions ? shuffle(responses) : responses;
       });
 
   const dragLayout = boxes.map(
@@ -337,7 +337,7 @@ const ClassificationPreview = ({
 
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
       {!smallSize && view === PREVIEW && (
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -353,7 +353,7 @@ const ClassificationPreview = ({
           <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
             <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
-                {group_possible_responses ? (
+                {groupPossibleResponses ? (
                   verifiedGroupDragItems.map((i, index) => (
                     <Fragment key={index}>
                       <FlexContainer
@@ -367,7 +367,7 @@ const ClassificationPreview = ({
                             color: theme.widgets.classification.previewSubtitleColor
                           }}
                         >
-                          {get(item, `possible_response_groups[${index}].title`, "")}
+                          {get(item, `possibleResponseGroups[${index}].title`, "")}
                         </Subtitle>
                         <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                           {i.map((ite, ind) =>
@@ -377,7 +377,7 @@ const ClassificationPreview = ({
                                 key={ind}
                                 isTransparent={transparent_possible_responses}
                                 preview={preview}
-                                renderIndex={possible_responses.indexOf(ite)}
+                                renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
@@ -389,7 +389,7 @@ const ClassificationPreview = ({
                                 key={ind}
                                 isTransparent={transparent_possible_responses}
                                 preview={preview}
-                                renderIndex={possible_responses.indexOf(ite)}
+                                renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
@@ -399,7 +399,7 @@ const ClassificationPreview = ({
                           )}
                         </FlexContainer>
                       </FlexContainer>
-                      {index !== possible_response_groups.length - 1 && (
+                      {index !== possibleResponseGroups.length - 1 && (
                         <div
                           style={{
                             width: 0,
@@ -427,7 +427,7 @@ const ClassificationPreview = ({
                               key={ind}
                               isTransparent={transparent_possible_responses}
                               preview={preview}
-                              renderIndex={possible_responses.indexOf(ite)}
+                              renderIndex={possibleResponses.indexOf(ite)}
                               onDrop={onDrop}
                               item={ite.value}
                               disableResponse={disableResponse}
@@ -440,7 +440,7 @@ const ClassificationPreview = ({
                                 key={ind}
                                 isTransparent={transparent_possible_responses}
                                 preview={preview}
-                                renderIndex={possible_responses.indexOf(ite)}
+                                renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}

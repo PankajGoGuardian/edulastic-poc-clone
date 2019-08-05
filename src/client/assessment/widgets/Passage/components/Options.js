@@ -161,8 +161,8 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
         <Col span={12}>
           <Label>{t("component.passage.instructorStimulus")}</Label>
           <QuestionTextArea
-            onChange={value => handleChange("instructor_stimulus", value)}
-            value={item.instructor_stimulus || ""}
+            onChange={value => handleChange("instructorStimulus", value)}
+            value={item.instructorStimulus || ""}
             style={{
               border: `1px solid ${theme.widgets.passage.quillBorderColor}`,
               height: "auto",
@@ -186,7 +186,7 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
       </StyledRow>
 
       <StyledRow gutter={32}>
-        {item.is_math && (
+        {item.isMath && (
           <Col span={12}>
             <Label>{t("component.passage.mathRenderer")}</Label>
             <Select

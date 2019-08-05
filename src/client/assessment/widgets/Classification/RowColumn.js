@@ -31,31 +31,31 @@ const actions = {
 class RowColumn extends Component {
   render() {
     const { item, setQuestionData, theme, t, toolbarSize, fillSections, cleanSections } = this.props;
-    const { ui_style, firstMount } = item;
+    const { uiStyle, firstMount } = item;
 
     const handleMain = (action, prop) => restProp => {
       setQuestionData(
         produce(item, draft => {
           switch (action) {
             case actions.ADD:
-              draft.ui_style[prop].push("");
-              if (prop === "column_titles") {
-                Array.from({ length: draft.ui_style.row_count }).forEach(() => {
-                  draft.validation.valid_response.value.push([]);
+              draft.uiStyle[prop].push("");
+              if (prop === "columnTitles") {
+                Array.from({ length: draft.uiStyle.rowCount }).forEach(() => {
+                  draft.validation.validResponse.value.push([]);
                 });
 
-                draft.validation.alt_responses.forEach(valid => {
-                  Array.from({ length: draft.ui_style.row_count }).forEach(() => {
+                draft.validation.altResponses.forEach(valid => {
+                  Array.from({ length: draft.uiStyle.rowCount }).forEach(() => {
                     valid.value.push([]);
                   });
                 });
-              } else if (prop === "row_titles") {
-                Array.from({ length: draft.ui_style.column_count }).forEach(() => {
-                  draft.validation.valid_response.value.push([]);
+              } else if (prop === "rowTitles") {
+                Array.from({ length: draft.uiStyle.columnCount }).forEach(() => {
+                  draft.validation.validResponse.value.push([]);
                 });
 
-                draft.validation.alt_responses.forEach(valid => {
-                  Array.from({ length: draft.ui_style.column_count }).forEach(() => {
+                draft.validation.altResponses.forEach(valid => {
+                  Array.from({ length: draft.uiStyle.columnCount }).forEach(() => {
                     valid.value.push([]);
                   });
                 });
@@ -63,27 +63,27 @@ class RowColumn extends Component {
               break;
 
             case actions.REMOVE:
-              draft.ui_style[prop].splice(restProp, 1);
-              if (prop === "column_titles" && draft.ui_style.column_count !== 1) {
-                draft.validation.valid_response.value.forEach(array => {
-                  array.splice(-1, draft.ui_style.row_count);
+              draft.uiStyle[prop].splice(restProp, 1);
+              if (prop === "columnTitles" && draft.uiStyle.columnCount !== 1) {
+                draft.validation.validResponse.value.forEach(array => {
+                  array.splice(-1, draft.uiStyle.rowCount);
                 });
-                draft.validation.alt_responses.forEach(valid => {
+                draft.validation.altResponses.forEach(valid => {
                   valid.value.forEach(array => {
-                    array.splice(-1, draft.ui_style.row_count);
+                    array.splice(-1, draft.uiStyle.rowCount);
                   });
                 });
-              } else if (prop === "row_titles" && draft.ui_style.row_count !== 1) {
-                draft.validation.valid_response.value.splice(-1, draft.ui_style.column_titles);
-                draft.validation.alt_responses.forEach(valid => {
-                  valid.value.splice(-1, draft.ui_style.column_titles);
+              } else if (prop === "rowTitles" && draft.uiStyle.rowCount !== 1) {
+                draft.validation.validResponse.value.splice(-1, draft.uiStyle.columnTitles);
+                draft.validation.altResponses.forEach(valid => {
+                  valid.value.splice(-1, draft.uiStyle.columnTitles);
                 });
               }
               break;
 
             case actions.SORTEND: {
               const { oldIndex, newIndex } = restProp;
-              draft.ui_style[prop] = arrayMove(item.ui_style[prop], oldIndex, newIndex);
+              draft.uiStyle[prop] = arrayMove(item.uiStyle[prop], oldIndex, newIndex);
               break;
             }
 
@@ -99,7 +99,7 @@ class RowColumn extends Component {
     const handleChange = prop => (index, value) => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style[prop][index] = value;
+          draft.uiStyle[prop][index] = value;
           updateVariables(draft);
         })
       );
@@ -108,17 +108,17 @@ class RowColumn extends Component {
     const onUiChange = prop => val => {
       setQuestionData(
         produce(item, draft => {
-          draft.ui_style[prop] = val;
+          draft.uiStyle[prop] = val;
 
-          const colCount = draft.ui_style.column_count;
-          const rowCount = draft.ui_style.row_count;
+          const colCount = draft.uiStyle.columnCount;
+          const rowCount = draft.uiStyle.rowCount;
 
           const initialLength = (colCount || 2) * (rowCount || 1);
 
-          if (prop === "column_count" || prop === "row_count") {
-            draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+          if (prop === "columnCount" || prop === "rowCount") {
+            draft.validation.validResponse.value = Array(...Array(initialLength)).map(() => []);
 
-            draft.validation.alt_responses.forEach(ite => {
+            draft.validation.altResponses.forEach(ite => {
               ite.value = Array(...Array(initialLength)).map(() => []);
             });
             if (prop === "column_count" && Array.isArray(draft.ui_style.column_titles)) {
@@ -161,8 +161,8 @@ class RowColumn extends Component {
               data-cy="classification-row-dropdown"
               size="large"
               style={{ width: "calc(100% - 30px)" }}
-              value={ui_style.row_count}
-              onChange={value => onUiChange("row_count")(+value)}
+              value={uiStyle.rowCount}
+              onChange={value => onUiChange("rowCount")(+value)}
             >
               {Array.from({ length: 10 }).map((v, index) => (
                 <Option data-cy={`row-dropdown-list-${index}`} key={index} value={index + 1}>
@@ -182,11 +182,11 @@ class RowColumn extends Component {
             <List
               prefix="rows"
               buttonText={t("component.classification.addNewRow")}
-              items={item.ui_style.row_titles}
-              onAdd={handleMain(actions.ADD, "row_titles")}
-              onSortEnd={handleMain(actions.SORTEND, "row_titles")}
-              onChange={handleChange("row_titles")}
-              onRemove={handleMain(actions.REMOVE, "row_titles")}
+              items={item.uiStyle.rowTitles}
+              onAdd={handleMain(actions.ADD, "rowTitles")}
+              onSortEnd={handleMain(actions.SORTEND, "rowTitles")}
+              onChange={handleChange("rowTitles")}
+              onRemove={handleMain(actions.REMOVE, "rowTitles")}
               firstFocus={firstMount}
               useDragHandle
               columns={1}
@@ -207,8 +207,8 @@ class RowColumn extends Component {
               data-cy="classification-column-dropdown"
               size="large"
               style={{ width: "calc(100% - 30px)" }}
-              value={ui_style.column_count}
-              onChange={value => onUiChange("column_count")(+value)}
+              value={uiStyle.columnCount}
+              onChange={value => onUiChange("columnCount")(+value)}
             >
               {Array.from({ length: 10 }).map((v, index) => (
                 <Option data-cy={`coloumn-dropdown-list-${index}`} key={index} value={index + 1}>
@@ -228,11 +228,11 @@ class RowColumn extends Component {
             <List
               prefix="columns"
               buttonText={t("component.classification.addNewColumn")}
-              items={item.ui_style.column_titles}
-              onAdd={handleMain(actions.ADD, "column_titles")}
-              onSortEnd={handleMain(actions.SORTEND, "column_titles")}
-              onChange={handleChange("column_titles")}
-              onRemove={handleMain(actions.REMOVE, "column_titles")}
+              items={item.uiStyle.columnTitles}
+              onAdd={handleMain(actions.ADD, "columnTitles")}
+              onSortEnd={handleMain(actions.SORTEND, "columnTitles")}
+              onChange={handleChange("columnTitles")}
+              onRemove={handleMain(actions.REMOVE, "columnTitles")}
               firstFocus={firstMount}
               useDragHandle
               columns={1}

@@ -34,7 +34,7 @@ class Layout extends Component {
       fontsize: "normal",
       columns: 0,
       orientation: "horizontal",
-      choice_label: "number"
+      choiceLabel: "number"
     },
     advancedAreOpen: false,
     fillSections: () => {},
@@ -46,7 +46,7 @@ class Layout extends Component {
 
     const changeUiStyle = (prop, value) => {
       const isNumberColumn = prop === "columns";
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: isNumberColumn ? Math.abs(value).toFixed() : value
       });
@@ -129,8 +129,8 @@ class Layout extends Component {
               <SelectWrapper
                 size="large"
                 data-cy="labelTypeSelect"
-                onChange={val => changeUiStyle("choice_label", val)}
-                value={uiStyle.choice_label}
+                onChange={val => changeUiStyle("choiceLabel", val)}
+                value={uiStyle.choiceLabel}
               >
                 {labelTypeOptions.map(({ value: val, label }) => (
                   <Select.Option data-cy={val} key={val} value={val}>

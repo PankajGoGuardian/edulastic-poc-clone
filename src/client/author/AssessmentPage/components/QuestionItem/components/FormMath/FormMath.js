@@ -42,7 +42,7 @@ export default class FormMath extends React.Component {
     if (!validation) return this.renderForm();
 
     const {
-      valid_response: { value }
+      validResponse: { value }
     } = validation;
     const answer = value[0];
 

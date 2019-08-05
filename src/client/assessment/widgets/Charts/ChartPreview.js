@@ -50,8 +50,8 @@ const ChartPreview = ({
 }) => {
   const answerContextConfig = useContext(AnswerContext);
   const [barIsDragging, toggleBarDragging] = useState(false);
-  const fontSize = getFontSize(get(item, "ui_style.fontsize"));
-  const chartType = get(item, "ui_style.chart_type");
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
+  const chartType = get(item, "uiStyle.chartType");
   let previewTab = _previewTab;
   if (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable) {
     previewTab = CHECK;
@@ -59,7 +59,7 @@ const ChartPreview = ({
     previewTab = CLEAR;
   }
 
-  const { chart_data = {}, validation, ui_style } = item;
+  const { chart_data = {}, validation, uiStyle } = item;
   const { data = [] } = chart_data;
   let CurrentChart = null;
 
@@ -110,10 +110,10 @@ const ChartPreview = ({
     passData.data = [...userAnswer];
   }
 
-  const answerData = validation ? validation.valid_response.value : [];
+  const answerData = validation ? validation.validResponse.value : [];
   const answerCorrect = Array(answerData.length).fill(true);
 
-  const altAnswerData = validation && validation.alt_responses ? validation.alt_responses : [];
+  const altAnswerData = validation && validation.altResponses ? validation.altResponses : [];
   const altAnswerCorrect = altAnswerData.map(ans => Array(ans.value.length).fill(true));
 
   const correct =
@@ -131,7 +131,7 @@ const ChartPreview = ({
 
     if (tool === 3 && index >= 0) {
       const newAnswer = cloneDeep(ans);
-      newAnswer[index].y = ui_style.yAxisMin;
+      newAnswer[index].y = uiStyle.yAxisMin;
       setTool(0);
       saveAnswer(newAnswer);
       setElementsStash(newAnswer, getStashId());
@@ -142,7 +142,7 @@ const ChartPreview = ({
   };
 
   const calculatedParams = {
-    ...ui_style
+    ...uiStyle
   };
 
   const onReset = () => {
@@ -189,7 +189,7 @@ const ChartPreview = ({
     <Paper className="chart-wrapper" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       {view === PREVIEW && (
         <Fragment>
-          <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+          <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />

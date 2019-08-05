@@ -22,8 +22,8 @@ class ShadesSubtitle extends Component {
 
     const cell_width = canvas ? canvas.cell_width : 1;
     const cell_height = canvas ? canvas.cell_height : 1;
-    const row_count = canvas ? canvas.row_count : 1;
-    const column_count = canvas ? canvas.column_count : 1;
+    const rowCount = canvas ? canvas.rowCount : 1;
+    const columnCount = canvas ? canvas.columnCount : 1;
     const shaded = canvas ? canvas.shaded : [];
     const read_only_author_cells = canvas ? canvas.read_only_author_cells : false;
 
@@ -32,7 +32,7 @@ class ShadesSubtitle extends Component {
         produce(item, draft => {
           draft.canvas[prop] = val;
 
-          if (prop === "column_count" || prop === "row_count") {
+          if (prop === "columnCount" || prop === "rowCount") {
             draft.canvas.shaded = [];
           }
 
@@ -70,8 +70,8 @@ class ShadesSubtitle extends Component {
 
         <div>
           <ShadesView
-            colCount={column_count || 1}
-            rowCount={row_count || 1}
+            colCount={columnCount || 1}
+            rowCount={rowCount || 1}
             cellHeight={cell_height || 1}
             cellWidth={cell_width || 1}
             onCellClick={handleOnCellClick}

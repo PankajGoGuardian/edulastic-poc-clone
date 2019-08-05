@@ -129,12 +129,12 @@ const exactMatchEvaluator = async (userResponse, answers) => {
 };
 
 const evaluator = async ({ userResponse, validation }) => {
-  const { valid_response, alt_responses = [], scoring_type, min_score_if_attempted: attemptScore } = validation;
-  const answers = [valid_response, ...alt_responses];
+  const { validResponse, altResponses = [], scoringType, minScoreIfAttempted: attemptScore } = validation;
+  const answers = [validResponse, ...altResponses];
 
   let result;
 
-  switch (scoring_type) {
+  switch (scoringType) {
     case ScoringType.EXACT_MATCH:
     default:
       result = await exactMatchEvaluator(userResponse, answers);

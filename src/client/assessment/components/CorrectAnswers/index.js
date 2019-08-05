@@ -20,7 +20,7 @@ class CorrectAnswers extends Component {
   calcMaxAltLen = () => {
     const { validation } = this.props;
 
-    return validation.alt_responses ? validation.alt_responses.length : 0;
+    return validation.altResponses ? validation.altResponses.length : 0;
   };
 
   updateCountTabs = newCount => {
@@ -55,7 +55,7 @@ class CorrectAnswers extends Component {
   renderAltResponses = () => {
     const { validation } = this.props;
 
-    const isAlt = !isEmpty(validation.alt_responses);
+    const isAlt = !isEmpty(validation.altResponses);
 
     if (isAlt) {
       this.updateCountTabs(this.calcMaxAltLen() + 1);

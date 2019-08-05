@@ -33,7 +33,7 @@ class Layout extends Component {
     const { minHeight, maxHeight } = Dimensions;
     if (uiStyle.heightpx < minHeight || uiStyle.heightpx > maxHeight) {
       const height = clamp(uiStyle.heightpx, minHeight, maxHeight);
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         heightpx: height
       });
@@ -48,7 +48,7 @@ class Layout extends Component {
     if (height && (height < minHeight || height > maxHeight)) {
       height = clamp(height, minHeight, maxHeight);
       resp[index].heightpx = height;
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals: resp
       });
@@ -59,7 +59,7 @@ class Layout extends Component {
     const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections } = this.props;
 
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });
@@ -71,10 +71,10 @@ class Layout extends Component {
       const ind = responsecontainerindividuals.findIndex(cont => cont.index === index);
       if (ind !== -1) {
         responsecontainerindividuals[ind][prop] = value;
-        onChange("ui_style", { ...uiStyle, responsecontainerindividuals });
+        onChange("uiStyle", { ...uiStyle, responsecontainerindividuals });
       }
       // newStyles.responsecontainerindividuals[index][prop] = value;
-      // onChange("ui_style", newStyles);
+      // onChange("uiStyle", newStyles);
     };
 
     const addIndividual = () => {
@@ -92,7 +92,7 @@ class Layout extends Component {
         heightpx: 0,
         wordwrap: false
       });
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });
@@ -101,7 +101,7 @@ class Layout extends Component {
     const removeIndividual = index => {
       const { responsecontainerindividuals } = uiStyle;
       responsecontainerindividuals.splice(index, 1);
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });

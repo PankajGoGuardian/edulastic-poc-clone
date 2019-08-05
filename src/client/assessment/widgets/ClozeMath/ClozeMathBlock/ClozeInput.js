@@ -19,11 +19,11 @@ const ClozeInput = ({ id, resprops = {} }) => {
   const { inputs: _inputsAnwers = [] } = answers;
   const val = _inputsAnwers[id] ? _inputsAnwers[id].value : "";
   const {
-    response_ids: { inputs }
+    responseIds: { inputs }
   } = item;
   const { index } = find(inputs, res => res.id === id) || {};
   const response = find(response_containers, cont => cont.id === id);
-  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
   const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
   return checked ? (
     <CheckedBlock

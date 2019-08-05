@@ -25,8 +25,8 @@ const PassageView = ({ item, preview, showQuestionNumber, qIndex, flowLayout }) 
 
   return (
     <div>
-      {item.instructor_stimulus && !flowLayout && (
-        <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
+      {item.instructorStimulus && !flowLayout && (
+        <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructorStimulus }} />
       )}
       {!flowLayout && (
         <QuestionTitleWrapper>

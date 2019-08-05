@@ -24,7 +24,7 @@ class OrderListReport extends Component {
             listStyle={listStyle}
             styleType={styleType}
             correct={evaluation && evaluation[i]}
-            correctText={showAnswers && list[validation.valid_response.value[i]]}
+            correctText={showAnswers && list[validation.validResponse.value[i]]}
             showAnswers={showAnswers}
             index={i}
             ind={i + 1}

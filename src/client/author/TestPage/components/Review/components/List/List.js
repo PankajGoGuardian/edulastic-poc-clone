@@ -143,7 +143,7 @@ const SortableItem = SortableElement(
                       value={
                         testItem.itemLevelScoring
                           ? testItem.itemLevelScore
-                          : get(question, ["validation", "valid_response", "score"], 0)
+                          : get(question, ["validation", "validResponse", "score"], 0)
                       }
                       onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                     />
@@ -193,7 +193,7 @@ const List = SortableContainer(
       }
 
       return get(testItems, [i, "data", "questions"], []).reduce(
-        (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "valid_response", "score"], 0)),
+        (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "validResponse", "score"], 0)),
         0
       );
     };

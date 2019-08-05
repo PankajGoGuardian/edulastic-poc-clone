@@ -19,8 +19,8 @@ class Layout extends Component {
     const { onChange, item, advancedAreOpen, fillSections, cleanSections, t } = this.props;
 
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
-        ...item.ui_style,
+      onChange("uiStyle", {
+        ...item.uiStyle,
         [prop]: value
       });
     };
@@ -28,22 +28,22 @@ class Layout extends Component {
     const handleAddBlock = () => {
       let textBlocks = [];
 
-      if (item.text_blocks && item.text_blocks.length) {
-        textBlocks = [...item.text_blocks];
+      if (item.textBlocks && item.textBlocks.length) {
+        textBlocks = [...item.textBlocks];
       }
-      onChange("text_blocks", [...textBlocks, ""]);
+      onChange("textBlocks", [...textBlocks, ""]);
     };
 
     const handleDeleteBlock = index => {
-      const textBlocks = [...item.text_blocks];
+      const textBlocks = [...item.textBlocks];
       textBlocks.splice(index, 1);
-      onChange("text_blocks", textBlocks);
+      onChange("textBlocks", textBlocks);
     };
 
     const handleBlockChange = (index, value) => {
-      const textBlocks = [...item.text_blocks];
+      const textBlocks = [...item.textBlocks];
       textBlocks[index] = value;
-      onChange("text_blocks", textBlocks);
+      onChange("textBlocks", textBlocks);
     };
 
     return (
@@ -61,9 +61,9 @@ class Layout extends Component {
             <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
-              value={item.ui_style.response_font_scale}
+              value={item.uiStyle.responseFontScale}
               style={{ width: "100%" }}
-              onChange={val => changeUiStyle("response_font_scale", val)}
+              onChange={val => changeUiStyle("responseFontScale", val)}
             >
               {math.templateFontScaleOption.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
@@ -73,7 +73,7 @@ class Layout extends Component {
             </Select>
           </Col>
           <Col span={12}>
-            <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={item.ui_style.fontsize} />
+            <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={item.uiStyle.fontsize} />
           </Col>
         </StyledRow>
 
@@ -87,7 +87,7 @@ class Layout extends Component {
               columns={2}
               buttonText="Add"
               onAdd={handleAddBlock}
-              items={item.text_blocks}
+              items={item.textBlocks}
               onRemove={handleDeleteBlock}
               onChange={handleBlockChange}
             />

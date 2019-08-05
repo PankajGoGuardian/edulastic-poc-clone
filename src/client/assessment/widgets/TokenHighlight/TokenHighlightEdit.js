@@ -88,12 +88,12 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
-          value: draft.validation.valid_response.value
+          value: draft.validation.validResponse.value
         });
       })
     );
@@ -104,9 +104,9 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
 
         updateVariables(draft);
@@ -118,9 +118,9 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.value = ans;
+          draft.validation.validResponse.value = ans;
         } else {
-          draft.validation.alt_responses[correctTab - 1].value = ans;
+          draft.validation.altResponses[correctTab - 1].value = ans;
         }
 
         updateVariables(draft);
@@ -131,7 +131,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
 
         setCorrectTab(0);
         updateVariables(draft);
@@ -143,12 +143,12 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     <OptionsList
       item={item}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
     />

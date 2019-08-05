@@ -28,9 +28,9 @@ class Layout extends Component {
     const val = clamp(e.target.value, minWidth, maxWidth);
     const { onChange, uiStyle } = this.props;
     this.setState({ widthpx: val }, () => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
-        min_width: +val
+        minWidth: +val
       });
     });
   };
@@ -41,7 +41,7 @@ class Layout extends Component {
     const { onChange, uiStyle } = this.props;
 
     this.setState({ heightpx: val }, () => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         heightpx: +val
       });
@@ -109,7 +109,7 @@ class Layout extends Component {
     const { widthpx, heightpx } = this.state;
 
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });
@@ -130,9 +130,9 @@ class Layout extends Component {
             <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
-              value={uiStyle.response_font_scale}
+              value={uiStyle.responseFontScale}
               style={{ width: "100%" }}
-              onChange={val => changeUiStyle("response_font_scale", val)}
+              onChange={val => changeUiStyle("responseFontScale", val)}
             >
               {math.templateFontScaleOption.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
@@ -178,8 +178,8 @@ class Layout extends Component {
 
           <Col md={12}>
             <Checkbox
-              checked={uiStyle.transparent_background}
-              onChange={e => changeUiStyle("transparent_background", e.target.checked)}
+              checked={uiStyle.transparentBackground}
+              onChange={e => changeUiStyle("transparentBackground", e.target.checked)}
             >
               {t("component.options.transparentBackground")}
             </Checkbox>
@@ -219,7 +219,7 @@ Layout.defaultProps = {
     fontsize: "normal",
     columns: 0,
     orientation: "horizontal",
-    choice_label: "number"
+    choiceLabel: "number"
   },
   responseContainers: [],
   advancedAreOpen: false,

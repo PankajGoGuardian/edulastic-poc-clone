@@ -94,7 +94,7 @@ class Layout extends Component {
           newValue = maxHeight;
         }
       }
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: newValue
       });
@@ -105,7 +105,7 @@ class Layout extends Component {
       const item = responsecontainerindividuals[index];
       item[prop] = value;
       responsecontainerindividuals[index] = item;
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });
@@ -113,8 +113,8 @@ class Layout extends Component {
 
     const removeIndividual = index => {
       const { responsecontainerindividuals } = uiStyle;
-      responsecontainerindividuals[index] = {};
-      onChange("ui_style", {
+      responsecontainerindividuals.splice(index, 1);
+      onChange("uiStyle", {
         ...uiStyle,
         responsecontainerindividuals
       });
@@ -122,22 +122,15 @@ class Layout extends Component {
 
     const addNewResponseContainer = () => {
       const { responsecontainerindividuals } = uiStyle;
-      const diff = differenceBy(responses, responsecontainerindividuals, "id");
-      const _response = diff[0];
-      if (_response) {
-        const index = findIndex(responses, res => res.id === _response.id);
-        responsecontainerindividuals[index] = {
-          index,
-          widthpx: 0,
-          heightpx: 0,
-          placeholder: "",
-          id: _response.id
-        };
-        onChange("ui_style", {
-          ...uiStyle,
-          responsecontainerindividuals
-        });
-      }
+      responsecontainerindividuals.push({
+        widthpx: 0,
+        heightpx: 0,
+        placeholder: ""
+      });
+      onChange("uiStyle", {
+        ...uiStyle,
+        responsecontainerindividuals
+      });
     };
 
     const stemnumerationOptions = [

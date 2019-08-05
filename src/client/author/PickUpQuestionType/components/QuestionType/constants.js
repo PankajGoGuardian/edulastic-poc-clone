@@ -1815,7 +1815,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Equations & Inequalities",
         isMath: true,
-        response_containers: [
+        responseContainers: [
           {
             width: "60px"
           }
@@ -1939,7 +1939,7 @@ export const getCards = onSelectQuestionType => {
           maths: [],
           dropDowns: []
         },
-        response_container: {
+        responseContainer: {
           template: ""
         },
         uiStyle: {
@@ -1972,7 +1972,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         isMath: true,
-        response_containers: [],
+        responseContainers: [],
         symbols: ["basic", "qwerty"],
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         hints: [{ value: uuids[0], label: "Hint A" }]

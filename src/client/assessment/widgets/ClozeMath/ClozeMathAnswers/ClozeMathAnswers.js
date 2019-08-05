@@ -177,7 +177,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     });
     const splitWidth = Math.max(value.split("").length * 9, 100);
     const width = Math.min(splitWidth, 400);
-    const ind = findIndex(newItem.response_containers, container => container.id === answerId);
+    const ind = findIndex(newItem.responseContainers, container => container.id === answerId);
     if (ind === -1) {
       const responseIds = newItem.responseIds;
       const obj = {};
@@ -188,11 +188,11 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           obj.id = resp.id;
           obj.type = key;
           obj.widthpx = width;
-          newItem.response_containers.push(obj);
+          newItem.responseContainers.push(obj);
         }
       });
     } else {
-      newItem.response_containers[ind].widthpx = width;
+      newItem.responseContainers[ind].widthpx = width;
     }
     set(newItem, `validation.validResponse.textinput.value`, validInputsAnswers);
     setQuestionData(newItem);

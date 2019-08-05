@@ -11,6 +11,8 @@ var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/obje
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
+var _isArray2 = _interopRequireDefault(require("lodash/isArray"));
+
 var _get2 = _interopRequireDefault(require("lodash/get"));
 
 var _max2 = _interopRequireDefault(require("lodash/max"));
@@ -98,9 +100,25 @@ var groupChoiceById = function groupChoiceById(answers) {
           _iteratorNormalCompletion3 = true
         ) {
           var choice = _step3.value;
-          answersById[choice.id] = !answersById[choice.id]
-            ? [choice.value.trim()]
-            : [].concat((0, _toConsumableArray2["default"])(answersById[choice.id]), [choice.value.trim()]);
+
+          if ((0, _isArray2["default"])(choice.value)) {
+            answersById[choice.id] = !answersById[choice.id]
+              ? choice.value.map(function(v) {
+                  return v.trim();
+                })
+              : [].concat(
+                  (0, _toConsumableArray2["default"])(answersById[choice.id]),
+                  (0, _toConsumableArray2["default"])(
+                    choice.value.map(function(v) {
+                      return v.trim();
+                    })
+                  )
+                );
+          } else {
+            answersById[choice.id] = !answersById[choice.id]
+              ? [choice.value.trim()]
+              : [].concat((0, _toConsumableArray2["default"])(answersById[choice.id]), [choice.value.trim()]);
+          }
         }
       } catch (err) {
         _didIteratorError3 = true;

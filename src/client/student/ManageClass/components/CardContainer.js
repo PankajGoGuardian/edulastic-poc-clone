@@ -20,7 +20,7 @@ const ClassCard = ({ t, classItem, windowWidth }) => {
           </InfoContent>
         </CardHeader>
         <CardBody>
-          <Col xs={12} md={12} lg={12} xxl={12} span={24}>
+          <Col span={12}>
             <InfoLabel span={8}>{t("common.instructor")}</InfoLabel>
             <InfoContent span={16} info>
               {instructorName}
@@ -28,7 +28,7 @@ const ClassCard = ({ t, classItem, windowWidth }) => {
           </Col>
 
           {grades.length ? (
-            <Col xs={12} md={12} lg={12} xxl={12} span={24}>
+            <Col span={12}>
               <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
               <InfoContent span={16} info>
                 {grades.join(", ").replace(/O/i, " Other ")}
@@ -38,7 +38,7 @@ const ClassCard = ({ t, classItem, windowWidth }) => {
             ""
           )}
 
-          <Col xs={12} md={12} lg={12} xxl={12} span={24}>
+          <Col span={12}>
             <InfoLabel span={8}>{t("common.subject")}</InfoLabel>
             <InfoContent span={16} info>
               {subject}
@@ -46,7 +46,7 @@ const ClassCard = ({ t, classItem, windowWidth }) => {
           </Col>
 
           {standardSets.length ? (
-            <Col xs={12} md={12} lg={12} xxl={12} span={24}>
+            <Col span={12}>
               <InfoLabel span={8}>{t("common.standard")}</InfoLabel>
               <InfoContent span={16} info>
                 {standardSets && standardSets.map(std => std.name).join(",")}
@@ -54,14 +54,14 @@ const ClassCard = ({ t, classItem, windowWidth }) => {
             </Col>
           ) : null}
 
-          <Col xs={12} md={12} lg={12} xxl={12} span={24}>
+          <Col span={12}>
             <InfoLabel span={8}>{t("common.startDate")}</InfoLabel>
             <InfoContent span={16} info>
               {startDate && moment(startDate).format("DD MMM,YYYY")}
             </InfoContent>
           </Col>
 
-          <Col xs={12} md={12} lg={12} xxl={12} span={24}>
+          <Col span={12}>
             <InfoLabel span={8}>{t("common.endDate")}</InfoLabel>
             <InfoContent span={16} info>
               {endDate && moment(endDate).format("DD MMM,YYYY")}

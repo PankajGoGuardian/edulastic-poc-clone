@@ -1,7 +1,7 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { test } from "@edulastic/constants";
-import { call, put, all, takeEvery, select } from "redux-saga/effects";
+import { call, put, all, takeEvery, select, fork, take, takeLatest } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy } from "lodash";
@@ -449,6 +449,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.assignments;
     delete payload.data.authors;
     delete payload.data.createdBy;
+    delete payload.data.passages;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,
@@ -684,6 +685,18 @@ function* showAnswerSaga({ payload }) {
   }
 }
 
+function* takeCustom(pattern, worker, ...args) {
+  console.log("aaaaa");
+  const task = yield fork(function*() {
+    while (true) {
+      console.log("wwww");
+      const action = yield take(pattern);
+      yield call(worker, ...args, action);
+    }
+  });
+  return task;
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
@@ -693,7 +706,7 @@ export function* watcherSaga() {
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(TEST_PUBLISH, publishTestSaga),
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
-    yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
+    yield takeCustom(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
     yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
     yield takeEvery(PREVIEW_CHECK_ANSWER, checkAnswerSaga),
     yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga)

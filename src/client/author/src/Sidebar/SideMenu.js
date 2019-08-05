@@ -83,7 +83,14 @@ const menuItems = [
     icon: IconSettings,
     path: "author/districtprofile",
     allowedPathPattern: [/districtprofile/],
-    role: ["edulastic-admin", "district-admin", "school-admin"]
+    role: ["edulastic-admin", "district-admin"]
+  },
+  {
+    label: "Manage School",
+    icon: IconSettings,
+    path: "author/schools",
+    allowedPathPattern: [/schools/],
+    role: ["school-admin"]
   }
 ];
 class SideMenu extends Component {

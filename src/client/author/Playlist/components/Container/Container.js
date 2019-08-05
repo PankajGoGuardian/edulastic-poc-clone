@@ -10,7 +10,7 @@ import { Button, Row, Input, Spin } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
-import { grey, white } from "@edulastic/colors";
+import { grey, white, themeColor } from "@edulastic/colors";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import {
   ScrollBox,
@@ -405,7 +405,7 @@ class TestList extends Component {
           creating={creating}
           title="Play List Library"
           btnTitle="New Play list"
-          icon={<IconPlusStyled color="#00AD50" width={20} height={20} hoverColor="#00AD50" />}
+          icon={<IconPlusStyled color={themeColor} width={20} height={20} hoverColor={themeColor} />}
           renderFilter={() => (
             <StyleChangeWrapper>
               <IconTile

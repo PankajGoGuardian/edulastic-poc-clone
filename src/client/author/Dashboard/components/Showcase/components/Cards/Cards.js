@@ -1,14 +1,7 @@
 import React from "react";
 import { Row, Col } from "antd";
-import {
-  GreenCardContainer,
-  Greencard,
-  GreenCardBottomLayer,
-  Infocard,
-  InfoCardIconWrapper,
-  RateWrapper,
-  ButtonWrapper
-} from "./styled";
+import { themeColor } from "@edulastic/colors";
+import { Greencard, Infocard, InfoCardIconWrapper, RateWrapper, ButtonWrapper } from "./styled";
 import { TextWrapper } from "../../../styledComponents";
 import eurekaMath from "../../../../assets/svgs/eureka-math.svg";
 import heart from "../../../../assets/svgs/heart.svg";
@@ -28,7 +21,7 @@ export const GreencardSection = () => (
 // info card
 export const InfoSection = () => (
   <Infocard>
-    <TextWrapper size="16px" color="#00AD50">
+    <TextWrapper size="16px" color={themeColor}>
       Course 3 Middle School Math
     </TextWrapper>
     <TextWrapper size="12px" color="#434B5D" padding="0.5rem">

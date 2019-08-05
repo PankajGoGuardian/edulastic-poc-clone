@@ -140,6 +140,7 @@ class Container extends Component {
     return (
       <Content
         value={tabIndex}
+        padding="0px 10px 20px 0px"
         style={{
           width: row.dimension,
           marginRight: count - 1 === rowIndex ? "0px" : "30px"

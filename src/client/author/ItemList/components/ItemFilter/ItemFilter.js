@@ -2,19 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Affix, Input } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import {
-  Container,
-  Title,
-  Clear,
-  FixedFilters,
-  Header,
-  HeaderRow,
-  MainFilter,
-  MainFilterHeader,
-  StyledModal,
-  StyledModalContainer,
-  StyledModalTitle
-} from "./styled";
+import { Container, Title, Clear, FixedFilters, Header, HeaderRow, MainFilter, MainFilterHeader } from "./styled";
 
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import Search from "../Search/Search";
@@ -52,30 +40,15 @@ class ItemFilter extends Component {
       onSearchInputChange,
       curriculumStandards,
       t,
-      items,
-      toggleFilter,
-      isShowFilter
+      items
     } = this.props;
 
     return (
       <Container>
         <PerfectScrollbar>
           <FixedFilters>
-            <StyledModal open={isShowFilter} onClose={toggleFilter} center>
-              <StyledModalContainer>
-                <StyledModalTitle>{t("component.itemlist.filter.filters")}</StyledModalTitle>
-                {this.renderFullTextSearch()}
-                <Search
-                  search={search}
-                  showStatus={search.filter === items[1].filter}
-                  curriculums={curriculums}
-                  onSearchFieldChange={onSearchFieldChange}
-                  curriculumStandards={curriculumStandards}
-                />
-              </StyledModalContainer>
-            </StyledModal>
             {windowWidth > SMALL_DESKTOP_WIDTH ? this.renderFullTextSearch() : null}
-            <MainFilter isVisible={isShowFilter}>
+            <MainFilter>
               <Affix>
                 <MainFilterHeader>
                   <Title>{t("component.itemlist.filter.filters")}</Title>
@@ -114,9 +87,7 @@ ItemFilter.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired,
-  t: PropTypes.func.isRequired,
-  toggleFilter: PropTypes.func.isRequired,
-  isShowFilter: PropTypes.bool.isRequired
+  t: PropTypes.func.isRequired
 };
 
 export default ItemFilter;

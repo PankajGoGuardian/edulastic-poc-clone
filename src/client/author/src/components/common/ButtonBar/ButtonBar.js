@@ -12,7 +12,7 @@ import {
   IconEraseText,
   IconMetadata
 } from "@edulastic/icons";
-import { white } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
@@ -128,17 +128,15 @@ class ButtonBar extends Component {
                 {renderRightSide()}
                 {(showPublishButton || showPublishButton === undefined) &&
                   (itemStatus === "draft" ? (
-                    <Tooltip title={"Save"}>
+                    <Tooltip title="Save">
                       <CustomButton data-cy="saveButton" className="save-btn" onClick={onSave}>
-                        <HeadIcon>
-                          <IconSaveNew color="#00AD50" width={20.4} height={20.4} />
-                        </HeadIcon>
+                        <IconSaveNew color={themeColor} width={20.4} height={20.4} />
                       </CustomButton>
                     </Tooltip>
                   ) : (
                     <CustomButton data-cy="saveButton" onClick={onSave}>
                       <HeadIcon>
-                        <IconSaveNew color="#00AD50" width={20.4} height={20.4} />
+                        <IconSaveNew color={themeColor} width={20.4} height={20.4} />
                       </HeadIcon>
                       Save
                     </CustomButton>

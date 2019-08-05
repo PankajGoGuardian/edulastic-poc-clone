@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, smallDesktopWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { Button } from "antd";
 
 export const Container = styled.div`
   display: flex;
@@ -12,6 +13,16 @@ export const Container = styled.div`
 
   @media (max-width: ${mobileWidth}) {
     margin-top: 32px;
+  }
+`;
+
+export const HeaderActionButton = styled(Button)`
+  max-width: 45px;
+  height: 45px;
+
+  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+    max-width: 36px;
+    height: 36px;
   }
 `;
 
@@ -39,14 +50,12 @@ export const PreviewBar = styled.div`
       font-size: 0;
       margin: 0;
     }
-  }
-`;
 
-export const Button = styled.button`
-  width: 136px;
-  height: 45px;
-  border-radius: 37px;
-  background-color: #f3f3f3;
+    @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+      width: auto;
+      height: 36px;
+    }
+  }
 `;
 
 export const DisplayBlock = styled.div`

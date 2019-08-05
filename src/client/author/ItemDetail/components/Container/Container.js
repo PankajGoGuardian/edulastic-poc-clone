@@ -754,7 +754,7 @@ const enhance = compose(
 export default enhance(Container);
 
 const BreadCrumbBar = styled(Row)`
-  padding: 10px 30px 10px 0px;
+  padding: 5px 0px;
 `;
 
 const RightActionButtons = styled(Col)`

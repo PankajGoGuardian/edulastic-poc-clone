@@ -9,7 +9,7 @@ import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 import { IconFilter } from "@edulastic/icons";
-import { white } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 
 import {
   receiveAssignmentsAction,
@@ -238,7 +238,7 @@ class Assignments extends Component {
                   )}
                   <TableWrapper>
                     <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
-                      <IconFilter color={showFilter ? white : "#00AD50"} width={20} height={20} />
+                      <IconFilter color={showFilter ? white : themeColor} width={20} height={20} />
                     </FilterButton>
                     <StyledCard>
                       {isAdvancedView ? (

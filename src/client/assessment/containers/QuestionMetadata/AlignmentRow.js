@@ -171,7 +171,7 @@ const AlignmentRow = ({
           curriculumId: defaultCurriculumId,
           grades: defaultGrades || []
         });
-      } else if (interestedCurriculums.length > 0) {
+      } else if (interestedCurriculums && interestedCurriculums.length > 0) {
         editAlignment(alignmentIndex, {
           subject: interestedCurriculums[0].subject,
           curriculum: interestedCurriculums[0].name,

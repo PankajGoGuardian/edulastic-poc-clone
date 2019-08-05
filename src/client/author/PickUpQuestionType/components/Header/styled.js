@@ -1,4 +1,4 @@
-import { white, mobileWidth, tabletWidth, smallDesktopWidth } from "@edulastic/colors";
+import { white, mobileWidth, tabletWidth, smallDesktopWidth, mediumDesktopWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import { IconMenuOpenClose } from "@edulastic/icons";
 
@@ -15,7 +15,7 @@ export const Container = styled.div`
   height: 96px;
   z-index: 10;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
     height: 60px;
   }
   @media (max-width: ${mobileWidth}) {
@@ -31,7 +31,7 @@ export const Title = styled.div`
   font-weight: bold;
   line-height: 1.36;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
   }
   @media (max-width: ${mobileWidth}) {

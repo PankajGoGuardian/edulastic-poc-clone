@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, desktopWidth, smallDesktopWidth } from "@edulastic/colors";
+import { white, desktopWidth, mediumDesktopWidth } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -54,7 +54,7 @@ export const Link = styled.div`
     }
   }
 
-  @media screen and (max-width: ${smallDesktopWidth}) {
+  @media screen and (max-width: ${mediumDesktopWidth}) {
     margin: 0 3px;
     padding: 0 20px;
     height: 36px;

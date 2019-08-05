@@ -6,7 +6,6 @@ import {
   textColor,
   greenDark,
   dropZoneTitleColor,
-  smallDesktopWidth,
   mediumDesktopWidth
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
@@ -18,7 +17,7 @@ export const Container = styled.div`
   height: 100%;
   overflow: auto;
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     width: 235px;
   }
 `;

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { smallDesktopWidth, mediumDesktopWidth, white, green } from "@edulastic/colors";
+import { mediumDesktopWidth, white, green } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const Container = styled.div`
@@ -139,7 +139,7 @@ export const RightSide = styled.div`
       text-transform: uppercase;
     }
 
-    @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+    @media (max-width: ${mediumDesktopWidth}) {
       height: 36px;
       width: auto;
       padding: 0px 20px;
@@ -194,7 +194,7 @@ export const MenuItem = styled.li`
     }
   }
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
   }
 `;

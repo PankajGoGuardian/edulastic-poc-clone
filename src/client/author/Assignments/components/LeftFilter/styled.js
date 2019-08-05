@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Modal, Menu } from "antd";
 import {
-  smallDesktopWidth,
+  mediumDesktopWidth,
   themeColor,
   fadedGrey,
   mainBgColor,
@@ -265,7 +265,7 @@ export const ModalTitle = styled.div`
   font-weight: 600;
   color: ${title};
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 16px;
   }
 `;

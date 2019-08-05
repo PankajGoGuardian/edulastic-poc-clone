@@ -1916,6 +1916,7 @@ export const getCards = onSelectQuestionType => {
         custom_keys: ["m", "km", "cm", "mm"],
         uiStyle: {
           widthpx: 140,
+          heightpx: 35,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],

@@ -75,8 +75,11 @@ export const StyledFilterInput = styled(Input.Search)`
 `;
 
 export const StyledSchoolSearch = styled(Search)`
-  margin-left: 20px;
   width: 465px;
+`;
+
+export const StyledCreateSchoolButton = styled(Button)`
+  margin-right: 20px;
 `;
 
 export const StyledHeaderColumn = styled.div`

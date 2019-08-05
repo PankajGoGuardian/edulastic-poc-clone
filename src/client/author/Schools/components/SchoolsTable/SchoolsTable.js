@@ -7,6 +7,8 @@ import { get } from "lodash";
 import { Form, Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
 
+import { roleuser } from "@edulastic/constants";
+
 import {
   StyledTableContainer,
   StyledControlDiv,
@@ -15,6 +17,7 @@ import {
   StyledFilterInput,
   StyledFilterButton,
   StyledSchoolSearch,
+  StyledCreateSchoolButton,
   StyledTable,
   StyledHeaderColumn,
   StyledSortIconDiv,
@@ -30,7 +33,7 @@ import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
 import { receiveSchoolsAction, createSchoolsAction, updateSchoolsAction, deleteSchoolsAction } from "../../ducks";
 
 import { getSchoolsSelector } from "../../ducks";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
 
 class SchoolsTable extends React.Component {
@@ -418,7 +421,7 @@ class SchoolsTable extends React.Component {
       sortedInfo,
       currentPage
     } = this.state;
-    const { userOrgId, totalSchoolsCount } = this.props;
+    const { userOrgId, totalSchoolsCount, role } = this.props;
     const columnsInfo = [
       {
         title: (
@@ -684,7 +687,7 @@ class SchoolsTable extends React.Component {
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit school">Edit School</Menu.Item>
-        <Menu.Item key="deactivate school">Deactivate School</Menu.Item>
+        {role === roleuser.DISTRICT_ADMIN ? <Menu.Item key="deactivate school">Deactivate School</Menu.Item> : null}
       </Menu>
     );
 
@@ -774,9 +777,11 @@ class SchoolsTable extends React.Component {
     return (
       <StyledTableContainer>
         <StyledControlDiv>
-          <Button type="primary" onClick={this.showCreateSchoolModal}>
-            + Create School
-          </Button>
+          {role === roleuser.DISTRICT_ADMIN ? (
+            <StyledCreateSchoolButton type="primary" onClick={this.showCreateSchoolModal}>
+              + Create School
+            </StyledCreateSchoolButton>
+          ) : null}
           {createSchoolModalVisible && (
             <CreateSchoolModal
               modalVisible={createSchoolModalVisible}
@@ -839,6 +844,7 @@ const enhance = compose(
     state => ({
       schoolList: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
+      role: getUserRole(state),
       totalSchoolsCount: get(state, ["schoolsReducer", "totalSchoolCount"], 0)
     }),
     {

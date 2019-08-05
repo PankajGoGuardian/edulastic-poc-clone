@@ -520,6 +520,7 @@ class CoursesTable extends React.Component {
         <Menu.Item key="upload csv">Upload Course</Menu.Item>
         <Menu.Item key="edit course">Edit Course</Menu.Item>
         <Menu.Item key="deactivate course">Deactivate Course</Menu.Item>
+        <Menu.Item key="bulk edit courses">Bulk Edit Courses</Menu.Item>
       </Menu>
     );
 

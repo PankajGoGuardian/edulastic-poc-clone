@@ -4,6 +4,9 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { StyledComponents, TypeToConfirmModal } from "@edulastic/common";
+
+import { roleuser } from "@edulastic/constants";
+
 import {
   StyledTableContainer,
   StyledPagination,
@@ -43,7 +46,7 @@ import {
 
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 import { getFullNameFromAsString } from "../../../../common/utils/helpers";
 
@@ -449,6 +452,7 @@ class SchoolAdminTable extends Component {
 
     const {
       userOrgId,
+      role,
       adminUsersData: result,
       totalUsers,
       schoolsData,
@@ -499,11 +503,13 @@ class SchoolAdminTable extends Component {
           >
             Show current users only
           </Checkbox>
-          <StyledActionDropDown overlay={actionMenu}>
-            <Button>
-              Actions <Icon type="down" />
-            </Button>
-          </StyledActionDropDown>
+          {role === roleuser.DISTRICT_ADMIN ? (
+            <StyledActionDropDown overlay={actionMenu}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          ) : null}
         </StyledControlDiv>
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
@@ -635,6 +641,7 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
+      role: getUserRole(state),
       adminUsersData: getAdminUsersDataSelector(state),
       totalUsers: getAdminUsersDataCountSelector(state),
       schoolsData: getSchoolsSelector(state),

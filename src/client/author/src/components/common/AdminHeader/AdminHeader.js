@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
+import { roleuser } from "@edulastic/constants";
+
 import { AdminHeaderContent, StyledTitle, StyledTabs, StyledTabPane, StyledSubMenu } from "./styled";
 
 import { getUserRole } from "../../../selectors/user";
@@ -100,7 +102,7 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Courses" key={"Courses"} />
             <StyledTabPane tab="Class Enrollment" key={"Class Enrollment"} />
             <StyledTabPane tab="Groups" key={"Groups"} />
-            <StyledTabPane tab="Settings" key={"Settings"} />
+            {role === roleuser.DISTRICT_ADMIN ? <StyledTabPane tab="Settings" key={"Settings"} /> : null}
           </StyledTabs>
         </AdminHeaderContent>
         {active.mainMenu === "Settings" && (

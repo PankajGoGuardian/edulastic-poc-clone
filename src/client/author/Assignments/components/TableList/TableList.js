@@ -198,6 +198,7 @@ class TableList extends Component {
       t,
       onSelectRow,
       selectedRows,
+      toggleEditModal,
       folderData,
       showPreviewModal,
       showFilter
@@ -284,7 +285,13 @@ class TableList extends Component {
         render: (_, row) => (
           <ActionDiv>
             <Dropdown
-              overlay={ActionMenu(onOpenReleaseScoreSettings, row.currentAssignment, history, showPreviewModal)}
+              overlay={ActionMenu(
+                onOpenReleaseScoreSettings,
+                row.currentAssignment,
+                history,
+                showPreviewModal,
+                toggleEditModal
+              )}
               placement="bottomCenter"
               trigger={["click"]}
               onClick={e => e.stopPropagation()}

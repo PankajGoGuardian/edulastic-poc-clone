@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState } from "react";
 import PropTypes from "prop-types";
 import { white, themeColor } from "@edulastic/colors";
 import { compose } from "redux";
@@ -21,6 +21,7 @@ import TestPageNav from "../TestPageNav/TestPageNav";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
+import EditTestModal from "../../../src/components/common/EditTestModal";
 
 export const navButtonsTest = [
   {
@@ -79,6 +80,7 @@ const TestPageHeader = ({
   editEnable = false,
   windowWidth,
   onEnableEdit,
+  assignmentsCount = 0,
   toggleSideBar,
   showPublishButton,
   showShareButton,
@@ -89,11 +91,20 @@ const TestPageHeader = ({
   onAssign
 }) => {
   let navButtons = isPlaylist ? [...playlistNavButtons] : [...navButtonsTest];
+  const [openEditPopup, setOpenEditPopup] = useState(false);
   if (!owner) {
     navButtons = navButtons.slice(2);
   }
   return windowWidth > 993 ? (
     <HeaderWrapper>
+      <EditTestModal
+        visible={openEditPopup}
+        onCancel={() => setOpenEditPopup(false)}
+        onOk={() => {
+          onEnableEdit();
+          setOpenEditPopup(false);
+        }}
+      />
       <TitleWrapper>
         <Title title={title}>{title || "Untitled Test"} </Title>
         <TestStatus className={isPlaylist || editEnable ? "draft" : testStatus}>
@@ -151,7 +162,7 @@ const TestPageHeader = ({
             data-cy="edit"
             style={{ width: 42 }}
             size="large"
-            onClick={onEnableEdit}
+            onClick={assignmentsCount > 0 ? () => setOpenEditPopup(true) : onEnableEdit}
           >
             <IconPencilEdit color={themeColor} />
           </EduButton>

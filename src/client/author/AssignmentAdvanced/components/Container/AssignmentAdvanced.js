@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { find, isEmpty } from "lodash";
+import { find, isEmpty, get } from "lodash";
 import { Dropdown } from "antd";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -26,11 +26,15 @@ import {
 } from "./styled";
 import { Breadcrumb } from "../Breadcrumb";
 import TableList from "../TableList";
+import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
+import EditTestModal from "../../../src/components/common/EditTestModal";
 
 const { assignmentStatusBg } = authorAssignment;
 
 class AssignmentAdvanced extends Component {
   state = {
+    openEditPopup: false,
+    isPreviewModalVisible: false,
     filterStatus: ""
   };
 
@@ -76,7 +80,13 @@ class AssignmentAdvanced extends Component {
       </Breadcrumbs>
       <ActionDiv>
         <Dropdown
-          overlay={ActionMenu(this.onOpenReleaseScoreSettings, assingment, history)}
+          overlay={ActionMenu(
+            this.onOpenReleaseScoreSettings,
+            assingment,
+            history,
+            this.toggleTestPreviewModal,
+            this.toggleEditModal
+          )}
           placement="bottomCenter"
           trigger={["click"]}
         >
@@ -86,14 +96,36 @@ class AssignmentAdvanced extends Component {
     </FlexContainer>
   );
 
-  render() {
-    const { classList, assignmentsSummary, match, history } = this.props;
+  onEnableEdit = () => {
+    const { history, match } = this.props;
     const { testId } = match.params;
-    const { filterStatus } = this.state;
+    history.push(`/author/tests/${testId}/editAssigned`);
+  };
+
+  toggleEditModal = value => {
+    this.setState({ openEditPopup: value });
+  };
+
+  toggleTestPreviewModal = value => {
+    this.setState({ isPreviewModalVisible: !!value });
+  };
+  render() {
+    const { classList, assignmentsSummary, match, history, error } = this.props;
+    const { testId } = match.params;
+    const { filterStatus, openEditPopup, isPreviewModalVisible } = this.state;
     const assingment = find(assignmentsSummary, item => item.testId === testId) || {};
 
     return (
       <div>
+        <EditTestModal visible={openEditPopup} onCancel={() => this.toggleEditModal(false)} onOk={this.onEnableEdit} />
+
+        <TestPreviewModal
+          isModalVisible={isPreviewModalVisible}
+          testId={testId}
+          error={error}
+          hideModal={() => this.toggleTestPreviewModal(false)}
+        />
+
         <ListHeader title={assingment.title || "Loading..."} hasButton={false} />
         <Container>
           <FlexContainer justifyContent="space-between">
@@ -129,6 +161,7 @@ const enhance = compose(
   connect(
     state => ({
       assignmentsSummary: getAssignmentsSummary(state),
+      error: get(state, "test.error", false),
       classList: getAssignmentClassList(state)
     }),
     {

@@ -572,7 +572,12 @@ export function reducer(state = initialState, { type, payload }) {
         }
       };
     case ADD_PASSAGE: {
-      return { ...state, item: { ...state.item, passageId: payload._id }, passage: payload };
+      return produce(state, draft => {
+        draft.item.passageId = payload._id;
+        draft.passage = payload;
+        draft.item.rows[0].dimension = "50%";
+        return draft;
+      });
     }
     case UPDATE_PASSAGE_STRUCTURE: {
       return {

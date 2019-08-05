@@ -1,4 +1,3 @@
-/* global katex */
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import striptags from "striptags";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
@@ -43,10 +42,7 @@ const FroalaEditorInput = (element, board) => ({
       return;
     }
 
-    const content = replaceLatexesWithMathHtml(label, latex => {
-      if (!katex) return latex;
-      return katex.renderToString(latex);
-    });
+    const content = replaceLatexesWithMathHtml(label);
 
     init(
       element,

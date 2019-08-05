@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { arrayMove } from "react-sortable-hoc";
+import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, PaddingDiv } from "@edulastic/common";
 import { StyledTextField } from "../../common/styled_components";
@@ -14,8 +16,6 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../Question";
 import QuillSortableList from "../../../QuillSortableList";
-import { arrayMove } from "react-sortable-hoc";
-import { cloneDeep } from "lodash";
 
 const X_RATIO = "xRatio";
 const Y_RATIO = "yRatio";
@@ -124,7 +124,7 @@ class GraphQuadrants extends Component {
 
     list[index].text = value;
 
-    const responses = [graphData.validation.valid_response, ...graphData.validation.alt_responses];
+    const responses = [graphData.validation.validResponse, ...graphData.validation.altResponses];
     responses.forEach(response => {
       const responseValue = response.value.find(el => el.id === list[index].id);
       if (responseValue) {
@@ -140,7 +140,7 @@ class GraphQuadrants extends Component {
 
     const filteredItems = cloneDeep(graphData.list).filter((q, i) => i !== index);
 
-    const responses = [graphData.validation.valid_response, ...graphData.validation.alt_responses];
+    const responses = [graphData.validation.validResponse, ...graphData.validation.altResponses];
     responses.forEach(response => {
       response.value = response.value.filter(el => el.id !== graphData.list[index].id);
     });

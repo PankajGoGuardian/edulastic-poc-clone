@@ -1427,20 +1427,20 @@ export const getCards = onSelectQuestionType => {
         stimulus: "[This is the stem]",
         firstMount: true,
         canvas: {
-          x_max: 10.4,
-          x_min: -10.4,
-          y_max: 10.4,
-          y_min: -10.4,
-          x_ratio: 1,
-          y_ratio: 1
+          xMax: 10.4,
+          xMin: -10.4,
+          yMax: 10.4,
+          yMin: -10.4,
+          xRatio: 1,
+          yRatio: 1
         },
         controlbar: {
           controls: ["undo", "redo", "reset"],
-          default_control: "undo"
+          defaultControl: "undo"
         },
         toolbar: {
           tools: ["point"],
-          default_tool: "point"
+          defaultTool: "point"
         },
         list: [
           {
@@ -1457,15 +1457,15 @@ export const getCards = onSelectQuestionType => {
           }
         ],
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             score: 1,
             value: []
           },
-          alt_responses: []
+          altResponses: []
         },
         sampleAnswer: "",
-        ui_style: {
+        uiStyle: {
           drawLabelZero: false,
           displayPositionOnHover: false,
           currentStemNum: "numerical",
@@ -1486,14 +1486,14 @@ export const getCards = onSelectQuestionType => {
           yDistance: 1,
           xTickDistance: 1,
           yTickDistance: 1,
-          layout_width: 600,
-          layout_height: 600,
-          layout_margin: 0,
-          layout_snapto: "grid",
+          layoutWidth: 600,
+          layoutHeight: 600,
+          layoutMargin: 0,
+          layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y"
         },
-        background_image: {
+        backgroundImage: {
           src: "",
           x: 0,
           y: 0,
@@ -1502,8 +1502,8 @@ export const getCards = onSelectQuestionType => {
           opacity: 100,
           showShapePoints: true
         },
-        background_shapes: [],
-        multiple_responses: false,
+        backgroundShapes: [],
+        multipleResponses: false,
         hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType

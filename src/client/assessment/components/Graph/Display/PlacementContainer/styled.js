@@ -316,6 +316,11 @@ export const DragDropValuesContainer = styled.div`
     padding: 5px;
     display: flex !important;
     overflow: hidden;
+
+    img.fr-dii {
+      max-height: 40px !important;
+      width: auto !important;
+    }
   }
 
   .froala-wrapper {

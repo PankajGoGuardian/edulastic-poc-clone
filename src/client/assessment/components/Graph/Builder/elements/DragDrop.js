@@ -1,4 +1,3 @@
-/* global katex */
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
 import { CONSTANT, Colors } from "../config";
@@ -24,10 +23,7 @@ function renderElement(board, element) {
     fixed
   });
 
-  let content = replaceLatexesWithMathHtml(text, latex => {
-    if (!katex) return latex;
-    return katex.renderToString(latex);
-  });
+  let content = replaceLatexesWithMathHtml(text);
 
   if (!fixed) {
     const deleteIconId = `drag-drop-delete-${id}`;

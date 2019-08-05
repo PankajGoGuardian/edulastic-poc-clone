@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
+import { WithResources } from "@edulastic/common";
+
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
@@ -134,6 +136,8 @@ class PlacementContainer extends PureComponent {
       .replace(".", "")}`;
     this._graph = null;
 
+    this.state = { resourcesLoaded: false };
+
     this.onReset = this.onReset.bind(this);
     this.updateValues = this.updateValues.bind(this);
   }
@@ -156,6 +160,10 @@ class PlacementContainer extends PureComponent {
     this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
+      if (!disableResponse) {
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+      }
+
       this._graph.setDisableResponse(disableResponse);
 
       this._graph.resizeContainer(layout.width, layout.height);
@@ -210,6 +218,9 @@ class PlacementContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
+      if (prevProps.disableResponse && !disableResponse) {
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+      }
 
       if (
         canvas.xMin !== prevProps.canvas.xMin ||
@@ -370,6 +381,11 @@ class PlacementContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
+    const { resourcesLoaded } = this.state;
+    if (!resourcesLoaded) {
+      return;
+    }
+
     const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
     // correct answers blocks
@@ -413,13 +429,22 @@ class PlacementContainer extends PureComponent {
     }
   };
 
-  getDragDropValues() {
+  getDragDropValues = () => {
     const { list, elements } = this.props;
     return list.filter(elem => !elements.some(el => elem.id === el.id));
-  }
+  };
+
+  resourcesOnLoaded = () => {
+    const { resourcesLoaded } = this.state;
+    if (resourcesLoaded) {
+      return;
+    }
+    this.setState({ resourcesLoaded: true });
+    this.setElementsToGraph();
+  };
 
   render() {
-    const { layout, annotation, controls, questionId, disableResponse, view } = this.props;
+    const { layout, annotation, controls, disableResponse, view, graphData, setQuestionData } = this.props;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
 
@@ -427,6 +452,16 @@ class PlacementContainer extends PureComponent {
 
     return (
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
+        <WithResources
+          resources={[
+            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+          ]}
+          fallBack={<span />}
+          onLoaded={this.resourcesOnLoaded}
+        >
+          <span />
+        </WithResources>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
@@ -463,7 +498,7 @@ class PlacementContainer extends PureComponent {
                 <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
               )}
               <JSXBox data-cy="jxgbox" id={this._graphId} className="jxgbox" margin={margin} />
-              <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
+              <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
             </JSXBoxWrapper>
           </JSXBoxWithDropValues>
         </GraphWrapper>
@@ -492,6 +527,8 @@ PlacementContainer.propTypes = {
   setStashIndex: PropTypes.func.isRequired,
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
+  graphData: PropTypes.string.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   questionId: PropTypes.string.isRequired,
   altAnswerId: PropTypes.string,
   disableResponse: PropTypes.bool,

@@ -385,7 +385,9 @@ class Board {
   checkEditButtonCall(element) {
     return (
       this.elements.some(elem => elem.id === element.id) ||
-      this.elements.some(elem => Object.values(elem.ancestors).some(ancestor => ancestor.id === element.id))
+      this.elements.some(
+        elem => elem.ancestors && Object.values(elem.ancestors).some(ancestor => ancestor.id === element.id)
+      )
     );
   }
 

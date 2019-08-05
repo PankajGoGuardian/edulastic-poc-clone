@@ -19,6 +19,7 @@ import {
 
 import { Text } from "./styled/Text";
 import { Index } from "./styled/Index";
+import { ItemsWrapper } from "./styled/ItemsWrapper";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import QuillSortableList from "../../components/QuillSortableList";
@@ -282,20 +283,22 @@ const OrderList = ({
                 columns={columns}
               />
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
-                {correctAnswers.map((correctAnswer, i) => (
-                  <CorrectAnswerItem theme={theme}>
-                    <Text>
-                      <FlexContainer>
-                        <Index>{i + 1}</Index>
-                        <QuestionText>
-                          <MathFormulaDisplay
-                            dangerouslySetInnerHTML={{ __html: itemForPreview.list[correctAnswer] }}
-                          />
-                        </QuestionText>
-                      </FlexContainer>
-                    </Text>
-                  </CorrectAnswerItem>
-                ))}
+                <ItemsWrapper styleType={styleType}>
+                  {correctAnswers.map((correctAnswer, i) => (
+                    <CorrectAnswerItem theme={theme}>
+                      <Text>
+                        <FlexContainer>
+                          <Index>{i + 1}</Index>
+                          <QuestionText>
+                            <MathFormulaDisplay
+                              dangerouslySetInnerHTML={{ __html: itemForPreview.list[correctAnswer] }}
+                            />
+                          </QuestionText>
+                        </FlexContainer>
+                      </Text>
+                    </CorrectAnswerItem>
+                  ))}
+                </ItemsWrapper>
               </CorrectAnswersContainer>
 
               {hasAltAnswers && (

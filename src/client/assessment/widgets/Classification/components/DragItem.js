@@ -34,7 +34,7 @@ const specSource = {
 
     const itemTo = monitor.getDropResult();
 
-    props.onDrop(itemCurrent, itemTo);
+    props.onDrop(itemCurrent, itemTo, props.from);
   },
   canDrag(props) {
     return props.disableResponse !== true;

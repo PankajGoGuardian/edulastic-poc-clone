@@ -28,8 +28,8 @@ const ChoicesBox = ({ resprops, id }) => {
   } = resprops;
 
   if (!id) return null;
-  const { response_ids } = item;
-  const { index } = find(response_ids, response => response.id === id);
+  const { responseIds } = item;
+  const { index } = find(responseIds, response => response.id === id);
   let userAnswer = find(userAnswers, answer => (answer ? answer.id : "") === id);
   const individualStyle = responsecontainerindividuals[index];
 

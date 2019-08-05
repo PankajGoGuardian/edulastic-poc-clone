@@ -5,15 +5,15 @@ const exactMatchEvaluator = (
   userResponse = [],
   validAnswer,
   altAnswers,
-  { automarkable, min_score_if_attempted, max_score }
+  { automarkable, minScoreIfAttempted, maxScore }
 ) => {
   let score = 0;
 
   const text = userResponse;
 
-  const { value: validValue, score: validScore, matching_rule } = validAnswer;
+  const { value: validValue, score: validScore, matchingRule } = validAnswer;
 
-  let maxScore = validScore;
+  let mScore = validScore;
 
   let evaluation = false;
 
@@ -22,7 +22,7 @@ const exactMatchEvaluator = (
     score = validScore;
   }
 
-  if (matching_rule === ScoringType.CONTAINS && text && text.toLowerCase().includes(validValue.toLowerCase())) {
+  if (matchingRule === ScoringType.CONTAINS && text && text.toLowerCase().includes(validValue.toLowerCase())) {
     evaluation = true;
     if (score === 0) {
       score = validScore;
@@ -30,7 +30,7 @@ const exactMatchEvaluator = (
   }
 
   altAnswers.forEach(ite => {
-    const { value: altValue, score: altScore, matching_rule: altMatch } = ite;
+    const { value: altValue, score: altScore, matchingRule: altMatch } = ite;
 
     if ((altValue || "").trim() === (text || "").trim()) {
       evaluation = true;
@@ -46,32 +46,32 @@ const exactMatchEvaluator = (
       }
     }
 
-    maxScore = Math.max(maxScore, altScore);
+    mScore = Math.max(mScore, altScore);
   });
 
   if (automarkable) {
-    if (min_score_if_attempted) {
-      maxScore = Math.max(maxScore, min_score_if_attempted);
-      score = Math.max(min_score_if_attempted, score);
+    if (minScoreIfAttempted) {
+      mScore = Math.max(mScore, minScoreIfAttempted);
+      score = Math.max(minScoreIfAttempted, score);
     }
-  } else if (max_score) {
-    maxScore = Math.max(max_score, maxScore);
+  } else if (maxScore) {
+    mScore = Math.max(mScore, maxScore);
   }
 
   return {
     score,
-    maxScore,
+    maxScore: mScore,
     evaluation
   };
 };
 
 const evaluator = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses, scoring_type } = validation;
+  const { validResponse, altResponses, scoringType } = validation;
 
-  switch (scoring_type) {
+  switch (scoringType) {
     case ScoringType.EXACT_MATCH:
     default:
-      return exactMatchEvaluator(userResponse, valid_response, alt_responses, validation);
+      return exactMatchEvaluator(userResponse, validResponse, altResponses, validation);
   }
 };
 

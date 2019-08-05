@@ -179,7 +179,7 @@ const HighlightImagePreview = ({
     saveAnswer(history[historyTab + 1]);
   };
 
-  const fontSize = getFontSize(get(item, "ui_style.fontsize"));
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize"));
 
   const renderImage = () =>
     file ? (
@@ -208,7 +208,7 @@ const HighlightImagePreview = ({
         }}
       >
         <CanvasContainer>
-          <InstructorStimulus width="100%">{item.instructor_stimulus}</InstructorStimulus>
+          <InstructorStimulus width="100%">{item.instructorStimulus}</InstructorStimulus>
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}

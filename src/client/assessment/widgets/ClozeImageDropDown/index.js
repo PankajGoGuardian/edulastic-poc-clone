@@ -62,7 +62,7 @@ class ClozeImageDropDown extends Component {
       previewDisplayOptions,
       itemForEdit,
       itemForPreview,
-      uiStyle: item.ui_style
+      uiStyle: item.uiStyle
     };
   };
 
@@ -88,7 +88,7 @@ class ClozeImageDropDown extends Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.ui_style[prop] = uiStyle;
+        draft.uiStyle[prop] = uiStyle;
       })
     );
   };
@@ -102,10 +102,10 @@ class ClozeImageDropDown extends Component {
           value: []
         };
 
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.push(response);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.push(response);
         } else {
-          draft.validation.alt_responses = [response];
+          draft.validation.altResponses = [response];
         }
       })
     );
@@ -115,8 +115,8 @@ class ClozeImageDropDown extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses = draft.validation.alt_responses.filter((response, i) => i !== index);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
         }
       })
     );
@@ -135,7 +135,7 @@ class ClozeImageDropDown extends Component {
         this.setState({ duplicatedResponses: value });
         break;
       }
-      case "shuffle_options": {
+      case "shuffleOptions": {
         this.setState({ shuffleOptions: value });
         break;
       }
@@ -181,7 +181,7 @@ class ClozeImageDropDown extends Component {
 
     const Wrapper = testItem ? React.Fragment : Paper;
 
-    const fontSize = item.ui_style ? (item.ui_style.fontsize ? item.ui_style.fontsize : "lol") : "lol";
+    const fontSize = item.uiStyle ? (item.uiStyle.fontsize ? item.uiStyle.fontsize : "lol") : "lol";
 
     const { imagescale } = item;
 
@@ -236,7 +236,7 @@ class ClozeImageDropDown extends Component {
                       <CorrectAnswerOptions>
                         <Checkbox
                           className="additional-options"
-                          onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                          onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
                           label={t("component.cloze.imageDropDown.shuffleoptions")}
                           checked={shuffleOptions}
                         />

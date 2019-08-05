@@ -139,7 +139,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
   var userResponse = _ref.userResponse,
     validation = _ref.validation;
   var responses = createAnswerObject(userResponse);
-  var answers = [validation.valid_response].concat((0, _toConsumableArray2["default"])(validation.alt_responses || []));
+  var answers = [validation.validResponse].concat((0, _toConsumableArray2["default"])(validation.altResponses || []));
   var maxScore = (0, _max2["default"])(
     answers.map(function(i) {
       return i.score;
@@ -147,9 +147,9 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
   );
   var evaluation = {};
   var answersById = groupChoiceById(answers);
-  var optionCount = (0, _get2["default"])(validation, "valid_response.value.length", 0);
+  var optionCount = (0, _get2["default"])(validation, "validResponse.value.length", 0);
   var score = 0;
-  var questionScore = (0, _get2["default"])(validation, "valid_response.score", 1);
+  var questionScore = (0, _get2["default"])(validation, "validResponse.score", 1);
 
   var _loop = function _loop() {
     var id = _Object$keys[_i];
@@ -169,7 +169,7 @@ var mixAndMatchEvaluator = function mixAndMatchEvaluator(_ref) {
     return !i;
   }).length;
 
-  if (validation.scoring_type === "partialMatch") {
+  if (validation.scoringType === "partialMatch") {
     score = (correctAnswerCount / optionCount) * questionScore;
 
     if (validation.penalty) {
@@ -192,7 +192,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
   var userResponse = _ref2.userResponse,
     validation = _ref2.validation;
   var responses = createAnswerObject(userResponse);
-  var answers = [validation.valid_response].concat((0, _toConsumableArray2["default"])(validation.alt_responses || []));
+  var answers = [validation.validResponse].concat((0, _toConsumableArray2["default"])(validation.altResponses || []));
   var evaluations = [];
   var maxScore = (0, _max2["default"])(
     answers.map(function(i) {
@@ -226,7 +226,7 @@ var normalEvaluator = function normalEvaluator(_ref2) {
 
       var correctAnswerCount = Object.values(currentEvaluation).filter(_identity2["default"]).length; // if scoring type is "partialMatch", calculate the partial score
 
-      if (validation.scoring_type === "partialMatch") {
+      if (validation.scoringType === "partialMatch") {
         var questionScore = answer.score;
         currentScore = questionScore * (correctAnswerCount / answer.value.length); // if penalty is present
 
@@ -268,8 +268,8 @@ var normalEvaluator = function normalEvaluator(_ref2) {
 
   var evaluation = correct.score === 0 ? evaluations[0] : correct; // if score for attempting is present
 
-  if (validation.min_score_if_attempted && evaluation.score < validation.min_score_if_attempted) {
-    evaluation.score = validation.min_score_if_attempted;
+  if (validation.minScoreIfAttempted && evaluation.score < validation.minScoreIfAttempted) {
+    evaluation.score = validation.minScoreIfAttempted;
   }
 
   return (0, _objectSpread2["default"])({}, evaluation, {

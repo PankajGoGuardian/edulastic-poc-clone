@@ -496,8 +496,8 @@ class Authoring extends Component {
     const { item, setQuestionData } = this.props;
     const newResponseContainer = {};
     const elemRect = this.canvasRef.current.getBoundingClientRect();
-    const _width = get(item, "ui_style.width", 150);
-    const _height = get(item, "ui_style.height", 40);
+    const _width = get(item, "uiStyle.width", 150);
+    const _height = get(item, "uiStyle.height", 40);
 
     newResponseContainer.top = e.clientY - elemRect.top;
     newResponseContainer.left = e.clientX - elemRect.left;

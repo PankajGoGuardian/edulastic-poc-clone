@@ -78,7 +78,7 @@ class QuestionItem extends React.Component {
       data: {
         type,
         validation: {
-          valid_response: { value }
+          validResponse: { value }
         },
         options
       },

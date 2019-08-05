@@ -214,8 +214,8 @@ class MathFormulaPreview extends Component {
     const latex = this.getValidLatex(this.props);
 
     const hasAltAnswers =
-      item && item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;
-    const cssStyles = getStylesFromUiStyleToCssStyle(item.ui_style);
+      item && item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
+    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
     let statusColor = theme.widgets.mathFormula.inputColor;
     if (latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
       statusColor = !isEmpty(evaluation)
@@ -226,14 +226,14 @@ class MathFormulaPreview extends Component {
     }
     // cssStyles.width = cssStyles.width || cssStyles.minWidth;
     const testItemCorrectValues = testItem
-      ? item.validation.valid_response.value.map(validResponse => validResponse.value)
+      ? item.validation.validResponse.value.map(validResponse => validResponse.value)
       : [];
 
     const customKeys = get(item, "custom_keys", []);
     const allowNumericOnly = get(item, "allowNumericOnly", false);
 
     // in Units type, this need when the show dropdown option is true
-    const correctUnit = get(item, "validation.valid_response.value[0].options.unit", "");
+    const correctUnit = get(item, "validation.validResponse.value[0].options.unit", "");
 
     return (
       <div>
@@ -307,18 +307,18 @@ class MathFormulaPreview extends Component {
           </FlexContainer>
         )}
 
-        {!testItem && previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
+        {!testItem && previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
           <CorrectAnswerBox>
             {item.isUnits && item.showDropdown
-              ? item.validation.valid_response.value[0].value.search("=") === -1
-                ? item.validation.valid_response.value[0].value + correctUnit
-                : item.validation.valid_response.value[0].value.replace(/=/gm, `${correctUnit}=`)
-              : item.validation.valid_response.value[0].value}
+              ? item.validation.validResponse.value[0].value.search("=") === -1
+                ? item.validation.validResponse.value[0].value + correctUnit
+                : item.validation.validResponse.value[0].value.replace(/=/gm, `${correctUnit}=`)
+              : item.validation.validResponse.value[0].value}
           </CorrectAnswerBox>
         )}
         {!testItem && hasAltAnswers && previewType === SHOW && (
           <CorrectAnswerBox altAnswers>
-            {item.validation.alt_responses
+            {item.validation.altResponses
               .map(ans => {
                 if (item.isUnits && item.showDropdown) {
                   const altUnit = !ans.value[0].options.unit ? "" : ans.value[0].options.unit;

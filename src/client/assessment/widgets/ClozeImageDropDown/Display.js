@@ -144,7 +144,7 @@ class Display extends Component {
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
-    const cAnswers = get(item, "validation.valid_response.value", []);
+    const cAnswers = get(item, "validation.validResponse.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
 
     const imageHeight = this.getHeight();
@@ -287,15 +287,15 @@ class Display extends Component {
           fontSize={fontSize}
           cleanValue
           groupResponses={newOptions}
-          userAnswers={validation.valid_response && validation.valid_response.value}
+          userAnswers={validation.validResponse && validation.validResponse.value}
         />
-        {!isEmpty(validation.alt_responses) && (
+        {!isEmpty(validation.altResponses) && (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             cleanValue
             groupResponses={newOptions}
-            userAnswers={validation.valid_response && validation.valid_response.value}
-            altResponses={validation.alt_responses}
+            userAnswers={validation.validResponse && validation.validResponse.value}
+            altResponses={validation.altResponses}
           />
         )}
       </React.Fragment>

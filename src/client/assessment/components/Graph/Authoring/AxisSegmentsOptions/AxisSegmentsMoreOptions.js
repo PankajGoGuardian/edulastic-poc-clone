@@ -72,7 +72,7 @@ class AxisSegmentsMoreOptions extends Component {
     const { graphData, setNumberline } = this.props;
     const {
       numberlineAxis,
-      canvas: { x_min: xMin, x_max: xMax }
+      canvas: { xMin: xMin, xMax: xMax }
     } = graphData;
 
     let parsedValue = null;
@@ -133,12 +133,12 @@ class AxisSegmentsMoreOptions extends Component {
       target: { name, value }
     } = event;
     const { graphData, setOptions } = this.props;
-    const { ui_style } = graphData;
+    const { uiStyle } = graphData;
 
     if (!value) {
-      setOptions({ ...ui_style, [name]: 0 });
+      setOptions({ ...uiStyle, [name]: 0 });
     } else {
-      setOptions({ ...ui_style, [name]: parseInt(value, 10) });
+      setOptions({ ...uiStyle, [name]: parseInt(value, 10) });
     }
   };
 
@@ -222,7 +222,7 @@ class AxisSegmentsMoreOptions extends Component {
 
     const { layout, minWidth, currentRenderingBaseItem, currentFractionItem, ticksDistance } = this.state;
 
-    const { canvas, ui_style, numberlineAxis, toolbar } = graphData;
+    const { canvas, uiStyle, numberlineAxis, toolbar } = graphData;
 
     return (
       <Fragment>
@@ -272,9 +272,9 @@ class AxisSegmentsMoreOptions extends Component {
                 <Label>{t("component.graphing.layoutoptions.width")}</Label>
                 <MoreOptionsInput
                   type="text"
-                  name="layout_width"
+                  name="layoutWidth"
                   onChange={this.handleOptionsInputChange}
-                  value={ui_style.layout_width}
+                  value={uiStyle.layoutWidth}
                 />
               </Col>
             )}
@@ -290,9 +290,9 @@ class AxisSegmentsMoreOptions extends Component {
                 <Label>{t("component.graphing.layoutoptions.height")}</Label>
                 <MoreOptionsInput
                   type="text"
-                  name="layout_height"
+                  name="layoutHeight"
                   onChange={this.handleOptionsInputChange}
-                  value={ui_style.layout_height}
+                  value={uiStyle.layoutHeight}
                 />
               </Col>
             </Row>

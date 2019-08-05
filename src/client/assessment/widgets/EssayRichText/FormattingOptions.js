@@ -24,7 +24,7 @@ class FormattingOptions extends Component {
     const handleActiveChange = index => {
       setQuestionData(
         produce(item, draft => {
-          draft.formatting_options[index].active = !draft.formatting_options[index].active;
+          draft.formattingOptions[index].active = !draft.formattingOptions[index].active;
           updateVariables(draft);
         })
       );
@@ -33,7 +33,7 @@ class FormattingOptions extends Component {
     const handleChange = ({ oldIndex, newIndex }) => {
       setQuestionData(
         produce(item, draft => {
-          draft.formatting_options = arrayMove(draft.formatting_options, oldIndex, newIndex);
+          draft.formattingOptions = arrayMove(draft.formattingOptions, oldIndex, newIndex);
           updateVariables(draft);
         })
       );

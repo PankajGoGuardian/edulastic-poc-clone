@@ -61,7 +61,7 @@ class MathEssayInputLine extends Component {
 
   get fontSize() {
     const { item } = this.props;
-    return getFontSize(item.ui_style.fontsize);
+    return getFontSize(item.uiStyle.fontsize);
   }
 
   render() {

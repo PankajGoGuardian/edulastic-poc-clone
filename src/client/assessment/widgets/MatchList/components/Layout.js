@@ -22,10 +22,10 @@ class LayoutWrapper extends Component {
     const changeUIStyle = (prop, val) => {
       setQuestionData(
         produce(item, draft => {
-          if (!draft.ui_style) {
-            draft.ui_style = {};
+          if (!draft.uiStyle) {
+            draft.uiStyle = {};
           }
-          draft.ui_style[prop] = val;
+          draft.uiStyle[prop] = val;
         })
       );
     };
@@ -42,14 +42,14 @@ class LayoutWrapper extends Component {
           <Row gutter={36}>
             <Col md={12}>
               <ResponseContainerPositionOption
-                onChange={val => changeUIStyle("possibility_list_position", val)}
-                value={get(item, "ui_style.possibility_list_position", "bottom")}
+                onChange={val => changeUIStyle("possibilityListPosition", val)}
+                value={get(item, "uiStyle.possibilityListPosition", "bottom")}
               />
             </Col>
             <Col md={12}>
               <StemNumerationOption
                 onChange={val => changeUIStyle("validation_stem_numeration", val)}
-                value={get(item, "ui_style.validation_stem_numeration", "numerical")}
+                value={get(item, "uiStyle.validation_stem_numeration", "numerical")}
               />
             </Col>
           </Row>
@@ -58,7 +58,7 @@ class LayoutWrapper extends Component {
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
+                value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
           </Row>

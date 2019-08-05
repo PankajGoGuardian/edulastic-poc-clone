@@ -34,7 +34,7 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <StemNumerationOption
                 onChange={val => changeUIStyle("validation_stem_numeration", val)}
-                value={get(item, "ui_style.validation_stem_numeration", "numerical")}
+                value={get(item, "uiStyle.validation_stem_numeration", "numerical")}
               />
             </Col>
             <Col md={12}>
@@ -46,7 +46,7 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
+                value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
           </Row>

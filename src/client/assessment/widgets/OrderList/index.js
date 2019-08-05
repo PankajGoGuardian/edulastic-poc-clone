@@ -78,8 +78,8 @@ const OrderList = ({
     }
   }, [item, userAnswer]);
 
-  const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
-  const styleType = get(item, "ui_style.type", "button");
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
+  const styleType = get(item, "uiStyle.type", "button");
   const axis = styleType === "inline" ? "xy" : "y";
   const columns = styleType === "inline" ? 3 : 1;
 
@@ -87,10 +87,10 @@ const OrderList = ({
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.value = arrayMove(draft.validation.valid_response.value, oldIndex, newIndex);
+          draft.validation.validResponse.value = arrayMove(draft.validation.validResponse.value, oldIndex, newIndex);
         } else {
-          draft.validation.alt_responses[correctTab - 1].value = arrayMove(
-            draft.validation.alt_responses[correctTab - 1].value,
+          draft.validation.altResponses[correctTab - 1].value = arrayMove(
+            draft.validation.altResponses[correctTab - 1].value,
             oldIndex,
             newIndex
           );
@@ -109,7 +109,7 @@ const OrderList = ({
   const handleAddAltResponse = () => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
           value: draft.list.map((q, i) => i)
         });
@@ -122,7 +122,7 @@ const OrderList = ({
   const handleDeleteAltAnswers = index => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(index, 1);
+        draft.validation.altResponses.splice(index, 1);
 
         setCorrectTab(0);
         updateVariables(draft);
@@ -134,9 +134,9 @@ const OrderList = ({
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = points;
+          draft.validation.validResponse.score = points;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = points;
+          draft.validation.altResponses[correctTab - 1].score = points;
         }
         updateVariables(draft);
       })
@@ -152,15 +152,15 @@ const OrderList = ({
       readOnly
       items={
         correctTab === 0
-          ? item.validation.valid_response.value.map(ind => item.list[ind])
-          : item.validation.alt_responses[correctTab - 1].value.map(ind => item.list[ind])
+          ? item.validation.validResponse.value.map(ind => item.list[ind])
+          : item.validation.altResponses[correctTab - 1].value.map(ind => item.list[ind])
       }
       onSortEnd={handleCorrectSortEnd}
       useDragHandle
       columns={columns}
       styleType={styleType}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handleUpdatePoints}
       canDelete={false}
@@ -174,20 +174,20 @@ const OrderList = ({
   if (!item) return null;
 
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
-  const correctAnswers = get(itemForPreview, "validation.valid_response.value", []);
+  const correctAnswers = get(itemForPreview, "validation.validResponse.value", []);
 
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
   const hasAltAnswers =
     itemForPreview &&
     itemForPreview.validation &&
-    itemForPreview.validation.alt_responses &&
-    itemForPreview.validation.alt_responses.length > 0;
+    itemForPreview.validation.altResponses &&
+    itemForPreview.validation.altResponses.length > 0;
 
   const alternateAnswers = {};
 
   if (hasAltAnswers) {
-    const altAnswers = itemForPreview.validation.alt_responses;
+    const altAnswers = itemForPreview.validation.altResponses;
     altAnswers.forEach(altAnswer => {
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
@@ -205,7 +205,7 @@ const OrderList = ({
     }
 
     if (hasAltAnswers) {
-      for (const altAnswers of itemForPreview.validation.alt_responses) {
+      for (const altAnswers of itemForPreview.validation.altResponses) {
         if (altAnswers.value[index] === answer) {
           return true;
         }
@@ -241,7 +241,7 @@ const OrderList = ({
       )}
       {view === PREVIEW && (
         <Wrapper>
-          <InstructorStimulus>{itemForPreview.instructor_stimulus}</InstructorStimulus>
+          <InstructorStimulus>{itemForPreview.instructorStimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}

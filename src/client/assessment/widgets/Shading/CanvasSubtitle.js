@@ -20,8 +20,8 @@ class CanvasSubtitle extends Component {
 
     const cell_width = canvas ? canvas.cell_width : 1;
     const cell_height = canvas ? canvas.cell_height : 1;
-    const row_count = canvas ? canvas.row_count : 1;
-    const column_count = canvas ? canvas.column_count : 1;
+    const rowCount = canvas ? canvas.rowCount : 1;
+    const columnCount = canvas ? canvas.columnCount : 1;
 
     const handleCanvasOptionsChange = (prop, val) => {
       if (val < 1) return;
@@ -30,7 +30,7 @@ class CanvasSubtitle extends Component {
         produce(item, draft => {
           draft.canvas[prop] = val;
 
-          if (prop === "column_count" || prop === "row_count") {
+          if (prop === "columnCount" || prop === "rowCount") {
             draft.canvas.shaded = [];
           }
 
@@ -60,10 +60,10 @@ class CanvasSubtitle extends Component {
 
             <Input
               size="large"
-              value={row_count}
+              value={rowCount}
               type="number"
               min={1}
-              onChange={e => handleCanvasOptionsChange("row_count", +e.target.value)}
+              onChange={e => handleCanvasOptionsChange("rowCount", +e.target.value)}
             />
           </Col>
           <Col span={12}>
@@ -77,10 +77,10 @@ class CanvasSubtitle extends Component {
 
             <Input
               size="large"
-              value={column_count}
+              value={columnCount}
               min={0}
               type="number"
-              onChange={e => handleCanvasOptionsChange("column_count", +e.target.value)}
+              onChange={e => handleCanvasOptionsChange("columnCount", +e.target.value)}
             />
           </Col>
         </Row>

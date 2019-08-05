@@ -178,7 +178,7 @@ class ClozeTextDisplay extends Component {
       responsecontainerindividuals,
       stemNumeration: stemnumeration,
       placeholder: btnStyle.placeholder,
-      cAnswers: get(item, "validation.valid_response.value", [])
+      cAnswers: get(item, "validation.validResponse.value", [])
     };
 
     const QuestionContent = () => (
@@ -198,15 +198,15 @@ class ClozeTextDisplay extends Component {
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
           groupResponses={options}
-          userAnswers={validation.valid_response && validation.valid_response.value}
+          userAnswers={validation.validResponse && validation.validResponse.value}
           responseIds={responseIds}
         />
-        {!isEmpty(item.validation.alt_responses) && (
+        {!isEmpty(item.validation.altResponses) && (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
-            altAnswers={item.validation.alt_responses}
-            responseIds={item.response_ids}
+            altAnswers={item.validation.altResponses}
+            responseIds={item.responseIds}
           />
         )}
       </>

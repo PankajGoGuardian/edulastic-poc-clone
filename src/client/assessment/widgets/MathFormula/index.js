@@ -83,12 +83,12 @@ const MathFormula = ({
           />
           <MathFormulaOptions
             onChange={handleItemChangeChange}
-            uiStyle={item.ui_style}
+            uiStyle={item.uiStyle}
             item={item}
             responseContainers={item.response_containers}
             customKeys={item.custom_keys}
-            stimulusReview={item.stimulus_review}
-            instructorStimulus={item.instructor_stimulus}
+            stimulusReview={item.stimulusReview}
+            instructorStimulus={item.instructorStimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
             setKeyPadOffest={setOffset}

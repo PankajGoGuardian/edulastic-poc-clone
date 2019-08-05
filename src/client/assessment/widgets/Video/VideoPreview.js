@@ -24,26 +24,26 @@ const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
       {item.heading && <Subtitle>{item.heading}</Subtitle>}
     </QuestionTitleWrapper>
     {item.summary && <Label>{item.summary}</Label>}
-    {item && item.ui_style && (
+    {item && item.uiStyle && (
       <Media>
         {({ isFullscreen, playPause }) => (
           <div className="media">
             <div className={`media-player${isFullscreen ? " media-player--fullscreen" : ""}`} tabIndex="0">
               <Player
-                poster={item.ui_style.posterImage}
+                poster={item.uiStyle.posterImage}
                 src={item.sourceURL}
                 style={{
-                  ...item.ui_style,
+                  ...item.uiStyle,
                   width: "100%",
-                  maxWidth: item.ui_style.width
+                  maxWidth: item.uiStyle.width
                 }}
                 onClick={playPause}
               />
             </div>
-            {(!item.ui_style.hideControls || item.videoType === videoTypes.YOUTUBE) && (
-              <FlexContainer style={{ width: "100%", maxWidth: item.ui_style.width }}>
+            {(!item.uiStyle.hideControls || item.videoType === videoTypes.YOUTUBE) && (
+              <FlexContainer style={{ width: "100%", maxWidth: item.uiStyle.width }}>
                 <PlayPause />
-                <SeekBar style={{ width: item.ui_style.width - 338 }} />
+                <SeekBar style={{ width: item.uiStyle.width - 338 }} />
                 <div>
                   <CurrentTime /> / <Duration />
                 </div>
@@ -69,7 +69,7 @@ VideoPreview.propTypes = {
     videoType: PropTypes.string.isRequired,
     sourceURL: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
-    ui_style: PropTypes.shape({
+    uiStyle: PropTypes.shape({
       width: PropTypes.number.isRequired,
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,

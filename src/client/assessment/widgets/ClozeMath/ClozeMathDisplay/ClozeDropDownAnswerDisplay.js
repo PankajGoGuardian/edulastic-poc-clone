@@ -12,7 +12,7 @@ const ClozeDropDownAnswerDisplay = ({ resprops = {}, id }) => {
 
   const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
   const responseContainer = find(response_containers || [], cont => cont.id === id);
-  const width = (responseContainer ? responseContainer.widthpx : item.ui_style.min_width) || "auto";
+  const width = (responseContainer ? responseContainer.widthpx : item.uiStyle.minWidth) || "auto";
 
   return (
     <SelectWrapper>

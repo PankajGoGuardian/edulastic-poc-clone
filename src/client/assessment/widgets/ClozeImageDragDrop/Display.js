@@ -385,8 +385,8 @@ class Display extends Component {
 
     const questionId = item && item.id;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
-    const { userAnswers: _uAnswers, possibleResponses } = this.state;
-    const cAnswers = get(item, "validation.valid_response.value", []);
+    const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
+    const cAnswers = get(item, "validation.validResponse.value", []);
 
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
@@ -680,8 +680,8 @@ class Display extends Component {
       />
     );
 
-    const validAnswers = get(item, "validation.valid_response.value", []);
-    const altAnswers = get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
+    const validAnswers = get(item, "validation.validResponse.value", []);
+    const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
     const allAnswers = [validAnswers, ...altAnswers];
 
     const correctAnswerBoxLayout = showAnswer ? (

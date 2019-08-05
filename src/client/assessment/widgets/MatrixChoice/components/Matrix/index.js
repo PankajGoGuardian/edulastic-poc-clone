@@ -18,8 +18,8 @@ import { CHECK, SHOW } from "../../../../constants/constantsForQuestions";
 
 const getResponses = validation => {
   const altResponses =
-    validation.alt_responses && validation.alt_responses.length ? validation.alt_responses.map(res => res.value) : [];
-  return [validation.valid_response.value, ...altResponses];
+    validation.altResponses && validation.altResponses.length ? validation.altResponses.map(res => res.value) : [];
+  return [validation.validResponse.value, ...altResponses];
 };
 
 const validatedAnswers = (answers, responses, matrix, type) => {
@@ -198,18 +198,18 @@ const Matrix = props => {
         ""
       ),
       dataIndex: `${i}`,
-      width: uiStyle.option_width || "auto",
+      width: uiStyle.optionWidth || "auto",
       key: i,
       render: data => getCell(i, data)
     }));
 
-    const stemTitle = !helpers.isEmpty(uiStyle.stem_title) ? (
-      <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stem_title }} />
+    const stemTitle = !helpers.isEmpty(uiStyle.stemTitle) ? (
+      <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.stemTitle }} />
     ) : (
       ""
     );
-    const optionRowTitle = !helpers.isEmpty(uiStyle.option_row_title) ? (
-      <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.option_row_title }} />
+    const optionRowTitle = !helpers.isEmpty(uiStyle.optionRowTitle) ? (
+      <StyledHeader dangerouslySetInnerHTML={{ __html: uiStyle.optionRowTitle }} />
     ) : (
       ""
     );
@@ -219,7 +219,7 @@ const Matrix = props => {
         title: stemTitle,
         dataIndex: "stem",
         key: "stem",
-        width: uiStyle.stem_width || "auto",
+        width: uiStyle.stemWidth || "auto",
         render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
       },
       {
@@ -228,7 +228,7 @@ const Matrix = props => {
       }
     ];
 
-    if (uiStyle.type === "table" && uiStyle.stem_numeration) {
+    if (uiStyle.type === "table" && uiStyle.stemNumeration) {
       columns = [
         {
           title: "",
@@ -259,7 +259,7 @@ const Matrix = props => {
   const data = stems.map((stem, i) => ({
     key: i,
     stem,
-    numeration: helpers.getNumeration(i, uiStyle.stem_numeration),
+    numeration: helpers.getNumeration(i, uiStyle.stemNumeration),
     ...getData(i)
   }));
 
@@ -269,11 +269,11 @@ const Matrix = props => {
     <StyledTable
       data-cy="matrixTable"
       fontSize={fontSize}
-      horizontalLines={uiStyle.horizontal_lines}
+      horizontalLines={uiStyle.horizontalLines}
       columns={getColumns()}
       dataSource={data}
       pagination={false}
-      hasOptionRow={!helpers.isEmpty(uiStyle.option_row_title)}
+      hasOptionRow={!helpers.isEmpty(uiStyle.optionRowTitle)}
     />
   );
 };

@@ -24,7 +24,7 @@ const OptionsList = withPoints(ChartPreview);
 
 const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
   const {
-    ui_style: { yAxisMax, yAxisMin, snapTo }
+    uiStyle: { yAxisMax, yAxisMin, snapTo }
   } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
@@ -37,11 +37,11 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
           const params = { yAxisMax, yAxisMin, snapTo };
           draft.chart_data.data = getReCalculatedPoints(draft.chart_data.data, params);
 
-          draft.validation.alt_responses.forEach(altResp => {
+          draft.validation.altResponses.forEach(altResp => {
             altResp.value = getReCalculatedPoints(altResp.value, params);
           });
 
-          draft.validation.valid_response.value = getReCalculatedPoints(draft.validation.valid_response.value, params);
+          draft.validation.validResponse.value = getReCalculatedPoints(draft.validation.validResponse.value, params);
         })
       );
     }
@@ -58,11 +58,11 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
 
         draft.chart_data.data.push({ ...newPoint });
 
-        draft.validation.alt_responses.forEach(altResp => {
+        draft.validation.altResponses.forEach(altResp => {
           altResp.value.push({ ...newPoint });
         });
 
-        draft.validation.valid_response.value.push({ ...newPoint });
+        draft.validation.validResponse.value.push({ ...newPoint });
       })
     );
   };
@@ -81,10 +81,10 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
           }
           case "label": {
             draft.chart_data.data[index].x = value;
-            draft.validation.alt_responses.forEach(altResp => {
+            draft.validation.altResponses.forEach(altResp => {
               altResp.value[index].x = value;
             });
-            draft.validation.valid_response.value[index].x = value;
+            draft.validation.validResponse.value[index].x = value;
             break;
           }
           case "value": {
@@ -102,11 +102,11 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
       produce(item, draft => {
         draft.chart_data.data.splice(index, 1);
 
-        draft.validation.alt_responses.forEach(altResp => {
+        draft.validation.altResponses.forEach(altResp => {
           altResp.value.splice(index, 1);
         });
 
-        draft.validation.valid_response.value.splice(index, 1);
+        draft.validation.validResponse.value.splice(index, 1);
       })
     );
   };
@@ -114,7 +114,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
 
         setCorrectTab(0);
       })
@@ -124,12 +124,12 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
-          value: draft.validation.valid_response.value.map(chartData => ({ ...chartData, y: yAxisMin }))
+          value: draft.validation.validResponse.value.map(chartData => ({ ...chartData, y: yAxisMin }))
         });
       })
     );
@@ -140,9 +140,9 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
       })
     );
@@ -152,9 +152,9 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.value = ans;
+          draft.validation.validResponse.value = ans;
         } else {
-          draft.validation.alt_responses[correctTab - 1].value = ans;
+          draft.validation.altResponses[correctTab - 1].value = ans;
         }
       })
     );
@@ -164,13 +164,13 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
     <OptionsList
       item={item}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       tab={correctTab}
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       userAnswer={
-        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
     />

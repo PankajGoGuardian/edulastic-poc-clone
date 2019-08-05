@@ -27,7 +27,7 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item 
   const onAddNewLine = index => {
     const newLines = cloneDeep(lines);
 
-    if (item.ui_style.max_lines && newLines.length === item.ui_style.max_lines) {
+    if (item.uiStyle.max_lines && newLines.length === item.uiStyle.max_lines) {
       return;
     }
 

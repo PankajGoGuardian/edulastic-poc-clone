@@ -120,10 +120,10 @@ const partialCompareFunction = ({ answers, userResponse = [] }) => {
 };
 
 const evaluator = ({ userResponse = [], validation }) => {
-  const { valid_response, alt_responses, scoring_type } = validation;
-  const answers = [valid_response, ...alt_responses];
+  const { validResponse, altResponses, scoringType } = validation;
+  const answers = [validResponse, ...altResponses];
 
-  switch (scoring_type) {
+  switch (scoringType) {
     case ScoringType.EXACT_MATCH:
       return exactMatchTemplate(exactCompareFunction, {
         userResponse,

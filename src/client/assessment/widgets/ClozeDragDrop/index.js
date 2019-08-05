@@ -59,7 +59,7 @@ class ClozeDragDrop extends Component {
       previewDisplayOptions,
       itemForEdit,
       itemForPreview,
-      uiStyle: item.ui_style
+      uiStyle: item.uiStyle
     };
   };
 
@@ -72,10 +72,10 @@ class ClozeDragDrop extends Component {
           value: []
         };
 
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.push(response);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.push(response);
         } else {
-          draft.validation.alt_responses = [response];
+          draft.validation.altResponses = [response];
         }
       })
     );
@@ -85,8 +85,8 @@ class ClozeDragDrop extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.validation && draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.splice(index, 1);
+        if (draft.validation && draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.splice(index, 1);
           setQuestionData(draft);
         }
       })
@@ -130,8 +130,8 @@ class ClozeDragDrop extends Component {
       ...restProps
     } = this.props;
 
-    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions, response_ids: responseIDs } = item;
+    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+    const { duplicatedResponses, showDraghandle, shuffleOptions, responseIds: responseIDs } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
@@ -168,7 +168,7 @@ class ClozeDragDrop extends Component {
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    responseIDs={item.response_ids}
+                    responseIDs={item.responseIds}
                   />
                   <CorrectAnswerOptions>
                     <CheckContainer>
@@ -241,7 +241,7 @@ class ClozeDragDrop extends Component {
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
-                responseIDs={item.response_ids}
+                responseIDs={item.responseIds}
                 {...restProps}
               />
             )}
@@ -263,7 +263,7 @@ class ClozeDragDrop extends Component {
                 userSelections={userAnswer}
                 validation={item.validation}
                 evaluation={evaluation}
-                responseIDs={item.response_ids}
+                responseIDs={item.responseIds}
                 {...restProps}
               />
             )}
@@ -286,7 +286,7 @@ class ClozeDragDrop extends Component {
                 uiStyle={uiStyle}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
-                responseIDs={item.response_ids}
+                responseIDs={item.responseIds}
                 {...restProps}
               />
             )}

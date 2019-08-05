@@ -56,13 +56,13 @@ class ChoicesForDropDown extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[dropDownId].splice(itemIndex, 1);
-        const validDropDown = cloneDeep(draft.validation.valid_response.dropdown.value);
+        const validDropDown = cloneDeep(draft.validation.validResponse.dropdown.value);
         forEach(validDropDown, answer => {
           if (answer.id === dropDownId) {
             answer.value = "";
           }
         });
-        draft.validation.valid_response.dropdown.value = validDropDown;
+        draft.validation.validResponse.dropdown.value = validDropDown;
         updateVariables(draft);
       })
     );
@@ -70,7 +70,7 @@ class ChoicesForDropDown extends Component {
 
   editOptions = (dropDownId, itemIndex, e) => {
     const { item, setQuestionData } = this.props;
-    const prevDropDownAnswers = get(item, "validation.valid_response.dropdown.value", []);
+    const prevDropDownAnswers = get(item, "validation.validResponse.dropdown.value", []);
     const prevAnswerIndex = findIndex(prevDropDownAnswers, answer => answer.id === dropDownId);
 
     setQuestionData(
@@ -80,11 +80,11 @@ class ChoicesForDropDown extends Component {
         draft.options[dropDownId][itemIndex] = e.target.value;
         const splitWidth = Math.max(e.target.value.split("").length * 9, 100);
         const width = Math.min(splitWidth, 400);
-        const drpdwnIndex = findIndex(draft.response_ids.dropDowns, drpdwn => drpdwn.id === dropDownId);
+        const drpdwnIndex = findIndex(draft.responseIds.dropDowns, drpdwn => drpdwn.id === dropDownId);
         const ind = findIndex(draft.response_containers, cont => cont.id === dropDownId);
         if (ind === -1) {
           draft.response_containers.push({
-            index: draft.response_ids.dropDowns[drpdwnIndex].index,
+            index: draft.responseIds.dropDowns[drpdwnIndex].index,
             id: dropDownId,
             widthpx: width,
             type: "dropDowns"
@@ -119,7 +119,7 @@ class ChoicesForDropDown extends Component {
   render() {
     const { t, item, fillSections, cleanSections } = this.props;
     const {
-      response_ids: { dropDowns = [] },
+      responseIds: { dropDowns = [] },
       options,
       stimulus
     } = item;

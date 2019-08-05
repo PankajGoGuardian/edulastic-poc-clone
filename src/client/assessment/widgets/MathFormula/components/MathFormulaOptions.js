@@ -69,7 +69,7 @@ const MathFormulaOptions = ({
   }
 
   const addResponseContainer = () => {
-    const { response_ids: responseIds } = item;
+    const { responseIds } = item;
     const ind = responseContainers.length;
     let obj = {};
     // eslint-disable-next-line no-labels

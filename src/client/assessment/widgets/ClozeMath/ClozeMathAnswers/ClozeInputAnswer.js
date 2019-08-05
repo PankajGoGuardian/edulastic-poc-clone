@@ -34,7 +34,7 @@ class ClozeInputAnswer extends Component {
   render() {
     const {
       answers,
-      item: { ui_style: uiStyle, response_containers: responseContainers }
+      item: { uiStyle: uiStyle, response_containers: responseContainers }
     } = this.props;
 
     return (
@@ -47,7 +47,7 @@ class ClozeInputAnswer extends Component {
         >
           {answers.map(answer => {
             const response = responseContainers.find(respCont => respCont.id === answer.id);
-            const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.min_width}px` || "auto";
+            const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.minWidth}px` || "auto";
             const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
             return (
               <Panel header={`Text Input ${answer.index + 1}`} key={answer.index}>

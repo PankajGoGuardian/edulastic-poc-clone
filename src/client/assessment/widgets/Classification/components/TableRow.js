@@ -25,7 +25,7 @@ const TableRow = ({
   drop,
   answers,
   preview,
-  possible_responses,
+  possibleResponses,
   onDrop,
   validArray,
   dragHandle,
@@ -62,14 +62,14 @@ const TableRow = ({
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
   };
-  const rowHasHeader = item.ui_style && item.ui_style.row_header;
+  const rowHasHeader = item.uiStyle && item.uiStyle.row_header;
   const cols = [];
   let validIndex = -1;
   const rndX = get(item, `rowTitle.x`, 0);
   const rndY = get(item, `rowTitle.y`, 0);
-  const responses = item.group_possible_responses
-    ? item.possible_response_groups.flatMap(group => group.responses)
-    : item.possible_responses;
+  const responses = item.groupPossibleResponses
+    ? item.possibleResponseGroups.flatMap(group => group.responses)
+    : item.possibleResponses;
   for (let index = startIndex; index < startIndex + colCount; index++) {
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
@@ -200,7 +200,7 @@ TableRow.propTypes = {
   drop: PropTypes.func.isRequired,
   answers: PropTypes.array.isRequired,
   preview: PropTypes.bool.isRequired,
-  possible_responses: PropTypes.array.isRequired,
+  possibleResponses: PropTypes.array.isRequired,
   onDrop: PropTypes.func.isRequired,
   validArray: PropTypes.array.isRequired,
   theme: PropTypes.object.isRequired,

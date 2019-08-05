@@ -16,7 +16,7 @@ export const ADD_ITEMS_QUESTION = "[author question] load question";
 export const UPDATE_QUESTION = "[author questions] update questions";
 export const SET_FIRST_MOUNT = "[author questions] set first mount";
 export const CHANGE_ITEM = "[author questions] change item";
-export const CHANGE_ITEM_UI_STYLE = "[author questions] change item ui_style";
+export const CHANGE_ITEM_UI_STYLE = "[author questions] change item uiStyle";
 export const ADD_QUESTION = "[author questions] add question";
 export const CHANGE_CURRENT_QUESTION = "[author quesitons] change current question";
 export const ADD_ALIGNMENT = "[author questions] add alignment";
@@ -93,11 +93,11 @@ const changeItem = (state, { payload }) => {
 const changeUIStyle = (state, { payload }) => {
   const newItem = _cloneDeep(state.byId[state.current]);
 
-  if (!newItem.ui_style) {
-    newItem.ui_style = {};
+  if (!newItem.uiStyle) {
+    newItem.uiStyle = {};
   }
 
-  newItem.ui_style[payload.prop] = payload.value;
+  newItem.uiStyle[payload.prop] = payload.value;
   state.byId[state.current] = newItem;
 };
 
@@ -173,14 +173,14 @@ export default createReducer(initialState, {
     if (!(score > 0)) {
       return state;
     }
-    set(state.byId[qid], "validation.valid_response.score", score);
+    set(state.byId[qid], "validation.validResponse.score", score);
   },
   [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: (state, { payload }) => {
     if (!payload) {
       for (const key of Object.keys(state.byId)) {
-        const oldScore = get(state.byId, "validation.valid_response.score", 0);
+        const oldScore = get(state.byId, "validation.validResponse.score", 0);
         if (oldScore === 0) {
-          set(state.byId[key], "validation.valid_response.score", 1);
+          set(state.byId[key], "validation.validResponse.score", 1);
         }
       }
     }

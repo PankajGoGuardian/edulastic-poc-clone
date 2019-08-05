@@ -38,7 +38,7 @@ class GraphAnswers extends Component {
     const { onAddAltResponses, graphData } = this.props;
     const { validation } = graphData;
 
-    this.handleTabChange(validation.alt_responses.length + 1);
+    this.handleTabChange(validation.altResponses.length + 1);
     onAddAltResponses();
   };
 
@@ -46,7 +46,7 @@ class GraphAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    newData.validation.valid_response.score = points;
+    newData.validation.validResponse.score = points;
 
     setQuestionData(newData);
   };
@@ -56,14 +56,14 @@ class GraphAnswers extends Component {
     const { validation } = question;
     const { toolbar } = question;
     toolbar.drawingObjects = this.getDrawingObjects(value);
-    validation.valid_response.value = value;
+    validation.validResponse.value = value;
     setQuestionData({ ...question, validation, toolbar });
   };
 
   updateAltValidationValue = (value, tabIndex) => {
     const { question, setQuestionData } = this.props;
     const { validation } = question;
-    validation.alt_responses[tabIndex].value = value;
+    validation.altResponses[tabIndex].value = value;
     setQuestionData({ ...question, validation });
   };
 
@@ -71,7 +71,7 @@ class GraphAnswers extends Component {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
 
-    newData.validation.alt_responses[i].score = points;
+    newData.validation.altResponses[i].score = points;
 
     setQuestionData(newData);
   };
@@ -153,7 +153,7 @@ class GraphAnswers extends Component {
             }}
             onChange={val => handleSelectIgnoreLabels(val)}
             options={getIgnoreLabelsOptions()}
-            value={graphData.validation.ignore_labels || "yes"}
+            value={graphData.validation.ignoreLabels || "yes"}
           >
             {getIgnoreLabelsOptions().map(option => (
               <Select.Option data-cy={option.value} key={option.value}>
@@ -201,22 +201,22 @@ class GraphAnswers extends Component {
           {tab === 0 && (
             <TabContainer>
               <GraphDisplayWithPoints
-                value={graphData.validation.valid_response.score}
+                value={graphData.validation.validResponse.score}
                 onChangePoints={this.handleUpdateCorrectScore}
                 view={view}
                 graphData={graphData}
                 previewTab={previewTab}
-                altAnswerId={graphData.validation.valid_response.id}
-                elements={graphData.validation.valid_response.value}
+                altAnswerId={graphData.validation.validResponse.id}
+                elements={graphData.validation.validResponse.value}
                 disableResponse={false}
                 onChange={this.updateValidationValue}
-                points={graphData.validation.valid_response.score}
+                points={graphData.validation.validResponse.score}
               />
             </TabContainer>
           )}
-          {graphData.validation.alt_responses &&
-            !!graphData.validation.alt_responses.length &&
-            graphData.validation.alt_responses.map((alter, i) => {
+          {graphData.validation.altResponses &&
+            !!graphData.validation.altResponses.length &&
+            graphData.validation.altResponses.map((alter, i) => {
               if (i + 1 === tab) {
                 return (
                   <TabContainer>

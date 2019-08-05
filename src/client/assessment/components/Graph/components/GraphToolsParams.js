@@ -281,7 +281,7 @@ GraphToolsParams.propTypes = {
 
 GraphToolsParams.defaultProps = {
   toolbar: {
-    default_tool: "",
+    defaultTool: "",
     tools: [],
     drawingPrompt: "byTools"
   }

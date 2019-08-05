@@ -53,25 +53,25 @@ class MultipleChoiceOptions extends Component {
           label
         }));
 
-        let idx = item.validation.valid_response.value.findIndex(val => val === oldIndex);
+        let idx = item.validation.validResponse.value.findIndex(val => val === oldIndex);
         if (idx !== -1) {
-          draft.validation.valid_response.value[idx] = newIndex;
+          draft.validation.validResponse.value[idx] = newIndex;
         }
 
-        idx = item.validation.valid_response.value.findIndex(val => val === newIndex);
+        idx = item.validation.validResponse.value.findIndex(val => val === newIndex);
         if (idx !== -1) {
-          draft.validation.valid_response.value[idx] = oldIndex;
+          draft.validation.validResponse.value[idx] = oldIndex;
         }
 
-        if (draft.validation.alt_responses) {
-          for (let i = 0; i < item.validation.alt_responses; i++) {
-            const altResponse = draft.validation.alt_responses[i];
-            idx = item.validation.alt_responses[i].value.findIndex(val => val === oldIndex);
+        if (draft.validation.altResponses) {
+          for (let i = 0; i < item.validation.altResponses; i++) {
+            const altResponse = draft.validation.altResponses[i];
+            idx = item.validation.altResponses[i].value.findIndex(val => val === oldIndex);
             if (idx !== -1) {
               altResponse.value[idx] = newIndex;
             }
 
-            idx = item.validation.alt_responses[i].value.findIndex(val => val === newIndex);
+            idx = item.validation.altResponses[i].value.findIndex(val => val === newIndex);
             if (idx !== -1) {
               altResponse.value[idx] = oldIndex;
             }

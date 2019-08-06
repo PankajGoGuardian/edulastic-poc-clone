@@ -450,7 +450,6 @@ function* createTestSaga({ payload }) {
 
 function* updateTestSaga({ payload }) {
   try {
-    console.log("pa", payload);
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
     delete payload.data.updatedDate;

@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Table, Icon, Pagination } from "antd";
+import { Icon, Pagination, Input, Button } from "antd";
+import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -32,12 +33,6 @@ export const StyledTable = styled(Table)`
         text-align: end;
       }
     }
-
-    .ant-table-thead,
-    .ant-table-tbody {
-      tr {
-      }
-    }
   }
 `;
 
@@ -48,6 +43,14 @@ export const StyledTableButton = styled.a`
   &:last-child {
     margin-right: 0;
   }
+`;
+
+export const StyledSchoolSearch = styled(Input.Search)`
+  width: 465px;
+`;
+
+export const StyledCreateSchoolButton = styled(Button)`
+  margin-right: 20px;
 `;
 
 export const StyledHeaderColumn = styled.div`

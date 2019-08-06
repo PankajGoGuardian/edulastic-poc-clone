@@ -115,7 +115,7 @@ class App extends Component {
         } else if (role === "student") {
           defaultRoute = "/home/assignments";
         } else if (role === "district-admin" || role === "school-admin") {
-          defaultRoute = "/author/assignments";
+          defaultRoute = "/author/dashboard";
         } else if (user.user && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
           defaultRoute = "/auth";
         }

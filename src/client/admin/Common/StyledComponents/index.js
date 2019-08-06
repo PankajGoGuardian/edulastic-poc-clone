@@ -1,6 +1,7 @@
 import { IconHeader, IconLogoCompact } from "@edulastic/icons";
 import styled from "styled-components";
-import { Table as AntdTable, Select, Button as AntdButton, Input, Dropdown, Pagination } from "antd";
+import { Select, Button as AntdButton, Input, Dropdown, Pagination } from "antd";
+import { StyledTable as AntdTable } from "../../../common/styled";
 const { Search } = Input;
 
 export const Logo = styled(IconHeader)`
@@ -71,7 +72,7 @@ export const OuterDiv = styled.div`
 // Manage District common components
 export const StyledControlDiv = styled.div`
   display: flex;
-  margin-bottom: 20px;
+  margin: 10px 0px;
   .ant-btn-primary {
     color: white;
   }
@@ -118,6 +119,30 @@ export const StyledTable = styled(AntdTable)`
     &: hover {
       a {
         opacity: 100;
+      }
+    }
+  }
+
+  .ant-table-body,
+  .ant-table-scroll {
+    .ant-table-header {
+      table {
+        thead {
+          tr {
+            th {
+              word-break: break-all;
+            }
+          }
+        }
+      }
+    }
+    table {
+      tbody {
+        tr {
+          td {
+            word-break: break-all;
+          }
+        }
       }
     }
   }

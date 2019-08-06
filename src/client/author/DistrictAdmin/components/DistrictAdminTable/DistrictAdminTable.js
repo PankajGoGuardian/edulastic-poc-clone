@@ -102,17 +102,20 @@ class DistrictAdminTable extends Component {
             {firstName} {lastName}
           </span>
         ),
-        sorter: (a, b) => compareByAlph(a.firstName, b.secondName)
+        sorter: (a, b) => compareByAlph(a.firstName, b.secondName),
+        width: 200
       },
       {
         title: "Username",
         dataIndex: "_source.email",
-        sorter: (a, b) => compareByAlph(a.email, b.email)
+        sorter: (a, b) => compareByAlph(a.email, b.email),
+        width: 200
       },
       {
         title: "SSO",
         dataIndex: "_source.sso",
-        render: (sso = "N/A") => sso
+        render: (sso = "N/A") => sso,
+        width: 200
       },
       {
         dataIndex: "_id",
@@ -123,7 +126,8 @@ class DistrictAdminTable extends Component {
           <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
             <Icon type="delete" theme="twoTone" />
           </StyledTableButton>
-        ]
+        ],
+        width: 100
       }
     ];
 
@@ -488,16 +492,14 @@ class DistrictAdminTable extends Component {
               </StyledActionDropDown>
             </RightFilterDiv>
           </StyledFilterDiv>
-          <StyledControlDiv>
-            {createDistrictAdminModalVisible && (
-              <CreateDistrictAdminModal
-                modalVisible={createDistrictAdminModalVisible}
-                createDistrictAdmin={this.createDistrictAdmin}
-                closeModal={this.closeCreateDistrictAdminModal}
-                userOrgId={userOrgId}
-              />
-            )}
-          </StyledControlDiv>
+          {createDistrictAdminModalVisible && (
+            <CreateDistrictAdminModal
+              modalVisible={createDistrictAdminModalVisible}
+              createDistrictAdmin={this.createDistrictAdmin}
+              closeModal={this.closeCreateDistrictAdminModal}
+              userOrgId={userOrgId}
+            />
+          )}
           {filtersData.map((item, i) => {
             const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
             const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
@@ -558,13 +560,8 @@ class DistrictAdminTable extends Component {
             rowSelection={rowSelection}
             dataSource={Object.values(result)}
             columns={this.columns}
-            pagination={{
-              current: pageNo,
-              total: totalUsers,
-              pageSize: 25,
-              onChange: page => setPageNo(page)
-            }}
-            scroll={{ y: 400 }}
+            pagination={false}
+            scroll={{ y: 500 }}
           />
           <StyledPagination
             defaultCurrent={1}

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Table, Icon, Pagination } from "antd";
+import { Table, Icon, Pagination, Input, Button } from "antd";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -50,7 +50,7 @@ export const StyledTableButton = styled.a`
   }
 `;
 
-export const StyledSchoolSearch = styled(Search)`
+export const StyledSchoolSearch = styled(Input.Search)`
   width: 465px;
 `;
 

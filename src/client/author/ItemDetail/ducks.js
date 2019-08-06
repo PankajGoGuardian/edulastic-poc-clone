@@ -913,8 +913,10 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
-    const { nextPageUrl, tabIndex } = yield select(state => get(state, "router.location.state"), {});
+    const { backUrl, tabIndex } = yield select(state => get(state, "router.location.state"), {});
+    const pathname = yield select(state => get(state, "router.location.pathname"), {});
 
+    const isEdit = pathname.includes("edit");
     const passage = yield select(getPassageSelector);
     const entity = yield select(getCurrentQuestionSelector);
     const currentItem = yield select(getItemDetailSelector);
@@ -930,11 +932,12 @@ function* savePassage({ payload }) {
     let allWidgets = yield select(state => get(state, "authorQuestions.byId", {}));
 
     let widgetIds = get(passage, "structure.widgets", []).map(widget => widget.reference);
-    widgetIds.push(widget.reference);
+
+    if (!isEdit) widgetIds.push(widget.reference);
 
     let passageData = Object.values(allWidgets).filter(i => widgetIds.includes(i.id));
     const modifiedPassage = produce(passage, draft => {
-      draft.structure.widgets.push(widget);
+      if (!isEdit) draft.structure.widgets.push(widget);
       draft.data = passageData;
       draft.testItems = uniq([...draft.testItems, currentItem._id]);
     });
@@ -945,7 +948,7 @@ function* savePassage({ payload }) {
       call(passageApi.update, _omit(modifiedPassage, ["__v"])),
       call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId)
     ]);
-    yield put(push(nextPageUrl));
+    yield put(push(backUrl));
   } catch (e) {
     console.log("error: ", e);
     yield call(message.error, "error saving passage");
@@ -955,7 +958,7 @@ function* savePassage({ payload }) {
 function* addWidgetToPassage({ payload }) {
   try {
     const { isTestFlow = false, itemId, testId, type, tabIndex = 0 } = payload;
-    console.log("item id at here is", itemId);
+
     const widget =
       type === "video"
         ? {
@@ -985,16 +988,14 @@ function* addWidgetToPassage({ payload }) {
             hints: [{ value: uuid(), label: "Hint A" }]
           };
     yield put(addQuestionAction(widget));
-    const nextPageUrl = isTestFlow
-      ? `/author/tests/${testId}/createItem/${itemId}`
-      : `/author/items/${itemId}/item-detail`;
+    const backUrl = isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : `/author/items/${itemId}/item-detail`;
 
     yield put(
       push({
         pathname: "/author/questions/create",
         state: {
           isPassageWithQuestions: true,
-          nextPageUrl,
+          backUrl,
           tabIndex
         }
       })

@@ -262,9 +262,14 @@ class Container extends Component {
   handleEditWidget = (widget, rowIndex) => {
     const { loadQuestion, changeView } = this.props;
     changeView("edit");
-    loadQuestion(widget, rowIndex);
+    loadQuestion(widget, 0);
   };
 
+  handleEditPassageWidget = (widget, rowIndex) => {
+    const { loadQuestion, changeView } = this.props;
+    changeView("edit");
+    loadQuestion(widget, rowIndex, true);
+  };
   handleDeleteWidget = i => widgetIndex => {
     const { deleteWidget } = this.props;
     deleteWidget(i, widgetIndex);
@@ -617,6 +622,7 @@ class Container extends Component {
                       itemData={passage}
                       count={1}
                       isPassageQuestion
+                      onEditWidget={this.handleEditPassageWidget}
                       handleAddToPassage={this.handleAddToPassage}
                       onDeleteWidget={this.handleDeletePassageWidget}
                     />

@@ -44,9 +44,9 @@ const TokenHighlightPreview = ({
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"), true);
 
   const validArray =
-    (item && item.validation && item.validation.valid_response && item.validation.valid_response.value) || [];
+    (item && item.validation && item.validation.validResponse && item.validation.validResponse.value) || [];
 
-  const altArray = (item && item.validation && item.validation.alt_responses) || [];
+  const altArray = (item && item.validation && item.validation.altResponses) || [];
 
   const [answers, setAnswers] = useState(userAnswer.length !== 0 ? userAnswer : initialArray);
 
@@ -102,7 +102,7 @@ const TokenHighlightPreview = ({
 
     const selectedItems = newAnswers.filter(answer => answer.selected);
 
-    if (item.max_selection && selectedItems.length > item.max_selection) {
+    if (item.maxSelection && selectedItems.length > item.maxSelection) {
       return;
     }
 
@@ -163,8 +163,8 @@ const TokenHighlightPreview = ({
     return resultStyle;
   };
 
-  const allCorrectAnswers = [item.validation.valid_response.value];
-  item.validation.alt_responses.forEach(altAnswers => {
+  const allCorrectAnswers = [item.validation.validResponse.value];
+  item.validation.altResponses.forEach(altAnswers => {
     allCorrectAnswers.push(altAnswers.value);
   }, []);
 

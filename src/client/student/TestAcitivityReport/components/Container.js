@@ -16,7 +16,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
   const [showModal, setModal] = useState(false);
   const { releaseScore = "" } = testActivityById;
   const questions = keyBy([...get(item, "data.questions", []), ...get(item, "data.resources", [])], "id");
-  const showAnswerProps = releaseScore === releaseGradeLabels.WITH_ANSWERS ? { preview: "show" } : { view: "preview" };
+  const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "clear";
 
   const closeModal = () => setModal(false);
 
@@ -27,7 +27,8 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
           {hasUserWork && <Button onClick={() => setModal(true)}> Show My Work </Button>}
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             <TestItemPreview
-              {...showAnswerProps}
+              view="preview"
+              preview={preview}
               cols={item.rows || []}
               questions={questions}
               verticalDivider={item.verticalDivider}

@@ -3,18 +3,25 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, keyBy, intersection, uniq } from "lodash";
-import { Spin, Button, Modal } from "antd";
+import { Spin, Button, Modal, Col, Select } from "antd";
 import styled from "styled-components";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import { withRouter } from "react-router-dom";
 
 import { questionType } from "@edulastic/constants";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
-import { testItemsApi } from "@edulastic/api";
+import { testItemsApi, passageApi } from "@edulastic/api";
 import { white, themeColor } from "@edulastic/colors";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
 import DragScrollContainer from "../../../../../assessment/components/DragScrollContainer";
-import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
+import {
+  getItemDetailSelectorForPreview,
+  getPassageSelector,
+  addPassageAction,
+  setItemDetailDataAction,
+  setQuestionsForPassageAction,
+  clearItemDetailAction
+} from "../../../../ItemDetail/ducks";
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
@@ -26,8 +33,24 @@ class PreviewModal extends React.Component {
 
     this.state = {
       flag: false,
-      scrollElement: null
+      scrollElement: null,
+      passageLoading: false
     };
+  }
+
+  componentDidMount() {
+    const { item, addPassage } = this.props;
+    if (!!item.passageId) {
+      this.setState({ passageLoading: true });
+      try {
+        passageApi.getById(item.passageId).then(response => {
+          addPassage(response.data.result);
+          this.setState({ passageLoading: false });
+        });
+      } catch (e) {
+        this.setState({ passageLoading: false });
+      }
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,8 +62,9 @@ class PreviewModal extends React.Component {
   }
 
   closeModal = () => {
-    const { onClose, changeView, clearAnswers } = this.props;
+    const { onClose, changeView, clearAnswers, clearItemDetail } = this.props;
     this.setState({ flag: false });
+    clearItemDetail();
     changeView("clear");
     onClose();
     clearAnswers();
@@ -80,6 +104,16 @@ class PreviewModal extends React.Component {
     }
   };
 
+  goToItem = itemId => {
+    const { setQuestionsForPassage, setItemDetailData, item, itemFromDetails } = this.props;
+    if (!(itemFromDetails && itemFromDetails.data)) {
+      setItemDetailData(item);
+    }
+    testItemsApi.getById(itemId).then(response => {
+      setQuestionsForPassage(response);
+    });
+  };
+
   render() {
     const {
       isVisible,
@@ -91,12 +125,14 @@ class PreviewModal extends React.Component {
       checkAnswer,
       showAnswer,
       preview,
-      showEvaluationButtons
+      showEvaluationButtons,
+      passage
     } = this.props;
 
-    const { scrollElement } = this.state;
+    const { scrollElement, passageLoading } = this.state;
     const questions = keyBy(get(item, "data.questions", []), "id");
     const resources = keyBy(get(item, "data.resources", []), "id");
+
     const allWidgets = { ...questions, ...resources };
     const { authors = [], rows, data = {} } = item;
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
@@ -106,6 +142,9 @@ class PreviewModal extends React.Component {
     const getAuthorsId = authors.map(author => author._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     const { allowDuplicate } = collections.find(o => o._id === item.collectionName) || { allowDuplicate: true };
+    let allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
+    const passageTestItems = get(passage, "testItems", []);
+
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 20 }}
@@ -141,6 +180,24 @@ class PreviewModal extends React.Component {
                     <IconPencilEdit color={themeColor} />
                   </EduButton>
                 )}
+                {passage && (
+                  <Col span={12}>
+                    {passageTestItems.length > 0 && (
+                      <Select
+                        value={item._id}
+                        showArrow={false}
+                        optionLabelProp={"children"}
+                        onChange={v => {
+                          this.goToItem(v);
+                        }}
+                      >
+                        {passageTestItems.map((v, ind) => (
+                          <Select.Option value={v}>{ind + 1}</Select.Option>
+                        ))}
+                      </Select>
+                    )}
+                  </Col>
+                )}
               </ButtonsWrapper>
               <ButtonsWrapper>
                 {isAnswerBtnVisible && (
@@ -173,13 +230,13 @@ class PreviewModal extends React.Component {
           )}
           {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} height={50} />}
           <QuestionWrapper padding="0px" innerRef={this.mountedQuestion}>
-            {loading || item === null ? (
+            {loading || item === null || passageLoading ? (
               <ProgressContainer>
                 <Spin tip="" />
               </ProgressContainer>
             ) : (
               <TestItemPreview
-                cols={rows}
+                cols={allRows}
                 preview={preview}
                 previewTab={preview}
                 verticalDivider={item.verticalDivider}
@@ -225,15 +282,24 @@ PreviewModal.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    (state, ownProps) => ({
-      item: getItemDetailSelectorForPreview(state, (ownProps.data || {}).id, ownProps.page),
-      collections: getCollectionsSelector(state),
-      preview: get(state, ["view", "preview"]),
-      currentAuthorId: get(state, ["user", "user", "_id"])
-    }),
+    (state, ownProps) => {
+      const itemId = (ownProps.data || {}).id;
+      return {
+        item: getItemDetailSelectorForPreview(state, itemId, ownProps.page),
+        collections: getCollectionsSelector(state),
+        passage: getPassageSelector(state),
+        preview: get(state, ["view", "preview"]),
+        currentAuthorId: get(state, ["user", "user", "_id"]),
+        itemFromDetails: get(state, ["itemDetail", "item"], {})
+      };
+    },
     {
       changeView: changePreviewAction,
-      clearAnswers: clearAnswersAction
+      clearAnswers: clearAnswersAction,
+      addPassage: addPassageAction,
+      setItemDetailData: setItemDetailDataAction,
+      setQuestionsForPassage: setQuestionsForPassageAction,
+      clearItemDetail: clearItemDetailAction
     }
   )
 );

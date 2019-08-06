@@ -386,21 +386,23 @@ class Review extends PureComponent {
             />
           </ReviewSummaryWrapper>
         </Row>
-        <PreviewModal
-          testId={get(this.props, "match.params.id", false)}
-          isVisible={isModalVisible}
-          onClose={this.closeModal}
-          showModal
-          isEditable={isEditable}
-          owner={owner}
-          addDuplicate={this.handleDuplicateItem}
-          page="review"
-          data={item}
-          questions={questions}
-          checkAnswer={() => checkAnswer(item)}
-          showAnswer={() => showAnswer(item)}
-          showEvaluationButtons
-        />
+        {isModalVisible && (
+          <PreviewModal
+            testId={get(this.props, "match.params.id", false)}
+            isVisible={isModalVisible}
+            onClose={this.closeModal}
+            showModal
+            isEditable={isEditable}
+            owner={owner}
+            addDuplicate={this.handleDuplicateItem}
+            page="review"
+            data={item}
+            questions={questions}
+            checkAnswer={() => checkAnswer(item)}
+            showAnswer={() => showAnswer(item)}
+            showEvaluationButtons
+          />
+        )}
         <TestPreviewModal
           isModalVisible={isTestPreviewModalVisible}
           testId={currentTestId}

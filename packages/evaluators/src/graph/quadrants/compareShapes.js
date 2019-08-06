@@ -34,11 +34,13 @@ class CompareShapes {
       ? this.testAnswer.find(item => item.id === trueId)
       : this.trueAnswerValue.find(item => item.id === trueId);
 
+    const negativeResult = {
+      id: testId,
+      result: false
+    };
+
     if (!testShape || !trueShape || testShape.type !== trueShape.type) {
-      return {
-        id: testId,
-        result: false
-      };
+      return negativeResult;
     }
 
     switch (testShape.type) {
@@ -74,11 +76,17 @@ class CompareShapes {
         return this.compareLogarithms(testShape, trueShape);
       case ShapeTypes.POLYNOM:
         return this.comparePolynoms(testShape, trueShape);
+      case ShapeTypes.EQUATION:
+        switch (testShape.subType) {
+          case ShapeTypes.LINE:
+            return this.compareLines(testShape, trueShape);
+          case ShapeTypes.PARABOLA:
+            return this.compareParabolas(testShape, trueShape);
+          default:
+            return negativeResult;
+        }
       default:
-        return {
-          id: testId,
-          result: false
-        };
+        return negativeResult;
     }
   }
 
@@ -166,7 +174,8 @@ class CompareShapes {
 
     if (
       testShapeFunc.getKoefA() === trueShapeFunc.getKoefA() &&
-      testShapeFunc.getKoefB() === trueShapeFunc.getKoefB()
+      testShapeFunc.getKoefB() === trueShapeFunc.getKoefB() &&
+      testShapeFunc.getVerticalLineOffset() === trueShapeFunc.getVerticalLineOffset()
     ) {
       return positiveResult;
     }

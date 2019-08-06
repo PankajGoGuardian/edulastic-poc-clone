@@ -68,12 +68,13 @@ var CompareShapes =
             : this.trueAnswerValue.find(function(item) {
                 return item.id === trueId;
               });
+          var negativeResult = {
+            id: testId,
+            result: false
+          };
 
           if (!testShape || !trueShape || testShape.type !== trueShape.type) {
-            return {
-              id: testId,
-              result: false
-            };
+            return negativeResult;
           }
 
           switch (testShape.type) {
@@ -124,11 +125,20 @@ var CompareShapes =
             case _constants.ShapeTypes.POLYNOM:
               return this.comparePolynoms(testShape, trueShape);
 
+            case _constants.ShapeTypes.EQUATION:
+              switch (testShape.subType) {
+                case _constants.ShapeTypes.LINE:
+                  return this.compareLines(testShape, trueShape);
+
+                case _constants.ShapeTypes.PARABOLA:
+                  return this.compareParabolas(testShape, trueShape);
+
+                default:
+                  return negativeResult;
+              }
+
             default:
-              return {
-                id: testId,
-                result: false
-              };
+              return negativeResult;
           }
         }
       },
@@ -226,7 +236,8 @@ var CompareShapes =
 
           if (
             testShapeFunc.getKoefA() === trueShapeFunc.getKoefA() &&
-            testShapeFunc.getKoefB() === trueShapeFunc.getKoefB()
+            testShapeFunc.getKoefB() === trueShapeFunc.getKoefB() &&
+            testShapeFunc.getVerticalLineOffset() === trueShapeFunc.getVerticalLineOffset()
           ) {
             return positiveResult;
           }

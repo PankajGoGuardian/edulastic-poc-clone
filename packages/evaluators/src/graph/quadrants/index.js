@@ -68,7 +68,8 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) =
         relatedShape.type !== ShapeTypes.SEGMENT &&
         relatedShape.type !== ShapeTypes.VECTOR &&
         relatedShape.type !== ShapeTypes.POLYGON &&
-        relatedShape.type !== ShapeTypes.POLYNOM
+        relatedShape.type !== ShapeTypes.POLYNOM &&
+        relatedShape.type !== ShapeTypes.EQUATION
       ) {
         const firstShape = userResponse.find(item => item.id === sameShapes[0].id);
         for (let j = 1; j < sameShapes.length; j++) {

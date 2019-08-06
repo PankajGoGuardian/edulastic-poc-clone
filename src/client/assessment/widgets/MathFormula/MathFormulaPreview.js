@@ -263,7 +263,7 @@ class MathFormulaPreview extends Component {
             )}
           </FlexContainer>
         )}
-        {console.log(testItem, item)}
+
         {!testItem && (
           <FlexContainer alignItems="flex-start" justifyContent="flex-start">
             <MathInputWrapper width={cssStyles.width}>

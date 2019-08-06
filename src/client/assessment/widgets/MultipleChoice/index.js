@@ -277,7 +277,7 @@ class MultipleChoice extends Component {
           )}
           {view === PREVIEW && (
             <Wrapper isV1Multipart={isV1Multipart} flowLayout={flowLayout}>
-              {previewTab === CHECK && (
+              {previewTab === CHECK ? (
                 <Display
                   checkAnswer
                   view={view}
@@ -299,8 +299,7 @@ class MultipleChoice extends Component {
                   styleType="primary"
                   {...restProps}
                 />
-              )}
-              {previewTab === SHOW && (
+              ) : previewTab === SHOW ? (
                 <Display
                   showAnswer
                   view={view}
@@ -322,8 +321,7 @@ class MultipleChoice extends Component {
                   styleType="primary"
                   {...restProps}
                 />
-              )}
-              {previewTab === CLEAR && (
+              ) : previewTab === CLEAR ? (
                 <Display
                   preview
                   view={view}
@@ -343,7 +341,7 @@ class MultipleChoice extends Component {
                   styleType="primary"
                   {...restProps}
                 />
-              )}
+              ) : null}
             </Wrapper>
           )}
         </PaddingDiv>

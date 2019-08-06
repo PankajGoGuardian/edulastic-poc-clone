@@ -9,7 +9,7 @@ import { get, isObject } from "lodash";
 import { FlexContainer } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { textColor, mainTextColor } from "@edulastic/colors";
+import { textColor, mainTextColor, white } from "@edulastic/colors";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
 
 const { Option } = Select;
@@ -24,7 +24,8 @@ const UnitsDropdownPure = ({
   selected,
   options,
   onChangeShowDropdown,
-  disabled
+  disabled,
+  statusColor
 }) => {
   const [offset, updateOffset] = useState(keypadOffset);
 
@@ -104,6 +105,7 @@ const UnitsDropdownPure = ({
           onChange={handleChange}
           disabled={disabled}
           style={styles}
+          statusColor={statusColor}
         >
           {allBtns.map((btn, i) => (
             <Option value={btn.handler} key={i}>
@@ -142,7 +144,8 @@ UnitsDropdownPure.propTypes = {
   preview: PropTypes.bool,
   t: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func,
-  disabled: PropTypes.bool
+  disabled: PropTypes.bool,
+  statusColor: PropTypes.string
 };
 
 UnitsDropdownPure.defaultProps = {
@@ -150,6 +153,7 @@ UnitsDropdownPure.defaultProps = {
   preview: false,
   disabled: false,
   selected: "",
+  statusColor: "",
   onChangeShowDropdown: () => null
 };
 
@@ -169,6 +173,10 @@ const UniteSelet = styled(Select)`
   min-width: 80px;
   .ant-select-selection {
     padding: 5px 2px;
+    background: ${({ statusColor }) => statusColor || white};
+  }
+  svg {
+    display: inline-block;
   }
 `;
 

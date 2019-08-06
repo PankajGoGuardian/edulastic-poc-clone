@@ -5,20 +5,23 @@ import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
-
 import {
-  StyledClassName,
-  StyledTableContainer,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
+  StyledFilterInput,
+  StyledSchoolSearch as StyledSearch,
+  StyledActionDropDown,
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+import {
+  StyledTableContainer,
   StyledTable,
   StyledTableButton,
-  StyledFilterInput,
-  StyledSearch,
-  StyledActionDropDown,
+  StyledAddFilterButton,
   TeacherSpan,
-  StyledPagination,
-  StyledFilterButton
+  StyledPagination
 } from "./styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
@@ -490,7 +493,7 @@ class ClassesTable extends Component {
         },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name),
-        width: 50
+        width: 100
       },
       {
         title: "Users",
@@ -629,44 +632,53 @@ class ClassesTable extends Component {
             />
           )}
           {i < 2 && (
-            <StyledFilterButton
+            <StyledAddFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );
     }
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.showAddClassModal}>
-            + Create new class
-          </Button>
-
-          <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} onChange={this.onChangeSearch} />
-          <Checkbox
-            disabled={!!filtersData.find(item => item.filtersColumn === "active")}
-            style={{ margin: "auto" }}
-            checked={showActive}
-            onChange={this.onChangeShowActive}
-          >
-            Show Active Classes
-          </Checkbox>
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showAddClassModal}>
+              + Create new class
             </Button>
-          </StyledActionDropDown>
-        </StyledControlDiv>
+
+            <StyledSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              disabled={!!filtersData.find(item => item.filtersColumn === "active")}
+              style={{ margin: "auto" }}
+              value={showActive}
+              onChange={this.onChangeShowActive}
+            >
+              Show Active Classes
+            </Checkbox>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
         {SearchRows}
         <StyledTable
           rowKey={record => record._id}
@@ -674,6 +686,7 @@ class ClassesTable extends Component {
           dataSource={Object.values(dataSource)}
           columns={columnsData}
           pagination={false}
+          scroll={{ y: 500 }}
         />
         <StyledPagination
           defaultCurrent={1}

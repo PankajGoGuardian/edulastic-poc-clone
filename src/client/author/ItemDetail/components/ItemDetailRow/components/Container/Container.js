@@ -140,7 +140,7 @@ class Container extends Component {
     return (
       <Content
         value={tabIndex}
-        padding="0px 10px 20px 0px"
+        padding="25px 0px"
         style={{
           width: row.dimension,
           marginRight: count - 1 === rowIndex ? "0px" : "30px"
@@ -178,8 +178,8 @@ class Container extends Component {
         )}
         {isPassageQuestion && (
           <>
-            <Button onClick={() => handleAddToPassage("video")}> Add Video</Button>{" "}
-            <Button onClick={() => handleAddToPassage("passage")}> Add Passage </Button>
+            <Button onClick={() => handleAddToPassage("video", tabIndex)}> Add Video</Button>{" "}
+            <Button onClick={() => handleAddToPassage("passage", tabIndex)}> Add Passage </Button>
           </>
         )}
       </Content>

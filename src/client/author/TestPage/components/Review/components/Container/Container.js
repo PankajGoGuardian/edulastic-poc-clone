@@ -318,7 +318,7 @@ class Review extends PureComponent {
     return (
       <ReviewPageContainer>
         <Row>
-          <Col span={isSmallSize ? 18 : 24}>
+          <Col span={owner && isEditable ? 24 : 18}>
             <div ref={this.secondHeaderRef}>
               <SecondHeader isMobileSize={isMobileSize}>
                 <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
@@ -337,6 +337,8 @@ class Review extends PureComponent {
                 />
               </SecondHeader>
             </div>
+          </Col>
+          <Col span={isSmallSize ? 18 : 24}>
             <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable
@@ -346,6 +348,9 @@ class Review extends PureComponent {
                   isEditable={isEditable}
                   owner={owner}
                   scoring={test.scoring}
+                  questions={questions}
+                  rows={rows}
+                  mobile={!isSmallSize}
                   onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
                 />
@@ -386,21 +391,23 @@ class Review extends PureComponent {
             />
           </ReviewSummaryWrapper>
         </Row>
-        <PreviewModal
-          testId={get(this.props, "match.params.id", false)}
-          isVisible={isModalVisible}
-          onClose={this.closeModal}
-          showModal
-          isEditable={isEditable}
-          owner={owner}
-          addDuplicate={this.handleDuplicateItem}
-          page="review"
-          data={item}
-          questions={questions}
-          checkAnswer={() => checkAnswer(item)}
-          showAnswer={() => showAnswer(item)}
-          showEvaluationButtons
-        />
+        {isModalVisible && (
+          <PreviewModal
+            testId={get(this.props, "match.params.id", false)}
+            isVisible={isModalVisible}
+            onClose={this.closeModal}
+            showModal
+            isEditable={isEditable}
+            owner={owner}
+            addDuplicate={this.handleDuplicateItem}
+            page="review"
+            data={item}
+            questions={questions}
+            checkAnswer={() => checkAnswer(item)}
+            showAnswer={() => showAnswer(item)}
+            showEvaluationButtons
+          />
+        )}
         <TestPreviewModal
           isModalVisible={isTestPreviewModalVisible}
           testId={currentTestId}

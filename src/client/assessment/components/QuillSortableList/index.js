@@ -20,6 +20,7 @@ const QuillSortableList = SortableContainer(
     styleType = "",
     canDelete = true,
     t,
+    centerContent,
     imageDefaultWidth
   }) => (
     <div data-cy="sortable-list-container" style={{ fontSize }}>
@@ -27,6 +28,7 @@ const QuillSortableList = SortableContainer(
         <QuillSortableItem
           fontSize={fontSize}
           key={index}
+          centerContent={centerContent}
           index={index}
           label={label ? `${label} ${index + 1}` : ""}
           indx={prefix + index}

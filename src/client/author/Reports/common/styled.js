@@ -158,7 +158,16 @@ export const StyledTable = styled(Table)`
   // when u change this u have to change "StyledTable" in "src/client/common/styled.js" to make every css in sync
   // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
   // Import this and add USE CASE SPECIFIC CSS
-  .ant-table-body {
+
+  .ant-table-body,
+  .ant-table-scroll {
+    .ant-table-header {
+      // mozilla
+      scrollbar-color: transparent transparent;
+    }
+    .ant-table-header::-webkit-scrollbar {
+      background-color: transparent;
+    }
     overflow: auto;
     table {
       thead {

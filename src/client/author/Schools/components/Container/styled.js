@@ -5,13 +5,15 @@ const { Content } = Layout;
 
 export const SchoolsDiv = styled.div`
   background-color: #fff;
+  display: flex;
+  flex-direction: row;
 `;
 
 export const StyledContent = styled(Content)`
   width: 100%;
   padding-left: 40px;
   padding-right: 40px;
-  margin: 20px auto 0;
+  margin: 100px 20px 20px 20px;
 `;
 
 export const StyledLayout = styled(Layout)`

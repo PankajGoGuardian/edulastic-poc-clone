@@ -43,7 +43,7 @@ import {
   JSXBoxWrapper,
   JSXBoxWithDrawingObjectsWrapper
 } from "./styled";
-import Tools from "./Tools";
+import Tools from "../../common/Tools";
 import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
 import { ElementSettingsMenu } from "./ElementSettingsMenu";

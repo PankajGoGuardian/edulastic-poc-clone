@@ -3,11 +3,14 @@ import { Layout, Spin, Row, Button, Radio } from "antd";
 
 const { Content } = Layout;
 
-export const TestSettingDiv = styled.div``;
+export const TestSettingDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 
 export const StyledContent = styled(Content)`
   width: 95%;
-  margin: 40px auto 0;
+  margin: 150px 30px 10px 30px;
 `;
 
 export const StyledLayout = styled(Layout)`

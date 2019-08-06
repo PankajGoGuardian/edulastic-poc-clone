@@ -4,18 +4,22 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { StyledComponents, TypeToConfirmModal } from "@edulastic/common";
+
+import { roleuser } from "@edulastic/constants";
+
 import {
-  StyledTableContainer,
   StyledPagination,
-  StyledTable,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
-  StyledClassName,
-  StyledFilterInput,
   StyledAddFilterButton,
+  StyledFilterInput,
   StyledSchoolSearch,
-  StyledActionDropDown
-} from "./styled";
+  StyledActionDropDown,
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+import { StyledTable, StyledTableContainer } from "./styled";
 
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
 import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
@@ -43,7 +47,7 @@ import {
 
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 import { getFullNameFromAsString } from "../../../../common/utils/helpers";
 
@@ -102,22 +106,26 @@ class SchoolAdminTable extends Component {
         render: (text, record, index) => {
           let name = getFullNameFromAsString(record._source);
           return name ? name : "";
-        }
+        },
+        width: 200
       },
       {
         title: "Email",
         dataIndex: "_source.email",
-        sorter: (a, b) => compareByAlph(a.email, b.email)
+        sorter: (a, b) => compareByAlph(a.email, b.email),
+        width: 200
       },
       {
         title: "SSO",
         dataIndex: "_source.sso",
-        render: (sso = "N/A") => sso
+        render: (sso = "N/A") => sso,
+        width: 100
       },
       {
         title: "School",
         dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name)
+        render: (schools = []) => schools.map(school => school.name),
+        width: 200
       },
       {
         dataIndex: "_id",
@@ -130,7 +138,8 @@ class SchoolAdminTable extends Component {
               <Icon type="delete" theme="twoTone" />
             </OnHoverButton>
           </React.Fragment>
-        )
+        ),
+        width: 100
       }
     ];
 
@@ -449,6 +458,7 @@ class SchoolAdminTable extends Component {
 
     const {
       userOrgId,
+      role,
       adminUsersData: result,
       totalUsers,
       schoolsData,
@@ -475,36 +485,43 @@ class SchoolAdminTable extends Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
-            + Add School Admin
-          </Button>
-          {createSchoolAdminModalVisible && (
-            <CreateSchoolAdminModal
-              modalVisible={createSchoolAdminModalVisible}
-              createSchoolAdmin={this.createUser}
-              closeModal={this.closeCreateUserModal}
-              userOrgId={userOrgId}
-            />
-          )}
-          <StyledSchoolSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <Checkbox
-            checked={this.state.showActive}
-            onChange={this.onChangeShowActive}
-            disabled={!!filtersData.find(item => item.filtersColumn === "status")}
-          >
-            Show current users only
-          </Checkbox>
-          <StyledActionDropDown overlay={actionMenu}>
-            <Button>
-              Actions <Icon type="down" />
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
+              + Add School Admin
             </Button>
-          </StyledActionDropDown>
-        </StyledControlDiv>
+            <StyledSchoolSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              checked={this.state.showActive}
+              onChange={this.onChangeShowActive}
+              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+            >
+              Show current users only
+            </Checkbox>
+            {role === roleuser.DISTRICT_ADMIN ? (
+              <StyledActionDropDown overlay={actionMenu}>
+                <Button>
+                  Actions <Icon type="down" />
+                </Button>
+              </StyledActionDropDown>
+            ) : null}
+          </RightFilterDiv>
+        </StyledFilterDiv>
+        {createSchoolAdminModalVisible && (
+          <CreateSchoolAdminModal
+            modalVisible={createSchoolAdminModalVisible}
+            createSchoolAdmin={this.createSchoolAdmin}
+            closeModal={this.closeCreateSchoolAdminModal}
+            userOrgId={userOrgId}
+          />
+        )}
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
           const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
@@ -584,7 +601,7 @@ class SchoolAdminTable extends Component {
           dataSource={Object.values(result)}
           columns={this.columns}
           pagination={false}
-          hideOnSinglePage={true}
+          scroll={{ y: 500 }}
         />
         <StyledPagination
           defaultCurrent={1}
@@ -593,6 +610,12 @@ class SchoolAdminTable extends Component {
           total={totalUsers}
           onChange={page => this.setPageNo(page)}
           hideOnSinglePage={true}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
         />
         {editSchoolAdminModaVisible && (
           <EditSchoolAdminModal
@@ -635,6 +658,7 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
+      role: getUserRole(state),
       adminUsersData: getAdminUsersDataSelector(state),
       totalUsers: getAdminUsersDataCountSelector(state),
       schoolsData: getSchoolsSelector(state),

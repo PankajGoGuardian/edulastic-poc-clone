@@ -7,20 +7,26 @@ import { get } from "lodash";
 import { Form, Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
 
+import { roleuser } from "@edulastic/constants";
+
+import {
+  StyledControlDiv,
+  StyledFilterDiv,
+  StyledFilterSelect,
+  StyledAddFilterButton,
+  StyledFilterInput,
+  StyledActionDropDown
+} from "../../../../admin/Common/StyledComponents";
 import {
   StyledTableContainer,
-  StyledControlDiv,
-  StyledFilterSelect,
   StyledTableButton,
-  StyledFilterInput,
-  StyledFilterButton,
-  StyledSchoolSearch,
   StyledTable,
   StyledHeaderColumn,
   StyledSortIconDiv,
   StyledSortIcon,
   StyledPagination,
-  StyledActionDropDown
+  StyledSchoolSearch,
+  StyledCreateSchoolButton
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
@@ -30,7 +36,7 @@ import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
 import { receiveSchoolsAction, createSchoolsAction, updateSchoolsAction, deleteSchoolsAction } from "../../ducks";
 
 import { getSchoolsSelector } from "../../ducks";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
 
 class SchoolsTable extends React.Component {
@@ -376,16 +382,16 @@ class SchoolsTable extends React.Component {
           }
         } else {
           if (!search[filtersColumn]) {
-            search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+            search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
           } else {
-            search[filtersColumn].value.push(filterStr);
+            search[filtersColumn].push({ type: filtersValue, value: filterStr });
           }
         }
       }
     }
 
     if (searchByName.length > 0) {
-      search.name = { type: "cont", value: [searchByName] };
+      search.name = [{ type: "cont", value: searchByName }];
     }
 
     return {
@@ -418,7 +424,7 @@ class SchoolsTable extends React.Component {
       sortedInfo,
       currentPage
     } = this.state;
-    const { userOrgId, totalSchoolsCount } = this.props;
+    const { userOrgId, totalSchoolsCount, role } = this.props;
     const columnsInfo = [
       {
         title: (
@@ -550,7 +556,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "isApproved",
         editable: true,
-        width: 50,
+        width: 100,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -588,7 +594,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "teachersCount",
         editable: true,
-        width: 50,
+        width: 100,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -615,7 +621,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "studentsCount",
         editable: true,
-        width: 50,
+        width: 100,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -642,7 +648,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "sectionsCount",
         editable: true,
-        width: 50,
+        width: 100,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -684,7 +690,7 @@ class SchoolsTable extends React.Component {
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit school">Edit School</Menu.Item>
-        <Menu.Item key="deactivate school">Deactivate School</Menu.Item>
+        {role === roleuser.DISTRICT_ADMIN ? <Menu.Item key="deactivate school">Deactivate School</Menu.Item> : null}
       </Menu>
     );
 
@@ -753,19 +759,19 @@ class SchoolsTable extends React.Component {
           )}
 
           {i < 2 && (
-            <StyledFilterButton
+            <StyledAddFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
 
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );
@@ -773,20 +779,12 @@ class SchoolsTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.showCreateSchoolModal}>
-            + Create School
-          </Button>
-          {createSchoolModalVisible && (
-            <CreateSchoolModal
-              modalVisible={createSchoolModalVisible}
-              createSchool={this.createSchool}
-              closeModal={this.closeCreateSchoolModal}
-              dataSource={dataSource}
-              userOrgId={userOrgId}
-            />
-          )}
-
+        <StyledFilterDiv>
+          {role === roleuser.DISTRICT_ADMIN ? (
+            <StyledCreateSchoolButton type="primary" onClick={this.showCreateSchoolModal}>
+              + Create School
+            </StyledCreateSchoolButton>
+          ) : null}
           <StyledSchoolSearch
             placeholder="Search by name"
             onSearch={this.handleSearchName}
@@ -798,9 +796,24 @@ class SchoolsTable extends React.Component {
               Actions <Icon type="down" />
             </Button>
           </StyledActionDropDown>
-        </StyledControlDiv>
+        </StyledFilterDiv>
+        {createSchoolModalVisible && (
+          <CreateSchoolModal
+            modalVisible={createSchoolModalVisible}
+            createSchool={this.createSchool}
+            closeModal={this.closeCreateSchoolModal}
+            dataSource={dataSource}
+            userOrgId={userOrgId}
+          />
+        )}
         {SearchRows}
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+        <StyledTable
+          rowSelection={rowSelection}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          scroll={{ y: 500 }}
+        />
         <StyledPagination
           current={currentPage}
           defaultCurrent={1}
@@ -817,6 +830,7 @@ class SchoolsTable extends React.Component {
             updateSchool={this.updateSchool}
             closeModal={this.closeEditSchoolModal}
             userOrgId={userOrgId}
+            hideOnSinglePage={true}
           />
         )}
 
@@ -839,6 +853,7 @@ const enhance = compose(
     state => ({
       schoolList: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
+      role: getUserRole(state),
       totalSchoolsCount: get(state, ["schoolsReducer", "totalSchoolCount"], 0)
     }),
     {

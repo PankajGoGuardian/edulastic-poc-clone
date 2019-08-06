@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
 import { FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
@@ -119,7 +119,7 @@ const DragItemContainer = ({
         <DragPreview {...restProps} isDragging={isDragging} isResetOffset={isResetOffset}>
           {dragItem}
         </DragPreview>
-        <div
+        <InnerWrapper
           style={getStyles(
             isDragging,
             isTransparent,
@@ -143,9 +143,16 @@ const DragItemContainer = ({
           )}
         >
           {dragItem}
-        </div>
+        </InnerWrapper>
       </div>
     )
   );
 };
+
+const InnerWrapper = styled.div`
+  p {
+    width: 151px;
+  }
+`;
+
 export default withTheme(DragSource("item", specSource, collectSource)(DragItemContainer));

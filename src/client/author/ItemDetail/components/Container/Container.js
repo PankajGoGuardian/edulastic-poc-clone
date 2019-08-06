@@ -46,7 +46,7 @@ import {
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
-import { Content, ItemDetailWrapper, PreviewContent, ButtonClose, BackLink } from "./styled";
+import { Content, ItemDetailWrapper, PreviewContent, ButtonClose, BackLink, ContentWrapper } from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
@@ -219,14 +219,14 @@ class Container extends Component {
     });
   };
 
-  handleAddToPassage = type => {
+  handleAddToPassage = (type, tabIndex) => {
     const { isTestFlow, match, addWidgetToPassage } = this.props;
     addWidgetToPassage({
       isTestFlow,
       itemId: isTestFlow ? match.params.itemId : match.params.id,
       testId: match.params.testId,
       type,
-      tabIndex: 0 // TODO: fix mulitple tab case
+      tabIndex
     });
   };
 
@@ -262,9 +262,14 @@ class Container extends Component {
   handleEditWidget = (widget, rowIndex) => {
     const { loadQuestion, changeView } = this.props;
     changeView("edit");
-    loadQuestion(widget, rowIndex);
+    loadQuestion(widget, 0);
   };
 
+  handleEditPassageWidget = (widget, rowIndex) => {
+    const { loadQuestion, changeView } = this.props;
+    changeView("edit");
+    loadQuestion(widget, rowIndex, true);
+  };
   handleDeleteWidget = i => widgetIndex => {
     const { deleteWidget } = this.props;
     deleteWidget(i, widgetIndex);
@@ -326,7 +331,7 @@ class Container extends Component {
 
     let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
     return (
-      <PreviewContent>
+      <PreviewContent padding="25px">
         <TestItemPreview
           cols={allRows}
           previewTab={preview}
@@ -536,111 +541,114 @@ class Container extends Component {
               renderRightSide={view === "edit" ? this.renderButtons : () => {}}
             />
           </ItemHeader>
-          <BreadCrumbBar>
-            <Col md={view === "preview" ? 12 : 24}>
-              {windowWidth > MAX_MOBILE_WIDTH ? (
-                <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
-                  {passage && (
-                    <Row type="flex" style={{ width: 145 }} justify="end">
-                      <Col span={12}>
-                        {passageTestItems.length > 0 && (
-                          <Select
-                            value={item._id}
+          <ContentWrapper>
+            <BreadCrumbBar>
+              <Col md={24}>
+                {windowWidth > MAX_MOBILE_WIDTH ? (
+                  <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
+                    {passage && (
+                      <Row type="flex" style={{ width: 145 }} justify="end">
+                        <Col span={12}>
+                          {passageTestItems.length > 0 && (
+                            <Select
+                              value={item._id}
+                              onChange={v => {
+                                this.goToItem(v);
+                              }}
+                            >
+                              {passage.testItems.map((v, ind) => (
+                                <Select.Option value={v}>{ind + 1}</Select.Option>
+                              ))}
+                            </Select>
+                          )}
+                        </Col>
+                        <Col span={12}>
+                          <Button.Group>
+                            <Button
+                              disabled={this.props.itemDeleting}
+                              onClick={this.addItemToPassage}
+                              style={{ display: "inline" }}
+                              size="small"
+                            >
+                              +
+                            </Button>
+                            <Button
+                              disabled={this.props.itemDeleting}
+                              onClick={this.deleteItemFromPassage}
+                              style={{ display: "inline" }}
+                              size="small"
+                            >
+                              -
+                            </Button>
+                          </Button.Group>
+                        </Col>
+                      </Row>
+                    )}
+                    {item && view !== "preview" && qLength > 1 && (
+                      <Row type="flex" justify="end" style={{ width: 250 }}>
+                        <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
+                        <Col>
+                          <Switch
+                            checked={item.itemLevelScoring}
+                            checkedChildren="on"
+                            unCheckedChildren="off"
                             onChange={v => {
-                              this.goToItem(v);
+                              setItemLevelScoring(v);
                             }}
-                          >
-                            {passage.testItems.map((v, ind) => (
-                              <Select.Option value={v}>{ind + 1}</Select.Option>
-                            ))}
-                          </Select>
-                        )}
-                      </Col>
-                      <Col span={12}>
-                        <Button.Group>
-                          <Button
-                            disabled={this.props.itemDeleting}
-                            onClick={this.addItemToPassage}
-                            style={{ display: "inline" }}
-                            size="small"
-                          >
-                            +
-                          </Button>
-                          <Button
-                            disabled={this.props.itemDeleting}
-                            onClick={this.deleteItemFromPassage}
-                            style={{ display: "inline" }}
-                            size="small"
-                          >
-                            -
-                          </Button>
-                        </Button.Group>
-                      </Col>
-                    </Row>
-                  )}
-                  {item && view !== "preview" && qLength > 1 && (
-                    <Row type="flex" justify="end" style={{ width: 250 }}>
-                      <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
-                      <Col>
-                        <Switch
-                          checked={item.itemLevelScoring}
-                          checkedChildren="on"
-                          unCheckedChildren="off"
-                          onChange={v => {
-                            setItemLevelScoring(v);
-                          }}
-                        />
-                      </Col>
-                    </Row>
-                  )}
-                </SecondHeadBar>
-              ) : (
-                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-              )}
-            </Col>
-            {view === "preview" && (
-              <RightActionButtons col={12}>
-                <div>{this.renderButtons()}</div>
-              </RightActionButtons>
-            )}
-          </BreadCrumbBar>
-          {view === "edit" && (
-            <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-              <ItemDetailWrapper>
-                {!!item.passageId && (
-                  <ItemDetailRow
-                    row={passage.structure}
-                    key="0"
-                    view={view}
-                    rowIndex="0"
-                    itemData={passage}
-                    count={1}
-                    isPassageQuestion
-                    handleAddToPassage={this.handleAddToPassage}
-                    onDeleteWidget={this.handleDeletePassageWidget}
-                  />
+                          />
+                        </Col>
+                      </Row>
+                    )}
+                    {view === "preview" && (
+                      <RightActionButtons col={12}>
+                        <div>{this.renderButtons()}</div>
+                      </RightActionButtons>
+                    )}
+                  </SecondHeadBar>
+                ) : (
+                  <BackLink onClick={history.goBack}>Back to Item List</BackLink>
                 )}
-                {rows &&
-                  rows.map((row, i) => (
+              </Col>
+            </BreadCrumbBar>
+            {view === "edit" && (
+              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                <ItemDetailWrapper padding="0px">
+                  {!!item.passageId && (
                     <ItemDetailRow
-                      key={passage ? i + 1 : i}
-                      row={row}
+                      row={passage.structure}
+                      key="0"
                       view={view}
-                      rowIndex={i}
-                      itemData={item}
-                      count={rows.length}
-                      onAdd={this.handleAdd}
-                      windowWidth={windowWidth}
-                      onDeleteWidget={this.handleDeleteWidget(i)}
-                      onEditWidget={this.handleEditWidget}
-                      onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                      rowIndex="0"
+                      itemData={passage}
+                      count={1}
+                      isPassageQuestion
+                      onEditWidget={this.handleEditPassageWidget}
+                      handleAddToPassage={this.handleAddToPassage}
+                      onDeleteWidget={this.handleDeletePassageWidget}
                     />
-                  ))}
-              </ItemDetailWrapper>
-            </AnswerContext.Provider>
-          )}
-          {view === "preview" && this.renderPreview()}
-          {view === "metadata" && this.renderMetadata()}
+                  )}
+                  {rows &&
+                    rows.map((row, i) => (
+                      <ItemDetailRow
+                        key={passage ? i + 1 : i}
+                        row={row}
+                        view={view}
+                        rowIndex={i}
+                        itemData={item}
+                        count={rows.length}
+                        onAdd={this.handleAdd}
+                        windowWidth={windowWidth}
+                        onDeleteWidget={this.handleDeleteWidget(i)}
+                        onEditWidget={this.handleEditWidget}
+                        onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                      />
+                    ))}
+                </ItemDetailWrapper>
+              </AnswerContext.Provider>
+            )}
+            {view === "preview" && this.renderPreview()}
+            {view === "metadata" && this.renderMetadata()}
+          </ContentWrapper>
         </Layout>
       </ItemDetailContext.Provider>
     );

@@ -161,13 +161,13 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
       {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
         <AnswerAndScore>
           <span data-cy="score">
-            {score}/{maxScore}
+            {Math.floor(score * 100) / 100}/{Math.floor(maxScore * 100) / 100}
           </span>
           <Title>{t("common.correctAnswer")}</Title>
         </AnswerAndScore>
       )}
       <AnswerAndScore>
-        <span data-cy="percent">{Math.floor(scorePercentage * 100) / 100}%</span>
+        <span data-cy="percent">{Math.round(scorePercentage)}%</span>
         <Title>{t("common.score")}</Title>
       </AnswerAndScore>
     </React.Fragment>

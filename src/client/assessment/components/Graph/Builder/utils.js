@@ -305,7 +305,12 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
     const { id, type, points, latex, subType } = element;
-    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.ANNOTATION || type === CONSTANT.TOOLS.AREA) {
+    if (
+      type === CONSTANT.TOOLS.POINT ||
+      type === CONSTANT.TOOLS.ANNOTATION ||
+      type === CONSTANT.TOOLS.AREA ||
+      type === CONSTANT.TOOLS.DRAG_DROP
+    ) {
       if (!acc[id]) {
         acc[id] = element;
       }
@@ -319,7 +324,8 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       _type: element._type,
       id: element.id,
       label: element.label,
-      labelIsVisible: element.labelIsVisible
+      labelIsVisible: element.labelIsVisible,
+      text: element.text
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
       acc[id].latex = latex;
@@ -353,7 +359,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 export function flat2nestedConfig(config) {
   return Object.values(
     config.reduce((acc, element) => {
-      const { id, type, subElement = false, latex = null, subType = null, points } = element;
+      const { id, type, subElement = false, latex = null, subType = null, points, text = null } = element;
 
       if (!acc[id] && !subElement) {
         acc[id] = {
@@ -364,11 +370,16 @@ export function flat2nestedConfig(config) {
           label: element.label,
           labelIsVisible: element.labelIsVisible,
           latex,
-          subType
+          subType,
+          text
         };
         if (type === CONSTANT.TOOLS.AREA) {
           acc[id].points = points;
-        } else if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.ANNOTATION) {
+        } else if (
+          type === CONSTANT.TOOLS.POINT ||
+          type === CONSTANT.TOOLS.ANNOTATION ||
+          type === CONSTANT.TOOLS.DRAG_DROP
+        ) {
           acc[id].x = element.x;
           acc[id].y = element.y;
           if (type === CONSTANT.TOOLS.POINT) {

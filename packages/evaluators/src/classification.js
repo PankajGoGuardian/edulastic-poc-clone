@@ -96,7 +96,6 @@ const evaluator = ({ userResponse = [], validation }) => {
   return scoring_type === ScoringType.EXACT_MATCH
     ? exactMatchEvaluator(answers, userResponse)
     : partialMatchEvaluator(answers, userResponse);
-
 };
 
 export default evaluator;

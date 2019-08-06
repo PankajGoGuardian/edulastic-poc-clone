@@ -5,13 +5,16 @@ import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { Tabs, Tab, MathSpan } from "@edulastic/common";
 
-import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE } from "../../constants/constantsForQuestions";
+import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE, CUSTOM_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
 import { Container } from "./styled/Container";
 import { ModeButton } from "./styled/ModeButton";
+import { TemplateWrapper } from "./styled/TemplateWrapper";
+
+import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray, getCustomArray } from "./helpers";
 
 class Template extends Component {
   render() {
@@ -33,38 +36,15 @@ class Template extends Component {
         produce(item, draft => {
           if (prop === "template") {
             let resultArray = "";
-            const initialArray = propData.replace(/(<p>|<\/p>)*/g, "").split('<p class="newline_section"><br>');
-
-            const paragraphsArray = initialArray.map(el => ({
-              value: `${el}<br/>`,
-              active: true
-            }));
-            const sentencesArray = initialArray
-              .join("<br/>")
-              .split(".")
-              .map(el => ({ value: `${el}.`, active: true }))
-              .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
-
-            const mathArray = initialArray.join("<br/> ").match(/<span(.*?)class="input__math"(.*?)>/g);
-            let i = 0;
-            const wordsArray = initialArray
-              .join("<br/> ")
-              .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
-              .split(/\s/g)
-              .map(el => {
-                if (mathArray && el.indexOf("<span></span>") !== -1) {
-                  el = el.replace("<span></span>", mathArray[i]);
-                  i++;
-                }
-                return { value: `${el}`, active: true };
-              });
-
+            const initialArray = getInitialArray(propData);
             if (mode === WORD_MODE) {
-              resultArray = cloneDeep(wordsArray);
+              resultArray = cloneDeep(getWordsArray(initialArray));
             } else if (mode === PARAGRAPH_MODE) {
-              resultArray = cloneDeep(paragraphsArray);
+              resultArray = cloneDeep(getParagraphsArray(initialArray));
+            } else if (mode === CUSTOM_MODE) {
+              resultArray = cloneDeep(getCustomArray(initialArray));
             } else {
-              resultArray = cloneDeep(sentencesArray);
+              resultArray = cloneDeep(getSentencesArray(initialArray));
             }
             setTemplate(resultArray);
           }
@@ -90,63 +70,73 @@ class Template extends Component {
     };
 
     return (
-      <Question
-        section="main"
-        label={t("component.tokenHighlight.templateTitle")}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      >
-        <Subtitle>{t("component.tokenHighlight.templateTitle")}</Subtitle>
-        <Tabs style={{ marginBottom: 15 }} value={templateTab} onChange={setTemplateTab}>
-          <Tab label={t("component.tokenHighlight.editTemplateTab")} />
-          <Tab label={t("component.tokenHighlight.editTokenTab")} />
-        </Tabs>
+      <TemplateWrapper>
+        <Question
+          section="main"
+          label={t("component.tokenHighlight.templateTitle")}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        >
+          <Subtitle>{t("component.tokenHighlight.templateTitle")}</Subtitle>
+          <Tabs style={{ marginBottom: 15 }} value={templateTab} onChange={setTemplateTab}>
+            <Tab label={t("component.tokenHighlight.editTemplateTab")} />
+            <Tab label={t("component.tokenHighlight.editTokenTab")} />
+          </Tabs>
 
-        {templateTab === 0 && (
-          <QuestionTextArea
-            onChange={val => handleItemChangeChange("template", val)}
-            value={item.template}
-            toolbarId="tokens-template"
-            border="border"
-          />
-        )}
+          {templateTab === 0 && (
+            <QuestionTextArea
+              onChange={val => handleItemChangeChange("template", val)}
+              value={item.template}
+              toolbarId="tokens-template"
+              border="border"
+            />
+          )}
 
-        {templateTab === 1 && (
-          <Fragment>
-            <Container>
-              <ModeButton
-                active={mode === PARAGRAPH_MODE}
-                onClick={() => handleItemChangeChange("tokenization", PARAGRAPH_MODE)}
-                type="button"
-              >
-                {t("component.tokenHighlight.paragraph")}
-              </ModeButton>
-              <ModeButton
-                active={mode === SENTENCE_MODE}
-                onClick={() => handleItemChangeChange("tokenization", SENTENCE_MODE)}
-                type="button"
-              >
-                {t("component.tokenHighlight.sentence")}
-              </ModeButton>
-              <ModeButton
-                active={mode === WORD_MODE}
-                onClick={() => handleItemChangeChange("tokenization", WORD_MODE)}
-                type="button"
-              >
-                {t("component.tokenHighlight.word")}
-              </ModeButton>
-            </Container>
-            {template.map((el, i) => (
-              <MathSpan
-                onClick={handleTemplateClick(i)}
-                dangerouslySetInnerHTML={{ __html: el.value }}
-                key={i}
-                className={el.active ? "active-word token" : "token"}
-              />
-            ))}
-          </Fragment>
-        )}
-      </Question>
+          {templateTab === 1 ? (
+            <Fragment>
+              <Container>
+                <ModeButton
+                  active={mode === PARAGRAPH_MODE}
+                  onClick={() => handleItemChangeChange("tokenization", PARAGRAPH_MODE)}
+                  type="button"
+                >
+                  {t("component.tokenHighlight.paragraph")}
+                </ModeButton>
+                <ModeButton
+                  active={mode === SENTENCE_MODE}
+                  onClick={() => handleItemChangeChange("tokenization", SENTENCE_MODE)}
+                  type="button"
+                >
+                  {t("component.tokenHighlight.sentence")}
+                </ModeButton>
+                <ModeButton
+                  active={mode === WORD_MODE}
+                  onClick={() => handleItemChangeChange("tokenization", WORD_MODE)}
+                  type="button"
+                >
+                  {t("component.tokenHighlight.word")}
+                </ModeButton>
+                <ModeButton
+                  active={mode === CUSTOM_MODE}
+                  onClick={() => handleItemChangeChange("tokenization", CUSTOM_MODE)}
+                  type="button"
+                >
+                  {t("component.tokenHighlight.custom")}
+                </ModeButton>
+              </Container>
+
+              {template.map((el, i) => (
+                <MathSpan
+                  onClick={handleTemplateClick(i)}
+                  dangerouslySetInnerHTML={{ __html: el.value }}
+                  key={i}
+                  className={el.active ? `active-word token ${mode}` : "token"}
+                />
+              ))}
+            </Fragment>
+          ) : null}
+        </Question>
+      </TemplateWrapper>
     );
   }
 }

@@ -219,6 +219,7 @@ class MathFormulaPreview extends Component {
     const hasAltAnswers =
       item && item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
     const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
+    let answerContainerStyle = {};
     let statusColor = theme.widgets.mathFormula.inputColor;
     if (latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
       statusColor = !isEmpty(evaluation)
@@ -226,6 +227,20 @@ class MathFormulaPreview extends Component {
           ? theme.widgets.mathFormula.inputCorrectColor
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
+
+      answerContainerStyle = {
+        background: statusColor,
+        border: "1px solid",
+        width: "fit-content",
+        position: "relative",
+        borderRadius: 4,
+        paddingRight: 30,
+        borderColor: !isEmpty(evaluation)
+          ? evaluation.some(ie => ie)
+            ? theme.widgets.mathFormula.inputCorrectBorderColor
+            : theme.widgets.mathFormula.inputIncorrectBorderColor
+          : theme.widgets.mathFormula.inputIncorrectBorderColor
+      };
     }
     cssStyles.width = cssStyles.width || minWidth;
     cssStyles.height = cssStyles.height || minHeight;
@@ -239,6 +254,10 @@ class MathFormulaPreview extends Component {
 
     // in Units type, this need when the show dropdown option is true
     const correctUnit = get(item, "validation.validResponse.value[0].options.unit", "");
+
+    const statusIcon = latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+      <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+    );
 
     return (
       <div>
@@ -254,7 +273,11 @@ class MathFormulaPreview extends Component {
         {testItem && <MathDisplay template={studentTemplate} innerValues={testItemCorrectValues} />}
 
         {!testItem && (
-          <FlexContainer alignItems="flex-start" justifyContent="flex-start">
+          <FlexContainer
+            alignItems="flex-start"
+            justifyContent="flex-start"
+            style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
+          >
             <MathInputWrapper width={cssStyles.width}>
               {this.isStatic() && (
                 <StaticMath
@@ -296,18 +319,20 @@ class MathFormulaPreview extends Component {
                   />
                 </MathInputSpan>
               )}
-              {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
-                <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
-              )}
+              {!item.showDropdown && statusIcon}
             </MathInputWrapper>
             {item.isUnits && item.showDropdown && (
-              <UnitsDropdown
-                item={item}
-                preview
-                onChange={this.selectUnitFromDropdown}
-                selected={this.selectedUnit}
-                disabled={disableResponse}
-              />
+              <>
+                <UnitsDropdown
+                  item={item}
+                  preview
+                  onChange={this.selectUnitFromDropdown}
+                  selected={this.selectedUnit}
+                  disabled={disableResponse}
+                  statusColor={statusColor}
+                />
+                {statusIcon}
+              </>
             )}
           </FlexContainer>
         )}

@@ -1419,6 +1419,97 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "graphing",
+      cardImage: GRGraphing,
+      data: {
+        title: "Graph Placement",
+        type: questionType.GRAPH,
+        graphType: "quadrantsPlacement",
+        stimulus: "[This is the stem]",
+        firstMount: true,
+        canvas: {
+          xMax: 10.4,
+          xMin: -10.4,
+          yMax: 10.4,
+          yMin: -10.4,
+          xRatio: 1,
+          yRatio: 1
+        },
+        controlbar: {
+          controls: ["undo", "redo", "reset"],
+          defaultControl: "undo"
+        },
+        toolbar: {
+          tools: ["point"],
+          defaultTool: "point"
+        },
+        list: [
+          {
+            text: "<p>Option 1</p>",
+            id: `list-item-${Math.random()
+              .toString(36)
+              .substr(2, 9)}`
+          },
+          {
+            text: "<p>Option 2</p>",
+            id: `list-item-${Math.random()
+              .toString(36)
+              .substr(2, 9)}`
+          }
+        ],
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: []
+          },
+          altResponses: []
+        },
+        sampleAnswer: "",
+        uiStyle: {
+          drawLabelZero: false,
+          displayPositionOnHover: false,
+          currentStemNum: "numerical",
+          currentFontSize: "normal",
+          xShowAxisLabel: false,
+          xHideTicks: false,
+          xDrawLabel: true,
+          xMaxArrow: true,
+          xMinArrow: true,
+          xCommaInLabel: false,
+          yShowAxisLabel: false,
+          yHideTicks: false,
+          yDrawLabel: true,
+          yMaxArrow: true,
+          yMinArrow: true,
+          yCommaInLabel: false,
+          xDistance: 1,
+          yDistance: 1,
+          xTickDistance: 1,
+          yTickDistance: 1,
+          layoutWidth: 600,
+          layoutHeight: 600,
+          layoutMargin: 0,
+          layoutSnapto: "grid",
+          xAxisLabel: "X",
+          yAxisLabel: "Y"
+        },
+        backgroundImage: {
+          src: "",
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          opacity: 100,
+          showShapePoints: true
+        },
+        backgroundShapes: [],
+        multipleResponses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "graphing",
       cardImage: GRNumberLinePlot,
       data: {
         title: "Number line with plot",

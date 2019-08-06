@@ -337,7 +337,7 @@ class MathFormulaPreview extends Component {
           </FlexContainer>
         )}
 
-        {!testItem && previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
+        {previewType === SHOW && item.validation.validResponse.value[0].value !== undefined && (
           <CorrectAnswerBox>
             {item.isUnits && item.showDropdown
               ? item.validation.validResponse.value[0].value.search("=") === -1
@@ -346,7 +346,7 @@ class MathFormulaPreview extends Component {
               : item.validation.validResponse.value[0].value}
           </CorrectAnswerBox>
         )}
-        {!testItem && hasAltAnswers && previewType === SHOW && (
+        {hasAltAnswers && previewType === SHOW && (
           <CorrectAnswerBox altAnswers>
             {item.validation.altResponses
               .map(ans => {

@@ -299,7 +299,7 @@ const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
     .ant-select-dropdown-menu-item {
       min-height: ${props => (props.minHeight ? props.minHeight : "30px")};
       &-active {
-        background-color: ${themeColor}20;
+        background-color: ${themeColor}33;
       }
     }
 

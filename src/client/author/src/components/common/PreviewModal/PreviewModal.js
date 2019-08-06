@@ -181,7 +181,7 @@ class PreviewModal extends React.Component {
                   </EduButton>
                 )}
                 {passage && passageTestItems.length > 0 ? (
-                  <Select
+                  <ItemsListDropDown
                     value={item._id}
                     showArrow={false}
                     optionLabelProp={"children"}
@@ -192,7 +192,7 @@ class PreviewModal extends React.Component {
                     {passageTestItems.map((v, ind) => (
                       <Select.Option value={v}>{ind + 1}</Select.Option>
                     ))}
-                  </Select>
+                  </ItemsListDropDown>
                 ) : (
                   ""
                 )}
@@ -362,4 +362,16 @@ const QuestionWrapper = styled.div`
   background: ${white};
   padding: ${props => (props.padding ? props.padding : "20px")};
   overflow: auto;
+`;
+
+const ItemsListDropDown = styled(Select)`
+  .ant-select-selection {
+    margin: 0;
+    border: 1px solid ${themeColor};
+    color: ${themeColor};
+  }
+  .ant-select-selection-selected-value {
+    padding: 5px 8px;
+    margin: 0;
+  }
 `;

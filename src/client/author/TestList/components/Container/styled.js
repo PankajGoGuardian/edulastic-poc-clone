@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Pagination, Affix, Input } from "antd";
 
-import { themeColor, desktopWidth, textColor, grey } from "@edulastic/colors";
+import { themeColor, desktopWidth, mediumDesktopWidth, textColor, grey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const ScrollBox = styled.div`
@@ -90,6 +90,10 @@ export const Main = styled.div`
   min-height: calc(100vh - 96px);
   box-shadow: -1px 0px 5px 1px ${grey};
   padding: 20px 25px;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    min-height: calc(100vh - 60px);
+  }
 `;
 
 export const FilterButton = styled.div`

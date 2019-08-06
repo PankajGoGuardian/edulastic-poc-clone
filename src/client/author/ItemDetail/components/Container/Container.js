@@ -326,7 +326,7 @@ class Container extends Component {
 
     let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
     return (
-      <PreviewContent padding="25px">
+      <PreviewContent>
         <TestItemPreview
           cols={allRows}
           previewTab={preview}
@@ -756,7 +756,7 @@ const enhance = compose(
 export default enhance(Container);
 
 const BreadCrumbBar = styled(Row)`
-  padding: 5px 0px;
+  padding: 0px 0px 10px;
 `;
 
 const RightActionButtons = styled(Col)`

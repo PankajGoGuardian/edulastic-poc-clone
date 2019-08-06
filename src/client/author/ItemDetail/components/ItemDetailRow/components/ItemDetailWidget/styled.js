@@ -1,4 +1,4 @@
-import { themeColor, white, mobileWidth } from "@edulastic/colors";
+import { themeColor, white, mobileWidth, mediumDesktopWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -42,21 +42,26 @@ export const Buttons = styled.div`
 
   .ant-btn-circle {
     background: ${white};
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16);
     display: flex;
     justify-content: center;
     align-items: center;
     width: 32px;
     height: 32px;
+    border: 1px solid ${themeColor};
     border-radius: 3px;
-    border: 0;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 
     svg {
       fill: ${themeColor};
     }
   }
 
+  @media (max-width: ${mediumDesktopWidth}) {
+    .ant-btn-circle {
+      width: 30px;
+      height: 30px;
+    }
+  }
   @media (max-width: ${mobileWidth}) {
     right: 0px;
   }

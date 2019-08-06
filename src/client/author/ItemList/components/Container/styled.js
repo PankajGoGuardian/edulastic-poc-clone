@@ -1,4 +1,4 @@
-import { mobileWidth, white, themeColor } from "@edulastic/colors";
+import { mobileWidth, mediumDesktopWidth, white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
 
@@ -12,6 +12,10 @@ export const Container = styled.div`
   position: relative;
   background: #f3f3f8;
   height: calc(100vh - 96px);
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: calc(100vh - 60px);
+  }
 
   @media (max-width: ${mobileWidth}) {
     padding: 0;

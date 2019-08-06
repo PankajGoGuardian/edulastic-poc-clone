@@ -11,6 +11,7 @@ export const Content = styled(Paper)`
 
 export const PreviewContent = styled(Content)`
   padding: ${props => (props.padding ? props.padding : "0px")};
+  min-height: 50px;
   @media (max-width: ${mobileWidth}) {
     & > div {
       padding: 0;
@@ -19,7 +20,7 @@ export const PreviewContent = styled(Content)`
 `;
 
 export const ContentWrapper = styled.div`
-  padding: 20px 30px;
+  padding: 10px 30px;
 `;
 
 export const ItemDetailWrapper = styled.div`

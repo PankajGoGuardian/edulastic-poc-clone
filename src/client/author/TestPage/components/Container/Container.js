@@ -126,8 +126,6 @@ class Container extends PureComponent {
 
     if (editAssigned) {
       setRegradeOldId(match.params.id);
-    } else {
-      setRegradeOldId("");
     }
     window.onbeforeunload = () => {
       return this.beforeUnload();

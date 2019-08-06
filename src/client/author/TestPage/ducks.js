@@ -293,8 +293,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         }
       };
     case SET_SAFE_BROWSE_PASSWORD:
-      return {
-        ...state,
+      return {f
+        ...state,df
         entity: {
           ...state.entity,
           sebPassword: payload.data
@@ -450,7 +450,6 @@ function* createTestSaga({ payload }) {
 
 function* updateTestSaga({ payload }) {
   try {
-    console.log("pa", payload);
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
     delete payload.data.updatedDate;

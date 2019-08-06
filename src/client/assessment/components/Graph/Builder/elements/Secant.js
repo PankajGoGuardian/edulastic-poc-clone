@@ -27,6 +27,7 @@ function create(board, secantPoints, id = null) {
     label: getLabelParameters(jxgType),
     id
   });
+  newLine.labelIsVisible = true;
   newLine.type = jxgType;
   newLine.addParents(secantPoints);
   newLine.ancestors = {
@@ -34,6 +35,8 @@ function create(board, secantPoints, id = null) {
     [secantPoints[1].id]: secantPoints[1]
   };
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -64,6 +67,7 @@ function getConfig(secant) {
     type: CONSTANT.TOOLS.SECANT,
     id: secant.id,
     label: secant.labelHTML || false,
+    labelIsVisible: secant.labelIsVisible,
     points: Object.keys(secant.ancestors)
       .sort()
       .map(n => Point.getConfig(secant.ancestors[n]))

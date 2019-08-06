@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button } from "antd";
 
-import { white, mobileWidth, desktopWidth, smallDesktopWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { white, mobileWidth, desktopWidth, mediumDesktopWidth } from "@edulastic/colors";
 
 import iconCart from "./shopping-cart.svg";
 
@@ -13,7 +13,7 @@ export const Container = styled.div`
   cursor: ${props => (props.disabled ? "default" : "pointer")};
   transition: opacity 300ms ease-in-out;
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     margin-left: 10px;
   }
   @media (max-width: ${mobileWidth}) {
@@ -46,7 +46,7 @@ export const CartButtonWrapper = styled(Button)`
     background-size: 50%;
   }
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
   }
 

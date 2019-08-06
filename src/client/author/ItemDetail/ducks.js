@@ -572,7 +572,12 @@ export function reducer(state = initialState, { type, payload }) {
         }
       };
     case ADD_PASSAGE: {
-      return { ...state, item: { ...state.item, passageId: payload._id }, passage: payload };
+      return produce(state, draft => {
+        draft.item.passageId = payload._id;
+        draft.passage = payload;
+        draft.item.rows[0].dimension = "50%";
+        return draft;
+      });
     }
     case UPDATE_PASSAGE_STRUCTURE: {
       return {
@@ -685,7 +690,15 @@ export function* updateItemSaga({ payload }) {
 
     // const questions = yield select(getQuestionsSelector);
     const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
-    const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
+    const rows = yield select(state => get(state, "itemDetail.item.rows"), []);
+    const testItemWidgetIds = rows.reduce((allIds, row = {}) => {
+      let widgetIds = (row.widgets || []).map(i => i.reference);
+      return [...allIds, ...widgetIds];
+    }, []);
+
+    const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {}))).filter(item =>
+      testItemWidgetIds.includes(item.id)
+    );
     const questions = widgets.filter(item => !resourceTypes.includes(item.type));
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
 
@@ -739,15 +752,8 @@ export function* updateItemSaga({ payload }) {
 
       yield put(setTestItemsAction(nextTestItems));
 
-      const testEntity = yield select(getTestEntitySelector);
-
-      const updatedTestEntity = {
-        ...testEntity,
-        testItems: [...testEntity.testItems, item]
-      };
-
       if (!payload.testId) {
-        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+        yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
       } else {
         yield put(setCreatedItemToTestAction(item));
         yield put(push(`/author/tests/${payload.testId}`));
@@ -967,7 +973,7 @@ function* addWidgetToPassage({ payload }) {
             heading: "",
             summary: "",
             transcript: "",
-            ui_style: {
+            uiStyle: {
               width: 480,
               height: 270,
               posterImage: "",

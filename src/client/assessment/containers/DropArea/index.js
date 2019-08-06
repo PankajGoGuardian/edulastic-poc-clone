@@ -123,7 +123,7 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
     }
   };
 
-  const { ui_style: uiStyles = {} } = item;
+  const { uiStyle: uiStyles = {} } = item;
   const { responsecontainerindividuals = {} } = uiStyles;
 
   return item.responses.map((response, i) => {

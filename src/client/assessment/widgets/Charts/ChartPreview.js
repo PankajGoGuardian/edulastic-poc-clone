@@ -40,13 +40,13 @@ const ChartPreview = ({
   disableResponse,
   evaluation,
   t,
-  metaData,
   tab,
   changePreviewTab,
   stash,
   stashIndex,
   setElementsStash,
-  setStashIndex
+  setStashIndex,
+  setQuestionData
 }) => {
   const answerContextConfig = useContext(AnswerContext);
   const [barIsDragging, toggleBarDragging] = useState(false);
@@ -202,22 +202,12 @@ const ChartPreview = ({
         gridParams={calculatedParams}
         deleteMode={tool === 3}
         view={view}
-        toggleBarDragging={toggleBarDragging}
         disableResponse={disableResponse}
         previewTab={previewTab}
         saveAnswer={saveAnswerHandler}
         correct={correct}
-      />
-      <AnnotationRnd
-        style={{
-          backgroundColor: "transparent",
-          boxShadow: "none",
-          border: view === EDIT ? "1px solid lightgray" : "none"
-        }}
-        questionId={item.id}
-        disableDragging={view !== EDIT}
-        isAbove={view === EDIT ? !barIsDragging : false}
-        onDoubleClick={() => toggleBarDragging(!barIsDragging)}
+        item={item}
+        setQuestionData={setQuestionData}
       />
       {view === PREVIEW && previewTab === SHOW && (
         <CorrectAnswersContainer title={t("component.chart.correctAnswer")}>
@@ -231,6 +221,8 @@ const ChartPreview = ({
             previewTab={previewTab}
             saveAnswer={saveAnswerHandler}
             correct={answerCorrect}
+            item={item}
+            setQuestionData={setQuestionData}
           />
         </CorrectAnswersContainer>
       )}
@@ -250,6 +242,8 @@ const ChartPreview = ({
               previewTab={previewTab}
               saveAnswer={saveAnswerHandler}
               correct={altAnswerCorrect[index]}
+              item={item}
+              setQuestionData={setQuestionData}
             />
           </CorrectAnswersContainer>
         ))}
@@ -258,6 +252,7 @@ const ChartPreview = ({
 };
 
 ChartPreview.propTypes = {
+  setQuestionData: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,

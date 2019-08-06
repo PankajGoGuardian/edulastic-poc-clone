@@ -15,7 +15,10 @@ function create(board, circlePoints, id = null) {
     label: getLabelParameters(JXG.OBJECT_TYPE_CIRCLE),
     id
   });
+  newLine.labelIsVisible = true;
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -48,6 +51,7 @@ function getConfig(circle) {
     type: CONSTANT.TOOLS.CIRCLE,
     id: circle.id,
     label: circle.labelHTML || false,
+    labelIsVisible: circle.labelIsVisible,
     points: Object.keys(circle.ancestors)
       .sort()
       .map(n => Point.getConfig(circle.ancestors[n]))

@@ -3,7 +3,7 @@ import { Table, Button } from "antd";
 import { testActivity } from "@edulastic/constants";
 import {
   mobileWidth,
-  smallDesktopWidth,
+  mediumDesktopWidth,
   darkGrey,
   lightGreySecondary,
   white,
@@ -99,7 +99,7 @@ export const TableData = styled(Table)`
         white-space: nowrap;
         text-align: center;
 
-        @media (max-width: ${smallDesktopWidth}) {
+        @media (max-width: ${mediumDesktopWidth}) {
           font-size: 10px;
         }
 
@@ -189,7 +189,7 @@ export const TableData = styled(Table)`
       padding-right: 0px;
     }
   }
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     .ant-table-thead > tr > th {
       font-size: 10px;
     }
@@ -203,7 +203,7 @@ export const TestThumbnail = styled.img`
   border-radius: 4px;
   width: 50px;
   height: 24px;
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     width: 32px;
   }
 `;
@@ -278,7 +278,7 @@ export const BtnStatus = styled(Button)`
   border-radius: 5px;
   background-color: ${props => defineStatusBg(props.status)};
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 20px;
     line-height: 20px;
     font-size: 9px;
@@ -317,7 +317,7 @@ export const GreyFont = styled.div`
     white-space: initial;
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 11px;
   }
 `;

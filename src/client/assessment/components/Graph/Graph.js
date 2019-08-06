@@ -78,6 +78,7 @@ class Graph extends Component {
         return GraphAxisLabels;
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return GraphQuadrants;
     }
@@ -94,6 +95,7 @@ class Graph extends Component {
         return AxisLabelsOptions;
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return QuadrantsMoreOptions;
     }
@@ -110,6 +112,7 @@ class Graph extends Component {
         return this.getAxisLabelsOptionsProps();
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return this.getQuadrantsOptionsProps();
     }
@@ -277,6 +280,7 @@ class Graph extends Component {
       disableResponse,
       flowLayout,
       showQuestionNumber,
+      setQuestionData,
       ...restProps
     } = this.props;
     let previewTab = _previewTab;
@@ -340,7 +344,7 @@ class Graph extends Component {
                 fillSections={fillSections}
                 advancedAreOpen
               >
-                <Annotations editable />
+                <Annotations question={item} setQuestionData={setQuestionData} editable />
               </Question>
               <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>

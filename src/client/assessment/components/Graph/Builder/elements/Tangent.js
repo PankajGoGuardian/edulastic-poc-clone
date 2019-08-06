@@ -27,6 +27,7 @@ function create(board, tangentPoints, id = null) {
     label: getLabelParameters(jxgType),
     id
   });
+  newLine.labelIsVisible = true;
   newLine.type = jxgType;
   newLine.addParents(tangentPoints);
   newLine.ancestors = {
@@ -34,6 +35,8 @@ function create(board, tangentPoints, id = null) {
     [tangentPoints[1].id]: tangentPoints[1]
   };
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -66,6 +69,7 @@ function getConfig(tangent) {
     type: CONSTANT.TOOLS.TANGENT,
     id: tangent.id,
     label: tangent.labelHTML || false,
+    labelIsVisible: tangent.labelIsVisible,
     points: Object.keys(tangent.ancestors)
       .sort()
       .map(n => Point.getConfig(tangent.ancestors[n]))

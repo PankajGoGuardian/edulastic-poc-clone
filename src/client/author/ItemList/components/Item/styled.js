@@ -1,5 +1,4 @@
 import {
-  smallDesktopWidth,
   mediumDesktopWidth,
   white,
   tabletWidth,
@@ -124,7 +123,7 @@ export const ViewButtonStyled = styled(Button)`
     }
   }
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
   }
 `;
@@ -159,7 +158,7 @@ export const AddButtonStyled = styled(Button)`
     }
   }
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
   }
 `;

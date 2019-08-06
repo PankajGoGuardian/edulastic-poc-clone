@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { cloneDeep, isEqual, get, shuffle, uniq } from "lodash";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-
+import "core-js/features/array/flat";
 import {
   Paper,
   FlexContainer,
@@ -80,15 +80,15 @@ const ClassificationPreview = ({
     imageUrl,
     imageOptions,
     shuffleOptions,
-    transparent_possible_responses,
-    transparent_background_image = true,
-    duplicate_responses,
+    transparentPossibleResponses,
+    transparentBackgroundImage = true,
+    duplicateResponses,
     uiStyle: {
       columnCount: colCount,
       columnTitles: colTitles = [],
       rowCount: rowCount,
       rowTitles: rowTitles = [],
-      show_drag_handle
+      showDragHandle
     }
   } = item;
 
@@ -147,6 +147,7 @@ const ClassificationPreview = ({
 
   const [answers, setAnswers] = useState(initialAnswers);
   const [dragItems, setDragItems] = useState(possibleResponses);
+  console.log("answers", initialAnswers);
 
   /**
    * it is used to filter out responses from the bottom container and place in correct boxes
@@ -170,9 +171,8 @@ const ClassificationPreview = ({
 
   const boxes = createEmptyArrayOfArrays();
 
-  const onDrop = (itemCurrent, itemTo) => {
-    const columnCount = get(item, "max_response_per_cell", "");
-
+  const onDrop = (itemCurrent, itemTo, from) => {
+    const columnCount = get(item, "maxResponsePerCell", "");
     const dItems = cloneDeep(dragItems);
     const ansArrays = cloneDeep(answers);
     if (columnCount && ansArrays[itemTo.index] && ansArrays[itemTo.index].length >= columnCount) {
@@ -199,7 +199,9 @@ const ClassificationPreview = ({
       const obj = posResp.find(ite => ite.value === itemCurrent.item);
       if (obj) {
         ansArrays.forEach((arr, i) => {
-          if (!duplicate_responses && arr.includes(obj.id)) {
+          if (!duplicateResponses && arr.includes(obj.id)) {
+            arr.splice(arr.indexOf(obj.id), 1);
+          } else if (from === "column" && arr.includes(obj.id)) {
             arr.splice(arr.indexOf(obj.id), 1);
           }
 
@@ -209,7 +211,7 @@ const ClassificationPreview = ({
         });
       }
 
-      if (!duplicate_responses) {
+      if (!duplicateResponses) {
         const includes = posResp.flatMap(obj => obj.value).includes(itemCurrent.item);
         if (includes) {
           dItems.splice(dItems.findIndex(obj => obj.value === itemCurrent.item), 1);
@@ -257,8 +259,8 @@ const ClassificationPreview = ({
 
   const verifiedDragItems = uniq(
     shuffleOptions
-      ? shuffle(duplicate_responses ? posResponses : dragItems)
-      : duplicate_responses
+      ? shuffle(duplicateResponses ? posResponses : dragItems)
+      : duplicateResponses
       ? posResponses
       : dragItems
   );
@@ -268,7 +270,7 @@ const ClassificationPreview = ({
    * This takes care of filtering out draggable responses from the bottom container
    */
   const flattenAnswers = answers.flat();
-  const verifiedGroupDragItems = duplicate_responses
+  const verifiedGroupDragItems = duplicateResponses
     ? possibleResponseGroups.map(group => {
         return shuffleOptions ? shuffle(group.responses) : group.responses;
       })
@@ -283,21 +285,21 @@ const ClassificationPreview = ({
         <TableRow
           colTitles={colTitles}
           key={ind}
-          isBackgroundImageTransparent={transparent_background_image}
-          isTransparent={transparent_possible_responses}
+          isBackgroundImageTransparent={transparentBackgroundImage}
+          isTransparent={transparentPossibleResponses}
           startIndex={ind}
-          width={get(item, "ui_style.row_titles_width", "max-content")}
-          height={get(item, "ui_style.row_min_height", "85px")}
+          width={get(item, "uiStyle.row_titles_width", "max-content")}
+          height={get(item, "uiStyle.row_min_height", "85px")}
           colCount={colCount}
           arrayOfRows={arrayOfRows}
           rowTitles={rowTitles}
           drop={drop}
-          dragHandle={show_drag_handle}
+          dragHandle={showDragHandle}
           answers={answers}
           validArray={evaluation}
           preview={preview}
           previewTab={previewTab}
-          possible_responses={possible_responses}
+          possibleResponses={possibleResponses}
           onDrop={onDrop}
           isResizable={view === EDIT}
           item={item}
@@ -315,14 +317,14 @@ const ClassificationPreview = ({
       rowCount={rowCount}
       rowTitles={rowTitles}
       colTitles={colTitles}
-      width={get(item, "ui_style.row_titles_width", "max-content")}
+      width={get(item, "uiStyle.row_titles_width", "max-content")}
       minWidth="200px"
-      height={get(item, "ui_style.row_min_height", "85px")}
-      isBackgroundImageTransparent={transparent_background_image}
-      isTransparent={transparent_possible_responses}
+      height={get(item, "uiStyle.row_min_height", "85px")}
+      isBackgroundImageTransparent={transparentBackgroundImage}
+      isTransparent={transparentPossibleResponses}
       answers={answers}
       drop={drop}
-      dragHandle={show_drag_handle}
+      dragHandle={showDragHandle}
       item={item}
       isReviewTab={isReviewTab}
       validArray={evaluation}
@@ -371,29 +373,31 @@ const ClassificationPreview = ({
                         </Subtitle>
                         <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                           {i.map((ite, ind) =>
-                            duplicate_responses ? (
+                            duplicateResponses ? (
                               <DragItem
-                                dragHandle={show_drag_handle}
+                                dragHandle={showDragHandle}
                                 key={ind}
-                                isTransparent={transparent_possible_responses}
+                                isTransparent={transparentPossibleResponses}
                                 preview={preview}
                                 renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             ) : (
                               <DragItem
-                                dragHandle={show_drag_handle}
+                                dragHandle={showDragHandle}
                                 key={ind}
-                                isTransparent={transparent_possible_responses}
+                                isTransparent={transparentPossibleResponses}
                                 preview={preview}
                                 renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             )
                           )}
@@ -421,30 +425,32 @@ const ClassificationPreview = ({
                     >
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                         {verifiedDragItems.map((ite, ind) => {
-                          return duplicate_responses ? (
+                          return duplicateResponses ? (
                             <DragItem
-                              dragHandle={show_drag_handle}
+                              dragHandle={showDragHandle}
                               key={ind}
-                              isTransparent={transparent_possible_responses}
+                              isTransparent={transparentPossibleResponses}
                               preview={preview}
                               renderIndex={possibleResponses.indexOf(ite)}
                               onDrop={onDrop}
                               item={ite.value}
                               disableResponse={disableResponse}
                               possibilityListPosition={listPosition}
+                              from="container"
                             />
                           ) : (
                             dragItems.includes(ite) && (
                               <DragItem
-                                dragHandle={show_drag_handle}
+                                dragHandle={showDragHandle}
                                 key={ind}
-                                isTransparent={transparent_possible_responses}
+                                isTransparent={transparentPossibleResponses}
                                 preview={preview}
                                 renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             )
                           );

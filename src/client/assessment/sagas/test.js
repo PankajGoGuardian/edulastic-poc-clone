@@ -2,7 +2,7 @@ import { testActivityApi, testsApi, assignmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { Modal, message } from "antd";
 import { push } from "react-router-redux";
-import { keyBy as _keyBy, groupBy, get } from "lodash";
+import { keyBy as _keyBy, groupBy, get, flatten } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
@@ -61,6 +61,7 @@ function* loadTest({ payload }) {
     });
 
     const groupId = yield select(getCurrentGroupWithAllClasses);
+
     // if !preivew, need to load previous responses as well!
     const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
     const testRequest = !demo
@@ -95,10 +96,15 @@ function* loadTest({ payload }) {
     }
     const isAuthorReview = Object.keys(testData).length > 0;
     const [test] = isAuthorReview ? [testData] : yield all([testRequest]);
-    const questions = getQuestions(test.testItems);
+    let questions = getQuestions(test.testItems);
+    if (test.passages) {
+      const passageItems = test.passages.map(passage => passage.data || []);
+      questions = [...flatten(passageItems), ...questions];
+    }
+
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
 
-    let { testItems } = test;
+    let { testItems, passages } = test;
 
     const settings = {
       calcType:
@@ -203,6 +209,7 @@ function* loadTest({ payload }) {
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
+        passages,
         items: testItems,
         title: test.title,
         annotations: test.annotations,

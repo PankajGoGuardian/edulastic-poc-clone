@@ -1,4 +1,4 @@
-import { smallDesktopWidth, white } from "@edulastic/colors";
+import { mediumDesktopWidth, white } from "@edulastic/colors";
 import styled from "styled-components";
 
 const Title = styled.p`
@@ -11,7 +11,7 @@ const Title = styled.p`
   color: ${white};
   display: inline-block;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
   }
 `;

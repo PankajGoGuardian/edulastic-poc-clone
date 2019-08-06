@@ -139,6 +139,7 @@ class CorrectAnswers extends Component {
       showDashedBorder,
       imageOptions,
       item,
+      setQuestionData,
       children
     } = this.props;
     const { value } = this.state;
@@ -176,6 +177,7 @@ class CorrectAnswers extends Component {
                 backgroundColor={backgroundColor}
                 imageOptions={imageOptions}
                 item={item}
+                setQuestionData={setQuestionData}
               />
             </TabContainer>
           )}
@@ -204,6 +206,7 @@ class CorrectAnswers extends Component {
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                       imageOptions={imageOptions}
                       item={item}
+                      setQuestionData={setQuestionData}
                     />
                   </TabContainer>
                 );

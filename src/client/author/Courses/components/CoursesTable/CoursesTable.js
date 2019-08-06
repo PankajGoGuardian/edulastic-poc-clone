@@ -10,17 +10,20 @@ const Option = Select.Option;
 import AddCourseModal from "./AddCourseModal/AddCourseModal";
 import EditCourseModal from "./EditCourseModal/EditCourseModal";
 import UploadCourseModal from "./UploadCourseModal";
-
+import {
+  StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
+  StyledFilterSelect,
+  StyledFilterInput,
+  StyledSchoolSearch as StyledNameSearch,
+  StyledActionDropDown
+} from "../../../../admin/Common/StyledComponents";
 import {
   StyledTableContainer,
-  StyledControlDiv,
-  StyledFilterSelect,
   StyledTable,
   StyledTableButton,
-  StyledFilterInput,
   StyledFilterButton,
-  StyledNameSearch,
-  StyledActionDropDown,
   StyledActiveCheckbox,
   StyledPagination,
   StyledHeaderColumn,
@@ -583,61 +586,75 @@ class CoursesTable extends React.Component {
     }
 
     return (
-      <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.showAddCourseModal}>
-            + Create Course
-          </Button>
-
-          <StyledNameSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
-            Show active courses only
-          </StyledActiveCheckbox>
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
+      <>
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showAddCourseModal}>
+              + Create Course
             </Button>
-          </StyledActionDropDown>
-        </StyledControlDiv>
-        {SearchRows}
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
-        <StyledPagination
-          current={currentPage}
-          defaultCurrent={1}
-          pageSize={25}
-          total={totalCourseCount}
-          onChange={this.changePagination}
-          hideOnSinglePage={true}
-        />
-        {editCourseModalVisible && editCourseKey != "" && (
-          <EditCourseModal
-            courseData={selectedCourse[0]}
-            modalVisible={editCourseModalVisible}
-            saveCourse={this.updateCourse}
-            closeModal={this.closeEditCourseModal}
-            userOrgId={userOrgId}
+
+            <StyledNameSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+          <RightFilterDiv>
+            <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
+              Show active courses only
+            </StyledActiveCheckbox>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
+
+        <StyledTableContainer>
+          <StyledControlDiv />
+          {SearchRows}
+          <StyledTable
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            columns={columns}
+            pagination={false}
+            scroll={{ y: 400 }}
           />
-        )}
-        {addCourseModalVisible && (
-          <AddCourseModal
-            modalVisible={addCourseModalVisible}
-            addCourse={this.addCourse}
-            closeModal={this.closeAddCourseModal}
-            userOrgId={userOrgId}
+          <StyledPagination
+            current={currentPage}
+            defaultCurrent={1}
+            pageSize={25}
+            total={totalCourseCount}
+            onChange={this.changePagination}
+            hideOnSinglePage={true}
           />
-        )}
-        {uploadCourseModalVisible && (
-          <UploadCourseModal
-            modalVisible={uploadCourseModalVisible}
-            closeModal={this.closeUploadCourseModal}
-            searchData={searchData}
-          />
-        )}
-      </StyledTableContainer>
+          {editCourseModalVisible && editCourseKey != "" && (
+            <EditCourseModal
+              courseData={selectedCourse[0]}
+              modalVisible={editCourseModalVisible}
+              saveCourse={this.updateCourse}
+              closeModal={this.closeEditCourseModal}
+              userOrgId={userOrgId}
+            />
+          )}
+          {addCourseModalVisible && (
+            <AddCourseModal
+              modalVisible={addCourseModalVisible}
+              addCourse={this.addCourse}
+              closeModal={this.closeAddCourseModal}
+              userOrgId={userOrgId}
+            />
+          )}
+          {uploadCourseModalVisible && (
+            <UploadCourseModal
+              modalVisible={uploadCourseModalVisible}
+              closeModal={this.closeUploadCourseModal}
+              searchData={searchData}
+            />
+          )}
+        </StyledTableContainer>
+      </>
     );
   }
 }

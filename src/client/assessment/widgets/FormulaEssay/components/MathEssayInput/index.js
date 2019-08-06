@@ -8,7 +8,7 @@ import { Wrapper } from "./styled/Wrapper";
 
 export const MathEssayInputContext = React.createContext({});
 
-const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item }) => {
+const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item, disableResponse }) => {
   const [currentLineIndex, setCurrentLineIndex] = useState();
 
   const handleChange = (index, value) => {
@@ -52,6 +52,7 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item 
         <Wrapper>
           {lines.map((line, i) => (
             <MathEssayInputLine
+              disableResponse={disableResponse}
               key={line.index}
               id={line.index}
               item={item}
@@ -80,10 +81,12 @@ MathEssayInput.propTypes = {
   lines: PropTypes.array.isRequired,
   setLines: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
-  uiStyle: PropTypes.object
+  uiStyle: PropTypes.object,
+  disableResponse: PropTypes.bool
 };
 
 MathEssayInput.defaultProps = {
+  disableResponse: false,
   textFormattingOptions: [],
   uiStyle: {}
 };

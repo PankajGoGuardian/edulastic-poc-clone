@@ -5,15 +5,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, Button } from "@edulastic/common";
-import {
-  mobileWidth,
-  tabletWidth,
-  desktopWidth,
-  smallDesktopWidth,
-  mediumDesktopWidth,
-  white,
-  themeColor
-} from "@edulastic/colors";
+import { mobileWidth, tabletWidth, desktopWidth, mediumDesktopWidth, white, themeColor } from "@edulastic/colors";
 import { IconPlusCircle, IconMenuOpenClose } from "@edulastic/icons";
 import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
@@ -157,7 +149,7 @@ export const TestButton = styled(Button)`
     }
   }
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     min-height: 36px;
     height: 36px;
     padding: 5px 15px;
@@ -188,7 +180,7 @@ const CreateButton = styled(Button)`
     border-color: ${props => props.theme.themeColor};
   }
 
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
     min-height: 36px;
     margin-left: 10px;
@@ -205,7 +197,7 @@ export const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
-  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${mediumDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
   }
 `;

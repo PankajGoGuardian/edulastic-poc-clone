@@ -12,6 +12,7 @@ import { Svg } from "./styled/Svg";
 import { Polygon } from "./styled/Polygon";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper } from "./styled/QustionNumber";
+import { ImageContainer } from "./styled/ImageContainer";
 
 const HotspotPreview = ({
   view,
@@ -71,9 +72,9 @@ const HotspotPreview = ({
         )}
       </QuestionTitleWrapper>
 
-      <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
+      <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} width={+width} height={+height} justifyContent="center">
+        <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
         <Svg data-cy="answer-container" width={+width} height={+height}>
-          <image href={source} width={+width} height={+height} preserveAspectRatio="none" x={0} y={0} />
           {areas &&
             areas.map((area, i) => (
               <Polygon
@@ -92,9 +93,15 @@ const HotspotPreview = ({
       {previewTab === "show" && !smallSize && (
         <Fragment>
           <CorrectAnswersContainer title={t("component.graphing.correctAnswer")}>
-            <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
+            <BlockContainer
+              data-cy="hotspotMap"
+              style={{ maxWidth }}
+              width={+width}
+              height={+height}
+              justifyContent="center"
+            >
+              <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
               <Svg data-cy="answer-container" width={+width} height={+height}>
-                <image href={source} width={+width} height={+height} preserveAspectRatio="none" x={0} y={0} />
                 {areas &&
                   areas.map((area, i) => (
                     <Polygon
@@ -113,19 +120,25 @@ const HotspotPreview = ({
           {altAnswers &&
             altAnswers.map((altAnswer, i) => (
               <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
-                <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
+                <BlockContainer
+                  data-cy="hotspotMap"
+                  style={{ maxWidth }}
+                  width={+width}
+                  height={+height}
+                  justifyContent="center"
+                >
+                  <ImageContainer src={source} width={+width} height={+height} left={0} top={0} />
                   <Svg data-cy="answer-container" width={+width} height={+height}>
-                    <image href={source} width={+width} height={+height} preserveAspectRatio="none" x={0} y={0} />
                     {areas &&
-                      areas.map((area, i) => (
+                      areas.map((area, altIndex) => (
                         <Polygon
                           key={i}
-                          showAnswer={altAnswer.value.includes(i)}
+                          showAnswer={altAnswer.value.includes(altIndex)}
                           onClick={() => {}}
                           points={area.map(point => `${point.x},${point.y}`).join(" ")}
-                          selected={altAnswer.value.includes(i)}
+                          selected={altAnswer.value.includes(altIndex)}
                           correct
-                          {...getStyles(i)}
+                          {...getStyles(altIndex)}
                         />
                       ))}
                   </Svg>
@@ -135,9 +148,9 @@ const HotspotPreview = ({
         </Fragment>
       )}
       {smallSize && (
-        <BlockContainer justifyContent="center">
+        <BlockContainer width={320} height={170} justifyContent="center">
+          <ImageContainer src={source} width={320} height={170} left={0} top={0} />
           <Svg data-cy="answer-container" width={320} height={170}>
-            <image href={source} width={320} height={170} preserveAspectRatio="none" x={0} y={0} />
             {previewAreas.map((areaPreviewPoints, i) => (
               <Polygon
                 key={i}

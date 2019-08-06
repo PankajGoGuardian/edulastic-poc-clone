@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { Tooltip } from "antd";
 import { MathSpan } from "@edulastic/common";
 
 const convertNumToPixel = val => {
@@ -19,9 +20,14 @@ const Container = styled.div`
     width: ${({ width }) => `${convertNumToPixel(width)} !important`};
     margin: 0px !important;
   }
+  .clipText {
+    white-space: ${({ isWrapText }) => (isWrapText ? "normal" : "nowrap")};
+    height: ${({ containerH, isWrapText }) =>
+      isWrapText ? (containerH ? convertNumToPixel(parseInt(containerH, 10) - 10) : "auto") : "auto"};
+  }
 `;
 
-const AnswerContainer = ({ answer, height, width }) => {
+const AnswerContainer = ({ answer, height, width, isWrapText }) => {
   const [imageOriginalSize, setSize] = useState({ width: 1, height: 1 });
   const getImageWidth = (index, em) => {
     const img = new Image();
@@ -55,18 +61,30 @@ const AnswerContainer = ({ answer, height, width }) => {
   }
 
   return (
-    <Container height={imageHeight} width={imageWidth}>
-      <MathSpan
-        dangerouslySetInnerHTML={{
-          __html: answer
-        }}
-      />
+    <Container height={imageHeight} containerH={height} width={imageWidth} isWrapText={isWrapText}>
+      <Tooltip
+        placement="bottomLeft"
+        title={() => (
+          <MathSpan
+            dangerouslySetInnerHTML={{
+              __html: answer || ""
+            }}
+          />
+        )}
+      >
+        <MathSpan
+          dangerouslySetInnerHTML={{
+            __html: answer.replace("<p>", "<p class='clipText'>") || ""
+          }}
+        />
+      </Tooltip>
     </Container>
   );
 };
 
 AnswerContainer.propTypes = {
   answer: PropTypes.string.isRequired,
+  isWrapText: PropTypes.bool.isRequired,
   height: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired,
   width: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired
 };

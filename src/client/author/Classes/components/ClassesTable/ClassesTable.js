@@ -5,20 +5,23 @@ import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
-
 import {
-  StyledClassName,
-  StyledTableContainer,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
+  StyledFilterInput,
+  StyledSchoolSearch as StyledSearch,
+  StyledActionDropDown,
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+import {
+  StyledTableContainer,
   StyledTable,
   StyledTableButton,
-  StyledFilterInput,
-  StyledSearch,
-  StyledActionDropDown,
+  StyledAddFilterButton,
   TeacherSpan,
-  StyledPagination,
-  StyledFilterButton
+  StyledPagination
 } from "./styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
@@ -509,7 +512,7 @@ class ClassesTable extends Component {
               <StyledTableButton onClick={() => this.onEditClass(id)} title="Edit">
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(id)} title="Deactivate">
+              <StyledTableButton onClick={() => this.handleDelete(id)} title="Archive">
                 <Icon type="delete" theme="twoTone" />
               </StyledTableButton>
             </React.Fragment>
@@ -629,109 +632,123 @@ class ClassesTable extends Component {
             />
           )}
           {i < 2 && (
-            <StyledFilterButton
+            <StyledAddFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );
     }
     return (
-      <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.showAddClassModal}>
-            + Create new class
-          </Button>
-
-          <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} onChange={this.onChangeSearch} />
-          <Checkbox
-            disabled={!!filtersData.find(item => item.filtersColumn === "active")}
-            style={{ margin: "auto" }}
-            checked={showActive}
-            onChange={this.onChangeShowActive}
-          >
-            Show Active Classes
-          </Checkbox>
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
+      <>
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showAddClassModal}>
+              + Create new class
             </Button>
-          </StyledActionDropDown>
-        </StyledControlDiv>
-        {SearchRows}
-        <StyledTable
-          rowKey={record => record._id}
-          rowSelection={rowSelection}
-          dataSource={Object.values(dataSource)}
-          columns={columnsData}
-          pagination={false}
-        />
-        <StyledPagination
-          defaultCurrent={1}
-          current={currentPage}
-          pageSize={25}
-          total={totalClassCount}
-          onChange={this.changePagination}
-          hideOnSinglePage={true}
-        />
-        {editClassModalVisible && (
-          <EditClassModal
-            selClassData={selectedClass}
-            modalVisible={editClassModalVisible}
-            saveClass={this.updateClass}
-            closeModal={this.closeEditClassModal}
-            schoolsData={schoolsData}
-            teacherList={teacherList}
-            userOrgId={userOrgId}
+
+            <StyledSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              disabled={!!filtersData.find(item => item.filtersColumn === "active")}
+              style={{ margin: "auto" }}
+              value={showActive}
+              onChange={this.onChangeShowActive}
+            >
+              Show Active Classes
+            </Checkbox>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
+
+        <StyledTableContainer>
+          <StyledControlDiv />
+          {SearchRows}
+          <StyledTable
+            rowKey={record => record._id}
+            rowSelection={rowSelection}
+            dataSource={Object.values(dataSource)}
+            columns={columnsData}
+            pagination={false}
+            scroll={{ y: 400 }}
+          />
+          <StyledPagination
+            defaultCurrent={1}
+            current={currentPage}
+            pageSize={25}
+            total={totalClassCount}
+            onChange={this.changePagination}
+            hideOnSinglePage={true}
+          />
+          {editClassModalVisible && (
+            <EditClassModal
+              selClassData={selectedClass}
+              modalVisible={editClassModalVisible}
+              saveClass={this.updateClass}
+              closeModal={this.closeEditClassModal}
+              schoolsData={schoolsData}
+              teacherList={teacherList}
+              userOrgId={userOrgId}
+              searchCourseList={searchCourseList}
+              coursesForDistrictList={coursesForDistrictList}
+            />
+          )}
+
+          {addClassModalVisible && (
+            <AddClassModal
+              modalVisible={addClassModalVisible}
+              addClass={this.addClass}
+              closeModal={this.closeAddClassModal}
+              userOrgId={userOrgId}
+              searchCourseList={searchCourseList}
+              coursesForDistrictList={coursesForDistrictList}
+            />
+          )}
+
+          {archiveClassModalVisible && (
+            <ArchiveClassModal
+              modalVisible={archiveClassModalVisible}
+              archiveClass={this.archiveClass}
+              closeModal={this.closeArchiveModal}
+              classNames={selectedArchiveClasses.map(id => {
+                const { _source = {} } = dataSource[id];
+                return <StyledClassName key={id}>{_source.name}</StyledClassName>;
+              })}
+            />
+          )}
+          <BulkEditModal
+            bulkEditData={bulkEditData}
+            districtId={userOrgId}
+            onCloseModal={() => setBulkEditVisibility(false)}
+            setBulkEditMode={setBulkEditMode}
+            setBulkEditUpdateView={setBulkEditUpdateView}
+            selectedIds={selectedRowKeys}
+            selectedClasses={selectedRowKeys.map(_id => dataSource[_id])}
+            bulkUpdateClasses={this._bulkUpdateClasses}
             searchCourseList={searchCourseList}
             coursesForDistrictList={coursesForDistrictList}
           />
-        )}
-
-        {addClassModalVisible && (
-          <AddClassModal
-            modalVisible={addClassModalVisible}
-            addClass={this.addClass}
-            closeModal={this.closeAddClassModal}
-            userOrgId={userOrgId}
-            searchCourseList={searchCourseList}
-            coursesForDistrictList={coursesForDistrictList}
-          />
-        )}
-
-        {archiveClassModalVisible && (
-          <ArchiveClassModal
-            modalVisible={archiveClassModalVisible}
-            archiveClass={this.archiveClass}
-            closeModal={this.closeArchiveModal}
-            classNames={selectedArchiveClasses.map(id => {
-              const { _source = {} } = dataSource[id];
-              return <StyledClassName key={id}>{_source.name}</StyledClassName>;
-            })}
-          />
-        )}
-        <BulkEditModal
-          bulkEditData={bulkEditData}
-          districtId={userOrgId}
-          onCloseModal={() => setBulkEditVisibility(false)}
-          setBulkEditMode={setBulkEditMode}
-          setBulkEditUpdateView={setBulkEditUpdateView}
-          selectedIds={selectedRowKeys}
-          selectedClasses={selectedRowKeys.map(_id => dataSource[_id])}
-          bulkUpdateClasses={this._bulkUpdateClasses}
-          searchCourseList={searchCourseList}
-          coursesForDistrictList={coursesForDistrictList}
-        />
-      </StyledTableContainer>
+        </StyledTableContainer>
+      </>
     );
   }
 }

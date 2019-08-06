@@ -4,23 +4,26 @@ import { Layout, Spin } from "antd";
 const { Content } = Layout;
 
 export const TermDiv = styled.div`
+  display: flex;
+  flex-direction: row;
   background-color: #fff;
 `;
 
 export const StyledContent = styled(Content)`
   width: 100%;
-  padding-left: 40px;
-  padding-right: 40px;
-  margin: 20px auto 0;
+  margin: 140px 30px 10px 30px;
 `;
 
 export const StyledLayout = styled(Layout)`
   position: relative;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius:10px;
+  padding:1rem;
   background: #fff;
   display: flex;
   flex-direction: column;
   pointer-events: ${props => (props.loading === "true" ? "none" : "auto")}
-  min-height: 400px;
+  min-height: 90vh;
 `;
 
 export const SpinContainer = styled.div`

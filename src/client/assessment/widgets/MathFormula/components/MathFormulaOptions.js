@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { cloneDeep, findIndex, isObject } from "lodash";
+import { cloneDeep, findIndex, isObject, difference } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { evaluationType, questionType } from "@edulastic/constants";
@@ -35,7 +35,8 @@ const MathFormulaOptions = ({
         return;
       }
       const _keys = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(btn => btn.label);
-      onChange("custom_keys", _keys);
+      const diffKeys = difference(customKeys, _keys);
+      onChange("custom_keys", _keys.concat(diffKeys));
     }
   }, [item.showDropdown, item.symbols]);
   const changeCustomKey = ({ index, value }) => {

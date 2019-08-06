@@ -38,13 +38,13 @@ class Template extends Component {
             let resultArray = "";
             const initialArray = getInitialArray(propData);
             if (mode === WORD_MODE) {
-              resultArray = cloneDeep(getWordsArray(initialArray));
+              resultArray = getWordsArray(initialArray);
             } else if (mode === PARAGRAPH_MODE) {
-              resultArray = cloneDeep(getParagraphsArray(initialArray));
+              resultArray = getParagraphsArray(initialArray);
             } else if (mode === CUSTOM_MODE) {
-              resultArray = cloneDeep(getCustomArray(initialArray));
+              resultArray = getCustomArray(initialArray);
             } else {
-              resultArray = cloneDeep(getSentencesArray(initialArray));
+              resultArray = getSentencesArray(initialArray);
             }
             setTemplate(resultArray);
           }

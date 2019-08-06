@@ -191,9 +191,12 @@ class MathFormulaPreview extends Component {
   }
 
   get selectedUnit() {
-    const { userAnswer } = this.props;
-    if (userAnswer) {
+    const { userAnswer, testItem, item } = this.props;
+    if (!testItem && userAnswer) {
       return userAnswer.unit;
+    }
+    if (testItem) {
+      return get(item, "validation.validResponse.value[0].options.unit", "");
     }
     return "";
   }
@@ -246,8 +249,21 @@ class MathFormulaPreview extends Component {
           />
         </QuestionTitleWrapper>
 
-        {testItem && <MathDisplay template={studentTemplate} innerValues={testItemCorrectValues} />}
-
+        {testItem && (
+          <FlexContainer alignItems="flex-start" justifyContent="flex-start">
+            <MathDisplay style={cssStyles} template={studentTemplate} innerValues={testItemCorrectValues} />
+            {item.isUnits && item.showDropdown && (
+              <UnitsDropdown
+                preview
+                disabled
+                item={item}
+                selected={this.selectedUnit}
+                onChange={this.selectUnitFromDropdown}
+              />
+            )}
+          </FlexContainer>
+        )}
+        {console.log(testItem, item)}
         {!testItem && (
           <FlexContainer alignItems="flex-start" justifyContent="flex-start">
             <MathInputWrapper width={cssStyles.width}>

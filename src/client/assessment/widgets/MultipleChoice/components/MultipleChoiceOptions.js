@@ -88,7 +88,11 @@ class MultipleChoiceOptions extends Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options.splice(index, 1);
+        const [removedOption] = draft.options.splice(index, 1);
+        draft.validation.validResponse.value = draft.validation.validResponse.value.filter(
+          validOption => validOption !== removedOption.value
+        );
+
         for (let i = index + 1; i < draft.options.length; i++) {
           if (draft.variable && draft.variable.variableStatus) {
             draft.variable.variableStatus[`option-${i - 1}`] = draft.variable.variableStatus[`option-${i}`];

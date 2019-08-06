@@ -53,11 +53,9 @@ class MetaInfoCell extends Component {
       setSelectedTests,
       setTestItems,
       setDataAndSave,
-      getItemsSubjectAndGrade,
       selectedRows,
-      setTestData,
+      testItemsList,
       test,
-      tests,
       gotoSummary
     } = this.props;
     if (!test.title) {
@@ -76,47 +74,14 @@ class MetaInfoCell extends Component {
     }
     if (!keys.includes(row.id)) {
       keys[keys.length] = row.id;
-      setSelectedTests(keys);
-      setTestItems(keys);
-      const testToAdd = tests.find(el => row.id === el._id);
-      newTest.testItems.push(testToAdd);
+      const item = testItemsList.find(el => row.id === el._id);
+      setDataAndSave({ addToTest: true, item });
     } else {
       keys = keys.filter(item => item !== row.id);
-      setSelectedTests(keys);
-      setTestItems(keys);
-      newTest.testItems = newTest.testItems.filter(el => row.id !== el._id);
+      setDataAndSave({ addToTest: false, item: { _id: row.id } });
     }
-
-    // getting grades and subjects from each question array in test items
-    const { testItems = [] } = newTest;
-
-    const questionGrades = testItems
-      .flatMap(item => (item.data && item.data.questions) || [])
-      .flatMap(question => question.grades || []);
-    const questionSubjects = testItems
-      .flatMap(item => (item.data && item.data.questions) || [])
-      .flatMap(question => question.subjects || []);
-    //alignment object inside questions contains subject and domains
-    const getAlignmentsObject = testItems
-      .flatMap(item => (item.data && item.data.questions) || [])
-      .flatMap(question => question.alignment || []);
-
-    const subjects = getAlignmentsObject.map(alignment => alignment.subject);
-
-    //domains inside alignment object holds standards with grades
-    const grades = getAlignmentsObject
-      .flatMap(alignment => alignment.domains)
-      .flatMap(domain => domain.standards)
-      .flatMap(standard => standard.grades);
-    getItemsSubjectAndGrade({
-      subjects: _uniq([...subjects, ...questionSubjects]),
-      grades: _uniq([...grades, ...questionGrades])
-    });
-    if (!test._id && testItems.length === 1) {
-      setDataAndSave(newTest);
-    } else {
-      setTestData(newTest);
-    }
+    setSelectedTests(keys);
+    setTestItems(keys);
   };
 
   get isAddOrRemove() {
@@ -286,15 +251,13 @@ const enhance = compose(
       selectedRows: getSelectedItemSelector(state),
       test: getTestSelector(state),
       userId: getUserId(state),
-      tests: getTestItemsSelector(state)
+      testItemsList: getTestItemsSelector(state)
     }),
     {
       setTestItems: setTestItemsAction,
-      setTestData: setTestDataAction,
       setDataAndSave: setTestDataAndUpdateAction,
       checkAnswer: previewCheckAnswerAction,
-      showAnswer: previewShowAnswerAction,
-      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
+      showAnswer: previewShowAnswerAction
     }
   )
 );

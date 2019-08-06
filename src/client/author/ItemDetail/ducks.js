@@ -752,15 +752,8 @@ export function* updateItemSaga({ payload }) {
 
       yield put(setTestItemsAction(nextTestItems));
 
-      const testEntity = yield select(getTestEntitySelector);
-
-      const updatedTestEntity = {
-        ...testEntity,
-        testItems: [...testEntity.testItems, item]
-      };
-
       if (!payload.testId) {
-        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+        yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
       } else {
         yield put(setCreatedItemToTestAction(item));
         yield put(push(`/author/tests/${payload.testId}`));

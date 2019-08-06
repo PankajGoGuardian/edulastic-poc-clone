@@ -416,15 +416,9 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
       yield put(setTestItemsAction(nextTestItems));
 
-      let testEntity = yield select(getTestEntitySelector);
-
-      const updatedTestEntity = {
-        ...testEntity,
-        testItems: [...testEntity.testItems, item]
-      };
       yield put(setCreatedItemToTestAction(item));
       if (!tId || tId === "undefined") {
-        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+        yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
       } else {
         yield put(push(!isEditFlow ? `/author/tests/${tId}` : `/author/tests/${tId}/createItem/${item._id}`));
       }

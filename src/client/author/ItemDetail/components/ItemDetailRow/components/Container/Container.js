@@ -178,8 +178,8 @@ class Container extends Component {
         )}
         {isPassageQuestion && (
           <>
-            <Button onClick={() => handleAddToPassage("video")}> Add Video</Button>{" "}
-            <Button onClick={() => handleAddToPassage("passage")}> Add Passage </Button>
+            <Button onClick={() => handleAddToPassage("video", tabIndex)}> Add Video</Button>{" "}
+            <Button onClick={() => handleAddToPassage("passage", tabIndex)}> Add Passage </Button>
           </>
         )}
       </Content>

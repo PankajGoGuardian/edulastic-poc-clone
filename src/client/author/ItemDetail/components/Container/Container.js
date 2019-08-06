@@ -219,14 +219,14 @@ class Container extends Component {
     });
   };
 
-  handleAddToPassage = type => {
+  handleAddToPassage = (type, tabIndex) => {
     const { isTestFlow, match, addWidgetToPassage } = this.props;
     addWidgetToPassage({
       isTestFlow,
       itemId: isTestFlow ? match.params.itemId : match.params.id,
       testId: match.params.testId,
       type,
-      tabIndex: 0 // TODO: fix mulitple tab case
+      tabIndex
     });
   };
 

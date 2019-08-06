@@ -95,18 +95,25 @@ function calculateNewParabolaLatex(line, points) {
 }
 
 function createPoint(board, coords, params) {
-  return board.$board.create("point", coords, {
+  const point = board.$board.create("point", coords, {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Colors.default[CONSTANT.TOOLS.POINT],
     ...params,
     fillColor: params.strokeColor,
     highlightFillColor: params.highlightStrokeColor,
     label: getLabelParameters(JXG.OBJECT_TYPE_POINT),
-    fixed: params.fixed === null ? false : params.fixed
+    fixed: params.fixed === null ? false : params.fixed,
+    snapToGrid: false
   });
+  point.labelIsVisible = true;
+  point.pointIsVisible = true;
+  point.on("mouseover", event => board.handleElementMouseOver(point, event));
+  point.on("mouseout", () => board.handleElementMouseOut(point));
+
+  return point;
 }
 
-function createLine(board, points, params, handleSnapEnabled = true) {
+function createLine(board, points, params) {
   const newLine = board.$board.create("line", points, {
     ...getPropsByLineType(CONSTANT.TOOLS.LINE),
     ...Colors.default[CONSTANT.TOOLS.EQUATION],
@@ -115,13 +122,13 @@ function createLine(board, points, params, handleSnapEnabled = true) {
     fixed: params.fixed === null ? false : params.fixed
   });
 
-  handleSnapEnabled &&
-    handleSnap(
-      newLine,
-      Object.values(newLine.ancestors),
-      board,
-      calculateNewLineLatex(newLine, Object.values(newLine.ancestors))
-    );
+  handleSnap(
+    newLine,
+    Object.values(newLine.ancestors),
+    board,
+    calculateNewLineLatex(newLine, Object.values(newLine.ancestors)),
+    true
+  );
 
   return newLine;
 }
@@ -149,7 +156,8 @@ function createParabola(board, points, params) {
     newLine,
     Object.values(newLine.ancestors),
     board,
-    calculateNewParabolaLatex(newLine, Object.values(newLine.ancestors))
+    calculateNewParabolaLatex(newLine, Object.values(newLine.ancestors)),
+    true
   );
 
   return newLine;
@@ -315,34 +323,10 @@ function renderElement(board, element, points, params) {
         // find anchor points and create line by this points
         const coords = findLinePointsCoords(gridParams, equationLeft, equationRight);
         if (coords.length === 2) {
-          const coordIndex = equationLeft === "x" ? 0 : 1,
-            checkStep = equationLeft === "x" ? gridParams.stepX : gridParams.stepY,
-            firstPointIsDecimal = coords[0][coordIndex] % checkStep !== 0 ? true : false,
-            secondPointIsDecimal = coords[1][coordIndex] % checkStep !== 0 ? true : false,
-            handleSnapEnabled = coords.some(coord => coord[coordIndex] % checkStep !== 0);
+          const point1 = createPoint(board, coords[0], params);
+          const point2 = createPoint(board, coords[1], params);
 
-          const point1 = createPoint(board, coords[0], {
-            ...params,
-            visible: !firstPointIsDecimal,
-            fixed: firstPointIsDecimal,
-            snapToGrid: !firstPointIsDecimal
-          });
-          const point2 = createPoint(board, coords[1], {
-            ...params,
-            visible: !secondPointIsDecimal,
-            fixed: secondPointIsDecimal,
-            snapToGrid: !secondPointIsDecimal
-          });
-
-          line = createLine(
-            board,
-            [point1, point2],
-            {
-              ...params,
-              fixed: coords.some(coord => coord[coordIndex] % checkStep !== 0) ? true : false
-            },
-            !handleSnapEnabled
-          );
+          line = createLine(board, [point1, point2], params);
           subType = CONSTANT.TOOLS.LINE;
         }
       }

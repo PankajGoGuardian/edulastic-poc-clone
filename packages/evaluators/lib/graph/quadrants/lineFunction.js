@@ -46,6 +46,16 @@ var LineFunction =
           var koefB = (this.y2 * this.x1 - this.y1 * this.x2) / (this.x1 - this.x2);
           return koefB.toFixed(_constants.FractionDigits);
         }
+      },
+      {
+        key: "getVerticalLineOffset",
+        value: function getVerticalLineOffset() {
+          if (this.x1 === this.x2) {
+            return this.x1;
+          }
+
+          return "NaN";
+        }
       }
     ]);
     return LineFunction;

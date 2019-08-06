@@ -4,14 +4,17 @@ import { Layout, Spin, Row, Button, Radio } from "antd";
 const RadioGroup = Radio.Group;
 const { Content } = Layout;
 
-export const DistrictPolicyDiv = styled.div``;
-
-export const StyledContent = styled(Content)`
-  width: 95%;
-  margin: 40px auto 0;
+export const DistrictPolicyDiv = styled.div`
+  display: flex;
+  flex-direction: row;
 `;
 
-export const StyledLayout = styled(Layout)`
+export const StyledContent = styled.div`
+  width: 95%;
+  margin: 140px auto 10px auto;
+`;
+
+export const StyledLayout = styled.div`
   position: relative;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;

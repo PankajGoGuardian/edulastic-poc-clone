@@ -6,19 +6,24 @@ import { get } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
-
 import {
-  StyledTableContainer,
   StyledPagination,
-  StyledControlDiv,
-  StyledFilterSelect,
+  StyledTableContainer,
   StyledTable,
-  StyledTableButton,
-  StyledFilterInput,
+  StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
+  StyledFilterSelect,
   StyledAddFilterButton,
+  StyledFilterInput,
   StyledSchoolSearch,
   StyledActionDropDown,
   StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+import {
+  // StyledTableContainer,
+  // StyledTable,
+  StyledTableButton
 } from "./styled";
 
 import { UserFormModal as EditTeacherModal } from "../../../../common/components/UserFormModal/UserFormModal";
@@ -499,35 +504,43 @@ class TeacherTable extends Component {
 
     return (
       <StyledTableContainer>
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showInviteTeacherModal}>
+              + Invite Multiple Teachers
+            </Button>
+            <StyledSchoolSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              checked={this.state.showActive}
+              onChange={this.onChangeShowActive}
+              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+            >
+              Show current users only
+            </Checkbox>
+            <StyledActionDropDown overlay={actionMenu}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
+
         <StyledControlDiv>
-          <Button type="primary" onClick={this.showInviteTeacherModal}>
-            + Invite Multiple Teachers
-          </Button>
           {inviteTeacherModalVisible && (
             <InviteMultipleTeacherModal
               modalVisible={inviteTeacherModalVisible}
+              inviteTeachers={this.sendInviteTeacher}
               closeModal={this.closeInviteTeacherModal}
-              addTeachers={this.addTeachers}
               userOrgId={userOrgId}
             />
           )}
-          <StyledSchoolSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <Checkbox
-            checked={this.state.showActive}
-            onChange={this.onChangeShowActive}
-            disabled={!!filtersData.find(item => item.filtersColumn === "status")}
-          >
-            Show current users only
-          </Checkbox>
-          <StyledActionDropDown overlay={actionMenu}>
-            <Button>
-              Actions <Icon type="down" />
-            </Button>
-          </StyledActionDropDown>
         </StyledControlDiv>
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
@@ -617,6 +630,13 @@ class TeacherTable extends Component {
           total={totalUsers}
           onChange={page => this.setPageNo(page)}
           hideOnSinglePage={true}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
+          scroll={{ y: 400 }}
         />
         {editTeacherModaVisible && (
           <EditTeacherModal

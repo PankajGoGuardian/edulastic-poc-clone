@@ -3,9 +3,14 @@ import { Layout, Spin } from "antd";
 
 const { Content } = Layout;
 
+export const PerformanceBandDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
 export const StyledContent = styled(Content)`
   width: 95%;
-  margin: 40px auto 0;
+  margin: 150px 30px 10px 30px;
 `;
 
 export const StyledLayout = styled(Layout)`

@@ -378,16 +378,16 @@ class SchoolsTable extends React.Component {
           }
         } else {
           if (!search[filtersColumn]) {
-            search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+            search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
           } else {
-            search[filtersColumn].value.push(filterStr);
+            search[filtersColumn].push({ type: filtersValue, value: filterStr });
           }
         }
       }
     }
 
     if (searchByName.length > 0) {
-      search.name = { type: "cont", value: [searchByName] };
+      search.name = [{ type: "cont", value: searchByName }];
     }
 
     return {

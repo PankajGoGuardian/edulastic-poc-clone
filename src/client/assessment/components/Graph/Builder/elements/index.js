@@ -26,3 +26,5 @@ export { default as Equation } from "./Equation";
 export { default as Annotation } from "./Annotation";
 export { default as Area } from "./Area";
 export { default as DrawingObject } from "./DrawingObject";
+export { default as EditButton } from "./EditButton";
+export { default as DragDrop } from "./DragDrop";

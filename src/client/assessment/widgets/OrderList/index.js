@@ -1,4 +1,4 @@
-import React, { Fragment, useMemo, useState, useEffect } from "react";
+import React, { Fragment, useMemo, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -14,11 +14,13 @@ import {
   CorrectAnswersContainer,
   FlexContainer,
   MathFormulaDisplay,
-  QuestionNumberLabel
+  QuestionNumberLabel,
+  AnswerContext
 } from "@edulastic/common";
 
 import { Text } from "./styled/Text";
 import { Index } from "./styled/Index";
+import { ItemsWrapper } from "./styled/ItemsWrapper";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import QuillSortableList from "../../components/QuillSortableList";
@@ -70,6 +72,7 @@ const OrderList = ({
   isReviewTab
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
+  const answerContext = useContext(AnswerContext);
 
   useEffect(() => {
     if (userAnswer.length === 0) {
@@ -197,7 +200,13 @@ const OrderList = ({
       });
     });
   }
-  const initialAnswers = disableResponse ? correctAnswers : userAnswer;
+
+  let initialAnswers;
+  if (answerContext.expressGrader) {
+    initialAnswers = disableResponse ? correctAnswers : userAnswer;
+  } else {
+    initialAnswers = userAnswer.length > 0 ? userAnswer : correctAnswers;
+  }
 
   const evaluationFromAnswers = userAnswer.map((answer, index) => {
     if (answer === correctAnswers[index]) {
@@ -282,20 +291,22 @@ const OrderList = ({
                 columns={columns}
               />
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
-                {correctAnswers.map((correctAnswer, i) => (
-                  <CorrectAnswerItem theme={theme}>
-                    <Text>
-                      <FlexContainer>
-                        <Index>{i + 1}</Index>
-                        <QuestionText>
-                          <MathFormulaDisplay
-                            dangerouslySetInnerHTML={{ __html: itemForPreview.list[correctAnswer] }}
-                          />
-                        </QuestionText>
-                      </FlexContainer>
-                    </Text>
-                  </CorrectAnswerItem>
-                ))}
+                <ItemsWrapper styleType={styleType}>
+                  {correctAnswers.map((correctAnswer, i) => (
+                    <CorrectAnswerItem theme={theme}>
+                      <Text>
+                        <FlexContainer>
+                          <Index>{i + 1}</Index>
+                          <QuestionText>
+                            <MathFormulaDisplay
+                              dangerouslySetInnerHTML={{ __html: itemForPreview.list[correctAnswer] }}
+                            />
+                          </QuestionText>
+                        </FlexContainer>
+                      </Text>
+                    </CorrectAnswerItem>
+                  ))}
+                </ItemsWrapper>
               </CorrectAnswersContainer>
 
               {hasAltAnswers && (

@@ -130,7 +130,8 @@ class AdvancedTable extends Component {
                 this.props.onOpenReleaseScoreSettings,
                 row,
                 this.props.history,
-                this.props.showPreviewModal
+                this.props.showPreviewModal,
+                this.props.toggleEditModal
               )}
               placement="bottomCenter"
               trigger={["click"]}

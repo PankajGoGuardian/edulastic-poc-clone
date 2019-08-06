@@ -8,17 +8,19 @@ import { StyledComponents, TypeToConfirmModal } from "@edulastic/common";
 import { roleuser } from "@edulastic/constants";
 
 import {
-  StyledTableContainer,
   StyledPagination,
   StyledTable,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
-  StyledClassName,
-  StyledFilterInput,
   StyledAddFilterButton,
+  StyledFilterInput,
   StyledSchoolSearch,
-  StyledActionDropDown
-} from "./styled";
+  StyledActionDropDown,
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+import { StyledTableContainer } from "./styled";
 
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
 import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
@@ -479,37 +481,44 @@ class SchoolAdminTable extends Component {
 
     return (
       <StyledTableContainer>
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
+              + Add School Admin
+            </Button>
+            <StyledSchoolSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              checked={this.state.showActive}
+              onChange={this.onChangeShowActive}
+              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+            >
+              Show current users only
+            </Checkbox>
+            {role === roleuser.DISTRICT_ADMIN ? (
+              <StyledActionDropDown overlay={actionMenu}>
+                <Button>
+                  Actions <Icon type="down" />
+                </Button>
+              </StyledActionDropDown>
+            ) : null}
+          </RightFilterDiv>
+        </StyledFilterDiv>
         <StyledControlDiv>
-          <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
-            + Add School Admin
-          </Button>
           {createSchoolAdminModalVisible && (
             <CreateSchoolAdminModal
               modalVisible={createSchoolAdminModalVisible}
-              createSchoolAdmin={this.createUser}
-              closeModal={this.closeCreateUserModal}
+              createSchoolAdmin={this.createSchoolAdmin}
+              closeModal={this.closeCreateSchoolAdminModal}
               userOrgId={userOrgId}
             />
           )}
-          <StyledSchoolSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <Checkbox
-            checked={this.state.showActive}
-            onChange={this.onChangeShowActive}
-            disabled={!!filtersData.find(item => item.filtersColumn === "status")}
-          >
-            Show current users only
-          </Checkbox>
-          {role === roleuser.DISTRICT_ADMIN ? (
-            <StyledActionDropDown overlay={actionMenu}>
-              <Button>
-                Actions <Icon type="down" />
-              </Button>
-            </StyledActionDropDown>
-          ) : null}
         </StyledControlDiv>
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
@@ -599,6 +608,13 @@ class SchoolAdminTable extends Component {
           total={totalUsers}
           onChange={page => this.setPageNo(page)}
           hideOnSinglePage={true}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
+          scroll={{ y: 400 }}
         />
         {editSchoolAdminModaVisible && (
           <EditSchoolAdminModal

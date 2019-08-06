@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mobileWidth, desktopWidth, smallDesktopWidth, themeColor, textColor } from "@edulastic/colors";
+import { mobileWidth, desktopWidth, mediumDesktopWidth, themeColor, textColor } from "@edulastic/colors";
 import Modal from "react-responsive-modal";
 import { Link } from "react-router-dom";
 import { Menu } from "antd";
@@ -34,7 +34,7 @@ export const PickQuestionWrapper = styled.div`
   justify-content: space-between;
   padding: 126px 30px 30px;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     padding: 90px 30px 30px;
   }
 `;

@@ -9,7 +9,7 @@ import { Pagination, Spin, message } from "antd";
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle } from "@edulastic/icons";
-
+import { themeColor } from "@edulastic/colors";
 import {
   Container,
   MainList,
@@ -320,7 +320,7 @@ class AddItems extends PureComponent {
                     size="large"
                     onClick={this.handleCreateNewItem}
                   >
-                    <IconPlusCircle color="#00AD50" width={15} height={15} />
+                    <IconPlusCircle color={themeColor} width={15} height={15} />
                     <span>Create new Item</span>
                   </StyledButton>
                 </ItemsMenu>

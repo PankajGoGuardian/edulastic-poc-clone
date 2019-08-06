@@ -153,7 +153,7 @@ const ClozeMathPreview = ({
             checked: type === CHECK || type === SHOW,
             onInnerClick,
             uiStyles,
-            response_containers: item.response_containers
+            responseContainers: item.responseContainers
           }
         }}
         showWarnings

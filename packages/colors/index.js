@@ -6,8 +6,10 @@ export const themeColor = "#00AD50"; // green
 export const themeColorLight = "#42d184"; // light green
 export const themeColorLighter = "#5EB500"; // light green
 export const themeColorSecondaryLighter = "#26B96A"; // light green
-export const themeColorTagsBg = "#E1FBED";
+export const themeColorTagsBg = "#D1F9EB";
 export const themeColorBreadcrumb = "#69727E";
+export const themeLightGrayColor = "#BBBFC4";
+export const themeLightGrayBgColor = "#F1F1F1";
 
 export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";
@@ -126,6 +128,7 @@ export const tabletWidth = "768px";
 export const desktopWidth = "992px";
 export const smallDesktopWidth = "1024px";
 export const largeDesktopWidth = "1200px";
+export const mediumDesktopWidth = "1366px";
 export const extraDesktopWidth = "1440px";
 export const extraDesktopWidthMax = "1600px";
 
@@ -159,3 +162,14 @@ export const eastBaycolor = "#51596a";
 
 export const draftColor = "#f8ac59";
 export const publishedColor = "#1ab394";
+
+export const backgrounds = {
+  default: "#f3f3f3",
+  primary: "#f8f8f8"
+};
+
+export const borders = {
+  default: "#f2f2f2",
+  primary: "#b1b1b1",
+  secondary: "#e6e6e6"
+};

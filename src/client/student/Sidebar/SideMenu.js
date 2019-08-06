@@ -20,7 +20,7 @@ import {
   IconQuestion
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
-import { white, tabletWidth, largeDesktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { white, tabletWidth, largeDesktopWidth, extraDesktopWidthMax, mainTextColor } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
 
@@ -357,7 +357,7 @@ const SideBar = styled(Layout.Sider)`
     height: 60px;
     border-radius: 65px;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: #ffffff;
+    background-color: ${white};
     padding: 0px;
     margin: 0 auto;
     justify-content: center;
@@ -391,7 +391,7 @@ const SideBar = styled(Layout.Sider)`
   .ant-layout-sider-zero-width-trigger {
     top: 10px;
     right: -50px;
-    color: #fff;
+    color: ${white};
     background: transparent;
     display: none;
   }
@@ -484,7 +484,7 @@ const Menu = styled(AntMenu)`
   background: transparent;
   &:not(.ant-menu-horizontal) {
     .ant-menu-item-selected {
-      color: #fff;
+      color: ${white};
       background-color: transparent;
 
       svg {
@@ -679,7 +679,7 @@ const FooterDropDown = styled.div`
   -webkit-transition: 0.2s;
   ul {
     background: ${props => props.theme.sideMenu.userInfoDropdownBgColor};
-    border-bottom: 1px solid #fff;
+    border-bottom: 1px solid ${white};
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
     max-width: 100%;
@@ -785,14 +785,14 @@ const UserInfoButton = styled.div`
   .ant-select-selection {
     background: transparent;
     border: 0px;
-    color: #ffffff;
+    color: ${white};
   }
 
   @media (max-width: ${tabletWidth}) {
     width: 60px;
     padding: 0;
     margin: 0 18px 0 auto;
-    background: ${props => (props.isVisible ? "#fff" : "transparent")};
+    background: ${props => (props.isVisible ? white : "transparent")};
     border-radius: ${props => (props.isVisible ? "0 0 15px 15px" : "50%")};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 
@@ -884,7 +884,7 @@ const HelpIcon = styled(IconQuestion)`
 `;
 
 const IconDropdown = styled(AntIcon)`
-  color: #444;
+  color: ${mainTextColor};
   position: absolute;
   top: -10px;
 `;
@@ -903,7 +903,7 @@ const IconBars = styled(AntIcon)`
     top: 18px;
     left: 12px;
     font-size: 24px;
-    color: #fff;
+    color: ${white};
   }
 `;
 

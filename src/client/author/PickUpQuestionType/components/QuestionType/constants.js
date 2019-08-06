@@ -1157,7 +1157,7 @@ export const getCards = onSelectQuestionType => {
           showborder: true,
           isSnapFitValues: true
         },
-        ui_style: {
+        uiStyle: {
           widthpx: 140,
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom"
@@ -1419,6 +1419,97 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "graphing",
+      cardImage: GRGraphing,
+      data: {
+        title: "Graph Placement",
+        type: questionType.GRAPH,
+        graphType: "quadrantsPlacement",
+        stimulus: "[This is the stem]",
+        firstMount: true,
+        canvas: {
+          xMax: 10.4,
+          xMin: -10.4,
+          yMax: 10.4,
+          yMin: -10.4,
+          xRatio: 1,
+          yRatio: 1
+        },
+        controlbar: {
+          controls: ["undo", "redo", "reset"],
+          defaultControl: "undo"
+        },
+        toolbar: {
+          tools: ["point"],
+          defaultTool: "point"
+        },
+        list: [
+          {
+            text: "<p>Option 1</p>",
+            id: `list-item-${Math.random()
+              .toString(36)
+              .substr(2, 9)}`
+          },
+          {
+            text: "<p>Option 2</p>",
+            id: `list-item-${Math.random()
+              .toString(36)
+              .substr(2, 9)}`
+          }
+        ],
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: []
+          },
+          altResponses: []
+        },
+        sampleAnswer: "",
+        uiStyle: {
+          drawLabelZero: false,
+          displayPositionOnHover: false,
+          currentStemNum: "numerical",
+          currentFontSize: "normal",
+          xShowAxisLabel: false,
+          xHideTicks: false,
+          xDrawLabel: true,
+          xMaxArrow: true,
+          xMinArrow: true,
+          xCommaInLabel: false,
+          yShowAxisLabel: false,
+          yHideTicks: false,
+          yDrawLabel: true,
+          yMaxArrow: true,
+          yMinArrow: true,
+          yCommaInLabel: false,
+          xDistance: 1,
+          yDistance: 1,
+          xTickDistance: 1,
+          yTickDistance: 1,
+          layoutWidth: 600,
+          layoutHeight: 600,
+          layoutMargin: 0,
+          layoutSnapto: "grid",
+          xAxisLabel: "X",
+          yAxisLabel: "Y"
+        },
+        backgroundImage: {
+          src: "",
+          x: 0,
+          y: 0,
+          width: 100,
+          height: 100,
+          opacity: 100,
+          showShapePoints: true
+        },
+        backgroundShapes: [],
+        multipleResponses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "graphing",
       cardImage: GRNumberLinePlot,
       data: {
         title: "Number line with plot",
@@ -1669,6 +1760,15 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
+      type: "edit",
+      cardImage: VPPassage,
+      data: {
+        title: "Passage with Questions",
+        type: questionType.PASSAGE_WITH_QUESTIONS
+      },
+      onSelectQuestionType
+    },
+    {
       type: "video-passages",
       cardImage: VPVideoPlayer,
       stimulus: "",
@@ -1806,7 +1906,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Equations & Inequalities",
         isMath: true,
-        response_containers: [
+        responseContainers: [
           {
             width: "60px"
           }
@@ -1930,7 +2030,7 @@ export const getCards = onSelectQuestionType => {
           maths: [],
           dropDowns: []
         },
-        response_container: {
+        responseContainer: {
           template: ""
         },
         uiStyle: {
@@ -1963,7 +2063,7 @@ export const getCards = onSelectQuestionType => {
           }
         },
         isMath: true,
-        response_containers: [],
+        responseContainers: [],
         symbols: ["basic", "qwerty"],
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         hints: [{ value: uuids[0], label: "Hint A" }]

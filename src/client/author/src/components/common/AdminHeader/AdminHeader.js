@@ -4,7 +4,15 @@ import PropTypes from "prop-types";
 
 import { roleuser } from "@edulastic/constants";
 
-import { AdminHeaderContent, StyledTitle, StyledTabs, StyledTabPane, StyledSubMenu } from "./styled";
+import {
+  AdminHeaderContent,
+  StyledTitle,
+  StyledTabs,
+  StyledTabPane,
+  StyledSubMenu,
+  AdminHeaderWrapper,
+  Title
+} from "./styled";
 
 import { getUserRole } from "../../../selectors/user";
 
@@ -92,8 +100,9 @@ class AdminHeader extends Component {
     const { title, active, count = 0, role } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
-      <React.Fragment>
+      <AdminHeaderWrapper>
         <AdminHeaderContent>
+          <Title>{role === roleuser.DISTRICT_ADMIN ? "Manage District" : "Manage School"}</Title>
           <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
             {role === "district-admin" ? <StyledTabPane tab="District Profile" key={"District Profile"} /> : null}
             <StyledTabPane tab={SchoolTabtext} key={"Schools"} />
@@ -123,7 +132,7 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Student" key={"Student"} />
           </StyledSubMenu>
         )}
-      </React.Fragment>
+      </AdminHeaderWrapper>
     );
   }
 }

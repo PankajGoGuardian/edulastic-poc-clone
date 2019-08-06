@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Button } from "antd";
-import { IconEye, IconCheck, IconSource, IconSettings, IconEraseText } from "@edulastic/icons";
-import { darkGrey } from "@edulastic/colors";
+import { IconSettings } from "@edulastic/icons";
+import { darkGrey, themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
@@ -10,7 +10,7 @@ import { compose } from "redux";
 import styled from "styled-components";
 
 import { clearAnswersAction } from "../../../actions/answers";
-import { Container, PreviewBar, DisplayBlock } from "./styled_components";
+import { Container, PreviewBar, DisplayBlock, HeaderActionButton } from "./styled_components";
 import { ButtonLink } from "..";
 
 class ButtonAction extends Component {
@@ -66,13 +66,13 @@ class ButtonAction extends Component {
               }}
             >
               {showSettingsButton && (
-                <Button htmlType="button" onClick={onShowSettings} style={{ height: 45, width: 45 }}>
+                <HeaderActionButton htmlType="button" onClick={onShowSettings}>
                   <ButtonLink
                     color="primary"
-                    icon={<IconSettings color="#00AD50" width={20} height={20} />}
-                    style={{ color: "#00AD50" }}
+                    icon={<IconSettings color={themeColor} width={20} height={20} />}
+                    style={{ color: themeColor }}
                   />
-                </Button>
+                </HeaderActionButton>
               )}
             </PreviewBar>
           )}
@@ -90,7 +90,7 @@ class ButtonAction extends Component {
                   onClick={this.handleCheckClick}
                   data-cy="check-answer-btn"
                 >
-                  <ButtonLink color="primary" style={{ color: attempts >= allowedAttempts ? darkGrey : "#00AD50" }}>
+                  <ButtonLink color="primary" style={{ color: attempts >= allowedAttempts ? darkGrey : themeColor }}>
                     <LabelText>CHECK ANSWER</LabelText>
                   </ButtonLink>
                 </Button>
@@ -102,7 +102,7 @@ class ButtonAction extends Component {
                   onClick={() => changePreviewTab("show")}
                   data-cy="show-answers-btn"
                 >
-                  <ButtonLink color="primary" style={{ color: "#00AD50" }}>
+                  <ButtonLink color="primary" style={{ color: themeColor }}>
                     <LabelText>SHOW ANSWER</LabelText>
                   </ButtonLink>
                 </Button>
@@ -116,7 +116,7 @@ class ButtonAction extends Component {
                 }}
                 data-cy="clear-btn"
               >
-                <ButtonLink color="primary" active={previewTab === "clear"} style={{ color: "#00AD50" }}>
+                <ButtonLink color="primary" active={previewTab === "clear"} style={{ color: themeColor }}>
                   <LabelText>CLEAR</LabelText>
                 </ButtonLink>
               </Button>

@@ -89,8 +89,8 @@ class LayoutWrapper extends Component {
             </Col>
             <Col md={12}>
               <MaximumResponsesPerCellOption
-                onChange={val => changeItem("max_response_per_cell", +val)}
-                value={get(item, "max_response_per_cell", "")}
+                onChange={val => changeItem("maxResponsePerCell", +val)}
+                value={get(item, "maxResponsePerCell", "")}
               />
             </Col>
           </Row>

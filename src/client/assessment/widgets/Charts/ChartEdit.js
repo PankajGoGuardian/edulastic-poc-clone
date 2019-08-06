@@ -173,6 +173,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
+      setQuestionData={setQuestionData}
     />
   );
 
@@ -207,7 +208,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
       />
 
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Annotations editable />
+        <Annotations question={item} setQuestionData={setQuestionData} editable />
       </Widget>
 
       <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />

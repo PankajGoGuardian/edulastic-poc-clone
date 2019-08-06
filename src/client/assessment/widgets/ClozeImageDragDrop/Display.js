@@ -380,14 +380,13 @@ class Display extends Component {
       item,
       imageOptions,
       showBorder,
-      isReviewTab
+      isReviewTab,
+      setQuestionData
     } = this.props;
 
-    const questionId = item && item.id;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
-    const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
+    const { userAnswers: _uAnswers, possibleResponses } = this.state;
     const cAnswers = get(item, "validation.validResponse.value", []);
-
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
@@ -417,7 +416,7 @@ class Display extends Component {
       alignItems: "center",
       width: "max-content",
       whiteSpace: isWrapText ? "normal" : "nowrap",
-      overflow: isWrapText ? "visible" : "hidden",
+      overflow: "hidden",
       textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
@@ -444,7 +443,8 @@ class Display extends Component {
             boxShadow: "none",
             border: preview ? null : "1px solid lightgray"
           }}
-          questionId={questionId}
+          question={item}
+          setQuestionData={setQuestionData}
         />
       </div>
     );
@@ -620,7 +620,8 @@ class Display extends Component {
                             <AnswerContainer
                               height={responseContainer.height || "auto"}
                               width={responseContainer.width || "auto"}
-                              answer={isWrapText ? answer : answer.replace("<p>", "<p class='clipText'>") || ""}
+                              isWrapText={isWrapText}
+                              answer={answer}
                             />
                           </DragItem>
                         );
@@ -792,6 +793,7 @@ class Display extends Component {
 }
 
 Display.propTypes = {
+  setQuestionData: PropTypes.func.isRequired,
   options: PropTypes.array,
   changePreviewTab: PropTypes.func,
   changePreview: PropTypes.func,

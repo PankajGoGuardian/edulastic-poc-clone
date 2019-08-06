@@ -4,7 +4,7 @@ import enhanceWithClickOutside from "react-click-outside";
 import { Icon } from "antd";
 import { compose } from "redux";
 
-import { MathInput } from "@edulastic/common";
+import { MathInput, MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { getFontSize } from "../../../../../../utils/helpers";
@@ -43,6 +43,10 @@ class MathEssayInputLine extends Component {
         isEmpty: true
       });
     }
+
+    if (this.props.disableResponse && !nextProps.disableResponse) {
+      this.focus();
+    }
   }
 
   focus = () => {
@@ -64,40 +68,48 @@ class MathEssayInputLine extends Component {
     return getFontSize(item.uiStyle.fontsize);
   }
 
+  renderMathText = text => `<p><span class="input__math" data-latex="${text}"></span>&nbsp;</p>`;
+
   render() {
     const { isEmpty } = this.state;
-    const { onAddNewLine, onChange, line, id, onChangeType, active, item, t } = this.props;
+    const { onAddNewLine, onChange, line, id, onChangeType, active, item, t, disableResponse } = this.props;
 
     return (
-      <Wrapper active={active}>
+      <Wrapper active={disableResponse ? false : active}>
         <WrapperIn>
-          {line.type === "text" && (
-            <CustomTextInput
-              ref={this.inputRef}
-              toolbarId={`toolbarId${id}`}
-              onFocus={this.handleFocus}
-              value={line.text}
-              onChange={onChange}
-              fontSize={this.fontSize}
-            />
-          )}
-          {line.type === "math" && (
-            <MathInput
-              ref={this.inputRef}
-              symbols={item.symbols}
-              numberPad={item.numberPad}
-              value={line.text}
-              onInput={onChange}
-              onFocus={this.handleFocus}
-              style={{
-                border: 0,
-                height: "auto",
-                minHeight: "auto",
-                fontSize: this.fontSize
-              }}
-            />
-          )}
-          {active && isEmpty && (
+          {line.type === "text" &&
+            (disableResponse ? (
+              <div dangerouslySetInnerHTML={{ __html: line.text }} />
+            ) : (
+              <CustomTextInput
+                ref={this.inputRef}
+                toolbarId={`toolbarId${id}`}
+                onFocus={this.handleFocus}
+                value={line.text}
+                onChange={onChange}
+                fontSize={this.fontSize}
+              />
+            ))}
+          {line.type === "math" &&
+            (disableResponse ? (
+              <MathSpan dangerouslySetInnerHTML={{ __html: this.renderMathText(line.text) }} />
+            ) : (
+              <MathInput
+                ref={this.inputRef}
+                symbols={item.symbols}
+                numberPad={item.numberPad}
+                value={line.text}
+                onInput={onChange}
+                onFocus={this.handleFocus}
+                style={{
+                  border: 0,
+                  height: "auto",
+                  minHeight: "auto",
+                  fontSize: this.fontSize
+                }}
+              />
+            ))}
+          {active && isEmpty && !disableResponse && (
             <Buttons>
               <Button
                 className={line.type === "math" ? "active" : ""}
@@ -116,7 +128,7 @@ class MathEssayInputLine extends Component {
               </Button>
             </Buttons>
           )}
-          {active && !isEmpty && (
+          {active && !isEmpty && !disableResponse && (
             <Buttons>
               <Button onClick={onAddNewLine} title={t("component.options.createNewLine")}>
                 <Icon type="enter" />
@@ -124,7 +136,7 @@ class MathEssayInputLine extends Component {
             </Buttons>
           )}
         </WrapperIn>
-        {active && <Label>{line.type}</Label>}
+        {active && !disableResponse && <Label>{line.type}</Label>}
       </Wrapper>
     );
   }
@@ -139,10 +151,12 @@ MathEssayInputLine.propTypes = {
   active: PropTypes.bool.isRequired,
   setActive: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  disableResponse: PropTypes.bool
 };
 
 MathEssayInputLine.defaultProps = {
+  disableResponse: false,
   line: {
     text: "",
     type: "text"

@@ -8,6 +8,7 @@ import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { PlacementContainer } from "./PlacementContainer";
 
 const safeParseFloat = val => {
   if (val) {
@@ -131,13 +132,14 @@ class GraphDisplay extends Component {
         break;
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         this.validateQuadrants();
     }
   };
 
   getGraphContainer = () => {
-    const { graphData } = this.props;
+    const { graphData, bgShapes } = this.props;
     const { graphType } = graphData;
 
     switch (graphType) {
@@ -145,6 +147,8 @@ class GraphDisplay extends Component {
         return AxisSegmentsContainer;
       case "axisLabels":
         return AxisLabelsContainer;
+      case "quadrantsPlacement":
+        return !bgShapes ? PlacementContainer : QuadrantsContainer;
       case "quadrants":
       case "firstQuadrant":
       default:
@@ -163,6 +167,7 @@ class GraphDisplay extends Component {
         return this.getAxisLabelsProps();
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return this.getQuadrantsProps();
     }
@@ -180,7 +185,9 @@ class GraphDisplay extends Component {
       bgShapes,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      advancedElementSettings,
+      setQuestionData
     } = this.props;
 
     const {
@@ -192,7 +199,8 @@ class GraphDisplay extends Component {
       controlbar,
       annotation,
       id,
-      graphType
+      graphType,
+      list
     } = graphData;
 
     const { showGrid = true, xShowAxis = true, yShowAxis = true } = uiStyle;
@@ -258,16 +266,19 @@ class GraphDisplay extends Component {
       controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
       elements,
-      graphType,
+      graphType: bgShapes && graphType === "quadrantsPlacement" ? "quadrants" : graphType,
       bgShapes,
       annotation,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      list,
+      advancedElementSettings,
+      setQuestionData,
+      graphData
     };
   };
 
@@ -282,10 +293,11 @@ class GraphDisplay extends Component {
       elements,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData
     } = this.props;
 
-    const { uiStyle, canvas, toolbar, numberlineAxis, graphType, id } = graphData;
+    const { uiStyle, canvas, toolbar, numberlineAxis } = graphData;
 
     return {
       canvas: {
@@ -364,14 +376,14 @@ class GraphDisplay extends Component {
       tools: toolbar ? toolbar.tools : [],
       setValue: onChange,
       elements,
-      graphType,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData,
+      graphData
     };
   };
 
@@ -386,10 +398,11 @@ class GraphDisplay extends Component {
       elements,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData
     } = this.props;
 
-    const { uiStyle, canvas, numberlineAxis, list, graphType, id } = graphData;
+    const { uiStyle, canvas, numberlineAxis, list } = graphData;
 
     return {
       canvas: {
@@ -467,18 +480,18 @@ class GraphDisplay extends Component {
         showGrid: false
       },
       list,
-      graphType,
       evaluation,
       setValue: onChange,
       elements,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
       setCalculatedHeight: this.setCalculatedHeight,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData,
+      graphData
     };
   };
 
@@ -532,6 +545,7 @@ GraphDisplay.propTypes = {
 GraphDisplay.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
+  advancedElementSettings: false,
   onChange: () => {},
   changePreviewTab: () => {},
   elements: [],

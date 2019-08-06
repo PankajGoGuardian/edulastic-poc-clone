@@ -62,10 +62,6 @@ export const StyledCard = styled(Card)`
     padding: 20px 0px 60px;
     min-height: calc(100vh - 150px);
   }
-
-  @media (max-width: ${tabletWidth}) {
-    display: none;
-  }
 `;
 
 export const FullFlexContainer = styled(FlexContainer)`
@@ -139,9 +135,11 @@ export const FilterButton = styled(Button)`
   margin-top: 34px;
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
-  background: ${props => (props.showFilter ? "#00AD50" : "#ffffff")};
-  &:focus {
+  background: ${props => (props.showFilter ? themeColor : white)} !important;
+  &:focus,
+  &:hover {
     outline: unset;
+    color: ${props => (props.isShowFilter ? white : themeColor)};
   }
 `;
 

@@ -1,7 +1,7 @@
 import { Pagination, Card, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, largeDesktopWidth, smallDesktopWidth, tabletWidth, red, themeColor } from "@edulastic/colors";
+import { mobileWidth, largeDesktopWidth, mediumDesktopWidth, tabletWidth, red, themeColor } from "@edulastic/colors";
 import { IconExclamationMark } from "@edulastic/icons";
 
 import { themes } from "../../../../student/themes";
@@ -97,7 +97,7 @@ export const PagInfo = styled.span`
   cursor: pointer;
   user-select: none;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 10px;
   }
   @media (max-width: ${mobileWidth}) {
@@ -199,7 +199,7 @@ export const StyledParaF = styled.p`
   margin-bottom: 5px;
   color: #434b5d;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 12px;
     line-height: 12px;
   }
@@ -214,7 +214,7 @@ export const StyledParaS = styled.p`
   display: flex;
   align-items: center;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 11px;
   }
 `;

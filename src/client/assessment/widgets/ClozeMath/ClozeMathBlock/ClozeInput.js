@@ -7,7 +7,7 @@ import CheckedBlock from "./CheckedBlock";
 
 const ClozeInput = ({ id, resprops = {} }) => {
   const {
-    response_containers,
+    responseContainers,
     save,
     answers = {},
     evaluation = [],
@@ -22,7 +22,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
     responseIds: { inputs }
   } = item;
   const { index } = find(inputs, res => res.id === id) || {};
-  const response = find(response_containers, cont => cont.id === id);
+  const response = find(responseContainers, cont => cont.id === id);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
   const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
   return checked ? (

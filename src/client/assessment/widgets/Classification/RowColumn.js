@@ -121,12 +121,12 @@ class RowColumn extends Component {
             draft.validation.altResponses.forEach(ite => {
               ite.value = Array(...Array(initialLength)).map(() => []);
             });
-            if (prop === "column_count" && Array.isArray(draft.ui_style.column_titles)) {
-              draft.ui_style.column_titles = Array(val)
+            if (prop === "columnCount" && Array.isArray(draft.uiStyle.columnTitles)) {
+              draft.uiStyle.columnTitles = Array(val)
                 .fill("")
                 .map((el, i) => `COLUMN ${i + 1}`);
-            } else if (prop === "row_count" && Array.isArray(draft.ui_style.row_titles)) {
-              draft.ui_style.row_titles = Array(val)
+            } else if (prop === "rowCount" && Array.isArray(draft.uiStyle.rowTitles)) {
+              draft.uiStyle.rowTitles = Array(val)
                 .fill("")
                 .map((el, i) => `ROW ${i + 1}`);
             }

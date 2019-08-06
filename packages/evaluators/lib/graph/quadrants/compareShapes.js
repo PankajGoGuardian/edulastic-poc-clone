@@ -80,6 +80,9 @@ var CompareShapes =
             case _constants.ShapeTypes.POINT:
               return this.comparePoints(testShape, trueShape);
 
+            case _constants.ShapeTypes.DRAG_DROP:
+              return this.compareDragDropValues(testShape, trueShape);
+
             case _constants.ShapeTypes.LINE:
               return this.compareLines(testShape, trueShape);
 
@@ -146,6 +149,23 @@ var CompareShapes =
 
           return {
             id: testPoint.id,
+            result: false
+          };
+        }
+      },
+      {
+        key: "compareDragDropValues",
+        value: function compareDragDropValues(testValue, trueValue) {
+          if (testValue.x === trueValue.x && testValue.y === trueValue.y && testValue.text === trueValue.text) {
+            return {
+              id: testValue.id,
+              relatedId: trueValue.id,
+              result: true
+            };
+          }
+
+          return {
+            id: testValue.id,
             result: false
           };
         }

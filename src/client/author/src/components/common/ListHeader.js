@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, Button } from "@edulastic/common";
-import { mobileWidth, tabletWidth, desktopWidth, smallDesktopWidth, white, themeColor } from "@edulastic/colors";
+import { mobileWidth, tabletWidth, desktopWidth, mediumDesktopWidth, white, themeColor } from "@edulastic/colors";
 import { IconPlusCircle, IconMenuOpenClose } from "@edulastic/icons";
 import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
@@ -122,27 +122,22 @@ export const TestButton = styled(Button)`
   margin-left: 25px;
   background: ${white};
   padding: 5px 30px;
-  &:hover {
-    color: ${props => props.theme.themeColor};
-  }
+  &:hover,
   &:focus,
   &:active {
+    color: ${props => props.theme.themeColor};
     border-color: ${props => props.theme.themeColor};
     outline-color: ${props => props.theme.themeColor};
   }
   span {
     margin-left: 15px;
   }
-  @media (max-width: ${smallDesktopWidth}) {
-    min-height: 36px;
-    height: 36px;
-    padding: 5px 15px;
-  }
+
   @media (max-width: ${desktopWidth}) {
     width: 44px;
     height: 44px;
     min-height: 44px;
-    padding: 0 !important;
+    padding: 0;
     min-width: 0 !important;
 
     span {
@@ -153,6 +148,13 @@ export const TestButton = styled(Button)`
       position: static;
     }
   }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    min-height: 36px;
+    height: 36px;
+    padding: 5px 15px;
+  }
+
   @media (max-width: ${mobileWidth}) {
     width: 45px;
     height: 40px;
@@ -169,15 +171,19 @@ const CreateButton = styled(Button)`
   color: ${themeColor};
   border-radius: 3px;
   background: ${white};
+  border-color: ${props => props.theme.themeColor};
   justify-content: space-around;
   margin-left: 20px;
-  &:hover {
+  &:hover,
+  &:focus {
     color: ${props => props.theme.themeColor};
-  }
-  &:focus,
-  &:active {
     border-color: ${props => props.theme.themeColor};
-    outline-color: ${props => props.theme.themeColor};
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
+    min-height: 36px;
+    margin-left: 10px;
   }
 `;
 
@@ -191,7 +197,7 @@ export const Title = styled.h1`
   font-weight: bold;
   margin: 0;
   padding: 0;
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
   }
 `;

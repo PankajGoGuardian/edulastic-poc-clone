@@ -9,7 +9,7 @@ import {
   textColor,
   draftColor,
   publishedColor,
-  smallDesktopWidth
+  mediumDesktopWidth
 } from "@edulastic/colors";
 import { IconShare } from "@edulastic/icons";
 
@@ -40,7 +40,7 @@ export const Title = styled.div`
   color: ${white};
   align-items: center;
 
-  @media screen and (max-width: ${smallDesktopWidth}) {
+  @media screen and (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
     max-width: 170px;
   }

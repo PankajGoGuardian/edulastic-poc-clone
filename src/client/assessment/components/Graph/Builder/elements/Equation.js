@@ -266,11 +266,13 @@ function renderElement(board, element, points, params) {
     latexIsBroken: true
   };
 
+  // get left and right parts of equation
   const splitLatex = latex.split("=");
   if (splitLatex.length !== 2) {
     return elementWithErrorLatex;
   }
 
+  // clear latex string and check equation parts
   const equationLeft = splitLatex[0];
   const equationRight = fixLatex(splitLatex[1]);
   if ((equationLeft !== "x" && equationLeft !== "y") || !equationRight) {
@@ -279,6 +281,7 @@ function renderElement(board, element, points, params) {
 
   let line = null;
 
+  // if points exist, then the equation has already been parsed
   if (points) {
     switch (subType) {
       case CONSTANT.TOOLS.LINE:
@@ -292,11 +295,14 @@ function renderElement(board, element, points, params) {
     }
   }
 
+  // if equation is new, we try parse equation
   if (!line) {
     try {
       const gridParams = getGridParams(board);
 
+      // if equation is parabola
       if (isParabola(equationRight)) {
+        // find anchor points and create parabola by this points
         const coords = findParabolaPointsCoords(gridParams, equationRight);
         if (coords.length === 2) {
           const point1 = createPoint(board, coords[0], params);
@@ -304,7 +310,9 @@ function renderElement(board, element, points, params) {
           line = createParabola(board, [point1, point2], params);
           subType = CONSTANT.TOOLS.PARABOLA;
         }
+        // if equation is line
       } else if (isLine(gridParams.xMin, gridParams.xMax, equationLeft, equationRight)) {
+        // find anchor points and create line by this points
         const coords = findLinePointsCoords(gridParams, equationLeft, equationRight);
         if (coords.length === 2) {
           const coordIndex = equationLeft === "x" ? 0 : 1,
@@ -343,6 +351,7 @@ function renderElement(board, element, points, params) {
     }
   }
 
+  // if equation not parsed, we try create object by latex via jsxgraph functiongraph
   if (!line) {
     try {
       line = board.$board.create("functiongraph", [equationRight], {
@@ -356,6 +365,8 @@ function renderElement(board, element, points, params) {
     }
   }
 
+  // if jsxgraph object built successfully, we return it
+  // otherwise we believe that latex with an error
   if (line) {
     line.latex = element.latex;
     line.type = jxgType;

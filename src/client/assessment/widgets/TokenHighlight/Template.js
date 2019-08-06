@@ -13,6 +13,8 @@ import Question from "../../components/Question";
 import { Container } from "./styled/Container";
 import { ModeButton } from "./styled/ModeButton";
 
+import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray } from "./helpers";
+
 class Template extends Component {
   render() {
     const {
@@ -33,38 +35,13 @@ class Template extends Component {
         produce(item, draft => {
           if (prop === "template") {
             let resultArray = "";
-            const initialArray = propData.replace(/(<p>|<\/p>)*/g, "").split('<p class="newline_section"><br>');
-
-            const paragraphsArray = initialArray.map(el => ({
-              value: `${el}<br/>`,
-              active: true
-            }));
-            const sentencesArray = initialArray
-              .join("<br/>")
-              .split(".")
-              .map(el => ({ value: `${el}.`, active: true }))
-              .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
-
-            const mathArray = initialArray.join("<br/> ").match(/<span(.*?)class="input__math"(.*?)>/g);
-            let i = 0;
-            const wordsArray = initialArray
-              .join("<br/> ")
-              .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
-              .split(/\s/g)
-              .map(el => {
-                if (mathArray && el.indexOf("<span></span>") !== -1) {
-                  el = el.replace("<span></span>", mathArray[i]);
-                  i++;
-                }
-                return { value: `${el}`, active: true };
-              });
-
+            const initialArray = getInitialArray(propData);
             if (mode === WORD_MODE) {
-              resultArray = cloneDeep(wordsArray);
+              resultArray = cloneDeep(getWordsArray(initialArray));
             } else if (mode === PARAGRAPH_MODE) {
-              resultArray = cloneDeep(paragraphsArray);
+              resultArray = cloneDeep(getParagraphsArray(initialArray));
             } else {
-              resultArray = cloneDeep(sentencesArray);
+              resultArray = cloneDeep(getSentencesArray(initialArray));
             }
             setTemplate(resultArray);
           }

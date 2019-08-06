@@ -107,6 +107,8 @@ const getByV1Id = id =>
     })
     .then(result => result.data.result);
 
+const deleteById = id => api.callApi({ url: `${prefix}/${id}`, method: "delete" }).then(result => result.data);
+
 export default {
   getAll,
   getById,
@@ -116,5 +118,6 @@ export default {
   evaluation,
   duplicateTestItem,
   publishTestItem,
-  getByV1Id
+  getByV1Id,
+  deleteById
 };

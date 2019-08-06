@@ -6,20 +6,20 @@ import * as moment from "moment";
 import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
 import { getUserFeatures } from "../../../../student/Login/ducks";
-
 import {
-  StyledTableContainer,
   StyledPagination,
+  StyledTableContainer,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
-  StyledTableButton,
-  StyledTable,
-  StyledFilterInput,
   StyledAddFilterButton,
+  StyledFilterInput,
   StyledSchoolSearch,
   StyledActionDropDown,
   StyledClassName
-} from "./styled";
+} from "../../../../admin/Common/StyledComponents";
+import { StyledTableButton, StyledTable } from "./styled";
 
 import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
 
@@ -568,10 +568,34 @@ class StudentTable extends Component {
 
     return (
       <StyledTableContainer>
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showInviteStudentModal}>
+              + Add Multiple Students
+            </Button>
+            <StyledSchoolSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              checked={this.state.showActive}
+              onChange={this.onChangeShowActive}
+              disabled={!!filtersData.find(item => item.filtersColumn === "status")}
+            >
+              Show current users only
+            </Checkbox>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
         <StyledControlDiv>
-          <Button type="primary" onClick={this.showInviteStudentModal}>
-            + Add Multiple Students
-          </Button>
           {inviteStudentModalVisible && (
             <InviteMultipleStudentModal
               modalVisible={inviteStudentModalVisible}
@@ -581,23 +605,6 @@ class StudentTable extends Component {
               setProvider={setProvider}
             />
           )}
-          <StyledSchoolSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <Checkbox
-            checked={this.state.showActive}
-            onChange={this.onChangeShowActive}
-            disabled={!!filtersData.find(item => item.filtersColumn === "status")}
-          >
-            Show current users only
-          </Checkbox>
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
-            </Button>
-          </StyledActionDropDown>
         </StyledControlDiv>
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
@@ -686,6 +693,13 @@ class StudentTable extends Component {
           total={totalUsers}
           onChange={page => this.setPageNo(page)}
           hideOnSinglePage={true}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
+          scroll={{ y: 400 }}
         />
         {editStudentModaVisible && (
           <EditStudentFormModal

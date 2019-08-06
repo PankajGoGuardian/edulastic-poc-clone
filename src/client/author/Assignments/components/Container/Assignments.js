@@ -9,7 +9,7 @@ import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 import { IconFilter } from "@edulastic/icons";
-import { white } from "@edulastic/colors";
+import { white, themeColor } from "@edulastic/colors";
 
 import {
   receiveAssignmentsAction,
@@ -54,6 +54,7 @@ import {
 } from "./styled";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getUserRole } from "../../../src/selectors/user";
+import EditTestModal from "../../../src/components/common/EditTestModal";
 
 const { releaseGradeLabels, type } = test;
 
@@ -71,6 +72,7 @@ class Assignments extends Component {
     selectedRows: [],
     filterState: initialFilterState,
     isPreviewModalVisible: false,
+    openEditPopup: false,
     currentTestId: ""
   };
 
@@ -115,6 +117,10 @@ class Assignments extends Component {
 
   showPreviewModal = testId => {
     this.setState({ isPreviewModalVisible: true, currentTestId: testId });
+  };
+
+  toggleEditModal = (value, currentTestId) => {
+    this.setState({ openEditPopup: value, currentTestId });
   };
 
   handleCreate = () => {
@@ -167,6 +173,12 @@ class Assignments extends Component {
     this.setState({ selectedRows: selected });
   };
 
+  onEnableEdit = () => {
+    const { history } = this.props;
+    const { currentTestId } = this.state;
+    history.push(`/author/tests/${currentTestId}/editAssigned`);
+  };
+
   render() {
     const {
       assignmentsByTestId,
@@ -180,11 +192,17 @@ class Assignments extends Component {
       isAdvancedView,
       currentAssignment
     } = this.props;
-    const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId } = this.state;
+    const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
     const tabletWidth = 768;
     const { releaseScore } = currentAssignment;
     return (
       <div>
+        <EditTestModal
+          visible={openEditPopup}
+          onCancel={() => this.toggleEditModal(false, "")}
+          onOk={this.onEnableEdit}
+        />
+
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
           testId={currentTestId}
@@ -220,7 +238,7 @@ class Assignments extends Component {
                   )}
                   <TableWrapper>
                     <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
-                      <IconFilter color={showFilter ? white : "#00AD50"} width={20} height={20} />
+                      <IconFilter color={showFilter ? white : themeColor} width={20} height={20} />
                     </FilterButton>
                     <StyledCard>
                       {isAdvancedView ? (
@@ -231,6 +249,7 @@ class Assignments extends Component {
                           selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           filters={filterState}
+                          toggleEditModal={this.toggleEditModal}
                           showPreviewModal={this.showPreviewModal}
                           showFilter={showFilter}
                         />
@@ -238,6 +257,7 @@ class Assignments extends Component {
                         <TableList
                           assignmentsByTestId={assignmentsByTestId}
                           tests={tests}
+                          toggleEditModal={this.toggleEditModal}
                           onSelectRow={this.onSelectRow}
                           selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}

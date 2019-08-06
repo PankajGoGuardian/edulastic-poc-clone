@@ -81,16 +81,16 @@ class ChoicesForDropDown extends Component {
         const splitWidth = Math.max(e.target.value.split("").length * 9, 100);
         const width = Math.min(splitWidth, 400);
         const drpdwnIndex = findIndex(draft.responseIds.dropDowns, drpdwn => drpdwn.id === dropDownId);
-        const ind = findIndex(draft.response_containers, cont => cont.id === dropDownId);
+        const ind = findIndex(draft.responseContainers, cont => cont.id === dropDownId);
         if (ind === -1) {
-          draft.response_containers.push({
+          draft.responseContainers.push({
             index: draft.responseIds.dropDowns[drpdwnIndex].index,
             id: dropDownId,
             widthpx: width,
             type: "dropDowns"
           });
         } else {
-          draft.response_containers[ind].widthpx = width;
+          draft.responseContainers[ind].widthpx = width;
         }
         if (prevAnswerIndex !== -1) {
           const prevAnswer = prevDropDownAnswers[prevAnswerIndex].value;

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { borders } from "@edulastic/colors";
 // assets
 import lockIcon from "../../assets/lock-icon.svg";
 // components
@@ -41,10 +42,10 @@ const NotAvailableButton = styled(StartButton)`
     background: transparent;
     position: relative;
     padding-left: 40px;
-    border-color: #b1b1b1;
+    border-color: ${borders.primary};
 
     span {
-      color: #b1b1b1;
+      color: ${borders.primary};
 
       img {
         position: absolute;

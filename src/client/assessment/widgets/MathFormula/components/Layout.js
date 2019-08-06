@@ -62,13 +62,13 @@ class Layout extends Component {
     const ind = findIndex(newContainers, cont => cont.index === index);
     if (ind !== -1) {
       newContainers[ind][prop] = value;
-      onChange("response_containers", newContainers);
+      onChange("responseContainers", newContainers);
     }
   };
 
   addResponseContainer = () => {
     const { item, responseContainers, onChange } = this.props;
-    const { response_ids: responseIds } = item;
+    const { responseIds: responseIds } = item;
     const ind = responseContainers.length;
     let obj = {};
     // eslint-disable-next-line no-labels
@@ -85,14 +85,14 @@ class Layout extends Component {
         }
       }
     }
-    onChange("response_containers", [...responseContainers, obj]);
+    onChange("responseContainers", [...responseContainers, obj]);
   };
 
   deleteResponseContainer = index => {
     const { responseContainers, onChange } = this.props;
     const newContainers = cloneDeep(responseContainers);
     newContainers.splice(index, 1);
-    onChange("response_containers", newContainers);
+    onChange("responseContainers", newContainers);
   };
 
   render() {

@@ -199,7 +199,7 @@ class ClozeDropDown extends Component {
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                   advancedAreOpen={advancedAreOpen}
-                  responseIDs={response_ids}
+                  responseIDs={responseIds}
                 />
               </div>
             </React.Fragment>

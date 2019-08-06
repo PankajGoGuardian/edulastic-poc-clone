@@ -10,20 +10,23 @@ const Option = Select.Option;
 import { roleuser } from "@edulastic/constants";
 
 import {
-  StyledTableContainer,
   StyledControlDiv,
+  StyledFilterDiv,
   StyledFilterSelect,
-  StyledTableButton,
+  StyledAddFilterButton,
   StyledFilterInput,
-  StyledFilterButton,
-  StyledSchoolSearch,
-  StyledCreateSchoolButton,
+  StyledActionDropDown
+} from "../../../../admin/Common/StyledComponents";
+import {
+  StyledTableContainer,
+  StyledTableButton,
   StyledTable,
   StyledHeaderColumn,
   StyledSortIconDiv,
   StyledSortIcon,
   StyledPagination,
-  StyledActionDropDown
+  StyledSchoolSearch,
+  StyledCreateSchoolButton
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
@@ -756,42 +759,32 @@ class SchoolsTable extends React.Component {
           )}
 
           {i < 2 && (
-            <StyledFilterButton
+            <StyledAddFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
 
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );
     }
 
     return (
-      <StyledTableContainer>
-        <StyledControlDiv>
+      <>
+        <StyledFilterDiv>
           {role === roleuser.DISTRICT_ADMIN ? (
             <StyledCreateSchoolButton type="primary" onClick={this.showCreateSchoolModal}>
               + Create School
             </StyledCreateSchoolButton>
           ) : null}
-          {createSchoolModalVisible && (
-            <CreateSchoolModal
-              modalVisible={createSchoolModalVisible}
-              createSchool={this.createSchool}
-              closeModal={this.closeCreateSchoolModal}
-              dataSource={dataSource}
-              userOrgId={userOrgId}
-            />
-          )}
-
           <StyledSchoolSearch
             placeholder="Search by name"
             onSearch={this.handleSearchName}
@@ -803,37 +796,56 @@ class SchoolsTable extends React.Component {
               Actions <Icon type="down" />
             </Button>
           </StyledActionDropDown>
-        </StyledControlDiv>
-        {SearchRows}
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
-        <StyledPagination
-          current={currentPage}
-          defaultCurrent={1}
-          pageSize={25}
-          total={totalSchoolsCount}
-          onChange={this.changePagination}
-          hideOnSinglePage={true}
-        />
-
-        {editSchoolModaVisible && editSchoolKey !== "" && (
-          <EditSchoolModal
-            schoolData={editSchoolData[0]}
-            modalVisible={editSchoolModaVisible}
-            updateSchool={this.updateSchool}
-            closeModal={this.closeEditSchoolModal}
-            userOrgId={userOrgId}
+        </StyledFilterDiv>
+        <StyledTableContainer>
+          <StyledControlDiv>
+            {createSchoolModalVisible && (
+              <CreateSchoolModal
+                modalVisible={createSchoolModalVisible}
+                createSchool={this.createSchool}
+                closeModal={this.closeCreateSchoolModal}
+                dataSource={dataSource}
+                userOrgId={userOrgId}
+              />
+            )}
+          </StyledControlDiv>
+          {SearchRows}
+          <StyledTable
+            rowSelection={rowSelection}
+            dataSource={dataSource}
+            columns={columns}
+            pagination={false}
+            scroll={{ y: 400 }}
           />
-        )}
-
-        {deactivateSchoolModalVisible && (
-          <DeactivateSchoolModal
-            modalVisible={deactivateSchoolModalVisible}
-            deactivateSchool={this.deactivateSchool}
-            closeModal={this.closeDeactivateSchoolModal}
-            schoolData={selectedDeactivateSchools}
+          <StyledPagination
+            current={currentPage}
+            defaultCurrent={1}
+            pageSize={25}
+            total={totalSchoolsCount}
+            onChange={this.changePagination}
           />
-        )}
-      </StyledTableContainer>
+
+          {editSchoolModaVisible && editSchoolKey !== "" && (
+            <EditSchoolModal
+              schoolData={editSchoolData[0]}
+              modalVisible={editSchoolModaVisible}
+              updateSchool={this.updateSchool}
+              closeModal={this.closeEditSchoolModal}
+              userOrgId={userOrgId}
+              hideOnSinglePage={true}
+            />
+          )}
+
+          {deactivateSchoolModalVisible && (
+            <DeactivateSchoolModal
+              modalVisible={deactivateSchoolModalVisible}
+              deactivateSchool={this.deactivateSchool}
+              closeModal={this.closeDeactivateSchoolModal}
+              schoolData={selectedDeactivateSchools}
+            />
+          )}
+        </StyledTableContainer>
+      </>
     );
   }
 }

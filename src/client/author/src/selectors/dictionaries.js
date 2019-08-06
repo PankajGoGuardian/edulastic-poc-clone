@@ -57,16 +57,20 @@ export const getFormattedCurriculums = (interestedCurriculums = [], allCurriculu
         otherCurriculumsForUser.push(formattedData);
       }
     });
+
+  // if DA check show all standards then showAllStandards will be true for all teachers in that disctrict
   return showAllStandards
     ? !isEmpty(interestedCurriculumsForUser) || !isEmpty(defaultStandard)
       ? [
-          ...interestedCurriculumsForUser,
           ...defaultStandard,
+          ...interestedCurriculumsForUser,
           { value: "------", text: "--------------------", disabled: true },
           ...otherCurriculumsForUser
         ]
-      : [...otherCurriculumsForUser]
-    : [...interestedCurriculumsForUser];
+      : [...defaultStandard, ...otherCurriculumsForUser]
+    : interestedCurriculumsForUser.length
+    ? interestedCurriculumsForUser
+    : defaultStandard;
 };
 
 export const getDictionariesAlignmentsSelector = createSelector(

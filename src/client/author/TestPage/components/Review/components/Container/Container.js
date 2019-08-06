@@ -346,6 +346,9 @@ class Review extends PureComponent {
                   isEditable={isEditable}
                   owner={owner}
                   scoring={test.scoring}
+                  questions={questions}
+                  rows={rows}
+                  mobile={!isSmallSize}
                   onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
                 />

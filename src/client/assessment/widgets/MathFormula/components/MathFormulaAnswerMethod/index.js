@@ -78,7 +78,7 @@ const MathFormulaAnswerMethod = ({
       compareMethod = methodsConst.EQUIV_SYMBOLIC;
     }
     onChange("method", compareMethod);
-    onChangeKeypad("units_us");
+    if (onChangeKeypad) onChangeKeypad("units_us");
     handleChangeAdditionals(`${method}_${index}`, "pop");
     handleChangeAdditionals(`${compareMethod}_${index}`, "push");
   }, [item.showDropdown]);

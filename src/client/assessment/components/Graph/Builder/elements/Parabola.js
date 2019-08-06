@@ -64,7 +64,10 @@ function renderElement(board, points, params) {
     [points[0].id]: points[0],
     [points[1].id]: points[1]
   };
+  newLine.labelIsVisible = true;
   handleSnap(newLine, Object.values(newLine.ancestors), board, updateCoords);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -107,6 +110,7 @@ function getConfig(parabola) {
     type: CONSTANT.TOOLS.PARABOLA,
     id: parabola.id,
     label: parabola.labelHTML || false,
+    labelIsVisible: parabola.labelIsVisible,
     points: Object.keys(parabola.ancestors)
       .sort()
       .map(n => Point.getConfig(parabola.ancestors[n]))

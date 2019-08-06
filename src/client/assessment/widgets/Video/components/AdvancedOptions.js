@@ -23,7 +23,7 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
   const handleUiChange = (prop, value) => {
     setQuestionData(
       produce(item, draft => {
-        draft.ui_style[prop] = +value;
+        draft.uiStyle[prop] = +value;
       })
     );
   };
@@ -69,7 +69,7 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
             <StyledInput
               size="large"
               type="number"
-              value={item && item.ui_style && item.ui_style.width ? item.ui_style.width : ""}
+              value={item && item.uiStyle && item.uiStyle.width ? item.uiStyle.width : ""}
               onChange={e => handleUiChange("width", e.target.value)}
             />
           </Col>
@@ -78,7 +78,7 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
             <StyledInput
               size="large"
               type="number"
-              value={item && item.ui_style && item.ui_style.height ? item.ui_style.height : ""}
+              value={item && item.uiStyle && item.uiStyle.height ? item.uiStyle.height : ""}
               onChange={e => handleUiChange("height", e.target.value)}
             />
           </Col>
@@ -108,7 +108,7 @@ AdvancedOptions.propTypes = {
     videoType: PropTypes.string.isRequired,
     sourceURL: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
-    ui_style: PropTypes.shape({
+    uiStyle: PropTypes.shape({
       width: PropTypes.number.isRequired,
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,

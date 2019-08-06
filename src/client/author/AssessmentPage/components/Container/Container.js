@@ -201,7 +201,7 @@ class Container extends React.Component {
     const correctAnswerPicked = questions
       .filter(question => question.type !== "sectionLabel")
       .every(question => {
-        const validationValue = get(question, "validation.valid_response.value");
+        const validationValue = get(question, "validation.validResponse.value");
         if (question.type === "math") {
           return validationValue.every(value => !isEmpty(value.value));
         }

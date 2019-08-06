@@ -1,4 +1,4 @@
-import { themeColor, themeColorLight, themeColorBreadcrumb } from "@edulastic/colors";
+import { themeColor, themeColorLighter, themeColorLight, themeColorBreadcrumb } from "@edulastic/colors";
 import edulasticDefaultLogo from "./assets/logo.svg";
 
 export const themes = {
@@ -35,9 +35,9 @@ export const themes = {
       helpButtonBgColor: "#ffffff",
       helpButtonBgHoverColor: themeColor,
       helpButtonFontSize: "14px",
-      helpButtonTextColor: "#5EB500",
+      helpButtonTextColor: themeColorLighter,
       helpButtonTextHoverColor: "white",
-      helpIconColor: "#5EB500",
+      helpIconColor: themeColorLighter,
       helpIconHoverColor: "white",
       dropdownIconColor: "#333333",
       userInfoButtonBgColor: "#ffffff",
@@ -217,28 +217,29 @@ export const themes = {
     },
     classCard: {
       cardBg: "white",
-      cardHeaderBorderColor: "#f2f2f2",
-      cardTitleColor: "#434b5d",
-      cardTitleTextSize: "16px",
+      cardHeaderBorderColor: "#F1F1F1",
+      cardTitleColor: themeColor,
+      cardTitleTextSize: "14px",
       cardVisitClassBtnBgColor: "white",
       cardVisitClassBtnBgHoverColor: themeColor,
       cardVisitClassBtnTextColor: themeColor,
       cardVisitClassBtnTextHoverColor: "white",
       cardVisitClassBtnBorderColor: themeColor,
-      cardVisitClassBtnTextSize: "10px",
-      cardUserInfoLabelColor: "#434b5d",
-      cardUserInfoLabelTextSize: "13px",
+      cardVisitClassBtnTextSize: "11px",
+      cardUserInfoLabelColor: "#AAAFB5",
+      cardUserInfoLabelTextSize: "11px",
       cardUserInfoContentColor: "#4aac8b",
-      cardActiveStatusBgColor: "rgba(66, 209, 132, 1)",
-      cardActiveStatusTextColor: "#ffffff",
+      cardActiveStatusBgColor: "rgba(0, 173, 80, .2)",
+      cardActiveStatusTextColor: themeColor,
       cardActiveStatusTextSize: "10px",
       cardArchiveStatusBgColor: "rgba(0, 176, 255, 0.2)",
       cardArchiveStatusTextColor: "#0083be",
-      cardArchiveStatusTextSize: "10px"
+      cardArchiveStatusTextSize: "10px",
+      cardInfoContentColor: "#434B5D"
     },
     profile: {
       userHeadingTextSize: "22px",
-      userHeadingTextColor: "#434b5d",
+      userHeadingTextColor: "#434B5D",
       userHeadingTextWeight: "bold",
       userSubTitleTextSize: "13px",
       userSubTitleTextColor: "#434b5d",

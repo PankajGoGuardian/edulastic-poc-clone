@@ -28,10 +28,12 @@ class EditSchoolModal extends React.Component {
       checkSchoolExist = await schoolApi.getSchools({
         districtId: this.props.userOrgId,
         search: {
-          name: {
-            type: "eq",
-            value: nameValidate.value
-          }
+          name: [
+            {
+              type: "eq",
+              value: nameValidate.value
+            }
+          ]
         }
       });
       this.setState({ showSpin: false, checkSchoolExist });

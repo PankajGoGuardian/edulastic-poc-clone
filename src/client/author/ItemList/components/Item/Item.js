@@ -161,17 +161,19 @@ class Item extends Component {
     const itemType = getQuestionType(item);
     return (
       <Container className="fr-view">
-        <PreviewModal
-          isVisible={isShowPreviewModal}
-          page="addItems"
-          showEvaluationButtons
-          onClose={this.closeModal}
-          data={{ ...item, id: item._id }}
-          isEditable={isEditable}
-          owner={owner}
-          checkAnswer={() => checkAnswer({ ...item, isItem: true })}
-          showAnswer={() => showAnswer(item)}
-        />
+        {isShowPreviewModal && (
+          <PreviewModal
+            isVisible={isShowPreviewModal}
+            page="addItems"
+            showEvaluationButtons
+            onClose={this.closeModal}
+            data={{ ...item, id: item._id }}
+            isEditable={isEditable}
+            owner={owner}
+            checkAnswer={() => checkAnswer({ ...item, isItem: true })}
+            showAnswer={() => showAnswer(item)}
+          />
+        )}
         <Question>
           <QuestionContent>
             <MoveLink onClick={this.previewItem}>{this.itemStimulus}</MoveLink>
@@ -179,7 +181,9 @@ class Item extends Component {
           </QuestionContent>
           {windowWidth > MAX_TAB_WIDTH && (
             <ViewButton>
-              <ViewButtonStyled onClick={this.previewItem}>{t("component.item.view")}</ViewButtonStyled>
+              <ViewButtonStyled onClick={this.previewItem}>
+                <IconEye /> {t("component.item.view")}
+              </ViewButtonStyled>
               <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
                 {selectedToCart ? "Remove" : <IconPlus />}
               </AddButtonStyled>

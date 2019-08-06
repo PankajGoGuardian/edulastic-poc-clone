@@ -27,6 +27,7 @@ import Question from "../../components/Question";
 
 class ClozeImageText extends Component {
   static contextType = AnswerContext;
+
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -60,7 +61,7 @@ class ClozeImageText extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
-      uiStyle: item.ui_style,
+      uiStyle: item.uiStyle,
       itemForPreview
     };
   };
@@ -74,10 +75,10 @@ class ClozeImageText extends Component {
           value: []
         };
 
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.push(response);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.push(response);
         } else {
-          draft.validation.alt_responses = [response];
+          draft.validation.altResponses = [response];
         }
       })
     );
@@ -87,8 +88,8 @@ class ClozeImageText extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses = draft.validation.alt_responses.filter((response, i) => i !== index);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
         }
       })
     );
@@ -108,7 +109,7 @@ class ClozeImageText extends Component {
         this.setState({ duplicatedResponses: value });
         break;
       }
-      case "shuffle_options": {
+      case "shuffleOptions": {
         this.setState({ shuffleOptions: value });
         break;
       }

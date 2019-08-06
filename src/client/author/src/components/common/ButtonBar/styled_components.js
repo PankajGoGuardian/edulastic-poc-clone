@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { smallDesktopWidth, white, green } from "@edulastic/colors";
+import { mediumDesktopWidth, white, themeColor, fadedGrey } from "@edulastic/colors";
 import { Button } from "antd";
 
 export const Container = styled.div`
@@ -17,7 +17,7 @@ export const Container = styled.div`
     height: 40px;
     width: 100px;
     border-radius: 4px;
-    background-color: ${green};
+    background-color: ${themeColor};
     border: none;
     display: flex;
     align-items: center;
@@ -42,7 +42,7 @@ export const Container = styled.div`
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.2px;
-    color: #e5e5e5;
+    color: ${fadedGrey};
     padding-top: 7px;
   }
 
@@ -54,7 +54,7 @@ export const Container = styled.div`
   }
 
   .ant-menu-horizontal > .ant-menu-item-selected {
-    background: #057fc1;
+    background: ${themeColor};
     border-bottom: solid 4px #c9c9c9;
     letter-spacing: 0.2px;
     font-weight: 600;
@@ -129,6 +129,9 @@ export const RightSide = styled.div`
     height: 45px;
     background: #fff;
     margin-left: 5px;
+    &.save-btn {
+      padding: 0px 10px;
+    }
 
     span {
       color: #00ad50;
@@ -136,7 +139,7 @@ export const RightSide = styled.div`
       text-transform: uppercase;
     }
 
-    @media (max-width: ${smallDesktopWidth}) {
+    @media (max-width: ${mediumDesktopWidth}) {
       height: 36px;
       width: auto;
       padding: 0px 20px;
@@ -191,7 +194,10 @@ export const MenuItem = styled.li`
     }
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 36px;
+    svg {
+      display: none;
+    }
   }
 `;

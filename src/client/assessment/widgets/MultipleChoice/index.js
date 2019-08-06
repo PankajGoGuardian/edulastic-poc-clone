@@ -45,12 +45,12 @@ class MultipleChoice extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { item } = this.props;
-    if (!nextProps.item.shuffle_options) {
+    if (!nextProps.item.shuffleOptions) {
       const shuffledOptions = replaceValues(cloneDeep(nextProps.item.options), nextProps.item.variable);
       this.setState({
         shuffledOptions
       });
-    } else if (nextProps.item.shuffle_options !== item.shuffle_options && nextProps.item.shuffle_options) {
+    } else if (nextProps.item.shuffleOptions !== item.shuffleOptions && nextProps.item.shuffleOptions) {
       const shuffledOptions = replaceValues(cloneDeep(shuffle(nextProps.item.options)), nextProps.item.variable);
       this.setState({
         shuffledOptions
@@ -93,9 +93,9 @@ class MultipleChoice extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
-      uiStyle: item.ui_style,
-      multipleResponses: !!item.multiple_responses,
-      shuffleOptions: !!item.shuffle_options
+      uiStyle: item.uiStyle,
+      multipleResponses: !!item.multipleResponses,
+      shuffleOptions: !!item.shuffleOptions
     };
   };
 
@@ -110,10 +110,10 @@ class MultipleChoice extends Component {
           value: []
         };
 
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.push(response);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.push(response);
         } else {
-          draft.validation.alt_responses = [response];
+          draft.validation.altResponses = [response];
         }
       })
     );
@@ -129,8 +129,8 @@ class MultipleChoice extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses = draft.validation.alt_responses.filter((response, i) => i !== index);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
         }
       })
     );
@@ -147,7 +147,7 @@ class MultipleChoice extends Component {
       changePreviewTab(CLEAR);
       changeView(CLEAR);
     }
-    if (item.multiple_responses) {
+    if (item.multipleResponses) {
       if (newAnswer.includes(qid)) {
         const removeIndex = newAnswer.findIndex(el => el === qid);
         newAnswer.splice(removeIndex, 1);
@@ -171,9 +171,9 @@ class MultipleChoice extends Component {
           return acc;
         };
 
-        if (name === "multiple_responses" && value === false) {
-          draft.validation.valid_response.value = draft.validation.valid_response.value.reduce(reduceResponses, []);
-          draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
+        if (name === "multipleResponses" && value === false) {
+          draft.validation.validResponse.value = draft.validation.validResponse.value.reduce(reduceResponses, []);
+          draft.validation.altResponses = draft.validation.altResponses.map(res => {
             res.value = res.value.reduce(reduceResponses, []);
             return res;
           });
@@ -217,7 +217,7 @@ class MultipleChoice extends Component {
     const isV1Multipart = get(col, "isV1Multipart", false);
 
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
-    // const multi_response = this.props.item.multiple_responses;
+    // const multi_response = this.props.item.multipleResponses;
     return (
       <React.Fragment>
         <PaddingDiv>
@@ -251,13 +251,13 @@ class MultipleChoice extends Component {
                   <Divider />
                   <Checkbox
                     data-cy="multi"
-                    onChange={() => this.handleOptionsChange("multiple_responses", !multipleResponses)}
+                    onChange={() => this.handleOptionsChange("multipleResponses", !multipleResponses)}
                     checked={multipleResponses}
                   >
                     {t("component.multiplechoice.multipleResponses")}
                   </Checkbox>
                   <Checkbox
-                    onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                    onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
                     checked={shuffleOptions}
                   >
                     {t("component.multiplechoice.shuffleOptions")}
@@ -277,70 +277,30 @@ class MultipleChoice extends Component {
           )}
           {view === PREVIEW && (
             <Wrapper isV1Multipart={isV1Multipart} flowLayout={flowLayout}>
-              {previewTab === CHECK && (
+              {previewTab === SHOW || previewTab === CLEAR || previewTab === CHECK ? (
                 <Display
-                  checkAnswer
-                  view={view}
-                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
-                  smallSize={smallSize}
-                  userSelections={userAnswer}
-                  options={shuffledOptions}
-                  question={previewStimulus}
-                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
-                  handleMultiSelect={this.handleMultiSelect}
-                  uiStyle={uiStyle}
-                  evaluation={evaluation}
-                  qIndex={qIndex}
-                  instructorStimulus={item.instructor_stimulus}
-                  multipleResponses={multipleResponses}
-                  flowLayout={flowLayout}
-                  qLabel={item.qLabel}
-                  styleType="primary"
-                  {...restProps}
-                />
-              )}
-              {previewTab === SHOW && (
-                <Display
-                  showAnswer
+                  showAnswer={previewTab === SHOW}
+                  preview={previewTab === CLEAR}
+                  checkAnswer={previewTab === CHECK}
                   view={view}
                   smallSize={smallSize}
                   options={shuffledOptions}
                   question={previewStimulus}
                   userSelections={userAnswer}
-                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
-                  handleMultiSelect={this.handleMultiSelect}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
                   validation={item.validation}
-                  qIndex={qIndex}
-                  instructorStimulus={item.instructor_stimulus}
-                  multipleResponses={multipleResponses}
-                  flowLayout={flowLayout}
-                  qLabel={item.qLabel}
-                  styleType="primary"
-                  {...restProps}
-                />
-              )}
-              {previewTab === CLEAR && (
-                <Display
-                  preview
-                  view={view}
-                  smallSize={smallSize}
-                  options={shuffledOptions}
-                  question={previewStimulus}
-                  userSelections={userAnswer}
-                  uiStyle={uiStyle}
-                  validation={item.validation}
                   onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   qIndex={qIndex}
-                  instructorStimulus={item.instructor_stimulus}
+                  instructorStimulus={item.instructorStimulus}
                   multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   qLabel={item.qLabel}
+                  testItem={testItem}
                   styleType="primary"
                   {...restProps}
                 />
-              )}
+              ) : null}
             </Wrapper>
           )}
         </PaddingDiv>

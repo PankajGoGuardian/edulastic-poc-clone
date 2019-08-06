@@ -13,11 +13,11 @@ import Extras from "../../containers/Extras";
 import LayoutComponent from "./LayoutComponent";
 
 const Options = ({ item, t, fillSections, cleanSections, advancedAreOpen }) => {
-  const [act, setAct] = useState(item.formatting_options || []);
+  const [act, setAct] = useState(item.formattingOptions || []);
 
   useEffect(() => {
-    if (!isEqual(act, item.formatting_options)) {
-      setAct(item.formatting_options);
+    if (!isEqual(act, item.formattingOptions)) {
+      setAct(item.formattingOptions);
     }
   });
 

@@ -1,5 +1,6 @@
-import { desktopWidth, mobileWidth, white } from "@edulastic/colors";
+import { mobileWidth, white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
+import { Button } from "antd";
 
 export const Container = styled.div`
   padding: 0;
@@ -12,10 +13,6 @@ export const Container = styled.div`
   background: #f3f3f8;
   height: calc(100vh - 96px);
 
-  @media (max-width: ${desktopWidth}) {
-    flex-direction: column;
-  }
-
   @media (max-width: ${mobileWidth}) {
     padding: 0;
     height: initial;
@@ -23,12 +20,28 @@ export const Container = styled.div`
   }
 `;
 
+export const ShowLeftFilterButton = styled(Button)`
+  min-width: 35px;
+  min-height: 25px;
+  padding: 2px;
+  padding-top: 5px;
+  border-radius: 3px;
+  position: fixed;
+  margin-left: -20px;
+  margin-top: 26px;
+  z-index: 100;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+  background: ${props => (props.isShowFilter ? themeColor : white)} !important;
+  &:focus,
+  &:hover {
+    outline: unset;
+    color: ${props => (props.isShowFilter ? white : themeColor)};
+  }
+`;
+
 export const ListItems = styled.div`
   flex: 1;
-
-  @media (max-width: ${mobileWidth}) {
-    padding: 0 26px 20px;
-  }
+  padding-left: ${props => (props.isShowFilter ? "0px" : "30px")};
 `;
 
 export const Element = styled.div`
@@ -38,8 +51,8 @@ export const Element = styled.div`
   > div {
     position: relative;
     height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
+    padding-bottom: 40px;
 
     @media (max-width: ${mobileWidth}) {
       height: initial;

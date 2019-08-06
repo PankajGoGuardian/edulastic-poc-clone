@@ -21,11 +21,11 @@ export default class QuestionDropdown extends React.Component {
         0: ["A", "B"]
       },
       validation: {
-        valid_response: {
+        validResponse: {
           score: 1,
           value: []
         },
-        alt_responses: []
+        altResponses: []
       }
     }
   };
@@ -82,7 +82,7 @@ export default class QuestionDropdown extends React.Component {
       question: { validation }
     } = this.props;
     const {
-      valid_response: { score }
+      validResponse: { score }
     } = validation;
 
     this.updateValidation(value, score);
@@ -93,7 +93,7 @@ export default class QuestionDropdown extends React.Component {
       question: { validation }
     } = this.props;
     const {
-      valid_response: { value }
+      validResponse: { value }
     } = validation;
 
     this.updateValidation(value, score);
@@ -104,12 +104,12 @@ export default class QuestionDropdown extends React.Component {
 
     const data = {
       validation: {
-        scoring_type: EXACT_MATCH,
-        valid_response: {
+        scoringType: EXACT_MATCH,
+        validResponse: {
           value: [value],
           score
         },
-        alt_responses: []
+        altResponses: []
       }
     };
 
@@ -121,7 +121,7 @@ export default class QuestionDropdown extends React.Component {
       question: { validation }
     } = this.props;
     const {
-      valid_response: { value, score }
+      validResponse: { value, score }
     } = validation;
 
     return (

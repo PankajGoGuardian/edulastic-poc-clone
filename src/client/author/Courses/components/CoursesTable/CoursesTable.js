@@ -10,17 +10,20 @@ const Option = Select.Option;
 import AddCourseModal from "./AddCourseModal/AddCourseModal";
 import EditCourseModal from "./EditCourseModal/EditCourseModal";
 import UploadCourseModal from "./UploadCourseModal";
-
+import {
+  StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
+  StyledFilterSelect,
+  StyledFilterInput,
+  StyledSchoolSearch as StyledNameSearch,
+  StyledActionDropDown
+} from "../../../../admin/Common/StyledComponents";
 import {
   StyledTableContainer,
-  StyledControlDiv,
-  StyledFilterSelect,
   StyledTable,
   StyledTableButton,
-  StyledFilterInput,
   StyledFilterButton,
-  StyledNameSearch,
-  StyledActionDropDown,
   StyledActiveCheckbox,
   StyledPagination,
   StyledHeaderColumn,
@@ -251,6 +254,11 @@ class CoursesTable extends React.Component {
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+
+  onChangeSearch = event => {
+    this.setState({ searchByName: event.currentTarget.value });
+  };
+
   handleSearchName = value => {
     const { filtersData, sortedInfo, currentPage } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
@@ -355,28 +363,30 @@ class CoursesTable extends React.Component {
     const { userOrgId } = this.props;
 
     let search = {};
+
+    if (searchByName.length > 0) {
+      search.name = { type: "cont", value: [searchByName] };
+    }
+
     for (let i = 0; i < filtersData.length; i++) {
-      if (
-        filtersData[i].filtersColumn !== "" &&
-        filtersData[i].filtersValue !== "" &&
-        filtersData[i].filterStr !== ""
-      ) {
-        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+      let { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
+        if (!search[filtersColumn]) {
+          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+        } else {
+          search[filtersColumn].value.push(filterStr);
+        }
       }
     }
 
-    if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
-    }
-
     const loadListJsonData = {
+      search,
       districtId: userOrgId,
       limit: 25,
       page: currentPage,
       sortField: sortedInfo.columnKey,
       order: sortedInfo.order,
-      active: showActive ? 1 : 0,
-      search
+      active: showActive ? 1 : 0
     };
 
     // TO DO: remove this line after further investigation
@@ -513,6 +523,7 @@ class CoursesTable extends React.Component {
         <Menu.Item key="upload csv">Upload Course</Menu.Item>
         <Menu.Item key="edit course">Edit Course</Menu.Item>
         <Menu.Item key="deactivate course">Deactivate Course</Menu.Item>
+        <Menu.Item key="bulk edit courses">Bulk Edit Courses</Menu.Item>
       </Menu>
     );
 
@@ -577,29 +588,45 @@ class CoursesTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.showAddCourseModal}>
-            + Create Course
-          </Button>
-
-          <StyledNameSearch placeholder="Search by name" onSearch={this.handleSearchName} />
-          <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
-            Show active courses only
-          </StyledActiveCheckbox>
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showAddCourseModal}>
+              + Create Course
             </Button>
-          </StyledActionDropDown>
-        </StyledControlDiv>
+
+            <StyledNameSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+          <RightFilterDiv>
+            <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
+              Show active courses only
+            </StyledActiveCheckbox>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
+
         {SearchRows}
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+        <StyledTable
+          rowSelection={rowSelection}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          scroll={{ y: 500 }}
+        />
         <StyledPagination
           current={currentPage}
           defaultCurrent={1}
           pageSize={25}
           total={totalCourseCount}
           onChange={this.changePagination}
+          hideOnSinglePage={true}
         />
         {editCourseModalVisible && editCourseKey != "" && (
           <EditCourseModal

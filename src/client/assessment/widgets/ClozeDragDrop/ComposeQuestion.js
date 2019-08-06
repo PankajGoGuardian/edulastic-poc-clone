@@ -36,7 +36,7 @@ class ComposeQuestion extends Component {
   componentDidMount = () => {
     const { fillSections, t, item } = this.props;
     const node = ReactDOM.findDOMNode(this);
-    const deskHeight = item.ui_style.layout_height;
+    const deskHeight = item.uiStyle.layoutHeight;
 
     fillSections(
       "main",

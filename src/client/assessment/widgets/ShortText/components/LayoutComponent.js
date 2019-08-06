@@ -36,11 +36,11 @@ class LayoutComponent extends Component {
     const _uiStyleChange = (prop, val) => {
       setQuestionData(
         produce(item, draft => {
-          if (!draft.ui_style) {
-            draft.ui_style = {};
+          if (!draft.uiStyle) {
+            draft.uiStyle = {};
           }
 
-          draft.ui_style[prop] = val;
+          draft.uiStyle[prop] = val;
         })
       );
     };
@@ -90,7 +90,7 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <InputTypeOption
                 onChange={val => _uiStyleChange("input_type", val)}
-                value={get(item, "ui_style.input_type", "text")}
+                value={get(item, "uiStyle.input_type", "text")}
               />
             </Col>
             <Col md={12}>
@@ -102,7 +102,7 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <FontSizeOption
                 onChange={val => _uiStyleChange("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
+                value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
           </Row>

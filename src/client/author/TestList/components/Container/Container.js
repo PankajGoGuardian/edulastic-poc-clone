@@ -9,7 +9,7 @@ import { Button, Row, Input, Spin, message } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
-import { grey, white } from "@edulastic/colors";
+import { grey, white, themeColor } from "@edulastic/colors";
 import {
   ScrollBox,
   Container,
@@ -33,11 +33,7 @@ import {
   getTestsLoadingSelector,
   getTestsCountSelector,
   getTestsLimitSelector,
-  getTestsPageSelector,
-  getDefaultGradesSelector,
-  getDefaultSubjectSelector,
-  updateDefaultGradesAction,
-  updateDefaultSubjectAction
+  getTestsPageSelector
 } from "../../ducks";
 import { getTestsCreatingSelector, clearTestDataAction, clearCreatedItemsAction } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
@@ -63,10 +59,13 @@ import NoDataNotification from "../../../../common/components/NoDataNotification
 import {
   getInterestedCurriculumsSelector,
   getInterestedSubjectsSelector,
-  getInterestedGradesSelector
+  getInterestedGradesSelector,
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector
 } from "../../../src/selectors/user";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getInterestedStandards } from "../../../dataUtils";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -286,7 +285,17 @@ class TestList extends Component {
 
   handleFiltersChange = (name, value) => {
     const { search } = this.state;
-    const { receiveTests, clearDictStandards, history, limit, page, mode, getCurriculumStandards } = this.props;
+    const {
+      receiveTests,
+      clearDictStandards,
+      history,
+      limit,
+      page,
+      mode,
+      getCurriculumStandards,
+      updateDefaultGrades,
+      updateDefaultSubject
+    } = this.props;
     let updatedKeys = {};
     if (name === "curriculumId") {
       clearDictStandards();
@@ -303,7 +312,7 @@ class TestList extends Component {
         [name]: value,
         curriculumId: ""
       };
-      updateDefaultSubjectAction(value);
+      updateDefaultSubject(value);
       storeInLocalStorage("defaultSubject", value);
       clearDictStandards();
     } else {
@@ -313,7 +322,7 @@ class TestList extends Component {
       };
     }
     if (name === "grades") {
-      updateDefaultGradesAction(value);
+      updateDefaultGrades(value);
       storeInLocalStorage("defaultGrades", value);
     }
     this.setState(
@@ -716,7 +725,7 @@ class TestList extends Component {
                     size="large"
                     onClick={this.handleCreateNewModule}
                   >
-                    <IconPlusCircle color="#00AD50" width={15} height={15} />
+                    <IconPlusCircle color={themeColor} width={15} height={15} />
                     <span>Add Module</span>
                   </StyledButton>
                 )}

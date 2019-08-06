@@ -38,7 +38,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleAddResp = () => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possible_responses.push("");
+        draft.possibleResponses.push("");
       })
     );
   };
@@ -46,16 +46,16 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleRemoveResp = index => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.value.splice(
-          draft.validation.valid_response.value.indexOf(draft.possible_responses[index]),
+        draft.validation.validResponse.value.splice(
+          draft.validation.validResponse.value.indexOf(draft.possibleResponses[index]),
           1
         );
 
-        draft.validation.alt_responses.forEach(ite => {
-          ite.value.splice(ite.value.indexOf(draft.possible_responses[index]), 1);
+        draft.validation.altResponses.forEach(ite => {
+          ite.value.splice(ite.value.indexOf(draft.possibleResponses[index]), 1);
         });
 
-        draft.possible_responses.splice(index, 1);
+        draft.possibleResponses.splice(index, 1);
       })
     );
   };
@@ -63,7 +63,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleSortEndResp = ({ oldIndex, newIndex }) => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possible_responses = arrayMove(item.possible_responses, oldIndex, newIndex);
+        draft.possibleResponses = arrayMove(item.possibleResponses, oldIndex, newIndex);
       })
     );
   };
@@ -71,14 +71,14 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleChangeResp = (index, value) => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.value[
-          draft.validation.valid_response.value.indexOf(draft.possible_responses[index])
+        draft.validation.validResponse.value[
+          draft.validation.validResponse.value.indexOf(draft.possibleResponses[index])
         ] = value;
-        draft.validation.alt_responses.forEach(ite => {
-          ite.value[ite.value.indexOf(draft.possible_responses[index])] = value;
+        draft.validation.altResponses.forEach(ite => {
+          ite.value[ite.value.indexOf(draft.possibleResponses[index])] = value;
         });
 
-        draft.possible_responses[index] = value;
+        draft.possibleResponses[index] = value;
       })
     );
   };
@@ -86,13 +86,13 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleAddAnswer = () => {
     _setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
           value: Array.from({
-            length: item.validation.valid_response.value.length
+            length: item.validation.validResponse.value.length
           }).fill(null)
         });
       })
@@ -103,7 +103,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleCloseTab = tabIndex => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
 
         setCorrectTab(0);
       })
@@ -114,9 +114,9 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
     _setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
       })
     );
@@ -126,9 +126,9 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
     _setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.value = ans;
+          draft.validation.validResponse.value = ans;
         } else {
-          draft.validation.alt_responses[correctTab - 1].value = ans;
+          draft.validation.altResponses[correctTab - 1].value = ans;
         }
       })
     );
@@ -137,7 +137,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const onGroupPossibleResp = e => {
     _setQuestionData(
       produce(item, draft => {
-        draft.group_possible_responses = e.target.checked;
+        draft.groupPossibleResponses = e.target.checked;
       })
     );
   };
@@ -145,7 +145,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const onGroupTitleChange = (index, value) => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups[index].title = value;
+        draft.possibleResponseGroups[index].title = value;
       })
     );
   };
@@ -154,12 +154,12 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
     <OptionsList
       item={item}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
     />
@@ -168,7 +168,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const onAddInner = index => () => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups[index].responses.push("");
+        draft.possibleResponseGroups[index].responses.push("");
       })
     );
   };
@@ -176,17 +176,17 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const onRemoveInner = ind => index => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.value = Array.from({
-          length: item.validation.valid_response.value.length
+        draft.validation.validResponse.value = Array.from({
+          length: item.validation.validResponse.value.length
         }).fill(null);
 
-        draft.validation.alt_responses.forEach(ite => {
+        draft.validation.altResponses.forEach(ite => {
           ite.value = Array.from({
-            length: item.validation.valid_response.value.length
+            length: item.validation.validResponse.value.length
           }).fill(null);
         });
 
-        draft.possible_response_groups[ind].responses.splice(index, 1);
+        draft.possibleResponseGroups[ind].responses.splice(index, 1);
       })
     );
   };
@@ -194,7 +194,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleGroupAdd = () => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups.push({ title: "", responses: [] });
+        draft.possibleResponseGroups.push({ title: "", responses: [] });
       })
     );
   };
@@ -202,17 +202,17 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleGroupRemove = index => () => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.value = Array.from({
-          length: item.validation.valid_response.value.length
+        draft.validation.validResponse.value = Array.from({
+          length: item.validation.validResponse.value.length
         }).fill(null);
 
-        draft.validation.alt_responses.forEach(ite => {
+        draft.validation.altResponses.forEach(ite => {
           ite.value = Array.from({
-            length: item.validation.valid_response.value.length
+            length: item.validation.validResponse.value.length
           }).fill(null);
         });
 
-        draft.possible_response_groups.splice(index, 1);
+        draft.possibleResponseGroups.splice(index, 1);
       })
     );
   };
@@ -220,8 +220,8 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleGroupSortEnd = index => ({ oldIndex, newIndex }) => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups[index].responses = arrayMove(
-          draft.possible_response_groups[index].responses,
+        draft.possibleResponseGroups[index].responses = arrayMove(
+          draft.possibleResponseGroups[index].responses,
           oldIndex,
           newIndex
         );
@@ -232,7 +232,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleGroupChange = ind => (index, value) => {
     _setQuestionData(
       produce(item, draft => {
-        draft.possible_response_groups[ind].responses[index] = value;
+        draft.possibleResponseGroups[ind].responses[index] = value;
       })
     );
   };
@@ -250,16 +250,16 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
         >
           <GroupPossibleResponses
             checkboxChange={onGroupPossibleResp}
-            checkboxVal={item.group_possible_responses}
-            items={item.group_possible_responses ? item.possible_response_groups : item.possible_responses}
+            checkboxVal={item.groupPossibleResponses}
+            items={item.groupPossibleResponses ? item.possibleResponseGroups : item.possibleResponses}
             firstFocus={item.firstMount}
             onAddInner={onAddInner}
             onTitleChange={onGroupTitleChange}
-            onAdd={item.group_possible_responses ? handleGroupAdd : handleAddResp}
-            onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleSortEndResp}
-            onChange={item.group_possible_responses ? handleGroupChange : handleChangeResp}
+            onAdd={item.groupPossibleResponses ? handleGroupAdd : handleAddResp}
+            onSortEnd={item.groupPossibleResponses ? handleGroupSortEnd : handleSortEndResp}
+            onChange={item.groupPossibleResponses ? handleGroupChange : handleChangeResp}
             onRemoveInner={onRemoveInner}
-            onRemove={item.group_possible_responses ? handleGroupRemove : handleRemoveResp}
+            onRemove={item.groupPossibleResponses ? handleGroupRemove : handleRemoveResp}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />

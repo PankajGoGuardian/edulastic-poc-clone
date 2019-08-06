@@ -95,7 +95,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
         relatedShape.type !== _constants.ShapeTypes.SEGMENT &&
         relatedShape.type !== _constants.ShapeTypes.VECTOR &&
         relatedShape.type !== _constants.ShapeTypes.POLYGON &&
-        relatedShape.type !== _constants.ShapeTypes.POLYNOM
+        relatedShape.type !== _constants.ShapeTypes.POLYNOM &&
+        relatedShape.type !== _constants.ShapeTypes.EQUATION
       ) {
         var firstShape = userResponse.find(function(item) {
           return item.id === sameShapes[0].id;
@@ -206,22 +207,22 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 var evaluator = function evaluator(_ref) {
   var userResponse = _ref.userResponse,
     validation = _ref.validation;
-  var valid_response = validation.valid_response,
-    alt_responses = validation.alt_responses,
+  var validResponse = validation.validResponse,
+    altResponses = validation.altResponses,
     ignore_repeated_shapes = validation.ignore_repeated_shapes,
-    ignore_labels = validation.ignore_labels;
+    ignoreLabels = validation.ignoreLabels;
   var score = 0;
   var maxScore = 1;
   var evaluation = {};
-  var answers = [valid_response];
+  var answers = [validResponse];
 
-  if (alt_responses) {
-    answers = answers.concat((0, _toConsumableArray2["default"])(alt_responses));
+  if (altResponses) {
+    answers = answers.concat((0, _toConsumableArray2["default"])(altResponses));
   }
 
   var result = {};
   answers.forEach(function(answer, index) {
-    result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignore_labels);
+    result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignoreLabels);
 
     if (result.commonResult) {
       score = Math.max(answer.score, score);

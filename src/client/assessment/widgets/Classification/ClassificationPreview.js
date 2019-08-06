@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { cloneDeep, isEqual, get, shuffle, uniq } from "lodash";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-
+import "core-js/features/array/flat";
 import {
   Paper,
   FlexContainer,
@@ -16,6 +16,7 @@ import {
   QuestionNumberLabel
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import TableLayout from "./components/TableLayout";
 
 import DropContainer from "../../components/DropContainer";
 import { PREVIEW, SHOW, CLEAR, CHECK, EDIT } from "../../constants/constantsForQuestions";
@@ -31,7 +32,7 @@ import { QuestionTitleWrapper } from "./styled/QustionNumber";
 const ClassificationPreview = ({
   view,
   saveAnswer,
-  item = { ui_style: {} },
+  item = { uiStyle: {} },
   t,
   evaluation,
   userAnswer,
@@ -43,7 +44,8 @@ const ClassificationPreview = ({
   showQuestionNumber,
   disableResponse,
   changePreviewTab,
-  isReviewTab
+  isReviewTab,
+  setQuestionData
 }) => {
   const styles = {
     itemContainerStyle: {
@@ -71,39 +73,39 @@ const ClassificationPreview = ({
   };
 
   const {
-    possible_responses: posResponses = [],
-    group_possible_responses,
-    possible_response_groups = [],
+    possibleResponses: posResponses = [],
+    groupPossibleResponses,
+    possibleResponseGroups = [],
     stimulus,
     imageUrl,
     imageOptions,
-    shuffle_options,
-    transparent_possible_responses,
-    transparent_background_image = true,
-    duplicate_responses,
-    ui_style: {
-      column_count: colCount,
-      column_titles: colTitles = [],
-      row_count: rowCount,
-      row_titles: rowTitles = [],
-      show_drag_handle
+    shuffleOptions,
+    transparentPossibleResponses,
+    transparentBackgroundImage = true,
+    duplicateResponses,
+    uiStyle: {
+      columnCount: colCount,
+      columnTitles: colTitles = [],
+      rowCount: rowCount,
+      rowTitles: rowTitles = [],
+      showDragHandle
     }
   } = item;
 
   const itemValidation = item.validation || {};
-  let validArray = itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
-  let altArrays = itemValidation && itemValidation.alt_responses;
+  let validArray = itemValidation && itemValidation.validResponse && itemValidation.validResponse.value;
+  let altArrays = itemValidation && itemValidation.altResponses;
   validArray = validArray || [];
   altArrays = altArrays ? altArrays.map(arr => arr.value || []) : [];
   let groupArrays = [];
 
-  possible_response_groups.forEach(o => {
+  possibleResponseGroups.forEach(o => {
     groupArrays = [...groupArrays, ...o.responses];
   });
 
-  const posResp = group_possible_responses ? groupArrays : posResponses;
+  const posResp = groupPossibleResponses ? groupArrays : posResponses;
 
-  const possible_responses =
+  const possibleResponses =
     editCorrectAnswers.length > 0
       ? posResp.filter(ite => {
           return (
@@ -144,7 +146,8 @@ const ClassificationPreview = ({
     !disableResponse && editCorrectAnswers.length > 0 ? editCorrectAnswers : getInitialUserAnswers();
 
   const [answers, setAnswers] = useState(initialAnswers);
-  const [dragItems, setDragItems] = useState(possible_responses);
+  const [dragItems, setDragItems] = useState(possibleResponses);
+  console.log("answers", initialAnswers);
 
   /**
    * it is used to filter out responses from the bottom container and place in correct boxes
@@ -153,24 +156,23 @@ const ClassificationPreview = ({
   useEffect(() => {
     if (
       !isEqual(answers, initialAnswers) ||
-      (!group_possible_responses &&
-        (possible_responses.length !== dragItems.length || !isEqual(possible_responses, dragItems)))
+      (!groupPossibleResponses &&
+        (possibleResponses.length !== dragItems.length || !isEqual(possibleResponses, dragItems)))
     ) {
       setAnswers(initialAnswers);
-      const abc = possible_responses.filter(resp => {
+      const abc = possibleResponses.filter(resp => {
         return initialAnswers.every(arr => {
           return !arr.includes(resp.id);
         });
       });
       setDragItems(abc);
     }
-  }, [userAnswer, possible_responses]);
+  }, [userAnswer, possibleResponses]);
 
   const boxes = createEmptyArrayOfArrays();
 
-  const onDrop = (itemCurrent, itemTo) => {
-    const columnCount = get(item, "max_response_per_cell", "");
-
+  const onDrop = (itemCurrent, itemTo, from) => {
+    const columnCount = get(item, "maxResponsePerCell", "");
     const dItems = cloneDeep(dragItems);
     const ansArrays = cloneDeep(answers);
     if (columnCount && ansArrays[itemTo.index] && ansArrays[itemTo.index].length >= columnCount) {
@@ -197,7 +199,9 @@ const ClassificationPreview = ({
       const obj = posResp.find(ite => ite.value === itemCurrent.item);
       if (obj) {
         ansArrays.forEach((arr, i) => {
-          if (!duplicate_responses && arr.includes(obj.id)) {
+          if (!duplicateResponses && arr.includes(obj.id)) {
+            arr.splice(arr.indexOf(obj.id), 1);
+          } else if (from === "column" && arr.includes(obj.id)) {
             arr.splice(arr.indexOf(obj.id), 1);
           }
 
@@ -207,7 +211,7 @@ const ClassificationPreview = ({
         });
       }
 
-      if (!duplicate_responses) {
+      if (!duplicateResponses) {
         const includes = posResp.flatMap(obj => obj.value).includes(itemCurrent.item);
         if (includes) {
           dItems.splice(dItems.findIndex(obj => obj.value === itemCurrent.item), 1);
@@ -244,9 +248,9 @@ const ClassificationPreview = ({
   const arrayOfCols = transformArray(validArray);
   const arrayOfAltCols = altArrays.map(altArray => transformArray(altArray));
 
-  const listPosition = get(item, "ui_style.possibility_list_position", "bottom");
-  const rowHeader = get(item, "ui_style.row_header", null);
-  const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
+  const listPosition = get(item, "uiStyle.possibilityListPosition", "bottom");
+  const rowHeader = get(item, "uiStyle.rowHeader", null);
+  const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
   const wrapperStyle = {
     display: "flex",
@@ -254,9 +258,9 @@ const ClassificationPreview = ({
   };
 
   const verifiedDragItems = uniq(
-    shuffle_options
-      ? shuffle(duplicate_responses ? posResponses : dragItems)
-      : duplicate_responses
+    shuffleOptions
+      ? shuffle(duplicateResponses ? posResponses : dragItems)
+      : duplicateResponses
       ? posResponses
       : dragItems
   );
@@ -266,18 +270,76 @@ const ClassificationPreview = ({
    * This takes care of filtering out draggable responses from the bottom container
    */
   const flattenAnswers = answers.flat();
-  const verifiedGroupDragItems = duplicate_responses
-    ? possible_response_groups.map(group => {
-        return shuffle_options ? shuffle(group.responses) : group.responses;
+  const verifiedGroupDragItems = duplicateResponses
+    ? possibleResponseGroups.map(group => {
+        return shuffleOptions ? shuffle(group.responses) : group.responses;
       })
-    : possible_response_groups.map(group => {
+    : possibleResponseGroups.map(group => {
         const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
-        return shuffle_options ? shuffle(responses) : responses;
+        return shuffleOptions ? shuffle(responses) : responses;
       });
+
+  const dragLayout = boxes.map(
+    (n, ind) =>
+      arrayOfRows.has(ind) && (
+        <TableRow
+          colTitles={colTitles}
+          key={ind}
+          isBackgroundImageTransparent={transparentBackgroundImage}
+          isTransparent={transparentPossibleResponses}
+          startIndex={ind}
+          width={get(item, "uiStyle.row_titles_width", "max-content")}
+          height={get(item, "uiStyle.row_min_height", "85px")}
+          colCount={colCount}
+          arrayOfRows={arrayOfRows}
+          rowTitles={rowTitles}
+          drop={drop}
+          dragHandle={showDragHandle}
+          answers={answers}
+          validArray={evaluation}
+          preview={preview}
+          previewTab={previewTab}
+          possibleResponses={possibleResponses}
+          onDrop={onDrop}
+          isResizable={view === EDIT}
+          item={item}
+          disableResponse={disableResponse}
+          isReviewTab={isReviewTab}
+          view={view}
+          setQuestionData={setQuestionData}
+        />
+      )
+  );
+
+  const tableLayout = (
+    <TableLayout
+      colCount={colCount}
+      rowCount={rowCount}
+      rowTitles={rowTitles}
+      colTitles={colTitles}
+      width={get(item, "uiStyle.row_titles_width", "max-content")}
+      minWidth="200px"
+      height={get(item, "uiStyle.row_min_height", "85px")}
+      isBackgroundImageTransparent={transparentBackgroundImage}
+      isTransparent={transparentPossibleResponses}
+      answers={answers}
+      drop={drop}
+      dragHandle={showDragHandle}
+      item={item}
+      isReviewTab={isReviewTab}
+      validArray={evaluation}
+      preview={preview}
+      onDrop={onDrop}
+      disableResponse={disableResponse}
+      rowHeader={rowHeader}
+    />
+  );
+
+  const tableContent = rowCount > 1 ? tableLayout : dragLayout;
 
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
       {!smallSize && view === PREVIEW && (
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
@@ -287,41 +349,13 @@ const ClassificationPreview = ({
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
         <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl}>
-          {boxes.map(
-            (n, ind) =>
-              arrayOfRows.has(ind) && (
-                <TableRow
-                  colTitles={colTitles}
-                  key={ind}
-                  isBackgroundImageTransparent={transparent_background_image}
-                  isTransparent={transparent_possible_responses}
-                  startIndex={ind}
-                  width={get(item, "ui_style.row_titles_width", "max-content")}
-                  height={get(item, "ui_style.row_min_height", "85px")}
-                  colCount={colCount}
-                  arrayOfRows={arrayOfRows}
-                  rowTitles={rowTitles}
-                  drop={drop}
-                  dragHandle={show_drag_handle}
-                  answers={answers}
-                  validArray={evaluation}
-                  preview={preview}
-                  previewTab={previewTab}
-                  possible_responses={possible_responses}
-                  onDrop={onDrop}
-                  isResizable={view === EDIT}
-                  item={item}
-                  disableResponse={disableResponse}
-                  isReviewTab={isReviewTab}
-                />
-              )
-          )}
+          {tableContent}
         </TableWrapper>
         {!disableResponse && (
           <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
             <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
-                {group_possible_responses ? (
+                {groupPossibleResponses ? (
                   verifiedGroupDragItems.map((i, index) => (
                     <Fragment key={index}>
                       <FlexContainer
@@ -335,39 +369,41 @@ const ClassificationPreview = ({
                             color: theme.widgets.classification.previewSubtitleColor
                           }}
                         >
-                          {get(item, `possible_response_groups[${index}].title`, "")}
+                          {get(item, `possibleResponseGroups[${index}].title`, "")}
                         </Subtitle>
                         <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                           {i.map((ite, ind) =>
-                            duplicate_responses ? (
+                            duplicateResponses ? (
                               <DragItem
-                                dragHandle={show_drag_handle}
+                                dragHandle={showDragHandle}
                                 key={ind}
-                                isTransparent={transparent_possible_responses}
+                                isTransparent={transparentPossibleResponses}
                                 preview={preview}
-                                renderIndex={possible_responses.indexOf(ite)}
+                                renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             ) : (
                               <DragItem
-                                dragHandle={show_drag_handle}
+                                dragHandle={showDragHandle}
                                 key={ind}
-                                isTransparent={transparent_possible_responses}
+                                isTransparent={transparentPossibleResponses}
                                 preview={preview}
-                                renderIndex={possible_responses.indexOf(ite)}
+                                renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             )
                           )}
                         </FlexContainer>
                       </FlexContainer>
-                      {index !== possible_response_groups.length - 1 && (
+                      {index !== possibleResponseGroups.length - 1 && (
                         <div
                           style={{
                             width: 0,
@@ -389,30 +425,32 @@ const ClassificationPreview = ({
                     >
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
                         {verifiedDragItems.map((ite, ind) => {
-                          return duplicate_responses ? (
+                          return duplicateResponses ? (
                             <DragItem
-                              dragHandle={show_drag_handle}
+                              dragHandle={showDragHandle}
                               key={ind}
-                              isTransparent={transparent_possible_responses}
+                              isTransparent={transparentPossibleResponses}
                               preview={preview}
-                              renderIndex={possible_responses.indexOf(ite)}
+                              renderIndex={possibleResponses.indexOf(ite)}
                               onDrop={onDrop}
                               item={ite.value}
                               disableResponse={disableResponse}
                               possibilityListPosition={listPosition}
+                              from="container"
                             />
                           ) : (
                             dragItems.includes(ite) && (
                               <DragItem
-                                dragHandle={show_drag_handle}
+                                dragHandle={showDragHandle}
                                 key={ind}
-                                isTransparent={transparent_possible_responses}
+                                isTransparent={transparentPossibleResponses}
                                 preview={preview}
-                                renderIndex={possible_responses.indexOf(ite)}
+                                renderIndex={possibleResponses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
                                 possibilityListPosition={listPosition}
+                                from="container"
                               />
                             )
                           );

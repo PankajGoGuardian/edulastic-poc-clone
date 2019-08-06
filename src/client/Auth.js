@@ -7,6 +7,8 @@ import { connect } from "react-redux";
 import { SelectRolePopup } from "./student/SsoLogin/selectRolePopup";
 
 import { isLoggedInForPrivateRoute } from "./common/utils/helpers";
+import { removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { roleuser } from "@edulastic/constants";
 
 const GetStarted = lazy(() =>
   import(/* webpackChunkName: "getStarted" */ "./student/Signup/components/GetStartedContainer")
@@ -20,7 +22,12 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
     window.location.hash = "#login";
   }
 
-  if (isLoggedInForPrivateRoute(user) && user.user.role === "teacher") {
+  if (
+    isLoggedInForPrivateRoute(user) &&
+    (user.user.role === roleuser.TEACHER ||
+      user.user.role === roleuser.SCHOOL_ADMIN ||
+      user.user.role === roleuser.DISTRICT_ADMIN)
+  ) {
     return <Redirect exact to="/author/dashboard" />;
   } else if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
     return <Redirect exact to="/home/assignments" />;
@@ -45,6 +52,9 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
       </>
     );
   }
+
+  removeFromLocalStorage("defaultGrades");
+  removeFromLocalStorage("defaultSubject");
 
   return location.hash === "#signup" ? (
     <GetStarted

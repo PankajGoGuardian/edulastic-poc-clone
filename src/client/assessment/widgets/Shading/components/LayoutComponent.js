@@ -70,8 +70,8 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <Label>{t("component.options.hideCells")}</Label>
               <ShadesView
-                colCount={canvas.column_count || 1}
-                rowCount={canvas.row_count || 1}
+                colCount={canvas.columnCount || 1}
+                rowCount={canvas.rowCount || 1}
                 cellHeight={canvas.cell_height || 1}
                 cellWidth={canvas.cell_width || 1}
                 onCellClick={_cellClick}
@@ -89,10 +89,10 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <MaxSelectionOption
                 onChange={val => {
-                  changeItem("max_selection", +val);
+                  changeItem("maxSelection", +val);
                   saveAnswer([]);
                 }}
-                value={item.max_selection}
+                value={item.maxSelection}
               />
             </Col>
           </Row>
@@ -101,7 +101,7 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
+                value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
             <Col md={12}>

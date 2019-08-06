@@ -13,6 +13,7 @@ import { Paper, PaddingDiv, AnswerContext } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { changePreviewAction } from "../../../author/src/actions/view";
+import { getSnapItemsByIdSelector } from "../../selectors/snapItems";
 import { EDIT } from "../../constants/constantsForQuestions";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -27,9 +28,13 @@ import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Annotations/Annotations";
 import Question from "../../components/Question";
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div`
+  overflow-x: auto;
+`;
 
 class ClozeImageDragDrop extends Component {
+  static contextType = AnswerContext;
+
   state = {
     duplicatedResponses: false,
     shuffleOptions: false,
@@ -43,7 +48,6 @@ class ClozeImageDragDrop extends Component {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);
     const item = view === EDIT ? templateItem : itemForPreview;
-
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
     const previewDisplayOptions = item.options;
@@ -61,12 +65,13 @@ class ClozeImageDragDrop extends Component {
         validation: templateItem.validation
       };
     }
+
     return {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
       itemForPreview,
-      uiStyle: item.ui_style
+      uiStyle: item.uiStyle
     };
   };
 
@@ -79,10 +84,10 @@ class ClozeImageDragDrop extends Component {
           value: []
         };
 
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.push(response);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.push(response);
         } else {
-          draft.validation.alt_responses = [response];
+          draft.validation.altResponses = [response];
         }
       })
     );
@@ -102,7 +107,7 @@ class ClozeImageDragDrop extends Component {
         this.setState({ duplicatedResponses: value });
         break;
       }
-      case "shuffle_options": {
+      case "shuffleOptions": {
         this.setState({ shuffleOptions: value });
         break;
       }
@@ -146,7 +151,7 @@ class ClozeImageDragDrop extends Component {
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const duplicatedResponses = item.duplicated_responses || false;
     const showDraghandle = item.show_draghandle || false;
-    const shuffleOptions = item.shuffle_options || false;
+    const shuffleOptions = item.shuffleOptions || false;
     const transparentResponses = item.transparent_responses || false;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -217,7 +222,7 @@ class ClozeImageDragDrop extends Component {
                       <Checkbox
                         data-cy="shuffle-check"
                         className="additional-options"
-                        onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                        onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
                         defaultChecked={shuffleOptions}
                       >
                         {t("component.cloze.imageDragDrop.shuffleoptions")}
@@ -250,7 +255,7 @@ class ClozeImageDragDrop extends Component {
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                 >
-                  <Annotations editable />
+                  <Annotations question={item} setQuestionData={setQuestionData} editable />
                 </Question>
               </div>
               <Options
@@ -275,7 +280,7 @@ class ClozeImageDragDrop extends Component {
                 checkAnswer
                 item={itemForPreview}
                 options={previewDisplayOptions}
-                instructorStimulus={itemForPreview.instructor_stimulus}
+                instructorStimulus={itemForPreview.instructorStimulus}
                 question={previewStimulus}
                 uiStyle={uiStyle}
                 templateMarkUp={itemForPreview.templateMarkUp}
@@ -299,6 +304,7 @@ class ClozeImageDragDrop extends Component {
                 evaluation={evaluation}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                setQuestionData={setQuestionData}
                 {...restProps}
               />
             )}
@@ -306,7 +312,7 @@ class ClozeImageDragDrop extends Component {
               <Display
                 showAnswer
                 item={itemForPreview}
-                instructorStimulus={itemForPreview.instructor_stimulus}
+                instructorStimulus={itemForPreview.instructorStimulus}
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
@@ -331,6 +337,7 @@ class ClozeImageDragDrop extends Component {
                 evaluation={evaluation}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                setQuestionData={setQuestionData}
                 {...restProps}
               />
             )}
@@ -340,7 +347,7 @@ class ClozeImageDragDrop extends Component {
                 preview
                 item={itemForPreview}
                 responses={item.responses}
-                instructorStimulus={itemForPreview.instructor_stimulus}
+                instructorStimulus={itemForPreview.instructorStimulus}
                 validation={itemForPreview.validation}
                 configureOptions={{
                   duplicatedResponses,
@@ -367,6 +374,7 @@ class ClozeImageDragDrop extends Component {
                 onChange={this.handleAddAnswer}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                setQuestionData={setQuestionData}
                 {...restProps}
               />
             )}
@@ -394,7 +402,8 @@ ClozeImageDragDrop.propTypes = {
   cleanSections: PropTypes.func,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool,
-  changePreview: PropTypes.func.isRequired
+  changePreview: PropTypes.func.isRequired,
+  snapItems: PropTypes.array
 };
 
 ClozeImageDragDrop.defaultProps = {
@@ -405,6 +414,7 @@ ClozeImageDragDrop.defaultProps = {
   smallSize: false,
   history: {},
   userAnswer: [],
+  snapItems: [],
   testItem: false,
   advancedAreOpen: false,
   evaluation: [],
@@ -417,7 +427,10 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    (state, { item }) => ({
+      isSidebarCollapsed: state.authorUi.isSidebarCollapsed,
+      snapItems: getSnapItemsByIdSelector(state, item.id)
+    }),
     { setQuestionData: setQuestionDataAction, changePreview: changePreviewAction }
   )
 );

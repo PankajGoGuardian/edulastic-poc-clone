@@ -21,11 +21,11 @@ import Scoring from "../../containers/WidgetOptions/components/Scoring";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
-  const [act, setAct] = useState(item.formatting_options || []);
+  const [act, setAct] = useState(item.formattingOptions || []);
 
   useEffect(() => {
-    if (!isEqual(act, item.formatting_options)) {
-      setAct(item.formatting_options);
+    if (!isEqual(act, item.formattingOptions)) {
+      setAct(item.formattingOptions);
     }
   });
 
@@ -72,8 +72,8 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
         <WordLimitAndCount
           withOutTopMargin
           onChange={handleItemChangeChange}
-          selectValue={item.show_word_limit}
-          inputValue={item.max_word}
+          selectValue={item.showWordLimit}
+          inputValue={item.maxWord}
           fillSections={fillSections}
           cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
@@ -81,8 +81,8 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
         />
         <Checkbox
           style={{ marginTop: 32 }}
-          defaultChecked={item.show_word_count}
-          onChange={e => handleItemChangeChange("show_word_count", e.target.checked)}
+          defaultChecked={item.showWordCount}
+          onChange={e => handleItemChangeChange("showWordCount", e.target.checked)}
         >
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>

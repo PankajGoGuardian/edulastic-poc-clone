@@ -100,40 +100,56 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   return (
     <CheckBoxTemplateBox>
       {showAnswer && hasGroupResponses && (
-        <div
-          className={`
+        <Droppable drop={() => ({ dropTargetIndex })}>
+          <Draggable
+            onDrop={onDropHandler}
+            data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
+              userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+          >
+            <div
+              className={`
             response-btn 
             ${choiceAttempted ? "check-answer" : ""}
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-          style={btnStyle}
-        >
-          <span className="index">{dropTargetIndex + 1}</span>
-          <span className="text">{getLabel(dropTargetIndex)}</span>
+              style={btnStyle}
+            >
+              <span className="index">{dropTargetIndex + 1}</span>
+              <span className="text">{getLabel(dropTargetIndex)}</span>
 
-          <IconWrapper>
-            {choiceAttempted && status === "right" && <RightIcon />}
-            {choiceAttempted && status === "wrong" && <WrongIcon />}
-          </IconWrapper>
-        </div>
+              <IconWrapper>
+                {choiceAttempted && status === "right" && <RightIcon />}
+                {choiceAttempted && status === "wrong" && <WrongIcon />}
+              </IconWrapper>
+            </div>
+          </Draggable>
+        </Droppable>
       )}
       {showAnswer && !hasGroupResponses && (
-        <div
-          className={`
+        <Droppable drop={() => ({ dropTargetIndex })}>
+          <Draggable
+            onDrop={onDropHandler}
+            data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
+              userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+          >
+            <div
+              className={`
             response-btn 
             ${choiceAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-          style={btnStyle}
-        >
-          <span className="index">{dropTargetIndex + 1}</span>
-          <span className="text">{getLabel(dropTargetIndex)}</span>
+              style={btnStyle}
+            >
+              <span className="index">{dropTargetIndex + 1}</span>
+              <span className="text">{getLabel(dropTargetIndex)}</span>
 
-          <IconWrapper>
-            {choiceAttempted && status === "right" && <RightIcon />}
-            {choiceAttempted && status === "wrong" && <WrongIcon />}
-          </IconWrapper>
-        </div>
+              <IconWrapper>
+                {choiceAttempted && status === "right" && <RightIcon />}
+                {choiceAttempted && status === "wrong" && <WrongIcon />}
+              </IconWrapper>
+            </div>
+          </Draggable>
+        </Droppable>
       )}
       {!showAnswer && hasGroupResponses && (
         <Droppable drop={() => ({ dropTargetIndex })}>
@@ -145,9 +161,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             <div
               className={`
               response-btn 
-              ${choiceAttempted ? "check-answer" : ""} 
-              ${status}`}
-              style={btnStyle}
+              check-answer
+              ${choiceAttempted ? status : ""}`}
+              style={{ ...btnStyle, margin: "2px 4px" }}
             >
               <span className="index">{dropTargetIndex + 1}</span>
               <span className="text">{getLabel(dropTargetIndex)}</span>
@@ -166,9 +182,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             <div
               className={`
               response-btn 
-              ${choiceAttempted ? "check-answer" : ""}
-              ${status}`}
-              style={btnStyle}
+              check-answer
+              ${choiceAttempted ? status : ""}`}
+              style={{ ...btnStyle, margin: "2px 4px" }}
             >
               <span className="index">{dropTargetIndex + 1}</span>
               <span className="text">{getLabel(dropTargetIndex)}</span>

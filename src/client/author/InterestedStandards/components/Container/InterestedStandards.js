@@ -15,7 +15,8 @@ import {
   StyledSubjectLine,
   StyledSubjectCloseButton,
   StyledSubjectContent,
-  StyledCheckbox
+  StyledCheckbox,
+  InterestedStandardsDiv
 } from "./styled";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
@@ -172,7 +173,7 @@ class InterestedStandards extends Component {
     // show list end
 
     return (
-      <div>
+      <InterestedStandardsDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
@@ -216,7 +217,7 @@ class InterestedStandards extends Component {
             />
           </StyledLayout>
         </StyledContent>
-      </div>
+      </InterestedStandardsDiv>
     );
   }
 }

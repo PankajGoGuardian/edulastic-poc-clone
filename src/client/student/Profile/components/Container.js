@@ -5,9 +5,11 @@ import PropTypes from "prop-types";
 import { Layout, Form, Input, Button } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { extraDesktopWidth, largeDesktopWidth, desktopWidth, borders, backgrounds } from "@edulastic/colors";
 
 import ProfileImage from "../../assets/Profile.png";
 import cameraIcon from "../../assets/photo-camera.svg";
+import { Wrapper } from "../../styled";
 
 const FormItem = Form.Item;
 class ProfileContainer extends React.Component {
@@ -149,37 +151,38 @@ const LayoutContent = styled(Layout.Content)`
   width: 100%;
 `;
 
-const Wrapper = styled.div`
-  height: 100%;
-  margin: 30px 30px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  background-color: ${props => props.theme.assignment.cardContainerBgColor};
-  padding: 20px 30px;
-  position: relative;
-  @media screen and (max-width: 1300px) {
-    padding: 15px;
-  }
-
-  @media screen and (max-width: 767px) {
-    padding: 5px 30px;
-  }
-`;
-
 const ProfileContentWrapper = styled.div`
   text-align: center;
 `;
 
 const UserDetail = styled.div`
-  padding: 0.5rem 0rem 1.5rem;
-  border-bottom: 1px solid #f2f2f2;
+  padding: 42px 0rem 54px;
+  border-bottom: 1px solid ${borders.default};
+
+  @media (max-width: ${largeDesktopWidth}) {
+    padding: 25px 0 30px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    padding: 32px 0 20px;
+  }
 `;
 
 const UserTitle = styled.h2`
   color: ${props => props.theme.profile.userHeadingTextColor};
   font-size: ${props => props.theme.profile.userHeadingTextSize};
   font-weight: ${props => props.theme.profile.userHeadingTextWeight};
-  margin-bottom: 5px;
+  margin-bottom: 11px;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    font-size: 18px;
+    margin-bottom: 7px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    font-size: 22px;
+    margin-bottom: 11px;
+  }
 `;
 
 const UserSubTitle = styled.p`
@@ -188,48 +191,139 @@ const UserSubTitle = styled.p`
 `;
 
 const ProfileImgWrapper = styled.div`
-  margin: 40px auto;
-  max-width: 140px;
-  max-height: 140px;
+  margin: 44px auto 30px;
+  max-width: 146px;
+  max-height: 146px;
   position: relative;
+
   div {
-    width: 140px;
-    height: 140px;
+    width: 146px;
+    height: 146px;
     border-radius: 50%;
     overflow: hidden;
     background: url(${ProfileImage}) no-repeat;
     background-size: cover;
     background-position: center center;
   }
+
   span {
     width: 34px;
     height: 34px;
     border-radius: 50%;
     position: absolute;
     right: 5px;
-    bottom: 5px;
+    bottom: -1px;
     background: ${props => props.theme.profile.uploadIconBgColor};
     line-height: 30px;
     cursor: pointer;
+
     img {
       width: 17px;
+    }
+  }
+
+  @media (max-width: ${extraDesktopWidth}) {
+    max-width: 124px;
+    max-height: 124px;
+    margin-top: 25px;
+
+    div {
+      width: 124px;
+      height: 124px;
+    }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    max-width: 114px;
+    max-height: 114px;
+    margin-top: 30px;
+    margin-bottom: 9px;
+
+    div {
+      width: 114px;
+      height: 114px;
+    }
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    max-width: 146px;
+    max-height: 146px;
+    margin-top: 41px;
+    margin-bottom: 16px;
+
+    div {
+      width: 146px;
+      height: 146px;
     }
   }
 `;
 
 const FormWrapper = styled(Form)`
-  width: 70%
+  max-width: 749px;
+  width: 100%;
   margin: 0px auto;
   text-align: left;
-  @media (max-width: 992px) {
+
+  .ant-form-item {
+    margin-bottom: 22px;
+  }
+
+  .ant-input {
+    height: 40px;
+    background: ${backgrounds.primary};
+    border: 1px solid ${borders.secondary};
+    padding: 0 24px;
+  }
+
+  @media (max-width: ${extraDesktopWidth}) {
+    max-width: 647px;
+
+    .ant-form-item-control {
+      line-height: 35px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 8px;
+    }
+
+    .ant-input {
+      height: 30px;
+    }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    .ant-form-item-control {
+      line-height: 34px;
+    }
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+  }
+
+  @media (max-width: ${desktopWidth}) {
     width: 100%;
+
+    .ant-form-item {
+      margin-bottom: 7px;
+      padding: 0 5px;
+    }
+
+    .ant-form-item-control {
+      line-height: 43px;
+    }
+
+    .ant-input {
+      height: 40px;
+    }
   }
 `;
 
 const FormItemWrapper = styled(FormItem)`
   width: 50%;
   display: inline-block;
-  padding: 0px 10px;
+  padding: 0px 15px;
+
   @media (max-width: 425px) {
     width: 100%;
     display: block;
@@ -238,6 +332,7 @@ const FormItemWrapper = styled(FormItem)`
     font-size: ${props => props.theme.profile.formInputLabelSize};
     color: ${props => props.theme.profile.formInputLabelColor};
     font-weight: 600;
+    letter-spacing: -0.4px;
   }
   .ant-form-explain {
     font-size: 12px;
@@ -246,20 +341,62 @@ const FormItemWrapper = styled(FormItem)`
 
 const FormButtonWrapper = styled.div`
   text-align: center;
-  margin-top: 30px;
+  margin-top: 46px;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    margin-top: 27px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    margin-top: 34px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    margin-top: 24px;
+  }
 `;
 
 const SaveButton = styled(Button)`
-  width: 150px;
-  margin: 0px 10px;
+  width: 200px;
+  height: 40px;
+  margin: 0 15px;
   background: ${props => props.theme.profile.saveButtonBgColor};
   border-color: ${props => props.theme.profile.saveButtonBorderColor};
   font-size: ${props => props.theme.profile.saveButtonTextSize};
   color: ${props => props.theme.profile.saveButtonTextColor};
   text-transform: uppercase;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    height: 36px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 160px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    width: 100%;
+    margin: 8px 0 0 0;
+  }
 `;
 
 const CancelButton = styled(SaveButton)`
+  width: 200px;
+  height: 40px;
+  margin: 0 15px;
   background: ${props => props.theme.profile.cancelButtonBgColor};
   color: ${props => props.theme.profile.cancelButtonTextColor};
+
+  @media (max-width: ${extraDesktopWidth}) {
+    height: 36px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 160px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    width: 100%;
+    margin: 0;
+  }
 `;

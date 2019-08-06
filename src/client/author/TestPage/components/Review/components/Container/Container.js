@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq } from "lodash";
+import { cloneDeep, get, uniq as _uniq, flatMap, map } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -34,13 +34,55 @@ const scoreOfItem = item => {
     return item.itemLevelScore;
   }
   return get(item, "data.questions", []).reduce(
-    (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
+    (acc, q) => acc + get(q, ["validation", "validResponse", "score"], 0),
     0
   );
 };
 
 const getTotalScore = testItems => testItems.map(item => scoreOfItem(item)).reduce((total, s) => total + s, 0);
 
+const getStandardWiseSummary = question => {
+  let standardSummary;
+  if (question) {
+    const points = get(question, "validation.validResponse.score", 1);
+    const alignment = get(question, "alignment", []);
+    standardSummary = flatMap(alignment, ({ domains, isEquivalentStandard = false, curriculumId }) =>
+      flatMap(domains, ({ standards }) =>
+        map(standards, ({ name }) => ({
+          curriculumId: `${curriculumId}`,
+          identifier: name,
+          totalPoints: points,
+          totalQuestions: 1,
+          isEquivalentStandard
+        }))
+      )
+    );
+  }
+  return standardSummary;
+};
+
+export const createSummaryData = items => {
+  const summary = {
+    totalPoints: 0,
+    totalQuestions: 0,
+    standards: []
+  };
+  for (const item of items) {
+    const { itemLevelScoring, maxScore, itemLevelScore } = item;
+    const itemPoints = (itemLevelScoring === true && itemLevelScore) || maxScore;
+    const questions = get(item, "data.questions", []);
+    const itemTotalQuestions = questions.length;
+    for (const question of questions) {
+      const standardSummary = getStandardWiseSummary(question);
+      if (standardSummary) {
+        summary.standards.push(...standardSummary);
+      }
+    }
+    summary.totalPoints += itemPoints;
+    summary.totalQuestions += itemTotalQuestions;
+  }
+  return summary;
+};
 // TODO rewrite into  class component and mobile view
 class Review extends PureComponent {
   static propTypes = {
@@ -113,7 +155,7 @@ class Review extends PureComponent {
       const foundItem = test.testItems.find(({ id }) => id === item._id);
       return !(foundItem && foundItem.selected);
     });
-
+    newData.summary = createSummaryData(newData.testItems);
     this.setSelected([]);
     setData(newData);
     message.success("Selected item(s) removed successfully");
@@ -276,7 +318,7 @@ class Review extends PureComponent {
     return (
       <ReviewPageContainer>
         <Row>
-          <Col span={isSmallSize ? 18 : 24}>
+          <Col span={owner && isEditable ? 24 : 18}>
             <div ref={this.secondHeaderRef}>
               <SecondHeader isMobileSize={isMobileSize}>
                 <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
@@ -295,6 +337,8 @@ class Review extends PureComponent {
                 />
               </SecondHeader>
             </div>
+          </Col>
+          <Col span={isSmallSize ? 18 : 24}>
             <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable
@@ -304,6 +348,9 @@ class Review extends PureComponent {
                   isEditable={isEditable}
                   owner={owner}
                   scoring={test.scoring}
+                  questions={questions}
+                  rows={rows}
+                  mobile={!isSmallSize}
                   onChangePoints={this.handleChangePoints}
                   handlePreview={this.handlePreviewTestItem}
                 />
@@ -344,21 +391,23 @@ class Review extends PureComponent {
             />
           </ReviewSummaryWrapper>
         </Row>
-        <PreviewModal
-          testId={get(this.props, "match.params.id", false)}
-          isVisible={isModalVisible}
-          onClose={this.closeModal}
-          showModal
-          isEditable={isEditable}
-          owner={owner}
-          addDuplicate={this.handleDuplicateItem}
-          page="review"
-          data={item}
-          questions={questions}
-          checkAnswer={() => checkAnswer(item)}
-          showAnswer={() => showAnswer(item)}
-          showEvaluationButtons
-        />
+        {isModalVisible && (
+          <PreviewModal
+            testId={get(this.props, "match.params.id", false)}
+            isVisible={isModalVisible}
+            onClose={this.closeModal}
+            showModal
+            isEditable={isEditable}
+            owner={owner}
+            addDuplicate={this.handleDuplicateItem}
+            page="review"
+            data={item}
+            questions={questions}
+            checkAnswer={() => checkAnswer(item)}
+            showAnswer={() => showAnswer(item)}
+            showEvaluationButtons
+          />
+        )}
         <TestPreviewModal
           isModalVisible={isTestPreviewModalVisible}
           testId={currentTestId}

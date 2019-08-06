@@ -110,7 +110,7 @@ const MatrixChoice = ({
             />
             <Options
               onChange={handleItemChangeChange}
-              uiStyle={item.ui_style}
+              uiStyle={item.uiStyle}
               fillSections={fillSections}
               cleanSections={cleanSections}
               advancedAreOpen={advancedAreOpen}

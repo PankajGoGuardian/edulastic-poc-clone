@@ -1,6 +1,7 @@
 import JXG from "jsxgraph";
 import { CONSTANT } from "./config";
 import { defaultConfig as lineConfig } from "./elements/Line";
+import { EditButton } from "./elements";
 import rayConfig from "./elements/Ray";
 import segmentConfig from "./elements/Segment";
 import vectorConfig from "./elements/Vector";
@@ -140,7 +141,24 @@ function getPointsFromFlatConfig(type, pointIds, config) {
   }
 }
 
-export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = () => {}) => {
+export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = () => {}, enableSnapTo = false) => {
+  if (enableSnapTo) {
+    line.on("down", () => {
+      points.forEach(point => {
+        if (!point.visProp.snaptogrid) {
+          point.setAttribute({ snapToGrid: true });
+        }
+      });
+    });
+    points.forEach(point => {
+      point.on("down", () => {
+        if (!point.visProp.snaptogrid) {
+          point.setAttribute({ snapToGrid: true });
+        }
+      });
+    });
+  }
+
   line.on("up", () => {
     if (line.dragged) {
       points.forEach(point => point.snapToGrid());
@@ -156,7 +174,6 @@ export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = ()
     line.dragged = true;
     board.dragged = true;
   });
-
   points.forEach(point => {
     point.on("up", () => {
       if (point.dragged) {
@@ -171,6 +188,7 @@ export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = ()
       }
       point.dragged = true;
       board.dragged = true;
+      EditButton.cleanButton(board, point);
     });
   });
 };
@@ -304,7 +322,12 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
     const { id, type, points, latex, subType } = element;
-    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.ANNOTATION || type === CONSTANT.TOOLS.AREA) {
+    if (
+      type === CONSTANT.TOOLS.POINT ||
+      type === CONSTANT.TOOLS.ANNOTATION ||
+      type === CONSTANT.TOOLS.AREA ||
+      type === CONSTANT.TOOLS.DRAG_DROP
+    ) {
       if (!acc[id]) {
         acc[id] = element;
       }
@@ -317,7 +340,9 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type,
       _type: element._type,
       id: element.id,
-      label: element.label
+      label: element.label,
+      labelIsVisible: element.labelIsVisible,
+      text: element.text
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
       acc[id].latex = latex;
@@ -351,7 +376,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 export function flat2nestedConfig(config) {
   return Object.values(
     config.reduce((acc, element) => {
-      const { id, type, subElement = false, latex = null, subType = null, points } = element;
+      const { id, type, subElement = false, latex = null, subType = null, points, text = null } = element;
 
       if (!acc[id] && !subElement) {
         acc[id] = {
@@ -360,14 +385,24 @@ export function flat2nestedConfig(config) {
           _type: element._type,
           colors: element.colors || null,
           label: element.label,
+          labelIsVisible: element.labelIsVisible,
           latex,
-          subType
+          subType,
+          text
         };
         if (type === CONSTANT.TOOLS.AREA) {
           acc[id].points = points;
-        } else if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.ANNOTATION) {
+        } else if (
+          type === CONSTANT.TOOLS.POINT ||
+          type === CONSTANT.TOOLS.ANNOTATION ||
+          type === CONSTANT.TOOLS.DRAG_DROP
+        ) {
           acc[id].x = element.x;
           acc[id].y = element.y;
+          if (type === CONSTANT.TOOLS.POINT) {
+            acc[id].pointIsVisible = element.pointIsVisible;
+            acc[id].labelIsVisible = element.labelIsVisible;
+          }
         } else {
           acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
         }

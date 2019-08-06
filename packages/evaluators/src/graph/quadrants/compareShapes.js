@@ -34,16 +34,20 @@ class CompareShapes {
       ? this.testAnswer.find(item => item.id === trueId)
       : this.trueAnswerValue.find(item => item.id === trueId);
 
+    const negativeResult = {
+      id: testId,
+      result: false
+    };
+
     if (!testShape || !trueShape || testShape.type !== trueShape.type) {
-      return {
-        id: testId,
-        result: false
-      };
+      return negativeResult;
     }
 
     switch (testShape.type) {
       case ShapeTypes.POINT:
         return this.comparePoints(testShape, trueShape);
+      case ShapeTypes.DRAG_DROP:
+        return this.compareDragDropValues(testShape, trueShape);
       case ShapeTypes.LINE:
         return this.compareLines(testShape, trueShape);
       case ShapeTypes.RAY:
@@ -72,11 +76,17 @@ class CompareShapes {
         return this.compareLogarithms(testShape, trueShape);
       case ShapeTypes.POLYNOM:
         return this.comparePolynoms(testShape, trueShape);
+      case ShapeTypes.EQUATION:
+        switch (testShape.subType) {
+          case ShapeTypes.LINE:
+            return this.compareLines(testShape, trueShape);
+          case ShapeTypes.PARABOLA:
+            return this.compareParabolas(testShape, trueShape);
+          default:
+            return negativeResult;
+        }
       default:
-        return {
-          id: testId,
-          result: false
-        };
+        return negativeResult;
     }
   }
 
@@ -95,6 +105,21 @@ class CompareShapes {
 
     return {
       id: testPoint.id,
+      result: false
+    };
+  }
+
+  compareDragDropValues(testValue, trueValue) {
+    if (testValue.x === trueValue.x && testValue.y === trueValue.y && testValue.text === trueValue.text) {
+      return {
+        id: testValue.id,
+        relatedId: trueValue.id,
+        result: true
+      };
+    }
+
+    return {
+      id: testValue.id,
       result: false
     };
   }
@@ -149,7 +174,8 @@ class CompareShapes {
 
     if (
       testShapeFunc.getKoefA() === trueShapeFunc.getKoefA() &&
-      testShapeFunc.getKoefB() === trueShapeFunc.getKoefB()
+      testShapeFunc.getKoefB() === trueShapeFunc.getKoefB() &&
+      testShapeFunc.getVerticalLineOffset() === trueShapeFunc.getVerticalLineOffset()
     ) {
       return positiveResult;
     }

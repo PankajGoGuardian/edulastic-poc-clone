@@ -40,7 +40,7 @@ Options.defaultProps = {
     fontsize: "normal",
     columns: 0,
     orientation: "horizontal",
-    choice_label: "number"
+    choiceLabel: "number"
   },
   advancedAreOpen: false,
   fillSections: () => {},

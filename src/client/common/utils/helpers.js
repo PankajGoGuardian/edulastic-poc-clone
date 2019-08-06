@@ -131,9 +131,9 @@ export const isEmailValid = (rule, value, callback, checks, message) => {
 
   if (flag) {
     callback();
-  } else {
-    callback(message);
+    return true;
   }
+  callback(message);
 };
 
 export const getFullNameFromAsString = obj => {

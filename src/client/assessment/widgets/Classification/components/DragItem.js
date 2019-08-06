@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
 import { FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
@@ -34,7 +34,7 @@ const specSource = {
 
     const itemTo = monitor.getDropResult();
 
-    props.onDrop(itemCurrent, itemTo);
+    props.onDrop(itemCurrent, itemTo, props.from);
   },
   canDrag(props) {
     return props.disableResponse !== true;
@@ -57,12 +57,7 @@ const Item = ({ valid, preview, theme, dragHandle, renderIndex, item }) => (
       </IndexBox>
     )}
     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
-    {preview && valid !== undefined && (
-      <div>
-        {valid && <IconCheck />}
-        {!valid && <IconClose />}
-      </div>
-    )}
+    {preview && valid !== undefined && <div>{valid ? <IconCheck /> : <IconClose />}</div>}
   </FlexContainer>
 );
 
@@ -87,6 +82,7 @@ const DragItemContainer = ({
   dragHandle,
   possibilityListPosition,
   isResetOffset = false,
+  noPadding,
   ...restProps
 }) => {
   const dragItem = (
@@ -123,7 +119,7 @@ const DragItemContainer = ({
         <DragPreview {...restProps} isDragging={isDragging} isResetOffset={isResetOffset}>
           {dragItem}
         </DragPreview>
-        <div
+        <InnerWrapper
           style={getStyles(
             isDragging,
             isTransparent,
@@ -139,7 +135,7 @@ const DragItemContainer = ({
               : theme.widgets.classification.dragItemBorderColor,
             preview && valid !== undefined
               ? {
-                  paddingRight: 15,
+                  padding: 0,
                   borderTopLeftRadius: 0,
                   borderBottomLeftRadius: 0
                 }
@@ -147,9 +143,16 @@ const DragItemContainer = ({
           )}
         >
           {dragItem}
-        </div>
+        </InnerWrapper>
       </div>
     )
   );
 };
+
+const InnerWrapper = styled.div`
+  p {
+    width: 151px;
+  }
+`;
+
 export default withTheme(DragSource("item", specSource, collectSource)(DragItemContainer));

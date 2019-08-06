@@ -1,14 +1,13 @@
 import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Select } from "antd";
-import { pick as _pick, uniq as _uniq } from "lodash";
+import { pick as _pick, uniq as _uniq, get } from "lodash";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
 import {
   getFormattedCurriculumsSelector,
   getRecentStandardsListSelector
 } from "../../../author/src/selectors/dictionaries";
-import { updateRecentStandardsAction } from "../../../author/src/actions/dictionaries";
 import BrowseButton from "./styled/BrowseButton";
 import { ItemBody } from "./styled/ItemBody";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
@@ -17,8 +16,11 @@ import StandardsModal from "./StandardsModal";
 import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
 import StandardTags from "./styled/StandardTags";
 import StandardsWrapper, { RecentStandards } from "./styled/StandardsWrapper";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { storeInLocalStorage, removeFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { themeColor, grey } from "@edulastic/colors";
+import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../student/Login/ducks";
+import { getDefaultGradesSelector, getDefaultSubjectSelector } from "../../../author/src/selectors/user";
+import { updateDefaultCurriculumAction } from "../../../author/src/actions/dictionaries";
 
 const AlignmentRow = ({
   t,
@@ -34,6 +36,13 @@ const AlignmentRow = ({
   editAlignment,
   createUniqGradeAndSubjects,
   formattedCuriculums,
+  defaultGrades,
+  updateDefaultCurriculum,
+  defaultSubject,
+  defaultCurriculumId,
+  defaultCurriculumName,
+  updateDefaultGrades,
+  updateDefaultSubject,
   interestedCurriculums,
   recentStandardsList = []
 }) => {
@@ -46,15 +55,25 @@ const AlignmentRow = ({
   } = alignment;
   const [showModal, setShowModal] = useState(false);
   const setSubject = val => {
+    updateDefaultSubject(val);
+    storeInLocalStorage("defaultSubject", val);
+    removeFromLocalStorage("defaultCurriculumId");
+    removeFromLocalStorage("defaultCurriculumName");
+    updateDefaultCurriculum({ defaultCurriculumId: "", defaultCurriculumName: "" });
     editAlignment(alignmentIndex, { subject: val, curriculum: "" });
   };
 
   const setGrades = val => {
+    updateDefaultGrades(val);
+    storeInLocalStorage("defaultGrades", val);
     editAlignment(alignmentIndex, { grades: val });
   };
 
   const handleChangeStandard = (curriculum, event) => {
     const curriculumId = event.key;
+    storeInLocalStorage("defaultCurriculumId", curriculumId);
+    storeInLocalStorage("defaultCurriculumName", curriculum);
+    updateDefaultCurriculum({ defaultCurriculumId: curriculumId, defaultCurriculumName: curriculum });
     editAlignment(alignmentIndex, { curriculumId, curriculum });
   };
 
@@ -145,7 +164,14 @@ const AlignmentRow = ({
   useEffect(() => {
     const { grades: alGrades, subject: alSubject, curriculum: alCurriculum, curriculumId: alCurriculumId } = alignment;
     if (!alCurriculumId) {
-      if (interestedCurriculums.length > 0) {
+      if (defaultSubject && defaultCurriculumId) {
+        editAlignment(alignmentIndex, {
+          subject: defaultSubject,
+          curriculum: defaultCurriculumName,
+          curriculumId: defaultCurriculumId,
+          grades: defaultGrades || []
+        });
+      } else if (interestedCurriculums && interestedCurriculums.length > 0) {
         editAlignment(alignmentIndex, {
           subject: interestedCurriculums[0].subject,
           curriculum: interestedCurriculums[0].name,
@@ -341,8 +367,16 @@ AlignmentRow.propTypes = {
 
 export default connect(
   (state, props) => ({
+    defaultCurriculumId: get(state, "dictionaries.defaultCurriculumId"),
+    defaultCurriculumName: get(state, "dictionaries.defaultCurriculumName"),
     formattedCuriculums: getFormattedCurriculumsSelector(state, props.alignment),
+    defaultGrades: getDefaultGradesSelector(state),
+    defaultSubject: getDefaultSubjectSelector(state),
     recentStandardsList: getRecentStandardsListSelector(state)
   }),
-  null
+  {
+    updateDefaultCurriculum: updateDefaultCurriculumAction,
+    updateDefaultSubject: updateDefaultSubjectAction,
+    updateDefaultGrades: updateDefaultGradesAction
+  }
 )(AlignmentRow);

@@ -10,6 +10,7 @@ import Display from "./Display";
 
 class CorrectAnswer extends Component {
   static propTypes = {
+    setQuestionData: PropTypes.func.isRequired,
     response: PropTypes.object.isRequired,
     onUpdatePoints: PropTypes.func.isRequired,
     onUpdateValidationValue: PropTypes.func.isRequired,
@@ -80,7 +81,8 @@ class CorrectAnswer extends Component {
       backgroundColor,
       maxRespCount,
       imageOptions = {},
-      item
+      item,
+      setQuestionData
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -121,6 +123,7 @@ class CorrectAnswer extends Component {
           imageOptions={imageOptions}
           showBorder={false}
           item={item}
+          setQuestionData={setQuestionData}
         />
       </div>
     );

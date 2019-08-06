@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -8,6 +8,7 @@ import { white } from "@edulastic/colors";
 import { DragSource } from "react-dnd";
 import { withNamespaces } from "@edulastic/localization";
 
+import ItemDetailContext, { COMPACT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import QuestionWrapper from "../../../../../../assessment/components/QuestionWrapper";
 import { Types } from "../../../../constants";
 import { setItemDetailDraggingAction, setItemLevelScoreAction, setItemLevelScoringAction } from "../../../../ducks";
@@ -15,6 +16,7 @@ import { getQuestionByIdSelector, setQuestionScoreAction } from "../../../../../
 import { Container, Buttons } from "./styled";
 import { InputNumber } from "antd";
 import { get } from "lodash";
+import { questionType } from "@edulastic/constants";
 
 const ItemDetailWidget = ({
   widget,
@@ -33,6 +35,7 @@ const ItemDetailWidget = ({
   setQuestionScore,
   rowIndex
 }) => {
+  const { layoutType } = useContext(ItemDetailContext);
   const [showButtons, setShowButtons] = useState(!flowLayout);
   const onMouseEnterHander = () => {
     if (flowLayout) setShowButtons(true);
@@ -41,6 +44,14 @@ const ItemDetailWidget = ({
     if (flowLayout) setShowButtons(false);
   };
   const showPoints = rowIndex === 0 && itemData.rows.length > 1 ? false : true;
+  const { multipartItem } = itemData;
+
+  let disableResponse = false;
+  if (multipartItem && question.type === questionType.TOKEN_HIGHLIGHT) {
+    disableResponse = true;
+  } else if (multipartItem && question.type === questionType.HIGHLIGHT_IMAGE) {
+    disableResponse = true;
+  }
 
   return (
     connectDragPreview &&
@@ -58,13 +69,14 @@ const ItemDetailWidget = ({
                 questionId={widget.reference}
                 data={{ ...question, smallSize: true }}
                 flowLayout={flowLayout}
+                disableResponse={disableResponse}
               />
             )}
           </div>
 
           {(!flowLayout || showButtons) && (
             <div style={{ flex: "1" }}>
-              <Buttons>
+              <Buttons compact={layoutType === COMPACT}>
                 {itemData.itemLevelScoring && widgetIndex === 0 && showPoints && (
                   <div className="points">
                     Points :{" "}
@@ -88,7 +100,7 @@ const ItemDetailWidget = ({
                       className="ant-input"
                       type="number"
                       min={1}
-                      value={get(question, "validation.valid_response.score", 0)}
+                      value={get(question, "validation.validResponse.score", 0)}
                       onChange={e => {
                         const v = parseFloat(e.target.value);
                         setQuestionScore({ score: v, qid: question.id });

@@ -4,7 +4,7 @@ import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import produce from "immer";
 
-import { WORD_MODE, PARAGRAPH_MODE, EDIT } from "../../constants/constantsForQuestions";
+import { WORD_MODE, PARAGRAPH_MODE, EDIT, CUSTOM_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
@@ -16,6 +16,8 @@ import Options from "./components/Options";
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 
+import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray, getCustomArray } from "./helpers";
+
 const OptionsList = withPoints(TokenHighlightPreview);
 
 const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedAreOpen }) => {
@@ -25,38 +27,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
 
   const mode = item.tokenization;
 
-  const initialArray = item.template
-    .replace(/<br\/>/g, "")
-    .replace(/(<p>)/g, "")
-    .replace(/(<\/p>)/g, "<br/>")
-    .split('<p class="newline_section">');
-
-  const paragraphsArray = (initialArray.join("").match(/(.*?)(<br\/>)+/g) || []).map(el => ({
-    value: `${el}`,
-    active: true
-  }));
-
-  const sentencesArray = (initialArray.join("").match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g) || [])
-    .map(el => ({ value: `${el}`, active: true }))
-    .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
-
-  const mathArray = initialArray.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
-  let i = 0;
-  const wordsArray = (
-    initialArray
-      .join("")
-      .replace("&nbsp;", " ")
-      .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
-      .match(/(.*?)(([\s]+([.]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
-  )
-    .map(el => {
-      if (mathArray && el.indexOf("<span></span>") !== -1) {
-        el = el.replace("<span></span>", mathArray[i]);
-        i++;
-      }
-      return el;
-    })
-    .map(el => ({ value: `${el}`, active: true }));
+  const initialArray = getInitialArray(item.template);
 
   const [template, setTemplate] = useState();
 
@@ -64,13 +35,15 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     setQuestionData(
       produce(item, draft => {
         if (template || draft.templeWithTokens.length === 0) {
-          let resultArray = "";
+          let resultArray = [];
           if (mode === WORD_MODE) {
-            resultArray = wordsArray;
+            resultArray = getWordsArray(initialArray);
           } else if (mode === PARAGRAPH_MODE) {
-            resultArray = paragraphsArray;
+            resultArray = getParagraphsArray(initialArray);
+          } else if (mode === CUSTOM_MODE) {
+            resultArray = getCustomArray(initialArray);
           } else {
-            resultArray = sentencesArray;
+            resultArray = getSentencesArray(initialArray);
           }
 
           draft.templeWithTokens = resultArray;
@@ -83,17 +56,17 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         updateVariables(draft);
       })
     );
-  }, [mode, item.template]);
+  }, [mode, item.template, correctTab]);
 
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
-          value: draft.validation.valid_response.value
+          value: draft.validation.validResponse.value
         });
       })
     );
@@ -104,9 +77,9 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
 
         updateVariables(draft);
@@ -118,9 +91,9 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.value = ans;
+          draft.validation.validResponse.value = ans;
         } else {
-          draft.validation.alt_responses[correctTab - 1].value = ans;
+          draft.validation.altResponses[correctTab - 1].value = ans;
         }
 
         updateVariables(draft);
@@ -131,7 +104,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
 
         setCorrectTab(0);
         updateVariables(draft);
@@ -143,12 +116,13 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     <OptionsList
       item={item}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
+      mode={mode}
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={
-        correctTab === 0 ? item.validation.valid_response.value : item.validation.alt_responses[correctTab - 1].value
+        correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
     />

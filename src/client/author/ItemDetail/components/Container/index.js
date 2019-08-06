@@ -46,7 +46,7 @@ const ItemDetailContainer = ({
   const { modalItemId } = props;
   const { id, testId } = match.params;
   // TODO: make it friggin editable or something. Feature is not done yet!
-  const [isEditable, setEditable] = useState(false);
+  const [isEditable, setEditable] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
   const [isMultipart, setMultipart] = useState(false);
 

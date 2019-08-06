@@ -17,23 +17,29 @@ export const getFontSize = (fontSize, withRem = false) => {
   }
 };
 
-export const getStylesFromUiStyleToCssStyle = ui_style => {
+export const getStylesFromUiStyleToCssStyle = uiStyle => {
   const cssStyles = {};
-  Object.keys(ui_style || {}).forEach(item => {
-    const value = ui_style[item];
+  Object.keys(uiStyle || {}).forEach(item => {
+    const value = uiStyle[item];
     switch (item) {
       case "fontsize":
         cssStyles.fontSize = getFontSize(value, true);
         break;
-      case "min_width":
+      case "minWidth":
         cssStyles.minWidth = `${value}px`;
         break;
-      case "transparent_background":
+      case "widthpx":
+        cssStyles.width = `${value}px`;
+        break;
+      case "heightpx":
+        cssStyles.height = `${value}px`;
+        break;
+      case "transparentBackground":
         if (value) cssStyles.background = "transparent";
         break;
-      case "response_font_scale":
+      case "responseFontScale":
         if (value === "boosted") {
-          if (ui_style.fontsize) cssStyles.fontScale = `${parseFloat(getFontSize(ui_style.fontsize, true)) * 1.5}rem`;
+          if (uiStyle.fontsize) cssStyles.fontScale = `${parseFloat(getFontSize(uiStyle.fontsize, true)) * 1.5}rem`;
           else cssStyles.fontScale = "1.5rem";
         }
         break;

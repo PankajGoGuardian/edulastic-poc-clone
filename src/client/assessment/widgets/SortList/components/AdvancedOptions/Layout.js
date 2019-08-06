@@ -13,8 +13,8 @@ import Question from "../../../../components/Question";
 class LayoutWrapper extends Component {
   render() {
     const { onUiChange, advancedAreOpen, item, fillSections, cleanSections, t } = this.props;
-    const fontsize = get(item, "ui_style.fontsize");
-    const orientation = get(item, "ui_style.orientation");
+    const fontsize = get(item, "uiStyle.fontsize");
+    const orientation = get(item, "uiStyle.orientation");
 
     return (
       <Question

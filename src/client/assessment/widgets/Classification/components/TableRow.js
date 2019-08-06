@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
+import { Rnd } from "react-rnd";
 
+import { get } from "lodash";
 import { CenteredText } from "@edulastic/common";
 
 import DropContainer from "../../../components/DropContainer";
@@ -10,7 +12,9 @@ import DragItem from "./DragItem";
 import { Column, ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
-import { SHOW, CHECK } from "../../../constants/constantsForQuestions";
+import { SHOW, CHECK, EDIT, PREVIEW } from "../../../constants/constantsForQuestions";
+
+import produce from "immer";
 
 const TableRow = ({
   startIndex,
@@ -21,7 +25,7 @@ const TableRow = ({
   drop,
   answers,
   preview,
-  possible_responses,
+  possibleResponses,
   onDrop,
   validArray,
   dragHandle,
@@ -34,8 +38,19 @@ const TableRow = ({
   item,
   disableResponse,
   isReviewTab,
-  previewTab
+  previewTab,
+  view,
+  setQuestionData
 }) => {
+  const handleRowTitleDragStop = (event, data) => {
+    if (setQuestionData) {
+      setQuestionData(
+        produce(item, draft => {
+          draft.rowTitle = { x: data.x, y: data.y };
+        })
+      );
+    }
+  };
   const styles = {
     columnContainerStyle: {
       display: "flex",
@@ -47,27 +62,74 @@ const TableRow = ({
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
   };
+  const rowHasHeader = item.uiStyle && item.uiStyle.row_header;
   const cols = [];
-
   let validIndex = -1;
-  const responses = item.group_possible_responses
-    ? item.possible_response_groups.flatMap(group => group.responses)
-    : item.possible_responses;
+  const rndX = get(item, `rowTitle.x`, 0);
+  const rndY = get(item, `rowTitle.y`, 0);
+  const responses = item.groupPossibleResponses
+    ? item.possibleResponseGroups.flatMap(group => group.responses)
+    : item.possibleResponses;
   for (let index = startIndex; index < startIndex + colCount; index++) {
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
-        <RowTitleCol key={index + startIndex + colCount} colCount={colCount}>
-          {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
-            <CenteredText
-              style={{ wordWrap: "break-word", textAlign: "left" }}
-              dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
+        <Rnd
+          enableResizing={{
+            bottom: false,
+            bottomLeft: false,
+            bottomRight: false,
+            left: false,
+            right: false,
+            top: false,
+            topLeft: false,
+            topRight: false
+          }}
+          default={{ x: rndX, y: rndY }}
+          disableDragging={view !== EDIT}
+          onDragStop={handleRowTitleDragStop}
+        >
+          {rowHasHeader && (
+            <ColumnLabel
+              transparent={previewTab === SHOW || previewTab === CHECK}
+              dangerouslySetInnerHTML={{ __html: rowHasHeader }}
             />
-          ) : null}
-        </RowTitleCol>
+          )}
+
+          <RowTitleCol
+            key={index + startIndex + colCount}
+            colCount={colCount}
+            justifyContent="center"
+            width="100%"
+            padding="0"
+            marginTop="0"
+          >
+            {rowTitles[index / colCount] || rowTitles[index / colCount] === "" ? (
+              <CenteredText
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  wordWrap: "break-word",
+                  width: `200px`,
+                  height: "85px",
+                  border: rowHasHeader ? `2px dashed ${theme.dropContainer.isNotOverBorderColor}` : "none"
+                }}
+                dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
+              />
+            ) : null}
+          </RowTitleCol>
+        </Rnd>
       );
     }
     cols.push(
-      <ResponseRnd question={item} height="auto" index={index} isResizable={isResizable}>
+      <ResponseRnd
+        rowHasTitle={rowTitles.length > 0}
+        question={item}
+        height="auto"
+        index={index}
+        isResizable={isResizable}
+        rowHasHeader={rowHasHeader}
+      >
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
           <ColumnLabel
             transparent={previewTab === SHOW || previewTab === CHECK}
@@ -90,11 +152,12 @@ const TableRow = ({
             answers[index].map((answerValue, answerIndex) => {
               validIndex++;
               const resp = responses.find(resp => resp.id === answerValue);
+              const valid = get(validArray, [index, resp.id], undefined);
               return (
                 <DragItem
                   isTransparent={isTransparent}
                   dragHandle={dragHandle}
-                  valid={isReviewTab ? true : validArray && validArray[validIndex]}
+                  valid={isReviewTab ? true : valid}
                   preview={preview}
                   key={answerIndex}
                   renderIndex={responses.findIndex(resp => resp.id === answerValue)}
@@ -102,6 +165,8 @@ const TableRow = ({
                   item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
                   isResetOffset
+                  noPadding
+                  from="column"
                 />
               );
             })}
@@ -126,7 +191,7 @@ TableRow.propTypes = {
   drop: PropTypes.func.isRequired,
   answers: PropTypes.array.isRequired,
   preview: PropTypes.bool.isRequired,
-  possible_responses: PropTypes.array.isRequired,
+  possibleResponses: PropTypes.array.isRequired,
   onDrop: PropTypes.func.isRequired,
   validArray: PropTypes.array.isRequired,
   theme: PropTypes.object.isRequired,

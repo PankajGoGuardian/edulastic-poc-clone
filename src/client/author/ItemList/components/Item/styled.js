@@ -1,12 +1,15 @@
 import {
+  mediumDesktopWidth,
   white,
   tabletWidth,
   textColor,
   lightGrey,
   greyDarken,
   greenPrimary,
-  darkGrey,
-  green,
+  themeLightGrayColor,
+  themeLightGrayBgColor,
+  themeColorTagsBg,
+  themeColor,
   red
 } from "@edulastic/colors";
 import styled from "styled-components";
@@ -14,12 +17,9 @@ import { Button } from "antd";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 
 export const Container = styled.div`
-  border-top: 0;
   padding: 30px 0 15px;
+  border-bottom: 1px solid #f6f6f6;
 
-  &:not(:first-child) {
-    border-top: 1px solid #f6f6f6;
-  }
   @media (max-width: ${tabletWidth}) {
     flex-direction: column;
     padding: 28px 28px 0 28px;
@@ -45,7 +45,6 @@ export const Question = styled.div`
   display: flex;
 
   & p {
-    margin: 0.5em 0;
     font-size: 13px;
   }
 
@@ -86,24 +85,32 @@ export const ViewButton = styled.div`
 `;
 
 export const ViewButtonStyled = styled(Button)`
-  width: 136px;
   height: 40px;
   border-radius: 4px;
   background: ${white};
-  box-shadow: 0px 1px 1px 1px rgba(201, 208, 219, 0.5);
+  box-shadow: 0px 1px 1px 1px ${themeColor}05;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  border: 0;
-  color: #00ad50;
-  &:hover {
+  color: ${themeColor};
+  padding: 5px 30px 5px 20px;
+  line-height: 17px;
+  display: flex;
+  align-items: center;
+  &:hover,
+  &:focus {
     background: ${lightGrey};
-    color: #00ad50;
+    color: ${themeColor};
+    svg {
+      fill: ${themeColor};
+    }
+  }
+  svg {
+    fill: ${themeColor};
+    margin-right: 20px;
+    width: 20px;
   }
 
-  svg {
-    display: none;
-  }
   @media (max-width: ${tabletWidth}) {
     width: 40px;
     height: 40px;
@@ -114,13 +121,10 @@ export const ViewButtonStyled = styled(Button)`
       font-size: 0;
       display: none;
     }
-    svg {
-      display: initial;
-      width: 20px;
-      height: 20px;
-      margin-bottom: -3px;
-      fill: #00ad50;
-    }
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
   }
 `;
 
@@ -133,14 +137,13 @@ export const AddButtonStyled = styled(Button)`
   font-weight: 600;
   text-transform: uppercase;
   margin-left: 10px;
-  color: #00ad50;
-  border: 0;
+  color: ${themeColor};
   padding: 0 15px;
 
   svg {
     max-width: 13px;
     max-height: 13px;
-    fill: #00ad50;
+    fill: ${themeColor};
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -151,16 +154,21 @@ export const AddButtonStyled = styled(Button)`
 
     svg {
       margin-top: 4px;
-      stroke: #00ad50;
+      stroke: ${themeColor};
     }
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
   }
 `;
 
 export const Detail = styled.div`
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
-  margin-top: 43px;
-  min-height: 39px;
+  margin-top: 15px;
+  min-height: 40px;
 
   @media (max-width: ${tabletWidth}) {
     margin: 0;
@@ -172,8 +180,8 @@ export const Detail = styled.div`
 
 export const TypeCategory = styled.div`
   display: flex;
+  align-items: center;
   margin-right: 10px;
-  margin-bottom: 10px;
 
   @media (max-width: ${tabletWidth}) {
     display: block;
@@ -187,16 +195,15 @@ export const TypeCategory = styled.div`
 
 export const DetailCategory = styled.div`
   display: flex;
+  align-items: center;
   margin-left: 20px;
 
   svg {
     max-width: 16px;
     max-height: 14px;
-    width: 100vw;
-    height: 100vh;
-    fill: ${darkGrey};
+    fill: ${themeLightGrayColor};
     &:hover {
-      fill: ${darkGrey};
+      fill: ${themeLightGrayColor};
     }
   }
   @media (max-width: ${tabletWidth}) {
@@ -220,7 +227,7 @@ export const CategoryName = styled.span`
   font-size: 12px;
   font-weight: 600;
   margin-right: 5px;
-  color: ${darkGrey};
+  color: ${themeLightGrayColor};
 
   @media (max-width: ${tabletWidth}) {
     display: block;
@@ -232,11 +239,10 @@ export const CategoryName = styled.span`
 export const CategoryContent = styled.div`
   margin-left: 0;
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
 
   @media (max-width: ${tabletWidth}) {
-    flex-wrap: wrap;
-    align-items: center;
     justify-content: flex-start;
     width: 100%;
   }
@@ -247,13 +253,11 @@ export const Label = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  height: 23.5px;
+  height: 24px;
   padding: 6px 14px;
   margin-right: 10px;
-  margin-bottom: 5px;
   border-radius: 5px;
-  border: solid 1px #e2e2e2;
-  line-height: 1;
+  background: ${themeLightGrayBgColor};
 
   span {
     font-size: 10px;
@@ -307,7 +311,7 @@ export const Text = styled.span`
   align-items: center;
   font-size: 12px;
   font-weight: 600;
-  color: ${darkGrey};
+  color: ${themeLightGrayColor};
 
   @media (max-width: ${tabletWidth}) {
     margin-top: 8px;
@@ -333,29 +337,30 @@ export const Categories = styled.div`
 export const ShareIcon = styled(IconShare)`
   display: flex;
   align-items: center;
-  fill: #00ad50;
+  fill: ${themeColor};
 `;
 
 export const HeartIcon = styled(IconHeart)`
   display: flex;
   align-items: center;
-  fill: #00ad50;
+  fill: ${themeColor};
 `;
 
 export const UserIcon = styled(IconUser)`
   display: flex;
   align-items: center;
-  fill: #00ad50;
+  fill: ${themeColor};
 `;
 
 export const IdIcon = styled(IconId)`
   display: flex;
   align-items: center;
-  fill: #00ad50;
+  fill: ${themeColor};
 `;
 
 export const StandardContent = styled.div`
   display: flex;
+  align-items: center;
 
   @media (max-width: ${tabletWidth}) {
     flex-wrap: wrap;
@@ -369,13 +374,11 @@ export const LabelStandard = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  height: 23.5px;
+  height: 24px;
   padding: 6px 14px;
-  line-height: 1;
   margin-right: 10px;
-  margin-bottom: 5px;
   border-radius: 5px;
-  border: solid 1px ${greenPrimary};
+  background: ${themeColorTagsBg};
 
   span {
     font-size: 10px;
@@ -383,7 +386,7 @@ export const LabelStandard = styled.div`
     font-weight: bold;
     letter-spacing: 0.2px;
     text-transform: uppercase;
-    color: ${greyDarken};
+    color: ${themeColor};
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -423,10 +426,10 @@ export const MoreInfo = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: ${props => (props.isOpenedDetails ? "#00AD50" : white)};
+  background: ${props => (props.isOpenedDetails ? themeColor : white)};
   box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
   border: 0;
-  color: #00ad50;
+  color: ${themeColor};
   width: 40px;
   height: 40px;
   border-radius: 3px;
@@ -437,7 +440,7 @@ export const MoreInfo = styled.div`
   &:focus,
   &:hover {
     svg {
-      fill: ${props => (props.isOpenedDetails ? white : "#00AD50")};
+      fill: ${props => (props.isOpenedDetails ? white : themeColor)};
     }
   }
 
@@ -446,7 +449,7 @@ export const MoreInfo = styled.div`
     width: 18px;
     height: 15px;
     margin-bottom: -3px;
-    fill: ${props => (props.isOpenedDetails ? white : "#00AD50")};
+    fill: ${props => (props.isOpenedDetails ? white : themeColor)};
     position: relative;
     transition: all 0.3s ease;
     transform: ${props => (props.isOpenedDetails ? "rotate(180deg)" : "rotate(0deg)")};

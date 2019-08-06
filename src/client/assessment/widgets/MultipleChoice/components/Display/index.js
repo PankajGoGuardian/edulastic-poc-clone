@@ -77,7 +77,7 @@ Display.defaultProps = {
     fontsize: "normal",
     columns: 1,
     orientation: "horizontal",
-    choice_label: "number"
+    choiceLabel: "number"
   },
   showQuestionNumber: false,
   flowLayout: false,

@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Select, Checkbox, Input } from "antd";
 import { compose } from "redux";
+import { cloneDeep, findIndex, clamp } from "lodash";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
@@ -14,37 +15,102 @@ import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import Question from "../../../components/Question";
 import FontSizeSelect from "../../../components/FontSizeSelect";
+import ResponseContainers from "./ResponseContainers";
 
 class Layout extends Component {
   state = {
-    minWidth: 0
+    widthpx: 0,
+    heightpx: 0
   };
 
-  handleGlobalWidthBlur = e => {
+  handleDefaultWidthBlur = e => {
     const { minWidth, maxWidth } = response;
-    let val = e.target.value;
+    const val = clamp(e.target.value, minWidth, maxWidth);
     const { onChange, uiStyle } = this.props;
-    if (val < minWidth || val > maxWidth) {
-      val = val < minWidth ? minWidth : maxWidth;
-    }
-    this.setState({ minWidth: val }, () => {
-      onChange("ui_style", {
+    this.setState({ widthpx: val }, () => {
+      onChange("uiStyle", {
         ...uiStyle,
-        min_width: +val
+        minWidth: +val
       });
     });
   };
 
-  onChangeMinWidth = e => {
-    this.setState({ minWidth: e.target.value });
+  handleDefaultHeightBlur = e => {
+    const { minHeight, maxHeight } = response;
+    const val = clamp(e.target.value, minHeight, maxHeight);
+    const { onChange, uiStyle } = this.props;
+
+    this.setState({ heightpx: val }, () => {
+      onChange("uiStyle", {
+        ...uiStyle,
+        heightpx: +val
+      });
+    });
+  };
+
+  onChangeWidthPx = e => {
+    this.setState({ widthpx: e.target.value });
+  };
+
+  onChangeHeightPx = e => {
+    this.setState({ heightpx: e.target.value });
+  };
+
+  changeResponseContainers = ({ index, prop, value }) => {
+    const { responseContainers, onChange } = this.props;
+    const newContainers = cloneDeep(responseContainers);
+    const ind = findIndex(newContainers, cont => cont.index === index);
+    if (ind !== -1) {
+      newContainers[ind][prop] = value;
+      onChange("responseContainers", newContainers);
+    }
+  };
+
+  addResponseContainer = () => {
+    const { item, responseContainers, onChange } = this.props;
+    const { responseIds } = item;
+    const ind = responseContainers.length;
+    let obj = {};
+    // eslint-disable-next-line no-labels
+    outerLoop: if (responseIds) {
+      // eslint-disable-next-line guard-for-in
+      for (const key in responseIds) {
+        const responses = responseIds[key];
+        for (const _response of responses) {
+          if (_response.index === ind) {
+            obj = { ..._response };
+            // eslint-disable-next-line no-labels
+            break outerLoop;
+          }
+        }
+      }
+    }
+    onChange("responseContainers", [...responseContainers, obj]);
+  };
+
+  deleteResponseContainer = index => {
+    const { responseContainers, onChange } = this.props;
+    const newContainers = cloneDeep(responseContainers);
+    newContainers.splice(index, 1);
+    onChange("responseContainers", newContainers);
   };
 
   render() {
-    const { onChange, uiStyle, t, advancedAreOpen, fillSections, cleanSections } = this.props;
-    const { minWidth } = this.state;
+    const {
+      onChange,
+      uiStyle,
+      t,
+      advancedAreOpen,
+      fillSections,
+      cleanSections,
+      responseContainers,
+      showResponseBoxes
+    } = this.props;
+    const { widthpx, heightpx } = this.state;
+    const { minHeight, maxHeight, minWidth, maxWidth } = response;
 
     const changeUiStyle = (prop, value) => {
-      onChange("ui_style", {
+      onChange("uiStyle", {
         ...uiStyle,
         [prop]: value
       });
@@ -65,9 +131,9 @@ class Layout extends Component {
             <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
-              value={uiStyle.response_font_scale}
+              value={uiStyle.responseFontScale}
               style={{ width: "100%" }}
-              onChange={val => changeUiStyle("response_font_scale", val)}
+              onChange={val => changeUiStyle("responseFontScale", val)}
             >
               {math.templateFontScaleOption.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>
@@ -76,20 +142,36 @@ class Layout extends Component {
               ))}
             </Select>
           </Col>
+
           <Col md={12}>
-            <Label>{t("component.options.responseMinimumWidth")}</Label>
-            <Input
-              type="number"
-              size="large"
-              value={minWidth || uiStyle.min_width}
-              onChange={this.onChangeMinWidth}
-              onBlur={this.handleGlobalWidthBlur}
-              max={400}
-              min={20}
-            />
+            <Row gutter={8}>
+              <Col md={12}>
+                <Label>{t("component.options.defaultWidth")}</Label>
+                <Input
+                  type="number"
+                  size="large"
+                  value={widthpx || uiStyle.widthpx || minWidth}
+                  onChange={this.onChangeWidthPx}
+                  onBlur={this.handleDefaultWidthBlur}
+                  max={maxWidth}
+                  min={minWidth}
+                />
+              </Col>
+              <Col md={12}>
+                <Label>{t("component.options.defaultHeight")}</Label>
+                <Input
+                  type="number"
+                  size="large"
+                  value={heightpx || uiStyle.heightpx || minHeight}
+                  onChange={this.onChangeHeightPx}
+                  onBlur={this.handleDefaultHeightBlur}
+                  max={maxHeight}
+                  min={minHeight}
+                />
+              </Col>
+            </Row>
           </Col>
         </Row>
-
         <Row gutter={60}>
           <Col md={12}>
             <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
@@ -97,13 +179,23 @@ class Layout extends Component {
 
           <Col md={12}>
             <Checkbox
-              checked={uiStyle.transparent_background}
-              onChange={e => changeUiStyle("transparent_background", e.target.checked)}
+              checked={uiStyle.transparentBackground}
+              onChange={e => changeUiStyle("transparentBackground", e.target.checked)}
             >
               {t("component.options.transparentBackground")}
             </Checkbox>
           </Col>
         </Row>
+        {showResponseBoxes && (
+          <Row>
+            <ResponseContainers
+              containers={responseContainers}
+              onChange={this.changeResponseContainers}
+              onAdd={this.addResponseContainer}
+              onDelete={this.deleteResponseContainer}
+            />
+          </Row>
+        )}
       </Question>
     );
   }
@@ -112,21 +204,27 @@ class Layout extends Component {
 Layout.propTypes = {
   onChange: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  item: PropTypes.object,
+  responseContainers: PropTypes.array,
   uiStyle: PropTypes.object,
   advancedAreOpen: PropTypes.bool,
+  showResponseBoxes: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
 
 Layout.defaultProps = {
+  item: {},
   uiStyle: {
     type: "standard",
     fontsize: "normal",
     columns: 0,
     orientation: "horizontal",
-    choice_label: "number"
+    choiceLabel: "number"
   },
+  responseContainers: [],
   advancedAreOpen: false,
+  showResponseBoxes: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

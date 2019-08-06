@@ -38,7 +38,7 @@ VideoPlayer.propTypes = {
     sourceURL: PropTypes.string.isRequired,
     heading: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
-    ui_style: PropTypes.shape({
+    uiStyle: PropTypes.shape({
       width: PropTypes.number.isRequired,
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,

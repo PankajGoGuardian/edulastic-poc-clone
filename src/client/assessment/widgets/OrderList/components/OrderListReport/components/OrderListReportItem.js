@@ -21,8 +21,8 @@ const OrderListReportItem = SortableElement(
     <Fragment>
       <Container styleType={styleType} columns={columns} correct={correct}>
         <Text>
-          <FlexContainer>
-            <Index>{ind}</Index>
+          <Index>{ind}</Index>
+          <FlexContainer justifyContent="center">
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: children }} />
           </FlexContainer>
           {correct && (

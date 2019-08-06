@@ -10,7 +10,7 @@ const RowHeader = ({ t, onChange, value, size, ...restProps }) => (
   <Fragment>
     <Label data-cy="rowHeaderInput">{t("component.options.rowHeader")}</Label>
     <WidgetFRInput>
-      <QuestionTextArea toolbarId="row_header" toolbarSize="SM" placeholder={""} onChange={onChange} value={value} />
+      <QuestionTextArea toolbarId="rowHeader" toolbarSize="SM" placeholder={""} onChange={onChange} value={value} />
     </WidgetFRInput>
   </Fragment>
 );

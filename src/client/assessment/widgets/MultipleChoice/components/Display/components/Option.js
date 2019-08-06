@@ -27,20 +27,21 @@ const Option = props => {
     validation,
     styleType,
     multipleResponses,
-    isReviewTab
+    isReviewTab,
+    testItem
   } = props;
   let className = "";
   let correctAnswers = [];
   if (!isEmpty(validation)) {
-    const altResponses = validation.alt_responses.length > 0 ? validation.alt_responses.map(ar => ar.value) : [];
-    correctAnswers = flatten([validation.valid_response.value, ...altResponses]);
+    const altResponses = validation.altResponses.length > 0 ? validation.altResponses.map(ar => ar.value) : [];
+    correctAnswers = flatten([validation.validResponse.value, ...altResponses]);
   }
 
-  const isSelected = isReviewTab ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
+  const isSelected =
+    isReviewTab || testItem ? correctAnswers.includes(item.value) : userSelections.includes(item.value);
 
-  const isCorrect = isReviewTab
-    ? correct[correctAnswers.indexOf(item.value)]
-    : correct[userSelections.indexOf(item.value)];
+  const isCorrect =
+    isReviewTab || testItem ? correct[correctAnswers.indexOf(item.value)] : correct[userSelections.indexOf(item.value)];
 
   const fontSize = getFontSize(uiStyle.fontsize);
 
@@ -48,7 +49,7 @@ const Option = props => {
     let validAnswers = [];
 
     if (!isEmpty(validation)) {
-      validAnswers = [validation.valid_response, ...validation.alt_responses];
+      validAnswers = [validation.validResponse, ...validation.altResponses];
     }
 
     if (flatten(validAnswers.map(v => v.value)).includes(item.value)) {
@@ -74,7 +75,7 @@ const Option = props => {
 
   const getLabel = inx => {
     if (uiStyle.type === "block") {
-      switch (uiStyle.choice_label) {
+      switch (uiStyle.choiceLabel) {
         case "number":
           return inx + 1;
         case "upper-alpha":

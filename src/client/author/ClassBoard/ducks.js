@@ -105,7 +105,7 @@ function* markAsDoneSaga({ payload }) {
     yield call(message.success, "Successfully marked as done");
   } catch (err) {
     if (err && err.status == 422 && err.data && err.data.message) {
-      yield call(message.error, err.data.message);
+      yield call(message.warn, err.data.message);
     } else {
       yield call(message.error, "Mark as done is failed");
     }

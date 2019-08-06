@@ -58,7 +58,7 @@ class Template extends Component {
         .each(findResponseIndexes);
 
       Object.keys(newResponseId).map(key => {
-        if (key !== "scoring_type") {
+        if (key !== "scoringType") {
           if (isEmpty(newResponseId[key])) {
             delete newResponseId[key];
           }
@@ -72,79 +72,79 @@ class Template extends Component {
       const _validation = cloneDeep(validation);
 
       // remove correct answer (math input) by deleted response box id
-      if (_validation.valid_response.value) {
-        _validation.valid_response.value.map((val, index) => {
+      if (_validation.validResponse.value) {
+        _validation.validResponse.value.map((val, index) => {
           if (!val[0].id) {
-            _validation.valid_response.value.splice(index, 1);
+            _validation.validResponse.value.splice(index, 1);
           }
           const isExist = find(_allIds, res => res.id === val[0].id);
           if (!isExist) {
-            _validation.valid_response.value.splice(index, 1);
+            _validation.validResponse.value.splice(index, 1);
           }
         });
       }
 
       // remvoe correct answer (text input) by deleted response box id.
-      if (_validation.valid_response.textinput) {
-        _validation.valid_response.textinput.value.map((val, index) => {
+      if (_validation.validResponse.textinput) {
+        _validation.validResponse.textinput.value.map((val, index) => {
           if (!val.id) {
-            _validation.valid_response.textinput.value.splice(index, 1);
+            _validation.validResponse.textinput.value.splice(index, 1);
           }
           const isExist = find(_allIds, res => res.id === val.id);
           if (!isExist) {
-            _validation.valid_response.textinput.value.splice(index, 1);
+            _validation.validResponse.textinput.value.splice(index, 1);
           }
         });
       }
 
       // remove correct answer (dropdown) by deleted response box id.
-      if (_validation.valid_response.dropdown) {
-        _validation.valid_response.dropdown.value.map((val, index) => {
+      if (_validation.validResponse.dropdown) {
+        _validation.validResponse.dropdown.value.map((val, index) => {
           if (!val.id) {
-            _validation.valid_response.dropdown.value.splice(index, 1);
+            _validation.validResponse.dropdown.value.splice(index, 1);
           }
           const isExist = find(_allIds, res => res.id === val.id);
           if (!isExist) {
-            _validation.valid_response.dropdown.value.splice(index, 1);
+            _validation.validResponse.dropdown.value.splice(index, 1);
           }
         });
       }
 
       // add new correct answers with response id
-      if (!_validation.valid_response) {
-        _validation.valid_response = { score: 1, value: [], dropdown: { value: [] }, textinput: { value: [] } };
+      if (!_validation.validResponse) {
+        _validation.validResponse = { score: 1, value: [], dropdown: { value: [] }, textinput: { value: [] } };
       }
       _keys(responseIds).map(responsekey => {
         responseIds[responsekey].map(res => {
           if (responsekey === "inputs") {
-            if (!_validation.valid_response.textinput) {
-              _validation.valid_response.textinput = { value: [] };
+            if (!_validation.validResponse.textinput) {
+              _validation.validResponse.textinput = { value: [] };
             }
-            const isExist = find(_validation.valid_response.textinput.value, valid => valid.id === res.id);
+            const isExist = find(_validation.validResponse.textinput.value, valid => valid.id === res.id);
             if (!isExist) {
-              _validation.valid_response.textinput.value.push({
+              _validation.validResponse.textinput.value.push({
                 value: "",
                 id: res.id
               });
             }
           }
           if (responsekey === "maths") {
-            if (!_validation.valid_response.value) {
-              _validation.valid_response.value = [];
+            if (!_validation.validResponse.value) {
+              _validation.validResponse.value = [];
             }
-            const isExist = find(_validation.valid_response.value, valid => (valid[0] ? valid[0].id : "") === res.id);
+            const isExist = find(_validation.validResponse.value, valid => (valid[0] ? valid[0].id : "") === res.id);
             if (!isExist) {
               const newArray = [{ ...initialMethod, id: res.id }];
-              _validation.valid_response.value.push(newArray);
+              _validation.validResponse.value.push(newArray);
             }
           }
           if (responsekey === "dropDowns") {
-            if (!_validation.valid_response.dropdown) {
-              _validation.valid_response.dropdown = { value: [] };
+            if (!_validation.validResponse.dropdown) {
+              _validation.validResponse.dropdown = { value: [] };
             }
-            const isExist = find(_validation.valid_response.dropdown.value, valid => valid.id === res.id);
+            const isExist = find(_validation.validResponse.dropdown.value, valid => valid.id === res.id);
             if (!isExist) {
-              _validation.valid_response.dropdown.value.push({
+              _validation.validResponse.dropdown.value.push({
                 value: "",
                 id: res.id
               });
@@ -154,13 +154,13 @@ class Template extends Component {
       });
 
       // reduce alternate answers
-      const maxAltLen = _validation.alt_responses ? _validation.alt_responses.length : 0;
-      if (isArray(_validation.alt_responses)) {
+      const maxAltLen = _validation.altResponses ? _validation.altResponses.length : 0;
+      if (isArray(_validation.altResponses)) {
         // math input alternate responses
-        if (_validation.valid_response.value) {
-          _validation.alt_responses.map(alt_res => {
-            if (_validation.valid_response.value.length > alt_res.value.length) {
-              alt_res.value.push(last(_validation.valid_response.value));
+        if (_validation.validResponse.value) {
+          _validation.altResponses.map(alt_res => {
+            if (_validation.validResponse.value.length > alt_res.value.length) {
+              alt_res.value.push(last(_validation.validResponse.value));
             }
             alt_res.value.map((altAnswer, index) => {
               const isExist = find(_allIds, res => res.id === (altAnswer ? altAnswer[0] : "").id);
@@ -171,10 +171,10 @@ class Template extends Component {
           });
         }
         // textinput alternate responses
-        if (_validation.valid_response.textinput) {
-          _validation.alt_responses.map(alt_res => {
-            if (_validation.valid_response.textinput.value.length > alt_res.textinput.value.length) {
-              alt_res.textinput.value.push(last(_validation.valid_response.textinput.value));
+        if (_validation.validResponse.textinput) {
+          _validation.altResponses.map(alt_res => {
+            if (_validation.validResponse.textinput.value.length > alt_res.textinput.value.length) {
+              alt_res.textinput.value.push(last(_validation.validResponse.textinput.value));
             }
             alt_res.textinput.value.map((altAnswer, index) => {
               const isExist = find(_allIds, res => res.id === (altAnswer || "").id);
@@ -185,10 +185,10 @@ class Template extends Component {
           });
         }
         // dropdown alternate responses
-        if (_validation.valid_response.dropdown) {
-          _validation.alt_responses.map(alt_res => {
-            if (_validation.valid_response.dropdown.value.length > alt_res.dropdown.value.length) {
-              alt_res.dropdown.value.push(last(_validation.valid_response.dropdown.value));
+        if (_validation.validResponse.dropdown) {
+          _validation.altResponses.map(alt_res => {
+            if (_validation.validResponse.dropdown.value.length > alt_res.dropdown.value.length) {
+              alt_res.dropdown.value.push(last(_validation.validResponse.dropdown.value));
             }
             alt_res.dropdown.value.map((altAnswer, index) => {
               const isExist = find(_allIds, res => res.id === (altAnswer || "").id);
@@ -198,7 +198,7 @@ class Template extends Component {
             });
           });
         }
-      } else if (_validation.valid_response) {
+      } else if (_validation.validResponse) {
         const newAltValues = {
           score: 1,
           value: [],
@@ -209,24 +209,24 @@ class Template extends Component {
             value: []
           }
         };
-        newAltValues.value = cloneDeep(_validation.valid_response.value || []);
+        newAltValues.value = cloneDeep(_validation.validResponse.value || []);
         newAltValues.value.map(answer => {
           answer.value = "";
           return answer;
         });
-        newAltValues.textinput.value = cloneDeep(_validation.valid_response.textinput.value || []);
+        newAltValues.textinput.value = cloneDeep(_validation.validResponse.textinput.value || []);
         newAltValues.textinput.value.map(answer => {
           answer.value = "";
           return answer;
         });
-        newAltValues.dropdown.value = cloneDeep(_validation.valid_response.dropdown.value || []);
+        newAltValues.dropdown.value = cloneDeep(_validation.validResponse.dropdown.value || []);
         newAltValues.dropdown.value.map(answer => {
           answer.value = "";
           return answer;
         });
-        _validation.alt_responses = [];
+        _validation.altResponses = [];
         for (let i = 0; i < maxAltLen; i++) {
-          _validation.alt_responses.push({
+          _validation.altResponses.push({
             score: 1,
             value: newAltValues
           });
@@ -234,23 +234,23 @@ class Template extends Component {
       }
 
       // remove empty valid value if there is no response box(math, dropdown, or textinput)
-      if (isEmpty(_validation.valid_response.value)) {
-        delete _validation.valid_response.value;
-        _validation.alt_responses = _validation.alt_responses.map(alt_res => {
+      if (isEmpty(_validation.validResponse.value)) {
+        delete _validation.validResponse.value;
+        _validation.altResponses = _validation.altResponses.map(alt_res => {
           delete alt_res.value;
           return alt_res;
         });
       }
-      if (_validation.valid_response.textinput && isEmpty(_validation.valid_response.textinput.value)) {
-        delete _validation.valid_response.textinput;
-        _validation.alt_responses = _validation.alt_responses.map(alt_res => {
+      if (_validation.validResponse.textinput && isEmpty(_validation.validResponse.textinput.value)) {
+        delete _validation.validResponse.textinput;
+        _validation.altResponses = _validation.altResponses.map(alt_res => {
           delete alt_res.textinput;
           return alt_res;
         });
       }
-      if (_validation.valid_response.dropdown && isEmpty(_validation.valid_response.dropdown.value)) {
-        delete _validation.valid_response.dropdown;
-        _validation.alt_responses = _validation.alt_responses.map(alt_res => {
+      if (_validation.validResponse.dropdown && isEmpty(_validation.validResponse.dropdown.value)) {
+        delete _validation.validResponse.dropdown;
+        _validation.altResponses = _validation.altResponses.map(alt_res => {
           delete alt_res.dropdown;
           return alt_res;
         });
@@ -277,19 +277,19 @@ class Template extends Component {
       const newItem = produce(item, draft => {
         draft.stimulus = val;
 
-        draft.response_ids = _reduceResponseIds(draft.stimulus);
+        draft.responseIds = _reduceResponseIds(draft.stimulus);
 
-        draft.validation = _reduceValidation(draft.response_ids, draft.validation);
+        draft.validation = _reduceValidation(draft.responseIds, draft.validation);
 
-        draft.options = _reduceOptions(draft.response_ids, draft.options);
+        draft.options = _reduceOptions(draft.responseIds, draft.options);
       });
 
       if (!newItem.options) {
         delete newItem.options;
       }
 
-      if (newItem.validation.valid_response.value) {
-        newItem.validation.valid_response.value.map(res => {
+      if (newItem.validation.validResponse.value) {
+        newItem.validation.validResponse.value.map(res => {
           if (res && !res.length) {
             res.push(initialMethod);
           }

@@ -29,13 +29,13 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
+                value={get(item, "uiStyle.fontsize", "normal")}
               />
             </Col>
             <Col md={12}>
               <MaxSelectionOption
-                onChange={val => changeItem("max_selection", +val)}
-                value={get(item, "max_selection", 0)}
+                onChange={val => changeItem("maxSelection", +val)}
+                value={get(item, "maxSelection", 0)}
               />
             </Col>
           </Row>

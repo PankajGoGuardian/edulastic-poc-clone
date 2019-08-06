@@ -16,6 +16,8 @@ import {
   IconGraphPolygon as IconPolygon
 } from "@edulastic/icons";
 
+import { WithResources } from "@edulastic/common";
+
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
@@ -41,9 +43,10 @@ import {
   JSXBoxWrapper,
   JSXBoxWithDrawingObjectsWrapper
 } from "./styled";
-import Tools from "./Tools";
+import Tools from "../../common/Tools";
 import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
+import { ElementSettingsMenu } from "./ElementSettingsMenu";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -150,7 +153,10 @@ class GraphContainer extends PureComponent {
 
     this.state = {
       selectedTool: this.getDefaultTool(),
-      selectedDrawingObject: null
+      selectedDrawingObject: null,
+      elementSettingsAreOpened: false,
+      elementId: null,
+      resourcesLoaded: false
     };
 
     this.onSelectTool = this.onSelectTool.bind(this);
@@ -169,6 +175,26 @@ class GraphContainer extends PureComponent {
     };
   }
 
+  handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
+
+  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility) => {
+    const { setValue, setElementsStash } = this.props;
+    const { elementId } = this.state;
+    const config = this._graph.getConfig();
+    const updateElement = config.filter(element => element.id === elementId)[0];
+
+    if (updateElement) {
+      updateElement.label = labelText;
+      updateElement.pointIsVisible = pointVisibility;
+      updateElement.labelIsVisible = labelVisibility;
+
+      setValue(config);
+      setElementsStash(config, this.getStashId());
+    }
+
+    this.setState({ elementSettingsAreOpened: false });
+  };
+
   setDefaultToolState() {
     this.setState({ selectedTool: this.getDefaultTool() });
   }
@@ -185,19 +211,22 @@ class GraphContainer extends PureComponent {
       backgroundShapes,
       toolbar,
       setElementsStash,
-      graphType,
+      graphData,
       disableResponse
     } = this.props;
 
     const { tools } = toolbar;
 
-    this._graph = makeBorder(this._graphId, graphType);
+    this._graph = makeBorder(this._graphId, graphData.graphType);
 
     if (!this.drawingObjectsAreVisible()) {
       this._graph.setTool(tools[0]);
     }
 
     if (this._graph) {
+      if (!disableResponse) {
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+      }
       this._graph.setDisableResponse(disableResponse);
 
       this._graph.resizeContainer(layout.width, layout.height);
@@ -258,6 +287,9 @@ class GraphContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
+      if (prevProps.disableResponse && !disableResponse) {
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+      }
 
       if (
         canvas.xMin !== prevProps.canvas.xMin ||
@@ -406,9 +438,9 @@ class GraphContainer extends PureComponent {
   }
 
   getStashId() {
-    const { questionId, altAnswerId, view, bgShapes } = this.props;
+    const { graphData, altAnswerId, view, bgShapes } = this.props;
     const type = bgShapes ? "bgShapes" : altAnswerId || view;
-    return `${questionId}_${type}`;
+    return `${graphData.id}_${type}`;
   }
 
   getHandlerByControlName = control => {
@@ -429,6 +461,7 @@ class GraphContainer extends PureComponent {
   updateValues() {
     const conf = this._graph.getConfig();
     const { setValue, setElementsStash } = this.props;
+
     setValue(conf);
     setElementsStash(conf, this.getStashId());
   }
@@ -446,7 +479,12 @@ class GraphContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
+    const { resourcesLoaded } = this.state;
+    if (!resourcesLoaded) {
+      return;
+    }
+
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, setValue } = this.props;
 
     // correct answers blocks
     if (elementsIsCorrect) {
@@ -458,6 +496,7 @@ class GraphContainer extends PureComponent {
     if (disableResponse) {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
+      this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadAnswersFromConfig(coloredElements);
       return;
@@ -467,6 +506,7 @@ class GraphContainer extends PureComponent {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
+      this._graph.resetAnswers();
       this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
       return;
     }
@@ -476,7 +516,9 @@ class GraphContainer extends PureComponent {
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.reset();
+      this._graph.resetAnswers();
       this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible());
+      setValue(this._graph.getConfig());
     }
   };
 
@@ -586,7 +628,7 @@ class GraphContainer extends PureComponent {
     "hyperbola",
     "polygon",
     "parabola",
-    "label",
+    // "label",
     "annotation",
     "area"
   ];
@@ -616,15 +658,47 @@ class GraphContainer extends PureComponent {
     this._graph.setDrawingObject(drawingObject);
   };
 
+  resourcesOnLoaded = () => {
+    const { resourcesLoaded } = this.state;
+    if (resourcesLoaded) {
+      return;
+    }
+    this.setState({ resourcesLoaded: true });
+    this.setElementsToGraph();
+  };
+
   render() {
-    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse, view } = this.props;
+    const {
+      toolbar,
+      layout,
+      annotation,
+      controls,
+      bgShapes,
+      elements,
+      disableResponse,
+      view,
+      advancedElementSettings,
+      graphData,
+      setQuestionData
+    } = this.props;
     const { tools } = toolbar;
-    const { selectedTool } = this.state;
+    const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
     const equations = elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION);
+
     return (
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
+        <WithResources
+          resources={[
+            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+          ]}
+          fallBack={<span />}
+          onLoaded={this.resourcesOnLoaded}
+        >
+          <span />
+        </WithResources>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
@@ -669,7 +743,14 @@ class GraphContainer extends PureComponent {
                 className="jxgbox"
                 margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
               />
-              <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
+              <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+              {elementSettingsAreOpened && this._graph && (
+                <ElementSettingsMenu
+                  advancedElementSettings={advancedElementSettings}
+                  element={this._graph.getConfig().filter(element => element.id === elementId)[0]}
+                  handleClose={this.handleElementSettingsMenuClose}
+                />
+              )}
             </JSXBoxWrapper>
           </JSXBoxWithDrawingObjectsWrapper>
         </GraphWrapper>
@@ -689,7 +770,6 @@ GraphContainer.propTypes = {
   backgroundShapes: PropTypes.object,
   evaluation: PropTypes.any,
   toolbar: PropTypes.object,
-  graphType: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
   elements: PropTypes.array.isRequired,
   bgShapes: PropTypes.bool.isRequired,
@@ -700,16 +780,19 @@ GraphContainer.propTypes = {
   setStashIndex: PropTypes.func.isRequired,
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
-  questionId: PropTypes.string.isRequired,
+  graphData: PropTypes.string.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   altAnswerId: PropTypes.string,
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
-  elementsIsCorrect: PropTypes.bool
+  elementsIsCorrect: PropTypes.bool,
+  advancedElementSettings: PropTypes.bool
 };
 
 GraphContainer.defaultProps = {
   backgroundShapes: { values: [], showPoints: true },
+  advancedElementSettings: false,
   evaluation: null,
   annotation: null,
   controls: [],

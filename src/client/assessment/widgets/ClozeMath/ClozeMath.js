@@ -95,14 +95,29 @@ const ClozeMath = ({
       fallBack={<span />}
       onLoaded={() => {}}
     >
-      {!flowLayout ? (
-        <>
-          <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-          <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel>}
-          </QuestionTitleWrapper>
-        </>
-      ) : null}
+      <>
+        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+        <QuestionTitleWrapper>
+          {!flowLayout ? showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel> : null}
+
+          {view === PREVIEW && (
+            <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
+              <ClozeMathPreview
+                type={actualPreviewMode}
+                item={itemForPreview}
+                stimulus={item.stimulus}
+                options={item.options || {}}
+                responseIds={item.responseIds}
+                saveAnswer={saveAnswer}
+                check={checkAnswer}
+                userAnswer={userAnswer}
+                evaluation={evaluation}
+                {...restProps}
+              />
+            </Paper>
+          )}
+        </QuestionTitleWrapper>
+      </>
 
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
@@ -131,34 +146,19 @@ const ClozeMath = ({
 
           <MathFormulaOptions
             onChange={_itemChange}
-            uiStyle={item.ui_style}
+            uiStyle={item.uiStyle}
             item={item}
-            responseContainers={item.response_containers}
-            textBlocks={item.text_blocks}
-            stimulusReview={item.stimulus_review}
-            instructorStimulus={item.instructor_stimulus}
+            responseContainers={item.responseContainers}
+            textBlocks={item.textBlocks}
+            stimulusReview={item.stimulusReview}
+            instructorStimulus={item.instructorStimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
+            showResponseBoxes
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
         </ContentArea>
-      )}
-      {view === PREVIEW && (
-        <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
-          <ClozeMathPreview
-            type={actualPreviewMode}
-            item={itemForPreview}
-            stimulus={item.stimulus}
-            options={item.options || {}}
-            responseIds={item.response_ids}
-            saveAnswer={saveAnswer}
-            check={checkAnswer}
-            userAnswer={userAnswer}
-            evaluation={evaluation}
-            {...restProps}
-          />
-        </Paper>
       )}
     </WithResources>
   );

@@ -66,7 +66,7 @@ class AxisLabelsMoreOptions extends Component {
     const { graphData, setNumberline } = this.props;
     const {
       numberlineAxis,
-      canvas: { x_min: xMin, x_max: xMax }
+      canvas: { xMin: xMin, xMax: xMax }
     } = graphData;
 
     let parsedValue = null;
@@ -127,12 +127,12 @@ class AxisLabelsMoreOptions extends Component {
       target: { name, value }
     } = event;
     const { graphData, setOptions } = this.props;
-    const { ui_style } = graphData;
+    const { uiStyle } = graphData;
 
     if (!value) {
-      setOptions({ ...ui_style, [name]: "" });
+      setOptions({ ...uiStyle, [name]: "" });
     } else {
-      setOptions({ ...ui_style, [name]: value });
+      setOptions({ ...uiStyle, [name]: value });
     }
   };
 
@@ -141,8 +141,8 @@ class AxisLabelsMoreOptions extends Component {
       target: { name, value }
     } = event;
     const { graphData, setOptions } = this.props;
-    const { ui_style } = graphData;
-    setOptions({ ...ui_style, [name]: value });
+    const { uiStyle } = graphData;
+    setOptions({ ...uiStyle, [name]: value });
   };
 
   getFontSizeItem = () => {
@@ -204,7 +204,7 @@ class AxisLabelsMoreOptions extends Component {
       advancedAreOpen
     } = this.props;
 
-    const { canvas, ui_style, numberlineAxis } = graphData;
+    const { canvas, uiStyle, numberlineAxis } = graphData;
 
     return (
       <Fragment>
@@ -238,9 +238,9 @@ class AxisLabelsMoreOptions extends Component {
               <Label>{t("component.graphing.layoutoptions.width")}</Label>
               <MoreOptionsInput
                 type="text"
-                name="layout_width"
+                name="layoutWidth"
                 placeholder="0"
-                value={ui_style.layout_width === 0 ? null : ui_style.layout_width}
+                value={uiStyle.layoutWidth === 0 ? null : uiStyle.layoutWidth}
                 onChange={this.handleOptionsInputChange}
               />
             </Col>
@@ -249,8 +249,8 @@ class AxisLabelsMoreOptions extends Component {
               <Label>{t("component.graphing.layoutoptions.height")}</Label>
               <MoreOptionsInput
                 type="text"
-                name="layout_height"
-                value={ui_style.layout_height}
+                name="layoutHeight"
+                value={uiStyle.layoutHeight}
                 onChange={this.handleInputChange}
               />
             </Col>
@@ -270,9 +270,9 @@ class AxisLabelsMoreOptions extends Component {
               <Label>{t("component.graphing.layoutoptions.lineposition")}</Label>
               <MoreOptionsInput
                 type="text"
-                name="line_position"
+                name="linePosition"
                 placeholder="0"
-                value={ui_style.line_position === 0 ? null : ui_style.line_position}
+                value={uiStyle.linePosition === 0 ? null : uiStyle.linePosition}
                 onChange={this.handleOptionsInputChange}
               />
             </Col>
@@ -281,9 +281,9 @@ class AxisLabelsMoreOptions extends Component {
               <Label>{t("component.graphing.layoutoptions.titleposition")}</Label>
               <MoreOptionsInput
                 type="text"
-                name="title_position"
+                name="titlePosition"
                 placeholder="0"
-                value={ui_style.title_position === 0 ? null : ui_style.title_position}
+                value={uiStyle.titlePosition === 0 ? null : uiStyle.titlePosition}
                 onChange={this.handleOptionsInputChange}
               />
             </Col>
@@ -292,9 +292,9 @@ class AxisLabelsMoreOptions extends Component {
               <Label>{t("component.graphing.layoutoptions.pointboxposition")}</Label>
               <MoreOptionsInput
                 type="text"
-                name="point_box_position"
+                name="pointBoxPosition"
                 placeholder="0"
-                value={ui_style.point_box_position === 0 ? null : ui_style.point_box_position}
+                value={uiStyle.pointBoxPosition === 0 ? null : uiStyle.pointBoxPosition}
                 onChange={this.handleOptionsInputChange}
               />
             </Col>

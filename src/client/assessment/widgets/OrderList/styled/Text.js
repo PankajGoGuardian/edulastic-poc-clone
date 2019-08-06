@@ -11,6 +11,5 @@ export const Text = styled.div`
   min-height: 50px;
   padding: 15px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
 `;

@@ -1,7 +1,20 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import { AdminHeaderContent, StyledTitle, StyledTabs, StyledTabPane, StyledSubMenu } from "./styled";
+import { roleuser } from "@edulastic/constants";
+
+import {
+  AdminHeaderContent,
+  StyledTitle,
+  StyledTabs,
+  StyledTabPane,
+  StyledSubMenu,
+  AdminHeaderWrapper,
+  Title
+} from "./styled";
+
+import { getUserRole } from "../../../selectors/user";
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -11,7 +24,7 @@ class AdminHeader extends Component {
   };
 
   onHeaderTabClick = (key, e) => {
-    const { history } = this.props;
+    const { history, role } = this.props;
     switch (key) {
       case "District Profile":
         history.push(`/author/districtprofile`);
@@ -20,7 +33,11 @@ class AdminHeader extends Component {
         history.push(`/author/Schools`);
         return;
       case "Users":
-        history.push(`/author/users/district-admin`);
+        if (role === "district-admin") {
+          history.push(`/author/users/district-admin`);
+        } else if (role === "school-admin") {
+          history.push(`/author/users/school-admin`);
+        }
         return;
       case "Classes":
         history.push(`/author/Classes`);
@@ -80,25 +97,26 @@ class AdminHeader extends Component {
   };
 
   render() {
-    const { title, active, count = 0 } = this.props;
+    const { title, active, count = 0, role } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
-      <React.Fragment>
+      <AdminHeaderWrapper>
         <AdminHeaderContent>
+          <Title>{role === roleuser.DISTRICT_ADMIN ? "Manage District" : "Manage School"}</Title>
           <StyledTabs type="card" defaultActiveKey={active.mainMenu} onTabClick={this.onHeaderTabClick}>
-            <StyledTabPane tab="District Profile" key={"District Profile"} />
+            {role === "district-admin" ? <StyledTabPane tab="District Profile" key={"District Profile"} /> : null}
             <StyledTabPane tab={SchoolTabtext} key={"Schools"} />
             <StyledTabPane tab="Users" key={"Users"} />
             <StyledTabPane tab="Classes" key={"Classes"} />
             <StyledTabPane tab="Courses" key={"Courses"} />
             <StyledTabPane tab="Class Enrollment" key={"Class Enrollment"} />
             <StyledTabPane tab="Groups" key={"Groups"} />
-            <StyledTabPane tab="Settings" key={"Settings"} />
+            {role === roleuser.DISTRICT_ADMIN ? <StyledTabPane tab="Settings" key={"Settings"} /> : null}
           </StyledTabs>
         </AdminHeaderContent>
         {active.mainMenu === "Settings" && (
           <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
-            <StyledTabPane tab="District Policies" key={"District Policies"} />
+            {role === "district-admin" ? <StyledTabPane tab="District Policies" key={"District Policies"} /> : null}
             <StyledTabPane tab="Test Settings" key={"Test Settings"} />
             <StyledTabPane tab="Term" key={"Term"} />
             <StyledTabPane tab="Interested Standards" key={"Interested Standards"} />
@@ -108,15 +126,20 @@ class AdminHeader extends Component {
         )}
         {active.mainMenu === "Users" && (
           <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
-            <StyledTabPane tab="District Admin" key={"District Admin"} />
+            {role === "district-admin" ? <StyledTabPane tab="District Admin" key={"District Admin"} /> : null}
             <StyledTabPane tab="School Admin" key={"School Admin"} />
             <StyledTabPane tab="Teacher" key={"Teacher"} />
             <StyledTabPane tab="Student" key={"Student"} />
           </StyledSubMenu>
         )}
-      </React.Fragment>
+      </AdminHeaderWrapper>
     );
   }
 }
 
-export default AdminHeader;
+export default connect(
+  state => ({
+    role: getUserRole(state)
+  }),
+  {}
+)(AdminHeader);

@@ -3,17 +3,7 @@ import PropTypes from "prop-types";
 import { Dropdown, Icon, Button } from "antd";
 import styled from "styled-components";
 import { DragSource } from "react-dnd";
-import {
-  darkBlue,
-  lightBlue,
-  lightGreen,
-  green,
-  white,
-  mobileWidth,
-  desktopWidth,
-  extraDesktopWidth,
-  tabletWidth
-} from "@edulastic/colors";
+import { lightBlue, white, themeColor } from "@edulastic/colors";
 import Tags from "../../src/components/common/Tags";
 import { IconVisualization, IconMoreVertical, IconCheckSmall, IconLeftArrow } from "@edulastic/icons";
 import { matchAssigned } from "../util";
@@ -113,7 +103,7 @@ class AssignmentDragItem extends Component {
           <AssignmentIconsHolder>
             <AssignmentIcon>
               <CustomIcon>
-                <IconVisualization color="#00AD50" onClick={() => viewTest(moduleData.contentId)} />
+                <IconVisualization color={themeColor} onClick={() => viewTest(moduleData.contentId)} />
               </CustomIcon>
             </AssignmentIcon>
             {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
@@ -122,7 +112,7 @@ class AssignmentDragItem extends Component {
                   {isAssigned ? (
                     <IconCheckSmall color={white} />
                   ) : (
-                    <IconLeftArrow color="#00AD50" width={13.3} height={9.35} />
+                    <IconLeftArrow color={themeColor} width={13.3} height={9.35} />
                   )}
                   {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
                 </Button>
@@ -132,7 +122,7 @@ class AssignmentDragItem extends Component {
               <AssignmentIcon>
                 <Dropdown overlay={moreMenu} trigger={["click"]}>
                   <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
-                    <IconMoreVertical color="#00AD50" />
+                    <IconMoreVertical color={themeColor} />
                   </CustomIcon>
                 </Dropdown>
               </AssignmentIcon>
@@ -205,18 +195,4 @@ const Assignment = styled(Row)`
   border-radius: 0;
   padding-top: 10px;
   padding-bottom: 10px;
-`;
-
-const ModulesAssigned = styled.div`
-  font-size: 10px;
-  font-weight: 700;
-  background-color: ${lightBlue};
-  display: flex;
-  align-items: center;
-  padding-left: 20px;
-  padding-right: 20px;
-  color: ${darkBlue};
-  text-transform: uppercase;
-  margin-left: auto;
-  justify-self: flex-end;
 `;

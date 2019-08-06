@@ -119,7 +119,7 @@ class CreateSchoolAdminModal extends React.Component {
       page: 1,
       sortField: "name",
       order: "asc",
-      search: { name: { type: "cont", value } }
+      search: { name: [{ type: "cont", value }] }
     });
     this.setState({ schoolList: schoolListData.data, fetching: false });
   };

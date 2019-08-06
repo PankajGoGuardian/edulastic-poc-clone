@@ -6,9 +6,10 @@ import styled from "styled-components";
 import { Radio, Select } from "antd";
 import { get, isObject } from "lodash";
 
-import { FlexContainer, MathKeyboard } from "@edulastic/common";
+import { FlexContainer } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
-import { textColor, mainTextColor } from "@edulastic/colors";
+import { textColor, mainTextColor, white } from "@edulastic/colors";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
 
 const { Option } = Select;
@@ -22,7 +23,9 @@ const UnitsDropdownPure = ({
   preview,
   selected,
   options,
-  onChangeShowDropdown
+  onChangeShowDropdown,
+  disabled,
+  statusColor
 }) => {
   const [offset, updateOffset] = useState(keypadOffset);
 
@@ -54,23 +57,28 @@ const UnitsDropdownPure = ({
   const symbol = get(item, "symbols", [])[0]; // units_us units_si
   const customKeys = get(item, "custom_keys", []);
 
-  let allBtns = customKeys.map(key => ({
+  const allBtns = customKeys.map(key => ({
     handler: key,
     label: key,
     types: [isObject(symbol) ? symbol.label : symbol],
     command: "write"
   }));
 
-  if (isObject(symbol) || symbol === "units_us" || symbol === "units_si") {
-    allBtns = MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
-      if (isObject(symbol) && symbol.value.includes(btn.handler)) {
-        btn.types.push(symbol.label);
-      }
-      return btn;
-    })
-      .filter(btn => btn.types.includes(isObject(symbol) ? symbol.label : symbol))
-      .concat(allBtns);
-  }
+  const uiStyle = get(item, "uiStyle", {});
+  const styles = {
+    height: uiStyle.heightpx || response.minHeight
+  };
+
+  // if (isObject(symbol) || symbol === "units_us" || symbol === "units_si") {
+  //   allBtns = MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
+  //     if (isObject(symbol) && symbol.value.includes(btn.handler)) {
+  //       btn.types.push(symbol.label);
+  //     }
+  //     return btn;
+  //   })
+  //     .filter(btn => btn.types.includes(isObject(symbol) ? symbol.label : symbol))
+  //     .concat(allBtns);
+  // }
 
   const getLabel = handler => {
     const seleted = allBtns.find(btn => btn.handler === handler) || {};
@@ -92,7 +100,13 @@ const UnitsDropdownPure = ({
   return (
     <FlexContainer alignItems="center" justifyContent="flex-start">
       {item.showDropdown && (
-        <UniteSelet value={preview ? selected : options ? options.unit : ""} onChange={handleChange}>
+        <UniteSelet
+          value={preview ? selected : options ? options.unit : ""}
+          onChange={handleChange}
+          disabled={disabled}
+          style={styles}
+          statusColor={statusColor}
+        >
           {allBtns.map((btn, i) => (
             <Option value={btn.handler} key={i}>
               {getLabel(btn.handler)}
@@ -129,13 +143,17 @@ UnitsDropdownPure.propTypes = {
   selected: PropTypes.string,
   preview: PropTypes.bool,
   t: PropTypes.func.isRequired,
-  onChangeShowDropdown: PropTypes.func
+  onChangeShowDropdown: PropTypes.func,
+  disabled: PropTypes.bool,
+  statusColor: PropTypes.string
 };
 
 UnitsDropdownPure.defaultProps = {
   keypadOffset: 0,
   preview: false,
+  disabled: false,
   selected: "",
+  statusColor: "",
   onChangeShowDropdown: () => null
 };
 
@@ -155,6 +173,10 @@ const UniteSelet = styled(Select)`
   min-width: 80px;
   .ant-select-selection {
     padding: 5px 2px;
+    background: ${({ statusColor }) => statusColor || white};
+  }
+  svg {
+    display: inline-block;
   }
 `;
 

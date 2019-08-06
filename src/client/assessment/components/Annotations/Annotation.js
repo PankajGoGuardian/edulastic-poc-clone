@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+
 import { withNamespaces } from "@edulastic/localization";
 import { FroalaEditor } from "@edulastic/common";
 import { IconTrashAlt } from "@edulastic/icons";
 import { greenDark, red } from "@edulastic/colors";
-import { Header, FroalaInput } from "./styled/styled_components";
-import { Container } from "../Graph/common/styled_components";
+
+import { Header, FroalaInput, Container } from "./styled/styled_components";
 
 const DeleteButton = ({ onDelete, deleteToolStyles }) => (
   <Container style={deleteToolStyles}>
@@ -39,8 +40,6 @@ class Annotation extends Component {
               }}
             />
           </FroalaInput>
-          {/* <IconTrashAlt onClick={() => removeAnnotation(index)} />
-           */}
           <DeleteButton onDelete={() => removeAnnotation(index)} />
         </Header>
       </div>

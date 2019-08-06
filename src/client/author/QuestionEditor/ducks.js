@@ -103,9 +103,9 @@ export const setQuestionAction = data => ({
   payload: { data }
 });
 
-export const loadQuestionAction = (data, rowIndex) => ({
+export const loadQuestionAction = (data, rowIndex, isPassageWidget = false) => ({
   type: LOAD_QUESTION,
-  payload: { data, rowIndex }
+  payload: { data, rowIndex, isPassageWidget }
 });
 
 export const calculateFormulaAction = data => ({
@@ -357,16 +357,16 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
       if (draftData.data.questions.length > 0) {
         if (data.itemLevelScoring) {
           draftData.data.questions[0].itemScore = data.itemLevelScore;
-          set(draftData, ["data", "questions", 0, "validation", "valid_response", "score"], data.itemLevelScore);
+          set(draftData, ["data", "questions", 0, "validation", "validResponse", "score"], data.itemLevelScore);
           for (const [index] of draftData.data.questions.entries()) {
             if (index > 0) {
-              set(draftData, ["data", "questions", index, "validation", "valid_response", "score"], 0);
+              set(draftData, ["data", "questions", index, "validation", "validResponse", "score"], 0);
             }
           }
         } else if (draftData.data.questions[0].itemScore) {
           // const itemScore = draftData.data.questions[0].itemScore;
           // for (let [index] of draftData.data.questions.entries()) {
-          //   draftData.data.questions[index].validation.valid_response.score =
+          //   draftData.data.questions[index].validation.validResponse.score =
           //     itemScore / draftData.data.questions.length;
           // }
           delete draftData.data.questions[0].itemScore;
@@ -416,15 +416,9 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
 
       yield put(setTestItemsAction(nextTestItems));
 
-      let testEntity = yield select(getTestEntitySelector);
-
-      const updatedTestEntity = {
-        ...testEntity,
-        testItems: [...testEntity.testItems, item]
-      };
       yield put(setCreatedItemToTestAction(item));
       if (!tId || tId === "undefined") {
-        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+        yield put(setTestDataAndUpdateAction({ addToTest: true, item }));
       } else {
         yield put(push(!isEditFlow ? `/author/tests/${tId}` : `/author/tests/${tId}/createItem/${item._id}`));
       }
@@ -530,9 +524,8 @@ function* calculateFormulaSaga() {
 
 function* loadQuestionSaga({ payload }) {
   try {
-    const { data, rowIndex } = payload;
+    const { data, rowIndex, isPassageWidget = false } = payload;
     const pathname = yield select(state => state.router.location.pathname);
-
     yield put(changeCurrentQuestionAction(data.reference));
     if (pathname.includes("tests")) {
       yield put(
@@ -541,7 +534,8 @@ function* loadQuestionSaga({ payload }) {
           state: {
             backText: "question edit",
             backUrl: pathname,
-            rowIndex
+            rowIndex,
+            isPassageWithQuestions: isPassageWidget
           }
         })
       );
@@ -552,7 +546,8 @@ function* loadQuestionSaga({ payload }) {
           state: {
             backText: "question edit",
             backUrl: pathname,
-            rowIndex
+            rowIndex,
+            isPassageWithQuestions: isPassageWidget
           }
         })
       );

@@ -112,7 +112,7 @@ class KeyPadOptions extends Component {
   };
 
   render() {
-    const { item, onChange, advancedAreOpen, fillSections, cleanSections, t } = this.props;
+    const { item, onChange, advancedAreOpen, fillSections, cleanSections, t, renderExtra } = this.props;
     const symbol = item.symbols[0];
     const isCustom = isObject(symbol);
 
@@ -181,13 +181,17 @@ class KeyPadOptions extends Component {
                     items={this.getNumberPad(isCustom)}
                     buttonStyle={btnStyle}
                   />
-                  <KeyPad symbol={symbol} onChange={onChange} item={item} buttonStyle={btnStyle} />
+                  {!item.showDropdown && (
+                    <KeyPad symbol={symbol} onChange={onChange} item={item} buttonStyle={btnStyle} />
+                  )}
                 </>
               )}
             </FlexContainer>
           </Col>
           <Col span={12} />
         </StyledRow>
+
+        {renderExtra}
       </Question>
     );
   }
@@ -200,14 +204,16 @@ KeyPadOptions.propTypes = {
   setKeyPadOffest: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  renderExtra: PropTypes.node
 };
 
 KeyPadOptions.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  setKeyPadOffest: () => {}
+  setKeyPadOffest: () => {},
+  renderExtra: null
 };
 
 export default withNamespaces("assessment")(KeyPadOptions);

@@ -5,7 +5,8 @@ import {
   secondaryTextColor,
   textColor,
   greenDark,
-  dropZoneTitleColor
+  dropZoneTitleColor,
+  mediumDesktopWidth
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
 import styled from "styled-components";
@@ -15,8 +16,9 @@ export const Container = styled.div`
   width: 280px;
   height: 100%;
   overflow: auto;
-  @media (max-width: ${desktopWidth}) {
-    width: 100%;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    width: 235px;
   }
 `;
 
@@ -29,7 +31,6 @@ export const FixedFilters = styled.div`
     top: auto;
     padding-right: 0;
     padding-left: 0;
-    display: none;
   }
 `;
 
@@ -146,17 +147,13 @@ export const MainFilter = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     position: relative;
-    display: ${props => (props.isVisible ? "block" : "none")};
+    display: block;
     padding: 0px 25px 0px 19px;
   }
 `;
 
 export const MainFilterHeader = styled.div`
   display: flex;
-
-  @media (max-width: ${desktopWidth}) {
-    display: none;
-  }
 `;
 
 export const Title = styled.span`

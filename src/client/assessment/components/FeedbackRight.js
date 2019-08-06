@@ -9,7 +9,7 @@ import { compose } from "redux";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth, smallDesktopWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
+import { mobileWidth, mediumDesktopWidth, themeColor, themeColorTagsBg, tabGrey } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
@@ -301,7 +301,7 @@ const StyledCardTwo = styled(Card)`
     }
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     max-width: 250px;
   }
   @media (max-width: ${mobileWidth}) {

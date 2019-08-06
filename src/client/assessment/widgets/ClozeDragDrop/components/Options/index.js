@@ -32,6 +32,7 @@ const Options = ({ onChange, uiStyle, outerStyle, fillSections, cleanSections, a
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
+  responseIDs: PropTypes.array,
   outerStyle: PropTypes.object,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
@@ -40,6 +41,7 @@ Options.propTypes = {
 
 Options.defaultProps = {
   outerStyle: {},
+  responseIDs: [],
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",

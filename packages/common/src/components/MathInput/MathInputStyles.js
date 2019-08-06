@@ -2,16 +2,18 @@ import styled from "styled-components";
 import { mobileWidth } from "@edulastic/colors";
 
 export const MathInputStyles = styled.div`
-  width: ${({ width, fullWidth }) => (width ? width : fullWidth ? "100%" : "unset")};
+  width: ${({ width, fullWidth }) => width || (fullWidth ? "100%" : "fit-content")};
+  height: ${({ height }) => height || "auto"};
 
   .input {
     position: relative;
   }
 
   .input__math {
-    min-height: 42px;
-    display: inline-flex;
+    height: 100%;
     width: 100%;
+    min-width: 40px;
+    display: inline-flex;
     padding-right: ${({ width }) => (width ? "unset" : "40px")};
     position: relative;
     border-radius: 5px;

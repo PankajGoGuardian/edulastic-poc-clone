@@ -6,7 +6,9 @@ import {
   extraDesktopWidthMax,
   mobileWidthMax,
   textColor,
-  titleColor
+  titleColor,
+  title,
+  backgrounds
 } from "@edulastic/colors";
 
 export const Wrapper = styled.div`
@@ -40,7 +42,7 @@ export const Wrapper = styled.div`
 `;
 
 export const NoDataBox = styled.div`
-  background: #f3f3f3;
+  background: ${backgrounds.default};
   width: 396px;
   height: 351px;
   position: absolute;
@@ -172,4 +174,15 @@ export const BreadcrumbWrapper = styled.div`
   @media screen and (max-width: ${tabletWidth}) {
     flex-direction: column;
   }
+`;
+
+export const Title = styled.h3`
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 24px;
+  color: ${title};
+  display: block;
+  margin-top: 28px;
+  margin-left: 12px;
+  margin-bottom: 20px;
 `;

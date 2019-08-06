@@ -59,14 +59,14 @@ class ChoicesForResponse extends Component {
       produce(item, draft => {
         draft.options[responseId].splice(itemIndex, 1);
 
-        const validAnswers = cloneDeep(draft.validation.valid_response.value);
+        const validAnswers = cloneDeep(draft.validation.validResponse.value);
         forEach(validAnswers, answer => {
           if (answer.id === responseId) {
             answer.value = "";
           }
         });
 
-        draft.validation.valid_response.value = validAnswers;
+        draft.validation.validResponse.value = validAnswers;
         updateVariables(draft);
       })
     );
@@ -78,7 +78,7 @@ class ChoicesForResponse extends Component {
       produce(item, draft => {
         if (draft.options[responseId] === undefined) draft.options[responseId] = [];
 
-        const correctAnswer = find(draft.validation.valid_response.value, answer => answer.id === responseId);
+        const correctAnswer = find(draft.validation.validResponse.value, answer => answer.id === responseId);
         if (correctAnswer && correctAnswer.value === draft.options[responseId][itemIndex]) {
           correctAnswer.value = e.target.value;
         }
@@ -92,7 +92,7 @@ class ChoicesForResponse extends Component {
         });
 
         const finalWidth = 40 + maxLength * 7;
-        draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+        draft.uiStyle.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
         updateVariables(draft);
       })
     );

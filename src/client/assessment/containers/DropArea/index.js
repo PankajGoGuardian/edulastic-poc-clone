@@ -41,8 +41,8 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
       setQuestionData(
         produce(item, draft => {
           draft.responses.splice(deletedIndex, 1);
-          draft.validation.valid_response.value.splice(deletedIndex, 1);
-          draft.validation.alt_responses = draft.validation.alt_responses.map(resp => {
+          draft.validation.validResponse.value.splice(deletedIndex, 1);
+          draft.validation.altResponses = draft.validation.altResponses.map(resp => {
             resp.value.splice(deletedIndex, 1);
             return resp;
           });
@@ -69,7 +69,7 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
   };
 
   const getIndex = index => {
-    const stemNumeration = get(item, "ui_style.stemnumeration");
+    const stemNumeration = get(item, "uiStyle.stemnumeration");
     return helpers.getNumeration(index, stemNumeration);
   };
 
@@ -123,26 +123,43 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
     }
   };
 
-  return item.responses.map((response, i) => (
-    <Draggable
-      response={response}
-      key={i}
-      index={getIndex(i)}
-      background={item.background}
-      showDashedBorder={get(item, "responseLayout.showdashedborder", false)}
-      transparentBackground={get(item, "responseLayout.transparentbackground", false)}
-      showBorder={get(item, "responseLayout.showborder", false)}
-      onDragStop={_dragStop(i)}
-      onDrag={(evt, d) => handleDragging(d)}
-      onResize={_resize(i)}
-      onDelete={_delete(response.id)}
-      onClick={_click(i)}
-      showIndex={showIndex}
-      style={{
-        pointerEvents: disable ? "none" : "auto"
-      }}
-    />
-  ));
+  const { uiStyle: uiStyles = {} } = item;
+  const { responsecontainerindividuals = {} } = uiStyles;
+
+  return item.responses.map((response, i) => {
+    let responseHeight = uiStyles.heightpx || response.height;
+    let responseWidth = uiStyles.widthpx || response.width;
+    responseWidth = responsecontainerindividuals[i]
+      ? responsecontainerindividuals[i].widthpx || responseWidth
+      : responseWidth;
+
+    responseHeight = responsecontainerindividuals[i]
+      ? responsecontainerindividuals[i].heightpx || responseHeight
+      : responseHeight;
+
+    return (
+      <Draggable
+        response={response}
+        responseHeight={responseHeight}
+        responseWidth={responseWidth}
+        key={i}
+        index={getIndex(i)}
+        background={item.background}
+        showDashedBorder={get(item, "responseLayout.showdashedborder", false)}
+        transparentBackground={get(item, "responseLayout.transparentbackground", false)}
+        showBorder={get(item, "responseLayout.showborder", false)}
+        onDragStop={_dragStop(i)}
+        onDrag={(evt, d) => handleDragging(d)}
+        onResize={_resize(i)}
+        onDelete={_delete(response.id)}
+        onClick={_click(i)}
+        showIndex={showIndex}
+        style={{
+          pointerEvents: disable ? "none" : "auto"
+        }}
+      />
+    );
+  });
 };
 
 DropArea.propTypes = {

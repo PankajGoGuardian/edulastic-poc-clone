@@ -42,14 +42,14 @@ class TemplateMarkup extends Component {
       const _preIDs = cloneDeep(preIDs);
       const _preValidation = cloneDeep(preValidation);
       const {
-        valid_response: { value },
-        alt_responses: altResponses
+        validResponse: { value },
+        altResponses: altResponses
       } = cloneDeep(_preValidation);
 
       newAltValue = cloneDeep(altResponses);
 
       if (!window.$) {
-        return { response_ids: newResponseIds, validation: _preValidation };
+        return { responseIds: newResponseIds, validation: _preValidation };
       }
 
       const parsedHTML = $("<div />").html(temp);
@@ -79,18 +79,18 @@ class TemplateMarkup extends Component {
           newResponseIds.push({ index, id });
         });
 
-      _preValidation.valid_response.value = newValue;
+      _preValidation.validResponse.value = newValue;
       if (isArray(newAltValue)) {
-        _preValidation.alt_responses = newAltValue;
+        _preValidation.altResponses = newAltValue;
       }
-      return { response_ids: newResponseIds, validation: _preValidation };
+      return { responseIds: newResponseIds, validation: _preValidation };
     };
 
     setQuestionData(
       produce(item, draft => {
         draft.stimulus = stimulus;
-        const { response_ids, validation } = reduceResponse(stimulus, draft.response_ids, draft.validation);
-        draft.response_ids = response_ids;
+        const { responseIds, validation } = reduceResponse(stimulus, draft.responseIds, draft.validation);
+        draft.responseIds = responseIds;
         draft.validation = validation;
         updateVariables(draft);
       })

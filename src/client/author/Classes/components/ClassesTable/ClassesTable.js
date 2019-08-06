@@ -5,20 +5,23 @@ import { compose } from "redux";
 import { get, cloneDeep } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
-
 import {
-  StyledClassName,
-  StyledTableContainer,
   StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
   StyledFilterSelect,
+  StyledFilterInput,
+  StyledSchoolSearch as StyledSearch,
+  StyledActionDropDown,
+  StyledClassName
+} from "../../../../admin/Common/StyledComponents";
+import {
+  StyledTableContainer,
   StyledTable,
   StyledTableButton,
-  StyledFilterInput,
-  StyledSearch,
-  StyledActionDropDown,
+  StyledAddFilterButton,
   TeacherSpan,
-  StyledPagination,
-  StyledFilterButton
+  StyledPagination
 } from "./styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
@@ -95,23 +98,14 @@ class ClassesTable extends Component {
       },
       currentPage: 1,
       selectedArchiveClasses: [],
-      showActive: true,
-      disableActiveUsers: false
+      showActive: true
     };
     this.filterTextInputRef = [React.createRef(), React.createRef(), React.createRef()];
   }
 
   componentDidMount() {
     const { userOrgId, loadClassListData } = this.props;
-
-    loadClassListData({
-      districtId: userOrgId,
-      page: 1,
-      limit: 25,
-      search: {
-        active: 1
-      }
-    });
+    this.loadFilteredList();
   }
 
   // onHeaderCell = colName => {
@@ -284,6 +278,11 @@ class ClassesTable extends Component {
   };
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
+
+  onChangeSearch = event => {
+    this.setState({ searchByName: event.currentTarget.value });
+  };
+
   handleSearchName = value => {
     const { filtersData, sortedInfo, currentPage } = this.state;
     this.setState({ searchByName: value }, this.loadFilteredList);
@@ -351,17 +350,7 @@ class ClassesTable extends Component {
     filtersData[key].filtersColumn = value;
 
     if (value === "subjects" || value === "grades" || value === "active") filtersData[key].filtersValue = "eq";
-    // here we check if the filter chosen is active or if the previous value held by the select was active
-    // then according to this, we either disable or enable the checkbox
-    if (value === "active" || this.state.filtersData[key].filtersColumn === "active") {
-      this.setState(
-        {
-          disableActiveUsers: value === "active",
-          filtersData
-        },
-        () => this.afterSetState(key)
-      );
-    } else this.setState({ filtersData }, () => this.afterSetState(key)); // this is done so that we dont have multiple set states and we can avoid two renders
+    this.setState({ filtersData }, () => this.afterSetState(key)); // this is done so that we dont have multiple set states and we can avoid two renders
   };
 
   changeFilterValue = (value, key) => {
@@ -409,60 +398,49 @@ class ClassesTable extends Component {
       newFiltersData = filtersData.filter((item, index) => index !== key);
     }
     // here we check if the filter we are removing is the active filter, then we enable the checkbox back
-    if (filtersData[key].filtersColumn === "active") {
-      this.setState(
-        {
-          filtersData: newFiltersData,
-          disableActiveUsers: false
-        },
-        this.loadFilteredList
-      );
-    } else this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
+    this.setState({ filtersData: newFiltersData }, this.loadFilteredList);
   };
 
   getSearchQuery = () => {
     const { userOrgId } = this.props;
-    const { filtersData, searchByName, currentPage, showActive, disableActiveUsers } = this.state;
+    const { filtersData, searchByName, currentPage, showActive } = this.state;
     const search = {};
 
     if (searchByName.length > 0) {
-      search.name = searchByName;
+      search.name = [searchByName];
+    }
+
+    if (!filtersData.find(item => item.filtersColumn === "active")) {
+      search.active = showActive ? [1] : [0];
     }
 
     for (let i = 0; i < filtersData.length; i++) {
-      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      let { filtersColumn, filtersValue, filterStr } = filtersData[i];
       if (
         filtersColumn &&
         filtersValue &&
         filterStr !== "" // here because 0 can be a value too for "active" select
       ) {
-        if (filtersColumn === "active") {
-          search[filtersColumn] = filterStr;
+        if (filtersColumn === "grades" || filtersColumn === "subjects" || filtersColumn === "active") {
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = [filterStr];
+          } else {
+            search[filtersColumn].push(filterStr);
+          }
         } else {
           if (!search[filtersColumn]) {
-            search[filtersColumn] = [];
-          }
-          if (filtersColumn === "grades" || filtersColumn === "subjects") {
-            search[filtersColumn].push(filterStr);
+            search[filtersColumn] = { type: filtersValue, value: [filterStr] };
           } else {
-            search[filtersColumn].push({
-              type: filtersValue,
-              value: filterStr
-            });
+            search[filtersColumn].value.push(filterStr);
           }
         }
-        // search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
       }
     }
     return {
+      search,
       districtId: userOrgId,
       limit: 25,
-      page: currentPage,
-      search,
-      search: {
-        ...search,
-        active: showActive ? 1 : 0
-      }
+      page: currentPage
     };
   };
 
@@ -515,7 +493,7 @@ class ClassesTable extends Component {
         },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name),
-        width: 50
+        width: 100
       },
       {
         title: "Users",
@@ -534,7 +512,7 @@ class ClassesTable extends Component {
               <StyledTableButton onClick={() => this.onEditClass(id)} title="Edit">
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(id)} title="Deactivate">
+              <StyledTableButton onClick={() => this.handleDelete(id)} title="Archive">
                 <Icon type="delete" theme="twoTone" />
               </StyledTableButton>
             </React.Fragment>
@@ -554,8 +532,7 @@ class ClassesTable extends Component {
       editClassKey,
       currentPage,
       selectedArchiveClasses,
-      showActive,
-      disableActiveUsers
+      showActive
     } = this.state;
 
     const {
@@ -655,44 +632,53 @@ class ClassesTable extends Component {
             />
           )}
           {i < 2 && (
-            <StyledFilterButton
+            <StyledAddFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
               disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
           {((filtersData.length === 1 && filtersData[0].filterAdded) || filtersData.length > 1) && (
-            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            <StyledAddFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
-            </StyledFilterButton>
+            </StyledAddFilterButton>
           )}
         </StyledControlDiv>
       );
     }
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.showAddClassModal}>
-            + Create new class
-          </Button>
-
-          <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} />
-          <Checkbox
-            disabled={disableActiveUsers}
-            style={{ margin: "auto" }}
-            checked={showActive}
-            onChange={this.onChangeShowActive}
-          >
-            Show Active Classes
-          </Checkbox>
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showAddClassModal}>
+              + Create new class
             </Button>
-          </StyledActionDropDown>
-        </StyledControlDiv>
+
+            <StyledSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+
+          <RightFilterDiv>
+            <Checkbox
+              disabled={!!filtersData.find(item => item.filtersColumn === "active")}
+              style={{ margin: "auto" }}
+              value={showActive}
+              onChange={this.onChangeShowActive}
+            >
+              Show Active Classes
+            </Checkbox>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
         {SearchRows}
         <StyledTable
           rowKey={record => record._id}
@@ -700,6 +686,7 @@ class ClassesTable extends Component {
           dataSource={Object.values(dataSource)}
           columns={columnsData}
           pagination={false}
+          scroll={{ y: 500 }}
         />
         <StyledPagination
           defaultCurrent={1}
@@ -707,6 +694,7 @@ class ClassesTable extends Component {
           pageSize={25}
           total={totalClassCount}
           onChange={this.changePagination}
+          hideOnSinglePage={true}
         />
         {editClassModalVisible && (
           <EditClassModal

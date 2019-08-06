@@ -134,8 +134,6 @@ const reducer = (state = initialState, { type, payload }) => {
                 _st.entities[entityIndex].questionActivities[itemIndex] = {
                   ...oldQAct,
                   ...questionItem,
-                  skipped: false,
-                  graded: true,
                   score,
                   maxScore
                 };

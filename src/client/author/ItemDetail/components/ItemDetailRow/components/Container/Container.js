@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Button } from "antd";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -122,7 +123,16 @@ class Container extends Component {
   };
 
   render() {
-    const { row, onEditTabTitle, rowIndex, dragging, count, windowWidth } = this.props;
+    const {
+      row,
+      onEditTabTitle,
+      rowIndex,
+      dragging,
+      count,
+      windowWidth,
+      isPassageQuestion,
+      handleAddToPassage
+    } = this.props;
     const { tabIndex } = this.state;
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
     // adding first part?
@@ -130,12 +140,13 @@ class Container extends Component {
     return (
       <Content
         value={tabIndex}
+        padding="25px 0px"
         style={{
           width: row.dimension,
           marginRight: count - 1 === rowIndex ? "0px" : "30px"
         }}
       >
-        {row.tabs && row.tabs.length > 0 && windowWidth > MAX_MOBILE_WIDTH && (
+        {row.tabs && row.tabs.length > 0 && (
           <TabContainer>
             <Tabs value={tabIndex} onChange={ind => this.handleTabChange(ind)}>
               {row.tabs.map((tab, key) => (
@@ -160,10 +171,16 @@ class Container extends Component {
         )}
         {this.renderWidgets()}
 
-        {enableAnotherPart && (
+        {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
             <AddNew isAddFirstPart={isAddFirstPart} onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
           </AddButtonContainer>
+        )}
+        {isPassageQuestion && (
+          <>
+            <Button onClick={() => handleAddToPassage("video", tabIndex)}> Add Video</Button>{" "}
+            <Button onClick={() => handleAddToPassage("passage", tabIndex)}> Add Passage </Button>
+          </>
         )}
       </Content>
     );

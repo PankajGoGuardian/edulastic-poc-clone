@@ -48,7 +48,7 @@ export const getUserAnswerSelector = createSelector(
       const qId = getQuestionId(questionId);
       userAnswer = getAnswerByQuestionIdSelector(qId)(answers);
     }
-
+    userAnswer = userAnswer || ""; // Bug fix for EV-6781
     return userAnswer;
   }
 );

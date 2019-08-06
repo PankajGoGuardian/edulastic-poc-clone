@@ -104,7 +104,7 @@ const ShadingPreview = ({
       newUserAnswer.splice(indexOfSameShade, 1);
     }
 
-    if (item.max_selection && newUserAnswer.length > item.max_selection) {
+    if (item.maxSelection && newUserAnswer.length > item.maxSelection) {
       return;
     }
 

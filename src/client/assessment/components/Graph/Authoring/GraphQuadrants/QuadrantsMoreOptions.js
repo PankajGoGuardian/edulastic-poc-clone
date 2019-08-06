@@ -5,6 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Checkbox } from "@edulastic/common";
 import { Select } from "antd";
 
+import { EDIT } from "../../../../constants/constantsForQuestions";
 import Extras from "../../../../containers/Extras";
 import { MoreOptionsInput, MoreOptionsInputSmall } from "../../common/styled_components";
 
@@ -467,7 +468,7 @@ class QuadrantsMoreOptions extends Component {
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.background_options.backgroundImage")}</Subtitle>
+          <Subtitle>{t("component.graphing.background_options.background_image")}</Subtitle>
           <Row gutter={60}>
             <Col md={24}>
               <Label>{t("component.graphing.background_options.image_url")}</Label>
@@ -561,6 +562,7 @@ class QuadrantsMoreOptions extends Component {
             <Col md={24}>
               {advancedAreOpen && (
                 <GraphDisplay
+                  view={EDIT}
                   advancedElementSettings={true}
                   graphData={graphData}
                   onChange={setBgShapes}
@@ -599,8 +601,6 @@ QuadrantsMoreOptions.propTypes = {
 };
 
 QuadrantsMoreOptions.defaultProps = {
-  fontSizeList: [],
-  stemNumerationList: [],
   advancedAreOpen: false
 };
 

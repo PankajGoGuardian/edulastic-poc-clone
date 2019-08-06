@@ -3,19 +3,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
-import {
-  IconGraphRay as IconRay,
-  IconGraphLine as IconLine,
-  IconGraphLabel as IconLabel,
-  IconGraphPoint as IconPoint,
-  IconGraphSine as IconSine,
-  IconGraphParabola as IconParabola,
-  IconGraphCircle as IconCircle,
-  IconGraphVector as IconVector,
-  IconGraphSegment as IconSegment,
-  IconGraphPolygon as IconPolygon
-} from "@edulastic/icons";
-
 import { WithResources } from "@edulastic/common";
 
 import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQuestions";
@@ -41,12 +28,10 @@ import {
   LabelRight,
   Title,
   JSXBoxWrapper,
-  JSXBoxWithDrawingObjectsWrapper
+  JSXBoxWithDropValues
 } from "./styled";
 import Tools from "../../common/Tools";
-import Equations from "./Equations";
-import DrawingObjects from "./DrawingObjects";
-import { ElementSettingsMenu } from "./ElementSettingsMenu";
+import DragDropValues from "./DragDropValues";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -142,7 +127,7 @@ const getCompareResult = evaluation => {
   return evaluation[0];
 };
 
-class GraphContainer extends PureComponent {
+class PlacementContainer extends PureComponent {
   constructor(props) {
     super(props);
 
@@ -151,52 +136,10 @@ class GraphContainer extends PureComponent {
       .replace(".", "")}`;
     this._graph = null;
 
-    this.state = {
-      selectedTool: this.getDefaultTool(),
-      selectedDrawingObject: null,
-      elementSettingsAreOpened: false,
-      elementId: null,
-      resourcesLoaded: false
-    };
+    this.state = { resourcesLoaded: false };
 
-    this.onSelectTool = this.onSelectTool.bind(this);
     this.onReset = this.onReset.bind(this);
     this.updateValues = this.updateValues.bind(this);
-  }
-
-  getDefaultTool() {
-    const { toolbar } = this.props;
-    const { tools } = toolbar;
-
-    return {
-      name: tools[0],
-      index: 0,
-      groupIndex: -1
-    };
-  }
-
-  handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
-
-  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility) => {
-    const { setValue, setElementsStash } = this.props;
-    const { elementId } = this.state;
-    const config = this._graph.getConfig();
-    const updateElement = config.filter(element => element.id === elementId)[0];
-
-    if (updateElement) {
-      updateElement.label = labelText;
-      updateElement.pointIsVisible = pointVisibility;
-      updateElement.labelIsVisible = labelVisibility;
-
-      setValue(config);
-      setElementsStash(config, this.getStashId());
-    }
-
-    this.setState({ elementSettingsAreOpened: false });
-  };
-
-  setDefaultToolState() {
-    this.setState({ selectedTool: this.getDefaultTool() });
   }
 
   componentDidMount() {
@@ -209,24 +152,18 @@ class GraphContainer extends PureComponent {
       gridParams,
       bgImgOptions,
       backgroundShapes,
-      toolbar,
       setElementsStash,
-      graphData,
+      graphType,
       disableResponse
     } = this.props;
 
-    const { tools } = toolbar;
-
-    this._graph = makeBorder(this._graphId, graphData.graphType);
-
-    if (!this.drawingObjectsAreVisible()) {
-      this._graph.setTool(tools[0]);
-    }
+    this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
       if (!disableResponse) {
         this._graph.createEditButton(this.handleElementSettingsMenuOpen);
       }
+
       this._graph.setDisableResponse(disableResponse);
 
       this._graph.resizeContainer(layout.width, layout.height);
@@ -254,6 +191,8 @@ class GraphContainer extends PureComponent {
       this._graph.setBgImage(bgImgOptions);
       this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
 
+      this._graph.setDragDropDeleteHandler();
+
       this.setElementsToGraph();
     }
 
@@ -271,19 +210,11 @@ class GraphContainer extends PureComponent {
       gridParams,
       bgImgOptions,
       backgroundShapes,
-      toolbar,
       disableResponse,
       previewTab,
       changePreviewTab,
       elements
     } = this.props;
-
-    const { tools } = toolbar;
-
-    if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
-      this.setDefaultToolState();
-      this._graph.setTool(tools[0]);
-    }
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
@@ -389,28 +320,12 @@ class GraphContainer extends PureComponent {
     }
   }
 
-  onSelectTool({ name, index, groupIndex }) {
-    this.setState({ selectedTool: { name, index, groupIndex } });
-    this._graph.setTool(name);
-  }
-
   onReset() {
-    const { toolbar } = this.props;
-    const { tools } = toolbar;
-
-    this.setState({
-      selectedTool: this.getDefaultTool()
-    });
-
-    this._graph.setTool(tools[0]);
     this._graph.reset();
     this.updateValues();
   }
 
   onUndo = () => {
-    if (this._graph.cleanToolTempPoints()) {
-      return;
-    }
     const { stash, stashIndex, setStashIndex, setValue } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
@@ -420,9 +335,6 @@ class GraphContainer extends PureComponent {
   };
 
   onRedo() {
-    if (this._graph.cleanToolTempPoints()) {
-      return;
-    }
     const { stash, stashIndex, setStashIndex, setValue } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
@@ -431,16 +343,10 @@ class GraphContainer extends PureComponent {
     }
   }
 
-  onDelete() {
-    this.selectDrawingObject(null);
-    this.setState({ selectedTool: { name: "delete", index: -1, groupIndex: -1 } });
-    this._graph.setTool("trash");
-  }
-
   getStashId() {
-    const { graphData, altAnswerId, view, bgShapes } = this.props;
-    const type = bgShapes ? "bgShapes" : altAnswerId || view;
-    return `${graphData.id}_${type}`;
+    const { questionId, altAnswerId, view } = this.props;
+    const type = altAnswerId || view;
+    return `${questionId}_${type}`;
   }
 
   getHandlerByControlName = control => {
@@ -451,8 +357,6 @@ class GraphContainer extends PureComponent {
         return this.onRedo();
       case "reset":
         return this.onReset();
-      case "delete":
-        return this.onDelete();
       default:
         return () => {};
     }
@@ -461,14 +365,12 @@ class GraphContainer extends PureComponent {
   updateValues() {
     const conf = this._graph.getConfig();
     const { setValue, setElementsStash } = this.props;
-
     setValue(conf);
     setElementsStash(conf, this.getStashId());
   }
 
   graphUpdateHandler = () => {
     this.updateValues();
-    this.selectDrawingObject(null);
   };
 
   setGraphUpdateEventHandler = () => {
@@ -507,7 +409,7 @@ class GraphContainer extends PureComponent {
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
+      this._graph.loadFromConfig(coloredElements, true);
       return;
     }
 
@@ -517,144 +419,19 @@ class GraphContainer extends PureComponent {
     ) {
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible());
+      this._graph.loadFromConfig(elements, true);
     }
   };
 
-  getIconByToolName = (toolName, options) => {
-    if (!toolName) {
-      return "";
+  onAddDragDropValue = (dragDropValue, x, y) => {
+    if (this._graph.addDragDropValue(dragDropValue, x, y)) {
+      this.updateValues();
     }
-
-    const { width, height } = options;
-
-    const iconsByToolName = {
-      point: () => <IconPoint {...options} />,
-      line: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconLine {...newOptions} />;
-      },
-      ray: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconRay {...newOptions} />;
-      },
-      segment: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconSegment {...newOptions} />;
-      },
-      vector: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height + 5
-        };
-
-        return <IconVector {...newOptions} />;
-      },
-      circle: () => <IconCircle {...options} />,
-      ellipse: () => "ellipse",
-      hyperbola: () => "hyperbola",
-      tangent: () => "tangent",
-      secant: () => "secant",
-      exponent: () => "exponent",
-      logarithm: () => "logarithm",
-      polynom: () => "polynom",
-      parabola: () => <IconParabola {...options} />,
-      sine: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10
-        };
-
-        return <IconSine {...newOptions} />;
-      },
-      polygon: () => <IconPolygon {...options} />,
-      mark: () => <IconLabel {...options} />,
-      label: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height - 2
-        };
-
-        return <IconLabel {...newOptions} />;
-      },
-      annotation: () => "annotation",
-      area: () => "area"
-    };
-
-    return iconsByToolName[toolName]();
   };
 
-  setEquations = equations => {
-    const { setValue, setElementsStash, elements } = this.props;
-    let newElements = cloneDeep(elements);
-    newElements = newElements.filter(el => el.type !== CONSTANT.TOOLS.EQUATION);
-    newElements.push(...equations);
-    setValue(newElements);
-    setElementsStash(newElements, this.getStashId());
-  };
-
-  allTools = [
-    "point",
-    "line",
-    "ray",
-    "segment",
-    "vector",
-    "circle",
-    "ellipse",
-    "sine",
-    "tangent",
-    "secant",
-    "exponent",
-    "logarithm",
-    "polynom",
-    "hyperbola",
-    "polygon",
-    "parabola",
-    // "label",
-    "annotation",
-    "area"
-  ];
-
-  allControls = ["undo", "redo", "reset", "delete"];
-
-  drawingObjectsAreVisible = () => {
-    const { view, toolbar } = this.props;
-    const { drawingPrompt } = toolbar;
-    return view !== EDIT && drawingPrompt === "byObjects";
-  };
-
-  getDrawingObjects = () => {
-    const { toolbar, elements } = this.props;
-    const { drawingObjects } = toolbar;
-    const { selectedDrawingObject } = this.state;
-
-    return drawingObjects.map(item => ({
-      ...item,
-      disabled: elements.findIndex(el => el.id === item.id) > -1,
-      selected: !!(selectedDrawingObject && selectedDrawingObject.id === item.id)
-    }));
-  };
-
-  selectDrawingObject = drawingObject => {
-    this.setState({ selectedDrawingObject: drawingObject });
-    this._graph.setDrawingObject(drawingObject);
+  getDragDropValues = () => {
+    const { list, elements } = this.props;
+    return list.filter(elem => !elements.some(el => elem.id === el.id));
   };
 
   resourcesOnLoaded = () => {
@@ -667,24 +444,11 @@ class GraphContainer extends PureComponent {
   };
 
   render() {
-    const {
-      toolbar,
-      layout,
-      annotation,
-      controls,
-      bgShapes,
-      elements,
-      disableResponse,
-      view,
-      advancedElementSettings,
-      graphData,
-      setQuestionData
-    } = this.props;
-    const { tools } = toolbar;
-    const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
+    const { layout, annotation, controls, disableResponse, view, graphData, setQuestionData } = this.props;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
-    const equations = elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION);
+
+    const margin = layout.margin ? layout.margin : hasAnnotation ? 20 : 0;
 
     return (
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
@@ -702,25 +466,22 @@ class GraphContainer extends PureComponent {
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
           {!disableResponse && (
             <Tools
-              toolsAreVisible={!this.drawingObjectsAreVisible()}
-              tools={bgShapes ? this.allTools : tools}
-              controls={bgShapes ? this.allControls : controls}
-              tool={selectedTool}
-              bgShapes={bgShapes}
-              getIconByToolName={this.getIconByToolName}
+              toolsAreVisible={false}
+              controls={controls}
+              bgShapes={false}
+              getIconByToolName={() => ""}
               getHandlerByControlName={this.getHandlerByControlName}
-              onSelect={this.onSelectTool}
-              fontSize={bgShapes ? 12 : layout.fontSize}
+              onSelect={() => {}}
+              fontSize={layout.fontSize}
             />
           )}
-          {!this.drawingObjectsAreVisible() && !disableResponse && (
-            <Equations equations={equations} setEquations={this.setEquations} />
-          )}
-          <JSXBoxWithDrawingObjectsWrapper>
-            {this.drawingObjectsAreVisible() && !disableResponse && (
-              <DrawingObjects
-                selectDrawingObject={this.selectDrawingObject}
-                drawingObjects={this.getDrawingObjects()}
+          <JSXBoxWithDropValues className="jsxbox-with-drag-drop">
+            {!disableResponse && (
+              <DragDropValues
+                height={layout.height}
+                margin={margin}
+                values={this.getDragDropValues()}
+                onAddDragDropValue={this.onAddDragDropValue}
               />
             )}
             <JSXBoxWrapper width={+layout.width + 40}>
@@ -736,29 +497,17 @@ class GraphContainer extends PureComponent {
               {annotation && annotation.labelBottom && (
                 <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
               )}
-              <JSXBox
-                data-cy="jxgbox"
-                id={this._graphId}
-                className="jxgbox"
-                margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
-              />
+              <JSXBox data-cy="jxgbox" id={this._graphId} className="jxgbox" margin={margin} />
               <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
-              {elementSettingsAreOpened && this._graph && (
-                <ElementSettingsMenu
-                  advancedElementSettings={advancedElementSettings}
-                  element={this._graph.getConfig().filter(element => element.id === elementId)[0]}
-                  handleClose={this.handleElementSettingsMenuClose}
-                />
-              )}
             </JSXBoxWrapper>
-          </JSXBoxWithDrawingObjectsWrapper>
+          </JSXBoxWithDropValues>
         </GraphWrapper>
       </div>
     );
   }
 }
 
-GraphContainer.propTypes = {
+PlacementContainer.propTypes = {
   canvas: PropTypes.object.isRequired,
   layout: PropTypes.object.isRequired,
   pointParameters: PropTypes.object.isRequired,
@@ -768,10 +517,9 @@ GraphContainer.propTypes = {
   bgImgOptions: PropTypes.object.isRequired,
   backgroundShapes: PropTypes.object,
   evaluation: PropTypes.any,
-  toolbar: PropTypes.object,
+  graphType: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
   elements: PropTypes.array.isRequired,
-  bgShapes: PropTypes.bool.isRequired,
   annotation: PropTypes.object,
   controls: PropTypes.array,
   view: PropTypes.string.isRequired,
@@ -781,32 +529,28 @@ GraphContainer.propTypes = {
   stashIndex: PropTypes.object,
   graphData: PropTypes.string.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  questionId: PropTypes.string.isRequired,
   altAnswerId: PropTypes.string,
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,
   elementsIsCorrect: PropTypes.bool,
-  advancedElementSettings: PropTypes.bool
+  list: PropTypes.array
 };
 
-GraphContainer.defaultProps = {
+PlacementContainer.defaultProps = {
   backgroundShapes: { values: [], showPoints: true },
-  advancedElementSettings: false,
   evaluation: null,
   annotation: null,
   controls: [],
   stash: {},
   stashIndex: {},
   altAnswerId: null,
-  toolbar: {
-    tools: [],
-    drawingPrompt: "byTools",
-    drawingObjects: []
-  },
   disableResponse: false,
   previewTab: CLEAR,
   changePreviewTab: () => {},
-  elementsIsCorrect: false
+  elementsIsCorrect: false,
+  list: []
 };
 
 export default connect(
@@ -818,4 +562,4 @@ export default connect(
     setElementsStash: setElementsStashAction,
     setStashIndex: setStashIndexAction
   }
-)(GraphContainer);
+)(PlacementContainer);

@@ -44,6 +44,8 @@ class CompareShapes {
     switch (testShape.type) {
       case ShapeTypes.POINT:
         return this.comparePoints(testShape, trueShape);
+      case ShapeTypes.DRAG_DROP:
+        return this.compareDragDropValues(testShape, trueShape);
       case ShapeTypes.LINE:
         return this.compareLines(testShape, trueShape);
       case ShapeTypes.RAY:
@@ -95,6 +97,21 @@ class CompareShapes {
 
     return {
       id: testPoint.id,
+      result: false
+    };
+  }
+
+  compareDragDropValues(testValue, trueValue) {
+    if (testValue.x === trueValue.x && testValue.y === trueValue.y && testValue.text === trueValue.text) {
+      return {
+        id: testValue.id,
+        relatedId: trueValue.id,
+        result: true
+      };
+    }
+
+    return {
+      id: testValue.id,
       result: false
     };
   }

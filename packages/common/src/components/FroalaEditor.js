@@ -587,10 +587,18 @@ const CustomEditor = ({
     EditorRef.current = getEditor();
   };
 
+  const hasResponseBoxBtn = () =>
+    additionalToolbarOptions.includes("textinput") ||
+    additionalToolbarOptions.includes("response") ||
+    additionalToolbarOptions.includes("mathinput") ||
+    additionalToolbarOptions.includes("textdropdown") ||
+    additionalToolbarOptions.includes("responseBoxes") ||
+    additionalToolbarOptions.includes("paragraphNumber");
+
   useEffect(() => {
     // sample extension of custom buttons
     initMathField();
-    if (value) {
+    if (value && hasResponseBoxBtn()) {
       setChange(reIndexResponses(value));
     }
     // Math Input

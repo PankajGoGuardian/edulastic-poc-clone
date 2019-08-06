@@ -180,23 +180,21 @@ class PreviewModal extends React.Component {
                     <IconPencilEdit color={themeColor} />
                   </EduButton>
                 )}
-                {passage && (
-                  <Col span={12}>
-                    {passageTestItems.length > 0 && (
-                      <Select
-                        value={item._id}
-                        showArrow={false}
-                        optionLabelProp={"children"}
-                        onChange={v => {
-                          this.goToItem(v);
-                        }}
-                      >
-                        {passageTestItems.map((v, ind) => (
-                          <Select.Option value={v}>{ind + 1}</Select.Option>
-                        ))}
-                      </Select>
-                    )}
-                  </Col>
+                {passage && passageTestItems.length > 0 ? (
+                  <Select
+                    value={item._id}
+                    showArrow={false}
+                    optionLabelProp={"children"}
+                    onChange={v => {
+                      this.goToItem(v);
+                    }}
+                  >
+                    {passageTestItems.map((v, ind) => (
+                      <Select.Option value={v}>{ind + 1}</Select.Option>
+                    ))}
+                  </Select>
+                ) : (
+                  ""
                 )}
               </ButtonsWrapper>
               <ButtonsWrapper>

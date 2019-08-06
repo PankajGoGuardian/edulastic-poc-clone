@@ -262,7 +262,7 @@ class MainSetting extends Component {
       }
     });
     return (
-      <Container padding="30px">
+      <Container padding="30px" marginTop="10px">
         <Row style={{ padding: 0 }}>
           <Col span={isSmallSize ? 0 : 6}>
             <NavigationMenu fixed={windowScrollTop >= 90}>

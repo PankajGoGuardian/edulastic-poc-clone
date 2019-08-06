@@ -4,17 +4,13 @@ import styled from "styled-components";
 
 export const Content = styled(Paper)`
   display: flex;
-  margin: 0px 40px 50px 40px;
   flex-wrap: nowrap;
-  padding: 0;
+  padding: ${props => (props.padding ? props.padding : "0px")};
   position: relative;
-
-  @media (max-width: ${mobileWidth}) {
-    margin: 50px 25px;
-  }
 `;
 
 export const PreviewContent = styled(Content)`
+  padding: ${props => (props.padding ? props.padding : "0px")};
   @media (max-width: ${mobileWidth}) {
     & > div {
       padding: 0;
@@ -22,9 +18,13 @@ export const PreviewContent = styled(Content)`
   }
 `;
 
+export const ContentWrapper = styled.div`
+  padding: 20px 30px;
+`;
+
 export const ItemDetailWrapper = styled.div`
   display: flex;
-  padding: 0px 30px 40px;
+  padding: ${props => (props.padding ? props.padding : "0px 30px 40px")};
   flex-wrap: nowrap;
   width: 100%;
 

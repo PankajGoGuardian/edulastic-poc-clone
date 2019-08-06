@@ -13,7 +13,7 @@ class SecondHeadBar extends Component {
   render() {
     const { breadcrumb } = this.props;
     return (
-      <Container padding="10px 30px">
+      <Container padding="0px">
         <Breadcrumb data={breadcrumb} style={{ position: "unset", width: "100%" }} />
         {this.props.children ? this.props.children : null}
       </Container>

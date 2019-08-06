@@ -22,9 +22,6 @@ const FlexContainer = styled.div`
     & > * {
       margin-right: 3px;
     }
-    svg {
-      display: none;
-    }
     button svg {
       display: inline-block;
     }

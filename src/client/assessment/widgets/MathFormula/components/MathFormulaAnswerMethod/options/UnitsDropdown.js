@@ -7,6 +7,7 @@ import { Radio, Select } from "antd";
 import { get, isObject } from "lodash";
 
 import { FlexContainer } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { textColor, mainTextColor, white } from "@edulastic/colors";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
@@ -63,6 +64,11 @@ const UnitsDropdownPure = ({
     command: "write"
   }));
 
+  const uiStyle = get(item, "uiStyle", {});
+  const styles = {
+    height: uiStyle.heightpx || response.minHeight
+  };
+
   // if (isObject(symbol) || symbol === "units_us" || symbol === "units_si") {
   //   allBtns = MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
   //     if (isObject(symbol) && symbol.value.includes(btn.handler)) {
@@ -98,6 +104,7 @@ const UnitsDropdownPure = ({
           value={preview ? selected : options ? options.unit : ""}
           onChange={handleChange}
           disabled={disabled}
+          style={styles}
           statusColor={statusColor}
         >
           {allBtns.map((btn, i) => (

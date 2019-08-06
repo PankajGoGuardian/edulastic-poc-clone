@@ -11,6 +11,7 @@ import {
   FlexContainer,
   QuestionNumberLabel
 } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 
 import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 
@@ -211,6 +212,8 @@ class MathFormulaPreview extends Component {
     } = this.props;
     const { innerValues } = this.state;
 
+    const { minWidth, minHeight } = response;
+
     const latex = this.getValidLatex(this.props);
 
     const hasAltAnswers =
@@ -239,7 +242,9 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectBorderColor
       };
     }
-    // cssStyles.width = cssStyles.width || cssStyles.minWidth;
+    cssStyles.width = cssStyles.width || minWidth;
+    cssStyles.height = cssStyles.height || minHeight;
+
     const testItemCorrectValues = testItem
       ? item.validation.validResponse.value.map(validResponse => validResponse.value)
       : [];

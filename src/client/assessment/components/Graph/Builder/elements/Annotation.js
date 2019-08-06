@@ -1,5 +1,4 @@
 import { CONSTANT } from "../config";
-import FroalaEditorInput from "./FroalaEditorInput";
 import { getLabelPositionParameters } from "../settings";
 
 const jxgType = 99;
@@ -43,12 +42,13 @@ function onHandler() {
   return (board, event) => {
     const coords = board.getCoords(event);
 
-    const newElement = renderElement(board, {
+    // const newElement = renderElement(board, {
+    renderElement(board, {
       x: coords.usrCoords[1],
       y: coords.usrCoords[2]
     });
 
-    FroalaEditorInput(newElement, board).setFocus();
+    // FroalaEditorInput(newElement, board).setFocus();
   };
 }
 

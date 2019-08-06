@@ -35,11 +35,16 @@ function renderElement(board, element) {
 
   const mark = board.$board.create("text", [x, y, content], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
-    anchorX: "middle",
+    anchorX: "middle", // this setting cause offset flickering
     anchorY: "top",
     cssClass,
     highlightCssClass: cssClass,
     fixed
+  });
+
+  // fix offset flickering
+  setTimeout(() => {
+    mark.rendNode.childNodes[0].style.opacity = 1;
   });
 
   const newElement = board.$board.create("group", [point, mark], {

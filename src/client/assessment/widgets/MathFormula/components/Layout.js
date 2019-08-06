@@ -107,7 +107,7 @@ class Layout extends Component {
       showResponseBoxes
     } = this.props;
     const { widthpx, heightpx } = this.state;
-    const { minHeight, minWidth } = response;
+    const { minHeight, maxHeight, minWidth, maxWidth } = response;
 
     const changeUiStyle = (prop, value) => {
       onChange("uiStyle", {
@@ -153,8 +153,8 @@ class Layout extends Component {
                   value={widthpx || uiStyle.widthpx || minWidth}
                   onChange={this.onChangeWidthPx}
                   onBlur={this.handleDefaultWidthBlur}
-                  max={400}
-                  min={140}
+                  max={maxWidth}
+                  min={minWidth}
                 />
               </Col>
               <Col md={12}>
@@ -165,8 +165,8 @@ class Layout extends Component {
                   value={heightpx || uiStyle.heightpx || minHeight}
                   onChange={this.onChangeHeightPx}
                   onBlur={this.handleDefaultHeightBlur}
-                  max={400}
-                  min={35}
+                  max={maxHeight}
+                  min={minHeight}
                 />
               </Col>
             </Row>

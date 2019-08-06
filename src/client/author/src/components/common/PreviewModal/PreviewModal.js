@@ -18,10 +18,10 @@ import {
   getItemDetailSelectorForPreview,
   getPassageSelector,
   addPassageAction,
-  setItemDetailDataAction,
+  setPrevewItemAction,
   setQuestionsForPassageAction,
-  clearItemDetailAction
-} from "../../../../ItemDetail/ducks";
+  clearPreviewAction
+} from "./ducks";
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
@@ -62,9 +62,9 @@ class PreviewModal extends React.Component {
   }
 
   closeModal = () => {
-    const { onClose, changeView, clearAnswers, clearItemDetail } = this.props;
+    const { onClose, changeView, clearAnswers, clearPreview } = this.props;
     this.setState({ flag: false });
-    clearItemDetail();
+    clearPreview();
     changeView("clear");
     onClose();
     clearAnswers();
@@ -105,9 +105,9 @@ class PreviewModal extends React.Component {
   };
 
   goToItem = itemId => {
-    const { setQuestionsForPassage, setItemDetailData, item, itemFromDetails } = this.props;
-    if (!(itemFromDetails && itemFromDetails.data)) {
-      setItemDetailData(item);
+    const { setQuestionsForPassage, setPrevewItem, item, testItemPreviewData } = this.props;
+    if (!(testItemPreviewData && testItemPreviewData.data)) {
+      setPrevewItem(item);
     }
     testItemsApi.getById(itemId).then(response => {
       setQuestionsForPassage(response);
@@ -290,16 +290,16 @@ const enhance = compose(
         passage: getPassageSelector(state),
         preview: get(state, ["view", "preview"]),
         currentAuthorId: get(state, ["user", "user", "_id"]),
-        itemFromDetails: get(state, ["itemDetail", "item"], {})
+        testItemPreviewData: get(state, ["testItemPreview", "item"], {})
       };
     },
     {
       changeView: changePreviewAction,
       clearAnswers: clearAnswersAction,
       addPassage: addPassageAction,
-      setItemDetailData: setItemDetailDataAction,
+      setPrevewItem: setPrevewItemAction,
       setQuestionsForPassage: setQuestionsForPassageAction,
-      clearItemDetail: clearItemDetailAction
+      clearPreview: clearPreviewAction
     }
   )
 );

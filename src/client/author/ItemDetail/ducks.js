@@ -89,7 +89,6 @@ export const ADD_WIDGET_TO_PASSAGE = "[itemDetail] add widget to passage";
 export const DELETE_ITEM = "[itemDetail] delete item";
 export const SET_DELETING_ITEM = "[itemDetail] item deletion in progress";
 export const DELETE_WIDGET_FROM_PASSAGE = "[itemDetail] delete widget from passage";
-export const SET_QUESTIONS_IN_PASSAGE = "[itemDetail] set questions to passage";
 // actions
 
 //
@@ -194,7 +193,6 @@ export const setItemLevelScoreAction = createAction(SET_ITEM_DETAIL_SCORE);
 export const incrementItemLevelScore = createAction(INC_ITEM_DETAIL_SCORE);
 export const decrementItemLevelScore = createAction(DEC_ITEM_DETAIL_SCORE);
 export const setItemDeletingAction = createAction(SET_DELETING_ITEM);
-export const setQuestionsForPassageAction = createAction(SET_QUESTIONS_IN_PASSAGE);
 
 export const saveCurrentEditingTestIdAction = id => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
@@ -238,23 +236,6 @@ export const getRedirectTestSelector = createSelector(
   stateSelector,
   state => state.redirectTestId
 );
-
-export const getItemDetailSelectorForPreview = (state, id, page) => {
-  let testItems = [];
-  const itemDetail = get(state, "itemDetail.item", {});
-  if (itemDetail && itemDetail.data) {
-    return get(state, "itemDetail.item");
-  }
-  if (page === "addItems") {
-    testItems = get(state, "testsAddItems.items", []);
-  } else if (page === "review") {
-    testItems = get(state, "tests.entity.testItems", []);
-  } else {
-    console.warn("unknown page type ", page);
-  }
-  const item = testItems.find(x => x._id === id);
-  return item || undefined;
-};
 
 export const getItemIdSelector = createSelector(
   getItemDetailSelector,
@@ -584,18 +565,6 @@ export function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         passage: payload
-      };
-    }
-    case SET_QUESTIONS_IN_PASSAGE: {
-      return {
-        ...state,
-        item: {
-          ...payload,
-          data: {
-            ...state.item.data,
-            questions: payload.data.questions
-          }
-        }
       };
     }
     default:

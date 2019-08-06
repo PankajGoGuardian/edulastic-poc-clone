@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { cloneDeep, findIndex, isObject } from "lodash";
+import { cloneDeep, findIndex, isObject, difference } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { evaluationType, questionType } from "@edulastic/constants";
@@ -35,7 +35,8 @@ const MathFormulaOptions = ({
         return;
       }
       const _keys = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(btn => btn.label);
-      onChange("custom_keys", _keys);
+      const diffKeys = difference(customKeys, _keys);
+      onChange("custom_keys", _keys.concat(diffKeys));
     }
   }, [item.showDropdown, item.symbols]);
   const changeCustomKey = ({ index, value }) => {
@@ -69,7 +70,7 @@ const MathFormulaOptions = ({
   }
 
   const addResponseContainer = () => {
-    const { response_ids: responseIds } = item;
+    const { responseIds } = item;
     const ind = responseContainers.length;
     let obj = {};
     // eslint-disable-next-line no-labels
@@ -86,7 +87,7 @@ const MathFormulaOptions = ({
         }
       }
     }
-    onChange("response_containers", [...responseContainers, obj]);
+    onChange("responseContainers", [...responseContainers, obj]);
   };
 
   const changeResponseContainers = ({ index, prop, value }) => {
@@ -94,14 +95,14 @@ const MathFormulaOptions = ({
     const ind = findIndex(newContainers, cont => cont.index === index);
     if (ind !== -1) {
       newContainers[ind][prop] = value;
-      onChange("response_containers", newContainers);
+      onChange("responseContainers", newContainers);
     }
   };
 
   const deleteResponseContainer = index => {
     const newContainers = cloneDeep(responseContainers);
     newContainers.splice(index, 1);
-    onChange("response_containers", newContainers);
+    onChange("responseContainers", newContainers);
   };
   return (
     <WidgetOptions

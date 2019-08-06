@@ -1,6 +1,7 @@
 import { createSelector } from "reselect";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy } from "lodash";
-import { testItemsApi } from "@edulastic/api";
+import uuid from "uuid/v4";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy, uniq } from "lodash";
+import { testItemsApi, passageApi, itemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
 import { delay } from "redux-saga";
@@ -32,6 +33,7 @@ import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
 
 import { setQuestionCategory } from "../src/actions/pickUpQuestion";
+import { addQuestionAction, getCurrentQuestionSelector } from "../sharedDucks/questions";
 import { getAlignmentFromQuestionSelector, setDictAlignmentFromQuestion } from "../QuestionEditor/ducks";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
 import { getDictionariesAlignmentsSelector, getRecentStandardsListSelector } from "../src/selectors/dictionaries";
@@ -79,6 +81,14 @@ export const SHOW_PUBLISH_WARNING_MODAL = "[itemDetail] show publish warning mod
 export const PROCEED_PUBLISH_ACTION = "[itemDeatil] goto metadata page";
 export const SAVE_CURRENT_TEST_ITEM = "[itemDetail] save current test item";
 export const CONVERT_TO_MULTIPART = "[itemDetail] convert item to multipart";
+export const CONVERT_TO_PASSAGE_WITH_QUESTIONS = "[itemDetail] convert to passage with questions";
+export const ADD_PASSAGE = "[itemDetail] add passage to item";
+export const SAVE_PASSAGE = "[itemDetail] save passage to item";
+export const UPDATE_PASSAGE_STRUCTURE = "[itemDetail] update passage structure";
+export const ADD_WIDGET_TO_PASSAGE = "[itemDetail] add widget to passage";
+export const DELETE_ITEM = "[itemDetail] delete item";
+export const SET_DELETING_ITEM = "[itemDetail] item deletion in progress";
+export const DELETE_WIDGET_FROM_PASSAGE = "[itemDetail] delete widget from passage";
 // actions
 
 //
@@ -86,6 +96,13 @@ export const togglePublishWarningModalAction = createAction(SHOW_PUBLISH_WARNING
 export const proceedPublishingItemAction = createAction(PROCEED_PUBLISH_ACTION);
 export const saveCurrentTestItemAction = createAction(SAVE_CURRENT_TEST_ITEM);
 export const convertItemToMultipartAction = createAction(CONVERT_TO_MULTIPART);
+export const convertItemToPassageWithQuestionsAction = createAction(CONVERT_TO_PASSAGE_WITH_QUESTIONS);
+export const addPassageAction = createAction(ADD_PASSAGE);
+export const savePassageAction = createAction(SAVE_PASSAGE);
+export const updatePassageStructureAction = createAction(UPDATE_PASSAGE_STRUCTURE);
+export const addWidgetToPassageAction = createAction(ADD_WIDGET_TO_PASSAGE);
+export const deleteItemAction = createAction(DELETE_ITEM);
+export const deleteWidgetFromPassageAction = createAction(DELETE_WIDGET_FROM_PASSAGE);
 
 export const getItemDetailByIdAction = (id, params) => ({
   type: RECEIVE_ITEM_DETAIL_REQUEST,
@@ -175,6 +192,7 @@ export const setItemLevelScoringAction = createAction(SET_ITEM_DETAIL_ITEM_LEVEL
 export const setItemLevelScoreAction = createAction(SET_ITEM_DETAIL_SCORE);
 export const incrementItemLevelScore = createAction(INC_ITEM_DETAIL_SCORE);
 export const decrementItemLevelScore = createAction(DEC_ITEM_DETAIL_SCORE);
+export const setItemDeletingAction = createAction(SET_DELETING_ITEM);
 
 export const saveCurrentEditingTestIdAction = id => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
@@ -198,6 +216,11 @@ export const getItemDetailSelector = createSelector(
 export const getItemSelector = createSelector(
   stateSelector,
   state => state.item
+);
+
+export const getPassageSelector = createSelector(
+  stateSelector,
+  state => state.passage
 );
 
 export const isSingleQuestionViewSelector = createSelector(
@@ -325,6 +348,7 @@ export const getItemDetailValidationSelector = createSelector(
 
 const initialState = {
   item: null,
+  passage: null,
   error: null,
   loading: false,
   updating: false,
@@ -358,14 +382,21 @@ const updateDimension = (state, { left, right }) => {
   if (left === "100%") {
     newState.item.rows[0].widgets = [...newState.item.rows[0].widgets, ...newState.item.rows[1].widgets];
     newState.item.rows.length = 1;
-  } else if (!newState.item.rows[1]) {
-    newState.item.rows[1] = {
-      tabs: [],
-      dimension: right,
-      widgets: []
-    };
   } else {
-    newState.item.rows[1].dimension = right;
+    // if its a pasage type. left is passage and right is the testItem
+    if (newState.item.passageId) {
+      newState.item.rows[0].dimension = right;
+      newState.passage.structure.dimension = left;
+    } else if (!newState.item.rows[1]) {
+      // normal multipart
+      newState.item.rows[1] = {
+        tabs: [],
+        dimension: right,
+        widgets: []
+      };
+    } else {
+      newState.item.rows[1].dimension = right;
+    }
   }
   return newState;
 };
@@ -377,14 +408,19 @@ const updateTabTitle = (state, { rowIndex, tabIndex, value }) => {
 };
 
 const useTabs = (state, { rowIndex, isUseTabs }) => {
-  const newState = cloneDeep(state);
-  if (isUseTabs) {
-    newState.item.rows[rowIndex].tabs = ["Tab 1", "Tab 2"];
-  }
-  if (!isUseTabs) {
-    newState.item.rows[rowIndex].tabs = [];
-  }
-  return newState;
+  return produce(state, newState => {
+    const { item, passage } = newState;
+    if (item.passageId) {
+      if (rowIndex === 0) {
+        passage.structure.tabs = isUseTabs ? ["Tab 1", "Tab 2"] : [];
+      } else {
+        item.rows[0].tabs = isUseTabs ? ["Tab 1", "Tab 2"] : [];
+      }
+    } else {
+      newState.item.rows[rowIndex].tabs = isUseTabs ? ["Tab 1", "Tab 2"] : [];
+    }
+    return newState;
+  });
 };
 
 const useFlowLayout = (state, { rowIndex, isUseFlowLayout }) => {
@@ -424,6 +460,9 @@ export function reducer(state = initialState, { type, payload }) {
     case SET_ITEM_DETAIL_ITEM_LEVEL_SCORING:
       return { ...state, item: { ...state.item, itemLevelScoring: !!payload } };
 
+    case SET_DELETING_ITEM:
+      return { ...state, deleting: payload };
+
     case SET_ITEM_DETAIL_SCORE:
       if (!(payload > 0)) {
         return state;
@@ -438,7 +477,7 @@ export function reducer(state = initialState, { type, payload }) {
        * But only need to do under certain conditions
        */
       const itemLevelScoring = get(state, "item.itemLevelScoring");
-      const updatingScore = get(payload, "validation.valid_response.score");
+      const updatingScore = get(payload, "validation.validResponse.score");
       const newQuestionTobeAdded = !get(state, "item.data.questions", []).find(x => x.id === payload.id);
       let canUpdateItemLevelScore = false;
       const questionsLength = get(state, "item.data.questions.length", 0);
@@ -462,6 +501,11 @@ export function reducer(state = initialState, { type, payload }) {
 
     case DELETE_ITEM_DETAIL_WIDGET_APPLY:
       return deleteWidget(state, payload);
+
+    case DELETE_WIDGET_FROM_PASSAGE:
+      return produce(state, draft => {
+        draft.passage.structure.widgets.splice(payload, 1);
+      });
 
     case UPDATE_TAB_TITLE:
       return updateTabTitle(state, payload);
@@ -518,6 +562,29 @@ export function reducer(state = initialState, { type, payload }) {
           multipartItem: true
         }
       };
+    case CONVERT_TO_PASSAGE_WITH_QUESTIONS:
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          multipartItem: true,
+          isPassageWithQuestions: true
+        }
+      };
+    case ADD_PASSAGE: {
+      return produce(state, draft => {
+        draft.item.passageId = payload._id;
+        draft.passage = payload;
+        draft.item.rows[0].dimension = "50%";
+        return draft;
+      });
+    }
+    case UPDATE_PASSAGE_STRUCTURE: {
+      return {
+        ...state,
+        passage: payload
+      };
+    }
     default:
       return state;
   }
@@ -530,7 +597,16 @@ function* receiveItemSaga({ payload }) {
     const data = yield call(testItemsApi.getById, payload.id, payload.params);
     let questions = (data.data && data.data.questions) || [];
     const questionsArr = (data.data && data.data.questions) || [];
-    const resources = (data.data && data.data.resources) || [];
+    let resources = (data.data && data.data.resources) || [];
+
+    //
+    if (data.passageData) {
+      let passageWidgets = data.passageData.data;
+      resources = [...resources, ...passageWidgets];
+      yield put(updatePassageStructureAction(data.passageData));
+    } else {
+      yield put(updatePassageStructureAction(undefined));
+    }
 
     // if there is only one question, set it as currentQuestionId, since
     // questionView will be loaded instead.
@@ -551,8 +627,9 @@ function* receiveItemSaga({ payload }) {
 
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
-      payload: data
+      payload: _omit(data, ["passageData"])
     });
+
     yield put({
       type: SET_ITEM_QIDS,
       payload: qids
@@ -581,6 +658,24 @@ function* receiveItemSaga({ payload }) {
   }
 }
 
+export function* deleteItemSaga({ payload }) {
+  try {
+    yield put(setItemDeletingAction(true));
+    const { id, redirectId } = payload;
+    const res = yield call(testItemsApi.deleteById, id);
+    yield call(message.success, "item deleted successfully");
+    yield put(setItemDeletingAction(false));
+    if (redirectId) {
+      yield put(push(`/author/items/${redirectId}/item-detail`));
+    } else {
+      yield put(push(`/author/items`));
+    }
+  } catch (e) {
+    console.error(err);
+    yield call(message.error, "deleting item failed");
+  }
+}
+
 export function* updateItemSaga({ payload }) {
   try {
     const { addToTest } = payload;
@@ -595,7 +690,15 @@ export function* updateItemSaga({ payload }) {
 
     // const questions = yield select(getQuestionsSelector);
     const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
-    const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
+    const rows = yield select(state => get(state, "itemDetail.item.rows"), []);
+    const testItemWidgetIds = rows.reduce((allIds, row = {}) => {
+      let widgetIds = (row.widgets || []).map(i => i.reference);
+      return [...allIds, ...widgetIds];
+    }, []);
+
+    const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {}))).filter(item =>
+      testItemWidgetIds.includes(item.id)
+    );
     const questions = widgets.filter(item => !resourceTypes.includes(item.type));
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
 
@@ -774,6 +877,148 @@ function* convertToMultipartSaga({ payload }) {
   }
 }
 
+function* convertToPassageWithQuestions({ payload }) {
+  try {
+    const { isTestFlow = false, itemId, testId } = payload;
+
+    // create a passage type with the following structure
+    const passage = yield call(passageApi.create, {
+      structure: {
+        tabs: [],
+        dimension: "50%",
+        widgets: [],
+        flowLayout: false,
+        content: ""
+      }
+    });
+    const { _id: passageId } = passage;
+
+    yield put(addPassageAction(passage));
+    yield put(
+      addQuestionAction({
+        id: uuid(),
+        title: "Passage",
+        type: questionType.PASSAGE,
+        heading: "Section 3",
+        math_renderer: "",
+        content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items.",
+        hints: [{ value: uuid(), label: "Hint A" }]
+      })
+    );
+    const nextPageUrl = isTestFlow
+      ? `/author/tests/${testId}/createItem/${itemId}`
+      : `/author/items/${itemId}/item-detail`;
+
+    yield put(
+      push({
+        pathname: "/author/questions/create",
+        state: {
+          isPassageWithQuestions: true,
+          nextPageUrl,
+          tabIndex: 0
+        }
+      })
+    );
+  } catch (e) {
+    console.log("error", e);
+    yield call(message.error, e);
+  }
+}
+
+function* savePassage({ payload }) {
+  try {
+    const { nextPageUrl, tabIndex } = yield select(state => get(state, "router.location.state"), {});
+
+    const passage = yield select(getPassageSelector);
+    const entity = yield select(getCurrentQuestionSelector);
+    const currentItem = yield select(getItemDetailSelector);
+
+    const widget = {
+      widgetType: "resource",
+      type: entity.type,
+      title: entity.title,
+      reference: entity.id,
+      tabIndex
+    };
+
+    let allWidgets = yield select(state => get(state, "authorQuestions.byId", {}));
+
+    let widgetIds = get(passage, "structure.widgets", []).map(widget => widget.reference);
+    widgetIds.push(widget.reference);
+
+    let passageData = Object.values(allWidgets).filter(i => widgetIds.includes(i.id));
+    const modifiedPassage = produce(passage, draft => {
+      draft.structure.widgets.push(widget);
+      draft.data = passageData;
+      draft.testItems = uniq([...draft.testItems, currentItem._id]);
+    });
+
+    yield put(updatePassageStructureAction(modifiedPassage));
+
+    yield all([
+      call(passageApi.update, _omit(modifiedPassage, ["__v"])),
+      call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId)
+    ]);
+    yield put(push(nextPageUrl));
+  } catch (e) {
+    console.log("error: ", e);
+    yield call(message.error, "error saving passage");
+  }
+}
+
+function* addWidgetToPassage({ payload }) {
+  try {
+    const { isTestFlow = false, itemId, testId, type, tabIndex = 0 } = payload;
+    console.log("item id at here is", itemId);
+    const widget =
+      type === "video"
+        ? {
+            id: uuid(),
+            title: "VIDEO",
+            type: questionType.VIDEO,
+            sourceURL: "",
+            heading: "",
+            summary: "",
+            transcript: "",
+            uiStyle: {
+              width: 480,
+              height: 270,
+              posterImage: "",
+              hideControls: false,
+              captionURL: ""
+            },
+            hints: [{ value: uuid(), label: "Hint A" }]
+          }
+        : {
+            id: uuid(),
+            title: "Passage",
+            type: questionType.PASSAGE,
+            heading: "Section 3",
+            math_renderer: "",
+            content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items.",
+            hints: [{ value: uuid(), label: "Hint A" }]
+          };
+    yield put(addQuestionAction(widget));
+    const nextPageUrl = isTestFlow
+      ? `/author/tests/${testId}/createItem/${itemId}`
+      : `/author/items/${itemId}/item-detail`;
+
+    yield put(
+      push({
+        pathname: "/author/questions/create",
+        state: {
+          isPassageWithQuestions: true,
+          nextPageUrl,
+          tabIndex
+        }
+      })
+    );
+  } catch (e) {
+    console.log("error:", e);
+    yield call(message.error, "failed adding content");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
@@ -781,6 +1026,10 @@ export function* watcherSaga() {
     yield takeEvery(ITEM_DETAIL_PUBLISH, publishTestItemSaga),
     yield takeEvery(DELETE_ITEM_DETAIL_WIDGET, deleteWidgetSaga),
     yield takeLatest(SAVE_CURRENT_TEST_ITEM, saveTestItemSaga),
-    yield takeLatest(CONVERT_TO_MULTIPART, convertToMultipartSaga)
+    yield takeLatest(CONVERT_TO_MULTIPART, convertToMultipartSaga),
+    yield takeLatest(CONVERT_TO_PASSAGE_WITH_QUESTIONS, convertToPassageWithQuestions),
+    yield takeLatest(SAVE_PASSAGE, savePassage),
+    yield takeLatest(ADD_WIDGET_TO_PASSAGE, addWidgetToPassage),
+    yield takeEvery(DELETE_ITEM, deleteItemSaga)
   ]);
 }

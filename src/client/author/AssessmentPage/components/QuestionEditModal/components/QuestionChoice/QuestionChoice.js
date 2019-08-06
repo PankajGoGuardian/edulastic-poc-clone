@@ -38,12 +38,12 @@ export default class QuestionChoice extends React.Component {
 
   setDefaultState = question => {
     const { options, validation } = question;
-    const { valid_response } = validation;
+    const { validResponse } = validation;
 
     this.setState({
       optionsValue: options.map(o => o.label).join(""),
-      score: valid_response.score,
-      correctAnswers: valid_response.value
+      score: validResponse.score,
+      correctAnswers: validResponse.value
     });
   };
 
@@ -78,14 +78,14 @@ export default class QuestionChoice extends React.Component {
       () => {
         const data = {
           validation: {
-            scoring_type: EXACT_MATCH,
-            valid_response: {
+            scoringType: EXACT_MATCH,
+            validResponse: {
               value: checked,
               score
             },
-            alt_responses: []
+            altResponses: []
           },
-          multiple_responses: checked.length > 1
+          multipleResponses: checked.length > 1
         };
 
         onUpdate(data);
@@ -100,14 +100,14 @@ export default class QuestionChoice extends React.Component {
     this.setState({ score }, () => {
       const data = {
         validation: {
-          scoring_type: EXACT_MATCH,
-          valid_response: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
             value: correctAnswers,
             score
           },
-          alt_responses: []
+          altResponses: []
         },
-        multiple_responses: correctAnswers.length > 1
+        multipleResponses: correctAnswers.length > 1
       };
 
       onUpdate(data);

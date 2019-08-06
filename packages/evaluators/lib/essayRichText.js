@@ -6,11 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 exports["default"] = void 0;
 
 var exactMatchEvaluator = function exactMatchEvaluator(_ref) {
-  var min_score_if_attempted = _ref.min_score_if_attempted,
-    max_score = _ref.max_score;
+  var minScoreIfAttempted = _ref.minScoreIfAttempted,
+    maxScore = _ref.maxScore;
   return {
-    score: min_score_if_attempted || 0,
-    maxScore: max_score || 1,
+    score: minScoreIfAttempted || 0,
+    maxScore: maxScore || 1,
     evaluation: {}
   };
 };

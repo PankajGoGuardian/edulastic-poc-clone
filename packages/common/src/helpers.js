@@ -128,7 +128,7 @@ const escapeCurlyBraces = node => {
 };
 
 const processCurlyBraces = nodes => {
-  if (nodes.contents().length) {
+  if (nodes.prop("tagName") !== "IFRAME" && nodes.contents().length) {
     nodes.contents().each((index, node) => {
       if (node.nodeType === 3) {
         escapeCurlyBraces(node);

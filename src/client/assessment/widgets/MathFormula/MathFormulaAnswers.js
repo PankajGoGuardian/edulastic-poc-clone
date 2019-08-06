@@ -28,10 +28,10 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
           value: [initialMethod]
         });
@@ -45,7 +45,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleChangeCorrectPoints = points => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.score = points;
+        draft.validation.validResponse.score = points;
         updateVariables(draft, latexKeys);
       })
     );
@@ -54,7 +54,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleChangeAltPoints = (points, i) => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses[i].score = points;
+        draft.validation.altResponses[i].score = points;
         updateVariables(draft, latexKeys);
       })
     );
@@ -63,7 +63,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
         updateVariables(draft, latexKeys);
       })
     );
@@ -75,7 +75,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleChangeCorrectMethod = ({ index, prop, value }) => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.value[index][prop] = value;
+        draft.validation.validResponse.value[index][prop] = value;
 
         if (
           [
@@ -84,9 +84,9 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
             methods.IS_EXPANDED,
             methods.IS_TRUE,
             methods.EQUIV_SYNTAX
-          ].includes(draft.validation.valid_response.value[index].method)
+          ].includes(draft.validation.validResponse.value[index].method)
         ) {
-          delete draft.validation.valid_response.value[index].value;
+          delete draft.validation.validResponse.value[index].value;
         }
 
         updateVariables(draft, latexKeys);
@@ -97,7 +97,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleChangeAltMethod = answerIndex => ({ index, prop, value }) => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses[answerIndex].value[index][prop] = value;
+        draft.validation.altResponses[answerIndex].value[index][prop] = value;
         updateVariables(draft, latexKeys);
       })
     );
@@ -106,7 +106,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleAddCorrectMethod = () => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.value.push(initialMethod);
+        draft.validation.validResponse.value.push(initialMethod);
         updateVariables(draft, latexKeys);
       })
     );
@@ -115,7 +115,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleAddAltMethod = answerIndex => () => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses[answerIndex].value.push(initialMethod);
+        draft.validation.altResponses[answerIndex].value.push(initialMethod);
         updateVariables(draft, latexKeys);
       })
     );
@@ -124,7 +124,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleDeleteCorrectMethod = index => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.valid_response.value.splice(index, 1);
+        draft.validation.validResponse.value.splice(index, 1);
         updateVariables(draft, latexKeys);
       })
     );
@@ -133,7 +133,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
   const handleDeleteAltMethod = answerIndex => index => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses[answerIndex].value.splice(index, 1);
+        draft.validation.altResponses[answerIndex].value.splice(index, 1);
         updateVariables(draft, latexKeys);
       })
     );
@@ -150,10 +150,10 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
-  const handleAllowedVariables = variables => {
+  const handleAllowedOptions = (option, variables) => {
     setQuestionData(
       produce(item, draft => {
-        draft.allowedVariables = variables;
+        draft[option] = variables;
         updateVariables(draft, latexKeys);
       })
     );
@@ -183,27 +183,27 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
           <MathFormulaWithPoints
             item={item}
             onChange={handleChangeCorrectMethod}
-            onChangeAllowedVars={handleAllowedVariables}
+            onChangeAllowedOptions={handleAllowedOptions}
             onChangeShowDropdown={handleShowDropdown}
             onAdd={handleAddCorrectMethod}
             onDelete={handleDeleteCorrectMethod}
-            answer={item.validation.valid_response.value}
-            points={item.validation.valid_response.score}
+            answer={item.validation.validResponse.value}
+            points={item.validation.validResponse.score}
             onChangePoints={points => handleChangeCorrectPoints(points)}
             onChangeKeypad={handleKeypadMode}
             keypadOffset={keypadOffset}
           />
         )}
-        {item.validation.alt_responses &&
-          !!item.validation.alt_responses.length &&
-          item.validation.alt_responses.map((alter, i) => {
+        {item.validation.altResponses &&
+          !!item.validation.altResponses.length &&
+          item.validation.altResponses.map((alter, i) => {
             if (i + 1 === correctTab) {
               return (
                 <MathFormulaWithPoints
                   key={i}
                   item={item}
                   onChange={handleChangeAltMethod(i)}
-                  onChangeAllowedVars={handleAllowedVariables}
+                  onChangeAllowedOptions={handleAllowedOptions}
                   onChangeShowDropdown={handleShowDropdown}
                   onAdd={handleAddAltMethod(i)}
                   onDelete={handleDeleteAltMethod(i)}

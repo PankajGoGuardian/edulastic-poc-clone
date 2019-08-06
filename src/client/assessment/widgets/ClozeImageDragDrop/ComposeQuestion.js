@@ -455,8 +455,8 @@ class ComposeQuestion extends Component {
 
     const newResponseContainer = {};
     const elemRect = this.canvasRef.current.getBoundingClientRect();
-    const _width = get(item, "ui_style.width", 150);
-    const _height = get(item, "ui_style.height", 40);
+    const _width = get(item, "uiStyle.width", 150);
+    const _height = get(item, "uiStyle.height", 40);
 
     newResponseContainer.top = e.clientY - elemRect.top;
     newResponseContainer.left = e.clientX - elemRect.left;
@@ -634,7 +634,8 @@ class ComposeQuestion extends Component {
             >
               <AnnotationRnd
                 style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                questionId={item.id}
+                question={item}
+                setQuestionData={setQuestionData}
                 disableDragging={false}
                 isAbove={!isAnnotationBelow}
                 onDoubleClick={toggleIsAnnotationBelow}

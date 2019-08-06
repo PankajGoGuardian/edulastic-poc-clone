@@ -1,9 +1,9 @@
 const mcqEvaluation = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses } = validation;
+  const { validResponse, altResponses } = validation;
   const result = {};
   userResponse.forEach(resp => {
-    const altResponses = alt_responses.map(res => res.value);
-    result[resp] = !![...valid_response.value, ...altResponses].includes(resp);
+    const alternateResponses = altResponses.map(res => res.value);
+    result[resp] = !![...validResponse.value, ...alternateResponses].includes(resp);
   });
 
   return result;

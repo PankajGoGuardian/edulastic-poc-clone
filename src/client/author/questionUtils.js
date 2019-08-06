@@ -9,7 +9,7 @@ const { EXPRESSION_MULTIPART, CLOZE_DROP_DOWN, MULTIPLE_CHOICE } = questionType;
  */
 const expressionMultipartOptionsCheck = item => {
   // check options for dropdowns.
-  const optionsCount = get(item, ["response_ids", "dropDowns", "length"], 0);
+  const optionsCount = get(item, ["responseIds", "dropDowns", "length"], 0);
 
   // make sure that each dropDown has its own options.
   if (optionsCount !== Object.keys(item.options).length) return true;
@@ -31,7 +31,7 @@ const expressionMultipartOptionsCheck = item => {
  * @param {Object} item
  */
 const clozeDropDownOptionsCheck = item => {
-  const responses = get(item, "response_ids", []);
+  const responses = get(item, "responseIds", []);
   for (const res of responses) {
     const opts = item.options[res.id] || [];
     if (!opts.length) {

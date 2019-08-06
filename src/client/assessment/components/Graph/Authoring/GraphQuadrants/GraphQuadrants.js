@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { arrayMove } from "react-sortable-hoc";
+import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { PaddingDiv } from "@edulastic/common";
+import { Button, PaddingDiv } from "@edulastic/common";
 import { StyledTextField } from "../../common/styled_components";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
@@ -13,15 +15,22 @@ import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import Question from "../../../Question";
+import QuillSortableList from "../../../QuillSortableList";
 
-const X_RATIO = "x_ratio";
-const Y_RATIO = "y_ratio";
-const X_MIN = "x_min";
-const X_MAX = "x_max";
-const Y_MIN = "y_min";
-const Y_MAX = "y_max";
+const X_RATIO = "xRatio";
+const Y_RATIO = "yRatio";
+const X_MIN = "xMin";
+const X_MAX = "xMax";
+const Y_MIN = "yMin";
+const Y_MAX = "yMax";
 
 class GraphQuadrants extends Component {
+  isQuadrantsPlacement = () => {
+    const { graphData } = this.props;
+    const { graphType } = graphData;
+    return graphType === "quadrantsPlacement";
+  };
+
   onChangeQuestion = stimulus => {
     const { graphData, setQuestionData } = this.props;
     setQuestionData({ ...graphData, stimulus });
@@ -91,14 +100,67 @@ class GraphQuadrants extends Component {
     { value: "logarithm", label: "Logarithm" },
     { value: "hyperbola", label: "Hyperbola" },
     { value: "polygon", label: "Polygon" },
-    { value: "area", label: "Area" },
-    { value: "label", label: "Label" }
+    { value: "area", label: "Area" }
+    // { value: "label", label: "Label" }
   ];
 
   getDrawingPromptOptions = () => [
     { value: "byTools", label: "By drawing tools" },
     { value: "byObjects", label: "By objects" }
   ];
+
+  onSortOrderListEnd = ({ oldIndex, newIndex }) => {
+    const { graphData, setQuestionData } = this.props;
+
+    setQuestionData({
+      ...graphData,
+      list: arrayMove(graphData.list, oldIndex, newIndex)
+    });
+  };
+
+  handleChangeListItem = (index, value) => {
+    const { setQuestionData, graphData } = this.props;
+    const list = cloneDeep(graphData.list);
+
+    list[index].text = value;
+
+    const responses = [graphData.validation.validResponse, ...graphData.validation.altResponses];
+    responses.forEach(response => {
+      const responseValue = response.value.find(el => el.id === list[index].id);
+      if (responseValue) {
+        responseValue.text = value;
+      }
+    });
+
+    setQuestionData({ ...graphData, list });
+  };
+
+  handleDeleteListItem = index => {
+    const { setQuestionData, graphData } = this.props;
+
+    const filteredItems = cloneDeep(graphData.list).filter((q, i) => i !== index);
+
+    const responses = [graphData.validation.validResponse, ...graphData.validation.altResponses];
+    responses.forEach(response => {
+      response.value = response.value.filter(el => el.id !== graphData.list[index].id);
+    });
+
+    setQuestionData({ ...graphData, list: filteredItems });
+  };
+
+  handleAddListItem = () => {
+    const { setQuestionData, graphData } = this.props;
+    const newItem = cloneDeep(graphData);
+
+    newItem.list = newItem.list.concat({
+      text: "New Option",
+      id: `list-item-${Math.random()
+        .toString(36)
+        .substr(2, 9)}`
+    });
+
+    setQuestionData({ ...graphData, list: newItem.list });
+  };
 
   render() {
     const { t, graphData, fillSections, cleanSections } = this.props;
@@ -210,23 +272,55 @@ class GraphQuadrants extends Component {
             </Row>
           </PaddingDiv>
         </Question>
-        <Question
-          section="main"
-          label="Tools"
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-          advancedAreOpen
-        >
-          <PaddingDiv>
-            <Subtitle>{t("component.graphing.tools")}</Subtitle>
-            <GraphToolsParams
-              toolOptions={this.getToolOptions()}
-              drawingPromptOptions={this.getDrawingPromptOptions()}
-              toolbar={graphData.toolbar}
-              onChange={this.handleToolsChange}
-            />
-          </PaddingDiv>
-        </Question>
+        {!this.isQuadrantsPlacement() && (
+          <Question
+            section="main"
+            label="Tools"
+            cleanSections={cleanSections}
+            fillSections={fillSections}
+            advancedAreOpen
+          >
+            <PaddingDiv>
+              <Subtitle>{t("component.graphing.tools")}</Subtitle>
+              <GraphToolsParams
+                toolOptions={this.getToolOptions()}
+                drawingPromptOptions={this.getDrawingPromptOptions()}
+                toolbar={graphData.toolbar}
+                onChange={this.handleToolsChange}
+              />
+            </PaddingDiv>
+          </Question>
+        )}
+        {this.isQuadrantsPlacement() && (
+          <Question
+            section="main"
+            label="Possible Responses"
+            cleanSections={cleanSections}
+            fillSections={fillSections}
+            advancedAreOpen
+          >
+            <PaddingDiv>
+              <Subtitle>{t("component.graphing.possibleresponses")}</Subtitle>
+              <QuillSortableList
+                items={graphData.list.map(o => o.text)}
+                onSortEnd={this.onSortOrderListEnd}
+                useDragHandle
+                onRemove={this.handleDeleteListItem}
+                onChange={this.handleChangeListItem}
+              />
+              <Button
+                style={{ minWidth: 130, marginTop: 10 }}
+                onClick={this.handleAddListItem}
+                variant="extendedFab"
+                outlined
+                type="button"
+                color="primary"
+              >
+                {t("component.graphing.addnewpossibleresponsebtn")}
+              </Button>
+            </PaddingDiv>
+          </Question>
+        )}
       </div>
     );
   }

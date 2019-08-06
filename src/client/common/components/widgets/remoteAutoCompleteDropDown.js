@@ -6,7 +6,7 @@ import { some } from "lodash";
 
 import { useInternalEffect } from "../../../author/Reports/common/hooks/useInternalEffect";
 
-import { black } from "@edulastic/colors";
+import { black, themeColor } from "@edulastic/colors";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
@@ -298,6 +298,9 @@ const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
 
     .ant-select-dropdown-menu-item {
       min-height: ${props => (props.minHeight ? props.minHeight : "30px")};
+      &-active {
+        background-color: ${themeColor}20;
+      }
     }
 
     .ant-select-dropdown-menu-item-group {

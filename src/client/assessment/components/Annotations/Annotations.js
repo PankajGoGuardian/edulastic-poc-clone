@@ -1,16 +1,15 @@
 import React, { Component, createRef } from "react";
 import { v4 } from "uuid";
-import { EduButton } from "@edulastic/common";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { Subtitle } from "../Graph/common/styled_components";
-import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
+
+import { EduButton } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+
 import Annotation from "./Annotation";
 import { EditAnnotationsContainer } from "./styled/EditAnnotationsContainer";
 import { AnnotationsStyle } from "./styled/styled_components";
+import { Subtitle } from "./styled/Subtitle";
 
 class Annotations extends Component {
   ref = createRef();
@@ -137,15 +136,4 @@ Annotations.defaultProps = {
   transformable: false
 };
 
-const enhance = compose(
-  withNamespaces("assessment"),
-  connect(
-    (state, ownProps) => ({
-      question: getQuestionDataSelector(state),
-      edit: ownProps.editable
-    }),
-    { setQuestionData: setQuestionDataAction }
-  )
-);
-
-export default enhance(Annotations);
+export default withNamespaces("assessment")(Annotations);

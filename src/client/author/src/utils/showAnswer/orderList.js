@@ -1,5 +1,5 @@
 const createEvaluation = ({ validation }, answer = []) => {
-  const correct = validation.valid_response.value;
+  const correct = validation.validResponse.value;
   const result = {};
   answer.forEach((resp, index) => {
     result[resp] = correct[index] === resp;

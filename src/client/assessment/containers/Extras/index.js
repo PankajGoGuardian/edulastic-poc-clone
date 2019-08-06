@@ -49,8 +49,8 @@ class Extras extends Component {
                   toolbarId="instructor_stimulus"
                   toolbarSize="SM"
                   placeholder="Enter instructor stimulus"
-                  onChange={value => _change("instructor_stimulus", value)}
-                  value={get(item, "instructor_stimulus", "")}
+                  onChange={value => _change("instructorStimulus", value)}
+                  value={get(item, "instructorStimulus", "")}
                 />
               </WidgetFRInput>
             </Col>
@@ -63,8 +63,8 @@ class Extras extends Component {
                   placeholder="Enter sample answer"
                   toolbarId="sample_answer"
                   toolbarSize="SM"
-                  onChange={value => _change("metadata.sample_answer", value)}
-                  value={get(item, "metadata.sample_answer", "")}
+                  onChange={value => _change("metadata.sampleAnswer", value)}
+                  value={get(item, "metadata.sampleAnswer", "")}
                 />
               </WidgetFRInput>
             </Col>

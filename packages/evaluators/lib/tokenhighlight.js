@@ -119,12 +119,12 @@ var partialMatchEvaluator = function partialMatchEvaluator(_ref3) {
 var evaluator = function evaluator(_ref5) {
   var userResponse = _ref5.userResponse,
     validation = _ref5.validation;
-  var valid_response = validation.valid_response,
-    alt_responses = validation.alt_responses,
-    scoring_type = validation.scoring_type;
-  var answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
+  var validResponse = validation.validResponse,
+    altResponses = validation.altResponses,
+    scoringType = validation.scoringType;
+  var answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
 
-  switch (scoring_type) {
+  switch (scoringType) {
     case _scoring.ScoringType.EXACT_MATCH:
       return (0, _exactMatchTemplate["default"])(exactMatchEvaluator, {
         userResponse: userResponse,

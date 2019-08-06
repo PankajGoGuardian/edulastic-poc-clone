@@ -1,5 +1,6 @@
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import striptags from "striptags";
+import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 import { CONSTANT } from "../config";
 
 function init(element, board, cb, readOnly = false) {
@@ -41,16 +42,19 @@ const FroalaEditorInput = (element, board) => ({
       return;
     }
 
+    const content = replaceLatexesWithMathHtml(label);
+
     init(
       element,
       board,
       () => {
         if (label) {
-          element.editor.html.set(label);
+          element.editor.html.set(content);
         }
       },
       readOnly
     );
+
     element.labelHTML = label;
   },
 

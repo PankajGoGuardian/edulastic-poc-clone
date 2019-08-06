@@ -24,7 +24,7 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
   const handleUiStyleChange = (prop, uiStyle) => {
     setQuestionData(
       produce(item, draft => {
-        draft.ui_style[prop] = uiStyle;
+        draft.uiStyle[prop] = uiStyle;
         updateVariables(draft);
       })
     );
@@ -33,12 +33,12 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
-        if (!draft.validation.alt_responses) {
-          draft.validation.alt_responses = [];
+        if (!draft.validation.altResponses) {
+          draft.validation.altResponses = [];
         }
-        draft.validation.alt_responses.push({
+        draft.validation.altResponses.push({
           score: 1,
-          value: item.validation.valid_response.value
+          value: item.validation.validResponse.value
         });
       })
     );
@@ -48,7 +48,7 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
   const handleCloseTab = tabIndex => {
     setQuestionData(
       produce(item, draft => {
-        draft.validation.alt_responses.splice(tabIndex, 1);
+        draft.validation.altResponses.splice(tabIndex, 1);
 
         setCorrectTab(0);
         updateVariables(draft);
@@ -60,10 +60,10 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.value = arrayMove(draft.validation.valid_response.value, oldIndex, newIndex);
+          draft.validation.validResponse.value = arrayMove(draft.validation.validResponse.value, oldIndex, newIndex);
         } else {
-          draft.validation.alt_responses[correctTab - 1].value = arrayMove(
-            draft.validation.alt_responses[correctTab - 1].value,
+          draft.validation.altResponses[correctTab - 1].value = arrayMove(
+            draft.validation.altResponses[correctTab - 1].value,
             oldIndex,
             newIndex
           );
@@ -76,9 +76,9 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
     setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
-          draft.validation.valid_response.score = val;
+          draft.validation.validResponse.score = val;
         } else {
-          draft.validation.alt_responses[correctTab - 1].score = val;
+          draft.validation.altResponses[correctTab - 1].score = val;
         }
 
         updateVariables(draft);
@@ -93,14 +93,14 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
       canDelete={false}
       items={
         correctTab === 0
-          ? item.validation.valid_response.value.map(ind => item.source[ind])
-          : item.validation.alt_responses[correctTab - 1].value.map(ind => item.source[ind])
+          ? item.validation.validResponse.value.map(ind => item.source[ind])
+          : item.validation.altResponses[correctTab - 1].value.map(ind => item.source[ind])
       }
       onSortEnd={handleCorrectSortEnd}
       useDragHandle
       columns={1}
       points={
-        correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
+        correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
       onChangePoints={handlePointsChange}
     />

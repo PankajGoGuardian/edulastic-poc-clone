@@ -42,22 +42,22 @@ class Layout extends Component {
     const changeUiStyle = (prop, value) => {
       setQuestionData(
         produce(item, draft => {
-          if (!draft.ui_style) {
-            draft.ui_style = {};
+          if (!draft.uiStyle) {
+            draft.uiStyle = {};
           }
 
           if (prop === "inputtype") {
-            draft.validation.valid_response.value = draft.validation.valid_response.value.map(mapValues);
+            draft.validation.validResponse.value = draft.validation.validResponse.value.map(mapValues);
 
-            if (Array.isArray(draft.validation.alt_responses)) {
-              draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
+            if (Array.isArray(draft.validation.altResponses)) {
+              draft.validation.altResponses = draft.validation.altResponses.map(res => {
                 res.value = res.value.map(mapValues);
                 return res;
               });
             }
           }
 
-          draft.ui_style[prop] = value;
+          draft.uiStyle[prop] = value;
         })
       );
     };
@@ -115,13 +115,13 @@ class Layout extends Component {
               <Col md={12}>
                 <StemNumerationOption
                   onChange={val => changeUiStyle("validation_stem_numeration", val)}
-                  value={get(item, "ui_style.validation_stem_numeration", "numerical")}
+                  value={get(item, "uiStyle.validation_stem_numeration", "numerical")}
                 />
               </Col>
               <Col md={12}>
                 <FontSizeOption
                   onChange={val => changeUiStyle("fontsize", val)}
-                  value={get(item, "ui_style.fontsize", "normal")}
+                  value={get(item, "uiStyle.fontsize", "normal")}
                 />
               </Col>
             </Row>
@@ -130,7 +130,7 @@ class Layout extends Component {
               onChange={changeUiStyle}
               changeStyle={changeStyle}
               t={t}
-              uiStyle={get(item, "ui_style", {})}
+              uiStyle={get(item, "uiStyle", {})}
             />
           </Block>
         </Question>
@@ -146,11 +146,13 @@ Layout.propTypes = {
   item: PropTypes.object.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  responses: PropTypes.array
 };
 
 Layout.defaultProps = {
   advancedAreOpen: false,
+  responses: [],
   fillSections: () => {},
   cleanSections: () => {}
 };

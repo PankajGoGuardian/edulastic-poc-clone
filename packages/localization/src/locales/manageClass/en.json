@@ -1,5 +1,6 @@
 {
   "common": {
+    "myClasses": "My Classes",
     "noClassesTitle": "No archived classes",
     "noClassesSubTitle": "You have no archived classes available",
     "noActiveClassesTitle": "No active classes",

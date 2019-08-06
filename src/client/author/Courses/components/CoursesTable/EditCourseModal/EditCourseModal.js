@@ -64,11 +64,11 @@ class EditCourseModal extends React.Component {
         search: {
           name: {
             type: "eq",
-            value: nameValidate.value
+            value: [nameValidate.value]
           },
           number: {
             type: "eq",
-            value: numberValidate.value
+            value: [numberValidate.value]
           }
         }
       });

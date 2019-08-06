@@ -72,11 +72,11 @@ const partialMatchEvaluator = ({ userResponse = [], answers }) => {
 };
 
 const evaluator = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses, scoring_type } = validation;
+  const { validResponse, altResponses, scoringType } = validation;
 
-  const answers = [valid_response, ...alt_responses];
+  const answers = [validResponse, ...altResponses];
 
-  switch (scoring_type) {
+  switch (scoringType) {
     case ScoringType.EXACT_MATCH:
       return exactMatchTemplate(exactMatchEvaluator, {
         userResponse,

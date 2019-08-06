@@ -19,6 +19,7 @@ import { Polygon } from "./styled/Polygon";
 import { G } from "./styled/G";
 import { Rect } from "./styled/Rect";
 import { Text } from "./styled/Text";
+import { ImageContainer } from "./styled/ImageContainer";
 
 const circleRadius = 6;
 
@@ -156,14 +157,20 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
     if (selectedPolygon === null) {
       const newPoints = cloneDeep(points);
 
-      const position = image.current.getBoundingClientRect();
+      const imgRect = image.current.getBoundingClientRect();
 
       const point = {
-        x: e.clientX - position.left,
-        y: e.clientY - position.top
+        x: e.clientX - imgRect.left,
+        y: e.clientY - imgRect.top
       };
 
-      if (e.target === image.current) {
+      const isClickedImage = () => {
+        const mouseX = e.clientX - imgRect.left;
+        const mouseY = e.clientY - imgRect.top;
+        return mouseX >= 0 && mouseX <= imgRect.width && mouseY >= 0 && mouseY <= imgRect.height;
+      };
+
+      if (isClickedImage()) {
         if (newPoints[0]) {
           if (
             newPoints.every(
@@ -274,16 +281,24 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
       onMouseEnter={() => setMouseOn(true)}
       onMouseMove={handleCursor}
       id="svg-control-block"
+      style={{ position: "relative", width, height }}
     >
+      <ImageContainer
+        src={imageSrc}
+        innerRef={image}
+        width={+width}
+        height={+height}
+        preserveAspectRatio="none"
+        left={0}
+        top={0}
+      />
       <Svg
         width={width}
-        intersect={intersectionState || polygonIntersect}
         height={height}
+        intersect={intersectionState || polygonIntersect}
         onMouseUp={handleCircleMouseUp}
         onClick={handleClick}
       >
-        <image ref={image} href={imageSrc} width={width} height={height} preserveAspectRatio="none" x={0} y={0} />
-
         {points.map((point, i) => (
           <Circle
             key={i}
@@ -293,9 +308,7 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
             r={circleRadius}
           />
         ))}
-
         <Polyline points={points.map(point => `${point.x},${point.y}`).join(" ")} />
-
         {points[0] && mouseOn && (
           <Line
             onClick={handleLineClick}
@@ -306,7 +319,6 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
             y2={cursor.y}
           />
         )}
-
         {Array.isArray(areas) &&
           areas.length > 0 &&
           areas.map(
@@ -325,7 +337,6 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
                 />
               )
           )}
-
         {Array.isArray(dragPolygon) && (
           <Polygon
             intersect={intersectionState || polygonIntersect}
@@ -335,7 +346,6 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
             points={dragPolygon.map(point => `${point.x},${point.y}`).join(" ")}
           />
         )}
-
         {draggingPolygon === null &&
           Array.isArray(areas) &&
           areas.length > 0 &&
@@ -350,7 +360,6 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
                 </G>
               )
           )}
-
         {Array.isArray(polygonPoints) &&
           polygonPoints.map((point, i) => (
             <Circle

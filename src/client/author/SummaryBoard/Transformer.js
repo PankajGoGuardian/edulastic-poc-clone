@@ -15,8 +15,8 @@ const getAllQids = (testItemIds, testItemsDataKeyed) => {
  * @returns {number}
  */
 const getMaxScoreFromQuestion = question => {
-  let possibleScores = [DotProp.get(question, "validation.valid_response.score", 0)];
-  const alternateResponses = DotProp.get(question, "validation.alt_responses", false);
+  let possibleScores = [DotProp.get(question, "validation.validResponse.score", 0)];
+  const alternateResponses = DotProp.get(question, "validation.altResponses", false);
   if (alternateResponses) {
     possibleScores = possibleScores.concat(alternateResponses.map(r => r.score));
   }

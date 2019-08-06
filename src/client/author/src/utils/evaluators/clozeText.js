@@ -1,10 +1,10 @@
 const ClozeTextEvaluation = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses } = validation;
+  const { validResponse, altResponses } = validation;
   const result = {};
-  const altResponses = alt_responses.map(res => res.value);
-  altResponses.push(valid_response.value);
+  const alternateResponses = altResponses.map(res => res.value);
+  alternateResponses.push(validResponse.value);
   userResponse.forEach((resp, index) => {
-    result[index] = altResponses.filter(item => item[index] === resp).length > 0;
+    result[index] = alternateResponses.filter(item => item[index] === resp).length > 0;
   });
   return result;
 };

@@ -1,4 +1,4 @@
-import { smallDesktopWidth, white } from "@edulastic/colors";
+import { mediumDesktopWidth, white } from "@edulastic/colors";
 import styled from "styled-components";
 
 const Title = styled.p`
@@ -10,7 +10,7 @@ const Title = styled.p`
   letter-spacing: normal;
   color: ${white};
 
-  @media screen and (max-width: ${smallDesktopWidth}) {
+  @media screen and (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
   }
 `;

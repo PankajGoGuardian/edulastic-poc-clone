@@ -51,12 +51,12 @@ const MathFormulaAnswerMethod = ({
   showAdditionals,
   handleChangeAdditionals,
   onChangeKeypad,
-  onChangeAllowedVars,
-  allowedVariables,
+  onChangeAllowedOptions,
   onChangeShowDropdown,
   windowWidth,
   style = {},
   keypadOffset,
+  allowedVariables,
   t
 }) => {
   useEffect(() => {
@@ -78,7 +78,7 @@ const MathFormulaAnswerMethod = ({
       compareMethod = methodsConst.EQUIV_SYMBOLIC;
     }
     onChange("method", compareMethod);
-    onChangeKeypad("units_us");
+    if (onChangeKeypad) onChangeKeypad("units_us");
     handleChangeAdditionals(`${method}_${index}`, "pop");
     handleChangeAdditionals(`${compareMethod}_${index}`, "push");
   }, [item.showDropdown]);
@@ -304,13 +304,13 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={options}
-              onChange={changeOptions}
+              options={{ allowNumericOnly: item.allowNumericOnly }}
+              onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
           );
         case "allowedVariables":
-          return <AllowedVariables allowedVariables={allowedVariables} onChange={onChangeAllowedVars} />;
+          return <AllowedVariables allowedVariables={allowedVariables} onChange={onChangeAllowedOptions} />;
         case "setEvaluation":
           return (
             <CheckOption
@@ -445,7 +445,7 @@ const MathFormulaAnswerMethod = ({
 MathFormulaAnswerMethod.propTypes = {
   onChange: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func.isRequired,
-  onChangeAllowedVars: PropTypes.func.isRequired,
+  onChangeAllowedOptions: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onDelete: PropTypes.func,
   item: PropTypes.object.isRequired,

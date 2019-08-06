@@ -28,10 +28,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     changePreviewTab,
     previewTab,
     disableResponse,
-    item: { response_ids }
+    item: { responseIds }
   } = resprops;
 
-  const { index, id: answerId } = find(response_ids, response => response.id === id);
+  const { index, id: answerId } = find(responseIds, response => response.id === id);
   const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
 
   // eslint-disable-next-line no-unused-vars

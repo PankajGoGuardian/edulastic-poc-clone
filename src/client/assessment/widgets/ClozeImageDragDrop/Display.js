@@ -380,14 +380,13 @@ class Display extends Component {
       item,
       imageOptions,
       showBorder,
-      isReviewTab
+      isReviewTab,
+      setQuestionData
     } = this.props;
 
-    const questionId = item && item.id;
     const isWrapText = get(item, "responseLayout.isWrapText", false);
     const { userAnswers: _uAnswers, possibleResponses } = this.state;
-    const cAnswers = get(item, "validation.valid_response.value", []);
-
+    const cAnswers = get(item, "validation.validResponse.value", []);
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const isSnapFitValues = get(item, "responseLayout.isSnapFitValues", false);
@@ -417,7 +416,7 @@ class Display extends Component {
       alignItems: "center",
       width: "max-content",
       whiteSpace: isWrapText ? "normal" : "nowrap",
-      overflow: isWrapText ? "visible" : "hidden",
+      overflow: "hidden",
       textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
@@ -444,7 +443,8 @@ class Display extends Component {
             boxShadow: "none",
             border: preview ? null : "1px solid lightgray"
           }}
-          questionId={questionId}
+          question={item}
+          setQuestionData={setQuestionData}
         />
       </div>
     );
@@ -554,6 +554,7 @@ class Display extends Component {
                 top: smallSize ? responseContainer.top / 2 : responseContainer.top,
                 left: smallSize ? responseContainer.left / 2 : responseContainer.left,
                 height: smallSize ? responseContainer.height / 2 : responseContainer.height,
+                heightpx: smallSize ? responseContainer.height / 2 : responseContainer.height,
                 border: showDropItemBorder
                   ? showDashedBorder
                     ? `dashed 2px ${theme.widgets.clozeImageDragDrop.dropContainerDashedBorderColor}`
@@ -565,9 +566,11 @@ class Display extends Component {
                 // overflow: "hidden"
               };
               if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.widthpx = widthpx;
+                const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex];
+                btnStyle.width = individualW || btnStyle.width;
+                btnStyle.widthpx = individualW || btnStyle.widthpx;
+                btnStyle.height = individualH || btnStyle.height;
+                btnStyle.heightpx = individualH || btnStyle.heightpx;
               }
               if (btnStyle && btnStyle.width === 0) {
                 btnStyle.width = responseBtnStyle.widthpx;
@@ -583,7 +586,7 @@ class Display extends Component {
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
                     height: isWrapText ? "auto" : responseContainer.height || "auto", // responseContainer.height || "auto",
-                    width: isWrapText ? "auto" : responseContainer.width || "auto",
+                    width: responseContainer.width || "auto",
                     minHeight: responseContainer.height || "auto",
                     minWidth: responseContainer.width || "auto",
                     maxWidth: response.maxWidth
@@ -617,7 +620,8 @@ class Display extends Component {
                             <AnswerContainer
                               height={responseContainer.height || "auto"}
                               width={responseContainer.width || "auto"}
-                              answer={isWrapText ? answer : answer.replace("<p>", "<p class='clipText'>") || ""}
+                              isWrapText={isWrapText}
+                              answer={answer}
                             />
                           </DragItem>
                         );
@@ -677,8 +681,8 @@ class Display extends Component {
       />
     );
 
-    const validAnswers = get(item, "validation.valid_response.value", []);
-    const altAnswers = get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
+    const validAnswers = get(item, "validation.validResponse.value", []);
+    const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
     const allAnswers = [validAnswers, ...altAnswers];
 
     const correctAnswerBoxLayout = showAnswer ? (
@@ -789,6 +793,7 @@ class Display extends Component {
 }
 
 Display.propTypes = {
+  setQuestionData: PropTypes.func.isRequired,
   options: PropTypes.array,
   changePreviewTab: PropTypes.func,
   changePreview: PropTypes.func,

@@ -261,7 +261,7 @@ function* deleteClassSaga({ payload }) {
         page: 1,
         limit: 25,
         search: {
-          active: 1
+          active: [1]
         },
         districtId: payload.districtId
       })

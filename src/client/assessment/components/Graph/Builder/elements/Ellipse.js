@@ -15,7 +15,10 @@ function create(board, ellipsePoints, id = null) {
     label: getLabelParameters(JXG.OBJECT_TYPE_CONIC),
     id
   });
+  newLine.labelIsVisible = true;
   handleSnap(newLine, Object.values(newLine.ancestors), board);
+  board.handleStackedElementsMouseEvents(newLine);
+
   return newLine;
 }
 
@@ -48,6 +51,7 @@ function getConfig(ellipse) {
     type: CONSTANT.TOOLS.ELLIPSE,
     id: ellipse.id,
     label: ellipse.labelHTML || false,
+    labelIsVisible: ellipse.labelIsVisible,
     points: Object.keys(ellipse.ancestors)
       .sort()
       .map(n => Point.getConfig(ellipse.ancestors[n]))

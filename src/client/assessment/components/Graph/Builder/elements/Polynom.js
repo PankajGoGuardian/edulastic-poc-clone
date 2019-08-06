@@ -45,10 +45,13 @@ function create(board, polynomPoints, id = null) {
     label: getLabelParameters(jxgType),
     id
   });
+  newPolynom.labelIsVisible = true;
   newPolynom.type = jxgType;
   newPolynom.addParents(polynomPoints);
   newPolynom.ancestors = flatConfigPoints(polynomPoints);
   handleSnap(newPolynom, Object.values(newPolynom.ancestors), board);
+  board.handleStackedElementsMouseEvents(newPolynom);
+
   return newPolynom;
 }
 
@@ -90,6 +93,7 @@ function getConfig(polynom) {
     type: CONSTANT.TOOLS.POLYNOM,
     id: polynom.id,
     label: polynom.labelHTML || false,
+    labelIsVisible: polynom.labelIsVisible,
     points: Object.keys(polynom.ancestors)
       .sort()
       .map(n => Point.getConfig(polynom.ancestors[n]))

@@ -23,7 +23,7 @@ class Settings extends Component {
   render() {
     const {
       t,
-      item: { videoType, ui_style: uiStyle },
+      item: { videoType, uiStyle: uiStyle },
       item,
       setQuestionData,
       advancedAreOpen,
@@ -44,7 +44,7 @@ class Settings extends Component {
 
     const _change = (prop, value) => {
       handleChange(
-        "ui_style",
+        "uiStyle",
         produce(uiStyle, draft => {
           draft[prop] = value;
           updateVariables(draft);
@@ -129,7 +129,7 @@ Settings.propTypes = {
     videoType: PropTypes.string.isRequired,
     sourceURL: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
-    ui_style: PropTypes.shape({
+    uiStyle: PropTypes.shape({
       width: PropTypes.number.isRequired,
       height: PropTypes.number.isRequired,
       posterImage: PropTypes.string.isRequired,

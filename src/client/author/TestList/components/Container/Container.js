@@ -9,7 +9,7 @@ import { Button, Row, Input, Spin, message } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
-import { grey, white } from "@edulastic/colors";
+import { grey, white, themeColor } from "@edulastic/colors";
 import {
   ScrollBox,
   Container,
@@ -725,7 +725,7 @@ class TestList extends Component {
                     size="large"
                     onClick={this.handleCreateNewModule}
                   >
-                    <IconPlusCircle color="#00AD50" width={15} height={15} />
+                    <IconPlusCircle color={themeColor} width={15} height={15} />
                     <span>Add Module</span>
                   </StyledButton>
                 )}

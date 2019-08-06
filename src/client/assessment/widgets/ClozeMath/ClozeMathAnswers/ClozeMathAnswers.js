@@ -25,12 +25,12 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const _addAnswer = () => {
     const newItem = cloneDeep(item);
-    const mathValidAnswers = cloneDeep(get(newItem, "validation.valid_response.value", []));
-    const inputValidAnswers = cloneDeep(get(newItem, "validation.valid_response.textinput.value", []));
-    const dropdownValidAnswers = cloneDeep(get(newItem, "validation.valid_response.dropdown.value", []));
+    const mathValidAnswers = cloneDeep(get(newItem, "validation.validResponse.value", []));
+    const inputValidAnswers = cloneDeep(get(newItem, "validation.validResponse.textinput.value", []));
+    const dropdownValidAnswers = cloneDeep(get(newItem, "validation.validResponse.dropdown.value", []));
 
-    if (!newItem.validation.alt_responses) {
-      newItem.validation.alt_responses = [];
+    if (!newItem.validation.altResponses) {
+      newItem.validation.altResponses = [];
     }
     if (!isEmpty(mathValidAnswers)) {
       mathValidAnswers.map(answer =>
@@ -53,7 +53,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       });
     }
 
-    newItem.validation.alt_responses.push({
+    newItem.validation.altResponses.push({
       score: 1,
       value: mathValidAnswers,
       textinput: { value: inputValidAnswers },
@@ -65,8 +65,8 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const handleCloseTab = tabIndex => {
     const newItem = cloneDeep(item);
-    if (newItem.validation.alt_responses) {
-      newItem.validation.alt_responses.splice(tabIndex, 1);
+    if (newItem.validation.altResponses) {
+      newItem.validation.altResponses.splice(tabIndex, 1);
     }
     if (newItem.validation.alt_inputs) {
       newItem.validation.alt_inputs.splice(tabIndex, 1);
@@ -74,8 +74,8 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     if (newItem.validation.alt_dropdowns) {
       newItem.validation.alt_dropdowns.splice(tabIndex, 1);
     }
-    if (isEmpty(newItem.validation.alt_responses)) {
-      delete newItem.validation.alt_responses;
+    if (isEmpty(newItem.validation.altResponses)) {
+      delete newItem.validation.altResponses;
     }
     if (isEmpty(newItem.validation.alt_inputs)) {
       delete newItem.validation.alt_inputs;
@@ -91,43 +91,43 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const _changeCorrectPoints = points => {
     const newItem = cloneDeep(item);
-    newItem.validation.valid_response.score = points;
+    newItem.validation.validResponse.score = points;
     setQuestionData(newItem);
   };
 
   const _changeAltPoints = i => points => {
     const newItem = cloneDeep(item);
-    newItem.validation.alt_responses[i].score = points;
+    newItem.validation.altResponses[i].score = points;
     setQuestionData(newItem);
   };
 
   const _changeCorrectMethod = ({ methodId, methodIndex, prop, value }) => {
     const newItem = cloneDeep(item);
-    const validAnswers = get(newItem, "validation.valid_response.value", []);
+    const validAnswers = get(newItem, "validation.validResponse.value", []);
     forEach(validAnswers, answer => {
       if (answer[0].id === methodId) {
         answer[methodIndex][prop] = value;
       }
     });
-    set(newItem, `validation.valid_response.value`, validAnswers);
+    set(newItem, `validation.validResponse.value`, validAnswers);
     setQuestionData(newItem);
   };
 
   const _addCorrectMethod = methodId => {
     const newItem = cloneDeep(item);
-    const validAnswers = get(newItem, "validation.valid_response.value", []);
+    const validAnswers = get(newItem, "validation.validResponse.value", []);
     forEach(validAnswers, answer => {
       if (answer[0].id === methodId) {
         answer.push({ ...initialMethod, id: methodId });
       }
     });
-    set(newItem, `validation.valid_response.value`, validAnswers);
+    set(newItem, `validation.validResponse.value`, validAnswers);
     setQuestionData(newItem);
   };
 
   const _addAltMethod = answerIndex => methodId => {
     const newItem = cloneDeep(item);
-    forEach(newItem.validation.alt_responses[answerIndex].value, answer => {
+    forEach(newItem.validation.altResponses[answerIndex].value, answer => {
       if (answer[0].id === methodId) {
         answer.push({ ...initialMethod, id: methodId });
       }
@@ -137,7 +137,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const _deleteCorrectMethod = ({ methodIndex, methodId }) => {
     const newItem = cloneDeep(item);
-    forEach(newItem.validation.valid_response.value, answer => {
+    forEach(newItem.validation.validResponse.value, answer => {
       if (answer[0].id === methodId) {
         answer.splice(methodIndex, 1);
       }
@@ -147,7 +147,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const _deleteAltMethod = answerIndex => ({ methodIndex, methodId }) => {
     const newItem = cloneDeep(item);
-    forEach(newItem.validation.alt_responses[answerIndex].value, answer => {
+    forEach(newItem.validation.altResponses[answerIndex].value, answer => {
       if (answer[0].id === methodId) {
         answer.splice(methodIndex, 1);
       }
@@ -157,19 +157,19 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const _updateDropDownCorrectAnswer = ({ value, dropDownId }) => {
     const newItem = cloneDeep(item);
-    const validDropDownAnswers = get(newItem, "validation.valid_response.dropdown.value", []);
+    const validDropDownAnswers = get(newItem, "validation.validResponse.dropdown.value", []);
     forEach(validDropDownAnswers, answer => {
       if (answer.id === dropDownId) {
         answer.value = value;
       }
     });
-    set(newItem, "validation.valid_response.dropdown.value", validDropDownAnswers);
+    set(newItem, "validation.validResponse.dropdown.value", validDropDownAnswers);
     setQuestionData(newItem);
   };
 
   const _updateInputCorrectAnswer = ({ value, answerId }) => {
     const newItem = cloneDeep(item);
-    const validInputsAnswers = get(newItem, "validation.valid_response.textinput.value", []);
+    const validInputsAnswers = get(newItem, "validation.validResponse.textinput.value", []);
     forEach(validInputsAnswers, answer => {
       if (answer.id === answerId) {
         answer.value = value;
@@ -177,9 +177,9 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     });
     const splitWidth = Math.max(value.split("").length * 9, 100);
     const width = Math.min(splitWidth, 400);
-    const ind = findIndex(newItem.response_containers, container => container.id === answerId);
+    const ind = findIndex(newItem.responseContainers, container => container.id === answerId);
     if (ind === -1) {
-      const responseIds = newItem.response_ids;
+      const responseIds = newItem.responseIds;
       const obj = {};
       Object.keys(responseIds).forEach(key => {
         const resp = responseIds[key].find(inp => inp.id === answerId);
@@ -188,13 +188,13 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           obj.id = resp.id;
           obj.type = key;
           obj.widthpx = width;
-          newItem.response_containers.push(obj);
+          newItem.responseContainers.push(obj);
         }
       });
     } else {
-      newItem.response_containers[ind].widthpx = width;
+      newItem.responseContainers[ind].widthpx = width;
     }
-    set(newItem, `validation.valid_response.textinput.value`, validInputsAnswers);
+    set(newItem, `validation.validResponse.textinput.value`, validInputsAnswers);
     setQuestionData(newItem);
   };
 
@@ -202,7 +202,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const _changeAltMethod = answerIndex => ({ methodId, methodIndex, prop, value }) => {
     const newItem = cloneDeep(item);
-    forEach(newItem.validation.alt_responses[answerIndex].value, answer => {
+    forEach(newItem.validation.altResponses[answerIndex].value, answer => {
       if (answer[0].id === methodId) {
         answer[methodIndex][prop] = value;
       }
@@ -212,7 +212,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const _changeAltInputMethod = answerIndex => ({ value, answerId }) => {
     const newItem = cloneDeep(item);
-    forEach(newItem.validation.alt_responses[answerIndex].textinput.value, answer => {
+    forEach(newItem.validation.altResponses[answerIndex].textinput.value, answer => {
       if (answer.id === answerId) {
         answer.value = value;
       }
@@ -222,7 +222,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
 
   const _changeAltDropDownMethod = answerIndex => ({ value, dropDownId }) => {
     const newItem = cloneDeep(item);
-    forEach(newItem.validation.alt_responses[answerIndex].dropdown.value, answer => {
+    forEach(newItem.validation.altResponses[answerIndex].dropdown.value, answer => {
       if (answer.id === dropDownId) {
         answer.value = value;
       }
@@ -247,11 +247,20 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
-  const mathAnswers = get(item, "validation.valid_response.value", []);
-  const inputAnswers = get(item, "validation.valid_response.textinput.value", []);
-  const dropDownAnswers = get(item, "validation.valid_response.dropdown.value", []);
+  const handleAllowedOptions = mathInputIndex => (option, variables) => {
+    setQuestionData(
+      produce(item, draft => {
+        draft[option] = draft[option] || {};
+        draft[option][mathInputIndex] = variables;
+      })
+    );
+  };
 
-  const { response_ids: responseIds } = item;
+  const mathAnswers = get(item, "validation.validResponse.value", []);
+  const inputAnswers = get(item, "validation.validResponse.textinput.value", []);
+  const dropDownAnswers = get(item, "validation.validResponse.dropdown.value", []);
+
+  const { responseIds: responseIds } = item;
 
   let orderedAnswers = [];
   if (responseIds) {
@@ -273,7 +282,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
   }
   orderedAnswers = orderedAnswers.sort((a, b) => a.index - b.index);
 
-  const isAlt = !isEmpty(item.validation.alt_responses);
+  const isAlt = !isEmpty(item.validation.altResponses);
 
   return (
     <CorrectAnswers
@@ -288,7 +297,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       <CorrectAnswerContainer>
         {correctTab === 0 && (
           <MathFormulaPoints
-            points={get(item, "validation.valid_response.score", 0)}
+            points={get(item, "validation.validResponse.score", 0)}
             onChangePoints={_changeCorrectPoints}
           />
         )}
@@ -298,7 +307,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
               return <InputAnswer key={index} item={item} onChange={_updateInputCorrectAnswer} answers={[answer]} />;
             }
             if (isAlt) {
-              const _altInputVlaues = get(item, `validation.alt_responses[${correctTab - 1}].textinput.value`, []);
+              const _altInputVlaues = get(item, `validation.altResponses[${correctTab - 1}].textinput.value`, []);
               const altAnswer = { ...answer, ...find(_altInputVlaues, av => av.id === answer.id) };
               return (
                 <InputAnswer
@@ -317,7 +326,8 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   item={item}
                   key={index}
                   onChange={_changeCorrectMethod}
-                  onChangeAllowedVars={handleAllowedVariables(answer.index)}
+                  // onChangeAllowedOptions={handleAllowedVariables}
+                  onChangeAllowedOptions={handleAllowedOptions(index)}
                   onAdd={_addCorrectMethod}
                   onDelete={_deleteCorrectMethod}
                   answers={[answer]}
@@ -326,14 +336,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
               );
             }
             if (isAlt) {
-              const _altMathVlaues = get(item, `validation.alt_responses[${correctTab - 1}].value`, []);
+              const _altMathVlaues = get(item, `validation.altResponses[${correctTab - 1}].value`, []);
               const altAnswer = { ...answer, value: find(_altMathVlaues, av => av[0].id === answer.value[0].id) };
               return (
                 <MathFormulaAnswer
                   key={index}
                   item={item}
                   onChange={_changeAltMethod(correctTab - 1)}
-                  onChangeAllowedVars={handleAllowedVariables}
+                  onChangeAllowedOptions={handleAllowedOptions(index)}
                   onAdd={_addAltMethod(correctTab - 1)}
                   onDelete={_deleteAltMethod(correctTab - 1)}
                   answers={[altAnswer]}
@@ -350,7 +360,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
               );
             }
             if (isAlt) {
-              const _altDropDownsVlaues = get(item, `validation.alt_responses[${correctTab - 1}].dropdown.value`, []);
+              const _altDropDownsVlaues = get(item, `validation.altResponses[${correctTab - 1}].dropdown.value`, []);
               const altAnswer = { ...answer, ...find(_altDropDownsVlaues, av => av.id === answer.id) };
               return (
                 <DropDownAnswer

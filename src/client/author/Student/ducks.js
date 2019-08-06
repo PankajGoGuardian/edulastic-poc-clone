@@ -335,11 +335,11 @@ function* deleteStudentSaga({ payload }) {
 
 function* addMultiStudentSaga({ payload }) {
   try {
-    const addMultiStudents = yield call(userApi.addMultipleStudents, payload);
+    const addMultiStudents = yield call(userApi.addMultipleStudents, payload.addReq);
     yield put(addMultiStudentsSuccessAction(addMultiStudents));
     // here, since we have a common duck for users tab for calling the api, we make that action,
     // and fetch the fresh data
-    yield put(receiveAdminDataAction());
+    yield put(receiveAdminDataAction(payload.listReq));
   } catch (err) {
     const errorMessage = "Adding Multi Students is failing";
     yield call(message.error, errorMessage);

@@ -4,18 +4,10 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
-import { MathFormulaDisplay } from "@edulastic/common";
 import { CHECK, SHOW, CLEAR } from "../../../../constants/constantsForQuestions";
-
-import DragHandle from "../DragHandle";
-import { Container } from "./styled/Container";
-import { StyledDragHandle } from "./styled/StyledDragHandle";
-import { Text } from "./styled/Text";
-import { FlexCenter } from "./styled/FlexCenter";
-import { WithIndex } from "./styled/WithIndex";
 import { TextEmpty } from "./styled/TextEmpty";
-import { IconCheck } from "./styled/IconCheck";
-import { IconClose } from "./styled/IconClose";
+import DragPreview from "../../../../components/DragPreview";
+import { DragItemContent } from "./DragItemContent";
 
 function collectSource(connector, monitor) {
   return {
@@ -61,45 +53,41 @@ const DragItem = ({
   correct,
   previewTab,
   index,
-  theme
+  theme,
+  isResetOffset
 }) => {
   const showPreview = previewTab === CHECK || previewTab === SHOW;
-
-  return obj ? (
-    connectDragSource(
-      <div
-        onClick={() => (active ? onClick("") : onClick(obj))}
-        style={{
-          opacity: isDragging ? 0 : 1,
-          background: active ? theme.widgets.sortList.dragItemActiveBgColor : theme.widgets.sortList.dragItemBgColor,
-          borderRadius: 4
-        }}
-      >
-        <Container smallSize={smallSize}>
-          {!showPreview && (
-            <StyledDragHandle smallSize={smallSize}>
-              <DragHandle smallSize={smallSize} />
-            </StyledDragHandle>
-          )}
-
-          <Text checkStyle={!active && showPreview} correct={correct} smallSize={smallSize}>
-            <FlexCenter>
-              {showPreview ? <WithIndex>{index + 1}</WithIndex> : ""}
-              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: obj }} />
-            </FlexCenter>
-            {showPreview && (
-              <div>
-                {correct && <IconCheck />}
-                {!correct && <IconClose />}
-              </div>
-            )}
-          </Text>
-        </Container>
-      </div>
-    )
-  ) : (
+  return (
     <div>
-      <TextEmpty smallSize={smallSize} />
+      <DragPreview isDragging={isDragging} isResetOffset={isResetOffset}>
+        <DragItemContent active={active} correct={correct} obj={obj} showPreview={showPreview} smallSize={smallSize} />
+      </DragPreview>
+      {obj ? (
+        connectDragSource(
+          <div
+            onClick={() => (active ? onClick("") : onClick(obj))}
+            style={{
+              opacity: isDragging ? 0 : 1,
+              background: active
+                ? theme.widgets.sortList.dragItemActiveBgColor
+                : theme.widgets.sortList.dragItemBgColor,
+              borderRadius: 4
+            }}
+          >
+            <DragItemContent
+              active={active}
+              correct={correct}
+              obj={obj}
+              showPreview={showPreview}
+              smallSize={smallSize}
+            />
+          </div>
+        )
+      ) : (
+        <div>
+          <TextEmpty smallSize={smallSize} />
+        </div>
+      )}
     </div>
   );
 };
@@ -114,13 +102,15 @@ DragItem.propTypes = {
   correct: PropTypes.bool,
   previewTab: PropTypes.string,
   index: PropTypes.number.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  isResetOffset: PropTypes.bool
 };
 
 DragItem.defaultProps = {
   obj: null,
   correct: false,
-  previewTab: CLEAR
+  previewTab: CLEAR,
+  isResetOffset: false
 };
 
 const enhance = compose(

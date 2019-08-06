@@ -204,7 +204,7 @@ class ClozeMathInput extends React.Component {
     const { maths: _userAnwers = [] } = answers;
 
     const {
-      response_ids: { maths }
+      responseIds: { maths }
     } = item;
     const { index } = find(maths, res => res.id === id) || {};
 
@@ -227,9 +227,9 @@ class ClozeMathInput extends React.Component {
   get restrictKeys() {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
-    const { allowedVariables } = item;
+    const { allowedVariables = {} } = item;
     const {
-      response_ids: { maths }
+      responseIds: { maths }
     } = item;
     const { index } = find(maths, res => res.id === id) || {};
     return allowedVariables[index] ? allowedVariables[index].split(",").map(segment => segment.trim()) : [];
@@ -237,10 +237,10 @@ class ClozeMathInput extends React.Component {
 
   render() {
     const { resprops = {}, id } = this.props;
-    const { response_containers, item, uiStyles = {} } = resprops;
+    const { responseContainers, item, uiStyles = {} } = resprops;
     const { showKeyboard, keyboardStyles } = this.state;
-    const response = find(response_containers, cont => cont.id === id);
-    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+    const response = find(responseContainers, cont => cont.id === id);
+    const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
     const customKeys = get(item, "custom_keys", []);
@@ -276,10 +276,10 @@ class ClozeMathInput extends React.Component {
 }
 
 const MathInput = ({ resprops = {}, id }) => {
-  const { response_containers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
   const { maths: _mathAnswers = [] } = answers;
-  const response = find(response_containers, cont => cont.id === id);
-  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.ui_style.min_width}px` || "auto";
+  const response = find(responseContainers, cont => cont.id === id);
+  const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
   const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
 
   return checked ? (

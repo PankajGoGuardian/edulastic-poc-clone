@@ -21,8 +21,8 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
       if (!evaluator) {
         results[id] = [];
       } else {
-        const { isUnits, is_math, showDropdown } = validations[id];
-        if (isUnits && is_math && showDropdown) {
+        const { isUnits, isMath, showDropdown } = validations[id];
+        if (isUnits && isMath && showDropdown) {
           const expression = answer.expression || "";
           const unit = answer.unit ? answer.unit : "";
           if (expression.search("=") === -1) {
@@ -37,7 +37,7 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
           hasGroupResponses: validation.hasGroupResponses,
           validation: itemLevelScoring
             ? produce(validation.validation, v => {
-                set(v, "valid_response.score", itemLevelScore / questionsNum);
+                set(v, "validResponse.score", itemLevelScore / questionsNum);
               })
             : validation.validation
         });

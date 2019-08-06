@@ -107,7 +107,7 @@ const ClozeMath = ({
                 item={itemForPreview}
                 stimulus={item.stimulus}
                 options={item.options || {}}
-                responseIds={item.response_ids}
+                responseIds={item.responseIds}
                 saveAnswer={saveAnswer}
                 check={checkAnswer}
                 userAnswer={userAnswer}
@@ -146,14 +146,15 @@ const ClozeMath = ({
 
           <MathFormulaOptions
             onChange={_itemChange}
-            uiStyle={item.ui_style}
+            uiStyle={item.uiStyle}
             item={item}
-            responseContainers={item.response_containers}
-            textBlocks={item.text_blocks}
-            stimulusReview={item.stimulus_review}
-            instructorStimulus={item.instructor_stimulus}
+            responseContainers={item.responseContainers}
+            textBlocks={item.textBlocks}
+            stimulusReview={item.stimulusReview}
+            instructorStimulus={item.instructorStimulus}
             metadata={item.metadata}
             advancedAreOpen={advancedAreOpen}
+            showResponseBoxes
             fillSections={fillSections}
             cleanSections={cleanSections}
           />

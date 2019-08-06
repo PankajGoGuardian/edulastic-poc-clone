@@ -7,8 +7,7 @@ export const Content = styled(Paper)`
   height: 100%;
   left: 0;
   right: 0;
-  /* overflow: auto; */
-  padding: 25px;
+  padding: ${props => (props.padding ? props.padding : "0px")};
   height: 100%;
 
   @media (max-width: ${mobileWidth}) {

@@ -5,7 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Row, Spin } from "antd";
 import ClassCard from "./CardContainer";
 
-import { Wrapper, NoDataBox } from "../../styled";
+import { Wrapper, NoDataBox, Title } from "../../styled";
 import NoDataIcon from "../../assets/nodata.svg";
 
 const ClassCards = ({ classList, t }) => {
@@ -17,8 +17,11 @@ const ManageClassContainer = ({ t, classList, loading, showClass }) => {
   if (loading) return <Spin />;
   return (
     <Wrapper>
+      <Title>{t("common.myClasses")}</Title>
       {classList.length ? (
-        <Row gutter={20}>{<ClassCards classList={classList} t={t} />}</Row>
+        <Row gutter={34} style={{ padding: "0px 12px" }}>
+          {<ClassCards classList={classList} t={t} />}
+        </Row>
       ) : (
         <NoDataBox>
           <img src={NoDataIcon} alt="noData" />

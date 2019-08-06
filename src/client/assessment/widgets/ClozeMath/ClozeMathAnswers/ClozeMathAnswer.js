@@ -35,9 +35,9 @@ class ClozeMathAnswer extends Component {
   };
 
   render() {
-    const { answers, onChange, onAdd, onDelete, item, onChangeKeypad, onChangeAllowedVars } = this.props;
+    const { answers, onChange, onAdd, onDelete, item, onChangeKeypad, onChangeAllowedOptions } = this.props;
     const { showAdditionals } = this.state;
-    const { response_containers: responseContainers = [], ui_style: uiStyle, allowedVariables = {} } = item;
+    const { responseContainers: responseContainers = [], uiStyle: uiStyle, allowedVariables = {} } = item;
     const _changeMethod = (methodId, methodIndex) => (prop, val) => {
       onChange({ methodId, methodIndex, prop, value: val });
     };
@@ -77,7 +77,7 @@ class ClozeMathAnswer extends Component {
         >
           {answers.map(answer => {
             const response = responseContainers.find(cont => cont.index === answer.index);
-            const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.min_width}px` || "auto";
+            const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.minWidth}px` || "auto";
             const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
             return (
               <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.index}`}>
@@ -97,8 +97,8 @@ class ClozeMathAnswer extends Component {
                     onAddIndex={method.id}
                     style={{ width, height }}
                     onChangeKeypad={onChangeKeypad}
-                    onChangeAllowedVars={onChangeAllowedVars}
-                    allowedVariables={allowedVariables[answer.index]}
+                    onChangeAllowedOptions={onChangeAllowedOptions}
+                    allowedVariables={allowedVariables[answer.index] || ""}
                     {...method}
                   />
                 ))}
@@ -116,7 +116,7 @@ ClozeMathAnswer.propTypes = {
   t: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
-  onChangeAllowedVars: PropTypes.func.isRequired,
+  onChangeAllowedOptions: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired

@@ -157,14 +157,14 @@ class Display extends Component {
       imageOptions,
       isReviewTab
     } = this.props;
-    const cAnswers = get(item, "validation.valid_response.value", []);
+    const cAnswers = get(item, "validation.validResponse.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
     const { userAnswers: _uAnswers } = this.state;
 
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { height, wordwrap, stemnumeration } = uiStyle;
+    const { height, wordwrap, stemnumeration, responsecontainerindividuals } = uiStyle;
 
     const responseBtnStyle = {
       width: uiStyle.width !== 0 ? uiStyle.width : "auto",
@@ -207,12 +207,14 @@ class Display extends Component {
           />
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
+            const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex] || {};
+
             const btnStyle = {
               fontSize,
-              width: `${uiStyle.widthpx}px` || responseContainer.width,
+              width: individualW || uiStyle.widthpx || responseContainer.width,
+              height: individualH || uiStyle.height || responseContainer.height,
               top: uiStyle.top || responseContainer.top,
               left: uiStyle.left || responseContainer.left,
-              height: uiStyle.height || responseContainer.height,
               border: showDropItemBorder
                 ? showDashedBorder
                   ? `dashed 2px ${theme.widgets.clozeImageText.responseContainerDashedBorderColor}`
@@ -237,11 +239,7 @@ class Display extends Component {
                       : null
                     : null
                 }
-                style={{
-                  ...btnStyle,
-                  height: `${parseInt(responseContainer.height, 10)}px`,
-                  width: `${parseInt(responseContainer.width, 10)}px`
-                }}
+                style={{ ...btnStyle }}
               >
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
@@ -293,13 +291,13 @@ class Display extends Component {
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
-    const altResponses = validation.alt_responses || [];
+    const altResponses = validation.altResponses || [];
     const correctAnswerBoxLayout = showAnswer ? (
       <React.Fragment>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
           groupResponses={options}
-          userAnswers={validation.valid_response && validation.valid_response.value}
+          userAnswers={validation.validResponse && validation.validResponse.value}
         />
         {altResponses.map((altResponse, index) => (
           <CorrectAnswerBoxLayout

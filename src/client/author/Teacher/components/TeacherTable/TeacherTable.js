@@ -9,6 +9,7 @@ import { TypeToConfirmModal } from "@edulastic/common";
 
 import {
   StyledTableContainer,
+  StyledPagination,
   StyledControlDiv,
   StyledFilterSelect,
   StyledTable,
@@ -20,7 +21,7 @@ import {
   StyledClassName
 } from "./styled";
 
-import { AddUserFormModal as EditTeacherModal } from "../../../../common/components/AddUserModal/AddUserModal";
+import { UserFormModal as EditTeacherModal } from "../../../../common/components/UserFormModal/UserFormModal";
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
 import InviteMultipleTeacherModal from "./InviteMultipleTeacherModal/InviteMultipleTeacherModal";
 import StudentsDetailsModal from "../../../Student/components/StudentTable/StudentsDetailsModal/StudentsDetailsModal";
@@ -156,6 +157,15 @@ class TeacherTable extends Component {
   }
 
   componentDidUpdate(prevProps) {}
+
+  addTeachers = obj => {
+    const { addTeachers } = this.props;
+    let o = {
+      addReq: obj,
+      listReq: this.getSearchQuery()
+    };
+    addTeachers(o);
+  };
 
   onEditTeacher = key => {
     this.setState({
@@ -497,7 +507,7 @@ class TeacherTable extends Component {
             <InviteMultipleTeacherModal
               modalVisible={inviteTeacherModalVisible}
               closeModal={this.closeInviteTeacherModal}
-              addTeachers={addTeachers}
+              addTeachers={this.addTeachers}
               userOrgId={userOrgId}
             />
           )}
@@ -597,12 +607,16 @@ class TeacherTable extends Component {
           rowSelection={rowSelection}
           dataSource={Object.values(result)}
           columns={this.columns}
-          pagination={{
-            current: currentPage,
-            total: totalUsers,
-            pageSize: 25,
-            onChange: page => this.setPageNo(page)
-          }}
+          pagination={false}
+          hideOnSinglePage={true}
+        />
+        <StyledPagination
+          defaultCurrent={1}
+          current={currentPage}
+          pageSize={25}
+          total={totalUsers}
+          onChange={page => this.setPageNo(page)}
+          hideOnSinglePage={true}
         />
         {editTeacherModaVisible && (
           <EditTeacherModal

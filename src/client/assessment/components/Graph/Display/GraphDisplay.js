@@ -8,6 +8,7 @@ import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { PlacementContainer } from "./PlacementContainer";
 
 const safeParseFloat = val => {
   if (val) {
@@ -59,14 +60,14 @@ class GraphDisplay extends Component {
 
   validateNumberline = () => {
     const { graphData } = this.props;
-    const { canvas, ui_style } = graphData;
+    const { canvas, uiStyle } = graphData;
     const { graphIsValid } = this.state;
 
     const parsedGraphData = {
-      width: ui_style.layout_width ? parseInt(ui_style.layout_width, 10) : ui_style.layout_width,
-      height: ui_style.layout_height ? parseInt(ui_style.layout_height, 10) : ui_style.layout_height,
-      xMin: canvas.x_min ? parseFloat(canvas.x_min, 10) : canvas.x_min,
-      xMax: canvas.x_max ? parseFloat(canvas.x_max, 10) : canvas.x_max
+      width: uiStyle.layoutWidth ? parseInt(uiStyle.layoutWidth, 10) : uiStyle.layoutWidth,
+      height: uiStyle.layoutHeight ? parseInt(uiStyle.layoutHeight, 10) : uiStyle.layoutHeight,
+      xMin: canvas.xMin ? parseFloat(canvas.xMin, 10) : canvas.xMin,
+      xMax: canvas.xMax ? parseFloat(canvas.xMax, 10) : canvas.xMax
     };
 
     if (
@@ -88,16 +89,16 @@ class GraphDisplay extends Component {
 
   validateQuadrants = () => {
     const { graphData } = this.props;
-    const { canvas, ui_style } = graphData;
+    const { canvas, uiStyle } = graphData;
     const { graphIsValid } = this.state;
 
     const parsedGraphData = {
-      width: ui_style.layout_width ? parseInt(ui_style.layout_width, 10) : ui_style.layout_width,
-      height: ui_style.layout_height ? parseInt(ui_style.layout_height, 10) : ui_style.layout_height,
-      xMin: canvas.x_min ? parseFloat(canvas.x_min, 10) : canvas.x_min,
-      xMax: canvas.x_max ? parseFloat(canvas.x_max, 10) : canvas.x_max,
-      yMin: canvas.y_min ? parseFloat(canvas.y_min, 10) : canvas.y_min,
-      yMax: canvas.y_max ? parseFloat(canvas.y_max, 10) : canvas.y_max
+      width: uiStyle.layoutWidth ? parseInt(uiStyle.layoutWidth, 10) : uiStyle.layoutWidth,
+      height: uiStyle.layoutHeight ? parseInt(uiStyle.layoutHeight, 10) : uiStyle.layoutHeight,
+      xMin: canvas.xMin ? parseFloat(canvas.xMin, 10) : canvas.xMin,
+      xMax: canvas.xMax ? parseFloat(canvas.xMax, 10) : canvas.xMax,
+      yMin: canvas.yMin ? parseFloat(canvas.yMin, 10) : canvas.yMin,
+      yMax: canvas.yMax ? parseFloat(canvas.yMax, 10) : canvas.yMax
     };
 
     if (
@@ -131,13 +132,14 @@ class GraphDisplay extends Component {
         break;
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         this.validateQuadrants();
     }
   };
 
   getGraphContainer = () => {
-    const { graphData } = this.props;
+    const { graphData, bgShapes } = this.props;
     const { graphType } = graphData;
 
     switch (graphType) {
@@ -145,6 +147,8 @@ class GraphDisplay extends Component {
         return AxisSegmentsContainer;
       case "axisLabels":
         return AxisLabelsContainer;
+      case "quadrantsPlacement":
+        return !bgShapes ? PlacementContainer : QuadrantsContainer;
       case "quadrants":
       case "firstQuadrant":
       default:
@@ -163,6 +167,7 @@ class GraphDisplay extends Component {
         return this.getAxisLabelsProps();
       case "quadrants":
       case "firstQuadrant":
+      case "quadrantsPlacement":
       default:
         return this.getQuadrantsProps();
     }
@@ -180,94 +185,100 @@ class GraphDisplay extends Component {
       bgShapes,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      advancedElementSettings,
+      setQuestionData
     } = this.props;
 
     const {
-      ui_style,
+      uiStyle,
       canvas,
-      background_image,
+      backgroundImage,
       background_shapes,
       toolbar,
       controlbar,
       annotation,
       id,
-      graphType
+      graphType,
+      list
     } = graphData;
 
-    const { showGrid = true, xShowAxis = true, yShowAxis = true } = ui_style;
+    const { showGrid = true, xShowAxis = true, yShowAxis = true } = uiStyle;
 
     return {
       canvas: {
-        xMin: parseFloat(canvas.x_min) - 1,
-        xMax: parseFloat(canvas.x_max) + 1,
-        yMin: parseFloat(canvas.y_min) - 1,
-        yMax: parseFloat(canvas.y_max) + 1
+        xMin: parseFloat(canvas.xMin) - 1,
+        xMax: parseFloat(canvas.xMax) + 1,
+        yMin: parseFloat(canvas.yMin) - 1,
+        yMax: parseFloat(canvas.yMax) + 1
       },
       layout: {
-        width: ui_style.layout_width,
-        margin: ui_style.layout_margin,
-        height: ui_style.layout_height,
-        snapTo: ui_style.layout_snapto,
-        fontSize: getFontSizeVal(ui_style.currentFontSize)
+        width: uiStyle.layoutWidth,
+        margin: uiStyle.layoutMargin,
+        height: uiStyle.layoutHeight,
+        snapTo: uiStyle.layoutSnapto,
+        fontSize: getFontSizeVal(uiStyle.currentFontSize)
       },
       pointParameters: {
         snapToGrid: true,
-        snapSizeX: getSnapSize(ui_style.layout_snapto, parseFloat(ui_style.xDistance)),
-        snapSizeY: getSnapSize(ui_style.layout_snapto, parseFloat(ui_style.yDistance)),
-        showInfoBox: ui_style.displayPositionOnHover,
+        snapSizeX: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.xDistance)),
+        snapSizeY: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.yDistance)),
+        showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false
       },
       xAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.xTickDistance),
-        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
-        showTicks: !ui_style.xHideTicks,
-        drawLabels: ui_style.xDrawLabel,
-        maxArrow: ui_style.xMaxArrow,
-        minArrow: ui_style.xMinArrow,
-        commaInLabel: ui_style.xCommaInLabel,
+        ticksDistance: safeParseFloat(uiStyle.xTickDistance),
+        name: uiStyle.xShowAxisLabel ? uiStyle.xAxisLabel : "",
+        showTicks: !uiStyle.xHideTicks,
+        drawLabels: uiStyle.xDrawLabel,
+        maxArrow: uiStyle.xMaxArrow,
+        minArrow: uiStyle.xMinArrow,
+        commaInLabel: uiStyle.xCommaInLabel,
         showAxis: xShowAxis
       },
       yAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.yTickDistance),
-        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
-        showTicks: !ui_style.yHideTicks,
-        drawLabels: ui_style.yDrawLabel,
-        maxArrow: ui_style.yMaxArrow,
-        minArrow: ui_style.yMinArrow,
-        commaInLabel: ui_style.yCommaInLabel,
+        ticksDistance: safeParseFloat(uiStyle.yTickDistance),
+        name: uiStyle.yShowAxisLabel ? uiStyle.yAxisLabel : "",
+        showTicks: !uiStyle.yHideTicks,
+        drawLabels: uiStyle.yDrawLabel,
+        maxArrow: uiStyle.yMaxArrow,
+        minArrow: uiStyle.yMinArrow,
+        commaInLabel: uiStyle.yCommaInLabel,
         showAxis: yShowAxis
       },
       gridParams: {
-        gridX: safeParseFloat(ui_style.xDistance),
-        gridY: safeParseFloat(ui_style.yDistance),
+        gridX: safeParseFloat(uiStyle.xDistance),
+        gridY: safeParseFloat(uiStyle.yDistance),
         showGrid
       },
       bgImgOptions: {
-        urlImg: background_image.src,
-        opacity: background_image.opacity / 100,
-        coords: [background_image.x, background_image.y],
-        size: [background_image.width, background_image.height]
+        urlImg: backgroundImage.src,
+        opacity: backgroundImage.opacity / 100,
+        coords: [backgroundImage.x, backgroundImage.y],
+        size: [backgroundImage.width, backgroundImage.height]
       },
       backgroundShapes: {
         values: bgShapes ? [] : background_shapes || [],
-        showPoints: !!background_image.showShapePoints
+        showPoints: !!backgroundImage.showShapePoints
       },
       evaluation,
       toolbar,
       controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
       elements,
-      graphType,
+      graphType: bgShapes && graphType === "quadrantsPlacement" ? "quadrants" : graphType,
       bgShapes,
       annotation,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      list,
+      advancedElementSettings,
+      setQuestionData,
+      graphData
     };
   };
 
@@ -282,17 +293,18 @@ class GraphDisplay extends Component {
       elements,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData
     } = this.props;
 
-    const { ui_style, canvas, toolbar, numberlineAxis, graphType, id } = graphData;
+    const { uiStyle, canvas, toolbar, numberlineAxis } = graphData;
 
     return {
       canvas: {
-        xMin: parseFloat(canvas.x_min),
-        xMax: parseFloat(canvas.x_max),
-        yMin: parseFloat(canvas.y_min),
-        yMax: parseFloat(canvas.y_max),
+        xMin: parseFloat(canvas.xMin),
+        xMax: parseFloat(canvas.xMax),
+        yMin: parseFloat(canvas.yMin),
+        yMax: parseFloat(canvas.yMax),
         numberline: true,
         margin: parseFloat(canvas.margin),
         responsesAllowed: parseInt(canvas.responsesAllowed, 10) || 1,
@@ -318,60 +330,60 @@ class GraphDisplay extends Component {
         labelShowMin: numberlineAxis && numberlineAxis.labelShowMin
       },
       layout: {
-        width: ui_style.layout_width,
-        margin: ui_style.layout_margin,
-        height: ui_style.layout_height,
-        snapTo: ui_style.layout_snapto,
-        fontSize: getFontSizeVal(ui_style.currentFontSize),
-        titlePosition: parseInt(ui_style.title_position, 10),
-        linePosition: numberlineAxis.stackResponses ? 75 : parseInt(ui_style.line_position, 10),
-        pointBoxPosition: parseInt(ui_style.point_box_position, 10)
+        width: uiStyle.layoutWidth,
+        margin: uiStyle.layoutMargin,
+        height: uiStyle.layoutHeight,
+        snapTo: uiStyle.layoutSnapto,
+        fontSize: getFontSizeVal(uiStyle.currentFontSize),
+        titlePosition: parseInt(uiStyle.titlePosition, 10),
+        linePosition: numberlineAxis.stackResponses ? 75 : parseInt(uiStyle.linePosition, 10),
+        pointBoxPosition: parseInt(uiStyle.pointBoxPosition, 10)
       },
       pointParameters: {
         snapToGrid: true,
-        snapSizeX: getSnapSize(ui_style.layout_snapto, parseFloat(ui_style.xDistance)),
-        snapSizeY: getSnapSize(ui_style.layout_snapto, parseFloat(ui_style.yDistance)),
-        showInfoBox: ui_style.displayPositionOnHover,
+        snapSizeX: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.xDistance)),
+        snapSizeY: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.yDistance)),
+        showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false
       },
       xAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.xTickDistance),
-        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
-        showTicks: !ui_style.xHideTicks,
-        drawLabels: ui_style.xDrawLabel,
-        maxArrow: ui_style.xMaxArrow,
-        minArrow: ui_style.xMinArrow,
-        commaInLabel: ui_style.xCommaInLabel,
-        strokeColor: ui_style.xStrokeColor ? ui_style.xStrokeColor : "#00b0ff",
-        tickEndings: ui_style.xTickEndings ? ui_style.xTickEndings : false
+        ticksDistance: safeParseFloat(uiStyle.xTickDistance),
+        name: uiStyle.xShowAxisLabel ? uiStyle.xAxisLabel : "",
+        showTicks: !uiStyle.xHideTicks,
+        drawLabels: uiStyle.xDrawLabel,
+        maxArrow: uiStyle.xMaxArrow,
+        minArrow: uiStyle.xMinArrow,
+        commaInLabel: uiStyle.xCommaInLabel,
+        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#00b0ff",
+        tickEndings: uiStyle.xTickEndings ? uiStyle.xTickEndings : false
       },
       yAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.yTickDistance),
-        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
-        showTicks: !ui_style.yHideTicks,
-        drawLabels: ui_style.yDrawLabel,
-        maxArrow: ui_style.yMaxArrow,
-        minArrow: ui_style.yMinArrow,
-        commaInLabel: ui_style.yCommaInLabel,
-        minorTicks: ui_style.yMinorTicks ? ui_style.yMinorTicks : 0
+        ticksDistance: safeParseFloat(uiStyle.yTickDistance),
+        name: uiStyle.yShowAxisLabel ? uiStyle.yAxisLabel : "",
+        showTicks: !uiStyle.yHideTicks,
+        drawLabels: uiStyle.yDrawLabel,
+        maxArrow: uiStyle.yMaxArrow,
+        minArrow: uiStyle.yMinArrow,
+        commaInLabel: uiStyle.yCommaInLabel,
+        minorTicks: uiStyle.yMinorTicks ? uiStyle.yMinorTicks : 0
       },
       gridParams: {
-        gridY: safeParseFloat(ui_style.yDistance),
-        gridX: safeParseFloat(ui_style.xDistance),
+        gridY: safeParseFloat(uiStyle.yDistance),
+        gridX: safeParseFloat(uiStyle.xDistance),
         showGrid: false
       },
       evaluation,
       tools: toolbar ? toolbar.tools : [],
       setValue: onChange,
       elements,
-      graphType,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData,
+      graphData
     };
   };
 
@@ -386,17 +398,18 @@ class GraphDisplay extends Component {
       elements,
       altAnswerId,
       disableResponse,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData
     } = this.props;
 
-    const { ui_style, canvas, numberlineAxis, list, graphType, id } = graphData;
+    const { uiStyle, canvas, numberlineAxis, list } = graphData;
 
     return {
       canvas: {
-        xMin: parseFloat(canvas.x_min),
-        xMax: parseFloat(canvas.x_max),
-        yMin: parseFloat(canvas.y_min),
-        yMax: parseFloat(canvas.y_max),
+        xMin: parseFloat(canvas.xMin),
+        xMax: parseFloat(canvas.xMax),
+        yMin: parseFloat(canvas.yMin),
+        yMax: parseFloat(canvas.yMax),
         numberline: true,
         margin: parseFloat(canvas.margin),
         title: canvas.title
@@ -423,70 +436,70 @@ class GraphDisplay extends Component {
         shuffleAnswerChoices: numberlineAxis && numberlineAxis.shuffleAnswerChoices
       },
       layout: {
-        width: ui_style.layout_width,
-        margin: ui_style.layout_margin,
-        height: ui_style.layout_height,
-        autoCalcHeight: ui_style.autoCalcHeight,
-        snapTo: ui_style.layout_snapto,
-        fontSize: getFontSizeVal(ui_style.currentFontSize),
-        titlePosition: parseInt(ui_style.title_position, 10),
-        linePosition: parseInt(ui_style.line_position, 10),
-        pointBoxPosition: parseInt(ui_style.point_box_position, 10)
+        width: uiStyle.layoutWidth,
+        margin: uiStyle.layoutMargin,
+        height: uiStyle.layoutHeight,
+        autoCalcHeight: uiStyle.autoCalcHeight,
+        snapTo: uiStyle.layoutSnapto,
+        fontSize: getFontSizeVal(uiStyle.currentFontSize),
+        titlePosition: parseInt(uiStyle.titlePosition, 10),
+        linePosition: parseInt(uiStyle.linePosition, 10),
+        pointBoxPosition: parseInt(uiStyle.pointBoxPosition, 10)
       },
       pointParameters: {
         snapToGrid: true,
-        snapSizeX: getSnapSize(ui_style.layout_snapto, parseFloat(ui_style.xDistance)),
-        snapSizeY: getSnapSize(ui_style.layout_snapto, parseFloat(ui_style.yDistance)),
-        showInfoBox: ui_style.displayPositionOnHover,
+        snapSizeX: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.xDistance)),
+        snapSizeY: getSnapSize(uiStyle.layoutSnapto, parseFloat(uiStyle.yDistance)),
+        showInfoBox: uiStyle.displayPositionOnHover,
         withLabel: false
       },
       xAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.xTickDistance),
-        name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
-        showTicks: !ui_style.xHideTicks,
-        drawLabels: ui_style.xDrawLabel,
-        maxArrow: ui_style.xMaxArrow,
-        minArrow: ui_style.xMinArrow,
-        commaInLabel: ui_style.xCommaInLabel,
-        strokeColor: ui_style.xStrokeColor ? ui_style.xStrokeColor : "#00b0ff",
-        tickEndings: ui_style.xTickEndings ? ui_style.xTickEndings : false
+        ticksDistance: safeParseFloat(uiStyle.xTickDistance),
+        name: uiStyle.xShowAxisLabel ? uiStyle.xAxisLabel : "",
+        showTicks: !uiStyle.xHideTicks,
+        drawLabels: uiStyle.xDrawLabel,
+        maxArrow: uiStyle.xMaxArrow,
+        minArrow: uiStyle.xMinArrow,
+        commaInLabel: uiStyle.xCommaInLabel,
+        strokeColor: uiStyle.xStrokeColor ? uiStyle.xStrokeColor : "#00b0ff",
+        tickEndings: uiStyle.xTickEndings ? uiStyle.xTickEndings : false
       },
       yAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.yTickDistance),
-        name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
-        showTicks: !ui_style.yHideTicks,
-        drawLabels: ui_style.yDrawLabel,
-        maxArrow: ui_style.yMaxArrow,
-        minArrow: ui_style.yMinArrow,
-        commaInLabel: ui_style.yCommaInLabel,
-        minorTicks: ui_style.yMinorTicks ? ui_style.yMinorTicks : 0
+        ticksDistance: safeParseFloat(uiStyle.yTickDistance),
+        name: uiStyle.yShowAxisLabel ? uiStyle.yAxisLabel : "",
+        showTicks: !uiStyle.yHideTicks,
+        drawLabels: uiStyle.yDrawLabel,
+        maxArrow: uiStyle.yMaxArrow,
+        minArrow: uiStyle.yMinArrow,
+        commaInLabel: uiStyle.yCommaInLabel,
+        minorTicks: uiStyle.yMinorTicks ? uiStyle.yMinorTicks : 0
       },
       gridParams: {
-        gridY: safeParseFloat(ui_style.yDistance),
-        gridX: safeParseFloat(ui_style.xDistance),
+        gridY: safeParseFloat(uiStyle.yDistance),
+        gridX: safeParseFloat(uiStyle.xDistance),
         showGrid: false
       },
       list,
-      graphType,
       evaluation,
       setValue: onChange,
       elements,
-      questionId: id,
       altAnswerId,
       view,
       previewTab,
       changePreviewTab,
       disableResponse,
       setCalculatedHeight: this.setCalculatedHeight,
-      elementsIsCorrect
+      elementsIsCorrect,
+      setQuestionData,
+      graphData
     };
   };
 
   setCalculatedHeight = height => {
     const { setQuestionData, graphData } = this.props;
     const newGraphData = cloneDeep(graphData);
-    newGraphData.ui_style = {
-      ...newGraphData.ui_style,
+    newGraphData.uiStyle = {
+      ...newGraphData.uiStyle,
       autoCalcHeight: height
     };
     setQuestionData(newGraphData);
@@ -532,6 +545,7 @@ GraphDisplay.propTypes = {
 GraphDisplay.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
+  advancedElementSettings: false,
   onChange: () => {},
   changePreviewTab: () => {},
   elements: [],

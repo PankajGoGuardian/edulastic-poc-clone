@@ -28,7 +28,7 @@ export const getQuestionTableData = (studentResponse, questionArr) => {
       let item = arr[i];
       let q = questions[item.qid];
       let options = keyBy(q.options, "value");
-      let correctAnswers = get(q, "validation.valid_response.value", []);
+      let correctAnswers = get(q, "validation.validResponse.value", []);
       const userResponse = item.userResponse ? item.userResponse : [];
       item.question = item.correct;
       item.questionNumber = i + 1;

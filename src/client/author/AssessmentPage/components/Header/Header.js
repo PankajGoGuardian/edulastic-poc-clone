@@ -4,6 +4,7 @@ import { Button, Dropdown, Menu, Icon } from "antd";
 
 import { IconDiskette } from "@edulastic/icons";
 import { FlexContainer, EduButton } from "@edulastic/common";
+import { themeColor } from "@edulastic/colors";
 
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Title from "../../common/Title";
@@ -21,7 +22,7 @@ const Header = ({ onTabChange, currentTab, tabs, title, status, onSave, onPublis
     <SaveWrapper>
       <FlexContainer justifyContent="space-between" className="abcdTesting">
         <EduButton data-cy="save" style={{ ...style, width: 42, padding: 0 }} size="large" onClick={onSave("draft")}>
-          <IconDiskette color="#00AD50" fill="#00AD50" />
+          <IconDiskette color={themeColor} fill={themeColor} />
         </EduButton>
         <EduButton data-cy="assign" style={{ ...style, width: 120 }} size="large" onClick={onAssign}>
           Assign

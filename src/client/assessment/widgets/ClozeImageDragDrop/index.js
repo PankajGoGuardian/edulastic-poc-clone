@@ -28,7 +28,9 @@ import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Annotations/Annotations";
 import Question from "../../components/Question";
 
-const EmptyWrapper = styled.div``;
+const EmptyWrapper = styled.div`
+  overflow-x: auto;
+`;
 
 class ClozeImageDragDrop extends Component {
   static contextType = AnswerContext;
@@ -46,7 +48,6 @@ class ClozeImageDragDrop extends Component {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);
     const item = view === EDIT ? templateItem : itemForPreview;
-
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
     const previewDisplayOptions = item.options;
@@ -64,12 +65,13 @@ class ClozeImageDragDrop extends Component {
         validation: templateItem.validation
       };
     }
+
     return {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
       itemForPreview,
-      uiStyle: item.ui_style
+      uiStyle: item.uiStyle
     };
   };
 
@@ -82,10 +84,10 @@ class ClozeImageDragDrop extends Component {
           value: []
         };
 
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.push(response);
+        if (draft.validation.altResponses && draft.validation.altResponses.length) {
+          draft.validation.altResponses.push(response);
         } else {
-          draft.validation.alt_responses = [response];
+          draft.validation.altResponses = [response];
         }
       })
     );
@@ -105,7 +107,7 @@ class ClozeImageDragDrop extends Component {
         this.setState({ duplicatedResponses: value });
         break;
       }
-      case "shuffle_options": {
+      case "shuffleOptions": {
         this.setState({ shuffleOptions: value });
         break;
       }
@@ -149,7 +151,7 @@ class ClozeImageDragDrop extends Component {
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const duplicatedResponses = item.duplicated_responses || false;
     const showDraghandle = item.show_draghandle || false;
-    const shuffleOptions = item.shuffle_options || false;
+    const shuffleOptions = item.shuffleOptions || false;
     const transparentResponses = item.transparent_responses || false;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -220,7 +222,7 @@ class ClozeImageDragDrop extends Component {
                       <Checkbox
                         data-cy="shuffle-check"
                         className="additional-options"
-                        onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                        onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
                         defaultChecked={shuffleOptions}
                       >
                         {t("component.cloze.imageDragDrop.shuffleoptions")}
@@ -253,7 +255,7 @@ class ClozeImageDragDrop extends Component {
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                 >
-                  <Annotations editable />
+                  <Annotations question={item} setQuestionData={setQuestionData} editable />
                 </Question>
               </div>
               <Options
@@ -272,39 +274,110 @@ class ClozeImageDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            <Display
-              checkAnswer={
-                previewTab === "check" || (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)
-              }
-              showAnswer={previewTab === "show" && !answerContextConfig.expressGrader}
-              preview={
-                previewTab === "clear" || (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)
-              }
-              item={itemForPreview}
-              options={previewDisplayOptions}
-              instructorStimulus={itemForPreview.instructor_stimulus}
-              question={previewStimulus}
-              uiStyle={uiStyle}
-              userSelections={userAnswer}
-              onChange={this.handleAddAnswer}
-              maxRespCount={item.maxRespCount}
-              showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-              configureOptions={{
-                duplicatedResponses,
-                showDraghandle,
-                shuffleOptions,
-                transparentResponses
-              }}
-              imageAlterText={item.imageAlterText}
-              responseContainers={item.responses}
-              imageUrl={item.imageUrl}
-              evaluation={evaluation}
-              imageOptions={item.imageOptions}
-              backgroundColor={item.background}
-              smallSize={smallSize}
-              previewTab={previewTab}
-              {...restProps}
-            />
+            {(previewTab === "check" ||
+              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
+              <Display
+                checkAnswer
+                item={itemForPreview}
+                options={previewDisplayOptions}
+                instructorStimulus={itemForPreview.instructorStimulus}
+                question={previewStimulus}
+                uiStyle={uiStyle}
+                templateMarkUp={itemForPreview.templateMarkUp}
+                userAnswer={userAnswer}
+                userSelections={userAnswer}
+                onChange={this.handleAddAnswer}
+                maxRespCount={item.maxRespCount}
+                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                configureOptions={{
+                  duplicatedResponses,
+                  showDraghandle,
+                  shuffleOptions,
+                  transparentResponses
+                }}
+                imageAlterText={item.imageAlterText}
+                imageTitle={item.imageTitle}
+                responseContainers={item.responses}
+                imageUrl={item.imageUrl}
+                imageWidth={item.imageWidth}
+                imageHeight={item.imageHeight}
+                evaluation={evaluation}
+                imageOptions={item.imageOptions}
+                showBorder={false}
+                setQuestionData={setQuestionData}
+                {...restProps}
+              />
+            )}
+            {previewTab === "show" && !answerContextConfig.expressGrader && (
+              <Display
+                showAnswer
+                item={itemForPreview}
+                instructorStimulus={itemForPreview.instructorStimulus}
+                options={previewDisplayOptions}
+                question={previewStimulus}
+                uiStyle={uiStyle}
+                templateMarkUp={itemForPreview.templateMarkUp}
+                maxRespCount={item.maxRespCount}
+                userAnswer={userAnswer}
+                userSelections={userAnswer}
+                validation={itemForPreview.validation}
+                showDashedBorder={itemForPreview.responseLayout && itemForPreview.responseLayout.showdashedborder}
+                configureOptions={{
+                  duplicatedResponses,
+                  showDraghandle,
+                  shuffleOptions,
+                  transparentResponses
+                }}
+                imageAlterText={item.imageAlterText}
+                imageTitle={item.imageTitle}
+                responseContainers={item.responses}
+                imageUrl={item.imageUrl}
+                imageWidth={item.imageWidth}
+                imageHeight={item.imageHeight}
+                evaluation={evaluation}
+                imageOptions={item.imageOptions}
+                showBorder={false}
+                setQuestionData={setQuestionData}
+                {...restProps}
+              />
+            )}
+            {(previewTab === "clear" ||
+              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
+              <Display
+                preview
+                item={itemForPreview}
+                responses={item.responses}
+                instructorStimulus={itemForPreview.instructorStimulus}
+                validation={itemForPreview.validation}
+                configureOptions={{
+                  duplicatedResponses,
+                  showDraghandle,
+                  shuffleOptions,
+                  transparentResponses
+                }}
+                options={previewDisplayOptions}
+                imageAlterText={item.imageAlterText}
+                imageTitle={item.imageTitle}
+                responseContainers={item.responses}
+                imageUrl={item.imageUrl}
+                imageWidth={item.imageWidth}
+                imageHeight={item.imageHeight}
+                question={previewStimulus}
+                maxRespCount={item.maxRespCount}
+                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                uiStyle={uiStyle}
+                backgroundColor={item.background}
+                smallSize={smallSize}
+                templateMarkUp={itemForPreview.templateMarkUp}
+                userSelections={userAnswer}
+                userAnswer={userAnswer}
+                onChange={this.handleAddAnswer}
+                imageOptions={item.imageOptions}
+                showBorder={false}
+                setQuestionData={setQuestionData}
+                {...restProps}
+              />
+            )}
           </Wrapper>
         )}
       </div>

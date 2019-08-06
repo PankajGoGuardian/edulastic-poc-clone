@@ -117,8 +117,8 @@ class GraphAxisLabels extends Component {
               <Label>Minimum value</Label>
               <StyledTextField
                 type="number"
-                value={canvas.x_min}
-                name="x_min"
+                value={canvas.xMin}
+                name="xMin"
                 onChange={this.handleCanvasChange}
                 onBlur={event => this.handleCanvasBlur(event, 0)}
                 step={1}
@@ -132,8 +132,8 @@ class GraphAxisLabels extends Component {
               <Label>Maximum value</Label>
               <StyledTextField
                 type="number"
-                value={canvas.x_max}
-                name="x_max"
+                value={canvas.xMax}
+                name="xMax"
                 onChange={this.handleCanvasChange}
                 onBlur={event => this.handleCanvasBlur(event, 10)}
                 step={1}

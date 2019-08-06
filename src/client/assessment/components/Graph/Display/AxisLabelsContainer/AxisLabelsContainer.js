@@ -19,7 +19,7 @@ import { AUTO_HEIGHT_VALUE, AUTO_VALUE } from "../../Builder/config/constants";
 
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
-import Tools from "../QuadrantsContainer/Tools";
+import Tools from "../../common/Tools";
 import { GraphWrapper, JSXBox } from "./styled";
 
 const getColoredElems = (elements, compareResult) => {
@@ -102,13 +102,13 @@ class AxisLabelsContainer extends PureComponent {
       yAxesParameters,
       layout,
       gridParams,
-      graphType,
+      graphData,
       setElementsStash,
       setCalculatedHeight,
       disableResponse,
       view
     } = this.props;
-    this._graph = makeBorder(this._graphId, graphType);
+    this._graph = makeBorder(this._graphId, graphData.graphType);
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
@@ -236,6 +236,7 @@ class AxisLabelsContainer extends PureComponent {
     }
 
     if (disableResponse) {
+      this._graph.removeMarks();
       this._graph.removeMarksAnswers();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);
@@ -249,6 +250,7 @@ class AxisLabelsContainer extends PureComponent {
 
     if (previewTab === CHECK || previewTab === SHOW) {
       this._graph.removeMarks();
+      this._graph.removeMarksAnswers();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);
         const coloredElements = getColoredElems(elements, compareResult);
@@ -266,6 +268,7 @@ class AxisLabelsContainer extends PureComponent {
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.removeMarks();
+      this._graph.removeMarksAnswers();
       this._graph.renderMarks(list, elements);
     }
   };
@@ -296,9 +299,9 @@ class AxisLabelsContainer extends PureComponent {
   }
 
   getStashId() {
-    const { questionId, altAnswerId, view } = this.props;
+    const { graphData, altAnswerId, view } = this.props;
     const type = altAnswerId || view;
-    return `${questionId}_${type}`;
+    return `${graphData.id}_${type}`;
   }
 
   getHandlerByControlName = control => {
@@ -322,7 +325,7 @@ class AxisLabelsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, numberlineAxis, questionId, disableResponse, view } = this.props;
+    const { layout, numberlineAxis, disableResponse, view, graphData, setQuestionData } = this.props;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
@@ -348,7 +351,7 @@ class AxisLabelsContainer extends PureComponent {
           )}
           <div style={{ position: "relative" }}>
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-            <AnnotationRnd questionId={questionId} disableDragging={view !== EDIT} />
+            <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
           </div>
         </GraphWrapper>
       </div>
@@ -357,7 +360,6 @@ class AxisLabelsContainer extends PureComponent {
 }
 
 AxisLabelsContainer.propTypes = {
-  graphType: PropTypes.string.isRequired,
   canvas: PropTypes.object.isRequired,
   numberlineAxis: PropTypes.object.isRequired,
   layout: PropTypes.object.isRequired,
@@ -374,7 +376,8 @@ AxisLabelsContainer.propTypes = {
   setStashIndex: PropTypes.func.isRequired,
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
-  questionId: PropTypes.string.isRequired,
+  graphData: PropTypes.string.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   altAnswerId: PropTypes.string,
   setCalculatedHeight: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool,

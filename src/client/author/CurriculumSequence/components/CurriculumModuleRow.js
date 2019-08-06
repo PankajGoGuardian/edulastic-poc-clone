@@ -280,7 +280,7 @@ class ModuleRow extends Component {
                               <AssignmentIcon>
                                 <CustomIcon>
                                   <IconVisualization
-                                    color="#00AD50"
+                                    color={themeColor}
                                     onClick={() => this.viewTest(moduleData.contentId)}
                                   />
                                 </CustomIcon>
@@ -301,7 +301,7 @@ class ModuleRow extends Component {
                                 <AssignmentIcon>
                                   <Dropdown overlay={moreMenu} trigger={["click"]}>
                                     <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
-                                      <IconMoreVertical color="#00AD50" />
+                                      <IconMoreVertical color={themeColor} />
                                     </CustomIcon>
                                   </Dropdown>
                                 </AssignmentIcon>

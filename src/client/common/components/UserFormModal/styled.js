@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Modal, Button } from "antd";
-import { lightGrey3, linkColor, lightBlue3, title, themeColor } from "@edulastic/colors";
+import { Modal, Button, Form as AntdForm } from "antd";
+import { lightGrey3, linkColor, lightBlue3, title, themeColor, white } from "@edulastic/colors";
 
 export const StyledModal = styled(Modal)`
   .ant-modal-content,
@@ -13,6 +13,10 @@ export const StyledModal = styled(Modal)`
   }
 `;
 
+export const Form = styled(AntdForm)`
+  background: ${white};
+  padding: 20px;
+`;
 export const Title = styled.div`
   color: ${themeColor};
   label {
@@ -69,4 +73,9 @@ export const Field = styled.fieldset`
   .ant-select {
     width: 100%;
   }
+`;
+export const FooterDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
 `;

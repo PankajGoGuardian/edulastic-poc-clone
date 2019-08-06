@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, smallDesktopWidth, white, themeColor, tabGrey } from "@edulastic/colors";
+import { mobileWidth, mediumDesktopWidth, white, themeColor, tabGrey } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 100%;
@@ -39,7 +39,7 @@ const StyledStudentTabButton = styled.a`
     color: ${themeColor};
   }
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     height: 30px;
     padding: 8px 12px;
     font-size: 10px;
@@ -82,7 +82,7 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   font-size: 11px;
   text-transform: uppercase;
 
-  @media (max-width: ${smallDesktopWidth}) {
+  @media (max-width: ${mediumDesktopWidth}) {
     min-width: 250px;
     padding: 15px 10px;
   }

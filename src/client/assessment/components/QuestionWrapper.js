@@ -51,6 +51,8 @@ import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
+import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
+
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
   display: ${({ isFlex }) => (isFlex ? "flex" : "block")};
@@ -210,6 +212,8 @@ const getQuestion = type => {
 };
 
 class QuestionWrapper extends Component {
+  static contextType = ItemDetailContext;
+
   state = {
     main: [],
     advanced: [],
@@ -283,11 +287,13 @@ class QuestionWrapper extends Component {
       showUserTTS,
       ...restProps
     } = this.props;
+
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
+    const { layoutType } = this.context;
 
     const isV1Multipart = get(this.props, "col.isV1Multipart", false);
     const studentName = data.activity && data.activity.studentName;
@@ -331,7 +337,7 @@ class QuestionWrapper extends Component {
         ]}
         fallBack={<span />}
       >
-        <ThemeProvider theme={{ ...themes.default, fontSize: get(data, "ui_style.fontsize", "normal") }}>
+        <ThemeProvider theme={{ ...themes.default, fontSize: get(data, "uiStyle.fontsize", "normal") }}>
           <>
             {canShowPlayer ? (
               <AudioControls
@@ -358,7 +364,8 @@ class QuestionWrapper extends Component {
                 style={{
                   width: "-webkit-fill-available",
                   display: "flex",
-                  boxShadow: "none"
+                  boxShadow: "none",
+                  paddingRight: layoutType === COMPACT ? "100px" : null
                 }}
                 flowLayout={flowLayout}
               >

@@ -46,7 +46,7 @@ InputField.defaultProps = {
 class LayoutsComponent extends Component {
   render() {
     const { item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t } = this.props;
-    const chartType = get(item, "ui_style.chart_type");
+    const chartType = get(item, "uiStyle.chartType");
 
     const changeItem = (prop, val) => {
       setQuestionData(
@@ -59,67 +59,67 @@ class LayoutsComponent extends Component {
     const changeUIStyle = (prop, val) => {
       setQuestionData(
         produce(item, draft => {
-          if (!draft.ui_style) {
-            draft.ui_style = {};
+          if (!draft.uiStyle) {
+            draft.uiStyle = {};
           }
-          draft.ui_style[prop] = val;
+          draft.uiStyle[prop] = val;
         })
       );
     };
 
-    const getLayoutSettings = chart_type => {
+    const getLayoutSettings = chartType => {
       const settings = [
         <InputField
           name="width"
-          value={parseInt(item.ui_style.width, 10) < 1 ? null : item.ui_style.width}
+          value={parseInt(item.uiStyle.width, 10) < 1 ? null : item.uiStyle.width}
           onChange={changeUIStyle}
           type="number"
           t={t}
         />,
         <InputField
           name="height"
-          value={parseInt(item.ui_style.height, 10) < 1 ? null : item.ui_style.height}
+          value={parseInt(item.uiStyle.height, 10) < 1 ? null : item.uiStyle.height}
           onChange={changeUIStyle}
           type="number"
           t={t}
         />,
         <StemNumerationOption
           onChange={val => changeUIStyle("validation_stem_numeration", val)}
-          value={get(item, "ui_style.validation_stem_numeration", "numerical")}
+          value={get(item, "uiStyle.validation_stem_numeration", "numerical")}
         />,
         <FontSizeOption
           onChange={val => changeUIStyle("fontsize", val)}
-          value={get(item, "ui_style.fontsize", "normal")}
+          value={get(item, "uiStyle.fontsize", "normal")}
         />
       ];
 
       if (
-        chart_type === questionType.HISTOGRAM ||
-        chart_type === questionType.BAR_CHART ||
-        chart_type === questionType.LINE_CHART
+        chartType === questionType.HISTOGRAM ||
+        chartType === questionType.BAR_CHART ||
+        chartType === questionType.LINE_CHART
       ) {
         settings.push(
           <GridlinesOption
             onChange={val => changeUIStyle(SETTING_NAME_SHOW_GRIDLINES, val)}
-            value={get(item, `ui_style.${SETTING_NAME_SHOW_GRIDLINES}`, SHOW_GRIDLINES_BOTH)}
+            value={get(item, `uiStyle.${SETTING_NAME_SHOW_GRIDLINES}`, SHOW_GRIDLINES_BOTH)}
           />
         );
       }
 
-      if (chart_type === questionType.LINE_CHART) {
+      if (chartType === questionType.LINE_CHART) {
         settings.push(
           <PointStyleOption
             onChange={val => changeUIStyle("pointStyle", val)}
-            value={get(item, "ui_style.pointStyle", "dot")}
+            value={get(item, "uiStyle.pointStyle", "dot")}
           />
         );
       }
 
-      if (chart_type === questionType.HISTOGRAM) {
+      if (chartType === questionType.HISTOGRAM) {
         settings.push(
           <MulticolorBarsOption
             onChange={val => changeUIStyle("multicolorBars", val)}
-            value={get(item, "ui_style.multicolorBars", true)}
+            value={get(item, "uiStyle.multicolorBars", true)}
           />
         );
       }

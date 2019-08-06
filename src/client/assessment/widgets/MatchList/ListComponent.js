@@ -23,10 +23,10 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list.push(null);
-          draft.validation.valid_response.value.push(null);
+          draft.validation.validResponse.value.push(null);
 
-          if (draft.validation.alt_responses.length > 0) {
-            draft.validation.alt_responses.forEach(altResponse => {
+          if (draft.validation.altResponses.length > 0) {
+            draft.validation.altResponses.forEach(altResponse => {
               altResponse.value.push(null);
             });
           }
@@ -41,10 +41,10 @@ class ListComponent extends Component {
         produce(item, draft => {
           draft.list.splice(index, 1);
 
-          draft.validation.valid_response.value.splice(index, 1);
+          draft.validation.validResponse.value.splice(index, 1);
 
-          if (draft.validation.alt_responses.length > 0) {
-            draft.validation.alt_responses.forEach(altResponse => {
+          if (draft.validation.altResponses.length > 0) {
+            draft.validation.altResponses.forEach(altResponse => {
               altResponse.value.splice(index, 1);
             });
           }

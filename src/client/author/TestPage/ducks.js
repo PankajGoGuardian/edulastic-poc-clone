@@ -214,6 +214,7 @@ const initialState = {
   loading: false,
   creating: false,
   thumbnail: "",
+  regradeTestId: "",
   createdItems: [],
   sharedUsersList: []
 };
@@ -292,8 +293,8 @@ export const reducer = (state = initialState, { type, payload }) => {
         }
       };
     case SET_SAFE_BROWSE_PASSWORD:
-      return {
-        ...state,
+      return {f
+        ...state,df
         entity: {
           ...state.entity,
           sebPassword: payload.data
@@ -407,7 +408,14 @@ function* createTestSaga({ payload }) {
       delete payload.data.assignmentPassword;
     }
 
-    const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate", "testItems"]);
+    const dataToSend = omit(payload.data, [
+      "assignments",
+      "createdDate",
+      "updatedDate",
+      "testItems",
+      "passages",
+      "isUsed"
+    ]);
     //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
     if (!payload.isCartTest) {
       dataToSend.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);

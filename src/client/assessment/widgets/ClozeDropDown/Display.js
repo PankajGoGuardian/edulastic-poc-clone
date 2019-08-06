@@ -11,6 +11,7 @@ import { getFontSize } from "../../utils/helpers";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
+import VideoContainer from "../../components/VideoContainer";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
 import ChoicesBox from "./ChoicesBox";
@@ -183,6 +184,7 @@ class ClozeDropDownDisplay extends Component {
           showWarnings
           components={{
             textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
+            iframe: VideoContainer,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -218,6 +220,8 @@ ClozeDropDownDisplay.propTypes = {
   configureOptions: PropTypes.object,
   evaluation: PropTypes.array,
   uiStyle: PropTypes.object,
+  changePreviewTab: PropTypes.func.isRequired,
+  previewTab: PropTypes.func.isRequired,
   instructorStimulus: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,

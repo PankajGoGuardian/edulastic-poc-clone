@@ -277,59 +277,18 @@ class MultipleChoice extends Component {
           )}
           {view === PREVIEW && (
             <Wrapper isV1Multipart={isV1Multipart} flowLayout={flowLayout}>
-              {previewTab === CHECK ? (
+              {previewTab === SHOW || previewTab === CLEAR || previewTab === CHECK ? (
                 <Display
-                  checkAnswer
+                  showAnswer={previewTab === SHOW}
+                  preview={previewTab === CLEAR}
+                  checkAnswer={previewTab === CHECK}
                   view={view}
-                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   smallSize={smallSize}
-                  userSelections={userAnswer}
                   options={shuffledOptions}
                   question={previewStimulus}
-                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
-                  handleMultiSelect={this.handleMultiSelect}
+                  userSelections={userAnswer}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
-                  qIndex={qIndex}
-                  instructorStimulus={item.instructorStimulus}
-                  multipleResponses={multipleResponses}
-                  flowLayout={flowLayout}
-                  qLabel={item.qLabel}
-                  testItem={testItem}
-                  styleType="primary"
-                  {...restProps}
-                />
-              ) : previewTab === SHOW ? (
-                <Display
-                  showAnswer
-                  view={view}
-                  smallSize={smallSize}
-                  options={shuffledOptions}
-                  question={previewStimulus}
-                  userSelections={userAnswer}
-                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
-                  handleMultiSelect={this.handleMultiSelect}
-                  uiStyle={uiStyle}
-                  evaluation={evaluation}
-                  validation={item.validation}
-                  qIndex={qIndex}
-                  instructorStimulus={item.instructorStimulus}
-                  multipleResponses={multipleResponses}
-                  flowLayout={flowLayout}
-                  qLabel={item.qLabel}
-                  testItem={testItem}
-                  styleType="primary"
-                  {...restProps}
-                />
-              ) : previewTab === CLEAR ? (
-                <Display
-                  preview
-                  view={view}
-                  smallSize={smallSize}
-                  options={shuffledOptions}
-                  question={previewStimulus}
-                  userSelections={userAnswer}
-                  uiStyle={uiStyle}
                   validation={item.validation}
                   onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   qIndex={qIndex}

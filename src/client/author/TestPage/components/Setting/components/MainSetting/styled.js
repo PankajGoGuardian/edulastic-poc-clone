@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import {
   mobileWidth,
+  mediumDesktopWidth,
   secondaryTextColor,
   white,
   linkColor1,
@@ -15,7 +16,7 @@ import {
 import { Paper } from "@edulastic/common";
 
 export const Container = styled(Paper)`
-  margin-top: 27px;
+  margin-top: ${props => (props.marginTop ? props.marginTop : "27px")};
 
   @media screen and (max-width: 993px) {
     padding: 0;
@@ -76,6 +77,10 @@ export const StyledAnchor = styled(Anchor)`
     letter-spacing: 0.2px;
     color: ${linkColor1};
     text-transform: capitalize;
+
+    @media (max-width: ${mediumDesktopWidth}) {
+      white-space: normal;
+    }
   }
 
   .ant-anchor-link-title-active {

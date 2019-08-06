@@ -318,7 +318,7 @@ class Review extends PureComponent {
     return (
       <ReviewPageContainer>
         <Row>
-          <Col span={isSmallSize ? 18 : 24}>
+          <Col span={owner && isEditable ? 24 : 18}>
             <div ref={this.secondHeaderRef}>
               <SecondHeader isMobileSize={isMobileSize}>
                 <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
@@ -337,6 +337,8 @@ class Review extends PureComponent {
                 />
               </SecondHeader>
             </div>
+          </Col>
+          <Col span={isSmallSize ? 18 : 24}>
             <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable

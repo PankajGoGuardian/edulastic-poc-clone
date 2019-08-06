@@ -38,19 +38,21 @@ class MainInfoCell extends React.Component {
             </Label>
           )}
         </TypeContainer>
-        <PreviewModal
-          isVisible={isShowPreviewModal}
-          testId={testId}
-          isEditable={isEditable}
-          page="addItems"
-          showEvaluationButtons
-          checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
-          showAnswer={() => showAnswer(data)}
-          addDuplicate={addDuplicate}
-          showModal={showModal}
-          onClose={this.closeModal}
-          data={data}
-        />
+        {isShowPreviewModal && (
+          <PreviewModal
+            isVisible={isShowPreviewModal}
+            testId={testId}
+            isEditable={isEditable}
+            page="addItems"
+            showEvaluationButtons
+            checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
+            showAnswer={() => showAnswer(data)}
+            addDuplicate={addDuplicate}
+            showModal={showModal}
+            onClose={this.closeModal}
+            data={data}
+          />
+        )}
       </div>
     );
   }

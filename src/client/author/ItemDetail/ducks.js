@@ -237,19 +237,6 @@ export const getRedirectTestSelector = createSelector(
   state => state.redirectTestId
 );
 
-export const getItemDetailSelectorForPreview = (state, id, page) => {
-  let testItems = [];
-  if (page === "addItems") {
-    testItems = get(state, "testsAddItems.items", []);
-  } else if (page === "review") {
-    testItems = get(state, "tests.entity.testItems", []);
-  } else {
-    console.warn("unknown page type ", page);
-  }
-  const item = testItems.find(x => x._id === id);
-  return item || undefined;
-};
-
 export const getItemIdSelector = createSelector(
   getItemDetailSelector,
   item => item && item._id

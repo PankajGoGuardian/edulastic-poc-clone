@@ -155,6 +155,17 @@ const BackgroundStyleWrapper = styled.div.attrs({
   .fr-wrapper {
     transition: padding-top 0.5s;
     padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
+    ${({ centerContent }) => {
+      if (centerContent) {
+        return `.fr-element *,
+        &.show-placeholder .fr-placeholder{
+          margin-left:auto !important;
+          margin-right:auto !important;
+          width: max-content !important;
+        }        
+        `;
+      }
+    }}
   }
 
   ${({ border }) => {
@@ -258,6 +269,7 @@ const CustomEditor = ({
   initOnClick,
   theme,
   border,
+  centerContent,
   imageDefaultWidth,
   placeholder,
   ...restOptions
@@ -753,6 +765,7 @@ const CustomEditor = ({
       <BackgroundStyleWrapper
         backgroundColor={config.backgroundColor}
         toolbarExpanded={toolbarExpanded}
+        centerContent={centerContent}
         border={border}
         theme={theme}
       >
@@ -783,7 +796,8 @@ CustomEditor.propTypes = {
   readOnly: PropTypes.bool,
   imageDefaultWidth: PropTypes.number,
   initOnClick: PropTypes.bool,
-  border: PropTypes.string
+  border: PropTypes.string,
+  centerContent: PropTypes.bool
 };
 
 CustomEditor.defaultProps = {
@@ -794,7 +808,8 @@ CustomEditor.defaultProps = {
   additionalToolbarOptions: [],
   readOnly: false,
   imageDefaultWidth: 300,
-  border: "none"
+  border: "none",
+  centerContent: false
 };
 
 export default withTheme(withMathFormula(CustomEditor));

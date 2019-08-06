@@ -150,6 +150,7 @@ const OrderList = ({
     <OptionsList
       fontSize={fontSize}
       axis={axis}
+      centerContent
       data-cy="match-option-list"
       prefix="options2"
       readOnly
@@ -295,8 +296,8 @@ const OrderList = ({
                   {correctAnswers.map((correctAnswer, i) => (
                     <CorrectAnswerItem theme={theme}>
                       <Text>
-                        <FlexContainer>
-                          <Index>{i + 1}</Index>
+                        <Index>{i + 1}</Index>
+                        <FlexContainer justifyContent="center" style={{ width: "100%" }}>
                           <QuestionText>
                             <MathFormulaDisplay
                               dangerouslySetInnerHTML={{ __html: itemForPreview.list[correctAnswer] }}
@@ -314,8 +315,8 @@ const OrderList = ({
                   {Object.keys(alternateAnswers).map(key => (
                     <CorrectAnswerItem theme={theme}>
                       <Text>
-                        <FlexContainer>
-                          <Index>{key}</Index>
+                        <Index>{key}</Index>
+                        <FlexContainer justifyContent="center" style={{ width: "100%" }}>
                           <QuestionText>
                             <MathFormulaDisplay
                               dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }}

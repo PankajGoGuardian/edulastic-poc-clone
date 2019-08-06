@@ -12,12 +12,14 @@ const QuestionTextArea = ({
   additionalToolbarOptions,
   border,
   readOnly,
+  centerContent = false,
   imageDefaultWidth
 }) => (
   <FroalaEditor
     placeholder={placeholder}
     onChange={onChange}
     value={value}
+    centerContent={centerContent}
     toolbarId={toolbarId}
     toolbarSize={toolbarSize}
     additionalToolbarOptions={additionalToolbarOptions}

@@ -98,6 +98,7 @@ class ListComponent extends Component {
           onSortEnd={onSortOrderListEnd}
           useDragHandle
           styleType="button"
+          centerContent
           onRemove={handleDeleteQuestion}
           onChange={handleQuestionsChange}
           fillSections={fillSections}

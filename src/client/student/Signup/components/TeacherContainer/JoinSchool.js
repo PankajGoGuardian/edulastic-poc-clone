@@ -121,9 +121,9 @@ const JoinSchool = ({
         searchSchoolByDistrictRequestAction({
           districtId,
           search: {
-            name: { type: "cont", value: [searchText] },
-            city: { type: "cont", value: [searchText] },
-            zip: { type: "cont", value: [searchText] }
+            name: [{ type: "cont", value: searchText }],
+            city: [{ type: "cont", value: searchText }],
+            zip: [{ type: "cont", value: searchText }]
           },
           searchKeysSearchType: "or"
         });

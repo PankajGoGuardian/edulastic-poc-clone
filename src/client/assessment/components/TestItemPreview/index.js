@@ -7,7 +7,7 @@ import { withWindowSizes } from "@edulastic/common";
 
 import { themes } from "../../themes";
 import TestItemCol from "./containers/TestItemCol";
-import { Container } from "./styled/Container";
+import { Container, Divider, CollapseBtn } from "./styled/Container";
 
 class TestItemPreview extends Component {
   static propTypes = {
@@ -32,6 +32,10 @@ class TestItemPreview extends Component {
     student: {}
   };
 
+  state = {
+    collapsed: [],
+    collapseDir: ""
+  };
   getStyle = first => {
     const { verticalDivider, scrolling } = this.props;
 
@@ -48,6 +52,22 @@ class TestItemPreview extends Component {
     }
 
     return style;
+  };
+
+  setCollapseView = (index, dir) => {
+    const { cols } = this.props;
+    const { collapsed } = this.state;
+    if (collapsed.length) {
+      return this.setState({ collapsed: [], collapseDir: "" });
+    }
+    const setNewCollapseArray = [...new Array(cols.length - index)].map((_, i) => {
+      const val = dir === "left" ? i : cols.length - i - 1;
+      return val;
+    });
+    this.setState({
+      collapsed: setNewCollapseArray,
+      collapseDir: dir
+    });
   };
 
   render() {
@@ -67,6 +87,7 @@ class TestItemPreview extends Component {
       LCBPreviewModal,
       ...restProps
     } = this.props;
+    const { collapsed, collapseDir } = this.state;
     let questionCount = 0;
     cols
       .filter(item => item.widgets.length > 0)
@@ -82,26 +103,48 @@ class TestItemPreview extends Component {
         <Container width={windowWidth} style={style}>
           {cols &&
             cols.length &&
-            cols.map((col, i) => (
-              <TestItemCol
-                {...restProps}
-                evaluation={evaluation}
-                key={i}
-                col={col}
-                view="preview"
-                metaData={metaData}
-                preview={preview}
-                multiple={cols.length > 1}
-                style={this.getStyle(i !== cols.length - 1)}
-                windowWidth={windowWidth}
-                showFeedback={showFeedback}
-                questions={questions}
-                qIndex={qIndex}
-                student={student}
-                disableResponse={disableResponse}
-                LCBPreviewModal={LCBPreviewModal}
-              />
-            ))}
+            cols
+              .filter((_, i) => !collapsed.includes(i))
+              .map((col, i) => (
+                <>
+                  {i > 0 && !collapseDir ? (
+                    <Divider>
+                      <CollapseBtn className="fa fa-arrow-left" onClick={() => this.setCollapseView(i, "left")} />
+                      <CollapseBtn className="fa fa-arrow-right" onClick={() => this.setCollapseView(i, "right")} />
+                    </Divider>
+                  ) : (
+                    ""
+                  )}
+                  {collapseDir === "left" ? (
+                    <CollapseBtn className="fa fa-arrow-right" onClick={this.setCollapseView} />
+                  ) : (
+                    ""
+                  )}
+                  <TestItemCol
+                    {...restProps}
+                    evaluation={evaluation}
+                    key={i}
+                    col={col}
+                    view="preview"
+                    metaData={metaData}
+                    preview={preview}
+                    multiple={cols.length > 1}
+                    style={this.getStyle(i !== cols.length - 1)}
+                    windowWidth={windowWidth}
+                    showFeedback={showFeedback}
+                    questions={questions}
+                    qIndex={qIndex}
+                    student={student}
+                    disableResponse={disableResponse}
+                    LCBPreviewModal={LCBPreviewModal}
+                  />
+                  {collapseDir === "right" ? (
+                    <CollapseBtn className="fa fa-arrow-left" onClick={this.setCollapseView} />
+                  ) : (
+                    ""
+                  )}
+                </>
+              ))}
         </Container>
       </ThemeProvider>
     );

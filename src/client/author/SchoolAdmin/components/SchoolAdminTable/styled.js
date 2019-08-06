@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
+
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -11,5 +13,15 @@ export const StyledTableContainer = styled.div`
 
   input {
     border: 1px solid #d9d9d9;
+  }
+`;
+
+export const StyledTable = styled(Table)`
+  .ant-table-row {
+    &: hover {
+      button#onHoverVisible {
+        opacity: 100;
+      }
+    }
   }
 `;

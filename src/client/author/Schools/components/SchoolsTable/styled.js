@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Table, Icon, Pagination, Input, Button } from "antd";
+import { Icon, Pagination, Input, Button } from "antd";
+import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -30,12 +31,6 @@ export const StyledTable = styled(Table)`
     &-thead {
       & > tr :nth-last-of-type(-n + 4) {
         text-align: end;
-      }
-    }
-
-    .ant-table-thead,
-    .ant-table-tbody {
-      tr {
       }
     }
   }

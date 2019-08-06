@@ -493,7 +493,7 @@ class ClassesTable extends Component {
         },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a._source.owners[0].name.localeCompare(b._source.owners[0].name),
-        width: 50
+        width: 100
       },
       {
         title: "Users",
@@ -649,7 +649,7 @@ class ClassesTable extends Component {
       );
     }
     return (
-      <>
+      <StyledTableContainer>
         <StyledFilterDiv>
           <div>
             <Button type="primary" onClick={this.showAddClassModal}>
@@ -679,76 +679,72 @@ class ClassesTable extends Component {
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
-
-        <StyledTableContainer>
-          <StyledControlDiv />
-          {SearchRows}
-          <StyledTable
-            rowKey={record => record._id}
-            rowSelection={rowSelection}
-            dataSource={Object.values(dataSource)}
-            columns={columnsData}
-            pagination={false}
-            scroll={{ y: 400 }}
-          />
-          <StyledPagination
-            defaultCurrent={1}
-            current={currentPage}
-            pageSize={25}
-            total={totalClassCount}
-            onChange={this.changePagination}
-            hideOnSinglePage={true}
-          />
-          {editClassModalVisible && (
-            <EditClassModal
-              selClassData={selectedClass}
-              modalVisible={editClassModalVisible}
-              saveClass={this.updateClass}
-              closeModal={this.closeEditClassModal}
-              schoolsData={schoolsData}
-              teacherList={teacherList}
-              userOrgId={userOrgId}
-              searchCourseList={searchCourseList}
-              coursesForDistrictList={coursesForDistrictList}
-            />
-          )}
-
-          {addClassModalVisible && (
-            <AddClassModal
-              modalVisible={addClassModalVisible}
-              addClass={this.addClass}
-              closeModal={this.closeAddClassModal}
-              userOrgId={userOrgId}
-              searchCourseList={searchCourseList}
-              coursesForDistrictList={coursesForDistrictList}
-            />
-          )}
-
-          {archiveClassModalVisible && (
-            <ArchiveClassModal
-              modalVisible={archiveClassModalVisible}
-              archiveClass={this.archiveClass}
-              closeModal={this.closeArchiveModal}
-              classNames={selectedArchiveClasses.map(id => {
-                const { _source = {} } = dataSource[id];
-                return <StyledClassName key={id}>{_source.name}</StyledClassName>;
-              })}
-            />
-          )}
-          <BulkEditModal
-            bulkEditData={bulkEditData}
-            districtId={userOrgId}
-            onCloseModal={() => setBulkEditVisibility(false)}
-            setBulkEditMode={setBulkEditMode}
-            setBulkEditUpdateView={setBulkEditUpdateView}
-            selectedIds={selectedRowKeys}
-            selectedClasses={selectedRowKeys.map(_id => dataSource[_id])}
-            bulkUpdateClasses={this._bulkUpdateClasses}
+        {SearchRows}
+        <StyledTable
+          rowKey={record => record._id}
+          rowSelection={rowSelection}
+          dataSource={Object.values(dataSource)}
+          columns={columnsData}
+          pagination={false}
+          scroll={{ y: 500 }}
+        />
+        <StyledPagination
+          defaultCurrent={1}
+          current={currentPage}
+          pageSize={25}
+          total={totalClassCount}
+          onChange={this.changePagination}
+          hideOnSinglePage={true}
+        />
+        {editClassModalVisible && (
+          <EditClassModal
+            selClassData={selectedClass}
+            modalVisible={editClassModalVisible}
+            saveClass={this.updateClass}
+            closeModal={this.closeEditClassModal}
+            schoolsData={schoolsData}
+            teacherList={teacherList}
+            userOrgId={userOrgId}
             searchCourseList={searchCourseList}
             coursesForDistrictList={coursesForDistrictList}
           />
-        </StyledTableContainer>
-      </>
+        )}
+
+        {addClassModalVisible && (
+          <AddClassModal
+            modalVisible={addClassModalVisible}
+            addClass={this.addClass}
+            closeModal={this.closeAddClassModal}
+            userOrgId={userOrgId}
+            searchCourseList={searchCourseList}
+            coursesForDistrictList={coursesForDistrictList}
+          />
+        )}
+
+        {archiveClassModalVisible && (
+          <ArchiveClassModal
+            modalVisible={archiveClassModalVisible}
+            archiveClass={this.archiveClass}
+            closeModal={this.closeArchiveModal}
+            classNames={selectedArchiveClasses.map(id => {
+              const { _source = {} } = dataSource[id];
+              return <StyledClassName key={id}>{_source.name}</StyledClassName>;
+            })}
+          />
+        )}
+        <BulkEditModal
+          bulkEditData={bulkEditData}
+          districtId={userOrgId}
+          onCloseModal={() => setBulkEditVisibility(false)}
+          setBulkEditMode={setBulkEditMode}
+          setBulkEditUpdateView={setBulkEditUpdateView}
+          selectedIds={selectedRowKeys}
+          selectedClasses={selectedRowKeys.map(_id => dataSource[_id])}
+          bulkUpdateClasses={this._bulkUpdateClasses}
+          searchCourseList={searchCourseList}
+          coursesForDistrictList={coursesForDistrictList}
+        />
+      </StyledTableContainer>
     );
   }
 }

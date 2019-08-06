@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Table, Pagination } from "antd";
+import { Pagination } from "antd";
+import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
 
 export const StyledTableButton = styled.a`
   margin-right: 20px;
@@ -10,3 +11,5 @@ export const StyledPagination = styled(Pagination)`
   margin-top: 15px;
   align-self: flex-end;
 `;
+
+export const StyledTable = styled(Table)``;

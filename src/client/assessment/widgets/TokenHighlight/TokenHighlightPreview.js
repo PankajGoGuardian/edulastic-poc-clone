@@ -31,7 +31,6 @@ const TokenHighlightPreview = ({
   previewTab,
   theme,
   showQuestionNumber,
-  qIndex,
   disableResponse,
   t
 }) => {
@@ -120,13 +119,6 @@ const TokenHighlightPreview = ({
     });
 
     return [...resultArray];
-  };
-
-  const smallSizeStyles = {
-    fontSize: smallSize
-      ? theme.widgets.tokenHighlight.previewSmallFontSize
-      : theme.widgets.tokenHighlight.previewFontSize,
-    lineHeight: smallSize ? "18px" : "28px"
   };
 
   const getClass = index =>
@@ -219,8 +211,8 @@ TokenHighlightPreview.propTypes = {
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  t: PropTypes.func.isRequired
 };
 
 TokenHighlightPreview.defaultProps = {
@@ -229,7 +221,6 @@ TokenHighlightPreview.defaultProps = {
   userAnswer: [],
   editCorrectAnswers: [],
   showQuestionNumber: false,
-  qIndex: null,
   disableResponse: false
 };
 

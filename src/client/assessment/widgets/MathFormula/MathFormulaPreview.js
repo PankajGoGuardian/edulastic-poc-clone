@@ -341,8 +341,8 @@ class MathFormulaPreview extends Component {
           <CorrectAnswerBox>
             {item.isUnits && item.showDropdown
               ? item.validation.validResponse.value[0].value.search("=") === -1
-                ? item.validation.validResponse.value[0].value + correctUnit
-                : item.validation.validResponse.value[0].value.replace(/=/gm, `${correctUnit}=`)
+                ? `${item.validation.validResponse.value[0].value} ${correctUnit}`
+                : item.validation.validResponse.value[0].value.replace(/=/gm, ` ${correctUnit}=`)
               : item.validation.validResponse.value[0].value}
           </CorrectAnswerBox>
         )}
@@ -353,8 +353,8 @@ class MathFormulaPreview extends Component {
                 if (item.isUnits && item.showDropdown) {
                   const altUnit = !ans.value[0].options.unit ? "" : ans.value[0].options.unit;
                   return ans.value[0].value.search("=") === -1
-                    ? ans.value[0].value + altUnit
-                    : ans.value[0].value.replace(/=/gm, `${altUnit}=`);
+                    ? `${ans.value[0].value} ${altUnit}`
+                    : ans.value[0].value.replace(/=/gm, ` ${altUnit}=`);
                 }
                 return ans.value[0].value;
               })

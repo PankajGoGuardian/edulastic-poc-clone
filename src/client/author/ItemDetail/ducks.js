@@ -713,8 +713,14 @@ export function* updateItemSaga({ payload }) {
         return message.error(errMsg);
       }
     }
+
+    const { __v, ...passageData } = yield select(getPassageSelector);
+
     // return;
-    const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
+    const [{ testId, ...item }] = yield all([
+      call(testItemsApi.updateById, payload.id, data, payload.testId),
+      passageData ? call(passageApi.update, passageData) : null
+    ]);
     // on update, if there is only question.. set it as the questionId, since we are changing the view
     // to singleQuestionView!
     if (questions.length === 1) {

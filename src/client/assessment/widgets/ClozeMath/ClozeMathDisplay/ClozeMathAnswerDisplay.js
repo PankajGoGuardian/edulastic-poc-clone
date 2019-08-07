@@ -10,7 +10,7 @@ const ClozeMathAnswerDisplay = ({ resprops, id }) => {
   return (
     <MathDisplay
       template="\MathQuillMathField{}"
-      style={{ height: uiStyles.height || "31px", width: uiStyles.width }}
+      styles={{ height: uiStyles.height || "31px", width: uiStyles.width }}
       innerValues={[latex]}
     />
   );

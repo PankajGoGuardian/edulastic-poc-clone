@@ -15,7 +15,7 @@ const Wrapper = styled(Layout)`
 `;
 
 const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location, logout }) => {
-  const activeEnrolledClasses = (activeClasses || []).filter(c => c.status === "1");
+  const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   // location is available as prop when we are navigating through link from student manage class
   useEffect(() => {

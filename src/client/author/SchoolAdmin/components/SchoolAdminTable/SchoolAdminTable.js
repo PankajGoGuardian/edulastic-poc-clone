@@ -124,7 +124,7 @@ class SchoolAdminTable extends Component {
       {
         title: "School",
         dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name),
+        render: (schools = []) => schools.map(school => school.name).join(", "),
         width: 200
       },
       {
@@ -408,14 +408,14 @@ class SchoolAdminTable extends Component {
           continue;
         }
         if (!search[filtersColumn]) {
-          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
         } else {
-          search[filtersColumn].value.push(filterStr);
+          search[filtersColumn].push({ type: filtersValue, value: filterStr });
         }
       }
     }
     if (searchByName) {
-      search["firstName"] = { type: "cont", value: [searchByName] };
+      search["name"] = searchByName;
     }
 
     return {

@@ -423,15 +423,15 @@ class TeacherTable extends Component {
           continue;
         }
         if (!search[filtersColumn]) {
-          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
         } else {
-          search[filtersColumn].value.push(filterStr);
+          search[filtersColumn].push({ type: filtersValue, value: filterStr });
         }
       }
     }
 
     if (searchByName) {
-      search["firstName"] = { type: "cont", value: [searchByName] };
+      search["name"] = searchByName;
     }
 
     return {

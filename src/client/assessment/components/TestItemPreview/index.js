@@ -34,7 +34,7 @@ class TestItemPreview extends Component {
 
   state = {
     collapsed: [],
-    collapseDir: ""
+    collapseDirection: ""
   };
   getStyle = first => {
     const { verticalDivider, scrolling } = this.props;
@@ -58,15 +58,16 @@ class TestItemPreview extends Component {
     const { cols } = this.props;
     const { collapsed } = this.state;
     if (collapsed.length) {
-      return this.setState({ collapsed: [], collapseDir: "" });
+      return this.setState({ collapsed: [], collapseDirection: "" });
     }
-    const setNewCollapseArray = [...new Array(cols.length - index)].map((_, i) => {
-      const val = dir === "left" ? i : cols.length - i - 1;
-      return val;
-    });
+
+    const collapseLength = dir === "left" ? index : cols.length - index;
+    const setNewCollapseArray = [...new Array(collapseLength)].map((_, i) =>
+      dir === "left" ? i : cols.length - i - 1
+    );
     this.setState({
       collapsed: setNewCollapseArray,
-      collapseDir: dir
+      collapseDirection: dir
     });
   };
 
@@ -87,7 +88,7 @@ class TestItemPreview extends Component {
       LCBPreviewModal,
       ...restProps
     } = this.props;
-    const { collapsed, collapseDir } = this.state;
+    const { collapsed, collapseDirection } = this.state;
     let questionCount = 0;
     cols
       .filter(item => item.widgets.length > 0)
@@ -101,50 +102,48 @@ class TestItemPreview extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <Container width={windowWidth} style={style}>
-          {cols &&
-            cols.length &&
-            cols
-              .filter((_, i) => !collapsed.includes(i))
-              .map((col, i) => (
-                <>
-                  {i > 0 && !collapseDir ? (
-                    <Divider>
-                      <CollapseBtn className="fa fa-arrow-left" onClick={() => this.setCollapseView(i, "left")} />
-                      <CollapseBtn className="fa fa-arrow-right" onClick={() => this.setCollapseView(i, "right")} />
-                    </Divider>
-                  ) : (
-                    ""
-                  )}
-                  {collapseDir === "left" ? (
-                    <CollapseBtn className="fa fa-arrow-right" onClick={this.setCollapseView} />
-                  ) : (
-                    ""
-                  )}
-                  <TestItemCol
-                    {...restProps}
-                    evaluation={evaluation}
-                    key={i}
-                    col={col}
-                    view="preview"
-                    metaData={metaData}
-                    preview={preview}
-                    multiple={cols.length > 1}
-                    style={this.getStyle(i !== cols.length - 1)}
-                    windowWidth={windowWidth}
-                    showFeedback={showFeedback}
-                    questions={questions}
-                    qIndex={qIndex}
-                    student={student}
-                    disableResponse={disableResponse}
-                    LCBPreviewModal={LCBPreviewModal}
-                  />
-                  {collapseDir === "right" ? (
-                    <CollapseBtn className="fa fa-arrow-left" onClick={this.setCollapseView} />
-                  ) : (
-                    ""
-                  )}
-                </>
-              ))}
+          {cols
+            .filter((_, i) => !collapsed.includes(i))
+            .map((col, i) => (
+              <>
+                {i > 0 && !collapseDirection ? (
+                  <Divider>
+                    <CollapseBtn className="fa fa-arrow-left" onClick={() => this.setCollapseView(i, "left")} />
+                    <CollapseBtn className="fa fa-arrow-right" onClick={() => this.setCollapseView(i, "right")} />
+                  </Divider>
+                ) : (
+                  ""
+                )}
+                {collapseDirection === "left" ? (
+                  <CollapseBtn className="fa fa-arrow-right" onClick={this.setCollapseView} />
+                ) : (
+                  ""
+                )}
+                <TestItemCol
+                  {...restProps}
+                  evaluation={evaluation}
+                  key={i}
+                  col={col}
+                  view="preview"
+                  metaData={metaData}
+                  preview={preview}
+                  multiple={cols.length > 1}
+                  style={this.getStyle(i !== cols.length - 1)}
+                  windowWidth={windowWidth}
+                  showFeedback={showFeedback}
+                  questions={questions}
+                  qIndex={qIndex}
+                  student={student}
+                  disableResponse={disableResponse}
+                  LCBPreviewModal={LCBPreviewModal}
+                />
+                {collapseDirection === "right" ? (
+                  <CollapseBtn className="fa fa-arrow-left" onClick={this.setCollapseView} />
+                ) : (
+                  ""
+                )}
+              </>
+            ))}
         </Container>
       </ThemeProvider>
     );

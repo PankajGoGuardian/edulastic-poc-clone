@@ -4,7 +4,7 @@ import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import produce from "immer";
 
-import { WORD_MODE, PARAGRAPH_MODE, EDIT } from "../../constants/constantsForQuestions";
+import { WORD_MODE, PARAGRAPH_MODE, EDIT, CUSTOM_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
@@ -16,7 +16,7 @@ import Options from "./components/Options";
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 
-import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray } from "./helpers";
+import { getInitialArray, getParagraphsArray, getSentencesArray, getWordsArray, getCustomArray } from "./helpers";
 
 const OptionsList = withPoints(TokenHighlightPreview);
 
@@ -35,11 +35,13 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     setQuestionData(
       produce(item, draft => {
         if (template || draft.templeWithTokens.length === 0) {
-          let resultArray = "";
+          let resultArray = [];
           if (mode === WORD_MODE) {
             resultArray = getWordsArray(initialArray);
           } else if (mode === PARAGRAPH_MODE) {
             resultArray = getParagraphsArray(initialArray);
+          } else if (mode === CUSTOM_MODE) {
+            resultArray = getCustomArray(initialArray);
           } else {
             resultArray = getSentencesArray(initialArray);
           }
@@ -116,6 +118,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
       points={
         correctTab === 0 ? item.validation.validResponse.score : item.validation.altResponses[correctTab - 1].score
       }
+      mode={mode}
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
       editCorrectAnswers={

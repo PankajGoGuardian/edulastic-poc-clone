@@ -95,7 +95,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
         relatedShape.type !== _constants.ShapeTypes.SEGMENT &&
         relatedShape.type !== _constants.ShapeTypes.VECTOR &&
         relatedShape.type !== _constants.ShapeTypes.POLYGON &&
-        relatedShape.type !== _constants.ShapeTypes.POLYNOM
+        relatedShape.type !== _constants.ShapeTypes.POLYNOM &&
+        relatedShape.type !== _constants.ShapeTypes.EQUATION
       ) {
         var firstShape = userResponse.find(function(item) {
           return item.id === sameShapes[0].id;

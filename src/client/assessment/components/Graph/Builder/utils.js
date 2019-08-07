@@ -143,7 +143,24 @@ function getPointsFromFlatConfig(type, pointIds, config) {
   }
 }
 
-export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = () => {}) => {
+export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = () => {}, enableSnapTo = false) => {
+  if (enableSnapTo) {
+    line.on("down", () => {
+      points.forEach(point => {
+        if (!point.visProp.snaptogrid) {
+          point.setAttribute({ snapToGrid: true });
+        }
+      });
+    });
+    points.forEach(point => {
+      point.on("down", () => {
+        if (!point.visProp.snaptogrid) {
+          point.setAttribute({ snapToGrid: true });
+        }
+      });
+    });
+  }
+
   line.on("up", () => {
     if (line.dragged) {
       points.forEach(point => point.snapToGrid());

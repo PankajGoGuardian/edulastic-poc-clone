@@ -60,7 +60,14 @@ const DragItem = ({
   return (
     <div>
       <DragPreview isDragging={isDragging} isResetOffset={isResetOffset}>
-        <DragItemContent active={active} correct={correct} obj={obj} showPreview={showPreview} smallSize={smallSize} />
+        <DragItemContent
+          active={active}
+          correct={correct}
+          obj={obj}
+          showPreview={showPreview}
+          smallSize={smallSize}
+          index={index}
+        />
       </DragPreview>
       {obj ? (
         connectDragSource(
@@ -80,6 +87,7 @@ const DragItem = ({
               obj={obj}
               showPreview={showPreview}
               smallSize={smallSize}
+              index={index}
             />
           </div>
         )

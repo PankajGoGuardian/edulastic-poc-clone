@@ -219,14 +219,14 @@ class Container extends Component {
     });
   };
 
-  handleAddToPassage = type => {
+  handleAddToPassage = (type, tabIndex) => {
     const { isTestFlow, match, addWidgetToPassage } = this.props;
     addWidgetToPassage({
       isTestFlow,
       itemId: isTestFlow ? match.params.itemId : match.params.id,
       testId: match.params.testId,
       type,
-      tabIndex: 0 // TODO: fix mulitple tab case
+      tabIndex
     });
   };
 
@@ -262,9 +262,14 @@ class Container extends Component {
   handleEditWidget = (widget, rowIndex) => {
     const { loadQuestion, changeView } = this.props;
     changeView("edit");
-    loadQuestion(widget, rowIndex);
+    loadQuestion(widget, 0);
   };
 
+  handleEditPassageWidget = (widget, rowIndex) => {
+    const { loadQuestion, changeView } = this.props;
+    changeView("edit");
+    loadQuestion(widget, rowIndex, true);
+  };
   handleDeleteWidget = i => widgetIndex => {
     const { deleteWidget } = this.props;
     deleteWidget(i, widgetIndex);
@@ -326,7 +331,7 @@ class Container extends Component {
 
     let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
     return (
-      <PreviewContent padding="25px">
+      <PreviewContent>
         <TestItemPreview
           cols={allRows}
           previewTab={preview}
@@ -617,6 +622,7 @@ class Container extends Component {
                       itemData={passage}
                       count={1}
                       isPassageQuestion
+                      onEditWidget={this.handleEditPassageWidget}
                       handleAddToPassage={this.handleAddToPassage}
                       onDeleteWidget={this.handleDeletePassageWidget}
                     />
@@ -756,7 +762,7 @@ const enhance = compose(
 export default enhance(Container);
 
 const BreadCrumbBar = styled(Row)`
-  padding: 5px 0px;
+  padding: 0px 0px 10px;
 `;
 
 const RightActionButtons = styled(Col)`

@@ -523,6 +523,7 @@ class CoursesTable extends React.Component {
         <Menu.Item key="upload csv">Upload Course</Menu.Item>
         <Menu.Item key="edit course">Edit Course</Menu.Item>
         <Menu.Item key="deactivate course">Deactivate Course</Menu.Item>
+        <Menu.Item key="bulk edit courses">Bulk Edit Courses</Menu.Item>
       </Menu>
     );
 
@@ -586,7 +587,7 @@ class CoursesTable extends React.Component {
     }
 
     return (
-      <>
+      <StyledTableContainer>
         <StyledFilterDiv>
           <div>
             <Button type="primary" onClick={this.showAddCourseModal}>
@@ -611,50 +612,47 @@ class CoursesTable extends React.Component {
           </RightFilterDiv>
         </StyledFilterDiv>
 
-        <StyledTableContainer>
-          <StyledControlDiv />
-          {SearchRows}
-          <StyledTable
-            rowSelection={rowSelection}
-            dataSource={dataSource}
-            columns={columns}
-            pagination={false}
-            scroll={{ y: 400 }}
+        {SearchRows}
+        <StyledTable
+          rowSelection={rowSelection}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          scroll={{ y: 500 }}
+        />
+        <StyledPagination
+          current={currentPage}
+          defaultCurrent={1}
+          pageSize={25}
+          total={totalCourseCount}
+          onChange={this.changePagination}
+          hideOnSinglePage={true}
+        />
+        {editCourseModalVisible && editCourseKey != "" && (
+          <EditCourseModal
+            courseData={selectedCourse[0]}
+            modalVisible={editCourseModalVisible}
+            saveCourse={this.updateCourse}
+            closeModal={this.closeEditCourseModal}
+            userOrgId={userOrgId}
           />
-          <StyledPagination
-            current={currentPage}
-            defaultCurrent={1}
-            pageSize={25}
-            total={totalCourseCount}
-            onChange={this.changePagination}
-            hideOnSinglePage={true}
+        )}
+        {addCourseModalVisible && (
+          <AddCourseModal
+            modalVisible={addCourseModalVisible}
+            addCourse={this.addCourse}
+            closeModal={this.closeAddCourseModal}
+            userOrgId={userOrgId}
           />
-          {editCourseModalVisible && editCourseKey != "" && (
-            <EditCourseModal
-              courseData={selectedCourse[0]}
-              modalVisible={editCourseModalVisible}
-              saveCourse={this.updateCourse}
-              closeModal={this.closeEditCourseModal}
-              userOrgId={userOrgId}
-            />
-          )}
-          {addCourseModalVisible && (
-            <AddCourseModal
-              modalVisible={addCourseModalVisible}
-              addCourse={this.addCourse}
-              closeModal={this.closeAddCourseModal}
-              userOrgId={userOrgId}
-            />
-          )}
-          {uploadCourseModalVisible && (
-            <UploadCourseModal
-              modalVisible={uploadCourseModalVisible}
-              closeModal={this.closeUploadCourseModal}
-              searchData={searchData}
-            />
-          )}
-        </StyledTableContainer>
-      </>
+        )}
+        {uploadCourseModalVisible && (
+          <UploadCourseModal
+            modalVisible={uploadCourseModalVisible}
+            closeModal={this.closeUploadCourseModal}
+            searchData={searchData}
+          />
+        )}
+      </StyledTableContainer>
     );
   }
 }

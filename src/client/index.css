@@ -2061,3 +2061,7 @@ span.token.active-word {
 .ant-message-info .anticon {
   color: #f9942d;
 }
+
+.sortableHelper {
+  z-index: 10000;
+}

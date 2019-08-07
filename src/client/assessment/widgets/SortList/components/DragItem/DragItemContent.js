@@ -12,7 +12,7 @@ import { WithIndex } from "./styled/WithIndex";
 import { IconCheck } from "./styled/IconCheck";
 import { IconClose } from "./styled/IconClose";
 
-export const DragItemContent = ({ smallSize, showPreview, active, correct, obj }) => (
+export const DragItemContent = ({ smallSize, showPreview, active, correct, obj, index }) => (
   <Container smallSize={smallSize}>
     {!showPreview && (
       <StyledDragHandle smallSize={smallSize}>

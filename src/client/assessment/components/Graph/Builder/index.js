@@ -1517,7 +1517,15 @@ class Board {
                   points = el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(
+                          pointEl,
+                          {
+                            ...attributes,
+                            snapToGrid: false
+                          },
+                          attrs.bgShapes
+                        )
                     })
                   );
                 }
@@ -1945,7 +1953,11 @@ class Board {
                   points = el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
+                      objectCreator: attributes =>
+                        this.createAnswerPointFromConfig(pointEl, {
+                          ...attributes,
+                          snapToGrid: false
+                        })
                     })
                   );
                 }

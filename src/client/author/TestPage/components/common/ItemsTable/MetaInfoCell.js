@@ -151,17 +151,19 @@ class MetaInfoCell extends Component {
     const isEditable = owner;
     return (
       <Container>
-        <PreviewModal
-          isVisible={isShowPreviewModal}
-          page="addItems"
-          onClose={this.closeModal}
-          data={data}
-          owner={owner}
-          showEvaluationButtons={true}
-          isEditable={isEditable}
-          checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
-          showAnswer={() => showAnswer(data)}
-        />
+        {isShowPreviewModal && (
+          <PreviewModal
+            isVisible={isShowPreviewModal}
+            page="addItems"
+            onClose={this.closeModal}
+            data={data}
+            owner={owner}
+            showEvaluationButtons={true}
+            isEditable={isEditable}
+            checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
+            showAnswer={() => showAnswer(data)}
+          />
+        )}
         {windowWidth > 468 ? (
           <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-end">
             <StyledButton

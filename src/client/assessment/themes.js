@@ -499,7 +499,9 @@ export const themes = {
       mathFormula: {
         inputColor: "#fff",
         inputCorrectColor: "#D3FEA6",
+        inputCorrectBorderColor: "#9cc658",
         inputIncorrectColor: "#FCE0E8",
+        inputIncorrectBorderColor: "#f796b2",
         iconTrashColor: themeColor,
         iconTrashHoverColor: "#ee1658", // red
         quillBorderColor: "#dfdfdf", // grey

@@ -103,9 +103,9 @@ export const setQuestionAction = data => ({
   payload: { data }
 });
 
-export const loadQuestionAction = (data, rowIndex) => ({
+export const loadQuestionAction = (data, rowIndex, isPassageWidget = false) => ({
   type: LOAD_QUESTION,
-  payload: { data, rowIndex }
+  payload: { data, rowIndex, isPassageWidget }
 });
 
 export const calculateFormulaAction = data => ({
@@ -524,9 +524,8 @@ function* calculateFormulaSaga() {
 
 function* loadQuestionSaga({ payload }) {
   try {
-    const { data, rowIndex } = payload;
+    const { data, rowIndex, isPassageWidget = false } = payload;
     const pathname = yield select(state => state.router.location.pathname);
-
     yield put(changeCurrentQuestionAction(data.reference));
     if (pathname.includes("tests")) {
       yield put(
@@ -535,7 +534,8 @@ function* loadQuestionSaga({ payload }) {
           state: {
             backText: "question edit",
             backUrl: pathname,
-            rowIndex
+            rowIndex,
+            isPassageWithQuestions: isPassageWidget
           }
         })
       );
@@ -546,7 +546,8 @@ function* loadQuestionSaga({ payload }) {
           state: {
             backText: "question edit",
             backUrl: pathname,
-            rowIndex
+            rowIndex,
+            isPassageWithQuestions: isPassageWidget
           }
         })
       );

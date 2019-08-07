@@ -8,7 +8,7 @@ export const Content = styled(Paper)`
   left: 0;
   right: 0;
   padding: ${props => (props.padding ? props.padding : "0px")};
-  height: 100%;
+  overflow: hidden;
 
   @media (max-width: ${mobileWidth}) {
     padding: 33px 30px;
@@ -21,11 +21,7 @@ export const TabContainer = styled.div`
 
 export const AddButtonContainer = styled(FlexContainer)`
   margin-bottom: 0;
-  margin-right: 40px;
-
-  @media (max-width: ${mobileWidth}) {
-    margin-right: 0px;
-  }
+  margin-top: 25px;
 `;
 
 export const MobileSide = styled.div`

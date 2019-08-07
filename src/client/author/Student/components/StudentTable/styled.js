@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Table, Pagination } from "antd";
+import { Pagination } from "antd";
+import { StyledTable as Table } from "../../../../admin/Common/StyledComponents";
 
 export const StyledTable = styled(Table)`
   .ant-table-row {

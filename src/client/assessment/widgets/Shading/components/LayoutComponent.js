@@ -89,10 +89,10 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <MaxSelectionOption
                 onChange={val => {
-                  changeItem("max_selection", +val);
+                  changeItem("maxSelection", +val);
                   saveAnswer([]);
                 }}
-                value={item.max_selection}
+                value={item.maxSelection}
               />
             </Col>
           </Row>

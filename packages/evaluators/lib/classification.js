@@ -9,159 +9,184 @@ exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
+var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-var _reduce2 = _interopRequireDefault(require("lodash/reduce"));
+var _objectSpread5 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
+
+var _identity2 = _interopRequireDefault(require("lodash/identity"));
+
+var _flatten2 = _interopRequireDefault(require("lodash/flatten"));
+
+var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
 
-var _partialMatchTemplate = _interopRequireDefault(require("./helpers/partialMatchTemplate"));
-
-var _exactMatchTemplate = _interopRequireDefault(require("./helpers/exactMatchTemplate"));
-
-var sortFunc = function sortFunc(a, b) {
-  return a - b;
-};
-
-var exactCompareFunction = function exactCompareFunction(_ref) {
-  var answers = _ref.answers,
-    _ref$userResponse = _ref.userResponse,
-    userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
-  var score = 0;
-  var maxScore = 1;
-  var rightIndex = 0;
-  answers.forEach(function(_ref2, ind) {
-    var answer = _ref2.value,
-      totalScore = _ref2.score;
-
-    if (!answer || !answer.length) {
-      return;
-    }
-
-    var matches = 0;
-    var totalMatches = (0, _reduce2["default"])(
-      answer,
-      function(acc, array) {
-        var sum = 0;
-        array.forEach(function() {
-          sum++;
-        });
-        return acc + sum;
-      },
-      0
-    );
-    userResponse.forEach(function(col, colIndex) {
-      col.sort(sortFunc).forEach(function(ans, index) {
-        if ((0, _isEqual2["default"])(answer[colIndex].sort(sortFunc)[index], ans)) {
-          matches++;
-        }
-      });
-    });
-    var currentScore = totalMatches && matches === totalMatches ? totalScore : 0;
-    score = Math.max(score, currentScore);
-    maxScore = Math.max(maxScore, totalScore);
-
-    if (currentScore === score && score !== 0) {
-      rightIndex = ind;
-    }
-  });
+/**
+ * exact match evaluator
+ * @param {Array} answers - possible set of correct answer
+ * @param {Array} userReponse - answers set by user
+ */
+var exactMatchEvaluator = function exactMatchEvaluator() {
+  var answers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var userResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
   var evaluation = [];
-  var currentIndex = 0;
-  userResponse.forEach(function(col, colIndex) {
-    col.sort(sortFunc).forEach(function(ans, index) {
-      evaluation[currentIndex] = (0, _isEqual2["default"])(
-        answers[rightIndex].value[colIndex].sort(sortFunc)[index],
-        ans
-      );
-      currentIndex++;
-    });
-  });
-  return {
-    score: score,
-    maxScore: maxScore,
-    evaluation: evaluation
-  };
-};
-
-var partialCompareFunction = function partialCompareFunction(_ref3) {
-  var answers = _ref3.answers,
-    _ref3$userResponse = _ref3.userResponse,
-    userResponse = _ref3$userResponse === void 0 ? [] : _ref3$userResponse;
   var score = 0;
-  var maxScore = 1;
-  var rightIndex = 0;
-  answers.forEach(function(_ref4, ind) {
-    var answer = _ref4.value,
-      totalScore = _ref4.score;
+  var maxScore = 0; // evaluate for each set of possible correct answer.
 
-    if (!answer || !answer.length) {
-      return;
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (
+      var _iterator = answers[Symbol.iterator](), _step;
+      !(_iteratorNormalCompletion = (_step = _iterator.next()).done);
+      _iteratorNormalCompletion = true
+    ) {
+      var correctAnswer = _step.value;
+      var _answer = correctAnswer.value,
+        possibleMaxScore = correctAnswer.score; // handle the empty scenario.
+
+      if (!Array.isArray(_answer)) {
+        continue;
+      } // maxScore is max amongs all possible maxScores in possible set of responses.
+
+      maxScore = Math.max(possibleMaxScore || 0, maxScore);
+      var correct = true; // check if all rows matches.
+      // check equality in set handles order issue - here order in each row of response doesnt matter.
+
+      _answer.forEach(function(row, i) {
+        if (!userResponse[i] || !(0, _isEqual2["default"])(new Set(row), new Set(userResponse[i]))) correct = false;
+      }); // if muliple set of correct answer matches, give user max among them!
+
+      if (correct) {
+        score = Math.max(score, possibleMaxScore || 0);
+      }
     }
-
-    var matches = 0;
-    var totalMatches = 0;
-    userResponse.forEach(function(col, colIndex) {
-      col.sort(sortFunc).forEach(function(ans, index) {
-        totalMatches++;
-
-        if ((0, _isEqual2["default"])(answer[colIndex].sort(sortFunc)[index], ans)) {
-          matches++;
-        }
-      });
-    });
-    var scorePerAnswer = totalScore / totalMatches;
-    var currentScore = matches * scorePerAnswer;
-    score = Math.max(score, currentScore);
-    maxScore = Math.max(maxScore, totalScore);
-
-    if (currentScore === score) {
-      rightIndex = ind;
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator["return"] != null) {
+        _iterator["return"]();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
     }
-  });
-  var evaluation = [];
-  var currentIndex = 0;
-  userResponse.forEach(function(col, colIndex) {
-    col.sort(sortFunc).forEach(function(ans, index) {
-      evaluation[currentIndex] = (0, _isEqual2["default"])(
-        answers[rightIndex].value[colIndex].sort(sortFunc)[index],
-        ans
-      );
-      currentIndex++;
-    });
-  });
-  return {
-    score: score,
-    maxScore: maxScore,
-    evaluation: evaluation
-  };
-};
-
-var evaluator = function evaluator(_ref5) {
-  var _ref5$userResponse = _ref5.userResponse,
-    userResponse = _ref5$userResponse === void 0 ? [] : _ref5$userResponse,
-    validation = _ref5.validation;
-  var validResponse = validation.validResponse,
-    altResponses = validation.altResponses,
-    scoringType = validation.scoringType;
-  var answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
-
-  switch (scoringType) {
-    case _scoring.ScoringType.EXACT_MATCH:
-      return (0, _exactMatchTemplate["default"])(exactCompareFunction, {
-        userResponse: userResponse,
-        answers: answers,
-        validation: validation
-      });
-
-    case _scoring.ScoringType.PARTIAL_MATCH:
-    case _scoring.ScoringType.PARTIAL_MATCH_V2:
-    default:
-      return (0, _partialMatchTemplate["default"])(partialCompareFunction, {
-        userResponse: userResponse,
-        answers: answers,
-        validation: validation
-      });
   }
+
+  if (score) {
+    // if score exist, that means its a perfect match. hence set every element
+    // in every row as true.
+    evaluation = userResponse.map(function(row, i) {
+      return row.reduce(function(finalEval, item) {
+        return (0, _objectSpread5["default"])({}, finalEval, (0, _defineProperty2["default"])({}, item, true));
+      }, {});
+    });
+  } else {
+    // if its not a perfect match, construct evaluation based on
+    // first possible set of answer.
+    var answer = answers[0].value;
+    evaluation = userResponse.map(function(row, i) {
+      var answerRow = answer[i] || [];
+      return row.reduce(function(finalEval, item) {
+        return (0,
+        _objectSpread5["default"])({}, finalEval, (0, _defineProperty2["default"])({}, item, answerRow.includes(item)));
+      }, {});
+    });
+  }
+
+  return {
+    score: score,
+    maxScore: maxScore,
+    evaluation: evaluation
+  };
+};
+
+var partialMatchEvaluator = function partialMatchEvaluator() {
+  var answers = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var userResponse = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+  var evaluation = [];
+  var score = 0;
+  var maxScore = 0;
+  var _iteratorNormalCompletion2 = true;
+  var _didIteratorError2 = false;
+  var _iteratorError2 = undefined;
+
+  try {
+    var _loop = function _loop() {
+      var answer = _step2.value;
+      var currentAnswer = answer.value,
+        possibleMaxScore = answer.score;
+      maxScore = Math.max(maxScore, possibleMaxScore || 0);
+      var currentEvalution = userResponse.map(function(row, i) {
+        var answerRow = currentAnswer[i] || [];
+        return row.reduce(function(finalEval, item) {
+          return (0,
+          _objectSpread5[
+            "default"
+          ])({}, finalEval, (0, _defineProperty2["default"])({}, item, answerRow.includes(item)));
+        }, {});
+      });
+      var answersCount = (0, _flatten2["default"])(currentAnswer).length;
+      var correctCount = currentEvalution.reduce(function(correct, item) {
+        var correctCount = Object.values(item).filter(_identity2["default"]).length;
+        return (correct += correctCount);
+      }, 0);
+      var currentScore = (possibleMaxScore * correctCount) / answersCount;
+
+      if (currentScore > score) {
+        score = currentScore;
+        evaluation = currentEvalution;
+      } else {
+        evaluation = currentEvalution;
+      }
+    };
+
+    for (
+      var _iterator2 = answers[Symbol.iterator](), _step2;
+      !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done);
+      _iteratorNormalCompletion2 = true
+    ) {
+      _loop();
+    }
+  } catch (err) {
+    _didIteratorError2 = true;
+    _iteratorError2 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
+        _iterator2["return"]();
+      }
+    } finally {
+      if (_didIteratorError2) {
+        throw _iteratorError2;
+      }
+    }
+  }
+
+  return {
+    score: score,
+    maxScore: maxScore,
+    evaluation: evaluation
+  };
+};
+
+var evaluator = function evaluator(_ref) {
+  var _ref$userResponse = _ref.userResponse,
+    userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse,
+    validation = _ref.validation;
+  var valid_response = validation.valid_response,
+    _validation$alt_respo = validation.alt_responses,
+    alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo,
+    scoring_type = validation.scoring_type;
+  var answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
+  return scoring_type === _scoring.ScoringType.EXACT_MATCH
+    ? exactMatchEvaluator(answers, userResponse)
+    : partialMatchEvaluator(answers, userResponse);
 };
 
 var _default = evaluator;

@@ -19,7 +19,7 @@ import {
   StyledActionDropDown,
   StyledClassName
 } from "../../../../admin/Common/StyledComponents";
-import { StyledTableButton, StyledTable } from "./styled";
+import { StyledTable, StyledTableButton } from "./styled";
 
 import { UserFormModal as EditStudentFormModal } from "../../../../common/components/UserFormModal/UserFormModal";
 
@@ -122,27 +122,32 @@ class StudentTable extends Component {
             {firstName} {lastName}
           </span>
         ),
-        sorter: (a, b) => compareByAlph(a.firstName, b.secondName)
+        sorter: (a, b) => compareByAlph(a.firstName, b.secondName),
+        width: 200
       },
       {
         title: "Username",
         dataIndex: "_source.username",
         render: (text, record, index) => record._source.username || record._source.email,
-        sorter: (a, b) => compareByAlph(a.email, b.email)
+        sorter: (a, b) => compareByAlph(a.email, b.email),
+        width: 200
       },
       {
         title: "SSO",
         dataIndex: "_source.sso",
-        render: (sso = "N/A") => sso
+        render: (sso = "N/A") => sso,
+        width: 100
       },
       {
         title: "School",
         dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name)
+        render: (schools = []) => schools.map(school => school.name),
+        width: 150
       },
       {
         title: "Classes",
-        dataIndex: "classCount"
+        dataIndex: "classCount",
+        width: 50
       },
       {
         dataIndex: "_id",
@@ -153,7 +158,9 @@ class StudentTable extends Component {
           <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
             <Icon type="delete" theme="twoTone" />
           </StyledTableButton>
-        ]
+        ],
+        textWrap: "word-break",
+        width: 100
       }
     ];
 
@@ -595,17 +602,15 @@ class StudentTable extends Component {
             </StyledActionDropDown>
           </RightFilterDiv>
         </StyledFilterDiv>
-        <StyledControlDiv>
-          {inviteStudentModalVisible && (
-            <InviteMultipleStudentModal
-              modalVisible={inviteStudentModalVisible}
-              inviteStudents={this.sendInviteStudent}
-              closeModal={this.closeInviteStudentModal}
-              features={features}
-              setProvider={setProvider}
-            />
-          )}
-        </StyledControlDiv>
+        {inviteStudentModalVisible && (
+          <InviteMultipleStudentModal
+            modalVisible={inviteStudentModalVisible}
+            inviteStudents={this.sendInviteStudent}
+            closeModal={this.closeInviteStudentModal}
+            features={features}
+            setProvider={setProvider}
+          />
+        )}
         {filtersData.map((item, i) => {
           const { filtersColumn, filtersValue, filterStr, filterAdded } = item;
           const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
@@ -684,7 +689,7 @@ class StudentTable extends Component {
           dataSource={Object.values(result)}
           columns={this.columns}
           pagination={false}
-          hideOnSinglePage={true}
+          scroll={{ y: 500 }}
         />
         <StyledPagination
           defaultCurrent={1}
@@ -699,7 +704,6 @@ class StudentTable extends Component {
             pageSize: 25,
             onChange: page => setPageNo(page)
           }}
-          scroll={{ y: 400 }}
         />
         {editStudentModaVisible && (
           <EditStudentFormModal

@@ -490,7 +490,7 @@ class GraphContainer extends PureComponent {
       return;
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, setValue } = this.props;
 
     // correct answers blocks
     if (elementsIsCorrect) {
@@ -524,6 +524,7 @@ class GraphContainer extends PureComponent {
       this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadFromConfig(elements);
+      setValue(this._graph.getConfig());
     }
   };
 

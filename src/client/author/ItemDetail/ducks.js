@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import uuid from "uuid/v4";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy, uniq } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy, uniq, isEmpty } from "lodash";
 import { testItemsApi, passageApi, itemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
@@ -701,12 +701,12 @@ export function* updateItemSaga({ payload }) {
       }
     }
 
-    const { __v, ...passageData } = yield select(getPassageSelector);
+    const { __v, ...passageData } = yield select(getPassageSelector) || {};
 
     // return;
     const [{ testId, ...item }] = yield all([
       call(testItemsApi.updateById, payload.id, data, payload.testId),
-      passageData ? call(passageApi.update, passageData) : null
+      !isEmpty(passageData) ? call(passageApi.update, passageData) : null
     ]);
     // on update, if there is only question.. set it as the questionId, since we are changing the view
     // to singleQuestionView!

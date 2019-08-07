@@ -11,8 +11,6 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
 
-var _objectSpread5 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
-
 var _identity2 = _interopRequireDefault(require("lodash/identity"));
 
 var _flatten2 = _interopRequireDefault(require("lodash/flatten"));
@@ -20,6 +18,37 @@ var _flatten2 = _interopRequireDefault(require("lodash/flatten"));
 var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
 var _scoring = require("./const/scoring");
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly)
+      symbols = symbols.filter(function(sym) {
+        return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+      });
+    keys.push.apply(keys, symbols);
+  }
+  return keys;
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    if (i % 2) {
+      ownKeys(source, true).forEach(function(key) {
+        (0, _defineProperty2["default"])(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(source).forEach(function(key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+  return target;
+}
 
 /**
  * exact match evaluator
@@ -83,7 +112,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     // in every row as true.
     evaluation = userResponse.map(function(row, i) {
       return row.reduce(function(finalEval, item) {
-        return (0, _objectSpread5["default"])({}, finalEval, (0, _defineProperty2["default"])({}, item, true));
+        return _objectSpread({}, finalEval, (0, _defineProperty2["default"])({}, item, true));
       }, {});
     });
   } else {
@@ -93,8 +122,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
     evaluation = userResponse.map(function(row, i) {
       var answerRow = answer[i] || [];
       return row.reduce(function(finalEval, item) {
-        return (0,
-        _objectSpread5["default"])({}, finalEval, (0, _defineProperty2["default"])({}, item, answerRow.includes(item)));
+        return _objectSpread({}, finalEval, (0, _defineProperty2["default"])({}, item, answerRow.includes(item)));
       }, {});
     });
   }
@@ -125,10 +153,7 @@ var partialMatchEvaluator = function partialMatchEvaluator() {
       var currentEvalution = userResponse.map(function(row, i) {
         var answerRow = currentAnswer[i] || [];
         return row.reduce(function(finalEval, item) {
-          return (0,
-          _objectSpread5[
-            "default"
-          ])({}, finalEval, (0, _defineProperty2["default"])({}, item, answerRow.includes(item)));
+          return _objectSpread({}, finalEval, (0, _defineProperty2["default"])({}, item, answerRow.includes(item)));
         }, {});
       });
       var answersCount = (0, _flatten2["default"])(currentAnswer).length;
@@ -179,12 +204,12 @@ var evaluator = function evaluator(_ref) {
   var _ref$userResponse = _ref.userResponse,
     userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse,
     validation = _ref.validation;
-  var valid_response = validation.valid_response,
-    _validation$alt_respo = validation.alt_responses,
-    alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo,
-    scoring_type = validation.scoring_type;
-  var answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-  return scoring_type === _scoring.ScoringType.EXACT_MATCH
+  var validResponse = validation.validResponse,
+    _validation$altRespon = validation.altResponses,
+    altResponses = _validation$altRespon === void 0 ? [] : _validation$altRespon,
+    scoringType = validation.scoringType;
+  var answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
+  return scoringType === _scoring.ScoringType.EXACT_MATCH
     ? exactMatchEvaluator(answers, userResponse)
     : partialMatchEvaluator(answers, userResponse);
 };

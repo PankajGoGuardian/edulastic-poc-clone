@@ -157,6 +157,8 @@ class PlacementContainer extends PureComponent {
       disableResponse
     } = this.props;
 
+    const { resourcesLoaded } = this.state;
+
     this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
@@ -189,7 +191,9 @@ class PlacementContainer extends PureComponent {
         ...gridParams
       });
       this._graph.setBgImage(bgImgOptions);
-      this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+      if (resourcesLoaded) {
+        this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+      }
 
       this._graph.setDragDropDeleteHandler();
 
@@ -215,6 +219,8 @@ class PlacementContainer extends PureComponent {
       changePreviewTab,
       elements
     } = this.props;
+
+    const { resourcesLoaded } = this.state;
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
@@ -309,7 +315,9 @@ class PlacementContainer extends PureComponent {
         backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints
       ) {
         this._graph.resetBg();
-        this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+        if (resourcesLoaded) {
+          this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+        }
       }
 
       this.setElementsToGraph(prevProps);
@@ -409,7 +417,7 @@ class PlacementContainer extends PureComponent {
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(coloredElements, true);
+      this._graph.loadFromConfig(coloredElements);
       return;
     }
 
@@ -419,7 +427,7 @@ class PlacementContainer extends PureComponent {
     ) {
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(elements, true);
+      this._graph.loadFromConfig(elements);
     }
   };
 
@@ -435,11 +443,14 @@ class PlacementContainer extends PureComponent {
   };
 
   resourcesOnLoaded = () => {
+    const { backgroundShapes } = this.props;
     const { resourcesLoaded } = this.state;
     if (resourcesLoaded) {
       return;
     }
     this.setState({ resourcesLoaded: true });
+    this._graph.resetBg();
+    this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
     this.setElementsToGraph();
   };
 

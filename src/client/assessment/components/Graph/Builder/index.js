@@ -10,8 +10,6 @@ import {
   Polygon,
   Parabola,
   Hyperbola,
-  Label,
-  FroalaEditorInput,
   Mark,
   Numberline,
   NumberlinePoint,
@@ -48,12 +46,13 @@ import {
   handleSnap,
   isInPolygon,
   objectLabelComparator,
-  nameGenerator
+  nameGenerator,
+  setLabel
 } from "./utils";
 import _events from "./events";
 
 import "jsxgraph/distrib/jsxgraph.css";
-import "../common/FroalaEditorInput.css";
+import "../common/Label.css";
 import "../common/Mark.css";
 import "../common/EditButton.css";
 import "../common/DragDrop.css";
@@ -788,6 +787,7 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#setBoundingBox
    */
   setGraphParameters(graphParameters) {
+    this.parameters.graphParameters = graphParameters;
     this.$board.setBoundingBox(graphParameters2Boundingbox(graphParameters));
   }
 
@@ -916,7 +916,7 @@ class Board {
         });
 
         if (el.labelIsVisible) {
-          FroalaEditorInput(newElement, this).setLabel(el.label, true);
+          setLabel(newElement, el.label);
         }
         return newElement;
       })
@@ -957,7 +957,7 @@ class Board {
     );
   }
 
-  loadFromConfig(flatCfg, labelIsReadOnly) {
+  loadFromConfig(flatCfg) {
     // get name of the last object by label and reset objectNameGenerator with it
     flatCfg.sort(objectLabelComparator);
     if (typeof flatCfg[0] === "object") {
@@ -984,7 +984,7 @@ class Board {
           ...el.colors
         });
 
-        FroalaEditorInput(newElement, this).setLabel(el.label, true);
+        setLabel(newElement, el.label);
         return newElement;
       })
     );
@@ -1011,7 +1011,7 @@ class Board {
           ...el.colors
         });
 
-        FroalaEditorInput(newElement, this).setLabel(el.label, true);
+        setLabel(newElement, el.label);
         return newElement;
       })
     );

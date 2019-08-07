@@ -3,7 +3,6 @@
   cursor: pointer;
   font-family: unset !important;
   font-size: 14px !important;
-  opacity: 1;
   transform: translate(0, 10px);
 }
 
@@ -34,4 +33,5 @@
   overflow: hidden;
   height: 100%;
   width: auto;
+  opacity: 0;
 }

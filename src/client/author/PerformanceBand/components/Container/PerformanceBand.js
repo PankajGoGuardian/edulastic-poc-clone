@@ -6,7 +6,7 @@ import { get } from "lodash";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import PerformanceBandTable from "../PerformanceBandTable/PerformanceBandTable";
 
-import { StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
+import { StyledContent, StyledLayout, SpinContainer, StyledSpin, PerformanceBandDiv } from "./styled";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
@@ -21,7 +21,7 @@ class PerformanceBand extends Component {
     const showSpin = loading || updating || creating;
 
     return (
-      <div>
+      <PerformanceBandDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
@@ -33,7 +33,7 @@ class PerformanceBand extends Component {
             <PerformanceBandTable />
           </StyledLayout>
         </StyledContent>
-      </div>
+      </PerformanceBandDiv>
     );
   }
 }

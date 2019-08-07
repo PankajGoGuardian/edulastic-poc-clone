@@ -128,6 +128,12 @@ export default {
     [TOOLS.AREA]: {
       fillColor: "#00b2ff",
       highlightFillColor: "#00b2ff"
+    },
+    [TOOLS.DRAG_DROP]: {
+      fillColor: "#00b2ff",
+      strokeColor: "#00b2ff",
+      highlightStrokeColor: "#00b2ff",
+      highlightFillColor: "#00b2ff"
     }
   },
 
@@ -248,6 +254,12 @@ export default {
     },
     [TOOLS.AREA]: {
       fillColor: "#ee1658",
+      highlightFillColor: "#ee1658"
+    },
+    [TOOLS.DRAG_DROP]: {
+      fillColor: "#ee1658",
+      strokeColor: "#ee1658",
+      highlightStrokeColor: "#ee1658",
       highlightFillColor: "#ee1658"
     }
   },
@@ -370,6 +382,12 @@ export default {
     [TOOLS.AREA]: {
       fillColor: "#1fe3a1",
       highlightFillColor: "#1fe3a1"
+    },
+    [TOOLS.DRAG_DROP]: {
+      fillColor: "#1fe3a1",
+      strokeColor: "#1fe3a1",
+      highlightStrokeColor: "#1fe3a1",
+      highlightFillColor: "#1fe3a1"
     }
   },
 
@@ -490,6 +508,12 @@ export default {
     },
     [TOOLS.AREA]: {
       fillColor: "#ffcb00",
+      highlightFillColor: "#ffcb00"
+    },
+    [TOOLS.DRAG_DROP]: {
+      fillColor: "#ffcb00",
+      strokeColor: "#ffcb00",
+      highlightStrokeColor: "#ffcb00",
       highlightFillColor: "#ffcb00"
     }
   }

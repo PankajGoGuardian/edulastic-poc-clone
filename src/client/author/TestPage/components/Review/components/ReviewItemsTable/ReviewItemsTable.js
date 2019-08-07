@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -9,40 +9,75 @@ import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getStandardsSelector } from "../../ducks";
 import { getQuestionType } from "../../../../../dataUtils";
+import { SortableItem } from "../List/List";
+import { helpers } from "@edulastic/common";
 
-const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, isEditable, owner, onChangePoints }) => {
+const ItemsTable = ({
+  items,
+  mobile,
+  standards,
+  questions,
+  scoring = {},
+  rows,
+  selected,
+  setSelected,
+  handlePreview,
+  isEditable,
+  owner,
+  onChangePoints
+}) => {
+  const [expandedRows, setExpandedRows] = useState(-1);
+
+  const handleCheckboxChange = (index, checked) => {
+    if (checked) {
+      setSelected([...selected, index]);
+    } else {
+      const newSelected = selected.filter(item => item !== index);
+      setSelected(newSelected);
+    }
+  };
   const columns = [
     {
       title: "Main info",
       dataIndex: "data",
       key: "main",
-      render: data => (
-        <>
-          <MainInfoCell
-            data={data.main}
-            handlePreview={handlePreview}
-            isEditable={isEditable}
+      render: data =>
+        expandedRows === data.key ? (
+          <SortableItem
+            key={data.key}
+            metaInfoData={data.meta}
+            index={data.key}
             owner={owner}
+            indx={data.key}
+            isEditable={isEditable}
+            item={rows[data.key]}
+            testItem={data.meta.item}
+            points={data.main.points}
+            onCheck={handleCheckboxChange}
             onChangePoints={onChangePoints}
+            onPreview={handlePreview}
+            selected={selected}
+            collapseView={true}
+            questions={questions}
+            mobile={mobile}
           />
-          <MetaInfoCell data={data.meta} />
-        </>
-      )
+        ) : (
+          <>
+            <MainInfoCell
+              data={data.main}
+              handlePreview={handlePreview}
+              isEditable={isEditable}
+              owner={owner}
+              index={data.key}
+              setExpandedRows={setExpandedRows}
+              onChangePoints={onChangePoints}
+            />
+            <MetaInfoCell data={data.meta} />
+          </>
+        )
     }
   ];
-  const getPoints = item => {
-    if (!item) {
-      return 0;
-    }
-    if (item.itemLevelScoring) {
-      return item.itemLevelScore;
-    }
 
-    return get(item, ["data", "questions"], []).reduce(
-      (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "validResponse", "score"], 0)),
-      0
-    );
-  };
   const audioStatus = item => {
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
@@ -57,17 +92,17 @@ const ItemsTable = ({ items, standards, selected, setSelected, handlePreview, is
   const data = items.map((item, i) => {
     const main = {
       id: item._id,
-      points: getPoints(item),
+      points: scoring[item._id] || helpers.getPoints(item),
       title: item._id
     };
 
     const meta = {
       id: item._id,
       by: get(item, ["createdBy", "name"], ""),
-      shared: "9578 (1)",
-      likes: 9,
+      shared: 0,
+      likes: 0,
       type: getQuestionType(item),
-      points: getPoints(item),
+      points: scoring[item._id] || helpers.getPoints(item),
       item,
       isPremium: !!item.collectionName,
       standards: standards[item._id],

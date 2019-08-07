@@ -26,7 +26,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var mScore = validScore;
   var evaluation = false;
 
-  if (typeof text === "string" && (validValue || "").trim() === (text || "").trim()) {
+  if ((validValue || "").trim() === (text || "").trim()) {
     evaluation = true;
     score = validScore;
   }

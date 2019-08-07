@@ -1,0 +1,37 @@
+.drag-drop {
+  width: unset;
+  cursor: pointer;
+  font-family: unset !important;
+  font-size: 14px !important;
+  transform: translate(0, 10px);
+}
+
+.drag-drop .delete-drag-drop {
+  opacity: 1;
+  position: absolute;
+  height: 15px;
+  width: 15px;
+  top: -8px;
+  right: -15px;
+  transition: 0.2s ease fill;
+}
+
+.drag-drop .delete-drag-drop:hover {
+  fill: red;
+}
+
+.drag-drop img.fr-dii {
+  max-height: 40px !important;
+  width: auto !important;
+}
+
+.drag-drop .drag-drop-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  height: 100%;
+  width: auto;
+  opacity: 0;
+}

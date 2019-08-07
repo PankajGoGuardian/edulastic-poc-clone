@@ -26,6 +26,7 @@ const QuillSortableItem = SortableElement(
     fontSize,
     canDelete,
     placeholder,
+    centerContent,
     imageDefaultWidth
   }) => (
     <SortableItemContainer styleType={styleType} fontSize={fontSize} columns={columns}>
@@ -41,6 +42,7 @@ const QuillSortableItem = SortableElement(
             onChange={onChange}
             style={{ width: "100%" }}
             readOnly={rOnly}
+            centerContent={centerContent}
             toolbarSize={toolbarSize}
             imageDefaultWidth={imageDefaultWidth}
           />

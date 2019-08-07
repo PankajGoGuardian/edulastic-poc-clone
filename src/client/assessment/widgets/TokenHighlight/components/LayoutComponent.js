@@ -34,8 +34,8 @@ class LayoutComponent extends Component {
             </Col>
             <Col md={12}>
               <MaxSelectionOption
-                onChange={val => changeItem("max_selection", +val)}
-                value={get(item, "max_selection", 0)}
+                onChange={val => changeItem("maxSelection", +val)}
+                value={get(item, "maxSelection", 0)}
               />
             </Col>
           </Row>

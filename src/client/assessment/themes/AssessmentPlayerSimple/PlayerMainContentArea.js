@@ -31,7 +31,7 @@ const PlayerContentArea = ({
       <MainWrapper>
         {scrollElementRef.current && <DragScrollContainer scrollWrraper={scrollElementRef.current} />}
         <MainContent innerRef={scrollElementRef}>
-          <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} />
+          <TestItemPreview cols={itemRows} previewTab={previewTab} questions={questions} showCollapseBtn />
         </MainContent>
         <PlayerFooter
           isLast={isLast}

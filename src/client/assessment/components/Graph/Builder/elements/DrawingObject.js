@@ -12,9 +12,9 @@ import {
   Polynom,
   Secant,
   Sin,
-  Tangent,
-  FroalaEditorInput
+  Tangent
 } from ".";
+import { setLabel } from "../utils";
 
 function onHandler(board, event) {
   const {
@@ -54,7 +54,7 @@ function onHandler(board, event) {
         y = coords.usrCoords[2] - (i - 2) * deltaY;
       }
       const point = Point.create(board, [x, y]);
-      FroalaEditorInput(point, this).setLabel(label, true);
+      setLabel(point, label);
       points.push(point);
     });
 
@@ -103,7 +103,7 @@ function onHandler(board, event) {
     }
   }
 
-  FroalaEditorInput(newElement, this).setLabel(drawingObject.label, true);
+  setLabel(newElement, drawingObject.label);
   return newElement;
 }
 

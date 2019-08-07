@@ -54,7 +54,7 @@ class AddClassModal extends Component {
 
   fetchSchool = async value => {
     // here searchParams is added only when value exists
-    const searchParam = value ? { search: { name: { type: "cont", value: [value] } } } : {};
+    const searchParam = value ? { search: { name: [{ type: "cont", value }] } } : {};
     this.setState({ schoolList: [], fetchingSchool: true });
     const schoolListData = await schoolApi.getSchools({
       districtId: this.props.userOrgId,
@@ -108,7 +108,7 @@ class AddClassModal extends Component {
     value &&
       Object.assign(searchData, {
         search: {
-          username: { type: "cont", value: [value] }
+          username: [{ type: "cont", value }]
         }
       });
 

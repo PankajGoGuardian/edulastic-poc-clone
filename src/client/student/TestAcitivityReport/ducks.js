@@ -4,7 +4,7 @@ import { push } from "react-router-redux";
 import { get } from "lodash";
 import { reportsApi, testsApi } from "@edulastic/api";
 import { setTestItemsAction } from "../sharedDucks/TestItem";
-import { getReportByIdSelector } from "../sharedDucks/ReportsModule/ducks";
+import { getReportByIdSelector, setTestActivityAction } from "../sharedDucks/ReportsModule/ducks";
 import { ADD_ITEM_EVALUATION, LOAD_ANSWERS, LOAD_SCRATCH_PAD } from "../../assessment/constants/actions";
 import { replaceTestItemsAction } from "../../author/TestPage/ducks";
 // types
@@ -44,6 +44,7 @@ function* loadTestActivityReport({ payload }) {
         testItems
       })
     );
+    yield put(setTestActivityAction(reports.testActivity));
     yield put(setFeedbackReportAction(reports.questionActivities));
     yield put(setTestItemsAction(test.testItems));
 

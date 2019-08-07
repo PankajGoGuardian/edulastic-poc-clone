@@ -385,7 +385,7 @@ class Display extends Component {
     } = this.props;
 
     const isWrapText = get(item, "responseLayout.isWrapText", false);
-    const { userAnswers: _uAnswers, possibleResponses, snapItems } = this.state;
+    const { userAnswers: _uAnswers, possibleResponses } = this.state;
     const cAnswers = get(item, "validation.validResponse.value", []);
     const transparentBackground = get(item, "responseLayout.transparentbackground", false);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
@@ -416,7 +416,7 @@ class Display extends Component {
       alignItems: "center",
       width: "max-content",
       whiteSpace: isWrapText ? "normal" : "nowrap",
-      overflow: isWrapText ? "visible" : "hidden",
+      overflow: "hidden",
       textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
@@ -620,7 +620,8 @@ class Display extends Component {
                             <AnswerContainer
                               height={responseContainer.height || "auto"}
                               width={responseContainer.width || "auto"}
-                              answer={isWrapText ? answer : answer.replace("<p>", "<p class='clipText'>") || ""}
+                              isWrapText={isWrapText}
+                              answer={answer}
                             />
                           </DragItem>
                         );

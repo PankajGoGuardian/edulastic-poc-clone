@@ -31,8 +31,8 @@ const TokenHighlightPreview = ({
   previewTab,
   theme,
   showQuestionNumber,
-  qIndex,
   disableResponse,
+  mode,
   t
 }) => {
   const initialArray = (item.templeWithTokens || []).map((el, i) => ({
@@ -52,6 +52,8 @@ const TokenHighlightPreview = ({
 
   const [isCheck, setIsCheck] = useState(false);
 
+  const [mergedTokens, setMergedTokens] = useState(item.templeWithTokens);
+
   useEffect(() => {
     if (view === EDIT) {
       if (item.templeWithTokens.length === editCorrectAnswers.length) {
@@ -60,6 +62,56 @@ const TokenHighlightPreview = ({
         saveAnswer(initialArray);
       }
     }
+    const _mergedTokens = item.templeWithTokens.reduce((acc, currItem, currentIndex) => {
+      const tokens = item.templeWithTokens;
+      const prevIndex = currentIndex - 1;
+      const currentAccIndex = acc.length - 1;
+      const lastAccItem = acc[currentAccIndex];
+      const prevItem = tokens[prevIndex];
+
+      if (get(currItem, "active", false) && get(prevItem, "active", false)) {
+        // current and previous item active, merge it with and update the destination array
+        const mergedItem = {
+          ...currItem,
+          value: `${lastAccItem.value}${currItem.value}`,
+          active: true,
+          mergeIndex: currentIndex
+        };
+        acc.splice(currentAccIndex, 1);
+        acc.push(mergedItem);
+      } else if (
+        get(currItem, "active", false) &&
+        !get(prevItem, "active", false) &&
+        get(lastAccItem, "mergeIndex", undefined) !== prevIndex
+      ) {
+        // disconnected current active, previouse not
+        acc.push(currItem);
+      } else if (
+        !get(currItem, "active", false) &&
+        !get(prevItem, "active", false) &&
+        get(lastAccItem, "mergeIndex", undefined) !== prevIndex
+      ) {
+        // disconnected current and previous not active
+        acc.push(currItem);
+      } else if (
+        !get(currItem, "active", false) &&
+        get(prevItem, "active", false) &&
+        get(lastAccItem, "mergeIndex", undefined) !== prevIndex
+      ) {
+        // disconnected current not active, previous active
+        acc.push(currItem);
+      } else if (
+        get(lastAccItem, "mergeIndex", undefined) === prevIndex &&
+        (get(currItem, "active", false) || !get(currItem, "active", false))
+      ) {
+        // disconnected current active, previous not active special case
+        acc.push(currItem);
+      }
+
+      return acc;
+    }, []);
+
+    setMergedTokens(_mergedTokens);
   }, [item.templeWithTokens, editCorrectAnswers]);
 
   useEffect(() => {
@@ -102,7 +154,7 @@ const TokenHighlightPreview = ({
 
     const selectedItems = newAnswers.filter(answer => answer.selected);
 
-    if (item.max_selection && selectedItems.length > item.max_selection) {
+    if (item.maxSelection && selectedItems.length > item.maxSelection) {
       return;
     }
 
@@ -122,13 +174,6 @@ const TokenHighlightPreview = ({
     return [...resultArray];
   };
 
-  const smallSizeStyles = {
-    fontSize: smallSize
-      ? theme.widgets.tokenHighlight.previewSmallFontSize
-      : theme.widgets.tokenHighlight.previewFontSize,
-    lineHeight: smallSize ? "18px" : "28px"
-  };
-
   const getClass = index =>
     answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected
       ? "active-word token answer"
@@ -138,8 +183,9 @@ const TokenHighlightPreview = ({
 
   const rightAnswers = validate();
 
-  const getStyles = (index, disableResp = false) => {
-    const defaultAnswers = disableResp ? validArray : answers;
+  const getStyles = (index, disableResp = false, correctAnswers = []) => {
+    const _answers = correctAnswers.length > 0 ? correctAnswers : answers;
+    const defaultAnswers = disableResp ? validArray : _answers;
     const condition =
       defaultAnswers.find(elem => elem.index === index) && defaultAnswers.find(elem => elem.index === index).selected;
 
@@ -162,6 +208,12 @@ const TokenHighlightPreview = ({
     return resultStyle;
   };
 
+  const tokenList = mode === "custom" ? mergedTokens : item.templeWithTokens;
+  const allCorrectAnswers = [item.validation.validResponse.value];
+  item.validation.altResponses.forEach(altAnswers => {
+    allCorrectAnswers.push(altAnswers.value);
+  }, []);
+
   return (
     <Paper
       data-cy="previewWrapper"
@@ -176,7 +228,7 @@ const TokenHighlightPreview = ({
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 
-      {item.templeWithTokens.map((el, i) =>
+      {tokenList.map((el, i) =>
         el.active ? (
           <MathSpan
             onClick={!disableResponse ? handleSelect(i) : () => {}}
@@ -189,22 +241,29 @@ const TokenHighlightPreview = ({
           <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
         )
       )}
-      {previewTab === SHOW && (
-        <CorrectAnswersContainer title={t("component.sortList.correctAnswers")}>
-          {item.templeWithTokens.map((el, i) =>
-            el.active ? (
-              <MathSpan
-                onClick={() => {}}
-                dangerouslySetInnerHTML={{ __html: el.value }}
-                style={getStyles(i, true)}
-                key={i}
-              />
-            ) : (
-              <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-            )
-          )}
-        </CorrectAnswersContainer>
-      )}
+      {previewTab === SHOW &&
+        allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {
+          const title =
+            correctGroupIndex === 0
+              ? t("component.sortList.correctAnswers")
+              : `${t("component.sortList.alternateAnswer")} ${correctGroupIndex}`;
+          return (
+            <CorrectAnswersContainer key={correctGroupIndex} title={title}>
+              {correctAnswers.map((el, i) =>
+                el.selected ? (
+                  <MathSpan
+                    onClick={() => {}}
+                    dangerouslySetInnerHTML={{ __html: el.value }}
+                    style={getStyles(i, false, correctAnswers)}
+                    key={i}
+                  />
+                ) : (
+                  <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
+                )
+              )}
+            </CorrectAnswersContainer>
+          );
+        })}
     </Paper>
   );
 };
@@ -220,7 +279,9 @@ TokenHighlightPreview.propTypes = {
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  mode: PropTypes.string,
+  t: PropTypes.func.isRequired
 };
 
 TokenHighlightPreview.defaultProps = {
@@ -230,7 +291,8 @@ TokenHighlightPreview.defaultProps = {
   editCorrectAnswers: [],
   showQuestionNumber: false,
   qIndex: null,
-  disableResponse: false
+  disableResponse: false,
+  mode: ""
 };
 
 const enhance = compose(

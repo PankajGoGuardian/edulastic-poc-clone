@@ -1,4 +1,4 @@
-import { identity, maxBy, max, get } from "lodash";
+import { identity, maxBy, max, get, isArray } from "lodash";
 import { get as levenshteinDistance } from "fast-levenshtein";
 
 // create an `{id: value}` list from object
@@ -32,9 +32,15 @@ const groupChoiceById = answers => {
   const answersById = {};
   for (const answer of answers) {
     for (const choice of answer.value) {
-      answersById[choice.id] = !answersById[choice.id]
-        ? [choice.value.trim()]
-        : [...answersById[choice.id], choice.value.trim()];
+      if (isArray(choice.value)) {
+        answersById[choice.id] = !answersById[choice.id]
+          ? choice.value.map(v => v.trim())
+          : [...answersById[choice.id], ...choice.value.map(v => v.trim())];
+      } else {
+        answersById[choice.id] = !answersById[choice.id]
+          ? [choice.value.trim()]
+          : [...answersById[choice.id], choice.value.trim()];
+      }
     }
   }
 

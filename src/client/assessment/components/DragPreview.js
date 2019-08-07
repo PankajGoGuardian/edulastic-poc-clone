@@ -5,20 +5,39 @@ import { DragLayer } from "react-dnd";
 import { white, dashBorderColor } from "@edulastic/colors";
 
 function collect(monitor, { isResetOffset }) {
+  const clientOffset = monitor.getClientOffset();
+  const sourceClientOffset = monitor.getSourceClientOffset();
+
+  const sourceOffset = isResetOffset ? monitor.getDifferenceFromInitialOffset() : monitor.getSourceClientOffset();
+
+  // This is difference between parent top/left and item top/left
+  // it's supposed to be used with isResetOffset true
+  let difference = { x: 0, y: 0 };
+  if (clientOffset && sourceClientOffset) {
+    difference = {
+      x: clientOffset.x - sourceClientOffset.x,
+      y: clientOffset.y - sourceClientOffset.y
+    };
+  }
+
   return {
-    sourceOffset: isResetOffset ? monitor.getDifferenceFromInitialOffset() : monitor.getSourceClientOffset()
+    sourceOffset,
+    difference
   };
 }
 
 class DragPreview extends Component {
   render() {
-    const { isDragging, children, sourceOffset } = this.props;
-    if (!isDragging || !sourceOffset) {
-      return null;
-    }
+    const { children, sourceOffset, isResetOffset, isDragging, difference } = this.props;
 
     return (
-      <PreviewContainer left={sourceOffset && sourceOffset.x} top={sourceOffset && sourceOffset.y}>
+      <PreviewContainer
+        isResetOffset={isResetOffset}
+        isHidden={!isDragging}
+        difference={difference}
+        left={sourceOffset && sourceOffset.x}
+        top={sourceOffset && sourceOffset.y}
+      >
         {children}
       </PreviewContainer>
     );
@@ -31,12 +50,16 @@ DragPreview.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired
   }),
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  isResetOffset: PropTypes.bool,
+  difference: PropTypes.object
 };
 
 DragPreview.defaultProps = {
   isDragging: false,
-  sourceOffset: {}
+  sourceOffset: {},
+  isResetOffset: false,
+  difference: { x: 0, y: 0 }
 };
 
 export default DragLayer(collect)(DragPreview);
@@ -46,14 +69,15 @@ const PreviewContainer = styled.div.attrs({
     transform: `translate(${left || 0}px, ${top || 0}px)`
   })
 })`
+  display: ${({ isHidden }) => (isHidden ? "none" : null)};
   background: ${white};
   border: 2px ${dashBorderColor} dotted;
   padding: 8px 20px;
   position: fixed;
   opacity: 0.5;
   z-index: 1000;
-  left: 0;
-  top: 0;
+  left: ${({ isResetOffset, difference }) => (isResetOffset ? difference.x : 0)};
+  top: ${({ isResetOffset, difference }) => (isResetOffset ? difference.y : 0)};
   transition: none;
   pointer-events: none;
 `;

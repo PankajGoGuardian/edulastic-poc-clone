@@ -1,4 +1,6 @@
 import JXG from "jsxgraph";
+import striptags from "striptags";
+import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 import { CONSTANT } from "./config";
 import { defaultConfig as lineConfig } from "./elements/Line";
 import { EditButton } from "./elements";
@@ -141,7 +143,24 @@ function getPointsFromFlatConfig(type, pointIds, config) {
   }
 }
 
-export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = () => {}) => {
+export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = () => {}, enableSnapTo = false) => {
+  if (enableSnapTo) {
+    line.on("down", () => {
+      points.forEach(point => {
+        if (!point.visProp.snaptogrid) {
+          point.setAttribute({ snapToGrid: true });
+        }
+      });
+    });
+    points.forEach(point => {
+      point.on("down", () => {
+        if (!point.visProp.snaptogrid) {
+          point.setAttribute({ snapToGrid: true });
+        }
+      });
+    });
+  }
+
   line.on("up", () => {
     if (line.dragged) {
       points.forEach(point => point.snapToGrid());
@@ -297,7 +316,7 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
   const { size, coords } = bgImageParameters;
   const xSize = Math.abs(graphParameters.xMin) + Math.abs(graphParameters.xMax);
   const ySize = Math.abs(graphParameters.yMin) + Math.abs(graphParameters.yMax);
-  const imageSize = [Math.round((xSize / 100) * size[0]), Math.round((ySize / 100) * size[1])];
+  const imageSize = [(xSize / 100) * size[0], (ySize / 100) * size[1]];
   const leftCorner = [coords[0] - imageSize[0] / 2, coords[1] - imageSize[1] / 2];
   return [leftCorner, imageSize];
 }
@@ -305,7 +324,12 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
     const { id, type, points, latex, subType } = element;
-    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.ANNOTATION || type === CONSTANT.TOOLS.AREA) {
+    if (
+      type === CONSTANT.TOOLS.POINT ||
+      type === CONSTANT.TOOLS.ANNOTATION ||
+      type === CONSTANT.TOOLS.AREA ||
+      type === CONSTANT.TOOLS.DRAG_DROP
+    ) {
       if (!acc[id]) {
         acc[id] = element;
       }
@@ -319,7 +343,8 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       _type: element._type,
       id: element.id,
       label: element.label,
-      labelIsVisible: element.labelIsVisible
+      labelIsVisible: element.labelIsVisible,
+      text: element.text
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
       acc[id].latex = latex;
@@ -353,7 +378,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 export function flat2nestedConfig(config) {
   return Object.values(
     config.reduce((acc, element) => {
-      const { id, type, subElement = false, latex = null, subType = null, points } = element;
+      const { id, type, subElement = false, latex = null, subType = null, points, text = null } = element;
 
       if (!acc[id] && !subElement) {
         acc[id] = {
@@ -364,11 +389,16 @@ export function flat2nestedConfig(config) {
           label: element.label,
           labelIsVisible: element.labelIsVisible,
           latex,
-          subType
+          subType,
+          text
         };
         if (type === CONSTANT.TOOLS.AREA) {
           acc[id].points = points;
-        } else if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.ANNOTATION) {
+        } else if (
+          type === CONSTANT.TOOLS.POINT ||
+          type === CONSTANT.TOOLS.ANNOTATION ||
+          type === CONSTANT.TOOLS.DRAG_DROP
+        ) {
           acc[id].x = element.x;
           acc[id].y = element.y;
           if (type === CONSTANT.TOOLS.POINT) {
@@ -581,4 +611,16 @@ export function objectLabelComparator(a, b) {
     return 1;
   }
   return 0;
+}
+
+export function setLabel(element, label) {
+  if (!label || element.latexIsBroken) {
+    return;
+  }
+
+  const content = replaceLatexesWithMathHtml(label);
+  element.setLabel(striptags(content));
+  element.label.rendNode.innerHTML = content;
+
+  element.labelHTML = label;
 }

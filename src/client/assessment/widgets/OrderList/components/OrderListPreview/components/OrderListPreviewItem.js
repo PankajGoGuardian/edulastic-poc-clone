@@ -16,7 +16,10 @@ const OrderListPreviewItem = SortableElement(({ children, showDragHandle, smallS
       </StyledDragHandle>
     )}
     <Text styleType={styleType} showDragHandle={showDragHandle} smallSize={smallSize}>
-      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: children }} />
+      <MathFormulaDisplay
+        style={{ width: "max-content", margin: "auto" }}
+        dangerouslySetInnerHTML={{ __html: children }}
+      />
     </Text>
   </Container>
 ));

@@ -15,18 +15,12 @@ const Wrapper = styled(Layout)`
 `;
 
 const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location, logout }) => {
-  const activeEnrolledClasses = (activeClasses || []).filter(c => c.status === "1");
+  const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   // location is available as prop when we are navigating through link from student manage class
   useEffect(() => {
     loadAllClasses();
   }, []);
-
-  useEffect(() => {
-    if (!loading && activeEnrolledClasses.length === 0) {
-      logout();
-    }
-  }, [loading, activeEnrolledClasses.length]);
 
   if (loading) return <Spin />;
   const { classItem = {} } = location;

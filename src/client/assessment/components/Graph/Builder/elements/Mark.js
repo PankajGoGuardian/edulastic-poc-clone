@@ -1,4 +1,3 @@
-/* global katex */
 import JXG from "jsxgraph";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
@@ -80,10 +79,7 @@ const onHandler = (board, coords, data) => {
     y = lineY;
   }
 
-  let content = replaceLatexesWithMathHtml(data.text, latex => {
-    if (!katex) return latex;
-    return katex.renderToString(latex);
-  });
+  let content = replaceLatexesWithMathHtml(data.text);
 
   if (!coords || !coords.fixed) {
     const deleteIconId = `mark-delete-${data.id}`;

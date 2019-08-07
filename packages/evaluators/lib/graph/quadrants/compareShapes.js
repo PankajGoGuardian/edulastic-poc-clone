@@ -68,17 +68,21 @@ var CompareShapes =
             : this.trueAnswerValue.find(function(item) {
                 return item.id === trueId;
               });
+          var negativeResult = {
+            id: testId,
+            result: false
+          };
 
           if (!testShape || !trueShape || testShape.type !== trueShape.type) {
-            return {
-              id: testId,
-              result: false
-            };
+            return negativeResult;
           }
 
           switch (testShape.type) {
             case _constants.ShapeTypes.POINT:
               return this.comparePoints(testShape, trueShape);
+
+            case _constants.ShapeTypes.DRAG_DROP:
+              return this.compareDragDropValues(testShape, trueShape);
 
             case _constants.ShapeTypes.LINE:
               return this.compareLines(testShape, trueShape);
@@ -121,11 +125,20 @@ var CompareShapes =
             case _constants.ShapeTypes.POLYNOM:
               return this.comparePolynoms(testShape, trueShape);
 
+            case _constants.ShapeTypes.EQUATION:
+              switch (testShape.subType) {
+                case _constants.ShapeTypes.LINE:
+                  return this.compareLines(testShape, trueShape);
+
+                case _constants.ShapeTypes.PARABOLA:
+                  return this.compareParabolas(testShape, trueShape);
+
+                default:
+                  return negativeResult;
+              }
+
             default:
-              return {
-                id: testId,
-                result: false
-              };
+              return negativeResult;
           }
         }
       },
@@ -146,6 +159,23 @@ var CompareShapes =
 
           return {
             id: testPoint.id,
+            result: false
+          };
+        }
+      },
+      {
+        key: "compareDragDropValues",
+        value: function compareDragDropValues(testValue, trueValue) {
+          if (testValue.x === trueValue.x && testValue.y === trueValue.y && testValue.text === trueValue.text) {
+            return {
+              id: testValue.id,
+              relatedId: trueValue.id,
+              result: true
+            };
+          }
+
+          return {
+            id: testValue.id,
             result: false
           };
         }
@@ -206,7 +236,8 @@ var CompareShapes =
 
           if (
             testShapeFunc.getKoefA() === trueShapeFunc.getKoefA() &&
-            testShapeFunc.getKoefB() === trueShapeFunc.getKoefB()
+            testShapeFunc.getKoefB() === trueShapeFunc.getKoefB() &&
+            testShapeFunc.getVerticalLineOffset() === trueShapeFunc.getVerticalLineOffset()
           ) {
             return positiveResult;
           }

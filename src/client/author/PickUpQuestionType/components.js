@@ -1,31 +1,27 @@
 import styled from "styled-components";
 
-import { themeColor, cardBg, cardBorder } from "@edulastic/colors";
+import { themeColor, cardBg, cardBorder, largeDesktopWidth, mediumDesktopWidth, mobileWidth } from "@edulastic/colors";
 
 export const RoundDiv = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(25% - 18px);
-  margin: 0px 9px 18px;
+  justify-content: space-between;
+  margin: 0px 0px 15px;
   background-color: ${cardBg};
   border: 1px solid ${cardBorder};
   border-radius: 10px;
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s ease;
-  min-height: 270px;
+  min-height: 230px;
 
-  @media (max-width: 2048px) {
-    width: calc(33.3333% - 18px);
+  @media (min-width: 1201px) {
+    width: calc((100% - 30px) / 3);
   }
-  @media (max-width: 1600px) {
-    width: calc(33.3333% - 18px);
-    min-height: 239px;
+  @media only screen and (max-width: ${largeDesktopWidth}) {
+    width: calc((100% - 20px) / 2);
   }
-  @media (max-width: 1024px) {
-    width: calc(50% - 18px);
-  }
-  @media (max-width: 480px) {
+  @media only screen and (max-width: ${mobileWidth}) {
     width: 100%;
   }
 
@@ -41,24 +37,27 @@ export const RoundDiv = styled.div`
 export const Header = styled.div`
   display: flex;
   align-items: center;
-  padding: 18px 20px 6px;
+  padding: 20px;
   color: #434b5d;
   font-family: Open Sans;
   font-size: 16px;
   font-weight: bold;
   transition: all 0.3s ease;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    font-size: 13px;
+  }
 `;
 
 export const Content = styled.div`
   width: 100%;
-  padding: 24px 18px 15px;
+  padding: 0px 20px 20px;
   user-select: none;
   position: relative;
   cursor: pointer;
   overflow: hidden;
   display: flex;
   align-items: center;
-  margin: 0 0 auto 0;
 `;
 
 export const StyledPreviewImage = styled.img`

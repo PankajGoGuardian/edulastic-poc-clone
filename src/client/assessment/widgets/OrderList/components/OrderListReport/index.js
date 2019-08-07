@@ -28,6 +28,7 @@ class OrderListReport extends Component {
             showAnswers={showAnswers}
             index={i}
             ind={i + 1}
+            sortableHelper="sortableHelper"
           >
             {q}
           </OrderListReportItem>

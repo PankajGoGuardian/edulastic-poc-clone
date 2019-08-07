@@ -8,6 +8,7 @@ import { questionType } from "@edulastic/constants";
 import { PaddingDiv, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   IconClose,
   IconBarChart,
@@ -44,7 +45,8 @@ import {
   SelectWidget,
   BackLink,
   PickQuestionWrapper,
-  LeftMenuWrapper
+  LeftMenuWrapper,
+  AffixWrapper
 } from "./styled";
 import { toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import Breadcrumb from "../../../src/components/Breadcrumb";
@@ -248,68 +250,64 @@ class Container extends Component {
               <Menu.Item key="feature-tab">{t("component.pickupcomponent.feature")}</Menu.Item>
             </Menu>
             <MenuTitle>{t("component.pickupcomponent.selectAType")}</MenuTitle>
-            <LeftMenuWrapper
-              mode="inline"
-              style={{
-                background: "transparent",
-                border: 0
-              }}
-              selectedKeys={[selectedCategory]}
-              onClick={this.handleCategory}
-            >
-              <Menu.Item key="multiple-choice">
-                <IconNewList />
-                {"Multiple Choice"}
-              </Menu.Item>
-              <Menu.Item key="fill-blanks">
-                <IconSelection />
-                {"Fill in the Blanks"}
-              </Menu.Item>
-              <Menu.Item key="classify">
-                <IconLayout />
-                {"Classify, Match & Order"}
-              </Menu.Item>
-              <Menu.Item key="edit">
-                <IconEdit />
-                {"Reading & Comprehension"}
-              </Menu.Item>
-              <Menu.Item key="highlight">
-                <IconTarget />
-                {"Highlight"}
-              </Menu.Item>
-              <Menu.Item key="math">
-                <IconMath />
-                {"Math"}
-              </Menu.Item>
-              <Menu.Item key="graphing">
-                <IconLineChart />
-                {"Graphing"}
-              </Menu.Item>
-              <Menu.Item key="charts">
-                <IconBarChart />
-                {"Charts"}
-              </Menu.Item>
-              <Menu.Item key="chemistry">
-                <IconMolecule />
-                {"Chemistry"}
-              </Menu.Item>
-              <Menu.Item key="multipart">
-                <IconMultipart />
-                {"Multipart"}
-              </Menu.Item>
-              <Menu.Item key="video-passages">
-                <IconPlay />
-                {"Video & Text"}
-              </Menu.Item>
-              <Menu.Item key="rulers-calculators">
-                <IconRulerPencil />
-                {"Rulers & Calculators"}
-              </Menu.Item>
-              <Menu.Item key="other">
-                <IconMore />
-                {"Other"}
-              </Menu.Item>
-            </LeftMenuWrapper>
+            <AffixWrapper>
+              <PerfectScrollbar>
+                <LeftMenuWrapper mode="inline" selectedKeys={[selectedCategory]} onClick={this.handleCategory}>
+                  <Menu.Item key="multiple-choice">
+                    <IconNewList />
+                    {"Multiple Choice"}
+                  </Menu.Item>
+                  <Menu.Item key="fill-blanks">
+                    <IconSelection />
+                    {"Fill in the Blanks"}
+                  </Menu.Item>
+                  <Menu.Item key="classify">
+                    <IconLayout />
+                    {"Classify, Match & Order"}
+                  </Menu.Item>
+                  <Menu.Item key="edit">
+                    <IconEdit />
+                    {"Reading & Comprehension"}
+                  </Menu.Item>
+                  <Menu.Item key="highlight">
+                    <IconTarget />
+                    {"Highlight"}
+                  </Menu.Item>
+                  <Menu.Item key="math">
+                    <IconMath />
+                    {"Math"}
+                  </Menu.Item>
+                  <Menu.Item key="graphing">
+                    <IconLineChart />
+                    {"Graphing"}
+                  </Menu.Item>
+                  <Menu.Item key="charts">
+                    <IconBarChart />
+                    {"Charts"}
+                  </Menu.Item>
+                  <Menu.Item key="chemistry">
+                    <IconMolecule />
+                    {"Chemistry"}
+                  </Menu.Item>
+                  <Menu.Item key="multipart">
+                    <IconMultipart />
+                    {"Multipart"}
+                  </Menu.Item>
+                  <Menu.Item key="video-passages">
+                    <IconPlay />
+                    {"Video & Text"}
+                  </Menu.Item>
+                  <Menu.Item key="rulers-calculators">
+                    <IconRulerPencil />
+                    {"Rulers & Calculators"}
+                  </Menu.Item>
+                  <Menu.Item key="other">
+                    <IconMore />
+                    {"Other"}
+                  </Menu.Item>
+                </LeftMenuWrapper>
+              </PerfectScrollbar>
+            </AffixWrapper>
           </LeftSide>
           <RightSide>
             <Breadcrumb

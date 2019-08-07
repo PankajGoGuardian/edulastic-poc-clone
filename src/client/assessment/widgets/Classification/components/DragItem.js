@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
 import { FlexContainer, MathFormulaDisplay } from "@edulastic/common";
 import { IMAGE_LIST_DEFAULT_WIDTH } from "@edulastic/constants/const/imageConstants";
@@ -85,6 +85,8 @@ const DragItemContainer = ({
   noPadding,
   ...restProps
 }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
   const dragItem = (
     <Item
       isDragging={isDragging}
@@ -98,54 +100,69 @@ const DragItemContainer = ({
     />
   );
 
+  const handleMouseMove = evt => {
+    setMousePosition({ x: evt.clientX, y: evt.clientY });
+  };
+
   const itemWidth =
     possibilityListPosition === IMAGE_LIST_POSITION_LEFT || possibilityListPosition === IMAGE_LIST_POSITION_RIGHT
       ? IMAGE_LIST_DEFAULT_WIDTH
       : null;
 
   return (
-    item &&
-    connectDragSource(
-      <div
-        className="drag-item"
-        data-cy={`drag-drop-item-${renderIndex}`}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          margin: "10px 15px 10px 15px",
-          width: itemWidth
-        }}
-      >
-        <DragPreview {...restProps} isDragging={isDragging} isResetOffset={isResetOffset}>
-          {dragItem}
-        </DragPreview>
-        <div
-          style={getStyles(
-            isDragging,
-            isTransparent,
-            valid && preview
-              ? theme.widgets.classification.dragItemValidBgColor
-              : preview && valid !== undefined
-              ? theme.widgets.classification.dragItemNotValidBgColor
-              : theme.widgets.classification.dragItemBgColor,
-            valid && preview
-              ? theme.widgets.classification.dragItemValidBorderColor
-              : preview && valid !== undefined
-              ? theme.widgets.classification.dragItemNotValidBorderColor
-              : theme.widgets.classification.dragItemBorderColor,
-            preview && valid !== undefined
-              ? {
-                  padding: 0,
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0
-                }
-              : { borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }
-          )}
-        >
-          {dragItem}
-        </div>
-      </div>
-    )
+    <MainWrapper onMouseMove={handleMouseMove}>
+      <DragPreview mousePosition={mousePosition} isDragging={isDragging} isResetOffset={isResetOffset}>
+        {dragItem}
+      </DragPreview>
+      {item &&
+        connectDragSource(
+          <div
+            className="drag-item"
+            data-cy={`drag-drop-item-${renderIndex}`}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              margin: "10px 15px 10px 15px",
+              width: itemWidth
+            }}
+          >
+            <InnerWrapper
+              style={getStyles(
+                isDragging,
+                isTransparent,
+                valid && preview
+                  ? theme.widgets.classification.dragItemValidBgColor
+                  : preview && valid !== undefined
+                  ? theme.widgets.classification.dragItemNotValidBgColor
+                  : theme.widgets.classification.dragItemBgColor,
+                valid && preview
+                  ? theme.widgets.classification.dragItemValidBorderColor
+                  : preview && valid !== undefined
+                  ? theme.widgets.classification.dragItemNotValidBorderColor
+                  : theme.widgets.classification.dragItemBorderColor,
+                preview && valid !== undefined
+                  ? {
+                      padding: 0,
+                      borderTopLeftRadius: 0,
+                      borderBottomLeftRadius: 0
+                    }
+                  : { borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }
+              )}
+            >
+              {dragItem}
+            </InnerWrapper>
+          </div>
+        )}
+    </MainWrapper>
   );
 };
+
+const InnerWrapper = styled.div`
+  p {
+    width: 151px;
+  }
+`;
+
+const MainWrapper = styled.div``;
+
 export default withTheme(DragSource("item", specSource, collectSource)(DragItemContainer));

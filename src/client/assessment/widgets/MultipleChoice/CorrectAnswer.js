@@ -26,25 +26,8 @@ class CorrectAnswer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      responseScore: props.response && props.response.score,
-      userSelections: [...props.response.value]
+      responseScore: props.response && props.response.score
     };
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    const { multipleResponses } = this.props;
-
-    // Update user selection to last selected choice when multiple_response
-    // changes to false, this won't cause re-render, instead it will show up
-    // with the next update
-    if (
-      prevProps.multipleResponses !== multipleResponses &&
-      prevState.userSelections !== 1 &&
-      prevState.userSelections !== 0 &&
-      !multipleResponses
-    ) {
-      this.handleMultiSelect(prevState.userSelections.pop());
-    }
   }
 
   updateScore = e => {
@@ -57,8 +40,8 @@ class CorrectAnswer extends Component {
   };
 
   handleMultiSelect = answerId => {
-    const { onUpdateValidationValue, multipleResponses } = this.props;
-    let { userSelections: newUserSelection } = this.state;
+    const { onUpdateValidationValue, multipleResponses, response } = this.props;
+    let newUserSelection = response.value;
 
     newUserSelection = newUserSelection.includes(answerId)
       ? newUserSelection.filter(item => item !== answerId)
@@ -66,7 +49,6 @@ class CorrectAnswer extends Component {
       ? [...newUserSelection, answerId]
       : [answerId];
 
-    this.setState({ userSelections: newUserSelection });
     onUpdateValidationValue(newUserSelection);
   };
 

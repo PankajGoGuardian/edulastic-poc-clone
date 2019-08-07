@@ -14,8 +14,6 @@ import { EduButton, FlexContainer, Paper } from "@edulastic/common";
 export const Container = styled.div`
   width: 100%;
   height: 100%;
-  padding-bottom: 51px;
-  padding-left: 20px
   position: relative;
 
   @media (max-width: ${mobileWidth}) {
@@ -56,7 +54,7 @@ export const MainList = styled.div`
 
 export const ListItems = styled.div`
   flex: 1;
-  margin: 0px 0px -50px;
+  margin: 0px;
   overflow: auto;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   background: ${white};
@@ -140,11 +138,7 @@ export const StyledSelect = styled(Select)`
 
 export const ItemsPagination = styled(FlexContainer)`
   justify-content: flex-end;
-  margin: 19px 0 39px 0;
-
-  @media screen and (max-width: 480px) {
-    padding: 30px;
-  }
+  padding: 20px;
 `;
 
 export const ListWrapper = styled(Paper)`

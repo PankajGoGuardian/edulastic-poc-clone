@@ -21,7 +21,7 @@ export const ReviewPageContainer = styled.div`
       }
     }
     @media (max-width: ${mediumDesktopWidth}) {
-      top: 60px;
+      top: 59px;
     }
   }
 `;

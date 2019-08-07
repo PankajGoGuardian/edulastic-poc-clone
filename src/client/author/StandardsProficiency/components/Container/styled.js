@@ -4,6 +4,8 @@ import { Layout, Spin } from "antd";
 const { Content } = Layout;
 
 export const StandardsProficiencyDiv = styled.div`
+  display: flex;
+  flex-direction: row;
   .ant-table-thead > tr > th,
   .ant-table-tbody > tr > td {
     text-align: center;
@@ -17,7 +19,7 @@ export const StandardsProficiencyDiv = styled.div`
 
 export const StyledContent = styled(Content)`
   width: 95%;
-  margin: 40px auto 0;
+  margin: 150px 30px 10px 30px;
 `;
 
 export const StyledLayout = styled(Layout)`

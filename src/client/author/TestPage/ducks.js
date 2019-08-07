@@ -1,12 +1,13 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
 import { test } from "@edulastic/constants";
-import { call, put, all, takeEvery, select } from "redux-saga/effects";
+import { call, put, all, takeEvery, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get, uniqBy } from "lodash";
+import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
 import moment from "moment";
+import produce from "immer";
 import {
   SET_MAX_ATTEMPT,
   UPDATE_TEST_IMAGE,
@@ -18,6 +19,8 @@ import {
 import { loadQuestionsAction } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
+import { getItemsSubjectAndGradeAction } from "./components/AddItems/ducks";
+import { helpers } from "@edulastic/common";
 
 // constants
 
@@ -127,7 +130,7 @@ export const setTestDataAction = data => ({
 
 export const setTestDataAndUpdateAction = data => ({
   type: SET_TEST_DATA_AND_SAVE,
-  payload: { data }
+  payload: data
 });
 export const clearTestDataAction = () => ({
   type: CLEAR_TEST_DATA
@@ -214,6 +217,7 @@ const initialState = {
   loading: false,
   creating: false,
   thumbnail: "",
+  regradeTestId: "",
   createdItems: [],
   sharedUsersList: []
 };
@@ -247,7 +251,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return { ...state, creating: true };
     case CREATE_TEST_SUCCESS:
     case UPDATE_TEST_SUCCESS:
-      const { testItems, ...entity } = payload.entity;
+      const { testItems, scoring: score, ...entity } = payload.entity;
       return {
         ...state,
         entity: { ...state.entity, ...entity },
@@ -256,7 +260,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         creating: false
       };
     case UPDATE_ENTITY_DATA:
-      const { testItems: items, ...dataRest } = payload.entity;
+      const { testItems: items, scoring, ...dataRest } = payload.entity;
       return {
         ...state,
         entity: { ...state.entity, ...dataRest },
@@ -407,13 +411,20 @@ function* createTestSaga({ payload }) {
       delete payload.data.assignmentPassword;
     }
 
-    const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate", "testItems"]);
+    const dataToSend = omit(payload.data, [
+      "assignments",
+      "createdDate",
+      "updatedDate",
+      "testItems",
+      "passages",
+      "isUsed"
+    ]);
     //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
-    if (!payload.isCartTest) {
-      dataToSend.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
-    } else {
-      dataToSend.testItems = payload.data.testItems;
-    }
+    dataToSend.testItems = payload.data.testItems.map(o => ({
+      itemId: o._id,
+      maxScore: helpers.getPoints(o),
+      questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
+    }));
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
     yield put({
@@ -442,6 +453,7 @@ function* createTestSaga({ payload }) {
 
 function* updateTestSaga({ payload }) {
   try {
+    const { scoring = {} } = payload.data;
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
     delete payload.data.updatedDate;
@@ -451,6 +463,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.createdBy;
     delete payload.data.passages;
     delete payload.data.isUsed;
+    delete payload.data.scoring;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,
@@ -468,7 +481,13 @@ function* updateTestSaga({ payload }) {
       yield call(message.error, "Please add a valid password.");
       return;
     }
-    payload.data.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
+    payload.data.testItems =
+      payload.data.testItems &&
+      payload.data.testItems.map(o => ({
+        itemId: o._id,
+        maxScore: scoring[o._id] || helpers.getPoints(o),
+        questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o), scoring[o._id]) : {}
+      }));
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
@@ -568,35 +587,87 @@ function* deleteSharedUserSaga({ payload }) {
   }
 }
 
-function* setTestDataAndUpdateSaga({ payload }) {
+function* setTestDataAndUpdateSaga(payload) {
   try {
-    if (payload.data.thumbnail === defaultImage) {
+    let newTest = yield select(getTestSelector);
+    const { addToTest, item } = payload;
+    if (addToTest) {
+      newTest = produce(newTest, draft => {
+        draft.testItems.push(item);
+      });
+    } else {
+      newTest = produce(newTest, draft => {
+        draft.testItems.filter(el => row.id !== item._id);
+      });
+    }
+    // getting grades and subjects from each question array in test items
+    const { testItems = [] } = newTest;
+
+    const questionGrades = testItems
+      .flatMap(item => (item.data && item.data.questions) || [])
+      .flatMap(question => question.grades || []);
+    const questionSubjects = testItems
+      .flatMap(item => (item.data && item.data.questions) || [])
+      .flatMap(question => question.subjects || []);
+    //alignment object inside questions contains subject and domains
+    const getAlignmentsObject = testItems
+      .flatMap(item => (item.data && item.data.questions) || [])
+      .flatMap(question => question.alignment || []);
+
+    const subjects = getAlignmentsObject.map(alignment => alignment.subject);
+
+    //domains inside alignment object holds standards with grades
+    const grades = getAlignmentsObject
+      .flatMap(alignment => alignment.domains)
+      .flatMap(domain => domain.standards)
+      .flatMap(standard => standard.grades);
+    yield put(
+      getItemsSubjectAndGradeAction({
+        subjects: _uniq([...subjects, ...questionSubjects]),
+        grades: _uniq([...grades, ...questionGrades])
+      })
+    );
+
+    if (newTest.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
-        subject: get(payload, "data.subjects[0]", "Other Subjects"),
-        standard: get(payload, "data.summary.standards[0].identifier", "")
+        subject: get(newTest, "data.subjects[0]", "Other Subjects"),
+        standard: get(newTest, "data.summary.standards[0].identifier", "")
       });
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
-    yield put(setTestDataAction(payload.data));
-    const { title } = payload.data;
-    if (!title) {
-      return yield call(message.error("Name field cannot be empty"));
-    }
-    if (!payload.data.requirePassword) {
-      delete payload.data.assignmentPassword;
-    } else if (!payload.data.assignmentPassword) {
-      yield call(message.error, "Please add a valid password.");
-      return;
-    }
-    const entity = yield call(testsApi.create, payload.data);
-    yield put({
-      type: UPDATE_ENTITY_DATA,
-      payload: {
-        entity
+    yield put(setTestDataAction(newTest));
+    if (!newTest._id) {
+      const { title } = newTest;
+      if (!title) {
+        return yield call(message.error("Name field cannot be empty"));
       }
-    });
-    yield put(replace(`/author/tests/${entity._id}`));
-    yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
+      if (!newTest.requirePassword) {
+        delete newTest.assignmentPassword;
+      } else if (!newTest.assignmentPassword) {
+        yield call(message.error, "Please add a valid password.");
+        return;
+      }
+
+      newTest = produce(newTest, draft => {
+        draft.testItems =
+          draft.testItems &&
+          draft.testItems.map(o => ({
+            itemId: o._id,
+            maxScore: helpers.getPoints(o),
+            questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
+          }));
+      });
+
+      const entity = yield call(testsApi.create, newTest);
+      yield put({
+        type: UPDATE_ENTITY_DATA,
+        payload: {
+          entity
+        }
+      });
+      yield put(replace(`/author/tests/${entity._id}`));
+      yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
+    }
   } catch (e) {
     const errorMessage = "Auto Save of Test is failing";
     yield call(message.error, errorMessage);
@@ -687,6 +758,7 @@ function* showAnswerSaga({ payload }) {
 }
 
 export function* watcherSaga() {
+  const requestChan = yield actionChannel(SET_TEST_DATA_AND_SAVE);
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
@@ -695,11 +767,14 @@ export function* watcherSaga() {
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(TEST_PUBLISH, publishTestSaga),
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
-    yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
     yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
     yield takeEvery(PREVIEW_CHECK_ANSWER, checkAnswerSaga),
     yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga)
   ]);
+  while (true) {
+    const { payload } = yield take(requestChan);
+    yield call(setTestDataAndUpdateSaga, payload);
+  }
 }
 
 // selectors

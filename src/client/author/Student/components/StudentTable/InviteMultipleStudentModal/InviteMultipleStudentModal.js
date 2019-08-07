@@ -136,7 +136,7 @@ class InviteMultipleStudentModal extends Component {
     searchKey &&
       Object.assign(searchData, {
         search: {
-          email: { type: "cont", value: [searchKey] }
+          email: [{ type: "cont", value: searchKey }]
         }
       });
     if (searchKey.length > 0) {

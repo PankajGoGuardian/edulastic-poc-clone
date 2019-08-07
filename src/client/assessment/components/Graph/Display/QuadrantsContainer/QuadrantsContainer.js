@@ -43,7 +43,7 @@ import {
   JSXBoxWrapper,
   JSXBoxWithDrawingObjectsWrapper
 } from "./styled";
-import Tools from "./Tools";
+import Tools from "../../common/Tools";
 import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
 import { ElementSettingsMenu } from "./ElementSettingsMenu";
@@ -216,6 +216,7 @@ class GraphContainer extends PureComponent {
     } = this.props;
 
     const { tools } = toolbar;
+    const { resourcesLoaded } = this.state;
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
 
@@ -252,7 +253,9 @@ class GraphContainer extends PureComponent {
         ...gridParams
       });
       this._graph.setBgImage(bgImgOptions);
-      this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+      if (resourcesLoaded) {
+        this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+      }
 
       this.setElementsToGraph();
     }
@@ -279,6 +282,7 @@ class GraphContainer extends PureComponent {
     } = this.props;
 
     const { tools } = toolbar;
+    const { resourcesLoaded } = this.state;
 
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
       this.setDefaultToolState();
@@ -378,7 +382,9 @@ class GraphContainer extends PureComponent {
         backgroundShapes.showPoints !== prevProps.backgroundShapes.showPoints
       ) {
         this._graph.resetBg();
-        this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+        if (resourcesLoaded) {
+          this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+        }
       }
 
       this.setElementsToGraph(prevProps);
@@ -484,7 +490,7 @@ class GraphContainer extends PureComponent {
       return;
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, setValue } = this.props;
 
     // correct answers blocks
     if (elementsIsCorrect) {
@@ -507,7 +513,7 @@ class GraphContainer extends PureComponent {
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
+      this._graph.loadFromConfig(coloredElements);
       return;
     }
 
@@ -517,7 +523,8 @@ class GraphContainer extends PureComponent {
     ) {
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible());
+      this._graph.loadFromConfig(elements);
+      setValue(this._graph.getConfig());
     }
   };
 
@@ -627,7 +634,6 @@ class GraphContainer extends PureComponent {
     "hyperbola",
     "polygon",
     "parabola",
-    // "label",
     "annotation",
     "area"
   ];
@@ -658,11 +664,14 @@ class GraphContainer extends PureComponent {
   };
 
   resourcesOnLoaded = () => {
+    const { backgroundShapes } = this.props;
     const { resourcesLoaded } = this.state;
     if (resourcesLoaded) {
       return;
     }
     this.setState({ resourcesLoaded: true });
+    this._graph.resetBg();
+    this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
     this.setElementsToGraph();
   };
 

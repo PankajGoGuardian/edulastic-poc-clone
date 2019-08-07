@@ -34,7 +34,9 @@ export const TOOLS = {
   AREA: "area",
 
   // Default
-  RESET: "reset"
+  RESET: "reset",
+
+  DRAG_DROP: "drag_drop"
 };
 
 export const EVENT_NAMES = {

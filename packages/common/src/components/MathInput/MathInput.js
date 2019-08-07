@@ -153,10 +153,9 @@ class MathInput extends React.PureComponent {
   };
 
   onClickMathField = () => {
-    const { onInnerFieldClick } = this.props;
     const { mathFieldFocus } = this.state;
     if (!mathFieldFocus) {
-      this.setState({ mathFieldFocus: true }, onInnerFieldClick);
+      this.setState({ mathFieldFocus: true }, this.focus);
     }
   };
 
@@ -181,7 +180,8 @@ class MathInput extends React.PureComponent {
       className,
       restrictKeys,
       customKeys,
-      hideKeypad
+      hideKeypad,
+      onInnerFieldClick
     } = this.props;
 
     return (
@@ -190,7 +190,7 @@ class MathInput extends React.PureComponent {
           ref={this.containerRef}
           onFocus={() => {
             onFocus(true);
-            this.setState({ mathFieldFocus: true });
+            this.setState({ mathFieldFocus: true }, onInnerFieldClick);
           }}
           className="input"
           onClick={this.onClickMathField}

@@ -10,17 +10,20 @@ const Option = Select.Option;
 import AddCourseModal from "./AddCourseModal/AddCourseModal";
 import EditCourseModal from "./EditCourseModal/EditCourseModal";
 import UploadCourseModal from "./UploadCourseModal";
-
+import {
+  StyledControlDiv,
+  StyledFilterDiv,
+  RightFilterDiv,
+  StyledFilterSelect,
+  StyledFilterInput,
+  StyledSchoolSearch as StyledNameSearch,
+  StyledActionDropDown
+} from "../../../../admin/Common/StyledComponents";
 import {
   StyledTableContainer,
-  StyledControlDiv,
-  StyledFilterSelect,
   StyledTable,
   StyledTableButton,
-  StyledFilterInput,
   StyledFilterButton,
-  StyledNameSearch,
-  StyledActionDropDown,
   StyledActiveCheckbox,
   StyledPagination,
   StyledHeaderColumn,
@@ -520,6 +523,7 @@ class CoursesTable extends React.Component {
         <Menu.Item key="upload csv">Upload Course</Menu.Item>
         <Menu.Item key="edit course">Edit Course</Menu.Item>
         <Menu.Item key="deactivate course">Deactivate Course</Menu.Item>
+        <Menu.Item key="bulk edit courses">Bulk Edit Courses</Menu.Item>
       </Menu>
     );
 
@@ -584,27 +588,38 @@ class CoursesTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <Button type="primary" onClick={this.showAddCourseModal}>
-            + Create Course
-          </Button>
-
-          <StyledNameSearch
-            placeholder="Search by name"
-            onSearch={this.handleSearchName}
-            onChange={this.onChangeSearch}
-          />
-          <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
-            Show active courses only
-          </StyledActiveCheckbox>
-          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
-            <Button>
-              Actions <Icon type="down" />
+        <StyledFilterDiv>
+          <div>
+            <Button type="primary" onClick={this.showAddCourseModal}>
+              + Create Course
             </Button>
-          </StyledActionDropDown>
-        </StyledControlDiv>
+
+            <StyledNameSearch
+              placeholder="Search by name"
+              onSearch={this.handleSearchName}
+              onChange={this.onChangeSearch}
+            />
+          </div>
+          <RightFilterDiv>
+            <StyledActiveCheckbox defaultChecked={showActive} onChange={this.onChangeShowActive}>
+              Show active courses only
+            </StyledActiveCheckbox>
+            <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+              <Button>
+                Actions <Icon type="down" />
+              </Button>
+            </StyledActionDropDown>
+          </RightFilterDiv>
+        </StyledFilterDiv>
+
         {SearchRows}
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+        <StyledTable
+          rowSelection={rowSelection}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          scroll={{ y: 500 }}
+        />
         <StyledPagination
           current={currentPage}
           defaultCurrent={1}

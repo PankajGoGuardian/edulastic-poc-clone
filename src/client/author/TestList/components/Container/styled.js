@@ -129,6 +129,10 @@ export const AffixWrapper = styled(Affix)`
   width: 260px;
   top: 96px;
   padding: 20px 0px;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    top: 60px;
+  }
 `;
 
 export const PaginationWrapper = styled(Pagination)`

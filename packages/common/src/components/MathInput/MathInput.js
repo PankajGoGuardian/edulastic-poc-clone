@@ -44,7 +44,7 @@ class MathInput extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     const { mathField } = this.state;
     if (mathField && mathField.latex() !== nextProps.value) {
-      mathField.latex(nextProps.value);
+      mathField.latex(this.sanitizeLatex(nextProps.value));
     }
   }
 
@@ -66,7 +66,7 @@ class MathInput extends React.PureComponent {
     }));
 
     const mathField = MQ.MathField(this.mathFieldRef.current, window.MathQuill);
-    mathField.write(value);
+    mathField.write(this.sanitizeLatex(value));
 
     if (defaultFocus) {
       mathField.focus();
@@ -83,6 +83,8 @@ class MathInput extends React.PureComponent {
       }
     );
   }
+
+  sanitizeLatex = v => v.replace(/&amp;/g, "&");
 
   handleKeypress = e => {
     const { restrictKeys, allowNumericOnly } = this.props;

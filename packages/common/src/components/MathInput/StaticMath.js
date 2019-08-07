@@ -15,7 +15,8 @@ const StaticMath = ({
   latex,
   innerValues,
   restrictKeys,
-  customKeys
+  customKeys,
+  alwaysShowKeyboard
 }) => {
   const [mathField, setMathField] = useState(null);
   const [currentInnerField, setCurrentInnerField] = useState(null);
@@ -93,9 +94,11 @@ const StaticMath = ({
     setShowKeyboard(false);
   };
 
+  const sanitizeLatex = v => v.replace(/&amp;/g, "&");
+
   const setLatex = newLatex => {
     if (!mathField) return;
-    mathField.latex(newLatex);
+    mathField.latex(sanitizeLatex(newLatex));
 
     setInnerFields(mathField.innerFields);
 
@@ -189,10 +192,14 @@ const StaticMath = ({
   return (
     <MathInputStyles minWidth={style.minWidth}>
       <div ref={containerRef} className="input" onBlur={onBlurInput}>
-        <div className="input__math" style={style} data-cy="answer-math-input-style">
+        <div
+          className="input__math"
+          style={{ minWidth: style.width, minHeight: style.height }}
+          data-cy="answer-math-input-style"
+        >
           <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />
         </div>
-        <div className="input__keyboard">
+        <div className={alwaysShowKeyboard ? "input__keyboard" : "input__absolute__keyboard"}>
           {showKeyboard && (
             <MathKeyboard
               symbols={symbols}
@@ -220,7 +227,8 @@ StaticMath.propTypes = {
   latex: PropTypes.string.isRequired,
   customKeys: PropTypes.array,
   restrictKeys: PropTypes.array,
-  innerValues: PropTypes.array
+  innerValues: PropTypes.array,
+  alwaysShowKeyboard: PropTypes.bool
 };
 
 StaticMath.defaultProps = {
@@ -228,7 +236,8 @@ StaticMath.defaultProps = {
   customKeys: [],
   restrictKeys: [],
   innerValues: [],
-  onInnerFieldClick: () => {}
+  onInnerFieldClick: () => {},
+  alwaysShowKeyboard: false
 };
 
 const StaticMathWithResources = props => (

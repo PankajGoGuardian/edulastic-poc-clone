@@ -90,26 +90,6 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
       evaluations = { ...evaluations, ...mathEvaluation };
     }
 
-    /**
-     * Total score should be equally distributed among each input type.
-     * If total score is 9 points and there are three inputs, Each answer is worth 3 points.
-     * In case student answers
-     * If one correct - score should be 3/9
-     * If two correct then 6/9,
-     * If all three are correct 9/9.
-     *
-     * We will treat =>not-attempted = wrong attempt.
-     * If there are three response blocks and score = 9 and penalty is 3.
-     * "score per response" = score / numberOfResponseBlocks ( 9/3 )
-     * "penalty per response" = penalty / numberOfResponseBlocks ( 3/3 )
-     *
-     * Only one is attempted and is correct attempts then score = 1/9 (calculation = 3 - 1 -1).
-     * If two are attempted and are correct attempts then score = 5/9 (calculation = 3 + 3 -1).
-     * If three are attempted and are correct attempts then score = 9/9 (calculation = 3 + 3 +3).
-     * If three are attempted score will be and one attempt is correct and rest two are wrong
-     * attempts score = 1/9 (calculation = 3 - 1 -1)
-     */
-
     const correctCount = Object.values(evaluations).filter(identity).length;
 
     const answersCount =

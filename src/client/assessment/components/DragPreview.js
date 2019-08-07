@@ -12,13 +12,14 @@ function collect(monitor, { isResetOffset }) {
 
 class DragPreview extends Component {
   render() {
-    const { isDragging, children, sourceOffset } = this.props;
-    if (!isDragging || !sourceOffset) {
-      return null;
-    }
+    const { children, sourceOffset, isResetOffset } = this.props;
 
     return (
-      <PreviewContainer left={sourceOffset && sourceOffset.x} top={sourceOffset && sourceOffset.y}>
+      <PreviewContainer
+        isHidden={isResetOffset}
+        left={sourceOffset && sourceOffset.x}
+        top={sourceOffset && sourceOffset.y}
+      >
         {children}
       </PreviewContainer>
     );
@@ -31,12 +32,14 @@ DragPreview.propTypes = {
     x: PropTypes.number.isRequired,
     y: PropTypes.number.isRequired
   }),
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  isResetOffset: PropTypes.bool
 };
 
 DragPreview.defaultProps = {
   isDragging: false,
-  sourceOffset: {}
+  sourceOffset: {},
+  isResetOffset: false
 };
 
 export default DragLayer(collect)(DragPreview);
@@ -46,6 +49,7 @@ const PreviewContainer = styled.div.attrs({
     transform: `translate(${left || 0}px, ${top || 0}px)`
   })
 })`
+  display: ${({ isHidden }) => (isHidden ? "none" : null)};
   background: ${white};
   border: 2px ${dashBorderColor} dotted;
   padding: 8px 20px;

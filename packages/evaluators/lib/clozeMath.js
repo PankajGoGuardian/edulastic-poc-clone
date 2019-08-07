@@ -169,12 +169,10 @@ var normalEvaluator =
           clozeTextEvaluation,
           mathEvaluation,
           correctCount,
-          wrongCount,
           answersCount,
           scoreOfAnswer,
           penaltyOfAnwer,
           penaltyScore,
-          negativeScore,
           selectedEvaluation;
 
         return _regenerator["default"].wrap(function _callee2$(_context3) {
@@ -267,29 +265,7 @@ var normalEvaluator =
                 evaluations = (0, _objectSpread2["default"])({}, evaluations, mathEvaluation);
 
               case 20:
-                /**
-                 * Total score should be equally distributed among each input type.
-                 * If total score is 9 points and there are three inputs, Each answer is worth 3 points.
-                 * In case student answers
-                 * If one correct - score should be 3/9
-                 * If two correct then 6/9,
-                 * If all three are correct 9/9.
-                 *
-                 * We will treat =>not-attempted = wrong attempt.
-                 * If there are three response blocks and score = 9 and penalty is 3.
-                 * "score per response" = score / numberOfResponseBlocks ( 9/3 )
-                 * "penalty per response" = penalty / numberOfResponseBlocks ( 3/3 )
-                 *
-                 * Only one is attempted and is correct attempts then score = 1/9 (calculation = 3 - 1 -1).
-                 * If two are attempted and are correct attempts then score = 5/9 (calculation = 3 + 3 -1).
-                 * If three are attempted and are correct attempts then score = 9/9 (calculation = 3 + 3 +3).
-                 * If three are attempted score will be and one attempt is correct and rest two are wrong
-                 * attempts score = 1/9 (calculation = 3 - 1 -1)
-                 */
                 correctCount = Object.values(evaluations).filter(_identity2["default"]).length;
-                wrongCount = Object.values(evaluations).filter(function(x) {
-                  return !x;
-                }).length;
                 answersCount =
                   (0, _get2["default"])(validAnswers[i].dropdown, ["value", "length"], 0) +
                   (0, _get2["default"])(validAnswers[i], ["value", "length"], 0) +
@@ -297,16 +273,10 @@ var normalEvaluator =
                 scoreOfAnswer = maxScore / answersCount;
                 penaltyOfAnwer = penalty / answersCount;
                 penaltyScore = penaltyOfAnwer * (answersCount - correctCount);
+                currentScore = scoreOfAnswer * correctCount;
 
                 if (scoringType === "partialMatch") {
-                  currentScore = questionScore * (correctCount / answersCount);
-
-                  if (penalty) {
-                    negativeScore = penalty * wrongCount;
-                    currentScore -= negativeScore;
-                  }
-                } else {
-                  currentScore = scoreOfAnswer * correctCount - penaltyScore;
+                  currentScore -= penaltyScore;
                 }
 
                 score = Math.max(score, currentScore);

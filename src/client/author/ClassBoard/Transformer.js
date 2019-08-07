@@ -22,12 +22,12 @@ const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
 /**
  *
  * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}_testItemsData
- * @param {string[]} testItems
+ * @param {object[]} testItems
  */
 export const markQuestionLabel = (_testItemsData, testItems) => {
   const testItemsData = keyBy(_testItemsData, "_id");
   for (let i = 0; i < testItems.length; i++) {
-    const item = testItemsData[testItems[i]];
+    const item = testItemsData[testItems[i].itemId];
     if (!(item.data && item.data.questions)) {
       continue;
     }
@@ -198,7 +198,7 @@ export const transformGradeBookResponse = ({
   testActivities,
   testQuestionActivities
 }) => {
-  const testItemIds = test.testItems;
+  const testItemIds = test.testItems.map(o => o.itemId);
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);

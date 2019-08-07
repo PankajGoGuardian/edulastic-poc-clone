@@ -67,9 +67,9 @@ class Item extends Component {
     });
   };
 
-  handleToggleItemToCart = itemId => () => {
+  handleToggleItemToCart = item => () => {
     const { onToggleToCart } = this.props;
-    onToggleToCart(itemId);
+    onToggleToCart(item);
   };
 
   get description() {
@@ -184,7 +184,7 @@ class Item extends Component {
               <ViewButtonStyled onClick={this.previewItem}>
                 <IconEye /> {t("component.item.view")}
               </ViewButtonStyled>
-              <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
+              <AddButtonStyled onClick={this.handleToggleItemToCart(item)}>
                 {selectedToCart ? "Remove" : <IconPlus />}
               </AddButtonStyled>
             </ViewButton>

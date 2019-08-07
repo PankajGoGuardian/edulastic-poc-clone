@@ -10,12 +10,14 @@ import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getStandardsSelector } from "../../ducks";
 import { getQuestionType } from "../../../../../dataUtils";
 import { SortableItem } from "../List/List";
+import { helpers } from "@edulastic/common";
 
 const ItemsTable = ({
   items,
   mobile,
   standards,
   questions,
+  scoring = {},
   rows,
   selected,
   setSelected,
@@ -75,19 +77,7 @@ const ItemsTable = ({
         )
     }
   ];
-  const getPoints = item => {
-    if (!item) {
-      return 0;
-    }
-    if (item.itemLevelScoring) {
-      return item.itemLevelScore;
-    }
 
-    return get(item, ["data", "questions"], []).reduce(
-      (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "validResponse", "score"], 0)),
-      0
-    );
-  };
   const audioStatus = item => {
     const questions = get(item, "data.questions", []);
     const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
@@ -102,7 +92,7 @@ const ItemsTable = ({
   const data = items.map((item, i) => {
     const main = {
       id: item._id,
-      points: getPoints(item),
+      points: scoring[item._id] || helpers.getPoints(item),
       title: item._id
     };
 
@@ -112,7 +102,7 @@ const ItemsTable = ({
       shared: 0,
       likes: 0,
       type: getQuestionType(item),
-      points: getPoints(item),
+      points: scoring[item._id] || helpers.getPoints(item),
       item,
       isPremium: !!item.collectionName,
       standards: standards[item._id],

@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 import { get } from "lodash";
-import { FlexContainer, AnswerContext } from "@edulastic/common";
+import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
 
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
@@ -148,11 +148,7 @@ export const SortableItem = ({
                     size="large"
                     type="number"
                     disabled={!owner || !isEditable}
-                    value={
-                      testItem.itemLevelScoring
-                        ? testItem.itemLevelScore
-                        : get(question, ["validation", "validResponse", "score"], 0)
-                    }
+                    value={points}
                     onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                   />
                 </FlexContainer>
@@ -193,18 +189,6 @@ const List = SortableContainer(
       }
     };
 
-    const getPoints = i => {
-      let item = null;
-      if (scoring.testItems && scoring.testItems.length) {
-        item = scoring.testItems.find(({ id }) => id === testItems[i].id);
-      }
-
-      return get(testItems, [i, "data", "questions"], []).reduce(
-        (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "validResponse", "score"], 0)),
-        0
-      );
-    };
-
     const audioStatus = item => {
       const questions = get(item, "data.questions", []);
       const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
@@ -241,7 +225,7 @@ const List = SortableContainer(
             isEditable={isEditable}
             item={item}
             testItem={testItems[i]}
-            points={getPoints(i)}
+            points={scoring[testItems[i]._id] || helpers.getPoints(testItems[i])}
             onCheck={handleCheckboxChange}
             onChangePoints={onChangePoints}
             onPreview={onPreview}

@@ -1,6 +1,6 @@
 /* eslint-disable */
 import uuid from "uuid/v4";
-import { isString, get } from "lodash";
+import { isString, get, round } from "lodash";
 import { fileApi } from "@edulastic/api";
 import { aws, question, questionType } from "@edulastic/constants";
 import { message } from "antd";
@@ -273,6 +273,40 @@ export const calculateWordsCount = ele =>
     .split(/\W/g)
     .filter(i => !!i.trim()).length;
 export const canInsert = element => element.contentEditable !== "false";
+
+const getPoints = item => {
+  if (!item) {
+    return 0;
+  }
+  if (item.itemLevelScoring) {
+    return item.itemLevelScore;
+  }
+
+  return get(item, ["data", "questions"], []).reduce(
+    (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "validResponse", "score"], 0)),
+    0
+  );
+};
+
+const getQuestionLevelScore = (questions, totalMaxScore, newMaxScore) => {
+  let questionScore = {};
+  if (!newMaxScore) {
+    questions.forEach(o => (questionScore[o.id] = o.itemScore));
+    return questionScore;
+  }
+  let currScore = 0;
+  questions.forEach((o, index) => {
+    if (index === questions.length - 1) {
+      questionScore[o.id] = newMaxScore - currScore;
+    } else {
+      const score = round(get(o, ["validation", "validResponse", "score"], 0) * (newMaxScore / totalMaxScore), 2);
+      currScore += score;
+      questionScore[o.id] = score;
+    }
+  });
+  return questionScore;
+};
+
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,
@@ -284,6 +318,8 @@ export default {
   reIndexResponses,
   sanitizeForReview,
   canInsert,
+  getPoints,
+  getQuestionLevelScore,
   removeIndexFromTemplate,
   calculateWordsCount
 };

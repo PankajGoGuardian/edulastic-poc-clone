@@ -20,6 +20,7 @@ import { loadQuestionsAction } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction } from "./components/AddItems/ducks";
+import { helpers } from "@edulastic/common";
 
 // constants
 
@@ -250,7 +251,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return { ...state, creating: true };
     case CREATE_TEST_SUCCESS:
     case UPDATE_TEST_SUCCESS:
-      const { testItems, ...entity } = payload.entity;
+      const { testItems, scoring: score, ...entity } = payload.entity;
       return {
         ...state,
         entity: { ...state.entity, ...entity },
@@ -259,7 +260,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         creating: false
       };
     case UPDATE_ENTITY_DATA:
-      const { testItems: items, ...dataRest } = payload.entity;
+      const { testItems: items, scoring, ...dataRest } = payload.entity;
       return {
         ...state,
         entity: { ...state.entity, ...dataRest },
@@ -419,11 +420,11 @@ function* createTestSaga({ payload }) {
       "isUsed"
     ]);
     //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
-    if (!payload.isCartTest) {
-      dataToSend.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
-    } else {
-      dataToSend.testItems = payload.data.testItems;
-    }
+    dataToSend.testItems = payload.data.testItems.map(o => ({
+      itemId: o._id,
+      maxScore: helpers.getPoints(o),
+      questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
+    }));
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
     yield put({
@@ -452,6 +453,7 @@ function* createTestSaga({ payload }) {
 
 function* updateTestSaga({ payload }) {
   try {
+    const { scoring = {} } = payload.data;
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
     delete payload.data.updatedDate;
@@ -461,6 +463,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.createdBy;
     delete payload.data.passages;
     delete payload.data.isUsed;
+    delete payload.data.scoring;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,
@@ -478,7 +481,13 @@ function* updateTestSaga({ payload }) {
       yield call(message.error, "Please add a valid password.");
       return;
     }
-    payload.data.testItems = payload.data.testItems && payload.data.testItems.map(o => o._id);
+    payload.data.testItems =
+      payload.data.testItems &&
+      payload.data.testItems.map(o => ({
+        itemId: o._id,
+        maxScore: scoring[o._id] || helpers.getPoints(o),
+        questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o), scoring[o._id]) : {}
+      }));
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
@@ -638,6 +647,17 @@ function* setTestDataAndUpdateSaga(payload) {
         yield call(message.error, "Please add a valid password.");
         return;
       }
+
+      newTest = produce(newTest, draft => {
+        draft.testItems =
+          draft.testItems &&
+          draft.testItems.map(o => ({
+            itemId: o._id,
+            maxScore: helpers.getPoints(o),
+            questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
+          }));
+      });
+
       const entity = yield call(testsApi.create, newTest);
       yield put({
         type: UPDATE_ENTITY_DATA,

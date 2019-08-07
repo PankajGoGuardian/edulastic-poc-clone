@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const StyledSpan = styled.span`
-  padding: 5px;
+  padding: 4px 5px;
   border-radius: 2px;
   border: 1px solid #d9d9d9;
   display: inline-block;

@@ -7,7 +7,7 @@ import MathSpan from "../MathSpan";
 
 const MathDisplayWrapper = styled.span`
   .input__math {
-    padding: 5px;
+    padding: 4px 5px;
     border-radius: 2px;
     border: 1px solid #d9d9d9;
     display: inline-block;

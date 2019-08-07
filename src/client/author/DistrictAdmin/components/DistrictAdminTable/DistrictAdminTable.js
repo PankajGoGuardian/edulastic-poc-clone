@@ -116,18 +116,6 @@ class DistrictAdminTable extends Component {
         dataIndex: "_source.sso",
         render: (sso = "N/A") => sso,
         width: 200
-      },
-      {
-        dataIndex: "_id",
-        render: id => [
-          <StyledTableButton key={`${id}0`} onClick={() => this.onEditDistrictAdmin(id)} title="Edit">
-            <Icon type="edit" theme="twoTone" />
-          </StyledTableButton>,
-          <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)} title="Deactivate">
-            <Icon type="delete" theme="twoTone" />
-          </StyledTableButton>
-        ],
-        width: 100
       }
     ];
 
@@ -456,13 +444,6 @@ class DistrictAdminTable extends Component {
       removeFilter
     } = this.props;
 
-    const actionMenu = (
-      <Menu onClick={this.changeActionMode}>
-        <Menu.Item key="edit user">Update Selected User</Menu.Item>
-        <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
-      </Menu>
-    );
-
     return (
       <>
         <StyledTableContainer>
@@ -485,18 +466,13 @@ class DistrictAdminTable extends Component {
               >
                 Show current users only
               </Checkbox>
-              <StyledActionDropDown overlay={actionMenu}>
-                <Button>
-                  Actions <Icon type="down" />
-                </Button>
-              </StyledActionDropDown>
             </RightFilterDiv>
           </StyledFilterDiv>
           {createDistrictAdminModalVisible && (
             <CreateDistrictAdminModal
               modalVisible={createDistrictAdminModalVisible}
-              createDistrictAdmin={this.createDistrictAdmin}
-              closeModal={this.closeCreateDistrictAdminModal}
+              createDistrictAdmin={this.createUser}
+              closeModal={this.closeCreateUserModal}
               userOrgId={userOrgId}
             />
           )}
@@ -517,6 +493,7 @@ class DistrictAdminTable extends Component {
                   </Option>
                   <Option value="username">Username</Option>
                   <Option value="email">Email</Option>
+                  <Option value="status">Status</Option>
                 </StyledFilterSelect>
                 <StyledFilterSelect
                   placeholder="Select a value"
@@ -527,17 +504,31 @@ class DistrictAdminTable extends Component {
                     Select a value
                   </Option>
                   <Option value="eq">Equals</Option>
-                  <Option value="cont">Contains</Option>
+                  {!filterStrDD[filtersColumn] ? <Option value="cont">Contains</Option> : null}
                 </StyledFilterSelect>
-                <StyledFilterInput
-                  placeholder="Enter text"
-                  onChange={e => this.changeFilterText(e, i)}
-                  onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                  onBlur={e => this.onBlurFilterText(e, i)}
-                  value={filterStr ? filterStr : undefined}
-                  disabled={isFilterTextDisable}
-                  innerRef={this.filterTextInputRef[i]}
-                />
+                {!filterStrDD[filtersColumn] ? (
+                  <StyledFilterInput
+                    placeholder="Enter text"
+                    onChange={e => this.changeFilterText(e, i)}
+                    onSearch={(v, e) => this.onSearchFilter(v, e, i)}
+                    onBlur={e => this.onBlurFilterText(e, i)}
+                    value={filterStr ? filterStr : undefined}
+                    disabled={isFilterTextDisable}
+                    innerRef={this.filterTextInputRef[i]}
+                  />
+                ) : (
+                  <StyledFilterSelect
+                    placeholder={filterStrDD[filtersColumn].placeholder}
+                    onChange={v => this.changeStatusValue(v, i)}
+                    value={filterStr !== "" ? filterStr : undefined}
+                  >
+                    {filterStrDD[filtersColumn].list.map(item => (
+                      <Option key={item.title} value={item.value} disabled={item.disabled}>
+                        {item.title}
+                      </Option>
+                    ))}
+                  </StyledFilterSelect>
+                )}
                 {i < 2 && (
                   <StyledAddFilterButton
                     type="primary"

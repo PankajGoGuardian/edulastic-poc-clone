@@ -61,6 +61,10 @@ class MathFormulaPreview extends Component {
     };
   }
 
+  componentDidMount() {
+    this.updateStaticMathFromUserAnswer();
+  }
+
   componentDidUpdate(prevProps) {
     const { studentTemplate, type: previewType } = this.props;
     const { studentTemplate: prevStudentTemplate, type: prevPreviewType } = prevProps;

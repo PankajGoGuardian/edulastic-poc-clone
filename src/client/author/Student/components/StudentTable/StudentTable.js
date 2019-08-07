@@ -248,20 +248,6 @@ class StudentTable extends Component {
     });
   };
 
-  sendInviteStudent = inviteStudentList => {
-    this.setState({
-      inviteStudentModalVisible: false
-    });
-    const { addMultiStudents, userOrgId } = this.props;
-
-    let o = {
-      addReq: { districtId: userOrgId, data: inviteStudentList },
-      listReq: this.getSearchQuery()
-    };
-
-    addMultiStudents(o);
-  };
-
   closeInviteStudentModal = () => {
     this.setState({
       inviteStudentModalVisible: false
@@ -281,6 +267,20 @@ class StudentTable extends Component {
   };
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
+
+  sendInvite = inviteStudentList => {
+    this.setState({
+      inviteStudentModalVisible: false
+    });
+    const { addMultiStudents, userOrgId } = this.props;
+
+    let o = {
+      addReq: { districtId: userOrgId, data: inviteStudentList },
+      listReq: this.getSearchQuery()
+    };
+
+    addMultiStudents(o);
+  };
 
   createUser = () => {
     if (this.formRef) {
@@ -487,15 +487,15 @@ class StudentTable extends Component {
           continue;
         }
         if (!search[filtersColumn]) {
-          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
         } else {
-          search[filtersColumn].value.push(filterStr);
+          search[filtersColumn].push({ type: filtersValue, value: filterStr });
         }
       }
     }
 
     if (searchByName) {
-      search["firstName"] = { type: "cont", value: [searchByName] };
+      search["name"] = searchByName;
     }
 
     return {
@@ -605,7 +605,7 @@ class StudentTable extends Component {
         {inviteStudentModalVisible && (
           <InviteMultipleStudentModal
             modalVisible={inviteStudentModalVisible}
-            inviteStudents={this.sendInviteStudent}
+            inviteStudents={this.sendInvite}
             closeModal={this.closeInviteStudentModal}
             features={features}
             setProvider={setProvider}

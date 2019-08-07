@@ -157,7 +157,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
     padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
     ${({ centerContent }) => {
       if (centerContent) {
-        return `.fr-element *,
+        return `.fr-element p,
         &.show-placeholder .fr-placeholder{
           margin-left:auto !important;
           margin-right:auto !important;

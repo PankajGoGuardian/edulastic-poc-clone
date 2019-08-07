@@ -91,22 +91,20 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     }
 
     const correctCount = Object.values(evaluations).filter(identity).length;
-    const wrongCount = Object.values(evaluations).filter(x => !x).length;
 
     const answersCount =
       get(validAnswers[i].dropdown, ["value", "length"], 0) +
       get(validAnswers[i], ["value", "length"], 0) +
       get(validAnswers[i].textinput, ["value", "length"], 0);
 
-    if (scoringType === "partialMatch") {
-      currentScore = questionScore * (correctCount / answersCount);
+    const scoreOfAnswer = maxScore / answersCount;
+    const penaltyOfAnwer = penalty / answersCount;
+    const penaltyScore = penaltyOfAnwer * (answersCount - correctCount);
 
-      if (penalty) {
-        const negativeScore = penalty * wrongCount;
-        currentScore -= negativeScore;
-      }
-    } else if (correctCount === answersCount) {
-      currentScore = questionScore;
+    currentScore = scoreOfAnswer * correctCount;
+
+    if (scoringType === "partialMatch") {
+      currentScore -= penaltyScore;
     }
 
     score = Math.max(score, currentScore);

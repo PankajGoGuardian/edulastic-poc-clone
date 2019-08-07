@@ -180,16 +180,7 @@ function* evaluateAnswers({ payload }) {
 function* showAnswers() {
   try {
     yield put({ type: CHECK_ANSWER, payload: { mode: "show" } }); // validate the results first then show it
-    const answers = yield select(state => state.answers);
-    const validations = yield select(getQuestionsSelector);
-    const evaluation = yield createShowAnswerData(validations, answers);
-
-    yield put({
-      type: ADD_ITEM_EVALUATION,
-      payload: {
-        ...evaluation
-      }
-    });
+    //with check answer itself,it will save evaluation , we dont need this again.
   } catch (err) {
     console.error(err);
     const errorMessage = "Show Answer Failed";

@@ -45,32 +45,44 @@ export const CardTextContent = ({ data, history }) => {
         RECENT:
       </TextWrapper>
       <RowWrapper1 onClick={() => gotoAssignedAssessment()}>
-        {asgnTitle && (
-          <Col span={5}>
-            <Image src={asgnThumbnail} />
-          </Col>
-        )}
-
-        <Col
-          span={16}
-          style={{
-            marginLeft: "0.5rem"
-          }}
-        >
-          <Row>
-            <Tooltip title={asgnTitle || "No Recent Assignments"} placement="topLeft">
-              <TextDiv>{asgnTitle ? asgnTitle : "No Recent Assignments"}</TextDiv>
-            </Tooltip>
-          </Row>
-          <Row>
-            <TextWrapper color="#AAAFB5" size="11px" fw="bold">
-              {asgnStatus}
-            </TextWrapper>
-          </Row>
-        </Col>
-        {asgnTitle && (
-          <Col span={2}>
-            <IconRightArrow type="right" />
+        {asgnTitle ? (
+          <>
+            <Col span={5}>
+              <Image src={asgnThumbnail} />
+            </Col>
+            <Col
+              span={16}
+              style={{
+                marginLeft: "0.5rem"
+              }}
+            >
+              <Row>
+                <Tooltip title={asgnTitle} placement="topLeft">
+                  <TextDiv>{asgnTitle}</TextDiv>
+                </Tooltip>
+              </Row>
+              <Row>
+                <TextWrapper color="#AAAFB5" size="11px" fw="bold">
+                  {asgnStatus}
+                </TextWrapper>
+              </Row>
+            </Col>
+            <Col span={2}>
+              <IconRightArrow type="right" />
+            </Col>
+          </>
+        ) : (
+          <Col
+            span={16}
+            style={{
+              cursor: "default"
+            }}
+          >
+            <Row>
+              <TextWrapper color="#AAAFB5" size="12px" mb="22px">
+                No Recent Assignments
+              </TextWrapper>
+            </Row>
           </Col>
         )}
       </RowWrapper1>

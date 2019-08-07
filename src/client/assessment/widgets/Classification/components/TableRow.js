@@ -151,7 +151,7 @@ const TableRow = ({
             // eslint-disable-next-line no-loop-func
             answers[index].map((answerValue, answerIndex) => {
               validIndex++;
-              const resp = responses.find(resp => resp.id === answerValue);
+              const resp = (responses.length && responses.find(resp => resp.id === answerValue)) || {};
               const valid = get(validArray, [index, resp.id], undefined);
               return (
                 <DragItem

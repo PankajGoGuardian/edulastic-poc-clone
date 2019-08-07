@@ -86,6 +86,7 @@ class TestItemPreview extends Component {
       evaluation,
       previewTab,
       LCBPreviewModal,
+      showCollapseBtn = false,
       ...restProps
     } = this.props;
     const { collapsed, collapseDirection } = this.state;
@@ -99,6 +100,9 @@ class TestItemPreview extends Component {
       return null;
     }
 
+    //show collapse button only in student player or in author preview mode.
+    const hasResourceTypeQuestion = cols.flatMap(item => item.widgets).find(item => item.widgetType === "resource");
+    const showCollapseButtons = !collapseDirection && hasResourceTypeQuestion && showCollapseBtn;
     return (
       <ThemeProvider theme={themes.default}>
         <Container width={windowWidth} style={style}>
@@ -106,7 +110,7 @@ class TestItemPreview extends Component {
             .filter((_, i) => !collapsed.includes(i))
             .map((col, i) => (
               <>
-                {i > 0 && !collapseDirection ? (
+                {i > 0 && showCollapseButtons ? (
                   <Divider>
                     <CollapseBtn className="fa fa-arrow-left" onClick={() => this.setCollapseView(i, "left")} />
                     <CollapseBtn className="fa fa-arrow-right" onClick={() => this.setCollapseView(i, "right")} />
@@ -121,6 +125,7 @@ class TestItemPreview extends Component {
                 )}
                 <TestItemCol
                   {...restProps}
+                  showCollapseBtn
                   evaluation={evaluation}
                   key={i}
                   col={col}

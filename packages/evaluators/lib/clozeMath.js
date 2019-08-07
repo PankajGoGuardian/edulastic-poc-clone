@@ -169,9 +169,10 @@ var normalEvaluator =
           clozeTextEvaluation,
           mathEvaluation,
           correctCount,
-          wrongCount,
           answersCount,
-          negativeScore,
+          scoreOfAnswer,
+          penaltyOfAnwer,
+          penaltyScore,
           selectedEvaluation;
 
         return _regenerator["default"].wrap(function _callee2$(_context3) {
@@ -203,7 +204,7 @@ var normalEvaluator =
 
               case 8:
                 if (!(i < validAnswers.length)) {
-                  _context3.next = 29;
+                  _context3.next = 32;
                   break;
                 }
 
@@ -265,23 +266,17 @@ var normalEvaluator =
 
               case 20:
                 correctCount = Object.values(evaluations).filter(_identity2["default"]).length;
-                wrongCount = Object.values(evaluations).filter(function(x) {
-                  return !x;
-                }).length;
                 answersCount =
                   (0, _get2["default"])(validAnswers[i].dropdown, ["value", "length"], 0) +
                   (0, _get2["default"])(validAnswers[i], ["value", "length"], 0) +
                   (0, _get2["default"])(validAnswers[i].textinput, ["value", "length"], 0);
+                scoreOfAnswer = maxScore / answersCount;
+                penaltyOfAnwer = penalty / answersCount;
+                penaltyScore = penaltyOfAnwer * (answersCount - correctCount);
+                currentScore = scoreOfAnswer * correctCount;
 
                 if (scoringType === "partialMatch") {
-                  currentScore = questionScore * (correctCount / answersCount);
-
-                  if (penalty) {
-                    negativeScore = penalty * wrongCount;
-                    currentScore -= negativeScore;
-                  }
-                } else if (correctCount === answersCount) {
-                  currentScore = questionScore;
+                  currentScore -= penaltyScore;
                 }
 
                 score = Math.max(score, currentScore);
@@ -290,12 +285,12 @@ var normalEvaluator =
                   score: currentScore
                 });
 
-              case 26:
+              case 29:
                 i++;
                 _context3.next = 8;
                 break;
 
-              case 29:
+              case 32:
                 selectedEvaluation = (0, _maxBy2["default"])(allEvaluations, "score");
 
                 if (score === 0) {
@@ -318,7 +313,7 @@ var normalEvaluator =
                   maxScore: maxScore
                 });
 
-              case 34:
+              case 37:
               case "end":
                 return _context3.stop();
             }

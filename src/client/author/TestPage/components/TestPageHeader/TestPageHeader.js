@@ -80,7 +80,6 @@ const TestPageHeader = ({
   editEnable = false,
   windowWidth,
   onEnableEdit,
-  isUsed = false,
   toggleSideBar,
   showPublishButton,
   showShareButton,
@@ -162,7 +161,7 @@ const TestPageHeader = ({
             data-cy="edit"
             style={{ width: 42 }}
             size="large"
-            onClick={isUsed ? () => setOpenEditPopup(true) : onEnableEdit}
+            onClick={() => setOpenEditPopup(true)}
           >
             <IconPencilEdit color={themeColor} />
           </EduButton>

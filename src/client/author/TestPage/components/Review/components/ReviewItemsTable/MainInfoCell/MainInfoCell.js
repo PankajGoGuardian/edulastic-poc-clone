@@ -28,7 +28,7 @@ class MainInfoCell extends React.Component {
               type="number"
               disabled={!owner || !isEditable}
               value={data.points}
-              onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
+              onChange={e => onChangePoints(data.id, +e.target.value)}
             />
           </FlexContainer>
         </FlexContainer>

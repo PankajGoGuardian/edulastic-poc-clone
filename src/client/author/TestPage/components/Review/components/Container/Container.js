@@ -188,11 +188,9 @@ class Review extends PureComponent {
     const { test, setData } = this.props;
     const newData = cloneDeep(test);
 
-    const itemIndex = newData.scoring.testItems.findIndex(({ id }) => testItemId === id);
+    if (!newData.scoring) newData.scoring = {};
 
-    newData.scoring.testItems[itemIndex].points = value;
-    newData.scoring.total = newData.scoring.testItems.reduce((acc, item) => acc + item.points, 0);
-
+    newData.scoring[testItemId] = value;
     setData(newData);
   };
 

@@ -22,12 +22,6 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
     loadAllClasses();
   }, []);
 
-  useEffect(() => {
-    if (!loading && activeEnrolledClasses.length === 0) {
-      logout();
-    }
-  }, [loading, activeEnrolledClasses.length]);
-
   if (loading) return <Spin />;
   const { classItem = {} } = location;
 

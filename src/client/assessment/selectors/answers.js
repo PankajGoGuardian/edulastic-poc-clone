@@ -48,7 +48,6 @@ export const getUserAnswerSelector = createSelector(
       const qId = getQuestionId(questionId);
       userAnswer = getAnswerByQuestionIdSelector(qId)(answers);
     }
-
     return userAnswer;
   }
 );

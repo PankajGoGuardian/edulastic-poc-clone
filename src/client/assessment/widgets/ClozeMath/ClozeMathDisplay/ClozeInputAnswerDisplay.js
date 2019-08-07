@@ -7,13 +7,20 @@ const StyledSpan = styled.span`
   border-radius: 2px;
   border: 1px solid #d9d9d9;
   display: inline-block;
+  vertical-align: middle;
+  height: ${({ height }) => height || "31px"};
+  width: ${({ width }) => width || "31px"};
 `;
 
 const ClozeInputAnswerDisplay = ({ resprops, id }) => {
-  const { answers = {} } = resprops;
+  const { answers = {}, uiStyles } = resprops;
   const { inputs: _userAnwers } = answers;
   const val = _userAnwers[id] ? _userAnwers[id].value : "";
-  return <StyledSpan>{val}</StyledSpan>;
+  return (
+    <StyledSpan height={uiStyles.height} width={uiStyles.width}>
+      {val}
+    </StyledSpan>
+  );
 };
 
 ClozeInputAnswerDisplay.propTypes = {

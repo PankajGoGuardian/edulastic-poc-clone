@@ -7,11 +7,13 @@ import MathSpan from "../MathSpan";
 
 const MathDisplayWrapper = styled.span`
   .input__math {
-    padding: 4px 5px;
+    padding: 2px 5px 3px;
     border-radius: 2px;
     border: 1px solid #d9d9d9;
     display: inline-block;
     width: ${({ style }) => (style.width ? style.width : "auto")};
+    height: ${({ style }) => style.height || "auto"};
+    vertical-align: middle;
   }
 `;
 

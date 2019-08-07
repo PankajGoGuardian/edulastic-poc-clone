@@ -241,6 +241,7 @@ class PreviewModal extends React.Component {
                 scrolling={item.scrolling}
                 style={{ width: "100%" }}
                 questions={allWidgets}
+                showCollapseBtn
               />
             )}
           </QuestionWrapper>

@@ -340,6 +340,7 @@ class Container extends Component {
           scrolling={item.scrolling}
           style={{ width: "100%" }}
           questions={questions}
+          showCollapseBtn
         />
       </PreviewContent>
     );

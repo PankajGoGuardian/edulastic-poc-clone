@@ -35,6 +35,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
               scrolling={item.scrolling}
               releaseScore={releaseScore}
               showFeedback={true}
+              showCollapseBtn
               disableResponse
               isStudentReport
             />

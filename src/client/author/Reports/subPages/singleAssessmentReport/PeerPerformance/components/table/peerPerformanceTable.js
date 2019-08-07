@@ -197,9 +197,15 @@ export const PeerPerformanceTable = ({
           Assessment Statistics By {idToName[compareBy]} | {assessmentName}
         </StyledH3>
       </StyledDiv>
-      <CsvTable isCsvDownloading={isCsvDownloading} onCsvConvert={onCsvConvert}>
-        <StyledTable colouredCellsNo={colouredCellsNo} columns={_columns} dataSource={tableData} rowKey={rowKey} />
-      </CsvTable>
+      <CsvTable
+        isCsvDownloading={isCsvDownloading}
+        onCsvConvert={onCsvConvert}
+        colouredCellsNo={colouredCellsNo}
+        columns={_columns}
+        dataSource={tableData}
+        rowKey={rowKey}
+        Component={StyledTable}
+      />
     </div>
   );
 };

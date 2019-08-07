@@ -182,15 +182,16 @@ export const AssessmentStatisticTable = props => {
           ""
         )}
       </Row>
-      <CsvTable onCsvConvert={onCsvConvert} isCsvDownloading={props.isCsvDownloading}>
-        <PrintableTable
-          isPrinting={props.isPrinting}
-          component={StyledTable}
-          columns={table.columns}
-          dataSource={table.tableData}
-          rowKey={"groupId"}
-        />
-      </CsvTable>
+      <CsvTable
+        isPrinting={props.isPrinting}
+        component={StyledTable}
+        columns={table.columns}
+        dataSource={table.tableData}
+        rowKey={"groupId"}
+        onCsvConvert={onCsvConvert}
+        isCsvDownloading={props.isCsvDownloading}
+        Component={PrintableTable}
+      />
     </div>
   );
 };

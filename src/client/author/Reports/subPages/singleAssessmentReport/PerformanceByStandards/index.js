@@ -23,7 +23,6 @@ import { getUserRole } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
 import CsvTable from "../../../common/components/tables/CsvTable";
 import { getCsvDownloadingState } from "../../../ducks";
-import { downloadCSV } from "../../../common/util";
 
 const PAGE_SIZE = 15;
 
@@ -147,8 +146,6 @@ const PerformanceByStandards = ({
   const handleStandardIdChange = selected => {
     setStandardId(selected.key);
   };
-
-  const onCsvConvert = data => downloadCSV(`performance_by_standards_${new Date().getTime()}.csv`, data);
 
   const renderSimpleFilter = ({ key: filterKey, title: filterTitle, data }) => {
     const radioValue = filter[filterKey];
@@ -302,18 +299,17 @@ const PerformanceByStandards = ({
             />
           </CardDropdownWrapper>
         </CardHeader>
-        <CsvTable onCsvConvert={onCsvConvert} isCsvDownloading={isCsvDownloading}>
-          <PerformanceAnalysisTable
-            tableData={tableData}
-            report={reportWithFilteredSkills}
-            viewBy={viewBy}
-            analyzeBy={analyzeBy}
-            compareBy={compareBy}
-            selectedStandards={selectedStandards}
-            selectedDomains={selectedDomains}
-            totalPoints={totalPoints}
-          />
-        </CsvTable>
+        <PerformanceAnalysisTable
+          tableData={tableData}
+          report={reportWithFilteredSkills}
+          viewBy={viewBy}
+          analyzeBy={analyzeBy}
+          compareBy={compareBy}
+          selectedStandards={selectedStandards}
+          selectedDomains={selectedDomains}
+          totalPoints={totalPoints}
+          isCsvDownloading={isCsvDownloading}
+        />
       </StyledCard>
     </>
   );

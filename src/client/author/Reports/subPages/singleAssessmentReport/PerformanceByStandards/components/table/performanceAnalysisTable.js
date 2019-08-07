@@ -9,10 +9,11 @@ import {
   getMasteryLevel,
   getOverallRawScore
 } from "../../util/transformers";
-import { getHSLFromRange1, getOverallScore } from "../../../../../common/util";
+import { getHSLFromRange1, getOverallScore, downloadCSV } from "../../../../../common/util";
 import { StyledTable } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
+import CsvTable from "../../../../../common/components/tables/CsvTable";
 
 const columnHashMap = {
   school: "studentName",
@@ -42,7 +43,8 @@ const PerformanceAnalysisTable = ({
   selectedStandards,
   selectedDomains,
   tableData,
-  totalPoints
+  totalPoints,
+  isCsvDownloading
 }) => {
   const formatScore = (score, analyzeBy) => {
     switch (analyzeBy) {
@@ -258,9 +260,22 @@ const PerformanceAnalysisTable = ({
     ...makeStandardColumns(tableData)
   ];
 
+  const onCsvConvert = data => downloadCSV(`performance_by_standards_${new Date().getTime()}.csv`, data);
+
   const columns = getAnalysisColumns();
 
-  return <AnalysisTable dataSource={tableData} columns={columns} />;
+  return (
+    <CsvTable
+      onCsvConvert={onCsvConvert}
+      isCsvDownloading={isCsvDownloading}
+      Component={AnalysisTable}
+      dataSource={tableData}
+      columns={columns}
+      pagination={{
+        pageSize: 1
+      }}
+    />
+  );
 };
 
 PerformanceAnalysisTable.propTypes = {

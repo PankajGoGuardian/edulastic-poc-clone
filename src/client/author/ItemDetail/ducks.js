@@ -891,16 +891,14 @@ function* convertToPassageWithQuestions({ payload }) {
         hints: [{ value: uuid(), label: "Hint A" }]
       })
     );
-    const nextPageUrl = isTestFlow
-      ? `/author/tests/${testId}/createItem/${itemId}`
-      : `/author/items/${itemId}/item-detail`;
+    const backUrl = isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : `/author/items/${itemId}/item-detail`;
 
     yield put(
       push({
         pathname: "/author/questions/create",
         state: {
           isPassageWithQuestions: true,
-          nextPageUrl,
+          backUrl,
           tabIndex: 0
         }
       })

@@ -285,6 +285,7 @@ class QuestionWrapper extends Component {
       showStudentWork,
       LCBPreviewModal,
       showUserTTS,
+      showCollapseBtn = false,
       ...restProps
     } = this.props;
 
@@ -328,7 +329,7 @@ class QuestionWrapper extends Component {
     const isPassageOrVideoType = [questionType.PASSAGE, questionType.VIDEO].includes(data.type);
 
     const studentReportFeedbackVisible = isStudentReport && !isPassageOrVideoType && !data.scoringDisabled;
-
+    const showQuestionNumber = showFeedback || (showCollapseBtn && !isPassageOrVideoType);
     return (
       <WithResources
         resources={[
@@ -389,7 +390,7 @@ class QuestionWrapper extends Component {
                     advancedAreOpen={advancedAreOpen}
                     cleanSections={this.cleanSections}
                     fillSections={this.fillSections}
-                    showQuestionNumber={showFeedback}
+                    showQuestionNumber={showQuestionNumber}
                     flowLayout={flowLayout}
                     disableResponse={disableResponse}
                     {...userAnswerProps}

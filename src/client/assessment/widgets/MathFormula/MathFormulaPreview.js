@@ -275,7 +275,7 @@ class MathFormulaPreview extends Component {
 
         {testItem && (
           <FlexContainer alignItems="flex-start" justifyContent="flex-start">
-            <MathDisplay style={cssStyles} template={studentTemplate} innerValues={testItemCorrectValues} />
+            <MathDisplay styles={cssStyles} template="\MathQuillMathField{}" innerValues={testItemCorrectValues} />
             {item.isUnits && item.showDropdown && (
               <UnitsDropdown
                 preview

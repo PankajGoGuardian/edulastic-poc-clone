@@ -150,7 +150,7 @@ class Layout extends Component {
                 <Input
                   type="number"
                   size="large"
-                  value={widthpx || uiStyle.widthpx || minWidth}
+                  value={widthpx || uiStyle.minWidth || minWidth}
                   onChange={this.onChangeWidthPx}
                   onBlur={this.handleDefaultWidthBlur}
                   max={maxWidth}

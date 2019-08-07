@@ -11,22 +11,25 @@ const MathDisplayWrapper = styled.span`
     border-radius: 2px;
     border: 1px solid #d9d9d9;
     display: inline-block;
-    width: ${({ style }) => (style.width ? style.width : "auto")};
+    min-width: ${({ styles }) => (styles.width ? styles.width : "auto")};
   }
 `;
 
-const MathDisplay = ({ template, innerValues, style }) => {
+const MathDisplay = ({ template, innerValues, styles }) => {
   let workTemplate = `${template}`;
   for (let i = 0; i < innerValues.length; i++) {
     workTemplate = workTemplate.replace(
       "\\MathQuillMathField{}",
-      `<span class="input__math" data-latex="${innerValues[i]}"></span>`
+      // `<span class="input__math" data-latex="${innerValues[i]}"></span>`
+      innerValues[i]
     );
   }
   workTemplate = workTemplate.replace(/\\MathQuillMathField{}/g, "");
   return (
-    <MathDisplayWrapper style={style}>
-      <MathSpan dangerouslySetInnerHTML={{ __html: workTemplate }} />
+    <MathDisplayWrapper styles={styles}>
+      <MathSpan
+        dangerouslySetInnerHTML={{ __html: `<span class="input__math" data-latex="${workTemplate}"></span>` }}
+      />
     </MathDisplayWrapper>
   );
 };
@@ -34,12 +37,12 @@ const MathDisplay = ({ template, innerValues, style }) => {
 MathDisplay.propTypes = {
   template: PropTypes.string.isRequired,
   innerValues: PropTypes.object,
-  style: PropTypes.object
+  styles: PropTypes.object
 };
 
 MathDisplay.defaultProps = {
   innerValues: [],
-  style: {}
+  styles: {}
 };
 
 export default withMathFormula(MathDisplay);

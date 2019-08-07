@@ -108,7 +108,7 @@ class AddClassModal extends Component {
     value &&
       Object.assign(searchData, {
         search: {
-          username: { type: "cont", value: [value] }
+          username: [{ type: "cont", value }]
         }
       });
 

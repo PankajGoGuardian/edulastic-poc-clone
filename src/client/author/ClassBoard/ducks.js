@@ -350,6 +350,16 @@ export const getTestActivitySelector = createSelector(
   (state, removedStudents) => state.entities.filter(item => !removedStudents.includes(item.studentId))
 );
 
+export const notStartedStudentsSelector = createSelector(
+  getTestActivitySelector,
+  state => state.filter(x => x.status === "notStarted")
+);
+
+export const inProgressStudentsSelector = createSelector(
+  getTestActivitySelector,
+  state => state.filter(x => x.status === "inProgress")
+);
+
 export const getAdditionalDataSelector = createSelector(
   stateTestActivitySelector,
   state => state.additionalData

@@ -367,7 +367,7 @@ class MathFormulaPreview extends Component {
             {item.validation.altResponses
               .map(ans => {
                 if (item.isUnits && item.showDropdown) {
-                  const altUnit = !ans.value[0].options.unit ? "" : ans.value[0].options.unit;
+                  const altUnit = get(ans, "value[0].options.unit", "");
                   return ans.value[0].value.search("=") === -1
                     ? `${ans.value[0].value} ${altUnit}`
                     : ans.value[0].value.replace(/=/gm, ` ${altUnit}=`);

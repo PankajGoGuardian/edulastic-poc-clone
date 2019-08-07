@@ -806,6 +806,12 @@
       "content": "Content",
       "ignoreCase": "Ignore Case",
       "mixNmatch": "Mix-n-Match alternative answers"
+    },
+    "fractionEditor": {
+      "setCorrectAnswers": "Set Correct Answer",
+      "composeQuestion": "Question",
+      "questionPlaceholder": "Enter the question stem here",
+      "fractionOptions": "Fraction Options"
     }
   }
 }

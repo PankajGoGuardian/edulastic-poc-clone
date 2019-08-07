@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { mobileWidth, desktopWidth, mediumDesktopWidth, themeColor, textColor } from "@edulastic/colors";
 import Modal from "react-responsive-modal";
 import { Link } from "react-router-dom";
-import { Menu } from "antd";
+import { Menu, Affix } from "antd";
 
 export const Content = styled.div`
   display: flex;
@@ -28,6 +28,17 @@ export const Content = styled.div`
   }
 `;
 
+export const AffixWrapper = styled(Affix)`
+  position: fixed;
+  width: 280px;
+  top: 140px;
+  padding: 20px 0px;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    top: 96px;
+  }
+`;
+
 export const PickQuestionWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -35,16 +46,24 @@ export const PickQuestionWrapper = styled.div`
   padding: 126px 30px 30px;
 
   @media (max-width: ${mediumDesktopWidth}) {
-    padding: 90px 30px 30px;
+    padding-top: 80px;
   }
 `;
 
 export const LeftSide = styled.div`
-  height: 100vh;
-  background-color: #f3f3f8;
   width: 280px;
-  padding-right: 30px;
+  padding: 0px;
   margin: 0px;
+  position: relative;
+
+  .scrollbar-container {
+    height: calc(100vh - 150px);
+    padding-right: 30px;
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
 
   .ant-menu-item:after {
     left: 0;
@@ -104,9 +123,9 @@ export const LeftSide = styled.div`
     margin-bottom: 20px;
     margin-top: 0px;
   }
-  @media (max-width: ${mobileWidth}) {
-    width: 100%;
-    height: auto;
+
+  @media (max-width: ${desktopWidth}) {
+    display: none;
   }
 `;
 
@@ -136,13 +155,17 @@ export const RightSide = styled.div`
   }
 
   @media (max-width: ${desktopWidth}) {
-    padding: 116px 26px 26px;
     width: 100%;
     height: auto !important;
   }
 `;
 
 export const LeftMenuWrapper = styled(Menu)`
+  background: transparent;
+  border: 0;
+  &.ant-menu-inline {
+    margin: 0px;
+  }
   svg {
     fill: #434b5d;
     width: 21px !important;
@@ -153,10 +176,12 @@ export const LeftMenuWrapper = styled(Menu)`
 
 export const MenuTitle = styled.div`
   display: block;
-  width: 100%;
+  width: 280px;
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
+  margin-bottom: 15px;
+  position: fixed;
 `;
 
 export const StyledModal = styled(Modal)``;

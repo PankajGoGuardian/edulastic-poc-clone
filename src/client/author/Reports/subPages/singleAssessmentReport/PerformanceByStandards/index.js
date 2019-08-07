@@ -21,6 +21,9 @@ import { AutocompleteDropDown } from "../../../../Reports/common/components/widg
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
+import CsvTable from "../../../common/components/tables/CsvTable";
+import { getCsvDownloadingState } from "../../../ducks";
+import { downloadCSV } from "../../../common/util";
 
 const PAGE_SIZE = 15;
 
@@ -32,7 +35,15 @@ const findCompareByTitle = (key = "") => {
   return title;
 };
 
-const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandards, match, settings, role }) => {
+const PerformanceByStandards = ({
+  loading,
+  report = {},
+  getPerformanceByStandards,
+  match,
+  settings,
+  role,
+  isCsvDownloading
+}) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
@@ -136,6 +147,8 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
   const handleStandardIdChange = selected => {
     setStandardId(selected.key);
   };
+
+  const onCsvConvert = data => downloadCSV(`performance_by_standards_${new Date().getTime()}.csv`, data);
 
   const renderSimpleFilter = ({ key: filterKey, title: filterTitle, data }) => {
     const radioValue = filter[filterKey];
@@ -289,16 +302,18 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
             />
           </CardDropdownWrapper>
         </CardHeader>
-        <PerformanceAnalysisTable
-          tableData={tableData}
-          report={reportWithFilteredSkills}
-          viewBy={viewBy}
-          analyzeBy={analyzeBy}
-          compareBy={compareBy}
-          selectedStandards={selectedStandards}
-          selectedDomains={selectedDomains}
-          totalPoints={totalPoints}
-        />
+        <CsvTable onCsvConvert={onCsvConvert} isCsvDownloading={isCsvDownloading}>
+          <PerformanceAnalysisTable
+            tableData={tableData}
+            report={reportWithFilteredSkills}
+            viewBy={viewBy}
+            analyzeBy={analyzeBy}
+            compareBy={compareBy}
+            selectedStandards={selectedStandards}
+            selectedDomains={selectedDomains}
+            totalPoints={totalPoints}
+          />
+        </CsvTable>
       </StyledCard>
     </>
   );
@@ -326,7 +341,8 @@ const enhance = connect(
   state => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
     role: getUserRole(state),
-    report: getPerformanceByStandardsReportSelector(state)
+    report: getPerformanceByStandardsReportSelector(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction

@@ -18,7 +18,7 @@ import {
   getReportsAssessmentSummary,
   getReportsAssessmentSummaryLoader
 } from "./ducks";
-import { getPrintingState } from "../../../ducks";
+import { getPrintingState, getCsvDownloadingState } from "../../../ducks";
 import { getUserRole } from "../../../../src/selectors/user";
 
 const AssessmentSummary = props => {
@@ -73,6 +73,7 @@ const AssessmentSummary = props => {
                     data={state.metricInfo}
                     role={props.role}
                     isPrinting={props.isPrinting}
+                    isCsvDownloading={props.isCsvDownloading}
                   />
                 ) : (
                   ""
@@ -92,7 +93,8 @@ const enhance = compose(
       assessmentSummary: getReportsAssessmentSummary(state),
       loading: getReportsAssessmentSummaryLoader(state),
       role: getUserRole(state),
-      isPrinting: getPrintingState(state)
+      isPrinting: getPrintingState(state),
+      isCsvDownloading: getCsvDownloadingState(state)
     }),
     {
       getAssessmentSummaryRequestAction: getAssessmentSummaryRequestAction

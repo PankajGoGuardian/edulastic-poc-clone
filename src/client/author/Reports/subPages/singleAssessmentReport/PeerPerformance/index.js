@@ -17,6 +17,7 @@ import { SignedStackedBarChartContainer } from "./components/charts/signedStacke
 import { UpperContainer, TableContainer } from "./components/styled";
 import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance, getReportsPeerPerformanceLoader } from "./ducks";
+import { getCsvDownloadingState } from "../../../ducks";
 
 import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
@@ -48,7 +49,14 @@ const denormalizeData = res => {
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
-const PeerPerformance = ({ peerPerformance, getPeerPerformanceRequestAction, role, settings, loading }) => {
+const PeerPerformance = ({
+  peerPerformance,
+  getPeerPerformanceRequestAction,
+  role,
+  settings,
+  loading,
+  isCsvDownloading
+}) => {
   const [ddfilter, setDdFilter] = useState({
     analyseBy: "score(%)",
     compareBy: role === "teacher" ? "groupId" : "schoolId",
@@ -202,6 +210,7 @@ const PeerPerformance = ({ peerPerformance, getPeerPerformanceRequestAction, rol
           <TableContainer>
             <StyledCard>
               <PeerPerformanceTable
+                isCsvDownloading={isCsvDownloading}
                 columns={parsedData.columns}
                 dataSource={parsedData.data}
                 rowKey={"compareBylabel"}
@@ -225,7 +234,8 @@ const enhance = compose(
     state => ({
       peerPerformance: getReportsPeerPerformance(state),
       loading: getReportsPeerPerformanceLoader(state),
-      role: getUserRole(state)
+      role: getUserRole(state),
+      isCsvDownloading: getCsvDownloadingState(state)
     }),
     {
       getPeerPerformanceRequestAction: getPeerPerformanceRequestAction

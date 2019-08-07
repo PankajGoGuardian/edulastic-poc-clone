@@ -7,6 +7,8 @@ import { StyledH3 } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { idToName, analyseByToName } from "../../util/transformers";
 import styled from "styled-components";
+import { downloadCSV } from "../../../../../common/util";
+import CsvTable from "../../../../../common/components/tables/CsvTable";
 
 const getDisplayValue = (data, record, analyseBy, columnKey) => {
   let printData = data;
@@ -33,7 +35,8 @@ export const PeerPerformanceTable = ({
   assessmentName,
   filter,
   bandInfo,
-  role
+  role,
+  isCsvDownloading = false
 }) => {
   const sortNumbers = key => (a, b) => {
     let _a = a[key] || 0;
@@ -185,6 +188,8 @@ export const PeerPerformanceTable = ({
     }
   });
 
+  const onCsvConvert = data => downloadCSV(`peer_performance_${new Date().getTime()}.csv`, data);
+
   return (
     <div>
       <StyledDiv>
@@ -192,7 +197,9 @@ export const PeerPerformanceTable = ({
           Assessment Statistics By {idToName[compareBy]} | {assessmentName}
         </StyledH3>
       </StyledDiv>
-      <StyledTable colouredCellsNo={colouredCellsNo} columns={_columns} dataSource={tableData} rowKey={rowKey} />
+      <CsvTable isCsvDownloading={isCsvDownloading} onCsvConvert={onCsvConvert}>
+        <StyledTable colouredCellsNo={colouredCellsNo} columns={_columns} dataSource={tableData} rowKey={rowKey} />
+      </CsvTable>
     </div>
   );
 };

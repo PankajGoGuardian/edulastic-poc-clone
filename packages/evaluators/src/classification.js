@@ -61,7 +61,6 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
   let evaluation = [];
   let score = 0;
   let maxScore = 0;
-
   for (const answer of answers) {
     const { value: currentAnswer, score: possibleMaxScore } = answer;
     maxScore = Math.max(maxScore, possibleMaxScore || 0);
@@ -90,10 +89,9 @@ const partialMatchEvaluator = (answers = [], userResponse = []) => {
 };
 
 const evaluator = ({ userResponse = [], validation }) => {
-  const { valid_response, alt_responses = [], scoring_type } = validation;
-  const answers = [valid_response, ...alt_responses];
-
-  return scoring_type === ScoringType.EXACT_MATCH
+  const { validResponse, altResponses = [], scoringType } = validation;
+  const answers = [validResponse, ...altResponses];
+  return scoringType === ScoringType.EXACT_MATCH
     ? exactMatchEvaluator(answers, userResponse)
     : partialMatchEvaluator(answers, userResponse);
 };

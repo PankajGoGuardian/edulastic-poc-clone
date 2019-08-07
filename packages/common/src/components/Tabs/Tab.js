@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { themeColor, white, mobileWidth, tabGrey } from "@edulastic/colors";
+import { themeColor, white, mobileWidth, title, mediumDesktopWidth } from "@edulastic/colors";
 import { IconPencilEdit, IconClose } from "@edulastic/icons";
 
 const Tab = ({
@@ -75,36 +75,42 @@ Tab.defaultProps = {
 export default Tab;
 
 const Container = styled.div`
-  color: ${({ active }) => (active ? white : tabGrey)};
+  color: ${({ active }) => (active ? themeColor : title)};
   padding: ${({ type }) => (type === "primary" ? "0 10px" : "10px 25px")};
   cursor: pointer;
-  background: ${({ active }) => (active ? themeColor : white)};
+  background: ${white};
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
   line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
   min-width: ${({ type }) => (type === "primary" ? "120px" : "0")};
   text-align: center;
   border-radius: ${({ borderRadius }) => (borderRadius ? "4px" : 0)};
   text-transform: uppercase;
-
-  &:first-child {
-    border-radius: 4px 0 0 4px;
-  }
-
-  &:nth-last-child(2) {
-    border-radius: 0 4px 4px 0;
-  }
+  border-bottom: 2px solid ${({ active }) => (active ? themeColor : "transparent")};
 
   span {
-    font-size: 11px;
+    font-size: 14px;
     font-weight: 600;
     margin: auto;
-    color: ${({ active }) => (active ? white : tabGrey)};
+    color: ${({ active }) => (active ? themeColor : title)};
+    text-transform: uppercase;
+  }
+
+  input {
+    font-weight: 600;
+    text-transform: uppercase;
   }
 
   svg {
     width: 6px;
     height: 6px;
-    fill: ${({ active }) => (active ? white : tabGrey)};
+    fill: ${({ active }) => (active ? themeColor : title)};
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    input,
+    span {
+      font-size: 12px;
+    }
   }
 
   @media (max-width: ${mobileWidth}) {

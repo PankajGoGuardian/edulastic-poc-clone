@@ -125,6 +125,7 @@ class TestItemPreview extends Component {
                 )}
                 <TestItemCol
                   {...restProps}
+                  showCollapseBtn
                   evaluation={evaluation}
                   key={i}
                   col={col}

@@ -491,7 +491,7 @@ export const getQIdsSelector = createSelector(
       return [];
     }
     const testItemsDataKeyed = keyBy(testItemsData, "_id");
-    const qIds = getAllQids(testItemIds, testItemsDataKeyed);
+    const qIds = getAllQids(testItemIds.map(o => o.itemId), testItemsDataKeyed);
     return qIds;
   }
 );

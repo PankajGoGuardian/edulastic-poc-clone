@@ -53,7 +53,13 @@ const ItemPlayer = ({ match, answers, addEvaluation, changePreview, evaluation, 
 
   return (
     <div>
-      <TestItemPreview cols={testItem.rows} questions={allItems} preview={view} evaluation={evaluation} />
+      <TestItemPreview
+        cols={testItem.rows}
+        questions={allItems}
+        preview={view}
+        evaluation={evaluation}
+        showCollapseBtn
+      />
       <Button onClick={evaluate}> Check Answer </Button>
       <Button onClick={clear}> Clear </Button>
     </div>

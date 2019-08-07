@@ -421,7 +421,12 @@ class AssessmentPlayerDefault extends React.Component {
           <Main skin>
             <MainWrapper>
               {testItemState === "" && (
-                <TestItemPreview LCBPreviewModal={LCBPreviewModal} cols={itemRows} questions={questions} />
+                <TestItemPreview
+                  LCBPreviewModal={LCBPreviewModal}
+                  cols={itemRows}
+                  questions={questions}
+                  showCollapseBtn
+                />
               )}
               {testItemState === "check" && (
                 <TestItemPreview
@@ -433,6 +438,7 @@ class AssessmentPlayerDefault extends React.Component {
                   scrolling={item.scrolling}
                   questions={questions}
                   LCBPreviewModal={LCBPreviewModal}
+                  showCollapseBtn
                 />
               )}
             </MainWrapper>

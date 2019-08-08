@@ -88,12 +88,12 @@ export const getStudentsListSelector = createSelector(
         if (state.filtersText === "") {
           return row;
         } else {
-          if (state.filtersValue === "equals") {
+          if (state.filtersValue === "eq") {
             const equalKeys = possibleFilterKey.filter(key => {
               if (row[key] === state.filtersText) return row;
             });
             if (equalKeys.length > 0) return row;
-          } else if (state.filtersValue === "contains" || state.filtersValue === "") {
+          } else if (state.filtersValue === "cont" || state.filtersValue === "") {
             const equalKeys = possibleFilterKey.filter(key => {
               if (row[key] !== undefined) {
                 if (row[key].toString().indexOf(state.filtersText) !== -1) return row;

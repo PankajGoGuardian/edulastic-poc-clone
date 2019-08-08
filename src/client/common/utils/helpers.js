@@ -1,5 +1,5 @@
 import { signUpState } from "@edulastic/constants";
-import { isUndefined, isEmpty, trim } from "lodash";
+import { isUndefined, last } from "lodash";
 import { Partners } from "./static/partnerData";
 
 export const getWordsInURLPathName = pathname => {

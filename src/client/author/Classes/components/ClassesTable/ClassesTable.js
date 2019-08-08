@@ -42,7 +42,7 @@ import {
   bulkUpdateClassesAction
 } from "../../ducks";
 
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUser } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 import { receiveTeachersListAction, getTeachersListSelector } from "../../../Teacher/ducks";
@@ -402,12 +402,13 @@ class ClassesTable extends Component {
   };
 
   getSearchQuery = () => {
-    const { userOrgId } = this.props;
+    const { userOrgId, userDetails } = this.props;
+    const { role, institutionIds } = userDetails;
     const { filtersData, searchByName, currentPage, showActive } = this.state;
     const search = {};
 
     if (searchByName.length > 0) {
-      search.name = [searchByName];
+      search.name = searchByName;
     }
 
     if (!filtersData.find(item => item.filtersColumn === "active")) {
@@ -429,12 +430,15 @@ class ClassesTable extends Component {
           }
         } else {
           if (!search[filtersColumn]) {
-            search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+            search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
           } else {
-            search[filtersColumn].value.push(filterStr);
+            search[filtersColumn].push({ type: filtersValue, value: filterStr });
           }
         }
       }
+    }
+    if (role === "school-admin") {
+      Object.assign(search, { institutionIds });
     }
     return {
       search,
@@ -578,8 +582,8 @@ class ClassesTable extends Component {
             Select a value
           </Option>
         );
-        optValues.push(<Option value="equals">Equals</Option>);
-        optValues.push(<Option value="contains">Contains</Option>);
+        optValues.push(<Option value="eq">Equals</Option>);
+        optValues.push(<Option value="cont">Contains</Option>);
       }
 
       SearchRows.push(
@@ -753,6 +757,7 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
+      userDetails: getUser(state),
       classList: getClassListSelector(state),
       coursesForDistrictList: getCoursesForDistrictSelector(state),
       totalClassCount: get(state, ["classesReducer", "totalClassCount"], 0),

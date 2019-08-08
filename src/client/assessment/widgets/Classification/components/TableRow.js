@@ -131,10 +131,7 @@ const TableRow = ({
         rowHasHeader={rowHasHeader}
       >
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
-          <ColumnLabel
-            transparent={previewTab === SHOW || previewTab === CHECK}
-            dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }}
-          />
+          <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
         ) : null}
         <DropContainer
           style={{

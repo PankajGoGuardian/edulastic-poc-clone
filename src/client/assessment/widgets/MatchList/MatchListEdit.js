@@ -46,13 +46,15 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleRemoveResp = index => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.validResponse.value.splice(
-          draft.validation.validResponse.value.indexOf(draft.possibleResponses[index]),
-          1
-        );
-
+        const i = draft.validation.validResponse.value.indexOf(draft.possibleResponses[index]);
+        if (i > -1) {
+          draft.validation.validResponse.value[i] = null;
+        }
         draft.validation.altResponses.forEach(ite => {
-          ite.value.splice(ite.value.indexOf(draft.possibleResponses[index]), 1);
+          const j = ite.value.indexOf(draft.possibleResponses[index]);
+          if (j > -1) {
+            ite.value[j] = null;
+          }
         });
 
         draft.possibleResponses.splice(index, 1);
@@ -71,11 +73,15 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleChangeResp = (index, value) => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.validResponse.value[
-          draft.validation.validResponse.value.indexOf(draft.possibleResponses[index])
-        ] = value;
+        const i = draft.validation.validResponse.value.indexOf(draft.possibleResponses[index]);
+        if (i > -1) {
+          draft.validation.validResponse.value[i] = value;
+        }
         draft.validation.altResponses.forEach(ite => {
-          ite.value[ite.value.indexOf(draft.possibleResponses[index])] = value;
+          const j = ite.value.indexOf(draft.possibleResponses[index]);
+          if (j > -1) {
+            ite.value[j] = value;
+          }
         });
 
         draft.possibleResponses[index] = value;
@@ -138,6 +144,16 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
     _setQuestionData(
       produce(item, draft => {
         draft.groupPossibleResponses = e.target.checked;
+
+        draft.validation.validResponse.value = Array.from({
+          length: item.validation.validResponse.value.length
+        }).fill(null);
+
+        draft.validation.altResponses.forEach(ite => {
+          ite.value = Array.from({
+            length: item.validation.validResponse.value.length
+          }).fill(null);
+        });
       })
     );
   };
@@ -158,7 +174,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
       }
       onChangePoints={handlePointsChange}
       saveAnswer={handleAnswerChange}
-      editCorrectAnswers={
+      userAnswer={
         correctTab === 0 ? item.validation.validResponse.value : item.validation.altResponses[correctTab - 1].value
       }
       view={EDIT}
@@ -176,14 +192,15 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const onRemoveInner = ind => index => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.validResponse.value = Array.from({
-          length: item.validation.validResponse.value.length
-        }).fill(null);
-
+        const i = draft.validation.validResponse.value.indexOf(draft.possibleResponseGroups[ind].responses[index]);
+        if (i > -1) {
+          draft.validation.validResponse.value[i] = null;
+        }
         draft.validation.altResponses.forEach(ite => {
-          ite.value = Array.from({
-            length: item.validation.validResponse.value.length
-          }).fill(null);
+          const j = ite.value.indexOf(draft.possibleResponseGroups[ind].responses[index]);
+          if (j > -1) {
+            ite.value[j] = null;
+          }
         });
 
         draft.possibleResponseGroups[ind].responses.splice(index, 1);
@@ -202,14 +219,17 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleGroupRemove = index => () => {
     _setQuestionData(
       produce(item, draft => {
-        draft.validation.validResponse.value = Array.from({
-          length: item.validation.validResponse.value.length
-        }).fill(null);
-
-        draft.validation.altResponses.forEach(ite => {
-          ite.value = Array.from({
-            length: item.validation.validResponse.value.length
-          }).fill(null);
+        draft.possibleResponseGroups[index].responses.forEach(respValue => {
+          const i = draft.validation.validResponse.value.indexOf(respValue);
+          if (i > -1) {
+            draft.validation.validResponse.value[i] = null;
+          }
+          draft.validation.altResponses.forEach(ite => {
+            const j = ite.value.indexOf(respValue);
+            if (j > -1) {
+              ite.value[j] = null;
+            }
+          });
         });
 
         draft.possibleResponseGroups.splice(index, 1);
@@ -232,6 +252,17 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleGroupChange = ind => (index, value) => {
     _setQuestionData(
       produce(item, draft => {
+        const i = draft.validation.validResponse.value.indexOf(draft.possibleResponseGroups[ind].responses[index]);
+        if (i > -1) {
+          draft.validation.validResponse.value[i] = value;
+        }
+        draft.validation.altResponses.forEach(ite => {
+          const j = ite.value.indexOf(draft.possibleResponseGroups[ind].responses[index]);
+          if (j > -1) {
+            ite.value[j] = value;
+          }
+        });
+
         draft.possibleResponseGroups[ind].responses[index] = value;
       })
     );

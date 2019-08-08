@@ -381,6 +381,7 @@ class Container extends Component {
 
     return (
       <ButtonAction
+        allowedAttempts
         onShowSource={this.handleShowSource}
         onShowSettings={this.handleShowSettings}
         onChangeView={this.handleChangeView}

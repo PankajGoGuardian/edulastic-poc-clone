@@ -6,15 +6,14 @@ import { Rnd } from "react-rnd";
 import { get } from "lodash";
 import { CenteredText } from "@edulastic/common";
 
+import produce from "immer";
 import DropContainer from "../../../components/DropContainer";
 
 import DragItem from "./DragItem";
-import { Column, ColumnLabel } from "../styled/Column";
+import { ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
-import { SHOW, CHECK, EDIT, PREVIEW } from "../../../constants/constantsForQuestions";
-
-import produce from "immer";
+import { EDIT } from "../../../constants/constantsForQuestions";
 
 const TableRow = ({
   startIndex,
@@ -25,20 +24,17 @@ const TableRow = ({
   drop,
   answers,
   preview,
-  possibleResponses,
   onDrop,
   validArray,
   dragHandle,
   isTransparent,
   isBackgroundImageTransparent,
-  width,
   height,
   theme,
   isResizable,
   item,
   disableResponse,
   isReviewTab,
-  previewTab,
   view,
   setQuestionData
 }) => {
@@ -64,6 +60,7 @@ const TableRow = ({
   };
   const rowHasHeader = item.uiStyle && item.uiStyle.row_header;
   const cols = [];
+  // eslint-disable-next-line no-unused-vars
   let validIndex = -1;
   const rndX = get(item, `rowTitle.x`, 0);
   const rndY = get(item, `rowTitle.y`, 0);
@@ -142,8 +139,8 @@ const TableRow = ({
             answers[index].length > 0 &&
             // eslint-disable-next-line no-loop-func
             answers[index].map((answerValue, answerIndex) => {
-              validIndex++;
-              const resp = (responses.length && responses.find(resp => resp.id === answerValue)) || {};
+              validIndex += 1;
+              const resp = (responses.length && responses.find(_resp => _resp.id === answerValue)) || {};
               const valid = get(validArray, [index, resp.id], undefined);
               return (
                 <DragItem
@@ -152,7 +149,7 @@ const TableRow = ({
                   valid={isReviewTab ? true : valid}
                   preview={preview}
                   key={answerIndex}
-                  renderIndex={responses.findIndex(resp => resp.id === answerValue)}
+                  renderIndex={responses.findIndex(_resp => _resp.id === answerValue)}
                   onDrop={onDrop}
                   item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
@@ -171,12 +168,12 @@ const TableRow = ({
 };
 
 TableRow.propTypes = {
-  width: PropTypes.any.isRequired,
   height: PropTypes.any.isRequired,
   startIndex: PropTypes.number.isRequired,
   colCount: PropTypes.number.isRequired,
   dragHandle: PropTypes.any.isRequired,
   arrayOfRows: PropTypes.object.isRequired,
+  colTitles: PropTypes.array.isRequired,
   rowTitles: PropTypes.array.isRequired,
   isTransparent: PropTypes.any.isRequired,
   isBackgroundImageTransparent: PropTypes.any.isRequired,
@@ -184,12 +181,15 @@ TableRow.propTypes = {
   answers: PropTypes.array.isRequired,
   preview: PropTypes.bool.isRequired,
   possibleResponses: PropTypes.array.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   onDrop: PropTypes.func.isRequired,
   validArray: PropTypes.array.isRequired,
   theme: PropTypes.object.isRequired,
+  isReviewTab: PropTypes.bool.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
   isResizable: PropTypes.bool.isRequired,
   item: PropTypes.object.isRequired,
-  previewTab: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired
 };
 
 export default withTheme(TableRow);

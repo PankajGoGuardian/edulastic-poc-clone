@@ -517,6 +517,7 @@ class Container extends PureComponent {
           creating={creating}
           showEditButton={showEditButton}
           owner={owner}
+          isUsed={test.isUsed}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           testStatus={testStatus}

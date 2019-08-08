@@ -75,6 +75,7 @@ const TestPageHeader = ({
   title,
   creating,
   onShare,
+  isUsed = false,
   onPublish,
   showEditButton = false,
   editEnable = false,
@@ -98,6 +99,7 @@ const TestPageHeader = ({
     <HeaderWrapper>
       <EditTestModal
         visible={openEditPopup}
+        isUsed={isUsed}
         onCancel={() => setOpenEditPopup(false)}
         onOk={() => {
           onEnableEdit();

@@ -88,12 +88,7 @@ const TableRow = ({
           disableDragging={view !== EDIT}
           onDragStop={handleRowTitleDragStop}
         >
-          {rowHasHeader && (
-            <ColumnLabel
-              transparent={previewTab === SHOW || previewTab === CHECK}
-              dangerouslySetInnerHTML={{ __html: rowHasHeader }}
-            />
-          )}
+          {rowHasHeader && <ColumnLabel dangerouslySetInnerHTML={{ __html: rowHasHeader }} />}
 
           <RowTitleCol
             key={index + startIndex + colCount}
@@ -131,10 +126,7 @@ const TableRow = ({
         rowHasHeader={rowHasHeader}
       >
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
-          <ColumnLabel
-            transparent={previewTab === SHOW || previewTab === CHECK}
-            dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }}
-          />
+          <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
         ) : null}
         <DropContainer
           style={{

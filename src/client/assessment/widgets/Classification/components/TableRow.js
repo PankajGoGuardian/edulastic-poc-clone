@@ -88,12 +88,7 @@ const TableRow = ({
           disableDragging={view !== EDIT}
           onDragStop={handleRowTitleDragStop}
         >
-          {rowHasHeader && (
-            <ColumnLabel
-              transparent={previewTab === SHOW || previewTab === CHECK}
-              dangerouslySetInnerHTML={{ __html: rowHasHeader }}
-            />
-          )}
+          {rowHasHeader && <ColumnLabel dangerouslySetInnerHTML={{ __html: rowHasHeader }} />}
 
           <RowTitleCol
             key={index + startIndex + colCount}

@@ -204,7 +204,7 @@ export const PeerPerformanceTable = ({
         columns={_columns}
         dataSource={tableData}
         rowKey={rowKey}
-        Component={StyledTable}
+        tableToRender={StyledTable}
       />
     </div>
   );

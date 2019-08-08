@@ -268,12 +268,9 @@ const PerformanceAnalysisTable = ({
     <CsvTable
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}
-      Component={AnalysisTable}
+      tableToRender={AnalysisTable}
       dataSource={tableData}
       columns={columns}
-      pagination={{
-        pageSize: 1
-      }}
     />
   );
 };

@@ -9,11 +9,12 @@ const defaultPagination = {
 const CsvTable = ({
   onCsvConvert,
   isCsvDownloading,
-  Component,
+  tableToRender,
   dataSource,
   pagination = defaultPagination,
   ...restProps
 }) => {
+  const Component = tableToRender;
   const childrenRef = useRef(null);
 
   let _pagination = pagination;
@@ -24,7 +25,8 @@ const CsvTable = ({
 
   useEffect(() => {
     if (isCsvDownloading && childrenRef.current) {
-      onCsvConvert(convertTableToCSV(childrenRef.current));
+      const { csvText, csvRawData } = convertTableToCSV(childrenRef.current);
+      onCsvConvert(csvText, csvRawData);
     }
   }, [isCsvDownloading]);
 

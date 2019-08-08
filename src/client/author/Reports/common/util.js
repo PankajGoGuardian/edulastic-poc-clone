@@ -175,6 +175,7 @@ export const toggleItem = (items, item) =>
 export const convertTableToCSV = refComponent => {
   const rows = refComponent.querySelectorAll("tr");
   let csv = [];
+  let csvRawData = [];
   for (let i = 0; i < rows.length; i++) {
     let row = [],
       cols = rows[i].querySelectorAll("td, th");
@@ -184,8 +185,12 @@ export const convertTableToCSV = refComponent => {
       row.push('"' + data + '"');
     }
     csv.push(row.join(";"));
+    csvRawData.push(row);
   }
-  return csv.join("\n");
+  return {
+    csvText: csv.join("\n"),
+    csvRawData
+  };
 };
 
 export const downloadCSV = (filename, data) => {

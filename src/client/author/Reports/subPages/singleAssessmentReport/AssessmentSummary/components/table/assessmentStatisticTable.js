@@ -190,7 +190,7 @@ export const AssessmentStatisticTable = props => {
         rowKey={"groupId"}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={props.isCsvDownloading}
-        Component={PrintableTable}
+        tableToRender={PrintableTable}
       />
     </div>
   );

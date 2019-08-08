@@ -30,14 +30,25 @@ const MatchListEdit = ({ isNew, item: itemProp, setQuestionData, advancedAreOpen
 
   useEffect(() => {
     setItem(itemProp);
-    if (!itemProp.groupPossibleResponses !== item.groupPossibleResponses) {
+    if (itemProp.groupPossibleResponses === true && itemProp.groupPossibleResponses !== item.groupPossibleResponses) {
+      // toggle group response on - update first group responses with possible responses
       setItem(
         produce(itemProp, draft => {
           draft.possibleResponseGroups[0].responses = draft.possibleResponses;
         })
       );
+    } else if (
+      itemProp.groupPossibleResponses === false &&
+      itemProp.groupPossibleResponses !== item.groupPossibleResponses
+    ) {
+      // toggle group response off - put back updated first group responses
+      setItem(
+        produce(itemProp, draft => {
+          draft.possibleResponses = draft.possibleResponseGroups[0].responses;
+        })
+      );
     }
-  }, [itemProp, item.possibleResponses]);
+  }, [itemProp]);
 
   const _setQuestionData = questionData => {
     setQuestionData(

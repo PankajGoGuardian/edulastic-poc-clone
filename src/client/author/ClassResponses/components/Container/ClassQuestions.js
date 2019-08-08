@@ -1,7 +1,7 @@
 import React, { Component, useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { keyBy as _keyBy, isEmpty } from "lodash";
+import { keyBy as _keyBy, isEmpty, get } from "lodash";
 // components
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { loadScratchPadAction } from "../../../../assessment/actions/userWork.js";
@@ -20,6 +20,7 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork }) {
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
       <TestItemPreview
+        showCollapseBtn={true}
         showFeedback
         cols={rows}
         preview="show"
@@ -87,6 +88,7 @@ class ClassQuestions extends Component {
     let {
       classResponse: { testItems }
     } = this.props;
+    testItems = this.props.testItemsData;
     const userQActivities =
       currentStudent && currentStudent.questionActivities ? currentStudent.questionActivities : [];
     if (!testItems) {
@@ -239,7 +241,9 @@ class ClassQuestions extends Component {
 }
 
 export default connect(
-  null,
+  state => ({
+    testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], [])
+  }),
   {
     loadScratchPad: loadScratchPadAction
   }

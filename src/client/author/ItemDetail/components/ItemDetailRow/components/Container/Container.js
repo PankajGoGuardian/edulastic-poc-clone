@@ -10,7 +10,7 @@ import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
 import { getItemDetailDraggingSelector } from "../../../../ducks";
 import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
-import { Content, AddButtonContainer, TabContainer, WidgetContainer } from "./styled";
+import { Content, AddButtonContainer, TabContainer, WidgetContainer, AddPassageBtnContainer } from "./styled";
 // src/client/author/ItemDetail/ducks.js
 import { setItemLevelScoreAction } from "../../../../ducks";
 import { FlexContainer } from "@edulastic/common";
@@ -177,10 +177,10 @@ class Container extends Component {
           </AddButtonContainer>
         )}
         {isPassageQuestion && (
-          <>
+          <AddPassageBtnContainer>
             <Button onClick={() => handleAddToPassage("video", tabIndex)}> Add Video</Button>{" "}
             <Button onClick={() => handleAddToPassage("passage", tabIndex)}> Add Passage </Button>
-          </>
+          </AddPassageBtnContainer>
         )}
       </Content>
     );

@@ -722,6 +722,10 @@ export const themes = {
       chart: {
         bgColor: "#fff",
         labelStrokeColor: "#42d184"
+      },
+      fractionEditor: {
+        wrongColor: "#fce0e8",
+        correctColor: "#D3FEA6"
       }
     }
   }

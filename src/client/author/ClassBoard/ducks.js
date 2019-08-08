@@ -17,7 +17,7 @@ import {
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
-import { markQuestionLabel, getQuestionLabels } from "./Transformer";
+import { markQuestionLabel, getQuestionLabels, transformTestItems } from "./Transformer";
 
 import {
   RECEIVE_GRADEBOOK_REQUEST,
@@ -64,6 +64,7 @@ function* receiveTestActivitySaga({ payload }) {
     const students = get(gradebookData, "students", []);
     // this method mutates the gradebookData
     markQuestionLabel(gradebookData.testItemsData, gradebookData.test.testItems);
+    transformTestItems(gradebookData);
     // attach fake data to students for presentation mode.
     const fakeData = createFakeData(students.length);
     gradebookData.students = students.map((student, index) => ({
@@ -348,6 +349,16 @@ export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
   removedStudentsSelector,
   (state, removedStudents) => state.entities.filter(item => !removedStudents.includes(item.studentId))
+);
+
+export const notStartedStudentsSelector = createSelector(
+  getTestActivitySelector,
+  state => state.filter(x => x.status === "notStarted")
+);
+
+export const inProgressStudentsSelector = createSelector(
+  getTestActivitySelector,
+  state => state.filter(x => x.status === "inProgress")
 );
 
 export const getAdditionalDataSelector = createSelector(

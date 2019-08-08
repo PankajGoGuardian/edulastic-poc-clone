@@ -1,7 +1,15 @@
 import { Pagination, Card, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, largeDesktopWidth, mediumDesktopWidth, tabletWidth, red, themeColor } from "@edulastic/colors";
+import {
+  mobileWidth,
+  largeDesktopWidth,
+  mediumDesktopWidth,
+  tabletWidth,
+  red,
+  themeColor,
+  lightGreen4
+} from "@edulastic/colors";
 import { IconExclamationMark } from "@edulastic/icons";
 
 import { themes } from "../../../../student/themes";
@@ -134,7 +142,7 @@ export const CircularDiv = styled.div`
   color: #00ad50;
   font-weight: 600;
   line-height: 38px;
-  background-color: #e1fbed;
+  background-color: ${lightGreen4};
   display: flex;
   justify-content: center;
   align-items: center;

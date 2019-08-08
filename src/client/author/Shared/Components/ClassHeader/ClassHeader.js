@@ -26,7 +26,8 @@ import {
   RightSideButtonWrapper,
   DropMenu,
   MenuItems,
-  CaretUp
+  CaretUp,
+  StudentStatusDetails
 } from "./styled";
 import { StudentReportCardMenuModal } from "./components/studentReportCardMenuModal";
 import { StudentReportCardModal } from "./components/studentReportCardModal";
@@ -40,7 +41,13 @@ import {
   closeAssignmentAction,
   togglePauseAssignmentAction
 } from "../../../src/actions/classBoard";
-import { showScoreSelector, getClassResponseSelector, getMarkAsDoneEnableSelector } from "../../../ClassBoard/ducks";
+import {
+  showScoreSelector,
+  getClassResponseSelector,
+  getMarkAsDoneEnableSelector,
+  notStartedStudentsSelector,
+  inProgressStudentsSelector
+} from "../../../ClassBoard/ducks";
 import { getUserRole } from "../../../../student/Login/ducks";
 import { togglePresentationModeAction } from "../../../src/actions/testActivity";
 import { getToggleReleaseGradeStateSelector } from "../../../src/selectors/assignments";
@@ -56,6 +63,7 @@ class ClassHeader extends Component {
     this.state = {
       visible: false,
       isPauseModalVisible: false,
+      isCloseModalVisible: false,
       modalInputVal: "",
       condition: true, // Whether meet the condition, if not show popconfirm.
       showDropdown: false,
@@ -125,6 +133,7 @@ class ClassHeader extends Component {
   handleCloseAssignment = () => {
     const { closeAssignment, assignmentId, classId } = this.props;
     closeAssignment(assignmentId, classId);
+    this.toggleCloseModal(false);
   };
 
   onStudentReportCardsClick = () => {
@@ -181,6 +190,10 @@ class ClassHeader extends Component {
     this.setState({ isPauseModalVisible: value, modalInputVal: "" });
   };
 
+  toggleCloseModal = value => {
+    this.setState({ isCloseModalVisible: value, modalInputVal: "" });
+  };
+
   handleValidateInput = e => {
     this.setState({ modalInputVal: e.target.value });
   };
@@ -201,10 +214,12 @@ class ClassHeader extends Component {
       isPresentationMode,
       isShowReleaseSettingsPopup,
       toggleReleaseGradePopUp,
-      userRole
+      userRole,
+      notStartedStudents,
+      inProgressStudents
     } = this.props;
 
-    const { showDropdown, visible, isPauseModalVisible, modalInputVal = "" } = this.state;
+    const { showDropdown, visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
     const { endDate, startDate, releaseScore, isPaused = false } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
@@ -300,7 +315,7 @@ class ClassHeader extends Component {
                   {isPaused ? "OPEN" : "PAUSE"}
                 </OpenCloseButton>
               )}
-              <OpenCloseButton onClick={this.handleCloseAssignment}>CLOSE</OpenCloseButton>
+              <OpenCloseButton onClick={() => this.toggleCloseModal(true)}>CLOSE</OpenCloseButton>
             </>
           ) : (
             ""
@@ -340,6 +355,31 @@ class ClassHeader extends Component {
             okText="Yes, Pause"
             cancelText="No, Cancel"
           />
+          <ConfirmationModal
+            title="Close"
+            show={isCloseModalVisible}
+            onOk={this.handleCloseAssignment}
+            onCancel={() => this.toggleCloseModal(false)}
+            inputVal={modalInputVal}
+            onInputChange={this.handleValidateInput}
+            expectedVal="CLOSE"
+            bodyText={
+              <div>
+                <StudentStatusDetails>
+                  {notStartedStudents.length ? <p>{notStartedStudents.length} student(s) have not started yet</p> : ""}
+                  {inProgressStudents.length ? (
+                    <p>{inProgressStudents.length} student(s) have not submitted yet</p>
+                  ) : (
+                    ""
+                  )}
+                </StudentStatusDetails>
+                <p>Are you sure you want to close ?</p>
+                <p>Once closed, no student would be able to answer the assessment</p>
+              </div>
+            }
+            okText="Yes,Close"
+            canUndone
+          />
         </StyledDiv>
       </Container>
     );
@@ -372,7 +412,9 @@ const enhance = compose(
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state)
+      isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
+      notStartedStudents: notStartedStudentsSelector(state),
+      inProgressStudents: inProgressStudentsSelector(state)
     }),
     {
       setReleaseScore: releaseScoreAction,

@@ -24,6 +24,14 @@ export const AddButtonContainer = styled(FlexContainer)`
   margin-top: 25px;
 `;
 
+export const AddPassageBtnContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  button {
+    margin-right: 10px;
+  }
+`;
+
 export const MobileSide = styled.div`
   position: fixed;
   display: flex;

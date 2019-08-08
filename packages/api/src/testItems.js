@@ -109,6 +109,14 @@ const getByV1Id = id =>
 
 const deleteById = id => api.callApi({ url: `${prefix}/${id}`, method: "delete" }).then(result => result.data);
 
+const getPassageItems = id =>
+  api
+    .callApi({
+      url: `${prefix}/passage-items/${id}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 export default {
   getAll,
   getById,
@@ -119,5 +127,6 @@ export default {
   duplicateTestItem,
   publishTestItem,
   getByV1Id,
-  deleteById
+  deleteById,
+  getPassageItems
 };

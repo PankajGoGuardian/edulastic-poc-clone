@@ -8,7 +8,8 @@ import {
   textColor,
   greenDark,
   darkGrey,
-  titleColor
+  titleColor,
+  mediumDesktopWidth
 } from "@edulastic/colors";
 import { Button, Icon, Divider, Menu, Checkbox, Table } from "antd";
 import { IconManage } from "@edulastic/icons";
@@ -46,6 +47,10 @@ export const Title = styled.div`
     font-weight: 500;
     margin-left: 10px;
   }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    font-size: 18px;
+  }
 `;
 
 export const IconManageClass = styled(IconManage)`
@@ -71,6 +76,10 @@ export const EditButton = styled(Button)`
   &:focus {
     color: ${white};
     background: ${themeColorLight};
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
   }
 `;
 

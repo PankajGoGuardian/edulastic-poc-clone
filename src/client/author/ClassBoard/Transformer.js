@@ -191,12 +191,23 @@ export const getFirstName = studentName => {
   return parts[0];
 };
 
+export const transformTestItems = ({ passageData, testItemsData }) => {
+  const passagesKeyed = keyBy(passageData, "_id");
+
+  for (let x of testItemsData) {
+    if (x.passageId && passagesKeyed[x.passageId]) {
+      x.rows.unshift(passagesKeyed[x.passageId].structure);
+    }
+  }
+};
+
 export const transformGradeBookResponse = ({
   test,
   testItemsData,
   students: studentNames,
   testActivities,
-  testQuestionActivities
+  testQuestionActivities,
+  passageData
 }) => {
   const testItemIds = test.testItems.map(o => o.itemId);
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
@@ -273,7 +284,15 @@ export const transformGradeBookResponse = ({
           const _id = el;
 
           if (!questionActivitiesIndexed[el]) {
-            return { _id, notStarted: true, weight, disabled, testItemId, barLabel, qLabel };
+            return {
+              _id,
+              weight,
+              disabled,
+              testItemId,
+              barLabel,
+              qLabel,
+              ...(submitted ? { skipped: true } : { notStarted: true })
+            };
           }
           let {
             skipped,

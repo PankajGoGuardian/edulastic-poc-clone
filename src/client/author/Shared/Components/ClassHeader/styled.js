@@ -296,3 +296,20 @@ export const DropMenu = styled(Menu)`
   margin-top: 10px;
   min-width: 175px;
 `;
+
+export const StudentStatusDetails = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  p {
+    background: #f2f2f2;
+    padding: 12px 18px;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #8f8f8f;
+    text-transform: uppercase;
+    &:first-child {
+      margin-right: 10px;
+    }
+  }
+`;

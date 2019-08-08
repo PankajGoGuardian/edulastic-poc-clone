@@ -701,7 +701,7 @@ export function* updateItemSaga({ payload }) {
       }
     }
 
-    const { __v, ...passageData } = yield select(getPassageSelector) || {};
+    const { __v, ...passageData } = (yield select(getPassageSelector)) || {};
 
     // return;
     const [{ testId, ...item }] = yield all([
@@ -892,7 +892,7 @@ function* convertToPassageWithQuestions({ payload }) {
       })
     );
     const backUrl = isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : `/author/items/${itemId}/item-detail`;
-
+    yield put(setQuestionCategory("multiple-choice"));
     yield put(
       push({
         pathname: "/author/questions/create",

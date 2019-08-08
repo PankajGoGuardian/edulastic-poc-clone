@@ -26,11 +26,6 @@ export const StyledTable = styled(Table)`
   }
 `;
 
-export const StyledAddFilterButton = styled(Button)`
-  margin-left: 20px;
-  visibility: ${props => (props ? "hidden" : "visible")};
-`;
-
 export const StyledTableButton = styled.a`
   margin-right: 20px;
   font-size: 20px;

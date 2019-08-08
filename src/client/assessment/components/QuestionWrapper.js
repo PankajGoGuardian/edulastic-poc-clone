@@ -33,6 +33,7 @@ import { HighlightImage } from "../widgets/HighlightImage";
 import { Drawing } from "./Drawing";
 import { EssayPlainText } from "../widgets/EssayPlainText";
 import { EssayRichText } from "../widgets/EssayRichText";
+import FractionEditor from "../widgets/FractionEditor";
 
 import withAnswerSave from "./HOC/withAnswerSave";
 import { MatrixChoice } from "../widgets/MatrixChoice";
@@ -206,6 +207,8 @@ const getQuestion = type => {
       return ClozeMath;
     case questionType.GRAPH:
       return Graph;
+    case questionType.FRACTION_EDITOR:
+      return FractionEditor;
     default:
       return null;
   }
@@ -288,7 +291,6 @@ class QuestionWrapper extends Component {
       showCollapseBtn = false,
       ...restProps
     } = this.props;
-
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab } = this.state;
@@ -410,23 +412,9 @@ class QuestionWrapper extends Component {
                   )}
                 </FlexContainer>
               </PaperWrapper>
-              {showFeedback &&
-                !isPassageOrVideoType &&
-                (multiple ? (
-                  <FeedbackBottom
-                    widget={data}
-                    disabled={disabled}
-                    studentName={studentName}
-                    {...presentationModeProps}
-                  />
-                ) : (
-                  <FeedbackRight
-                    disabled={disabled}
-                    widget={data}
-                    studentName={studentName}
-                    {...presentationModeProps}
-                  />
-                ))}
+              {showFeedback && !isPassageOrVideoType && (
+                <FeedbackRight disabled={disabled} widget={data} studentName={studentName} {...presentationModeProps} />
+              )}
               {/* STUDENT REPORT PAGE FEEDBACK */}
               {studentReportFeedbackVisible && <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />}
             </QuestionContainer>

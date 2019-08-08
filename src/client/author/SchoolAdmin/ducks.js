@@ -276,12 +276,25 @@ function* createSchoolAdminSaga({ payload }) {
   try {
     const createSchoolAdmin = yield call(userApi.createUser, payload.createReq);
     yield put(createSchoolAdminSuccessAction(createSchoolAdmin));
-
     // here after an update/delete/create, the new data is fetched back again
-    const { role } = createSchoolAdmin;
-    if (role === "teacher") yield call(message.success, "New user created successfully");
-    else if (role === "student") yield call(message.success, "Student added successfully");
     yield put(receiveAdminDataAction(payload.listReq));
+    const { role } = createSchoolAdmin;
+    let msg = "";
+    switch (role) {
+      case "teacher":
+        msg = "New user created successfully";
+        break;
+      case "student":
+        msg = "User added to class successfully";
+        break;
+      case "school-admin":
+        msg = "School admin created successfully";
+        break;
+      case "district-admin":
+        msg = "District admin created successfully";
+        break;
+    }
+    yield call(message.success, msg);
   } catch (err) {
     const errorMessage = "Create SchoolAdmin is failing";
     yield call(message.error, errorMessage);

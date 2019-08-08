@@ -8,6 +8,7 @@ const FlexContainer = styled.div`
   flex-direction: ${props => (props.flexDirection ? props.flexDirection : "row")};
   margin-bottom: ${({ marginBottom }) => (!marginBottom ? null : marginBottom)};
   padding: ${props => (props.padding ? props.padding : "0px")};
+  flex-wrap: ${({ flexWrap }) => flexWrap || null};
   & > * {
     margin-right: ${({ childMarginRight }) => (childMarginRight !== undefined ? childMarginRight : 10)}px;
   }

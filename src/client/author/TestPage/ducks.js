@@ -5,7 +5,7 @@ import { call, put, all, takeEvery, select, actionChannel, take } from "redux-sa
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq } from "lodash";
-import { testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
+import { testItemsApi, testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
 import moment from "moment";
 import produce from "immer";
 import {
@@ -21,7 +21,7 @@ import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
 import { getItemsSubjectAndGradeAction } from "./components/AddItems/ducks";
 import { helpers } from "@edulastic/common";
-
+import { togglePassageConfirmModalAction } from "./components/AddItems/ducks";
 // constants
 
 const testItemStatusConstants = {
@@ -64,6 +64,8 @@ export const PREVIEW_CHECK_ANSWER = "[test] check answer for preview modal";
 export const PREVIEW_SHOW_ANSWER = "[test] show answer for preview modal";
 export const REPLACE_TEST_ITEMS = "[test] replace test items";
 export const UPDATE_TEST_DEFAULT_IMAGE = "[test] update default thumbnail image";
+export const SET_PASSAGE_ITEMS = "[tests] set passage items";
+export const SET_AND_SAVE_PASSAGE_ITEMS = "[tests] set and save passage items";
 
 // actions
 
@@ -71,6 +73,8 @@ export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER);
 export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS);
 export const updateDefaultThumbnailAction = createAction(UPDATE_TEST_DEFAULT_IMAGE);
+export const setPassageItemsAction = createAction(SET_PASSAGE_ITEMS);
+export const setAndSavePassageItemsAction = createAction(SET_AND_SAVE_PASSAGE_ITEMS);
 
 export const receiveTestByIdAction = id => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -219,7 +223,8 @@ const initialState = {
   thumbnail: "",
   regradeTestId: "",
   createdItems: [],
-  sharedUsersList: []
+  sharedUsersList: [],
+  passageItems: []
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -353,6 +358,22 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: {
           ...payload
         }
+      };
+    case SET_PASSAGE_ITEMS:
+      return {
+        ...state,
+        passageItems: [...payload]
+      };
+    case SET_AND_SAVE_PASSAGE_ITEMS:
+      const oldTestItems = state.entity.testItems;
+      const updated = uniqBy([...oldTestItems, ...state.passageItems], "_id");
+      return {
+        ...state,
+        entity: {
+          ...state.entity,
+          testItems: updated
+        },
+        passageItems: []
       };
     default:
       return state;
@@ -635,6 +656,13 @@ function* setTestDataAndUpdateSaga(payload) {
       });
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
+
+    if (item.passageId) {
+      const passageItems = yield call(testItemsApi.getPassageItems, item.passageId);
+      yield put(setPassageItemsAction(passageItems));
+      if (passageItems.length > 1) yield put(togglePassageConfirmModalAction(true));
+    }
+
     yield put(setTestDataAction(newTest));
     if (!newTest._id) {
       const { title } = newTest;
@@ -773,6 +801,7 @@ export function* watcherSaga() {
   ]);
   while (true) {
     const { payload } = yield take(requestChan);
+
     yield call(setTestDataAndUpdateSaga, payload);
   }
 }
@@ -780,6 +809,11 @@ export function* watcherSaga() {
 // selectors
 
 export const stateSelector = state => state.tests;
+
+export const getPassageItemsCountSelector = createSelector(
+  stateSelector,
+  state => state.passageItems.length
+);
 
 export const getTestSelector = createSelector(
   stateSelector,

@@ -82,7 +82,6 @@ import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
 
 export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
-
   // use it for ids of MCQ
   const uuids = [uuid(), uuid(), uuid(), uuid()];
 
@@ -2103,6 +2102,90 @@ export const getCards = onSelectQuestionType => {
         isMath: true,
         symbols: ["basic", "qwerty"],
         hints: [{ value: uuids[0], label: "Hint A" }]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "fractionEditor",
+      cardImage: MTEssay,
+      stimulus: "",
+      data: {
+        title: "Fraction Editor",
+        type: "fractionEditor",
+        annotation: [
+          {
+            antnPosition: "absolute",
+            antnHeight: "",
+            antnId: "229d3a7b-3ed6-19e9-0a28-2fcd07c4ce44",
+            antnTop: "32.1px",
+            antnContent:
+              '<div id="dragged-ans-choice" class="drag-ans wrap-text" style="width:120px;height:80px;padding-top:10px;">Annotation added</div>',
+            antnLeft: "38.4px",
+            antnWidth: "",
+            antnclass: "wrap-text annotation-dropped",
+            antnZindex: 10
+          }
+        ],
+        validation: {
+          validResponse: {
+            score: 1,
+            value: 1
+          }
+        },
+        commonparameters: {
+          allowedVariables: {
+            fields: []
+          },
+          solution: {
+            fields: [
+              {
+                value: "",
+                key: "solution"
+              }
+            ]
+          },
+          advancedOptions: {
+            fields: []
+          },
+          hint: {
+            fields: [
+              {
+                value: "",
+                key: "hint"
+              }
+            ]
+          },
+          writeboard: {
+            fields: [
+              {
+                value: "No",
+                key: "writeboard"
+              }
+            ]
+          },
+          handlingComma: {
+            fields: []
+          },
+          mathtoolbar: {
+            fields: []
+          },
+          points: {
+            fields: [
+              {
+                value: null,
+                key: "points"
+              }
+            ]
+          }
+        },
+        fractionProperties: {
+          count: 1,
+          fractionType: "rectangles",
+          rows: 2,
+          columns: 2,
+          sectors: 7,
+          selected: [1]
+        }
       },
       onSelectQuestionType
     }

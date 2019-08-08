@@ -5,8 +5,6 @@ const methods = {
   IS_SIMPLIFIED: "isSimplified",
   IS_FACTORISED: "isFactorised",
   IS_EXPANDED: "isExpanded",
-  IS_TRUE: "isTrue",
-  IS_UNIT: "isUnit",
   STRING_MATCH: "stringMatch",
   EQUIV_SYNTAX: "equivSyntax"
 };

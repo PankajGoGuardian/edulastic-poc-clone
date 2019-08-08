@@ -8,7 +8,8 @@ const methods = {
   IS_TRUE: "isTrue",
   IS_UNIT: "isUnit",
   STRING_MATCH: "stringMatch",
-  EQUIV_SYNTAX: "equivSyntax"
+  EQUIV_SYNTAX: "equivSyntax",
+  IS_RATIONALIZED: "isRationalized"
 };
 
 const fields = {
@@ -103,11 +104,14 @@ const methodOptions = {
     "setThousandsSeparator",
     "allowedVariables",
     "setEvaluation",
+    "isRationalized",
+    "setListTypeResponse",
     "compareSides",
     "unit"
   ],
   [methods.EQUIV_LITERAL]: [
     "ariaLabel",
+    "setListTypeResponse",
     "ignoreTrailingZeros",
     "setDecimalSeparator",
     "setThousandsSeparator",
@@ -140,7 +144,8 @@ const methodOptions = {
   [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
   [methods.IS_TRUE]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator"],
   [methods.IS_UNIT]: ["allowedUnits", "setThousandsSeparator", "inverseResult"],
-  [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"]
+  [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"],
+  [methods.IS_RATIONALIZED]: []
 };
 
 module.exports = {

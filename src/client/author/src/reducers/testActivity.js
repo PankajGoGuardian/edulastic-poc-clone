@@ -78,6 +78,12 @@ const reducer = (state = initialState, { type, payload }) => {
         const entityIndex = _st.entities.findIndex(x => x.testActivityId === testActivityId);
         if (entityIndex != -1) {
           _st.entities[entityIndex].status = "submitted";
+          for (let qAct of _st.entities[entityIndex].questionActivities) {
+            if (qAct.notStarted) {
+              qAct.skipped = true;
+              qAct.notStarted = undefined;
+            }
+          }
         }
       });
       return nextState;

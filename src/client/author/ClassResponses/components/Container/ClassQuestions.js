@@ -20,6 +20,7 @@ function Preview({ item, qIndex, studentId, evaluation, showStudentWork }) {
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
       <TestItemPreview
+        showCollapseBtn={true}
         showFeedback
         cols={rows}
         preview="show"

@@ -21,7 +21,12 @@ import { CustomizedHeaderWrapper } from "./common/components/header";
 import navigation from "./common/static/json/navigation.json";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 
-import { getPrintingState, setPrintingStateAction, setCsvDownloadingStateAction } from "./ducks";
+import {
+  getPrintingState,
+  setPrintingStateAction,
+  setCsvDownloadingStateAction,
+  getCsvDownloadingState
+} from "./ducks";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
@@ -39,14 +44,17 @@ const Container = props => {
 
   const onDownloadCSVClickCB = () => {
     props.setCsvDownloadingStateAction(true);
-    setTimeout(() => {
-      props.setCsvDownloadingStateAction(false);
-    });
   };
 
   const onRefineResultsCB = (event, status) => {
     setShowFilter(status);
   };
+
+  useEffect(() => {
+    if (props.isCsvDownloading) {
+      props.setCsvDownloadingStateAction(false);
+    }
+  }, [props.isCsvDownloading]);
 
   useEffect(() => {
     if (props.isPrinting) {
@@ -290,7 +298,8 @@ const Reports = props => {
 
 const enhance = connect(
   state => ({
-    isPrinting: getPrintingState(state)
+    isPrinting: getPrintingState(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     setPrintingStateAction,

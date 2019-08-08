@@ -158,7 +158,7 @@ export const AssessmentStatisticTable = props => {
     setTableType(selected);
   };
 
-  const onCsvConvert = data => downloadCSV(`assessment_summary_${new Date().getTime()}.csv`, data);
+  const onCsvConvert = data => downloadCSV(`${tableType.title} Level Performance Report (1).csv`, data);
 
   const dropDownData = [
     { key: "school", title: "School" },

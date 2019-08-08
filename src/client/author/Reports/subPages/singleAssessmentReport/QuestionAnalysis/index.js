@@ -123,6 +123,7 @@ const QuestionAnalysis = ({
                     compareBy={compareBy}
                     filter={chartFilter}
                     role={role}
+                    compareByTitle={dropDownKeyToLabel[compareBy]}
                   />
                 </Col>
               </Row>

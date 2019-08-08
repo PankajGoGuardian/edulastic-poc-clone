@@ -86,7 +86,7 @@ const PerformanceByStudents = ({
     setProficiency(selected);
   };
 
-  const onCsvConvert = data => downloadCSV(`student_performance_${new Date().getTime()}.csv`, data);
+  const onCsvConvert = data => downloadCSV(`Performance by Students.csv`, data);
 
   const _columns = getColumns(columns, res && res.testName, role);
 

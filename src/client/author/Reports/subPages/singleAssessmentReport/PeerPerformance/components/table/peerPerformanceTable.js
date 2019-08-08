@@ -188,7 +188,7 @@ export const PeerPerformanceTable = ({
     }
   });
 
-  const onCsvConvert = data => downloadCSV(`peer_performance_${new Date().getTime()}.csv`, data);
+  const onCsvConvert = data => downloadCSV(`Peer Performance School Report.csv`, data);
 
   return (
     <div>

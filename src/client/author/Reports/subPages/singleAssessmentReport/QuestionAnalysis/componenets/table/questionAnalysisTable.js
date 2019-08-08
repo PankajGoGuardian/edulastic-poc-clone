@@ -39,7 +39,7 @@ const sortNumbers = (compareByType, index, key) => (a, b) => {
   return _a - _b;
 };
 
-export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCsvDownloading }) => {
+export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCsvDownloading, compareByTitle }) => {
   const colouredCells = (compareByType, index) => (text, record) => {
     const tooltipText = (_compareByType, _record, _index) => {
       return (
@@ -172,7 +172,7 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCs
     });
   }, [filter]);
 
-  const onCsvConvert = data => downloadCSV(`question_analysis_${new Date().getTime()}.csv`, data);
+  const onCsvConvert = data => downloadCSV(`Question Performance Analysis Report by ${compareByTitle}.csv`, data);
 
   return (
     <CsvTable

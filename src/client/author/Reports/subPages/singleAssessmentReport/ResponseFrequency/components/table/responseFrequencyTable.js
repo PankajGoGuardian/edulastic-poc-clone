@@ -270,7 +270,7 @@ export class ResponseFrequencyTable extends Component {
     });
 
     const csvData = [rawData[0].join(";"), ...modifiedCsvRows].join("\n");
-    downloadCSV(`response_frequency_${new Date().getTime()}.csv`, csvData);
+    downloadCSV(`Response Frequency.csv`, csvData);
   };
 
   render() {

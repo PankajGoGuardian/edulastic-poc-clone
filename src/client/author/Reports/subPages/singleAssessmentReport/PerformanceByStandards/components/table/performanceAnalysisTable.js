@@ -260,7 +260,7 @@ const PerformanceAnalysisTable = ({
     ...makeStandardColumns(tableData)
   ];
 
-  const onCsvConvert = data => downloadCSV(`performance_by_standards_${new Date().getTime()}.csv`, data);
+  const onCsvConvert = data => downloadCSV(`Performance By Standard Report.csv`, data);
 
   const columns = getAnalysisColumns();
 

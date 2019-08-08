@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq, flatMap, map } from "lodash";
+import { cloneDeep, get, uniq as _uniq, flatMap, map, uniqBy } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -32,10 +32,10 @@ import TestPreviewModal from "../../../../../Assignments/components/Container/Te
 const getTotalScore = ({ testItems, scoring }) =>
   testItems.map(item => scoring[item._id] || helpers.getPoints(item)).reduce((total, s) => total + s, 0);
 
-const getStandardWiseSummary = question => {
+const getStandardWiseSummary = (question, point) => {
   let standardSummary;
   if (question) {
-    const points = get(question, "validation.validResponse.score", 1);
+    const points = point;
     const alignment = get(question, "alignment", []);
     standardSummary = flatMap(alignment, ({ domains, isEquivalentStandard = false, curriculumId }) =>
       flatMap(domains, ({ standards }) =>
@@ -52,23 +52,25 @@ const getStandardWiseSummary = question => {
   return standardSummary;
 };
 
-export const createSummaryData = items => {
+export const createSummaryData = (items, scoring) => {
   const summary = {
     totalPoints: 0,
     totalQuestions: 0,
     standards: []
   };
   for (const item of items) {
-    const { itemLevelScoring, maxScore, itemLevelScore } = item;
+    const { itemLevelScoring, maxScore, itemLevelScore, _id } = item;
     const itemPoints = (itemLevelScoring === true && itemLevelScore) || maxScore;
     const questions = get(item, "data.questions", []);
     const itemTotalQuestions = questions.length;
+    const questionWisePoints = helpers.getQuestionLevelScore(questions, helpers.getPoints(item), scoring[_id]);
     for (const question of questions) {
-      const standardSummary = getStandardWiseSummary(question);
+      const standardSummary = getStandardWiseSummary(question, questionWisePoints[question.id]);
       if (standardSummary) {
         summary.standards.push(...standardSummary);
       }
     }
+    summary.standards = uniqBy(summary.standards, "identifier");
     summary.totalPoints += itemPoints;
     summary.totalQuestions += itemTotalQuestions;
   }
@@ -146,7 +148,7 @@ class Review extends PureComponent {
       const foundItem = test.testItems.find(({ id }) => id === item._id);
       return !(foundItem && foundItem.selected);
     });
-    newData.summary = createSummaryData(newData.testItems);
+    newData.summary = createSummaryData(newData.testItems, newData.scoring);
     this.setSelected([]);
     setData(newData);
     message.success("Selected item(s) removed successfully");
@@ -182,6 +184,7 @@ class Review extends PureComponent {
     if (!newData.scoring) newData.scoring = {};
 
     newData.scoring[testItemId] = value;
+    newData.summary = createSummaryData(newData.testItems, newData.scoring);
     setData(newData);
   };
 

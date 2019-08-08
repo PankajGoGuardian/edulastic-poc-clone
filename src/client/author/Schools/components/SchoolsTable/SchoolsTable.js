@@ -556,7 +556,7 @@ class SchoolsTable extends React.Component {
         ),
         dataIndex: "isApproved",
         editable: true,
-        width: 100,
+        width: 110,
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -812,7 +812,7 @@ class SchoolsTable extends React.Component {
           dataSource={dataSource}
           columns={columns}
           pagination={false}
-          scroll={{ y: 500 }}
+          scroll={{ x: true, y: 500 }}
         />
         <StyledPagination
           current={currentPage}

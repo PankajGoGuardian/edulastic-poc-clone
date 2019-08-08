@@ -131,6 +131,42 @@ export const StyledTable = styled(AntdTable)`
           tr {
             th {
               word-break: break-all;
+              padding: 10px;
+              min-width: 75px;
+            }
+            @media only screen and (min-width: 1px) and (max-width: 600px) {
+              th {
+                padding: 10px;
+                font-size: 8px;
+              }
+            }
+
+            @media only screen and (min-width: 601px) and (max-width: 767px) {
+              th {
+                padding: 10px;
+                font-size: 9px;
+              }
+            }
+
+            @media only screen and (min-width: 768px) and (max-width: 991px) {
+              th {
+                padding: 10px;
+                font-size: 10px;
+              }
+            }
+
+            @media only screen and (min-width: 992px) and (max-width: 1199px) {
+              th {
+                padding: 10px;
+                font-size: 11px;
+              }
+            }
+
+            @media only screen and (min-width: 1200px) {
+              th {
+                padding: 10px;
+                font-size: 12px;
+              }
             }
           }
         }
@@ -141,6 +177,7 @@ export const StyledTable = styled(AntdTable)`
         tr {
           td {
             word-break: break-all;
+            min-width: 75px;
           }
         }
       }

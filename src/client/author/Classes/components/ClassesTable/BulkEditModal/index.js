@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker } from "antd";
 import { StyledComponents } from "@edulastic/common";
+import { connect } from "react-redux";
+import { getUser } from "../../../../src/selectors/user";
 
 const { Button } = StyledComponents;
 const { Option } = Select;
@@ -11,7 +13,7 @@ const CONFIG = {
   endDate: "End Date"
 };
 
-export default function BulkEditModal({
+function BulkEditModal({
   bulkEditData: { showModal, updateMode, updateView },
   districtId,
   onCloseModal,
@@ -21,7 +23,8 @@ export default function BulkEditModal({
   selectedClasses,
   bulkUpdateClasses,
   searchCourseList,
-  coursesForDistrictList
+  coursesForDistrictList,
+  userDetails
 }) {
   const [value, setValue] = useState("");
   const radioStyle = {
@@ -34,7 +37,8 @@ export default function BulkEditModal({
     bulkUpdateClasses({
       groupIds: selectedIds,
       districtId,
-      [updateMode]: value
+      [updateMode]: value,
+      institutionIds: userDetails.institutionIds
     });
   };
 
@@ -164,3 +168,8 @@ export default function BulkEditModal({
     </Modal>
   );
 }
+
+export default connect(
+  state => ({ userDetails: getUser(state) }),
+  {}
+)(BulkEditModal);

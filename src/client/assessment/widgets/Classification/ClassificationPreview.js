@@ -292,6 +292,7 @@ const ClassificationPreview = ({
           isReviewTab={isReviewTab}
           view={view}
           setQuestionData={setQuestionData}
+          rowHeader={rowHeader}
         />
       )
   );

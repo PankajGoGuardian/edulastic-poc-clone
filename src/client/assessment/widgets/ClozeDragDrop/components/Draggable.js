@@ -1,7 +1,7 @@
 import React from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
-import DragPreview from "../../../components/DragPreview";
+import DragPreview from "../../../components/SourceDragPreview";
 
 function collectSource(connector, monitor) {
   return {

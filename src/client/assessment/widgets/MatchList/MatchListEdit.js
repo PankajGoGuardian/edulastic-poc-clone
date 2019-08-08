@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
@@ -24,31 +24,8 @@ import ListComponent from "./ListComponent";
 
 const OptionsList = withPoints(MatchListPreview);
 
-const MatchListEdit = ({ item: itemProp, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => {
+const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
-  const [item, setItem] = useState(itemProp);
-
-  useEffect(() => {
-    setItem(itemProp);
-    if (itemProp.groupPossibleResponses === true && itemProp.groupPossibleResponses !== item.groupPossibleResponses) {
-      // toggle group response on - update first group responses with possible responses
-      setItem(
-        produce(itemProp, draft => {
-          draft.possibleResponseGroups[0].responses = draft.possibleResponses;
-        })
-      );
-    } else if (
-      itemProp.groupPossibleResponses === false &&
-      itemProp.groupPossibleResponses !== item.groupPossibleResponses
-    ) {
-      // toggle group response off - put back updated first group responses
-      setItem(
-        produce(itemProp, draft => {
-          draft.possibleResponses = draft.possibleResponseGroups[0].responses;
-        })
-      );
-    }
-  }, [itemProp]);
 
   const _setQuestionData = questionData => {
     setQuestionData(

@@ -9,6 +9,7 @@ import {
   set,
   sortBy
 } from "lodash";
+import produce from "immer";
 
 // actions types
 export const LOAD_QUESTIONS = "[author questions] load questions";
@@ -81,7 +82,24 @@ const deleteQuestion = (state, { payload }) => {
 
 // update question by id
 const updateQuestion = (state, { payload }) => {
-  state.byId[payload.id] = payload;
+  let newPayload = payload;
+
+  const prevGroupPossibleResponsesState = get(state.byId[payload.id], "groupPossibleResponses");
+  const groupPossibleResponses = get(payload, "groupPossibleResponses");
+
+  if (groupPossibleResponses === true && groupPossibleResponses !== prevGroupPossibleResponsesState) {
+    // toggle group response on - update first group responses with possible responses
+    newPayload = produce(payload, draft => {
+      draft.possibleResponseGroups[0].responses = draft.possibleResponses;
+    });
+  } else if (groupPossibleResponses === false && groupPossibleResponses !== prevGroupPossibleResponsesState) {
+    // toggle group response off - put back updated first group responses
+    newPayload = produce(payload, draft => {
+      draft.possibleResponses = draft.possibleResponseGroups[0].responses;
+    });
+  }
+
+  state.byId[payload.id] = newPayload;
 };
 
 const changeItem = (state, { payload }) => {

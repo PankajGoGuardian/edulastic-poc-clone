@@ -136,8 +136,6 @@ const methodOptions = {
   [methods.IS_SIMPLIFIED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
   [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
   [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
-  [methods.IS_TRUE]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator"],
-  [methods.IS_UNIT]: ["allowedUnits", "setThousandsSeparator", "inverseResult"],
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"]
 };
 

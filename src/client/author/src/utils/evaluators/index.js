@@ -19,7 +19,8 @@ import {
   choiceMatrix,
   charts,
   graph,
-  clozeMath
+  clozeMath,
+  fractionEditor
 } from "@edulastic/evaluators";
 
 // clozeDropDown and ClozeText shares same logic
@@ -52,7 +53,8 @@ const evaluators = {
   [questionType.TOKEN_HIGHLIGHT]: tokenhighlight,
   [questionType.SHADING]: shading,
   [questionType.FORMULA_ESSAY]: essayRichText,
-  [questionType.GRAPH]: graph
+  [questionType.GRAPH]: graph,
+  [questionType.FRACTION_EDITOR]: fractionEditor
 };
 
 export default evaluators;

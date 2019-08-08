@@ -57,7 +57,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
   return (
     <Question
       section="main"
-      label={t("component.fractionEditor.fractionOptions")}
+      label={t("common.options.mainTitle")}
       fillSections={fillSections}
       cleanSections={cleanSections}
     >

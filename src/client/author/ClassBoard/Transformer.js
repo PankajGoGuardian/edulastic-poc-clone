@@ -284,7 +284,15 @@ export const transformGradeBookResponse = ({
           const _id = el;
 
           if (!questionActivitiesIndexed[el]) {
-            return { _id, notStarted: true, weight, disabled, testItemId, barLabel, qLabel };
+            return {
+              _id,
+              weight,
+              disabled,
+              testItemId,
+              barLabel,
+              qLabel,
+              ...(submitted ? { skipped: true } : { notStarted: true })
+            };
           }
           let {
             skipped,

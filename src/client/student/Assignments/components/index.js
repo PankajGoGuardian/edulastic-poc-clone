@@ -24,7 +24,7 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
 
   useEffect(() => {
     if (!loading && activeEnrolledClasses.length === 0) {
-      logout();
+      // logout();
     }
   }, [loading, activeEnrolledClasses.length]);
 

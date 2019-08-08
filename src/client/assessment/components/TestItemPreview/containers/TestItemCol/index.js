@@ -40,7 +40,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, flowLayout) => {
+  renderTabContent = (widget, flowLayout, index) => {
     const {
       preview,
       LCBPreviewModal,
@@ -54,7 +54,11 @@ class TestItemCol extends Component {
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
-    const question = questions[widget.reference];
+    // question label for preview mode
+    const question =
+      questions[widget.reference] && questions[widget.reference].qLabel
+        ? questions[widget.reference]
+        : { ...questions[widget.reference], qLabel: `Q${index + 1}` };
     if (!question) {
       return <div />;
     }
@@ -132,7 +136,7 @@ class TestItemCol extends Component {
                 !!col.tabs.length &&
                 value === widget.tabIndex &&
                 this.renderTabContent(widget, col.flowLayout)}
-              {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout)}
+              {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout, i)}
             </React.Fragment>
           ))}
         </WidgetContainer>

@@ -85,6 +85,7 @@ const DragItem = ({
               active={active}
               correct={correct}
               obj={obj}
+              index={index}
               showPreview={showPreview}
               smallSize={smallSize}
               index={index}

@@ -124,7 +124,7 @@ class SchoolAdminTable extends Component {
       {
         title: "School",
         dataIndex: "_source.institutionDetails",
-        render: (schools = []) => schools.map(school => school.name),
+        render: (schools = []) => schools.map(school => school.name).join(", "),
         width: 200
       },
       {
@@ -216,14 +216,6 @@ class SchoolAdminTable extends Component {
   };
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
-
-  createSchoolAdmin = newSchoolAdminData => {
-    const { userOrgId, createAdminUser } = this.props;
-    newSchoolAdminData.role = "school-admin";
-    newSchoolAdminData.districtId = userOrgId;
-    createAdminUser(newSchoolAdminData);
-    this.setState({ createSchoolAdminModalVisible: false });
-  };
 
   createUser = createReq => {
     const { userOrgId, createAdminUser } = this.props;
@@ -408,14 +400,14 @@ class SchoolAdminTable extends Component {
           continue;
         }
         if (!search[filtersColumn]) {
-          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
         } else {
-          search[filtersColumn].value.push(filterStr);
+          search[filtersColumn].push({ type: filtersValue, value: filterStr });
         }
       }
     }
     if (searchByName) {
-      search["firstName"] = { type: "cont", value: [searchByName] };
+      search["name"] = searchByName;
     }
 
     return {
@@ -517,8 +509,8 @@ class SchoolAdminTable extends Component {
         {createSchoolAdminModalVisible && (
           <CreateSchoolAdminModal
             modalVisible={createSchoolAdminModalVisible}
-            createSchoolAdmin={this.createSchoolAdmin}
-            closeModal={this.closeCreateSchoolAdminModal}
+            createSchoolAdmin={this.createUser}
+            closeModal={this.closeCreateUserModal}
             userOrgId={userOrgId}
           />
         )}

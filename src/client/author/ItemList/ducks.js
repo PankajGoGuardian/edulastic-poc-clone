@@ -1,17 +1,16 @@
 import { takeEvery, takeLatest, call, put, select } from "redux-saga/effects";
-import { xor } from "lodash";
 import { message } from "antd";
-
+import produce from "immer";
 import { setTestItemsAction } from "../TestPage/components/AddItems/ducks";
 import { setTestDataAction, createTestAction, getTestEntitySelector } from "../TestPage/ducks";
 
 export const ADD_ITEM_TO_CART = "[item list] add item to cart";
 export const CREATE_TEST_FROM_CART = "[item list] create test from cart";
 
-export const addItemToCartAction = itemId => ({
+export const addItemToCartAction = item => ({
   type: ADD_ITEM_TO_CART,
   payload: {
-    itemId
+    item
   }
 });
 
@@ -23,18 +22,27 @@ export const createTestFromCartAction = testName => ({
 });
 
 export function* addItemToCartSaga({ payload }) {
-  const { itemId } = payload;
+  const { item } = payload;
   const test = yield select(getTestEntitySelector);
   const testItems = [...test.testItems];
-
-  const updatedTestItems = xor(testItems, [itemId]);
+  let updatedTestItems = [];
+  if (testItems.some(o => o._id === item._id)) {
+    updatedTestItems = produce(testItems, draft => {
+      draft = draft.filter(x => x._id !== item._id);
+      return draft;
+    });
+  } else {
+    updatedTestItems = produce(testItems, draft => {
+      draft = draft.push(item);
+    });
+  }
 
   const updatedTest = {
     ...test,
     testItems: updatedTestItems
   };
 
-  yield put(setTestItemsAction(updatedTestItems));
+  yield put(setTestItemsAction(updatedTestItems.map(o => o._id)));
   yield put(setTestDataAction(updatedTest));
 }
 

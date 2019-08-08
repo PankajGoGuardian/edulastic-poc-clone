@@ -37,7 +37,7 @@ const StudentAutoComplete = ({
       page: 0,
       limit: 20,
       search: {
-        username: { type: "cont", value: [searchTerm] }
+        username: [{ type: "cont", value: searchTerm }]
       },
       districtId,
       role: "student"

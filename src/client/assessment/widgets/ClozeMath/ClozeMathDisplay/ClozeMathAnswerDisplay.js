@@ -4,10 +4,16 @@ import PropTypes from "prop-types";
 import { MathDisplay } from "@edulastic/common";
 
 const ClozeMathAnswerDisplay = ({ resprops, id }) => {
-  const { answers = {} } = resprops;
+  const { answers = {}, uiStyles } = resprops;
   const { maths: _userAnwers } = answers;
   const latex = _userAnwers[id] ? _userAnwers[id].value : "";
-  return <MathDisplay template="\MathQuillMathField{}" innerValues={[latex]} />;
+  return (
+    <MathDisplay
+      template="\MathQuillMathField{}"
+      styles={{ height: uiStyles.height || "31px", width: uiStyles.width }}
+      innerValues={[latex]}
+    />
+  );
 };
 
 ClozeMathAnswerDisplay.propTypes = {

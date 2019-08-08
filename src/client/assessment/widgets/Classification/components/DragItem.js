@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { DragSource } from "react-dnd";
 import styled, { withTheme } from "styled-components";
@@ -85,6 +85,8 @@ const DragItemContainer = ({
   noPadding,
   ...restProps
 }) => {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+
   const dragItem = (
     <Item
       isDragging={isDragging}
@@ -98,14 +100,18 @@ const DragItemContainer = ({
     />
   );
 
+  const handleMouseMove = evt => {
+    setMousePosition({ x: evt.clientX, y: evt.clientY });
+  };
+
   const itemWidth =
     possibilityListPosition === IMAGE_LIST_POSITION_LEFT || possibilityListPosition === IMAGE_LIST_POSITION_RIGHT
       ? IMAGE_LIST_DEFAULT_WIDTH
       : null;
 
   return (
-    <Fragment>
-      <DragPreview {...restProps} isDragging={isDragging} isResetOffset={isResetOffset}>
+    <MainWrapper onMouseMove={handleMouseMove}>
+      <DragPreview mousePosition={mousePosition} isDragging={isDragging} isResetOffset={isResetOffset}>
         {dragItem}
       </DragPreview>
       {item &&
@@ -147,7 +153,7 @@ const DragItemContainer = ({
             </InnerWrapper>
           </div>
         )}
-    </Fragment>
+    </MainWrapper>
   );
 };
 
@@ -156,5 +162,7 @@ const InnerWrapper = styled.div`
     width: 151px;
   }
 `;
+
+const MainWrapper = styled.div``;
 
 export default withTheme(DragSource("item", specSource, collectSource)(DragItemContainer));

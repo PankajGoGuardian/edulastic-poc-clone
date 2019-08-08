@@ -22,7 +22,8 @@ class EditClassModal extends Component {
           grades: row.grades,
           tags: row.tags,
           // not implemented in add model so sending empty if not present i.e. created in da settings
-          standardSets: standardSets || []
+          standardSets: standardSets || [],
+          courseId: row.courseId
         };
         this.props.saveClass(saveClassData);
         if (row.endDate) {

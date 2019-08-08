@@ -22,9 +22,9 @@ export const attemptSummarySelector = createSelector(
       const firstQid = qids[0];
       const bookmarked = bookmarks[item._id];
       /**
-       * considering attempted only if all the questions of an item attempted
+       * considering attempted if any one question in an item attempted
        */
-      const attempted = qids.every(x => answers[x]);
+      const attempted = qids.some(x => answers[x]);
       if (bookmarked) {
         blocks[firstQid] = 2;
       } else {

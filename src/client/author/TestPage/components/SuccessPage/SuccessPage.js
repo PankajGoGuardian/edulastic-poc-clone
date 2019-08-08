@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
+import { get } from "lodash";
 import {
   receiveTestByIdAction,
   getTestSelector,
@@ -121,12 +122,16 @@ class SuccessPage extends React.Component {
   }
 
   render() {
-    const { test, isPlaylist, playlist, isAssignSuccess, assignment = {} } = this.props;
+    const { test, isPlaylist, playlist, isAssignSuccess, assignment = {}, userId } = this.props;
     const { isShareModalVisible } = this.state;
-    const { title, _id, status, thumbnail, scoring = {}, grades, subjects } = isPlaylist ? playlist : test;
+    const { title, _id, status, thumbnail, scoring = {}, grades, subjects, authors = [] } = isPlaylist
+      ? playlist
+      : test;
+
     const shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
     const currentClass = (assignment.class && assignment.class[0]) || {};
     const assignmentStatus = currentClass.startDate < Date.now() || currentClass.open ? "IN PROGRESS" : "NOT OPEN";
+    const isOwner = authors.some(o => o._id === userId);
     const playlistBreadCrumbData = [
       {
         title: "PLAY LIST",
@@ -202,28 +207,37 @@ class SuccessPage extends React.Component {
                   <Divider />
                 </>
               )}
-              <FlexTitle>Share With Others</FlexTitle>
-              <FlexTextWrapper>
-                <b>{title}</b>&nbsp;has been added to your&nbsp;<b>{this.getHighPriorityShared}</b>.
-              </FlexTextWrapper>
-              <FlexText>
-                Click on &nbsp;
-                <span onClick={this.onShareModalChange} style={{ color: themeColor, cursor: "pointer" }}>
-                  Edit
-                </span>
-                &nbsp;icon to share it with your colleagues.
-              </FlexText>
+              {isOwner && (
+                <>
+                  <FlexTitle>Share With Others</FlexTitle>
+                  <FlexTextWrapper>
+                    <b>{title}</b>&nbsp;has been added to your&nbsp;<b>{this.getHighPriorityShared}</b>.
+                  </FlexTextWrapper>
+                  <FlexText>
+                    Click on &nbsp;
+                    <span onClick={this.onShareModalChange} style={{ color: themeColor, cursor: "pointer" }}>
+                      Edit
+                    </span>
+                    &nbsp;icon to share it with your colleagues.
+                  </FlexText>
+                </>
+              )}
               <FlexShareContainer>
-                <FlexShareTitle>Shared With</FlexShareTitle>
-                <FlexShareWithBox>
-                  <IconWrapper>
-                    <IconLock />
-                  </IconWrapper>
-                  <FlexText>{this.getHighPriorityShared}</FlexText>
-                  <IconWrapper onClick={this.onShareModalChange}>
-                    <IconPencilEdit color={themeColor} />
-                  </IconWrapper>
-                </FlexShareWithBox>
+                {isOwner && (
+                  <>
+                    <FlexShareTitle>Shared With</FlexShareTitle>
+                    <FlexShareWithBox>
+                      <IconWrapper>
+                        <IconLock />
+                      </IconWrapper>
+                      <FlexText>{this.getHighPriorityShared}</FlexText>
+                      <IconWrapper onClick={this.onShareModalChange}>
+                        <IconPencilEdit color={themeColor} />
+                      </IconWrapper>
+                    </FlexShareWithBox>
+                  </>
+                )}
+
                 <FlexShareTitle>Share</FlexShareTitle>
                 <FlexShareBox>
                   <TitleCopy copyable={{ text: shareUrl }}>
@@ -245,6 +259,7 @@ const enhance = compose(
     state => ({
       playlist: getPlaylistSelector(state),
       test: getTestSelector(state),
+      userId: get(state, "user.user._id", ""),
       assignment: getCurrentAssignmentSelector(state),
       playListSharedUsersList: getPlayListSharedListSelector(state),
       testSharedUsersList: getTestSharedListSelector(state)

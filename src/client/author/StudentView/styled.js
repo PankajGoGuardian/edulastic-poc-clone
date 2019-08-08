@@ -81,6 +81,13 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   justify-content: center;
   font-size: 11px;
   text-transform: uppercase;
+  position: relative;
+  svg {
+    position: absolute;
+    left: 10px;
+    width: 40px;
+    height: 25px;
+  }
 
   @media (max-width: ${mediumDesktopWidth}) {
     min-width: 250px;

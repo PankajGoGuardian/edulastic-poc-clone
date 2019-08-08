@@ -87,6 +87,7 @@ export const MainContainer = styled.div``;
 
 export const LeftContainer = styled.div`
   flex: 1;
+  padding-right: 15px;
 `;
 
 export const RightContainer = styled.div`

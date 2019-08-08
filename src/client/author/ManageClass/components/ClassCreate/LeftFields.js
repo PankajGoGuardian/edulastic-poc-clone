@@ -5,9 +5,12 @@ import Uploader from "./Uploader";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { getThumbnail } from "../ClassSectionThumbnailsBySubjectGrade";
 
+const defultImage = "https://fakeimg.pl/1000x500/";
+
 export default props => {
   useEffect(() => {
-    setThumbnail(getThumbnail());
+    const thumbNailImage = getThumbnail();
+    setThumbnail(thumbNailImage || defultImage);
   }, []);
   const [thumbnail, setThumbnail] = useState("");
 

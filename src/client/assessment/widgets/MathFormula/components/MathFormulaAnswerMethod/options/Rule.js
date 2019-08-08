@@ -13,6 +13,22 @@ const RulePure = ({ syntax, argument, onChange, t }) => {
     { value: "", label: "" },
     { value: math.syntaxes.DECIMAL, label: t("component.math.decimal") },
     {
+      value: math.syntaxes.INTEGER,
+      label: t("component.math.integer")
+    },
+    {
+      value: math.syntaxes.SCIENTIFIC,
+      label: t("component.math.scientific")
+    },
+    {
+      value: math.syntaxes.NUMBER,
+      label: t("component.math.number")
+    },
+    {
+      value: math.syntaxes.VARIABLE,
+      label: t("component.math.variable")
+    },
+    {
       value: math.syntaxes.SIMPLE_FRACTION,
       label: t("component.math.simpleFraction")
     },

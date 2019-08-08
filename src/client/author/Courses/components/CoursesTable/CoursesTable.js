@@ -365,16 +365,16 @@ class CoursesTable extends React.Component {
     let search = {};
 
     if (searchByName.length > 0) {
-      search.name = { type: "cont", value: [searchByName] };
+      search.name = [{ type: "cont", value: searchByName }];
     }
 
     for (let i = 0; i < filtersData.length; i++) {
       let { filtersColumn, filtersValue, filterStr } = filtersData[i];
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (!search[filtersColumn]) {
-          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
         } else {
-          search[filtersColumn].value.push(filterStr);
+          search[filtersColumn].push({ type: filtersValue, value: filterStr });
         }
       }
     }

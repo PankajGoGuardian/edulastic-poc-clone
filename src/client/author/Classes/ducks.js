@@ -252,20 +252,9 @@ function* createClassSaga({ payload }) {
 
 function* deleteClassSaga({ payload }) {
   try {
-    yield call(groupApi.deleteGroup, payload);
+    yield call(groupApi.deleteGroup, payload.data);
     yield put(deleteClassSuccessAction(payload));
-    // here after the delete operation is a success,
-    // the classes are fetched again to get the latest data
-    yield put(
-      receiveClassListAction({
-        page: 1,
-        limit: 25,
-        search: {
-          active: [1]
-        },
-        districtId: payload.districtId
-      })
-    );
+    yield put(receiveClassListAction(payload.searchQuery));
   } catch (err) {
     const errorMessage = "Delete Class is failing";
     yield call(message.error, errorMessage);

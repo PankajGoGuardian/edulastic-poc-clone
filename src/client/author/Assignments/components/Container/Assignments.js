@@ -199,6 +199,7 @@ class Assignments extends Component {
       <div>
         <EditTestModal
           visible={openEditPopup}
+          isUsed={true}
           onCancel={() => this.toggleEditModal(false, "")}
           onOk={this.onEnableEdit}
         />

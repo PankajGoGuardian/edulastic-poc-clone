@@ -222,9 +222,9 @@ class ClozeTextDisplay extends Component {
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-          {!question && <QuestionContent />}
+          {!question && QuestionContent}
         </QuestionTitleWrapper>
-        {question && <QuestionContent />}
+        {question && QuestionContent}
         {answerBox}
       </div>
     );

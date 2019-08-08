@@ -248,7 +248,7 @@ class ClassesTable extends Component {
 
   archiveClass = () => {
     const { selectedArchiveClasses } = this.state;
-    const { userOrgId: districtId, deleteClass } = this.props;
+    const { userOrgId: districtId, deleteClass, userDetails } = this.props;
 
     this.setState({
       // here selectedRowKeys is set back to [], since all the previously selected rows would have been deleted,
@@ -256,7 +256,13 @@ class ClassesTable extends Component {
       selectedRowKeys: [],
       archiveClassModalVisible: false
     });
-    deleteClass({ groupIds: selectedArchiveClasses, districtId });
+
+    const o = {
+      data: { groupIds: selectedArchiveClasses, districtId, institutionIds: userDetails.institutionIds },
+      searchQuery: this.getSearchQuery()
+    };
+
+    deleteClass(o);
   };
 
   closeArchiveModal = () => {

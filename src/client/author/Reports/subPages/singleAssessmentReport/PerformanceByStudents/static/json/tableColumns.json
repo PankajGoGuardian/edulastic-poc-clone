@@ -39,5 +39,11 @@
     "dataIndex": "studentScore",
     "key": "studentScore",
     "width": 250
+  },
+  {
+    "title": "SIS ID",
+    "dataIndex": "sisId",
+    "key": "sisId",
+    "className": "hide"
   }
 ]

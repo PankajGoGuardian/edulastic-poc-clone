@@ -5,6 +5,7 @@ const methods = {
   IS_SIMPLIFIED: "isSimplified",
   IS_FACTORISED: "isFactorised",
   IS_EXPANDED: "isExpanded",
+  IS_RATIONALIZED: "isRationalized",
   STRING_MATCH: "stringMatch",
   EQUIV_SYNTAX: "equivSyntax"
 };
@@ -101,11 +102,14 @@ const methodOptions = {
     "setThousandsSeparator",
     "allowedVariables",
     "setEvaluation",
+    "isRationalized",
+    "setListTypeResponse",
     "compareSides",
     "unit"
   ],
   [methods.EQUIV_LITERAL]: [
     "ariaLabel",
+    "setListTypeResponse",
     "ignoreTrailingZeros",
     "setDecimalSeparator",
     "setThousandsSeparator",
@@ -136,7 +140,8 @@ const methodOptions = {
   [methods.IS_SIMPLIFIED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
   [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
   [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
-  [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"]
+  [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"],
+  [methods.IS_RATIONALIZED]: []
 };
 
 module.exports = {

@@ -5,8 +5,9 @@ import { CustomTableTooltip } from "../../../../../common/components/customTable
 import { Row, Col } from "antd";
 import { find } from "lodash";
 import { ResponseTag } from "./responseTag";
-import { getHSLFromRange1 } from "../../../../../common/util";
+import { getHSLFromRange1, downloadCSV } from "../../../../../common/util";
 import PrintableTable from "../../../../../common/components/tables/PrintableTable";
+import CsvTable from "../../../../../common/components/tables/CsvTable";
 
 export class ResponseFrequencyTable extends Component {
   constructor(props) {
@@ -246,10 +247,39 @@ export class ResponseFrequencyTable extends Component {
     return _a - _b;
   }
 
+  onCsvConvert = (data, rawData) => {
+    // extract all rows excpet the columns name
+    const csvRows = rawData.splice(1, rawData.length);
+
+    const modifiedCsvRows = csvRows.map(csvRow => {
+      const item = csvRow[6];
+
+      csvRow[6] = item
+        .replace(/"/g, "")
+        .replace(/%/g, "%,")
+        .split(",")
+        .filter(item => item)
+        .map(item => {
+          const option = item.replace(/\d+%/g, "");
+          const number = item.match(/\d+%/g)[0];
+          return `${option ? `${option} :` : ""} ${number || "N/A"}`;
+        })
+        .join(", ");
+
+      return csvRow.join(";");
+    });
+
+    const csvData = [rawData[0].join(";"), ...modifiedCsvRows].join("\n");
+    downloadCSV(`Response Frequency.csv`, csvData);
+  };
+
   render() {
     return (
       <StyledCard className="response-frequency-table">
-        <PrintableTable
+        <CsvTable
+          isCsvDownloading={this.props.isCsvDownloading}
+          onCsvConvert={this.onCsvConvert}
+          tableToRender={PrintableTable}
           isPrinting={this.props.isPrinting}
           component={StyledTable}
           columns={this.columns}

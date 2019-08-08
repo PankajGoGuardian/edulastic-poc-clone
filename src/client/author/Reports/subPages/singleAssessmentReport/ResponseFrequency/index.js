@@ -19,7 +19,7 @@ import {
   getReportsResponseFrequencyLoader
 } from "./ducks";
 import tempData from "./static/json/temp.json";
-import { getPrintingState } from "../../../ducks";
+import { getPrintingState, getCsvDownloadingState } from "../../../ducks";
 
 const filterData = (data, filter) => (Object.keys(filter).length > 0 ? data.filter(item => filter[item.qType]) : data);
 
@@ -151,6 +151,7 @@ const ResponseFrequency = props => {
             correctThreshold={difficultItems}
             incorrectFrequencyThreshold={misunderstoodItems}
             isPrinting={props.isPrinting}
+            isCsvDownloading={props.isCsvDownloading}
           />
         </StyledContainer>
       )}
@@ -163,7 +164,8 @@ const enhance = compose(
     state => ({
       responseFrequency: getReportsResponseFrequency(state),
       loading: getReportsResponseFrequencyLoader(state),
-      isPrinting: getPrintingState(state)
+      isPrinting: getPrintingState(state),
+      isCsvDownloading: getCsvDownloadingState(state)
     }),
     {
       getResponseFrequencyRequestAction: getResponseFrequencyRequestAction

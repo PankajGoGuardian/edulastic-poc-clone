@@ -21,6 +21,8 @@ import { AutocompleteDropDown } from "../../../../Reports/common/components/widg
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
 import { StyledSignedBarContainer, StyledDropDownContainer, StyledH3, StyledCard } from "../../../common/styled";
+import CsvTable from "../../../common/components/tables/CsvTable";
+import { getCsvDownloadingState } from "../../../ducks";
 
 const PAGE_SIZE = 15;
 
@@ -32,7 +34,15 @@ const findCompareByTitle = (key = "") => {
   return title;
 };
 
-const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandards, match, settings, role }) => {
+const PerformanceByStandards = ({
+  loading,
+  report = {},
+  getPerformanceByStandards,
+  match,
+  settings,
+  role,
+  isCsvDownloading
+}) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.STUDENTS : compareByMode.SCHOOL);
@@ -298,6 +308,7 @@ const PerformanceByStandards = ({ loading, report = {}, getPerformanceByStandard
           selectedStandards={selectedStandards}
           selectedDomains={selectedDomains}
           totalPoints={totalPoints}
+          isCsvDownloading={isCsvDownloading}
         />
       </StyledCard>
     </>
@@ -326,7 +337,8 @@ const enhance = connect(
   state => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
     role: getUserRole(state),
-    report: getPerformanceByStandardsReportSelector(state)
+    report: getPerformanceByStandardsReportSelector(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getPerformanceByStandards: getPerformanceByStandardsAction

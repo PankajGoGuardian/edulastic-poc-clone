@@ -6,10 +6,11 @@ import Moment from "moment";
 import next from "immer";
 import { StyledTable } from "../styled";
 
-import { getStandardDeviation, getVariance } from "../../../../../common/util";
+import { getStandardDeviation, getVariance, downloadCSV } from "../../../../../common/util";
 import { StyledH3 } from "../../../../../common/styled";
 import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 import PrintableTable from "../../../../../common/components/tables/PrintableTable";
+import CsvTable from "../../../../../common/components/tables/CsvTable";
 
 import columnData from "../../static/json/tableColumns.json";
 
@@ -157,6 +158,8 @@ export const AssessmentStatisticTable = props => {
     setTableType(selected);
   };
 
+  const onCsvConvert = data => downloadCSV(`${tableType.title} Level Performance Report.csv`, data);
+
   const dropDownData = [
     { key: "school", title: "School" },
     { key: "teacher", title: "Teacher" },
@@ -179,12 +182,15 @@ export const AssessmentStatisticTable = props => {
           ""
         )}
       </Row>
-      <PrintableTable
+      <CsvTable
         isPrinting={props.isPrinting}
         component={StyledTable}
         columns={table.columns}
         dataSource={table.tableData}
         rowKey={"groupId"}
+        onCsvConvert={onCsvConvert}
+        isCsvDownloading={props.isCsvDownloading}
+        tableToRender={PrintableTable}
       />
     </div>
   );

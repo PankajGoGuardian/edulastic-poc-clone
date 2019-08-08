@@ -62,11 +62,13 @@ class MetaInfoCell extends Component {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
+
     const newTest = cloneDeep(test);
     let keys = [];
     if (newTest.safeBrowser && !newTest.sebPassword) {
       return message.error("Please add a valid password");
     }
+
     if (selectedRows !== undefined) {
       selectedRows.data.forEach((selectedRow, index) => {
         keys[index] = selectedRow;

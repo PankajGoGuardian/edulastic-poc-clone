@@ -36,12 +36,16 @@ import {
   getTestsItemsCountSelector,
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
-  receiveTestItemsAction
+  receiveTestItemsAction,
+  getPassageConfirmModalStateSelector,
+  togglePassageConfirmModalAction
 } from "./ducks";
+import { setAndSavePassageItemsAction, getPassageItemsCountSelector } from "../../ducks";
 import ItemsTable from "../common/ItemsTable/ItemsTable";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
 import { getClearSearchState, filterMenuItems } from "../../../ItemList";
 import ModalCreateTestItem from "../ModalCreateTestItem/ModalCreateTestItem";
+import PassageConfirmationModal from "../PassageConfirmationModal/PassageConfirmationModal";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 class AddItems extends PureComponent {
@@ -274,6 +278,15 @@ class AddItems extends PureComponent {
     }));
   };
 
+  handleResponse = value => {
+    const { togglePassageConfirmModal, setAndSavePassageItems } = this.props;
+    togglePassageConfirmModal(false);
+    if (value) {
+      console.log("INVOKING setAndSavePassageItems");
+      setAndSavePassageItems();
+    }
+  };
+
   render() {
     const {
       windowWidth,
@@ -287,7 +300,11 @@ class AddItems extends PureComponent {
       t,
       createTestItemModalVisible,
       count,
-      gotoSummary
+      gotoSummary,
+      togglePassageConfirmModal,
+      passageConfirmModalVisible,
+      setAndSavePassageItems,
+      passageItemsCount
     } = this.props;
 
     const { search, selectedTestItems, questionCreateType } = this.state;
@@ -349,6 +366,14 @@ class AddItems extends PureComponent {
         {createTestItemModalVisible && (
           <ModalCreateTestItem type={questionCreateType} setAuthoredByMeFilter={this.setAuthoredByMeFilter} />
         )}
+        {passageConfirmModalVisible && (
+          <PassageConfirmationModal
+            visible={passageConfirmModalVisible}
+            togglePassageConfirmationModal={togglePassageConfirmModal}
+            itemsCount={passageItemsCount}
+            handleResponse={this.handleResponse}
+          />
+        )}
       </Container>
     );
   }
@@ -367,7 +392,9 @@ const enhance = compose(
       count: getTestsItemsCountSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      createTestItemModalVisible: getCreateItemModalVisibleSelector(state)
+      createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
+      passageConfirmModalVisible: getPassageConfirmModalStateSelector(state),
+      passageItemsCount: getPassageItemsCountSelector(state)
     }),
     {
       receiveTestItems: receiveTestItemsAction,
@@ -375,7 +402,9 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
       clearDictAlignment: clearDictAlignmentAction,
-      createTestItem: createTestItemAction
+      createTestItem: createTestItemAction,
+      togglePassageConfirmModal: togglePassageConfirmModalAction,
+      setAndSavePassageItems: setAndSavePassageItemsAction
     }
   )
 );

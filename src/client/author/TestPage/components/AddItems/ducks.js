@@ -11,6 +11,7 @@ export const RECEIVE_TEST_ITEMS_ERROR = "[addItems] receive items error";
 export const SET_TEST_ITEMS_REQUEST = "[addItems] set items request";
 export const CLEAR_SELECTED_ITEMS = "[addItems] clear selected items";
 export const GET_ITEMS_SUBJECT_AND_GRADE = "[addItems] get subjects and grades";
+export const TOGGLE_PASSAGE_CONFIRM_MODAL = "[addItems] toggle passage confirm modal";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -53,6 +54,11 @@ export const getItemsSubjectAndGradeAction = data => ({
   payload: data
 });
 
+export const togglePassageConfirmModalAction = data => ({
+  type: TOGGLE_PASSAGE_CONFIRM_MODAL,
+  payload: data
+});
+
 // reducer
 
 const initialState = {
@@ -68,7 +74,8 @@ const initialState = {
   itemsSubjectAndGrade: {
     subjects: [],
     grades: []
-  }
+  },
+  showPassageConfirmModal: false
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -105,6 +112,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         itemsSubjectAndGrade: payload
       };
+    case TOGGLE_PASSAGE_CONFIRM_MODAL:
+      return {
+        ...state,
+        showPassageConfirmModal: payload
+      };
     default:
       return state;
   }
@@ -140,6 +152,11 @@ export const getTestItemsSelector = createSelector(
   state => state.items
 );
 
+export const getPopStateSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.showPopUp
+);
+
 export const getTestItemsLoadingSelector = createSelector(
   stateTestItemsSelector,
   state => state.loading
@@ -168,4 +185,9 @@ export const getSelectedItemSelector = createSelector(
 export const getItemsSubjectAndGradeSelector = createSelector(
   stateTestItemsSelector,
   state => state.itemsSubjectAndGrade
+);
+
+export const getPassageConfirmModalStateSelector = createSelector(
+  stateTestItemsSelector,
+  state => state.showPassageConfirmModal
 );

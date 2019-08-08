@@ -24,7 +24,7 @@ import ListComponent from "./ListComponent";
 
 const OptionsList = withPoints(MatchListPreview);
 
-const MatchListEdit = ({ isNew, item: itemProp, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => {
+const MatchListEdit = ({ item: itemProp, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
   const [item, setItem] = useState(itemProp);
 

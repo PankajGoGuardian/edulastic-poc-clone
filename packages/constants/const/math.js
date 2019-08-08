@@ -29,7 +29,11 @@ const syntaxes = {
   EXPONENT: "isExponent",
   STANDARD_FORM: "isStandardForm",
   SLOPE_INTERCEPT_FORM: "isSlopeInterceptForm",
-  POINT_SLOPE_FORM: "isPointSlopeForm"
+  POINT_SLOPE_FORM: "isPointSlopeForm",
+  NUMBER: "numberType",
+  INTEGER: "integerType",
+  SCIENTIFIC: "scientificType",
+  VARIABLE: "variableType"
 };
 
 const mathInputTypes = {

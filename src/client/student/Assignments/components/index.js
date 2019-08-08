@@ -22,6 +22,7 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
     loadAllClasses();
   }, []);
 
+
   if (loading) return <Spin />;
   const { classItem = {} } = location;
 

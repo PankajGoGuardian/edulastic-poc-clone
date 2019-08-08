@@ -701,7 +701,7 @@ export function* updateItemSaga({ payload }) {
       }
     }
 
-    const { __v, ...passageData } = yield select(getPassageSelector) || {};
+    const { __v, ...passageData } = (yield select(getPassageSelector)) || {};
 
     // return;
     const [{ testId, ...item }] = yield all([

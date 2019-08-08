@@ -410,23 +410,9 @@ class QuestionWrapper extends Component {
                   )}
                 </FlexContainer>
               </PaperWrapper>
-              {showFeedback &&
-                !isPassageOrVideoType &&
-                (multiple ? (
-                  <FeedbackBottom
-                    widget={data}
-                    disabled={disabled}
-                    studentName={studentName}
-                    {...presentationModeProps}
-                  />
-                ) : (
-                  <FeedbackRight
-                    disabled={disabled}
-                    widget={data}
-                    studentName={studentName}
-                    {...presentationModeProps}
-                  />
-                ))}
+              {showFeedback && !isPassageOrVideoType && (
+                <FeedbackRight disabled={disabled} widget={data} studentName={studentName} {...presentationModeProps} />
+              )}
               {/* STUDENT REPORT PAGE FEEDBACK */}
               {studentReportFeedbackVisible && <StudentReportFeedback qLabel={data.qLabel} qId={data.id} />}
             </QuestionContainer>

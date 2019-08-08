@@ -61,6 +61,10 @@ class MathFormulaPreview extends Component {
     };
   }
 
+  componentDidMount() {
+    this.updateStaticMathFromUserAnswer();
+  }
+
   componentDidUpdate(prevProps) {
     const { studentTemplate, type: previewType } = this.props;
     const { studentTemplate: prevStudentTemplate, type: prevPreviewType } = prevProps;
@@ -248,10 +252,6 @@ class MathFormulaPreview extends Component {
     cssStyles.width = cssStyles.width || minWidth;
     cssStyles.height = cssStyles.height || minHeight;
 
-    const testItemCorrectValues = testItem
-      ? item.validation.validResponse.value.map(validResponse => validResponse.value)
-      : [];
-
     const customKeys = get(item, "custom_keys", []);
     const allowNumericOnly = get(item, "allowNumericOnly", false);
 
@@ -275,7 +275,7 @@ class MathFormulaPreview extends Component {
 
         {testItem && (
           <FlexContainer alignItems="flex-start" justifyContent="flex-start">
-            <MathDisplay style={cssStyles} template={studentTemplate} innerValues={testItemCorrectValues} />
+            <MathDisplay style={cssStyles} template={studentTemplate} innerValues={innerValues} />
             {item.isUnits && item.showDropdown && (
               <UnitsDropdown
                 preview

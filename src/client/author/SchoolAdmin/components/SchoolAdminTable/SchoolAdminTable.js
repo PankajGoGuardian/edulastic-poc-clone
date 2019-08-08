@@ -217,14 +217,6 @@ class SchoolAdminTable extends Component {
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
 
-  createSchoolAdmin = newSchoolAdminData => {
-    const { userOrgId, createAdminUser } = this.props;
-    newSchoolAdminData.role = "school-admin";
-    newSchoolAdminData.districtId = userOrgId;
-    createAdminUser(newSchoolAdminData);
-    this.setState({ createSchoolAdminModalVisible: false });
-  };
-
   createUser = createReq => {
     const { userOrgId, createAdminUser } = this.props;
     createReq.role = "school-admin";
@@ -517,8 +509,8 @@ class SchoolAdminTable extends Component {
         {createSchoolAdminModalVisible && (
           <CreateSchoolAdminModal
             modalVisible={createSchoolAdminModalVisible}
-            createSchoolAdmin={this.createSchoolAdmin}
-            closeModal={this.closeCreateSchoolAdminModal}
+            createSchoolAdmin={this.createUser}
+            closeModal={this.closeCreateUserModal}
             userOrgId={userOrgId}
           />
         )}

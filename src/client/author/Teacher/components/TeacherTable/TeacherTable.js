@@ -164,15 +164,6 @@ class TeacherTable extends Component {
 
   componentDidUpdate(prevProps) {}
 
-  addTeachers = obj => {
-    const { addTeachers } = this.props;
-    let o = {
-      addReq: obj,
-      listReq: this.getSearchQuery()
-    };
-    addTeachers(o);
-  };
-
   onEditTeacher = key => {
     this.setState({
       editTeacherModaVisible: true,
@@ -235,6 +226,15 @@ class TeacherTable extends Component {
   };
 
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
+
+  sendInvite = obj => {
+    const { addTeachers } = this.props;
+    let o = {
+      addReq: obj,
+      listReq: this.getSearchQuery()
+    };
+    addTeachers(o);
+  };
 
   createUser = createReq => {
     const { userOrgId, createAdminUser } = this.props;
@@ -535,8 +535,8 @@ class TeacherTable extends Component {
         {inviteTeacherModalVisible && (
           <InviteMultipleTeacherModal
             modalVisible={inviteTeacherModalVisible}
-            inviteTeachers={this.sendInviteTeacher}
             closeModal={this.closeInviteTeacherModal}
+            addTeachers={this.sendInvite}
             userOrgId={userOrgId}
           />
         )}

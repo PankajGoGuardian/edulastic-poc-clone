@@ -99,7 +99,7 @@ const FormulaEssay = ({
             lines={
               !isEmpty(userAnswer)
                 ? userAnswer
-                : [{ text: "", type: item.uiStyle && item.uiStyle.default_mode, index: uuidv4() }]
+                : [{ text: "", type: item.uiStyle && item.uiStyle.defaultMode, index: uuidv4() }]
             }
             {...restProps}
           />

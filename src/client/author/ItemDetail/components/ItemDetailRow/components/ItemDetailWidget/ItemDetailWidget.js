@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Button } from "antd";
+import { get } from "lodash";
 import { IconMoveArrows, IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { white } from "@edulastic/colors";
 import { DragSource } from "react-dnd";
@@ -14,9 +15,6 @@ import { Types } from "../../../../constants";
 import { setItemDetailDraggingAction, setItemLevelScoreAction, setItemLevelScoringAction } from "../../../../ducks";
 import { getQuestionByIdSelector, setQuestionScoreAction } from "../../../../../sharedDucks/questions";
 import { Container, Buttons } from "./styled";
-import { InputNumber } from "antd";
-import { get } from "lodash";
-import { questionType } from "@edulastic/constants";
 
 const ItemDetailWidget = ({
   widget,
@@ -44,14 +42,6 @@ const ItemDetailWidget = ({
     if (flowLayout) setShowButtons(false);
   };
   const showPoints = rowIndex === 0 && itemData.rows.length > 1 ? false : true;
-  const { multipartItem } = itemData;
-
-  let disableResponse = false;
-  if (multipartItem && question.type === questionType.TOKEN_HIGHLIGHT) {
-    disableResponse = true;
-  } else if (multipartItem && question.type === questionType.HIGHLIGHT_IMAGE) {
-    disableResponse = true;
-  }
 
   return (
     connectDragPreview &&
@@ -69,7 +59,7 @@ const ItemDetailWidget = ({
                 questionId={widget.reference}
                 data={{ ...question, smallSize: true }}
                 flowLayout={flowLayout}
-                disableResponse={disableResponse}
+                disableResponse
               />
             )}
           </div>

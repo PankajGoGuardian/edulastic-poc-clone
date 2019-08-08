@@ -495,7 +495,7 @@ class DistrictAdminTable extends Component {
           {createDistrictAdminModalVisible && (
             <CreateDistrictAdminModal
               modalVisible={createDistrictAdminModalVisible}
-              createDistrictAdmin={this.createDistrictAdmin}
+              createDistrictAdmin={this.createUser}
               closeModal={this.closeCreateDistrictAdminModal}
               userOrgId={userOrgId}
             />

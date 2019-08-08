@@ -3,17 +3,24 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 
 const StyledSpan = styled.span`
-  padding: 5px;
+  padding: 4px 5px;
   border-radius: 2px;
   border: 1px solid #d9d9d9;
   display: inline-block;
+  vertical-align: middle;
+  height: ${({ height }) => height || "31px"};
+  width: ${({ width }) => width || "31px"};
 `;
 
 const ClozeInputAnswerDisplay = ({ resprops, id }) => {
-  const { answers = {} } = resprops;
+  const { answers = {}, uiStyles } = resprops;
   const { inputs: _userAnwers } = answers;
   const val = _userAnwers[id] ? _userAnwers[id].value : "";
-  return <StyledSpan>{val}</StyledSpan>;
+  return (
+    <StyledSpan height={uiStyles.height} width={uiStyles.width}>
+      {val}
+    </StyledSpan>
+  );
 };
 
 ClozeInputAnswerDisplay.propTypes = {

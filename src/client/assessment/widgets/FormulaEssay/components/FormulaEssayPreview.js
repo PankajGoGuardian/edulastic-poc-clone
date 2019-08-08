@@ -34,7 +34,7 @@ const FormulaEssayPreview = ({
         value={item.template}
         lines={lines}
         setLines={setLines}
-        onInput={latex => console.log(latex)}
+        onInput={latex => latex}
       />
     </MathEssayInputWrapper>
   );

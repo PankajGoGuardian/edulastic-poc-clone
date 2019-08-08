@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { white, themeColor, themeColorLight, greyDarken } from "@edulastic/colors";
+import { white, themeColor, themeColorLight, greyDarken, mediumDesktopWidth } from "@edulastic/colors";
 import { Button } from "antd";
 import { IconManage } from "@edulastic/icons";
 import { Paper, FlexContainer } from "@edulastic/common";
@@ -13,6 +13,10 @@ export const Title = styled.div`
   text-align: left;
   display: flex;
   color: ${white};
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    font-size: 18px;
+  }
 `;
 
 export const IconManageClass = styled(IconManage)`
@@ -26,6 +30,10 @@ const ShareButtonStyle = css`
   border-radius: 25px;
   height: 40px;
   display: flex;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
+  }
 `;
 
 export const SaveClassBtn = styled(Button)`

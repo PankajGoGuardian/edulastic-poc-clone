@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 
-import { white, themeColor, boxShadowDefault, lightBlue, themeColorLight } from "@edulastic/colors";
+import { white, themeColor, boxShadowDefault, themeColorLight, mediumDesktopWidth } from "@edulastic/colors";
 import { Button, Table, Select, Icon } from "antd";
 import { IconManage, IconPlus } from "@edulastic/icons";
 
@@ -64,6 +64,10 @@ export const Title = styled.div`
   text-align: left;
   display: flex;
   color: ${white};
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    font-size: 18px;
+  }
 `;
 
 export const IconManageClass = styled(IconManage)`
@@ -81,6 +85,10 @@ const ShareButtonStyle = css`
   border-radius: 10px;
   height: 40px;
   display: flex;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
+  }
 `;
 export const CreateClassButton = styled(Button)`
   ${ShareButtonStyle}

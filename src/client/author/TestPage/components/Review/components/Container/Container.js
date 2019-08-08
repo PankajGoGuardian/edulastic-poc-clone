@@ -5,7 +5,7 @@ import { cloneDeep, get, uniq as _uniq, flatMap, map } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { Paper, withWindowSizes } from "@edulastic/common";
+import { Paper, withWindowSizes, helpers } from "@edulastic/common";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import List from "../List/List";
@@ -29,17 +29,8 @@ import { clearDictAlignmentAction } from "../../../../../src/actions/dictionarie
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 
-const scoreOfItem = item => {
-  if (item.itemLevelScoring) {
-    return item.itemLevelScore;
-  }
-  return get(item, "data.questions", []).reduce(
-    (acc, q) => acc + get(q, ["validation", "validResponse", "score"], 0),
-    0
-  );
-};
-
-const getTotalScore = testItems => testItems.map(item => scoreOfItem(item)).reduce((total, s) => total + s, 0);
+const getTotalScore = ({ testItems, scoring }) =>
+  testItems.map(item => scoring[item._id] || helpers.getPoints(item)).reduce((total, s) => total + s, 0);
 
 const getStandardWiseSummary = question => {
   let standardSummary;
@@ -383,7 +374,7 @@ class Review extends PureComponent {
               summary={test.summary || {}}
               onChangeField={this.handleChangeField}
               thumbnail={defaultThumbnail || test.thumbnail}
-              totalPoints={getTotalScore(test.testItems)}
+              totalPoints={getTotalScore(test)}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
             />

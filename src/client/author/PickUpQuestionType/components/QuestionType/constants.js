@@ -856,7 +856,29 @@ export const getCards = onSelectQuestionType => {
         title: "Classification",
         firstMount: true,
         groupPossibleResponses: false,
-        possibleResponseGroups: [],
+        possibleResponseGroups: [
+          {
+            title: "Group 1",
+            responses: [
+              {
+                id: uuids[0],
+                value: "Choice B"
+              },
+              {
+                id: uuids[1],
+                value: "Choice C"
+              },
+              {
+                id: uuids[2],
+                value: "Choice A"
+              },
+              {
+                id: uuids[3],
+                value: "Choice D"
+              }
+            ]
+          }
+        ],
         possibleResponses: [
           {
             id: uuids[0],

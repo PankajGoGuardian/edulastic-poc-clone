@@ -10,6 +10,7 @@ export default styled.div`
   border-top: 2px solid ${blue};
   border-right: 2px solid ${blue};
   max-width: 200px;
+  transition: all 0.5s;
   &:hover {
     background-color: ${({ previewTab }) => (previewTab === "clear" ? mainBlueColor : null)};
   }

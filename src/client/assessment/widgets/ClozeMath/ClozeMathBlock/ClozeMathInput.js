@@ -27,7 +27,6 @@ class ClozeMathInput extends React.Component {
     this.mathRef = React.createRef();
     this.wrappedRef = React.createRef();
     this.mathKeyboardRef = React.createRef();
-    console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   }
 
   componentDidMount() {

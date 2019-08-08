@@ -11,7 +11,6 @@ import { getFontSize } from "../../utils/helpers";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
-import VideoContainer from "../../components/VideoContainer";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
 import ChoicesBox from "./ChoicesBox";
@@ -177,14 +176,13 @@ class ClozeDropDownDisplay extends Component {
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
-    const QuestionContent = () => (
+    const questionContent = (
       <ContentWrapper fontSize={fontSize}>
         <JsxParser
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
           showWarnings
           components={{
             textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
-            iframe: VideoContainer,
             mathspan: MathSpanWrapper
           }}
           jsx={parsedTemplate}
@@ -198,9 +196,9 @@ class ClozeDropDownDisplay extends Component {
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-          {!question && <QuestionContent />}
+          {!question && questionContent}
         </QuestionTitleWrapper>
-        {question && <QuestionContent />}
+        {question && questionContent}
         {answerBox}
       </div>
     );

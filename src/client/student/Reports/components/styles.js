@@ -5,7 +5,10 @@ import {
   themeColor,
   mainTextColor,
   borders,
+  backgrounds,
   title,
+  reportHeaderText,
+  reportValue,
   extraDesktopWidth,
   largeDesktopWidth,
   desktopWidth
@@ -60,7 +63,7 @@ export const ReportHeaderText = styled.p`
   margin: 0;
   font-size: 11px;
   font-weight: 700;
-  color: #aaafb5;
+  color: ${reportHeaderText};
   text-transform: uppercase;
   text-align: center;
   letter-spacing: 0.6px;
@@ -276,15 +279,19 @@ export const ReportAttemptItem = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 6px 21px;
-  background: #f8f8f8;
+  background: ${backgrounds.primary};
   border-radius: 4px;
   margin-top: 7px;
+
+  @media (max-width: ${desktopWidth}) {
+    padding: 6px 9px;
+  }
 `;
 
 export const ReportAttemptItemDate = styled.span`
   font-size: 12px;
   font-weight: 600;
-  color: #9ca0a9;
+  color: ${reportValue};
 
   @media (max-width: ${largeDesktopWidth}) {
     font-size: 11px;
@@ -298,7 +305,7 @@ export const ReportAttemptItemDate = styled.span`
 export const ReportAttemptItemValue = styled.span`
   font-size: 16px;
   font-weight: 600;
-  color: #9ca0a9;
+  color: ${reportValue};
   text-align: center;
   line-height: 1;
 
@@ -324,6 +331,7 @@ export const ReportAttemptItemLink = styled.span`
   }
 
   @media (max-width: ${desktopWidth}) {
+    width: auto;
     font-size: 11px;
   }
 `;
@@ -420,5 +428,17 @@ export const ReportReviewButton = styled(Button)`
   @media (max-width: ${desktopWidth}) {
     min-width: 200px;
     font-size: 11px;
+  }
+`;
+
+export const ReportMobileLabel = styled.span`
+  display: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: ${title};
+  margin-bottom: -18px;
+
+  @media (max-width: ${desktopWidth}) {
+    display: block;
   }
 `;

@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { withNamespaces } from "@edulastic/localization";
+
 import { getCurrentGroup } from "../../Login/ducks";
 
 // actions
@@ -23,7 +26,7 @@ import {
   ReportList
 } from "./styles";
 
-const Content = ({ flag, assignments, fetchAssignments, currentGroup }) => {
+const Content = ({ flag, assignments, fetchAssignments, currentGroup, t }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
   }, []);
@@ -32,16 +35,16 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup }) => {
     <LayoutContent flag={flag}>
       <WrapperReport>
         <ReportHeader>
-          <ReportHeaderName>Report name</ReportHeaderName>
-          <ReportHeaderDate>Date</ReportHeaderDate>
-          <ReportHeaderAttempt>Attempt</ReportHeaderAttempt>
-          <ReportHeaderCorrectAnswer>Correct answer</ReportHeaderCorrectAnswer>
-          <ReportHeaderAverageScore>Average score</ReportHeaderAverageScore>
+          <ReportHeaderName>{t("common.report.reportName")}</ReportHeaderName>
+          <ReportHeaderDate>{t("common.report.date")}</ReportHeaderDate>
+          <ReportHeaderAttempt>{t("common.report.attempt")}</ReportHeaderAttempt>
+          <ReportHeaderCorrectAnswer>{t("common.report.correctAnswer")}</ReportHeaderCorrectAnswer>
+          <ReportHeaderAverageScore>{t("common.report.averageScore")}</ReportHeaderAverageScore>
           <ReportHeaderReview />
         </ReportHeader>
         <ReportList>
           {assignments.map((item, index) => (
-            <ReportCard key={index} data={item} />
+            <ReportCard key={index} data={item} t={t} />
           ))}
         </ReportList>
       </WrapperReport>
@@ -49,21 +52,27 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup }) => {
   );
 };
 
-export default connect(
-  state => ({
-    flag: state.ui.flag,
-    currentGroup: getCurrentGroup(state),
-    assignments: getAssignmentsSelector(state)
-  }),
-  {
-    fetchAssignments: fetchAssignmentsAction
-  }
-)(Content);
+const enhance = compose(
+  withNamespaces("student"),
+  connect(
+    state => ({
+      flag: state.ui.flag,
+      currentGroup: getCurrentGroup(state),
+      assignments: getAssignmentsSelector(state)
+    }),
+    {
+      fetchAssignments: fetchAssignmentsAction
+    }
+  )
+);
+
+export default enhance(Content);
 
 Content.propTypes = {
   flag: PropTypes.bool.isRequired,
   assignments: PropTypes.array,
   fetchAssignments: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   currentGroup: PropTypes.string
 };
 

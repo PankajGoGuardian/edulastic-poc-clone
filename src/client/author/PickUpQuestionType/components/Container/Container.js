@@ -305,6 +305,10 @@ class Container extends Component {
                     <IconMore />
                     {"Other"}
                   </Menu.Item>
+                  <Menu.Item key="fractionEditor">
+                    <IconMore />
+                    Fraction Editor
+                  </Menu.Item>
                 </LeftMenuWrapper>
               </PerfectScrollbar>
             </AffixWrapper>

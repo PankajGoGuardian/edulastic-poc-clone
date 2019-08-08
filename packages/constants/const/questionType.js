@@ -33,6 +33,7 @@ const HISTOGRAM = "histogram";
 const DOT_PLOT = "dots";
 const LINE_PLOT = "linePlot";
 const GRAPH = "graph";
+const FRACTION_EDITOR = "fractionEditor";
 
 const selectsData = [
   { value: "", text: "All Types" },
@@ -109,6 +110,7 @@ module.exports = {
   LINE_PLOT,
   GRAPH,
   selectsData,
+  PASSAGE_WITH_QUESTIONS,
   manuallyGradableQn,
-  PASSAGE_WITH_QUESTIONS
+  FRACTION_EDITOR
 };

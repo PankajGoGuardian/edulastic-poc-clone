@@ -124,8 +124,8 @@ class ClassCreate extends React.Component {
       searchTerms = {
         districtId,
         search: {
-          name: { type: "cont", value: [key] },
-          number: { type: "eq", value: [key] },
+          name: [{ type: "cont", value: key }],
+          number: [{ type: "eq", value: key }],
           operator: "or"
         }
       };

@@ -321,6 +321,26 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.setEvaluation")}
             />
           );
+        case "setListTypeResponse":
+          return (
+            <CheckOption
+              dataCy="answer-list-evaluation"
+              optionKey="interpretAsList"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.setListTypeResponse")}
+            />
+          );
+        case "isRationalized":
+          return (
+            <CheckOption
+              dataCy="answer-rationalized"
+              optionKey="isRationalized"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.isRationalized")}
+            />
+          );
         default:
           return null;
       }

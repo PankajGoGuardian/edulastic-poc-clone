@@ -252,6 +252,10 @@ class MathFormulaPreview extends Component {
     cssStyles.width = cssStyles.width || minWidth;
     cssStyles.height = cssStyles.height || minHeight;
 
+    const testItemCorrectValues = testItem
+      ? item.validation.validResponse.value.map(validResponse => validResponse.value)
+      : [];
+
     const customKeys = get(item, "custom_keys", []);
     const allowNumericOnly = get(item, "allowNumericOnly", false);
 
@@ -275,7 +279,7 @@ class MathFormulaPreview extends Component {
 
         {testItem && (
           <FlexContainer alignItems="flex-start" justifyContent="flex-start">
-            <MathDisplay style={cssStyles} template={studentTemplate} innerValues={innerValues} />
+            <MathDisplay styles={cssStyles} template="\MathQuillMathField{}" innerValues={testItemCorrectValues} />
             {item.isUnits && item.showDropdown && (
               <UnitsDropdown
                 preview

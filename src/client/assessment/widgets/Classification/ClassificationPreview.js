@@ -10,7 +10,6 @@ import {
   CorrectAnswersContainer,
   Stimulus,
   Subtitle,
-  CenteredText,
   InstructorStimulus,
   MathFormulaDisplay,
   QuestionNumberLabel
@@ -40,10 +39,8 @@ const ClassificationPreview = ({
   smallSize,
   editCorrectAnswers,
   theme,
-  qIndex,
   showQuestionNumber,
   disableResponse,
-  changePreviewTab,
   isReviewTab,
   setQuestionData
 }) => {
@@ -86,7 +83,7 @@ const ClassificationPreview = ({
     uiStyle: {
       columnCount: colCount,
       columnTitles: colTitles = [],
-      rowCount: rowCount,
+      rowCount,
       rowTitles: rowTitles = [],
       showDragHandle
     }
@@ -107,14 +104,9 @@ const ClassificationPreview = ({
 
   const possibleResponses =
     editCorrectAnswers.length > 0
-      ? posResp.filter(ite => {
-          return (
-            ite &&
-            editCorrectAnswers.every(i => {
-              return !i.includes(posResp.find(resp => resp.id === ite.id).id);
-            })
-          );
-        })
+      ? posResp.filter(
+          ite => ite && editCorrectAnswers.every(i => !i.includes(posResp.find(resp => resp.id === ite.id).id))
+        )
       : posResp;
 
   const initialLength = (colCount || 2) * (rowCount || 1);
@@ -147,7 +139,6 @@ const ClassificationPreview = ({
 
   const [answers, setAnswers] = useState(initialAnswers);
   const [dragItems, setDragItems] = useState(possibleResponses);
-  console.log("answers", initialAnswers);
 
   /**
    * it is used to filter out responses from the bottom container and place in correct boxes
@@ -160,11 +151,7 @@ const ClassificationPreview = ({
         (possibleResponses.length !== dragItems.length || !isEqual(possibleResponses, dragItems)))
     ) {
       setAnswers(initialAnswers);
-      const abc = possibleResponses.filter(resp => {
-        return initialAnswers.every(arr => {
-          return !arr.includes(resp.id);
-        });
-      });
+      const abc = possibleResponses.filter(resp => initialAnswers.every(arr => !arr.includes(resp.id)));
       setDragItems(abc);
     }
   }, [userAnswer, possibleResponses]);
@@ -212,9 +199,9 @@ const ClassificationPreview = ({
       }
 
       if (!duplicateResponses) {
-        const includes = posResp.flatMap(obj => obj.value).includes(itemCurrent.item);
+        const includes = posResp.flatMap(_obj => _obj.value).includes(itemCurrent.item);
         if (includes) {
-          dItems.splice(dItems.findIndex(obj => obj.value === itemCurrent.item), 1);
+          dItems.splice(dItems.findIndex(_obj => _obj.value === itemCurrent.item), 1);
           setDragItems(dItems);
         }
       }
@@ -271,9 +258,7 @@ const ClassificationPreview = ({
    */
   const flattenAnswers = answers.flat();
   const verifiedGroupDragItems = duplicateResponses
-    ? possibleResponseGroups.map(group => {
-        return shuffleOptions ? shuffle(group.responses) : group.responses;
-      })
+    ? possibleResponseGroups.map(group => (shuffleOptions ? shuffle(group.responses) : group.responses))
     : possibleResponseGroups.map(group => {
         const responses = group.responses.filter(response => !flattenAnswers.includes(response.id));
         return shuffleOptions ? shuffle(responses) : responses;
@@ -424,8 +409,8 @@ const ClassificationPreview = ({
                       justifyContent="flex-start"
                     >
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                        {verifiedDragItems.map((ite, ind) => {
-                          return duplicateResponses ? (
+                        {verifiedDragItems.map((ite, ind) =>
+                          duplicateResponses ? (
                             <DragItem
                               dragHandle={showDragHandle}
                               key={ind}
@@ -453,8 +438,8 @@ const ClassificationPreview = ({
                                 from="container"
                               />
                             )
-                          );
-                        })}
+                          )
+                        )}
                       </FlexContainer>
                     </FlexContainer>
                   </Fragment>
@@ -467,65 +452,61 @@ const ClassificationPreview = ({
 
       {previewTab === SHOW || isReviewTab ? (
         <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
-          {arrayOfCols.map((arr, i) => {
-            return (
-              <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
-                <Subtitle style={styles.correctAnswersMargins}>
-                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
-                </Subtitle>
-                {arr.map((id, index) => {
-                  const resp = posResp.find(resp => resp.id === id);
-                  return (
-                    <div style={styles.itemContainerStyle} key={index}>
-                      <IndexBox preview={preview}>{index + 1}</IndexBox>
-                      <MathFormulaDisplay
-                        style={getStyles(
-                          false,
-                          false,
-                          theme.widgets.classification.boxBgColor,
-                          theme.widgets.classification.boxBorderColor,
-                          styles.previewItemStyle
-                        )}
-                        dangerouslySetInnerHTML={{ __html: (resp && resp.value) || "" }}
-                      />
-                    </div>
-                  );
-                })}
-              </FlexContainer>
-            );
-          })}
-          {arrayOfAltCols.map((arrays, ind) => (
-            <Fragment key={ind}>
-              <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>{`${t(
-                "component.classification.alternateAnswer"
-              )} ${ind + 1}`}</Subtitle>
-              {arrays.map((arr, i) => {
+          {arrayOfCols.map((arr, i) => (
+            <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+              <Subtitle style={styles.correctAnswersMargins}>
+                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+              </Subtitle>
+              {arr.map((id, index) => {
+                const resp = posResp.find(_resp => _resp.id === id);
                 return (
-                  <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
-                    <Subtitle style={styles.correctAnswersMargins}>
-                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
-                    </Subtitle>
-                    {arr.map((id, index) => {
-                      const resp = posResp.find(resp => resp.id === id);
-                      return (
-                        <div style={styles.itemContainerStyle} key={index}>
-                          <IndexBox preview={preview}>{index + 1}</IndexBox>
-                          <MathFormulaDisplay
-                            style={getStyles(
-                              false,
-                              false,
-                              theme.widgets.classification.boxBgColor,
-                              theme.widgets.classification.boxBorderColor,
-                              styles.previewItemStyle
-                            )}
-                            dangerouslySetInnerHTML={{ __html: (resp && resp.value) || "" }}
-                          />
-                        </div>
-                      );
-                    })}
-                  </FlexContainer>
+                  <div style={styles.itemContainerStyle} key={index}>
+                    <IndexBox preview={preview}>{index + 1}</IndexBox>
+                    <MathFormulaDisplay
+                      style={getStyles(
+                        false,
+                        false,
+                        theme.widgets.classification.boxBgColor,
+                        theme.widgets.classification.boxBorderColor,
+                        styles.previewItemStyle
+                      )}
+                      dangerouslySetInnerHTML={{ __html: (resp && resp.value) || "" }}
+                    />
+                  </div>
                 );
               })}
+            </FlexContainer>
+          ))}
+          {arrayOfAltCols.map((arrays, ind) => (
+            <Fragment key={ind}>
+              <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>
+                {`${t("component.classification.alternateAnswer")} ${ind + 1}`}
+              </Subtitle>
+              {arrays.map((arr, i) => (
+                <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+                  <Subtitle style={styles.correctAnswersMargins}>
+                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+                  </Subtitle>
+                  {arr.map((id, index) => {
+                    const resp = posResp.find(_resp => _resp.id === id);
+                    return (
+                      <div style={styles.itemContainerStyle} key={index}>
+                        <IndexBox preview={preview}>{index + 1}</IndexBox>
+                        <MathFormulaDisplay
+                          style={getStyles(
+                            false,
+                            false,
+                            theme.widgets.classification.boxBgColor,
+                            theme.widgets.classification.boxBorderColor,
+                            styles.previewItemStyle
+                          )}
+                          dangerouslySetInnerHTML={{ __html: (resp && resp.value) || "" }}
+                        />
+                      </div>
+                    );
+                  })}
+                </FlexContainer>
+              ))}
             </Fragment>
           ))}
         </CorrectAnswersContainer>
@@ -542,13 +523,12 @@ ClassificationPreview.propTypes = {
   evaluation: PropTypes.array.isRequired,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
+  setQuestionData: PropTypes.any.isRequired,
   userAnswer: PropTypes.any.isRequired,
   view: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
-  qIndex: PropTypes.number,
   showQuestionNumber: PropTypes.bool,
   disableResponse: PropTypes.bool,
-  changePreviewTab: PropTypes.func.isRequired,
   isReviewTab: PropTypes.bool
 };
 
@@ -557,7 +537,6 @@ ClassificationPreview.defaultProps = {
   smallSize: false,
   editCorrectAnswers: [],
   showQuestionNumber: false,
-  qIndex: null,
   disableResponse: false,
   isReviewTab: false
 };

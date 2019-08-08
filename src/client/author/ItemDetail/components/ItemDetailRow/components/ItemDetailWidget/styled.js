@@ -17,7 +17,7 @@ export const Container = styled.div`
 
 export const Buttons = styled.div`
   position: absolute;
-  right: ${({ compact }) => (compact ? "-10px" : "20px")};
+  right: 20px;
   top: 50%;
   width: 32px;
   display: flex;

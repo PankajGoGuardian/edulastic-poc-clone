@@ -66,7 +66,7 @@ const ItemDetailWidget = ({
 
           {(!flowLayout || showButtons) && (
             <div style={{ flex: "1" }}>
-              <Buttons compact={layoutType === COMPACT}>
+              <Buttons>
                 {itemData.itemLevelScoring && widgetIndex === 0 && showPoints && (
                   <div className="points">
                     Points :{" "}

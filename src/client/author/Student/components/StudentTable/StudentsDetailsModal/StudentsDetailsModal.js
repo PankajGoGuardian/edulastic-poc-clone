@@ -13,7 +13,6 @@ class StudentsDetailsModal extends React.Component {
       {
         title: "Name",
         dataIndex: "fullName",
-        width: "50%",
         render: (fullName, { provider, role }) => {
           if (role === "student") {
             if (provider === "google" || provider === "mso") {
@@ -28,13 +27,11 @@ class StudentsDetailsModal extends React.Component {
       {
         title: "Username",
         dataIndex: "username",
-        width: "50%",
         render: username => <div>{username}</div>
       },
       {
         title: "Status",
         dataIndex: "status",
-        width: "50%",
         render: status => {
           let statusText = "";
           if (status === "SUCCESS") {
@@ -92,6 +89,7 @@ class StudentsDetailsModal extends React.Component {
             Done
           </Button>
         ]}
+        width="60%"
       >
         <Row>
           <Col span={24}>

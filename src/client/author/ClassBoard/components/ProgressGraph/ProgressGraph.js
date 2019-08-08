@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { sumBy, round } from "lodash";
 import BarGraph from "../BarGraph/BarGraph";
-
+import { Tag } from "antd";
 import {
   StyledProgress,
   StyledDiv,
@@ -11,6 +11,7 @@ import {
   GraphDescription,
   ProgressBarContainer
 } from "./styled";
+import { lightGreen4, themeColor } from "@edulastic/colors";
 
 export default class Graph extends Component {
   static propTypes = {
@@ -33,7 +34,7 @@ export default class Graph extends Component {
   };
 
   render() {
-    const { gradebook, onClickHandler, testQuestionActivities, testActivity } = this.props;
+    const { gradebook, onClickHandler, testQuestionActivities, testActivity, title = "" } = this.props;
     const absentNumber = (testActivity || []).filter(x => x.status === "absent").length;
     const percentage = round(gradebook.avgScore * 100);
     return (
@@ -43,6 +44,20 @@ export default class Graph extends Component {
             {
               // TODO: need to implement gradient stoke color
             }
+            <Tag
+              color={lightGreen4}
+              style={{
+                color: themeColor,
+                textAlign: "center",
+                width: "200px",
+                overflow: "hidden",
+                marginBottom: "5px",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap"
+              }}
+            >
+              {title}
+            </Tag>
             <StyledProgress
               className="getProgress"
               strokeLinecap="square"

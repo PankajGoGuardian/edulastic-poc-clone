@@ -608,6 +608,7 @@ class ClassBoard extends Component {
                 <StyledCard bordered={false}>
                   <Graph
                     gradebook={gradebook}
+                    title={additionalData.testName}
                     testActivity={testActivity}
                     testQuestionActivities={testQuestionActivities}
                     onClickHandler={this.onClickBarGraph}

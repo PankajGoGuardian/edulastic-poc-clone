@@ -228,7 +228,7 @@ class DisneyCardContainer extends Component {
                   if (questionAct.notStarted) {
                     return <SquareColorDisabled weight={weight} key={questionIndex} />;
                   } else if (questionAct.skipped && questionAct.score === 0) {
-                    return <SquareColorDivGray weight={weight} key={questionIndex} />;
+                    return <SquareColorDivGray title="skipped" weight={weight} key={questionIndex} />;
                   } else if (questionAct.graded === false) {
                     return <SquareColorBlue weight={weight} key={questionIndex} />;
                   } else if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {

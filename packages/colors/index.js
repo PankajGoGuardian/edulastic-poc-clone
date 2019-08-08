@@ -68,6 +68,7 @@ export const lightGreen = "#f5f9fe";
 export const lightGreen1 = "#62ebbd";
 export const lightGreen2 = "#94df5e";
 export const lightGreen3 = "#d2fca5";
+export const lightGreen4 = "#e1fbed";
 export const greenDark = "#4aac8b";
 export const greenDark1 = "#00b373";
 export const greenDark2 = "#1fb58b";

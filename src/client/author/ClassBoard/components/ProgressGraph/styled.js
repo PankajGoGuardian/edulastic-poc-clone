@@ -23,6 +23,8 @@ export const StyledDivF = styled.div``;
 export const StyledProgressDiv = styled.div`
   display: flex;
   position: relative;
+  align-items: center;
+  flex-direction: column;
 `;
 
 export const GraphDescription = styled.span`
@@ -35,7 +37,7 @@ export const GraphDescription = styled.span`
   text-transform: uppercase;
   position: absolute;
   width: 100%;
-  top: 50%;
+  top: 55%;
 `;
 
 export const GraphInfo = styled.div`

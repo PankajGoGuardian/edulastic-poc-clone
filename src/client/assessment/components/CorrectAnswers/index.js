@@ -33,24 +33,27 @@ class CorrectAnswers extends Component {
     }
   };
 
-  renderLabel = index => (
-    <FlexContainer style={{ marginBottom: 0, marginTop: 0 }}>
-      <span>
-        {this.props.t("component.correctanswers.alternate")} {index + 1}
-      </span>
-      <IconClose
-        style={{
-          marginLeft: "auto"
-        }}
-        onClick={e => {
-          e.stopPropagation();
-          this.props.onCloseTab(index);
-          this.updateCountTabs(this.calcMaxAltLen());
-        }}
-        data-cy="del-alter"
-      />
-    </FlexContainer>
-  );
+  renderLabel = index => {
+    const { t, onCloseTab } = this.props;
+    return (
+      <FlexContainer style={{ marginBottom: 0, marginTop: 0 }}>
+        <span>
+          {t("component.correctanswers.alternate")} {index + 1}
+        </span>
+        <IconClose
+          style={{
+            marginLeft: "auto"
+          }}
+          onClick={e => {
+            e.stopPropagation();
+            onCloseTab(index);
+            this.updateCountTabs(this.calcMaxAltLen());
+          }}
+          data-cy="del-alter"
+        />
+      </FlexContainer>
+    );
+  };
 
   renderAltResponses = () => {
     const { validation } = this.props;
@@ -68,28 +71,31 @@ class CorrectAnswers extends Component {
     return null;
   };
 
-  renderPlusButton = () => (
-    <Button
-      style={{
-        background: "transparent",
-        color: themeColor,
-        borderRadius: 0,
-        padding: 0,
-        boxShadow: "none",
-        marginLeft: "auto",
-        minHeight: 28
-      }}
-      onClick={() => {
-        this.props.onTabChange();
-        this.props.onAdd();
-      }}
-      color="primary"
-      variant="extendedFab"
-      data-cy="alternate"
-    >
-      {`+ ${this.props.t("component.correctanswers.alternativeAnswer")}`}
-    </Button>
-  );
+  renderPlusButton = () => {
+    const { onTabChange, onAdd, t } = this.props;
+    return (
+      <Button
+        style={{
+          background: "transparent",
+          color: themeColor,
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: "none",
+          marginLeft: "auto",
+          minHeight: 28
+        }}
+        onClick={() => {
+          onTabChange();
+          onAdd();
+        }}
+        color="primary"
+        variant="extendedFab"
+        data-cy="alternate"
+      >
+        {`+ ${t("component.correctanswers.alternativeAnswer")}`}
+      </Button>
+    );
+  };
 
   render() {
     const { t, onTabChange, children, correctTab, options, fillSections, cleanSections } = this.props;
@@ -137,14 +143,12 @@ CorrectAnswers.propTypes = {
   correctTab: PropTypes.number.isRequired,
   options: PropTypes.any,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func,
-  marginBottom: PropTypes.string
+  cleanSections: PropTypes.func
 };
 
 CorrectAnswers.defaultProps = {
   options: null,
   children: undefined,
-  marginBottom: 0,
   fillSections: () => {},
   cleanSections: () => {}
 };

@@ -63,11 +63,11 @@ const CorrectAnswers = ({ setQuestionData, produce, fillSections, cleanSections,
   return (
     <Question
       section="main"
-      label={t("component.fractionEditor.setCorrectAnswers")}
+      label={t("common.correctAnswers.setCorrectAnswers")}
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("component.fractionEditor.setCorrectAnswers")}</Subtitle>
+      <Subtitle>{t("common.correctAnswers.setCorrectAnswers")}</Subtitle>
       <FlexContainer justifyContent="flex-start" marginBottom="1em">
         <Input
           type="number"

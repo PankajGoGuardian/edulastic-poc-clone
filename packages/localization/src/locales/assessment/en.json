@@ -9,7 +9,15 @@
     "options": {
       "title": "Advanced Options",
       "exactMatch": "Exact match",
-      "partialMatch": "Partial match"
+      "partialMatch": "Partial match",
+      "mainTitle": "Options"
+    },
+    "correctAnswers": {
+      "setCorrectAnswers": "Set Correct Answer(s)"
+    },
+    "question": {
+      "composeQuestion": "Question",
+      "questionPlaceholder": "Enter the question stem here"
     }
   },
   "component": {
@@ -806,12 +814,6 @@
       "content": "Content",
       "ignoreCase": "Ignore Case",
       "mixNmatch": "Mix-n-Match alternative answers"
-    },
-    "fractionEditor": {
-      "setCorrectAnswers": "Set Correct Answer",
-      "composeQuestion": "Question",
-      "questionPlaceholder": "Enter the question stem here",
-      "fractionOptions": "Fraction Options"
     }
   }
 }

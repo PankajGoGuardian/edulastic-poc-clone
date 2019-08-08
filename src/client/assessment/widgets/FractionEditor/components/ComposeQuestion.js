@@ -15,14 +15,14 @@ const ComposeQuestion = ({ fillSections, cleanSections, t, stimulus, setQuestion
   return (
     <Question
       section="main"
-      label={t("component.fractionEditor.composeQuestion")}
+      label={t("common.question.composeQuestion")}
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("component.fractionEditor.composeQuestion")}</Subtitle>
+      <Subtitle>{t("common.question.composeQuestion")}</Subtitle>
       <FroalaEditor
         tag="textarea"
-        placeholder={t("component.fractionEditor.questionPlaceholder")}
+        placeholder={t("common.question.questionPlaceholder")}
         value={stimulus}
         toolbarId={"toolbarId"}
         onChange={onChangeQuestion}

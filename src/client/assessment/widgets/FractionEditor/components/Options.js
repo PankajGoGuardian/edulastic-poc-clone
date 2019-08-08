@@ -61,7 +61,7 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
       fillSections={fillSections}
       cleanSections={cleanSections}
     >
-      <Subtitle>{t("component.fractionEditor.fractionOptions")}</Subtitle>
+      <Subtitle>{t("common.options.mainTitle")}</Subtitle>
 
       <FlexContainer justifyContent="flex-start">
         <Col span={14}>

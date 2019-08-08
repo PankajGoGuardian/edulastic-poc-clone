@@ -23,7 +23,7 @@ const Display = ({
   const handleSelect = index => {
     const _userAnswer = [...userAnswer];
     if (_userAnswer.includes(index)) {
-      _userAnswer.splice(index);
+      _userAnswer.splice(_userAnswer.indexOf(index));
     } else {
       _userAnswer.push(index);
     }

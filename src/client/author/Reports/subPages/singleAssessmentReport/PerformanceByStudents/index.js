@@ -9,8 +9,11 @@ import {
   getReportsPerformanceByStudentsLoader
 } from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
+import { getCsvDownloadingState } from "../../../ducks";
 import { parseData, getTableData, getColumns, getProficiencyBandData } from "./util/transformers";
+import { downloadCSV } from "../../../common/util";
 
+import CsvTable from "../../../common/components/tables/CsvTable";
 import { StyledH3, StyledCard } from "../../../common/styled";
 import { UpperContainer, StyledDropDownContainer, StyledTable } from "./components/styled";
 import { Placeholder } from "../../../common/components/loader";
@@ -26,6 +29,7 @@ const PerformanceByStudents = ({
   performanceByStudents,
   getPerformanceByStudentsRequestAction,
   settings,
+  isCsvDownloading,
   loading
 }) => {
   const [ddfilter, setDdFilter] = useState({
@@ -82,6 +86,8 @@ const PerformanceByStudents = ({
     setProficiency(selected);
   };
 
+  const onCsvConvert = data => downloadCSV(`student_performance_${new Date().getTime()}.csv`, data);
+
   const _columns = getColumns(columns, res && res.testName, role);
 
   return (
@@ -126,13 +132,16 @@ const PerformanceByStudents = ({
             </Row>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-                <StyledTable
+                <CsvTable
+                  isCsvDownloading={isCsvDownloading}
+                  onCsvConvert={onCsvConvert}
                   columns={_columns}
                   dataSource={tableData}
-                  colouredCellsNo={4}
+                  colouredCellsNo={5}
                   rightAligned={8}
                   pagination={pagination}
                   onChange={setPagination}
+                  tableToRender={StyledTable}
                 />
               </Col>
             </Row>
@@ -147,7 +156,8 @@ const enhance = connect(
   state => ({
     performanceByStudents: getReportsPerformanceByStudents(state),
     loading: getReportsPerformanceByStudentsLoader(state),
-    role: getUserRole(state)
+    role: getUserRole(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getPerformanceByStudentsRequestAction

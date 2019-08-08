@@ -6,6 +6,11 @@ import { Input } from "antd";
 import { Form } from "antd";
 import { Field } from "./styled";
 import { userApi } from "@edulastic/api";
+import styled from "styled-components";
+import hashIcon from "../../../../../student/assets/hashtag-icon.svg";
+import userIcon from "../../../../../student/assets/user-icon.svg";
+import mailIcon from "../../../../../student/assets/mail-icon.svg";
+import keyIcon from "../../../../../student/assets/key-icon.svg";
 const BasicFields = ({
   stds,
   isEdit,
@@ -97,14 +102,20 @@ const BasicFields = ({
   };
 
   return (
-    <>
+    <FormBody>
       {showClassCodeField && (
         <Field name="ClassCode">
           <legend>Class Code</legend>
           <Form.Item>
             {getFieldDecorator("code", {
               rules: [{ required: true, message: "Please input the destination class" }]
-            })(<Input onBlur={evt => fetchClassDetailsUsingCode(evt.target.value)} placeholder="Enter Class Code" />)}
+            })(
+              <Input
+                prefix={<img src={hashIcon} alt="" />}
+                onBlur={evt => fetchClassDetailsUsingCode(evt.target.value)}
+                placeholder="Enter Class Code"
+              />
+            )}
           </Form.Item>
         </Field>
       )}
@@ -115,7 +126,7 @@ const BasicFields = ({
           <Form.Item>
             {getFieldDecorator("email", {
               rules: [{ validator: checkUser }, ...commonEmailValidations]
-            })(<Input placeholder="Enter Username" />)}
+            })(<Input prefix={<img src={mailIcon} alt="" />} placeholder="Enter Username" />)}
           </Form.Item>
         </Field>
       ) : (
@@ -125,7 +136,13 @@ const BasicFields = ({
             {getFieldDecorator("email", {
               rules: [...commonEmailValidations],
               initialValue: email || username
-            })(<Input placeholder="Enter Username" disabled={googleId || canvasId || cliId || cleverId} />)}
+            })(
+              <Input
+                prefix={<img src={mailIcon} alt="" />}
+                placeholder="Enter Username"
+                disabled={googleId || canvasId || cliId || cleverId}
+              />
+            )}
           </Form.Item>
         </Field>
       )}
@@ -144,7 +161,13 @@ const BasicFields = ({
                 { required: true, message: "Please provide user full name" },
                 { max: 128, message: "Must less than 128 characters!" }
               ]
-            })(<Input placeholder="Enter the name of the user" disabled={enroll} />)}
+            })(
+              <Input
+                prefix={<img src={userIcon} alt="" />}
+                placeholder="Enter the name of the user"
+                disabled={enroll}
+              />
+            )}
           </Form.Item>
         </Field>
       )}
@@ -159,7 +182,7 @@ const BasicFields = ({
                   { max: 128, message: "Must less than 128 characters!" }
                 ],
                 initialValue: firstName || ""
-              })(<Input placeholder="Enter the first name of the user" />)}
+              })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the first name of the user" />)}
             </Form.Item>
           </Field>
           <Field name="lastName">
@@ -167,7 +190,7 @@ const BasicFields = ({
             <Form.Item>
               {getFieldDecorator("lastName", {
                 initialValue: lastName || ""
-              })(<Input placeholder="Enter the last name of the user" />)}
+              })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the last name of the user" />)}
             </Form.Item>
           </Field>
         </>
@@ -183,7 +206,14 @@ const BasicFields = ({
                   { required: true, message: "Please provide a valid password" },
                   { min: 6, message: "Must larger than 6 characters!" }
                 ]
-              })(<Input type="password" placeholder="Enter Password" disabled={enroll} />)}
+              })(
+                <Input
+                  prefix={<img src={keyIcon} alt="" />}
+                  type="password"
+                  placeholder="Enter Password"
+                  disabled={enroll}
+                />
+              )}
             </Form.Item>
           </Field>
           <Field name="confirmPassword">
@@ -191,7 +221,14 @@ const BasicFields = ({
             <Form.Item>
               {getFieldDecorator("confirmPassword", {
                 rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
-              })(<Input type="password" placeholder="Confirm Password" disabled={enroll} />)}
+              })(
+                <Input
+                  prefix={<img src={keyIcon} alt="" />}
+                  type="password"
+                  placeholder="Confirm Password"
+                  disabled={enroll}
+                />
+              )}
             </Form.Item>
           </Field>
         </>
@@ -200,7 +237,9 @@ const BasicFields = ({
           <Field name="password">
             <legend>Password</legend>
             <Form.Item>
-              {getFieldDecorator("password", {})(<Input type="password" placeholder="Enter Password" />)}
+              {getFieldDecorator("password", {})(
+                <Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Enter Password" />
+              )}
             </Form.Item>
           </Field>
           <Field name="confirmPassword">
@@ -208,12 +247,12 @@ const BasicFields = ({
             <Form.Item>
               {getFieldDecorator("confirmPassword", {
                 rules: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }]
-              })(<Input type="password" placeholder="Confirm Password" />)}
+              })(<Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Confirm Password" />)}
             </Form.Item>
           </Field>
         </>
       )}
-    </>
+    </FormBody>
   );
 };
 
@@ -232,3 +271,11 @@ export default connect(state => ({
   students: get(state, "manageClass.studentsList", []),
   districtId: get(state, "user.user.orgData.districtId", "")
 }))(BasicFields);
+
+const FormBody = styled.div`
+  .ant-input-affix-wrapper {
+    .ant-input-prefix {
+      width: 15px;
+    }
+  }
+`;

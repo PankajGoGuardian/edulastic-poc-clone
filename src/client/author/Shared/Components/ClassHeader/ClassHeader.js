@@ -367,9 +367,9 @@ class ClassHeader extends Component {
             bodyText={
               <div>
                 <StudentStatusDetails>
-                  {notStartedStudents.length ? <p>{notStartedStudents.length} student(s) have not started yet</p> : ""}
+                  {notStartedStudents.length ? <p>{notStartedStudents.length} student(s) have not yet started</p> : ""}
                   {inProgressStudents.length ? (
-                    <p>{inProgressStudents.length} student(s) have not submitted yet</p>
+                    <p>{inProgressStudents.length} student(s) have not yet submitted</p>
                   ) : (
                     ""
                   )}

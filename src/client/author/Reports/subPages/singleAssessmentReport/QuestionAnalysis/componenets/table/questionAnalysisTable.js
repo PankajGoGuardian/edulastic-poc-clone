@@ -4,9 +4,10 @@ import { get, keyBy, isEmpty } from "lodash";
 import next from "immer";
 
 import { roleuser } from "@edulastic/constants";
-import { getHSLFromRange1 } from "../../../../../common/util";
+import { getHSLFromRange1, downloadCSV } from "../../../../../common/util";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { StyledTable } from "../styled";
+import CsvTable from "../../../../../common/components/tables/CsvTable";
 import columns from "../../static/json/tableColumns.json";
 
 const comparedByToToolTipLabel = {
@@ -38,7 +39,7 @@ const sortNumbers = (compareByType, index, key) => (a, b) => {
   return _a - _b;
 };
 
-export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role }) => {
+export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role, isCsvDownloading, compareByTitle }) => {
   const colouredCells = (compareByType, index) => (text, record) => {
     const tooltipText = (_compareByType, _record, _index) => {
       return (
@@ -171,8 +172,13 @@ export const QuestionAnalysisTable = ({ tableData, compareBy, filter, role }) =>
     });
   }, [filter]);
 
+  const onCsvConvert = data => downloadCSV(`Question Performance Analysis Report by ${compareByTitle}.csv`, data);
+
   return (
-    <StyledTable
+    <CsvTable
+      isCsvDownloading={isCsvDownloading}
+      onCsvConvert={onCsvConvert}
+      tableToRender={StyledTable}
       columns={_columns}
       dataSource={_tableData}
       rowKey={"questionId"}

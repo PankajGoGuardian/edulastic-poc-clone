@@ -36,6 +36,7 @@ import {
 import { AnswerContext } from "@edulastic/common";
 
 import { getQuestionLabels } from "../ClassBoard/Transformer";
+import { IconFeedback } from "@edulastic/icons";
 
 const _getquestionLabels = memoizeOne(getQuestionLabels);
 
@@ -219,6 +220,7 @@ class StudentViewContainer extends Component {
             </PartiallyCorrectButton>
           </StudentButtonDiv>
           <GiveOverallFeedBackButton onClick={() => this.handleShowFeedbackPopup(true)} active>
+            <IconFeedback color={"#fff"} />
             {initFeedbackValue.length ? (
               <Tooltip title={feedbackButtonToolTip}>
                 <span>{`${initFeedbackValue.slice(0, 30)}${initFeedbackValue.length > 30 ? "....." : ""}`}</span>

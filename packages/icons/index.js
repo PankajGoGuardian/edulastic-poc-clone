@@ -168,3 +168,4 @@ export { default as IconExclamationMark } from "./src/IconExclamationMark";
 export { default as IconFilterClass } from "./src/IconFilterClass";
 export { default as IconVolumeUp } from "./src/IconVolumeUp";
 export { default as IconNoVolume } from "./src/IconNoVolume";
+export { default as IconFeedback } from "./src/IconFeedback";

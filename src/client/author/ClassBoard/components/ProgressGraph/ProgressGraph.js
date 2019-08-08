@@ -49,7 +49,7 @@ export default class Graph extends Component {
               style={{
                 color: themeColor,
                 textAlign: "center",
-                width: "200px",
+                width: "100%",
                 overflow: "hidden",
                 marginBottom: "5px",
                 textOverflow: "ellipsis",

@@ -5,11 +5,11 @@ const methods = {
   IS_SIMPLIFIED: "isSimplified",
   IS_FACTORISED: "isFactorised",
   IS_EXPANDED: "isExpanded",
+  IS_RATIONALIZED: "isRationalized",
   IS_TRUE: "isTrue",
   IS_UNIT: "isUnit",
   STRING_MATCH: "stringMatch",
-  EQUIV_SYNTAX: "equivSyntax",
-  IS_RATIONALIZED: "isRationalized"
+  EQUIV_SYNTAX: "equivSyntax"
 };
 
 const fields = {

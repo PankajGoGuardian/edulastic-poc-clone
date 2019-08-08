@@ -399,7 +399,7 @@ function* receiveTestByIdSaga({ payload }) {
   try {
     const createdItems = yield select(getTestCreatedItemsSelector);
     let entity = yield call(testsApi.getById, payload.id, { data: true });
-    entity.testItems = uniqBy([...entity.testItems, ...createdItems], "_id");
+    entity.testItems = uniqBy([...createdItems, ...entity.testItems], "_id");
     const questions = getQuestions(entity.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));

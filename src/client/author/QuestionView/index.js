@@ -308,7 +308,7 @@ class QuestionViewContainer extends Component {
         {testActivity &&
           !loading &&
           testActivity.map((student, index) => {
-            if (!student.testActivityId || classQuestion.length === 0) {
+            if (!student.testActivityId) {
               return null;
             }
             return (

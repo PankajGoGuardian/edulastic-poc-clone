@@ -16,8 +16,8 @@ const convertNumToPixel = val => {
 const Container = styled.div`
   width: 100%;
   img {
-    height: ${({ height }) => `${convertNumToPixel(height)} !important`};
-    width: ${({ width }) => `${convertNumToPixel(width)} !important`};
+    height: 100%;
+    width: 100%;
     margin: 0px !important;
   }
   .clipText {

@@ -411,7 +411,6 @@ class Display extends Component {
     const dragItemStyle = {
       border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
       margin: 5,
-      padding: 5,
       display: "flex",
       alignItems: "center",
       width: "max-content",

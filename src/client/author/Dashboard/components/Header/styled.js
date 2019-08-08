@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { Layout, Button } from "antd";
+import { Layout, Button, Typography } from "antd";
 import { IconPlusCircle } from "@edulastic/icons";
-import { Typography } from "antd";
-import { green } from "@edulastic/colors";
+import { green, mediumDesktopWidth } from "@edulastic/colors";
+
 const { Text } = Typography;
 const { Header } = Layout;
 
@@ -16,6 +16,10 @@ export const HeaderWrapper = styled(Header)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 60px;
+  }
 `;
 export const TitleWrapper = styled.h1`
   font-size: ${props => props.theme.header.headerTitleFontSize};
@@ -35,6 +39,10 @@ export const ManageClassButton = styled(Button)`
   border-radius: 50px;
   &:hover {
     color: ${props => props.theme.header.headerBgColor};
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    height: 36px;
   }
 `;
 

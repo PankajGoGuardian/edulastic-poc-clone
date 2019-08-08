@@ -9,7 +9,7 @@ import { questionType as constantsQuestionType } from "@edulastic/constants";
 import { Progress, withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
-import { Row, Col, Switch, Input, Layout, Select, Button } from "antd";
+import { Row, Col, Switch, Input, Layout, Select, Button, Modal } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector, getPreviewSelector } from "../../../src/selectors/view";
@@ -82,6 +82,7 @@ const defaultEmptyItem = {
 class Container extends Component {
   state = {
     showModal: false,
+    showRemovePassageItemPopup: false,
     showSettings: false
   };
 
@@ -405,7 +406,13 @@ class Container extends Component {
     this.props.createItem(data);
   };
 
-  deleteItemFromPassage = () => {
+  handleRemoveItemRequest = () => {
+    this.setState({
+      showRemovePassageItemPopup: true
+    });
+  };
+
+  removeItemAndUpdatePassage = () => {
     const { item, passage } = this.props;
     const id = item._id;
     const { testItems } = passage;
@@ -414,7 +421,14 @@ class Container extends Component {
     const redirectId = removedArray[originalIndex]
       ? removedArray[originalIndex]
       : removedArray[removedArray.length - 1];
+    this.closeRemovePassageItemPopup();
     this.props.deleteItem({ id: item._id, redirectId });
+  };
+
+  closeRemovePassageItemPopup = () => {
+    this.setState({
+      showRemovePassageItemPopup: false
+    });
   };
 
   goToItem = id => {
@@ -422,7 +436,7 @@ class Container extends Component {
   };
 
   render() {
-    const { showModal, showSettings } = this.state;
+    const { showModal, showSettings, showRemovePassageItemPopup } = this.state;
     const {
       t,
       match,
@@ -482,6 +496,22 @@ class Container extends Component {
 
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
+        <Modal
+          visible={showRemovePassageItemPopup}
+          title="Remove Item"
+          onCancel={this.closeRemovePassageItemPopup}
+          centered={true}
+          footer={[
+            <Button key="cancel" onClick={this.closeRemovePassageItemPopup}>
+              Cancel
+            </Button>,
+            <Button key="submit" onClick={this.removeItemAndUpdatePassage} type="primary">
+              Remove
+            </Button>
+          ]}
+        >
+          <p> Do you really want to remove the item?</p>
+        </Modal>
         <Layout>
           {showModal && item && (
             <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
@@ -564,24 +594,26 @@ class Container extends Component {
                           )}
                         </Col>
                         <Col span={12}>
-                          <Button.Group>
-                            <Button
-                              disabled={this.props.itemDeleting}
-                              onClick={this.addItemToPassage}
-                              style={{ display: "inline" }}
-                              size="small"
-                            >
-                              +
-                            </Button>
-                            <Button
-                              disabled={this.props.itemDeleting}
-                              onClick={this.deleteItemFromPassage}
-                              style={{ display: "inline" }}
-                              size="small"
-                            >
-                              -
-                            </Button>
-                          </Button.Group>
+                          {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
+                            <Button.Group>
+                              <Button
+                                disabled={this.props.itemDeleting}
+                                onClick={this.addItemToPassage}
+                                style={{ display: "inline" }}
+                                size="small"
+                              >
+                                +
+                              </Button>
+                              <Button
+                                disabled={this.props.itemDeleting}
+                                onClick={this.handleRemoveItemRequest}
+                                style={{ display: "inline" }}
+                                size="small"
+                              >
+                                -
+                              </Button>
+                            </Button.Group>
+                          )}
                         </Col>
                       </Row>
                     )}

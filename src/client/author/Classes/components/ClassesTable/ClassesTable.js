@@ -13,16 +13,10 @@ import {
   StyledFilterInput,
   StyledSchoolSearch as StyledSearch,
   StyledActionDropDown,
-  StyledClassName
+  StyledClassName,
+  StyledAddFilterButton
 } from "../../../../admin/Common/StyledComponents";
-import {
-  StyledTableContainer,
-  StyledTable,
-  StyledTableButton,
-  StyledAddFilterButton,
-  TeacherSpan,
-  StyledPagination
-} from "./styled";
+import { StyledTableContainer, StyledTable, StyledTableButton, TeacherSpan, StyledPagination } from "./styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
 import EditClassModal from "./EditClassModal/EditClassModal";

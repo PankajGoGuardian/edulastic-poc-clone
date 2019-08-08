@@ -70,7 +70,7 @@ export const createSummaryData = (items, scoring) => {
         summary.standards.push(...standardSummary);
       }
     }
-    summary.standards = uniqBy(summary.standards, "curriculumId");
+    summary.standards = uniqBy(summary.standards, "identifier");
     summary.totalPoints += itemPoints;
     summary.totalQuestions += itemTotalQuestions;
   }

@@ -5,11 +5,9 @@ import { FieldLabel } from "./components";
 import Uploader from "./Uploader";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
-const defaultImage = "https://fakeimg.pl/1000x300/";
-
 const LeftField = props => {
   const { thumbnailUri, tags } = props;
-  const [thumbnail, setThumbnail] = useState(thumbnailUri || defaultImage);
+  const [thumbnail, setThumbnail] = useState(thumbnailUri);
   return (
     <>
       <FieldLabel label="Class Image" optional {...props} fiedlName="thumbnail" initialValue={thumbnail}>

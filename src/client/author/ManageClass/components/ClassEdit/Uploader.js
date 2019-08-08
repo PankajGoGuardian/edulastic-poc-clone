@@ -13,9 +13,7 @@ import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
 import { beforeUpload } from "@edulastic/common";
 
 class Uploader extends React.Component {
-  state = {
-    imageUrl: "https://fakeimg.pl/1000x500/"
-  };
+  state = {};
 
   handleChange = async info => {
     try {

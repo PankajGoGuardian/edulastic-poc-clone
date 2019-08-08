@@ -68,7 +68,9 @@ const ClassCard = ({ t, classItem, windowWidth }) => {
             </InfoContent>
           </Col>
 
-          <Link to={{ pathname: "/home/assignments", classItem }}>
+          <Link
+            to={active === 1 ? { pathname: "/home/assignments", classItem } : { pathname: "/home/reports", classItem }}
+          >
             <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
           </Link>
         </CardBody>

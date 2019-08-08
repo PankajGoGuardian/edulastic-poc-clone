@@ -82,6 +82,7 @@ const reducer = (state = initialState, { type, payload }) => {
             if (qAct.notStarted) {
               qAct.skipped = true;
               qAct.notStarted = undefined;
+              qAct.score = 0;
             }
           }
         }

@@ -21,6 +21,7 @@ class EditClassModal extends Component {
           subject: row.subject,
           grades: row.grades,
           tags: row.tags,
+          courseId: row.courseId,
           // not implemented in add model so sending empty if not present i.e. created in da settings
           standardSets: standardSets || [],
           courseId: row.courseId

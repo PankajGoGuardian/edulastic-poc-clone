@@ -62,14 +62,18 @@ class EditCourseModal extends React.Component {
         sortField: "name",
         order: "asc",
         search: {
-          name: {
-            type: "eq",
-            value: [nameValidate.value]
-          },
-          number: {
-            type: "eq",
-            value: [numberValidate.value]
-          }
+          name: [
+            {
+              type: "eq",
+              value: nameValidate.value
+            }
+          ],
+          number: [
+            {
+              type: "eq",
+              value: numberValidate.value
+            }
+          ]
         }
       });
 

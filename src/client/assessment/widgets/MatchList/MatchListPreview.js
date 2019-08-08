@@ -58,7 +58,6 @@ const MatchListPreview = ({
   t,
   previewTab,
   smallSize,
-  editCorrectAnswers,
   theme,
   showQuestionNumber,
   qIndex,
@@ -98,13 +97,18 @@ const MatchListPreview = ({
   let validArray = itemValidation.validResponse && itemValidation.validResponse.value;
   validArray = validArray || [];
   const altArray = itemValidation.altResponses || [];
-  let groupArrays = [];
 
-  possibleResponseGroups.forEach(o => {
-    groupArrays = [...groupArrays, ...o.responses];
-  });
+  const getPossibleResponses = () => {
+    if (!groupPossibleResponses) {
+      return [...posResponses];
+    }
 
-  const possibleResponses = groupPossibleResponses ? groupArrays : posResponses;
+    let groupArrays = [];
+    possibleResponseGroups.forEach(o => {
+      groupArrays = [...groupArrays, ...o.responses];
+    });
+    return groupArrays;
+  };
 
   const [ans, setAns] = useState(
     Array.isArray(userAnswer) && !userAnswer.every(answer => answer === null)
@@ -112,19 +116,9 @@ const MatchListPreview = ({
       : Array.from({ length: list.length }).fill(null)
   );
 
-  let [dragItems, setDragItems] = useState(
-    possibleResponses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
+  const [dragItems, setDragItems] = useState(
+    getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
   );
-
-  if (editCorrectAnswers.length > 0) {
-    if (
-      !isEqual(ans, editCorrectAnswers) ||
-      !isEqual(dragItems, possibleResponses.filter(ite => !editCorrectAnswers.includes(ite)))
-    ) {
-      setAns(editCorrectAnswers);
-      setDragItems(possibleResponses.filter(ite => !editCorrectAnswers.includes(ite)));
-    }
-  }
 
   useEffect(() => {
     setAns(
@@ -132,8 +126,8 @@ const MatchListPreview = ({
         ? userAnswer
         : Array.from({ length: list.length }).fill(null)
     );
-    setDragItems(possibleResponses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
-  }, [userAnswer]);
+    setDragItems(getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
+  }, [userAnswer, posResponses, possibleResponseGroups]);
 
   const preview = previewTab === CHECK || previewTab === SHOW;
 
@@ -233,12 +227,6 @@ const MatchListPreview = ({
   if (shuffleOptions === true) {
     dragItems = shuffle(dragItems);
   }
-
-  const choicesImageStyle = {
-    maxWidth: "220px !important",
-    maxHeight: "120px !important",
-    width: "auto !important"
-  };
 
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -422,7 +410,6 @@ const MatchListPreview = ({
 
 MatchListPreview.propTypes = {
   previewTab: PropTypes.string,
-  editCorrectAnswers: PropTypes.array,
   t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
@@ -440,7 +427,6 @@ MatchListPreview.propTypes = {
 MatchListPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
-  editCorrectAnswers: [],
   userAnswer: [],
   showQuestionNumber: false,
   qIndex: null,

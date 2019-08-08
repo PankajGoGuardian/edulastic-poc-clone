@@ -33,9 +33,15 @@ const Container = styled.div`
   background-color: ${dashBorderColor};
   flex: 2;
   img {
-    width: 220px;
-    z-index: 100;
-    position: relative;
+    ${({ imageStyle }) => {
+      return imageStyle
+        ? `
+        width: 220px;
+        z-index: 100;
+        position: relative;
+      `
+        : null;
+    }}
     ${({ imageStyle }) => imageStyle}
   }
 `;

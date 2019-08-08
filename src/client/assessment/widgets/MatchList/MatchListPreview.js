@@ -296,7 +296,7 @@ const MatchListPreview = ({
         </FlexContainer>
 
         {!disableResponse && (
-          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")} imageStyle={choicesImageStyle}>
+          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
             <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
                 {groupPossibleResponses ? (
@@ -387,11 +387,11 @@ const MatchListPreview = ({
       )}
       {previewTab === SHOW || isReviewTab ? (
         <Fragment>
-          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")} imageStyle={choicesImageStyle}>
+          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
             {list.map((ite, i) => (
               <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
-                  <MathFormulaDisplay style={centerContent} stem dangerouslySetInnerHTML={{ __html: ite }} />
+                  <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <CorItem index={i}>
                   <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
@@ -401,11 +401,11 @@ const MatchListPreview = ({
           </CorrectAnswersContainer>
 
           {hasAlternateAnswers && (
-            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")} imageStyle={choicesImageStyle}>
+            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} marginBottom="10px" alignItems="center">
                   <CorTitle>
-                    <MathFormulaDisplay style={centerContent} stem dangerouslySetInnerHTML={{ __html: list[i] }} />
+                    <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
                   <CorItem index={i}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />

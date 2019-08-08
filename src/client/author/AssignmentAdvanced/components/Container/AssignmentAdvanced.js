@@ -117,7 +117,12 @@ class AssignmentAdvanced extends Component {
 
     return (
       <div>
-        <EditTestModal visible={openEditPopup} onCancel={() => this.toggleEditModal(false)} onOk={this.onEnableEdit} />
+        <EditTestModal
+          visible={openEditPopup}
+          isUsed={true}
+          onCancel={() => this.toggleEditModal(false)}
+          onOk={this.onEnableEdit}
+        />
 
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}

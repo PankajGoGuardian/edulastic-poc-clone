@@ -20,10 +20,15 @@ export default WrappedComponent => {
               type="number"
               data-cy="points"
               value={points}
-              onChange={e => onChangePoints(+e.target.value)}
+              onChange={e => {
+                if (e.target.value > 0) {
+                  onChangePoints(+e.target.value);
+                }
+              }}
+              step={0.5}
               style={{ width: 140, textAlign: "center", fontSize: 14 }}
               size="large"
-              min={0}
+              min={0.5}
             />
             <PointsText>{t("component.correctanswers.points")}</PointsText>
           </Container>

@@ -176,7 +176,7 @@ class ClozeDropDownDisplay extends Component {
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
     };
-    const QuestionContent = () => (
+    const questionContent = (
       <ContentWrapper fontSize={fontSize}>
         <JsxParser
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
@@ -196,9 +196,9 @@ class ClozeDropDownDisplay extends Component {
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>}
           <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-          {!question && <QuestionContent />}
+          {!question && questionContent}
         </QuestionTitleWrapper>
-        {question && <QuestionContent />}
+        {question && questionContent}
         {answerBox}
       </div>
     );
@@ -218,6 +218,8 @@ ClozeDropDownDisplay.propTypes = {
   configureOptions: PropTypes.object,
   evaluation: PropTypes.array,
   uiStyle: PropTypes.object,
+  changePreviewTab: PropTypes.func.isRequired,
+  previewTab: PropTypes.func.isRequired,
   instructorStimulus: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,

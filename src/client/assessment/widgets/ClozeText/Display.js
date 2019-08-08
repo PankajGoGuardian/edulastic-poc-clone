@@ -181,7 +181,7 @@ class ClozeTextDisplay extends Component {
       cAnswers: get(item, "validation.validResponse.value", [])
     };
 
-    const QuestionContent = () => (
+    const QuestionContent = (
       <JsxParser
         bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
         showWarnings

@@ -11,6 +11,7 @@ import { StyledCard, UpperContainer, TableContainer } from "./componenets/styled
 import { getChartData, getTableData } from "./utils/transformers";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import dropDownData from "./static/json/dropDownData.json";
+import { getCsvDownloadingState } from "../../../ducks";
 
 import {
   getQuestionAnalysisRequestAction,
@@ -19,7 +20,14 @@ import {
 } from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
 
-const QuestionAnalysis = ({ questionAnalysis, getQuestionAnalysisRequestAction, role, settings, loading }) => {
+const QuestionAnalysis = ({
+  questionAnalysis,
+  getQuestionAnalysisRequestAction,
+  role,
+  settings,
+  loading,
+  isCsvDownloading
+}) => {
   const [compareBy, setCompareBy] = useState(role === "teacher" ? "groupId" : "schoolId");
   const [chartFilter, setChartFilter] = useState({});
 
@@ -109,7 +117,13 @@ const QuestionAnalysis = ({ questionAnalysis, getQuestionAnalysisRequestAction, 
                   </Row>
                 </Col>
                 <Col className={"bottom-table-container"}>
-                  <QuestionAnalysisTable tableData={tableData} compareBy={compareBy} filter={chartFilter} role={role} />
+                  <QuestionAnalysisTable
+                    isCsvDownloading={isCsvDownloading}
+                    tableData={tableData}
+                    compareBy={compareBy}
+                    filter={chartFilter}
+                    role={role}
+                  />
                 </Col>
               </Row>
             </StyledCard>
@@ -124,7 +138,8 @@ export default connect(
   state => ({
     questionAnalysis: getReportsQuestionAnalysis(state),
     loading: getReportsQuestionAnalysisLoader(state),
-    role: getUserRole(state)
+    role: getUserRole(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   { getQuestionAnalysisRequestAction }
 )(QuestionAnalysis);

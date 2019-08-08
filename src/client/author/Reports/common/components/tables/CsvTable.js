@@ -17,7 +17,11 @@ const CsvTable = ({
   const Component = tableToRender;
   const childrenRef = useRef(null);
 
-  let _pagination = pagination;
+  let _pagination = { ...pagination };
+
+  if (typeof _pagination.pageSize === "undefined") {
+    _pagination.pageSize = 10;
+  }
 
   if (isCsvDownloading) {
     _pagination.pageSize = dataSource.length;

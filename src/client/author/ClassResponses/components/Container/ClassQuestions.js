@@ -54,6 +54,8 @@ class ClassQuestions extends Component {
     selectedTestItem: []
   };
 
+  static contextType = AnswerContext;
+
   componentDidMount() {
     const { loadScratchPad, questionActivities } = this.props;
     const userWork = {};
@@ -88,14 +90,16 @@ class ClassQuestions extends Component {
     let {
       classResponse: { testItems }
     } = this.props;
-    testItems = this.props.testItemsData;
+    if (!this.context.expressGrader && testItems) {
+      testItems = this.props.testItemsData.filter(tid => testItems.find(ti => ti._id === tid._id));
+    }
     const userQActivities =
       currentStudent && currentStudent.questionActivities ? currentStudent.questionActivities : [];
     if (!testItems) {
       return [];
     }
 
-    const { testItemsOrder } = this.props;
+    const { testItemsOrder = {} } = this.props;
     testItems = testItems
       .sort((x, y) => testItemsOrder[x._id] - testItemsOrder[y._id])
       .map(item => {

@@ -86,7 +86,7 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
 /**
  *
  * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]} testItemsData
- * @param {string[]} testItems
+ * @param {{itemId:string}[]} testItems
  * @returns {{[qid:string]:{qLabel:string, barLabel: string } }}
  */
 export const getQuestionLabels = (testItemsData, testItems) => {
@@ -96,7 +96,7 @@ export const getQuestionLabels = (testItemsData, testItems) => {
   const result = {};
   const testItemsdataKeyed = keyBy(testItemsData, "_id");
   for (let i = 0; i < testItems.length; i++) {
-    const item = testItemsdataKeyed[testItems[i]];
+    const item = testItemsdataKeyed[testItems[i].itemId];
     if (!item) {
       continue;
     }
@@ -291,7 +291,7 @@ export const transformGradeBookResponse = ({
               testItemId,
               barLabel,
               qLabel,
-              ...(submitted ? { skipped: true } : { notStarted: true })
+              ...(submitted ? { skipped: true, score: 0 } : { notStarted: true })
             };
           }
           let {

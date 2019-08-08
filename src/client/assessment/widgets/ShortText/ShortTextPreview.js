@@ -39,8 +39,13 @@ const ShortTextPreview = ({
   useEffect(() => {
     if (Array.isArray(userAnswer)) {
       setText("");
+      /**
+       * to display already enetered user response
+       */
+    } else if (typeof userAnswer === "string" && userAnswer) {
+      setText(userAnswer);
     }
-  });
+  }, [userAnswer]);
 
   const handleTextChange = e => {
     const val = e.target.value;

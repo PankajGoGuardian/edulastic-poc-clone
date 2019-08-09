@@ -159,13 +159,6 @@ export const StyledTable = styled(Table)`
   // DO NOT ADD USE CASE SPECIFIC CSS HERE, ONLY ADD GENERIC CSS
   // Import this and add USE CASE SPECIFIC CSS
 
-  th,
-  td {
-    &.hide {
-      display: none;
-    }
-  }
-
   .ant-table-body,
   .ant-table-scroll {
     .ant-table-header {

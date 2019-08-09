@@ -5,6 +5,7 @@ import { CustomTableTooltip } from "../../../../../../common/components/customTa
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
 import { StyledTable, StyledCell } from "../../../../../../common/styled";
 import { getHSLFromRange1 } from "../../../../../../common/util";
+import CsvTable from "../../../../../../common/components/tables/CsvTable";
 
 const getCol = (text, backgroundColor) => {
   return <StyledCell style={{ backgroundColor }}>{text ? `${text}%` : "N/A"}</StyledCell>;
@@ -98,26 +99,39 @@ const getColumns = (studentName = "") => {
   ];
 };
 
-const AssessmentTable = ({ data, studentName, selectedTests }) => {
+const AssessmentTable = ({ data, studentName, selectedTests, isCsvDownloading, onCsvConvert }) => {
   const columns = getColumns(studentName);
 
   const filteredData = filter(data, test => {
     return selectedTests.length ? includes(selectedTests, test.uniqId) : true;
   });
 
-  return <StyledTable dataSource={filteredData} columns={columns} colouredCellsNo={1} />;
+  return (
+    <CsvTable
+      dataSource={filteredData}
+      columns={columns}
+      colouredCellsNo={1}
+      tableToRender={StyledTable}
+      onCsvConvert={onCsvConvert}
+      isCsvDownloading={isCsvDownloading}
+    />
+  );
 };
 
 AssessmentTable.propTypes = {
   data: PropTypes.array,
   studentName: PropTypes.string,
-  selectedTests: PropTypes.array
+  selectedTests: PropTypes.array,
+  isCsvDownloading: PropTypes.bool,
+  onCsvConvert: PropTypes.func
 };
 
 AssessmentTable.defaultProps = {
   data: [],
   studentName: "",
-  selectedTests: []
+  selectedTests: [],
+  isCsvDownloading: false,
+  onCsvConvert: () => {}
 };
 
 export default AssessmentTable;

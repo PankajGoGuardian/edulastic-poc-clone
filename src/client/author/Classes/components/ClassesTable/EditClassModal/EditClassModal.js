@@ -118,12 +118,6 @@ class EditClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label="Subject">
               {getFieldDecorator("subject", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please select subject"
-                  }
-                ],
                 initialValue: subject
               })(
                 <Select placeholder="Select Subject">
@@ -141,12 +135,6 @@ class EditClassModal extends Component {
           <Col span={24}>
             <ModalFormItem label="Grades">
               {getFieldDecorator("grades", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please select grades"
-                  }
-                ],
                 initialValue: grades
               })(
                 <Select placeholder="Select Grades" mode="multiple">

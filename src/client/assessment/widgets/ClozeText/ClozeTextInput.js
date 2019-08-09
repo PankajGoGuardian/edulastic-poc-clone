@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Input } from "antd";
@@ -101,8 +101,13 @@ const ClozeTextInput = ({ resprops, id }) => {
   }
   const [input, setInput] = useState({ id, value });
 
+  useEffect(() => {
+    setInput({ id, value });
+  }, [value]);
+
   const _getValue = val => {
     const newStr = value.split("");
+    const selection = getInputSelection(ref.current);
     newStr.splice(selection.start, selection.end - selection.start, val);
     return newStr.join("");
   };
@@ -128,7 +133,7 @@ const ClozeTextInput = ({ resprops, id }) => {
   let height = style.height || "auto";
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
   if (view === "edit") {
-    if (uiStyle.globalSettings) {
+    if (view === "edit" && uiStyle.globalSettings) {
       width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
       height = style.height || "auto";
     } else {
@@ -136,6 +141,7 @@ const ClozeTextInput = ({ resprops, id }) => {
       height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
     }
   } else {
+    // eslint-disable-next-line no-lonely-if
     if (uiStyle.globalSettings) {
       width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
       height = style.height || "auto";
@@ -155,7 +161,7 @@ const ClozeTextInput = ({ resprops, id }) => {
         ref={ref}
         type={type}
         onChange={e => handleInputChange({ value: e.target.value, id })}
-        onBlur={_ => onChange(input)}
+        onBlur={() => onChange(input)}
         disabled={disableResponse}
         wrap={item.multiple_line ? "" : "off"}
         value={input.value || ""}
@@ -178,9 +184,9 @@ const ClozeTextInput = ({ resprops, id }) => {
         <NumberPad
           buttonStyle={{ height: "100%", width: 30, position: "absolute", right: 0, top: 0 }}
           onChange={(_, val) => {
-            _change({
+            handleInputChange({
               value: _getValue(val),
-              index
+              id
             });
             ref.current.focus();
           }}

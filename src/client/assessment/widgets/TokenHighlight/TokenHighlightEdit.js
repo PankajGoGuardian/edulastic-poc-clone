@@ -65,15 +65,9 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
           draft.validation.altResponses = [];
         }
 
-        const _valid = cloneDeep(draft.validation.validResponse.value);
         draft.validation.altResponses.push({
           score: 1,
-          value: _valid
-            ? _valid.map(v => {
-                v.selected = false;
-                return v;
-              })
-            : []
+          value: []
         });
       })
     );

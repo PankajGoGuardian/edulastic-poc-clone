@@ -470,6 +470,13 @@ class Container extends Component {
       hasAuthorPermission
     } = this.props;
 
+    let breadCrumbQType = "";
+    if (item.passageId && item.canAddMultipleItems) {
+      breadCrumbQType = "Passage with Multipe Questions";
+    } else if (item.passageId && !item.canAddMultipleItems) {
+      breadCrumbQType = "Passage with Multiple parts";
+    }
+
     const passageTestItems = get(passage, "testItems", []);
     const currentPassageIndex = passageTestItems.indexOf(item._id);
 
@@ -583,7 +590,7 @@ class Container extends Component {
             <BreadCrumbBar>
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
-                  <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
+                  <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
                     {item.canAddMultipleItems && passage && (
                       <Row type="flex" style={{ width: 145 }} justify="end">
                         <Col span={12}>

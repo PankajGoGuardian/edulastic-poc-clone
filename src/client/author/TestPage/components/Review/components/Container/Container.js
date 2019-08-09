@@ -178,6 +178,12 @@ class Review extends PureComponent {
   };
 
   handleChangePoints = (testItemId, value) => {
+    /**
+     * prevent zero or less
+     */
+    if (!(value > 0)) {
+      return;
+    }
     const { test, setData } = this.props;
     const newData = cloneDeep(test);
 

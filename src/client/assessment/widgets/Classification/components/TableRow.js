@@ -111,7 +111,7 @@ const TableRow = ({
               width: 200,
               minHeight: 39
             }}
-            dangerouslySetInnerHTML={{ __html: "<p>Row header</p>" }}
+            dangerouslySetInnerHTML={{ __html: rowHeader }}
           />
         </RowTitleCol>
       </Rnd>
@@ -227,7 +227,6 @@ TableRow.propTypes = {
   drop: PropTypes.func.isRequired,
   answers: PropTypes.array.isRequired,
   preview: PropTypes.bool.isRequired,
-  possibleResponses: PropTypes.array.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   onDrop: PropTypes.func.isRequired,
   validArray: PropTypes.array.isRequired,

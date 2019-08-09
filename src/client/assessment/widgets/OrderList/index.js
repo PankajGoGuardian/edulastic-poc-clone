@@ -314,20 +314,22 @@ const OrderList = ({
 
               {hasAltAnswers && (
                 <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
-                  {Object.keys(alternateAnswers).map(key => (
-                    <CorrectAnswerItem theme={theme}>
-                      <Text>
-                        <Index>{key}</Index>
-                        <FlexContainer justifyContent="center" style={{ width: "100%" }}>
-                          <QuestionText>
-                            <MathFormulaDisplay
-                              dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }}
-                            />
-                          </QuestionText>
-                        </FlexContainer>
-                      </Text>
-                    </CorrectAnswerItem>
-                  ))}
+                  <ItemsWrapper styleType={styleType}>
+                    {Object.keys(alternateAnswers).map(key => (
+                      <CorrectAnswerItem theme={theme}>
+                        <Text>
+                          <Index>{key}</Index>
+                          <FlexContainer justifyContent="center" style={{ width: "100%" }}>
+                            <QuestionText>
+                              <MathFormulaDisplay
+                                dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }}
+                              />
+                            </QuestionText>
+                          </FlexContainer>
+                        </Text>
+                      </CorrectAnswerItem>
+                    ))}
+                  </ItemsWrapper>
                 </CorrectAnswersContainer>
               )}
             </Fragment>

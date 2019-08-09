@@ -23,8 +23,6 @@ export const getData = (rawData = {}, tests = [], bandInfo = []) => {
       ? moment(parseInt(test.assignmentDate)).format("MMMM DD, YYYY")
       : "N/A";
 
-    console.log(testType, testTypeHashMap[testType.toLowerCase()], "testTypeHashMap[testType]");
-
     return {
       totalQuestions: 0,
       ...test,

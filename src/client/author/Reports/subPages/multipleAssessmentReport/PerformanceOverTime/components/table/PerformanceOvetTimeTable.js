@@ -4,7 +4,8 @@ import PropTypes from "prop-types";
 import { StyledCard, StyledTable, StyledH3, StyledCell } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
-import { getHSLFromRange1, stringCompare } from "../../../../../common/util";
+import { getHSLFromRange1, stringCompare, downloadCSV } from "../../../../../common/util";
+import CsvTable from "../../../../../common/components/tables/CsvTable";
 
 const staticFields = [
   {
@@ -93,17 +94,27 @@ const getColumns = () => {
   return [...staticFields, ...dynamicColumns];
 };
 
-const PerformanceOverTimeTable = ({ dataSource }) => {
+const PerformanceOverTimeTable = ({ dataSource, isCsvDownloading }) => {
+  const onCsvConvert = data => downloadCSV(`Performance Over Time.csv`, data);
+
   return (
     <StyledCard>
       <StyledH3>Assessment Statistics Over Time</StyledH3>
-      <StyledTable dataSource={dataSource} columns={getColumns()} colouredCellsNo={3} />
+      <CsvTable
+        dataSource={dataSource}
+        columns={getColumns()}
+        colouredCellsNo={3}
+        tableToRender={StyledTable}
+        onCsvConvert={onCsvConvert}
+        isCsvDownloading={isCsvDownloading}
+      />
     </StyledCard>
   );
 };
 
 PerformanceOverTimeTable.propTypes = {
-  dataSource: PropTypes.array.isRequired
+  dataSource: PropTypes.array.isRequired,
+  isCsvDownloading: PropTypes.bool
 };
 
 export default PerformanceOverTimeTable;

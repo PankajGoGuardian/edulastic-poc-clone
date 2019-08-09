@@ -13,6 +13,7 @@ import TableTooltipRow from "../../../../../common/components/tooltip/TableToolt
 import TrendColumn from "./TrendColumn";
 import dropDownData from "../../static/json/dropDownData.json";
 import { compareByMap } from "../../utils/trend";
+import CsvTable from "../../../../../common/components/tables/CsvTable";
 
 const formatText = (text, type) => {
   if (text === null || typeof text === "undefined") return "N/A";
@@ -112,6 +113,7 @@ const getColumns = (
       title: "Trend",
       dataIndex: "tests",
       width: 150,
+      visibleOn: ["browser"],
       render: (tests, record) => {
         const augmentedTests = map(tests, (test, testId) => {
           const currentTestGroup = groupedTests[testId] || {};
@@ -128,6 +130,14 @@ const getColumns = (
 
         return <TrendColumn type={record.trend} tests={augmentedTests} />;
       }
+    },
+    {
+      key: "type",
+      title: "Trend",
+      dataIndex: "trend",
+      width: 0,
+      visibleOn: ["csv"],
+      render: (trend, record) => capitalize(trend)
     }
   ];
 
@@ -138,7 +148,18 @@ const getColumns = (
   );
 };
 
-const TrendTable = ({ data, rawMetric, testData, analyseBy, compareBy, customColumns, heading, toolTipContent }) => {
+const TrendTable = ({
+  data,
+  rawMetric,
+  testData,
+  analyseBy,
+  compareBy,
+  customColumns,
+  heading,
+  toolTipContent,
+  isCsvDownloading,
+  onCsvConvert
+}) => {
   const columns = getColumns(testData, rawMetric, analyseBy, compareBy, customColumns, toolTipContent);
   const groupedAvailableTests = groupBy(rawMetric, "testId");
 
@@ -150,7 +171,14 @@ const TrendTable = ({ data, rawMetric, testData, analyseBy, compareBy, customCol
         </Col>
       </Row>
       <TableContainer>
-        <StyledTable dataSource={data} columns={columns} colouredCellsNo={values(groupedAvailableTests).length} />
+        <CsvTable
+          dataSource={data}
+          columns={columns}
+          colouredCellsNo={values(groupedAvailableTests).length}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
+          tableToRender={StyledTable}
+        />
       </TableContainer>
     </StyledCard>
   );
@@ -169,7 +197,9 @@ TrendTable.propTypes = {
   compareBy: optionShape,
   customColumns: PropTypes.array,
   heading: PropTypes.string,
-  toolTipContent: PropTypes.func
+  toolTipContent: PropTypes.func,
+  isCsvDownloading: PropTypes.bool,
+  onCsvConvert: PropTypes.func
 };
 
 TrendTable.defaultProps = {
@@ -177,7 +207,9 @@ TrendTable.defaultProps = {
   compareBy: dropDownData.compareByData[0],
   customColumns: [],
   heading: "",
-  toolTipContent: () => null
+  toolTipContent: () => null,
+  isCsvDownloading: false,
+  onCsvConvert: () => {}
 };
 
 export default TrendTable;

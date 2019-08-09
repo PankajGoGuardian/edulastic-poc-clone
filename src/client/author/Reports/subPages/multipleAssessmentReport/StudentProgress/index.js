@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { getUserRole } from "../../../../src/selectors/user";
+import { getCsvDownloadingState } from "../../../ducks";
 
 import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
@@ -17,6 +18,8 @@ import { usefetchProgressHook } from "../common/hooks";
 import { useGetBandData } from "./hooks";
 import { filterAccordingToRole } from "../../../common/util";
 import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
+
+import { downloadCSV } from "../../../common/util";
 
 const DefaultBandInfo = [
   {
@@ -45,6 +48,7 @@ const StudentProgress = ({
   getStudentProgressRequestAction,
   studentProgress,
   MARFilterData,
+  isCsvDownloading,
   settings,
   loading,
   role
@@ -69,6 +73,7 @@ const StudentProgress = ({
   const customTableColumns = filterAccordingToRole(tableColumns, role);
 
   const onTrendSelect = trend => setSelectedTrend(trend === selectedTrend ? "" : trend);
+  const onCsvConvert = data => downloadCSV(`Student Progress.csv`, data);
 
   return (
     <>
@@ -80,6 +85,8 @@ const StudentProgress = ({
         renderFilters={() => <AnalyseByFilter onFilterChange={setAnalyseBy} analyseBy={analyseBy} />}
       />
       <TrendTable
+        onCsvConvert={onCsvConvert}
+        isCsvDownloading={isCsvDownloading}
         data={data}
         testData={testData}
         compareBy={compareBy}
@@ -111,7 +118,8 @@ const enhance = connect(
     studentProgress: getReportsStudentProgress(state),
     loading: getReportsStudentProgressLoader(state),
     MARFilterData: getReportsMARFilterData(state),
-    role: getUserRole(state)
+    role: getUserRole(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getStudentProgressRequestAction

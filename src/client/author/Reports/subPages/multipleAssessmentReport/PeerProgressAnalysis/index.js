@@ -7,7 +7,7 @@ import {
   getPeerProgressAnalysisRequestAction
 } from "./ducks";
 import { getUserRole } from "../../../../../student/Login/ducks";
-
+import { getCsvDownloadingState } from "../../../ducks";
 import { Placeholder } from "../../../common/components/loader";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
 import { parseTrendData, getCompareByOptions, compareByMap } from "../common/utils/trend";
@@ -17,6 +17,7 @@ import TrendStats from "../common/components/trend/TrendStats";
 import TrendTable from "../common/components/trend/TrendTable";
 import Filters from "./components/table/Filters";
 import TableTooltipRow from "../../../common/components/tooltip/TableTooltipRow";
+import { downloadCSV } from "../../../common/util";
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -37,6 +38,7 @@ const usefetchProgressHook = (settings, compareBy, fetchAction) => {
 const PeerProgressAnalysis = ({
   getPeerProgressAnalysisRequestAction,
   peerProgressAnalysis,
+  isCsvDownloading,
   MARFilterData,
   settings,
   loading,
@@ -67,6 +69,8 @@ const PeerProgressAnalysis = ({
         return;
     }
   };
+
+  const onCsvConvert = data => downloadCSV(`Peer Progress.csv`, data);
 
   if (loading) {
     return (
@@ -100,6 +104,8 @@ const PeerProgressAnalysis = ({
         )}
       />
       <TrendTable
+        onCsvConvert={onCsvConvert}
+        isCsvDownloading={isCsvDownloading}
         heading="How well are student sub-groups progressing ?"
         data={parsedData}
         testData={testData}
@@ -128,7 +134,8 @@ const enhance = connect(
     peerProgressAnalysis: getReportsPeerProgressAnalysis(state),
     loading: getReportsPeerProgressAnalysisLoader(state),
     role: getUserRole(state),
-    MARFilterData: getReportsMARFilterData(state)
+    MARFilterData: getReportsMARFilterData(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getPeerProgressAnalysisRequestAction

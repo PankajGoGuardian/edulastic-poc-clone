@@ -44,6 +44,6 @@
     "title": "SIS ID",
     "dataIndex": "sisId",
     "key": "sisId",
-    "className": "hide"
+    "visibleOn": ["csv"]
   }
 ]

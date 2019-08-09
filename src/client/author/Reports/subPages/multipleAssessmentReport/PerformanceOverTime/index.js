@@ -9,6 +9,7 @@ import { parseData, augmentTestData } from "./utils/transformers";
 import AnalyseByFilter from "../common/components/filters/AnalyseByFilter";
 
 import { getReportsMARFilterData } from "../common/filterDataDucks";
+import { getCsvDownloadingState } from "../../../ducks";
 import {
   getReportsPerformanceOverTime,
   getReportsPerformanceOverTimeLoader,
@@ -24,6 +25,7 @@ import { usefetchProgressHook } from "../common/hooks";
 const PerformanceOverTime = ({
   getPerformanceOverTimeRequestAction,
   performanceOverTime,
+  isCsvDownloading,
   MARFilterData,
   settings,
   loading
@@ -68,7 +70,7 @@ const PerformanceOverTime = ({
           bandInfo={rawData.bandInfo}
         />
       </StyledCard>
-      <PerformanceOverTimeTable dataSource={filteredTableData} />
+      <PerformanceOverTimeTable isCsvDownloading={isCsvDownloading} dataSource={filteredTableData} />
     </>
   );
 };
@@ -78,7 +80,8 @@ const enhance = connect(
     performanceOverTime: getReportsPerformanceOverTime(state),
     loading: getReportsPerformanceOverTimeLoader(state),
     MARFilterData: getReportsMARFilterData(state),
-    role: getUserRole(state)
+    role: getUserRole(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getPerformanceOverTimeRequestAction

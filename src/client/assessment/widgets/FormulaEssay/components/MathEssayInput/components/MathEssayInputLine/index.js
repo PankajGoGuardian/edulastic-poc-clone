@@ -101,6 +101,7 @@ class MathEssayInputLine extends Component {
                 value={line.text}
                 onInput={onChange}
                 onFocus={this.handleFocus}
+                fullWidth
                 style={{
                   border: 0,
                   height: "auto",

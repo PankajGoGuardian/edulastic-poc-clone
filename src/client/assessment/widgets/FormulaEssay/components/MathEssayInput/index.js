@@ -33,7 +33,7 @@ const MathEssayInput = ({ textFormattingOptions, uiStyle, lines, setLines, item,
 
     newLines.splice(index + 1, 0, {
       text: "",
-      type: uiStyle.default_mode,
+      type: uiStyle.defaultMode,
       index: uuidv4()
     });
     setLines(newLines);

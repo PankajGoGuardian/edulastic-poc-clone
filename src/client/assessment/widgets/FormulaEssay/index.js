@@ -41,7 +41,7 @@ const FormulaEssay = ({
   ...restProps
 }) => {
   const resetLines = () => {
-    saveAnswer([{ text: "", type: item.uiStyle && item.uiStyle.default_mode, index: uuidv4() }]);
+    saveAnswer([{ text: "", type: item.uiStyle && item.uiStyle.defaultMode, index: uuidv4() }]);
   };
 
   const Wrapper = testItem ? EmptyWrapper : Paper;

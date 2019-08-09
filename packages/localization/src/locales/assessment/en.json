@@ -817,7 +817,8 @@
       "enterContent": "Enter Question Contents",
       "content": "Content",
       "ignoreCase": "Ignore Case",
-      "mixNmatch": "Mix-n-Match alternative answers"
+      "mixNmatch": "Mix-n-Match alternative answers",
+      "allowsinglelettermistake": "Allow single letter mistake"
     }
   }
 }

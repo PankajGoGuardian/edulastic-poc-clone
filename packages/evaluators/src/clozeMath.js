@@ -43,7 +43,8 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     scoringType,
     minScoreIfAttempted,
     penalty,
-    ignoreCase = false
+    ignoreCase = false,
+    allowSingleLetterMistake = false
   } = validation;
 
   const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;
@@ -73,7 +74,8 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
         validation: {
           scoringType: "exactMatch",
           validResponse: { score: 1, ...validAnswers[i].textinput },
-          ignoreCase
+          ignoreCase,
+          allowSingleLetterMistake
         }
       }).evaluation;
       evaluations = { ...evaluations, ...clozeTextEvaluation };
@@ -198,7 +200,8 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
           validResponse: { score: 1, ...validResponse.textinput },
           altResponses: alt_inputs,
           mixAndMatch: true,
-          ignoreCase
+          ignoreCase,
+          allowSingleLetterMistake
         }
       }).evaluation) ||
     {};

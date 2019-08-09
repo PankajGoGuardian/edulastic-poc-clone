@@ -151,6 +151,8 @@ var normalEvaluator =
           penalty,
           _validation$ignoreCas,
           ignoreCase,
+          _validation$allowSing,
+          allowSingleLetterMistake,
           _userResponse$inputs,
           inputs,
           _userResponse$dropDow,
@@ -189,7 +191,9 @@ var normalEvaluator =
                   (minScoreIfAttempted = validation.minScoreIfAttempted),
                   (penalty = validation.penalty),
                   (_validation$ignoreCas = validation.ignoreCase),
-                  (ignoreCase = _validation$ignoreCas === void 0 ? false : _validation$ignoreCas);
+                  (ignoreCase = _validation$ignoreCas === void 0 ? false : _validation$ignoreCas),
+                  (_validation$allowSing = validation.allowSingleLetterMistake),
+                  (allowSingleLetterMistake = _validation$allowSing === void 0 ? false : _validation$allowSing);
                 (_userResponse$inputs = userResponse.inputs),
                   (inputs = _userResponse$inputs === void 0 ? {} : _userResponse$inputs),
                   (_userResponse$dropDow = userResponse.dropDowns),
@@ -240,7 +244,8 @@ var normalEvaluator =
                         },
                         validAnswers[i].textinput
                       ),
-                      ignoreCase: ignoreCase
+                      ignoreCase: ignoreCase,
+                      allowSingleLetterMistake: allowSingleLetterMistake
                     }
                   }).evaluation;
                   evaluations = (0, _objectSpread2["default"])({}, evaluations, clozeTextEvaluation);
@@ -580,7 +585,8 @@ var mixAndMatchEvaluator =
                         ),
                         altResponses: alt_inputs,
                         mixAndMatch: true,
-                        ignoreCase: ignoreCase
+                        ignoreCase: ignoreCase,
+                        allowSingleLetterMistake: allowSingleLetterMistake
                       }
                     }).evaluation) ||
                   {}; // dropdown evaluation

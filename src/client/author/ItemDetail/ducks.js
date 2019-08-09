@@ -674,6 +674,7 @@ export function* updateItemSaga({ payload }) {
     if (payload.testId) {
       data.testId = testId;
     }
+    const { itemLevelScoring } = data;
 
     // const questions = yield select(getQuestionsSelector);
     const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
@@ -686,9 +687,17 @@ export function* updateItemSaga({ payload }) {
     const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {}))).filter(item =>
       testItemWidgetIds.includes(item.id)
     );
-    const questions = widgets.filter(item => !resourceTypes.includes(item.type));
+    let questions = widgets.filter(item => !resourceTypes.includes(item.type));
     const resources = widgets.filter(item => resourceTypes.includes(item.type));
-
+    questions = produce(questions, draft => {
+      draft.map((q, index) => {
+        if (index === 0) return q;
+        else {
+          q.scoringDisabled = itemLevelScoring ? true : undefined;
+          return q;
+        }
+      });
+    });
     data.data = {
       questions,
       resources

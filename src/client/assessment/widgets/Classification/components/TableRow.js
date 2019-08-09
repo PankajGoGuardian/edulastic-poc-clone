@@ -6,15 +6,14 @@ import { Rnd } from "react-rnd";
 import { get } from "lodash";
 import { CenteredText } from "@edulastic/common";
 
+import produce from "immer";
 import DropContainer from "../../../components/DropContainer";
 
 import DragItem from "./DragItem";
-import { Column, ColumnLabel } from "../styled/Column";
+import { ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
-import { SHOW, CHECK, EDIT, PREVIEW } from "../../../constants/constantsForQuestions";
-
-import produce from "immer";
+import { EDIT } from "../../../constants/constantsForQuestions";
 
 const TableRow = ({
   startIndex,
@@ -25,22 +24,20 @@ const TableRow = ({
   drop,
   answers,
   preview,
-  possibleResponses,
   onDrop,
   validArray,
   dragHandle,
   isTransparent,
   isBackgroundImageTransparent,
-  width,
   height,
   theme,
   isResizable,
   item,
   disableResponse,
   isReviewTab,
-  previewTab,
   view,
-  setQuestionData
+  setQuestionData,
+  rowHeader
 }) => {
   const handleRowTitleDragStop = (event, data) => {
     if (setQuestionData) {
@@ -51,6 +48,17 @@ const TableRow = ({
       );
     }
   };
+
+  const handleRowHeaderDragStop = (e, d) => {
+    if (setQuestionData) {
+      setQuestionData(
+        produce(item, draft => {
+          draft.rowHeaderPos = { x: d.x, y: d.y };
+        })
+      );
+    }
+  };
+
   const styles = {
     columnContainerStyle: {
       display: "flex",
@@ -63,14 +71,54 @@ const TableRow = ({
       flex: 1
     }
   };
-  const rowHasHeader = item.uiStyle && item.uiStyle.row_header;
+
   const cols = [];
+  // eslint-disable-next-line no-unused-vars
   let validIndex = -1;
   const rndX = get(item, `rowTitle.x`, 0);
-  const rndY = get(item, `rowTitle.y`, 0);
+  const rndY = get(item, `rowTitle.y`, rowHeader ? 40 : 0);
+
+  const rowHeaderX = get(item, `rowHeaderPos.x`, 0);
+  const rowHeaderY = get(item, `rowHeaderPos.y`, 0);
+
   const responses = item.groupPossibleResponses
     ? item.possibleResponseGroups.flatMap(group => group.responses)
     : item.possibleResponses;
+
+  if (rowHeader) {
+    cols.push(
+      <Rnd
+        enableResizing={{
+          bottom: false,
+          bottomLeft: false,
+          bottomRight: false,
+          left: false,
+          right: false,
+          top: false,
+          topLeft: false,
+          topRight: false
+        }}
+        default={{ x: rowHeaderX, y: rowHeaderY }}
+        disableDragging={view !== EDIT}
+        onDragStop={handleRowHeaderDragStop}
+      >
+        <RowTitleCol colCount={colCount} justifyContent="center" width="100%" padding="0" marginTop="0">
+          <CenteredText
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              wordWrap: "break-word",
+              width: 200,
+              minHeight: 39
+            }}
+            dangerouslySetInnerHTML={{ __html: rowHeader }}
+          />
+        </RowTitleCol>
+      </Rnd>
+    );
+  }
+
   for (let index = startIndex; index < startIndex + colCount; index++) {
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
@@ -89,8 +137,6 @@ const TableRow = ({
           disableDragging={view !== EDIT}
           onDragStop={handleRowTitleDragStop}
         >
-          {rowHasHeader && <ColumnLabel dangerouslySetInnerHTML={{ __html: rowHasHeader }} />}
-
           <RowTitleCol
             key={index + startIndex + colCount}
             colCount={colCount}
@@ -107,8 +153,7 @@ const TableRow = ({
                   alignItems: "center",
                   wordWrap: "break-word",
                   width: `200px`,
-                  height: "85px",
-                  border: rowHasHeader ? `2px dashed ${theme.dropContainer.isNotOverBorderColor}` : "none"
+                  height: "85px"
                 }}
                 dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] }}
               />
@@ -136,8 +181,8 @@ const TableRow = ({
             answers[index].length > 0 &&
             // eslint-disable-next-line no-loop-func
             answers[index].map((answerValue, answerIndex) => {
-              validIndex++;
-              const resp = (responses.length && responses.find(resp => resp.id === answerValue)) || {};
+              validIndex += 1;
+              const resp = (responses.length && responses.find(_resp => _resp.id === answerValue)) || {};
               const valid = get(validArray, [index, resp.id], undefined);
               return (
                 <DragItem
@@ -146,7 +191,7 @@ const TableRow = ({
                   valid={isReviewTab ? true : valid}
                   preview={preview}
                   key={answerIndex}
-                  renderIndex={responses.findIndex(resp => resp.id === answerValue)}
+                  renderIndex={responses.findIndex(_resp => _resp.id === answerValue)}
                   onDrop={onDrop}
                   item={(resp && resp.value) || ""}
                   disableResponse={disableResponse}
@@ -165,25 +210,32 @@ const TableRow = ({
 };
 
 TableRow.propTypes = {
-  width: PropTypes.any.isRequired,
   height: PropTypes.any.isRequired,
   startIndex: PropTypes.number.isRequired,
   colCount: PropTypes.number.isRequired,
   dragHandle: PropTypes.any.isRequired,
   arrayOfRows: PropTypes.object.isRequired,
+  colTitles: PropTypes.array.isRequired,
   rowTitles: PropTypes.array.isRequired,
   isTransparent: PropTypes.any.isRequired,
   isBackgroundImageTransparent: PropTypes.any.isRequired,
   drop: PropTypes.func.isRequired,
   answers: PropTypes.array.isRequired,
   preview: PropTypes.bool.isRequired,
-  possibleResponses: PropTypes.array.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   onDrop: PropTypes.func.isRequired,
   validArray: PropTypes.array.isRequired,
   theme: PropTypes.object.isRequired,
+  isReviewTab: PropTypes.bool.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
   isResizable: PropTypes.bool.isRequired,
   item: PropTypes.object.isRequired,
-  previewTab: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  rowHeader: PropTypes.string
+};
+
+TableRow.defaultProps = {
+  rowHeader: null
 };
 
 export default withTheme(TableRow);

@@ -1,6 +1,11 @@
 import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, round, find, indexOf } from "lodash";
 import next from "immer";
 
+export const testTypeHashMap = {
+  "common assessment": "common",
+  assessment: "class"
+};
+
 export const percentage = (numerator, denominator, ceilCalculation = false) => {
   if (numerator == 0 && denominator == 0) {
     return 0;

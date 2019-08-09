@@ -11,7 +11,8 @@ import {
 } from "./styled";
 import GoogleClassRoomImg from "../../../Dashboard/assets/images/google-classroom.png";
 import { Icon } from "antd";
-const ClassCreatePage = ({ filterClass }) => {
+const ClassCreatePage = ({ filterClass, recentInstitute = {} }) => {
+  const { name } = recentInstitute;
   return (
     <>
       <ClassCreateContainer>
@@ -22,7 +23,7 @@ const ClassCreatePage = ({ filterClass }) => {
             <p>
               No Active classes yet. You are currently a teacher in{" "}
               <span>
-                Bangalore International
+                {name}
                 <IconEdit type="edit" />
               </span>
             </p>

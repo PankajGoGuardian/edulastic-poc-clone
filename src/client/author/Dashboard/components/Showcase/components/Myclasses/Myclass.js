@@ -67,7 +67,7 @@ const MyClasses = ({
       </TextWrapper>
       {loading ? (
         <Spin style={{ marginTop: "80px" }} />
-      ) : classData.length == 0 ? (
+      ) : allActiveClasses.length == 0 ? (
         <CreateClassPage
           fetchClassList={fetchClassList}
           history={history}

@@ -10,9 +10,10 @@ import {
   getReportsStudentAssessmentProfileLoader,
   getStudentAssessmentProfileRequestAction
 } from "./ducks";
+import { getCsvDownloadingState } from "../../../ducks";
 import { getData } from "./common/utils/transformers";
 import { augementAssessmentChartData } from "../common/utils/transformers";
-import { toggleItem } from "../../../common/util";
+import { toggleItem, downloadCSV } from "../../../common/util";
 import { Placeholder } from "../../../common/components/loader";
 
 const StudentAssessmentProfile = ({
@@ -21,7 +22,8 @@ const StudentAssessmentProfile = ({
   settings,
   SARFilterData,
   studentAssessmentProfile,
-  getStudentAssessmentProfileRequestAction
+  getStudentAssessmentProfileRequestAction,
+  isCsvDownloading
 }) => {
   const { selectedStudent } = settings;
 
@@ -47,6 +49,7 @@ const StudentAssessmentProfile = ({
   }, [settings]);
 
   const onTestSelect = item => setSelectedTests(toggleItem(selectedTests, item.uniqId));
+  const onCsvConvert = data => downloadCSV(`Assessment Performance Report-${selectedStudent.title}.csv`, data);
 
   if (loading) {
     return (
@@ -69,7 +72,13 @@ const StudentAssessmentProfile = ({
         />
       </StyledCard>
       <StyledCard>
-        <AssessmentTable data={tableData} studentName={selectedStudent.title} selectedTests={selectedTests} />
+        <AssessmentTable
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
+          data={tableData}
+          studentName={selectedStudent.title}
+          selectedTests={selectedTests}
+        />
       </StyledCard>
     </>
   );
@@ -79,7 +88,8 @@ const enhance = connect(
   state => ({
     studentAssessmentProfile: getReportsStudentAssessmentProfile(state),
     loading: getReportsStudentAssessmentProfileLoader(state),
-    SARFilterData: getReportsSPRFilterData(state)
+    SARFilterData: getReportsSPRFilterData(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getStudentAssessmentProfileRequestAction

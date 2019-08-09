@@ -212,14 +212,14 @@ const MathFormulaAnswerMethod = ({
               label={t("component.math.allowInterval")}
             />
           );
-        case "ignoreText":
+        case "ignoreAlphabeticCharacters":
           return (
             <CheckOption
               dataCy="answer-ignore-text"
               optionKey="ignoreAlphabeticCharacters"
               options={options}
               onChange={changeOptions}
-              label={t("component.math.ignoreText")}
+              label={t("component.math.ignoreAlphabeticCharacters")}
             />
           );
         case "isDecimal":

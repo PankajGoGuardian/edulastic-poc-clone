@@ -618,7 +618,7 @@ function* setTestDataAndUpdateSaga(payload) {
       });
     } else {
       newTest = produce(newTest, draft => {
-        draft.testItems.filter(el => el.id !== item._id);
+        draft.testItems = draft.testItems.filter(el => el._id !== item._id);
       });
     }
     // getting grades and subjects from each question array in test items

@@ -81,9 +81,7 @@ const DragItemContainer = ({
   isTransparent,
   dragHandle,
   possibilityListPosition,
-  isResetOffset = false,
-  noPadding,
-  ...restProps
+  isResetOffset
 }) => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -155,6 +153,25 @@ const DragItemContainer = ({
         )}
     </MainWrapper>
   );
+};
+
+DragItemContainer.propTypes = {
+  connectDragSource: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired,
+  isDragging: PropTypes.bool.isRequired,
+  possibilityListPosition: PropTypes.string.isRequired,
+  preview: PropTypes.string.isRequired,
+  renderIndex: PropTypes.number.isRequired,
+  isTransparent: PropTypes.bool.isRequired,
+  dragHandle: PropTypes.bool.isRequired,
+  valid: PropTypes.bool,
+  isResetOffset: PropTypes.bool
+};
+
+DragItemContainer.defaultProps = {
+  isResetOffset: false,
+  valid: false
 };
 
 const InnerWrapper = styled.div`

@@ -161,6 +161,11 @@ const InnerWrapper = styled.div`
   p {
     width: 151px;
   }
+
+  .katex .base {
+    display: inline;
+    white-space: normal;
+  }
 `;
 
 const MainWrapper = styled.div``;

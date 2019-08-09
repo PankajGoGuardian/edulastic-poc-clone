@@ -17,6 +17,8 @@ import {
   getReportsStandardsFilters
 } from "../common/filterDataDucks";
 
+import { getCsvDownloadingState } from "../../../ducks";
+
 import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import dropDownData from "./static/json/dropDownData.json";
 
@@ -43,6 +45,7 @@ const StandardsPerformance = ({
   browseStandards,
   standardsFilters,
   getStandardsPerformanceSummaryRequestAction,
+  isCsvDownloading,
   settings,
   role,
   loading
@@ -119,8 +122,6 @@ const StandardsPerformance = ({
     masteryLevelData
   };
 
-  console.log(role, "role");
-
   return (
     <DropDownContainer>
       <StyledCard>
@@ -163,6 +164,7 @@ const StandardsPerformance = ({
           domainsData={domainsData}
           scaleInfo={scaleInfo}
           selectedDomains={selectedDomains}
+          isCsvDownloading={isCsvDownloading}
         />
       </StyledCard>
     </DropDownContainer>
@@ -175,6 +177,7 @@ const enhance = connect(
     loading: getReportsStandardsPerformanceSummaryLoader(state),
     browseStandards: getReportsStandardsBrowseStandards(state),
     standardsFilters: getReportsStandardsFilters(state),
+    isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state)
   }),
   {

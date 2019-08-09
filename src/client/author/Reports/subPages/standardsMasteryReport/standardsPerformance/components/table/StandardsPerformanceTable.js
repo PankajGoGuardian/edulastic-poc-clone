@@ -16,7 +16,8 @@ import { ControlDropDown } from "../../../../../common/components/widgets/contro
 import { StyledH3, StyledTable } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import TableTooltipRow from "../../../../../common/components/tooltip/TableTooltipRow";
-import { percentage } from "../../../../../common/util";
+import CsvTable from "../../../../../common/components/tables/CsvTable";
+import { percentage, downloadCSV } from "../../../../../common/util";
 
 export const getOverallScore = (metrics = []) => percentage(sumBy(metrics, "totalScore"), sumBy(metrics, "maxScore"));
 
@@ -131,6 +132,7 @@ const StandardsPerformanceTable = ({
   domainsData,
   scaleInfo,
   selectedDomains,
+  isCsvDownloading,
   ...tableProps
 }) => {
   const columns = getColumns(
@@ -151,6 +153,8 @@ const StandardsPerformanceTable = ({
   };
 
   const bindOnChange = (prefix, options) => props => onChangeTableFilters(prefix, options, props);
+
+  const onCsvConvert = data => downloadCSV(`Mastery By Domain.csv`, data);
 
   return (
     <>
@@ -189,11 +193,14 @@ const StandardsPerformanceTable = ({
       </Row>
       <Row type="flex" justify="start">
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
-          <StyledTable
+          <CsvTable
             {...tableProps}
             colouredCellsNo={domainsData.length}
             centerAligned={domainsData.length}
             columns={columns}
+            onCsvConvert={onCsvConvert}
+            isCsvDownloading={isCsvDownloading}
+            tableToRender={StyledTable}
           />
         </Col>
       </Row>

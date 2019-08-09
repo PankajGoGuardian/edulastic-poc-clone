@@ -21,6 +21,8 @@ import {
   getReportsStandardsGradebookLoader
 } from "./ducks";
 
+import { getCsvDownloadingState } from "../../../ducks";
+
 import { getFilterDropDownData, getDenormalizedData } from "./utils/transformers";
 
 import dropDownFormat from "./static/json/dropDownFormat.json";
@@ -33,6 +35,7 @@ const StandardsGradebook = ({
   standardsGradebook,
   standardsFilters,
   getStandardsGradebookRequestAction,
+  isCsvDownloading,
   role,
   user,
   settings,
@@ -139,6 +142,7 @@ const StandardsGradebook = ({
               denormalizedData={denormalizedData}
               masteryScale={masteryScale}
               chartFilter={chartFilter}
+              isCsvDownloading={isCsvDownloading}
               role={role}
             />
           </TableContainer>
@@ -156,7 +160,8 @@ const enhance = compose(
       loading: getReportsStandardsGradebookLoader(state),
       role: getUserRole(state),
       user: getUser(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state)
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
+      isCsvDownloading: getCsvDownloadingState(state)
     }),
     {
       getStandardsGradebookRequestAction: getStandardsGradebookRequestAction,

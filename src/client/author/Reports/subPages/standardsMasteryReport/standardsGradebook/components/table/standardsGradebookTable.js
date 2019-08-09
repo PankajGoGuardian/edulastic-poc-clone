@@ -10,6 +10,9 @@ import { StyledTable } from "../styled";
 import { StyledH3, StyledCard } from "../../../../../common/styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 
+import CsvTable from "../../../../../common/components/tables/CsvTable";
+import { downloadCSV } from "../../../../../common/util";
+
 import {
   getTableData,
   getMasteryDropDown,
@@ -20,7 +23,7 @@ import {
 
 import dropDownFormat from "../../static/json/dropDownFormat.json";
 
-export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartFilter, role }) => {
+export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartFilter, isCsvDownloading, role }) => {
   const [tableDdFilters, setTableDdFilters] = useState({
     masteryLevel: "all",
     analyseBy: "score(%)",
@@ -205,6 +208,8 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
     }
   };
 
+  const onCsvConvert = data => downloadCSV(`Standard Grade Book.csv`, data);
+
   return (
     <>
       <StyledCard>
@@ -237,7 +242,14 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
           </Col>
         </Row>
         <Row>
-          <StyledTable columns={columnsData} dataSource={filteredTableData} rowKey={tableDdFilters.compareBy} />
+          <CsvTable
+            columns={columnsData}
+            dataSource={filteredTableData}
+            rowKey={tableDdFilters.compareBy}
+            tableToRender={StyledTable}
+            onCsvConvert={onCsvConvert}
+            isCsvDownloading={isCsvDownloading}
+          />
         </Row>
       </StyledCard>
     </>

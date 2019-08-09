@@ -25,6 +25,12 @@ import {
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
+import {
+  setItemFromPassageAction,
+  getSelectedItemSelector,
+  getTestItemsSelector
+} from "../../../../TestPage/components/AddItems/ducks";
+import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -114,6 +120,43 @@ class PreviewModal extends React.Component {
     });
   };
 
+  handleSelection = row => {
+    const {
+      setSelectedTests,
+      setDataAndSave,
+      selectedRows,
+      testItemsList,
+      test,
+      gotoSummary,
+      item,
+      setItemFromPassage
+    } = this.props;
+    if (!test.title) {
+      gotoSummary();
+      return message.error("Name field cannot be empty");
+    }
+    const newTest = cloneDeep(test);
+    let keys = [];
+    if (newTest.safeBrowser && !newTest.sebPassword) {
+      return message.error("Please add a valid password");
+    }
+    if (selectedRows !== undefined) {
+      selectedRows.data.forEach((selectedRow, index) => {
+        keys[index] = selectedRow;
+      });
+    }
+    if (!keys.includes(row.id)) {
+      keys[keys.length] = row.id;
+      const item = testItemsList.find(el => row.id === el._id);
+      setDataAndSave({ addToTest: true, item });
+    } else {
+      keys = keys.filter(item => item !== row.id);
+      setDataAndSave({ addToTest: false, item: { _id: row.id } });
+    }
+    setSelectedTests(keys);
+    setItemFromPassage(item);
+  };
+
   render() {
     const {
       isVisible,
@@ -126,14 +169,15 @@ class PreviewModal extends React.Component {
       showAnswer,
       preview,
       showEvaluationButtons,
-      passage
+      passage,
+      onAddItems
     } = this.props;
 
     const { scrollElement, passageLoading } = this.state;
     const questions = keyBy(get(item, "data.questions", []), "id");
     const resources = keyBy(get(item, "data.resources", []), "id");
 
-    const allWidgets = { ...questions, ...resources };
+    let allWidgets = { ...questions, ...resources };
     const { authors = [], rows, data = {} } = item;
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
     const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
@@ -142,9 +186,12 @@ class PreviewModal extends React.Component {
     const getAuthorsId = authors.map(author => author._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     const { allowDuplicate } = collections.find(o => o._id === item.collectionName) || { allowDuplicate: true };
-    let allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
+    const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
-
+    const isPassage = passage && passageTestItems.length;
+    if (!!item.passageId && !!passage) {
+      allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
+    }
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 20 }}
@@ -155,6 +202,7 @@ class PreviewModal extends React.Component {
       >
         <HeadingWrapper>
           <Title>Preview</Title>
+          {isPassage && <button onClick={this.handleSelection}>add item</button>}
         </HeadingWrapper>
         <ModalContentArea>
           {showEvaluationButtons && (
@@ -180,7 +228,7 @@ class PreviewModal extends React.Component {
                     <IconPencilEdit color={themeColor} />
                   </EduButton>
                 )}
-                {passage && passageTestItems.length > 0 ? (
+                {isPassage ? (
                   <ItemsListDropDown
                     value={item._id}
                     showArrow={false}
@@ -273,6 +321,8 @@ PreviewModal.propTypes = {
 PreviewModal.defaultProps = {
   checkAnswer: () => {},
   showAnswer: () => {},
+  onAddItems: () => {},
+  gotoSummary: () => {},
   loading: false,
   isEditable: false,
   showEvaluationButtons: false
@@ -289,7 +339,10 @@ const enhance = compose(
         passage: getPassageSelector(state),
         preview: get(state, ["view", "preview"]),
         currentAuthorId: get(state, ["user", "user", "_id"]),
-        testItemPreviewData: get(state, ["testItemPreview", "item"], {})
+        testItemPreviewData: get(state, ["testItemPreview", "item"], {}),
+        selectedRows: getSelectedItemSelector(state),
+        test: getTestSelector(state),
+        testItemsList: getTestItemsSelector(state)
       };
     },
     {
@@ -298,7 +351,9 @@ const enhance = compose(
       addPassage: addPassageAction,
       setPrevewItem: setPrevewItemAction,
       setQuestionsForPassage: setQuestionsForPassageAction,
-      clearPreview: clearPreviewAction
+      clearPreview: clearPreviewAction,
+      setItemFromPassage: setItemFromPassageAction,
+      setDataAndSave: setTestDataAndUpdateAction
     }
   )
 );

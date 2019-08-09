@@ -657,12 +657,6 @@ function* setTestDataAndUpdateSaga(payload) {
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
 
-    if (item.passageId) {
-      const passageItems = yield call(testItemsApi.getPassageItems, item.passageId);
-      yield put(setPassageItemsAction(passageItems));
-      if (passageItems.length > 1) yield put(togglePassageConfirmModalAction(true));
-    }
-
     yield put(setTestDataAction(newTest));
     if (!newTest._id) {
       const { title } = newTest;

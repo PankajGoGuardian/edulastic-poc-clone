@@ -4,33 +4,15 @@ import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 
 import { MoveLink } from "@edulastic/common";
-import PreviewModal from "../../../../src/components/common/PreviewModal";
 import { getQuestionType } from "../../../../dataUtils";
 import { LabelText, Label } from "../../../../ItemList/components/Item/styled";
 class MainInfoCell extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      isShowPreviewModal: false
-    };
-  }
-
-  previewItem = () => {
-    this.setState({ isShowPreviewModal: true });
-  };
-
-  closeModal = () => {
-    this.setState({ isShowPreviewModal: false });
-  };
-
   render() {
-    const { data, testId, showModal, addDuplicate, isEditable = false, checkAnswer, showAnswer } = this.props;
-    const { isShowPreviewModal } = this.state;
+    const { data, previewItem } = this.props;
     const itemType = getQuestionType(data.item);
     return (
       <div className="fr-view">
-        <MoveLink onClick={() => this.previewItem()}>{data.stimulus}</MoveLink>
+        <MoveLink onClick={() => previewItem(data)}>{data.stimulus}</MoveLink>
         <TypeContainer>
           {itemType && (
             <Label>
@@ -38,21 +20,6 @@ class MainInfoCell extends React.Component {
             </Label>
           )}
         </TypeContainer>
-        {isShowPreviewModal && (
-          <PreviewModal
-            isVisible={isShowPreviewModal}
-            testId={testId}
-            isEditable={isEditable}
-            page="addItems"
-            showEvaluationButtons
-            checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
-            showAnswer={() => showAnswer(data)}
-            addDuplicate={addDuplicate}
-            showModal={showModal}
-            onClose={this.closeModal}
-            data={data}
-          />
-        )}
       </div>
     );
   }
@@ -60,9 +27,7 @@ class MainInfoCell extends React.Component {
 
 MainInfoCell.propTypes = {
   data: PropTypes.object.isRequired,
-  isEditable: PropTypes.bool,
-  showModal: PropTypes.bool,
-  addDuplicate: PropTypes.func
+  previewItem: PropTypes.func
 };
 
 export default withRouter(MainInfoCell);

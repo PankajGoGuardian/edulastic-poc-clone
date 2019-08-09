@@ -17,17 +17,20 @@ import {
   getTestSelector,
   setTestDataAndUpdateAction,
   previewCheckAnswerAction,
-  previewShowAnswerAction
+  previewShowAnswerAction,
+  setPassageItemsAction
 } from "../../../ducks";
 
 import {
   setTestItemsAction,
   getItemsSubjectAndGradeAction,
   getSelectedItemSelector,
-  getTestItemsSelector
+  getTestItemsSelector,
+  togglePassageConfirmModalAction
 } from "../../AddItems/ducks";
 
 import { getUserId } from "../../../../src/selectors/user";
+import { testItemsApi } from "@edulastic/api";
 
 class MetaInfoCell extends Component {
   constructor(props) {
@@ -48,7 +51,7 @@ class MetaInfoCell extends Component {
     setTestItems(selectedRowKeys);
   }
 
-  handleSelection = row => {
+  handleSelection = async row => {
     const {
       setSelectedTests,
       setTestItems,
@@ -56,7 +59,11 @@ class MetaInfoCell extends Component {
       selectedRows,
       testItemsList,
       test,
-      gotoSummary
+      gotoSummary,
+      setPreviewModalData,
+      togglePassageConfirmModal,
+      setPassageItems,
+      data
     } = this.props;
     if (!test.title) {
       gotoSummary();
@@ -68,7 +75,8 @@ class MetaInfoCell extends Component {
     if (newTest.safeBrowser && !newTest.sebPassword) {
       return message.error("Please add a valid password");
     }
-
+    //TODO better to find another way to pass state to preview modal
+    setPreviewModalData(data);
     if (selectedRows !== undefined) {
       selectedRows.data.forEach((selectedRow, index) => {
         keys[index] = selectedRow;
@@ -77,6 +85,13 @@ class MetaInfoCell extends Component {
     if (!keys.includes(row.id)) {
       keys[keys.length] = row.id;
       const item = testItemsList.find(el => row.id === el._id);
+      if (item.passageId) {
+        const passageItems = await testItemsApi.getPassageItems(item.passageId);
+        setPassageItems(passageItems);
+        if (passageItems.length > 1) {
+          return togglePassageConfirmModal(true);
+        }
+      }
       setDataAndSave({ addToTest: true, item });
     } else {
       keys = keys.filter(item => item !== row.id);
@@ -261,7 +276,9 @@ const enhance = compose(
       setTestItems: setTestItemsAction,
       setDataAndSave: setTestDataAndUpdateAction,
       checkAnswer: previewCheckAnswerAction,
-      showAnswer: previewShowAnswerAction
+      showAnswer: previewShowAnswerAction,
+      setPassageItems: setPassageItemsAction,
+      togglePassageConfirmModal: togglePassageConfirmModalAction
     }
   )
 );

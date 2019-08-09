@@ -40,12 +40,19 @@ import {
   getPassageConfirmModalStateSelector,
   togglePassageConfirmModalAction
 } from "./ducks";
-import { setAndSavePassageItemsAction, getPassageItemsCountSelector } from "../../ducks";
+import {
+  setAndSavePassageItemsAction,
+  getPassageItemsCountSelector,
+  previewCheckAnswerAction,
+  previewShowAnswerAction
+} from "../../ducks";
 import ItemsTable from "../common/ItemsTable/ItemsTable";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
 import { getClearSearchState, filterMenuItems } from "../../../ItemList";
 import ModalCreateTestItem from "../ModalCreateTestItem/ModalCreateTestItem";
 import PassageConfirmationModal from "../PassageConfirmationModal/PassageConfirmationModal";
+
+import PreviewModal from "../../../src/components/common/PreviewModal";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 class AddItems extends PureComponent {
@@ -86,7 +93,9 @@ class AddItems extends PureComponent {
   state = {
     search: getClearSearchState(),
     questionCreateType: "Duplicate",
-    selectedTestItems: []
+    selectedTestItems: [],
+    isShowPreviewModal: false,
+    previewData: {}
   };
 
   componentDidMount() {
@@ -282,9 +291,21 @@ class AddItems extends PureComponent {
     const { togglePassageConfirmModal, setAndSavePassageItems } = this.props;
     togglePassageConfirmModal(false);
     if (value) {
-      console.log("INVOKING setAndSavePassageItems");
-      setAndSavePassageItems();
+      return setAndSavePassageItems();
     }
+    this.setState({ isShowPreviewModal: true });
+  };
+
+  closeModal = () => {
+    this.setState({ isShowPreviewModal: false });
+  };
+
+  setPreviewModalData = previewData => {
+    this.setState({ previewData });
+  };
+
+  previewItem = previewData => {
+    this.setState({ isShowPreviewModal: true, previewData });
   };
 
   render() {
@@ -303,11 +324,12 @@ class AddItems extends PureComponent {
       gotoSummary,
       togglePassageConfirmModal,
       passageConfirmModalVisible,
-      setAndSavePassageItems,
-      passageItemsCount
+      passageItemsCount,
+      checkAnswer,
+      showAnswer
     } = this.props;
 
-    const { search, selectedTestItems, questionCreateType } = this.state;
+    const { search, selectedTestItems, questionCreateType, isShowPreviewModal, previewData } = this.state;
     return (
       <Container>
         <MainList id="main-list">
@@ -353,8 +375,9 @@ class AddItems extends PureComponent {
                       search={search}
                       showModal={true}
                       isEditable={isEditable}
-                      addDuplicate={this.handleDuplicateItem}
                       gotoSummary={gotoSummary}
+                      previewItem={this.previewItem}
+                      setPreviewModalData={this.setPreviewModalData}
                     />
                   )}
                   {!loading && this.renderPagination()}
@@ -372,6 +395,22 @@ class AddItems extends PureComponent {
             togglePassageConfirmationModal={togglePassageConfirmModal}
             itemsCount={passageItemsCount}
             handleResponse={this.handleResponse}
+          />
+        )}
+        {isShowPreviewModal && (
+          <PreviewModal
+            isVisible={isShowPreviewModal}
+            testId={this.props.match.params.id}
+            isEditable={isEditable}
+            page="addItems"
+            showEvaluationButtons
+            checkAnswer={() => checkAnswer({ ...previewData.item, id: previewData.id, isItem: true })}
+            showAnswer={() => showAnswer(previewData)}
+            addDuplicate={this.handleDuplicateItem}
+            onClose={this.closeModal}
+            data={previewData}
+            onAddItems={onAddItems}
+            gotoSummary={gotoSummary}
           />
         )}
       </Container>
@@ -404,7 +443,9 @@ const enhance = compose(
       clearDictAlignment: clearDictAlignmentAction,
       createTestItem: createTestItemAction,
       togglePassageConfirmModal: togglePassageConfirmModalAction,
-      setAndSavePassageItems: setAndSavePassageItemsAction
+      setAndSavePassageItems: setAndSavePassageItemsAction,
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction
     }
   )
 );

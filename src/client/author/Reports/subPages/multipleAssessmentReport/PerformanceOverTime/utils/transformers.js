@@ -1,7 +1,7 @@
 import next from "immer";
 import moment from "moment";
 import { groupBy, sumBy, round, maxBy, minBy, get, map, head, forEach, values, reduce, capitalize } from "lodash";
-import { percentage, getLeastProficiencyBand } from "../../../../common/util";
+import { percentage, getLeastProficiencyBand, testTypeHashMap } from "../../../../common/util";
 
 export const convertToBandData = (metricInfo = [], bandInfo = []) => {
   const leastProficiency = getLeastProficiencyBand(bandInfo);
@@ -112,7 +112,7 @@ export const parseData = (rawData = {}) => {
       diffScore: 100 - round(score),
       testId,
       uniqId: testId + testType,
-      testType: capitalize(testType),
+      testType: capitalize(testTypeHashMap[testType]),
       assessmentDate,
       assessmentDateFormatted,
       totalAssigned,

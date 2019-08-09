@@ -126,9 +126,8 @@ class PreviewModal extends React.Component {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
-    const newTest = { ...test };
     let keys = [];
-    if (newTest.safeBrowser && !newTest.sebPassword) {
+    if (test.safeBrowser && !test.sebPassword) {
       return message.error("Please add a valid password");
     }
     if (selectedRows !== undefined) {

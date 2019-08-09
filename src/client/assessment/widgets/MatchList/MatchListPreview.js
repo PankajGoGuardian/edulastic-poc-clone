@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
@@ -300,7 +300,7 @@ const MatchListPreview = ({
                           {i.title}
                         </Subtitle>
                         <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                          {shuffleOptions
+                          {!shuffleOptions
                             ? i.responses.map(
                                 (ite, ind) =>
                                   dragItems.includes(ite) && ( // Here we should shuffle in place
@@ -352,7 +352,7 @@ const MatchListPreview = ({
                       justifyContent="flex-start"
                     >
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                        {shuffleOptions
+                        {!shuffleOptions
                           ? dragItems.map(
                               // Here we should shuffle in place
                               (ite, ind) =>

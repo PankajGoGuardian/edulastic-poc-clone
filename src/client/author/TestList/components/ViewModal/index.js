@@ -66,6 +66,7 @@ class ViewModal extends React.Component {
       scoring = {},
       summary = {},
       sharing = [],
+      permission,
       _source
     } = item;
 
@@ -131,11 +132,13 @@ class ViewModal extends React.Component {
                 DUPLICATE
               </ButtonComponent>
             </ButtonContainer>
-            <ButtonContainer>
-              <ButtonComponent size={"large"} bgColor={themeColor} onClick={status === "published" ? assign : onEdit}>
-                {status === "published" ? "ASSIGN" : "EDIT"}
-              </ButtonComponent>
-            </ButtonContainer>
+            {(permission !== "VIEW" || status === "published") && (
+              <ButtonContainer>
+                <ButtonComponent size={"large"} bgColor={themeColor} onClick={status === "published" ? assign : onEdit}>
+                  {status === "published" ? "ASSIGNI" : "EDITI"}
+                </ButtonComponent>
+              </ButtonContainer>
+            )}
             <SummaryContainer>
               <SummaryTitle>Summary</SummaryTitle>
               <SummaryCardContainer>

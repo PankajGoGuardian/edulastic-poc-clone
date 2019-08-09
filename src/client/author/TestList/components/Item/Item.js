@@ -100,7 +100,7 @@ class Item extends Component {
 
   render() {
     const {
-      item: { title, tags = [], analytics, _source, thumbnail, status, _id: testId, description },
+      item: { title, tags = [], analytics, _source, thumbnail, status, _id: testId, description, permission },
       item,
       authorName,
       owner,

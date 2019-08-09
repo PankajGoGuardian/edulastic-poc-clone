@@ -299,7 +299,7 @@ export const DropMenu = styled(Menu)`
 
 export const StudentStatusDetails = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   margin-bottom: 30px;
   p {
     background: #f2f2f2;
@@ -308,8 +308,5 @@ export const StudentStatusDetails = styled.div`
     font-size: 12px;
     color: #8f8f8f;
     text-transform: uppercase;
-    &:first-child {
-      margin-right: 10px;
-    }
   }
 `;

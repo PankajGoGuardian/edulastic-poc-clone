@@ -220,13 +220,16 @@ class ClassHeader extends Component {
     } = this.props;
 
     const { showDropdown, visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
-    const { endDate, startDate, releaseScore, isPaused = false } = additionalData;
+    const { endDate, startDate, releaseScore, isPaused = false, open } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
     const canOpen =
       canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
     const canClose =
-      canCloseClass.includes(classId) && !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
+      (startDate || open) &&
+      canCloseClass.includes(classId) &&
+      !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
+    const canPause = startDate || open;
     const assignmentStatusForDisplay =
       assignmentStatus === "NOT OPEN" && startDate && startDate < moment() ? "IN PROGRESS" : assignmentStatus;
     const menu = (
@@ -305,9 +308,9 @@ class ClassHeader extends Component {
         <RightSideButtonWrapper>
           {canOpen ? (
             <OpenCloseButton onClick={this.handleOpenAssignment}>OPEN</OpenCloseButton>
-          ) : canClose ? (
+          ) : (
             <>
-              {assignmentStatusForDisplay !== "DONE" && (
+              {assignmentStatusForDisplay !== "DONE" && canPause && (
                 <OpenCloseButton
                   onClick={() => (isPaused ? this.handlePauseAssignment(!isPaused) : this.togglePauseModal(true))}
                 >
@@ -315,10 +318,8 @@ class ClassHeader extends Component {
                   {isPaused ? "OPEN" : "PAUSE"}
                 </OpenCloseButton>
               )}
-              <OpenCloseButton onClick={() => this.toggleCloseModal(true)}>CLOSE</OpenCloseButton>
+              {canClose ? <OpenCloseButton onClick={() => this.toggleCloseModal(true)}>CLOSE</OpenCloseButton> : ""}
             </>
-          ) : (
-            ""
           )}
           <Dropdown overlay={menu} placement={"bottomRight"}>
             <HeaderMenuIcon>
@@ -363,12 +364,13 @@ class ClassHeader extends Component {
             inputVal={modalInputVal}
             onInputChange={this.handleValidateInput}
             expectedVal="CLOSE"
+            bodyStyle={{ padding: "60px 20px" }}
             bodyText={
               <div>
                 <StudentStatusDetails>
-                  {notStartedStudents.length ? <p>{notStartedStudents.length} student(s) have not started yet</p> : ""}
+                  {notStartedStudents.length ? <p>{notStartedStudents.length} student(s) have not yet started</p> : ""}
                   {inProgressStudents.length ? (
-                    <p>{inProgressStudents.length} student(s) have not submitted yet</p>
+                    <p>{inProgressStudents.length} student(s) have not yet submitted</p>
                   ) : (
                     ""
                   )}

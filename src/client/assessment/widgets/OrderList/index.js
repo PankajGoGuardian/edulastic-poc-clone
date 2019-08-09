@@ -230,12 +230,7 @@ const OrderList = ({
       {view === EDIT && (
         <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
           <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
-          <ListComponent
-            saveAnswer={saveAnswer}
-            item={item}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          />
+          <ListComponent item={item} fillSections={fillSections} cleanSections={cleanSections} />
           <CorrectAnswers
             onTabChange={onTabChange}
             correctTab={correctTab}

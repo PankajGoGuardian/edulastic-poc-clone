@@ -20,7 +20,7 @@ const List = withAddButton(QuillSortableList);
 
 class ListComponent extends Component {
   render() {
-    const { item, t, setQuestionData, fillSections, cleanSections, saveAnswer } = this.props;
+    const { item, t, setQuestionData, fillSections, cleanSections } = this.props;
 
     const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
 
@@ -54,7 +54,6 @@ class ListComponent extends Component {
             return res;
           });
 
-          saveAnswer(indexList);
           updateVariables(draft);
         })
       );
@@ -75,8 +74,6 @@ class ListComponent extends Component {
               return res;
             });
           }
-
-          saveAnswer(draft.list.map((q, i) => i));
         })
       );
     };
@@ -113,7 +110,6 @@ ListComponent.propTypes = {
   t: PropTypes.func.isRequired,
   item: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,
-  saveAnswer: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };

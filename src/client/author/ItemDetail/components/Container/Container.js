@@ -403,7 +403,13 @@ class Container extends Component {
     /**
      * assuming this method is going to be called only when type is passageWithQuestions
      */
-    const data = { ...defaultEmptyItem, isPassageWithQuestions: true, multipartItem: true, passageId: passage._id };
+    const data = {
+      ...defaultEmptyItem,
+      canAddMultipleItems: true,
+      isPassageWithQuestions: true,
+      multipartItem: true,
+      passageId: passage._id
+    };
     this.props.createItem(data);
   };
 

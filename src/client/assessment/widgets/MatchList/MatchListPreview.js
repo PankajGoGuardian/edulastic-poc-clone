@@ -224,10 +224,6 @@ const MatchListPreview = ({
     alignItems: listPosition === "right" || listPosition === "left" ? "center" : "initial"
   };
 
-  if (shuffleOptions === true) {
-    dragItems = shuffle(dragItems);
-  }
-
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
@@ -304,19 +300,35 @@ const MatchListPreview = ({
                           {i.title}
                         </Subtitle>
                         <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                          {i.responses.map(
-                            (ite, ind) =>
-                              dragItems.includes(ite) && (
-                                <DragItem
-                                  flag="dragItems"
-                                  onDrop={onDrop}
-                                  key={ind}
-                                  item={ite}
-                                  getStyles={getStyles}
-                                  disableResponse={disableResponse}
-                                />
+                          {!shuffleOptions
+                            ? i.responses.map(
+                                (ite, ind) =>
+                                  dragItems.includes(ite) && ( // Here we should shuffle in place
+                                    <DragItem
+                                      flag="dragItems"
+                                      onDrop={onDrop}
+                                      key={ind}
+                                      item={ite}
+                                      getStyles={getStyles}
+                                      disableResponse={disableResponse}
+                                    />
+                                  )
                               )
-                          )}
+                            : shuffle(
+                                i.responses.map(
+                                  (ite, ind) =>
+                                    dragItems.includes(ite) && ( // Here we should shuffle in place
+                                      <DragItem
+                                        flag="dragItems"
+                                        onDrop={onDrop}
+                                        key={ind}
+                                        item={ite}
+                                        getStyles={getStyles}
+                                        disableResponse={disableResponse}
+                                      />
+                                    )
+                                )
+                              )}
                         </FlexContainer>
                       </FlexContainer>
                       {index !== possibleResponseGroups.length - 1 && (
@@ -340,21 +352,41 @@ const MatchListPreview = ({
                       justifyContent="flex-start"
                     >
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                        {dragItems.map(
-                          (ite, ind) =>
-                            dragItems.includes(ite) && (
-                              <DragItem
-                                flag="dragItems"
-                                onDrop={onDrop}
-                                key={ind}
-                                renderIndex={ind}
-                                item={ite}
-                                getStyles={getStyles}
-                                disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
-                              />
+                        {!shuffleOptions
+                          ? dragItems.map(
+                              // Here we should shuffle in place
+                              (ite, ind) =>
+                                dragItems.includes(ite) && (
+                                  <DragItem
+                                    flag="dragItems"
+                                    onDrop={onDrop}
+                                    key={ind}
+                                    renderIndex={ind}
+                                    item={ite}
+                                    getStyles={getStyles}
+                                    disableResponse={disableResponse}
+                                    changePreviewTab={changePreviewTab}
+                                  />
+                                )
                             )
-                        )}
+                          : shuffle(
+                              dragItems.map(
+                                // Here we should shuffle in place
+                                (ite, ind) =>
+                                  dragItems.includes(ite) && (
+                                    <DragItem
+                                      flag="dragItems"
+                                      onDrop={onDrop}
+                                      key={ind}
+                                      renderIndex={ind}
+                                      item={ite}
+                                      getStyles={getStyles}
+                                      disableResponse={disableResponse}
+                                      changePreviewTab={changePreviewTab}
+                                    />
+                                  )
+                              )
+                            )}
                       </FlexContainer>
                     </FlexContainer>
                   </Fragment>

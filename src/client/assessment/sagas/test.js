@@ -6,6 +6,7 @@ import { keyBy as _keyBy, groupBy, get, flatten } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
+import { markQuestionLabel } from "../Transformer";
 import {
   LOAD_TEST,
   LOAD_TEST_ITEMS,
@@ -105,7 +106,7 @@ function* loadTest({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
 
     let { testItems, passages } = test;
-
+    markQuestionLabel(testItems);
     const settings = {
       calcType:
         (testActivity && testActivity.testActivity.calcType) || test.calcType || testContants.calculatorTypes.NONE,

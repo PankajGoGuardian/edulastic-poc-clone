@@ -286,7 +286,6 @@ function* createSchoolAdminSaga({ payload }) {
     }
     const { role } = createSchoolAdmin;
     yield put(receiveAdminDataAction(payload.listReq));
-    const { role } = createSchoolAdmin;
     let msg = "";
     switch (role) {
       case "teacher":

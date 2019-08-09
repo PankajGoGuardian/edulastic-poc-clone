@@ -7335,7 +7335,7 @@ fresh@0.5.2:
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
   integrity sha1-PYyt2Q2XZWn6g1qx+OSyOhBWBac=
 
-froala-editor@^3.0.0-beta.1:
+froala-editor@3.0.0-beta.1, froala-editor@^3.0.0-beta.1:
   version "3.0.0-beta.1"
   resolved "https://registry.yarnpkg.com/froala-editor/-/froala-editor-3.0.0-beta.1.tgz#c109fb6d781ae8b6fa46137e3774f4fd66cc9113"
   integrity sha512-IbtHs+IxuaCm4RSZX6mACAH3VGRPYX0G4Syl9V5/p2OIov93gXfZJ5LZOKR9FnAwBPsRSraZEaoiS1gPQrfSSQ==
@@ -13832,7 +13832,7 @@ react-focus-lock@^1.17.7:
     prop-types "^15.6.2"
     react-clientside-effect "^1.2.0"
 
-react-froala-wysiwyg@^3.0.0-beta.1-1:
+react-froala-wysiwyg@3.0.0-beta.1-1:
   version "3.0.0-beta.1-1"
   resolved "https://registry.yarnpkg.com/react-froala-wysiwyg/-/react-froala-wysiwyg-3.0.0-beta.1-1.tgz#95dde087b3a448026b21011422531e39df80346a"
   integrity sha512-xPyTJ0dUm25kkhsBDL88BFqZScwoZpg+8TozavrE04/SbegOl4+V00T2mEYTUYiANyuvFQ+orCQykXW0cvCNcQ==

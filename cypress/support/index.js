@@ -2,10 +2,12 @@ import "cypress-testing-library/add-commands";
 import "./commands";
 import "./apiCommands";
 import "cypress-promise";
+import initGlobleRoutes from "./globalRoutes";
 
 require("cypress-xpath");
 
 const addContext = require("mochawesome/addContext");
+
 /*
  *  Global before hook to delete testdata
  */
@@ -13,10 +15,17 @@ before("delete test data", () => {
   cy.deleteTestData();
 });
 
+/*
+ *  init global routes for each* test
+ */
+if (Cypress.env().configFile === "visual-regression") {
+  beforeEach("beforeEach", () => {
+    initGlobleRoutes();
+  });
+}
+
 // FixMe : adding block to ignore uncaught error from the app
-Cypress.on("uncaught:exception", (err, runnable) => {
-  return false;
-});
+Cypress.on("uncaught:exception", () => false);
 
 // attach screenshot diff for visual tests
 Cypress.on("test:after:run", (test, runnable) => {

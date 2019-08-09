@@ -1,0 +1,6 @@
+{
+  "visual-regression": {
+    "teacher": "tea01@district01.com",
+    "student": "dastd4@xyz.com"
+  }
+}

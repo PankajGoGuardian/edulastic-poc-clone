@@ -64,10 +64,12 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         if (!draft.validation.altResponses) {
           draft.validation.altResponses = [];
         }
+
+        const _valid = cloneDeep(draft.validation.validResponse.value);
         draft.validation.altResponses.push({
           score: 1,
-          value: draft.validation.validResponse.value
-            ? draft.validation.validResponse.value.map(v => {
+          value: _valid
+            ? _valid.map(v => {
                 v.selected = false;
                 return v;
               })

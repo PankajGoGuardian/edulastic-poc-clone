@@ -168,13 +168,13 @@ const MatchListPreview = ({
     saveAnswer(answers);
   };
 
-  const handleShuffleChange = useCallback(() => {
+  const handleShuffleChange = () => {
     setQuestionData(
       produce(item, draft => {
         draft.shuffleOptions = !item.shuffleOptions;
       })
     );
-  }, [shuffleOptions]);
+  };
 
   const getStyles = ({ flag, preview, correct, isDragging, width }) => ({
     display: "flex",

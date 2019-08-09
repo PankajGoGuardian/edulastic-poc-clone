@@ -311,14 +311,14 @@ const MathFormulaAnswerMethod = ({
           );
         case "allowedVariables":
           return <AllowedVariables allowedVariables={allowedVariables} onChange={onChangeAllowedOptions} />;
-        case "setEvaluation":
+        case "interpretAsSet":
           return (
             <CheckOption
               dataCy="answer-set-evaluation"
-              optionKey="setEvaluation"
+              optionKey="interpretAsSet"
               options={options}
               onChange={changeOptions}
-              label={t("component.math.setEvaluation")}
+              label={t("component.math.interpretAsSet")}
             />
           );
         case "setListTypeResponse":

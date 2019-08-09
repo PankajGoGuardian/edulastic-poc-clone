@@ -749,7 +749,8 @@
       "choicesfordropdown": "Choices for Text Dropdown",
       "additionalOptions": "Additional Options",
       "setThousandsSeparator": "Set Thousands Separator",
-      "setEvaluation": "Interpret Response as Set",
+      "setEvaluation": "Set Evaluation",
+      "interpretAsSet": "Interpret Response as Set",
       "isRationalized": "Check if rationalized",
       "setListTypeResponse": "Interpret Response as List",
       "setDecimalSeparator": "Set Decimal Separator"

@@ -9,18 +9,7 @@ import { lightGrey } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const ResponseRnd = props => {
-  const {
-    children,
-    question,
-    setQuestionData,
-    isResizable,
-    minHeight,
-    width,
-    height,
-    index,
-    rowHasTitle,
-    rowHasHeader
-  } = props;
+  const { children, question, setQuestionData, isResizable, width, height, index } = props;
 
   const handleResponseDragStop = (evt, d) => {
     setQuestionData(

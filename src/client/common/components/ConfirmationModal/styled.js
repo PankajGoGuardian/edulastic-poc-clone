@@ -88,6 +88,7 @@ export const InitOptions = styled.div`
   padding: 60px 80px;
   text-align: center;
   font-weight: bold;
+  ${props => props.bodyStyle}
 `;
 
 export const StyledButton = styled(Button)`

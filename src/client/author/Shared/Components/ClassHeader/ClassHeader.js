@@ -364,6 +364,7 @@ class ClassHeader extends Component {
             inputVal={modalInputVal}
             onInputChange={this.handleValidateInput}
             expectedVal="CLOSE"
+            bodyStyle={{ padding: "60px 20px" }}
             bodyText={
               <div>
                 <StudentStatusDetails>

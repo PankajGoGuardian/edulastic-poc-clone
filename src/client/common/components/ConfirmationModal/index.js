@@ -22,7 +22,8 @@ const ConfirmationModal = ({
   expectedVal,
   bodyText,
   okText,
-  canUndone
+  canUndone,
+  bodyStyle = {}
 }) => {
   return (
     <ModalWrapper
@@ -44,7 +45,7 @@ const ConfirmationModal = ({
         </ModalFooter>
       ]}
     >
-      <InitOptions>
+      <InitOptions bodyStyle={bodyStyle}>
         <Row>
           <Col span={24}>
             <StyledDiv>{bodyText}</StyledDiv>

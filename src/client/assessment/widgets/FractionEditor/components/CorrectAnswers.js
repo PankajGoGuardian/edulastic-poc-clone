@@ -97,7 +97,7 @@ const CorrectAnswers = ({ setQuestionData, produce, fillSections, cleanSections,
             disabled
           />
         </FlexContainer>
-        <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+        <FlexContainer style={{ overflow: "scroll" }} justifyContent="flex-start" flexWrap="wrap">
           {Array(count)
             .fill()
             .map((el, index) => {

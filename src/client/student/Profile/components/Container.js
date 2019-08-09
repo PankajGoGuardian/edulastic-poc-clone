@@ -44,63 +44,31 @@ class ProfileContainer extends React.Component {
     const { flag, t, user } = this.props;
     return (
       <LayoutContent flag={flag}>
-        <Wrapper>
+        <Wrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
+          <ProfileImgWrapper>
+            <div />
+          </ProfileImgWrapper>
           <ProfileContentWrapper>
             <UserDetail>
-              <UserTitle>Welcome {user.firstName || "Zack"}</UserTitle>
-              <UserSubTitle>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mauris nunc.
-              </UserSubTitle>
+              <Title>Instructor Information</Title>
+              <Details>
+                <DetailRow>
+                  <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
+                  <DetailData>{user.firstName}</DetailData>
+                </DetailRow>
+                <DetailRow>
+                  <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
+                  <DetailData>{user.lastName || ""}</DetailData>
+                </DetailRow>
+                <DetailRow>
+                  <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
+                  <DetailData>{user.email}</DetailData>
+                </DetailRow>
+              </Details>
             </UserDetail>
-            <ProfileImgWrapper>
-              <div />
-              <span>
-                <img src={cameraIcon} alt="" />
-              </span>
-            </ProfileImgWrapper>
             <FormWrapper onSubmit={this.handleSubmit}>
               <FormItemWrapper>
-                <label>{t("common.title.firstNameInputLabel")}</label>
-                {getFieldDecorator("First Name", {
-                  rules: [
-                    {
-                      required: true,
-                      message: t("common.title.firstName")
-                    }
-                  ],
-                  initialValue: `${user.firstName}`
-                })(<Input readOnly />)}
-              </FormItemWrapper>
-              <FormItemWrapper>
-                <label>{t("common.title.lastNameInputLabel")}</label>
-                {getFieldDecorator("Last Name", {
-                  rules: [
-                    {
-                      required: true,
-                      message: t("common.title.lastName")
-                    }
-                  ],
-                  initialValue: `${user.lastName || ""}`
-                })(<Input readOnly />)}
-              </FormItemWrapper>
-              <FormItemWrapper>
-                <label>{t("common.title.emailInputLabel")}</label>
-                {getFieldDecorator("email", {
-                  rules: [
-                    {
-                      type: "email",
-                      message: t("common.title.validemail")
-                    },
-                    {
-                      required: true,
-                      message: t("common.title.email")
-                    }
-                  ],
-                  initialValue: `${user.email}`
-                })(<Input type="email" readOnly />)}
-              </FormItemWrapper>
-              <FormItemWrapper>
-                <label>{t("common.title.passwordInputLabel")}</label>
+                <Label>{t("common.title.newPasswordLabel")}</Label>
                 {getFieldDecorator("password", {
                   rules: [
                     {
@@ -108,7 +76,18 @@ class ProfileContainer extends React.Component {
                       message: t("common.title.password")
                     }
                   ]
-                })(<Input type="password" readOnly />)}
+                })(<Input type="password" />)}
+              </FormItemWrapper>{" "}
+              <FormItemWrapper>
+                <Label>{t("common.title.confirmPaswswordLabel")}</Label>
+                {getFieldDecorator("password", {
+                  rules: [
+                    {
+                      required: true,
+                      message: t("common.title.password")
+                    }
+                  ]
+                })(<Input type="password" />)}
               </FormItemWrapper>{" "}
               <FormButtonWrapper>
                 <FormItem>
@@ -147,28 +126,45 @@ ProfileContainer.propTypes = {
 };
 
 const LayoutContent = styled(Layout.Content)`
-  min-height: 100vh;
   width: 100%;
 `;
 
 const ProfileContentWrapper = styled.div`
-  text-align: center;
-`;
+  width: 1150px
+  background-color:white;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 20px;
 
-const UserDetail = styled.div`
-  padding: 42px 0rem 54px;
-  border-bottom: 1px solid ${borders.default};
+  @media (max-width: ${extraDesktopWidth}) {
+    width: 800px;
+    padding: 20px;
+  }
 
   @media (max-width: ${largeDesktopWidth}) {
-    padding: 25px 0 30px;
+    width: 735px;
+    padding:15px;
   }
 
   @media (max-width: ${desktopWidth}) {
-    padding: 32px 0 20px;
+    width: 600px;
+    padding:10px;
   }
 `;
 
-const UserTitle = styled.h2`
+const UserDetail = styled.div`
+  padding: 5px 0rem 30px;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    padding: 5px 0 30px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    padding: 5px 0 20px;
+  }
+`;
+
+const Title = styled.h3`
   color: ${props => props.theme.profile.userHeadingTextColor};
   font-size: ${props => props.theme.profile.userHeadingTextSize};
   font-weight: ${props => props.theme.profile.userHeadingTextWeight};
@@ -180,7 +176,7 @@ const UserTitle = styled.h2`
   }
 
   @media (max-width: ${desktopWidth}) {
-    font-size: 22px;
+    font-size: 18px;
     margin-bottom: 11px;
   }
 `;
@@ -191,19 +187,23 @@ const UserSubTitle = styled.p`
 `;
 
 const ProfileImgWrapper = styled.div`
-  margin: 44px auto 30px;
-  max-width: 146px;
-  max-height: 146px;
+  width: 400px;
+  height: 350px;
   position: relative;
+  background-color: white;
+  display: flex;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 
   div {
-    width: 146px;
-    height: 146px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
     overflow: hidden;
     background: url(${ProfileImage}) no-repeat;
     background-size: cover;
     background-position: center center;
+    margin: auto;
   }
 
   span {
@@ -223,33 +223,28 @@ const ProfileImgWrapper = styled.div`
   }
 
   @media (max-width: ${extraDesktopWidth}) {
-    max-width: 124px;
-    max-height: 124px;
-    margin-top: 25px;
+    width: 300px;
+    height: 250px;
 
     div {
-      width: 124px;
-      height: 124px;
+      width: 200px;
+      height: 200px;
     }
   }
 
   @media (max-width: ${largeDesktopWidth}) {
-    max-width: 114px;
-    max-height: 114px;
-    margin-top: 30px;
-    margin-bottom: 9px;
+    max-width: 250px;
+    max-height: 200px;
 
     div {
-      width: 114px;
-      height: 114px;
+      width: 150px;
+      height: 150px;
     }
   }
 
   @media (max-width: ${desktopWidth}) {
-    max-width: 146px;
-    max-height: 146px;
-    margin-top: 41px;
-    margin-bottom: 16px;
+    max-width: 200px;
+    max-height: 200px;
 
     div {
       width: 146px;
@@ -258,10 +253,33 @@ const ProfileImgWrapper = styled.div`
   }
 `;
 
+const Details = styled.div`
+  margin: 30px 0px 0px 25px;
+`;
+
+const DetailRow = styled.div`
+  padding: 15px 0px;
+`;
+const DetailTitle = styled.span`
+  font-size: 15px;
+  color: ${props => props.theme.profile.formInputLabelColor};
+  font-weight: 600;
+  width: 20%;
+  display: inline-block;
+`;
+const DetailData = styled.span`
+  font-size: 15px;
+  color: grey;
+  display: inline-block;
+`;
+
+const Label = styled.label`
+  text-transform: uppercase;
+`;
+
 const FormWrapper = styled(Form)`
-  max-width: 749px;
   width: 100%;
-  margin: 0px auto;
+  margin-left: 15px;
   text-align: left;
 
   .ant-form-item {
@@ -320,7 +338,7 @@ const FormWrapper = styled(Form)`
 `;
 
 const FormItemWrapper = styled(FormItem)`
-  width: 50%;
+  width: 49%;
   display: inline-block;
   padding: 0px 15px;
 

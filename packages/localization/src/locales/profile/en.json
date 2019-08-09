@@ -3,8 +3,11 @@
     "title": {
       "firstNameInputLabel": "First Name",
       "lastNameInputLabel": "Last Name",
+      "emailUsernameLabel": "Email/Username",
       "emailInputLabel": "Email",
       "passwordInputLabel": "Password",
+      "newPasswordLabel": "New Password",
+      "confirmPaswswordLabel": "Confirm Password",
       "firstName": "Please input your First name",
       "lastName": "Please input your Last name",
       "email": "Please input your E-mail!",

@@ -2,9 +2,10 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { takeEvery, takeLatest, call, put, all, select } from "redux-saga/effects";
 import { userApi } from "@edulastic/api";
-import { keyBy } from "lodash";
+import { keyBy, get } from "lodash";
 import { message } from "antd";
 import { getUserOrgId } from "../src/selectors/user";
+import { receiveClassEnrollmentListAction } from "../ClassEnrollment/ducks";
 
 const RECEIVE_SCHOOLADMIN_REQUEST = "[schooladmin] receive data request";
 const RECEIVE_SCHOOLADMIN_SUCCESS = "[schooladmin] receive data success";
@@ -277,6 +278,13 @@ function* createSchoolAdminSaga({ payload }) {
     const createSchoolAdmin = yield call(userApi.createUser, payload.createReq);
     yield put(createSchoolAdminSuccessAction(createSchoolAdmin));
     // here after an update/delete/create, the new data is fetched back again
+    const isFetchClassEnrollmentList = get(payload, "classEnrollmentPage", false);
+    if (isFetchClassEnrollmentList) {
+      yield put(receiveClassEnrollmentListAction(payload.listReq));
+    } else {
+      yield put(receiveAdminDataAction(payload.listReq));
+    }
+    const { role } = createSchoolAdmin;
     yield put(receiveAdminDataAction(payload.listReq));
     const { role } = createSchoolAdmin;
     let msg = "";
@@ -305,11 +313,16 @@ function* createSchoolAdminSaga({ payload }) {
 function* deleteSchoolAdminSaga({ payload }) {
   try {
     const { result } = yield call(userApi.deleteUser, payload.deleteReq);
-    message.success(result);
     yield put(deleteSchoolAdminSuccessAction(payload.deleteReq));
 
     // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveAdminDataAction(payload.listReq));
+    const isFetchClassEnrollmentList = get(payload, "classEnrollmentPage", false);
+    if (isFetchClassEnrollmentList) {
+      yield put(receiveClassEnrollmentListAction(payload.listReq));
+    } else {
+      yield put(receiveAdminDataAction(payload.listReq));
+    }
+    message.success(result);
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";
     yield call(message.error, errorMessage);

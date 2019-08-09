@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, Table, Spin } from "antd";
+import { Modal, Form, Input, Table, Spin, Icon } from "antd";
+import { StyledModal, Title, ActionButton, Field, FooterDiv } from "./styled";
+import { IconUser } from "@edulastic/icons";
 
 function AddStudentsToOtherClass({
   showModal,
@@ -34,6 +36,25 @@ function AddStudentsToOtherClass({
       }
     });
   };
+  const title = (
+    <Title>
+      <IconUser />
+      <label>Add Student(s) to another Class</label>
+    </Title>
+  );
+
+  const footer = (
+    <FooterDiv>
+      <ActionButton ghost type="primary" onClick={() => onCloseModal()}>
+        No, Cancel
+      </ActionButton>
+
+      <ActionButton type="primary" onClick={() => handleOkClick()} disabled={!destinationClassData}>
+        Add Student(s)
+        <Icon type="right" />
+      </ActionButton>
+    </FooterDiv>
+  );
   return successData ? (
     <Modal visible={showModal} title="Student enrollment status" width="800px" onOk={onCloseModal}>
       <Table
@@ -59,30 +80,39 @@ function AddStudentsToOtherClass({
       />
     </Modal>
   ) : (
-    <Modal
+    <StyledModal
       visible={showModal}
-      title="Add Student(s) to Another Class"
-      onOk={handleOkClick}
+      title={title}
+      footer={footer}
       onCancel={onCloseModal}
       width="800px"
-      okText="Add Student(s) >"
-      okButtonProps={{ disabled: !destinationClassData }}
-      cancelText="No, Cancel"
       maskClosable={false}
     >
       <Spin spinning={loading}>
         <Form>
-          <Form.Item label="Destination Class Code">
-            {getFieldDecorator("destClassCode", {
-              rules: [{ required: true, message: "Please input the destination class" }]
-            })(<Input onBlur={evt => fetchClassDetailsUsingCode(evt.target.value)} />)}
-          </Form.Item>
-          <Form.Item label="Class Name">{getFieldDecorator("name")(<Input disabled />)}</Form.Item>
-          <Form.Item label="School Name">{getFieldDecorator("institutionName")(<Input disabled />)}</Form.Item>
-          <Form.Item label="Teacher Name">{getFieldDecorator("teacherName")(<Input disabled />)}</Form.Item>
+          <Field name="destClassCode">
+            <legend>Destination Class Code</legend>
+            <Form.Item>
+              {getFieldDecorator("destClassCode", {
+                rules: [{ required: true, message: "Please input the destination class" }]
+              })(<Input onBlur={evt => fetchClassDetailsUsingCode(evt.target.value)} />)}
+            </Form.Item>
+          </Field>
+          <Field name="name">
+            <legend>Class Name</legend>
+            <Form.Item>{getFieldDecorator("name")(<Input disabled />)}</Form.Item>
+          </Field>
+          <Field name="institutionName">
+            <legend>School Name</legend>
+            <Form.Item>{getFieldDecorator("institutionName")(<Input disabled />)}</Form.Item>
+          </Field>
+          <Field name="teacherName">
+            <legend>Teacher Name</legend>
+            <Form.Item>{getFieldDecorator("teacherName")(<Input disabled />)}</Form.Item>
+          </Field>
         </Form>
       </Spin>
-    </Modal>
+    </StyledModal>
   );
 }
 

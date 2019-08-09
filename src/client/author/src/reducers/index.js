@@ -66,6 +66,7 @@ import { playlist } from "../../PlaylistPage";
 import pickUpQuestion from "./pickUpQuestion";
 import { dashboardTeacher } from "../../Dashboard";
 import { testItemPreview } from "../components/common/PreviewModal";
+import { classEnrollmentReducer } from "../../ClassEnrollment";
 
 const authorReducers = {
   authorUi,
@@ -135,7 +136,8 @@ const authorReducers = {
   interestedStandardsReducer,
   pickUpQuestion,
   dashboardTeacher,
-  testItemPreview
+  testItemPreview,
+  classEnrollmentReducer
 };
 
 export default authorReducers;

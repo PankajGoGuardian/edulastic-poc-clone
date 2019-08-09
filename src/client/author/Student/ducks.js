@@ -32,6 +32,7 @@ const FETCH_CLASS_DETAILS_USING_CODE = "[student] FETCH_CLASS_DETAILS_USING_CODE
 const FETCH_CLASS_DETAILS_SUCCESS = "[student] FETCH_CLASS_DETAILS_SUCCESS";
 
 const SET_MULTI_STUDENTS_PROVIDER = "[student] SET_MULTI_STUDENTS_PROVIDER";
+const RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE = "[student] RESET_FETCHED _CLASS_DETAILS_USING_CLASSCODE";
 
 export const receiveStudentsListAction = createAction(RECEIVE_STUDENTLIST_REQUEST);
 export const receiveStudentsListSuccessAction = createAction(RECEIVE_STUDENTLIST_SUCCESS);
@@ -59,6 +60,7 @@ export const fetchClassDetailsUsingCodeAction = createAction(FETCH_CLASS_DETAILS
 export const fetchClassDetailsSuccess = createAction(FETCH_CLASS_DETAILS_SUCCESS);
 
 export const setMultiStudentsProviderAction = createAction(SET_MULTI_STUDENTS_PROVIDER);
+export const resetFetchedClassDetailsAction = createAction(RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE);
 
 //selectors
 const stateStudentSelector = state => state.studentReducer;
@@ -118,6 +120,11 @@ export const getAddStudentsToOtherClassSelector = createSelector(
 export const getStudentsLoading = createSelector(
   stateStudentSelector,
   state => state.loading
+);
+
+export const getValidatedClassDetails = createSelector(
+  stateStudentSelector,
+  ({ addStudentsToOtherClass: { destinationClassData } }) => destinationClassData
 );
 
 // reducers
@@ -281,6 +288,9 @@ export const reducer = createReducer(initialState, {
   },
   [SET_MULTI_STUDENTS_PROVIDER]: (state, { payload }) => {
     state.mutliStudentsProvider = payload;
+  },
+  [RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE]: state => {
+    state.addStudentsToOtherClass.destinationClassData = {};
   }
 });
 

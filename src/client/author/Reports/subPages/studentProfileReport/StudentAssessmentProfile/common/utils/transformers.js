@@ -1,5 +1,6 @@
 import moment from "moment";
-import { map, get, find, round, sumBy } from "lodash";
+import { map, get, find, round, sumBy, capitalize } from "lodash";
+import { testTypeHashMap } from "../../../../../common/util";
 
 export const getData = (rawData = {}, tests = [], bandInfo = []) => {
   if (!tests.length) {
@@ -25,6 +26,7 @@ export const getData = (rawData = {}, tests = [], bandInfo = []) => {
     return {
       totalQuestions: 0,
       ...test,
+      testType: capitalize(testTypeHashMap[testType.toLowerCase()]),
       assignmentDateFormatted,
       districtAvg: testDistrictAvg,
       groupAvg: testGroupAvg,

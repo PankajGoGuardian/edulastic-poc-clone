@@ -3,7 +3,7 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, keyBy, intersection, uniq } from "lodash";
-import { Spin, Button, Modal, Col, Select } from "antd";
+import { Spin, Button, Modal, Select } from "antd";
 import styled from "styled-components";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import { withRouter } from "react-router-dom";
@@ -121,21 +121,12 @@ class PreviewModal extends React.Component {
   };
 
   handleSelection = row => {
-    const {
-      setSelectedTests,
-      setDataAndSave,
-      selectedRows,
-      testItemsList,
-      test,
-      gotoSummary,
-      item,
-      setItemFromPassage
-    } = this.props;
+    const { setDataAndSave, selectedRows, testItemsList, test, gotoSummary, item, setItemFromPassage } = this.props;
     if (!test.title) {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
-    const newTest = cloneDeep(test);
+    const newTest = { ...test };
     let keys = [];
     if (newTest.safeBrowser && !newTest.sebPassword) {
       return message.error("Please add a valid password");
@@ -153,7 +144,6 @@ class PreviewModal extends React.Component {
       keys = keys.filter(item => item !== row.id);
       setDataAndSave({ addToTest: false, item: { _id: row.id } });
     }
-    setSelectedTests(keys);
     setItemFromPassage(item);
   };
 
@@ -169,8 +159,7 @@ class PreviewModal extends React.Component {
       showAnswer,
       preview,
       showEvaluationButtons,
-      passage,
-      onAddItems
+      passage
     } = this.props;
 
     const { scrollElement, passageLoading } = this.state;
@@ -202,7 +191,14 @@ class PreviewModal extends React.Component {
       >
         <HeadingWrapper>
           <Title>Preview</Title>
-          {isPassage && <button onClick={this.handleSelection}>add item</button>}
+          {isPassage && (
+            <ButtonsWrapper>
+              {/* TODO right logic for showing add or remove  */}
+              <Button style={{ marginRight: "20px" }} onClick={this.handleSelection}>
+                ADD
+              </Button>
+            </ButtonsWrapper>
+          )}
         </HeadingWrapper>
         <ModalContentArea>
           {showEvaluationButtons && (
@@ -321,7 +317,6 @@ PreviewModal.propTypes = {
 PreviewModal.defaultProps = {
   checkAnswer: () => {},
   showAnswer: () => {},
-  onAddItems: () => {},
   gotoSummary: () => {},
   loading: false,
   isEditable: false,

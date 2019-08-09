@@ -15,7 +15,17 @@ import GoogleBanner from "./GoogleBanner";
 
 const { allGrades, allSubjects } = selectsData;
 
-const ClassList = ({ groups, archiveGroups, loadStudents, setShowDetails, syncClassLoading, showBanner, history }) => {
+const ClassList = ({
+  groups,
+  archiveGroups,
+  loadStudents,
+  setShowDetails,
+  syncClassLoading,
+  showBanner,
+  institutions,
+  history
+}) => {
+  const recentInstitute = institutions[institutions.length - 1];
   const findGrade = (_grade = []) => allGrades.filter(item => _grade.includes(item.value)).map(item => ` ${item.text}`);
   // eslint-disable-next-line max-len
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
@@ -119,7 +129,7 @@ const ClassList = ({ groups, archiveGroups, loadStudents, setShowDetails, syncCl
           pagination={classGroups.length > 10}
         />
       ) : (
-        <ClassCreatePage filterClass={filterClass} />
+        <ClassCreatePage filterClass={filterClass} recentInstitute={recentInstitute} />
       )}
     </TableWrapper>
   );
@@ -134,7 +144,9 @@ ClassList.propTypes = {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({}),
+    state => ({
+      institutions: get(state, "user.user.orgData.schools")
+    }),
     {
       loadStudents: fetchStudentsByIdAction
     }

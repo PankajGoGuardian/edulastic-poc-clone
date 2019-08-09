@@ -119,6 +119,12 @@ Object.defineProperty(exports, "charts", {
     return _charts["default"];
   }
 });
+Object.defineProperty(exports, "fractionEditor", {
+  enumerable: true,
+  get: function get() {
+    return _fractionEditor["default"];
+  }
+});
 
 var _mcq = _interopRequireDefault(require("./mcq"));
 
@@ -157,3 +163,5 @@ var _clozeDragDrop = _interopRequireDefault(require("./clozeDragDrop"));
 var _essayRichText = _interopRequireDefault(require("./essayRichText"));
 
 var _charts = _interopRequireDefault(require("./charts"));
+
+var _fractionEditor = _interopRequireDefault(require("./fractionEditor"));

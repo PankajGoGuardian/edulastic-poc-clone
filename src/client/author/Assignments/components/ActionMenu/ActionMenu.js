@@ -66,12 +66,12 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
             Release Grades
           </StyledLink>
         </Menu.Item>
-        <Menu.Item key="edit-Assignment">
-          <span style={{ marginTop: 2 }} onClick={() => toggleEditPopup(true, currentAssignment.testId)}>
+        <Menu.Item key="edit-Assignment" onClick={() => toggleEditPopup(true, currentAssignment.testId)}>
+          <StyledLink target="_blank" rel="noopener noreferrer">
             <img alt="icon" src={classIcon} />
             <SpaceElement />
             Edit Assessment
-          </span>
+          </StyledLink>
         </Menu.Item>
       </StyledMenu>
     </Container>

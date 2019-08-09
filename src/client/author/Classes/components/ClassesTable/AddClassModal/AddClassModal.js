@@ -35,7 +35,7 @@ class AddClassModal extends Component {
           type: "class",
           owners: teacherArr,
           institutionId: institutionId.key,
-          subject,
+          subject: subject ? subject : "Other Subjects",
           tags,
           courseId,
           // here multiple grades has to be sent as a comma separated string
@@ -161,14 +161,7 @@ class AddClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Subject">
-              {getFieldDecorator("subject", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please select subject"
-                  }
-                ]
-              })(
+              {getFieldDecorator("subject")(
                 <Select placeholder="Select Subject">
                   <Option value="Mathematics">Mathematics</Option>
                   <Option value="ELA">ELA</Option>
@@ -183,14 +176,7 @@ class AddClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Grades">
-              {getFieldDecorator("grades", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please select grades"
-                  }
-                ]
-              })(
+              {getFieldDecorator("grades")(
                 <Select mode="multiple" placeholder="Select Grades">
                   {GRADES_LIST.map(({ value, label }) => (
                     <Option key={value} value={value}>

@@ -105,11 +105,15 @@ const ClozeTextInput = ({ resprops, id }) => {
     setInput({ id, value });
   }, [value]);
 
-  const _getValue = val => {
-    const newStr = value.split("");
-    const selection = getInputSelection(ref.current);
-    newStr.splice(selection.start, selection.end - selection.start, val);
-    return newStr.join("");
+  const _getValue = specialChar => {
+    // TODO get input ref ? set cursor postion ?
+    const inputElement = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
+    if (inputElement) {
+      const selection = getInputSelection(inputElement);
+      const newStr = value.split("");
+      newStr.splice(selection.start, selection.end - selection.start, specialChar);
+      return newStr.join("");
+    }
   };
 
   const _makeCharactersMap = () => {
@@ -150,6 +154,7 @@ const ClozeTextInput = ({ resprops, id }) => {
       height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
     }
   }
+
   return (
     <CustomInput
       key={`input_${index}`}
@@ -182,7 +187,7 @@ const ClozeTextInput = ({ resprops, id }) => {
       />
       {item.character_map && (
         <NumberPad
-          buttonStyle={{ height: "100%", width: 30, position: "absolute", right: 0, top: 0 }}
+          buttonStyle={{ height: "100%", width: 30 }}
           onChange={(_, val) => {
             handleInputChange({
               value: _getValue(val),

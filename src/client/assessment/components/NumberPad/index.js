@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { MathKeyboard } from '@edulastic/common';
+import { MathKeyboard } from "@edulastic/common";
 
 import NumberPadItem from "./components/NumberPadItem";
 import { NumberPadWrapper } from "./styled/NumberPadWrapper";
@@ -14,7 +14,7 @@ const NumberPad = ({ items, onChange, characterMapButtons, buttonStyle, style })
   };
 
   return (
-    <NumberPadWrapper style={style}>
+    <NumberPadWrapper style={style} width={buttonStyle.width}>
       {items.map((item, index) => (
         <NumberPadContext.Provider key={index} value={characterMapButtons}>
           <NumberPadItem buttonStyle={buttonStyle} onSelect={selectHandler(index)} item={item} />

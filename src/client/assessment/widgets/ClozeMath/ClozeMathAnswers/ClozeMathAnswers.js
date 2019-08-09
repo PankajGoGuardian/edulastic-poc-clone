@@ -383,6 +383,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       />
       <Checkbox
         className="additional-options"
+        onChange={() =>
+          handleValidationOptionsChange("allowSingleLetterMistake", !item.validation.allowSingleLetterMistake)
+        }
+        label={t("component.multipart.allowsinglelettermistake")}
+        checked={!!item.validation.allowSingleLetterMistake}
+      />
+      <Checkbox
+        className="additional-options"
         onChange={() => handleValidationOptionsChange("mixAndMatch", !item.validation.mixAndMatch)}
         label={t("component.multipart.mixNmatch")}
         checked={!!item.validation.mixAndMatch}

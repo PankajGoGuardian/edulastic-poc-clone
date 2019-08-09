@@ -112,7 +112,7 @@ export const parseData = (rawData = {}) => {
       diffScore: 100 - round(score),
       testId,
       uniqId: testId + testType,
-      testType: capitalize(testTypeHashMap[testType]),
+      testType: capitalize(testTypeHashMap[testType.toLowerCase()]),
       assessmentDate,
       assessmentDateFormatted,
       totalAssigned,

@@ -119,6 +119,8 @@ const getPossibleResps = (snapItems, possibleResps) => {
 class Display extends Component {
   previewContainerRef = React.createRef();
 
+  responseBoxContainerRef = React.createRef();
+
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState !== undefined) {
       const {
@@ -697,10 +699,16 @@ class Display extends Component {
       <div />
     );
 
-    const responseBoxLayout = isReviewTab || !responses.length ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? "right" : responsecontainerposition;
+
+    let responseBoxContainerWidth = 150;
+    if (this.responseBoxContainerRef.current) {
+      responseBoxContainerWidth =
+        this.responseBoxContainerRef.current.clientWidth > 150 ? this.responseBoxContainerRef.current.clientWidth : 150;
+    }
 
     return (
       <div style={{ fontSize }}>
@@ -730,7 +738,6 @@ class Display extends Component {
             <div
               className="left responseboxContainer"
               style={{
-                width: "20%",
                 margin: 15,
                 height: "auto",
                 borderRadius: 10,
@@ -738,14 +745,16 @@ class Display extends Component {
                 display: "flex",
                 justifyContent: "center"
               }}
+              ref={this.responseBoxContainerRef}
             >
-              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+              <RelativeContainer containerWidth={responseBoxContainerWidth}>{responseBoxLayout}</RelativeContainer>
             </div>
             <div
               style={{
                 margin: "15px 0 15px 15px",
                 borderRadius: 10,
-                flex: 1
+                flex: 1,
+                width: `calc(100% - ${responseBoxContainerWidth + 30}px)`
               }}
             >
               {templateBoxLayout}
@@ -764,7 +773,8 @@ class Display extends Component {
               style={{
                 flex: 1,
                 margin: smallSize ? 0 : "15px 15px 15px 0",
-                borderRadius: 10
+                borderRadius: 10,
+                width: `calc(100% - ${responseBoxContainerWidth + 30}px)`
               }}
             >
               {templateBoxLayout}
@@ -780,8 +790,9 @@ class Display extends Component {
                 display: "flex",
                 justifyContent: "center"
               }}
+              ref={this.responseBoxContainerRef}
             >
-              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+              <RelativeContainer containerWidth={responseBoxContainerWidth}>{responseBoxLayout}</RelativeContainer>
             </div>
           </div>
         )}

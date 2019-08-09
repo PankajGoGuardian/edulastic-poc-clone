@@ -75,11 +75,13 @@ const OrderList = ({
   const answerContext = useContext(AnswerContext);
 
   useEffect(() => {
-    if (userAnswer.length === 0) {
+    if (view === PREVIEW && !disableResponse) {
       const { list = [] } = item;
-      saveAnswer(list.map((q, i) => i));
+      if (list.length !== userAnswer.length) {
+        saveAnswer(list.map((q, i) => i));
+      }
     }
-  }, [item, userAnswer]);
+  }, [view, previewTab]);
 
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
   const styleType = get(item, "uiStyle.type", "button");
@@ -206,7 +208,7 @@ const OrderList = ({
   if (answerContext.expressGrader) {
     initialAnswers = disableResponse ? correctAnswers : userAnswer;
   } else {
-    initialAnswers = userAnswer.length > 0 ? userAnswer : correctAnswers;
+    initialAnswers = userAnswer.length > 0 ? userAnswer : itemForPreview.list.map((q, i) => i);
   }
 
   const evaluationFromAnswers = userAnswer.map((answer, index) => {

@@ -95,7 +95,6 @@ const TestPageHeader = ({
   if (!owner) {
     navButtons = navButtons.slice(2);
   }
-  console.log("tes", testStatus);
   return windowWidth > 993 ? (
     <HeaderWrapper>
       <EditTestModal

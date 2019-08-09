@@ -135,7 +135,7 @@ class ViewModal extends React.Component {
             {(permission !== "VIEW" || status === "published") && (
               <ButtonContainer>
                 <ButtonComponent size={"large"} bgColor={themeColor} onClick={status === "published" ? assign : onEdit}>
-                  {status === "published" ? "ASSIGNI" : "EDITI"}
+                  {status === "published" ? "ASSIGN" : "EDIT"}
                 </ButtonComponent>
               </ButtonContainer>
             )}

@@ -312,6 +312,9 @@ const AnalysisTable = styled(StyledTable)`
   }
 
   .ant-table-tbody {
+    td {
+      min-width: 100px;
+    }
     td:nth-child(n + 3) {
       padding: 0 !important;
       text-align: right;

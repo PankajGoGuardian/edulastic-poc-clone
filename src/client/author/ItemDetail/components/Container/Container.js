@@ -578,7 +578,7 @@ class Container extends Component {
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
                   <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
-                    {passage && (
+                    {item.canAddMultipleItems && passage && (
                       <Row type="flex" style={{ width: 145 }} justify="end">
                         <Col span={12}>
                           {passageTestItems.length > 0 && (

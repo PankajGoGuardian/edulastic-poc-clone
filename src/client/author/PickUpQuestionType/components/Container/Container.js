@@ -82,8 +82,13 @@ class Container extends Component {
     }
 
     // handle case of passage with questions
-    if (data.type === questionType.PASSAGE_WITH_QUESTIONS) {
-      convertToPassageWithQuestions({ isTestFlow, itemId: itemId || id, testId });
+    if (data.type === questionType.PASSAGE_WITH_QUESTIONS || data.type === questionType.PASSAGE) {
+      convertToPassageWithQuestions({
+        isTestFlow,
+        itemId: itemId || id,
+        testId,
+        canAddMultipleItems: data.type === questionType.PASSAGE_WITH_QUESTIONS
+      });
       return;
     }
 

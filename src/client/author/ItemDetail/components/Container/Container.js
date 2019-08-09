@@ -504,14 +504,14 @@ class Container extends Component {
           centered={true}
           footer={[
             <Button key="cancel" onClick={this.closeRemovePassageItemPopup}>
-              Cancel
+              No, Cancel
             </Button>,
             <Button key="submit" onClick={this.removeItemAndUpdatePassage} type="primary">
-              Remove
+              Yes, Remove
             </Button>
           ]}
         >
-          <p> Do you really want to remove the item?</p>
+          <p> You are about to remove the current item from the passage. This action cannot be undone.</p>
         </Modal>
         <Layout>
           {showModal && item && (

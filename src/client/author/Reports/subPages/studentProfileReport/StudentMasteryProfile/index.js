@@ -16,11 +16,12 @@ import {
   getReportsStudentMasteryProfileLoader,
   getStudentMasteryProfileRequestAction
 } from "./ducks";
+import { getCsvDownloadingState } from "../../../ducks";
 import { getReportsSPRFilterData } from "../common/filterDataDucks";
 import { augmentStandardMetaInfo } from "../common/utils/transformers.js";
 import { useGetStudentMasteryData } from "../common/hooks";
 import { getDomainOptions } from "./common/utils/transformers";
-import { toggleItem } from "../../../common/util";
+import { toggleItem, downloadCSV } from "../../../common/util";
 
 const usefilterRecords = (records, domain) => {
   return useMemo(() => filter(records, record => domain == "All" || record.domainId == domain), [records, domain]);
@@ -43,6 +44,7 @@ const StudentMasteryProfile = ({
   settings,
   loading,
   SARFilterData,
+  isCsvDownloading,
   studentMasteryProfile,
   getStudentMasteryProfileRequestAction
 }) => {
@@ -88,6 +90,9 @@ const StudentMasteryProfile = ({
 
   const studentInformation = studInfo[0] || {};
 
+  const onCsvConvert = data =>
+    downloadCSV(`Standard Performance Details-${selectedStudent.title}-${studentInformation.subject}.csv`, data);
+
   return (
     <>
       <StyledCard>
@@ -127,7 +132,12 @@ const StudentMasteryProfile = ({
           </Col>
         </Row>
       </StyledCard>
-      <StudentMasteryTable data={filteredStandards} selectedMastery={selectedMastery} />
+      <StudentMasteryTable
+        onCsvConvert={onCsvConvert}
+        isCsvDownloading={isCsvDownloading}
+        data={filteredStandards}
+        selectedMastery={selectedMastery}
+      />
     </>
   );
 };
@@ -136,7 +146,8 @@ const enhance = connect(
   state => ({
     studentMasteryProfile: getReportsStudentMasteryProfile(state),
     SARFilterData: getReportsSPRFilterData(state),
-    loading: getReportsStudentMasteryProfileLoader(state)
+    loading: getReportsStudentMasteryProfileLoader(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getStudentMasteryProfileRequestAction

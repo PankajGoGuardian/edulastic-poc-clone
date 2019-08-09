@@ -11,7 +11,7 @@ import {
 } from "./styled";
 import GoogleClassRoomImg from "../../../Dashboard/assets/images/google-classroom.png";
 import { Icon } from "antd";
-const ClassCreatePage = ({ filterClass, recentInstitute }) => {
+const ClassCreatePage = ({ filterClass, recentInstitute = {} }) => {
   const { name } = recentInstitute;
   return (
     <>

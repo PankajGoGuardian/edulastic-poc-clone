@@ -411,6 +411,7 @@ class AddItems extends PureComponent {
             data={previewData}
             onAddItems={onAddItems}
             gotoSummary={gotoSummary}
+            setSelectedTests={this.setSelectedTestItems}
           />
         )}
       </Container>

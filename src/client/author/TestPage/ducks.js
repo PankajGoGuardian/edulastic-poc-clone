@@ -617,9 +617,10 @@ function* setTestDataAndUpdateSaga(payload) {
         draft.testItems.push(item);
       });
     } else {
-      newTest = produce(newTest, draft => {
-        draft.testItems = draft.testItems.filter(el => el._id !== item._id);
-      });
+      newTest = {
+        ...newTest,
+        testItems: newTest.testItems.filter(el => el._id !== item._id)
+      };
     }
     // getting grades and subjects from each question array in test items
     const { testItems = [] } = newTest;

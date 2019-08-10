@@ -28,7 +28,7 @@ import { clearAnswersAction } from "../../../actions/answers";
 import {
   setItemFromPassageAction,
   getSelectedItemSelector,
-  getTestItemsSelector
+  setTestItemsAction
 } from "../../../../TestPage/components/AddItems/ducks";
 import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
 
@@ -120,31 +120,43 @@ class PreviewModal extends React.Component {
     });
   };
 
-  handleSelection = row => {
-    const { setDataAndSave, selectedRows, testItemsList, test, gotoSummary, item, setItemFromPassage } = this.props;
+  handleSelection = () => {
+    const {
+      setDataAndSave,
+      selectedRows,
+
+      test,
+      gotoSummary,
+      item,
+      setTestItems,
+      setSelectedTests
+    } = this.props;
     if (!test.title) {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
-    let keys = [];
+    let keys = [...selectedRows.data];
     if (test.safeBrowser && !test.sebPassword) {
       return message.error("Please add a valid password");
     }
-    if (selectedRows !== undefined) {
-      selectedRows.data.forEach((selectedRow, index) => {
-        keys[index] = selectedRow;
-      });
-    }
-    if (!keys.includes(row.id)) {
-      keys[keys.length] = row.id;
-      const item = testItemsList.find(el => row.id === el._id);
+    if (!keys.includes(item._id)) {
+      keys[keys.length] = item._id;
       setDataAndSave({ addToTest: true, item });
     } else {
-      keys = keys.filter(item => item !== row.id);
-      setDataAndSave({ addToTest: false, item: { _id: row.id } });
+      keys = keys.filter(key => key !== item._id);
+      setDataAndSave({ addToTest: false, item: { _id: item._id } });
     }
-    setItemFromPassage(item);
+    setTestItems(keys);
+    setSelectedTests(keys);
   };
+
+  get isAddOrRemove() {
+    const { item, selectedRows } = this.props;
+    if (selectedRows && selectedRows.data && selectedRows.data.length) {
+      return !selectedRows.data.includes(item._id);
+    }
+    return true;
+  }
 
   render() {
     const {
@@ -158,7 +170,8 @@ class PreviewModal extends React.Component {
       showAnswer,
       preview,
       showEvaluationButtons,
-      passage
+      passage,
+      page
     } = this.props;
 
     const { scrollElement, passageLoading } = this.state;
@@ -190,11 +203,17 @@ class PreviewModal extends React.Component {
       >
         <HeadingWrapper>
           <Title>Preview</Title>
-          {isPassage && (
+          {isPassage && page === "addItems" && (
             <ButtonsWrapper>
-              {/* TODO right logic for showing add or remove  */}
-              <Button style={{ marginRight: "20px" }} onClick={this.handleSelection}>
-                ADD
+              <Button
+                style={{
+                  marginRight: "20px",
+                  border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+                  color: this.isAddOrRemove ? themeColor : "#ff0099"
+                }}
+                onClick={this.handleSelection}
+              >
+                {this.isAddOrRemove ? "ADD" : "REMOVE"}
               </Button>
             </ButtonsWrapper>
           )}
@@ -223,7 +242,7 @@ class PreviewModal extends React.Component {
                     <IconPencilEdit color={themeColor} />
                   </EduButton>
                 )}
-                {isPassage ? (
+                {isPassage && page === "addItems" && (
                   <ItemsListDropDown
                     value={item._id}
                     showArrow={false}
@@ -236,8 +255,6 @@ class PreviewModal extends React.Component {
                       <Select.Option value={v}>{ind + 1}</Select.Option>
                     ))}
                   </ItemsListDropDown>
-                ) : (
-                  ""
                 )}
               </ButtonsWrapper>
               <ButtonsWrapper>
@@ -335,8 +352,7 @@ const enhance = compose(
         currentAuthorId: get(state, ["user", "user", "_id"]),
         testItemPreviewData: get(state, ["testItemPreview", "item"], {}),
         selectedRows: getSelectedItemSelector(state),
-        test: getTestSelector(state),
-        testItemsList: getTestItemsSelector(state)
+        test: getTestSelector(state)
       };
     },
     {
@@ -347,7 +363,8 @@ const enhance = compose(
       setQuestionsForPassage: setQuestionsForPassageAction,
       clearPreview: clearPreviewAction,
       setItemFromPassage: setItemFromPassageAction,
-      setDataAndSave: setTestDataAndUpdateAction
+      setDataAndSave: setTestDataAndUpdateAction,
+      setTestItems: setTestItemsAction
     }
   )
 );

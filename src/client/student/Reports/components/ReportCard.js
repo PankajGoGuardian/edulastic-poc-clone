@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { last } from "lodash";
+import { Link } from "react-router-dom";
 
+import { TokenStorage } from "@edulastic/api";
+
+import { formatTime } from "../../utils";
 import { monthNames } from "../../../common/utils/helpers";
 
 import {
@@ -26,7 +30,7 @@ import {
 const ReportCard = ({ data, t }) => {
   const [isShownAttempts, toggleAttempts] = useState(false);
 
-  const { title, createdAt, maxAttempts, reports } = data;
+  const { title, createdAt, maxAttempts, reports, testId, testType, _id: assignmentId } = data;
 
   const lastAttempt = last(reports) || {};
   const resume = lastAttempt.status === 0;
@@ -36,6 +40,27 @@ const ReportCard = ({ data, t }) => {
   const attemptCount = newReports && newReports.length;
   const totalQuestions = correct + wrong + skipped || 0;
   const scorePercentage = (score / maxScore) * 100 || 0;
+
+  const token = TokenStorage.getAccessToken();
+  let url;
+  if (process.env.POI_APP_API_URI.startsWith("http")) {
+    url = `${process.env.POI_APP_API_URI.replace("http", "seb").replace(
+      "https",
+      "seb"
+    )}/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`;
+  } else if (process.env.POI_APP_API_URI.startsWith("//")) {
+    url = `${window.location.protocol.replace("http", "seb")}${
+      process.env.POI_APP_API_URI
+    }/test-activity/seb/test/${testId}/type/${testType}/assignment/${assignmentId}`;
+  } else {
+    console.warn(`** can't figure out where to put seb protocol **`);
+  }
+
+  if (lastAttempt._id) {
+    url += `/testActivity/${lastAttempt._id}`;
+  }
+
+  url += `/token/${token}/settings.seb`;
 
   const timeConvert = time24 => {
     let ts = time24;
@@ -84,22 +109,28 @@ const ReportCard = ({ data, t }) => {
         {scorePercentage}%<ReportMobileLabel>{t("common.report.score")}</ReportMobileLabel>
       </ReportAverageScore>
       <ReportReview>
-        <ReportReviewButton>{t("common.report.review")}</ReportReviewButton>
+        <ReportReviewButton href={url}>{t("common.report.review")}</ReportReviewButton>
       </ReportReview>
       <ReportAttempts active={isShownAttempts}>
-        <ReportAttemptItem>
-          <ReportAttemptItemDate>Jan 23, 8:30 AM</ReportAttemptItemDate>
-          <ReportAttemptItemValue>6/8</ReportAttemptItemValue>
-          <ReportAttemptItemValue>75%</ReportAttemptItemValue>
-          <ReportAttemptItemLink>{t("common.report.review")}</ReportAttemptItemLink>
-        </ReportAttemptItem>
+        {newReports.map(attempt => {
+          const percentage = (score / maxScore) * 100 || 0;
+          const total = correct + wrong;
 
-        <ReportAttemptItem>
-          <ReportAttemptItemDate>Jan 23, 8:30 AM</ReportAttemptItemDate>
-          <ReportAttemptItemValue>6/8</ReportAttemptItemValue>
-          <ReportAttemptItemValue>75%</ReportAttemptItemValue>
-          <ReportAttemptItemLink>{t("common.report.review")}</ReportAttemptItemLink>
-        </ReportAttemptItem>
+          return (
+            <ReportAttemptItem>
+              <ReportAttemptItemDate>{formatTime(createdAt)}</ReportAttemptItemDate>
+              <ReportAttemptItemValue>
+                {correct}/{total}
+              </ReportAttemptItemValue>
+              <ReportAttemptItemValue>{Math.floor(percentage * 100) / 100}%</ReportAttemptItemValue>
+              <ReportAttemptItemLink>
+                <Link to={`/home/class/${attempt.groupId}/testActivityReport/${data._id}`}>
+                  {t("common.report.review")}
+                </Link>
+              </ReportAttemptItemLink>
+            </ReportAttemptItem>
+          );
+        })}
       </ReportAttempts>
     </ReportWrapper>
   );

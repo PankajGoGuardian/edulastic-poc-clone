@@ -415,6 +415,14 @@ export const ReportReviewButton = styled(Button)`
   border: 1px solid ${themeColor};
   border-radius: 4px;
 
+  &.ant-btn {
+    line-height: 40px;
+
+    @media (max-width: ${largeDesktopWidth}) {
+      line-height: 36px;
+    }
+  }
+
   @media (max-width: ${extraDesktopWidth}) {
     min-width: 150px;
   }

@@ -10,7 +10,8 @@
       "title": "Advanced Options",
       "exactMatch": "Exact match",
       "partialMatch": "Partial match",
-      "mainTitle": "Options"
+      "mainTitle": "Options",
+      "annotations": "Annotations"
     },
     "correctAnswers": {
       "setCorrectAnswers": "Set Correct Answer(s)"
@@ -469,7 +470,6 @@
         "transparentbackground": "Transparent Background",
         "showborder": "Show drop area border",
         "snapfittodroparea": "Snap fit to drop Area",
-        "annotations": "Annotations",
         "wrapTextToFitDropArea": "Wrap text to fit drop area"
       },
       "imageDropDown": {

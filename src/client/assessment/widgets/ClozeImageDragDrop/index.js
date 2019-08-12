@@ -251,7 +251,7 @@ class ClozeImageDragDrop extends Component {
 
                 <Question
                   section="main"
-                  label={t("component.cloze.imageDragDrop.annotations")}
+                  label={t("common.options.annotations")}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                 >

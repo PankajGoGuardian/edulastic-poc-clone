@@ -213,7 +213,7 @@ class ShareModal extends React.Component {
   }
 
   render() {
-    const { sharedType, permission, _permissionKeys } = this.state;
+    const { sharedType, permission, _permissionKeys, currentUser } = this.state;
     const {
       isVisible,
       onClose,
@@ -230,6 +230,11 @@ class ShareModal extends React.Component {
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
     );
     const sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${testId}`;
+
+    const userSelectedLabel = `${currentUser.userName ? `${currentUser.userName},` : ""}${
+      currentUser.email ? currentUser.email : ""
+    }`;
+
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
         <ModalContainer>
@@ -295,6 +300,7 @@ class ShareModal extends React.Component {
                 onChange={this.handleChange}
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 notFoundContent={fetching ? <Spin size="small" /> : null}
+                value={userSelectedLabel}
               >
                 {filteredUserList.map(item => (
                   <Select.Option

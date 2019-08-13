@@ -156,7 +156,7 @@ class DisneyCardContainer extends Component {
                 <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
               )}
               <StyledName>
-                <StyledParaF data-cy="studentName" title={isPresentationMode ? undefined : student.email}>
+                <StyledParaF data-cy="studentName" title={isPresentationMode ? undefined : student.userName}>
                   {name}
                 </StyledParaF>
                 {student.present ? (

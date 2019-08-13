@@ -231,132 +231,146 @@ export const transformGradeBookResponse = ({
   }));
 
   return studentNames
-    .map(({ _id: studentId, firstName: studentName, lastName, email, fakeFirstName, fakeLastName, icon }) => {
-      const fullName = `${studentName}${lastName ? ` ${lastName}` : ""}`;
-      const fakeName = `${fakeFirstName} ${fakeLastName}`;
-      if (!studentTestActivities[studentId]) {
-        return {
-          studentId,
-          studentName: fullName,
-          email,
-          fakeName,
-          icon,
-          color: fakeFirstName,
-          present: true,
-          status: "notStarted",
-          maxScore: testMaxScore,
-          questionActivities: emptyQuestionActivities
-        };
-      }
-      const testActivity = studentTestActivities[studentId];
-      if (testActivity.redirect) {
-        return {
-          studentId,
-          studentName: fullName,
-          email,
-          fakeName,
-          icon,
-          color: fakeFirstName,
-          present: true,
-          status: "redirected",
-          redirected: true,
-          maxScore: testMaxScore,
-          questionActivities: emptyQuestionActivities
-        };
-      }
-      //TODO: for now always present
-      const present = true;
-      //TODO: no graded status now. using submitted as a substitute for graded
-      const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
-      const submitted = testActivity.status == testActivityStatus.SUBMITTED;
-      const absent = testActivity.status === testActivityStatus.ABSENT;
-      const redirected = testActivity.redirected;
-      const testActivityId = testActivity._id;
+    .map(
+      ({
+        _id: studentId,
+        firstName: studentName,
+        lastName,
+        email,
+        username: userName,
+        fakeFirstName,
+        fakeLastName,
+        icon
+      }) => {
+        const fullName = `${studentName}${lastName ? ` ${lastName}` : ""}`;
+        const fakeName = `${fakeFirstName} ${fakeLastName}`;
+        if (!studentTestActivities[studentId]) {
+          return {
+            studentId,
+            studentName: fullName,
+            userName,
+            email,
+            fakeName,
+            icon,
+            color: fakeFirstName,
+            present: true,
+            status: "notStarted",
+            maxScore: testMaxScore,
+            questionActivities: emptyQuestionActivities
+          };
+        }
+        const testActivity = studentTestActivities[studentId];
+        if (testActivity.redirect) {
+          return {
+            studentId,
+            studentName: fullName,
+            userName,
+            email,
+            fakeName,
+            icon,
+            color: fakeFirstName,
+            present: true,
+            status: "redirected",
+            redirected: true,
+            maxScore: testMaxScore,
+            questionActivities: emptyQuestionActivities
+          };
+        }
+        //TODO: for now always present
+        const present = true;
+        //TODO: no graded status now. using submitted as a substitute for graded
+        const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
+        const submitted = testActivity.status == testActivityStatus.SUBMITTED;
+        const absent = testActivity.status === testActivityStatus.ABSENT;
+        const redirected = testActivity.redirected;
+        const testActivityId = testActivity._id;
 
-      const questionActivitiesRaw = testActivityQuestionActivities[studentId];
+        const questionActivitiesRaw = testActivityQuestionActivities[studentId];
 
-      const score = (questionActivitiesRaw && questionActivitiesRaw.reduce((e1, e2) => (e2.score || 0) + e1, 0)) || 0;
+        const score = (questionActivitiesRaw && questionActivitiesRaw.reduce((e1, e2) => (e2.score || 0) + e1, 0)) || 0;
 
-      const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
+        const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
 
-      const questionActivities = qids.map(
-        ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel }, index) => {
-          const _id = el;
+        const questionActivities = qids.map(
+          ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel }, index) => {
+            const _id = el;
 
-          if (!questionActivitiesIndexed[el]) {
+            if (!questionActivitiesIndexed[el]) {
+              return {
+                _id,
+                weight,
+                disabled,
+                testItemId,
+                barLabel,
+                qLabel,
+                ...(submitted ? { skipped: true, score: 0 } : { notStarted: true })
+              };
+            }
+            let {
+              skipped,
+              correct,
+              partiallyCorrect: partialCorrect,
+              timeSpent,
+              score,
+              graded
+            } = questionActivitiesIndexed[el];
+            const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
+            if (score > 0 && skipped) {
+              skipped = false;
+            }
+            if (_qids && _qids.length) {
+              correct = score === questionMaxScore && score > 0;
+              if (!correct) {
+                partialCorrect = score > 0 && score <= questionMaxScore;
+              }
+            }
+
             return {
               _id,
               weight,
+              skipped,
+              correct,
+              partialCorrect,
+              score,
+              maxScore: questionMaxScore,
+              timeSpent,
               disabled,
               testItemId,
-              barLabel,
+              qids: _qids,
+              testActivityId,
+              graded,
               qLabel,
-              ...(submitted ? { skipped: true, score: 0 } : { notStarted: true })
+              barLabel
             };
           }
-          let {
-            skipped,
-            correct,
-            partiallyCorrect: partialCorrect,
-            timeSpent,
-            score,
-            graded
-          } = questionActivitiesIndexed[el];
-          const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
-          if (score > 0 && skipped) {
-            skipped = false;
-          }
-          if (_qids && _qids.length) {
-            correct = score === questionMaxScore && score > 0;
-            if (!correct) {
-              partialCorrect = score > 0 && score <= questionMaxScore;
-            }
-          }
+        );
 
-          return {
-            _id,
-            weight,
-            skipped,
-            correct,
-            partialCorrect,
-            score,
-            maxScore: questionMaxScore,
-            timeSpent,
-            disabled,
-            testItemId,
-            qids: _qids,
-            testActivityId,
-            graded,
-            qLabel,
-            barLabel
-          };
+        let displayStatus = "inProgress";
+        if (submitted) {
+          displayStatus = "submitted";
+        } else if (absent) {
+          displayStatus = "absent";
         }
-      );
 
-      let displayStatus = "inProgress";
-      if (submitted) {
-        displayStatus = "submitted";
-      } else if (absent) {
-        displayStatus = "absent";
+        return {
+          studentId,
+          studentName: fullName,
+          userName,
+          email,
+          fakeName,
+          icon,
+          color: fakeFirstName,
+          status: displayStatus,
+          present,
+          check: false,
+          graded,
+          maxScore: testMaxScore,
+          score,
+          testActivityId,
+          redirected,
+          questionActivities
+        };
       }
-
-      return {
-        studentId,
-        studentName: fullName,
-        email,
-        fakeName,
-        icon,
-        color: fakeFirstName,
-        status: displayStatus,
-        present,
-        check: false,
-        graded,
-        maxScore: testMaxScore,
-        score,
-        testActivityId,
-        redirected,
-        questionActivities
-      };
-    })
+    )
     .filter(x => x);
 };

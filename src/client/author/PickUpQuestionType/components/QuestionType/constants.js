@@ -80,14 +80,14 @@ import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
 // Rulers & Calculators
 import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
 
-export const getCards = onSelectQuestionType => {
+export const getCards = (onSelectQuestionType, isPassage = false) => {
   const { EMBED_RESPONSE } = math;
   // use it for ids of MCQ
   const uuids = [uuid(), uuid(), uuid(), uuid()];
 
   const uuidsForFill = [uuid(), uuid(), uuid()];
 
-  return [
+  let cards = [
     {
       type: "charts",
       cardImage: LinePlot,
@@ -1769,6 +1769,7 @@ export const getCards = onSelectQuestionType => {
     {
       type: "edit",
       cardImage: VPPassage,
+      isPassageType: true,
       data: {
         title: "Passage with Multiple parts",
         type: questionType.PASSAGE,
@@ -1783,6 +1784,7 @@ export const getCards = onSelectQuestionType => {
     {
       type: "edit",
       cardImage: VPPassage,
+      isPassageType: true,
       data: {
         title: "Passage with Questions",
         type: questionType.PASSAGE_WITH_QUESTIONS
@@ -2212,4 +2214,6 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     }
   ];
+
+  return isPassage ? cards.filter(i => !i.isPassageType) : cards;
 };

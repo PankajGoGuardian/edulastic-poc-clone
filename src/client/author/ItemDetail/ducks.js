@@ -89,6 +89,7 @@ export const ADD_WIDGET_TO_PASSAGE = "[itemDetail] add widget to passage";
 export const DELETE_ITEM = "[itemDetail] delete item";
 export const SET_DELETING_ITEM = "[itemDetail] item deletion in progress";
 export const DELETE_WIDGET_FROM_PASSAGE = "[itemDetail] delete widget from passage";
+export const UPDATE_ITEM_TO_PASSAGE_TYPE = "[itemDetail] convert item to passage type";
 // actions
 
 //
@@ -549,7 +550,7 @@ export function reducer(state = initialState, { type, payload }) {
           multipartItem: true
         }
       };
-    case CONVERT_TO_PASSAGE_WITH_QUESTIONS:
+    case UPDATE_ITEM_TO_PASSAGE_TYPE:
       return {
         ...state,
         item: {
@@ -894,7 +895,7 @@ function* convertToMultipartSaga({ payload }) {
 
 function* convertToPassageWithQuestions({ payload }) {
   try {
-    const { isTestFlow = false, itemId, testId } = payload;
+    const { isTestFlow = false, itemId, testId, canAddMultipleItems } = payload;
 
     // create a passage type with the following structure
     const passage = yield call(passageApi.create, {
@@ -909,6 +910,12 @@ function* convertToPassageWithQuestions({ payload }) {
     const { _id: passageId } = passage;
 
     yield put(addPassageAction(passage));
+    yield put({
+      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
+      payload: {
+        canAddMultipleItems: canAddMultipleItems
+      }
+    });
     yield put(
       addQuestionAction({
         id: uuid(),

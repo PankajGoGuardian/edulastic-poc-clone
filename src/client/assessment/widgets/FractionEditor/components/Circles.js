@@ -1,8 +1,17 @@
 import React, { useState } from "react";
 import { PieChart, Pie, Cell } from "recharts";
-import { mainBlueColor, lightBlue } from "@edulastic/colors/index";
+import { mainBlueColor, lightBlue, green, redDark } from "@edulastic/colors/index";
 
-const Circles = ({ sectors, selected, sectorClick, fractionNumber, fillColor, previewTab }) => {
+const Circles = ({
+  sectors,
+  selected,
+  sectorClick,
+  fractionNumber,
+  previewTab,
+  evaluation,
+  isExpressGrader,
+  isAnswerModifiable
+}) => {
   const _sectors = [];
   const offset = fractionNumber * sectors;
   const [hovered, setHovered] = useState(-1);
@@ -23,16 +32,48 @@ const Circles = ({ sectors, selected, sectorClick, fractionNumber, fillColor, pr
         {_sectors.map(sector => {
           const hoverProps = {};
           const _selected = selected.includes(sector.index);
-          let _fillColor = _selected
-            ? previewTab === "show"
-              ? "green"
-              : (fillColor && fillColor[sector.index]) || mainBlueColor
-            : lightBlue;
+          let fillColor;
+          if (previewTab === "show") {
+            if (isAnswerModifiable && isExpressGrader === undefined) {
+              //showAnswer tab and test review page (show userAnswers with green or redDark)
+              fillColor = _selected ? green : lightBlue;
+            } else if (!isAnswerModifiable && !isExpressGrader) {
+              // in LCB (show userAttempted answers as redDark or green)
+              if (_selected) {
+                fillColor = evaluation ? (evaluation[sector.index] ? green : redDark) : mainBlueColor;
+              } else {
+                fillColor = lightBlue;
+              }
+            } else if (isExpressGrader) {
+              if (!isAnswerModifiable) {
+                //inExprssGrader and editResponse if false (show userAnswers in greed or redDark)
+                if (_selected) {
+                  fillColor = evaluation ? (evaluation[sector.index] ? green : redDark) : mainBlueColor;
+                } else {
+                  fillColor = lightBlue;
+                }
+              } else {
+                //inExprssGrader and editResponse if true
+                fillColor = _selected ? mainBlueColor : lightBlue;
+              }
+            }
+          } else if (previewTab === "check") {
+            //checkAnswer tab (show userAttempted answers as redDark or green)
+            if (_selected) {
+              fillColor = evaluation ? (evaluation[sector.index] ? green : redDark) : mainBlueColor;
+            } else {
+              fillColor = lightBlue;
+            }
+          } else {
+            //edit mode as well as clear
+            fillColor = _selected ? mainBlueColor : lightBlue;
+          }
+
           if (previewTab === "clear") {
             (hoverProps.onMouseEnter = () => onHover(sector.index)),
               (hoverProps.onMouseLeave = () => handleSectorBlur(sector.index));
             if (hovered === sector.index) {
-              _fillColor = mainBlueColor;
+              fillColor = mainBlueColor;
             }
           }
           return (
@@ -40,7 +81,7 @@ const Circles = ({ sectors, selected, sectorClick, fractionNumber, fillColor, pr
               {...hoverProps}
               onClick={() => sectorClick(sector.index)}
               key={`cell-${sector.index}`}
-              fill={_fillColor}
+              fill={fillColor}
             />
           );
         })}

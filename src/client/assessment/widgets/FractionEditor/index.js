@@ -24,9 +24,10 @@ const FractionEditor = props => {
     evaluation,
     previewTab,
     showQuestionNumber,
-    userAnswer
+    userAnswer,
+    disableResponse,
+    changePreviewTab
   } = props;
-
   return (
     <>
       {view === EDIT ? (
@@ -74,6 +75,8 @@ const FractionEditor = props => {
           previewTab={previewTab}
           showQuestionNumber={showQuestionNumber}
           userAnswer={userAnswer}
+          disableResponse={disableResponse}
+          changePreviewTab={changePreviewTab}
         />
       )}
     </>

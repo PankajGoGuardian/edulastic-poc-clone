@@ -10,7 +10,8 @@ const Circles = ({
   previewTab,
   evaluation,
   isExpressGrader,
-  isAnswerModifiable
+  isAnswerModifiable,
+  isReviewTab
 }) => {
   const _sectors = [];
   const offset = fractionNumber * sectors;
@@ -26,6 +27,8 @@ const Circles = ({
     _sectors.push({ index: i + offset, value: 360 / sectors });
   }
 
+  console.log("what is selected", selected);
+
   return (
     <PieChart width={400} height={400}>
       <Pie data={_sectors} cx={200} cy={200} outerRadius={150} dataKey="value">
@@ -40,7 +43,7 @@ const Circles = ({
             } else if (!isAnswerModifiable && !isExpressGrader) {
               // in LCB (show userAttempted answers as redDark or green)
               if (_selected) {
-                fillColor = evaluation ? (evaluation[sector.index] ? green : redDark) : mainBlueColor;
+                fillColor = evaluation ? (evaluation[sector.index] || isReviewTab ? green : redDark) : mainBlueColor;
               } else {
                 fillColor = lightBlue;
               }
@@ -48,7 +51,7 @@ const Circles = ({
               if (!isAnswerModifiable) {
                 //inExprssGrader and editResponse if false (show userAnswers in greed or redDark)
                 if (_selected) {
-                  fillColor = evaluation ? (evaluation[sector.index] ? green : redDark) : mainBlueColor;
+                  fillColor = evaluation ? (evaluation[sector.index] || isReviewTab ? green : redDark) : mainBlueColor;
                 } else {
                   fillColor = lightBlue;
                 }

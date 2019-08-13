@@ -572,7 +572,7 @@ class Display extends Component {
               } else {
                 btnStyle.width = btnStyle.widthpx;
               }
-              console.log(btnStyle);
+
               if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
                 const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex];
                 btnStyle.width = individualW || btnStyle.width;

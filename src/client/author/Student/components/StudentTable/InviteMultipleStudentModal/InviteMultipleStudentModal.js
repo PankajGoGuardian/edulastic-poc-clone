@@ -313,10 +313,10 @@ class InviteMultipleStudentModal extends Component {
                       rules: [
                         {
                           required: true,
-                          message: "Please input Students Username"
+                          message: "No user Informtaion added."
                         },
                         {
-                          validator: this.validateStudentsList
+                          validator: !placeHolderVisible && this.validateStudentsList
                         }
                       ]
                     })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}

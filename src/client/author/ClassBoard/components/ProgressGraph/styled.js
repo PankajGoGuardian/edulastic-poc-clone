@@ -1,6 +1,6 @@
-import { Progress } from "antd";
+import { Progress, Tag } from "antd";
 import styled from "styled-components";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, themeColor } from "@edulastic/colors";
 
 export const StyledProgress = styled(Progress)`
   margin: 0 30px 15px 30px;
@@ -57,4 +57,14 @@ export const ProgressBarContainer = styled.div`
     flex-direction: column;
     align-items: center;
   }
+`;
+
+export const AssignmentTitle = styled(Tag)`
+  color: ${themeColor};
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;

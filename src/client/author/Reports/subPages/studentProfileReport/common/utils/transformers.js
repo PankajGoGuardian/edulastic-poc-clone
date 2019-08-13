@@ -1,5 +1,6 @@
 import { groupBy, map, find, reduce, values, round, capitalize, sumBy, orderBy, filter, keys } from "lodash";
 import { percentage, getProficiencyBand, testTypeHashMap } from "../../../../common/util";
+import gradesMap from "../static/json/gradesMap.json";
 
 const getCourses = classData => {
   const groupedByCourse = groupBy(classData, "courseId");
@@ -141,4 +142,11 @@ export const getDomains = (metricInfo = [], scaleInfo = []) => {
   });
 
   return domains;
+};
+
+export const getGrades = (grades = "") => {
+  return grades
+    .split(",")
+    .map(grade => gradesMap[grade])
+    .join(",");
 };

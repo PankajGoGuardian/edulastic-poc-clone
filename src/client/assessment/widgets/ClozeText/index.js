@@ -24,10 +24,12 @@ const EmptyWrapper = styled.div``;
 
 class ClozeText extends Component {
   static contextType = AnswerContext;
+
   componentDidUpdate(prevProps) {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData, previewTab, view } = this.props;
     const newItem = cloneDeep(item);
     let {
+      // eslint-disable-next-line prefer-const
       uiStyle: { responsecontainerindividuals: responses = [], globalSettings }
     } = newItem;
     if (!isEqual(prevProps.item.validation, newItem.validation)) {
@@ -48,8 +50,8 @@ class ClozeText extends Component {
       setQuestionData(newItem);
     }
     if (globalSettings && responses.length) {
-      const previewTabChange = prevProps.previewTab !== this.props.previewTab && this.props.previewTab === "clear";
-      const tabChange = prevProps.view !== this.props.view;
+      const previewTabChange = prevProps.previewTab !== previewTab && previewTab === "clear";
+      const tabChange = prevProps.view !== view;
       if (tabChange || previewTabChange) {
         responses = responses.map(response => ({
           ...response,
@@ -142,7 +144,7 @@ class ClozeText extends Component {
 
   handleAddAnswer = userAnswer => {
     const { saveAnswer, setQuestionData, item } = this.props;
-    const { uiStyle: uiStyle } = item;
+    const { uiStyle } = item;
     let newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
     if (uiStyle.globalSettings) {

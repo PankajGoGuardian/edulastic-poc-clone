@@ -10,7 +10,8 @@ const Circles = ({
   previewTab,
   evaluation,
   isExpressGrader,
-  isAnswerModifiable
+  isAnswerModifiable,
+  isReviewTab
 }) => {
   const _sectors = [];
   const offset = fractionNumber * sectors;
@@ -40,7 +41,7 @@ const Circles = ({
             } else if (!isAnswerModifiable && !isExpressGrader) {
               // in LCB (show userAttempted answers as redDark or green)
               if (_selected) {
-                fillColor = evaluation ? (evaluation[sector.index] ? green : redDark) : mainBlueColor;
+                fillColor = evaluation ? (evaluation[sector.index] || isReviewTab ? green : redDark) : mainBlueColor;
               } else {
                 fillColor = lightBlue;
               }
@@ -48,7 +49,7 @@ const Circles = ({
               if (!isAnswerModifiable) {
                 //inExprssGrader and editResponse if false (show userAnswers in greed or redDark)
                 if (_selected) {
-                  fillColor = evaluation ? (evaluation[sector.index] ? green : redDark) : mainBlueColor;
+                  fillColor = evaluation ? (evaluation[sector.index] || isReviewTab ? green : redDark) : mainBlueColor;
                 } else {
                   fillColor = lightBlue;
                 }

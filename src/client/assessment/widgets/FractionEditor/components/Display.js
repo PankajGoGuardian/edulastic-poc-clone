@@ -17,7 +17,8 @@ const Display = ({
   previewTab,
   showQuestionNumber,
   userAnswer,
-  changePreviewTab
+  changePreviewTab,
+  isReviewTab
 }) => {
   const { fractionProperties = {} } = item;
   const fractionType = fractionProperties.fractionType;
@@ -26,7 +27,7 @@ const Display = ({
 
   const answerContext = useContext(AnswerContext);
 
-  if (previewTab === "show" && answerContext.isAnswerModifiable && !answerContext.expressGrader) {
+  if ((previewTab === "show" && answerContext.isAnswerModifiable && !answerContext.expressGrader) || isReviewTab) {
     selected = Array(get(item, "validation.validResponse.value", 1))
       .fill()
       .map((_, i) => i + 1);
@@ -54,7 +55,11 @@ const Display = ({
     <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
       {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
       <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
-      <FlexContainer style={{ position: "relative" }} flexWrap="wrap" justifyContent="flex-start">
+      <FlexContainer
+        style={{ position: "relative", maxWidth: "100%", overflow: "auto" }}
+        flexWrap="wrap"
+        justifyContent="flex-start"
+      >
         {Array(count)
           .fill()
           .map((_, index) => {
@@ -68,6 +73,7 @@ const Display = ({
                 isExpressGrader={answerContext.expressGrader}
                 isAnswerModifiable={answerContext.isAnswerModifiable}
                 evaluation={evaluation}
+                isReviewTab={isReviewTab}
               />
             ) : (
               <Rectangles
@@ -80,6 +86,7 @@ const Display = ({
                 isExpressGrader={answerContext.expressGrader}
                 isAnswerModifiable={answerContext.isAnswerModifiable}
                 evaluation={evaluation}
+                isReviewTab={isReviewTab}
               />
             );
           })}

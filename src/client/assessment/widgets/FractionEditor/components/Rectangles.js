@@ -12,7 +12,8 @@ const Rectangles = ({
   previewTab,
   evaluation,
   isExpressGrader,
-  isAnswerModifiable
+  isAnswerModifiable,
+  isReviewTab
 }) => {
   const total = rows * columns;
   const offset = fractionNumber * total;
@@ -30,7 +31,11 @@ const Rectangles = ({
             } else if (!isAnswerModifiable && !isExpressGrader) {
               // in LCB (show userAttempted answers as redDark or green)
               if (_selected) {
-                fillColor = evaluation ? (evaluation[index + 1 + offset] ? green : redDark) : mainBlueColor;
+                fillColor = evaluation
+                  ? evaluation[index + 1 + offset] || isReviewTab
+                    ? green
+                    : redDark
+                  : mainBlueColor;
               } else {
                 fillColor = lightBlue;
               }
@@ -38,7 +43,11 @@ const Rectangles = ({
               if (!isAnswerModifiable) {
                 //inExprssGrader and editResponse if false (show userAnswers in greed or redDark)
                 if (_selected) {
-                  fillColor = evaluation ? (evaluation[index + 1 + offset] ? green : redDark) : mainBlueColor;
+                  fillColor = evaluation
+                    ? evaluation[index + 1 + offset] || isReviewTab
+                      ? green
+                      : redDark
+                    : mainBlueColor;
                 } else {
                   fillColor = lightBlue;
                 }

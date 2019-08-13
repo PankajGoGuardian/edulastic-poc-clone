@@ -23,6 +23,8 @@ import { useGetStudentMasteryData } from "../common/hooks";
 import { getDomainOptions } from "./common/utils/transformers";
 import { toggleItem, downloadCSV } from "../../../common/util";
 
+import gradesMap from "../common/static/json/gradesMap.json";
+
 const usefilterRecords = (records, domain) => {
   return useMemo(() => filter(records, record => domain == "All" || record.domainId == domain), [records, domain]);
 };
@@ -105,7 +107,7 @@ const StudentMasteryProfile = ({
               <b>Name</b>: {selectedStudent.title}
             </p>
             <p>
-              <b>Grade</b>: {studentInformation.grades}
+              <b>Grade</b>: {gradesMap[studentInformation.grades]}
             </p>
             <p>
               <b>Subject</b>: {studentInformation.subject}

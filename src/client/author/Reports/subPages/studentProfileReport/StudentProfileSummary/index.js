@@ -21,6 +21,8 @@ import StudentPerformancePie from "../common/components/charts/StudentPerformanc
 import StandardMasteryDetailsTable from "./common/components/table/StandardMasteryDetailsTable";
 import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
 
+import gradesMap from "../common/static/json/gradesMap.json";
+
 const getTooltip = payload => {
   if (payload && payload.length) {
     const { masteryName = "", percentage = 0, count = 0, totalCount = 0 } = payload[0].payload;
@@ -95,7 +97,7 @@ const StudentProfileSummary = ({
               <b>Name</b>: {selectedStudent.title}
             </p>
             <p>
-              <b>Grade</b>: {studentInformation.grades}
+              <b>Grade</b>: {gradesMap[studentInformation.grades]}
             </p>
             <p>
               <b>School</b>: {studentInformation.school || "N/A"}

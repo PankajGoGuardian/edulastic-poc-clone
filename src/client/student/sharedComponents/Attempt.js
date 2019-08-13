@@ -33,7 +33,7 @@ const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, r
         <SpaceBetween pagetype={type === "reports"} />
         {type === "reports" && activityReview && showReviewButton ? (
           <AnswerAndScoreReview>
-            <Link to={`/home/class/${classId}/testActivityReport/${data._id}`}>
+            <Link to={`/home/class/${classId}/test/${data.testId}/testActivityReport/${data._id}`}>
               <span data-cy="review">REVIEW</span>
             </Link>
           </AnswerAndScoreReview>

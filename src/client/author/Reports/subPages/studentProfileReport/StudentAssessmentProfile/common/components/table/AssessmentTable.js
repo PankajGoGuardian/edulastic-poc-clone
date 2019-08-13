@@ -78,10 +78,10 @@ const getColumns = (studentName = "") => {
             <TableTooltipRow title={"Assessment Type: "} value={record.testType} />
             <TableTooltipRow title={"Student Name: "} value={studentName} />
             <TableTooltipRow title={"Day of Assessment Start: "} value={record.assignmentDateFormatted} />
-            <TableTooltipRow title={"Student Perfromance: "} value={`${record.score}%`} />
-            <TableTooltipRow title={"District Perfromance: "} value={`${record.districtAvg}%`} />
-            <TableTooltipRow title={"School Perfromance: "} value={`${record.schoolAvg}%`} />
-            <TableTooltipRow title={"Class Perfromance: "} value={`${record.groupAvg}%`} />
+            <TableTooltipRow title={"Student Performance: "} value={`${record.score}%`} />
+            <TableTooltipRow title={"District Performance: "} value={`${record.districtAvg}%`} />
+            <TableTooltipRow title={"School Performance: "} value={`${record.schoolAvg}%`} />
+            <TableTooltipRow title={"Class Performance: "} value={`${record.groupAvg}%`} />
             <TableTooltipRow title={"Total Questions: "} value={record.totalQuestions} />
             <TableTooltipRow title={"Score: "} value={record.rawScore} />
           </div>

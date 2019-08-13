@@ -31,7 +31,7 @@ const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB }) 
           <BarTooltipRow title="Assessment : " value={record.testName || "N/A"} />
           <BarTooltipRow title="Type : " value={record.testType} />
           <BarTooltipRow title="Performance Band : " value={record.band.name} />
-          <BarTooltipRow title="Student Perfromance : " value={`${record.score}%`} />
+          <BarTooltipRow title="Student Performance : " value={`${record.score}%`} />
         </div>
       );
     }

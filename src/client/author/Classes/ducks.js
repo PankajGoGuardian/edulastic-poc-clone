@@ -231,6 +231,7 @@ function* updateClassSaga({ payload }) {
   try {
     const updateClassData = yield call(groupApi.editGroup, payload);
     yield put(updateClassSuccessAction(updateClassData));
+    yield call(message.success, "Class updated successfully");
   } catch (err) {
     const errorMessage = "Update Class is failing";
     yield call(message.error, errorMessage);

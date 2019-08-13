@@ -25,11 +25,7 @@ import {
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
-import {
-  setItemFromPassageAction,
-  getSelectedItemSelector,
-  setTestItemsAction
-} from "../../../../TestPage/components/AddItems/ducks";
+import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
 import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
 
 const { duplicateTestItem } = testItemsApi;
@@ -121,21 +117,12 @@ class PreviewModal extends React.Component {
   };
 
   handleSelection = () => {
-    const {
-      setDataAndSave,
-      selectedRows,
-
-      test,
-      gotoSummary,
-      item,
-      setTestItems,
-      setSelectedTests
-    } = this.props;
+    const { setDataAndSave, selectedRows, test, gotoSummary, item, setTestItems, setSelectedTests } = this.props;
     if (!test.title) {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
-    let keys = [...selectedRows.data];
+    let keys = [...(selectedRows.data || [])];
     if (test.safeBrowser && !test.sebPassword) {
       return message.error("Please add a valid password");
     }
@@ -362,7 +349,6 @@ const enhance = compose(
       setPrevewItem: setPrevewItemAction,
       setQuestionsForPassage: setQuestionsForPassageAction,
       clearPreview: clearPreviewAction,
-      setItemFromPassage: setItemFromPassageAction,
       setDataAndSave: setTestDataAndUpdateAction,
       setTestItems: setTestItemsAction
     }

@@ -7,7 +7,8 @@ const methods = {
   IS_EXPANDED: "isExpanded",
   IS_RATIONALIZED: "isRationalized",
   STRING_MATCH: "stringMatch",
-  EQUIV_SYNTAX: "equivSyntax"
+  EQUIV_SYNTAX: "equivSyntax",
+  SET_EVALUATION: "setEvaluation"
 };
 
 const fields = {
@@ -101,7 +102,7 @@ const methodOptions = {
     "setDecimalSeparator",
     "setThousandsSeparator",
     "allowedVariables",
-    "setEvaluation",
+    "interpretAsSet",
     "isRationalized",
     "setListTypeResponse",
     "compareSides",
@@ -132,9 +133,11 @@ const methodOptions = {
     "ignoreAlphabeticCharacters",
     "allowNumericOnly",
     "allowedVariables",
-    "setEvaluation",
+    "interpretAsSet",
     "compareSides"
   ],
+
+  [methods.SET_EVALUATION]: [],
   [methods.EQUIV_SYNTAX]: ["syntax", "ignoreAlphabeticCharacters", "argument", "rule"],
   [methods.IS_SIMPLIFIED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
   [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],

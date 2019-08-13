@@ -10,6 +10,8 @@ const MathDisplayWrapper = styled.span`
     padding: 2px 5px 3px;
     border-radius: 2px;
     border: 1px solid #d9d9d9;
+    margin-top: 2px;
+    margin-bottom: 2px;
     display: inline-block;
     min-width: ${({ styles }) => (styles.width ? styles.width : "auto")};
     height: ${({ styles }) => styles.height || "auto"};

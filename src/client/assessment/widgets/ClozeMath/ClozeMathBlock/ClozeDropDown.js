@@ -68,5 +68,5 @@ export default ClozeDropDown;
 
 const StyeldSelect = styled(Select)`
   min-width: 120px;
-  margin: 0px 4px;
+  margin: 2px 4px;
 `;

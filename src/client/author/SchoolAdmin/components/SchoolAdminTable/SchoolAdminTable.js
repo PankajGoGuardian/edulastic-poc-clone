@@ -55,16 +55,6 @@ import { getFullNameFromAsString } from "../../../../common/utils/helpers";
 const { Option } = Select;
 const { OnHoverTable, OnHoverButton } = StyledComponents;
 
-function compareByAlph(a, b) {
-  if (a > b) {
-    return -1;
-  }
-  if (a < b) {
-    return 1;
-  }
-  return 0;
-}
-
 const filterStrDD = {
   status: {
     list: [

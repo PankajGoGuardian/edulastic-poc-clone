@@ -50,16 +50,6 @@ import { getUserOrgId } from "../../../src/selectors/user";
 
 const { Option } = Select;
 
-function compareByAlph(a, b) {
-  if (a > b) {
-    return -1;
-  }
-  if (a < b) {
-    return 1;
-  }
-  return 0;
-}
-
 const filterStrDD = {
   status: {
     list: [

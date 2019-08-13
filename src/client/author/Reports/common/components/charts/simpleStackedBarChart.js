@@ -62,6 +62,7 @@ export const SimpleStackedBarChart = ({
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
   const [copyData, setCopyData] = useState(null);
   const [barIndex, setBarIndex] = useState(null);
+  const [isDotActive, setDotActive] = useState(false);
 
   const constants = {
     COLOR_BLACK: "#010101",
@@ -127,6 +128,9 @@ export const SimpleStackedBarChart = ({
   const onBarMouseLeave = index => () => {
     setBarIndex(null);
   };
+
+  const renderToolTipCursor = () =>
+    isDotActive ? <TooltipCursor lineYDomain={lineYDomain} yDomain={yDomain} /> : null;
 
   return (
     <StyledStackedBarChartContainer>
@@ -232,17 +236,20 @@ export const SimpleStackedBarChart = ({
             />
           ) : null}
           {lineChartDataKey ? (
-            <Line yAxisId="lineChart" type="linear" dataKey={lineChartDataKey} {...lineProps} />
+            <Line
+              activeDot={{
+                onMouseOver: () => setDotActive(true),
+                onMouseLeave: () => setDotActive(false)
+              }}
+              yAxisId="lineChart"
+              type="linear"
+              dataKey={lineChartDataKey}
+              {...lineProps}
+            />
           ) : null}
           {referenceLineY > 0 ? <ReferenceLine yAxisId={"barChart"} y={referenceLineY} stroke="#010101" /> : null}
           <Tooltip
-            cursor={
-              typeof TooltipCursor === "boolean" ? (
-                TooltipCursor
-              ) : (
-                <TooltipCursor lineYDomain={lineYDomain} yDomain={yDomain} />
-              )
-            }
+            cursor={typeof TooltipCursor === "boolean" ? TooltipCursor : renderToolTipCursor()}
             content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />}
           />
         </ComposedChart>

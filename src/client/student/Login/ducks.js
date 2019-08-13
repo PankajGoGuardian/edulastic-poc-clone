@@ -34,6 +34,9 @@ export const CHANGE_CLASS = "[student] change class";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
 export const UPDATE_USER_ROLE_REQUEST = "[auth] update user role request";
 export const SET_USER_GOOGLE_LOGGED_IN = "[auth] set user google logged in";
+export const UPDATE_PROFILE_IMAGE_PATH_REQUEST = "[user] update profile image path";
+export const UPDATE_PROFILE_IMAGE_PATH_SUCCESS = "[user] update profile image path success";
+export const UPDATE_PROFILE_IMAGE_PATH_FAILED = "[user] update profile image path failed";
 
 export const REQUEST_NEW_PASSWORD_REQUEST = "[auth] request new password request";
 export const REQUEST_NEW_PASSWORD_RESET_CONTROL = "[auth] request new password reset control";
@@ -88,6 +91,7 @@ export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
 export const setInviteDetailsAction = createAction(SET_INVITE_DETAILS_REQUEST);
 export const resetMyPasswordAction = createAction(RESET_MY_PASSWORD_REQUEST);
+export const updateProfileImageAction = createAction(UPDATE_PROFILE_IMAGE_PATH_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -217,6 +221,16 @@ export default createReducer(initialState, {
   },
   [RESET_MY_PASSWORD_FAILED]: state => {
     state.requestingChangePassword = false;
+  },
+  [UPDATE_PROFILE_IMAGE_PATH_REQUEST]: state => {
+    state.user.updatingImagePath = true;
+  },
+  [UPDATE_PROFILE_IMAGE_PATH_SUCCESS]: (state, { payload }) => {
+    state.user.updatingImagePath = false;
+    state.user.user.imagePath = payload;
+  },
+  [UPDATE_PROFILE_IMAGE_PATH_FAILED]: state => {
+    state.user.updatingImagePath = false;
   }
 });
 
@@ -729,6 +743,19 @@ function* resetMyPasswordRequestSaga({ payload }) {
   }
 }
 
+function* updateProfileImageSaga({ payload }) {
+  try {
+    const result = yield call(userApi.updateUser, payload);
+    yield call(message.success, "Password changed successfully");
+    yield put({ type: UPDATE_PROFILE_IMAGE_PATH_SUCCESS });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Failed to Update Image");
+    yield put({
+      type: UPDATE_PROFILE_IMAGE_PATH_FAILED
+    });
+  }
+}
+
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
     const result = yield call(authApi.validateClassCode, payload);
@@ -789,4 +816,5 @@ export function* watcherSaga() {
   yield takeLatest(GET_INVITE_DETAILS_REQUEST, getInviteDetailsSaga);
   yield takeLatest(SET_INVITE_DETAILS_REQUEST, setInviteDetailsSaga);
   yield takeLatest(RESET_MY_PASSWORD_REQUEST, resetMyPasswordRequestSaga);
+  yield takeLatest(UPDATE_PROFILE_IMAGE_PATH_REQUEST, updateProfileImageSaga);
 }

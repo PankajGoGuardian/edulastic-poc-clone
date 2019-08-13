@@ -10,7 +10,7 @@ export const uploadToS3 = async (file, folder) => {
   if (!file) {
     throw new Error("file is missing");
   }
-  if (!folder || !s3Folders.includes(folder)) {
+  if ((!folder || !s3Folders.includes(folder)) && !folder.includes("user/")) {
     throw new Error("folder is invalid");
   }
 

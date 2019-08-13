@@ -203,6 +203,12 @@ class ClozeText extends Component {
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
+    const { expressGrader, isAnswerModifiable } = answerContextConfig;
+
+    const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
+    const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
+    const isShowAnswer = previewTab === "show" && !expressGrader;
+
     return (
       <WithResources
         resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
@@ -281,10 +287,9 @@ class ClozeText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {(previewTab === "check" ||
-              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
+            {(isCheckAnswer || isClearAnswer || isShowAnswer) && (
               <Display
-                checkAnswer
+                checkAnswer={previewTab === "check"}
                 configureOptions={{
                   shuffleOptions
                 }}
@@ -301,52 +306,10 @@ class ClozeText extends Component {
                 showIndex
                 view={view}
                 previewTab={previewTab}
-                {...restProps}
-              />
-            )}
-            {previewTab === "show" && !answerContextConfig.expressGrader && (
-              <Display
-                showAnswer
-                configureOptions={{
-                  shuffleOptions
-                }}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
+                showAnswer={previewTab === "show"}
                 validation={itemForPreview.validation}
-                onChange={this.handleAddAnswer}
-                evaluation={evaluation}
-                instructorStimulus={itemForPreview.instructorStimulus}
-                item={itemForPreview}
-                responseIds={item.responseIds}
-                showIndex
-                {...restProps}
-                view={view}
-                previewTab={previewTab}
-              />
-            )}
-            {(previewTab === "clear" ||
-              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
-              <Display
-                preview={false}
-                configureOptions={{
-                  shuffleOptions
-                }}
+                preview={previewTab === "clear"}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                instructorStimulus={itemForPreview.instructorStimulus}
-                item={itemForPreview}
-                responseIds={item.responseIds}
-                showIndex={false}
-                view={view}
-                previewTab={previewTab}
                 {...restProps}
               />
             )}

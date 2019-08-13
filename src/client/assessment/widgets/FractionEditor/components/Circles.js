@@ -27,8 +27,6 @@ const Circles = ({
     _sectors.push({ index: i + offset, value: 360 / sectors });
   }
 
-  console.log("what is selected", selected);
-
   return (
     <PieChart width={400} height={400}>
       <Pie data={_sectors} cx={200} cy={200} outerRadius={150} dataKey="value">

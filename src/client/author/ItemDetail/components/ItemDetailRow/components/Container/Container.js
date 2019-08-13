@@ -10,7 +10,14 @@ import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
 import { getItemDetailDraggingSelector } from "../../../../ducks";
 import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
-import { Content, AddButtonContainer, TabContainer, WidgetContainer, AddPassageBtnContainer } from "./styled";
+import {
+  Content,
+  AddButtonContainer,
+  TabContainer,
+  WidgetContainer,
+  AddPassageBtnContainer,
+  CollapseBtn
+} from "./styled";
 // src/client/author/ItemDetail/ducks.js
 import { setItemLevelScoreAction } from "../../../../ducks";
 import { FlexContainer } from "@edulastic/common";
@@ -129,20 +136,24 @@ class Container extends Component {
       rowIndex,
       dragging,
       count,
-      windowWidth,
       isPassageQuestion,
-      handleAddToPassage
+      handleAddToPassage,
+      left,
+      right,
+      handleCollapse,
+      collapseDirection
     } = this.props;
     const { tabIndex } = this.state;
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
     // adding first part?
     const isAddFirstPart = row.widgets && row.widgets.length === 0;
+
     return (
       <Content
         value={tabIndex}
         padding="0px 0px 25px"
         style={{
-          width: row.dimension,
+          width: collapseDirection ? "100%" : row.dimension,
           marginRight: count - 1 === rowIndex ? "0px" : "20px"
         }}
       >
@@ -169,7 +180,9 @@ class Container extends Component {
         {dragging && row.widgets.filter(w => w.tabIndex === tabIndex).length === 0 && (
           <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={tabIndex} />
         )}
+        {left && <CollapseBtn className="fa fa-arrow-left" onClick={() => handleCollapse("left")} />}
         {this.renderWidgets()}
+        {right && <CollapseBtn className="fa fa-arrow-right" onClick={() => handleCollapse("right")} />}
 
         {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">

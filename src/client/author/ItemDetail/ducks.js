@@ -711,6 +711,25 @@ export function* updateItemSaga({ payload }) {
       }
     }
 
+    if (addToTest) {
+      const standardPresent = questions.some(hasStandards);
+
+      // if alignment data is not present, set the flag to open the modal, and wait for
+      // an action from the modal.!
+      if (!standardPresent) {
+        yield put(togglePublishWarningModalAction(true));
+        // action dispatched by the modal.
+        const { payload: publishItem } = yield take(PROCEED_PUBLISH_ACTION);
+        yield put(togglePublishWarningModalAction(false));
+
+        // if he wishes to add some just close the modal, and go to metadata.
+        // else continue the normal flow.
+        if (!publishItem) {
+          yield put(changeViewAction("metadata"));
+          return;
+        }
+      }
+    }
     const { __v, ...passageData } = (yield select(getPassageSelector)) || {};
 
     // return;

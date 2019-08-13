@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { blue, lightBlue, mainBlueColor } from "@edulastic/colors/index";
 
 export default styled.div`
-  background-color: ${({ previewTab, selected, fillColor }) =>
-    selected ? (previewTab === "show" ? "green" : fillColor || mainBlueColor) : lightBlue};
+  background-color: ${({ fillColor }) => fillColor || lightBlue};
   display: flex;
   justify-content: center;
   align-items: center;

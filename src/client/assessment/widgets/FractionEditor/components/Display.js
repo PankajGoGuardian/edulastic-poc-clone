@@ -1,46 +1,49 @@
-import React from "react";
+import React, { useContext } from "react";
 import { withTheme } from "styled-components";
 import get from "lodash/get";
 import PropTypes from "prop-types";
 
-import { Stimulus, FlexContainer, QuestionNumberLabel } from "@edulastic/common";
+import { Stimulus, FlexContainer, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
 import Circles from "./Circles";
 import Rectangles from "./Rectangles";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
 import { CLEAR, SHOW } from "../../../constants/constantsForQuestions";
 
-const Display = ({ saveAnswer, item, stimulus, evaluation, previewTab, showQuestionNumber, userAnswer }) => {
-  let fillColor = {};
-
+const Display = ({
+  saveAnswer,
+  item,
+  stimulus,
+  evaluation,
+  previewTab,
+  showQuestionNumber,
+  userAnswer,
+  changePreviewTab
+}) => {
   const { fractionProperties = {} } = item;
-  const { fractionType, count = 1 } = fractionProperties;
-
+  const fractionType = fractionProperties.fractionType;
+  const count = fractionProperties.count || 1;
   let selected = userAnswer;
-  if (previewTab === SHOW) {
-    if (fractionType === "circles") {
-      selected = Array(get(item, "validation.validResponse.value", 1))
-        .fill()
-        .map((_, i) => i + 1);
-    } else {
-      selected = Array(get(item, "validation.validResponse.value", 1))
-        .fill()
-        .map((_, i) => i + 1);
-    }
-  }
 
-  if (evaluation) {
-    Object.keys(evaluation).forEach(key => {
-      fillColor[key] = evaluation[key] === true ? "green" : "red";
-    });
-    if (previewTab === CLEAR) {
-      fillColor = {};
-    }
+  const answerContext = useContext(AnswerContext);
+
+  if (previewTab === "show" && answerContext.isAnswerModifiable && !answerContext.expressGrader) {
+    selected = Array(get(item, "validation.validResponse.value", 1))
+      .fill()
+      .map((_, i) => i + 1);
   }
 
   const handleSelect = index => {
+    if (
+      previewTab === "check" ||
+      (previewTab === "show" && !answerContext.expressGrader && answerContext.isAnswerModifiable)
+    ) {
+      saveAnswer([]);
+      changePreviewTab("clear");
+      return;
+    }
     const _userAnswer = [...userAnswer];
     if (_userAnswer.includes(index)) {
-      _userAnswer.splice(_userAnswer.indexOf(index));
+      _userAnswer.splice(_userAnswer.indexOf(index), 1);
     } else {
       _userAnswer.push(index);
     }
@@ -60,9 +63,11 @@ const Display = ({ saveAnswer, item, stimulus, evaluation, previewTab, showQuest
                 fractionNumber={index}
                 sectors={fractionProperties.sectors}
                 selected={selected}
-                sectorClick={i => handleSelect(i)}
-                fillColor={fillColor}
+                sectorClick={index => handleSelect(index)}
                 previewTab={previewTab}
+                isExpressGrader={answerContext.expressGrader}
+                isAnswerModifiable={answerContext.isAnswerModifiable}
+                evaluation={evaluation}
               />
             ) : (
               <Rectangles
@@ -70,9 +75,11 @@ const Display = ({ saveAnswer, item, stimulus, evaluation, previewTab, showQuest
                 rows={fractionProperties.rows}
                 columns={fractionProperties.columns}
                 selected={selected}
-                onSelect={i => handleSelect(i)}
-                fillColor={fillColor}
+                onSelect={index => handleSelect(index)}
                 previewTab={previewTab}
+                isExpressGrader={answerContext.expressGrader}
+                isAnswerModifiable={answerContext.isAnswerModifiable}
+                evaluation={evaluation}
               />
             );
           })}

@@ -2,32 +2,39 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Layout, Form, Input, Button } from "antd";
+import { Layout, Form, Input, Button, Icon } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { extraDesktopWidth, largeDesktopWidth, desktopWidth, borders, backgrounds } from "@edulastic/colors";
-
+import { resetMyPasswordAction } from "../../Login/ducks";
 import ProfileImage from "../../assets/Profile.png";
-import cameraIcon from "../../assets/photo-camera.svg";
 import { Wrapper } from "../../styled";
 
 const FormItem = Form.Item;
 class ProfileContainer extends React.Component {
   state = {
-    confirmDirty: false
+    confirmDirty: false,
+    showChangePassword: false
   };
 
   handleSubmit = e => {
-    const { form, login } = this.props;
+    const { form, user, resetMyPassword } = this.props;
     e.preventDefault();
-    form.validateFieldsAndScroll((err, { password, email }) => {
+    form.validateFieldsAndScroll((err, { password }) => {
       if (!err) {
-        login({
-          password,
-          email
+        resetMyPassword({
+          newPassword: password,
+          username: user.email
         });
+        form.resetFields();
       }
     });
+  };
+
+  handleCancel = e => {
+    e.preventDefault();
+    const { form } = this.props;
+    form.resetFields();
   };
 
   handleConfirmBlur = ({ target: { value } }) => {
@@ -36,12 +43,31 @@ class ProfileContainer extends React.Component {
     this.setState({ confirmDirty });
   };
 
+  compareToFirstPassword = (rule, value, callback) => {
+    const { form } = this.props;
+    if (value && value !== form.getFieldValue("password")) {
+      callback("Two passwords that you enter is inconsistent!");
+    } else {
+      callback();
+    }
+  };
+
+  validateToNextPassword = (rule, value, callback) => {
+    const { form } = this.props;
+    const { confirmDirty } = this.state;
+    if (value && confirmDirty) {
+      form.validateFields(["confirmPassword"], { force: true });
+    }
+    callback();
+  };
+
   render() {
     const {
       form: { getFieldDecorator }
     } = this.props;
 
     const { flag, t, user } = this.props;
+    const { showChangePassword } = this.state;
     return (
       <LayoutContent flag={flag}>
         <Wrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
@@ -66,40 +92,57 @@ class ProfileContainer extends React.Component {
                 </DetailRow>
               </Details>
             </UserDetail>
-            <FormWrapper onSubmit={this.handleSubmit}>
-              <FormItemWrapper>
-                <Label>{t("common.title.newPasswordLabel")}</Label>
-                {getFieldDecorator("password", {
-                  rules: [
-                    {
-                      required: true,
-                      message: t("common.title.password")
-                    }
-                  ]
-                })(<Input type="password" />)}
-              </FormItemWrapper>{" "}
-              <FormItemWrapper>
-                <Label>{t("common.title.confirmPaswswordLabel")}</Label>
-                {getFieldDecorator("password", {
-                  rules: [
-                    {
-                      required: true,
-                      message: t("common.title.password")
-                    }
-                  ]
-                })(<Input type="password" />)}
-              </FormItemWrapper>{" "}
-              <FormButtonWrapper>
-                <FormItem>
-                  <CancelButton disabled type="primary" ghost htmlType="submit">
-                    {t("common.title.cancel")}
-                  </CancelButton>
-                  <SaveButton disabled type="primary" htmlType="submit">
-                    {t("common.title.save")}
-                  </SaveButton>
-                </FormItem>
-              </FormButtonWrapper>
-            </FormWrapper>
+            <ChangePasswordToggleButton
+              onClick={() => {
+                this.setState({ showChangePassword: !showChangePassword });
+              }}
+            >
+              <span>CHANGE PASSWORD</span>
+              <Icon type={showChangePassword ? "caret-up" : "caret-down"} />
+            </ChangePasswordToggleButton>
+
+            {showChangePassword && (
+              <FormWrapper onSubmit={this.handleSubmit}>
+                <FormItemWrapper>
+                  <Label>{t("common.title.newPasswordLabel")}</Label>
+                  {getFieldDecorator("password", {
+                    rules: [
+                      {
+                        required: true,
+                        message: t("common.title.password")
+                      },
+                      {
+                        validator: this.validateToNextPassword
+                      }
+                    ]
+                  })(<Input type="password" />)}
+                </FormItemWrapper>{" "}
+                <FormItemWrapper>
+                  <Label>{t("common.title.confirmPaswswordLabel")}</Label>
+                  {getFieldDecorator("confirmPassword", {
+                    rules: [
+                      {
+                        required: true,
+                        message: t("common.title.password")
+                      },
+                      {
+                        validator: this.compareToFirstPassword
+                      }
+                    ]
+                  })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
+                </FormItemWrapper>{" "}
+                <FormButtonWrapper>
+                  <FormItem>
+                    <CancelButton type="primary" ghost onClick={this.handleCancel}>
+                      {t("common.title.cancel")}
+                    </CancelButton>
+                    <SaveButton type="primary" htmlType="submit">
+                      {t("common.title.save")}
+                    </SaveButton>
+                  </FormItem>
+                </FormButtonWrapper>
+              </FormWrapper>
+            )}
           </ProfileContentWrapper>
         </Wrapper>
       </LayoutContent>
@@ -111,10 +154,15 @@ const enhance = compose(
   React.memo,
   withNamespaces("profile"),
   Form.create(),
-  connect(state => ({
-    flag: state.ui.flag,
-    user: state.user.user
-  }))
+  connect(
+    state => ({
+      flag: state.ui.flag,
+      user: state.user.user
+    }),
+    {
+      resetMyPassword: resetMyPasswordAction
+    }
+  )
 );
 
 export default enhance(ProfileContainer);
@@ -153,10 +201,10 @@ const ProfileContentWrapper = styled.div`
 `;
 
 const UserDetail = styled.div`
-  padding: 5px 0rem 30px;
+  padding: 5px 0rem 20px;
 
   @media (max-width: ${largeDesktopWidth}) {
-    padding: 5px 0 30px;
+    padding: 5px 0 20px;
   }
 
   @media (max-width: ${desktopWidth}) {
@@ -258,7 +306,7 @@ const Details = styled.div`
 `;
 
 const DetailRow = styled.div`
-  padding: 15px 0px;
+  padding: 20px 0px;
 `;
 const DetailTitle = styled.span`
   font-size: 15px;
@@ -277,10 +325,22 @@ const Label = styled.label`
   text-transform: uppercase;
 `;
 
+const ChangePasswordToggleButton = styled.div`
+  color: ${props => props.theme.profile.cancelButtonTextColor};
+  padding-left: 25px;
+  cursor: pointer;
+  width: fit-content;
+  span {
+    margin-right: 20px;
+    font-weight: 600;
+  }
+`;
+
 const FormWrapper = styled(Form)`
   width: 100%;
   margin-left: 15px;
   text-align: left;
+  margin-top: 30px;
 
   .ant-form-item {
     margin-bottom: 22px;
@@ -359,19 +419,8 @@ const FormItemWrapper = styled(FormItem)`
 
 const FormButtonWrapper = styled.div`
   text-align: center;
-  margin-top: 46px;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    margin-top: 27px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    margin-top: 34px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    margin-top: 24px;
-  }
+  float: right;
+  padding-right: 20px;
 `;
 
 const SaveButton = styled(Button)`
@@ -404,6 +453,7 @@ const CancelButton = styled(SaveButton)`
   margin: 0 15px;
   background: ${props => props.theme.profile.cancelButtonBgColor};
   color: ${props => props.theme.profile.cancelButtonTextColor};
+  border: 1px solid ${props => props.theme.profile.cancelButtonTextColor};
 
   @media (max-width: ${extraDesktopWidth}) {
     height: 36px;

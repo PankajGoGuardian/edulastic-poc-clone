@@ -53,6 +53,9 @@ export const GET_INVITE_DETAILS_REQUEST = "[auth] get invite details request";
 export const GET_INVITE_DETAILS_SUCCESS = "[auth] get invite details success";
 export const SET_INVITE_DETAILS_REQUEST = "[auth] set invite details request";
 export const SET_INVITE_DETAILS_SUCCESS = "[auth] set invite details success";
+export const RESET_MY_PASSWORD_REQUEST = "[auth] reset my password request";
+export const RESET_MY_PASSWORD_FAILED = "[auth] reset my password failed";
+export const RESET_MY_PASSWORD_SUCCESS = "[auth] reset my password success";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -82,6 +85,7 @@ export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
 export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
 export const setInviteDetailsAction = createAction(SET_INVITE_DETAILS_REQUEST);
+export const resetMyPasswordAction = createAction(RESET_MY_PASSWORD_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -195,7 +199,16 @@ export default createReducer(initialState, {
   [GET_INVITE_DETAILS_SUCCESS]: (state, { payload }) => {
     state.invitedUserDetails = payload;
   },
-  [SET_INVITE_DETAILS_SUCCESS]: setUser
+  [SET_INVITE_DETAILS_SUCCESS]: setUser,
+  [RESET_MY_PASSWORD_REQUEST]: state => {
+    state.requestingChangePassword = true;
+  },
+  [RESET_MY_PASSWORD_SUCCESS]: (state, { payload }) => {
+    state.requestingChangePassword = false;
+  },
+  [RESET_MY_PASSWORD_FAILED]: state => {
+    state.requestingChangePassword = false;
+  }
 });
 
 export const getClasses = createSelector(
@@ -691,6 +704,19 @@ function* resetPasswordRequestSaga({ payload }) {
   }
 }
 
+function* resetMyPasswordRequestSaga({ payload }) {
+  try {
+    const result = yield call(userApi.resetMyPassword, payload);
+    yield call(message.success, "Password changed successfully");
+    yield put({ type: RESET_MY_PASSWORD_SUCCESS });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Failed to reset password.");
+    yield put({
+      type: RESET_MY_PASSWORD_FAILED
+    });
+  }
+}
+
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
     const result = yield call(authApi.validateClassCode, payload);
@@ -750,4 +776,5 @@ export function* watcherSaga() {
   yield takeLatest(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST, studentSignupCheckClasscodeSaga);
   yield takeLatest(GET_INVITE_DETAILS_REQUEST, getInviteDetailsSaga);
   yield takeLatest(SET_INVITE_DETAILS_REQUEST, setInviteDetailsSaga);
+  yield takeLatest(RESET_MY_PASSWORD_REQUEST, resetMyPasswordRequestSaga);
 }

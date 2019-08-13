@@ -12,16 +12,18 @@ import {
 } from "@edulastic/colors";
 
 export const Wrapper = styled.div`
-  min-height: 78vh;
+  min-height: ${props => (props.minHeight ? props.minHeight : "78vh")};
   margin: 16px 46px 16px;
   border-radius: 10px;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  background-color: ${props => props.theme.assignment.cardContainerBgColor};
+  box-shadow: ${props => (props.boxShadow ? props.boxShadow : "0 3px 10px 0 rgba(0, 0, 0, 0.1)")};
+  background-color: ${props => (props.bgColor ? props.bgColor : props.theme.assignment.cardContainerBgColor)};
   padding: 5px 30px;
   position: relative;
+  display: ${props => (props.display ? props.display : "")}
+  justify-content: ${props => (props.display === "flex" ? "space-between" : "")}
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
-    min-height: 75vh;
+    min-height: ${props => (props.minHeight ? props.minHeight : "75vh")};
     margin: 16px 44px;
   }
 
@@ -36,7 +38,7 @@ export const Wrapper = styled.div`
   @media screen and (max-width: ${mobileWidthMax}) {
     padding: 5px 20px;
     margin: 16px 26px;
-    min-height: 75vh;
+    min-height: ${props => (props.minHeight ? props.minHeight : "75vh")};
     display: block;
   }
 `;

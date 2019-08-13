@@ -130,9 +130,14 @@ class ClozeDragDrop extends Component {
       ...restProps
     } = this.props;
 
-    const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+    const { previewStimulus, previewDisplayOptions, itemForEdit, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, responseIds: responseIDs } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
+    const { expressGrader, isAnswerModifiable } = answerContextConfig;
+
+    const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
+    const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
+    const isShowAnswer = previewTab === "show" && !expressGrader;
 
     return (
       <WithResources
@@ -222,12 +227,13 @@ class ClozeDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {(previewTab === "check" ||
-              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
+            {(isCheckAnswer || isClearAnswer || isShowAnswer) && (
               <Display
                 view={view}
                 item={item}
-                checkAnswer
+                checkAnswer={previewTab === "check"}
+                showAnswer={previewTab === "show"}
+                preview={previewTab === "clear"}
                 hasGroupResponses={item.hasGroupResponses}
                 configureOptions={{
                   duplicatedResponses,
@@ -242,51 +248,8 @@ class ClozeDragDrop extends Component {
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
                 responseIDs={item.responseIds}
-                {...restProps}
-              />
-            )}
-            {previewTab === "show" && !answerContextConfig.expressGrader && (
-              <Display
-                view={view}
-                showAnswer
-                item={item}
-                hasGroupResponses={item.hasGroupResponses}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions
-                }}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
                 validation={item.validation}
-                evaluation={evaluation}
-                responseIDs={item.responseIds}
-                {...restProps}
-              />
-            )}
-            {(previewTab === "clear" ||
-              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
-              <Display
-                view={view}
-                item={item}
-                preview
-                hasGroupResponses={item.hasGroupResponses}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions
-                }}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                responseIDs={item.responseIds}
                 {...restProps}
               />
             )}

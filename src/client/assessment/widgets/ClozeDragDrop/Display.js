@@ -1,16 +1,15 @@
 /* eslint-disable no-undef */
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, isEmpty, get } from "lodash";
+import { cloneDeep, get } from "lodash";
 import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, PreWrapper, helpers, Stimulus, QuestionNumberLabel } from "@edulastic/common";
+import { PreWrapper, helpers, QuestionNumberLabel } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
-import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
@@ -377,7 +376,7 @@ class ClozeDragDropDisplay extends Component {
     );
     const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
-    const QuestionContent = () => (
+    const questionContent = (
       <div>
         {responsecontainerposition === "top" && (
           <React.Fragment>
@@ -449,9 +448,9 @@ class ClozeDragDropDisplay extends Component {
       <div style={{ fontSize }}>
         <QuestionTitleWrapper>
           {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
-          {!question && <QuestionContent />}
+          {!question && questionContent}
         </QuestionTitleWrapper>
-        {question && <QuestionContent />}
+        {question && questionContent}
         {answerBox}
       </div>
     );
@@ -480,6 +479,7 @@ ClozeDragDropDisplay.propTypes = {
   showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool,
   isReviewTab: PropTypes.bool,
+  view: PropTypes.string,
   responseIDs: PropTypes.array.isRequired,
   changePreview: PropTypes.func.isRequired
   // qIndex: PropTypes.number
@@ -497,6 +497,7 @@ ClozeDragDropDisplay.defaultProps = {
   evaluation: [],
   checkAnswer: false,
   stimulus: "",
+  view: "",
   smallSize: false,
   hasGroupResponses: false,
   validation: {},

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
 import { StyledTable, StyledCell, StyledH3 } from "../../../../../../common/styled";
+import CsvTable from "../../../../../../common/components/tables/CsvTable";
 
 const getCol = (text, backgroundColor) => {
   return <StyledCell style={{ backgroundColor }}>{text}</StyledCell>;
@@ -59,9 +60,12 @@ const columns = [
   }
 ];
 
-const StandardMasteryDetailsTable = ({ data }) => {
+const StandardMasteryDetailsTable = ({ data, isCsvDownloading, onCsvConvert }) => {
   return (
-    <StyledTable
+    <CsvTable
+      tableToRender={StyledTable}
+      onCsvConvert={onCsvConvert}
+      isCsvDownloading={isCsvDownloading}
       dataSource={data}
       columns={columns}
       colouredCellsNo={1}
@@ -74,11 +78,15 @@ const StandardMasteryDetailsTable = ({ data }) => {
 };
 
 StandardMasteryDetailsTable.propTypes = {
-  data: PropTypes.array
+  data: PropTypes.array,
+  onCsvConvert: PropTypes.func,
+  isCsvDownloading: PropTypes.bool
 };
 
 StandardMasteryDetailsTable.defaultProps = {
-  data: []
+  data: [],
+  onCsvConvert: () => {},
+  isCsvDownloading: false
 };
 
 export default StandardMasteryDetailsTable;

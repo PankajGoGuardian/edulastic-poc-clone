@@ -3,7 +3,7 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, keyBy, intersection, uniq } from "lodash";
-import { Spin, Button, Modal, Col, Select } from "antd";
+import { Spin, Button, Modal, Select } from "antd";
 import styled from "styled-components";
 import { FlexContainer, EduButton } from "@edulastic/common";
 import { withRouter } from "react-router-dom";
@@ -25,6 +25,12 @@ import {
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
+import {
+  setItemFromPassageAction,
+  getSelectedItemSelector,
+  setTestItemsAction
+} from "../../../../TestPage/components/AddItems/ducks";
+import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -114,6 +120,44 @@ class PreviewModal extends React.Component {
     });
   };
 
+  handleSelection = () => {
+    const {
+      setDataAndSave,
+      selectedRows,
+
+      test,
+      gotoSummary,
+      item,
+      setTestItems,
+      setSelectedTests
+    } = this.props;
+    if (!test.title) {
+      gotoSummary();
+      return message.error("Name field cannot be empty");
+    }
+    let keys = [...selectedRows.data];
+    if (test.safeBrowser && !test.sebPassword) {
+      return message.error("Please add a valid password");
+    }
+    if (!keys.includes(item._id)) {
+      keys[keys.length] = item._id;
+      setDataAndSave({ addToTest: true, item });
+    } else {
+      keys = keys.filter(key => key !== item._id);
+      setDataAndSave({ addToTest: false, item: { _id: item._id } });
+    }
+    setTestItems(keys);
+    setSelectedTests(keys);
+  };
+
+  get isAddOrRemove() {
+    const { item, selectedRows } = this.props;
+    if (selectedRows && selectedRows.data && selectedRows.data.length) {
+      return !selectedRows.data.includes(item._id);
+    }
+    return true;
+  }
+
   render() {
     const {
       isVisible,
@@ -126,14 +170,15 @@ class PreviewModal extends React.Component {
       showAnswer,
       preview,
       showEvaluationButtons,
-      passage
+      passage,
+      page
     } = this.props;
 
     const { scrollElement, passageLoading } = this.state;
     const questions = keyBy(get(item, "data.questions", []), "id");
     const resources = keyBy(get(item, "data.resources", []), "id");
 
-    const allWidgets = { ...questions, ...resources };
+    let allWidgets = { ...questions, ...resources };
     const { authors = [], rows, data = {} } = item;
     const questionsType = data.questions && uniq(data.questions.map(question => question.type));
     const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
@@ -142,9 +187,12 @@ class PreviewModal extends React.Component {
     const getAuthorsId = authors.map(author => author._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
     const { allowDuplicate } = collections.find(o => o._id === item.collectionName) || { allowDuplicate: true };
-    let allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
+    const allRows = !!item.passageId && !!passage ? [passage.structure, ...rows] : rows;
     const passageTestItems = get(passage, "testItems", []);
-
+    const isPassage = passage && passageTestItems.length;
+    if (!!item.passageId && !!passage) {
+      allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
+    }
     return (
       <PreviewModalWrapper
         bodyStyle={{ padding: 20 }}
@@ -155,6 +203,20 @@ class PreviewModal extends React.Component {
       >
         <HeadingWrapper>
           <Title>Preview</Title>
+          {isPassage && page === "addItems" && (
+            <ButtonsWrapper>
+              <Button
+                style={{
+                  marginRight: "20px",
+                  border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+                  color: this.isAddOrRemove ? themeColor : "#ff0099"
+                }}
+                onClick={this.handleSelection}
+              >
+                {this.isAddOrRemove ? "ADD" : "REMOVE"}
+              </Button>
+            </ButtonsWrapper>
+          )}
         </HeadingWrapper>
         <ModalContentArea>
           {showEvaluationButtons && (
@@ -180,7 +242,7 @@ class PreviewModal extends React.Component {
                     <IconPencilEdit color={themeColor} />
                   </EduButton>
                 )}
-                {passage && passageTestItems.length > 0 ? (
+                {isPassage && page === "addItems" && (
                   <ItemsListDropDown
                     value={item._id}
                     showArrow={false}
@@ -193,8 +255,6 @@ class PreviewModal extends React.Component {
                       <Select.Option value={v}>{ind + 1}</Select.Option>
                     ))}
                   </ItemsListDropDown>
-                ) : (
-                  ""
                 )}
               </ButtonsWrapper>
               <ButtonsWrapper>
@@ -273,6 +333,7 @@ PreviewModal.propTypes = {
 PreviewModal.defaultProps = {
   checkAnswer: () => {},
   showAnswer: () => {},
+  gotoSummary: () => {},
   loading: false,
   isEditable: false,
   showEvaluationButtons: false
@@ -289,7 +350,9 @@ const enhance = compose(
         passage: getPassageSelector(state),
         preview: get(state, ["view", "preview"]),
         currentAuthorId: get(state, ["user", "user", "_id"]),
-        testItemPreviewData: get(state, ["testItemPreview", "item"], {})
+        testItemPreviewData: get(state, ["testItemPreview", "item"], {}),
+        selectedRows: getSelectedItemSelector(state),
+        test: getTestSelector(state)
       };
     },
     {
@@ -298,7 +361,10 @@ const enhance = compose(
       addPassage: addPassageAction,
       setPrevewItem: setPrevewItemAction,
       setQuestionsForPassage: setQuestionsForPassageAction,
-      clearPreview: clearPreviewAction
+      clearPreview: clearPreviewAction,
+      setItemFromPassage: setItemFromPassageAction,
+      setDataAndSave: setTestDataAndUpdateAction,
+      setTestItems: setTestItemsAction
     }
   )
 );

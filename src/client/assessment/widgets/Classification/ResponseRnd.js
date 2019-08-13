@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -9,18 +9,9 @@ import { lightGrey } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const ResponseRnd = props => {
-  const {
-    children,
-    question,
-    setQuestionData,
-    isResizable,
-    minHeight,
-    width,
-    height,
-    index,
-    rowHasTitle,
-    rowHasHeader
-  } = props;
+  const { children, question, setQuestionData, isResizable, index } = props;
+
+  const [minHeight, setMinHeight] = useState(get(question, `responseOptions[${index}].height`, 0));
 
   const handleResponseDragStop = (evt, d) => {
     setQuestionData(
@@ -39,29 +30,9 @@ const ResponseRnd = props => {
   };
 
   const handleResponseResizeStop = (e, direction, ref, delta, position) => {
-    const { responseOptions = [] } = question;
-    const responseOption = responseOptions[index] || {};
+    const rect = ref.getBoundingClientRect();
 
-    // It can happen that we don't have imageOptions on the question,
-    // or it can happen that width or height are not number values
-
-    let updatedWidth;
-    if (responseOption && responseOption.width) {
-      updatedWidth = responseOption.width + delta.width;
-    } else if (typeof width === "number") {
-      updatedWidth = width + delta.width;
-    } else {
-      updatedWidth = ref.getBoundingClientRect().width;
-    }
-
-    let updatedHeight;
-    if (responseOption && responseOption.height) {
-      updatedHeight = responseOption.height + delta.height;
-    } else if (typeof height === "number") {
-      updatedHeight = height + delta.height;
-    } else {
-      updatedHeight = ref.getBoundingClientRect().height;
-    }
+    setMinHeight(rect.height);
 
     // Update question
     setQuestionData(
@@ -74,18 +45,22 @@ const ResponseRnd = props => {
           ...draft.responseOptions[index],
           x: position.x,
           y: position.y,
-          width: updatedWidth,
-          height: updatedHeight
+          width: rect.width,
+          height: rect.height
         };
       })
     );
   };
 
+  const handleResponseResize = () => {
+    setMinHeight(0);
+  };
+
   const offsetX = 215;
   const rndX = get(question, `responseOptions[${index}].x`, (index + 1) * offsetX);
   const rndY = get(question, `responseOptions[${index}].y`, 0);
-  const rndWidth = get(question, `responseOptions[${index}].width`, 200);
-  const rndHeight = get(question, `responseOptions[${index}].height`, height);
+  const rndWidth = get(question, `responseOptions[${index}].width`, 220);
+
   return (
     <Rnd
       style={{
@@ -94,13 +69,13 @@ const ResponseRnd = props => {
         padding: "2px",
         border: `1px solid ${lightGrey}`
       }}
-      size={{ width: rndWidth, height: rndHeight }}
+      size={{ width: rndWidth, height: "auto" }}
       position={{ x: rndX, y: rndY }}
       default={{
         x: rndX,
         y: rndY,
         width: rndWidth,
-        height: rndHeight
+        height: "auto"
       }}
       disableDragging={!isResizable}
       enableResizing={{
@@ -115,8 +90,9 @@ const ResponseRnd = props => {
       }}
       onDragStop={handleResponseDragStop}
       onResizeStop={handleResponseResizeStop}
+      onResize={handleResponseResize}
       cancel=".drag-item"
-      {...{ ...props, height: "auto" }}
+      minHeight={minHeight}
     >
       {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
     </Rnd>
@@ -126,9 +102,6 @@ const ResponseRnd = props => {
 ResponseRnd.propTypes = {
   children: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node]).isRequired,
   isResizable: PropTypes.bool,
-  minHeight: PropTypes.string || PropTypes.number,
-  width: PropTypes.string || PropTypes.number,
-  height: PropTypes.string || PropTypes.number,
   index: PropTypes.number,
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired
@@ -136,9 +109,6 @@ ResponseRnd.propTypes = {
 
 ResponseRnd.defaultProps = {
   isResizable: true,
-  minHeight: 0,
-  width: "100%",
-  height: "auto",
   index: 0
 };
 

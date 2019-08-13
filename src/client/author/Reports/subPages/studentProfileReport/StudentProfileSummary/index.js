@@ -10,9 +10,11 @@ import {
   getReportsStudentProfileSummaryLoader,
   getStudentProfileSummaryRequestAction
 } from "./ducks";
+import { getCsvDownloadingState } from "../../../ducks";
 import { Placeholder } from "../../../common/components/loader";
 import { augementAssessmentChartData, augmentStandardMetaInfo } from "../common/utils/transformers";
 import { augmentDomainStandardMasteryData } from "./common/utils/transformers";
+import { downloadCSV } from "../../../common/util";
 import { useGetStudentMasteryData } from "../common/hooks";
 import AssessmentChart from "../common/components/charts/AssessmentChart";
 import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
@@ -38,6 +40,7 @@ const StudentProfileSummary = ({
   match,
   loading,
   settings,
+  isCsvDownloading,
   SARFilterData,
   studentProfileSummary,
   getStudentProfileSummaryRequestAction
@@ -77,6 +80,8 @@ const StudentProfileSummary = ({
   }
 
   const studentInformation = studInfo[0] || {};
+  const onCsvConvert = data =>
+    downloadCSV(`Student Profile Report-${selectedStudent.title}-${studentInformation.subject}.csv`, data);
 
   return (
     <>
@@ -111,7 +116,11 @@ const StudentProfileSummary = ({
             <StudentPerformancePie data={standards} scaleInfo={scaleInfo} getTooltip={getTooltip} title="" />
           </Col>
           <Col xs={24} sm={24} md={16} lg={16} xl={16}>
-            <StandardMasteryDetailsTable data={domainsWithMastery} />
+            <StandardMasteryDetailsTable
+              onCsvConvert={onCsvConvert}
+              isCsvDownloading={isCsvDownloading}
+              data={domainsWithMastery}
+            />
           </Col>
         </Row>
       </StyledCard>
@@ -123,7 +132,8 @@ const enhance = connect(
   state => ({
     studentProfileSummary: getReportsStudentProfileSummary(state),
     loading: getReportsStudentProfileSummaryLoader(state),
-    SARFilterData: getReportsSPRFilterData(state)
+    SARFilterData: getReportsSPRFilterData(state),
+    isCsvDownloading: getCsvDownloadingState(state)
   }),
   {
     getStudentProfileSummaryRequestAction

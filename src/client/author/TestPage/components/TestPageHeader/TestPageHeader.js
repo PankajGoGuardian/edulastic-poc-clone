@@ -168,7 +168,7 @@ const TestPageHeader = ({
             <IconPencilEdit color={themeColor} />
           </EduButton>
         )}
-        {showShareButton && !isPlaylist && (
+        {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
           <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={onAssign}>
             Assign
           </EduButton>

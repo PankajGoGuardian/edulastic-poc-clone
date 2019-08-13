@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import striptags from "striptags";
 
-import DragPreview from "../../../components/DragPreview";
+import DragPreview from "../../../components/SourceDragPreview";
 
 function collectSource(connector, monitor) {
   return {

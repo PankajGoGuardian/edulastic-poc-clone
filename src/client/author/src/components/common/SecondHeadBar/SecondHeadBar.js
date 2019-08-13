@@ -9,9 +9,13 @@ import { clearAnswersAction } from "../../../actions/answers";
 import Breadcrumb from "../../Breadcrumb";
 import { Container } from "./styled_components";
 
+const breadCrumbTarget = `/author/items/${window.location.pathname.split("/")[3]}/item-detail`;
 class SecondHeadBar extends Component {
   render() {
-    const { breadcrumb } = this.props;
+    let { breadcrumb, breadCrumbQType } = this.props;
+    if (breadCrumbQType) {
+      breadcrumb = [...breadcrumb, { title: breadCrumbQType, to: breadCrumbTarget }];
+    }
     return (
       <Container padding="0px">
         <Breadcrumb data={breadcrumb} style={{ position: "unset", width: "100%" }} />
@@ -33,7 +37,7 @@ SecondHeadBar.defaultProps = {
     },
     {
       title: "ITEM DETAIL",
-      to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
+      to: breadCrumbTarget
     }
   ]
 };

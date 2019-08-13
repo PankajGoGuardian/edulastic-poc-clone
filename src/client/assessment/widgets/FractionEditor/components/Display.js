@@ -1,20 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { withTheme } from "styled-components";
 import get from "lodash/get";
+import PropTypes from "prop-types";
 
 import { Stimulus, FlexContainer, QuestionNumberLabel } from "@edulastic/common";
 import Circles from "./Circles";
 import Rectangles from "./Rectangles";
+import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
+import { CLEAR, SHOW } from "../../../constants/constantsForQuestions";
 
 const Display = ({ saveAnswer, item, stimulus, evaluation, previewTab, showQuestionNumber, userAnswer }) => {
   let fillColor = {};
 
   const { fractionProperties = {} } = item;
-  const fractionType = fractionProperties.fractionType;
-  const count = fractionProperties.count || 1;
+  const { fractionType, count = 1 } = fractionProperties;
 
   let selected = userAnswer;
-  if (previewTab === "show") {
+  if (previewTab === SHOW) {
     if (fractionType === "circles") {
       selected = Array(get(item, "validation.validResponse.value", 1))
         .fill()
@@ -30,7 +32,7 @@ const Display = ({ saveAnswer, item, stimulus, evaluation, previewTab, showQuest
     Object.keys(evaluation).forEach(key => {
       fillColor[key] = evaluation[key] === true ? "green" : "red";
     });
-    if (previewTab === "clear") {
+    if (previewTab === CLEAR) {
       fillColor = {};
     }
   }
@@ -49,7 +51,7 @@ const Display = ({ saveAnswer, item, stimulus, evaluation, previewTab, showQuest
     <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
       {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
       <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
-      <FlexContainer flexWrap="wrap">
+      <FlexContainer style={{ position: "relative" }} flexWrap="wrap" justifyContent="flex-start">
         {Array(count)
           .fill()
           .map((_, index) => {
@@ -58,7 +60,7 @@ const Display = ({ saveAnswer, item, stimulus, evaluation, previewTab, showQuest
                 fractionNumber={index}
                 sectors={fractionProperties.sectors}
                 selected={selected}
-                sectorClick={index => handleSelect(index)}
+                sectorClick={i => handleSelect(i)}
                 fillColor={fillColor}
                 previewTab={previewTab}
               />
@@ -68,15 +70,35 @@ const Display = ({ saveAnswer, item, stimulus, evaluation, previewTab, showQuest
                 rows={fractionProperties.rows}
                 columns={fractionProperties.columns}
                 selected={selected}
-                onSelect={index => handleSelect(index)}
+                onSelect={i => handleSelect(i)}
                 fillColor={fillColor}
                 previewTab={previewTab}
               />
             );
           })}
+        <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />
       </FlexContainer>
     </FlexContainer>
   );
+};
+
+Display.propTypes = {
+  previewTab: PropTypes.string,
+  item: PropTypes.object,
+  saveAnswer: PropTypes.func.isRequired,
+  userAnswer: PropTypes.array,
+  evaluation: PropTypes.any,
+  showQuestionNumber: PropTypes.bool,
+  stimulus: PropTypes.string
+};
+
+Display.defaultProps = {
+  previewTab: CLEAR,
+  item: {},
+  userAnswer: [],
+  evaluation: [],
+  showQuestionNumber: false,
+  stimulus: ""
 };
 
 export default withTheme(Display);

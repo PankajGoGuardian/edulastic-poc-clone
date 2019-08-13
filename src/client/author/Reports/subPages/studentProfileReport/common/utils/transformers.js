@@ -1,5 +1,5 @@
 import { groupBy, map, find, reduce, values, round, capitalize, sumBy, orderBy, filter, keys } from "lodash";
-import { percentage, getProficiencyBand } from "../../../../common/util";
+import { percentage, getProficiencyBand, testTypeHashMap } from "../../../../common/util";
 
 const getCourses = classData => {
   const groupedByCourse = groupBy(classData, "courseId");
@@ -54,7 +54,7 @@ export const augementAssessmentChartData = (metricInfo = [], bandInfo = []) => {
       ...assignment,
       score: scoreAvg,
       uniqId: testId + testType,
-      testType: capitalize(testType),
+      testType: capitalize(testTypeHashMap[testType.toLowerCase()]),
       diffScore: 100 - scoreAvg,
       band,
       assignments

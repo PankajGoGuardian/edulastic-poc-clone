@@ -5,6 +5,7 @@ import { Row, Col } from "antd";
 import TableTooltipRow from "../../../../../../common/components/tooltip/TableTooltipRow";
 import { CustomTableTooltip } from "../../../../../../common/components/customTableTooltip";
 import { StyledTable, StyledCell, StyledH3, StyledCard } from "../../../../../../common/styled";
+import CsvTable from "../../../../../../common/components/tables/CsvTable";
 
 const getCol = (text, backgroundColor) => {
   return <StyledCell style={{ backgroundColor }}>{text}</StyledCell>;
@@ -80,7 +81,7 @@ const columns = [
   }
 ];
 
-const StudentMasteryTable = ({ data, selectedMastery }) => {
+const StudentMasteryTable = ({ data, selectedMastery, isCsvDownloading, onCsvConvert }) => {
   const filteredStandards = filter(data, standard => {
     return !selectedMastery.length || intersection([standard.scale.masteryLabel], selectedMastery).length;
   });
@@ -90,7 +91,14 @@ const StudentMasteryTable = ({ data, selectedMastery }) => {
       <StyledH3>Standard Performance Details</StyledH3>
       <Row>
         <Col>
-          <StyledTable dataSource={filteredStandards} columns={columns} colouredCellsNo={5} />
+          <CsvTable
+            dataSource={filteredStandards}
+            columns={columns}
+            colouredCellsNo={5}
+            tableToRender={StyledTable}
+            onCsvConvert={onCsvConvert}
+            isCsvDownloading={isCsvDownloading}
+          />
         </Col>
       </Row>
     </StyledCard>
@@ -99,12 +107,16 @@ const StudentMasteryTable = ({ data, selectedMastery }) => {
 
 StudentMasteryTable.propTypes = {
   data: PropTypes.array,
-  selectedMastery: PropTypes.array
+  selectedMastery: PropTypes.array,
+  isCsvDownloading: PropTypes.bool,
+  onCsvConvert: PropTypes.func
 };
 
 StudentMasteryTable.defaultProps = {
   data: [],
-  selectedMastery: []
+  selectedMastery: [],
+  isCsvDownloading: false,
+  onCsvConvert: () => {}
 };
 
 export default StudentMasteryTable;

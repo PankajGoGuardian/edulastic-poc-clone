@@ -10,9 +10,11 @@ export const ModalTitle = styled.h2`
 
 export const ModalContainer = styled(Card)`
   color: ${secondaryTextColor};
+  max-height: 80vh;
   .ant-card-body {
     display: flex;
     padding: 32px;
+    height: 100%;
     min-width: 750px;
   }
 `;
@@ -31,6 +33,7 @@ export const Image = styled.div`
 `;
 
 export const ModalColumn = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -178,6 +181,7 @@ export const SummaryCardValue = styled.div`
 
 export const SummaryList = styled.div`
   margin-top: 15px;
+  max-height: 45vh;
 `;
 export const ListHeader = styled.div`
   display: flex;

@@ -86,7 +86,7 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
     position: absolute;
     left: 10px;
     width: 40px;
-    height: 25px;
+    height: 20px;
   }
 
   @media (max-width: ${mediumDesktopWidth}) {

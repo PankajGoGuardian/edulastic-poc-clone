@@ -2130,8 +2130,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType
     },
     {
-      type: "fractionEditor",
-      cardImage: MTEssay,
+      type: "graphing",
+      cardImage: GRGraphing,
       stimulus: "",
       data: {
         title: "Fraction Editor",

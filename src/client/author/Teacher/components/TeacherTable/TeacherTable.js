@@ -108,13 +108,23 @@ class TeacherTable extends Component {
             {firstName} {lastName}
           </span>
         ),
-        sorter: (a, b) => compareByAlph(a.firstName, b.secondName),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.firstName", "");
+          const next = get(b, "_source.firstName", "");
+          return next.localeCompare(prev);
+        },
         width: 200
       },
       {
         title: "Username",
         dataIndex: "_source.email",
-        sorter: (a, b) => compareByAlph(a.email, b.email),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.email", "");
+          const next = get(b, "_source.email", "");
+          return next.localeCompare(prev);
+        },
         width: 200
       },
       {

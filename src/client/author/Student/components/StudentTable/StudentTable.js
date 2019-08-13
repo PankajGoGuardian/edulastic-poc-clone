@@ -122,14 +122,24 @@ class StudentTable extends Component {
             {firstName} {lastName}
           </span>
         ),
-        sorter: (a, b) => compareByAlph(a.firstName, b.secondName),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.firstName", "");
+          const next = get(b, "_source.firstName", "");
+          return next.localeCompare(prev);
+        },
         width: 200
       },
       {
         title: "Username",
         dataIndex: "_source.username",
         render: (text, record, index) => record._source.username || record._source.email,
-        sorter: (a, b) => compareByAlph(a.email, b.email),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.username", "");
+          const next = get(b, "_source.username", "");
+          return next.localeCompare(prev);
+        },
         width: 200
       },
       {

@@ -557,6 +557,7 @@ function* shareTestSaga({ payload }) {
 function* publishTestSaga({ payload }) {
   try {
     let { _id: id, test, assignFlow } = payload;
+    const { isUsed } = test;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
     yield call(updateTestSaga, { payload: { id, data: test, assignFlow: true } });
@@ -569,8 +570,8 @@ function* publishTestSaga({ payload }) {
     if (assignFlow) {
       yield put(push(`/author/assignments/${id}`));
     } else {
-      if (oldId) {
-        yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
+      if (oldId || isUsed) {
+        yield put(push(`/author/assignments/regrade/new/${id}/old/${test.origTestId}`));
         yield put(setRegradeOldIdAction(undefined));
       } else {
         yield put(push(`/author/tests/${id}/publish`));

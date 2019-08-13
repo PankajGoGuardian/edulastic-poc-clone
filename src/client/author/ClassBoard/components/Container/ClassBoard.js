@@ -560,8 +560,8 @@ class ClassBoard extends Component {
         <CardDetailsContainer>
           <StyledFlexContainer justifyContent="space-between">
             <PaginationInfo>
-              &lt; &nbsp; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> &nbsp; / &nbsp;
-              <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> &nbsp; / &nbsp;
+              &lt; &nbsp; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> &nbsp;/&nbsp;
+              <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> &nbsp;/&nbsp;
               <Anchor>{additionalData.className}</Anchor>
             </PaginationInfo>
 

@@ -140,6 +140,7 @@ export const CircularDiv = styled.div`
   height: 42px;
   border-radius: 50%;
   color: #00ad50;
+  cursor: ${props => (props.isLink ? "pointer" : "default")};
   font-weight: 600;
   line-height: 38px;
   background-color: ${lightGreen4};
@@ -205,6 +206,7 @@ export const StyledParaF = styled.p`
   line-height: 16px;
   font-weight: 600;
   margin-bottom: 5px;
+  cursor: ${props => (props.isLink ? "pointer" : "default")};
   color: #434b5d;
 
   @media (max-width: ${mediumDesktopWidth}) {
@@ -219,6 +221,7 @@ export const StyledParaS = styled.p`
   font-weight: bold;
   color: ${({ color }) => color || classBoardTheme.CardCircularColor};
   text-transform: capitalize;
+  cursor: ${props => (props.isLink ? "pointer" : "default")};
   display: flex;
   align-items: center;
 

@@ -32,7 +32,7 @@ const DistrictRoutes = ({
   useEffect(() => {
     getOrgDetailsByShortNameAndOrgTypeAction({
       data: { shortName: districtShortName, orgType: "district" },
-      error: { message: t("common.policyvoilation") }
+      error: { message: t("common.policyviolation") }
     });
   }, []);
 

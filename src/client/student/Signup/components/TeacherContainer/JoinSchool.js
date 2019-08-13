@@ -82,7 +82,7 @@ const JoinSchool = ({
     } else if (!isSignupUsingDaURL && _school) {
       checkDistrictPolicyRequestAction({
         data: { districtId: _school.districtId, email, type: userInfo.role },
-        error: { message: t("common.policyvoilation") }
+        error: { message: t("common.policyviolation") }
       });
       setTempSchool(_school);
     }

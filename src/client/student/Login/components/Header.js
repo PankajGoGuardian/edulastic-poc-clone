@@ -22,7 +22,7 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShort
       {isSignupUsingDaURL &&
       (!isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") &&
         !isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")) ? (
-        t("common.policyvoilation")
+        t("common.policyviolation")
       ) : (
         <>
           <span>{t("common.donthaveanaccount")}</span>

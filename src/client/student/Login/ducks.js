@@ -49,6 +49,10 @@ export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup che
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
 export const UPDATE_DEFAULT_GRADES = "[user] update default grades";
 export const UPDATE_DEFAULT_SUBJECT = "[user] update default subject";
+export const GET_INVITE_DETAILS_REQUEST = "[auth] get invite details request";
+export const GET_INVITE_DETAILS_SUCCESS = "[auth] get invite details success";
+export const SET_INVITE_DETAILS_REQUEST = "[auth] set invite details request";
+export const SET_INVITE_DETAILS_SUCCESS = "[auth] set invite details success";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -76,6 +80,8 @@ export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHE
 export const resetPasswordRequestStateAction = createAction(RESET_PASSWORD_REQUEST_STATE);
 export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
 export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
+export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
+export const setInviteDetailsAction = createAction(SET_INVITE_DETAILS_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -185,7 +191,11 @@ export default createReducer(initialState, {
   },
   [RESET_PASSWORD_FAILED]: state => {
     state.requestingNewPassword = false;
-  }
+  },
+  [GET_INVITE_DETAILS_SUCCESS]: (state, { payload }) => {
+    state.invitedUserDetails = payload;
+  },
+  [SET_INVITE_DETAILS_SUCCESS]: setUser
 });
 
 export const getClasses = createSelector(
@@ -304,7 +314,7 @@ function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
 
   try {
-    const { name, email, password, role, classCode, policyvoilation } = payload;
+    const { name, email, password, role, classCode, policyViolation } = payload;
     let nameList = name.split(" ");
     nameList = nameList.filter(item => (item && item.trim() ? true : false));
     if (!nameList.length) {
@@ -312,7 +322,7 @@ function* signup({ payload }) {
     }
     if (!checkEmailPolicy(districtPolicy, role, email)) {
       throw {
-        message: policyvoilation
+        message: policyViolation
       };
     }
 
@@ -696,6 +706,29 @@ function* studentSignupCheckClasscodeSaga({ payload }) {
   }
 }
 
+function* getInviteDetailsSaga({ payload }) {
+  try {
+    const result = yield call(authApi.getInvitedUserDetails, payload);
+    yield put({ type: GET_INVITE_DETAILS_SUCCESS, payload: result });
+  } catch (e) {
+    yield put(push("/login"));
+  }
+}
+
+function* setInviteDetailsSaga({ payload }) {
+  try {
+    const result = yield call(authApi.updateInvitedUserDetails, payload);
+
+    const user = pick(result, userPickFields);
+    TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
+    TokenStorage.selectAccessToken(user._id, user.role);
+
+    yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result });
+  } catch (e) {
+    yield call(message.err, "Failed to update user details.");
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
@@ -715,4 +748,6 @@ export function* watcherSaga() {
   yield takeLatest(RESET_PASSWORD_USER_REQUEST, resetPasswordUserSaga);
   yield takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga);
   yield takeLatest(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST, studentSignupCheckClasscodeSaga);
+  yield takeLatest(GET_INVITE_DETAILS_REQUEST, getInviteDetailsSaga);
+  yield takeLatest(SET_INVITE_DETAILS_REQUEST, setInviteDetailsSaga);
 }

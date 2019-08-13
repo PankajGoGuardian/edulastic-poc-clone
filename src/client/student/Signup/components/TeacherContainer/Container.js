@@ -15,7 +15,17 @@ import { Partners } from "../../../../common/utils/static/partnerData";
 
 import { logoutAction } from "../../../Login/ducks";
 
-const Container = ({ user, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName, logout, match }) => {
+const Container = ({
+  user,
+  isSignupUsingDaURL,
+  generalSettings,
+  districtPolicy,
+  districtShortName,
+  logout,
+  match,
+  invitedUser = false,
+  invitedUserDetails = {}
+}) => {
   const { isAuthenticated, signupStatus } = user;
 
   const partnerKey = getPartnerKeyFromUrl(location.pathname);
@@ -38,6 +48,8 @@ const Container = ({ user, isSignupUsingDaURL, generalSettings, districtPolicy, 
           generalSettings={generalSettings}
           districtPolicy={districtPolicy}
           districtShortName={districtShortName}
+          invitedUser={invitedUser}
+          invitedUserDetails={invitedUserDetails}
         />
       </>
     );

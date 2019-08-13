@@ -19,7 +19,13 @@ import {
   greenDark3,
   white
 } from "@edulastic/colors";
-import { signupAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../../../Login/ducks";
+import {
+  signupAction,
+  googleLoginAction,
+  cleverLoginAction,
+  msoLoginAction,
+  setInviteDetailsAction
+} from "../../../Login/ducks";
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
@@ -28,7 +34,8 @@ import {
   getPartnerDASignupUrl,
   isDistrictPolicyAllowed,
   getDistrictLoginUrl,
-  getDistrictStudentSignupUrl
+  getDistrictStudentSignupUrl,
+  getFullNameFromString
 } from "../../../../common/utils/helpers";
 import { Partners } from "../../../../common/utils/static/partnerData";
 
@@ -57,17 +64,28 @@ class Signup extends React.Component {
   regExp = new RegExp("^[A-Za-z0-9 ]+$");
 
   handleSubmit = e => {
-    const { form, signup, t } = this.props;
+    const { form, signup, t, invitedUser, invitedUserDetails, setInviteDetailsAction } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email, name }) => {
       if (!err) {
-        signup({
-          password,
-          email: trim(email),
-          name: trim(name),
-          role: "teacher",
-          policyvoilation: t("common.policyvoilation")
-        });
+        if (!invitedUser) {
+          signup({
+            password,
+            email: trim(email),
+            name: trim(name),
+            role: "teacher",
+            policyViolation: t("common.policyviolation")
+          });
+        } else if (invitedUser) {
+          const fullName = getFullNameFromString(trim(name));
+          setInviteDetailsAction({
+            uid: invitedUserDetails._id,
+            email: invitedUserDetails.email,
+            username: invitedUserDetails.email,
+            ...fullName,
+            password
+          });
+        }
       }
     });
   };
@@ -107,9 +125,10 @@ class Signup extends React.Component {
       districtShortName,
       googleLoginAction,
       cleverLoginAction,
-      msoLoginAction
+      msoLoginAction,
+      invitedUser = false,
+      invitedUserDetails = {}
     } = this.props;
-
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 }
@@ -244,7 +263,7 @@ class Signup extends React.Component {
                             <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
                               {getFieldDecorator("email", {
                                 validateFirst: true,
-                                initialValue: "",
+                                initialValue: invitedUser ? invitedUserDetails.email : "",
                                 rules: [
                                   {
                                     transform: value => trim(value)
@@ -274,6 +293,7 @@ class Signup extends React.Component {
                                   placeholder="Enter your school email"
                                   type="email"
                                   autoComplete="new-password"
+                                  disabled={invitedUser}
                                 />
                               )}
                             </FormItem>
@@ -331,7 +351,7 @@ const enhance = compose(
   withNamespaces("login"),
   connect(
     null,
-    { signup: signupAction, googleLoginAction, cleverLoginAction, msoLoginAction }
+    { signup: signupAction, googleLoginAction, cleverLoginAction, msoLoginAction, setInviteDetailsAction }
   )
 );
 

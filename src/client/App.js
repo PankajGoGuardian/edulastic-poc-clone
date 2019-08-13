@@ -30,6 +30,7 @@ const TeacherSignup = lazy(() =>
   import(/* webpackChunkName: "teacherSignup" */ "./student/Signup/components/TeacherContainer/Container")
 );
 const Auth = lazy(() => import(/* webpackChunkName: "auth" */ "./Auth"));
+const Invite = lazy(() => import(/* webpackChunkName: "auth" */ "./Invite/index"));
 const GetStarted = lazy(() =>
   import(/* webpackChunkName: "getStarted" */ "./student/Signup/components/GetStartedContainer")
 );
@@ -93,6 +94,7 @@ class App extends Component {
     }
 
     const publicPath = location.pathname.split("/").includes("public") || location.pathname.includes("/fwd");
+
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
@@ -133,7 +135,8 @@ class App extends Component {
       } else if (
         this.props.location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
         this.props.location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/google") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/invite-teacher")
       ) {
       } else {
         redirectRoute = "/login";
@@ -200,6 +203,7 @@ class App extends Component {
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
             <Route exact path="/fwd" render={() => <V1Redirect />} />
+            <Route path="/auth/invite-teacher" render={() => <Invite />} />
             <Route path="/auth" render={() => <Auth />} />
             {testRedirectRoutes.map(route => (
               <Route path={route} component={RedirectToTest} key={route} />

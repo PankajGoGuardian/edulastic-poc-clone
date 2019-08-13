@@ -67,7 +67,8 @@ const TableRow = ({
       width: "100%",
       height: "100%",
       borderRadius: 4,
-      backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
+      backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor,
+      flex: 1
     }
   };
 
@@ -162,13 +163,7 @@ const TableRow = ({
       );
     }
     cols.push(
-      <ResponseRnd
-        rowHasTitle={rowTitles.length > 0}
-        question={item}
-        height="auto"
-        index={index}
-        isResizable={isResizable}
-      >
+      <ResponseRnd question={item} index={index} isResizable={isResizable}>
         {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
           <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
         ) : null}

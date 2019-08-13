@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { get, debounce } from "lodash";
 import { Form, Input, Row, Col, Select, Button, Modal, Spin } from "antd";
-import { grades } from "@edulastic/constants";
 import { schoolApi, userApi } from "@edulastic/api";
 import { ModalFormItem } from "./styled";
+import selectsData from "../../../../TestPage/components/common/selectsData";
 
 const { Option } = Select;
-const { GRADES_LIST } = grades;
+const { allGrades } = selectsData;
 
 class AddClassModal extends Component {
   constructor(props) {
@@ -178,9 +178,9 @@ class AddClassModal extends Component {
             <ModalFormItem label="Grades">
               {getFieldDecorator("grades")(
                 <Select mode="multiple" placeholder="Select Grades">
-                  {GRADES_LIST.map(({ value, label }) => (
+                  {allGrades.map(({ value, text }) => (
                     <Option key={value} value={value}>
-                      {label}
+                      {text}
                     </Option>
                   ))}
                 </Select>

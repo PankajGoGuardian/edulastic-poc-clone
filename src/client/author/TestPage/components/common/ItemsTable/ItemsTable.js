@@ -21,14 +21,11 @@ const ItemsTable = ({
   onAddItems,
   standards,
   windowWidth,
-  showModal = false,
-  isEditable = false,
-  addDuplicate,
-  checkAnswer,
-  showAnswer,
   testId,
   search,
-  gotoSummary
+  gotoSummary,
+  previewItem,
+  setPreviewModalData
 }) => {
   const columnProps = {
     setSelectedTests,
@@ -37,7 +34,8 @@ const ItemsTable = ({
     windowWidth,
     search,
     testId,
-    gotoSummary
+    gotoSummary,
+    setPreviewModalData
   };
 
   const columns = [
@@ -46,17 +44,7 @@ const ItemsTable = ({
       dataIndex: "main",
       key: "main",
       width: "30%",
-      render: data => (
-        <MainInfoCell
-          addDuplicate={addDuplicate}
-          showModal={showModal}
-          isEditable={isEditable}
-          checkAnswer={checkAnswer}
-          showAnswer={showAnswer}
-          testId={testId}
-          data={data}
-        />
-      )
+      render: data => <MainInfoCell data={data} previewItem={previewItem} />
     },
     {
       title: "Meta info",
@@ -146,10 +134,7 @@ const enhance = compose(
     state => ({
       standards: getStandardsSelector(state)
     }),
-    {
-      checkAnswer: previewCheckAnswerAction,
-      showAnswer: previewShowAnswerAction
-    }
+    null
   )
 );
 

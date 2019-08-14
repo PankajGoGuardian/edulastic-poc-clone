@@ -130,13 +130,13 @@ class App extends Component {
         (path[0] && path[0].toLocaleLowerCase() === "district") ||
         this.props.location.pathname.toLocaleLowerCase().includes("/partnerlogin/") ||
         this.props.location.pathname.toLocaleLowerCase().includes("/fwd") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/resetpassword")
+        this.props.location.pathname.toLocaleLowerCase().includes("/resetpassword") ||
+        this.props.location.pathname.toLocaleLowerCase().includes("/inviteteacher")
       ) {
       } else if (
         this.props.location.pathname.toLocaleLowerCase().includes("/auth/mso") ||
         this.props.location.pathname.toLocaleLowerCase().includes("/auth/clever") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/auth/google") ||
-        this.props.location.pathname.toLocaleLowerCase().includes("/auth/invite-teacher")
+        this.props.location.pathname.toLocaleLowerCase().includes("/auth/google")
       ) {
       } else {
         redirectRoute = "/login";
@@ -203,7 +203,7 @@ class App extends Component {
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
             <Route exact path="/fwd" render={() => <V1Redirect />} />
-            <Route path="/auth/invite-teacher" render={() => <Invite />} />
+            <Route path="/inviteTeacher" render={() => <Invite />} />
             <Route path="/auth" render={() => <Auth />} />
             {testRedirectRoutes.map(route => (
               <Route path={route} component={RedirectToTest} key={route} />

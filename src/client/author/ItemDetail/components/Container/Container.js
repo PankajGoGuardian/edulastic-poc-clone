@@ -87,9 +87,10 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    const { clearAnswers, changePreviewTab } = this.props;
-
+    const { clearAnswers, changePreviewTab, location, changeView } = this.props;
+    if (location.state && location.state.resetView === false) return;
     clearAnswers();
+    changeView("edit");
     changePreviewTab(CLEAR);
   }
 
@@ -299,12 +300,6 @@ class Container extends Component {
     setEditable(true);
   };
 
-  componentWillUnmount() {
-    // reset the view to "edit" while leaving.
-    const { changeView } = this.props;
-    changeView("edit");
-  }
-
   renderPreview = () => {
     const { rows, preview, questions, item: itemProps, passage } = this.props;
     const item = itemProps || {};
@@ -418,7 +413,7 @@ class Container extends Component {
   };
 
   goToItem = id => {
-    this.props.history.push(`/author/items/${id}/item-detail`);
+    this.props.history.push({ pathname: `/author/items/${id}/item-detail`, state: { resetView: false } });
   };
 
   handleCollapse = dir => {

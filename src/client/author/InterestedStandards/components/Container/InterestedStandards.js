@@ -183,7 +183,7 @@ class InterestedStandards extends Component {
               </SpinContainer>
             )}
             <Row>
-              <Col span={12}>
+              <Col span={12} style={{ display: "flex", flexDirection: "column" }}>
                 <StyledCheckbox onChange={this.updatePreferences} name="showAllStandards" checked={showAllStandards}>
                   Show all standards to the users
                 </StyledCheckbox>
@@ -194,7 +194,13 @@ class InterestedStandards extends Component {
                 >
                   Include other standards opted by the users
                 </StyledCheckbox>
-                <Button type="primary" onClick={this.showMyStandardSetsModal} shape="round" ghost>
+                <Button
+                  style={{ width: "260px" }}
+                  type="primary"
+                  onClick={this.showMyStandardSetsModal}
+                  shape="round"
+                  ghost
+                >
                   Select your standard sets
                 </Button>
               </Col>

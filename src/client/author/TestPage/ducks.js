@@ -485,6 +485,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.passages;
     delete payload.data.isUsed;
     delete payload.data.scoring;
+    delete payload.data.sharedType;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,

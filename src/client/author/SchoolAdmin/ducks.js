@@ -311,7 +311,7 @@ function* createSchoolAdminSaga({ payload }) {
 
 function* deleteSchoolAdminSaga({ payload }) {
   try {
-    const { result } = yield call(userApi.deleteUser, payload.deleteReq);
+    yield call(userApi.deleteUser, payload.deleteReq);
     yield put(deleteSchoolAdminSuccessAction(payload.deleteReq));
 
     // here after an update/delete/create, the new data is fetched back again
@@ -321,7 +321,7 @@ function* deleteSchoolAdminSaga({ payload }) {
     } else {
       yield put(receiveAdminDataAction(payload.listReq));
     }
-    message.success(result);
+    message.success("User(s) has been successfully deactivated");
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";
     yield call(message.error, errorMessage);

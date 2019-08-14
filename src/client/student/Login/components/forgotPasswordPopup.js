@@ -7,7 +7,11 @@ import { get, trim } from "lodash";
 import { white, greenDark, orange } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { isEmailValid } from "../../../common/utils/helpers";
-import { requestNewPasswordAction, resetPasswordRequestStateAction } from "./../ducks";
+import {
+  requestNewPasswordAction,
+  resetPasswordRequestStateAction,
+  requestNewPasswordResetControlAction
+} from "./../ducks";
 
 const ForgotPasswordPopup = props => {
   const {
@@ -18,7 +22,9 @@ const ForgotPasswordPopup = props => {
     t,
     requestNewPasswordAction,
     user,
-    resetPasswordRequestStateAction
+    districtPolicy,
+    resetPasswordRequestStateAction,
+    requestNewPasswordResetControlAction
   } = props;
   const { requestingNewPassword, requestNewPasswordSuccess } = user;
 
@@ -31,7 +37,11 @@ const ForgotPasswordPopup = props => {
   };
 
   const onSendLink = email => {
-    requestNewPasswordAction({ email });
+    requestNewPasswordAction({ email, districtId: districtPolicy.orgId });
+  };
+
+  const onClickTryAgain = () => {
+    requestNewPasswordResetControlAction();
   };
 
   const onClickClose = () => {
@@ -58,6 +68,23 @@ const ForgotPasswordPopup = props => {
               t={t}
               requestingNewPassword={requestingNewPassword}
             />
+          </div>
+        ) : requestNewPasswordSuccess.result === "error" ? (
+          <div className="link-sent-failed">
+            <div className="message-container">
+              <p>
+                <Icon type="close-circle" />
+              </p>
+              <p>{requestNewPasswordSuccess.message}</p>
+            </div>
+            <div className="model-buttons">
+              <Button className="try-again-button" key="tryAgain" onClick={onClickTryAgain}>
+                Try Again
+              </Button>
+              <Button className="close-button" key="close" onClick={onClickClose}>
+                Go back to SignIn page
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="link-sent">
@@ -234,6 +261,27 @@ const StyledForgotPasswordPopup = styled(ForgotPasswordPopup)`
           }
         }
       }
+
+      .link-sent-failed {
+        display: contents;
+        .message-container {
+          i {
+            border: solid 3px red;
+            border-radius: 20px;
+            font-size: 25px;
+            padding: 5px;
+            background-color: red;
+            margin: 5px;
+          }
+        }
+        .model-buttons {
+          .close-button,
+          .try-again-button {
+            border: solid 1px ${greenDark};
+            color: ${greenDark};
+          }
+        }
+      }
     }
   }
 `;
@@ -242,9 +290,10 @@ const enhance = compose(
   withNamespaces("login"),
   connect(
     state => ({
-      user: get(state, "user", null)
+      user: get(state, "user", null),
+      districtPolicy: get(state, "signup.districtPolicy", {})
     }),
-    { requestNewPasswordAction, resetPasswordRequestStateAction }
+    { requestNewPasswordAction, resetPasswordRequestStateAction, requestNewPasswordResetControlAction }
   )
 );
 

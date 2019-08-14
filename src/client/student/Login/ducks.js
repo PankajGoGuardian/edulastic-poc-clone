@@ -36,6 +36,7 @@ export const UPDATE_USER_ROLE_REQUEST = "[auth] update user role request";
 export const SET_USER_GOOGLE_LOGGED_IN = "[auth] set user google logged in";
 
 export const REQUEST_NEW_PASSWORD_REQUEST = "[auth] request new password request";
+export const REQUEST_NEW_PASSWORD_RESET_CONTROL = "[auth] request new password reset control";
 export const REQUEST_NEW_PASSWORD_FAILED = "[auth] request new password failed";
 export const REQUEST_NEW_PASSWORD_SUCCESS = "[auth] request new password success";
 export const RESET_PASSWORD_USER_REQUEST = "[auth] reset password user request";
@@ -77,6 +78,7 @@ export const changeClassAction = createAction(CHANGE_CLASS);
 export const setUserGoogleLoggedInAction = createAction(SET_USER_GOOGLE_LOGGED_IN);
 export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
 export const requestNewPasswordAction = createAction(REQUEST_NEW_PASSWORD_REQUEST);
+export const requestNewPasswordResetControlAction = createAction(REQUEST_NEW_PASSWORD_RESET_CONTROL);
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
 export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
@@ -179,9 +181,13 @@ export default createReducer(initialState, {
   [REQUEST_NEW_PASSWORD_FAILED]: state => {
     state.requestingNewPassword = false;
   },
-  [REQUEST_NEW_PASSWORD_SUCCESS]: state => {
+  [REQUEST_NEW_PASSWORD_SUCCESS]: (state, { payload }) => {
     state.requestingNewPassword = false;
-    state.requestNewPasswordSuccess = true;
+    state.requestNewPasswordSuccess = payload;
+  },
+  [REQUEST_NEW_PASSWORD_RESET_CONTROL]: state => {
+    state.requestingNewPassword = false;
+    state.requestNewPasswordSuccess = false;
   },
   [RESET_PASSWORD_REQUEST_STATE]: state => {
     state.requestNewPasswordSuccess = false;
@@ -672,7 +678,8 @@ function* requestNewPasswordSaga({ payload }) {
   try {
     const res = yield call(userApi.requestNewPassword, payload);
     yield put({
-      type: REQUEST_NEW_PASSWORD_SUCCESS
+      type: REQUEST_NEW_PASSWORD_SUCCESS,
+      payload: res
     });
   } catch (e) {
     console.error(e);

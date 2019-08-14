@@ -39,7 +39,7 @@ const CardImage = ({ data, history }) => {
               <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
                 {grades.length ? (
                   <>
-                    <SpanRightMargin>Grade</SpanRightMargin> {grades.join(", ").replace(/O/i, " Other ")}
+                    <SpanRightMargin>Grades</SpanRightMargin> {grades.join(", ").replace(/O/i, " Other ")}
                   </>
                 ) : (
                   ""

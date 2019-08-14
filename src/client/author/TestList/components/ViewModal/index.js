@@ -81,117 +81,111 @@ class ViewModal extends React.Component {
         }}
       >
         <ModalTitle>{title}</ModalTitle>
-        <PerfectScrollbar>
-          <ModalContainer>
-            <ModalColumn>
-              <Image src={thumbnail} />
+        <ModalContainer>
+          <ModalColumn>
+            <Image src={thumbnail} />
 
-              <AssessmentNameLabel>Assignment Name</AssessmentNameLabel>
-              <AssessmentName>{title}</AssessmentName>
+            <AssessmentNameLabel>Assignment Name</AssessmentNameLabel>
+            <AssessmentName>{title}</AssessmentName>
 
-              <DescriptionLabel>Description</DescriptionLabel>
-              <Description>{description}</Description>
+            <DescriptionLabel>Description</DescriptionLabel>
+            <Description>{description}</Description>
 
-              <TagsLabel>Tags</TagsLabel>
-              <TagsConatiner>{tags && tags.map((tag, index) => <TagGrade key={index}>{tag}</TagGrade>)}</TagsConatiner>
+            <TagsLabel>Tags</TagsLabel>
+            <TagsConatiner>{tags && tags.map((tag, index) => <TagGrade key={index}>{tag}</TagGrade>)}</TagsConatiner>
 
-              <GradeLabel>Grade</GradeLabel>
-              <GradeConatiner>
-                {grades && grades.map((grade, index) => <TagGrade key={index}>{grade}</TagGrade>)}
-              </GradeConatiner>
+            <GradeLabel>Grade</GradeLabel>
+            <GradeConatiner>
+              {grades && grades.map((grade, index) => <TagGrade key={index}>{grade}</TagGrade>)}
+            </GradeConatiner>
 
-              <SubjectLabel>Subject</SubjectLabel>
-              {subjects && subjects.map((subject, index) => <Subject key={index}>{subject}</Subject>)}
+            <SubjectLabel>Subject</SubjectLabel>
+            {subjects && subjects.map((subject, index) => <Subject key={index}>{subject}</Subject>)}
 
-              <Footer>
-                <FooterIcon>
-                  <IconWorldWide color={darkGrey} width={14} height={14} /> &nbsp;
-                  <IconText>{sharing[0] ? sharing[0].type : ""}</IconText>
-                </FooterIcon>
-                <FooterIcon rotate>
-                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                  {analytics && <IconText>{analytics.usage || 0} </IconText>}
-                </FooterIcon>
-                <FooterIcon>
-                  <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                  {analytics && <IconText>{analytics.likes || 0}</IconText>}
-                </FooterIcon>
-              </Footer>
-            </ModalColumn>
-            <ModalColumn>
+            <Footer>
+              <FooterIcon>
+                <IconWorldWide color={darkGrey} width={14} height={14} /> &nbsp;
+                <IconText>{sharing[0] ? sharing[0].type : ""}</IconText>
+              </FooterIcon>
+              <FooterIcon rotate>
+                <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                {analytics && <IconText>{analytics.usage || 0} </IconText>}
+              </FooterIcon>
+              <FooterIcon>
+                <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+                {analytics && <IconText>{analytics.likes || 0}</IconText>}
+              </FooterIcon>
+            </Footer>
+          </ModalColumn>
+          <ModalColumn>
+            <ButtonContainer>
+              <ButtonComponent
+                onClick={() => {
+                  onEdit();
+                }}
+              >
+                <IconWrapper>
+                  <IconDescription color={themeColor} />
+                </IconWrapper>
+                DETAILS
+              </ButtonComponent>
+              <ButtonComponent
+                onClick={() => {
+                  onDuplicate();
+                }}
+              >
+                <IconWrapper>
+                  <IconCopy color={themeColor} />
+                </IconWrapper>
+                DUPLICATE
+              </ButtonComponent>
+            </ButtonContainer>
+            {(permission !== "VIEW" || status === "published") && (
               <ButtonContainer>
-                <ButtonComponent
-                  onClick={() => {
-                    onEdit();
-                  }}
-                >
-                  <IconWrapper>
-                    <IconDescription color={themeColor} />
-                  </IconWrapper>
-                  DETAILS
-                </ButtonComponent>
-                <ButtonComponent
-                  onClick={() => {
-                    onDuplicate();
-                  }}
-                >
-                  <IconWrapper>
-                    <IconCopy color={themeColor} />
-                  </IconWrapper>
-                  DUPLICATE
+                <ButtonComponent size={"large"} bgColor={themeColor} onClick={status === "published" ? assign : onEdit}>
+                  {status === "published" ? "ASSIGN" : "EDIT"}
                 </ButtonComponent>
               </ButtonContainer>
-              {(permission !== "VIEW" || status === "published") && (
-                <ButtonContainer>
-                  <ButtonComponent
-                    size={"large"}
-                    bgColor={themeColor}
-                    onClick={status === "published" ? assign : onEdit}
-                  >
-                    {status === "published" ? "ASSIGN" : "EDIT"}
-                  </ButtonComponent>
-                </ButtonContainer>
-              )}
-              <SummaryContainer>
-                <SummaryTitle>Summary</SummaryTitle>
-                <SummaryCardContainer>
-                  <SummaryCard>
-                    <SummaryCardValue>
-                      {isPlaylist ? _source.modules && _source.modules.length : summary.totalItems || 0}
-                    </SummaryCardValue>
-                    <SummaryCardLabel>Items</SummaryCardLabel>
-                  </SummaryCard>
-                  <SummaryCard>
-                    <SummaryCardValue>{summary.totalPoints}</SummaryCardValue>
-                    <SummaryCardLabel>Points</SummaryCardLabel>
-                  </SummaryCard>
-                </SummaryCardContainer>
-                <PerfectScrollbar>
-                  <SummaryList>
-                    <ListHeader>
-                      <ListHeaderCell>SUMMARY</ListHeaderCell>
-                      <ListHeaderCell>Qs</ListHeaderCell>
-                      <ListHeaderCell>POINTS</ListHeaderCell>
-                    </ListHeader>
-                    {summary &&
-                      getInterestedStandards(summary, interestedCurriculums).map(
-                        data =>
-                          !data.isEquivalentStandard && (
-                            <ListRow>
-                              <ListCell>
-                                <SammaryMark>{data.identifier}</SammaryMark>
-                              </ListCell>
-                              <ListCell>{data.totalQuestions}</ListCell>
-                              <ListCell>{data.totalPoints}</ListCell>
-                            </ListRow>
-                          )
-                      )}
-                  </SummaryList>
-                </PerfectScrollbar>
-              </SummaryContainer>
-            </ModalColumn>
-          </ModalContainer>
-        </PerfectScrollbar>
+            )}
+            <SummaryContainer>
+              <SummaryTitle>Summary</SummaryTitle>
+              <SummaryCardContainer>
+                <SummaryCard>
+                  <SummaryCardValue>
+                    {isPlaylist ? _source.modules && _source.modules.length : summary.totalItems || 0}
+                  </SummaryCardValue>
+                  <SummaryCardLabel>Items</SummaryCardLabel>
+                </SummaryCard>
+                <SummaryCard>
+                  <SummaryCardValue>{summary.totalPoints}</SummaryCardValue>
+                  <SummaryCardLabel>Points</SummaryCardLabel>
+                </SummaryCard>
+              </SummaryCardContainer>
+              <PerfectScrollbar>
+                <SummaryList>
+                  <ListHeader>
+                    <ListHeaderCell>SUMMARY</ListHeaderCell>
+                    <ListHeaderCell>Qs</ListHeaderCell>
+                    <ListHeaderCell>POINTS</ListHeaderCell>
+                  </ListHeader>
+                  {summary &&
+                    getInterestedStandards(summary, interestedCurriculums).map(
+                      data =>
+                        !data.isEquivalentStandard && (
+                          <ListRow>
+                            <ListCell>
+                              <SammaryMark>{data.identifier}</SammaryMark>
+                            </ListCell>
+                            <ListCell>{data.totalQuestions}</ListCell>
+                            <ListCell>{data.totalPoints}</ListCell>
+                          </ListRow>
+                        )
+                    )}
+                </SummaryList>
+              </PerfectScrollbar>
+            </SummaryContainer>
+          </ModalColumn>
+        </ModalContainer>
       </Modal>
     );
   }

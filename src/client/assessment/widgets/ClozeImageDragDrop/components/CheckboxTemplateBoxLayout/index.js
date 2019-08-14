@@ -144,10 +144,10 @@ const CheckboxTemplateBoxLayout = ({
             drop={drop}
             disableResponse={disableResponse}
           >
+            {!isSnapFitValues
+              ? ((isChecked && status === "right") || showAnswer) && responseBoxIndex
+              : responseBoxIndex}
             <div className="text container" style={showAnswer || checkAnswer ? { padding: "0px" } : {}}>
-              {!isSnapFitValues
-                ? ((isChecked && status === "right") || showAnswer) && responseBoxIndex
-                : responseBoxIndex}
               {userSelections[dropTargetIndex] &&
                 userSelections[dropTargetIndex].value.map((answer, user_select_index) => {
                   const title = striptags(answer) || null;

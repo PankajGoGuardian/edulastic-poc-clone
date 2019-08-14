@@ -523,7 +523,7 @@ class ClassEnrollmentTable extends React.Component {
               <div> Are you sure you want to remove the selected student(s) from the class? </div>
             </>
           }
-          okText="Yes,Remove"
+          okText="Yes, Remove"
         />
         {addUserFormModalVisible && (
           <AddNewUserModal

@@ -160,7 +160,7 @@ const requestNewPassword = params =>
       params,
       method: "POST"
     })
-    .then(result => result.data.data);
+    .then(result => result.data.result);
 
 const fetchResetPasswordUser = params =>
   api

@@ -16,7 +16,7 @@ const Invite = ({ user, location, history, getInviteDetailsAction }) => {
   useEffect(() => {
     const queryParams = qs.parse(location.search.substring(1));
     const params = {
-      uid: queryParams.userId
+      uid: queryParams.uid
     };
     getInviteDetailsAction(params);
   }, []);

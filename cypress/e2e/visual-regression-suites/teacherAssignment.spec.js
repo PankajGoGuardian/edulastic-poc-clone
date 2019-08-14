@@ -1,15 +1,15 @@
 import FileHelper from "../framework/util/fileHelper";
 import LiveClassboardPage from "../framework/author/assignments/LiveClassboardPage";
 
-const SCREEN_SIZES = [[1920, 1080], [1366, 768], [1024, 768]]; // Cypress.config("SCREEN_SIZES");
+const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const liveClassboardPage = new LiveClassboardPage();
 
 describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
-  context(`teacher assignments page`, () => {
-    before("set token", () => {
-      cy.setToken("teacher.1.loadtest.k6test_jul26_4@snapwiz.com"); // setting auth token for teacher user
-    });
+  before("set token", () => {
+    cy.setToken("teacher.1.loadtest.k6test_jul26_4@snapwiz.com"); // setting auth token for teacher user
+  });
 
+  context(`teacher assignments page`, () => {
     SCREEN_SIZES.forEach(size => {
       const pageURL = "author/assignments";
 

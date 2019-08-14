@@ -405,8 +405,8 @@ class Display extends Component {
     const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      heightpx: heightpx !== 0 ? heightpx : "auto",
+      widthpx: uiStyle.widthpx !== 0 ? `${uiStyle.widthpx}px` : null,
+      heightpx: heightpx !== 0 ? `${heightpx}px` : null,
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
@@ -566,17 +566,19 @@ class Display extends Component {
                 borderRadius: 5
                 // overflow: "hidden"
               };
+
+              if (responseBtnStyle && responseBtnStyle.widthpx) {
+                btnStyle.width = responseBtnStyle.widthpx;
+              } else {
+                btnStyle.width = btnStyle.widthpx;
+              }
+
               if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
                 const { widthpx: individualW, heightpx: individualH } = responsecontainerindividuals[dropTargetIndex];
                 btnStyle.width = individualW || btnStyle.width;
                 btnStyle.widthpx = individualW || btnStyle.widthpx;
                 btnStyle.height = individualH || btnStyle.height;
                 btnStyle.heightpx = individualH || btnStyle.heightpx;
-              }
-              if (btnStyle && btnStyle.width === 0) {
-                btnStyle.width = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
               }
 
               return (

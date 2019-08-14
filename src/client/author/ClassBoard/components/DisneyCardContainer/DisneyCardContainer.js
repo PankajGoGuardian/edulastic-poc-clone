@@ -172,7 +172,7 @@ class DisneyCardContainer extends Component {
                 <StyledParaF
                   isLink={viewResponseStatus.includes(status.status)}
                   data-cy="studentName"
-                  title={isPresentationMode ? undefined : student.email}
+                  title={isPresentationMode ? undefined : student.userName}
                   onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
                 >
                   {name}

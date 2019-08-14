@@ -93,6 +93,7 @@ import {
 } from "./styled";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import AddStudentsPopup from "../AddStudentsPopup";
+import { getUserRole, getUserOrgId } from "../../../src/selectors/user";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -470,6 +471,8 @@ class ClassBoard extends Component {
       isPresentationMode,
       entities,
       labels,
+      userRole,
+      districtId,
       assignmentStatus,
       enrollmentStatus
     } = this.props;
@@ -561,7 +564,16 @@ class ClassBoard extends Component {
           <StyledFlexContainer justifyContent="space-between">
             <PaginationInfo>
               &lt; &nbsp; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> &nbsp; / &nbsp;
-              <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> &nbsp; / &nbsp;
+              <AnchorLink
+                to={
+                  userRole === "teacher"
+                    ? "/author/assignments"
+                    : `/author/assignments/${districtId}/${additionalData.testId}`
+                }
+              >
+                {additionalData.testName}
+              </AnchorLink>{" "}
+              &nbsp; / &nbsp;
               <Anchor>{additionalData.className}</Anchor>
             </PaginationInfo>
 
@@ -833,7 +845,8 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       classResponse: getClassResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
-
+      userRole: getUserRole(state),
+      districtId: getUserOrgId(state),
       testQuestionActivities: getTestQuestionActivitiesSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),

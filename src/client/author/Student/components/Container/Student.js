@@ -15,11 +15,16 @@ const menuActive = { mainMenu: "Users", subMenu: "Student" };
 
 class Student extends Component {
   render() {
-    const { loading, updating, deleting, creating, multiStudentsAdding, history } = this.props;
+    const { loading, updating, deleting, creating, multiStudentsAdding, history, routeKey } = this.props;
     const showSpin = loading || updating || deleting || creating || multiStudentsAdding;
 
+    // issue : click on current active tab , doesn't re-renders page, because there is no state/route change //
+    // --------------------------------- implemented solution -------------------------------------------------//
+    // since route key changes everytime even if we are routing from one url to itself,
+    // we are setting parent component div key as router location key, so that it re-renders on change.
+
     return (
-      <StudentDiv>
+      <StudentDiv key={routeKey}>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
@@ -42,7 +47,8 @@ const enhance = compose(
     updating: get(state, ["studentReducer", "updating"], false),
     creating: get(state, ["studentReducer", "creating"], false),
     deleting: get(state, ["studentReducer", "deleting"], false),
-    multiStudentsAdding: get(state, ["studentReducer", "multiStudentsAdding"], false)
+    multiStudentsAdding: get(state, ["studentReducer", "multiStudentsAdding"], false),
+    routeKey: get(state, ["router", "location", "key"])
   }))
 );
 

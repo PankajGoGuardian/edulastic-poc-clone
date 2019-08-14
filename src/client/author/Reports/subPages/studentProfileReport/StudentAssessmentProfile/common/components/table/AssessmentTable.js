@@ -8,7 +8,8 @@ import { getHSLFromRange1 } from "../../../../../../common/util";
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
 
 const getCol = (text, backgroundColor) => {
-  return <StyledCell style={{ backgroundColor }}>{text ? `${text}%` : "N/A"}</StyledCell>;
+  const value = typeof text === "undefined" ? "N/A" : `${text}%`;
+  return <StyledCell style={{ backgroundColor }}>{value}</StyledCell>;
 };
 
 const tableColumns = [

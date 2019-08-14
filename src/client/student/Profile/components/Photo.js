@@ -42,6 +42,10 @@ class Photo extends React.Component {
         loading: false
       });
     } catch (e) {
+      message.error("Unable to save thumbnail.");
+      this.setState({
+        loading: false
+      });
       console.log(e);
     }
   };

@@ -99,15 +99,6 @@ function* evaluateAnswers({ payload }) {
           return acc;
         }, {});
 
-      if (!answers[currentQuestionId]) {
-        yield put({
-          type: SET_ANSWER,
-          payload: {
-            id: currentQuestionId,
-            data: []
-          }
-        });
-      }
       const questions = yield select(getQuestionsSelector);
       const { evaluation, score, maxScore } = yield evaluateItem(answeredAndUnanswered, questions);
       yield put({
@@ -128,33 +119,10 @@ function* evaluateAnswers({ payload }) {
 
     // User is at the item level
     else {
-      const oldAnswers = yield select(state => _get(state, "answers", []));
-      const entityId = yield select(state => _get(state, "question.entity.data.id", null));
-      const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
+      const answers = yield select(state => _get(state, "answers", {}));
       const { itemLevelScore, itemLevelScoring = false } = yield select(state => state.itemDetail.item);
-
-      const answeredAndUnanswered = Object.keys(allQuestions).reduce((acc, currentId) => {
-        acc[currentId] = [];
-        return acc;
-      }, {});
-      const _answeredAndUnanswered = { ...answeredAndUnanswered, ...oldAnswers };
-
-      if (!oldAnswers[entityId]) {
-        yield put({
-          type: SET_ANSWER,
-          payload: {
-            id: entityId,
-            data: []
-          }
-        });
-      }
       const questions = yield select(getQuestionsSelector);
-      const { evaluation, score, maxScore } = yield evaluateItem(
-        _answeredAndUnanswered,
-        questions,
-        itemLevelScoring,
-        itemLevelScore
-      );
+      const { evaluation, score, maxScore } = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
 
       yield put({
         type: ADD_ITEM_EVALUATION,
@@ -196,16 +164,6 @@ function* setAnswerSaga({ payload }) {
 
     if ((preview === CLEAR && view === PREVIEW) || payload.view === "edit") {
       yield put(removeUserAnswerAction());
-    }
-
-    if (!answers[id]) {
-      yield put({
-        type: SET_ANSWER,
-        payload: {
-          id,
-          data: []
-        }
-      });
     }
   } catch (e) {
     console.log("error:", e);

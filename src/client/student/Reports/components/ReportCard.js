@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { TokenStorage } from "@edulastic/api";
 
 import { formatTime } from "../../utils";
-import { monthNames } from "../../../common/utils/helpers";
 
 import {
   ReportWrapper,
@@ -62,32 +61,10 @@ const ReportCard = ({ data, t }) => {
 
   url += `/token/${token}/settings.seb`;
 
-  const timeConvert = time24 => {
-    let ts = time24;
-    const H = +ts.substr(0, 2);
-    let h = H % 12 || 12;
-
-    h = h < 10 ? `0${h}` : h;
-    const ampm = H < 12 ? " AM" : " PM";
-    ts = h + ts.substr(2, 3) + ampm;
-    return ts;
-  };
-
-  const formatDate = () => {
-    const date = new Date(createdAt);
-
-    const month = monthNames[date.getMonth()].slice(0, 3);
-    const day = date.getDate();
-    const year = date.getFullYear();
-    const time = timeConvert(`${date.getHours()}:${(date.getMinutes() < 10 ? "0" : "") + date.getMinutes()}`);
-
-    return `${month} ${day}, ${year} - ${time}`;
-  };
-
   return (
     <ReportWrapper>
       <ReportName>{title}</ReportName>
-      <ReportDate>{formatDate()}</ReportDate>
+      <ReportDate>{formatTime(createdAt)}</ReportDate>
       <ReportAttempt>
         <ReportAttemptValue>
           {`${attemptCount}/${maxAttempts}`}

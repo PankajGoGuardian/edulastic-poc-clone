@@ -101,7 +101,7 @@ const ReportCard = ({ data, t }) => {
               </ReportAttemptItemValue>
               <ReportAttemptItemValue>{Math.floor(percentage * 100) / 100}%</ReportAttemptItemValue>
               <ReportAttemptItemLink>
-                <Link to={`/home/class/${attempt.groupId}/testActivityReport/${data._id}`}>
+                <Link to={`/home/class/${attempt.groupId}/test/${data.testId}/testActivityReport/${data._id}`}>
                   {t("common.report.review")}
                 </Link>
               </ReportAttemptItemLink>

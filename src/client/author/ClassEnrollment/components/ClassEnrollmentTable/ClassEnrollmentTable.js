@@ -520,7 +520,7 @@ class ClassEnrollmentTable extends React.Component {
           bodyText={
             <>
               {this.renderUserNames()}
-              <div> Are you sure you want to remove the selected students from the class? </div>
+              <div> Are you sure you want to remove the selected student(s) from the class? </div>
             </>
           }
           okText="Yes,Remove"

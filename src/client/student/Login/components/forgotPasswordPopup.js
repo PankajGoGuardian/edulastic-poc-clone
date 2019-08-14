@@ -20,16 +20,16 @@ const ForgotPasswordPopup = props => {
     onCancel,
     onOk,
     t,
-    requestNewPasswordAction,
+    requestNewPassword,
     user,
     districtPolicy,
-    resetPasswordRequestStateAction,
-    requestNewPasswordResetControlAction
+    resetPasswordRequestState,
+    requestNewPasswordResetControl
   } = props;
   const { requestingNewPassword, requestNewPasswordSuccess } = user;
 
   useEffect(() => {
-    resetPasswordRequestStateAction();
+    resetPasswordRequestState();
   }, []);
 
   const onCancelForgotPassword = () => {
@@ -37,11 +37,11 @@ const ForgotPasswordPopup = props => {
   };
 
   const onSendLink = email => {
-    requestNewPasswordAction({ email, districtId: districtPolicy.orgId });
+    requestNewPassword({ email, districtId: districtPolicy.orgId });
   };
 
   const onClickTryAgain = () => {
-    requestNewPasswordResetControlAction();
+    requestNewPasswordResetControl();
   };
 
   const onClickClose = () => {
@@ -293,7 +293,11 @@ const enhance = compose(
       user: get(state, "user", null),
       districtPolicy: get(state, "signup.districtPolicy", {})
     }),
-    { requestNewPasswordAction, resetPasswordRequestStateAction, requestNewPasswordResetControlAction }
+    {
+      requestNewPassword: requestNewPasswordAction,
+      resetPasswordRequestState: resetPasswordRequestStateAction,
+      requestNewPasswordResetControl: requestNewPasswordResetControlAction
+    }
   )
 );
 

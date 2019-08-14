@@ -29,7 +29,7 @@ const ClassCard = ({ t, classItem, windowWidth }) => {
 
           {grades.length ? (
             <Col span={12}>
-              <InfoLabel span={8}>{t("common.grade")}</InfoLabel>
+              <InfoLabel span={8}>{t("common.grades")}</InfoLabel>
               <InfoContent span={16} info>
                 {grades.join(", ").replace(/O/i, " Other ")}
               </InfoContent>

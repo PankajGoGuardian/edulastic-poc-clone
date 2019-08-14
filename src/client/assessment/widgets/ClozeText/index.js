@@ -24,10 +24,12 @@ const EmptyWrapper = styled.div``;
 
 class ClozeText extends Component {
   static contextType = AnswerContext;
+
   componentDidUpdate(prevProps) {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData, previewTab, view } = this.props;
     const newItem = cloneDeep(item);
     let {
+      // eslint-disable-next-line prefer-const
       uiStyle: { responsecontainerindividuals: responses = [], globalSettings }
     } = newItem;
     if (!isEqual(prevProps.item.validation, newItem.validation)) {
@@ -48,8 +50,8 @@ class ClozeText extends Component {
       setQuestionData(newItem);
     }
     if (globalSettings && responses.length) {
-      const previewTabChange = prevProps.previewTab !== this.props.previewTab && this.props.previewTab === "clear";
-      const tabChange = prevProps.view !== this.props.view;
+      const previewTabChange = prevProps.previewTab !== previewTab && previewTab === "clear";
+      const tabChange = prevProps.view !== view;
       if (tabChange || previewTabChange) {
         responses = responses.map(response => ({
           ...response,
@@ -142,7 +144,7 @@ class ClozeText extends Component {
 
   handleAddAnswer = userAnswer => {
     const { saveAnswer, setQuestionData, item } = this.props;
-    const { uiStyle: uiStyle } = item;
+    const { uiStyle } = item;
     let newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
     if (uiStyle.globalSettings) {
@@ -200,6 +202,12 @@ class ClozeText extends Component {
     const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
+
+    const { expressGrader, isAnswerModifiable } = answerContextConfig;
+
+    const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
+    const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
+    const isShowAnswer = previewTab === "show" && !expressGrader;
 
     return (
       <WithResources
@@ -279,10 +287,9 @@ class ClozeText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {(previewTab === "check" ||
-              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
+            {(isCheckAnswer || isClearAnswer || isShowAnswer) && (
               <Display
-                checkAnswer
+                checkAnswer={previewTab === "check"}
                 configureOptions={{
                   shuffleOptions
                 }}
@@ -299,52 +306,10 @@ class ClozeText extends Component {
                 showIndex
                 view={view}
                 previewTab={previewTab}
-                {...restProps}
-              />
-            )}
-            {previewTab === "show" && !answerContextConfig.expressGrader && (
-              <Display
-                showAnswer
-                configureOptions={{
-                  shuffleOptions
-                }}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
+                showAnswer={previewTab === "show"}
                 validation={itemForPreview.validation}
-                onChange={this.handleAddAnswer}
-                evaluation={evaluation}
-                instructorStimulus={itemForPreview.instructorStimulus}
-                item={itemForPreview}
-                responseIds={item.responseIds}
-                showIndex
-                {...restProps}
-                view={view}
-                previewTab={previewTab}
-              />
-            )}
-            {(previewTab === "clear" ||
-              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
-              <Display
-                preview={false}
-                configureOptions={{
-                  shuffleOptions
-                }}
+                preview={previewTab === "clear"}
                 key={previewDisplayOptions && previewStimulus && uiStyle}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                instructorStimulus={itemForPreview.instructorStimulus}
-                item={itemForPreview}
-                responseIds={item.responseIds}
-                showIndex={false}
-                view={view}
-                previewTab={previewTab}
                 {...restProps}
               />
             )}

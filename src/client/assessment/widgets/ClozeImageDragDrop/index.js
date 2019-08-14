@@ -156,6 +156,12 @@ class ClozeImageDragDrop extends Component {
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
+    const { expressGrader, isAnswerModifiable } = answerContextConfig;
+
+    const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
+    const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
+    const isShowAnswer = previewTab === "show" && !expressGrader;
+
     return (
       <div>
         {view === "edit" && (
@@ -274,10 +280,11 @@ class ClozeImageDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {(previewTab === "check" ||
-              (answerContextConfig.expressGrader && !answerContextConfig.isAnswerModifiable)) && (
+            {(isCheckAnswer || isClearAnswer || isShowAnswer) && (
               <Display
-                checkAnswer
+                checkAnswer={previewTab === "check"}
+                showAnswer={previewTab === "show"}
+                preview={previewTab === "clear"}
                 item={itemForPreview}
                 options={previewDisplayOptions}
                 instructorStimulus={itemForPreview.instructorStimulus}
@@ -305,76 +312,10 @@ class ClozeImageDragDrop extends Component {
                 imageOptions={item.imageOptions}
                 showBorder={false}
                 setQuestionData={setQuestionData}
-                {...restProps}
-              />
-            )}
-            {previewTab === "show" && !answerContextConfig.expressGrader && (
-              <Display
-                showAnswer
-                item={itemForPreview}
-                instructorStimulus={itemForPreview.instructorStimulus}
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
-                maxRespCount={item.maxRespCount}
-                userAnswer={userAnswer}
-                userSelections={userAnswer}
                 validation={itemForPreview.validation}
-                showDashedBorder={itemForPreview.responseLayout && itemForPreview.responseLayout.showdashedborder}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                imageAlterText={item.imageAlterText}
-                imageTitle={item.imageTitle}
-                responseContainers={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                imageHeight={item.imageHeight}
-                evaluation={evaluation}
-                imageOptions={item.imageOptions}
-                showBorder={false}
-                setQuestionData={setQuestionData}
-                {...restProps}
-              />
-            )}
-            {(previewTab === "clear" ||
-              (answerContextConfig.isAnswerModifiable && answerContextConfig.expressGrader)) && (
-              <Display
-                preview
-                item={itemForPreview}
                 responses={item.responses}
-                instructorStimulus={itemForPreview.instructorStimulus}
-                validation={itemForPreview.validation}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                options={previewDisplayOptions}
-                imageAlterText={item.imageAlterText}
-                imageTitle={item.imageTitle}
-                responseContainers={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                imageHeight={item.imageHeight}
-                question={previewStimulus}
-                maxRespCount={item.maxRespCount}
-                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                uiStyle={uiStyle}
                 backgroundColor={item.background}
                 smallSize={smallSize}
-                templateMarkUp={itemForPreview.templateMarkUp}
-                userSelections={userAnswer}
-                userAnswer={userAnswer}
-                onChange={this.handleAddAnswer}
-                imageOptions={item.imageOptions}
-                showBorder={false}
-                setQuestionData={setQuestionData}
                 {...restProps}
               />
             )}

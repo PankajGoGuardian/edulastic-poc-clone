@@ -17,7 +17,7 @@ export const SkillReportContainer = styled.div`
 
 export const SummaryTitle = styled.div`
   font-size: ${props => props.theme.skillReport.skillReportTitleFontSize};
-  font-weight: 600;
+  font-weight: 700;
   color: ${props => props.theme.skillReport.skillReportTitleColor};
   letter-spacing: 0.3px;
   margin-bottom: 24px;
@@ -102,11 +102,11 @@ export const StyledScoreProgress = styled(Progress)`
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
-    (props.percent >= 50
-      ? props.theme.skillReport.greenColor
-      : props.percent >= 30
+      props.percent >= 50
+        ? props.theme.skillReport.greenColor
+        : props.percent >= 30
         ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor)};
+        : props.theme.skillReport.redColor};
   }
 `;
 
@@ -118,10 +118,10 @@ export const StyledProgress = styled(Progress)`
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
-    (props.percent >= 50
-      ? props.theme.skillReport.greenColor
-      : props.percent >= 30
+      props.percent >= 50
+        ? props.theme.skillReport.greenColor
+        : props.percent >= 30
         ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor)};
+        : props.theme.skillReport.redColor};
   }
 `;

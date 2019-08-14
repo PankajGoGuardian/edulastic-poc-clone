@@ -49,6 +49,7 @@ const SkillReportMainContent = ({ skillReport, t }) => {
   // console.log('skillReport',skillReport);
   if (skillReport) {
     const getDomainScoreDetails = id =>
+      skillReport.reports.reportData.domainLevel &&
       skillReport.reports.reportData.domainLevel.filter(item => item.domain_id === id);
     sumData = skillReport.reports.curriculum.domains.map(domain => {
       const reportData = getDomainScoreDetails(domain._id)[0] || {};

@@ -12,11 +12,19 @@ const StyledTable = styled(Table)`
     }
   }
 
+  .ant-table-thead > tr {
+    background: transparent;
+  }
+
   .ant-table-thead > tr > th {
     background: ${props => props.theme.skillReport.tableHeaderBgColor};
     font-size: ${props => props.theme.skillReport.tableHeaderTextSize};
-    font-weight: 600;
+    font-weight: 700;
     color: ${props => props.theme.skillReport.tableHeaderTextColor};
+    text-transform: uppercase;
+    padding: 16px 27px;
+    border: 0;
+
     &:hover {
       background: ${props => props.theme.skillReport.tableHeaderHoverBgColor} !important;
       color: ${props => props.theme.skillReport.tableHeaderHoverTextColor} !important;

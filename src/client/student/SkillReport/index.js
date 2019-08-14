@@ -10,7 +10,7 @@ import { fetchSkillReportByClassID as fetchSkillReportAction, classSelector } fr
 
 const SkillReportContainer = ({ flag, skillReport, fetchSkillReport, classId }) => {
   useEffect(() => {
-    fetchSkillReport(classId);
+    if (classId) fetchSkillReport(classId);
   }, []);
   return (
     <React.Fragment>

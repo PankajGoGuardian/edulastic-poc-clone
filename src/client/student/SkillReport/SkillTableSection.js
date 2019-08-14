@@ -60,6 +60,7 @@ class DomainDetail extends Component {
     let maxScore = 1;
     if (summary) {
       const getStandardsScoreDetails = id =>
+        skillReport.reports.reportData.standardLevel &&
         skillReport.reports.reportData.standardLevel.filter(item => item.standard_id === id);
       sumData = summary.standards.map(standard => {
         const standardsData = getStandardsScoreDetails(standard._id)[0] || {};

@@ -58,16 +58,19 @@ const CheckboxTemplateBoxLayout = ({
         position: "absolute",
         borderRadius: 5
       };
+
+      if (responseBtnStyle && responseBtnStyle) {
+        btnStyle.width = responseBtnStyle.widthpx;
+      } else {
+        btnStyle.width = btnStyle.widthpx;
+      }
+
       if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
         const { widthpx } = responsecontainerindividuals[dropTargetIndex];
         btnStyle.width = widthpx;
         btnStyle.widthpx = widthpx;
       }
-      if (btnStyle && btnStyle.width === 0) {
-        btnStyle.width = responseBtnStyle.widthpx;
-      } else {
-        btnStyle.width = btnStyle.widthpx;
-      }
+
       let indexStr = "";
       switch (stemnumeration) {
         case "lowercase": {

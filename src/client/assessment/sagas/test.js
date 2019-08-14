@@ -30,7 +30,7 @@ import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
 const getQuestions = (testItems = []) => {
   const allQuestions = [];
 
-  Object.values(testItems).forEach(item => {
+  testItems.forEach(item => {
     if (item.data) {
       const { questions = [], resources = [] } = item.data;
       allQuestions.push(...questions, ...resources);

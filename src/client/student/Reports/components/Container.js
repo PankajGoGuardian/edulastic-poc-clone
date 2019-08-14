@@ -1,82 +1,72 @@
 import React, { useEffect } from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { compose } from "redux";
-import { withNamespaces } from "@edulastic/localization";
-
+import { Layout } from "antd";
 import { getCurrentGroup } from "../../Login/ducks";
 
 // actions
 import { fetchAssignmentsAction, getAssignmentsSelector } from "../ducks";
 
 // components
-import ReportCard from "./ReportCard";
+import AssignmentCard from "../../sharedComponents/AssignmentCard";
 
-// styles
-import {
-  WrapperReport,
-  ReportHeader,
-  LayoutContent,
-  ReportHeaderName,
-  ReportHeaderDate,
-  ReportHeaderAttempt,
-  ReportHeaderCorrectAnswer,
-  ReportHeaderAverageScore,
-  ReportHeaderReview,
-  ReportList
-} from "./styles";
-
-const Content = ({ flag, assignments, fetchAssignments, currentGroup, t }) => {
+const Content = ({ flag, assignments, fetchAssignments, currentGroup }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
   }, []);
 
   return (
     <LayoutContent flag={flag}>
-      <WrapperReport>
-        <ReportHeader>
-          <ReportHeaderName>{t("common.report.reportName")}</ReportHeaderName>
-          <ReportHeaderDate>{t("common.report.date")}</ReportHeaderDate>
-          <ReportHeaderAttempt>{t("common.report.attempt")}</ReportHeaderAttempt>
-          <ReportHeaderCorrectAnswer>{t("common.report.correctAnswer")}</ReportHeaderCorrectAnswer>
-          <ReportHeaderAverageScore>{t("common.report.averageScore")}</ReportHeaderAverageScore>
-          <ReportHeaderReview />
-        </ReportHeader>
-        <ReportList>
-          {assignments.map((item, index) => (
-            <ReportCard key={index} data={item} t={t} />
-          ))}
-        </ReportList>
-      </WrapperReport>
+      <Wrapper>
+        {assignments.map((item, index) => (
+          <AssignmentCard key={index} data={item} type="reports" />
+        ))}
+      </Wrapper>
     </LayoutContent>
   );
 };
 
-const enhance = compose(
-  withNamespaces("student"),
-  connect(
-    state => ({
-      flag: state.ui.flag,
-      currentGroup: getCurrentGroup(state),
-      assignments: getAssignmentsSelector(state)
-    }),
-    {
-      fetchAssignments: fetchAssignmentsAction
-    }
-  )
-);
-
-export default enhance(Content);
+export default connect(
+  state => ({
+    flag: state.ui.flag,
+    currentGroup: getCurrentGroup(state),
+    assignments: getAssignmentsSelector(state)
+  }),
+  {
+    fetchAssignments: fetchAssignmentsAction
+  }
+)(Content);
 
 Content.propTypes = {
   flag: PropTypes.bool.isRequired,
   assignments: PropTypes.array,
-  fetchAssignments: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  currentGroup: PropTypes.string
+  fetchAssignments: PropTypes.func.isRequired
 };
 
 Content.defaultProps = {
-  assignments: [],
-  currentGroup: ""
+  assignments: []
 };
+
+const LayoutContent = styled(Layout.Content)`
+  min-height: 100vh;
+  padding-bottom: 150px;
+  width: 100%;
+`;
+
+const Wrapper = styled.div`
+  height: 100%;
+  margin: 30px 30px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  background-color: ${props => props.theme.assignment.cardContainerBgColor};
+  padding: 5px 30px;
+  position: relative;
+  @media screen and (max-width: 1300px) {
+    padding: 5px 15px;
+  }
+
+  @media screen and (max-width: 767px) {
+    padding: 5px 30px;
+  }
+`;

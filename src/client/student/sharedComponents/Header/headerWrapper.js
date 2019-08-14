@@ -78,7 +78,7 @@ const AssignmentsHeader = styled(Layout.Header)`
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     padding: 0px 44px;
     height: 96px;
-    padding: 0px 30px 0 44px;
+    padding: 0px 30px 0 40px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {

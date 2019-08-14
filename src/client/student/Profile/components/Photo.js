@@ -29,10 +29,10 @@ class Photo extends React.Component {
       } else if (!beforeUpload(file)) {
         return;
       }
-      const imageUrl = await uploadToS3(file, `${aws.s3Folders.USER}`);
+      const imageUrl = await uploadToS3(file, `${aws.s3Folders.USER}`, `${user._id}`);
       updateProfileImagePath({
         data: {
-          imagePath: imageUrl,
+          thumbnail: imageUrl,
           email: user.email,
           districtId: user.districtId
         },
@@ -110,7 +110,7 @@ Photo.defaultProps = {
 export default connect(
   state => ({
     user: state.user.user,
-    imageUrl: state.user.user.imagePath
+    imageUrl: state.user.user.thumbnail
   }),
   { updateProfileImagePath: updateProfileImageAction }
 )(Photo);

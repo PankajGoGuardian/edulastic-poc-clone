@@ -227,7 +227,7 @@ export default createReducer(initialState, {
   },
   [UPDATE_PROFILE_IMAGE_PATH_SUCCESS]: (state, { payload }) => {
     state.user.updatingImagePath = false;
-    state.user.user.imagePath = payload;
+    state.user.thumbnail = payload;
   },
   [UPDATE_PROFILE_IMAGE_PATH_FAILED]: state => {
     state.user.updatingImagePath = false;
@@ -746,8 +746,8 @@ function* resetMyPasswordRequestSaga({ payload }) {
 function* updateProfileImageSaga({ payload }) {
   try {
     const result = yield call(userApi.updateUser, payload);
-    yield call(message.success, "Password changed successfully");
-    yield put({ type: UPDATE_PROFILE_IMAGE_PATH_SUCCESS });
+    yield call(message.success, "Thumbnail changed successfully");
+    yield put({ type: UPDATE_PROFILE_IMAGE_PATH_SUCCESS, payload: payload.data.thumbnail });
   } catch (e) {
     yield call(message.error, e && e.data ? e.data.message : "Failed to Update Image");
     yield put({

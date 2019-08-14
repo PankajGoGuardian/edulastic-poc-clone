@@ -104,6 +104,8 @@ const setUser = (state, { payload }) => {
   const defaultSubject = getFromLocalStorage("defaultSubject");
   const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
+  state.user.middleName = payload.middleName || undefined;
+  state.user.lastName = payload.lastName || undefined;
   set(state.user, "orgData.defaultClass", defaultClass);
   set(state.user, "orgData.selectedGrades", defaultGrades);
   set(state.user, "orgData.selectedSubject", defaultSubject);
@@ -120,6 +122,7 @@ const getCurrentPath = () => {
     location.pathname.toLowerCase() === "/signup" ||
     location.pathname.toLowerCase() === "/studentsignup" ||
     location.pathname.toLowerCase() === "/adminsignup" ||
+    location.pathname.toLowerCase() === "/inviteteacher" ||
     (path[0] && path[0] === "district")
   ) {
     return "";
@@ -414,6 +417,8 @@ const getLoggedOutUrl = () => {
     return "/district/" + restOfPath;
   } else if (pathname === "/resetpassword") {
     return window.location.href.split(window.location.origin)[1];
+  } else if (pathname === "/inviteteacher") {
+    return `${location.pathname}${location.search}${location.hash}`;
   } else {
     return "/login";
   }

@@ -75,9 +75,11 @@ class EditableCell extends React.Component {
 
   checkPrice = (rule, value, callback) => {
     const { dataSource, record } = this.props;
+    console.log("record", record);
     if (!isNaN(value)) {
       const sameRow = dataSource.filter(item => item.key === record.key);
       const sameDownRow = dataSource.filter(item => item.key === record.key + 1);
+      console.log({ sameDownRow });
 
       if (sameRow[0].from < parseInt(value)) callback(`To value should be less than ${sameRow[0].from}`);
       else if (sameDownRow[0].to + 1 > parseInt(value))
@@ -181,7 +183,7 @@ class EditableCell extends React.Component {
   }
 }
 
-class PerformanceBandTable extends React.Component {
+export class PerformanceBandTable extends React.Component {
   constructor(props) {
     super(props);
     this.columns = [
@@ -269,7 +271,9 @@ class PerformanceBandTable extends React.Component {
 
   componentDidMount() {
     const { loadPerformanceBand, userOrgId } = this.props;
-    loadPerformanceBand({ orgId: userOrgId });
+    if (loadPerformanceBand) {
+      loadPerformanceBand({ orgId: userOrgId });
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -402,6 +406,7 @@ class PerformanceBandTable extends React.Component {
   render() {
     const { dataSource, editingKey, isChangeState, performanceBandId } = this.state;
 
+    console.log("datasource", dataSource);
     const components = {
       body: {
         row: EditableFormRow,

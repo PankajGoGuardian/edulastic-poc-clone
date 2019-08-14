@@ -30,12 +30,10 @@ const Invite = ({ user, location, history, getInviteDetailsAction }) => {
     return <Redirect exact to="/author/dashboard" />;
   } else if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
     return <Redirect exact to="/home/assignments" />;
-  } else if (location.pathname.toLocaleLowerCase().includes("invite")) {
-    if (user && user.invitedUserDetails && !isEmpty(user.invitedUserDetails)) {
-      return <TeacherSignup invitedUser invitedUserDetails={user.invitedUserDetails} />;
-    } else {
-      return "Please Wait...";
-    }
+  } else if (user && user.invitedUserDetails && !isEmpty(user.invitedUserDetails)) {
+    return <TeacherSignup invitedUser invitedUserDetails={user.invitedUserDetails} />;
+  } else {
+    return "Please Wait...";
   }
 };
 

@@ -284,7 +284,6 @@ class ClozeImageDragDrop extends Component {
               <Display
                 checkAnswer={previewTab === "check"}
                 showAnswer={previewTab === "show"}
-                preview={previewTab === "clear"}
                 item={itemForPreview}
                 options={previewDisplayOptions}
                 instructorStimulus={itemForPreview.instructorStimulus}
@@ -316,6 +315,8 @@ class ClozeImageDragDrop extends Component {
                 responses={item.responses}
                 backgroundColor={item.background}
                 smallSize={smallSize}
+                previewTab={previewTab}
+                preview
                 {...restProps}
               />
             )}

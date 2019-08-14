@@ -71,7 +71,7 @@ class StudentSignup extends React.Component {
   };
 
   handleSubmit = e => {
-    const { form, signup, t } = this.props;
+    const { form, signup, t, districtPolicy } = this.props;
     const { method } = this.state;
     e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email, name, classCode }) => {
@@ -89,7 +89,8 @@ class StudentSignup extends React.Component {
             name,
             role: "student",
             classCode,
-            policyviolation: t("common.policyviolation")
+            policyviolation: t("common.policyviolation"),
+            districtId: districtPolicy ? districtPolicy.orgId : undefined
           });
         }
       }
@@ -114,11 +115,12 @@ class StudentSignup extends React.Component {
   };
 
   onClassCodeBlur = event => {
-    const { studentSignupCheckClasscodeAction } = this.props;
+    const { studentSignupCheckClasscodeAction, districtPolicy } = this.props;
     studentSignupCheckClasscodeAction({
       classCode: event.currentTarget.value,
       role: "student",
-      signOnMethod: "userNameAndPassword"
+      signOnMethod: "userNameAndPassword",
+      districtId: districtPolicy ? districtPolicy.orgId : undefined
     });
   };
 

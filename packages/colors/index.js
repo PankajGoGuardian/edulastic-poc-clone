@@ -164,6 +164,9 @@ export const eastBaycolor = "#51596a";
 export const draftColor = "#f8ac59";
 export const publishedColor = "#1ab394";
 
+export const reportHeaderText = "#aaafb5";
+export const reportValue = "#9ca0a9";
+
 export const backgrounds = {
   default: "#f3f3f3",
   primary: "#f8f8f8"

@@ -120,8 +120,8 @@ const DragItemContainer = ({
             style={{
               display: "flex",
               alignItems: "center",
-              margin: "10px 15px 10px 15px",
-              width: itemWidth
+              width: itemWidth,
+              margin: `5px`
             }}
           >
             <InnerWrapper

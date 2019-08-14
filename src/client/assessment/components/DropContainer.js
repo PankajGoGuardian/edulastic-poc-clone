@@ -42,7 +42,8 @@ const DropContainer = ({ connectDropTarget, index, isOver, flag, style, children
         zIndex: 1,
         ...style,
         border,
-        borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border
+        borderTopColor: noTopBorder && !isOver ? theme.dropContainer.noBorderColor : border,
+        padding: 0
       }}
     >
       {children}

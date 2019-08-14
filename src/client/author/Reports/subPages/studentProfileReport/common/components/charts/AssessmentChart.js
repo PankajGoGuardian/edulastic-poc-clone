@@ -27,7 +27,6 @@ const AssessmentChart = ({ data, selectedTests, onBarClickCB, onResetClickCB }) 
       const record = get(payload[0], "payload", {});
       return (
         <div>
-          <BarTooltipRow title="Assessment Name : " value={record.testName} />
           <BarTooltipRow title="Assessment : " value={record.testName || "N/A"} />
           <BarTooltipRow title="Type : " value={record.testType} />
           <BarTooltipRow title="Performance Band : " value={record.band.name} />

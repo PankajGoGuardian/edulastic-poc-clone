@@ -110,7 +110,6 @@ const methodOptions = {
   ],
   [methods.EQUIV_LITERAL]: [
     "ariaLabel",
-    "setListTypeResponse",
     "ignoreTrailingZeros",
     "setDecimalSeparator",
     "setThousandsSeparator",
@@ -134,7 +133,8 @@ const methodOptions = {
     "allowNumericOnly",
     "allowedVariables",
     "interpretAsSet",
-    "compareSides"
+    "compareSides",
+    "setListTypeResponse"
   ],
 
   [methods.SET_EVALUATION]: [],

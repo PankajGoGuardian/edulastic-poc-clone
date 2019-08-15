@@ -485,6 +485,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.passages;
     delete payload.data.isUsed;
     delete payload.data.scoring;
+    delete payload.data.sharedType;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,
@@ -557,6 +558,7 @@ function* shareTestSaga({ payload }) {
 function* publishTestSaga({ payload }) {
   try {
     let { _id: id, test, assignFlow } = payload;
+    const { isUsed } = test;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
     yield call(updateTestSaga, { payload: { id, data: test, assignFlow: true } });
@@ -569,8 +571,8 @@ function* publishTestSaga({ payload }) {
     if (assignFlow) {
       yield put(push(`/author/assignments/${id}`));
     } else {
-      if (oldId) {
-        yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
+      if (oldId || isUsed) {
+        yield put(push(`/author/assignments/regrade/new/${id}/old/${test.origTestId}`));
         yield put(setRegradeOldIdAction(undefined));
       } else {
         yield put(push(`/author/tests/${id}/publish`));
@@ -617,9 +619,10 @@ function* setTestDataAndUpdateSaga(payload) {
         draft.testItems.push(item);
       });
     } else {
-      newTest = produce(newTest, draft => {
-        draft.testItems = draft.testItems.filter(el => el._id !== item._id);
-      });
+      newTest = {
+        ...newTest,
+        testItems: newTest.testItems.filter(el => el._id !== item._id)
+      };
     }
     // getting grades and subjects from each question array in test items
     const { testItems = [] } = newTest;
@@ -655,12 +658,6 @@ function* setTestDataAndUpdateSaga(payload) {
         standard: get(newTest, "data.summary.standards[0].identifier", "")
       });
       yield put(updateDefaultThumbnailAction(thumbnail));
-    }
-
-    if (item.passageId) {
-      const passageItems = yield call(testItemsApi.getPassageItems, item.passageId);
-      yield put(setPassageItemsAction(passageItems));
-      if (passageItems.length > 1) yield put(togglePassageConfirmModalAction(true));
     }
 
     yield put(setTestDataAction(newTest));

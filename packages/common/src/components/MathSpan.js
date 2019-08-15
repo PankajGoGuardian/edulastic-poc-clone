@@ -10,12 +10,13 @@ const MathSpan = withMathFormula(styled.span.attrs({
   display: inline;
   user-select: none;
   max-width: 400px;
-  font-size: ${fonts.previewFontSize};
+  || {font-size: ${fonts.previewFontSize};}    ${/* Parent style OR'd with child style */ ""} 
   font-weight: ${fonts.previewFontWeight};
 
   @media (max-width: ${desktopWidth}) {
     font-size: ${fonts.previewFontSizeMobile};
-  }
+  
+}
 `);
 
 export default MathSpan;

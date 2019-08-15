@@ -108,6 +108,23 @@ const validateClassCode = params =>
     })
     .then(result => result.data.result);
 
+const getInvitedUserDetails = params =>
+  api
+    .callApi({
+      url: `${prefix}/invite-teacher`,
+      params
+    })
+    .then(result => result.data.result);
+
+const updateInvitedUserDetails = data =>
+  api
+    .callApi({
+      url: `${prefix}/invite-teacher`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   login,
   signup,
@@ -121,5 +138,7 @@ export default {
   checkUserExist,
   signupWithGoogle,
   V1Redirect,
-  validateClassCode
+  validateClassCode,
+  getInvitedUserDetails,
+  updateInvitedUserDetails
 };

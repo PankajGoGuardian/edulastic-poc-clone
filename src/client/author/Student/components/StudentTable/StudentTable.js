@@ -69,16 +69,6 @@ import { getFullNameFromString } from "../../../../common/utils/helpers";
 
 const { Option } = Select;
 
-function compareByAlph(a, b) {
-  if (a > b) {
-    return -1;
-  }
-  if (a < b) {
-    return 1;
-  }
-  return 0;
-}
-
 const filterStrDD = {
   status: {
     list: [
@@ -119,17 +109,27 @@ class StudentTable extends Component {
         title: "Name",
         render: (_, { _source: { firstName, lastName } = {} }) => (
           <span>
-            {firstName} {lastName}
+            {firstName === "Anonymous" ? "-" : firstName} {lastName}
           </span>
         ),
-        sorter: (a, b) => compareByAlph(a.firstName, b.secondName),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.firstName", "");
+          const next = get(b, "_source.firstName", "");
+          return next.localeCompare(prev);
+        },
         width: 200
       },
       {
         title: "Username",
         dataIndex: "_source.username",
         render: (text, record, index) => record._source.username || record._source.email,
-        sorter: (a, b) => compareByAlph(a.email, b.email),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.username", "");
+          const next = get(b, "_source.username", "");
+          return next.localeCompare(prev);
+        },
         width: 200
       },
       {

@@ -27,19 +27,9 @@ const getQuestionSelector = (state, props) => {
 const getQuestionId = questionId => questionId || "tmp";
 
 export const getUserAnswerSelector = createSelector(
-  [
-    getActivityFromPropsSelector,
-    getQuestionIdFromPropsSelector,
-    getAnswersListSelector,
-    isReviewTabSelector,
-    getQuestionSelector
-  ],
-  (activity, questionId, answers, isReviewTab, question) => {
+  [getActivityFromPropsSelector, getQuestionIdFromPropsSelector, getAnswersListSelector],
+  (activity, questionId, answers) => {
     if (!questionId) return undefined;
-
-    if (isReviewTab) {
-      return get(question, ["validation", "validResponse", "value"]);
-    }
 
     let userAnswer;
     if (activity && activity.userResponse) {

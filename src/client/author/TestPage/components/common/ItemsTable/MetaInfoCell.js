@@ -8,47 +8,33 @@ import { FlexContainer, MoveLink, PremiumTag } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { greenDark, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
-import { cloneDeep, uniq as _uniq } from "lodash";
+import { uniq as _uniq } from "lodash";
 
 import Standards from "../../../../ItemList/components/Item/Standards";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
 import {
-  setTestDataAction,
   getTestSelector,
   setTestDataAndUpdateAction,
   previewCheckAnswerAction,
-  previewShowAnswerAction
+  previewShowAnswerAction,
+  setPassageItemsAction
 } from "../../../ducks";
 
 import {
   setTestItemsAction,
-  getItemsSubjectAndGradeAction,
   getSelectedItemSelector,
-  getTestItemsSelector
+  getTestItemsSelector,
+  togglePassageConfirmModalAction
 } from "../../AddItems/ducks";
 
 import { getUserId } from "../../../../src/selectors/user";
+import { testItemsApi } from "@edulastic/api";
 
 class MetaInfoCell extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selectedRowKeys: props.selectedTests
-    };
-  }
-
-  componentDidMount() {
-    const { selectedRowKeys } = this.state;
-    const { setTestItems } = this.props;
-    const keys = [];
-    selectedRowKeys.forEach((selectedRow, index) => {
-      keys[index] = selectedRow;
-    });
-    setTestItems(selectedRowKeys);
-  }
-
-  handleSelection = row => {
+  state = {
+    selectedId: ""
+  };
+  handleSelection = async row => {
     const {
       setSelectedTests,
       setTestItems,
@@ -56,27 +42,40 @@ class MetaInfoCell extends Component {
       selectedRows,
       testItemsList,
       test,
-      gotoSummary
+      gotoSummary,
+      setPreviewModalData,
+      togglePassageConfirmModal,
+      setPassageItems,
+      data
     } = this.props;
     if (!test.title) {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
 
-    const newTest = cloneDeep(test);
     let keys = [];
-    if (newTest.safeBrowser && !newTest.sebPassword) {
+    if (test.safeBrowser && !test.sebPassword) {
       return message.error("Please add a valid password");
     }
-
+    //TODO better to find another way to pass state to preview modal
+    setPreviewModalData(data);
+    this.setState({ selectedId: data._id });
     if (selectedRows !== undefined) {
-      selectedRows.data.forEach((selectedRow, index) => {
+      (selectedRows.data || []).forEach((selectedRow, index) => {
         keys[index] = selectedRow;
       });
     }
     if (!keys.includes(row.id)) {
       keys[keys.length] = row.id;
       const item = testItemsList.find(el => row.id === el._id);
+      if (item.passageId) {
+        const passageItems = await testItemsApi.getPassageItems(item.passageId);
+        setPassageItems(passageItems);
+        if (passageItems.length > 1) {
+          this.setState({ selectedId: "" });
+          return togglePassageConfirmModal(true);
+        }
+      }
       setDataAndSave({ addToTest: true, item });
     } else {
       keys = keys.filter(item => item !== row.id);
@@ -84,6 +83,7 @@ class MetaInfoCell extends Component {
     }
     setSelectedTests(keys);
     setTestItems(keys);
+    this.setState({ selectedId: "" });
   };
 
   get isAddOrRemove() {
@@ -94,15 +94,8 @@ class MetaInfoCell extends Component {
     return true;
   }
 
-  previewItem = () => {
-    this.setState({ isShowPreviewModal: true });
-  };
-
-  closeModal = () => {
-    this.setState({ isShowPreviewModal: false });
-  };
-
   mobileRender = () => {
+    const { selectedId } = this.state;
     const { data, search } = this.props;
     return (
       <div style={{ padding: "5px 10px" }}>
@@ -132,6 +125,7 @@ class MetaInfoCell extends Component {
           </CategoryDiv>
         </FlexContainer>
         <StyledButton
+          loading={selectedId === data._id}
           onClick={() => this.handleSelection(data)}
           style={{
             border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
@@ -147,28 +141,14 @@ class MetaInfoCell extends Component {
   };
 
   render() {
-    const { isShowPreviewModal = false } = this.state;
-    const { data, windowWidth, search, checkAnswer, showAnswer, userId } = this.props;
-    const owner = data.item && data.item.authors && data.item.authors.some(x => x._id === userId);
-    const isEditable = owner;
+    const { selectedId } = this.state;
+    const { data, windowWidth, search } = this.props;
     return (
       <Container>
-        {isShowPreviewModal && (
-          <PreviewModal
-            isVisible={isShowPreviewModal}
-            page="addItems"
-            onClose={this.closeModal}
-            data={data}
-            owner={owner}
-            showEvaluationButtons={true}
-            isEditable={isEditable}
-            checkAnswer={() => checkAnswer({ ...data.item, id: data.id, isItem: true })}
-            showAnswer={() => showAnswer(data)}
-          />
-        )}
         {windowWidth > 468 ? (
           <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-end">
             <StyledButton
+              loading={selectedId === data._id}
               onClick={() => this.handleSelection(data)}
               style={{
                 border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
@@ -261,7 +241,9 @@ const enhance = compose(
       setTestItems: setTestItemsAction,
       setDataAndSave: setTestDataAndUpdateAction,
       checkAnswer: previewCheckAnswerAction,
-      showAnswer: previewShowAnswerAction
+      showAnswer: previewShowAnswerAction,
+      setPassageItems: setPassageItemsAction,
+      togglePassageConfirmModal: togglePassageConfirmModalAction
     }
   )
 );

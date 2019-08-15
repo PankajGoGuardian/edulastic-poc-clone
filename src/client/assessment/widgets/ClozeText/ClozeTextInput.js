@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Input } from "antd";
@@ -101,10 +101,19 @@ const ClozeTextInput = ({ resprops, id }) => {
   }
   const [input, setInput] = useState({ id, value });
 
-  const _getValue = val => {
-    const newStr = value.split("");
-    newStr.splice(selection.start, selection.end - selection.start, val);
-    return newStr.join("");
+  useEffect(() => {
+    setInput({ id, value });
+  }, [value]);
+
+  const _getValue = specialChar => {
+    // TODO get input ref ? set cursor postion ?
+    const inputElement = item.multiple_line ? ref.current.textAreaRef : ref.current.input;
+    if (inputElement) {
+      const selection = getInputSelection(inputElement);
+      const newStr = value.split("");
+      newStr.splice(selection.start, selection.end - selection.start, specialChar);
+      return newStr.join("");
+    }
   };
 
   const _makeCharactersMap = () => {
@@ -128,7 +137,7 @@ const ClozeTextInput = ({ resprops, id }) => {
   let height = style.height || "auto";
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
   if (view === "edit") {
-    if (uiStyle.globalSettings) {
+    if (view === "edit" && uiStyle.globalSettings) {
       width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
       height = style.height || "auto";
     } else {
@@ -136,6 +145,7 @@ const ClozeTextInput = ({ resprops, id }) => {
       height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
     }
   } else {
+    // eslint-disable-next-line no-lonely-if
     if (uiStyle.globalSettings) {
       width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
       height = style.height || "auto";
@@ -144,6 +154,7 @@ const ClozeTextInput = ({ resprops, id }) => {
       height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
     }
   }
+
   return (
     <CustomInput
       key={`input_${index}`}
@@ -155,7 +166,7 @@ const ClozeTextInput = ({ resprops, id }) => {
         ref={ref}
         type={type}
         onChange={e => handleInputChange({ value: e.target.value, id })}
-        onBlur={_ => onChange(input)}
+        onBlur={() => onChange(input)}
         disabled={disableResponse}
         wrap={item.multiple_line ? "" : "off"}
         value={input.value || ""}
@@ -176,11 +187,11 @@ const ClozeTextInput = ({ resprops, id }) => {
       />
       {item.character_map && (
         <NumberPad
-          buttonStyle={{ height: "100%", width: 30, position: "absolute", right: 0, top: 0 }}
+          buttonStyle={{ height: "100%", width: 30 }}
           onChange={(_, val) => {
-            _change({
+            handleInputChange({
               value: _getValue(val),
-              index
+              id
             });
             ref.current.focus();
           }}

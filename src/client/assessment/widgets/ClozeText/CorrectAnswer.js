@@ -21,12 +21,7 @@ class CorrectAnswer extends Component {
     previewTab: PropTypes.bool.isRequired,
     configureOptions: PropTypes.object.isRequired,
     responseIds: PropTypes.object.isRequired,
-    uiStyle: PropTypes.object.isRequired,
-    mixAndMatch: PropTypes.bool
-  };
-
-  static defaultProps = {
-    mixAndMatch: false
+    uiStyle: PropTypes.object.isRequired
   };
 
   static contextType = ItemLevelContext;
@@ -67,27 +62,25 @@ class CorrectAnswer extends Component {
       uiStyle,
       responseIds,
       view,
-      previewTab,
-      mixAndMatch
+      previewTab
     } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
-        {!mixAndMatch &&
-          (this.context || (
-            <CorrectAnswerHeader>
-              <CorrectAnswerPointField
-                type="number"
-                value={responseScore}
-                onChange={this.updateScore}
-                onBlur={this.updateScore}
-                disabled={false}
-                min={0}
-                step={0.5}
-              />
-              <span>{t("component.correctanswers.points")}</span>
-            </CorrectAnswerHeader>
-          ))}
+        {this.context || (
+          <CorrectAnswerHeader>
+            <CorrectAnswerPointField
+              type="number"
+              value={responseScore}
+              onChange={this.updateScore}
+              onBlur={this.updateScore}
+              disabled={false}
+              min={0}
+              step={0.5}
+            />
+            <span>{t("component.correctanswers.points")}</span>
+          </CorrectAnswerHeader>
+        )}
         <Display
           preview={false}
           setAnswers

@@ -1,7 +1,10 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
+import { get } from "lodash";
 import { userApi } from "@edulastic/api";
+import { roleuser } from "@edulastic/constants";
 import {
   StyledTextArea,
   PlaceHolderText,
@@ -201,7 +204,8 @@ class InviteMultipleStudentModal extends Component {
       studentsList,
       selectedClass,
       loadStudents,
-      features
+      features,
+      role
     } = this.props;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll } = this.state;
     const { classList = [], searchAndAddStudents = false } = orgData || {};
@@ -313,17 +317,27 @@ class InviteMultipleStudentModal extends Component {
                       rules: [
                         {
                           required: true,
-                          message: "Please input Students Username"
+                          message: "No user Informtaion added."
                         },
                         {
-                          validator: this.validateStudentsList
+                          validator: !placeHolderVisible && this.validateStudentsList
                         }
                       ]
                     })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
                   </FormItem>
                 </Col>
               </Row>
-
+              {curSel === "fl" || curSel === "lf" ? (
+                <p>
+                  {role === roleuser.TEACHER
+                    ? `Class code (${
+                        selectedClass.code
+                      }) will be used as default password for these students, please ask the students to change their password once they login to their account.
+                  `
+                    : `'edulastic' will be used as default password for these students, please ask the students to change
+                  their password once they login to their account.`}
+                </p>
+              ) : null}
               <Row type="flex" justify="end">
                 <Col>
                   <ActionButton type="primary" shape="round" key="submit" onClick={this.onInviteStudents}>
@@ -396,5 +410,12 @@ class InviteMultipleStudentModal extends Component {
   }
 }
 
-const InviteMultipleStudentModalForm = Form.create()(InviteMultipleStudentModal);
+const ConnectedInviteMultipleStudentModal = connect(
+  state => ({
+    role: get(state, "user.user.role", null)
+  }),
+  {}
+)(InviteMultipleStudentModal);
+
+const InviteMultipleStudentModalForm = Form.create()(ConnectedInviteMultipleStudentModal);
 export default InviteMultipleStudentModalForm;

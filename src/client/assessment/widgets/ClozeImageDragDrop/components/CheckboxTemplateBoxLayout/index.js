@@ -58,16 +58,19 @@ const CheckboxTemplateBoxLayout = ({
         position: "absolute",
         borderRadius: 5
       };
+
+      if (responseBtnStyle && responseBtnStyle) {
+        btnStyle.width = responseBtnStyle.widthpx;
+      } else {
+        btnStyle.width = btnStyle.widthpx;
+      }
+
       if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
         const { widthpx } = responsecontainerindividuals[dropTargetIndex];
         btnStyle.width = widthpx;
         btnStyle.widthpx = widthpx;
       }
-      if (btnStyle && btnStyle.width === 0) {
-        btnStyle.width = responseBtnStyle.widthpx;
-      } else {
-        btnStyle.width = btnStyle.widthpx;
-      }
+
       let indexStr = "";
       switch (stemnumeration) {
         case "lowercase": {
@@ -141,10 +144,10 @@ const CheckboxTemplateBoxLayout = ({
             drop={drop}
             disableResponse={disableResponse}
           >
+            {!isSnapFitValues
+              ? ((isChecked && status === "right") || showAnswer) && responseBoxIndex
+              : responseBoxIndex}
             <div className="text container" style={showAnswer || checkAnswer ? { padding: "0px" } : {}}>
-              {!isSnapFitValues
-                ? ((isChecked && status === "right") || showAnswer) && responseBoxIndex
-                : responseBoxIndex}
               {userSelections[dropTargetIndex] &&
                 userSelections[dropTargetIndex].value.map((answer, user_select_index) => {
                   const title = striptags(answer) || null;

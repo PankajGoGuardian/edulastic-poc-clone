@@ -1,5 +1,5 @@
 import { FlexContainer, Paper } from "@edulastic/common";
-import { darkBlueSecondary, mobileWidth } from "@edulastic/colors";
+import { darkBlueSecondary, mobileWidth, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Content = styled(Paper)`
@@ -9,7 +9,7 @@ export const Content = styled(Paper)`
   right: 0;
   padding: ${props => (props.padding ? props.padding : "0px")};
   overflow: hidden;
-
+  position: relative;
   @media (max-width: ${mobileWidth}) {
     padding: 33px 30px;
   }
@@ -51,4 +51,24 @@ export const WidgetContainer = styled.div`
   display: ${({ flowLayout }) => (flowLayout ? "flex" : "block")};
   flex-wrap: wrap;
   align-items: center;
+`;
+
+export const CollapseBtn = styled.i`
+  position: absolute;
+  top: 0;
+  cursor: pointer;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 5px 15px;
+  border-radius: 5px;
+  border: 1px solid ${themeColor};
+  color: ${themeColor};
+  margin: 10px;
+  z-index: 1;
+  &.fa-arrow-left {
+    right: 1px;
+  }
+  &.fa-arrow-right {
+    left: 1px;
+  }
 `;

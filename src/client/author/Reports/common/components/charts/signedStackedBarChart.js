@@ -59,6 +59,7 @@ export const SignedStackedBarChart = ({
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
   const [copyData, setCopyData] = useState(null);
   const [barIndex, setBarIndex] = useState(null);
+  const [activeLegend, setActiveLegend] = useState(null);
 
   const constants = {
     COLOR_BLACK: "#010101",
@@ -128,6 +129,9 @@ export const SignedStackedBarChart = ({
     setBarIndex(null);
   };
 
+  const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey);
+  const onLegendMouseLeave = () => setActiveLegend(null);
+
   return (
     <StyledSignedStackedBarChartContainer>
       <a
@@ -175,9 +179,20 @@ export const SignedStackedBarChart = ({
             label={<YAxisLabel data={constants.Y_AXIS_LABEL} />}
           />
           <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} barIndex={barIndex} />} />
-          <Legend align="left" verticalAlign="top" />
+          <Legend
+            align="left"
+            verticalAlign="top"
+            onMouseEnter={onLegendMouseEnter}
+            onMouseLeave={onLegendMouseLeave}
+          />
           <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
           {barsData.map((bdItem, bdIndex) => {
+            let fillOpacity = 1;
+
+            if (activeLegend && activeLegend !== bdItem.key) {
+              fillOpacity = 0.2;
+            }
+
             return (
               <Bar
                 key={bdItem.key}
@@ -208,13 +223,11 @@ export const SignedStackedBarChart = ({
                   }
                 />
                 {renderData.map((cdItem, cdIndex) => {
-                  {
-                    return filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
-                      <Cell key={cdItem[xAxisDataKey]} fill={cdItem["fill_" + bdIndex]} />
-                    ) : (
-                      <Cell key={cdItem[xAxisDataKey]} fill={"#c0c0c0"} />
-                    );
-                  }
+                  return filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
+                    <Cell key={cdItem[xAxisDataKey]} fill={cdItem["fill_" + bdIndex]} fillOpacity={fillOpacity} />
+                  ) : (
+                    <Cell key={cdItem[xAxisDataKey]} fill={"#c0c0c0"} />
+                  );
                 })}
               </Bar>
             );

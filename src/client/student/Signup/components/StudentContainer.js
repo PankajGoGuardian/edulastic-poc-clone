@@ -89,7 +89,7 @@ class StudentSignup extends React.Component {
             name,
             role: "student",
             classCode,
-            policyvoilation: t("common.policyvoilation")
+            policyviolation: t("common.policyviolation")
           });
         }
       }

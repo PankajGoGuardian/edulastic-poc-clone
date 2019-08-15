@@ -2,14 +2,15 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { sumBy, round } from "lodash";
 import BarGraph from "../BarGraph/BarGraph";
-import { Tag } from "antd";
+import { Tooltip } from "antd";
 import {
   StyledProgress,
   StyledDiv,
   StyledProgressDiv,
   GraphInfo,
   GraphDescription,
-  ProgressBarContainer
+  ProgressBarContainer,
+  AssignmentTitle
 } from "./styled";
 import { lightGreen4, themeColor } from "@edulastic/colors";
 
@@ -44,20 +45,12 @@ export default class Graph extends Component {
             {
               // TODO: need to implement gradient stoke color
             }
-            <Tag
-              color={lightGreen4}
-              style={{
-                color: themeColor,
-                textAlign: "center",
-                width: "100%",
-                overflow: "hidden",
-                marginBottom: "5px",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap"
-              }}
-            >
-              {title}
-            </Tag>
+            {!!title && (
+              <Tooltip title={title}>
+                <AssignmentTitle color={lightGreen4}>{title}</AssignmentTitle>
+              </Tooltip>
+            )}
+
             <StyledProgress
               className="getProgress"
               strokeLinecap="square"
@@ -73,7 +66,6 @@ export default class Graph extends Component {
           <GraphInfo data-cy="submittedSummary">
             {gradebook.submittedNumber} out of {gradebook.total} Submitted
             {absentNumber > 0 && <p>({absentNumber} absent)</p>}
-            {/* <p>({gradebook.total - gradebook.submittedNumber} Absent)</p> */}
           </GraphInfo>
         </ProgressBarContainer>
         <BarGraph

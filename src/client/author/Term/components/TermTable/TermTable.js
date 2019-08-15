@@ -10,7 +10,8 @@ import {
   StyledButton,
   StyledDeleteButton,
   StyledAddButton,
-  DeleteTermModalFooterDiv
+  DeleteTermModalFooterDiv,
+  StyledPagination
 } from "./styled";
 import CreateTermModal from "./CreateTermModal/CreateTermModal";
 import EditTermModal from "./EditTermModal/EditTermModal";
@@ -66,7 +67,8 @@ class TermTable extends React.Component {
       selectedKey: -1,
       createTermModalVisible: false,
       editTermModalVisible: false,
-      deleteTermModalVisible: false
+      deleteTermModalVisible: false,
+      currentPage: 1
     };
 
     this.columns = [
@@ -196,6 +198,9 @@ class TermTable extends React.Component {
       selectedKey: -1
     });
   };
+  changePagination = pageNumber => {
+    this.setState({ currentPage: pageNumber });
+  };
 
   render() {
     const components = {
@@ -219,8 +224,16 @@ class TermTable extends React.Component {
         })
       };
     });
-    const { data, createTermModalVisible, editTermModalVisible, selectedKey, deleteTermModalVisible } = this.state;
+    const {
+      data,
+      createTermModalVisible,
+      editTermModalVisible,
+      selectedKey,
+      deleteTermModalVisible,
+      currentPage
+    } = this.state;
     const selectedTerm = data.find(item => item.key === selectedKey);
+    const { termSetting: termsData } = this.props;
     return (
       <StyledTableContainer>
         <EditableContext.Provider value={this.props.form}>
@@ -229,9 +242,15 @@ class TermTable extends React.Component {
             dataSource={data}
             columns={columns}
             rowClassName="editable-row"
-            pagination={{
-              onChange: this.cancel
-            }}
+            pagination={false}
+          />
+          <StyledPagination
+            defaultCurrent={1}
+            current={currentPage}
+            pageSize={25}
+            total={termsData ? termsData.length : 0}
+            onChange={this.changePagination}
+            hideOnSinglePage={true}
           />
         </EditableContext.Provider>
         {createTermModalVisible && (

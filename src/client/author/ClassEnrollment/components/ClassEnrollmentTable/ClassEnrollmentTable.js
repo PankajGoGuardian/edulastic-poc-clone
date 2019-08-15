@@ -21,7 +21,7 @@ import {
 } from "./styled";
 
 import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUser } from "../../../src/selectors/user";
 import { getFullNameFromString } from "../../../../common/utils/helpers";
 import { getClassEnrollmentUsersSelector } from "../../ducks";
 
@@ -280,7 +280,7 @@ class ClassEnrollmentTable extends React.Component {
   };
 
   getSearchQuery = () => {
-    const { userOrgId: districtId } = this.props;
+    const { userOrgId: districtId, userDetails } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
 
     let search = {};
@@ -288,17 +288,16 @@ class ClassEnrollmentTable extends React.Component {
       const { filtersColumn, filtersValue, filterStr } = item;
       if (filtersColumn !== "" && filtersValue !== "" && filterStr !== "") {
         if (!search[filtersColumn]) {
-          search[filtersColumn] = { type: filtersValue, value: [filterStr] };
+          search[filtersColumn] = [{ type: filtersValue, value: filterStr }];
         } else {
-          search[filtersColumn].value.push(filterStr);
+          search[filtersColumn].push({ type: filtersValue, value: filterStr });
         }
       }
     }
     if (searchByName) {
-      search["firstName"] = { type: "cont", value: [searchByName] };
+      search["name"] = [{ type: "cont", value: searchByName }];
     }
-
-    return {
+    const data = {
       search,
       districtId,
       limit: 25,
@@ -307,6 +306,10 @@ class ClassEnrollmentTable extends React.Component {
       // sortField,
       // order
     };
+    if (userDetails) {
+      Object.assign(data, { institutionIds: userDetails.institutionIds });
+    }
+    return data;
   };
   onBlurFilterText = (event, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
@@ -355,13 +358,14 @@ class ClassEnrollmentTable extends React.Component {
       const code = get(item, "group.code", "");
       const name = get(item, "group.name", "");
       const firstName = get(item, "user.firstName", "");
+      const middleName = get(item, "user.middleName", "");
       const lastName = get(item, "user.lastName", "");
       const username = get(item, "user.username", "");
       const obj = {
         role,
         code,
         name,
-        fullName: `${firstName} ${lastName}`,
+        fullName: [firstName, middleName, lastName].join(" "),
         username
       };
       return obj;
@@ -444,7 +448,7 @@ class ClassEnrollmentTable extends React.Component {
               Select a column
             </Option>
             <Option value="code">Class Code</Option>
-            <Option value="fullname">Full Name</Option>
+            <Option value="fullName">Full Name</Option>
             <Option value="username">Username</Option>
             <Option value="role">Role</Option>
           </StyledFilterSelect>
@@ -516,10 +520,10 @@ class ClassEnrollmentTable extends React.Component {
           bodyText={
             <>
               {this.renderUserNames()}
-              <div> Are you sure you want to remove the selected students from the class? </div>
+              <div> Are you sure you want to remove the selected student(s) from the class? </div>
             </>
           }
-          okText="Yes,Remove"
+          okText="Yes, Remove"
         />
         {addUserFormModalVisible && (
           <AddNewUserModal
@@ -550,6 +554,7 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
+      userDetails: getUser(state),
       classEnrollmentData: getClassEnrollmentUsersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state)
     }),

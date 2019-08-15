@@ -217,7 +217,8 @@ const TokenHighlightPreview = ({
   return (
     <Paper
       data-cy="previewWrapper"
-      style={{ fontSize, wordBreak: "break-word" }}
+      style={{ wordBreak: "break-word" }}
+      fontSize={fontSize}
       padding={smallSize}
       boxShadow={smallSize ? "none" : ""}
     >

@@ -2,6 +2,8 @@ import { partialRight, ceil, groupBy, sumBy, includes, filter, map, orderBy, rou
 import next from "immer";
 
 export const testTypeHashMap = {
+  common: "common",
+  class: "class",
   "common assessment": "common",
   assessment: "class"
 };

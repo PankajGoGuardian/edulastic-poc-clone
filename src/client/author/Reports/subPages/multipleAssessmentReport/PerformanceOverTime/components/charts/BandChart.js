@@ -137,6 +137,7 @@ const BandChart = ({ data, bandInfo, selectedTests, analyseBy, onBarClickCB, onR
         filter={getSelectedItems(selectedTests)}
         onBarClickCB={_onBarClickCB}
         onResetClickCB={onResetClickCB}
+        margin={{ top: 0, right: 20, left: 20, bottom: 40 }}
       />
     </StyledSignedBarContainer>
   );

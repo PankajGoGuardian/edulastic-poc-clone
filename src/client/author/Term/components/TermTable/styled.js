@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { Pagination } from "antd";
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -43,4 +43,9 @@ export const StyledAddButton = styled.a`
     border: 2px solid #00b0ff;
     color: white;
   }
+`;
+
+export const StyledPagination = styled(Pagination)`
+  margin-top: 15px;
+  align-self: flex-end;
 `;

@@ -20,6 +20,7 @@ import AssessmentChart from "../common/components/charts/AssessmentChart";
 import StudentPerformancePie from "../common/components/charts/StudentPerformancePie";
 import StandardMasteryDetailsTable from "./common/components/table/StandardMasteryDetailsTable";
 import BarTooltipRow from "../../../common/components/tooltip/BarTooltipRow";
+import { getGrades } from "../common/utils/transformers";
 
 const getTooltip = payload => {
   if (payload && payload.length) {
@@ -95,7 +96,7 @@ const StudentProfileSummary = ({
               <b>Name</b>: {selectedStudent.title}
             </p>
             <p>
-              <b>Grade</b>: {studentInformation.grades}
+              <b>Grade</b>: {getGrades(studentInformation.grades)}
             </p>
             <p>
               <b>School</b>: {studentInformation.school || "N/A"}

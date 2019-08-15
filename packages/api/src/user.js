@@ -160,7 +160,7 @@ const requestNewPassword = params =>
       params,
       method: "POST"
     })
-    .then(result => result.data.data);
+    .then(result => result.data.result);
 
 const fetchResetPasswordUser = params =>
   api
@@ -190,6 +190,13 @@ const adddBulkTeacher = ({ districtId, userDetails }) =>
     })
     .then(result => result.data.result);
 
+const resetMyPassword = data =>
+  api.callApi({
+    url: `${prefix}/reset-password`,
+    method: "put",
+    data
+  });
+
 export default {
   getUser,
   fetchUsers,
@@ -212,5 +219,6 @@ export default {
   requestNewPassword,
   fetchResetPasswordUser,
   resetUserPassword,
-  adddBulkTeacher
+  adddBulkTeacher,
+  resetMyPassword
 };

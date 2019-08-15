@@ -36,6 +36,7 @@ export const UPDATE_USER_ROLE_REQUEST = "[auth] update user role request";
 export const SET_USER_GOOGLE_LOGGED_IN = "[auth] set user google logged in";
 
 export const REQUEST_NEW_PASSWORD_REQUEST = "[auth] request new password request";
+export const REQUEST_NEW_PASSWORD_RESET_CONTROL = "[auth] request new password reset control";
 export const REQUEST_NEW_PASSWORD_FAILED = "[auth] request new password failed";
 export const REQUEST_NEW_PASSWORD_SUCCESS = "[auth] request new password success";
 export const RESET_PASSWORD_USER_REQUEST = "[auth] reset password user request";
@@ -49,6 +50,13 @@ export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup che
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
 export const UPDATE_DEFAULT_GRADES = "[user] update default grades";
 export const UPDATE_DEFAULT_SUBJECT = "[user] update default subject";
+export const GET_INVITE_DETAILS_REQUEST = "[auth] get invite details request";
+export const GET_INVITE_DETAILS_SUCCESS = "[auth] get invite details success";
+export const SET_INVITE_DETAILS_REQUEST = "[auth] set invite details request";
+export const SET_INVITE_DETAILS_SUCCESS = "[auth] set invite details success";
+export const RESET_MY_PASSWORD_REQUEST = "[auth] reset my password request";
+export const RESET_MY_PASSWORD_FAILED = "[auth] reset my password failed";
+export const RESET_MY_PASSWORD_SUCCESS = "[auth] reset my password success";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -70,12 +78,16 @@ export const changeClassAction = createAction(CHANGE_CLASS);
 export const setUserGoogleLoggedInAction = createAction(SET_USER_GOOGLE_LOGGED_IN);
 export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
 export const requestNewPasswordAction = createAction(REQUEST_NEW_PASSWORD_REQUEST);
+export const requestNewPasswordResetControlAction = createAction(REQUEST_NEW_PASSWORD_RESET_CONTROL);
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
 export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
 export const resetPasswordRequestStateAction = createAction(RESET_PASSWORD_REQUEST_STATE);
 export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
 export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
+export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
+export const setInviteDetailsAction = createAction(SET_INVITE_DETAILS_REQUEST);
+export const resetMyPasswordAction = createAction(RESET_MY_PASSWORD_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -94,6 +106,8 @@ const setUser = (state, { payload }) => {
   const defaultSubject = getFromLocalStorage("defaultSubject");
   const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
+  state.user.middleName = payload.middleName || undefined;
+  state.user.lastName = payload.lastName || undefined;
   set(state.user, "orgData.defaultClass", defaultClass);
   set(state.user, "orgData.selectedGrades", defaultGrades);
   set(state.user, "orgData.selectedSubject", defaultSubject);
@@ -110,6 +124,7 @@ const getCurrentPath = () => {
     location.pathname.toLowerCase() === "/signup" ||
     location.pathname.toLowerCase() === "/studentsignup" ||
     location.pathname.toLowerCase() === "/adminsignup" ||
+    location.pathname.toLowerCase() === "/inviteteacher" ||
     (path[0] && path[0] === "district")
   ) {
     return "";
@@ -166,9 +181,13 @@ export default createReducer(initialState, {
   [REQUEST_NEW_PASSWORD_FAILED]: state => {
     state.requestingNewPassword = false;
   },
-  [REQUEST_NEW_PASSWORD_SUCCESS]: state => {
+  [REQUEST_NEW_PASSWORD_SUCCESS]: (state, { payload }) => {
     state.requestingNewPassword = false;
-    state.requestNewPasswordSuccess = true;
+    state.requestNewPasswordSuccess = payload;
+  },
+  [REQUEST_NEW_PASSWORD_RESET_CONTROL]: state => {
+    state.requestingNewPassword = false;
+    state.requestNewPasswordSuccess = false;
   },
   [RESET_PASSWORD_REQUEST_STATE]: state => {
     state.requestNewPasswordSuccess = false;
@@ -185,6 +204,19 @@ export default createReducer(initialState, {
   },
   [RESET_PASSWORD_FAILED]: state => {
     state.requestingNewPassword = false;
+  },
+  [GET_INVITE_DETAILS_SUCCESS]: (state, { payload }) => {
+    state.invitedUserDetails = payload;
+  },
+  [SET_INVITE_DETAILS_SUCCESS]: setUser,
+  [RESET_MY_PASSWORD_REQUEST]: state => {
+    state.requestingChangePassword = true;
+  },
+  [RESET_MY_PASSWORD_SUCCESS]: (state, { payload }) => {
+    state.requestingChangePassword = false;
+  },
+  [RESET_MY_PASSWORD_FAILED]: state => {
+    state.requestingChangePassword = false;
   }
 });
 
@@ -304,7 +336,7 @@ function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
 
   try {
-    const { name, email, password, role, classCode, policyvoilation } = payload;
+    const { name, email, password, role, classCode, policyViolation } = payload;
     let nameList = name.split(" ");
     nameList = nameList.filter(item => (item && item.trim() ? true : false));
     if (!nameList.length) {
@@ -312,7 +344,7 @@ function* signup({ payload }) {
     }
     if (!checkEmailPolicy(districtPolicy, role, email)) {
       throw {
-        message: policyvoilation
+        message: policyViolation
       };
     }
 
@@ -391,6 +423,8 @@ const getLoggedOutUrl = () => {
     return "/district/" + restOfPath;
   } else if (pathname === "/resetpassword") {
     return window.location.href.split(window.location.origin)[1];
+  } else if (pathname === "/inviteteacher") {
+    return `${location.pathname}${location.search}${location.hash}`;
   } else {
     return "/login";
   }
@@ -644,7 +678,8 @@ function* requestNewPasswordSaga({ payload }) {
   try {
     const res = yield call(userApi.requestNewPassword, payload);
     yield put({
-      type: REQUEST_NEW_PASSWORD_SUCCESS
+      type: REQUEST_NEW_PASSWORD_SUCCESS,
+      payload: res
     });
   } catch (e) {
     console.error(e);
@@ -681,6 +716,19 @@ function* resetPasswordRequestSaga({ payload }) {
   }
 }
 
+function* resetMyPasswordRequestSaga({ payload }) {
+  try {
+    const result = yield call(userApi.resetMyPassword, payload);
+    yield call(message.success, "Password changed successfully");
+    yield put({ type: RESET_MY_PASSWORD_SUCCESS });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Failed to reset password.");
+    yield put({
+      type: RESET_MY_PASSWORD_FAILED
+    });
+  }
+}
+
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
     const result = yield call(authApi.validateClassCode, payload);
@@ -693,6 +741,29 @@ function* studentSignupCheckClasscodeSaga({ payload }) {
       type: STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED,
       payload: e.data.message
     });
+  }
+}
+
+function* getInviteDetailsSaga({ payload }) {
+  try {
+    const result = yield call(authApi.getInvitedUserDetails, payload);
+    yield put({ type: GET_INVITE_DETAILS_SUCCESS, payload: result });
+  } catch (e) {
+    yield put(push("/login"));
+  }
+}
+
+function* setInviteDetailsSaga({ payload }) {
+  try {
+    const result = yield call(authApi.updateInvitedUserDetails, payload);
+
+    const user = pick(result, userPickFields);
+    TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
+    TokenStorage.selectAccessToken(user._id, user.role);
+
+    yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result });
+  } catch (e) {
+    yield call(message.err, "Failed to update user details.");
   }
 }
 
@@ -715,4 +786,7 @@ export function* watcherSaga() {
   yield takeLatest(RESET_PASSWORD_USER_REQUEST, resetPasswordUserSaga);
   yield takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga);
   yield takeLatest(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST, studentSignupCheckClasscodeSaga);
+  yield takeLatest(GET_INVITE_DETAILS_REQUEST, getInviteDetailsSaga);
+  yield takeLatest(SET_INVITE_DETAILS_REQUEST, setInviteDetailsSaga);
+  yield takeLatest(RESET_MY_PASSWORD_REQUEST, resetMyPasswordRequestSaga);
 }

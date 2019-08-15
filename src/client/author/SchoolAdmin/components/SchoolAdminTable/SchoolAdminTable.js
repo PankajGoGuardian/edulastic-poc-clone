@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { StyledComponents, TypeToConfirmModal } from "@edulastic/common";
 
@@ -54,16 +55,6 @@ import { getFullNameFromAsString } from "../../../../common/utils/helpers";
 const { Option } = Select;
 const { OnHoverTable, OnHoverButton } = StyledComponents;
 
-function compareByAlph(a, b) {
-  if (a > b) {
-    return -1;
-  }
-  if (a < b) {
-    return 1;
-  }
-  return 0;
-}
-
 const filterStrDD = {
   status: {
     list: [
@@ -102,7 +93,12 @@ class SchoolAdminTable extends Component {
       {
         title: "Name",
         dataIndex: "_source.firstName",
-        sorter: (a, b) => compareByAlph(a.firstName, b.secondName),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.firstName", "");
+          const next = get(b, "_source.firstName", "");
+          return next.localeCompare(prev);
+        },
         render: (text, record, index) => {
           let name = getFullNameFromAsString(record._source);
           return name ? name : "";
@@ -112,7 +108,12 @@ class SchoolAdminTable extends Component {
       {
         title: "Email",
         dataIndex: "_source.email",
-        sorter: (a, b) => compareByAlph(a.email, b.email),
+        sortDirections: ["descend", "ascend"],
+        sorter: (a, b) => {
+          const prev = get(a, "_source.email", "");
+          const next = get(b, "_source.email", "");
+          return next.localeCompare(prev);
+        },
         width: 200
       },
       {

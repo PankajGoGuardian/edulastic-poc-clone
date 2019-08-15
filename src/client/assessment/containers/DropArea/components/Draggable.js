@@ -62,8 +62,8 @@ Draggable.propTypes = {
   showDashedBorder: PropTypes.bool,
   showBorder: PropTypes.bool,
   showIndex: PropTypes.bool,
-  responseHeight: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired,
-  responseWidth: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired
+  responseHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  responseWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 Draggable.defaultProps = {

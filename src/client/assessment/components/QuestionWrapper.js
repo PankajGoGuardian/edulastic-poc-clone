@@ -262,6 +262,7 @@ class QuestionWrapper extends Component {
     if (props.view !== "edit") {
       return { main: [], advanced: [], activeTab: 0 };
     }
+    return null;
   }
 
   render() {
@@ -447,8 +448,8 @@ QuestionWrapper.propTypes = {
   handleAdvancedOpen: PropTypes.func,
   userRole: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool,
-  clearAnswers: PropTypes.func.isRequired,
-  LCBPreviewModal: PropTypes.any.isRequired
+  clearAnswers: PropTypes.func,
+  LCBPreviewModal: PropTypes.any
 };
 
 QuestionWrapper.defaultProps = {
@@ -461,8 +462,10 @@ QuestionWrapper.defaultProps = {
   isFlex: false,
   timespent: "",
   multiple: false,
+  LCBPreviewModal: false,
   showFeedback: false,
   qIndex: 0,
+  clearAnswers: () => {},
   changePreviewTab: () => {},
   flowLayout: false,
   advancedAreOpen: false,

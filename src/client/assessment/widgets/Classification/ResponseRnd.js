@@ -106,6 +106,7 @@ const ResponseRnd = props => {
       onResizeStop={handleResponseResizeStop}
       cancel=".drag-item"
       {...{ ...props, height: "auto" }}
+      className="answer-draggable-wrapper"
     >
       {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
     </Rnd>

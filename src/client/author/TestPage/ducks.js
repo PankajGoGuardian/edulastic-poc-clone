@@ -414,7 +414,6 @@ function* receiveTestByIdSaga({ payload }) {
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
   } catch (err) {
-    console.log(err);
     const errorMessage = "Receive test by id is failing";
     if (err.status === 403) {
       yield put(push("/author/tests"));

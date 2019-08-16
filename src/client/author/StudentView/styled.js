@@ -80,7 +80,6 @@ export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   min-width: 300px;
   justify-content: center;
   font-size: 11px;
-  text-transform: uppercase;
   position: relative;
   svg {
     position: absolute;

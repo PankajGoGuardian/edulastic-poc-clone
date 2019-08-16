@@ -8,7 +8,7 @@ import { withNamespaces } from "react-i18next";
 import { questionType } from "@edulastic/constants";
 import { Input } from "antd";
 
-import { Layout, FontSizeOption, StemNumerationOption } from "../../../containers/WidgetOptions/components";
+import { Layout, FontSizeOption } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
@@ -82,10 +82,6 @@ class LayoutsComponent extends Component {
           onChange={changeUIStyle}
           type="number"
           t={t}
-        />,
-        <StemNumerationOption
-          onChange={val => changeUIStyle("validation_stem_numeration", val)}
-          value={get(item, "uiStyle.validation_stem_numeration", "numerical")}
         />,
         <FontSizeOption
           onChange={val => changeUIStyle("fontsize", val)}

@@ -4,7 +4,7 @@ import { compose } from "redux";
 import ReactOutsideEvent from "react-outside-event";
 import { white, tabletWidth, mediumDesktopWidth, dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
 import { get, remove } from "lodash";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
 import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Tooltip } from "antd";
@@ -152,6 +152,14 @@ class SideMenu extends Component {
     }
   };
 
+  handleProfileClick = () => {
+    const { windowWidth } = this.props;
+    this.toggleDropdown();
+    if (windowWidth <= parseFloat(tabletWidth)) {
+      this.toggleMenu();
+    }
+  };
+
   toggleMenu = () => {
     const { toggleSideBar } = this.props;
     toggleSideBar();
@@ -204,9 +212,9 @@ class SideMenu extends Component {
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
-            <a onClick={event => event.preventDefault()}>
+            <Link to="/author/profile" onClick={this.handleProfileClick}>
               <IconDropdown type="user" /> {isCollapsed ? "" : "MY PROFILE"}
-            </a>
+            </Link>
           </Menu.Item>
         </Menu>
       </FooterDropDown>

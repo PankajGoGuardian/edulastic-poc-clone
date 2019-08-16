@@ -60,6 +60,10 @@ export const SET_INVITE_DETAILS_SUCCESS = "[auth] set invite details success";
 export const RESET_MY_PASSWORD_REQUEST = "[auth] reset my password request";
 export const RESET_MY_PASSWORD_FAILED = "[auth] reset my password failed";
 export const RESET_MY_PASSWORD_SUCCESS = "[auth] reset my password success";
+export const UPDATE_USER_DETAILS_REQUEST = "[user] update user details";
+export const UPDATE_USER_DETAILS_SUCCESS = "[user] update user details success";
+export const UPDATE_USER_DETAILS_FAILED = "[user] update user details failed";
+export const DELETE_ACCOUNT_REQUEST = "[auth] delete account";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -92,6 +96,8 @@ export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
 export const setInviteDetailsAction = createAction(SET_INVITE_DETAILS_REQUEST);
 export const resetMyPasswordAction = createAction(RESET_MY_PASSWORD_REQUEST);
 export const updateProfileImageAction = createAction(UPDATE_PROFILE_IMAGE_PATH_REQUEST);
+export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST);
+export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -231,6 +237,19 @@ export default createReducer(initialState, {
   },
   [UPDATE_PROFILE_IMAGE_PATH_FAILED]: state => {
     state.user.updatingImagePath = false;
+  },
+  [UPDATE_USER_DETAILS_REQUEST]: state => {
+    state.updatingUserDetails = true;
+  },
+  [UPDATE_USER_DETAILS_SUCCESS]: (state, { payload }) => {
+    delete state.updatingUserDetails,
+      (state.user = {
+        ...state.user,
+        ...payload
+      });
+  },
+  [UPDATE_USER_DETAILS_FAILED]: state => {
+    delete state.updatingUserDetails;
   }
 });
 
@@ -756,6 +775,28 @@ function* updateProfileImageSaga({ payload }) {
     });
   }
 }
+function* updateUserDetailsSaga({ payload }) {
+  try {
+    const result = yield call(userApi.updateUser, payload);
+    yield call(message.success, "User details updated successfully.");
+    yield put({ type: UPDATE_USER_DETAILS_SUCCESS, payload: result });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Update user details failed.");
+    yield put({
+      type: UPDATE_USER_DETAILS_FAILED
+    });
+  }
+}
+
+function* deleteAccountSaga({ payload }) {
+  try {
+    yield call(userApi.deleteAccount, payload);
+    yield call(message.success, "Account deleted successfully.");
+    yield put({ type: LOGOUT });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Unable to delete Account");
+  }
+}
 
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
@@ -818,4 +859,6 @@ export function* watcherSaga() {
   yield takeLatest(SET_INVITE_DETAILS_REQUEST, setInviteDetailsSaga);
   yield takeLatest(RESET_MY_PASSWORD_REQUEST, resetMyPasswordRequestSaga);
   yield takeLatest(UPDATE_PROFILE_IMAGE_PATH_REQUEST, updateProfileImageSaga);
+  yield takeLatest(UPDATE_USER_DETAILS_REQUEST, updateUserDetailsSaga);
+  yield takeLatest(DELETE_ACCOUNT_REQUEST, deleteAccountSaga);
 }

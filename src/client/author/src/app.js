@@ -46,7 +46,7 @@ const ClassEdit = lazy(() => import("../ManageClass/components/ClassEdit"));
 const ClassCreate = lazy(() => import("../ManageClass/components/ClassCreate"));
 const PrintPreviewClass = lazy(() => import("../ManageClass/components/PrintPreview"));
 
-const DistrictProfile = lazy(() => import("../DistrictProfile"));
+const Profile = lazy(() => import("../DistrictProfile"));
 const TestSetting = lazy(() => import("../TestSetting"));
 const Term = lazy(() => import("../Term"));
 const DistrictPolicy = lazy(() => import("../DistrictPolicy"));
@@ -367,7 +367,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   <Route exact path="/author/questions/create" component={QuestionEditor} />
                   <Route exact path="/author/questions/edit" component={QuestionEditor} />
                   <Route path="/author/reports/:reportType?" component={Reports} />
-                  <Route exact path="/author/districtprofile" component={DistrictProfile} />
+                  <Route exact path="/author/profile" component={Profile} />
                   <Route exact path="/author/settings/testsettings" component={TestSetting} />
                   <Route exact path="/author/settings/term" component={Term} />
                   <Route exact path="/author/settings/districtpolicies" component={DistrictPolicy} />

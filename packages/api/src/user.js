@@ -85,6 +85,14 @@ const deleteUser = data =>
     })
     .then(({ data: response }) => response);
 
+const deleteAccount = userId =>
+  api
+    .callApi({
+      url: `${prefix}/${userId}`,
+      method: "delete"
+    })
+    .then(({ data: response }) => response);
+
 const changeUserTTS = data =>
   api.callApi({
     url: `${prefix}/tts`,
@@ -220,5 +228,6 @@ export default {
   fetchResetPasswordUser,
   resetUserPassword,
   adddBulkTeacher,
-  resetMyPassword
+  resetMyPassword,
+  deleteAccount
 };

@@ -179,7 +179,7 @@ export const themes = {
       skillReportTitleColor: title,
       skillReportTitleFontSize: "22px",
       RelationTitleColor: "#434b5d",
-      RelationTitleFontSize: "14px",
+      RelationTitleFontSize: "16px",
       greenColor: "#1fe3a1",
       yellowColor: "#fdcc3b",
       redColor: "#ee1658",
@@ -193,9 +193,9 @@ export const themes = {
       tableHeaderHoverBgColor: "transparent",
       tableHeaderHoverTextColor: "#434b5d",
       tableHeaderTextSize: "12px",
-      tableDataBgColor: "white",
+      tableDataBgColor: "#F8F8F8",
       tableDataBgBorderColor: "#f8f8f8",
-      tableDataTextColor: "rgba(0, 0, 0, 0.65)",
+      tableDataTextColor: title,
       tableDataFontSize: "13px"
     },
     manageClass: {

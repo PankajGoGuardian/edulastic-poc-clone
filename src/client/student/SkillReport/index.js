@@ -13,12 +13,10 @@ const SkillReportContainer = ({ flag, skillReport, fetchSkillReport, classId }) 
     if (classId) fetchSkillReport(classId);
   }, []);
   return (
-    <React.Fragment>
-      <MainContainer flag={flag}>
-        <Header flag={flag} titleText="common.skillReportTitle" />
-        <SkillReportMainContent skillReport={skillReport} />
-      </MainContainer>
-    </React.Fragment>
+    <MainContainer flag={flag}>
+      <Header flag={flag} titleText="common.skillReportTitle" />
+      <SkillReportMainContent skillReport={skillReport} />
+    </MainContainer>
   );
 };
 

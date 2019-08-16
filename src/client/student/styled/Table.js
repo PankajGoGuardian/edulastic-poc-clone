@@ -1,10 +1,17 @@
 import { Table } from "antd";
 import styled from "styled-components";
 
+import { extraDesktopWidth, largeDesktopWidth } from "@edulastic/colors";
+
 const StyledTable = styled(Table)`
   .ant-table table {
     border-collapse: separate;
-    border-spacing: 0px 10px;
+    border-spacing: 0px 20px;
+
+    @media (max-width: ${largeDesktopWidth}) {
+      border-spacing: 0px 10px;
+    }
+
     @media screen and (max-width: 767px) {
       display: block;
       overflow-x: auto;
@@ -12,25 +19,62 @@ const StyledTable = styled(Table)`
     }
   }
 
-  .ant-table-thead > tr {
-    background: transparent;
+  .ant-table-thead {
+    border-spacing: 0;
+
+    > tr {
+      background: transparent;
+
+      > th {
+        background: ${props => props.theme.skillReport.tableHeaderBgColor};
+        font-size: ${props => props.theme.skillReport.tableHeaderTextSize};
+        font-weight: 700;
+        color: ${props => props.theme.skillReport.tableHeaderTextColor};
+        text-transform: uppercase;
+        padding: 0 26px 15px;
+        border: 0;
+
+        &:not(:first-child) {
+          text-align: center;
+        }
+
+        &.ant-table-column-has-actions.ant-table-column-has-sorters:hover {
+          background: transparent;
+        }
+
+        .ant-table-header-column .ant-table-column-sorters::before {
+          display: none;
+        }
+
+        .ant-table-column-sorter .ant-table-column-sorter-inner-full {
+          margin-top: -1px;
+          margin-left: 5px;
+        }
+
+        .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up,
+        .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down {
+          font-size: 8px;
+        }
+
+        @media (max-width: ${extraDesktopWidth}) {
+          font-size: 11px;
+        }
+
+        @media (max-width: ${largeDesktopWidth}) {
+          font-size: 10px;
+          padding: 0 16px;
+        }
+
+        @media screen and (max-width: 767px) {
+          word-break: unset;
+        }
+      }
+    }
   }
 
-  .ant-table-thead > tr > th {
-    background: ${props => props.theme.skillReport.tableHeaderBgColor};
-    font-size: ${props => props.theme.skillReport.tableHeaderTextSize};
-    font-weight: 700;
-    color: ${props => props.theme.skillReport.tableHeaderTextColor};
-    text-transform: uppercase;
-    padding: 16px 27px;
-    border: 0;
-
-    &:hover {
-      background: ${props => props.theme.skillReport.tableHeaderHoverBgColor} !important;
-      color: ${props => props.theme.skillReport.tableHeaderHoverTextColor} !important;
-    }
-    @media screen and (max-width: 767px) {
-      word-break: unset;
+  .ant-table-tbody > tr > td {
+    &:not(:first-child) {
+      text-align: center;
     }
   }
 
@@ -39,26 +83,22 @@ const StyledTable = styled(Table)`
 
     td {
       background: ${props => props.theme.skillReport.tableDataBgColor} !important;
-      border-top: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
-      border-bottom: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
       color: ${props => props.theme.skillReport.tableDataTextColor};
+      border: 0;
+      padding: 13px 26px;
+      font-size: 14px;
+
+      @media (max-width: ${extraDesktopWidth}) {
+        font-size: 12px;
+      }
+
+      @media (max-width: ${largeDesktopWidth}) {
+        font-size: 11px;
+      }
+
       @media screen and (max-width: 767px) {
         word-break: unset;
       }
-    }
-
-    td:first-child {
-      border-left: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
-      border-radius: 5px 0px 0px 5px;
-    }
-
-    td:last-child {
-      border-radius: 0px 5px 5px 0px;
-      border-right: 1px solid ${props => props.theme.skillReport.tableDataBgBorderColor};
-    }
-
-    &:hover {
-      box-shadow: 0 10px 10px 0 rgba(150, 180, 191, 0.1);
     }
   }
 `;

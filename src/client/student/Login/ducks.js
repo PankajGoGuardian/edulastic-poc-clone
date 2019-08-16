@@ -350,7 +350,7 @@ function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
 
   try {
-    const { name, email, password, role, classCode, policyViolation } = payload;
+    const { name, email, password, role, classCode, policyViolation, districtId } = payload;
     let nameList = name.split(" ");
     nameList = nameList.filter(item => (item && item.trim() ? true : false));
     if (!nameList.length) {
@@ -382,7 +382,8 @@ function* signup({ payload }) {
       firstName,
       middleName,
       lastName,
-      role
+      role,
+      districtId
     };
 
     if (classCode) {

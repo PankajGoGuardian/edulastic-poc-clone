@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect, useCallback } from "react";
+import React, { useState, Fragment, useEffect } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
@@ -60,7 +60,6 @@ const MatchListPreview = ({
   smallSize,
   theme,
   showQuestionNumber,
-  qIndex,
   showBorder,
   setQuestionData,
   disableResponse,
@@ -176,19 +175,19 @@ const MatchListPreview = ({
     );
   };
 
-  const getStyles = ({ flag, preview, correct, isDragging, width }) => ({
+  const getStyles = ({ flag, _preview, correct, isDragging, width }) => ({
     display: "flex",
-    width: width ? width : "auto",
+    width: width || "auto",
     alignItems: "center",
-    justifyContent: preview ? "space-between" : "center",
-    margin: flag === "dragItems" ? "10px 15px 10px 15px" : "10px 0px 10px 0",
-    background: preview
+    justifyContent: _preview ? "space-between" : "center",
+    padding: flag === "dragItems" ? "10px 15px 10px 15px" : "10px 0px 10px 0",
+    background: _preview
       ? correct
         ? theme.widgets.matchList.dragItemCorrectBgColor
         : theme.widgets.matchList.dragItemIncorrectBgColor
       : theme.widgets.matchList.dragItemBgColor,
-    border: showBorder ? `1px solid ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
-    padding: preview ? 0 : "0 40px",
+    border: showBorder ? `2px dotted ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
+    // padding: _preview ? 0 : "0 40px",
     cursor: "pointer",
     alignSelf: "stretch",
     borderRadius: 4,
@@ -450,8 +449,10 @@ MatchListPreview.propTypes = {
   userAnswer: PropTypes.array,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
+  showBorder: PropTypes.bool,
   disableResponse: PropTypes.bool,
+  setQuestionData: PropTypes.func.isRequired,
+  changePreview: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   isReviewTab: PropTypes.bool
 };
@@ -461,7 +462,7 @@ MatchListPreview.defaultProps = {
   smallSize: false,
   userAnswer: [],
   showQuestionNumber: false,
-  qIndex: null,
+  showBorder: false,
   disableResponse: false,
   isReviewTab: false
 };

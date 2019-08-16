@@ -235,17 +235,30 @@ class LeftFilter extends React.Component {
     onSetFilter(filters);
   };
 
-  handleSelectFolder = folder => {
-    const { setFolder, clearFolder } = this.props;
+  handleSelectFolder = async folder => {
+    const {
+      setFolder,
+      clearFolder,
+      filterState: filters,
+      districtId,
+      loadAssignmentsSummary,
+      isAdvancedView
+    } = this.props;
     const { visibleModal } = this.state;
 
     if (visibleModal.moveFolder) {
       const { _id } = folder;
       this.setState({ moveFolderId: _id });
     } else if (folder) {
-      setFolder(folder);
+      await setFolder(folder);
+      if (isAdvancedView) {
+        loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
+      }
     } else {
-      clearFolder();
+      await clearFolder();
+      if (isAdvancedView) {
+        loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
+      }
     }
   };
 

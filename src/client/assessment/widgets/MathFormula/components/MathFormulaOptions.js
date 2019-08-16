@@ -37,6 +37,8 @@ const MathFormulaOptions = ({
       const _keys = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(btn => btn.label);
       const diffKeys = difference(customKeys, _keys);
       onChange("custom_keys", _keys.concat(diffKeys));
+    } else {
+      onChange("custom_keys", []);
     }
   }, [item.showDropdown, item.symbols]);
   const changeCustomKey = ({ index, value }) => {

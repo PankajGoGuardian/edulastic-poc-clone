@@ -9,6 +9,7 @@ import { extraDesktopWidth, largeDesktopWidth, desktopWidth, borders, background
 import { resetMyPasswordAction } from "../../Login/ducks";
 import ProfileImage from "../../assets/Profile.png";
 import { Wrapper } from "../../styled";
+import Photo from "./Photo";
 
 const FormItem = Form.Item;
 class ProfileContainer extends React.Component {
@@ -72,7 +73,7 @@ class ProfileContainer extends React.Component {
       <LayoutContent flag={flag}>
         <Wrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
           <ProfileImgWrapper>
-            <div />
+            <Photo />
           </ProfileImgWrapper>
           <ProfileContentWrapper>
             <UserDetail>
@@ -242,62 +243,22 @@ const ProfileImgWrapper = styled.div`
   display: flex;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
-
-  div {
-    width: 250px;
-    height: 250px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: url(${ProfileImage}) no-repeat;
-    background-size: cover;
-    background-position: center center;
-    margin: auto;
-  }
-
-  span {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    position: absolute;
-    right: 5px;
-    bottom: -1px;
-    background: ${props => props.theme.profile.uploadIconBgColor};
-    line-height: 30px;
-    cursor: pointer;
-
-    img {
-      width: 17px;
-    }
-  }
+  justify-content: center;
+  align-items: center;
 
   @media (max-width: ${extraDesktopWidth}) {
     width: 300px;
     height: 250px;
-
-    div {
-      width: 200px;
-      height: 200px;
-    }
   }
 
   @media (max-width: ${largeDesktopWidth}) {
     max-width: 250px;
     max-height: 200px;
-
-    div {
-      width: 150px;
-      height: 150px;
-    }
   }
 
   @media (max-width: ${desktopWidth}) {
     max-width: 200px;
     max-height: 200px;
-
-    div {
-      width: 146px;
-      height: 146px;
-    }
   }
 `;
 

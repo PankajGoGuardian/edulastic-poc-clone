@@ -584,6 +584,7 @@ class Container extends Component {
               itemLevelScoring={item.itemLevelScoring}
               setItemLevelScoring={setItemLevelScoring}
               isPassageQuestion={isPassageQuestion}
+              questionsCount={qLength}
             />
           )}
           <ItemHeader
@@ -662,21 +663,6 @@ class Container extends Component {
                               </Button>
                             </Button.Group>
                           )}
-                        </Col>
-                      </Row>
-                    )}
-                    {item && view !== "preview" && qLength > 1 && (
-                      <Row type="flex" justify="end" style={{ width: 250 }}>
-                        <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
-                        <Col>
-                          <Switch
-                            checked={item.itemLevelScoring}
-                            checkedChildren="on"
-                            unCheckedChildren="off"
-                            onChange={v => {
-                              setItemLevelScoring(v);
-                            }}
-                          />
                         </Col>
                       </Row>
                     )}

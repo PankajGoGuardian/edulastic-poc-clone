@@ -23,7 +23,8 @@ class AddCoTeacher extends React.Component {
 
   state = {
     coTeacherId: null,
-    teacherList: []
+    teacherList: [],
+    searchText: ""
   };
 
   componentDidMount() {
@@ -44,10 +45,20 @@ class AddCoTeacher extends React.Component {
 
   onSearchHandler = value => {
     const { teachers } = this.props;
-    this.setState({
-      ...this.state,
-      teacherList: teachers.filter(teacher => teacher.email.includes(value) || teacher.firstName.includes(value))
-    });
+    const searchText = value.trim();
+    if (searchText.length) {
+      this.setState({
+        searchText: value,
+        teacherList: teachers.filter(
+          teacher => teacher.email.includes(value) || (teacher.firstName && teacher.firstName.includes(value))
+        )
+      });
+    } else {
+      this.setState({
+        searchText: "",
+        teacherList: []
+      });
+    }
   };
 
   onAddCoTeacher = debounce(() => {
@@ -78,8 +89,9 @@ class AddCoTeacher extends React.Component {
 
   render() {
     const { isOpen, handleCancel, primaryTeacherId } = this.props;
-    const { teacherList } = this.state;
+    const { teacherList, searchText } = this.state;
     const coTeachers = teacherList.filter(teacher => teacher._id !== primaryTeacherId);
+    const notFoundText = searchText.trim().length ? "No result found" : "Please enter 3 or more characters";
     const title = (
       <Title>
         <label>Add Co-Teacher</label>
@@ -117,7 +129,7 @@ class AddCoTeacher extends React.Component {
           showArrow={false}
           filterOption={false}
           onChange={this.onChangeHandler}
-          notFoundContent="Please enter 3 or more characters"
+          notFoundContent={notFoundText}
           onSearch={this.onSearchHandler}
         >
           {coTeachers.map((el, index) => (

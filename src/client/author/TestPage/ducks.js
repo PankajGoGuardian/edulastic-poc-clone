@@ -399,7 +399,10 @@ function* receiveTestByIdSaga({ payload }) {
   try {
     const createdItems = yield select(getTestCreatedItemsSelector);
     let entity = yield call(testsApi.getById, payload.id, { data: true });
-    entity.testItems = uniqBy([...createdItems, ...entity.testItems], "_id");
+    entity.testItems = entity.testItems.map(testItem =>
+      createdItems.length > 0 && createdItems[0]._id === testItem._id ? createdItems[0] : testItem
+    );
+    entity.testItems = uniqBy([...entity.testItems, ...createdItems], "_id");
     const questions = getQuestions(entity.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
@@ -411,6 +414,7 @@ function* receiveTestByIdSaga({ payload }) {
       yield put(updateDefaultThumbnailAction(thumbnail));
     }
   } catch (err) {
+    console.log(err);
     const errorMessage = "Receive test by id is failing";
     if (err.status === 403) {
       yield put(push("/author/tests"));

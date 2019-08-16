@@ -25,6 +25,7 @@ import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
 // components
 import AssignmentCard from "../../sharedComponents/AssignmentCard";
 import NoDataIcon from "../../assets/nodata.svg";
+import NoDataNotification from "../../../common/components/NoDataNotification";
 
 const withinThreshold = (targetDate, threshold) => {
   const diff = new Date(targetDate) - Date.now();
@@ -100,11 +101,10 @@ const Content = ({
   }, 60 * 1000);
 
   const noDataNotification = () => (
-    <NoDataBox>
-      <img src={NoDataIcon} alt="noData" />
-      <h4>No Assignments</h4>
-      <p>You don&apos;t have any currently assigned or completed assignments.</p>
-    </NoDataBox>
+    <NoDataNotification
+      heading={"No Assignments "}
+      description={"You don't have any currently assigned or completed assignments."}
+    />
   );
 
   const renderAssignments = () => (

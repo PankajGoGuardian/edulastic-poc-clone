@@ -322,7 +322,7 @@ const ClassificationPreview = ({
   );
 
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
-
+  const maxWidth = listPosition === "left" || listPosition === "right" ? "25%" : null;
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
@@ -338,7 +338,7 @@ const ClassificationPreview = ({
           {tableContent}
         </TableWrapper>
         {!disableResponse && (
-          <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
+          <CorrectAnswersContainer maxWidth={maxWidth} title={t("component.classification.dragItemsTitle")}>
             <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
                 {groupPossibleResponses ? (

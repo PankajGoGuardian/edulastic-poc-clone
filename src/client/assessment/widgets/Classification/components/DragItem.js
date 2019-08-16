@@ -102,11 +102,6 @@ const DragItemContainer = ({
     setMousePosition({ x: evt.clientX, y: evt.clientY });
   };
 
-  const itemWidth =
-    possibilityListPosition === IMAGE_LIST_POSITION_LEFT || possibilityListPosition === IMAGE_LIST_POSITION_RIGHT
-      ? IMAGE_LIST_DEFAULT_WIDTH
-      : null;
-
   return (
     <MainWrapper onMouseMove={handleMouseMove}>
       <DragPreview mousePosition={mousePosition} isDragging={isDragging} isResetOffset={isResetOffset}>
@@ -120,7 +115,6 @@ const DragItemContainer = ({
             style={{
               display: "flex",
               alignItems: "center",
-              width: itemWidth,
               margin: `5px`
             }}
           >

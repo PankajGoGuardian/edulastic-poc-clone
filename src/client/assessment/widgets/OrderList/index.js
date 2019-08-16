@@ -291,7 +291,7 @@ const OrderList = ({
                 helperClass="sortableHelper"
               />
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
-                <ItemsWrapper styleType={styleType}>
+                <ItemsWrapper styleType={styleType} columns={columns}>
                   {correctAnswers.map((correctAnswer, i) => (
                     <CorrectAnswerItem theme={theme}>
                       <Text>

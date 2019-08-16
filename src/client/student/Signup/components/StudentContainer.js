@@ -329,9 +329,11 @@ class StudentSignup extends React.Component {
                         <Col span={20} offset={2}>
                           <h5 align="center">
                             {method !== GOOGLE && method !== OFFICE && t("component.signup.formboxheading")}
-                            {method === GOOGLE && t("component.signup.formboxheadinggoole")}
+                            {(method === GOOGLE || method === OFFICE) && t("component.signup.formboxheadinggoole")}
                           </h5>
-                          {method === GOOGLE && <Description>{t("component.signup.codeFieldDesc")}</Description>}
+                          {(method === GOOGLE || method === OFFICE) && (
+                            <Description>{t("component.signup.codeFieldDesc")}</Description>
+                          )}
                           <Form onSubmit={this.handleSubmit}>
                             {method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()}
                             {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}

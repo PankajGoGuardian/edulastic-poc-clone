@@ -10,7 +10,6 @@ import { updateVariables } from "../../utils/variables";
 import withPoints from "../../components/HOC/withPoints";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import CorrectAnswers from "../../components/CorrectAnswers";
-import { Widget } from "../../styled/Widget";
 
 import AdvancedOptions from "./components/AdvancedOptions";
 import ComposeQuestion from "./ComposeQuestion";
@@ -38,7 +37,7 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
         }
         draft.validation.altResponses.push({
           score: 1,
-          value: item.validation.validResponse.value
+          value: [...Array(item.source ? item.source.length : 0).keys()]
         });
       })
     );

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick, get } from "lodash";
@@ -48,8 +48,6 @@ const MathFormulaAnswerMethod = ({
   options,
   item,
   index,
-  showAdditionals,
-  handleChangeAdditionals,
   onChangeKeypad,
   onChangeAllowedOptions,
   onChangeShowDropdown,
@@ -59,6 +57,7 @@ const MathFormulaAnswerMethod = ({
   allowedVariables,
   t
 }) => {
+  const [isActive, toggleAdditional] = useState(false);
   useEffect(() => {
     const newOptions = clearOptions(method, { ...options });
 
@@ -78,9 +77,9 @@ const MathFormulaAnswerMethod = ({
       compareMethod = methodsConst.EQUIV_SYMBOLIC;
     }
     onChange("method", compareMethod);
-    if (onChangeKeypad) onChangeKeypad("units_us");
-    handleChangeAdditionals(`${method}_${index}`, "pop");
-    handleChangeAdditionals(`${compareMethod}_${index}`, "push");
+    // if (onChangeKeypad) onChangeKeypad("units_us");
+    // handleChangeAdditionals(`${method}_${index}`, "pop");
+    // handleChangeAdditionals(`${compareMethod}_${index}`, "push");
   }, [item.showDropdown]);
 
   const changeOptions = (prop, val) => {
@@ -125,8 +124,6 @@ const MathFormulaAnswerMethod = ({
   };
 
   const methodOptions = methodOptionsConst[method];
-  const isActive = showAdditionals.find(el => el === `${method}_${index}`);
-
   const eToLowerCase = label => label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
 
   const renderMethodsOptions = () =>
@@ -403,18 +400,11 @@ const MathFormulaAnswerMethod = ({
         </StyledRow>
       )}
 
-      <AdditionalToggle
-        active={isActive}
-        onClick={() =>
-          isActive
-            ? handleChangeAdditionals(`${method}_${index}`, "pop")
-            : handleChangeAdditionals(`${method}_${index}`, "push")
-        }
-      >
+      <AdditionalToggle active={isActive} onClick={() => toggleAdditional(!isActive)}>
         {t("component.math.additionalOptions")}
       </AdditionalToggle>
 
-      {showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0 ? (
+      {isActive ? (
         <AdditionalContainer>
           <FlexContainer justifyContent="space-between" alignItems="none">
             <AdditionalCompareUsing>
@@ -424,11 +414,7 @@ const MathFormulaAnswerMethod = ({
                 size="large"
                 value={method}
                 style={{ width: "100%", height: 42 }}
-                onChange={val => {
-                  onChange("method", val);
-                  handleChangeAdditionals(`${method}_${index}`, "pop");
-                  handleChangeAdditionals(`${val}_${index}`, "push");
-                }}
+                onChange={val => onChange("method", val)}
               >
                 {methods.map(methodKey => (
                   <Select.Option
@@ -475,8 +461,6 @@ MathFormulaAnswerMethod.propTypes = {
   style: PropTypes.object,
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
-  showAdditionals: PropTypes.object,
-  handleChangeAdditionals: PropTypes.func,
   allowedVariables: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired
@@ -487,9 +471,7 @@ MathFormulaAnswerMethod.defaultProps = {
   method: "",
   style: {},
   options: {},
-  onDelete: undefined,
-  showAdditionals: [],
-  handleChangeAdditionals: () => {}
+  onDelete: undefined
 };
 
 export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

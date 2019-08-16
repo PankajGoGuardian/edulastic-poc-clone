@@ -61,7 +61,7 @@ const MathFormula = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea isSidebarCollapsed={isSidebarCollapsed} data-cy="question-content-area">
           <ComposeQuestion
             item={item}
             setQuestionData={setQuestionData}

@@ -305,6 +305,7 @@ export const JSXBoxWithDropValues = styled.div`
 `;
 
 export const DragDropValuesContainer = styled.div`
+  position: relative;
   min-width: ${props => props.width}px;
   min-height: ${props => props.minHeight}px;
   height: ${props => props.height}px;
@@ -326,4 +327,13 @@ export const DragDropValuesContainer = styled.div`
   .froala-wrapper {
     margin: auto;
   }
+`;
+
+export const DragDropTitle = styled.div`
+  height: ${props => props.height}px;
+  line-height: ${props => props.height}px;
+  font-size: ${props => props.theme.widgets.graphPlacement.dragDropTitleFontSize};
+  font-weight: ${props => props.theme.widgets.graphPlacement.dragDropTitleFontWeight};
+  width: 100%;
+  text-align: center;
 `;

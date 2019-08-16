@@ -44,9 +44,9 @@ Cypress.Commands.add("createUser", overrides => {
     .then(({ body }) => body.user);
 });
 
-Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username) => {
+Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username, password = "snapwiz") => {
   const user = {
-    password: "snapwiz"
+    password
   };
 
   user.username = email;

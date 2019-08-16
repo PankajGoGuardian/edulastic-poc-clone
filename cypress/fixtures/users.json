@@ -1,6 +1,9 @@
 {
   "visual-regression": {
-    "teacher": "tea01@district01.com",
+    "teacher": {
+      "username": "teacher.visual-automation@snapwiz.com",
+      "password": "automation"
+    },
     "student": "dastd4@xyz.com"
   }
 }

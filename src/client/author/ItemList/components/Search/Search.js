@@ -69,6 +69,7 @@ class Search extends Component {
           <Item>
             <ItemHeader>Grades</ItemHeader>
             <Select
+              data-cy="selectGrades"
               mode="multiple"
               size="large"
               placeholder="All Grades"
@@ -85,7 +86,7 @@ class Search extends Component {
           <Item>
             <ItemHeader>Subject</ItemHeader>
             <ItemBody>
-              <Select onSelect={onSearchFieldChange("subject")} value={subject} size="large">
+              <Select data-cy="selectSubject" onSelect={onSearchFieldChange("subject")} value={subject} size="large">
                 {selectsData.allSubjects.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}
@@ -98,6 +99,7 @@ class Search extends Component {
             <ItemHeader>Standard set</ItemHeader>
             <ItemBody>
               <Select
+                data-cy="selectSdtSet"
                 showSearch
                 size="large"
                 optionFilterProp="children"
@@ -125,6 +127,7 @@ class Search extends Component {
             </IconWrapper>
             <ItemHeader>Standards</ItemHeader>
             <Select
+              data-cy="selectStd"
               mode="multiple"
               size="large"
               optionFilterProp={"children"}
@@ -145,6 +148,7 @@ class Search extends Component {
             <ItemHeader>Question Type</ItemHeader>
             <ItemBody>
               <Select
+                data-cy="selectqType"
                 showSearch
                 size="large"
                 optionFilterProp={"children"}
@@ -164,7 +168,12 @@ class Search extends Component {
           <Item>
             <ItemHeader>Depth of Knowledge</ItemHeader>
             <ItemBody>
-              <Select size="large" onSelect={onSearchFieldChange("depthOfKnowledge")} value={depthOfKnowledge}>
+              <Select
+                data-cy="selectDOK"
+                size="large"
+                onSelect={onSearchFieldChange("depthOfKnowledge")}
+                value={depthOfKnowledge}
+              >
                 {selectsData.allDepthOfKnowledge.map((el, index) => (
                   <Select.Option key={el.value} value={el.value}>
                     {`${index > 0 ? index : ""} ${el.text}`}
@@ -176,7 +185,12 @@ class Search extends Component {
           <Item>
             <ItemHeader>Difficulty</ItemHeader>
             <ItemBody>
-              <Select size="large" onSelect={onSearchFieldChange("authorDifficulty")} value={authorDifficulty}>
+              <Select
+                data-cy="selectDifficulty"
+                size="large"
+                onSelect={onSearchFieldChange("authorDifficulty")}
+                value={authorDifficulty}
+              >
                 {selectsData.allAuthorDifficulty.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}
@@ -188,7 +202,12 @@ class Search extends Component {
           <Item>
             <ItemHeader>Collections</ItemHeader>
             <ItemBody>
-              <Select size="large" onSelect={onSearchFieldChange("collectionName")} value={collectionName}>
+              <Select
+                data-cy="selectCollection"
+                size="large"
+                onSelect={onSearchFieldChange("collectionName")}
+                value={collectionName}
+              >
                 {collectionData.map(el => (
                   <Select.Option key={el.value} value={el.value}>
                     {el.text}
@@ -202,7 +221,7 @@ class Search extends Component {
             <Item>
               <ItemHeader>Status</ItemHeader>
               <ItemBody>
-                <Select size="large" onSelect={onSearchFieldChange("status")} value={status}>
+                <Select data-cy="selectStatus" ssize="large" onSelect={onSearchFieldChange("status")} value={status}>
                   {selectsData.allStatus.map(el => (
                     <Select.Option key={el.value} value={el.value}>
                       {el.text}

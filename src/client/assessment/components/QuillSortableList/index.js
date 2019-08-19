@@ -21,7 +21,9 @@ const QuillSortableList = SortableContainer(
     canDelete = true,
     t,
     centerContent,
-    imageDefaultWidth
+    imageDefaultWidth,
+    placeholder,
+    defaultLabel
   }) => (
     <div data-cy="sortable-list-container" style={{ fontSize }}>
       {items.map((value, index) => (
@@ -30,9 +32,9 @@ const QuillSortableList = SortableContainer(
           key={index}
           centerContent={centerContent}
           index={index}
-          label={label ? `${label} ${index + 1}` : ""}
+          label={defaultLabel === false ? "" : label ? `${label} ${index + 1}` : ""}
           indx={prefix + index}
-          placeholder={`${t("component.multiplechoice.optionPlaceholder")} #${index + 1}`}
+          placeholder={placeholder || `${t("component.multiplechoice.optionPlaceholder")} #${index + 1}`}
           value={value}
           firstFocus={firstFocus}
           rOnly={readOnly}

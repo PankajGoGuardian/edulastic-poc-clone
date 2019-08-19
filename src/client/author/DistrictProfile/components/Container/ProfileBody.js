@@ -187,7 +187,7 @@ class ProfileBody extends React.Component {
             <UserDetail>
               <SubHeader>
                 <Title>Instructor Information</Title>
-                {!isEditProfile && (
+                {!isEditProfile && ["teacher", "district-admin"].includes(user.role) ? (
                   <>
                     <EditProfileButton
                       type="primary"
@@ -207,7 +207,7 @@ class ProfileBody extends React.Component {
                       {t("common.title.deleteAccount")}
                     </DeleteAccountButton>
                   </>
-                )}
+                ) : null}
               </SubHeader>
               {!isEditProfile ? (
                 <Details>

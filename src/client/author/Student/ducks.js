@@ -30,6 +30,7 @@ const ADD_STUDENTS_TO_OTHER_CLASS = "[student] ADD_STUDENTS_TO_OTHER_CLASS";
 const ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS = "[student] ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS";
 const FETCH_CLASS_DETAILS_USING_CODE = "[student] FETCH_CLASS_DETAILS_USING_CODE";
 const FETCH_CLASS_DETAILS_SUCCESS = "[student] FETCH_CLASS_DETAILS_SUCCESS";
+const FETCH_CLASS_DETAILS_FAIL = "[student] FETCH_CLASS_DETAILS_FAIL";
 
 const SET_MULTI_STUDENTS_PROVIDER = "[student] SET_MULTI_STUDENTS_PROVIDER";
 const RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE = "[student] RESET_FETCHED _CLASS_DETAILS_USING_CLASSCODE";
@@ -62,6 +63,7 @@ export const addStudentsToOtherClassAction = createAction(ADD_STUDENTS_TO_OTHER_
 export const addStudentsToOtherClassSuccess = createAction(ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS);
 export const fetchClassDetailsUsingCodeAction = createAction(FETCH_CLASS_DETAILS_USING_CODE);
 export const fetchClassDetailsSuccess = createAction(FETCH_CLASS_DETAILS_SUCCESS);
+export const fetchClassDetailsFail = createAction(FETCH_CLASS_DETAILS_FAIL);
 
 export const setMultiStudentsProviderAction = createAction(SET_MULTI_STUDENTS_PROVIDER);
 export const resetFetchedClassDetailsAction = createAction(RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE);
@@ -296,6 +298,9 @@ export const reducer = createReducer(initialState, {
     state.addStudentsToOtherClass.loading = false;
     state.addStudentsToOtherClass.successData = null;
   },
+  [FETCH_CLASS_DETAILS_FAIL]: state => {
+    state.addStudentsToOtherClass.loading = false;
+  },
   [SET_MULTI_STUDENTS_PROVIDER]: (state, { payload }) => {
     state.mutliStudentsProvider = payload;
   },
@@ -392,22 +397,25 @@ function* fetchClassDetailsUsingCodeSaga({ payload }) {
   try {
     const { result } = yield call(userApi.validateClassCode, payload);
     if (result.isValidClassCode) yield put(fetchClassDetailsSuccess(result));
-    else message.error("Invalid Class Code");
+    else {
+      message.error("Invalid Class Code");
+      yield put(fetchClassDetailsFail());
+    }
   } catch (err) {
     const errorMessage = "Something went wrong. Please try again";
     message.error(errorMessage);
+    yield put(fetchClassDetailsFail());
   }
 }
 function* moveUsersToOtherClassSaga({ payload }) {
   try {
     const result = yield call(userApi.moveUsersToOtherClass, payload);
-    console.log("result", result);
-    // if (!result.status) yield put(moveUsersToOtherClassSuccessAction(result));
-    // else message.error(result.status);
+    if (!result.status) yield put(addStudentsToOtherClassSuccess(result));
+    else message.error(result.status);
   } catch (err) {
-    // yield put(moveUsersToOtherClassFailAction("Error"));
-    const errorMessage = "Something went wrong. Please try again";
-    message.error(errorMessage);
+    const errorMessage = "Move Users is failing";
+    yield call(message.error, errorMessage);
+    yield put(addMultiStudentsErrorAction({ error: errorMessage }));
   }
 }
 

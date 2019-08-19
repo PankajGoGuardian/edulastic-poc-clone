@@ -26,7 +26,7 @@ import { getFullNameFromString } from "../../../../common/utils/helpers";
 import { getClassEnrollmentUsersSelector } from "../../ducks";
 
 import { AddStudentsToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
-import { AddStudentsToOtherClassModal as MoveStudentsToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
+import { AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
 import {
   getAddStudentsToOtherClassSelector,
   setAddStudentsToOtherClassVisiblityAction,
@@ -54,7 +54,9 @@ class ClassEnrollmentTable extends React.Component {
       addUserFormModalVisible: false,
       removeStudentsModalVisible: false,
       selectedUserIds: [],
-      selectedUsersInfo: []
+      selectedUsersInfo: [],
+      addStudentsModal: false,
+      moveUsersModal: false
     };
   }
 
@@ -104,6 +106,7 @@ class ClassEnrollmentTable extends React.Component {
       } else if (selectedRowKeys.length > 1) {
         message.error("You can only move one user at a time");
       } else if (selectedRowKeys.length == 1) {
+        this.setState({ moveUsersModal: true });
         setAddStudentsToOtherClassVisiblity(true);
       }
     } else if (e.key === "add students to other class") {
@@ -113,6 +116,7 @@ class ClassEnrollmentTable extends React.Component {
         if (isInstructor) {
           message.error("Only students can be added to another class");
         } else {
+          this.setState({ addStudentsModal: true });
           setAddStudentsToOtherClassVisiblity(true);
         }
       }
@@ -353,7 +357,9 @@ class ClassEnrollmentTable extends React.Component {
       removeStudentsModalVisible,
       addUserFormModalVisible,
       selectedUserIds,
-      selectedUsersInfo
+      selectedUsersInfo,
+      addStudentsModal,
+      moveUsersModal
     } = this.state;
     const {
       fetchClassDetailsUsingCode,
@@ -386,7 +392,6 @@ class ClassEnrollmentTable extends React.Component {
       };
       return obj;
     });
-
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange
@@ -550,32 +555,41 @@ class ClassEnrollmentTable extends React.Component {
             userOrgId={userOrgId}
           />
         )}
+        {addStudentsModal && (
+          <AddStudentsToOtherClassModal
+            titleText="Add Student(s) to another class"
+            buttonText="Add Student(s)"
+            {...addStudentsToOtherClassData}
+            handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
+            onCloseModal={() => {
+              this.setState({ addStudentsModal: false });
+              setAddStudentsToOtherClassVisiblity(false);
+            }}
+            fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+          />
+        )}
 
-        <AddStudentsToOtherClassModal
-          titleText="Add Student(s) to another class"
-          buttonText="Add Student(s)"
-          {...addStudentsToOtherClassData}
-          handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
-          onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
-          fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
-        />
-
-        <MoveStudentsToOtherClassModal
-          titleText="Move Student(s) to another class"
-          buttonText="Move Student(s)"
-          {...addStudentsToOtherClassData}
-          handleSubmit={destinationClassCode =>
-            moveUsersToOtherClass({
-              districtId: userOrgId,
-              destinationClassCode,
-              sourceClassCode: selectedUsersInfo[0].group.code,
-              userDetails: selectedUserIds
-            })
-          }
-          onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
-          fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
-          selectedUsersInfo={selectedUsersInfo}
-        />
+        {moveUsersModal && (
+          <MoveUsersToOtherClassModal
+            titleText="Move User(s) to another class"
+            buttonText="Move User(s)"
+            {...addStudentsToOtherClassData}
+            handleSubmit={destinationClassCode =>
+              moveUsersToOtherClass({
+                districtId: userOrgId,
+                destinationClassCode,
+                sourceClassCode: selectedUsersInfo[0].group.code,
+                userDetails: selectedUserIds
+              })
+            }
+            onCloseModal={() => {
+              this.setState({ moveUsersModal: false });
+              setAddStudentsToOtherClassVisiblity(false);
+            }}
+            fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+            selectedUsersInfo={selectedUsersInfo}
+          />
+        )}
       </StyledTableContainer>
     );
   }

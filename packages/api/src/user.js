@@ -203,7 +203,7 @@ const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCo
       url: `${prefix}/move-users`,
       data: {
         districtId,
-        userDetail,
+        userDetails,
         destinationClassCode,
         sourceClassCode
       },

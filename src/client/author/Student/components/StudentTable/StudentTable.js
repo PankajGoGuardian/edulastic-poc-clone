@@ -26,7 +26,7 @@ import { UserFormModal as EditStudentFormModal } from "../../../../common/compon
 import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
 import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
-import AddStudentsToOtherClass from "./AddStudentToOtherClass";
+import { AddStudentsToOtherClassModal } from "./AddStudentToOtherClass";
 
 import {
   addMultiStudentsRequestAction,
@@ -761,7 +761,9 @@ class StudentTable extends Component {
             }
           />
         )}
-        <AddStudentsToOtherClass
+        <AddStudentsToOtherClassModal
+          titleText="Add Student(s) to another class"
+          buttonText="Add Student(s)"
           {...addStudentsToOtherClassData}
           handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedRowKeys })}
           onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}

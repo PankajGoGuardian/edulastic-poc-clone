@@ -5,14 +5,15 @@ import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import produce from "immer";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
-import { Progress, withWindowSizes, AnswerContext } from "@edulastic/common";
+import { withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
-import { Row, Col, Switch, Input, Layout, Select, Button, Modal } from "antd";
+import { Row, Col, Layout, Button, Modal, Pagination } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
-import { getViewSelector, getPreviewSelector } from "../../../src/selectors/view";
+import { getViewSelector } from "../../../src/selectors/view";
 import {
   checkAnswerAction,
   showAnswerAction,
@@ -46,11 +47,19 @@ import {
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
-import { Content, ItemDetailWrapper, PreviewContent, ButtonClose, BackLink, ContentWrapper } from "./styled";
+import {
+  Content,
+  ItemDetailWrapper,
+  PreviewContent,
+  ButtonClose,
+  BackLink,
+  ContentWrapper,
+  PassageNavigation,
+  AddRemoveButtonWrapper
+} from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
-import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
@@ -60,6 +69,7 @@ import { clearAnswersAction } from "../../../src/actions/answers";
 import { changePreviewTabAction } from "../../../ItemAdd/ducks";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { questionType } from "@edulastic/constants";
+import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -81,31 +91,21 @@ const defaultEmptyItem = {
 
 class Container extends Component {
   state = {
-    showModal: false,
     showRemovePassageItemPopup: false,
-    showSettings: false
+    showSettings: false,
+    collapseDirection: ""
   };
 
   componentDidMount() {
-    const { clearAnswers, changePreviewTab } = this.props;
-
+    const { clearAnswers, changePreviewTab, location, changeView } = this.props;
+    if (location.state && location.state.resetView === false) return;
     clearAnswers();
+    changeView("edit");
     changePreviewTab(CLEAR);
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      getItemDetailById,
-      match,
-      rows,
-      history,
-      t,
-      loading,
-      redirectOnEmptyItem,
-      isTestFlow,
-      isMultipart,
-      item
-    } = this.props;
+    const { getItemDetailById, match, rows, history, t, loading, isTestFlow, item } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
     const { itemId, testId } = match.params;
@@ -188,10 +188,6 @@ class Container extends Component {
     changeView(view);
   };
 
-  handleShowSource = () => {
-    this.setState({ showModal: true });
-  };
-
   handleShowSettings = () => {
     this.setState(state => ({
       showSettings: !state.showSettings
@@ -254,12 +250,6 @@ class Container extends Component {
     }
   };
 
-  handleHideSource = () => {
-    this.setState({
-      showModal: false
-    });
-  };
-
   handleEditWidget = (widget, rowIndex) => {
     const { loadQuestion, changeView } = this.props;
     changeView("edit");
@@ -319,12 +309,6 @@ class Container extends Component {
     const { setEditable } = this.props;
     setEditable(true);
   };
-
-  componentWillUnmount() {
-    // reset the view to "edit" while leaving.
-    const { changeView } = this.props;
-    changeView("edit");
-  }
 
   renderPreview = () => {
     const { rows, preview, questions, item: itemProps, passage } = this.props;
@@ -403,14 +387,15 @@ class Container extends Component {
     /**
      * assuming this method is going to be called only when type is passageWithQuestions
      */
-    const data = {
-      ...defaultEmptyItem,
-      canAddMultipleItems: true,
-      isPassageWithQuestions: true,
-      multipartItem: true,
-      passageId: passage._id
-    };
-    this.props.createItem(data);
+    const item = produce(defaultEmptyItem, draft => {
+      draft.rows[0].dimension = "50%";
+      draft.canAddMultipleItems = true;
+      draft.canAddMultipleItems = true;
+      draft.isPassageWithQuestions = true;
+      draft.multipartItem = true;
+      draft.passageId = passage._id;
+    });
+    this.props.createItem(item);
   };
 
   handleRemoveItemRequest = () => {
@@ -438,12 +423,88 @@ class Container extends Component {
     });
   };
 
-  goToItem = id => {
-    this.props.history.push(`/author/items/${id}/item-detail`);
+  goToItem = page => {
+    const { passage, history } = this.props;
+    const _id = passage.testItems[page - 1];
+    history.push({
+      pathname: `/author/items/${_id}/item-detail`,
+      state: { resetView: false }
+    });
   };
 
+  handleCollapse = dir => {
+    this.setState(state => ({
+      collapseDirection: state.collapseDirection ? "" : dir
+    }));
+  };
+
+  renderEdit = () => {
+    const { collapseDirection } = this.state;
+    const { rows, item, updateTabTitle, windowWidth, passage, view } = this.props;
+    const passageWithQuestions = !!item.passageId;
+    const useTabsLeft = passageWithQuestions
+      ? !!get(passage, ["structure", "tabs", "length"], 0)
+      : !!get(rows, [0, "tabs", "length"], 0);
+    const collapseLeft = collapseDirection === "left";
+    const collapseRight = collapseDirection === "right";
+    return (
+      <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+        <ItemDetailWrapper padding="0px">
+          {passageWithQuestions && !collapseLeft && (
+            <ItemDetailRow
+              row={passage.structure}
+              key="0"
+              view={view}
+              rowIndex="0"
+              itemData={passage}
+              count={1}
+              isPassageQuestion
+              onEditWidget={this.handleEditPassageWidget}
+              handleAddToPassage={this.handleAddToPassage}
+              onDeleteWidget={this.handleDeletePassageWidget}
+              left={true}
+              right={false}
+              handleCollapse={this.handleCollapse}
+              collapseDirection={collapseDirection}
+              useTabsLeft={useTabsLeft}
+            />
+          )}
+          {rows &&
+            rows.map((row, i) => {
+              if (collapseLeft && i === 0 && !passageWithQuestions) {
+                return "";
+              }
+              if (collapseRight && (i === 1 || (passageWithQuestions && i === 0))) {
+                return "";
+              }
+              return (
+                <ItemDetailRow
+                  key={passage ? i + 1 : i}
+                  row={row}
+                  view={view}
+                  showAnswer
+                  rowIndex={i}
+                  itemData={item}
+                  count={rows.length}
+                  onAdd={this.handleAdd}
+                  windowWidth={windowWidth}
+                  onDeleteWidget={this.handleDeleteWidget(i)}
+                  onEditWidget={this.handleEditWidget}
+                  onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                  left={!item.passageId && i === 0 && rows.length > 1}
+                  right={(!!item.passageId && i === 0) || i === 1}
+                  handleCollapse={this.handleCollapse}
+                  collapseDirection={collapseDirection}
+                  useTabsLeft={useTabsLeft}
+                />
+              );
+            })}
+        </ItemDetailWrapper>
+      </AnswerContext.Provider>
+    );
+  };
   render() {
-    const { showModal, showSettings, showRemovePassageItemPopup } = this.state;
+    const { showSettings, showRemovePassageItemPopup } = this.state;
     const {
       t,
       match,
@@ -451,7 +512,7 @@ class Container extends Component {
       item,
       updating,
       type,
-      updateTabTitle,
+
       useTabs,
       useFlowLayout,
       changePreview,
@@ -478,7 +539,6 @@ class Container extends Component {
     }
 
     const passageTestItems = get(passage, "testItems", []);
-    const currentPassageIndex = passageTestItems.indexOf(item._id);
 
     const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
 
@@ -507,10 +567,9 @@ class Container extends Component {
       .some(widgetType => widgetType === questionType.PASSAGE);
 
     const layoutType = isPassage ? COMPACT : DEFAULT;
-
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
-        <Modal
+        <ConfirmationModal
           visible={showRemovePassageItemPopup}
           title="Remove Item"
           onCancel={this.closeRemovePassageItemPopup}
@@ -525,13 +584,8 @@ class Container extends Component {
           ]}
         >
           <p> You are about to remove the current item from the passage. This action cannot be undone.</p>
-        </Modal>
+        </ConfirmationModal>
         <Layout>
-          {showModal && item && (
-            <SourceModal onClose={this.handleHideSource} onApply={this.handleApplySource}>
-              {JSON.stringify(item, null, 4)}
-            </SourceModal>
-          )}
           {showSettings && (
             <SettingsBar
               type={type}
@@ -550,6 +604,7 @@ class Container extends Component {
               itemLevelScoring={item.itemLevelScoring}
               setItemLevelScoring={setItemLevelScoring}
               isPassageQuestion={isPassageQuestion}
+              questionsCount={qLength}
             />
           )}
           <ItemHeader
@@ -591,60 +646,30 @@ class Container extends Component {
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
                   <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
-                    {item.canAddMultipleItems && passage && (
-                      <Row type="flex" style={{ width: 145 }} justify="end">
-                        <Col span={12}>
-                          {passageTestItems.length > 0 && (
-                            <Select
-                              value={item._id}
-                              onChange={v => {
-                                this.goToItem(v);
-                              }}
-                            >
-                              {passage.testItems.map((v, ind) => (
-                                <Select.Option value={v}>{ind + 1}</Select.Option>
-                              ))}
-                            </Select>
-                          )}
-                        </Col>
-                        <Col span={12}>
-                          {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
-                            <Button.Group>
-                              <Button
-                                disabled={this.props.itemDeleting}
-                                onClick={this.addItemToPassage}
-                                style={{ display: "inline" }}
-                                size="small"
-                              >
-                                +
-                              </Button>
-                              <Button
-                                disabled={this.props.itemDeleting}
-                                onClick={this.handleRemoveItemRequest}
-                                style={{ display: "inline" }}
-                                size="small"
-                              >
-                                -
-                              </Button>
-                            </Button.Group>
-                          )}
-                        </Col>
-                      </Row>
-                    )}
-                    {item && view !== "preview" && qLength > 1 && (
-                      <Row type="flex" justify="end" style={{ width: 250 }}>
-                        <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
-                        <Col>
-                          <Switch
-                            checked={item.itemLevelScoring}
-                            checkedChildren="on"
-                            unCheckedChildren="off"
-                            onChange={v => {
-                              setItemLevelScoring(v);
-                            }}
-                          />
-                        </Col>
-                      </Row>
+                    {item.canAddMultipleItems && passage && view !== "metadata" && (
+                      <PassageNavigation>
+                        {passageTestItems.length > 1 && (
+                          <>
+                            <span>PASSAGE ITEMS </span>
+                            <Pagination
+                              total={passageTestItems.length}
+                              pageSize={1}
+                              defaultCurrent={passageTestItems.findIndex(i => i === item._id) + 1}
+                              onChange={this.goToItem}
+                            />
+                          </>
+                        )}
+                        {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
+                          <AddRemoveButtonWrapper>
+                            <Button disabled={this.props.itemDeleting} onClick={this.handleRemoveItemRequest}>
+                              - ITEM
+                            </Button>
+                            <Button disabled={this.props.itemDeleting} onClick={this.addItemToPassage}>
+                              + ITEM
+                            </Button>
+                          </AddRemoveButtonWrapper>
+                        )}
+                      </PassageNavigation>
                     )}
                     {view === "preview" && (
                       <RightActionButtons col={12}>
@@ -657,42 +682,7 @@ class Container extends Component {
                 )}
               </Col>
             </BreadCrumbBar>
-            {view === "edit" && (
-              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
-                <ItemDetailWrapper padding="0px">
-                  {!!item.passageId && (
-                    <ItemDetailRow
-                      row={passage.structure}
-                      key="0"
-                      view={view}
-                      rowIndex="0"
-                      itemData={passage}
-                      count={1}
-                      isPassageQuestion
-                      onEditWidget={this.handleEditPassageWidget}
-                      handleAddToPassage={this.handleAddToPassage}
-                      onDeleteWidget={this.handleDeletePassageWidget}
-                    />
-                  )}
-                  {rows &&
-                    rows.map((row, i) => (
-                      <ItemDetailRow
-                        key={passage ? i + 1 : i}
-                        row={row}
-                        view={view}
-                        rowIndex={i}
-                        itemData={item}
-                        count={rows.length}
-                        onAdd={this.handleAdd}
-                        windowWidth={windowWidth}
-                        onDeleteWidget={this.handleDeleteWidget(i)}
-                        onEditWidget={this.handleEditWidget}
-                        onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
-                      />
-                    ))}
-                </ItemDetailWrapper>
-              </AnswerContext.Provider>
-            )}
+            {view === "edit" && this.renderEdit()}
             {view === "preview" && this.renderPreview()}
             {view === "metadata" && this.renderMetadata()}
           </ContentWrapper>

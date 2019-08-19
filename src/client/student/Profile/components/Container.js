@@ -2,32 +2,40 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Layout, Form, Input, Button } from "antd";
+import { Layout, Form, Input, Button, Icon } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { extraDesktopWidth, largeDesktopWidth, desktopWidth, borders, backgrounds } from "@edulastic/colors";
-
+import { resetMyPasswordAction } from "../../Login/ducks";
 import ProfileImage from "../../assets/Profile.png";
-import cameraIcon from "../../assets/photo-camera.svg";
 import { Wrapper } from "../../styled";
+import Photo from "./Photo";
 
 const FormItem = Form.Item;
 class ProfileContainer extends React.Component {
   state = {
-    confirmDirty: false
+    confirmDirty: false,
+    showChangePassword: false
   };
 
   handleSubmit = e => {
-    const { form, login } = this.props;
+    const { form, user, resetMyPassword } = this.props;
     e.preventDefault();
-    form.validateFieldsAndScroll((err, { password, email }) => {
+    form.validateFieldsAndScroll((err, { password }) => {
       if (!err) {
-        login({
-          password,
-          email
+        resetMyPassword({
+          newPassword: password,
+          username: user.email
         });
+        form.resetFields();
       }
     });
+  };
+
+  handleCancel = e => {
+    e.preventDefault();
+    const { form } = this.props;
+    form.resetFields();
   };
 
   handleConfirmBlur = ({ target: { value } }) => {
@@ -36,91 +44,106 @@ class ProfileContainer extends React.Component {
     this.setState({ confirmDirty });
   };
 
+  compareToFirstPassword = (rule, value, callback) => {
+    const { form } = this.props;
+    if (value && value !== form.getFieldValue("password")) {
+      callback("Two passwords that you enter is inconsistent!");
+    } else {
+      callback();
+    }
+  };
+
+  validateToNextPassword = (rule, value, callback) => {
+    const { form } = this.props;
+    const { confirmDirty } = this.state;
+    if (value && confirmDirty) {
+      form.validateFields(["confirmPassword"], { force: true });
+    }
+    callback();
+  };
+
   render() {
     const {
       form: { getFieldDecorator }
     } = this.props;
 
     const { flag, t, user } = this.props;
+    const { showChangePassword } = this.state;
     return (
       <LayoutContent flag={flag}>
-        <Wrapper>
+        <Wrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
+          <ProfileImgWrapper>
+            <Photo />
+          </ProfileImgWrapper>
           <ProfileContentWrapper>
             <UserDetail>
-              <UserTitle>Welcome {user.firstName || "Zack"}</UserTitle>
-              <UserSubTitle>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget mauris nunc.
-              </UserSubTitle>
+              <Title>Instructor Information</Title>
+              <Details>
+                <DetailRow>
+                  <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
+                  <DetailData>{user.firstName}</DetailData>
+                </DetailRow>
+                <DetailRow>
+                  <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
+                  <DetailData>{user.lastName || ""}</DetailData>
+                </DetailRow>
+                <DetailRow>
+                  <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
+                  <DetailData>{user.email}</DetailData>
+                </DetailRow>
+              </Details>
             </UserDetail>
-            <ProfileImgWrapper>
-              <div />
-              <span>
-                <img src={cameraIcon} alt="" />
-              </span>
-            </ProfileImgWrapper>
-            <FormWrapper onSubmit={this.handleSubmit}>
-              <FormItemWrapper>
-                <label>{t("common.title.firstNameInputLabel")}</label>
-                {getFieldDecorator("First Name", {
-                  rules: [
-                    {
-                      required: true,
-                      message: t("common.title.firstName")
-                    }
-                  ],
-                  initialValue: `${user.firstName}`
-                })(<Input readOnly />)}
-              </FormItemWrapper>
-              <FormItemWrapper>
-                <label>{t("common.title.lastNameInputLabel")}</label>
-                {getFieldDecorator("Last Name", {
-                  rules: [
-                    {
-                      required: true,
-                      message: t("common.title.lastName")
-                    }
-                  ],
-                  initialValue: `${user.lastName || ""}`
-                })(<Input readOnly />)}
-              </FormItemWrapper>
-              <FormItemWrapper>
-                <label>{t("common.title.emailInputLabel")}</label>
-                {getFieldDecorator("email", {
-                  rules: [
-                    {
-                      type: "email",
-                      message: t("common.title.validemail")
-                    },
-                    {
-                      required: true,
-                      message: t("common.title.email")
-                    }
-                  ],
-                  initialValue: `${user.email}`
-                })(<Input type="email" readOnly />)}
-              </FormItemWrapper>
-              <FormItemWrapper>
-                <label>{t("common.title.passwordInputLabel")}</label>
-                {getFieldDecorator("password", {
-                  rules: [
-                    {
-                      required: true,
-                      message: t("common.title.password")
-                    }
-                  ]
-                })(<Input type="password" readOnly />)}
-              </FormItemWrapper>{" "}
-              <FormButtonWrapper>
-                <FormItem>
-                  <CancelButton disabled type="primary" ghost htmlType="submit">
-                    {t("common.title.cancel")}
-                  </CancelButton>
-                  <SaveButton disabled type="primary" htmlType="submit">
-                    {t("common.title.save")}
-                  </SaveButton>
-                </FormItem>
-              </FormButtonWrapper>
-            </FormWrapper>
+            <ChangePasswordToggleButton
+              onClick={() => {
+                this.setState({ showChangePassword: !showChangePassword });
+              }}
+            >
+              <span>CHANGE PASSWORD</span>
+              <Icon type={showChangePassword ? "caret-up" : "caret-down"} />
+            </ChangePasswordToggleButton>
+
+            {showChangePassword && (
+              <FormWrapper onSubmit={this.handleSubmit}>
+                <FormItemWrapper>
+                  <Label>{t("common.title.newPasswordLabel")}</Label>
+                  {getFieldDecorator("password", {
+                    rules: [
+                      {
+                        required: true,
+                        message: t("common.title.password")
+                      },
+                      {
+                        validator: this.validateToNextPassword
+                      }
+                    ]
+                  })(<Input type="password" />)}
+                </FormItemWrapper>{" "}
+                <FormItemWrapper>
+                  <Label>{t("common.title.confirmPaswswordLabel")}</Label>
+                  {getFieldDecorator("confirmPassword", {
+                    rules: [
+                      {
+                        required: true,
+                        message: t("common.title.password")
+                      },
+                      {
+                        validator: this.compareToFirstPassword
+                      }
+                    ]
+                  })(<Input type="password" onBlur={this.handleConfirmBlur} />)}
+                </FormItemWrapper>{" "}
+                <FormButtonWrapper>
+                  <FormItem>
+                    <CancelButton type="primary" ghost onClick={this.handleCancel}>
+                      {t("common.title.cancel")}
+                    </CancelButton>
+                    <SaveButton type="primary" htmlType="submit">
+                      {t("common.title.save")}
+                    </SaveButton>
+                  </FormItem>
+                </FormButtonWrapper>
+              </FormWrapper>
+            )}
           </ProfileContentWrapper>
         </Wrapper>
       </LayoutContent>
@@ -132,10 +155,15 @@ const enhance = compose(
   React.memo,
   withNamespaces("profile"),
   Form.create(),
-  connect(state => ({
-    flag: state.ui.flag,
-    user: state.user.user
-  }))
+  connect(
+    state => ({
+      flag: state.ui.flag,
+      user: state.user.user
+    }),
+    {
+      resetMyPassword: resetMyPasswordAction
+    }
+  )
 );
 
 export default enhance(ProfileContainer);
@@ -147,28 +175,45 @@ ProfileContainer.propTypes = {
 };
 
 const LayoutContent = styled(Layout.Content)`
-  min-height: 100vh;
   width: 100%;
 `;
 
 const ProfileContentWrapper = styled.div`
-  text-align: center;
-`;
+  width: 1150px
+  background-color:white;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 20px;
 
-const UserDetail = styled.div`
-  padding: 42px 0rem 54px;
-  border-bottom: 1px solid ${borders.default};
+  @media (max-width: ${extraDesktopWidth}) {
+    width: 800px;
+    padding: 20px;
+  }
 
   @media (max-width: ${largeDesktopWidth}) {
-    padding: 25px 0 30px;
+    width: 735px;
+    padding:15px;
   }
 
   @media (max-width: ${desktopWidth}) {
-    padding: 32px 0 20px;
+    width: 600px;
+    padding:10px;
   }
 `;
 
-const UserTitle = styled.h2`
+const UserDetail = styled.div`
+  padding: 5px 0rem 20px;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    padding: 5px 0 20px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    padding: 5px 0 20px;
+  }
+`;
+
+const Title = styled.h3`
   color: ${props => props.theme.profile.userHeadingTextColor};
   font-size: ${props => props.theme.profile.userHeadingTextSize};
   font-weight: ${props => props.theme.profile.userHeadingTextWeight};
@@ -180,7 +225,7 @@ const UserTitle = styled.h2`
   }
 
   @media (max-width: ${desktopWidth}) {
-    font-size: 22px;
+    font-size: 18px;
     margin-bottom: 11px;
   }
 `;
@@ -191,78 +236,72 @@ const UserSubTitle = styled.p`
 `;
 
 const ProfileImgWrapper = styled.div`
-  margin: 44px auto 30px;
-  max-width: 146px;
-  max-height: 146px;
+  width: 400px;
+  height: 350px;
   position: relative;
-
-  div {
-    width: 146px;
-    height: 146px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: url(${ProfileImage}) no-repeat;
-    background-size: cover;
-    background-position: center center;
-  }
-
-  span {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    position: absolute;
-    right: 5px;
-    bottom: -1px;
-    background: ${props => props.theme.profile.uploadIconBgColor};
-    line-height: 30px;
-    cursor: pointer;
-
-    img {
-      width: 17px;
-    }
-  }
+  background-color: white;
+  display: flex;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
 
   @media (max-width: ${extraDesktopWidth}) {
-    max-width: 124px;
-    max-height: 124px;
-    margin-top: 25px;
-
-    div {
-      width: 124px;
-      height: 124px;
-    }
+    width: 300px;
+    height: 250px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
-    max-width: 114px;
-    max-height: 114px;
-    margin-top: 30px;
-    margin-bottom: 9px;
-
-    div {
-      width: 114px;
-      height: 114px;
-    }
+    max-width: 250px;
+    max-height: 200px;
   }
 
   @media (max-width: ${desktopWidth}) {
-    max-width: 146px;
-    max-height: 146px;
-    margin-top: 41px;
-    margin-bottom: 16px;
+    max-width: 200px;
+    max-height: 200px;
+  }
+`;
 
-    div {
-      width: 146px;
-      height: 146px;
-    }
+const Details = styled.div`
+  margin: 30px 0px 0px 25px;
+`;
+
+const DetailRow = styled.div`
+  padding: 20px 0px;
+`;
+const DetailTitle = styled.span`
+  font-size: 15px;
+  color: ${props => props.theme.profile.formInputLabelColor};
+  font-weight: 600;
+  width: 20%;
+  display: inline-block;
+`;
+const DetailData = styled.span`
+  font-size: 15px;
+  color: grey;
+  display: inline-block;
+`;
+
+const Label = styled.label`
+  text-transform: uppercase;
+`;
+
+const ChangePasswordToggleButton = styled.div`
+  color: ${props => props.theme.profile.cancelButtonTextColor};
+  padding-left: 25px;
+  cursor: pointer;
+  width: fit-content;
+  span {
+    margin-right: 20px;
+    font-weight: 600;
   }
 `;
 
 const FormWrapper = styled(Form)`
-  max-width: 749px;
   width: 100%;
-  margin: 0px auto;
+  margin-left: 15px;
   text-align: left;
+  margin-top: 30px;
 
   .ant-form-item {
     margin-bottom: 22px;
@@ -320,7 +359,7 @@ const FormWrapper = styled(Form)`
 `;
 
 const FormItemWrapper = styled(FormItem)`
-  width: 50%;
+  width: 49%;
   display: inline-block;
   padding: 0px 15px;
 
@@ -341,19 +380,8 @@ const FormItemWrapper = styled(FormItem)`
 
 const FormButtonWrapper = styled.div`
   text-align: center;
-  margin-top: 46px;
-
-  @media (max-width: ${extraDesktopWidth}) {
-    margin-top: 27px;
-  }
-
-  @media (max-width: ${largeDesktopWidth}) {
-    margin-top: 34px;
-  }
-
-  @media (max-width: ${desktopWidth}) {
-    margin-top: 24px;
-  }
+  float: right;
+  padding-right: 20px;
 `;
 
 const SaveButton = styled(Button)`
@@ -386,6 +414,7 @@ const CancelButton = styled(SaveButton)`
   margin: 0 15px;
   background: ${props => props.theme.profile.cancelButtonBgColor};
   color: ${props => props.theme.profile.cancelButtonTextColor};
+  border: 1px solid ${props => props.theme.profile.cancelButtonTextColor};
 
   @media (max-width: ${extraDesktopWidth}) {
     height: 36px;

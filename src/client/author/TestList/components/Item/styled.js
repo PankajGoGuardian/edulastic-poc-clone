@@ -4,19 +4,37 @@ import { darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
-  border: 1px solid #eeeeee;
   box-shadow: none;
   cursor: pointer;
-  padding: 15px;
-  border-radius: 8px;
+  border-radius: 4px;
+  border: 0;
   .ant-card-body {
-    padding: 0;
+    padding: 16px;
+    box-shadow: 1px 1px 7px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
   }
 
   .ant-card-head {
-    padding: 0;
-    border-radius: 5px;
+    padding: 16px;
+    border: 0;
+    padding: 16px;
     overflow: hidden;
+    position: relative;
+    .ant-card-head-title {
+      border-radius: 5px;
+      &:before {
+        content: "";
+        position: absolute;
+        top: 8px;
+        left: 24px;
+        bottom: 24px;
+        right: 24px;
+        border-radius: 4px;
+        opacity: 0.3;
+        background: url(${props =>
+          props.src ? props.src : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"});
+      }
+    }
   }
 
   .ant-card-head-title {
@@ -44,6 +62,7 @@ export const Footer = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: flex-end;
+  padding-bottom: 15px;
 `;
 
 export const Author = styled.div`
@@ -63,6 +82,8 @@ export const Author = styled.div`
     }
   }
 `;
+
+export const PlaylistId = styled(Author)``;
 
 export const AuthorName = styled.span`
   overflow: hidden;
@@ -94,7 +115,7 @@ export const EllipsisWrapper = styled.div`
   min-height: 18px;
   position: relative;
   overflow: hidden;
-  text-align: justify;
+  text-align: center;
   text-overflow: hidden;
   &:before {
     content: "...";
@@ -146,7 +167,9 @@ export const ViewButton = styled.div`
   background: white;
   padding: 8px;
   margin: 10px 0px 15px;
-  box-shadow: 0px 1px 1px 1px ${fadedGrey};
+  border: 1px solid #00ad50;
+  line-height: 2.2em;
+  text-transform: uppercase;
   border-radius: 4px;
   font-weight: 600;
   text-align: center;
@@ -168,7 +191,8 @@ export const ButtonWrapper = styled.div`
 `;
 
 export const Header = styled.div`
-  min-height: 100px;
+  min-height: 120px;
+  padding: 10px 15px;
   position: relative;
   background: url(${props =>
     props.src ? props.src : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"});
@@ -182,12 +206,13 @@ export const Header = styled.div`
     }
   }
 `;
+Header.displayName = "CardHeader";
 
 export const Stars = styled(Rate)`
   font-size: 13px;
   position: absolute;
-  left: 10px;
-  top: 5px;
+  right: 10px;
+  bottom: 10px;
   z-index: 1;
 `;
 

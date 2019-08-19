@@ -117,7 +117,7 @@ export const Widget = styled.div`
   .mq-root-block,
   .mq-math-mode .mq-root-block {
     margin: 0;
-    font-size: 12px;
+    font-size: inherit;
     font-weight: 600;
     color: ${selectColor};
   }

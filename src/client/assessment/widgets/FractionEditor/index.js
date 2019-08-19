@@ -1,12 +1,15 @@
 import React from "react";
 import produce from "immer";
+import PropTypes from "prop-types";
 
-import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
+import { CLEAR, EDIT } from "../../constants/constantsForQuestions";
 import { ContentArea } from "../../styled/ContentArea";
 import ComposeQuestion from "./components/ComposeQuestion";
 import CorrectAnswers from "./components/CorrectAnswers";
 import Options from "./components/Options";
 import Display from "./components/Display";
+import Annotations from "../../components/Annotations/Annotations";
+import Question from "../../components/Question";
 
 const FractionEditor = props => {
   const {
@@ -21,9 +24,11 @@ const FractionEditor = props => {
     evaluation,
     previewTab,
     showQuestionNumber,
-    userAnswer
+    userAnswer,
+    disableResponse,
+    changePreviewTab,
+    isReviewTab
   } = props;
-
   return (
     <>
       {view === EDIT ? (
@@ -50,9 +55,16 @@ const FractionEditor = props => {
             t={t}
             fillSections={fillSections}
             cleanSections={cleanSections}
-            produce={produce}
             item={item}
           />
+          <Question
+            section="main"
+            label={t("common.options.annotations")}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          >
+            <Annotations question={item} setQuestionData={setQuestionData} editable />
+          </Question>
         </ContentArea>
       ) : (
         <Display
@@ -60,14 +72,42 @@ const FractionEditor = props => {
           item={item}
           t={t}
           stimulus={item.stimulus}
-          produce={produce}
           evaluation={evaluation}
           previewTab={previewTab}
           showQuestionNumber={showQuestionNumber}
           userAnswer={userAnswer}
+          disableResponse={disableResponse}
+          changePreviewTab={changePreviewTab}
+          isReviewTab={isReviewTab}
         />
       )}
     </>
   );
 };
+
+FractionEditor.propTypes = {
+  view: PropTypes.string.isRequired,
+  previewTab: PropTypes.string,
+  item: PropTypes.object,
+  setQuestionData: PropTypes.func.isRequired,
+  saveAnswer: PropTypes.func.isRequired,
+  userAnswer: PropTypes.array,
+  t: PropTypes.func.isRequired,
+  evaluation: PropTypes.any,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  showQuestionNumber: PropTypes.bool
+};
+
+FractionEditor.defaultProps = {
+  previewTab: CLEAR,
+  item: {},
+  userAnswer: [],
+  evaluation: [],
+  fillSections: () => {},
+  cleanSections: () => {},
+  showQuestionNumber: false
+};
+
 export default FractionEditor;

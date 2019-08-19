@@ -3,6 +3,7 @@
 import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 import { userBuilder } from "./generate";
 import LoginPage from "../e2e/framework/student/loginPage";
+import { getAccessToken } from "../../packages/api/src/utils/Storage";
 
 addMatchImageSnapshotCommand({
   failureThreshold: 100, // threshold for entire image
@@ -43,9 +44,11 @@ Cypress.Commands.add("createUser", overrides => {
     .then(({ body }) => body.user);
 });
 
-Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username) => {
+Cypress.Commands.add("clearToken", () => window.localStorage.clear());
+
+Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username, password = "snapwiz") => {
   const user = {
-    password: "snapwiz"
+    password
   };
 
   user.username = email;
@@ -59,8 +62,11 @@ Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username) => {
     const tokenKey = `user:${userId}:role:${role}`;
     window.localStorage.setItem("defaultTokenKey", tokenKey);
     window.localStorage.setItem(tokenKey, body.result.token);
+    return userId;
   });
 });
+
+Cypress.Commands.add("getToken", () => getAccessToken());
 
 Cypress.Commands.add("assertHome", () => {
   cy.url().should("eq", `${Cypress.config().baseUrl}/`);

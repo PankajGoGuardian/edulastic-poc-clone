@@ -4,15 +4,14 @@ import evaluators from "./evaluators";
 import { replaceVariables } from "../../../assessment/utils/variables";
 
 export const evaluateItem = async (answers, validations, itemLevelScoring = false, itemLevelScore = 0) => {
-  const answerIds = Object.keys(answers);
+  const questionIds = Object.keys(validations);
   const results = {};
   let totalScore = 0;
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0;
 
-  console.log("validations", validations);
   /* eslint-disable no-restricted-syntax */
   const questionsNum = Object.keys(validations).filter(x => validations[x].validation).length;
-  for (const id of answerIds) {
+  for (const id of questionIds) {
     let answer = answers[id];
 
     if (validations && validations[id]) {
@@ -21,17 +20,6 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
       if (!evaluator) {
         results[id] = [];
       } else {
-        const { isUnits, isMath, showDropdown } = validations[id];
-        if (isUnits && isMath && showDropdown) {
-          const expression = answer.expression || "";
-          const unit = answer.unit ? answer.unit : "";
-          if (expression.search("=") === -1) {
-            answer = expression + unit;
-          } else {
-            answer = expression.replace(/=/gm, `${unit}=`);
-          }
-        }
-
         const { evaluation, score, maxScore } = await evaluator({
           userResponse: answer,
           hasGroupResponses: validation.hasGroupResponses,
@@ -43,7 +31,6 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
         });
 
         results[id] = evaluation;
-        console.log("evaluation ", { validation, score });
         if (itemLevelScoring) {
           totalScore += round(score, 2);
         } else {

@@ -48,15 +48,12 @@ const specSource = {
       },
       itemTo.index
     );
-  },
-
-  canDrag(props) {
-    return !props.disable;
   }
 };
+
 class DragItem extends React.Component {
   render() {
-    const { connectDragSource, data, children, style, title, ...restProps } = this.props;
+    const { connectDragSource, data, children, style, title, disableResponse, ...restProps } = this.props;
     return (
       data &&
       connectDragSource(
@@ -65,9 +62,9 @@ class DragItem extends React.Component {
           style={{
             ...style
           }}
-          draggable={!this.props.disableResponse}
+          draggable={!disableResponse}
         >
-          {!this.props.disableResponse && <DragPreview {...restProps}>{children}</DragPreview>}
+          {!disableResponse && <DragPreview {...restProps}>{children}</DragPreview>}
           {children}
         </div>
       )
@@ -80,6 +77,7 @@ DragItem.propTypes = {
   data: PropTypes.any,
   isDragging: PropTypes.bool.isRequired,
   children: PropTypes.any.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
   active: PropTypes.bool.isRequired,
   smallSize: PropTypes.bool.isRequired,
   style: PropTypes.object.isRequired,

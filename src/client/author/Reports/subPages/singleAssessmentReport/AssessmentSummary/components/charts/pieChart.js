@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { ResponsiveContainer, PieChart, Pie, Legend, Tooltip } from "recharts";
 import { fadedBlack } from "@edulastic/colors";
 import { StyledCustomChartTooltip } from "../styled";
@@ -8,6 +8,11 @@ import { getHSLFromRange1 } from "../../../../../common/util";
 import performanceBandColorRange from "../../../../../common/static/json/performanceBandColorRange.json";
 
 export const SimplePieChart = props => {
+  const [activeLegend, setActiveLegend] = useState(null);
+
+  const onLegendMouseEnter = ({ value }) => setActiveLegend(value);
+  const onLegendMouseLeave = () => setActiveLegend(null);
+
   const renderCustomizedLabel = args => {
     const RADIAN = Math.PI / 180;
     let { cx, cy, midAngle, innerRadius, outerRadius, percent, index } = args;
@@ -29,16 +34,23 @@ export const SimplePieChart = props => {
       });
       const colors = performanceBandColorRange[props.data.length];
       for (let i = 0; i < props.data.length; i++) {
+        let fillOpacity = 1;
+
+        if (activeLegend && activeLegend !== props.data[i].name) {
+          fillOpacity = 0.2;
+        }
+
         arr.push({
           bandPerf: props.data[i].bandPerf,
           fill: colors[i],
           name: props.data[i].name,
-          sum: sum
+          sum,
+          fillOpacity
         });
       }
     }
     return arr;
-  }, [props.data]);
+  }, [props.data, activeLegend]);
 
   const getTooltipJSX = payload => {
     if (payload && payload.length) {
@@ -57,7 +69,13 @@ export const SimplePieChart = props => {
   return (
     <ResponsiveContainer width={"100%"}>
       <PieChart>
-        <Legend layout="vertical" align="left" verticalAlign="middle" />
+        <Legend
+          onMouseEnter={onLegendMouseEnter}
+          onMouseLeave={onLegendMouseLeave}
+          layout="vertical"
+          align="left"
+          verticalAlign="middle"
+        />
         <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
         <Pie name={"name"} data={chartData} labelLine={false} dataKey="bandPerf" label={renderCustomizedLabel} />
       </PieChart>

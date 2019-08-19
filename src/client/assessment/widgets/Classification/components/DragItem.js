@@ -102,11 +102,6 @@ const DragItemContainer = ({
     setMousePosition({ x: evt.clientX, y: evt.clientY });
   };
 
-  const itemWidth =
-    possibilityListPosition === IMAGE_LIST_POSITION_LEFT || possibilityListPosition === IMAGE_LIST_POSITION_RIGHT
-      ? IMAGE_LIST_DEFAULT_WIDTH
-      : null;
-
   return (
     <MainWrapper onMouseMove={handleMouseMove}>
       <DragPreview mousePosition={mousePosition} isDragging={isDragging} isResetOffset={isResetOffset}>
@@ -120,8 +115,7 @@ const DragItemContainer = ({
             style={{
               display: "flex",
               alignItems: "center",
-              margin: "10px 15px 10px 15px",
-              width: itemWidth
+              margin: `5px`
             }}
           >
             <InnerWrapper
@@ -170,13 +164,17 @@ DragItemContainer.propTypes = {
 };
 
 DragItemContainer.defaultProps = {
-  isResetOffset: false,
-  valid: false
+  isResetOffset: false
 };
 
 const InnerWrapper = styled.div`
   p {
     width: 151px;
+  }
+
+  .katex .base {
+    display: inline;
+    white-space: normal;
   }
 `;
 

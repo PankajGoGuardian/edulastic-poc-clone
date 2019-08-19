@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { find, isEmpty, get } from "lodash";
 import { withRouter } from "react-router-dom";
-import { Dropdown, Tooltip } from "antd";
+import { Dropdown, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 import produce from "immer";
@@ -15,6 +15,7 @@ import { getFolderSelector } from "../../../src/selectors/folder";
 import ActionMenu from "../ActionMenu/ActionMenu";
 
 import { Container, TableData, AssignmentTD, BtnAction, ActionDiv, TitleCase, TestThumbnail } from "./styled";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
 
 class AdvancedTable extends Component {
   state = {
@@ -214,11 +215,22 @@ class AdvancedTable extends Component {
       }
     };
 
+    if (loading) {
+      return <Spin size="large" />;
+    }
+    if (assignmentsSummary.length < 1) {
+      return (
+        <NoDataNotification
+          heading={"Assignments not available"}
+          description={"There are no assignments found for this filter."}
+        />
+      );
+    }
+
     return (
       <Container>
         <TableData
           columns={columns}
-          loading={loading}
           rowSelection={rowSelection}
           dataSource={assignmentsSummary}
           onRow={row => ({

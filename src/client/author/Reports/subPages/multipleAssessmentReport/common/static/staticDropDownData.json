@@ -29,7 +29,7 @@
   ],
   "grades": [
     { "key": "All", "title": "All Grades" },
-    { "key": "K", "title": "Kindergarden" },
+    { "key": "K", "title": "Kindergarten" },
     { "key": "1", "title": "Grade 1" },
     { "key": "2", "title": "Grade 2" },
     { "key": "3", "title": "Grade 3" },

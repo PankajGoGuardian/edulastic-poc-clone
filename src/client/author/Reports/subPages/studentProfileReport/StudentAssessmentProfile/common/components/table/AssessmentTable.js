@@ -8,7 +8,8 @@ import { getHSLFromRange1 } from "../../../../../../common/util";
 import CsvTable from "../../../../../../common/components/tables/CsvTable";
 
 const getCol = (text, backgroundColor) => {
-  return <StyledCell style={{ backgroundColor }}>{text ? `${text}%` : "N/A"}</StyledCell>;
+  const value = typeof text === "undefined" ? "N/A" : `${text}%`;
+  return <StyledCell style={{ backgroundColor }}>{value}</StyledCell>;
 };
 
 const tableColumns = [
@@ -78,10 +79,10 @@ const getColumns = (studentName = "") => {
             <TableTooltipRow title={"Assessment Type: "} value={record.testType} />
             <TableTooltipRow title={"Student Name: "} value={studentName} />
             <TableTooltipRow title={"Day of Assessment Start: "} value={record.assignmentDateFormatted} />
-            <TableTooltipRow title={"Student Perfromance: "} value={`${record.score}%`} />
-            <TableTooltipRow title={"District Perfromance: "} value={`${record.districtAvg}%`} />
-            <TableTooltipRow title={"School Perfromance: "} value={`${record.schoolAvg}%`} />
-            <TableTooltipRow title={"Class Perfromance: "} value={`${record.groupAvg}%`} />
+            <TableTooltipRow title={"Student Performance: "} value={`${record.score}%`} />
+            <TableTooltipRow title={"District Performance: "} value={`${record.districtAvg}%`} />
+            <TableTooltipRow title={"School Performance: "} value={`${record.schoolAvg}%`} />
+            <TableTooltipRow title={"Class Performance: "} value={`${record.groupAvg}%`} />
             <TableTooltipRow title={"Total Questions: "} value={record.totalQuestions} />
             <TableTooltipRow title={"Score: "} value={record.rawScore} />
           </div>

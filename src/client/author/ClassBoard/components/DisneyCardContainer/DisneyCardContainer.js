@@ -121,7 +121,7 @@ class DisneyCardContainer extends Component {
           status.status = "Absent";
           status.color = red;
         }
-
+        const viewResponseStatus = ["Submitted", "In Progress", "Graded"];
         let correctAnswers = 0;
         updateDisabledList(student.studentId, status.status);
         const questions = student.questionActivities.length;
@@ -149,18 +149,43 @@ class DisneyCardContainer extends Component {
           <StyledCard data-cy={`student-card-${name}`} bordered={false} key={index}>
             <PaginationInfoF>
               {isPresentationMode ? (
-                <i style={{ color: student.color, fontSize: "32px" }} className={`fa fa-${student.icon}`}>
+                <i
+                  onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
+                  style={{
+                    color: student.color,
+                    fontSize: "32px",
+                    cursor: viewResponseStatus.includes(status.status) ? "pointer" : "default"
+                  }}
+                  className={`fa fa-${student.icon}`}
+                >
                   {" "}
                 </i>
               ) : (
-                <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
+                <CircularDiv
+                  isLink={viewResponseStatus.includes(status.status)}
+                  onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
+                >
+                  {getAvatarName(student.studentName)}
+                </CircularDiv>
               )}
               <StyledName>
-                <StyledParaF data-cy="studentName" title={isPresentationMode ? undefined : student.email}>
+                <StyledParaF
+                  isLink={viewResponseStatus.includes(status.status)}
+                  data-cy="studentName"
+                  title={isPresentationMode ? undefined : student.userName}
+                  onClick={e => (viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : "")}
+                >
                   {name}
                 </StyledParaF>
                 {student.present ? (
-                  <StyledParaS data-cy="studentStatus" color={status.color}>
+                  <StyledParaS
+                    isLink={viewResponseStatus.includes(status.status)}
+                    data-cy="studentStatus"
+                    color={status.color}
+                    onClick={e =>
+                      viewResponseStatus.includes(status.status) ? viewResponses(e, student.studentId) : ""
+                    }
+                  >
                     {enrollMentFlag}
                     {status.status}
                   </StyledParaS>

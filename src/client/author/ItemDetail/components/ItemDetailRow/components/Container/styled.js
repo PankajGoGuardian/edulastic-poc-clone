@@ -1,5 +1,5 @@
 import { FlexContainer, Paper } from "@edulastic/common";
-import { darkBlueSecondary, mobileWidth } from "@edulastic/colors";
+import { darkBlueSecondary, mobileWidth, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Content = styled(Paper)`
@@ -9,7 +9,7 @@ export const Content = styled(Paper)`
   right: 0;
   padding: ${props => (props.padding ? props.padding : "0px")};
   overflow: hidden;
-
+  position: relative;
   @media (max-width: ${mobileWidth}) {
     padding: 33px 30px;
   }
@@ -29,6 +29,22 @@ export const AddPassageBtnContainer = styled.div`
   justify-content: center;
   button {
     margin-right: 10px;
+    background-color: ${themeColor};
+    color: #fff;
+    height: 45px;
+    width: 170px;
+    font-size: 11px;
+    &:hover {
+      color: ${themeColor};
+    }
+    &:last-child {
+      background-color: #fff;
+      color: ${themeColor};
+    }
+    &:focus > span:first-child,
+    &:active > span:first-child {
+      position: absolute;
+    }
   }
 `;
 
@@ -51,4 +67,40 @@ export const WidgetContainer = styled.div`
   display: ${({ flowLayout }) => (flowLayout ? "flex" : "block")};
   flex-wrap: wrap;
   align-items: center;
+`;
+
+export const CollapseBtn = styled.i`
+  position: absolute;
+  top: 0;
+  cursor: pointer;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 5px 15px;
+  border-radius: 5px;
+  border: 1px solid ${themeColor};
+  color: ${themeColor};
+  margin: 10px;
+  z-index: 1;
+  &.fa-arrow-left {
+    right: 1px;
+  }
+  &.fa-arrow-right {
+    left: 1px;
+  }
+`;
+
+export const PlusIcon = styled.span`
+  position: absolute;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 1px solid ${themeColor};
+  color: ${themeColor};
+  left: 10px;
+  top: 12px;
+  font-size: 18px;
+  line-height: 1;
 `;

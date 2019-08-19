@@ -6,12 +6,7 @@ import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 
 import { getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
-import {
-  Layout,
-  FontSizeOption,
-  StemNumerationOption,
-  MaxWidthOption
-} from "../../../containers/WidgetOptions/components";
+import { Layout, FontSizeOption, MaxWidthOption } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import Question from "../../../components/Question";
@@ -32,17 +27,8 @@ class LayoutComponent extends Component {
         <Layout>
           <Row gutter={36}>
             <Col md={12}>
-              <StemNumerationOption
-                onChange={val => changeUIStyle("validation_stem_numeration", val)}
-                value={get(item, "uiStyle.validation_stem_numeration", "numerical")}
-              />
-            </Col>
-            <Col md={12}>
               <MaxWidthOption onChange={val => changeItem("max_width", +val)} value={get(item, "max_width", 900)} />
             </Col>
-          </Row>
-
-          <Row gutter={36}>
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}

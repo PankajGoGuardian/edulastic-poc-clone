@@ -347,6 +347,8 @@ var evaluator =
           scoringType,
           attemptScore,
           answers,
+          expression,
+          unit,
           result;
 
         return _regenerator["default"].wrap(function _callee2$(_context2) {
@@ -359,19 +361,31 @@ var evaluator =
                   (altResponses = _validation$altRespon === void 0 ? [] : _validation$altRespon),
                   (scoringType = validation.scoringType),
                   (attemptScore = validation.minScoreIfAttempted);
-                answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
+                answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses)); // if its math unit type, derive answer by making into a string.
+
+                if (userResponse.expression || userResponse.unit) {
+                  expression = userResponse.expression || "";
+                  unit = userResponse.unit || "";
+
+                  if (expression.search("=") === -1) {
+                    userResponse = expression + unit;
+                  } else {
+                    userResponse = expression.replace(/=/gm, "".concat(unit, "="));
+                  }
+                }
+
                 _context2.t0 = scoringType;
-                _context2.next = _context2.t0 === _scoring.ScoringType.EXACT_MATCH ? 6 : 6;
+                _context2.next = _context2.t0 === _scoring.ScoringType.EXACT_MATCH ? 7 : 7;
                 break;
 
-              case 6:
-                _context2.next = 8;
+              case 7:
+                _context2.next = 9;
                 return exactMatchEvaluator(userResponse, answers);
 
-              case 8:
+              case 9:
                 result = _context2.sent;
 
-              case 9:
+              case 10:
                 // if score for attempting is greater than current score
                 // let it be the score!
                 if (!Number.isNaN(attemptScore) && attemptScore > result.score) {
@@ -380,7 +394,7 @@ var evaluator =
 
                 return _context2.abrupt("return", result);
 
-              case 11:
+              case 12:
               case "end":
                 return _context2.stop();
             }

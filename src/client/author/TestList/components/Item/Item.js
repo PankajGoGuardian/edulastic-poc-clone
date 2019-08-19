@@ -23,7 +23,9 @@ import {
   IconText,
   ButtonWrapper,
   DraftIconWrapper,
-  EllipsisWrapper
+  EllipsisWrapper,
+  ViewButton,
+  PlaylistId
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
@@ -129,6 +131,7 @@ class Item extends Component {
           hideModal={this.hidePreviewModal}
         />
         <Container
+          src={isPlaylist ? _source.thumbnail : thumbnail}
           onClick={isPlaylist ? this.moveToItem : this.openModal}
           title={
             <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
@@ -139,7 +142,6 @@ class Item extends Component {
                     Edit
                   </Button>
                 )}
-
                 {status === "draft" && (
                   <Button type="primary" onClick={this.duplicate}>
                     duplicate
@@ -167,36 +169,35 @@ class Item extends Component {
               <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
             </CardDescription>
             {!isPlaylist && <Tags tags={tags} />}
+            <ViewButton>View</ViewButton>
           </Inner>
           <Footer>
             {authorName && (
               <Author>
-                <IconText>Created by</IconText>
                 <AuthorWrapper>
                   <IconUser /> &nbsp;
                   <AuthorName title={authorName}>{authorName}</AuthorName>
                 </AuthorWrapper>
               </Author>
             )}
-            <StatusWrapper>
-              {!isPlaylist && (
-                <TestStatus status={status} view="tile">
-                  {status}
-                </TestStatus>
-              )}
-              {status !== "draft" && (
-                <UsageWrapper>
-                  <ShareIcon>
-                    <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                    <IconText>{usage}</IconText>
-                  </ShareIcon>
-                  <LikeIcon>
-                    <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                    <IconText>{likes}</IconText>
-                  </LikeIcon>
-                </UsageWrapper>
-              )}
-            </StatusWrapper>
+            {testItemId ? <PlaylistId># {testItemId}</PlaylistId> : null}
+            {!isPlaylist && (
+              <TestStatus status={status} view="tile">
+                {status}
+              </TestStatus>
+            )}
+            {status !== "draft" && (
+              <>
+                <ShareIcon>
+                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                  <IconText>{usage}</IconText>
+                </ShareIcon>
+                <LikeIcon>
+                  <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+                  <IconText>{likes}</IconText>
+                </LikeIcon>
+              </>
+            )}
           </Footer>
         </Container>
       </>

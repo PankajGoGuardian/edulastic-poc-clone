@@ -400,3 +400,7 @@ export const StyledAutocompleteDropDownContainer = styled.div`
     cursor: pointer;
   }
 `;
+
+export const StyledP = styled.p`
+  margin-bottom: 15px;
+`;

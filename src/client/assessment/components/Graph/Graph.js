@@ -58,12 +58,6 @@ const getFontSizeList = () => [
   { value: "huge", label: "Huge" }
 ];
 
-const getStemNumerationList = () => [
-  { value: "numerical", label: "Numerical" },
-  { value: "uppercase_alphabet", label: "Uppercase alphabet" },
-  { value: "lowercase_alphabet", label: "Lowercase alphabet" }
-];
-
 class Graph extends Component {
   static contextType = AnswerContext;
 
@@ -122,7 +116,6 @@ class Graph extends Component {
     const { item, fillSections, cleanSections, advancedAreOpen } = this.props;
 
     return {
-      stemNumerationList: getStemNumerationList(),
       fontSizeList: getFontSizeList(),
       setOptions: this.handleOptionsChange,
       setValidation: this.handleValidationChange,

@@ -2,14 +2,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { withNamespaces } from "@edulastic/localization";
+import { response } from "@edulastic/constants";
 
 import MathFormulaAnswerMethod from "./MathFormulaAnswerMethod";
+import { getStylesFromUiStyleToCssStyle } from "../../../utils/helpers";
 
 class MathFormulaAnswer extends Component {
-  state = {
-    showAdditionals: []
-  };
-
   render() {
     const {
       answer,
@@ -20,38 +18,18 @@ class MathFormulaAnswer extends Component {
       onChangeKeypad,
       onChangeAllowedOptions,
       keypadOffset,
-      onChangeShowDropdown
+      onChangeShowDropdown,
+      toggleAdditional
     } = this.props;
-
-    const { showAdditionals } = this.state;
 
     const handleChangeMethod = index => (prop, val) => {
       onChange({ index, prop, value: val });
     };
 
-    const handleChangeAdditionals = (method, direction) => {
-      const methods = showAdditionals;
-
-      switch (direction) {
-        case "pop":
-          methods.splice(methods.findIndex(el => el === method), 1);
-          break;
-        case "push":
-        default:
-          methods.push(method);
-          break;
-      }
-
-      this.setState({
-        showAdditionals: methods
-      });
-    };
-
-    const clearAdditionals = () => {
-      this.setState({
-        showAdditionals: []
-      });
-    };
+    const { minWidth, minHeight } = response;
+    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
+    cssStyles.width = cssStyles.width || minWidth;
+    cssStyles.height = cssStyles.height || minHeight;
 
     return (
       <div>
@@ -63,15 +41,14 @@ class MathFormulaAnswer extends Component {
             index={i}
             answer={answer}
             onChange={handleChangeMethod(i)}
-            showAdditionals={showAdditionals}
-            handleChangeAdditionals={handleChangeAdditionals}
-            clearAdditionals={clearAdditionals}
             onChangeKeypad={onChangeKeypad}
             onChangeAllowedOptions={onChangeAllowedOptions}
             allowedVariables={item.allowedVariables || ""}
             onChangeShowDropdown={onChangeShowDropdown}
             onAdd={onAdd}
             keypadOffset={keypadOffset}
+            style={cssStyles}
+            toggleAdditional={toggleAdditional}
             {...method}
           />
         ))}
@@ -90,7 +67,8 @@ MathFormulaAnswer.propTypes = {
   keypadOffset: PropTypes.number.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  toggleAdditional: PropTypes.func
 };
 
 export default withNamespaces("assessment")(MathFormulaAnswer);

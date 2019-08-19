@@ -199,7 +199,7 @@ class SideMenu extends Component {
             <LogoDash />
             <MenuWrapper isSidebarCollapsed={isSidebarCollapsed}>
               {isMobile && isSidebarCollapsed ? <IconBars type="bars" onClick={this.toggleMenu} /> : null}
-              <Menu defaultSelectedKeys={[menuIndex.toString()]} mode="inline" onClick={this.handleMenu}>
+              <Menu selectedKeys={[menuIndex.toString()]} mode="inline" onClick={this.handleMenu}>
                 {menuItems.map((menu, index) => {
                   const MenuIcon = this.renderIcon(menu.icon, isSidebarCollapsed);
                   return (

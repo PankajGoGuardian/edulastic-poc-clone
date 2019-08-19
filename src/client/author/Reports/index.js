@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
-import styled from "styled-components";
 import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
+import { Route } from "react-router-dom";
 import { Row, Col } from "antd";
-import next from "immer";
 
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessmentReport";

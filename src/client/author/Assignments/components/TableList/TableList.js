@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { isEmpty, find } from "lodash";
+import { isEmpty, find, get } from "lodash";
 import { Link, withRouter } from "react-router-dom";
-import { Dropdown, Checkbox, Tooltip } from "antd";
+import { Dropdown, Checkbox, Tooltip, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
@@ -35,6 +35,7 @@ import {
   ActionsWrapper,
   TitleCase
 } from "./styled";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
 
 const convertTableData = (data, assignments, index) => ({
   name: data.title,
@@ -198,6 +199,7 @@ class TableList extends Component {
       t,
       onSelectRow,
       selectedRows,
+      loading,
       toggleEditModal,
       folderData,
       showPreviewModal,
@@ -332,6 +334,17 @@ class TableList extends Component {
       });
       data = tempData.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
     }
+    if (loading) {
+      return <Spin size="large" />;
+    }
+    if (data.length < 1) {
+      return (
+        <NoDataNotification
+          heading={"Assignments not available"}
+          description={"There are no assignments found for this filter."}
+        />
+      );
+    }
 
     return (
       <Container>
@@ -379,6 +392,7 @@ const enhance = compose(
   withNamespaces("assignmentCard"),
   connect(
     state => ({
+      loading: get(state, "author_assignments.loading"),
       folderData: getFolderSelector(state)
     }),
     {}

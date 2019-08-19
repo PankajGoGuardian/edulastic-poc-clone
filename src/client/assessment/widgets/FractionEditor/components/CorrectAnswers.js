@@ -1,22 +1,20 @@
 import React from "react";
 import { Input, message } from "antd";
-import { FlexContainer } from "@edulastic/common";
 import { get } from "lodash";
+import PropTypes from "prop-types";
+import produce from "immer";
 
+import { FlexContainer } from "@edulastic/common";
 import Question from "../../../components/Question/index";
 import { Subtitle } from "../../../styled/Subtitle";
-import Circles from "../components/Circles";
-import Rectangles from "../components/Rectangles";
+import Circles from "./Circles";
+import Rectangles from "./Rectangles";
 import Divider from "../styled/Divider";
+import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
 
-const CorrectAnswers = ({ setQuestionData, produce, fillSections, cleanSections, t, item }) => {
+const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item }) => {
   const { fractionProperties = {} } = item;
-  const selected = fractionProperties.selected;
-  const sectors = fractionProperties.sectors || 7;
-  const fractionType = fractionProperties.fractionType;
-  const rows = fractionProperties.rows;
-  const columns = fractionProperties.columns;
-  const count = fractionProperties.count;
+  const { selected, sectors = 7, fractionType, rows, columns, count } = fractionProperties;
   const totalSelections = fractionType === "circles" ? count * sectors : count * (rows * columns);
 
   const handleCorrectAnswerChange = e => {
@@ -97,7 +95,11 @@ const CorrectAnswers = ({ setQuestionData, produce, fillSections, cleanSections,
             disabled
           />
         </FlexContainer>
-        <FlexContainer style={{ overflow: "scroll" }} justifyContent="flex-start" flexWrap="wrap">
+        <FlexContainer
+          style={{ overflowX: "auto", overflowY: "hidden", position: "relative" }}
+          justifyContent="flex-start"
+          flexWrap="wrap"
+        >
           {Array(count)
             .fill()
             .map((el, index) => {
@@ -113,10 +115,25 @@ const CorrectAnswers = ({ setQuestionData, produce, fillSections, cleanSections,
                 />
               );
             })}
+          <AnnotationRnd question={item} setQuestionData={setQuestionData} disableDragging={false} />
         </FlexContainer>
       </FlexContainer>
     </Question>
   );
+};
+
+CorrectAnswers.propTypes = {
+  item: PropTypes.object,
+  setQuestionData: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+CorrectAnswers.defaultProps = {
+  item: {},
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default CorrectAnswers;

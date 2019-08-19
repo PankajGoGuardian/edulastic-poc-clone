@@ -37,6 +37,8 @@ const getLoggedOutUrl = () => {
     return "/district/" + restOfPath;
   } else if (pathname === "/resetpassword") {
     return window.location.href.split(window.location.origin)[1];
+  } else if (pathname === "/inviteteacher") {
+    return `${location.pathname}${location.search}${location.hash}`;
   } else {
     return "/login";
   }

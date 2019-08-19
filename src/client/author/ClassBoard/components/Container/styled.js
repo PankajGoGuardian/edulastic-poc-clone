@@ -16,17 +16,27 @@ import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
 export const Anchor = styled.a`
+  max-width: 15vw;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
   color: ${linkColor};
 `;
 export const AnchorLink = styled(Link)`
+  display: inline-block;
+  max-width: 20vw;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   color: ${linkColor};
 `;
 
 export const PaginationInfo = styled.span`
   font-weight: 600;
-  display: inline-block;
+  display: flex;
+  max-width: 50vw;
   font-size: 11px;
-  word-spacing: 5px;
   color: ${linkColor};
   @media (max-width: ${mobileWidth}) {
     display: none;

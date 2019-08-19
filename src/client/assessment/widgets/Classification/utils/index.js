@@ -6,7 +6,7 @@ export const getStyles = (isDragging, isTransparent, backgroundColor, borderColo
   minHeight: 40,
   borderRadius: 5,
   border: `2px ${borderColor} dotted`,
-  padding: "8px 20px",
+  padding: "8px",
   backgroundColor: isTransparent ? "transparent" : backgroundColor,
   cursor: "pointer",
   ...styles

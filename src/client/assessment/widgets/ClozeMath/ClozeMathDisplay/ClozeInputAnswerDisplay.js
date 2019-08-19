@@ -8,6 +8,8 @@ const StyledSpan = styled.span`
   border: 1px solid #d9d9d9;
   display: inline-block;
   vertical-align: middle;
+  margin-top: 2px;
+  margin-bottom: 2px;
   height: ${({ height }) => height || "31px"};
   width: ${({ width }) => width || "31px"};
 `;

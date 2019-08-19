@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import { LinkItem } from "../../common/components/linkItem";
 import { BoxHeading } from "../../common/components/boxHeading";
+import { StyledP } from "../../common/styled";
 
 const links = [
   {
@@ -33,10 +34,6 @@ export const StandardsMasteryReport = props => {
     </div>
   );
 };
-
-const StyledP = styled.p`
-  margin-bottom: 10px;
-`;
 
 const LinksWrapper = styled.ul`
   padding: 0px;

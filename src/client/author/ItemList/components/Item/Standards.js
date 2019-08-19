@@ -1,12 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
+import { uniqBy } from "lodash";
 import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
 import { StandardContent, LabelStandard, LabelStandardText, CountGreen } from "./styled";
 const Standards = ({ item, interestedCurriculums, search }) => {
   const outStandardsCount = 1;
   const { curriculumId } = search;
   const domains = [];
-  const standards = [];
+  let standards = [];
   if (item.data && item.data.questions) {
     item.data.questions.map(question => {
       if (!question.alignment || !question.alignment.length) return;
@@ -32,6 +33,7 @@ const Standards = ({ item, interestedCurriculums, search }) => {
     domains.map(el => (el.standards && el.standards.length ? standards.push(...el.standards) : null));
   }
 
+  standards = uniqBy(standards, "_id");
   return standards.length ? (
     <StandardContent>
       {standards.map((standard, index) =>

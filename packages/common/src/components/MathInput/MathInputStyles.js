@@ -45,6 +45,10 @@ export const MathInputStyles = styled.div`
     .mq-editable-field {
       min-width: ${({ minWidth }) => minWidth || "auto"};
     }
+
+    .mq-root-block {
+      font-size: ${({ fontSize }) => `${fontSize || "inherit"}`};
+    }
   }
 
   .input__math__icon {

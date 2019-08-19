@@ -514,7 +514,10 @@ class TestList extends Component {
     }
     if (tests.length < 1) {
       return (
-        <NoDataNotification heading={"Tests not available"} description={"There are no tests found for this filter."} />
+        <NoDataNotification
+          heading={"Tests not available"}
+          description={`There are no tests found for this filter.You can create new item by clicking the "AUTHOR TEST" button.`}
+        />
       );
     }
 

@@ -85,6 +85,14 @@ const deleteUser = data =>
     })
     .then(({ data: response }) => response);
 
+const deleteAccount = userId =>
+  api
+    .callApi({
+      url: `${prefix}/${userId}`,
+      method: "delete"
+    })
+    .then(({ data: response }) => response);
+
 const changeUserTTS = data =>
   api.callApi({
     url: `${prefix}/tts`,
@@ -160,7 +168,7 @@ const requestNewPassword = params =>
       params,
       method: "POST"
     })
-    .then(result => result.data.data);
+    .then(result => result.data.result);
 
 const fetchResetPasswordUser = params =>
   api
@@ -190,6 +198,13 @@ const adddBulkTeacher = ({ districtId, userDetails }) =>
     })
     .then(result => result.data.result);
 
+const resetMyPassword = data =>
+  api.callApi({
+    url: `${prefix}/reset-password`,
+    method: "put",
+    data
+  });
+
 export default {
   getUser,
   fetchUsers,
@@ -212,5 +227,7 @@ export default {
   requestNewPassword,
   fetchResetPasswordUser,
   resetUserPassword,
-  adddBulkTeacher
+  adddBulkTeacher,
+  resetMyPassword,
+  deleteAccount
 };

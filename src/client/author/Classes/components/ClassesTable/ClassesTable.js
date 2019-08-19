@@ -186,7 +186,7 @@ class ClassesTable extends Component {
   };
 
   onChangeShowActive = e => {
-    this.setState({ showActive: e.target.checked }, this.loadFilteredList);
+    this.setState({ showActive: e.target.checked, currentPage: 1 }, this.loadFilteredList);
   };
 
   changeActionMode = e => {
@@ -412,7 +412,9 @@ class ClassesTable extends Component {
     }
 
     if (!filtersData.find(item => item.filtersColumn === "active")) {
-      search.active = showActive ? [1] : [0];
+      if (showActive) {
+        search.active = [1];
+      }
     }
 
     for (let i = 0; i < filtersData.length; i++) {
@@ -669,6 +671,7 @@ class ClassesTable extends Component {
 
           <RightFilterDiv>
             <Checkbox
+              checked={this.state.showActive}
               disabled={!!filtersData.find(item => item.filtersColumn === "active")}
               style={{ margin: "auto" }}
               value={showActive}

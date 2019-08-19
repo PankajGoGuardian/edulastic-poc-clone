@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get, uniq as _uniq, flatMap, map, uniqBy } from "lodash";
+import { cloneDeep, get, uniq as _uniq, flatMap, flatten, map, groupBy, some, sumBy } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -52,10 +52,11 @@ const getStandardWiseSummary = (question, point) => {
   return standardSummary;
 };
 
-export const createSummaryData = (items, scoring) => {
+export const createSummaryData = (items = [], scoring) => {
   const summary = {
     totalPoints: 0,
     totalQuestions: 0,
+    totalItems: items.length,
     standards: []
   };
   for (const item of items) {
@@ -70,7 +71,21 @@ export const createSummaryData = (items, scoring) => {
         summary.standards.push(...standardSummary);
       }
     }
-    summary.standards = uniqBy(summary.standards, "identifier");
+    if (summary.standards.length > 0) {
+      let standardSummary = groupBy(summary.standards, "curriculumId");
+      const standardSumm = map(standardSummary, (objects, curriculumId) => {
+        const obj = groupBy(objects, "identifier");
+        const standardObj = map(obj, (elements, identifier) => ({
+          curriculumId,
+          identifier,
+          totalQuestions: sumBy(elements, "totalQuestions"),
+          totalPoints: sumBy(elements, "totalPoints"),
+          isEquivalentStandard: !some(elements, ["isEquivalentStandard", false])
+        }));
+        return standardObj;
+      });
+      summary.standards = flatten(standardSumm);
+    }
     summary.totalPoints += itemPoints;
     summary.totalQuestions += itemTotalQuestions;
   }

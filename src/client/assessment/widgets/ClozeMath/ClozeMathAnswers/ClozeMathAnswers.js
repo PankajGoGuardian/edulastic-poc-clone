@@ -28,6 +28,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     const mathValidAnswers = cloneDeep(get(newItem, "validation.validResponse.value", []));
     const inputValidAnswers = cloneDeep(get(newItem, "validation.validResponse.textinput.value", []));
     const dropdownValidAnswers = cloneDeep(get(newItem, "validation.validResponse.dropdown.value", []));
+    const mathUnitValidAnswers = cloneDeep(get(newItem, "validation.validResponse.mathUnits.value", []));
 
     if (!newItem.validation.altResponses) {
       newItem.validation.altResponses = [];
@@ -53,11 +54,19 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
       });
     }
 
+    if (!isEmpty(mathUnitValidAnswers)) {
+      mathUnitValidAnswers.map(answer => {
+        answer.value = "";
+        return answer;
+      });
+    }
+
     newItem.validation.altResponses.push({
       score: 1,
       value: mathValidAnswers,
       textinput: { value: inputValidAnswers },
-      dropdown: { value: dropdownValidAnswers }
+      dropdown: { value: dropdownValidAnswers },
+      mathUnits: { value: mathUnitValidAnswers }
     });
     setQuestionData(newItem);
     setCorrectTab(correctTab + 1);
@@ -68,20 +77,8 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     if (newItem.validation.altResponses) {
       newItem.validation.altResponses.splice(tabIndex, 1);
     }
-    if (newItem.validation.alt_inputs) {
-      newItem.validation.alt_inputs.splice(tabIndex, 1);
-    }
-    if (newItem.validation.alt_dropdowns) {
-      newItem.validation.alt_dropdowns.splice(tabIndex, 1);
-    }
     if (isEmpty(newItem.validation.altResponses)) {
       delete newItem.validation.altResponses;
-    }
-    if (isEmpty(newItem.validation.alt_inputs)) {
-      delete newItem.validation.alt_inputs;
-    }
-    if (isEmpty(newItem.validation.alt_dropdowns)) {
-      delete newItem.validation.alt_dropdowns;
     }
     setQuestionData(newItem);
     if (correctTab >= 1) {

@@ -107,3 +107,9 @@
   height: 100%;
   width: auto;
 }
+
+.marks-container-title {
+  transform: translate(4px, 0);
+  font-weight: 700;
+  opacity: 1 !important;
+}

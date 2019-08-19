@@ -132,8 +132,19 @@ const evaluator = async ({ userResponse, validation }) => {
   const { validResponse, altResponses = [], scoringType, minScoreIfAttempted: attemptScore } = validation;
   const answers = [validResponse, ...altResponses];
 
+  // if its math unit type, derive answer by making into a string.
+  if (userResponse.expression || userResponse.unit) {
+    const expression = userResponse.expression || "";
+    const unit = userResponse.unit || "";
+    if (expression.search("=") === -1) {
+      userResponse = expression + unit;
+    } else {
+      userResponse = expression.replace(/=/gm, `${unit}=`);
+    }
+  }
   let result;
 
+  // TODO: Why....? fix-this.
   switch (scoringType) {
     case ScoringType.EXACT_MATCH:
     default:

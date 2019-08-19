@@ -9,7 +9,7 @@ import { questionType as constantsQuestionType } from "@edulastic/constants";
 import { withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
-import { Row, Col, Switch, Layout, Select, Button, Modal } from "antd";
+import { Row, Col, Layout, Button, Modal, Pagination } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -46,7 +46,16 @@ import {
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
-import { Content, ItemDetailWrapper, PreviewContent, ButtonClose, BackLink, ContentWrapper } from "./styled";
+import {
+  Content,
+  ItemDetailWrapper,
+  PreviewContent,
+  ButtonClose,
+  BackLink,
+  ContentWrapper,
+  PassageNavigation,
+  AddRemoveButtonWrapper
+} from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
@@ -412,8 +421,13 @@ class Container extends Component {
     });
   };
 
-  goToItem = id => {
-    this.props.history.push({ pathname: `/author/items/${id}/item-detail`, state: { resetView: false } });
+  goToItem = page => {
+    const { passage, history } = this.props;
+    const _id = passage.testItems[page - 1];
+    history.push({
+      pathname: `/author/items/${_id}/item-detail`,
+      state: { resetView: false }
+    });
   };
 
   handleCollapse = dir => {
@@ -546,7 +560,6 @@ class Container extends Component {
       .some(widgetType => widgetType === questionType.PASSAGE);
 
     const layoutType = isPassage ? COMPACT : DEFAULT;
-
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
         <ConfirmationModal
@@ -626,45 +639,30 @@ class Container extends Component {
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
                   <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
-                    {item.canAddMultipleItems && passage && (
-                      <Row type="flex" style={{ width: 145 }} justify="end">
-                        <Col span={12}>
-                          {!!passageTestItems.length && (
-                            <Select
-                              value={item._id}
-                              onChange={v => {
-                                this.goToItem(v);
-                              }}
-                            >
-                              {passage.testItems.map((v, ind) => (
-                                <Select.Option value={v}>{ind + 1}</Select.Option>
-                              ))}
-                            </Select>
-                          )}
-                        </Col>
-                        <Col span={12}>
-                          {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
-                            <Button.Group>
-                              <Button
-                                disabled={this.props.itemDeleting}
-                                onClick={this.addItemToPassage}
-                                style={{ display: "inline" }}
-                                size="small"
-                              >
-                                +
-                              </Button>
-                              <Button
-                                disabled={this.props.itemDeleting}
-                                onClick={this.handleRemoveItemRequest}
-                                style={{ display: "inline" }}
-                                size="small"
-                              >
-                                -
-                              </Button>
-                            </Button.Group>
-                          )}
-                        </Col>
-                      </Row>
+                    {item.canAddMultipleItems && passage && view !== "metadata" && (
+                      <PassageNavigation>
+                        {!!passageTestItems.length && (
+                          <>
+                            <span>PASSAGE ITEMS </span>
+                            <Pagination
+                              total={passageTestItems.length}
+                              pageSize={1}
+                              defaultCurrent={passageTestItems.findIndex(i => i === item._id) + 1}
+                              onChange={this.goToItem}
+                            />
+                          </>
+                        )}
+                        {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
+                          <AddRemoveButtonWrapper>
+                            <Button disabled={this.props.itemDeleting} onClick={this.handleRemoveItemRequest}>
+                              - ITEM
+                            </Button>
+                            <Button disabled={this.props.itemDeleting} onClick={this.addItemToPassage}>
+                              + ITEM
+                            </Button>
+                          </AddRemoveButtonWrapper>
+                        )}
+                      </PassageNavigation>
                     )}
                     {view === "preview" && (
                       <RightActionButtons col={12}>

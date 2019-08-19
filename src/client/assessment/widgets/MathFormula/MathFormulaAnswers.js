@@ -168,6 +168,14 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
+  const toggleAdditional = val => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.showAdditional = val;
+      })
+    );
+  };
+
   return (
     <CorrectAnswers
       onTabChange={setCorrectTab}
@@ -192,6 +200,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
             onChangePoints={points => handleChangeCorrectPoints(points)}
             onChangeKeypad={handleKeypadMode}
             keypadOffset={keypadOffset}
+            toggleAdditional={toggleAdditional}
           />
         )}
         {item.validation.altResponses &&
@@ -212,6 +221,7 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
                   onChangePoints={points => handleChangeAltPoints(points, i)}
                   onChangeKeypad={handleKeypadMode}
                   keypadOffset={keypadOffset}
+                  toggleAdditional={toggleAdditional}
                 />
               );
             }

@@ -18,7 +18,8 @@ class MathFormulaAnswer extends Component {
       onChangeKeypad,
       onChangeAllowedOptions,
       keypadOffset,
-      onChangeShowDropdown
+      onChangeShowDropdown,
+      toggleAdditional
     } = this.props;
 
     const handleChangeMethod = index => (prop, val) => {
@@ -47,6 +48,7 @@ class MathFormulaAnswer extends Component {
             onAdd={onAdd}
             keypadOffset={keypadOffset}
             style={cssStyles}
+            toggleAdditional={toggleAdditional}
             {...method}
           />
         ))}
@@ -65,7 +67,8 @@ MathFormulaAnswer.propTypes = {
   keypadOffset: PropTypes.number.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  toggleAdditional: PropTypes.func
 };
 
 export default withNamespaces("assessment")(MathFormulaAnswer);

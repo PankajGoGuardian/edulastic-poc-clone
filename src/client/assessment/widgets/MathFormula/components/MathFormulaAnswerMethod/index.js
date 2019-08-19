@@ -55,9 +55,10 @@ const MathFormulaAnswerMethod = ({
   style = {},
   keypadOffset,
   allowedVariables,
+  toggleAdditional,
   t
 }) => {
-  const [isActive, toggleAdditional] = useState(false);
+  const showAdditional = get(item, "showAdditional", false);
   useEffect(() => {
     const newOptions = clearOptions(method, { ...options });
 
@@ -400,11 +401,11 @@ const MathFormulaAnswerMethod = ({
         </StyledRow>
       )}
 
-      <AdditionalToggle active={isActive} onClick={() => toggleAdditional(!isActive)}>
+      <AdditionalToggle active={showAdditional} onClick={() => toggleAdditional(!showAdditional)}>
         {t("component.math.additionalOptions")}
       </AdditionalToggle>
 
-      {isActive ? (
+      {showAdditional ? (
         <AdditionalContainer>
           <FlexContainer justifyContent="space-between" alignItems="none">
             <AdditionalCompareUsing>
@@ -463,7 +464,8 @@ MathFormulaAnswerMethod.propTypes = {
   index: PropTypes.number.isRequired,
   allowedVariables: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  keypadOffset: PropTypes.number.isRequired
+  keypadOffset: PropTypes.number.isRequired,
+  toggleAdditional: PropTypes.func
 };
 
 MathFormulaAnswerMethod.defaultProps = {

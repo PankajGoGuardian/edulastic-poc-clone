@@ -55,7 +55,7 @@ const MathFormulaAnswerMethod = ({
   style = {},
   keypadOffset,
   allowedVariables,
-  toggleAdditional: _toggleAdditional,
+  toggleAdditional,
   t
 }) => {
   const showAdditional = get(item, "showAdditional", false);
@@ -401,7 +401,7 @@ const MathFormulaAnswerMethod = ({
         </StyledRow>
       )}
 
-      <AdditionalToggle active={showAdditional} onClick={() => _toggleAdditional(!showAdditional)}>
+      <AdditionalToggle active={showAdditional} onClick={() => toggleAdditional(!showAdditional)}>
         {t("component.math.additionalOptions")}
       </AdditionalToggle>
 

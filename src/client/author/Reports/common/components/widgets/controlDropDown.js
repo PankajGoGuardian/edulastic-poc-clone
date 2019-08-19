@@ -37,8 +37,6 @@ const ControlDropDown = ({
   const [selected, setSelected] = useState(by);
   const [isActive, setActive] = useState(false);
 
-  const toggleDropdown = () => setActive(prevState => !prevState);
-
   useInternalEffect(() => {
     let item = null;
     if (data.length) {
@@ -78,8 +76,8 @@ const ControlDropDown = ({
 
   const handleMenuClick = useCallback(
     event => {
-      toggleDropdown();
       const _selected = { key: event.key, title: event.item.props.title };
+      setActive(false);
       setSelected(_selected);
       if (selectCB) {
         selectCB(event, _selected, comData);
@@ -88,10 +86,16 @@ const ControlDropDown = ({
     [selectCB]
   );
 
+  const title = selected.title || prefix;
+
   return (
     <StyledDiv className={`${containerClassName} control-dropdown`}>
-      <Dropdown overlay={partial(CustomMenu, className, data, handleMenuClick, prefix, selected)} trigger={trigger}>
-        <Button title={prefix} onClick={toggleDropdown}>
+      <Dropdown
+        onVisibleChange={setActive}
+        overlay={partial(CustomMenu, className, data, handleMenuClick, prefix, selected)}
+        trigger={trigger}
+      >
+        <Button title={title}>
           {(showPrefixOnSelected ? prefix + " " : "") + selected.title}
           {isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
         </Button>

@@ -142,6 +142,8 @@ const AutocompleteDropDown = ({
 
   const dataSource = buildDropDownData(dropDownData);
 
+  const title = selected.title || prefix;
+
   return (
     <StyledAutocompleteDropDownContainer className={`${containerClassName} autocomplete-dropdown`}>
       <AutoComplete
@@ -157,7 +159,7 @@ const AutocompleteDropDown = ({
         ref={autoRef}
       >
         <Input
-          title={prefix || ""}
+          title={title}
           suffix={<Icon type={isActive ? iconActiveType : iconType} className="" />}
           placeholder={selected.title}
         />

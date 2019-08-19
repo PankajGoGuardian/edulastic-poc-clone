@@ -2,7 +2,7 @@ import React from "react";
 import { Icon, message, Button, Menu } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, unset, pickBy, identity, isEmpty } from "lodash";
+import { get, unset, pickBy, identity, uniqBy } from "lodash";
 import moment from "moment";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { AddNewUserModal } from "../Common/AddNewUser";
@@ -80,7 +80,16 @@ class ClassEnrollmentTable extends React.Component {
   onSelectChange = selectedRowKeys => {
     const { classEnrollmentData } = this.props;
     const selectedUserIds = selectedRowKeys.map(item => item.split(" ")[0]);
-    const selectedUsersInfo = classEnrollmentData.filter(data => selectedUserIds.includes(data.user._id));
+    const selectedClassCodes = selectedRowKeys.map(item => item.split(" ")[1]);
+    const selectedUsersInfo = classEnrollmentData.filter(data => {
+      const code = get(data, "group.code");
+      const userId = get(data, "user._id");
+      return (
+        selectedUserIds.includes(userId) &&
+        selectedClassCodes.includes(code) &&
+        selectedUserIds.indexOf(code) == selectedClassCodes.indexOf(userId)
+      );
+    });
     this.setState({ selectedRowKeys, selectedUserIds, selectedUsersInfo });
   };
 
@@ -88,6 +97,7 @@ class ClassEnrollmentTable extends React.Component {
     const { setAddStudentsToOtherClassVisiblity } = this.props;
     const { selectedRowKeys, selectedUsersInfo } = this.state;
     const isInstructor = selectedUsersInfo.some(user => user.role === "teacher");
+    const areUsersOfDifferentClasses = uniqBy(selectedUsersInfo, "group.code").length !== 1;
     if (e.key === "remove students") {
       if (selectedRowKeys.length == 0) {
         message.error("Select 1 or more Student to remove");
@@ -103,9 +113,9 @@ class ClassEnrollmentTable extends React.Component {
     } else if (e.key === "move users") {
       if (selectedRowKeys.length == 0) {
         message.error("You have not selected any users to move");
-      } else if (selectedRowKeys.length > 1) {
-        message.error("You can only move one user at a time");
-      } else if (selectedRowKeys.length == 1) {
+      } else if (areUsersOfDifferentClasses && selectedRowKeys.length !== 1) {
+        message.error("You can only move users of same class");
+      } else if (selectedRowKeys.length >= 1) {
         this.setState({ moveUsersModal: true });
         setAddStudentsToOtherClassVisiblity(true);
       }

@@ -24,6 +24,7 @@ function create(board, logPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...logPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.LOGARITHM],
+    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

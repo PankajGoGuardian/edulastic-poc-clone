@@ -24,6 +24,7 @@ function create(board, secantPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...secantPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.SECANT],
+    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

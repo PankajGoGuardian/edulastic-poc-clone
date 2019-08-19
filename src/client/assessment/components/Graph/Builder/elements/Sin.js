@@ -24,6 +24,7 @@ function create(board, sinPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...sinPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.SIN],
+    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

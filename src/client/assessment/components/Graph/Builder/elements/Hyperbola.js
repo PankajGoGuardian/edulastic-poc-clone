@@ -13,6 +13,7 @@ function create(board, hypPoints, id = null) {
   const newLine = board.$board.create("hyperbola", hypPoints, {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.HYPERBOLA],
+    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

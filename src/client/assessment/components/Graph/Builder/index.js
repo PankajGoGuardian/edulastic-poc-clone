@@ -1283,6 +1283,7 @@ class Board {
                   {
                     ...Hyperbola.parseConfig(),
                     ...attrs,
+                    strokeWidth: 2,
                     id: el.id
                   }
                 );
@@ -1311,6 +1312,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  strokeWidth: 2,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1343,6 +1345,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  strokeWidth: 2,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1375,6 +1378,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  strokeWidth: 2,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1407,6 +1411,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  strokeWidth: 2,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1439,6 +1444,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  strokeWidth: 2,
                   id: el.id
                 });
                 newElem.type = 95;
@@ -1468,6 +1474,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  strokeWidth: 2,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1499,6 +1506,7 @@ class Board {
                 const newElem = Parabola.renderElement(this, points, {
                   ...props,
                   ...attrs,
+                  strokeWidth: 2,
                   id: el.id
                 });
                 newElem.labelIsVisible = el.labelIsVisible;

@@ -42,6 +42,7 @@ function create(board, polynomPoints, id = null) {
   const newPolynom = board.$board.create("functiongraph", [makeCallback(...polynomPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.POLYNOM],
+    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

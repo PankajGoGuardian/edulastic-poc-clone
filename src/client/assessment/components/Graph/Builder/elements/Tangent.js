@@ -24,6 +24,7 @@ function create(board, tangentPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...tangentPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.TANGENT],
+    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

@@ -1,16 +1,10 @@
-<!--- Provide a general summary of your changes in the Title above -->
-
-#### Description
-
-<!--- Describe your changes in detail -->
-
 <!-- Add the JIRA ticket here --->
 
 ### JIRA TICKET
 
 [EV-<ticket_number>](https://snapwiz.atlassian.net/browse/EV-<ticket_number>)
 
-#### Summary of Change
+#### Description
 
 <!-- Add a brief description of how it was fixed or implemented-->
 

@@ -323,33 +323,43 @@ class StudentSignup extends React.Component {
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
                     {method !== GOOGLE && method !== OFFICE && this.renderFormHeader()}
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                    !isSignupUsingDaURL ? (
-                      <FormBody>
-                        <Col span={20} offset={2}>
-                          <h5 align="center">
-                            {method !== GOOGLE && method !== OFFICE && t("component.signup.formboxheading")}
-                            {(method === GOOGLE || method === OFFICE) && t("component.signup.formboxheadinggoole")}
-                          </h5>
-                          {(method === GOOGLE || method === OFFICE) && (
-                            <Description>{t("component.signup.codeFieldDesc")}</Description>
-                          )}
-                          <Form onSubmit={this.handleSubmit}>
-                            {method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()}
-                            {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}
-                            <FormItem>
+                    <FormBody>
+                      <Col span={20} offset={2}>
+                        <h5 align="center">
+                          {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
+                          !isSignupUsingDaURL
+                            ? method !== GOOGLE && method !== OFFICE && t("component.signup.formboxheading")
+                            : null}
+                          {(method === GOOGLE || method === OFFICE) && t("component.signup.formboxheadinggoole")}
+                        </h5>
+                        {(method === GOOGLE || method === OFFICE) && (
+                          <Description>{t("component.signup.codeFieldDesc")}</Description>
+                        )}
+                        <Form onSubmit={this.handleSubmit}>
+                          {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
+                          !isSignupUsingDaURL
+                            ? method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()
+                            : null}
+                          {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}
+                          <FormItem>
+                            {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
+                            !isSignupUsingDaURL
+                              ? method !== GOOGLE &&
+                                method !== OFFICE && (
+                                  <RegisterButton data-cy="signup" type="primary" htmlType="submit">
+                                    {t("component.signup.student.signupstudentbtn")}
+                                  </RegisterButton>
+                                )
+                              : null}
+                            {(method === GOOGLE || method === OFFICE) && (
                               <RegisterButton data-cy="signup" type="primary" htmlType="submit">
-                                {method !== GOOGLE &&
-                                  method !== OFFICE &&
-                                  t("component.signup.student.signupstudentbtn")}
-                                {(method === GOOGLE || method === OFFICE) &&
-                                  t("component.signup.student.signupentercode")}
+                                {t("component.signup.student.signupentercode")}
                               </RegisterButton>
-                            </FormItem>
-                          </Form>
-                        </Col>
-                      </FormBody>
-                    ) : null}
+                            )}
+                          </FormItem>
+                        </Form>
+                      </Col>
+                    </FormBody>
                   </FormWrapper>
                 </Col>
               </Row>

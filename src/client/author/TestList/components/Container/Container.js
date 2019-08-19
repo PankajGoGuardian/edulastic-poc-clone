@@ -625,12 +625,14 @@ class TestList extends Component {
             renderFilter={() => (
               <StyleChangeWrapper>
                 <IconTile
+                  data-cy="tileView"
                   onClick={() => this.handleStyleChange("tile")}
                   width={18}
                   height={18}
                   color={blockStyle === "tile" ? white : grey}
                 />
                 <IconList
+                  data-cy="listView"
                   onClick={() => this.handleStyleChange("horizontal")}
                   width={18}
                   height={18}

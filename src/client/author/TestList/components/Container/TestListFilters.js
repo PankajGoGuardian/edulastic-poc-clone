@@ -138,6 +138,7 @@ const TestListFilters = ({
           )}
           <SubTitle>{filterItem.title}</SubTitle>
           <Select
+            data-cy={filterItem.title}
             showSearch={filterItem.showSearch}
             onSearch={filterItem.onSearch && filterItem.onSearch}
             mode={filterItem.mode}

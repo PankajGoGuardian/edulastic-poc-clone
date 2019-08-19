@@ -16,6 +16,14 @@ export default class TestLibrary {
     this.assignPage = new TestAssignPage();
   }
 
+  clickOnTileView = () => {
+    cy.get('[data-cy="tileView"]').click();
+  };
+
+  clickOnListView = () => {
+    cy.get('[data-cy="listView"]').click();
+  };
+
   clickOnAuthorTest = () => {
     cy.get("button")
       .contains("Author Test")

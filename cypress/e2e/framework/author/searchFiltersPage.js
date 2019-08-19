@@ -17,6 +17,6 @@ export default class SearchFilters {
   clearAll = () => cy.contains("Clear all").click({ force: true });
 
   setCollection = collection => {
-    CypressHelper.selectDropDownByAttribute("selectCollection", collection);
+    CypressHelper.selectDropDownByAttribute("Collections", collection);
   };
 }

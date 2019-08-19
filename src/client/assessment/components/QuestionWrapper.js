@@ -368,6 +368,7 @@ class QuestionWrapper extends Component {
                   width: "-webkit-fill-available",
                   display: "flex",
                   boxShadow: "none",
+                  maxWidth: "65%", //to prevent content overflow in student side review
                   paddingRight: layoutType === COMPACT ? "100px" : null
                 }}
                 flowLayout={flowLayout}

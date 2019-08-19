@@ -368,8 +368,13 @@ const checkEmailPolicy = (policy, role, email) => {
 function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
 
+  let districtId;
+  if (districtPolicy) {
+    districtId = districtPolicy.orgId;
+  }
+
   try {
-    const { name, email, password, role, classCode, policyViolation, districtId } = payload;
+    const { name, email, password, role, classCode, policyViolation } = payload;
     let nameList = name.split(" ");
     nameList = nameList.filter(item => (item && item.trim() ? true : false));
     if (!nameList.length) {
@@ -552,6 +557,13 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
+  const districtPolicy = yield select(signupDistrictPolicySelector);
+  let districtId;
+  if (districtPolicy) {
+    localStorage.setItem("thirdPartySignOnDistrictPolicy", JSON.stringify(districtPolicy));
+    districtId = districtPolicy.orgId;
+  }
+
   try {
     let classCode = "";
     let role = "";
@@ -568,7 +580,12 @@ function* googleLogin({ payload }) {
     }
 
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "googleSignOn", role });
+      const validate = yield call(authApi.validateClassCode, {
+        classCode,
+        signOnMethod: "googleSignOn",
+        role,
+        districtId
+      });
     }
 
     const res = yield call(authApi.googleLogin);
@@ -579,6 +596,12 @@ function* googleLogin({ payload }) {
 }
 
 function* googleSSOLogin({ payload }) {
+  let districtPolicy = localStorage.getItem("thirdPartySignOnDistrictPolicy");
+  if (districtPolicy) {
+    districtPolicy = JSON.parse(districtPolicy);
+    payload.districtId = districtPolicy.orgId;
+  }
+
   try {
     if (payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
@@ -592,9 +615,19 @@ function* googleSSOLogin({ payload }) {
     yield call(message.error, get(e, "data.message", "Google Login failed"));
     yield put(push("/login"));
   }
+  localStorage.removeItem("thirdPartySignOnRole");
+  localStorage.removeItem("thirdPartySignOnClassCode");
+  localStorage.removeItem("thirdPartySignOnDistrictPolicy");
 }
 
 function* msoLogin({ payload }) {
+  const districtPolicy = yield select(signupDistrictPolicySelector);
+  let districtId;
+  if (districtPolicy) {
+    localStorage.setItem("thirdPartySignOnDistrictPolicy", JSON.stringify(districtPolicy));
+    districtId = districtPolicy.orgId;
+  }
+
   try {
     let classCode = "";
     let role = "";
@@ -610,7 +643,12 @@ function* msoLogin({ payload }) {
       }
     }
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "office365SignOn", role });
+      const validate = yield call(authApi.validateClassCode, {
+        classCode,
+        signOnMethod: "office365SignOn",
+        role,
+        districtId
+      });
     }
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
@@ -620,6 +658,12 @@ function* msoLogin({ payload }) {
 }
 
 function* msoSSOLogin({ payload }) {
+  let districtPolicy = localStorage.getItem("thirdPartySignOnDistrictPolicy");
+  if (districtPolicy) {
+    districtPolicy = JSON.parse(districtPolicy);
+    payload.districtId = districtPolicy.orgId;
+  }
+
   try {
     if (payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
@@ -633,6 +677,9 @@ function* msoSSOLogin({ payload }) {
     yield call(message.error, get(e, "data.message", "MSO Login failed"));
     yield put(push("/login"));
   }
+  localStorage.removeItem("thirdPartySignOnRole");
+  localStorage.removeItem("thirdPartySignOnClassCode");
+  localStorage.removeItem("thirdPartySignOnDistrictPolicy");
 }
 
 function* cleverLogin({ payload }) {

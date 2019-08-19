@@ -2,7 +2,7 @@ import { ScoringType } from "./const/scoring";
 
 // exact-match evaluator
 const exactMatchEvaluator = (
-  userResponse = [],
+  userResponse,
   validAnswer,
   altAnswers,
   { automarkable, minScoreIfAttempted, maxScore }

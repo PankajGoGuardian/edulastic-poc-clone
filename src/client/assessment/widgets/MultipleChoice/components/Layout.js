@@ -73,6 +73,12 @@ class Layout extends Component {
       }
     ];
 
+    const stemNumerationLayout = [
+      { value: "number", label: t("component.options.numerical") },
+      { value: "upper-alpha", label: t("component.options.uppercase") },
+      { value: "lower-alpha", label: t("component.options.lowercase") }
+    ];
+
     return (
       <Question
         section="advanced"
@@ -121,7 +127,24 @@ class Layout extends Component {
             <FontSizeSelect onChange={fontsize => changeUiStyle("fontsize", fontsize)} value={uiStyle.fontsize} />
           </Col>
         </Row>
-
+        <Row gutter={60}>
+          <Col md={12}>
+            <Label>{t("component.options.stemNumeration")}</Label>
+            <Select
+              size="large"
+              style={{ width: "100%" }}
+              onChange={val => changeUiStyle("stemNumeration", val)}
+              value={uiStyle.stemNumeration}
+              data-cy="stemNum"
+            >
+              {stemNumerationLayout.map(option => (
+                <Select.Option data-cy={option.value} key={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+        </Row>
         {uiStyle.type === "block" && (
           <Row gutter={60}>
             <Col md={12}>

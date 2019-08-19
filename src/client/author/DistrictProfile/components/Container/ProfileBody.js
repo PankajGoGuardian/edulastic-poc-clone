@@ -330,6 +330,7 @@ const ProfileContentWrapper = styled.div`
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   padding: 20px;
+  overflow:hidden;
 
   @media (max-width: ${extraDesktopWidth}) {
     width: 800px;

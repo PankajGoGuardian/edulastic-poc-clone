@@ -127,7 +127,7 @@ class Layout extends Component {
         <Subtitle>{t("component.options.display")}</Subtitle>
 
         <Row gutter={60}>
-          <Col md={12}>
+          <Col md={8}>
             <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
@@ -143,33 +143,29 @@ class Layout extends Component {
             </Select>
           </Col>
 
-          <Col md={12}>
-            <Row gutter={8}>
-              <Col md={12}>
-                <Label>{t("component.options.defaultWidth")}</Label>
-                <Input
-                  type="number"
-                  size="large"
-                  value={widthpx || uiStyle.minWidth || minWidth}
-                  onChange={this.onChangeWidthPx}
-                  onBlur={this.handleDefaultWidthBlur}
-                  max={maxWidth}
-                  min={minWidth}
-                />
-              </Col>
-              <Col md={12}>
-                <Label>{t("component.options.defaultHeight")}</Label>
-                <Input
-                  type="number"
-                  size="large"
-                  value={heightpx || uiStyle.heightpx || minHeight}
-                  onChange={this.onChangeHeightPx}
-                  onBlur={this.handleDefaultHeightBlur}
-                  max={maxHeight}
-                  min={minHeight}
-                />
-              </Col>
-            </Row>
+          <Col md={8}>
+            <Label>{t("component.options.defaultWidth")}</Label>
+            <Input
+              type="number"
+              size="large"
+              value={widthpx || uiStyle.minWidth || minWidth}
+              onChange={this.onChangeWidthPx}
+              onBlur={this.handleDefaultWidthBlur}
+              max={maxWidth}
+              min={minWidth}
+            />
+          </Col>
+          <Col md={8}>
+            <Label>{t("component.options.defaultHeight")}</Label>
+            <Input
+              type="number"
+              size="large"
+              value={heightpx || uiStyle.heightpx || minHeight}
+              onChange={this.onChangeHeightPx}
+              onBlur={this.handleDefaultHeightBlur}
+              max={maxHeight}
+              min={minHeight}
+            />
           </Col>
         </Row>
         <Row gutter={60}>

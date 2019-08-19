@@ -101,7 +101,7 @@ class SchoolAdminTable extends Component {
         },
         render: (text, record, index) => {
           let name = getFullNameFromAsString(record._source);
-          return name ? name : "";
+          return name.split(" ").includes("Anonymous") ? "-" : name;
         },
         width: 200
       },

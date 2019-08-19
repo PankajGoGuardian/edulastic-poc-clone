@@ -270,10 +270,7 @@ class StudentSignup extends React.Component {
     const isUserNameAndPasswordAllowed =
       (isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") || !isSignupUsingDaURL) &&
       method !== GOOGLE &&
-      method !== OFFICE
-        ? true
-        : false;
-
+      method !== OFFICE;
     return (
       <div>
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}

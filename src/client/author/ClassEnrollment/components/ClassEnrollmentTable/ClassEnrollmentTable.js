@@ -25,12 +25,14 @@ import { getUserOrgId, getUser } from "../../../src/selectors/user";
 import { getFullNameFromString } from "../../../../common/utils/helpers";
 import { getClassEnrollmentUsersSelector } from "../../ducks";
 
-import AddStudentsToOtherClass from "../../../Student/components/StudentTable/AddStudentToOtherClass";
+import { AddStudentsToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
+import { AddStudentsToOtherClassModal as MoveStudentsToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
 import {
   getAddStudentsToOtherClassSelector,
   setAddStudentsToOtherClassVisiblityAction,
   addStudentsToOtherClassAction,
-  fetchClassDetailsUsingCodeAction
+  fetchClassDetailsUsingCodeAction,
+  moveUsersToOtherClassAction
 } from "../../../Student/ducks";
 
 class ClassEnrollmentTable extends React.Component {
@@ -50,7 +52,9 @@ class ClassEnrollmentTable extends React.Component {
       confirmText: "",
       defaultText: "REMOVE",
       addUserFormModalVisible: false,
-      removeStudentsModalVisible: false
+      removeStudentsModalVisible: false,
+      selectedUserIds: [],
+      selectedUsersInfo: []
     };
   }
 
@@ -59,26 +63,29 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   renderUserNames() {
-    const { selectedRowKeys } = this.state;
+    const { selectedUsersInfo } = this.state;
     return (
       <UserNameContainer>
-        {selectedRowKeys.map(username => (
-          <UserName key={username}>{username}</UserName>
-        ))}
+        {selectedUsersInfo.map(item => {
+          const username = get(item, "user.username");
+          return <UserName key={username}>{username}</UserName>;
+        })}
       </UserNameContainer>
     );
   }
   onInputChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
 
   onSelectChange = selectedRowKeys => {
-    this.setState({ selectedRowKeys });
+    const { classEnrollmentData } = this.props;
+    const selectedUserIds = selectedRowKeys.map(item => item.split(" ")[0]);
+    const selectedUsersInfo = classEnrollmentData.filter(data => selectedUserIds.includes(data.user._id));
+    this.setState({ selectedRowKeys, selectedUserIds, selectedUsersInfo });
   };
 
   changeActionMode = e => {
-    const { classEnrollmentData, setAddStudentsToOtherClassVisiblity } = this.props;
-    const { selectedRowKeys } = this.state;
-    const selectedUsers = classEnrollmentData.filter(data => selectedRowKeys.includes(data.user.username));
-    const isInstructor = selectedUsers.some(user => user.role === "teacher");
+    const { setAddStudentsToOtherClassVisiblity } = this.props;
+    const { selectedRowKeys, selectedUsersInfo } = this.state;
+    const isInstructor = selectedUsersInfo.some(user => user.role === "teacher");
     if (e.key === "remove students") {
       if (selectedRowKeys.length == 0) {
         message.error("Select 1 or more Student to remove");
@@ -94,10 +101,10 @@ class ClassEnrollmentTable extends React.Component {
     } else if (e.key === "move users") {
       if (selectedRowKeys.length == 0) {
         message.error("You have not selected any users to move");
-      } else if (selectedRowKeys.length > 0) {
-        this.setState({
-          moveUsersModalVisible: true
-        });
+      } else if (selectedRowKeys.length > 1) {
+        message.error("You can only move one user at a time");
+      } else if (selectedRowKeys.length == 1) {
+        setAddStudentsToOtherClassVisiblity(true);
       }
     } else if (e.key === "add students to other class") {
       if (selectedRowKeys.length == 0) {
@@ -163,11 +170,8 @@ class ClassEnrollmentTable extends React.Component {
   };
 
   confirmDeactivate = () => {
-    const { deleteAdminUser, classEnrollmentData } = this.props;
-    const { selectedRowKeys } = this.state;
-    const userIds = classEnrollmentData
-      .filter(data => selectedRowKeys.includes(data.user.username))
-      .map(item => item.user._id);
+    const { deleteAdminUser } = this.props;
+    const { selectedUserIds: userIds } = this.state;
     const o = {
       deleteReq: { userIds, role: "student" },
       listReq: this.getSearchQuery(),
@@ -175,13 +179,19 @@ class ClassEnrollmentTable extends React.Component {
     };
     deleteAdminUser(o);
     this.setState({
-      removeStudentsModalVisible: false
+      removeStudentsModalVisible: false,
+      selectedRowKeys: [],
+      selectedUserIds: [],
+      selectedUsersInfo: []
     });
   };
 
   onCancelRemoveStudentsModal = () => {
     this.setState({
-      removeStudentsModalVisible: false
+      removeStudentsModalVisible: false,
+      selectedRowKeys: [],
+      selectedUserIds: [],
+      selectedUsersInfo: []
     });
   };
 
@@ -341,7 +351,9 @@ class ClassEnrollmentTable extends React.Component {
       defaultText,
       confirmText,
       removeStudentsModalVisible,
-      addUserFormModalVisible
+      addUserFormModalVisible,
+      selectedUserIds,
+      selectedUsersInfo
     } = this.state;
     const {
       fetchClassDetailsUsingCode,
@@ -351,9 +363,12 @@ class ClassEnrollmentTable extends React.Component {
       addStudentsToOtherClassData,
       setAddStudentsToOtherClassVisiblity,
       putStudentsToOtherClass,
-      userOrgId
+      userOrgId,
+      moveUsersToOtherClass
     } = this.props;
+
     const tableDataSource = classEnrollmentData.map(item => {
+      const key = `${get(item, "user._id")} ${get(item, "group.code", "")}`;
       const role = get(item, "role", "");
       const code = get(item, "group.code", "");
       const name = get(item, "group.name", "");
@@ -362,6 +377,7 @@ class ClassEnrollmentTable extends React.Component {
       const lastName = get(item, "user.lastName", "");
       const username = get(item, "user.username", "");
       const obj = {
+        key,
         role,
         code,
         name,
@@ -370,9 +386,6 @@ class ClassEnrollmentTable extends React.Component {
       };
       return obj;
     });
-    const userDetails = !isEmpty(classEnrollmentData)
-      ? classEnrollmentData.filter(data => selectedRowKeys.includes(data.user.username)).map(item => item.user._id)
-      : [];
 
     const rowSelection = {
       selectedRowKeys,
@@ -501,7 +514,6 @@ class ClassEnrollmentTable extends React.Component {
         </StyledControlDiv>
         {SearchRows}
         <StyledTable
-          rowKey={record => record.username}
           rowSelection={rowSelection}
           dataSource={tableDataSource}
           columns={columnsData}
@@ -539,11 +551,30 @@ class ClassEnrollmentTable extends React.Component {
           />
         )}
 
-        <AddStudentsToOtherClass
+        <AddStudentsToOtherClassModal
+          titleText="Add Student(s) to another class"
+          buttonText="Add Student(s)"
           {...addStudentsToOtherClassData}
-          handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails })}
+          handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
           onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+        />
+
+        <MoveStudentsToOtherClassModal
+          titleText="Move Student(s) to another class"
+          buttonText="Move Student(s)"
+          {...addStudentsToOtherClassData}
+          handleSubmit={destinationClassCode =>
+            moveUsersToOtherClass({
+              districtId: userOrgId,
+              destinationClassCode,
+              sourceClassCode: selectedUsersInfo[0].group.code,
+              userDetails: selectedUserIds
+            })
+          }
+          onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
+          fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+          selectedUsersInfo={selectedUsersInfo}
         />
       </StyledTableContainer>
     );
@@ -563,7 +594,8 @@ const enhance = compose(
       deleteAdminUser: deleteAdminUserAction,
       setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
-      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction
+      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
+      moveUsersToOtherClass: moveUsersToOtherClassAction
     }
   )
 );

@@ -34,6 +34,10 @@ const FETCH_CLASS_DETAILS_SUCCESS = "[student] FETCH_CLASS_DETAILS_SUCCESS";
 const SET_MULTI_STUDENTS_PROVIDER = "[student] SET_MULTI_STUDENTS_PROVIDER";
 const RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE = "[student] RESET_FETCHED _CLASS_DETAILS_USING_CLASSCODE";
 
+const MOVE_USERS_TO_OTHER_CLASS = "[student] move users to another class";
+const MOVE_USERS_TO_OTHER_CLASS_SUCCESS = "[student] move users to another class success";
+const MOVE_USERS_TO_OTHER_CLASS_FAIL = "[student] move users to another class success";
+
 export const receiveStudentsListAction = createAction(RECEIVE_STUDENTLIST_REQUEST);
 export const receiveStudentsListSuccessAction = createAction(RECEIVE_STUDENTLIST_SUCCESS);
 export const receiveStudentsListErrorAction = createAction(RECEIVE_STUDENTLIST_ERROR);
@@ -61,6 +65,10 @@ export const fetchClassDetailsSuccess = createAction(FETCH_CLASS_DETAILS_SUCCESS
 
 export const setMultiStudentsProviderAction = createAction(SET_MULTI_STUDENTS_PROVIDER);
 export const resetFetchedClassDetailsAction = createAction(RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE);
+
+export const moveUsersToOtherClassAction = createAction(MOVE_USERS_TO_OTHER_CLASS);
+export const moveUsersToOtherClassSuccessAction = createAction(MOVE_USERS_TO_OTHER_CLASS_SUCCESS);
+export const moveUsersToOtherClassFailAction = createAction(MOVE_USERS_TO_OTHER_CLASS_FAIL);
 
 //selectors
 const stateStudentSelector = state => state.studentReducer;
@@ -155,7 +163,9 @@ const initialState = {
     successData: null,
     loading: false
   },
-  mutliStudentsProvider: "google"
+  mutliStudentsProvider: "google",
+  movingUsersToOtherClass: false,
+  movingUsersToOtherClassError: null
 };
 
 export const reducer = createReducer(initialState, {
@@ -291,6 +301,16 @@ export const reducer = createReducer(initialState, {
   },
   [RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE]: state => {
     state.addStudentsToOtherClass.destinationClassData = {};
+  },
+  [MOVE_USERS_TO_OTHER_CLASS]: state => {
+    state.movingUsersToOtherClass = true;
+  },
+  [MOVE_USERS_TO_OTHER_CLASS_SUCCESS]: state => {
+    state.movingUsersToOtherClass = false;
+  },
+  [MOVE_USERS_TO_OTHER_CLASS_FAIL]: (state, { payload }) => {
+    state.movingUsersToOtherClass = false;
+    state.movingUsersToOtherClassErro = payload.error;
   }
 });
 
@@ -378,6 +398,18 @@ function* fetchClassDetailsUsingCodeSaga({ payload }) {
     message.error(errorMessage);
   }
 }
+function* moveUsersToOtherClassSaga({ payload }) {
+  try {
+    const result = yield call(userApi.moveUsersToOtherClass, payload);
+    console.log("result", result);
+    // if (!result.status) yield put(moveUsersToOtherClassSuccessAction(result));
+    // else message.error(result.status);
+  } catch (err) {
+    // yield put(moveUsersToOtherClassFailAction("Error"));
+    const errorMessage = "Something went wrong. Please try again";
+    message.error(errorMessage);
+  }
+}
 
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_STUDENTLIST_REQUEST, receiveStudentsListSaga)]);
@@ -387,4 +419,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(ADD_MULTI_STUDENTS_REQUEST, addMultiStudentSaga)]);
   yield all([yield takeEvery(ADD_STUDENTS_TO_OTHER_CLASS, addStudentsToOtherClassSaga)]);
   yield all([yield takeEvery(FETCH_CLASS_DETAILS_USING_CODE, fetchClassDetailsUsingCodeSaga)]);
+  yield all([yield takeEvery(MOVE_USERS_TO_OTHER_CLASS, moveUsersToOtherClassSaga)]);
 }

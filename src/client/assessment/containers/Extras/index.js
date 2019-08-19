@@ -48,7 +48,7 @@ class Extras extends Component {
                 <QuestionTextArea
                   toolbarId="instructor_stimulus"
                   toolbarSize="SM"
-                  placeholder="Enter instructor stimulus"
+                  placeholder={t("component.options.enterDistractorRationaleQuestion")}
                   onChange={value => _change("instructorStimulus", value)}
                   value={get(item, "instructorStimulus", "")}
                 />
@@ -60,7 +60,7 @@ class Extras extends Component {
 
               <WidgetFRInput>
                 <QuestionTextArea
-                  placeholder="Enter sample answer"
+                  placeholder={t("component.options.enterSampleAnswer")}
                   toolbarId="sample_answer"
                   toolbarSize="SM"
                   onChange={value => _change("metadata.sampleAnswer", value)}

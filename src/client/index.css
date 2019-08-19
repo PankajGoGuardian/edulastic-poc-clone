@@ -894,6 +894,7 @@ input[type="checkbox"] {
 
 .response-btn,
 mathinput,
+mathunit,
 textdropdown,
 textinput {
   padding: 0 10px 0 0;
@@ -943,6 +944,10 @@ mathinput::after {
   content: "Math Input";
 }
 
+mathunit::after {
+  content: "Math w/ unit";
+}
+
 textdropdown::after {
   content: "Text Dropdown";
 }
@@ -952,6 +957,7 @@ textinput::after {
 }
 
 mathinput::before,
+mathunit::before,
 textdropdown::before,
 textinput::before {
   content: attr(responseIndex);

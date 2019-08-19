@@ -179,7 +179,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     const width = Math.min(splitWidth, 400);
     const ind = findIndex(newItem.responseContainers, container => container.id === answerId);
     if (ind === -1) {
-      const responseIds = newItem.responseIds;
+      const { responseIds } = newItem;
       const obj = {};
       Object.keys(responseIds).forEach(key => {
         const resp = responseIds[key].find(inp => inp.id === answerId);
@@ -238,14 +238,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
-  const handleAllowedVariables = mathInputIndex => variables => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.allowedVariables = draft.allowedVariables || {};
-        draft.allowedVariables[mathInputIndex] = variables;
-      })
-    );
-  };
+  // const handleAllowedVariables = mathInputIndex => variables => {
+  //   setQuestionData(
+  //     produce(item, draft => {
+  //       draft.allowedVariables = draft.allowedVariables || {};
+  //       draft.allowedVariables[mathInputIndex] = variables;
+  //     })
+  //   );
+  // };
 
   const handleAllowedOptions = mathInputIndex => (option, variables) => {
     setQuestionData(
@@ -256,11 +256,19 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
+  const toggleAdditional = val => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.showAdditional = val;
+      })
+    );
+  };
+
   const mathAnswers = get(item, "validation.validResponse.value", []);
   const inputAnswers = get(item, "validation.validResponse.textinput.value", []);
   const dropDownAnswers = get(item, "validation.validResponse.dropdown.value", []);
 
-  const { responseIds: responseIds } = item;
+  const { responseIds } = item;
 
   let orderedAnswers = [];
   if (responseIds) {
@@ -332,6 +340,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   onDelete={_deleteCorrectMethod}
                   answers={[answer]}
                   onChangeKeypad={onChangeKeypad}
+                  toggleAdditional={toggleAdditional}
                 />
               );
             }
@@ -349,6 +358,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   answers={[altAnswer]}
                   onChangePoints={_changeAltPoints(correctTab - 1)}
                   onChangeKeypad={onChangeKeypad}
+                  toggleAdditional={toggleAdditional}
                 />
               );
             }

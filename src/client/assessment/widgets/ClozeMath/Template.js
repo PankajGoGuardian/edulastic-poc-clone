@@ -48,13 +48,15 @@ class Template extends Component {
           newResponseId.inputs.push({ index, id });
         } else if (tagName === "mathinput") {
           newResponseId.maths.push({ index, id });
+        } else if (tagName === "mathunit") {
+          newResponseId.maths.push({ index, id });
         } else if (tagName === "textdropdown") {
           newResponseId.dropDowns.push({ index, id });
         }
       }
 
       $(parsedHTML)
-        .find("textinput, mathinput, textdropdown")
+        .find("textinput, mathinput, textdropdown", "mathunit")
         .each(findResponseIndexes);
 
       Object.keys(newResponseId).map(key => {

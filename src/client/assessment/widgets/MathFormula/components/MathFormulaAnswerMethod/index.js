@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick, get } from "lodash";
@@ -465,7 +465,7 @@ MathFormulaAnswerMethod.propTypes = {
   allowedVariables: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired,
-  toggleAdditional: PropTypes.func
+  toggleAdditional: PropTypes.func.isRequired
 };
 
 MathFormulaAnswerMethod.defaultProps = {

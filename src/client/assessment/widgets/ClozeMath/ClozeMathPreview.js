@@ -161,7 +161,8 @@ const ClozeMathPreview = ({
           mathspan: MathSpanWrapper,
           textdropdown: testItem ? ClozeDropDownAnswerDisplay : ClozeDropDown,
           textinput: testItem ? ClozeInputAnswerDisplay : ClozeInput,
-          mathinput: testItem ? ClozeMathAnswerDisplay : ClozeMathInput
+          mathinput: testItem ? ClozeMathAnswerDisplay : ClozeMathInput,
+          mathunit: () => <span>Math Unit</span>
         }}
         jsx={newHtml}
       />

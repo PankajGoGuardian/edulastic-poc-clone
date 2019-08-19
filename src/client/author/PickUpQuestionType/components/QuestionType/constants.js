@@ -2046,7 +2046,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       data: {
         title: "Math, Text & Dropdown",
         stimulus:
-          '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
+          '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;,&nbsp;<mathunit contenteditable="false"></mathunit>&nbsp;</p>',
         templateDisplay: true,
         type: questionType.EXPRESSION_MULTIPART,
         responseIds: {

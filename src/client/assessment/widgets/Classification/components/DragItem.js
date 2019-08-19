@@ -164,8 +164,7 @@ DragItemContainer.propTypes = {
 };
 
 DragItemContainer.defaultProps = {
-  isResetOffset: false,
-  valid: false
+  isResetOffset: false
 };
 
 const InnerWrapper = styled.div`

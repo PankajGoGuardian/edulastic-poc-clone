@@ -337,3 +337,9 @@ export const DragDropTitle = styled.div`
   width: 100%;
   text-align: center;
 `;
+
+export const DragDropContainer = WithMathFormula(
+  styled.div`
+    margin: auto 0;
+  `
+);

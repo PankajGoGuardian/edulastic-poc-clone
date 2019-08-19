@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
 import produce from "immer";
 
-import { FroalaEditor } from "@edulastic/common";
-
 import { FroalaInput } from "./styled/styled_components";
+import { ValueWrapper } from "./styled/ValueWrapper";
 
 const resizeDisable = {
   bottom: false,
@@ -122,7 +121,6 @@ class AnnotationsRnd extends Component {
     const { question, disableDragging, isAbove } = this.props;
     if (!question || !question.annotations) return null;
 
-    const { updateAnnotation } = this;
     const annotations = question.annotations || [];
 
     return (
@@ -158,14 +156,7 @@ class AnnotationsRnd extends Component {
                 className="annotation"
               >
                 <FroalaInput {...this.props} isRnd>
-                  <FroalaEditor
-                    value={value}
-                    onChange={val => updateAnnotation(val, annotation.id)}
-                    toolbarInline
-                    toolbarVisibleWithoutSelection
-                    imageEditButtons={[]}
-                    readOnly
-                  />
+                  <ValueWrapper dangerouslySetInnerHTML={{ __html: value }} />
                 </FroalaInput>
               </Rnd>
             );

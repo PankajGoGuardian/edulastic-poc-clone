@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
-import { FroalaEditor } from "@edulastic/common";
-import { DragDropValuesContainer, DragDropTitle } from "./styled";
+import { DragDropValuesContainer, DragDropTitle, DragDropContainer } from "./styled";
 
 class DragDropValues extends Component {
   handleDragDropValuePosition = (d, value) => {
@@ -36,14 +35,7 @@ class DragDropValues extends Component {
               bounds=".jsxbox-with-drag-drop"
               className="drag-drop-value"
             >
-              <FroalaEditor
-                value={value.text}
-                onChange={() => {}}
-                toolbarInline
-                toolbarVisibleWithoutSelection
-                imageEditButtons={[]}
-                readOnly
-              />
+              <DragDropContainer dangerouslySetInnerHTML={{ __html: value.text }} />
             </Rnd>
           );
         })}

@@ -267,6 +267,13 @@ class StudentSignup extends React.Component {
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
     const partner = Partners[partnerKey];
 
+    const isUserNameAndPasswordAllowed =
+      (isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") || !isSignupUsingDaURL) &&
+      method !== GOOGLE &&
+      method !== OFFICE
+        ? true
+        : false;
+
     return (
       <div>
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
@@ -326,31 +333,21 @@ class StudentSignup extends React.Component {
                     <FormBody>
                       <Col span={20} offset={2}>
                         <h5 align="center">
-                          {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                          !isSignupUsingDaURL
-                            ? method !== GOOGLE && method !== OFFICE && t("component.signup.formboxheading")
-                            : null}
+                          {isUserNameAndPasswordAllowed ? t("component.signup.formboxheading") : null}
                           {(method === GOOGLE || method === OFFICE) && t("component.signup.formboxheadinggoole")}
                         </h5>
                         {(method === GOOGLE || method === OFFICE) && (
                           <Description>{t("component.signup.codeFieldDesc")}</Description>
                         )}
                         <Form onSubmit={this.handleSubmit}>
-                          {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                          !isSignupUsingDaURL
-                            ? method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()
-                            : null}
+                          {isUserNameAndPasswordAllowed ? this.renderGeneralFormFields() : null}
                           {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}
                           <FormItem>
-                            {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                            !isSignupUsingDaURL
-                              ? method !== GOOGLE &&
-                                method !== OFFICE && (
-                                  <RegisterButton data-cy="signup" type="primary" htmlType="submit">
-                                    {t("component.signup.student.signupstudentbtn")}
-                                  </RegisterButton>
-                                )
-                              : null}
+                            {isUserNameAndPasswordAllowed ? (
+                              <RegisterButton data-cy="signup" type="primary" htmlType="submit">
+                                {t("component.signup.student.signupstudentbtn")}
+                              </RegisterButton>
+                            ) : null}
                             {(method === GOOGLE || method === OFFICE) && (
                               <RegisterButton data-cy="signup" type="primary" htmlType="submit">
                                 {t("component.signup.student.signupentercode")}

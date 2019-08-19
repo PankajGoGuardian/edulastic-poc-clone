@@ -27,7 +27,6 @@ export const PassageNavigation = styled.div`
   display: flex;
   align-items: center;
   padding: 0 10px;
-  width: 50%;
   font-size: 11px;
   color: ${linkColor};
   .ant-pagination {

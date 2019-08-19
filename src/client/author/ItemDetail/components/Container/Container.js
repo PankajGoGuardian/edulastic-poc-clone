@@ -5,6 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import produce from "immer";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
 import { withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
@@ -386,14 +387,15 @@ class Container extends Component {
     /**
      * assuming this method is going to be called only when type is passageWithQuestions
      */
-    const data = {
-      ...defaultEmptyItem,
-      canAddMultipleItems: true,
-      isPassageWithQuestions: true,
-      multipartItem: true,
-      passageId: passage._id
-    };
-    this.props.createItem(data);
+    const item = produce(defaultEmptyItem, draft => {
+      draft.rows[0].dimension = "50%";
+      draft.canAddMultipleItems = true;
+      draft.canAddMultipleItems = true;
+      draft.isPassageWithQuestions = true;
+      draft.multipartItem = true;
+      draft.passageId = passage._id;
+    });
+    this.props.createItem(item);
   };
 
   handleRemoveItemRequest = () => {
@@ -440,6 +442,9 @@ class Container extends Component {
     const { collapseDirection } = this.state;
     const { rows, item, updateTabTitle, windowWidth, passage, view } = this.props;
     const passageWithQuestions = !!item.passageId;
+    const useTabsLeft = passageWithQuestions
+      ? !!get(passage, ["structure", "tabs", "length"], 0)
+      : !!get(rows, [0, "tabs", "length"], 0);
     const collapseLeft = collapseDirection === "left";
     const collapseRight = collapseDirection === "right";
     return (
@@ -461,6 +466,7 @@ class Container extends Component {
               right={false}
               handleCollapse={this.handleCollapse}
               collapseDirection={collapseDirection}
+              useTabsLeft={useTabsLeft}
             />
           )}
           {rows &&
@@ -489,6 +495,7 @@ class Container extends Component {
                   right={(!!item.passageId && i === 0) || i === 1}
                   handleCollapse={this.handleCollapse}
                   collapseDirection={collapseDirection}
+                  useTabsLeft={useTabsLeft}
                 />
               );
             })}
@@ -641,7 +648,7 @@ class Container extends Component {
                   <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
                     {item.canAddMultipleItems && passage && view !== "metadata" && (
                       <PassageNavigation>
-                        {!!passageTestItems.length && (
+                        {passageTestItems.length > 1 && (
                           <>
                             <span>PASSAGE ITEMS </span>
                             <Pagination

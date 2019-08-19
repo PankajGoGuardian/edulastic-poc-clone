@@ -2209,7 +2209,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           columns: 2,
           sectors: 7,
           selected: [1]
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     }

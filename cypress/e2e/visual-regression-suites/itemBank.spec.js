@@ -22,7 +22,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         cy.wait("@curriculum"); // wait for xhr to finish
         search.clearAll();
         search.setCollection("Private Library");
-        cy.contains("questions found");
+        cy.contains("13 questions found");
         cy.wait(500);
         cy.matchImageSnapshot(); // take screenshot and comapare
       });

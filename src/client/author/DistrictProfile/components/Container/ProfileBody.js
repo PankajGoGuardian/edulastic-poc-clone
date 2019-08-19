@@ -20,7 +20,8 @@ import {
   resetMyPasswordAction,
   updateUserDetailsAction,
   deleteAccountAction,
-  updateInterestedCurriculumsAction
+  updateInterestedCurriculumsAction,
+  removeSchoolAction
 } from "../../../../student/Login/ducks";
 import { Wrapper } from "../../../../student/styled/index";
 import DeleteAccountModal from "../DeleteAccountModal/DeleteAccountModal";
@@ -166,6 +167,11 @@ class ProfileBody extends React.Component {
 
   handleRemoveSchool = e => {
     const { selectedSchool } = this.state;
+    const { removeSchool, user } = this.props;
+    removeSchool({
+      userId: user._id,
+      schoolId: selectedSchool._id
+    });
     this.toggleModal("REMOVE_SCHOOL", false);
   };
 
@@ -433,7 +439,8 @@ const enhance = compose(
       updateUserDetails: updateUserDetailsAction,
       deleteAccount: deleteAccountAction,
       updateInterestedCurriculums: updateInterestedCurriculumsAction,
-      getDictCurriculums: getDictCurriculumsAction
+      getDictCurriculums: getDictCurriculumsAction,
+      removeSchool: removeSchoolAction
     }
   )
 );

@@ -205,6 +205,13 @@ const resetMyPassword = data =>
     data
   });
 
+const removeSchool = data =>
+  api.callApi({
+    url: `${prefix}/${data.userId}/institution/${data.schoolId}/remove`,
+    method: "put",
+    data
+  });
+
 export default {
   getUser,
   fetchUsers,
@@ -229,5 +236,6 @@ export default {
   resetUserPassword,
   adddBulkTeacher,
   resetMyPassword,
-  deleteAccount
+  deleteAccount,
+  removeSchool
 };

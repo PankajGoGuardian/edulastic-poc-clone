@@ -67,6 +67,9 @@ export const DELETE_ACCOUNT_REQUEST = "[auth] delete account";
 export const UPDATE_INTERESTED_CURRICULUMS_REQUEST = "[user] update interested curriculums request";
 export const UPDATE_INTERESTED_CURRICULUMS_SUCCESS = "[user] update interested curriculums success";
 export const UPDATE_INTERESTED_CURRICULUMS_FAILED = "[user] update interested curriculums failed";
+export const REMOVE_SCHOOL_REQUEST = "[user] remove school request";
+export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
+export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -102,6 +105,7 @@ export const updateProfileImageAction = createAction(UPDATE_PROFILE_IMAGE_PATH_R
 export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST);
 export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
 export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
+export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -264,6 +268,20 @@ export default createReducer(initialState, {
   },
   [UPDATE_INTERESTED_CURRICULUMS_FAILED]: state => {
     state.updatingInterestedCurriculums = undefined;
+  },
+  [REMOVE_SCHOOL_REQUEST]: state => {
+    state.removingSchool = true;
+  },
+  [REMOVE_SCHOOL_SUCCESS]: (state, { payload }) => {
+    state.removingSchool = undefined;
+    const updatedSchoolIds = state.user.institutionIds.filter(id => id !== payload);
+    const updatedSchools = state.user.orgData.schools.filter(school => school._id !== payload);
+    state.user.institutionIds = updatedSchoolIds;
+    state.user.orgData.institutionIds = updatedSchoolIds;
+    state.user.orgData.schools = updatedSchools;
+  },
+  [REMOVE_SCHOOL_FAILED]: state => {
+    state.removingSchool = undefined;
   }
 });
 
@@ -870,6 +888,17 @@ function* updateInterestedCurriculumsSaga({ payload }) {
   }
 }
 
+function* removeSchoolSaga({ payload }) {
+  try {
+    yield call(userApi.removeSchool, payload);
+    yield call(message.success, "Requested school removed successfully.");
+    yield put({ type: REMOVE_SCHOOL_SUCCESS, payload: payload.schoolId });
+  } catch (e) {
+    yield put({ type: REMOVE_SCHOOL_FAILED });
+    yield call(message.error, e && e.data ? e.data.message : "Failed to remove requested school");
+  }
+}
+
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
     const result = yield call(authApi.validateClassCode, payload);
@@ -934,4 +963,5 @@ export function* watcherSaga() {
   yield takeLatest(UPDATE_USER_DETAILS_REQUEST, updateUserDetailsSaga);
   yield takeLatest(DELETE_ACCOUNT_REQUEST, deleteAccountSaga);
   yield takeLatest(UPDATE_INTERESTED_CURRICULUMS_REQUEST, updateInterestedCurriculumsSaga);
+  yield takeLatest(REMOVE_SCHOOL_REQUEST, removeSchoolSaga);
 }

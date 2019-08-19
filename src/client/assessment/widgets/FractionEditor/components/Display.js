@@ -56,7 +56,7 @@ const Display = ({
       {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
       <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
       <FlexContainer
-        style={{ position: "relative", maxWidth: "100%", overflow: "auto" }}
+        style={{ position: "relative", maxWidth: "850px", overflow: "auto" }}
         flexWrap="wrap"
         justifyContent="flex-start"
       >

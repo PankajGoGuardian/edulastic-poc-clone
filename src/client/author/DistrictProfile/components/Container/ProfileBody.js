@@ -683,16 +683,19 @@ const ProfileImgWrapper = styled.div`
   @media (max-width: ${extraDesktopWidth}) {
     width: 300px;
     height: 250px;
+    margin-right: 10px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
     max-width: 250px;
     max-height: 200px;
+    margin-right: 10px;
   }
 
   @media (max-width: ${desktopWidth}) {
     max-width: 200px;
     max-height: 200px;
+    margin-right: 20px;
   }
 `;
 

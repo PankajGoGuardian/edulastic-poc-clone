@@ -47,7 +47,6 @@ export const RESET_PASSWORD_USER_SUCCESS = "[auth] reset password user success";
 export const RESET_PASSWORD_REQUEST = "[auth] reset password request";
 export const RESET_PASSWORD_FAILED = "[auth] reset password failed";
 export const RESET_PASSWORD_SUCCESS = "[auth] reset password success";
-export const RESET_PASSWORD_REQUEST_STATE = "[auth] reset password request state variable";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST = "[auth] student signup check classcode request";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup check classcode success";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
@@ -89,7 +88,6 @@ export const requestNewPasswordResetControlAction = createAction(REQUEST_NEW_PAS
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
 export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
-export const resetPasswordRequestStateAction = createAction(RESET_PASSWORD_REQUEST_STATE);
 export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
 export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
@@ -197,9 +195,6 @@ export default createReducer(initialState, {
   },
   [REQUEST_NEW_PASSWORD_RESET_CONTROL]: state => {
     state.requestingNewPassword = false;
-    state.requestNewPasswordSuccess = false;
-  },
-  [RESET_PASSWORD_REQUEST_STATE]: state => {
     state.requestNewPasswordSuccess = false;
   },
   [RESET_PASSWORD_USER_SUCCESS]: (state, { payload }) => {

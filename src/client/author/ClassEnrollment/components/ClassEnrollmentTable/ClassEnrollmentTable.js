@@ -113,7 +113,7 @@ class ClassEnrollmentTable extends React.Component {
     } else if (e.key === "move users") {
       if (selectedRowKeys.length == 0) {
         message.error("You have not selected any users to move");
-      } else if (areUsersOfDifferentClasses && selectedRowKeys.length !== 1) {
+      } else if (areUsersOfDifferentClasses) {
         message.error("You can only move users of same class");
       } else if (selectedRowKeys.length >= 1) {
         this.setState({ moveUsersModal: true });

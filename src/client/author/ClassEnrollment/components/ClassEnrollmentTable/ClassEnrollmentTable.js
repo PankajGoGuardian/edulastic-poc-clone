@@ -29,7 +29,6 @@ import { AddStudentsToOtherClassModal } from "../../../Student/components/Studen
 import { AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
 import {
   getAddStudentsToOtherClassSelector,
-  setAddStudentsToOtherClassVisiblityAction,
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction,
   moveUsersToOtherClassAction
@@ -55,8 +54,8 @@ class ClassEnrollmentTable extends React.Component {
       removeStudentsModalVisible: false,
       selectedUserIds: [],
       selectedUsersInfo: [],
-      addStudentsModal: false,
-      moveUsersModal: false
+      addStudentsModalVisible: false,
+      moveUsersModalVisible: false
     };
   }
 
@@ -90,7 +89,6 @@ class ClassEnrollmentTable extends React.Component {
   };
 
   changeActionMode = e => {
-    const { setAddStudentsToOtherClassVisiblity } = this.props;
     const { selectedRowKeys, selectedUsersInfo } = this.state;
     const isInstructor = selectedUsersInfo.some(user => user.role === "teacher");
     const areUsersOfDifferentClasses = uniqBy(selectedUsersInfo, "group.code").length > 1;
@@ -112,8 +110,7 @@ class ClassEnrollmentTable extends React.Component {
       } else if (areUsersOfDifferentClasses) {
         message.error("You can only move users of same class");
       } else if (selectedRowKeys.length >= 1) {
-        this.setState({ moveUsersModal: true });
-        // setAddStudentsToOtherClassVisiblity(true);
+        this.setState({ moveUsersModalVisible: true });
       }
     } else if (e.key === "add students to other class") {
       if (selectedRowKeys.length == 0) {
@@ -122,8 +119,7 @@ class ClassEnrollmentTable extends React.Component {
         if (isInstructor) {
           message.error("Only students can be added to another class");
         } else {
-          this.setState({ addStudentsModal: true });
-          // setAddStudentsToOtherClassVisiblity(true);
+          this.setState({ addStudentsModalVisible: true });
         }
       }
     }
@@ -364,8 +360,8 @@ class ClassEnrollmentTable extends React.Component {
       addUserFormModalVisible,
       selectedUserIds,
       selectedUsersInfo,
-      addStudentsModal,
-      moveUsersModal
+      addStudentsModalVisible,
+      moveUsersModalVisible
     } = this.state;
     const {
       fetchClassDetailsUsingCode,
@@ -373,7 +369,6 @@ class ClassEnrollmentTable extends React.Component {
       resetClassDetails,
       classEnrollmentData,
       addStudentsToOtherClassData,
-      setAddStudentsToOtherClassVisiblity,
       putStudentsToOtherClass,
       userOrgId,
       moveUsersToOtherClass
@@ -566,20 +561,19 @@ class ClassEnrollmentTable extends React.Component {
 
         <AddStudentsToOtherClassModal
           {...addStudentsToOtherClassData}
-          showModal={addStudentsModal}
+          showModal={addStudentsModalVisible}
           titleText="Add Student(s) to another class"
           buttonText="Add Student(s)"
           handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
           onCloseModal={() => {
             this.setState({ addStudentsModal: false });
-            setAddStudentsToOtherClassVisiblity(false);
           }}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
         />
 
         <MoveUsersToOtherClassModal
           {...addStudentsToOtherClassData}
-          showModal={moveUsersModal}
+          showModal={moveUsersModalVisible}
           titleText="Move User(s) to another class"
           buttonText="Move User(s)"
           handleSubmit={destinationClassCode =>
@@ -592,7 +586,6 @@ class ClassEnrollmentTable extends React.Component {
           }
           onCloseModal={() => {
             this.setState({ moveUsersModal: false });
-            setAddStudentsToOtherClassVisiblity(false);
           }}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           selectedUsersInfo={selectedUsersInfo}
@@ -613,7 +606,6 @@ const enhance = compose(
     {
       createAdminUser: createAdminUserAction,
       deleteAdminUser: deleteAdminUserAction,
-      setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
       moveUsersToOtherClass: moveUsersToOtherClassAction

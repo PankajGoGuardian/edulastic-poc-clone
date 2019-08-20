@@ -35,7 +35,16 @@ class ClozeMathAnswer extends Component {
   };
 
   render() {
-    const { answers, onChange, onAdd, onDelete, item, onChangeKeypad, onChangeAllowedOptions } = this.props;
+    const {
+      answers,
+      onChange,
+      onAdd,
+      onDelete,
+      item,
+      onChangeKeypad,
+      onChangeAllowedOptions,
+      toggleAdditional
+    } = this.props;
     const { showAdditionals } = this.state;
     const {
       responseContainers: responseContainers = [],
@@ -105,6 +114,7 @@ class ClozeMathAnswer extends Component {
                     onChangeAllowedOptions={onChangeAllowedOptions}
                     allowNumericOnly={allowNumericOnly[answer.index] || false}
                     allowedVariables={allowedVariables[answer.index] || ""}
+                    toggleAdditional={toggleAdditional}
                     {...method}
                   />
                 ))}

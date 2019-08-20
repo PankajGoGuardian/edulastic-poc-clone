@@ -106,7 +106,7 @@ class SchoolAdminTable extends Component {
         width: 200
       },
       {
-        title: "Email",
+        title: "Username",
         dataIndex: "_source.email",
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {

@@ -1,4 +1,4 @@
-import { white, mobileWidth, tabletWidth, mediumDesktopWidth } from "@edulastic/colors";
+import { tabletWidth, white, mobileWidth, mediumDesktopWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import { IconMenuOpenClose } from "@edulastic/icons";
 
@@ -18,9 +18,7 @@ export const Container = styled.div`
   @media (max-width: ${mediumDesktopWidth}) {
     height: 60px;
   }
-  @media (max-width: ${mobileWidth}) {
-    margin-bottom: 30px;
-    padding: 25px 26px 0;
+  @media (max-width: ${tabletWidth}) {
     left: 0px;
   }
 `;

@@ -562,7 +562,7 @@ class ClassBoard extends Component {
         />
         <CardDetailsContainer>
           <StyledFlexContainer justifyContent="space-between">
-            <PaginationInfo>
+            <PaginationInfo xs={24} md={8}>
               &lt; &nbsp; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> &nbsp;/&nbsp;
               <AnchorLink
                 to={
@@ -577,7 +577,7 @@ class ClassBoard extends Component {
               <Anchor>{additionalData.className}</Anchor>
             </PaginationInfo>
 
-            <StudentButtonDiv data-cy="studentnQuestionTab">
+            <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
               <BothButton
                 style={{ marginLeft: "20px" }}

@@ -1,6 +1,14 @@
 import styled from "styled-components";
 
-import { desktopWidth, fadedBlack, extraDesktopWidthMax, white, dashBorderColor, selectColor } from "@edulastic/colors";
+import {
+  desktopWidth,
+  mediumDesktopWidth,
+  fadedBlack,
+  extraDesktopWidthMax,
+  white,
+  dashBorderColor,
+  selectColor
+} from "@edulastic/colors";
 
 export const WidgetWrapper = styled.div`
   margin-top: 30px;
@@ -8,10 +16,10 @@ export const WidgetWrapper = styled.div`
 
 export const Widget = styled.div`
   position: ${({ position }) => position || "relative"};
-  padding: 30px;
+  padding: 25px 30px 30px;
   background: #f8f8fb;
   border-radius: 4px;
-  min-height: 250px;
+  min-height: 200px;
   display: ${({ advancedAreOpen }) => (advancedAreOpen !== null ? (advancedAreOpen ? "block" : "none") : "block")};
   ${({ visible }) =>
     typeof visible !== "undefined" &&
@@ -26,6 +34,10 @@ export const Widget = styled.div`
 
   &:not(:first-child) {
     margin-top: 30px;
+
+    @media (max-width: ${mediumDesktopWidth}) {
+      margin-top: 10px;
+    }
   }
 
   .ant-checkbox-wrapper + span,

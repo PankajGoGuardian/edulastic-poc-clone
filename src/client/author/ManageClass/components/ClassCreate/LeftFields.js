@@ -27,7 +27,7 @@ export default props => {
     }
     const tagsSelected = getFieldValue("tags");
     const newTags = [...tagsSelected, newTag._id];
-    setFieldsValue({ tags: newTags });
+    setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
     setSearchValue(undefined);
   };
 

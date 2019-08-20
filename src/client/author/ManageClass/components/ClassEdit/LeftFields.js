@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
+import { uniq } from "lodash";
 import { FieldLabel } from "./components";
 import Uploader from "./Uploader";
 import { tagsApi } from "@edulastic/api";
 
 const LeftField = props => {
-  const { thumbnailUri, tags, allTagsData, addNewTag, setFieldsValue } = props;
+  const { thumbnailUri, tags, allTagsData, addNewTag, setFieldsValue, getFieldValue } = props;
   const [thumbnail, setThumbnail] = useState(thumbnailUri);
   const [searchValue, setSearchValue] = useState(undefined);
   const selectTags = async id => {
@@ -18,14 +19,16 @@ const LeftField = props => {
     } else {
       newTag = allTagsData.find(tag => tag._id === id);
     }
-    const newTags = [...tags, newTag];
-    setFieldsValue({ tags: newTags.map(t => t._id) });
+    const tagsSelected = getFieldValue("tags");
+    const newTags = [...tagsSelected, newTag._id];
+    setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
     setSearchValue(undefined);
   };
 
   const deselectTags = id => {
-    const newTags = tags.filter(tag => tag._id !== id);
-    setFieldsValue({ tags: newTags.map(t => t._id) });
+    const tagsSelected = getFieldValue("tags");
+    const newTags = tagsSelected.filter(tag => tag !== id);
+    setFieldsValue({ tags: newTags });
   };
 
   const searchTags = async value => {

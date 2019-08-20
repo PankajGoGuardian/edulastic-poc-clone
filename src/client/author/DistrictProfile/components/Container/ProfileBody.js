@@ -85,9 +85,9 @@ class ProfileBody extends React.Component {
   };
 
   compareToFirstPassword = (rule, value, callback) => {
-    const { form } = this.props;
+    const { form, t } = this.props;
     if (value && value !== form.getFieldValue("password")) {
-      callback("Password didn't match.");
+      callback(t("common.title.confirmPasswordMess"));
     } else {
       callback();
     }

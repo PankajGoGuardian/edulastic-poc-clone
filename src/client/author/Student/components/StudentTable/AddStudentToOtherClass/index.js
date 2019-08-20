@@ -4,6 +4,8 @@ import { StyledModal, Title, ActionButton, Field, FooterDiv } from "./styled";
 import { IconUser } from "@edulastic/icons";
 
 function AddStudentsToOtherClass({
+  titleText,
+  buttonText,
   showModal,
   onCloseModal,
   successData,
@@ -11,7 +13,8 @@ function AddStudentsToOtherClass({
   handleSubmit,
   fetchClassDetailsUsingCode,
   destinationClassData,
-  loading
+  loading,
+  selectedUsersInfo = []
 }) {
   useEffect(() => {
     const { groupInfo: { name, institutionName, primaryTeacherId, owners = [] } = {} } = destinationClassData || {};
@@ -39,7 +42,7 @@ function AddStudentsToOtherClass({
   const title = (
     <Title>
       <IconUser />
-      <label>Add Student(s) to another Class</label>
+      <label>{titleText}</label>
     </Title>
   );
 
@@ -50,7 +53,7 @@ function AddStudentsToOtherClass({
       </ActionButton>
 
       <ActionButton type="primary" onClick={() => handleOkClick()} disabled={!destinationClassData}>
-        Add Student(s)
+        {buttonText}
         <Icon type="right" />
       </ActionButton>
     </FooterDiv>
@@ -116,4 +119,4 @@ function AddStudentsToOtherClass({
   );
 }
 
-export default Form.create()(AddStudentsToOtherClass);
+export const AddStudentsToOtherClassModal = Form.create()(AddStudentsToOtherClass);

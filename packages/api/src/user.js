@@ -205,6 +205,22 @@ const resetMyPassword = data =>
     data
   });
 
+
+const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCode, userDetails }) => {
+  return api
+    .callApi({
+      url: `${prefix}/move-users`,
+      data: {
+        districtId,
+        userDetails,
+        destinationClassCode,
+        sourceClassCode
+      },
+      method: "POST"
+    })
+    .then(result => result.data.result);
+};
+
 const removeSchool = data =>
   api.callApi({
     url: `${prefix}/${data.userId}/institution/${data.schoolId}/remove`,
@@ -236,6 +252,7 @@ export default {
   resetUserPassword,
   adddBulkTeacher,
   resetMyPassword,
+  moveUsersToOtherClass,
   deleteAccount,
   removeSchool
 };

@@ -202,7 +202,9 @@ const JoinSchool = ({
                 <Actions>
                   {/* I want to home school removed temporarily */}
                   {/* <AnchorBtn> I want to homeschool</AnchorBtn> */}
-                  {!isSignupUsingDaURL ? <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn> : null}
+                  {!isSignupUsingDaURL && !districtId ? (
+                    <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn>
+                  ) : null}
                   {selected && selected.districtName ? (
                     <DistrictName>
                       <span>District: </span>

@@ -5,7 +5,7 @@ import { call, put, all, takeEvery, select, actionChannel, take } from "redux-sa
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq } from "lodash";
-import { testItemsApi, testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
+import { testsApi, assignmentApi, contentSharingApi, tagsApi } from "@edulastic/api";
 import moment from "moment";
 import produce from "immer";
 import {
@@ -66,7 +66,9 @@ export const REPLACE_TEST_ITEMS = "[test] replace test items";
 export const UPDATE_TEST_DEFAULT_IMAGE = "[test] update default thumbnail image";
 export const SET_PASSAGE_ITEMS = "[tests] set passage items";
 export const SET_AND_SAVE_PASSAGE_ITEMS = "[tests] set and save passage items";
-
+export const GET_ALL_TAGS_IN_DISTRICT = "[test] get all tags in district";
+export const SET_ALL_TAGS = "[test] set all tags";
+export const ADD_NEW_TAG = "[test] add new tag";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -75,6 +77,8 @@ export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS);
 export const updateDefaultThumbnailAction = createAction(UPDATE_TEST_DEFAULT_IMAGE);
 export const setPassageItemsAction = createAction(SET_PASSAGE_ITEMS);
 export const setAndSavePassageItemsAction = createAction(SET_AND_SAVE_PASSAGE_ITEMS);
+export const getAllTagsAction = createAction(GET_ALL_TAGS_IN_DISTRICT);
+export const setAllTagsAction = createAction(SET_ALL_TAGS);
 
 export const receiveTestByIdAction = id => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -163,6 +167,7 @@ export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIS
 export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const setCreatedItemToTestAction = createAction(SET_CREATED_ITEM_TO_TEST);
 export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TEST);
+export const addNewTagAction = createAction(ADD_NEW_TAG);
 
 export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
 //reducer
@@ -224,7 +229,8 @@ const initialState = {
   regradeTestId: "",
   createdItems: [],
   sharedUsersList: [],
-  passageItems: []
+  passageItems: [],
+  tagsList: []
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -291,6 +297,16 @@ export const reducer = (state = initialState, { type, payload }) => {
           thumbnail: payload.fileUrl
         },
         updated: true
+      };
+    case SET_ALL_TAGS:
+      return {
+        ...state,
+        tagsList: payload
+      };
+    case ADD_NEW_TAG:
+      return {
+        ...state,
+        tagsList: [...state.tagsList, payload]
       };
     case SET_MAX_ATTEMPT:
       return {
@@ -441,6 +457,7 @@ function* createTestSaga({ payload }) {
       "updatedDate",
       "testItems",
       "passages",
+      "tags",
       "isUsed"
     ]);
     //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
@@ -449,6 +466,9 @@ function* createTestSaga({ payload }) {
       maxScore: helpers.getPoints(o),
       questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
     }));
+
+    dataToSend.tags = payload.data.tags.map(o => ({ _id: o._id, tagName: o.tagName }));
+
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
     yield put({
@@ -513,6 +533,9 @@ function* updateTestSaga({ payload }) {
         maxScore: scoring[o._id] || helpers.getPoints(o),
         questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o), scoring[o._id]) : {}
       }));
+
+    payload.data.tags = payload.data.tags.map(o => ({ _id: o._id, tagName: o.tagName }));
+
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
@@ -786,6 +809,17 @@ function* showAnswerSaga({ payload }) {
   }
 }
 
+function* getAllTagsSaga({ payload }) {
+  try {
+    const tags = yield call(tagsApi.getAll, payload.type);
+    yield put({
+      type: SET_ALL_TAGS,
+      payload: tags
+    });
+  } catch (e) {
+    yield call(message.error("Get All Tags failed"));
+  }
+}
 export function* watcherSaga() {
   const requestChan = yield actionChannel(SET_TEST_DATA_AND_SAVE);
   yield all([
@@ -798,6 +832,7 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
     yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
     yield takeEvery(PREVIEW_CHECK_ANSWER, checkAnswerSaga),
+    yield takeEvery(GET_ALL_TAGS_IN_DISTRICT, getAllTagsSaga),
     yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga)
   ]);
   while (true) {
@@ -912,4 +947,9 @@ export const getTestItemsRowsSelector = createSelector(
 export const getTestCreatedItemsSelector = createSelector(
   stateSelector,
   state => get(state, "createdItems", [])
+);
+
+export const getAllTagsSelector = createSelector(
+  stateSelector,
+  state => get(state, "tagsList", [])
 );

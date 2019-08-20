@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React, { memo, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Button } from "antd";
 import { connect } from "react-redux";
@@ -16,7 +16,13 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
 import { getUser } from "../../../../../src/selectors/user";
-import { getDefaultThumbnailSelector, updateDefaultThumbnailAction } from "../../../../ducks";
+import {
+  getDefaultThumbnailSelector,
+  updateDefaultThumbnailAction,
+  getAllTagsAction,
+  getAllTagsSelector,
+  addNewTagAction
+} from "../../../../ducks";
 
 const Summary = ({
   setData,
@@ -33,10 +39,13 @@ const Summary = ({
   onChangeGrade,
   backgroundColor,
   textColor,
+  getAllTags,
+  allTagsData,
   updateDefaultThumbnail,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
   onChangeColor,
+  addNewTag,
   onChangeSubjects,
   isEditable = true
 }) => {
@@ -47,6 +56,9 @@ const Summary = ({
     setData({ ...test, [field]: value });
   };
 
+  useEffect(() => {
+    getAllTags({ type: "test" });
+  }, []);
   const breadcrumbData = [
     {
       title: "TESTS LIBRARY",
@@ -97,7 +109,9 @@ const Summary = ({
               onChangeField={handleChangeField}
               windowWidth={windowWidth}
               grades={grades}
+              addNewTag={addNewTag}
               owner={owner}
+              allTagsData={allTagsData}
               isPlaylist={isPlaylist}
               subjects={subjects}
               onChangeGrade={onChangeGrade}
@@ -153,9 +167,12 @@ const enhance = compose(
       summary: getSummarySelector(state),
       currentUser: getUser(state),
       defaultThumbnail: getDefaultThumbnailSelector(state),
+      allTagsData: getAllTagsSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {
+      getAllTags: getAllTagsAction,
+      addNewTag: addNewTagAction,
       updateDefaultThumbnail: updateDefaultThumbnailAction
     }
   )

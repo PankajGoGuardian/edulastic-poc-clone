@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Select, Col } from "antd";
 
@@ -19,6 +19,7 @@ import { Block, MainTitle, MetaTitle, AnalyticsItem, ErrorWrapper } from "./styl
 import { ColorPickerContainer } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer";
 import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";
 import SummaryHeader from "../SummaryHeader/SummaryHeader";
+import { tagsApi } from "@edulastic/api";
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -42,14 +43,42 @@ const Sidebar = ({
   createdBy,
   thumbnail,
   textColor,
+  addNewTag,
   backgroundColor,
   onChangeColor,
+  allTagsData,
   isTextColorPickerVisible,
   isBackgroundColorPickerVisible,
   windowWidth,
   isEditable
 }) => {
   const subjectsList = selectsData.allSubjects.slice(1);
+  const [searchValue, setSearchValue] = useState(undefined);
+  const selectTags = async id => {
+    let newTag = {};
+    if (id === searchValue) {
+      newTag = await tagsApi.create({ tagName: searchValue, tagType: "test" });
+      addNewTag(newTag);
+    } else {
+      newTag = allTagsData.find(tag => tag._id === id);
+    }
+    const newTags = [...tags, newTag];
+    onChangeField("tags", newTags);
+    setSearchValue(undefined);
+  };
+
+  const deselectTags = id => {
+    const newTags = tags.filter(tag => tag._id !== id);
+    onChangeField("tags", newTags);
+  };
+
+  const searchTags = async value => {
+    if (allTagsData.some(tag => tag.tagName === value)) {
+      setSearchValue(undefined);
+    } else {
+      setSearchValue(value);
+    }
+  };
   return (
     <FlexContainer padding="30px" flexDirection="column">
       <Block>
@@ -151,16 +180,27 @@ const Sidebar = ({
         <MainTitle>Tags</MainTitle>
         <SummarySelect
           data-cy="tagsSelect"
-          mode="tags"
+          mode="multiple"
           size="large"
           style={{ marginBottom: 0 }}
+          optionLabelProp="title"
           placeholder="Please select"
-          defaultValue={tags}
-          onChange={value => onChangeField("tags", value)}
+          value={tags.map(t => t._id)}
+          onSearch={searchTags}
+          onSelect={selectTags}
+          onDeselect={deselectTags}
+          filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
         >
-          {selectsData.allTags.map(({ value, text }) => (
-            <Select.Option key={value} value={value}>
-              {text}
+          {!!searchValue ? (
+            <Select.Option key={0} value={searchValue} title={searchValue}>
+              {`${searchValue} (Create new Tag )`}
+            </Select.Option>
+          ) : (
+            ""
+          )}
+          {allTagsData.map(({ tagName, _id }, index) => (
+            <Select.Option key={_id} value={_id} title={tagName}>
+              {tagName}
             </Select.Option>
           ))}
         </SummarySelect>

@@ -7,7 +7,8 @@ const jxgType = 95;
 
 export const defaultConfig = {
   hasInnerPoints: true,
-  fixed: false
+  fixed: false,
+  strokeWidth: 2
 };
 
 function isStart(startPointCoords, testPointCoords) {
@@ -42,7 +43,6 @@ function create(board, polynomPoints, id = null) {
   const newPolynom = board.$board.create("functiongraph", [makeCallback(...polynomPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.POLYNOM],
-    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

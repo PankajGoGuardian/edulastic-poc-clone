@@ -7,7 +7,8 @@ const jxgType = 93;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.EXPONENT,
-  fixed: false
+  fixed: false,
+  strokeWidth: 2
 };
 
 const makeCallback = (p1, p2) => x => {
@@ -24,7 +25,6 @@ function create(board, expPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...expPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.EXPONENT],
-    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

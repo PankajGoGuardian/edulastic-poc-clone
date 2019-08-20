@@ -7,7 +7,8 @@ const jxgType = 96;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.SIN,
-  fixed: false
+  fixed: false,
+  strokeWidth: 2
 };
 
 const makeCallback = (p1, p2) => x => {
@@ -24,7 +25,6 @@ function create(board, sinPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...sinPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.SIN],
-    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

@@ -8,7 +8,8 @@ const jxgType = 97;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.PARABOLA,
-  fixed: false
+  fixed: false,
+  strokeWidth: 2
 };
 
 let tempToolPoints = [];
@@ -75,7 +76,6 @@ function create(board, parabolaPoints, id = null) {
   const params = {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.PARABOLA],
-    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   };

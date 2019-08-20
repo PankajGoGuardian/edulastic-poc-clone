@@ -7,7 +7,8 @@ const jxgType = 94;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.LOGARITHM,
-  fixed: false
+  fixed: false,
+  strokeWidth: 2
 };
 
 const makeCallback = (p1, p2) => x => {
@@ -24,7 +25,6 @@ function create(board, logPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...logPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.LOGARITHM],
-    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

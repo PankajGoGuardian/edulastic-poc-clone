@@ -7,7 +7,8 @@ const jxgType = 92;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.SECANT,
-  fixed: false
+  fixed: false,
+  strokeWidth: 2
 };
 
 const makeCallback = (p1, p2) => x => {
@@ -24,7 +25,6 @@ function create(board, secantPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...secantPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.SECANT],
-    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

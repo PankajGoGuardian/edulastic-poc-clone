@@ -7,7 +7,8 @@ const jxgType = 91;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.TANGENT,
-  fixed: false
+  fixed: false,
+  strokeWidth: 2
 };
 
 const makeCallback = (p1, p2) => x => {
@@ -24,7 +25,6 @@ function create(board, tangentPoints, id = null) {
   const newLine = board.$board.create("functiongraph", [makeCallback(...tangentPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.TANGENT],
-    strokeWidth: 2,
     label: getLabelParameters(jxgType),
     id
   });

@@ -77,18 +77,14 @@ class ClassEnrollmentTable extends React.Component {
   }
   onInputChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
 
-  onSelectChange = selectedRowKeys => {
+  onSelectChange = (selectedRowKeys, selectedRows) => {
     const { classEnrollmentData } = this.props;
-    const selectedUserIds = selectedRowKeys.map(item => item.split(" ")[0]);
-    const selectedClassCodes = selectedRowKeys.map(item => item.split(" ")[1]);
+    const selectedUserIds = selectedRows.map(item => item.id);
     const selectedUsersInfo = classEnrollmentData.filter(data => {
       const code = get(data, "group.code");
       const userId = get(data, "user._id");
-      return (
-        selectedUserIds.includes(userId) &&
-        selectedClassCodes.includes(code) &&
-        selectedUserIds.indexOf(code) == selectedClassCodes.indexOf(userId)
-      );
+      const recordMatch = selectedRows.find(r => r.code == code && r.id === userId);
+      if (recordMatch) return true;
     });
     this.setState({ selectedRowKeys, selectedUserIds, selectedUsersInfo });
   };
@@ -385,6 +381,7 @@ class ClassEnrollmentTable extends React.Component {
 
     const tableDataSource = classEnrollmentData.map(item => {
       const key = `${get(item, "user._id")} ${get(item, "group.code", "")}`;
+      const id = get(item, "user._id");
       const role = get(item, "role", "");
       const code = get(item, "group.code", "");
       const name = get(item, "group.name", "");
@@ -394,6 +391,7 @@ class ClassEnrollmentTable extends React.Component {
       const username = get(item, "user.username", "");
       const obj = {
         key,
+        id,
         role,
         code,
         name,

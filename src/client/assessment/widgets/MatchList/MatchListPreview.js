@@ -223,6 +223,21 @@ const MatchListPreview = ({
     alignItems: listPosition === "right" || listPosition === "left" ? "center" : "initial"
   };
 
+  const getStemNumeration = i => {
+    if (item.uiStyle) {
+      switch (item.uiStyle.validationStemNumeration) {
+        case "upper-alpha":
+          return String.fromCharCode(i + 65);
+        case "lower-alpha":
+          return String.fromCharCode(i + 65).toLowerCase();
+        default:
+          break;
+      }
+    }
+
+    return i + 1;
+  };
+
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
@@ -264,7 +279,7 @@ const MatchListPreview = ({
                   preview={preview}
                   correct={altAnswers.includes(ans[i])}
                   flag="ans"
-                  renderIndex={i}
+                  renderIndex={getStemNumeration(i)}
                   onDrop={onDrop}
                   item={ans[i]}
                   width="100%"
@@ -412,7 +427,7 @@ const MatchListPreview = ({
                 <CorTitle>
                   <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
-                <CorItem index={i}>
+                <CorItem index={getStemNumeration(i)}>
                   <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
                 </CorItem>
               </FlexContainer>
@@ -426,7 +441,7 @@ const MatchListPreview = ({
                   <CorTitle>
                     <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
-                  <CorItem index={i}>
+                  <CorItem index={getStemNumeration(i)}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
                   </CorItem>
                 </FlexContainer>

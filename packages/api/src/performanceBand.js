@@ -20,10 +20,10 @@ const createPerformanceBand = ({ body }) =>
     })
     .then(result => result.data.result);
 
-const updatePerformanceBand = ({ body }) =>
+const updatePerformanceBand = ({ _id, ...body }) =>
   api
     .callApi({
-      url: `${prefix}/`,
+      url: `${prefix}/${_id}`,
       method: "put",
       data: body
     })

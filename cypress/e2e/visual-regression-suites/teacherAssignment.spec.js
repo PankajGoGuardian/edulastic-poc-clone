@@ -16,6 +16,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
       it(`assignments page when resolution is '${size}'`, () => {
         cy.setResolution(size); // set the screen resolution
         cy.visit(`/${pageURL}`); // go to the required page usign url
+        cy.wait("@testdetail");
         cy.get('[data-cy="PresentationIcon"]')
           .should("be.visible")
           .and("have.length.greaterThan", 0); // ensure the dom elements are rendered

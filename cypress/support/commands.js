@@ -44,6 +44,8 @@ Cypress.Commands.add("createUser", overrides => {
     .then(({ body }) => body.user);
 });
 
+Cypress.Commands.add("clearToken", () => window.localStorage.clear());
+
 Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username, password = "snapwiz") => {
   const user = {
     password

@@ -94,4 +94,6 @@ const Field = styled.input`
     font-style: italic;
     color: #b1b1b1;
   }
+  ${({ style }) => style};
+  }}
 `;

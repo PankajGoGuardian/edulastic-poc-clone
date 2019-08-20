@@ -38,6 +38,7 @@ export default connect(
 const HeaderContainer = styled.div`
   padding-top: 76px;
   margin-bottom: 16px;
+  background: ${props => props.theme.headerBgColor || "#00AD50"};
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     padding-top: 96px;
@@ -63,12 +64,12 @@ const FixedHeader = styled(Affix)`
   @media (max-width: 768px) {
     left: 0;
     padding-left: 70px;
-    background: ${props => props.theme.headerBgColor};
+    background: ${props => props.theme.headerBgColor || "#00AD50"};
   }
 `;
 
 const AssignmentsHeader = styled(Layout.Header)`
-  background-color: ${props => props.theme.headerBgColor};
+  background-color: ${props => props.theme.headerBgColor || "#00AD50"};
   color: ${props => props.theme.headerTitleTextColor};
   display: flex;
   align-items: center;

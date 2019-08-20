@@ -84,23 +84,9 @@ function* evaluateAnswers({ payload }) {
       const currentQuestionId = yield select(state => _get(state, "authorQuestions.current", ""));
 
       const answers = yield select(state => _get(state, "answers", []));
-      const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
-
-      // Add questions that have not been answered
-      const answeredAndUnanswered = Object.keys(allQuestions)
-        .filter(questionId => questionId === currentQuestionId)
-        .reduce((acc, questionId) => {
-          if (answers[questionId]) {
-            acc[questionId] = answers[questionId];
-          } else {
-            acc[questionId] = [];
-          }
-
-          return acc;
-        }, {});
 
       const questions = yield select(getQuestionsSelector);
-      const { evaluation, score, maxScore } = yield evaluateItem(answeredAndUnanswered, questions);
+      const { evaluation, score, maxScore } = yield evaluateItem(answers, questions);
       yield put({
         type: ADD_ITEM_EVALUATION,
         payload: {

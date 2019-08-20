@@ -1,4 +1,4 @@
-export class CypressHelper {
+export default class CypressHelper {
   static selectDropDownByAttribute = (dataCYAttributeValue, textToSelect) => {
     cy.get(`[data-cy="${dataCYAttributeValue}"]`).click();
 

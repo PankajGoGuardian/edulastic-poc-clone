@@ -4,7 +4,7 @@ import { compose } from "redux";
 import ReactOutsideEvent from "react-outside-event";
 import { white, tabletWidth, mediumDesktopWidth, dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
 import { get, remove } from "lodash";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { connect } from "react-redux";
 import { Layout, Menu as AntMenu, Row, Col, Dropdown, Icon as AntIcon, Tooltip } from "antd";
@@ -152,6 +152,14 @@ class SideMenu extends Component {
     }
   };
 
+  handleProfileClick = () => {
+    const { windowWidth } = this.props;
+    this.toggleDropdown();
+    if (windowWidth <= parseFloat(tabletWidth)) {
+      this.toggleMenu();
+    }
+  };
+
   toggleMenu = () => {
     const { toggleSideBar } = this.props;
     toggleSideBar();
@@ -185,7 +193,8 @@ class SideMenu extends Component {
       lastName,
       logout,
       userRole,
-      className
+      className,
+      profileThumbnail
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
@@ -204,9 +213,9 @@ class SideMenu extends Component {
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
-            <a onClick={event => event.preventDefault()}>
+            <Link to="/author/profile" onClick={this.handleProfileClick}>
               <IconDropdown type="user" /> {isCollapsed ? "" : "MY PROFILE"}
-            </a>
+            </Link>
           </Menu.Item>
         </Menu>
       </FooterDropDown>
@@ -302,7 +311,7 @@ class SideMenu extends Component {
                     onVisibleChange={this.handleVisibleChange}
                   >
                     <div>
-                      <img src={Profile} alt="Profile" />
+                      {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}
                       <Tooltip title={userName}>
                         <div style={{ paddingLeft: 11 }}>
                           {!isCollapsed && !isMobile && <UserName>{userName || "Zack Oliver"}</UserName>}
@@ -359,7 +368,8 @@ const enhance = compose(
       lastName: get(state.user, "user.lastName", ""),
       userRole: get(state.user, "user.role", ""),
       lastPlayList: getLastPlayListSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      profileThumbnail: get(state.user, "user.thumbnail")
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )
@@ -876,6 +886,16 @@ const UserInfoButton = styled.div`
       margin: 0;
     }
   }
+`;
+
+const PseudoDiv = styled.div`
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  left: 0;
+  border-radius: 50%;
+  background: #dddddd;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 `;
 
 const Logo = styled(IconHeader)`

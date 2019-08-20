@@ -7,7 +7,7 @@ import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common
 import { ALPHABET } from "../../../constants/alphabet";
 import { CheckboxContainer } from "../styled/CheckboxContainer";
 import { MultiChoiceContent } from "../styled/MultiChoiceContent";
-import { Label } from "../styled/Label";
+import { Label, OptionsLabel } from "../styled/Label";
 import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
@@ -85,31 +85,45 @@ const Option = props => {
         default:
           return inx + 1;
       }
+    } else if (uiStyle.type === "standard") {
+      switch (uiStyle.stemNumeration) {
+        case "number":
+          return `(${inx + 1})`;
+        case "upper-alpha":
+          return `(${ALPHABET[inx].toUpperCase()})`;
+        case "lower-alpha":
+          return `(${ALPHABET[inx].toLowerCase()})`;
+        default:
+          return null;
+      }
     } else {
       return ALPHABET[inx].toUpperCase();
     }
   };
 
   const container = (
-    <CheckboxContainer
-      smallSize={smallSize}
-      uiStyle={uiStyle}
-      styleType={styleType}
-      multipleResponses={multipleResponses}
-    >
-      <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
-      <span
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: multipleResponses ? "0" : "50%"
-        }}
+    <>
+      <OptionsLabel>{getLabel(index)}</OptionsLabel>
+      <CheckboxContainer
+        smallSize={smallSize}
+        uiStyle={uiStyle}
+        styleType={styleType}
+        multipleResponses={multipleResponses}
       >
-        {getLabel(index)}
-      </span>
-      <div />
-    </CheckboxContainer>
+        <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
+        <span
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: multipleResponses ? "0" : "50%"
+          }}
+        >
+          {getLabel(index)}
+        </span>
+        <div />
+      </CheckboxContainer>
+    </>
   );
 
   const renderCheckbox = () => {

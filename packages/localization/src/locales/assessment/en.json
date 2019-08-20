@@ -25,6 +25,7 @@
     "checkAnswer": "Check answer",
     "hint": "Hint",
     "addANewHint": "Add a new hint",
+    "enterHintForTheProblem": "Enter a hint for the problem",
     "options": {
       "autoexpandoninput": "AUTO EXPAND ON INPUT",
       "instant_feedback": "Check answer button",
@@ -109,7 +110,7 @@
       "textBlocks": "Text Blocks",
       "customkeys": "Custom Keys",
       "addTextBlock": "Add new text block",
-      "addResponseContainer": "Add new response container",
+      "addResponseContainer": "Add new response box",
       "additionalOptions": "Additional Options",
       "stimulusReviewOnly": "Stimulus (review only)",
       "instructorStimulus": "Instructor stimulus",
@@ -202,7 +203,9 @@
       "solution": "Solution",
       "overallDistractorRationale": "Overall Distractor Rationale",
       "explanation": "Explanation",
-      "display": "Display"
+      "display": "Display",
+      "enterDistractorRationaleQuestion": "Enter distractor rationale for the question",
+      "enterSampleAnswer": "Enter sample answer"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -767,7 +770,7 @@
       "mathQuill": "MathQuill",
       "heading": "Heading",
       "contentsTitle": "Title",
-      "contents": "Contents",
+      "contents": "Content",
       "enterPassageContentHere": "Enter passage content here",
       "contentPages": "Content pages",
       "add": "Add",

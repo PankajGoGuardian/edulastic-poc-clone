@@ -18,14 +18,13 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
-  min-height: 400px;
+  min-height: 70vh;
   min-width: 400px;
   align-items: center;
   justify-content: center;
   display: flex;
 `;
 const NoDataBox = styled.div`
-  background: #f3f3f3;
   width: 300px;
   height: 300px;
   border-radius: 6px;

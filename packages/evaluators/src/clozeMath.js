@@ -175,7 +175,8 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
     // scoringType,
     minScoreIfAttempted = 0,
     penalty,
-    ignoreCase = false
+    ignoreCase = false,
+    allowSingleLetterMistake = false
   } = validation;
 
   const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;

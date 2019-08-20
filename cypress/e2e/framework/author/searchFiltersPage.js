@@ -1,3 +1,5 @@
+import CypressHelper from "../util/cypressHelpers";
+
 export default class SearchFilters {
   routeSearch = () => {
     cy.server();
@@ -13,4 +15,8 @@ export default class SearchFilters {
   };
 
   clearAll = () => cy.contains("Clear all").click({ force: true });
+
+  setCollection = collection => {
+    CypressHelper.selectDropDownByAttribute("Collections", collection);
+  };
 }

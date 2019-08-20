@@ -20,17 +20,6 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
       if (!evaluator) {
         results[id] = [];
       } else {
-        const { isUnits, isMath, showDropdown } = validations[id];
-        if (isUnits && isMath && showDropdown && answer) {
-          const expression = answer.expression || "";
-          const unit = answer.unit ? answer.unit : "";
-          if (expression.search("=") === -1) {
-            answer = expression + unit;
-          } else {
-            answer = expression.replace(/=/gm, `${unit}=`);
-          }
-        }
-
         const { evaluation, score, maxScore } = await evaluator({
           userResponse: answer,
           hasGroupResponses: validation.hasGroupResponses,

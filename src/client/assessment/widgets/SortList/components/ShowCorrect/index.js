@@ -9,13 +9,28 @@ import { Item } from "./styled/Item";
 import { Index } from "./styled/Index";
 import { Content } from "./styled/Content";
 
-const ShowCorrect = ({ list, altList, correctList, altResponses, source, t }) => (
+const getStemNumeration = (i, uiStyle) => {
+  if (uiStyle) {
+    switch (uiStyle.validationStemNumeration) {
+      case "upper-alpha":
+        return String.fromCharCode(i + 65);
+      case "lower-alpha":
+        return String.fromCharCode(i + 65).toLowerCase();
+      default:
+        break;
+    }
+  }
+
+  return i + 1;
+};
+
+const ShowCorrect = ({ list, altList, correctList, altResponses, source, t, item }) => (
   <CorrectAnswersContainer title={t("component.sortList.correctAnswers")}>
     <FlexRow>
-      {list.map((item, i) => (
+      {list.map((ele, i) => (
         <Item key={i}>
-          <Index>{correctList.indexOf(source.indexOf(item)) + 1}</Index>
-          <Content dangerouslySetInnerHTML={{ __html: item }} />
+          <Index>{getStemNumeration(i, item.uiStyle)}</Index>
+          <Content dangerouslySetInnerHTML={{ __html: ele }} />
         </Item>
       ))}
     </FlexRow>
@@ -26,7 +41,7 @@ const ShowCorrect = ({ list, altList, correctList, altResponses, source, t }) =>
         <FlexRow>
           {ans.value.map((answer, index) => (
             <Item key={index}>
-              <Index>{index + 1}</Index>
+              <Index>{getStemNumeration(index, item.uiStyle)}</Index>
               <Content dangerouslySetInnerHTML={{ __html: altList[i][index] }} />
             </Item>
           ))}
@@ -42,7 +57,8 @@ ShowCorrect.propTypes = {
   altResponses: PropTypes.array.isRequired,
   correctList: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
-  source: PropTypes.array.isRequired
+  source: PropTypes.array.isRequired,
+  item: PropTypes.func.isRequired
 };
 
 export default withNamespaces("assessment")(ShowCorrect);

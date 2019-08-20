@@ -40,7 +40,8 @@ export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST =
   "[signup] get district by short name and org type request";
 export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS =
   "[signup] get district by short name and org type request success";
-export const GET_PUBLIC_DISTRICT_POLICY_SUCCESS = "[signup] get public district policy request success";
+export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_FAILED =
+  "[signup] get district by short name and org type request failed";
 
 const CHECK_DISTRICT_POLICY_REQUEST = "[signup] check district policy request";
 const CHECK_DISTRICT_POLICY_SUCCESS = "[signup] check district policy success";
@@ -198,11 +199,20 @@ export default createReducer(initialState, {
   [JOIN_SCHOOL_FAILED]: (state, { payload }) => {
     state.updateUserWithSchoolLoading = false;
   },
-  [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS]: (state, { payload }) => {
-    state.generalSettings = payload;
+  [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST]: state => {
+    state.districtUrlLoading = true;
+    state.generalSettings = undefined;
+    state.districtPolicy = undefined;
   },
-  [GET_PUBLIC_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
-    state.districtPolicy = payload;
+  [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS]: (state, { payload }) => {
+    state.districtUrlLoading = false;
+    state.generalSettings = payload.generalSettings;
+    state.districtPolicy = payload.districtPolicy;
+  },
+  [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_FAILED]: state => {
+    state.districtUrlLoading = false;
+    state.generalSettings = undefined;
+    state.districtPolicy = undefined;
   },
   [CHECK_DISTRICT_POLICY_REQUEST]: (state, { payload }) => {
     state.checkingPolicy = true;
@@ -368,17 +378,19 @@ function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
   try {
     const result = yield call(settingsApi.getOrgDetailsByShortNameAndOrgType, payload.data);
     const { generalSettings, districtPolicy } = result;
-    if (generalSettings) {
-      yield put({ type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS, payload: generalSettings });
-    } else {
-      throw payload.error.message;
-    }
-    if (districtPolicy) {
-      yield put({ type: GET_PUBLIC_DISTRICT_POLICY_SUCCESS, payload: districtPolicy });
+
+    if (generalSettings && districtPolicy) {
+      yield put({
+        type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS,
+        payload: { generalSettings, districtPolicy }
+      });
     } else {
       throw payload.error.message;
     }
   } catch (e) {
+    yield put({
+      type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_FAILED
+    });
     yield call(message.error, payload.error.message);
     yield put(push("/login"));
   }

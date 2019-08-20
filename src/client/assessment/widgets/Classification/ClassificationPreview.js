@@ -109,6 +109,20 @@ const ClassificationPreview = ({
         )
       : posResp;
 
+  const getStemNumeration = i => {
+    if (item.uiStyle) {
+      switch (item.uiStyle.validationStemNumeration) {
+        case "upper-alpha":
+          return String.fromCharCode(i + 65);
+        case "lower-alpha":
+          return String.fromCharCode(i + 65).toLowerCase();
+        default:
+          break;
+      }
+    }
+    return i + 1;
+  };
+
   const initialLength = (colCount || 2) * (rowCount || 1);
 
   const createEmptyArrayOfArrays = () => Array(...Array(initialLength)).map(() => []);
@@ -322,7 +336,7 @@ const ClassificationPreview = ({
   );
 
   const tableContent = rowCount > 1 ? tableLayout : dragLayout;
-
+  const maxWidth = listPosition === "left" || listPosition === "right" ? "25%" : null;
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
@@ -338,7 +352,7 @@ const ClassificationPreview = ({
           {tableContent}
         </TableWrapper>
         {!disableResponse && (
-          <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
+          <CorrectAnswersContainer maxWidth={maxWidth} title={t("component.classification.dragItemsTitle")}>
             <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
               <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
                 {groupPossibleResponses ? (
@@ -365,7 +379,7 @@ const ClassificationPreview = ({
                                 key={ind}
                                 isTransparent={transparentPossibleResponses}
                                 preview={preview}
-                                renderIndex={possibleResponses.indexOf(ite)}
+                                renderIndex={getStemNumeration(ind)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
@@ -378,7 +392,7 @@ const ClassificationPreview = ({
                                 key={ind}
                                 isTransparent={transparentPossibleResponses}
                                 preview={preview}
-                                renderIndex={possibleResponses.indexOf(ite)}
+                                renderIndex={getStemNumeration(ind)}
                                 onDrop={onDrop}
                                 item={ite.value}
                                 disableResponse={disableResponse}
@@ -462,7 +476,7 @@ const ClassificationPreview = ({
                 const resp = posResp.find(_resp => _resp.id === id);
                 return (
                   <div style={styles.itemContainerStyle} key={index}>
-                    <IndexBox preview={preview}>{index + 1}</IndexBox>
+                    <IndexBox preview={preview}>{getStemNumeration(index)}</IndexBox>
                     <MathFormulaDisplay
                       style={getStyles(
                         false,
@@ -492,7 +506,7 @@ const ClassificationPreview = ({
                     const resp = posResp.find(_resp => _resp.id === id);
                     return (
                       <div style={styles.itemContainerStyle} key={index}>
-                        <IndexBox preview={preview}>{index + 1}</IndexBox>
+                        <IndexBox preview={preview}>{getStemNumeration(index)}</IndexBox>
                         <MathFormulaDisplay
                           style={getStyles(
                             false,

@@ -59,8 +59,8 @@ class LayoutWrapper extends Component {
             </Col>
             <Col md={12}>
               <StemNumerationOption
-                onChange={val => changeUIStyle("validation_stem_numeration", val)}
-                value={get(item, "uiStyle.validation_stem_numeration", "numerical")}
+                onChange={val => changeUIStyle("validationStemNumeration", val)}
+                value={get(item, "uiStyle.validationStemNumeration", "numerical")}
               />
             </Col>
           </Row>

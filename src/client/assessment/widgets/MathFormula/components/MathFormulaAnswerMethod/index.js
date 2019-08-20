@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick, get } from "lodash";
@@ -48,8 +48,6 @@ const MathFormulaAnswerMethod = ({
   options,
   item,
   index,
-  showAdditionals,
-  handleChangeAdditionals,
   onChangeKeypad,
   onChangeAllowedOptions,
   onChangeShowDropdown,
@@ -57,8 +55,11 @@ const MathFormulaAnswerMethod = ({
   style = {},
   keypadOffset,
   allowedVariables,
+  toggleAdditional,
+  allowNumericOnly,
   t
 }) => {
+  const showAdditional = get(item, "showAdditional", false);
   useEffect(() => {
     const newOptions = clearOptions(method, { ...options });
 
@@ -78,9 +79,9 @@ const MathFormulaAnswerMethod = ({
       compareMethod = methodsConst.EQUIV_SYMBOLIC;
     }
     onChange("method", compareMethod);
-    if (onChangeKeypad) onChangeKeypad("units_us");
-    handleChangeAdditionals(`${method}_${index}`, "pop");
-    handleChangeAdditionals(`${compareMethod}_${index}`, "push");
+    // if (onChangeKeypad) onChangeKeypad("units_us");
+    // handleChangeAdditionals(`${method}_${index}`, "pop");
+    // handleChangeAdditionals(`${compareMethod}_${index}`, "push");
   }, [item.showDropdown]);
 
   const changeOptions = (prop, val) => {
@@ -125,8 +126,6 @@ const MathFormulaAnswerMethod = ({
   };
 
   const methodOptions = methodOptionsConst[method];
-  const isActive = showAdditionals.find(el => el === `${method}_${index}`);
-
   const eToLowerCase = label => label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
 
   const renderMethodsOptions = () =>
@@ -304,7 +303,7 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={{ allowNumericOnly: item.allowNumericOnly }}
+              options={{ allowNumericOnly }}
               onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
@@ -363,6 +362,7 @@ const MathFormulaAnswerMethod = ({
               customKeys={isShowDropdown ? [] : customKeys}
               style={style}
               numberPad={item.numberPad}
+              allowNumericOnly={allowNumericOnly || false}
               onChangeKeypad={onChangeKeypad}
               value={value}
               showDropdown
@@ -403,18 +403,11 @@ const MathFormulaAnswerMethod = ({
         </StyledRow>
       )}
 
-      <AdditionalToggle
-        active={isActive}
-        onClick={() =>
-          isActive
-            ? handleChangeAdditionals(`${method}_${index}`, "pop")
-            : handleChangeAdditionals(`${method}_${index}`, "push")
-        }
-      >
+      <AdditionalToggle active={showAdditional} onClick={() => toggleAdditional(!showAdditional)}>
         {t("component.math.additionalOptions")}
       </AdditionalToggle>
 
-      {showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0 ? (
+      {showAdditional ? (
         <AdditionalContainer>
           <FlexContainer justifyContent="space-between" alignItems="none">
             <AdditionalCompareUsing>
@@ -424,11 +417,7 @@ const MathFormulaAnswerMethod = ({
                 size="large"
                 value={method}
                 style={{ width: "100%", height: 42 }}
-                onChange={val => {
-                  onChange("method", val);
-                  handleChangeAdditionals(`${method}_${index}`, "pop");
-                  handleChangeAdditionals(`${val}_${index}`, "push");
-                }}
+                onChange={val => onChange("method", val)}
               >
                 {methods.map(methodKey => (
                   <Select.Option
@@ -475,11 +464,11 @@ MathFormulaAnswerMethod.propTypes = {
   style: PropTypes.object,
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
-  showAdditionals: PropTypes.object,
-  handleChangeAdditionals: PropTypes.func,
   allowedVariables: PropTypes.string.isRequired,
+  allowNumericOnly: PropTypes.bool.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  keypadOffset: PropTypes.number.isRequired
+  keypadOffset: PropTypes.number.isRequired,
+  toggleAdditional: PropTypes.func
 };
 
 MathFormulaAnswerMethod.defaultProps = {
@@ -487,9 +476,7 @@ MathFormulaAnswerMethod.defaultProps = {
   method: "",
   style: {},
   options: {},
-  onDelete: undefined,
-  showAdditionals: [],
-  handleChangeAdditionals: () => {}
+  onDelete: undefined
 };
 
 export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

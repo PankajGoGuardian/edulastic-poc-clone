@@ -53,7 +53,7 @@ const Item = ({ valid, preview, theme, dragHandle, renderIndex, item }) => (
     {dragHandle && <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />}
     {preview && valid !== undefined && (
       <IndexBox preview={preview} valid={valid}>
-        {renderIndex + 1}
+        {renderIndex}
       </IndexBox>
     )}
     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
@@ -66,7 +66,7 @@ Item.propTypes = {
   preview: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
   dragHandle: PropTypes.bool.isRequired,
-  renderIndex: PropTypes.number.isRequired,
+  renderIndex: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired
 };
 
@@ -102,11 +102,6 @@ const DragItemContainer = ({
     setMousePosition({ x: evt.clientX, y: evt.clientY });
   };
 
-  const itemWidth =
-    possibilityListPosition === IMAGE_LIST_POSITION_LEFT || possibilityListPosition === IMAGE_LIST_POSITION_RIGHT
-      ? IMAGE_LIST_DEFAULT_WIDTH
-      : null;
-
   return (
     <MainWrapper onMouseMove={handleMouseMove}>
       <DragPreview mousePosition={mousePosition} isDragging={isDragging} isResetOffset={isResetOffset}>
@@ -120,7 +115,6 @@ const DragItemContainer = ({
             style={{
               display: "flex",
               alignItems: "center",
-              width: itemWidth,
               margin: `5px`
             }}
           >
@@ -170,8 +164,7 @@ DragItemContainer.propTypes = {
 };
 
 DragItemContainer.defaultProps = {
-  isResetOffset: false,
-  valid: false
+  isResetOffset: false
 };
 
 const InnerWrapper = styled.div`

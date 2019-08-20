@@ -4,6 +4,7 @@ const PAGE = ["studentsignup", "signup", "adminsignup"];
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 
 describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+  before(() => cy.clearToken());
   context(`getStarted page`, () => {
     const page = "getStarted";
     SCREEN_SIZES.forEach(size => {

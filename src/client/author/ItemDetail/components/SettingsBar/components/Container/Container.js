@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Checkbox } from "antd";
+import { Checkbox, Row, Col, Switch } from "antd";
 import ReactOutsideEvent from "react-outside-event";
 
-import { title } from "@edulastic/colors";
+import { title, themeColor } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
@@ -129,6 +129,9 @@ class Container extends Component {
       scrolling,
       onVerticalDividerChange,
       onScrollingChange,
+      itemLevelScoring,
+      setItemLevelScoring,
+      questionsCount,
       isSingleQuestion = false,
       isMultipart
     } = this.props;
@@ -167,6 +170,43 @@ class Container extends Component {
           checkedLeft={useFlowLayoutLeft}
           checkedRight={useFlowLayoutRight}
         />
+        {questionsCount > 1 && (
+          <Row
+            type="flex"
+            style={{
+              flexDirection: "column",
+              borderRadius: "5px",
+              boxShadow: "0 2px 5px 0 rgba(0,0,0,0.07)",
+              padding: "15px",
+              marginBottom: "50px",
+              backgroundColor: "#fff"
+            }}
+          >
+            <Row
+              style={{
+                color: themeColor,
+                fontSize: "13px",
+                fontWeight: "600",
+                marginBottom: "15px"
+              }}
+            >
+              Scoring Level
+            </Row>
+            <Row type="flex">
+              <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
+              <Col>
+                <Switch
+                  checked={itemLevelScoring}
+                  checkedChildren="on"
+                  unCheckedChildren="off"
+                  onChange={v => {
+                    setItemLevelScoring(v);
+                  }}
+                />
+              </Col>
+            </Row>
+          </Row>
+        )}
         <Checkboxes>
           <Checkbox style={{ marginBottom: 20 }} checked={verticalDivider} onChange={onVerticalDividerChange}>
             {t("author:component.settingsBar.showVerticalDivider")}

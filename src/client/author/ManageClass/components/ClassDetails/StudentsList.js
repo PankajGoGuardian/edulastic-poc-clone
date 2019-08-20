@@ -12,7 +12,7 @@ import { isFeatureAccessible } from "../../../../features/components/FeaturesSwi
 
 const StudentsList = ({ loaded, students, selectStudents, selectedStudent, features, groupList, selectedClass }) => {
   const { groupId, active } = selectedClass;
-  const [showAllStudents, setShowAllStudents] = useState(false);
+  const [showCurrentStudents, setShowCurrentStudents] = useState(true);
 
   const rowSelection = {
     onChange: (_, selectedRows) => {
@@ -26,8 +26,9 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
 
   const empty = isEmpty(students);
   // here only students without enrollmentStatus as "0" are shown
-  let filteredStudents = [];
-  filteredStudents = !showAllStudents ? students.filter(student => student.enrollmentStatus !== "0") : [...students];
+  const filteredStudents = showCurrentStudents
+    ? students.filter(student => student.enrollmentStatus === 1)
+    : [...students];
 
   const columns = [
     {
@@ -73,9 +74,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
       width: "30%",
       defaultSortOrder: "descend",
       sorter: (a, b) => a.enrollmentStatus > b.enrollmentStatus,
-      render: enrollmentStatus => (
-        <span>{enrollmentStatus && enrollmentStatus === "1" ? "Active" : "Not Enrolled"}</span>
-      )
+      render: enrollmentStatus => <span>{enrollmentStatus && enrollmentStatus == 1 ? "Active" : "Not Enrolled"}</span>
     }
   ];
 
@@ -90,12 +89,13 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
   }
   const rowKey = recode => recode.email || recode.username;
   const showStudentsHandler = () => {
-    setShowAllStudents(showAllStudents => !showAllStudents);
+    setShowCurrentStudents(showCurrentStudents => !showCurrentStudents);
   };
+
   return (
     <div style={{ textAlign: "end" }}>
       {!!students.length && (
-        <CheckboxShowStudents defaultChecked={!showAllStudents} onChange={showStudentsHandler}>
+        <CheckboxShowStudents defaultChecked={showCurrentStudents} onChange={showStudentsHandler}>
           Show current students only
         </CheckboxShowStudents>
       )}

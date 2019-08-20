@@ -11,8 +11,33 @@ class OrderListReport extends Component {
     return previewIndexesList.map(index => questionsList[index]);
   }
 
+  getStemNumeration = (i, uiStyle) => {
+    if (uiStyle) {
+      switch (uiStyle.validationStemNumeration) {
+        case "upper-alpha":
+          return String.fromCharCode(i + 65);
+        case "lower-alpha":
+          return String.fromCharCode(i + 65).toLowerCase();
+        default:
+          break;
+      }
+    }
+
+    return i + 1;
+  };
+
   render() {
-    const { validation, showAnswers, evaluation, list, listStyle, columns, disableResponse, styleType } = this.props;
+    const {
+      validation,
+      showAnswers,
+      evaluation,
+      list,
+      listStyle,
+      columns,
+      disableResponse,
+      styleType,
+      item
+    } = this.props;
 
     return (
       <div style={listStyle}>
@@ -27,7 +52,7 @@ class OrderListReport extends Component {
             correctText={showAnswers && list[validation.validResponse.value[i]]}
             showAnswers={showAnswers}
             index={i}
-            ind={i + 1}
+            ind={this.getStemNumeration(i, item.uiStyle)}
             sortableHelper="sortableHelper"
           >
             {q}
@@ -48,7 +73,8 @@ OrderListReport.propTypes = {
   disableResponse: PropTypes.bool,
   evaluation: PropTypes.array,
   columns: PropTypes.number,
-  styleType: PropTypes.string
+  styleType: PropTypes.string,
+  item: PropTypes.object.isRequired
 };
 OrderListReport.defaultProps = {
   showAnswers: false,

@@ -21,7 +21,7 @@ import {
   updateUserWithSchoolLoadingSelector,
   checkDistrictPolicyRequestAction
 } from "../../duck";
-import { getUserIPZipCode } from "../../../../author/src/selectors/user";
+import { getUserIPZipCode, getUserOrgId } from "../../../../author/src/selectors/user";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 
 const SchoolDropDownItemTemplate = ({ itemData: school }) => {
@@ -117,7 +117,7 @@ const JoinSchool = ({
 
   const fetchSchool = searchText => {
     if (searchText && searchText.length >= 3) {
-      if (isSignupUsingDaURL) {
+      if (isSignupUsingDaURL || districtId) {
         searchSchoolByDistrictRequestAction({
           districtId,
           search: {
@@ -136,7 +136,7 @@ const JoinSchool = ({
   const handleSearch = debounce(keyword => fetchSchool(keyword), 500);
 
   useEffect(() => {
-    if (isSignupUsingDaURL) {
+    if (isSignupUsingDaURL || districtId) {
       searchSchoolByDistrictRequestAction({ districtId });
     } else {
       searchSchool({ ipZipCode, email });
@@ -250,7 +250,8 @@ const enhance = compose(
       newSchool: get(state, "signup.newSchool", {}),
       checkDistrictPolicy: get(state, "signup.checkDistrictPolicy", false),
       updateUserWithSchoolLoading: updateUserWithSchoolLoadingSelector(state),
-      ipZipCode: getUserIPZipCode(state)
+      ipZipCode: getUserIPZipCode(state),
+      districtId: getUserOrgId(state)
     }),
     {
       searchSchool: searchSchoolRequestAction,

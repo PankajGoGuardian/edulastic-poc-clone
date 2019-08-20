@@ -50,7 +50,7 @@ class QuillSortableHintsList extends Component {
       produce(item, draft => {
         draft.hints.push({
           value: uuid(),
-          label: `${t("component.hint")} ${ALPHABET[draft.hints.length]}`
+          label: ""
         });
       })
     );
@@ -79,6 +79,8 @@ class QuillSortableHintsList extends Component {
             items={item.hints.map(o => o.label)}
             onSortEnd={this.onSortEnd}
             useDragHandle
+            placeholder={t("component.enterHintForTheProblem")}
+            defaultLabel={false}
             firstFocus={item.firstMount}
             onRemove={this.remove}
             onChange={this.editOptions}

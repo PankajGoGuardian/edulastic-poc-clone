@@ -510,6 +510,8 @@ var mixAndMatchEvaluator =
           penalty,
           _validation$ignoreCas2,
           ignoreCase,
+          _validation$allowSing2,
+          allowSingleLetterMistake,
           _userResponse$inputs2,
           inputs,
           _userResponse$dropDow2,
@@ -541,7 +543,9 @@ var mixAndMatchEvaluator =
                   (minScoreIfAttempted = _validation$minScoreI === void 0 ? 0 : _validation$minScoreI),
                   (penalty = validation.penalty),
                   (_validation$ignoreCas2 = validation.ignoreCase),
-                  (ignoreCase = _validation$ignoreCas2 === void 0 ? false : _validation$ignoreCas2);
+                  (ignoreCase = _validation$ignoreCas2 === void 0 ? false : _validation$ignoreCas2),
+                  (_validation$allowSing2 = validation.allowSingleLetterMistake),
+                  (allowSingleLetterMistake = _validation$allowSing2 === void 0 ? false : _validation$allowSing2);
                 (_userResponse$inputs2 = userResponse.inputs),
                   (inputs = _userResponse$inputs2 === void 0 ? {} : _userResponse$inputs2),
                   (_userResponse$dropDow2 = userResponse.dropDowns),

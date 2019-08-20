@@ -20,11 +20,13 @@ const AutocompleteDropDown = ({
   selectCB,
   data = [],
   comData,
-  iconType = "caret-down"
+  iconType = "caret-down",
+  iconActiveType = "caret-up"
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
   const [text, setText] = useState(by.title);
+  const [isActive, setActive] = useState(false);
   const autoRef = useRef(null);
   const textChangeStatusRef = useRef(false);
 
@@ -72,8 +74,11 @@ const AutocompleteDropDown = ({
     let arr = [
       <OptGroup key={"group"} label={prefix ? prefix : ""}>
         {datum.map((item, index) => {
+          const isSelected = selected.key === item.key;
+          const className = isSelected ? "ant-select-dropdown-menu-item-active" : null;
+
           return (
-            <Option key={item.key} title={item.title}>
+            <Option key={item.key} title={item.title} className={className}>
               {item.title}
             </Option>
           );
@@ -108,6 +113,7 @@ const AutocompleteDropDown = ({
     if (!item) {
       setText(selected.title);
     }
+    setActive(false);
 
     textChangeStatusRef.current = false;
   };
@@ -116,6 +122,7 @@ const AutocompleteDropDown = ({
     let obj = { key: key, title: item.props.title };
     setSelected(obj);
     selectCB(obj, comData);
+    setActive(false);
 
     textChangeStatusRef.current = false;
   };
@@ -129,10 +136,13 @@ const AutocompleteDropDown = ({
   const onFocus = () => {
     setText("");
     setDropDownData(data);
+    setActive(true);
     textChangeStatusRef.current = true;
   };
 
   const dataSource = buildDropDownData(dropDownData);
+
+  const title = selected.title || prefix;
 
   return (
     <StyledAutocompleteDropDownContainer className={`${containerClassName} autocomplete-dropdown`}>
@@ -148,7 +158,11 @@ const AutocompleteDropDown = ({
         value={text}
         ref={autoRef}
       >
-        <Input suffix={<Icon type={iconType} className="" />} placeholder={selected.title} />
+        <Input
+          title={title}
+          suffix={<Icon type={isActive ? iconActiveType : iconType} className="" />}
+          placeholder={selected.title}
+        />
       </AutoComplete>
     </StyledAutocompleteDropDownContainer>
   );

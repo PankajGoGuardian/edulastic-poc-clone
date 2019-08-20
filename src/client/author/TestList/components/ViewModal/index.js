@@ -161,7 +161,7 @@ class ViewModal extends React.Component {
                   <SummaryCardLabel>Points</SummaryCardLabel>
                 </SummaryCard>
               </SummaryCardContainer>
-              <PerfectScrollbar>
+              <PerfectScrollbar style={{ height: "45vh" }}>
                 <SummaryList>
                   <ListHeader>
                     <ListHeaderCell>SUMMARY</ListHeaderCell>

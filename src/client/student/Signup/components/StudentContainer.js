@@ -267,6 +267,10 @@ class StudentSignup extends React.Component {
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
     const partner = Partners[partnerKey];
 
+    const isUserNameAndPasswordAllowed =
+      (isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") || !isSignupUsingDaURL) &&
+      method !== GOOGLE &&
+      method !== OFFICE;
     return (
       <div>
         {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
@@ -323,31 +327,33 @@ class StudentSignup extends React.Component {
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
                     {method !== GOOGLE && method !== OFFICE && this.renderFormHeader()}
-                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
-                    !isSignupUsingDaURL ? (
-                      <FormBody>
-                        <Col span={20} offset={2}>
-                          <h5 align="center">
-                            {method !== GOOGLE && method !== OFFICE && t("component.signup.formboxheading")}
-                            {method === GOOGLE && t("component.signup.formboxheadinggoole")}
-                          </h5>
-                          {method === GOOGLE && <Description>{t("component.signup.codeFieldDesc")}</Description>}
-                          <Form onSubmit={this.handleSubmit}>
-                            {method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()}
-                            {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}
-                            <FormItem>
+                    <FormBody>
+                      <Col span={20} offset={2}>
+                        <h5 align="center">
+                          {isUserNameAndPasswordAllowed ? t("component.signup.formboxheading") : null}
+                          {(method === GOOGLE || method === OFFICE) && t("component.signup.formboxheadinggoole")}
+                        </h5>
+                        {(method === GOOGLE || method === OFFICE) && (
+                          <Description>{t("component.signup.codeFieldDesc")}</Description>
+                        )}
+                        <Form onSubmit={this.handleSubmit}>
+                          {isUserNameAndPasswordAllowed ? this.renderGeneralFormFields() : null}
+                          {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}
+                          <FormItem>
+                            {isUserNameAndPasswordAllowed ? (
                               <RegisterButton data-cy="signup" type="primary" htmlType="submit">
-                                {method !== GOOGLE &&
-                                  method !== OFFICE &&
-                                  t("component.signup.student.signupstudentbtn")}
-                                {(method === GOOGLE || method === OFFICE) &&
-                                  t("component.signup.student.signupentercode")}
+                                {t("component.signup.student.signupstudentbtn")}
                               </RegisterButton>
-                            </FormItem>
-                          </Form>
-                        </Col>
-                      </FormBody>
-                    ) : null}
+                            ) : null}
+                            {(method === GOOGLE || method === OFFICE) && (
+                              <RegisterButton data-cy="signup" type="primary" htmlType="submit">
+                                {t("component.signup.student.signupentercode")}
+                              </RegisterButton>
+                            )}
+                          </FormItem>
+                        </Form>
+                      </Col>
+                    </FormBody>
                   </FormWrapper>
                 </Col>
               </Row>

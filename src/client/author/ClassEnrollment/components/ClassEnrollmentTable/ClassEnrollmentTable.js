@@ -224,12 +224,12 @@ class ClassEnrollmentTable extends React.Component {
           ...item,
           filtersColumn: value
         };
-        if (value === "role") _item.filtersValue = "Equals";
+        if (value === "role") _item.filtersValue = "eq";
         return _item;
       }
       return item;
     });
-    this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList);
+    this.setState({ filtersData: _filtersData });
   };
   changeFilterValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
@@ -242,19 +242,22 @@ class ClassEnrollmentTable extends React.Component {
       return item;
     });
 
-    this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList);
+    this.setState({ filtersData: _filtersData });
   };
   changeFilterText = (e, key) => {
+    let fetchFilterData = false;
     const _filtersData = this.state.filtersData.map((item, index) => {
+      if (item.filtersColumn && item.filtersColumn === "role") fetchFilterData = true;
       if (index === key) {
         return {
           ...item,
-          filterStr: e.target.value
+          filterStr: fetchFilterData ? e : e.target.value
         };
       }
       return item;
     });
-    this.setState({ filtersData: _filtersData });
+    if (fetchFilterData) this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList);
+    else this.setState({ filtersData: _filtersData });
   };
 
   addFilter = (e, key) => {
@@ -438,7 +441,7 @@ class ClassEnrollmentTable extends React.Component {
         width: 200
       }
     ];
-
+    const roleFilterOptions = ["Teacher", "Student"];
     const SearchRows = [];
     for (let i = 0; i < filtersData.length; i++) {
       const { filtersColumn, filtersValue, filterStr, filterAdded } = filtersData[i];
@@ -446,7 +449,7 @@ class ClassEnrollmentTable extends React.Component {
       const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "" || !filterAdded;
 
       const optValues = [];
-      if (filtersColumn === "Role") {
+      if (filtersColumn === "role") {
         optValues.push(<Option value="eq">Equals</Option>);
       } else {
         optValues.push(
@@ -454,8 +457,8 @@ class ClassEnrollmentTable extends React.Component {
             Select a value
           </Option>
         );
-        optValues.push(<Option value="equals">Equals</Option>);
-        optValues.push(<Option value="contains">Contains</Option>);
+        optValues.push(<Option value="eq">Equals</Option>);
+        optValues.push(<Option value="cont">Contains</Option>);
       }
 
       SearchRows.push(
@@ -480,14 +483,26 @@ class ClassEnrollmentTable extends React.Component {
           >
             {optValues}
           </StyledFilterSelect>
-
-          <StyledFilterInput
-            placeholder="Enter text"
-            onChange={e => this.changeFilterText(e, i)}
-            onBlur={e => this.onBlurFilterText(e, i)}
-            disabled={isFilterTextDisable}
-            value={filterStr}
-          />
+          {filtersColumn === "role" ? (
+            <StyledFilterSelect
+              placeholder="Select a value"
+              onChange={e => this.changeFilterText(e, i)}
+              disabled={isFilterTextDisable}
+              value={filterStr}
+            >
+              {roleFilterOptions.map(item => (
+                <Option value={item.toLowerCase()}>{item}</Option>
+              ))}
+            </StyledFilterSelect>
+          ) : (
+            <StyledFilterInput
+              placeholder="Enter text"
+              onChange={e => this.changeFilterText(e, i)}
+              onBlur={e => this.onBlurFilterText(e, i)}
+              disabled={isFilterTextDisable}
+              value={filterStr}
+            />
+          )}
           {i < 2 && (
             <StyledFilterButton
               type="primary"
@@ -513,7 +528,11 @@ class ClassEnrollmentTable extends React.Component {
             + Add New User
           </Button>
 
-          <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} onChange={this.onChangeSearch} />
+          <StyledSearch
+            placeholder="Search by class name"
+            onSearch={this.handleSearchName}
+            onChange={this.onChangeSearch}
+          />
           <StyledActionDropDown overlay={actionMenu}>
             <Button>
               Actions <Icon type="down" />

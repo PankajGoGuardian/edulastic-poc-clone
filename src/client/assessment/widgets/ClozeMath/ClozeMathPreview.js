@@ -13,6 +13,7 @@ import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButto
 import ClozeDropDown from "./ClozeMathBlock/ClozeDropDown";
 import ClozeInput from "./ClozeMathBlock/ClozeInput";
 import ClozeMathInput from "./ClozeMathBlock/ClozeMathInput";
+import ClozeMathWithUnit from "./ClozeMathBlock/ClozeMathWithUnit";
 import ClozeDropDownAnswerDisplay from "./ClozeMathDisplay/ClozeDropDownAnswerDisplay";
 import ClozeInputAnswerDisplay from "./ClozeMathDisplay/ClozeInputAnswerDisplay";
 import ClozeMathAnswerDisplay from "./ClozeMathDisplay/ClozeMathAnswerDisplay";
@@ -162,7 +163,7 @@ const ClozeMathPreview = ({
           textdropdown: testItem ? ClozeDropDownAnswerDisplay : ClozeDropDown,
           textinput: testItem ? ClozeInputAnswerDisplay : ClozeInput,
           mathinput: testItem ? ClozeMathAnswerDisplay : ClozeMathInput,
-          mathunit: () => <span>Math Unit</span>
+          mathunit: testItem ? ClozeMathAnswerDisplay : ClozeMathWithUnit
         }}
         jsx={newHtml}
       />

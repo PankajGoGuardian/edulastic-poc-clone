@@ -6,7 +6,7 @@ import { MathKeyboard } from "@edulastic/common";
 
 const { Option } = Select;
 
-const SelectUnit = ({ onChange, unit, customUnits, keypadMode }) => {
+const SelectUnit = ({ onChange, unit, customUnits, keypadMode, preview, height }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
 
   if (keypadMode === "custom") {
@@ -21,7 +21,7 @@ const SelectUnit = ({ onChange, unit, customUnits, keypadMode }) => {
   };
 
   return (
-    <StyledSelect onChange={onChangeUnit} value={unit}>
+    <StyledSelect onChange={onChangeUnit} value={unit} preview={preview} height={height}>
       {allBtns.map((btn, i) => (
         <Option value={btn.handler} key={i}>
           {btn.label}
@@ -35,20 +35,37 @@ SelectUnit.propTypes = {
   onChange: PropTypes.func.isRequired,
   keypadMode: PropTypes.string.isRequired,
   unit: PropTypes.string.isRequired,
-  customUnits: PropTypes.string
+  customUnits: PropTypes.string,
+  height: PropTypes.string,
+  preview: PropTypes.bool
 };
 
 SelectUnit.defaultProps = {
-  customUnits: ""
+  height: "",
+  customUnits: "",
+  preview: false
 };
 
 export default SelectUnit;
 
 const StyledSelect = styled(Select)`
   min-width: 80px;
-  margin-left: 24px;
+  margin-left: ${({ preview }) => (preview ? "0px" : "24px")};
+  height: ${({ height }) => height || "auto"};
+  ${({ preview }) =>
+    preview &&
+    `
+      vertical-align: middle;
+    `}
+
   .ant-select-selection {
-    padding: 5px 2px;
+    padding: ${({ preview }) => (preview ? "0px" : "5px 2px")};
+    ${({ preview }) =>
+      preview &&
+      `
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+      `}
   }
   svg {
     display: inline-block;

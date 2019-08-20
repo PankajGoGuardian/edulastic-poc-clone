@@ -21,7 +21,7 @@ const specSource = {
     if (props.previewTab !== CLEAR && typeof props.changePreviewTab === "function") {
       props.changePreviewTab();
     }
-    return { item: props.item };
+    return { item: props.item, sourceFlag: props.flag, sourceIndex: props.renderIndex };
   },
 
   endDrag(props, monitor) {

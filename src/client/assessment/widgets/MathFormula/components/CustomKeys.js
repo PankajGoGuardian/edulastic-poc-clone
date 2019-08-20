@@ -30,7 +30,7 @@ const CustomKeys = ({ blocks, onChange, onAdd, onDelete, t }) => (
     </Row>
 
     <EduButton onClick={onAdd} type="primary">
-      {t("component.options.addTextBlock")}
+      {t("component.options.addNewKey")}
     </EduButton>
   </>
 );

@@ -11,7 +11,8 @@
       "exactMatch": "Exact match",
       "partialMatch": "Partial match",
       "mainTitle": "Options",
-      "annotations": "Annotations"
+      "annotations": "Annotations",
+      "hideAnnotations": "Hide Annotations"
     },
     "correctAnswers": {
       "setCorrectAnswers": "Set Correct Answer(s)"

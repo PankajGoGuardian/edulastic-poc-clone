@@ -21,6 +21,7 @@ import Header from "./Header";
 import LeftFields from "./LeftFields";
 import RightFields from "./RightFields";
 import { Container, FormTitle, LeftContainer, RightContainer } from "./styled";
+import { addNewTagAction, getAllTagsAction, getAllTagsSelector } from "../../../TestPage/ducks";
 
 class ClassCreate extends React.Component {
   static propTypes = {
@@ -60,21 +61,22 @@ class ClassCreate extends React.Component {
   };
 
   componentDidMount() {
-    const { curriculums, getCurriculums } = this.props;
+    const { curriculums, getCurriculums, getAllTags } = this.props;
 
     if (isEmpty(curriculums)) {
       getCurriculums();
     }
+    getAllTags({ type: "group" });
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    const { form, userId, userOrgData } = this.props;
+    const { form, userId, userOrgData, allTagsData } = this.props;
     const { districtId } = userOrgData;
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { createClass, curriculums } = this.props;
-        const { standardSets, endDate, startDate, courseId, grades, subject } = values;
+        const { standardSets, endDate, startDate, courseId, grades, subject, tags } = values;
 
         const updatedStandardsSets = standardSets.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
@@ -96,6 +98,7 @@ class ClassCreate extends React.Component {
         values.courseId = isEmpty(courseId) ? "" : courseId;
         values.grades = isEmpty(grades) ? ["Other"] : grades;
         values.subject = isEmpty(subject) ? "Other Subjects" : subject;
+        values.tags = tags.map(t => allTagsData.find(o => o._id === t));
 
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true });
@@ -146,10 +149,12 @@ class ClassCreate extends React.Component {
       setSubject,
       selectedSubject,
       entity,
+      allTagsData,
+      addNewTag,
       history
     } = this.props;
-    const { _id: classId } = entity;
-    const { getFieldDecorator, getFieldValue } = form;
+    const { _id: classId, tags } = entity;
+    const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
     const { defaultSchool, schools } = userOrgData;
     const { submitted } = this.state;
     if (!creating && submitted && isEmpty(error)) {
@@ -165,7 +170,14 @@ class ClassCreate extends React.Component {
             </Divider>
             <FlexContainer alignItems="baseline">
               <LeftContainer>
-                <LeftFields getFieldDecorator={getFieldDecorator} getFieldValue={getFieldValue} />
+                <LeftFields
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  tags={tags}
+                  setFieldsValue={setFieldsValue}
+                  allTagsData={allTagsData}
+                  addNewTag={addNewTag}
+                />
               </LeftContainer>
               <RightContainer>
                 <RightFields
@@ -208,6 +220,7 @@ const enhance = compose(
         creating: get(state, "manageClass.creating"),
         error: get(state, "manageClass.error"),
         entity: get(state, "manageClass.entity"),
+        allTagsData: getAllTagsSelector(state),
         filteredCurriculums: getFormattedCurriculumsSelector(state, {
           subject: selectedSubject
         }),
@@ -217,6 +230,8 @@ const enhance = compose(
     {
       getCurriculums: getDictCurriculumsAction,
       createClass: createClassAction,
+      getAllTags: getAllTagsAction,
+      addNewTag: addNewTagAction,
       searchCourseList: receiveSearchCourseAction,
       setSubject: setSubjectAction
     }

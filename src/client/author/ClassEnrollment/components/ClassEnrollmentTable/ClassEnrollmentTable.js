@@ -113,7 +113,7 @@ class ClassEnrollmentTable extends React.Component {
         message.error("You can only move users of same class");
       } else if (selectedRowKeys.length >= 1) {
         this.setState({ moveUsersModal: true });
-        setAddStudentsToOtherClassVisiblity(true);
+        // setAddStudentsToOtherClassVisiblity(true);
       }
     } else if (e.key === "add students to other class") {
       if (selectedRowKeys.length == 0) {
@@ -123,7 +123,7 @@ class ClassEnrollmentTable extends React.Component {
           message.error("Only students can be added to another class");
         } else {
           this.setState({ addStudentsModal: true });
-          setAddStudentsToOtherClassVisiblity(true);
+          // setAddStudentsToOtherClassVisiblity(true);
         }
       }
     }
@@ -563,41 +563,40 @@ class ClassEnrollmentTable extends React.Component {
             userOrgId={userOrgId}
           />
         )}
-        {addStudentsModal && (
-          <AddStudentsToOtherClassModal
-            titleText="Add Student(s) to another class"
-            buttonText="Add Student(s)"
-            {...addStudentsToOtherClassData}
-            handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
-            onCloseModal={() => {
-              this.setState({ addStudentsModal: false });
-              setAddStudentsToOtherClassVisiblity(false);
-            }}
-            fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
-          />
-        )}
 
-        {moveUsersModal && (
-          <MoveUsersToOtherClassModal
-            titleText="Move User(s) to another class"
-            buttonText="Move User(s)"
-            {...addStudentsToOtherClassData}
-            handleSubmit={destinationClassCode =>
-              moveUsersToOtherClass({
-                districtId: userOrgId,
-                destinationClassCode,
-                sourceClassCode: selectedUsersInfo[0].group.code,
-                userDetails: selectedUserIds
-              })
-            }
-            onCloseModal={() => {
-              this.setState({ moveUsersModal: false });
-              setAddStudentsToOtherClassVisiblity(false);
-            }}
-            fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
-            selectedUsersInfo={selectedUsersInfo}
-          />
-        )}
+        <AddStudentsToOtherClassModal
+          {...addStudentsToOtherClassData}
+          showModal={addStudentsModal}
+          titleText="Add Student(s) to another class"
+          buttonText="Add Student(s)"
+          handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
+          onCloseModal={() => {
+            this.setState({ addStudentsModal: false });
+            setAddStudentsToOtherClassVisiblity(false);
+          }}
+          fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+        />
+
+        <MoveUsersToOtherClassModal
+          {...addStudentsToOtherClassData}
+          showModal={moveUsersModal}
+          titleText="Move User(s) to another class"
+          buttonText="Move User(s)"
+          handleSubmit={destinationClassCode =>
+            moveUsersToOtherClass({
+              districtId: userOrgId,
+              destinationClassCode,
+              sourceClassCode: selectedUsersInfo[0].group.code,
+              userDetails: selectedUserIds
+            })
+          }
+          onCloseModal={() => {
+            this.setState({ moveUsersModal: false });
+            setAddStudentsToOtherClassVisiblity(false);
+          }}
+          fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+          selectedUsersInfo={selectedUsersInfo}
+        />
       </StyledTableContainer>
     );
   }

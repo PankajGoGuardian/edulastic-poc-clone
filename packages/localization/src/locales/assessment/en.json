@@ -314,6 +314,7 @@
       "enterQuestion": "Enter question",
       "list": "List",
       "addNew": "Add new",
+      "duplicatedResponses": "Duplicated responses",
       "dragItemsTitle": "Drag & Drop the answer",
       "correctAnswers": "Correct Answers",
       "alternateAnswers": "Alternate Answers"

@@ -6,6 +6,7 @@ import { math } from "@edulastic/constants";
 import { Checkbox } from "@edulastic/common";
 import CorrectAnswers from "../../../components/CorrectAnswers";
 import MathFormulaAnswer from "./ClozeMathAnswer";
+import MathUnitAnswer from "./ClozeMathUnitAnswer";
 import DropDownAnswer from "./ClozeDropDownAnswer";
 import InputAnswer from "./ClozeInputAnswer";
 import withPoints from "../../../components/HOC/withPoints";
@@ -22,6 +23,7 @@ const initialMethod = {
 
 const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, onChangeKeypad, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
+  const isAlt = !isEmpty(item.validation.altResponses);
 
   const _addAnswer = () => {
     const newItem = cloneDeep(item);
@@ -261,9 +263,45 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
+  // -----|-----|-----|------ Math Unit answers handler -----|-----|-----|------ //
+  const _onChangeMathUnitAnswer = altAnswerIndex => ({ answerId, prop, value }) => {
+    setQuestionData(
+      produce(item, draft => {
+        if (prop === "value" || prop === "unit" || prop === "options") {
+          let prevAnswers = draft.validation.validResponse.mathUnits.value;
+          if (isAlt) {
+            prevAnswers = draft.validation.altResponses[altAnswerIndex].mathUnits.value;
+          }
+          forEach(prevAnswers, answer => {
+            if (answer.id === answerId) {
+              if (prop === "unit") {
+                answer.options[prop] = value;
+              } else {
+                answer[prop] = value;
+              }
+            }
+          });
+          if (isAlt) {
+            draft.validation.altResponses[altAnswerIndex].mathUnits.value = prevAnswers;
+          }
+          draft.validation.validResponse.mathUnits.value = prevAnswers;
+        } else {
+          const mathUnitResponses = draft.responseIds.mathUnits;
+          forEach(mathUnitResponses, res => {
+            if (res.id === answerId) {
+              res[prop] = value;
+            }
+          });
+          draft.responseIds.mathUnits = mathUnitResponses;
+        }
+      })
+    );
+  };
+
   const mathAnswers = get(item, "validation.validResponse.value", []);
   const inputAnswers = get(item, "validation.validResponse.textinput.value", []);
   const dropDownAnswers = get(item, "validation.validResponse.dropdown.value", []);
+  const mathUnitsAnswers = get(item, "validation.validResponse.mathUnits.value", []);
 
   const { responseIds } = item;
 
@@ -280,14 +318,15 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
         } else if (key === "dropDowns") {
           const _answer = find(dropDownAnswers, valid => valid.id === r.id);
           orderedAnswers.push({ index: r.index, type: key, ..._answer });
+        } else if (key === "mathUnits") {
+          const _answer = find(mathUnitsAnswers, valid => valid.id === r.id);
+          orderedAnswers.push({ type: key, ..._answer, ...r });
         }
         return null;
       })
     );
   }
   orderedAnswers = orderedAnswers.sort((a, b) => a.index - b.index);
-
-  const isAlt = !isEmpty(item.validation.altResponses);
 
   return (
     <CorrectAnswers
@@ -375,6 +414,36 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   item={item}
                   onChange={_changeAltDropDownMethod(correctTab - 1)}
                   answers={[altAnswer]}
+                />
+              );
+            }
+          }
+          if (answer.type === "mathUnits") {
+            if (correctTab === 0) {
+              return (
+                <MathUnitAnswer
+                  key={index}
+                  item={item}
+                  answer={answer}
+                  onChange={_onChangeMathUnitAnswer(null)}
+                  onChangeAllowedOptions={handleAllowedOptions(index)}
+                  onChangeKeypad={onChangeKeypad}
+                  toggleAdditional={toggleAdditional}
+                />
+              );
+            }
+            if (isAlt) {
+              const _altMathUnitsVlaues = get(item, `validation.altResponses[${correctTab - 1}].mathUnits.value`, []);
+              const altAnswer = { ...answer, value: find(_altMathUnitsVlaues, av => av.id === answer.value.id) };
+              return (
+                <MathUnitAnswer
+                  key={index}
+                  item={item}
+                  answer={altAnswer}
+                  onChange={_onChangeMathUnitAnswer(correctTab - 1)}
+                  onChangeAllowedOptions={handleAllowedOptions(index)}
+                  onChangeKeypad={onChangeKeypad}
+                  toggleAdditional={toggleAdditional}
                 />
               );
             }

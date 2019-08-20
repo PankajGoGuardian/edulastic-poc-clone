@@ -59,7 +59,7 @@ class Template extends Component {
         } else if (tagName === "mathinput") {
           newResponseId.maths.push({ index, id });
         } else if (tagName === "mathunit") {
-          newResponseId.mathUnits.push({ index, id });
+          newResponseId.mathUnits.push({ index, id, keypadMode: math.units[0].value });
         } else if (tagName === "textdropdown") {
           newResponseId.dropDowns.push({ index, id });
         }

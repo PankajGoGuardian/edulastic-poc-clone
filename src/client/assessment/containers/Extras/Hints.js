@@ -17,7 +17,7 @@ import Question from "../../components/Question";
 
 const SortableListWithAddButton = withAddButton(QuillSortableList);
 
-const Hints = ({ t, item, setQuestionData, fillSections, cleanSections, advancedAreOpen }) => {
+const Hints = ({ t, item, setQuestionData, fillSections, cleanSections, advancedAreOpen, visible }) => {
   const prop = "hints";
 
   const _change = change({ item, setQuestionData, prop });
@@ -32,6 +32,7 @@ const Hints = ({ t, item, setQuestionData, fillSections, cleanSections, advanced
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
+      visible={visible}
     >
       <Fragment>
         <Subtitle>{t("component.options.hint")}</Subtitle>
@@ -60,13 +61,15 @@ Hints.propTypes = {
   item: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  visible: PropTypes.bool
 };
 
 Hints.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
-  advancedAreOpen: false
+  advancedAreOpen: false,
+  visible: true
 };
 
 const enhance = compose(

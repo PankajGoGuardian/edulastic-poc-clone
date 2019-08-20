@@ -115,7 +115,7 @@ class ProfileBody extends React.Component {
     const { curriculums, updateInterestedCurriculums, user } = this.props;
     const curriculumsData = [];
     for (let i = 0; i < updatedStandards.length; i++) {
-      const selStandards = curriculums.filter(item => item.curriculum === updatedStandards[i]);
+      const selStandards = curriculums.filter(item => item.curriculum._id === updatedStandards[i]._id);
       curriculumsData.push({
         _id: selStandards[0]._id,
         name: selStandards[0].curriculum,

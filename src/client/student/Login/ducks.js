@@ -879,9 +879,9 @@ function* deleteAccountSaga({ payload }) {
 
 function* updateInterestedCurriculumsSaga({ payload }) {
   try {
-    const result = yield call(settingsApi.updateInterestedStandards, payload);
+    yield call(settingsApi.updateInterestedStandards, payload);
     yield call(message.success, "Standard sets updated successfully.");
-    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: result });
+    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: payload.curriculums });
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED });
     yield call(message.error, e && e.data ? e.data.message : "Failed to update Standard sets");

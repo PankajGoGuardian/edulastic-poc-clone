@@ -57,7 +57,7 @@ const Summary = ({
   };
 
   useEffect(() => {
-    getAllTags({ type: "test" });
+    getAllTags({ type: isPlaylist ? "playlist" : "test" });
   }, []);
   const breadcrumbData = [
     {

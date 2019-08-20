@@ -3,6 +3,8 @@ import { Table, Input, Form, Icon, Checkbox, Button, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
+import produce from "immer";
+import ColorPicker from "../Container/ColorPicker";
 
 import {
   receivePerformanceBandAction,
@@ -75,12 +77,9 @@ class EditableCell extends React.Component {
 
   checkPrice = (rule, value, callback) => {
     const { dataSource, record } = this.props;
-    console.log("record", record);
     if (!isNaN(value)) {
       const sameRow = dataSource.filter(item => item.key === record.key);
       const sameDownRow = dataSource.filter(item => item.key === record.key + 1);
-      console.log({ sameDownRow });
-
       if (sameRow[0].from < parseInt(value)) callback(`To value should be less than ${sameRow[0].from}`);
       else if (sameDownRow[0].to + 1 > parseInt(value))
         callback(`To value shouldn't be less than ${sameDownRow[0].to}`);
@@ -202,6 +201,11 @@ export class PerformanceBandTable extends React.Component {
         }
       },
       {
+        title: "color",
+        dataIndex: "color",
+        render: (color, record) => <ColorPicker value={color} onChange={c => this.changeColor(c, record.key)} />
+      },
+      {
         title: "Above or At Standard",
         dataIndex: "aboveOrAtStandard",
         width: "20%",
@@ -320,6 +324,16 @@ export class PerformanceBandTable extends React.Component {
     this.props.setPerformanceBandData(dataSource);
   };
 
+  changeColor = (color, key) => {
+    const index = this.state.dataSource.findIndex(x => x.key === key);
+
+    const data = produce(this.state.dataSource, ds => {
+      ds[index].color = color;
+    });
+    this.setState({ isChangeState: true, dataSource: data });
+    this.props.setPerformanceBandData(data);
+  };
+
   handleDelete = (e, key) => {
     const dataSource = [...this.state.dataSource];
     if (dataSource.length <= 2) {
@@ -345,6 +359,7 @@ export class PerformanceBandTable extends React.Component {
       key: Math.max(...keyArray) + 1,
       name: "Performance Band" + (Math.max(...keyArray) + 1),
       aboveOrAtStandard: true,
+      color: "#576BA9",
       from: 0,
       to: 0
     };
@@ -406,7 +421,6 @@ export class PerformanceBandTable extends React.Component {
   render() {
     const { dataSource, editingKey, isChangeState, performanceBandId } = this.state;
 
-    console.log("datasource", dataSource);
     const components = {
       body: {
         row: EditableFormRow,

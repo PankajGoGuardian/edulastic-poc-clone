@@ -1,4 +1,4 @@
-import React, { Component, useReducer, useState } from "react";
+import React, { Component, useReducer, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -10,81 +10,35 @@ import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader"
 import PerformanceBandTable, {
   PerformanceBandTable as PerformanceBandTableDumb
 } from "../PerformanceBandTable/PerformanceBandTable";
+import { getUserOrgId } from "../../../src/selectors/user";
+import {
+  createPerformanceBandAction,
+  updatePerformanceBandAction,
+  deletePerformanceBandAction,
+  receivePerformanceBandAction,
+  setPerformanceBandLocalAction
+} from "../../ducks";
+import ColorPicker from "./ColorPicker";
 
 import { StyledContent, StyledLayout, SpinContainer, StyledSpin, PerformanceBandDiv } from "./styled";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
 
-class PerformanceBand extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    const { loading, updating, creating, history } = this.props;
-    const showSpin = loading || updating || creating;
-
-    return (
-      <PerformanceBandDiv>
-        <AdminHeader title={title} active={menuActive} history={history} />
-        <StyledContent>
-          <StyledLayout loading={showSpin ? "true" : "false"}>
-            {showSpin && (
-              <SpinContainer>
-                <StyledSpin size="large" />
-              </SpinContainer>
-            )}
-            <PerformanceBandTable />
-          </StyledLayout>
-        </StyledContent>
-      </PerformanceBandDiv>
-    );
-  }
-}
-
-const initialState = localStorage.performanceBands
-  ? JSON.parse(localStorage.performanceBands)
-  : [
-      {
-        name: "test 1",
-        id: uuid(),
-        performanceBand: [
-          {
-            color: "#ffffff",
-            name: "Proficient",
-            aboveOrAtStandard: true,
-            from: 100,
-            to: 0,
-            key: 0
-          }
-        ]
-      }
-    ];
-
 function ProfileRow({
   name,
   performanceBand,
-  id,
+  _id,
   index,
   setEditingIndex,
   active,
   updatePerformanceBand,
-  savePerformance
+  savePerformance,
+  remove,
+  update: updateToServer
 }) {
-  const createPerformanceBand = () => {
-    console.log("creating performanceBands", arguments);
-  };
-
   const setPerf = payload => {
-    updatePerformanceBand({ id, data: payload });
-  };
-
-  const setPerformanceBandData = () => {
-    console.log("setting PerformanceBandData", arguments);
-  };
-  const updatePerf = () => {
-    console.log("updating PerformanceBandData", arguments);
+    updatePerformanceBand({ _id, data: payload });
   };
 
   return (
@@ -94,7 +48,8 @@ function ProfileRow({
           <h3>{name}</h3>
         </Col>
         <Col span={12}>
-          <Button onClick={() => setEditingIndex(id)}>edit</Button> <Button>delete</Button>
+          <Button onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}>edit</Button>{" "}
+          <Button onClick={() => remove(_id)}>delete</Button>
         </Col>
       </Row>
 
@@ -102,10 +57,12 @@ function ProfileRow({
         <Row>
           <Col span={23}>
             <PerformanceBandTableDumb
-              performanceBandId={id}
+              performanceBandId={_id}
               dataSource={performanceBand}
-              createPerformanceband={createPerformanceBand}
-              updatePerformanceBand={() => {}}
+              createPerformanceband={() => {}}
+              updatePerformanceBand={() => {
+                updateToServer(_id);
+              }}
               setPerformanceBandData={setPerf}
             />
           </Col>
@@ -115,45 +72,33 @@ function ProfileRow({
   );
 }
 
-export function PerformanceBandAlt() {
+export function PerformanceBandAlt(props) {
+  const { loading, updating, creating, history, list, create, update, remove, profiles } = props;
+  const showSpin = loading || updating || creating;
+  useEffect(() => {
+    list();
+  }, []);
   const [editingIndex, setEditingIndex] = useState();
-  const [state, dispatch] = useReducer(
-    createReducer(initialState, {
-      addProfile: (state, { payload: name }) => {
-        state.push({
-          name,
-          id: uuid(),
-          performanceBand: [
-            {
-              color: "#ffffff",
-              name: "Proficient",
-              aboveOrAtStandard: true,
-              from: 100,
-              to: 0,
-              key: 0
-            }
-          ]
-        });
-      },
-      updatePerformanceBand: (state, { payload }) => {
-        const { id, data } = payload;
-        console.log("up reducer", { id, data }, payload);
-        const ind = state.findIndex(x => x.id === id);
-        console.log("up reducer", { ind });
-        state[ind].performanceBand = data;
-      }
-    }),
-    initialState
-  );
-
-  const saveAll = () => {
-    localStorage.performanceBands = JSON.stringify(state);
-  };
 
   const addProfile = () => {
     const name = prompt("name of the profile?");
+
     if (name) {
-      dispatch({ type: "addProfile", payload: name });
+      const initialObj = {
+        name,
+        orgId: props.orgId,
+        orgType: "district",
+        performanceBand: [
+          {
+            color: "#ffffff",
+            name: "Proficient",
+            aboveOrAtStandard: true,
+            from: 100,
+            to: 0
+          }
+        ]
+      };
+      create(initialObj);
     } else {
       alert("name can't be empty");
     }
@@ -164,27 +109,23 @@ export function PerformanceBandAlt() {
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout>
-          <Button.Group>
-            <Button type="primary" size="large" onClick={addProfile}>
-              + Add Profile
-            </Button>
-            <Button type="default" size="large" onClick={saveAll}>
-              Save All
-            </Button>
-          </Button.Group>
+          <Button type="primary" style={{ marginBottom: "5px" }} onClick={addProfile}>
+            + Add Profile
+          </Button>
           <List
-            dataSource={state}
+            dataSource={profiles}
             bordered
-            rowKey="id"
+            rowKey="_id"
             renderItem={profile => (
               <ProfileRow
                 {...profile}
+                remove={remove}
+                update={update}
                 setEditingIndex={setEditingIndex}
-                active={editingIndex === profile.id}
-                updatePerformanceBand={payload => dispatch({ type: "updatePerformanceBand", payload })}
+                active={editingIndex === profile._id}
+                updatePerformanceBand={props.updateLocal}
                 savePerformance={({ _id: id, performanceBand, ...rest }) => {
-                  dispatch({ type: "updatePerformanceBand", payload: { id, data: performanceBand } });
-                  console.log("rest", rest);
+                  props.updateLocal({ id, data: performanceBand });
                 }}
               />
             )}
@@ -196,12 +137,23 @@ export function PerformanceBandAlt() {
 }
 
 const enhance = compose(
-  connect(state => ({
-    loading: get(state, ["performanceBandReducer", "loading"], false),
-    updating: get(state, ["performanceBandReducer", "updating"], false),
-    creating: get(state, ["performanceBandReducer", "creating"], false)
-  }))
+  connect(
+    state => ({
+      loading: get(state, ["performanceBandReducer", "loading"], false),
+      updating: get(state, ["performanceBandReducer", "updating"], false),
+      creating: get(state, ["performanceBandReducer", "creating"], false),
+      profiles: get(state, ["performanceBandReducer", "profiles"], []),
+      orgId: getUserOrgId(state)
+    }),
+    {
+      list: receivePerformanceBandAction,
+      create: createPerformanceBandAction,
+      update: updatePerformanceBandAction,
+      remove: deletePerformanceBandAction,
+      updateLocal: setPerformanceBandLocalAction
+    }
+  )
 );
 
 //export default enhance(PerformanceBand);
-export default PerformanceBandAlt;
+export default enhance(PerformanceBandAlt);

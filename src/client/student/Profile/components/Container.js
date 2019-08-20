@@ -45,9 +45,9 @@ class ProfileContainer extends React.Component {
   };
 
   compareToFirstPassword = (rule, value, callback) => {
-    const { form } = this.props;
+    const { form, t } = this.props;
     if (value && value !== form.getFieldValue("password")) {
-      callback("Two passwords that you enter is inconsistent!");
+      callback(t("common.title.confirmPasswordMess"));
     } else {
       callback();
     }

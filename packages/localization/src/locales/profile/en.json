@@ -18,7 +18,8 @@
       "cancel": "cancel",
       "save": "save",
       "editProfile": "Edit Profile",
-      "deleteAccount": "Delete My Account"
+      "deleteAccount": "Delete My Account",
+      "confirmPasswordMess": "Password didn't match."
     }
   }
 }

@@ -2018,7 +2018,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [
               {
-                method: "equivSymbolic",
+                method: math.methods.EQUIV_VALUE,
                 options: {
                   inverseResult: false
                 },

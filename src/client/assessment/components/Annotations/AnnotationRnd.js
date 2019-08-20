@@ -118,11 +118,10 @@ class AnnotationsRnd extends Component {
   }
 
   render() {
-    const { question, disableDragging, isAbove } = this.props;
+    const { question, disableDragging, isAbove, bounds } = this.props;
     if (!question || !question.annotations) return null;
 
     const annotations = question.annotations || [];
-
     return (
       <Fragment>
         {annotations
@@ -152,7 +151,7 @@ class AnnotationsRnd extends Component {
                 }}
                 enableResizing={disableDragging ? resizeDisable : resizeEnable}
                 disableDragging={disableDragging}
-                bounds={"parent"}
+                bounds={bounds || "parent"}
                 className="annotation"
               >
                 <FroalaInput {...this.props} isRnd>

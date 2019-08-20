@@ -16,7 +16,6 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
   const { fractionProperties = {} } = item;
   const { selected, sectors = 7, fractionType, rows, columns, count } = fractionProperties;
   const totalSelections = fractionType === "circles" ? count * sectors : count * (rows * columns);
-
   const handleCorrectAnswerChange = e => {
     const value = +e.target.value;
     if (value > 0) {
@@ -96,7 +95,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
           />
         </FlexContainer>
         <FlexContainer
-          style={{ overflowX: "auto", overflowY: "hidden", position: "relative" }}
+          style={{ overflow: "auto", position: "relative", height: "425px", width: "700px" }}
           justifyContent="flex-start"
           flexWrap="wrap"
         >
@@ -115,7 +114,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
                 />
               );
             })}
-          <AnnotationRnd question={item} setQuestionData={setQuestionData} disableDragging={false} />
+          <AnnotationRnd bounds={"window"} question={item} setQuestionData={setQuestionData} disableDragging={false} />
         </FlexContainer>
       </FlexContainer>
     </Question>

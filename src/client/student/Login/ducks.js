@@ -334,6 +334,12 @@ export const getUserFeatures = createSelector(
 const routeSelector = state => state.router.location.pathname;
 
 function* login({ payload }) {
+  const generalSettings = yield select(signupGeneralSettingsSelector);
+  if (generalSettings) {
+    payload.districtId = generalSettings.orgId;
+    payload.districtName = generalSettings.name;
+  }
+
   try {
     const result = yield call(authApi.login, payload);
     const user = pick(result, userPickFields);
@@ -357,7 +363,7 @@ function* login({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Invalid username or password";
-    yield call(message.error, errorMessage);
+    yield call(message.error, get(err, "data.message", errorMessage));
   }
 }
 

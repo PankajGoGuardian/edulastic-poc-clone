@@ -109,7 +109,9 @@ const ForgotPasswordForm = props => {
     event.preventDefault();
     const { form } = props;
     form.validateFieldsAndScroll((err, { email }) => {
-      _onSubmit(email);
+      if (!err) {
+        _onSubmit(email);
+      }
     });
   };
 

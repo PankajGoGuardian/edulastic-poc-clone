@@ -9,7 +9,6 @@ import { EduButton, FlexContainer } from "@edulastic/common";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
-import { Subtitle } from "../../../styled/Subtitle";
 
 import { IconTrash } from "../styled/IconTrash";
 
@@ -18,7 +17,7 @@ class ResponseContainers extends Component {
     const { containers, onChange, onAdd, onDelete, t } = this.props;
     return (
       <Container>
-        <Subtitle>{t("component.options.responseBoxOverride")}</Subtitle>
+        <Label>{t("component.options.responseBoxOverride")}</Label>
 
         {containers.map((container, index) => (
           <Fragment>

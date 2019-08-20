@@ -97,7 +97,7 @@ class ClassEnrollmentTable extends React.Component {
     const { setAddStudentsToOtherClassVisiblity } = this.props;
     const { selectedRowKeys, selectedUsersInfo } = this.state;
     const isInstructor = selectedUsersInfo.some(user => user.role === "teacher");
-    const areUsersOfDifferentClasses = uniqBy(selectedUsersInfo, "group.code").length !== 1;
+    const areUsersOfDifferentClasses = uniqBy(selectedUsersInfo, "group.code").length > 1;
     if (e.key === "remove students") {
       if (selectedRowKeys.length == 0) {
         message.error("Select 1 or more Student to remove");

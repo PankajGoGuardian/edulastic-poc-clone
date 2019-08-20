@@ -83,7 +83,7 @@ class ClassEnrollmentTable extends React.Component {
     const selectedUsersInfo = classEnrollmentData.filter(data => {
       const code = get(data, "group.code");
       const userId = get(data, "user._id");
-      const recordMatch = selectedRows.find(r => r.code == code && r.id === userId);
+      const recordMatch = selectedRows.find(r => r.code === code && r.id === userId);
       if (recordMatch) return true;
     });
     this.setState({ selectedRowKeys, selectedUserIds, selectedUsersInfo });

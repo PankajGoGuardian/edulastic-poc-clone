@@ -173,14 +173,23 @@ const createPerformanceBand = data =>
     })
     .then(result => result.data.result);
 
-const updatePerformanceBand = data =>
+const updatePerformanceBand = ({ _id, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/performance-band/`,
+      url: `${prefix}/performance-band/${_id}`,
       method: "put",
       data
     })
     .then(result => result.data.result);
+
+const deletePerformanceBand = (_id, districtId) =>
+  api
+    .callApi({
+      url: `${prefix}/performance-band/${_id}`,
+      params: { districtId: districtId },
+      method: "delete"
+    })
+    .then(result => result.data);
 
 // interested standards
 const getInterestedStandards = ({ orgId }) =>
@@ -228,6 +237,7 @@ export default {
   updateStandardsProficiency,
   getPerformanceBand,
   createPerformanceBand,
+  deletePerformanceBand,
   updatePerformanceBand,
   getInterestedStandards,
   saveInterestedStandards,

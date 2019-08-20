@@ -64,6 +64,10 @@ const ClozeMathPreview = ({
   const _getAltInputsAnswers = () =>
     get(item, "validation.altResponses", []).map(alt => get(alt, "textinput.value", []));
 
+  const _getMathUintAnswers = () => get(item, "validation.validResponse.mathUnits.value", []);
+  const _getAltMathUintAnswers = () =>
+    get(item, "validation.altResponses", []).map(alt => get(alt, "mathUnits.value", []));
+
   const handleAddAnswer = (answer, answerType, id) => {
     let newAnswers = cloneDeep(userAnswer);
     const answers = newAnswers[answerType] || {};
@@ -173,10 +177,12 @@ const ClozeMathPreview = ({
           mathAnswers={_getMathAnswers()}
           dropdownAnswers={_getDropDownAnswers()}
           textInputAnswers={_getTextInputAnswers()}
+          mathUnitAnswers={_getMathUintAnswers()}
           responseIds={responseIds}
           altMathAnswers={_getAltMathAnswers()}
           altDropDowns={_getAltDropDownAnswers()}
           altInputs={_getAltInputsAnswers()}
+          altMathUnitAnswers={_getAltMathUintAnswers()}
         />
       )}
     </QuestionWrapper>

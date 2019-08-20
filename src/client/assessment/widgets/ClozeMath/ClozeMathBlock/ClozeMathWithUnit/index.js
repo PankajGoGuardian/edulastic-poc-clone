@@ -8,7 +8,7 @@ import { MathKeyboard } from "@edulastic/common";
 import CheckedBlock from "../CheckedBlock";
 import SelectUnit from "../../ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit";
 
-class ClozeMathInput extends React.Component {
+class ClozeMathWithUnit extends React.Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     resprops: PropTypes.object.isRequired
@@ -222,6 +222,11 @@ class ClozeMathInput extends React.Component {
     save({ ...this.userAnswer, unit }, "mathUnits", id);
   };
 
+  onFocusUnitDropdown = () => {
+    this.closeMathBoard();
+    this.saveAnswer();
+  };
+
   getStyles = uiStyles => {
     const btnStyle = {};
     if (uiStyles.fontSize) {
@@ -286,6 +291,7 @@ class ClozeMathInput extends React.Component {
           unit={unit}
           customUnits={customUnits}
           onChange={this.onChangeUnit}
+          onFocus={this.onFocusUnitDropdown}
           keypadMode={keypadMode}
           height={height || "auto"}
         />
@@ -307,9 +313,9 @@ class ClozeMathInput extends React.Component {
   }
 }
 
-const MathInput = ({ resprops = {}, id }) => {
+const MathWithUnit = ({ resprops = {}, id }) => {
   const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
-  const { mathUnits: _mathAnswers = [] } = answers;
+  const { mathUnits } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
@@ -320,7 +326,7 @@ const MathInput = ({ resprops = {}, id }) => {
       width={width}
       height={height}
       evaluation={evaluation}
-      userAnswer={_mathAnswers[id]}
+      userAnswer={mathUnits[id]}
       item={item}
       id={id}
       type="mathUnits"
@@ -328,16 +334,16 @@ const MathInput = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <ClozeMathInput resprops={resprops} id={id} />
+    <ClozeMathWithUnit resprops={resprops} id={id} />
   );
 };
 
-MathInput.propTypes = {
+MathWithUnit.propTypes = {
   id: PropTypes.string.isRequired,
   resprops: PropTypes.object.isRequired
 };
 
-export default MathInput;
+export default MathWithUnit;
 
 const KeyboardWrapper = styled.div`
   width: 40%;

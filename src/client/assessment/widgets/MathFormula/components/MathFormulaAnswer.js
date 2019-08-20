@@ -44,6 +44,7 @@ class MathFormulaAnswer extends Component {
             onChangeKeypad={onChangeKeypad}
             onChangeAllowedOptions={onChangeAllowedOptions}
             allowedVariables={item.allowedVariables || ""}
+            allowNumericOnly={item.allowNumericOnly || false}
             onChangeShowDropdown={onChangeShowDropdown}
             onAdd={onAdd}
             keypadOffset={keypadOffset}

@@ -56,6 +56,7 @@ const MathFormulaAnswerMethod = ({
   keypadOffset,
   allowedVariables,
   toggleAdditional,
+  allowNumericOnly,
   t
 }) => {
   const showAdditional = get(item, "showAdditional", false);
@@ -302,7 +303,7 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={{ allowNumericOnly: item.allowNumericOnly }}
+              options={{ allowNumericOnly }}
               onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
@@ -361,6 +362,7 @@ const MathFormulaAnswerMethod = ({
               customKeys={isShowDropdown ? [] : customKeys}
               style={style}
               numberPad={item.numberPad}
+              allowNumericOnly={allowNumericOnly || false}
               onChangeKeypad={onChangeKeypad}
               value={value}
               showDropdown
@@ -463,6 +465,7 @@ MathFormulaAnswerMethod.propTypes = {
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   allowedVariables: PropTypes.string.isRequired,
+  allowNumericOnly: PropTypes.bool.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired,
   toggleAdditional: PropTypes.func

@@ -3,7 +3,7 @@ import { pick, last, get, set } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
 import { push } from "connected-react-router";
-import { authApi, userApi, TokenStorage } from "@edulastic/api";
+import { authApi, userApi, TokenStorage, settingsApi } from "@edulastic/api";
 import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
@@ -64,6 +64,12 @@ export const UPDATE_USER_DETAILS_REQUEST = "[user] update user details";
 export const UPDATE_USER_DETAILS_SUCCESS = "[user] update user details success";
 export const UPDATE_USER_DETAILS_FAILED = "[user] update user details failed";
 export const DELETE_ACCOUNT_REQUEST = "[auth] delete account";
+export const UPDATE_INTERESTED_CURRICULUMS_REQUEST = "[user] update interested curriculums request";
+export const UPDATE_INTERESTED_CURRICULUMS_SUCCESS = "[user] update interested curriculums success";
+export const UPDATE_INTERESTED_CURRICULUMS_FAILED = "[user] update interested curriculums failed";
+export const REMOVE_SCHOOL_REQUEST = "[user] remove school request";
+export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
+export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -98,6 +104,8 @@ export const resetMyPasswordAction = createAction(RESET_MY_PASSWORD_REQUEST);
 export const updateProfileImageAction = createAction(UPDATE_PROFILE_IMAGE_PATH_REQUEST);
 export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST);
 export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
+export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
+export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -242,14 +250,38 @@ export default createReducer(initialState, {
     state.updatingUserDetails = true;
   },
   [UPDATE_USER_DETAILS_SUCCESS]: (state, { payload }) => {
-    delete state.updatingUserDetails,
-      (state.user = {
-        ...state.user,
-        ...payload
-      });
+    delete state.updatingUserDetails;
+    state.user = {
+      ...state.user,
+      ...payload
+    };
   },
   [UPDATE_USER_DETAILS_FAILED]: state => {
     delete state.updatingUserDetails;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_REQUEST]: state => {
+    state.updatingInterestedCurriculums = true;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_SUCCESS]: (state, { payload }) => {
+    state.updatingInterestedCurriculums = undefined;
+    state.user.orgData.interestedCurriculums = payload;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_FAILED]: state => {
+    state.updatingInterestedCurriculums = undefined;
+  },
+  [REMOVE_SCHOOL_REQUEST]: state => {
+    state.removingSchool = true;
+  },
+  [REMOVE_SCHOOL_SUCCESS]: (state, { payload }) => {
+    state.removingSchool = undefined;
+    const updatedSchoolIds = state.user.institutionIds.filter(id => id !== payload);
+    const updatedSchools = state.user.orgData.schools.filter(school => school._id !== payload);
+    state.user.institutionIds = updatedSchoolIds;
+    state.user.orgData.institutionIds = updatedSchoolIds;
+    state.user.orgData.schools = updatedSchools;
+  },
+  [REMOVE_SCHOOL_FAILED]: state => {
+    state.removingSchool = undefined;
   }
 });
 
@@ -845,6 +877,28 @@ function* deleteAccountSaga({ payload }) {
   }
 }
 
+function* updateInterestedCurriculumsSaga({ payload }) {
+  try {
+    yield call(settingsApi.updateInterestedStandards, payload);
+    yield call(message.success, "Standard sets updated successfully.");
+    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: payload.curriculums });
+  } catch (e) {
+    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED });
+    yield call(message.error, e && e.data ? e.data.message : "Failed to update Standard sets");
+  }
+}
+
+function* removeSchoolSaga({ payload }) {
+  try {
+    yield call(userApi.removeSchool, payload);
+    yield call(message.success, "Requested school removed successfully.");
+    yield put({ type: REMOVE_SCHOOL_SUCCESS, payload: payload.schoolId });
+  } catch (e) {
+    yield put({ type: REMOVE_SCHOOL_FAILED });
+    yield call(message.error, e && e.data ? e.data.message : "Failed to remove requested school");
+  }
+}
+
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
     const result = yield call(authApi.validateClassCode, payload);
@@ -908,4 +962,6 @@ export function* watcherSaga() {
   yield takeLatest(UPDATE_PROFILE_IMAGE_PATH_REQUEST, updateProfileImageSaga);
   yield takeLatest(UPDATE_USER_DETAILS_REQUEST, updateUserDetailsSaga);
   yield takeLatest(DELETE_ACCOUNT_REQUEST, deleteAccountSaga);
+  yield takeLatest(UPDATE_INTERESTED_CURRICULUMS_REQUEST, updateInterestedCurriculumsSaga);
+  yield takeLatest(REMOVE_SCHOOL_REQUEST, removeSchoolSaga);
 }

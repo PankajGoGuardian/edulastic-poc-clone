@@ -74,7 +74,7 @@ export const getChecks = answer => {
 };
 
 // exact match evaluator
-const exactMatchEvaluator = async (userResponse, answers) => {
+const exactMatchEvaluator = async (userResponse = "", answers) => {
   let score = 0;
   let maxScore = 1;
   let evaluation = [];
@@ -133,7 +133,7 @@ const evaluator = async ({ userResponse, validation }) => {
   const answers = [validResponse, ...altResponses];
 
   // if its math unit type, derive answer by making into a string.
-  if (userResponse.expression || userResponse.unit) {
+  if (typeof userResponse === "object" && (userResponse.expression || userResponse.unit)) {
     const expression = userResponse.expression || "";
     const unit = userResponse.unit || "";
     if (expression.search("=") === -1) {

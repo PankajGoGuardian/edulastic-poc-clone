@@ -457,7 +457,6 @@ function* createTestSaga({ payload }) {
       "updatedDate",
       "testItems",
       "passages",
-      "tags",
       "isUsed"
     ]);
     //we are getting testItem ids only in payload from cart, but whole testItem Object from test library.
@@ -466,8 +465,6 @@ function* createTestSaga({ payload }) {
       maxScore: helpers.getPoints(o),
       questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
     }));
-
-    dataToSend.tags = payload.data.tags.map(o => ({ _id: o._id, tagName: o.tagName }));
 
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
@@ -533,8 +530,6 @@ function* updateTestSaga({ payload }) {
         maxScore: scoring[o._id] || helpers.getPoints(o),
         questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o), scoring[o._id]) : {}
       }));
-
-    payload.data.tags = payload.data.tags.map(o => ({ _id: o._id, tagName: o.tagName }));
 
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));

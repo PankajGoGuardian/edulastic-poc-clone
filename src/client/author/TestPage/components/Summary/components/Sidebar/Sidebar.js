@@ -57,7 +57,8 @@ const Sidebar = ({
   const selectTags = async id => {
     let newTag = {};
     if (id === searchValue) {
-      newTag = await tagsApi.create({ tagName: searchValue, tagType: "test" });
+      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "test" });
+      newTag = { _id, tagName };
       addNewTag(newTag);
     } else {
       newTag = allTagsData.find(tag => tag._id === id);

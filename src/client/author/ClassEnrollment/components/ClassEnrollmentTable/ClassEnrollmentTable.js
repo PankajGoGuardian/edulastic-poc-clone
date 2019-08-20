@@ -566,7 +566,7 @@ class ClassEnrollmentTable extends React.Component {
           buttonText="Add Student(s)"
           handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
           onCloseModal={() => {
-            this.setState({ addStudentsModal: false });
+            this.setState({ addStudentsModalVisible: false });
           }}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
         />
@@ -585,7 +585,7 @@ class ClassEnrollmentTable extends React.Component {
             })
           }
           onCloseModal={() => {
-            this.setState({ moveUsersModal: false });
+            this.setState({ moveUsersModalVisible: false });
           }}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           selectedUsersInfo={selectedUsersInfo}

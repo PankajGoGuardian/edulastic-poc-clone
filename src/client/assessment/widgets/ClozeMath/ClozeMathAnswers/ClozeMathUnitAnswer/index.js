@@ -23,6 +23,15 @@ class ClozeMathUnitAnswer extends Component {
       onChange({ answerId, prop, value: val });
     };
 
+    const dropdownUnit = (
+      <SelectUnit
+        customUnits={answer.customUnits}
+        onChange={_changeValue(answer.id)}
+        unit={get(answer, "options.unit", "")}
+        keypadMode={answer.keypadMode}
+      />
+    );
+
     return (
       <AnswerContainer>
         <Collapse
@@ -45,7 +54,7 @@ class ClozeMathUnitAnswer extends Component {
               toggleAdditional={toggleAdditional}
               customUnits={answer.customUnits}
               keypadMode={answer.keypadMode}
-              renderExtra={<SelectUnit onChange={_changeValue(answer.id)} value={get(answer, "options.unit", "")} />}
+              renderExtra={dropdownUnit}
               showDefaultMode
               {...answer}
             />

@@ -111,7 +111,7 @@ class ProfileBody extends React.Component {
           <DetailData>
             <InputItemWrapper>
               {getFieldDecorator("title", {
-                initialValue: user.title || "Title",
+                initialValue: user.title,
                 rules: [
                   {
                     required: true,
@@ -120,7 +120,6 @@ class ProfileBody extends React.Component {
                 ]
               })(
                 <Select>
-                  <Option value="Title">Title</Option>
                   <Option value="Mr.">Mr.</Option>
                   <Option value="Mrs.">Mrs.</Option>
                   <Option value="Ms.">Ms.</Option>

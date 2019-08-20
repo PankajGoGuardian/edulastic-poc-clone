@@ -25,6 +25,7 @@
     "checkAnswer": "Check answer",
     "hint": "Hint",
     "addANewHint": "Add a new hint",
+    "enterHintForTheProblem": "Enter a hint for the problem",
     "options": {
       "autoexpandoninput": "AUTO EXPAND ON INPUT",
       "instant_feedback": "Check answer button",

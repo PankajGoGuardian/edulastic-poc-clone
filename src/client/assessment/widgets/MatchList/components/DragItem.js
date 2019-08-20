@@ -70,7 +70,7 @@ const DragItem = ({
         <DragPreview isDragging={isDragging} {...restProps}>
           {itemView}
         </DragPreview>
-        {preview && <Index correct={correct}>{renderIndex + 1}</Index>}
+        {preview && <Index correct={correct}>{renderIndex}</Index>}
         {itemView}
         {preview && (
           <div style={{ marginRight: 15 }}>

@@ -184,6 +184,7 @@ const Sidebar = ({
         <MainTitle>Tags</MainTitle>
         <SummarySelect
           data-cy="tagsSelect"
+          className="tagsSelect"
           mode="multiple"
           size="large"
           style={{ marginBottom: 0 }}

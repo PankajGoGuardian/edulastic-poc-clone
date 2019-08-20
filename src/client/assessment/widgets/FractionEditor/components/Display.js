@@ -24,7 +24,7 @@ const Display = ({
   const fractionType = fractionProperties.fractionType;
   const count = fractionProperties.count || 1;
   let selected = userAnswer;
-
+  const hideAnnotations = get(item, "options.hideAnnotations", false);
   const answerContext = useContext(AnswerContext);
 
   if ((previewTab === "show" && answerContext.isAnswerModifiable && !answerContext.expressGrader) || isReviewTab) {
@@ -90,7 +90,7 @@ const Display = ({
               />
             );
           })}
-        <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />
+        {!hideAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
       </FlexContainer>
     </FlexContainer>
   );

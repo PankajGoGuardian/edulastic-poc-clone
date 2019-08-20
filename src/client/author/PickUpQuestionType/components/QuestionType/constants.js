@@ -1843,7 +1843,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["units_si", "units_us", "qwerty"],
+        symbols: ["basic", "units_us", "units_si"],
         template: EMBED_RESPONSE,
         templateDisplay: false,
         hints: [{ value: uuids[0], label: "" }]
@@ -2034,7 +2034,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["units_us", "units_si", "qwerty"],
+        symbols: ["basic", "units_us", "units_si"],
         hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType

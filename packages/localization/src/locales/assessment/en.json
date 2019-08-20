@@ -203,7 +203,9 @@
       "solution": "Solution",
       "overallDistractorRationale": "Overall Distractor Rationale",
       "explanation": "Explanation",
-      "display": "Display"
+      "display": "Display",
+      "enterDistractorRationaleQuestion": "Enter distractor rationale for the question",
+      "enterSampleAnswer": "Enter sample answer"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

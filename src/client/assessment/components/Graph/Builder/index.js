@@ -1513,26 +1513,7 @@ class Board {
               el,
               objectCreator: attrs => {
                 const props = Equation.parseConfig();
-
-                let points = null;
-                if (el.points) {
-                  points = el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes =>
-                        this.createPointFromConfig(
-                          pointEl,
-                          {
-                            ...attributes,
-                            snapToGrid: false
-                          },
-                          attrs.bgShapes
-                        )
-                    })
-                  );
-                }
-
-                return Equation.renderElement(this, el, points, {
+                return Equation.renderElement(this, el, {
                   ...props,
                   ...attrs
                 });
@@ -1949,25 +1930,9 @@ class Board {
               el,
               objectCreator: attrs => {
                 const props = Equation.parseConfig();
-
-                let points = null;
-                if (el.points) {
-                  points = el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes =>
-                        this.createAnswerPointFromConfig(pointEl, {
-                          ...attributes,
-                          snapToGrid: false
-                        })
-                    })
-                  );
-                }
-
-                return Equation.renderElement(this, el, points, {
+                return Equation.renderElement(this, el, {
                   ...props,
-                  ...attrs,
-                  fixed: true
+                  ...attrs
                 });
               }
             })

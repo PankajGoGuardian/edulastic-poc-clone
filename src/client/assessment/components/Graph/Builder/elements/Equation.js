@@ -1,163 +1,195 @@
 import { CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
+import { fixLatex } from "../utils";
 
 const jxgType = 98;
 
 const defaultConfig = {
-  fixed: null
+  fixed: true,
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
 };
 
-const LinkedList = function() {
-  var Node = function(elem, next, prev) {
-    (this.elem = elem), (this.next = next), (this.prev = prev);
-  };
-  var me = this;
-  me.head = new Node(null, null, null);
-  me.head.next = me.head.prev = me.head;
-  me.shift = function() {
-    detach(me.head.next);
+const EMPTY = 0;
+const FINISHED = -1;
+const VALID = 1;
+const MAX_SPLIT = 32;
+const RES_COARSE = 8;
+const MAX_DEPTH = 4;
+const T0101 = 5;
+
+const equals = (x, y, eps) => {
+  if (x === y) return true;
+  return x - eps < y && y < x + eps;
+};
+
+class Node {
+  constructor(elem, next, prev) {
+    this.elem = elem;
+    this.next = next;
+    this.prev = prev;
+  }
+
+  detach() {
+    this.next.prev = this.prev;
+    this.prev.next = this.next;
+    this.next = null;
+    this.prev = null;
+    this.elem = null;
+  }
+}
+
+class LinkedList {
+  constructor() {
+    this.head = new Node(null, null, null);
+    this.head.next = this.head;
+    this.head.prev = this.head;
+  }
+
+  shift = () => {
+    this.head.next.detach();
   };
 
-  me.pop = function() {
-    detach(me.head.prev);
+  pop = () => {
+    this.head.prev.detach();
   };
 
-  me.push = function(e) {
-    var node = new Node(e, me.head, me.head.prev);
-    me.head.prev.next = node;
-    me.head.prev = node;
+  push = e => {
+    const node = new Node(e, this.head, this.head.prev);
+    this.head.prev.next = node;
+    this.head.prev = node;
   };
 
-  me.unshift = function(e) {
-    var node = new Node(e, me.head.next, me.head);
-    me.head.next.prev = node;
-    me.head.next = node;
+  unshift = e => {
+    const node = new Node(e, this.head.next, this.head);
+    this.head.next.prev = node;
+    this.head.next = node;
   };
 
-  me.merge = function(list) {
+  merge = list => {
     if (list.isEmpty()) return;
-    me.head.prev.next = list.head.next;
-    list.head.next.prev = me.head.prev;
-    list.head.prev.next = me.head;
-    me.head.prev = list.head.prev;
+    this.head.prev.next = list.head.next;
+    list.head.next.prev = this.head.prev;
+    list.head.prev.next = this.head;
+    this.head.prev = list.head.prev;
     list.destroy();
   };
 
-  me.isEmpty = function() {
-    return me.head === me.head.next;
+  isEmpty = () => this.head === this.head.next;
+
+  destroy = () => {
+    this.head = new Node(null, null, null);
   };
 
-  me.destroy = function() {
-    me.head = new Node(null, null, null);
-  };
-
-  me.toArray = function() {
-    var node = me.head.next;
-    var array = [];
-    while (node != me.head) {
+  toArray = () => {
+    let node = this.head.next;
+    const array = [];
+    while (node !== this.head) {
       array.push(node.elem);
       node = node.next;
     }
     return array;
   };
 
-  me.remove = function(current) {
-    if (current instanceof Node) detach(current);
+  remove = current => {
+    if (current instanceof Node) current.detach();
   };
 
-  me.forEach = function(callback) {
-    var current = me.head.next,
-      next;
-    while (current !== me.head) {
+  forEach = callback => {
+    let current = this.head.next;
+    let next;
+    while (current !== this.head) {
       next = current.next;
       callback(current.elem, current);
       current = next;
     }
   };
+}
 
-  function detach(node) {
-    node.next.prev = node.prev;
-    node.prev.next = node.next;
-    node.next = node.prev = null;
-    node.elem = null;
+class Point {
+  constructor(x, y, lineTo) {
+    this.x = x;
+    this.y = y;
+    this.lineTo = lineTo;
   }
-};
 
-var Point = function(x, y, lineTo) {
-  var me = this;
-  (me.x = x), (me.y = y), (me.lineTo = lineTo);
+  equals = p => equals(this.x, p.x, 1e-6) && equals(this.y, p.y, 1e-6);
+}
 
-  me.equals = function(p) {
-    return equals(me.x, p.x, 1e-6) && equals(me.y, p.y, 1e-6);
-  };
-
-  function equals(x, y, eps) {
-    if (x === y) return true;
-    return x - eps < y && y < x + eps;
+class PointList {
+  constructor(start, end) {
+    this.start = start;
+    this.end = end;
+    this.start.lineTo = false;
+    this.end.lineTo = true;
+    this.points = new LinkedList();
   }
-};
 
-var PointList = function(start, end) {
-  var me = this;
-  (me.start = start), (me.end = end);
-  (me.start.lineTo = false), (me.end.lineTo = true);
-  me.points = new LinkedList();
-
-  me.merge = function(list) {
-    me.points.push(me.end);
+  merge = list => {
+    this.points.push(this.end);
     list.start.lineTo = true;
-    me.points.push(list.start);
-    me.end = list.end;
-    if (list.points.length == 0) return;
-    me.points.merge(list.points);
+    this.points.push(list.start);
+    this.end = list.end;
+    if (list.points.length === 0) return;
+    this.points.merge(list.points);
   };
 
-  me.push = function(point) {
+  push = point => {
     point.lineTo = true;
-    me.points.push(me.end);
-    me.end = point;
+    this.points.push(this.end);
+    this.end = point;
   };
 
-  me.unshift = function(point) {
+  unshift = point => {
     point.lineTo = false;
-    me.start.lineTo = true;
-    me.points.unshift(me.start);
-    me.start = point;
+    this.start.lineTo = true;
+    this.points.unshift(this.start);
+    this.start = point;
   };
-};
+}
 
-var Rectangle = function(func) {
-  var me = this;
-  (me.eval = [0, 0, 0, 0]), (me.rect = [0, 0, 0, 0]);
-  (me.x = 0), (me.y = 0), (me.children = null), (me.status = null);
-  (me.singular = false), (me.func = func);
+class Rectangle {
+  constructor(func) {
+    this.eval = [0, 0, 0, 0];
+    this.rect = [0, 0, 0, 0];
+    this.x = 0;
+    this.y = 0;
+    this.children = null;
+    this.status = null;
+    this.singular = false;
+    this.func = func;
+  }
 
-  me.copy = function(r) {
-    for (var i = 0; i < 4; i++) {
-      me.eval[i] = r.eval[i];
-      me.rect[i] = r.rect[i];
+  copy = r => {
+    for (let i = 0; i < 4; i++) {
+      this.eval[i] = r.eval[i];
+      this.rect[i] = r.rect[i];
     }
-    (me.x = r.x), (me.y = r.y);
-    me.singular = r.singular;
+    this.x = r.x;
+    this.y = r.y;
+    this.singular = r.singular;
   };
 
-  me.set = function(x, y, fx, fy, singular) {
-    (me.x = x), (me.y = y), (me.rect[2] = fx), (me.rect[3] = fy);
-    me.singular = singular;
+  set = (x, y, fx, fy, singular) => {
+    this.x = x;
+    this.y = y;
+    this.rect[2] = fx;
+    this.rect[3] = fy;
+    this.singular = singular;
   };
 
-  me.split = function() {
-    if (me.children === null) {
-      me.children = [];
-      for (var i = 0; i < 4; i++) {
-        me.children.push(new Rectangle(me.func));
+  split = () => {
+    if (this.children === null) {
+      this.children = [];
+      for (let i = 0; i < 4; i++) {
+        this.children.push(new Rectangle(this.func));
       }
     }
-    var r = me.children;
-    var w2 = me.rect[2] * 0.5;
-    var h2 = me.rect[3] * 0.5;
-    for (var i = 0; i < 4; i++) {
-      r[i].copy(me);
+    const r = this.children;
+    const w2 = this.rect[2] * 0.5;
+    const h2 = this.rect[3] * 0.5;
+    for (let i = 0; i < 4; i++) {
+      r[i].copy(this);
       r[i].rect[2] = w2;
       r[i].rect[3] = h2;
     }
@@ -165,11 +197,11 @@ var Rectangle = function(func) {
     r[2].rect[0] += w2;
     r[2].rect[1] += h2;
     r[3].rect[1] += h2;
-    r[0].eval[1] = me.func(r[1].rect[0], r[1].rect[1]);
-    r[0].eval[2] = me.func(r[2].rect[0], r[2].rect[1]);
-    r[0].eval[3] = me.func(r[3].rect[0], r[3].rect[1]);
-    r[1].eval[2] = me.func(r[2].rect[0] + w2, r[2].rect[1]);
-    r[2].eval[3] = me.func(r[2].rect[0], r[2].rect[1] + h2);
+    r[0].eval[1] = this.func(r[1].rect[0], r[1].rect[1]);
+    r[0].eval[2] = this.func(r[2].rect[0], r[2].rect[1]);
+    r[0].eval[3] = this.func(r[3].rect[0], r[3].rect[1]);
+    r[1].eval[2] = this.func(r[2].rect[0] + w2, r[2].rect[1]);
+    r[2].eval[3] = this.func(r[2].rect[0], r[2].rect[1] + h2);
     r[1].eval[0] = r[0].eval[1];
     r[1].eval[3] = r[0].eval[2];
     r[2].eval[0] = r[0].eval[2];
@@ -180,44 +212,38 @@ var Rectangle = function(func) {
     return r;
   };
 
-  me.x1 = function() {
-    return me.rect[0];
-  };
-  me.y1 = function() {
-    return me.rect[1];
-  };
-  me.x2 = function() {
-    return me.rect[0] + me.rect[2];
-  };
-  me.y2 = function() {
-    return me.rect[1] + me.rect[3];
-  };
-};
+  x1 = () => this.rect[0];
 
-var Implicit = function(func, finish) {
-  var me = this;
-  var EMPTY = 0,
-    FINISHED = -1,
-    T_INV = -1,
-    VALID = 1;
-  var LIST_THRESHOLD = 16,
-    MAX_SPLIT = 32,
-    RES_COARSE = 8;
-  var MAX_DEPTH = 4,
-    T0101 = 5;
+  y1 = () => this.rect[1];
 
-  (me.func = func), (me.finish = finish), (me.grid = null);
-  (me.temp = null), (me.plotDepth = 0), (me.segmentCheckDepth = 0);
-  (me.openList = []), (me.segments = []);
-  (me.sw = 0), (me.sh = 0), (me.pts = [null, null]);
+  x2 = () => this.rect[0] + this.rect[2];
 
-  function buildStatus(r) {
-    var z = 0,
-      p = 0,
-      n = 0,
-      k = true;
-    for (var i = 0; i < 4; i++) {
-      if (!isFinite(r.eval[i]) || isNaN(r.eval[i])) {
+  y2 = () => this.rect[1] + this.rect[3];
+}
+
+class Implicit {
+  constructor(func, finish) {
+    this.func = func;
+    this.finish = finish;
+    this.grid = null;
+    this.temp = null;
+    this.plotDepth = 0;
+    this.segmentCheckDepth = 0;
+    this.openList = [];
+    this.segments = [];
+    this.sw = 0;
+    this.sh = 0;
+    this.pts = [null, null];
+    this.listThreshold = 16;
+  }
+
+  buildStatus = r => {
+    let z = 0;
+    let p = 0;
+    let n = 0;
+    let k = true;
+    for (let i = 0; i < 4; i++) {
+      if (!Number.isFinite(r.eval[i]) || Number.isNaN(r.eval[i])) {
         k = false;
         break;
       }
@@ -226,204 +252,206 @@ var Implicit = function(func, finish) {
       else z++;
     }
     r.status = { pos: p, neg: n, zero: z, valid: k, empty: !k || ((z + 1) | p | n) >= 4 };
-  }
+  };
 
-  function interpolate(p1, p2, fa, fb) {
-    var r = -fb / (fa - fb);
+  interpolate = (p1, p2, fa, fb) => {
+    const r = -fb / (fa - fb);
     if (r >= 0 && r <= 1) {
       return r * (p1 - p2) + p2;
     }
     return (p1 + p2) * 0.5;
-  }
-
-  function createLine(x1, y1, x2, y2) {
-    me.pts[0] = new Point(x1, y1, false);
-    me.pts[1] = new Point(x2, y2, true);
-    return VALID;
-  }
-
-  function oppSign(x, y) {
-    return x * y < 0.0;
-  }
-
-  me.abortList = function() {
-    for (var i = 0; i < me.openList.length; i++) {
-      me.segments.push(me.openList[i].start);
-      me.segments = me.segments.concat(me.openList[i].points.toArray());
-      me.segments.push(me.openList[i].end);
-    }
-    me.openList = [];
   };
 
-  me.create = function(r) {
+  createLine = (x1, y1, x2, y2) => {
+    this.pts[0] = new Point(x1, y1, false);
+    this.pts[1] = new Point(x2, y2, true);
+    return VALID;
+  };
+
+  oppSign = (x, y) => x * y < 0.0;
+
+  abortList = () => {
+    for (let i = 0; i < this.openList.length; i++) {
+      this.segments.push(this.openList[i].start);
+      this.segments = this.segments.concat(this.openList[i].points.toArray());
+      this.segments.push(this.openList[i].end);
+    }
+    this.openList = [];
+  };
+
+  create = r => {
     if (r.status.empty) return EMPTY;
-    var zer = r.status.zero;
-    var neg = r.status.neg;
-    var pos = r.status.pos;
+    const zer = r.status.zero;
+    const { neg } = r.status;
+    const { pos } = r.status;
     if (((zer + 1) | neg | pos) >= 4) {
       return EMPTY;
     }
-    var x1 = r.x1(),
-      x2 = r.x2(),
-      y1 = r.y1(),
-      y2 = r.y2();
-    var tl = r.eval[0],
-      tr = r.eval[1],
-      br = r.eval[2],
-      bl = r.eval[3];
+
+    const x1 = r.x1();
+    const x2 = r.x2();
+    const y1 = r.y1();
+    const y2 = r.y2();
+    const tl = r.eval[0];
+    const tr = r.eval[1];
+    const br = r.eval[2];
+    const bl = r.eval[3];
+    let k = 0;
+
     switch (zer) {
       case 0:
-        var k = 0;
-        if (neg === pos && !oppSign(tl, br)) return T0101;
-        if (oppSign(tl, tr)) me.pts[k++] = new Point(interpolate(x1, x2, tl, tr), y1, k !== 0);
-        if (oppSign(tr, br)) me.pts[k++] = new Point(x2, interpolate(y1, y2, tr, br), k !== 0);
-        if (oppSign(br, bl)) me.pts[k++] = new Point(interpolate(x1, x2, bl, br), y2, k !== 0);
-        if (oppSign(bl, tl)) me.pts[k++] = new Point(x1, interpolate(y1, y2, tl, bl), k !== 0);
+        if (neg === pos && !this.oppSign(tl, br)) return T0101;
+        if (this.oppSign(tl, tr)) this.pts[k++] = new Point(this.interpolate(x1, x2, tl, tr), y1, k !== 0);
+        if (this.oppSign(tr, br)) this.pts[k++] = new Point(x2, this.interpolate(y1, y2, tr, br), k !== 0);
+        if (this.oppSign(br, bl)) this.pts[k++] = new Point(this.interpolate(x1, x2, bl, br), y2, k !== 0);
+        if (this.oppSign(bl, tl)) this.pts[k++] = new Point(x1, this.interpolate(y1, y2, tl, bl), k !== 0);
         return VALID;
       case 1:
         if (neg === 3 || pos === 3) {
-          if (tl === 0.0) return createLine(x1, y1, x1, y1);
-          if (tr === 0.0) return createLine(x2, y1, x2, y1);
-          if (bl === 0.0) return createLine(x1, y2, x2, y2);
-          if (br === 0.0) return createLine(x2, y2, x2, y2);
+          if (tl === 0.0) return this.createLine(x1, y1, x1, y1);
+          if (tr === 0.0) return this.createLine(x2, y1, x2, y1);
+          if (bl === 0.0) return this.createLine(x1, y2, x2, y2);
+          if (br === 0.0) return this.createLine(x2, y2, x2, y2);
         }
         if (tl === 0.0) {
-          if (oppSign(bl, br)) return createLine(x1, y1, interpolate(x1, x2, bl, br), y2);
-          if (oppSign(tr, br)) return createLine(x1, y1, x2, interpolate(y1, y1, tr, br));
+          if (this.oppSign(bl, br)) return this.createLine(x1, y1, this.interpolate(x1, x2, bl, br), y2);
+          if (this.oppSign(tr, br)) return this.createLine(x1, y1, x2, this.interpolate(y1, y1, tr, br));
           return EMPTY;
         }
         if (tr === 0.0) {
-          if (oppSign(bl, br)) return createLine(interpolate(x1, x2, bl, br), y2, x2, y1);
-          if (oppSign(bl, tl)) return createLine(x1, interpolate(y1, y2, tl, bl), x2, y1);
+          if (this.oppSign(bl, br)) return this.createLine(this.interpolate(x1, x2, bl, br), y2, x2, y1);
+          if (this.oppSign(bl, tl)) return this.createLine(x1, this.interpolate(y1, y2, tl, bl), x2, y1);
           return EMPTY;
         }
         if (br === 0.0) {
-          if (oppSign(tl, tr)) return createLine(interpolate(x1, x2, tl, tr), y1, x2, y2);
-          if (oppSign(tl, bl)) return createLine(x1, interpolate(y1, y2, tl, bl), x2, y2);
+          if (this.oppSign(tl, tr)) return this.createLine(this.interpolate(x1, x2, tl, tr), y1, x2, y2);
+          if (this.oppSign(tl, bl)) return this.createLine(x1, this.interpolate(y1, y2, tl, bl), x2, y2);
           return EMPTY;
         }
         if (bl === 0.0) {
-          if (oppSign(tl, tr)) return createLine(x1, y2, interpolate(x1, x2, tl, tr), y1);
-          if (oppSign(tr, br)) return createLine(x1, y2, x2, interpolate(y1, y2, tr, br));
+          if (this.oppSign(tl, tr)) return this.createLine(x1, y2, this.interpolate(x1, x2, tl, tr), y1);
+          if (this.oppSign(tr, br)) return this.createLine(x1, y2, x2, this.interpolate(y1, y2, tr, br));
           return EMPTY;
         }
         return EMPTY;
       case 2:
         if (pos === 2 || neg === 2) {
           if (tl === 0.0) {
-            if (tr === 0.0) return createLine(x1, y1, x2, y1);
-            if (bl === 0.0) return createLine(x1, y1, x1, y2);
+            if (tr === 0.0) return this.createLine(x1, y1, x2, y1);
+            if (bl === 0.0) return this.createLine(x1, y1, x1, y2);
           } else if (br === 0.0) {
-            if (tr === 0.0) return createLine(x2, y1, x2, y2);
-            if (bl === 0.0) return createLine(x1, y2, x2, y2);
+            if (tr === 0.0) return this.createLine(x2, y1, x2, y2);
+            if (bl === 0.0) return this.createLine(x1, y2, x2, y2);
           }
         } else {
-          if (tr === 0.0 && bl === 0.0) return createLine(x1, y2, x2, y1);
-          if (tl === 0.0 && br === 0.0) return createLine(x1, y1, x2, y2);
+          if (tr === 0.0 && bl === 0.0) return this.createLine(x1, y2, x2, y1);
+          if (tl === 0.0 && br === 0.0) return this.createLine(x1, y1, x2, y2);
         }
+        return EMPTY;
+      default:
         return EMPTY;
     }
   };
 
-  me.append = function(r) {
-    var cfg = me.create(r);
+  append = r => {
+    const cfg = this.create(r);
     if (cfg === VALID) {
-      if (me.pts[0].x > me.pts[1].x) {
-        var temp = me.pts[0];
-        me.pts[0] = me.pts[1];
-        me.pts[1] = temp;
+      if (this.pts[0].x > this.pts[1].x) {
+        const temp = this.pts[0];
+        this.pts[0] = this.pts[1];
+        this.pts[1] = temp;
       }
-      var inx1 = -1,
-        inx2 = -1;
+      let inx1 = -1;
+      let inx2 = -1;
 
-      for (var i = 0; i < me.openList.length; i++) {
-        if (me.pts[1].equals(me.openList[i].start)) {
+      for (let i = 0; i < this.openList.length; i++) {
+        if (this.pts[1].equals(this.openList[i].start)) {
           inx1 = i;
           break;
         }
       }
 
-      for (var i = 0; i < me.openList.length; i++) {
-        if (me.pts[0].equals(me.openList[i].end)) {
+      for (let i = 0; i < this.openList.length; i++) {
+        if (this.pts[0].equals(this.openList[i].end)) {
           inx2 = i;
           break;
         }
       }
 
       if (inx1 !== -1 && inx2 !== -1) {
-        me.openList[inx2].merge(me.openList[inx1]);
-        me.openList.splice(inx1, 1);
+        this.openList[inx2].merge(this.openList[inx1]);
+        this.openList.splice(inx1, 1);
       } else if (inx1 !== -1) {
-        me.openList[inx1].unshift(me.pts[0]);
+        this.openList[inx1].unshift(this.pts[0]);
       } else if (inx2 !== -1) {
-        me.openList[inx2].push(me.pts[1]);
+        this.openList[inx2].push(this.pts[1]);
       } else {
-        me.openList.push(new PointList(me.pts[0], me.pts[1]));
+        this.openList.push(new PointList(this.pts[0], this.pts[1]));
       }
-      if (me.openList.length > LIST_THRESHOLD) {
-        me.abortList();
+      if (this.openList.length > this.listThreshold) {
+        this.abortList();
       }
     }
     return cfg;
   };
 
-  me.update = function(x1, y1, x2, y2, px, py, fast) {
+  update = (x1, y1, x2, y2, px, py, fast) => {
     x1 -= (0.25 * Math.PI) / px;
     if (fast) {
-      me.sw = 8;
-      me.sh = 8;
+      this.sw = 8;
+      this.sh = 8;
     } else {
-      me.sw = Math.min(MAX_SPLIT, Math.floor(px / RES_COARSE));
-      me.sh = Math.min(MAX_SPLIT, Math.floor(py / RES_COARSE));
+      this.sw = Math.min(MAX_SPLIT, Math.floor(px / RES_COARSE));
+      this.sh = Math.min(MAX_SPLIT, Math.floor(py / RES_COARSE));
     }
-    if (me.sw == 0 || me.sh == 0) {
+    if (this.sw === 0 || this.sh === 0) {
       return;
     }
-    if (me.grid === null || me.grid.length !== me.sh || me.grid[0].length !== me.sw) {
-      me.grid = [];
-      for (var i = 0; i < me.sh; i++) {
-        var col = [];
-        for (var j = 0; j < me.sw; j++) {
-          col.push(new Rectangle(me.func));
+    if (this.grid === null || this.grid.length !== this.sh || this.grid[0].length !== this.sw) {
+      this.grid = [];
+      for (let i = 0; i < this.sh; i++) {
+        const col = [];
+        for (let j = 0; j < this.sw; j++) {
+          col.push(new Rectangle(this.func));
         }
-        me.grid.push(col);
+        this.grid.push(col);
       }
     }
 
-    if (me.temp === null) {
-      me.temp = new Rectangle(me.func);
+    if (this.temp === null) {
+      this.temp = new Rectangle(this.func);
     }
 
-    var w = x2 - x1,
-      h = y2 - y1,
-      cur,
-      prev;
-    var frx = w / me.sw,
-      fry = h / me.sh;
+    const w = x2 - x1;
+    const h = y2 - y1;
+    let cur;
+    let prev;
+    const frx = w / this.sw;
+    const fry = h / this.sh;
+    const vertices = [];
+    const xcoords = [];
+    const ycoords = [];
 
-    var vertices = [],
-      xcoords = [],
-      ycoords = [];
-
-    for (var i = 0; i <= me.sw; i++) {
+    for (let i = 0; i <= this.sw; i++) {
       xcoords.push(x1 + i * frx);
     }
 
-    for (var i = 0; i <= me.sh; i++) {
+    for (let i = 0; i <= this.sh; i++) {
       ycoords.push(y1 + i * fry);
     }
 
-    for (var i = 0; i <= me.sw; i++) {
-      vertices.push(me.func(xcoords[i], ycoords[0]));
+    for (let i = 0; i <= this.sw; i++) {
+      vertices.push(this.func(xcoords[i], ycoords[0]));
     }
-    var i, j, dx, dy, fx, fy;
 
-    for (i = 1; i <= me.sh; i++) {
-      prev = me.func(xcoords[0], ycoords[i]);
-      fy = ycoords[i] - 0.5 * fry;
-      for (j = 1; j <= me.sw; j++) {
-        cur = me.func(xcoords[j], ycoords[i]);
-        var rect = me.grid[i - 1][j - 1];
+    let i;
+    let j;
+
+    for (i = 1; i <= this.sh; i++) {
+      prev = this.func(xcoords[0], ycoords[i]);
+      for (j = 1; j <= this.sw; j++) {
+        cur = this.func(xcoords[j], ycoords[i]);
+        const rect = this.grid[i - 1][j - 1];
         rect.set(j - 1, i - 1, frx, fry, false);
         rect.rect[0] = xcoords[j - 1];
         rect.rect[1] = ycoords[i - 1];
@@ -431,98 +459,101 @@ var Implicit = function(func, finish) {
         rect.eval[1] = vertices[j];
         rect.eval[2] = cur;
         rect.eval[3] = prev;
-        rect.status = buildStatus(rect);
+        rect.status = this.buildStatus(rect);
         vertices[j - 1] = prev;
         prev = cur;
       }
-      vertices[me.sw] = prev;
+      vertices[this.sw] = prev;
     }
 
-    me.plotDepth = 2;
-    me.segmentCheckDepth = 1;
-    LIST_THRESHOLD = 48;
+    this.plotDepth = 2;
+    this.segmentCheckDepth = 1;
+    this.listThreshold = 48;
 
-    for (i = 0; i < me.sh; i++) {
-      for (j = 0; j < me.sw; j++) {
-        if (!me.grid[i][j].singular && me.grid[i][j].status != EMPTY) {
-          me.temp.copy(me.grid[i][j]);
-          me.plot(me.temp, 0);
-          me.grid[i][j].status = FINISHED;
+    for (i = 0; i < this.sh; i++) {
+      for (j = 0; j < this.sw; j++) {
+        if (!this.grid[i][j].singular && this.grid[i][j].status !== EMPTY) {
+          this.temp.copy(this.grid[i][j]);
+          this.plot(this.temp, 0);
+          this.grid[i][j].status = FINISHED;
         }
       }
     }
 
-    for (var k = 0; k < 4; k++) {
-      for (i = 0; i < me.sh; i++) {
-        for (j = 0; j < me.sw; j++) {
-          if (me.grid[i][j].singular && me.grid[i][j].status != FINISHED) {
-            me.temp.copy(grid[i][j]);
-            me.plot(temp, 0);
-            me.grid[i][j].status = FINISHED;
+    for (let k = 0; k < 4; k++) {
+      for (i = 0; i < this.sh; i++) {
+        for (j = 0; j < this.sw; j++) {
+          if (this.grid[i][j].singular && this.grid[i][j].status !== FINISHED) {
+            this.temp.copy(this.grid[i][j]);
+            this.plot(this.temp, 0);
+            this.grid[i][j].status = FINISHED;
           }
         }
       }
     }
-    me.abortList();
-    me.finish(me.segments);
+    this.abortList();
+    this.finish(this.segments);
   };
 
-  me.makeTree = function(r, d) {
-    var children = r.split();
-    me.plot(children[0], d);
-    me.plot(children[1], d);
-    me.plot(children[2], d);
-    me.plot(children[3], d);
+  makeTree = (r, d) => {
+    const children = r.split();
+    this.plot(children[0], d);
+    this.plot(children[1], d);
+    this.plot(children[2], d);
+    this.plot(children[3], d);
   };
 
-  me.plot = function(r, d) {
-    if (d < me.segmentCheckDepth) {
-      me.makeTree(r, d + 1);
+  plot = (r, d) => {
+    if (d < this.segmentCheckDepth) {
+      this.makeTree(r, d + 1);
       return;
     }
-    buildStatus(r);
+    this.buildStatus(r);
     if (!r.status.empty) {
-      if (d >= me.plotDepth) {
-        if (me.append(r, d === MAX_DEPTH) === T0101 && d < MAX_DEPTH) {
-          me.makeTree(r, d + 1);
+      if (d >= this.plotDepth) {
+        if (this.append(r, d === MAX_DEPTH) === T0101 && d < MAX_DEPTH) {
+          this.makeTree(r, d + 1);
         }
       } else {
-        me.makeTree(r, d + 1);
+        this.makeTree(r, d + 1);
       }
     }
   };
-};
+}
 
-// plotter code using jsxgraph
-const CanvasPlotter = (board, func) => {
-  let me = {};
+class CanvasPlotter {
+  constructor(board, latex, params) {
+    this.board = board;
 
-  me.board = board;
-  me.func = func;
-  me.x1 = -10;
-  me.x2 = 10;
-  me.y1 = -10;
-  me.y2 = 10;
-  me.color = "green";
-  me.px = 300;
-  me.py = 300;
-  me.tx = 0;
-  me.ty = 0;
-  me.working = false;
-  me.result = null;
+    this.func = this.board.jc.snippet(latex, true, ["x", "y"], false); // (x,y) => Math.abs(x) + Math.abs(y) - 6;
+    this.params = params;
 
-  me.finish = segments => {
-    board.create("transform", [-me.x1 * me.tx, me.y2 * me.ty], { type: "translate" });
-    board.create("transform", [me.tx, -me.ty], { type: "scale" });
+    const [xMin, yMax, xMax, yMin] = this.board.getBoundingBox();
+    this.x1 = xMin;
+    this.x2 = xMax;
+    this.y1 = yMin;
+    this.y2 = yMax;
+    this.px = 300;
+    this.py = 300;
+    this.tx = 0;
+    this.ty = 0;
+    this.working = false;
+    this.result = null;
+  }
+
+  finish = segments => {
+    this.board.create("transform", [-this.x1 * this.tx, this.y2 * this.ty], { type: "translate" });
+    this.board.create("transform", [this.tx, -this.ty], { type: "scale" });
 
     let xs = [];
     let ys = [];
-
+    let s = null;
     const parents = [];
+
     for (let i = 0; i < segments.length; i++) {
-      var s = segments[i];
+      s = segments[i];
       if (!s.lineTo && xs.length) {
-        parents.push(board.create("curve", [xs, ys], { strokeWidth: 2 }));
+        parents.push(this.board.create("curve", [xs, ys], this.params));
         xs = [];
         ys = [];
       }
@@ -531,53 +562,51 @@ const CanvasPlotter = (board, func) => {
       ys.push(segments[i].y);
     }
     if (xs.length) {
-      me.result = board.create("curve", [xs, ys], { strokeWidth: 2 });
-      me.result.addParents(parents);
+      this.result = this.board.create("curve", [xs, ys], this.params);
+      this.result.addParents(parents);
     }
   };
 
-  me.update = (fast = false) => {
-    me.px = board.canvasWidth; //canvas.scrollWidth;
-    me.py = board.canvasHeight; //canvas.scrollHeight;
-    me.tx = me.px / (me.x2 - me.x1);
-    me.ty = me.py / (me.y2 - me.y1);
-    me.plot = new Implicit(me.func, me.finish);
-    me.plot.update(me.x1, me.y1, me.x2, me.y2, me.px, me.py, fast);
+  update = (fast = false) => {
+    this.px = this.board.canvasWidth;
+    this.py = this.board.canvasHeight;
+    this.tx = this.px / (this.x2 - this.x1);
+    this.ty = this.py / (this.y2 - this.y1);
+    this.plot = new Implicit(this.func, this.finish);
+    this.plot.update(this.x1, this.y1, this.x2, this.y2, this.px, this.py, fast);
   };
+}
 
-  return me;
-};
-
-function renderElement(board, element, points, params) {
-  const { latex } = element;
-
+function renderElement(board, element, params) {
+  const { latex, id, label } = element;
   const elementWithErrorLatex = {
     type: jxgType,
-    id: element.id,
-    latex: element.latex,
-    labelHTML: element.label,
+    id,
+    latex,
+    labelHTML: label,
     subType: null,
     latexIsBroken: true
   };
 
-  const cv = new CanvasPlotter(board.$board, (x, y) => -1);
+  let line = null;
+  const fixedLatex = fixLatex(latex);
+
   try {
-    cv.func = board.$board.jc.snippet(latex, true, ["x", "y"], false); //(x,y) => Math.abs(x) + Math.abs(y) - 6;
+    const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, params);
     cv.update();
+    line = cv.result;
   } catch (ex) {
     return elementWithErrorLatex;
   }
 
-  if (cv.result) {
-    const line = cv.result;
-    line.latex = latex;
-    line.type = jxgType;
-    line.subType = null;
-    console.log(line);
-    return line;
+  if (!line) {
+    return elementWithErrorLatex;
   }
 
-  return elementWithErrorLatex;
+  line.latex = latex;
+  line.type = jxgType;
+  line.subType = null;
+  return line;
 }
 
 function getConfig(equation) {

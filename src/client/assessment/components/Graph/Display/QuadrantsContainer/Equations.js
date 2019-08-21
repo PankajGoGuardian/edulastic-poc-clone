@@ -35,7 +35,7 @@ const symbols = ["basic"];
 const emptyEquation = {
   _type: 98,
   type: CONSTANT.TOOLS.EQUATION,
-  latex: "y=",
+  latex: "y=x",
   label: false
 };
 

@@ -45,18 +45,10 @@ function onHandler() {
     const funcs = board.elements
       .filter(el => el.latex && !el.latexIsBroken)
       .map(item => {
-        const splitLatex = item.latex.split("=");
-        const equationLeft = splitLatex[0];
-        const equationRight = fixLatex(splitLatex[1]);
+        const fixedLatex = fixLatex(item.latex);
+        const func = parse(fixedLatex.latexFunc);
 
-        return (x, y) => {
-          if (equationLeft === "x") {
-            return x > +equationRight ? "right" : x < +equationRight ? "left" : "on";
-          }
-
-          const func = parse(equationRight);
-          return y > func.eval({ x }) ? "top" : y < func.eval({ x }) ? "below" : "on";
-        };
+        return (x, y) => func.eval({ x, y }) > 0;
       });
 
     function calc(x, y) {

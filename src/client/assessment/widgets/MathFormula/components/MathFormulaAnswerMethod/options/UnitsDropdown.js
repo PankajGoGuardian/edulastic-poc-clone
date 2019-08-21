@@ -10,6 +10,7 @@ import { FlexContainer } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { textColor, mainTextColor, white } from "@edulastic/colors";
+import { Label } from "../../../../../styled/WidgetOptions/Label";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
 
 const { Option } = Select;
@@ -98,7 +99,7 @@ const UnitsDropdownPure = ({
   }, [item.showDropdown]);
 
   return (
-    <FlexContainer alignItems="center" justifyContent="flex-start">
+    <>
       {item.showDropdown && (
         <UniteSelet
           value={preview ? selected : options ? options.unit : ""}
@@ -115,22 +116,24 @@ const UnitsDropdownPure = ({
         </UniteSelet>
       )}
       {!preview && (
-        <FlexContainer alignItems="center" justifyContent="flex-start">
-          <FlexContainer flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
-            <FieldLabel>{t("component.math.showDropdown")}</FieldLabel>
-            <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
+        <FlexContainer justifyContent="flex-end" style={{ width: "100%" }}>
+          <FlexContainer alignItems="flex-start" flexDirection="column">
+            <Label data-cy="answer-math-unit-dropdown">{t("component.math.showDropdown")}</Label>
+            <FlexContainer style={{ height: styles.height || 35, flexWrap: "wrap" }} justifyContent="flex-start">
+              <Radio.Group onChange={onChnageRadioGroup} value={item.showDropdown ? "dropdown" : "keypad"}>
+                <Radio value="dropdown">
+                  <FieldLabel>{t("component.math.dropdown")}</FieldLabel>
+                </Radio>
+                <Radio value="keypad">
+                  <FieldLabel>{t("component.math.keypad")}</FieldLabel>
+                </Radio>
+              </Radio.Group>
+              <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
+            </FlexContainer>
           </FlexContainer>
-          <Radio.Group onChange={onChnageRadioGroup} value={item.showDropdown ? "dropdown" : "keypad"}>
-            <Radio value="dropdown">
-              <FieldLabel>{t("component.math.dropdown")}</FieldLabel>
-            </Radio>
-            <Radio value="keypad">
-              <FieldLabel>{t("component.math.keypad")}</FieldLabel>
-            </Radio>
-          </Radio.Group>
         </FlexContainer>
       )}
-    </FlexContainer>
+    </>
   );
 };
 

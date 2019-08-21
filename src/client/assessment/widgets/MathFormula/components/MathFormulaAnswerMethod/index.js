@@ -18,6 +18,7 @@ import { Rule } from "./options/Rule";
 import Units from "./options/Units";
 import { AdditionalToggle, AdditionalContainer, AdditionalCompareUsing } from "./styled/Additional";
 import { Container } from "./styled/Container";
+import { ExpectAnswer } from "./styled/ExpectAnswer";
 import { StyledRow } from "./styled/StyledRow";
 import { MathInputWrapper } from "./styled/MathInputWrapper";
 
@@ -358,9 +359,9 @@ const MathFormulaAnswerMethod = ({
 
   return (
     <Container data-cy="math-formula-answer">
-      <StyledRow gutter={8}>
+      <ExpectAnswer>
         {!methodOptions.includes("noExpeced") && (
-          <Col span={index === 0 ? 12 : 11}>
+          <div>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
               <MathInput
@@ -382,28 +383,24 @@ const MathFormulaAnswerMethod = ({
               />
               {renderExtra}
             </MathInputWrapper>
-          </Col>
+          </div>
         )}
         {index > 0 ? (
-          <Col span={2} style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
+          <div style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
             {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
-          </Col>
+          </div>
         ) : null}
         {item.isUnits && (
-          <Col
-            span={index === 0 ? 12 : 11}
-            style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 25 : 5 }}
-          >
-            <UnitsDropdown
-              item={item}
-              options={options}
-              onChange={changeOptions}
-              keypadOffset={keypadOffset}
-              onChangeShowDropdown={onChangeShowDropdown}
-            />
-          </Col>
+          <UnitsDropdown
+            item={item}
+            options={options}
+            onChange={changeOptions}
+            keypadOffset={keypadOffset}
+            onChangeShowDropdown={onChangeShowDropdown}
+          />
         )}
-      </StyledRow>
+      </ExpectAnswer>
+
       {methodOptions.includes("field") && (
         <StyledRow gutter={60}>
           <Col span={12}>

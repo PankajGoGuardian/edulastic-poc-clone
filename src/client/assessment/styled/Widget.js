@@ -17,12 +17,12 @@ export const Widget = styled.div`
     typeof visible !== "undefined" &&
     !visible &&
     `
-        position: absolute;
-        top: -300000; 
-        width: 0;
-        height: 0;
-        overflow: hidden;
-      `}}
+      position: absolute;
+      top: -300000px; 
+      width: 0;
+      height: 0;
+      overflow: hidden;
+    `}
 
   &:not(:first-child) {
     margin-top: 30px;
@@ -117,7 +117,7 @@ export const Widget = styled.div`
   .mq-root-block,
   .mq-math-mode .mq-root-block {
     margin: 0;
-    font-size: 12px;
+    font-size: inherit;
     font-weight: 600;
     color: ${selectColor};
   }

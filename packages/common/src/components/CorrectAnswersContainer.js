@@ -5,8 +5,8 @@ import styled from "styled-components";
 import { dashBorderColor } from "@edulastic/colors";
 import { Subtitle } from "@edulastic/common";
 
-const CorrectAnswersContainer = ({ title, children, imageStyle }) => (
-  <Container imageStyle={imageStyle}>
+const CorrectAnswersContainer = ({ title, children, imageStyle, maxWidth }) => (
+  <Container maxWidth={maxWidth} imageStyle={imageStyle}>
     <Subtitle style={{ marginBottom: 30 }}>{title}</Subtitle>
     {children}
   </Container>
@@ -32,6 +32,7 @@ const Container = styled.div`
   border-radius: 10px;
   background-color: ${dashBorderColor};
   flex: 2;
+  max-width: ${({ maxWidth }) => maxWidth || null};
   img {
     ${({ imageStyle }) => {
       return imageStyle

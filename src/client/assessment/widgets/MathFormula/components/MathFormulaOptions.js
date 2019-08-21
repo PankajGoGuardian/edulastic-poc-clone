@@ -2,14 +2,13 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { cloneDeep, findIndex, isObject, difference } from "lodash";
+import { cloneDeep, isObject, difference } from "lodash"; // , findIndex
 
 import { withNamespaces } from "@edulastic/localization";
 import { evaluationType, questionType } from "@edulastic/constants";
 import { MathKeyboard } from "@edulastic/common";
 
 import Layout from "./Layout";
-import ResponseContainers from "./ResponseContainers";
 import CustomKeys from "./CustomKeys";
 
 import WidgetOptions from "../../../containers/WidgetOptions";
@@ -26,7 +25,8 @@ const MathFormulaOptions = ({
   fillSections,
   cleanSections,
   advancedAreOpen,
-  setKeyPadOffest
+  setKeyPadOffest,
+  showResponseBoxes
 }) => {
   useEffect(() => {
     if (item.showDropdown) {
@@ -37,6 +37,8 @@ const MathFormulaOptions = ({
       const _keys = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(btn => btn.label);
       const diffKeys = difference(customKeys, _keys);
       onChange("custom_keys", _keys.concat(diffKeys));
+    } else {
+      onChange("custom_keys", []);
     }
   }, [item.showDropdown, item.symbols]);
   const changeCustomKey = ({ index, value }) => {
@@ -69,41 +71,6 @@ const MathFormulaOptions = ({
     });
   }
 
-  const addResponseContainer = () => {
-    const { responseIds } = item;
-    const ind = responseContainers.length;
-    let obj = {};
-    // eslint-disable-next-line no-labels
-    outerLoop: if (responseIds) {
-      // eslint-disable-next-line guard-for-in
-      for (const key in responseIds) {
-        const responses = responseIds[key];
-        for (const response of responses) {
-          if (response.index === ind) {
-            obj = { ...response };
-            // eslint-disable-next-line no-labels
-            break outerLoop;
-          }
-        }
-      }
-    }
-    onChange("responseContainers", [...responseContainers, obj]);
-  };
-
-  const changeResponseContainers = ({ index, prop, value }) => {
-    const newContainers = cloneDeep(responseContainers);
-    const ind = findIndex(newContainers, cont => cont.index === index);
-    if (ind !== -1) {
-      newContainers[ind][prop] = value;
-      onChange("responseContainers", newContainers);
-    }
-  };
-
-  const deleteResponseContainer = index => {
-    const newContainers = cloneDeep(responseContainers);
-    newContainers.splice(index, 1);
-    onChange("responseContainers", newContainers);
-  };
   return (
     <WidgetOptions
       scoringTypes={scoringTypes}
@@ -119,16 +86,7 @@ const MathFormulaOptions = ({
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
-      />
-
-      <ResponseContainers
-        containers={responseContainers}
-        onChange={changeResponseContainers}
-        onAdd={addResponseContainer}
-        onDelete={deleteResponseContainer}
-        advancedAreOpen={advancedAreOpen}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
+        showResponseBoxes={showResponseBoxes}
       />
 
       <KeyPadOptions
@@ -167,6 +125,7 @@ MathFormulaOptions.propTypes = {
   customKeys: PropTypes.array,
   uiStyle: PropTypes.object,
   advancedAreOpen: PropTypes.bool,
+  showResponseBoxes: PropTypes.bool,
   fillSections: PropTypes.func,
   setKeyPadOffest: PropTypes.func, // this needs only for units types
   cleanSections: PropTypes.func
@@ -182,6 +141,7 @@ MathFormulaOptions.defaultProps = {
     orientation: "horizontal",
     choice_label: "number"
   },
+  showResponseBoxes: false,
   advancedAreOpen: false,
   setKeyPadOffest: () => null,
   fillSections: () => {},

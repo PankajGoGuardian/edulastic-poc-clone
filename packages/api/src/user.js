@@ -85,6 +85,14 @@ const deleteUser = data =>
     })
     .then(({ data: response }) => response);
 
+const deleteAccount = userId =>
+  api
+    .callApi({
+      url: `${prefix}/${userId}`,
+      method: "delete"
+    })
+    .then(({ data: response }) => response);
+
 const changeUserTTS = data =>
   api.callApi({
     url: `${prefix}/tts`,
@@ -197,6 +205,28 @@ const resetMyPassword = data =>
     data
   });
 
+const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCode, userDetails }) => {
+  return api
+    .callApi({
+      url: `${prefix}/move-users`,
+      data: {
+        districtId,
+        userDetails,
+        destinationClassCode,
+        sourceClassCode
+      },
+      method: "POST"
+    })
+    .then(result => result.data.result);
+};
+
+const removeSchool = data =>
+  api.callApi({
+    url: `${prefix}/${data.userId}/institution/${data.schoolId}/remove`,
+    method: "put",
+    data
+  });
+
 export default {
   getUser,
   fetchUsers,
@@ -220,5 +250,8 @@ export default {
   fetchResetPasswordUser,
   resetUserPassword,
   adddBulkTeacher,
-  resetMyPassword
+  resetMyPassword,
+  moveUsersToOtherClass,
+  deleteAccount,
+  removeSchool
 };

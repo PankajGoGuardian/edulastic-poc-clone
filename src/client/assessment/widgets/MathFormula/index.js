@@ -61,19 +61,21 @@ const MathFormula = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+        <ContentArea isSidebarCollapsed={isSidebarCollapsed} data-cy="question-content-area">
           <ComposeQuestion
             item={item}
             setQuestionData={setQuestionData}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          <Template
-            item={item}
-            setQuestionData={setQuestionData}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          />
+          {item.templateDisplay && (
+            <Template
+              item={item}
+              setQuestionData={setQuestionData}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+            />
+          )}
           <MathFormulaAnswers
             item={item}
             setQuestionData={setQuestionData}

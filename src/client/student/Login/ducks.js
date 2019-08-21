@@ -3,7 +3,7 @@ import { pick, last, get, set } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
 import { push } from "connected-react-router";
-import { authApi, userApi, TokenStorage } from "@edulastic/api";
+import { authApi, userApi, TokenStorage, settingsApi } from "@edulastic/api";
 import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
@@ -34,6 +34,9 @@ export const CHANGE_CLASS = "[student] change class";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
 export const UPDATE_USER_ROLE_REQUEST = "[auth] update user role request";
 export const SET_USER_GOOGLE_LOGGED_IN = "[auth] set user google logged in";
+export const UPDATE_PROFILE_IMAGE_PATH_REQUEST = "[user] update profile image path";
+export const UPDATE_PROFILE_IMAGE_PATH_SUCCESS = "[user] update profile image path success";
+export const UPDATE_PROFILE_IMAGE_PATH_FAILED = "[user] update profile image path failed";
 
 export const REQUEST_NEW_PASSWORD_REQUEST = "[auth] request new password request";
 export const REQUEST_NEW_PASSWORD_RESET_CONTROL = "[auth] request new password reset control";
@@ -44,7 +47,6 @@ export const RESET_PASSWORD_USER_SUCCESS = "[auth] reset password user success";
 export const RESET_PASSWORD_REQUEST = "[auth] reset password request";
 export const RESET_PASSWORD_FAILED = "[auth] reset password failed";
 export const RESET_PASSWORD_SUCCESS = "[auth] reset password success";
-export const RESET_PASSWORD_REQUEST_STATE = "[auth] reset password request state variable";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST = "[auth] student signup check classcode request";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup check classcode success";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
@@ -57,6 +59,16 @@ export const SET_INVITE_DETAILS_SUCCESS = "[auth] set invite details success";
 export const RESET_MY_PASSWORD_REQUEST = "[auth] reset my password request";
 export const RESET_MY_PASSWORD_FAILED = "[auth] reset my password failed";
 export const RESET_MY_PASSWORD_SUCCESS = "[auth] reset my password success";
+export const UPDATE_USER_DETAILS_REQUEST = "[user] update user details";
+export const UPDATE_USER_DETAILS_SUCCESS = "[user] update user details success";
+export const UPDATE_USER_DETAILS_FAILED = "[user] update user details failed";
+export const DELETE_ACCOUNT_REQUEST = "[auth] delete account";
+export const UPDATE_INTERESTED_CURRICULUMS_REQUEST = "[user] update interested curriculums request";
+export const UPDATE_INTERESTED_CURRICULUMS_SUCCESS = "[user] update interested curriculums success";
+export const UPDATE_INTERESTED_CURRICULUMS_FAILED = "[user] update interested curriculums failed";
+export const REMOVE_SCHOOL_REQUEST = "[user] remove school request";
+export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
+export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -82,12 +94,16 @@ export const requestNewPasswordResetControlAction = createAction(REQUEST_NEW_PAS
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
 export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
-export const resetPasswordRequestStateAction = createAction(RESET_PASSWORD_REQUEST_STATE);
 export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
 export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
 export const setInviteDetailsAction = createAction(SET_INVITE_DETAILS_REQUEST);
 export const resetMyPasswordAction = createAction(RESET_MY_PASSWORD_REQUEST);
+export const updateProfileImageAction = createAction(UPDATE_PROFILE_IMAGE_PATH_REQUEST);
+export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST);
+export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
+export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
+export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -189,9 +205,6 @@ export default createReducer(initialState, {
     state.requestingNewPassword = false;
     state.requestNewPasswordSuccess = false;
   },
-  [RESET_PASSWORD_REQUEST_STATE]: state => {
-    state.requestNewPasswordSuccess = false;
-  },
   [RESET_PASSWORD_USER_SUCCESS]: (state, { payload }) => {
     state.resetPasswordUser = payload;
   },
@@ -217,6 +230,53 @@ export default createReducer(initialState, {
   },
   [RESET_MY_PASSWORD_FAILED]: state => {
     state.requestingChangePassword = false;
+  },
+  [UPDATE_PROFILE_IMAGE_PATH_REQUEST]: state => {
+    state.user.updatingImagePath = true;
+  },
+  [UPDATE_PROFILE_IMAGE_PATH_SUCCESS]: (state, { payload }) => {
+    state.user.updatingImagePath = false;
+    state.user.thumbnail = payload;
+  },
+  [UPDATE_PROFILE_IMAGE_PATH_FAILED]: state => {
+    state.user.updatingImagePath = false;
+  },
+  [UPDATE_USER_DETAILS_REQUEST]: state => {
+    state.updatingUserDetails = true;
+  },
+  [UPDATE_USER_DETAILS_SUCCESS]: (state, { payload }) => {
+    delete state.updatingUserDetails;
+    state.user = {
+      ...state.user,
+      ...payload
+    };
+  },
+  [UPDATE_USER_DETAILS_FAILED]: state => {
+    delete state.updatingUserDetails;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_REQUEST]: state => {
+    state.updatingInterestedCurriculums = true;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_SUCCESS]: (state, { payload }) => {
+    state.updatingInterestedCurriculums = undefined;
+    state.user.orgData.interestedCurriculums = payload;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_FAILED]: state => {
+    state.updatingInterestedCurriculums = undefined;
+  },
+  [REMOVE_SCHOOL_REQUEST]: state => {
+    state.removingSchool = true;
+  },
+  [REMOVE_SCHOOL_SUCCESS]: (state, { payload }) => {
+    state.removingSchool = undefined;
+    const updatedSchoolIds = state.user.institutionIds.filter(id => id !== payload);
+    const updatedSchools = state.user.orgData.schools.filter(school => school._id !== payload);
+    state.user.institutionIds = updatedSchoolIds;
+    state.user.orgData.institutionIds = updatedSchoolIds;
+    state.user.orgData.schools = updatedSchools;
+  },
+  [REMOVE_SCHOOL_FAILED]: state => {
+    state.removingSchool = undefined;
   }
 });
 
@@ -274,8 +334,15 @@ export const getUserFeatures = createSelector(
 const routeSelector = state => state.router.location.pathname;
 
 function* login({ payload }) {
+  const _payload = { ...payload };
+  const generalSettings = yield select(signupGeneralSettingsSelector);
+  if (generalSettings) {
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
+  }
+
   try {
-    const result = yield call(authApi.login, payload);
+    const result = yield call(authApi.login, _payload);
     const user = pick(result, userPickFields);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
@@ -297,7 +364,7 @@ function* login({ payload }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Invalid username or password";
-    yield call(message.error, errorMessage);
+    yield call(message.error, get(err, "data.message", errorMessage));
   }
 }
 
@@ -335,6 +402,11 @@ const checkEmailPolicy = (policy, role, email) => {
 function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
 
+  let districtId;
+  if (districtPolicy) {
+    districtId = districtPolicy.orgId;
+  }
+
   try {
     const { name, email, password, role, classCode, policyViolation } = payload;
     let nameList = name.split(" ");
@@ -368,7 +440,8 @@ function* signup({ payload }) {
       firstName,
       middleName,
       lastName,
-      role
+      role,
+      districtId
     };
 
     if (classCode) {
@@ -518,6 +591,13 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
+  const districtPolicy = yield select(signupDistrictPolicySelector);
+  let districtId;
+  if (districtPolicy) {
+    localStorage.setItem("thirdPartySignOnDistrictPolicy", JSON.stringify(districtPolicy));
+    districtId = districtPolicy.orgId;
+  }
+
   try {
     let classCode = "";
     let role = "";
@@ -534,7 +614,12 @@ function* googleLogin({ payload }) {
     }
 
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "googleSignOn", role });
+      const validate = yield call(authApi.validateClassCode, {
+        classCode,
+        signOnMethod: "googleSignOn",
+        role,
+        districtId
+      });
     }
 
     const res = yield call(authApi.googleLogin);
@@ -545,6 +630,12 @@ function* googleLogin({ payload }) {
 }
 
 function* googleSSOLogin({ payload }) {
+  let districtPolicy = localStorage.getItem("thirdPartySignOnDistrictPolicy");
+  if (districtPolicy) {
+    districtPolicy = JSON.parse(districtPolicy);
+    payload.districtId = districtPolicy.orgId;
+  }
+
   try {
     if (payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
@@ -558,9 +649,19 @@ function* googleSSOLogin({ payload }) {
     yield call(message.error, get(e, "data.message", "Google Login failed"));
     yield put(push("/login"));
   }
+  localStorage.removeItem("thirdPartySignOnRole");
+  localStorage.removeItem("thirdPartySignOnClassCode");
+  localStorage.removeItem("thirdPartySignOnDistrictPolicy");
 }
 
 function* msoLogin({ payload }) {
+  const districtPolicy = yield select(signupDistrictPolicySelector);
+  let districtId;
+  if (districtPolicy) {
+    localStorage.setItem("thirdPartySignOnDistrictPolicy", JSON.stringify(districtPolicy));
+    districtId = districtPolicy.orgId;
+  }
+
   try {
     let classCode = "";
     let role = "";
@@ -576,7 +677,12 @@ function* msoLogin({ payload }) {
       }
     }
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "office365SignOn", role });
+      const validate = yield call(authApi.validateClassCode, {
+        classCode,
+        signOnMethod: "office365SignOn",
+        role,
+        districtId
+      });
     }
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
@@ -586,6 +692,12 @@ function* msoLogin({ payload }) {
 }
 
 function* msoSSOLogin({ payload }) {
+  let districtPolicy = localStorage.getItem("thirdPartySignOnDistrictPolicy");
+  if (districtPolicy) {
+    districtPolicy = JSON.parse(districtPolicy);
+    payload.districtId = districtPolicy.orgId;
+  }
+
   try {
     if (payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
@@ -599,6 +711,9 @@ function* msoSSOLogin({ payload }) {
     yield call(message.error, get(e, "data.message", "MSO Login failed"));
     yield put(push("/login"));
   }
+  localStorage.removeItem("thirdPartySignOnRole");
+  localStorage.removeItem("thirdPartySignOnClassCode");
+  localStorage.removeItem("thirdPartySignOnDistrictPolicy");
 }
 
 function* cleverLogin({ payload }) {
@@ -729,6 +844,63 @@ function* resetMyPasswordRequestSaga({ payload }) {
   }
 }
 
+function* updateProfileImageSaga({ payload }) {
+  try {
+    const result = yield call(userApi.updateUser, payload);
+    yield call(message.success, "Thumbnail changed successfully");
+    yield put({ type: UPDATE_PROFILE_IMAGE_PATH_SUCCESS, payload: payload.data.thumbnail });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Failed to Update Image");
+    yield put({
+      type: UPDATE_PROFILE_IMAGE_PATH_FAILED
+    });
+  }
+}
+function* updateUserDetailsSaga({ payload }) {
+  try {
+    const result = yield call(userApi.updateUser, payload);
+    yield call(message.success, "User details updated successfully.");
+    yield put({ type: UPDATE_USER_DETAILS_SUCCESS, payload: result });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Update user details failed.");
+    yield put({
+      type: UPDATE_USER_DETAILS_FAILED
+    });
+  }
+}
+
+function* deleteAccountSaga({ payload }) {
+  try {
+    yield call(userApi.deleteAccount, payload);
+    yield call(message.success, "Account deleted successfully.");
+    yield put({ type: LOGOUT });
+  } catch (e) {
+    yield call(message.error, e && e.data ? e.data.message : "Unable to delete Account");
+  }
+}
+
+function* updateInterestedCurriculumsSaga({ payload }) {
+  try {
+    yield call(settingsApi.updateInterestedStandards, payload);
+    yield call(message.success, "Standard sets updated successfully.");
+    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: payload.curriculums });
+  } catch (e) {
+    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED });
+    yield call(message.error, e && e.data ? e.data.message : "Failed to update Standard sets");
+  }
+}
+
+function* removeSchoolSaga({ payload }) {
+  try {
+    yield call(userApi.removeSchool, payload);
+    yield call(message.success, "Requested school removed successfully.");
+    yield put({ type: REMOVE_SCHOOL_SUCCESS, payload: payload.schoolId });
+  } catch (e) {
+    yield put({ type: REMOVE_SCHOOL_FAILED });
+    yield call(message.error, e && e.data ? e.data.message : "Failed to remove requested school");
+  }
+}
+
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
     const result = yield call(authApi.validateClassCode, payload);
@@ -789,4 +961,9 @@ export function* watcherSaga() {
   yield takeLatest(GET_INVITE_DETAILS_REQUEST, getInviteDetailsSaga);
   yield takeLatest(SET_INVITE_DETAILS_REQUEST, setInviteDetailsSaga);
   yield takeLatest(RESET_MY_PASSWORD_REQUEST, resetMyPasswordRequestSaga);
+  yield takeLatest(UPDATE_PROFILE_IMAGE_PATH_REQUEST, updateProfileImageSaga);
+  yield takeLatest(UPDATE_USER_DETAILS_REQUEST, updateUserDetailsSaga);
+  yield takeLatest(DELETE_ACCOUNT_REQUEST, deleteAccountSaga);
+  yield takeLatest(UPDATE_INTERESTED_CURRICULUMS_REQUEST, updateInterestedCurriculumsSaga);
+  yield takeLatest(REMOVE_SCHOOL_REQUEST, removeSchoolSaga);
 }

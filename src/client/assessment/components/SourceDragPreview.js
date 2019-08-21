@@ -16,7 +16,6 @@ class DragPreview extends Component {
     if (!isDragging || !sourceOffset) {
       return null;
     }
-
     return (
       <PreviewContainer left={sourceOffset && sourceOffset.x} top={sourceOffset && sourceOffset.y}>
         {children}

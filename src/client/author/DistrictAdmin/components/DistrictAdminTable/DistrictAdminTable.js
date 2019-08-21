@@ -89,7 +89,7 @@ class DistrictAdminTable extends Component {
         title: "Name",
         render: (_, { _source: { firstName, lastName } = {} }) => (
           <span>
-            {firstName} {lastName}
+            {firstName === "Anonymous" ? "-" : firstName} {lastName}
           </span>
         ),
         sortDirections: ["descend", "ascend"],

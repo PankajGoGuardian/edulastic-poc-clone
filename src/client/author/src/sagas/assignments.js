@@ -48,9 +48,10 @@ function* receiveAssignmentsSummary({ payload = {} }) {
     }
     const userRole = yield select(getUserRole);
     if (userRole === "district-admin" || userRole === "school-admin") {
+      const folder = yield select(state => get(state, "folder.entity"), {});
       const entities = yield call(assignmentApi.fetchAssignmentsSummary, {
         districtId,
-        filters: pickBy(filters, identity),
+        filters: { ...pickBy(filters, identity), folderId: folder._id },
         sort
       });
       // handle zero assignments for current filter result

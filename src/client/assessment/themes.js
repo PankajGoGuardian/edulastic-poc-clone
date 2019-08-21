@@ -726,6 +726,10 @@ export const themes = {
       fractionEditor: {
         wrongColor: "#fce0e8",
         correctColor: "#D3FEA6"
+      },
+      graphPlacement: {
+        dragDropTitleFontWeight: "700",
+        dragDropTitleFontSize: "12px"
       }
     }
   }

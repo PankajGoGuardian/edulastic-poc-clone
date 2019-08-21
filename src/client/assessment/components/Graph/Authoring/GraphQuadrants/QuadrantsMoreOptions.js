@@ -59,7 +59,6 @@ class QuadrantsMoreOptions extends Component {
     const {
       t,
       graphData,
-      stemNumerationList,
       fontSizeList,
       setBgShapes,
       fillSections,
@@ -177,23 +176,6 @@ class QuadrantsMoreOptions extends Component {
                 ))}
               </Select>
             </Col>
-            <Col md={12}>
-              <Label>{t("component.graphing.layoutoptions.stemNumeration")}</Label>
-              <Select
-                size="large"
-                onChange={val => this.handleSelect("currentStemNum", val)}
-                value={currentStemNum}
-                data-cy="stemNumeration"
-                style={{ width: "100%" }}
-              >
-                {stemNumerationList.map(option => (
-                  <Select.Option data-cy={option.value} key={option.value}>
-                    {option.label}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.snapTo")}</Label>
               <MoreOptionsInput
@@ -589,7 +571,6 @@ QuadrantsMoreOptions.propTypes = {
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
-  stemNumerationList: PropTypes.array.isRequired,
   fontSizeList: PropTypes.array.isRequired,
   setOptions: PropTypes.func.isRequired,
   setBgImg: PropTypes.func.isRequired,

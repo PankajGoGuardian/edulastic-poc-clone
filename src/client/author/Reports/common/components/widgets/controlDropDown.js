@@ -6,9 +6,9 @@ import { fadedGrey, black, themeColor } from "@edulastic/colors";
 
 import { useInternalEffect } from "../../hooks/useInternalEffect";
 
-const CustomMenu = (className, data, handleMenuClick, prefix) => {
+const CustomMenu = (className, data, handleMenuClick, prefix, selected) => {
   return (
-    <Menu className={`${className}`} onClick={handleMenuClick}>
+    <Menu selectedKeys={[selected.key]} className={`${className}`} onClick={handleMenuClick}>
       <Menu.Item key="0" disabled={true}>
         {prefix}
       </Menu.Item>
@@ -32,9 +32,10 @@ const ControlDropDown = ({
   selectCB,
   data,
   comData,
-  trigger = ["hover"]
+  trigger = ["click"]
 }) => {
   const [selected, setSelected] = useState(by);
+  const [isActive, setActive] = useState(false);
 
   useInternalEffect(() => {
     let item = null;
@@ -76,6 +77,7 @@ const ControlDropDown = ({
   const handleMenuClick = useCallback(
     event => {
       const _selected = { key: event.key, title: event.item.props.title };
+      setActive(false);
       setSelected(_selected);
       if (selectCB) {
         selectCB(event, _selected, comData);
@@ -84,12 +86,18 @@ const ControlDropDown = ({
     [selectCB]
   );
 
+  const title = selected.title || prefix;
+
   return (
     <StyledDiv className={`${containerClassName} control-dropdown`}>
-      <Dropdown overlay={partial(CustomMenu, className, data, handleMenuClick, prefix)} trigger={trigger}>
-        <Button>
+      <Dropdown
+        onVisibleChange={setActive}
+        overlay={partial(CustomMenu, className, data, handleMenuClick, prefix, selected)}
+        trigger={trigger}
+      >
+        <Button title={title}>
           {(showPrefixOnSelected ? prefix + " " : "") + selected.title}
-          <Icon type="caret-down" />
+          {isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
         </Button>
       </Dropdown>
     </StyledDiv>

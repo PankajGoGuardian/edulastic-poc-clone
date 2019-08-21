@@ -82,6 +82,18 @@ class ClozeMathInput extends React.Component {
 
   handleKeypress = e => {
     const { restrictKeys } = this;
+    const { resprops = {}, id } = this.props;
+    const { item } = resprops;
+    const {
+      responseIds: { maths }
+    } = item;
+    const { index } = find(maths, res => res.id === id) || {};
+    if (item.allowNumericOnly && item.allowNumericOnly[index]) {
+      if (!e.key.match(/[0-9+-./%]/g)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
       const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;

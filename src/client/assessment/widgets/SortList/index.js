@@ -37,7 +37,8 @@ SortList.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  isSidebarCollapsed: PropTypes.bool
 };
 
 SortList.defaultProps = {
@@ -46,6 +47,7 @@ SortList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
+  isSidebarCollapsed: false,
   advancedAreOpen: false,
   evaluation: ""
 };

@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = exports.getChecks = exports.evaluate = void 0;
 
+var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
+
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
@@ -107,8 +109,10 @@ var exactMatchEvaluator =
   (function() {
     var _ref = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee(userResponse, answers) {
-        var score,
+      _regenerator["default"].mark(function _callee() {
+        var userResponse,
+          answers,
+          score,
           maxScore,
           evaluation,
           getAnswerCorrectMethods,
@@ -129,17 +133,20 @@ var exactMatchEvaluator =
           correct,
           data,
           _ref2,
-          result;
+          result,
+          _args = arguments;
 
         return _regenerator["default"].wrap(
           function _callee$(_context) {
             while (1) {
               switch ((_context.prev = _context.next)) {
                 case 0:
+                  userResponse = _args.length > 0 && _args[0] !== undefined ? _args[0] : "";
+                  answers = _args.length > 1 ? _args[1] : undefined;
                   score = 0;
                   maxScore = 1;
                   evaluation = [];
-                  _context.prev = 3;
+                  _context.prev = 5;
 
                   getAnswerCorrectMethods = function getAnswerCorrectMethods(answer) {
                     if (answer.value && answer.value.length) {
@@ -166,12 +173,12 @@ var exactMatchEvaluator =
                   _iteratorNormalCompletion = true;
                   _didIteratorError = false;
                   _iteratorError = undefined;
-                  _context.prev = 8;
+                  _context.prev = 10;
                   _iterator = answers[Symbol.iterator]();
 
-                case 10:
+                case 12:
                   if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
-                    _context.next = 53;
+                    _context.next = 55;
                     break;
                   }
 
@@ -182,12 +189,12 @@ var exactMatchEvaluator =
                   _iteratorNormalCompletion2 = true;
                   _didIteratorError2 = false;
                   _iteratorError2 = undefined;
-                  _context.prev = 18;
+                  _context.prev = 20;
                   _iterator2 = corrects[Symbol.iterator]();
 
-                case 20:
+                case 22:
                   if ((_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done)) {
-                    _context.next = 33;
+                    _context.next = 35;
                     break;
                   }
 
@@ -197,61 +204,61 @@ var exactMatchEvaluator =
                     expected: correct ? correct.replace(/\\ /g, " ") : "",
                     checks: checks
                   };
-                  _context.next = 25;
+                  _context.next = 27;
                   return evaluate(data);
 
-                case 25:
+                case 27:
                   _ref2 = _context.sent;
                   result = _ref2.result;
 
                   if (!(result === "true")) {
-                    _context.next = 30;
+                    _context.next = 32;
                     break;
                   }
 
                   valid = true;
-                  return _context.abrupt("break", 33);
+                  return _context.abrupt("break", 35);
 
-                case 30:
+                case 32:
                   _iteratorNormalCompletion2 = true;
-                  _context.next = 20;
-                  break;
-
-                case 33:
-                  _context.next = 39;
+                  _context.next = 22;
                   break;
 
                 case 35:
-                  _context.prev = 35;
-                  _context.t0 = _context["catch"](18);
+                  _context.next = 41;
+                  break;
+
+                case 37:
+                  _context.prev = 37;
+                  _context.t0 = _context["catch"](20);
                   _didIteratorError2 = true;
                   _iteratorError2 = _context.t0;
 
-                case 39:
-                  _context.prev = 39;
-                  _context.prev = 40;
+                case 41:
+                  _context.prev = 41;
+                  _context.prev = 42;
 
                   if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
                     _iterator2["return"]();
                   }
 
-                case 42:
-                  _context.prev = 42;
+                case 44:
+                  _context.prev = 44;
 
                   if (!_didIteratorError2) {
-                    _context.next = 45;
+                    _context.next = 47;
                     break;
                   }
 
                   throw _iteratorError2;
 
-                case 45:
-                  return _context.finish(42);
-
-                case 46:
-                  return _context.finish(39);
-
                 case 47:
+                  return _context.finish(44);
+
+                case 48:
+                  return _context.finish(41);
+
+                case 49:
                   if (valid) {
                     score = Math.max(answer.score, score);
                   }
@@ -259,63 +266,63 @@ var exactMatchEvaluator =
                   maxScore = Math.max(answer.score, maxScore);
                   evaluation = [].concat((0, _toConsumableArray2["default"])(evaluation), [valid]);
 
-                case 50:
+                case 52:
                   _iteratorNormalCompletion = true;
-                  _context.next = 10;
-                  break;
-
-                case 53:
-                  _context.next = 59;
+                  _context.next = 12;
                   break;
 
                 case 55:
-                  _context.prev = 55;
-                  _context.t1 = _context["catch"](8);
+                  _context.next = 61;
+                  break;
+
+                case 57:
+                  _context.prev = 57;
+                  _context.t1 = _context["catch"](10);
                   _didIteratorError = true;
                   _iteratorError = _context.t1;
 
-                case 59:
-                  _context.prev = 59;
-                  _context.prev = 60;
+                case 61:
+                  _context.prev = 61;
+                  _context.prev = 62;
 
                   if (!_iteratorNormalCompletion && _iterator["return"] != null) {
                     _iterator["return"]();
                   }
 
-                case 62:
-                  _context.prev = 62;
+                case 64:
+                  _context.prev = 64;
 
                   if (!_didIteratorError) {
-                    _context.next = 65;
+                    _context.next = 67;
                     break;
                   }
 
                   throw _iteratorError;
 
-                case 65:
-                  return _context.finish(62);
-
-                case 66:
-                  return _context.finish(59);
-
                 case 67:
-                  _context.next = 72;
-                  break;
+                  return _context.finish(64);
+
+                case 68:
+                  return _context.finish(61);
 
                 case 69:
-                  _context.prev = 69;
-                  _context.t2 = _context["catch"](3);
+                  _context.next = 74;
+                  break;
+
+                case 71:
+                  _context.prev = 71;
+                  _context.t2 = _context["catch"](5);
                   console.log(_context.t2);
 
-                case 72:
-                  _context.prev = 72;
+                case 74:
+                  _context.prev = 74;
                   return _context.abrupt("return", {
                     score: score,
                     maxScore: maxScore,
                     evaluation: evaluation
                   });
 
-                case 75:
+                case 77:
                 case "end":
                   return _context.stop();
               }
@@ -323,12 +330,12 @@ var exactMatchEvaluator =
           },
           _callee,
           null,
-          [[3, 69, 72, 75], [8, 55, 59, 67], [18, 35, 39, 47], [40, , 42, 46], [60, , 62, 66]]
+          [[5, 71, 74, 77], [10, 57, 61, 69], [20, 37, 41, 49], [42, , 44, 48], [62, , 64, 68]]
         );
       })
     );
 
-    return function exactMatchEvaluator(_x, _x2) {
+    return function exactMatchEvaluator() {
       return _ref.apply(this, arguments);
     };
   })();
@@ -347,6 +354,8 @@ var evaluator =
           scoringType,
           attemptScore,
           answers,
+          expression,
+          unit,
           result;
 
         return _regenerator["default"].wrap(function _callee2$(_context2) {
@@ -359,19 +368,34 @@ var evaluator =
                   (altResponses = _validation$altRespon === void 0 ? [] : _validation$altRespon),
                   (scoringType = validation.scoringType),
                   (attemptScore = validation.minScoreIfAttempted);
-                answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses));
+                answers = [validResponse].concat((0, _toConsumableArray2["default"])(altResponses)); // if its math unit type, derive answer by making into a string.
+
+                if (
+                  (0, _typeof2["default"])(userResponse) === "object" &&
+                  (userResponse.expression || userResponse.unit)
+                ) {
+                  expression = userResponse.expression || "";
+                  unit = userResponse.unit || "";
+
+                  if (expression.search("=") === -1) {
+                    userResponse = expression + unit;
+                  } else {
+                    userResponse = expression.replace(/=/gm, "".concat(unit, "="));
+                  }
+                }
+
                 _context2.t0 = scoringType;
-                _context2.next = _context2.t0 === _scoring.ScoringType.EXACT_MATCH ? 6 : 6;
+                _context2.next = _context2.t0 === _scoring.ScoringType.EXACT_MATCH ? 7 : 7;
                 break;
 
-              case 6:
-                _context2.next = 8;
+              case 7:
+                _context2.next = 9;
                 return exactMatchEvaluator(userResponse, answers);
 
-              case 8:
+              case 9:
                 result = _context2.sent;
 
-              case 9:
+              case 10:
                 // if score for attempting is greater than current score
                 // let it be the score!
                 if (!Number.isNaN(attemptScore) && attemptScore > result.score) {
@@ -380,7 +404,7 @@ var evaluator =
 
                 return _context2.abrupt("return", result);
 
-              case 11:
+              case 12:
               case "end":
                 return _context2.stop();
             }
@@ -389,7 +413,7 @@ var evaluator =
       })
     );
 
-    return function evaluator(_x3) {
+    return function evaluator(_x) {
       return _ref4.apply(this, arguments);
     };
   })();

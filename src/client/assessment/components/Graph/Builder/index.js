@@ -96,6 +96,8 @@ class Board {
 
     this.marksContainer = null;
 
+    this.marksContainerLabel = null;
+
     this.numberlineSnapToTicks = true;
     /**
      * Board settings

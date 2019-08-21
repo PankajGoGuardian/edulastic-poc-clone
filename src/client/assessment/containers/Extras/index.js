@@ -48,19 +48,21 @@ class Extras extends Component {
                 <QuestionTextArea
                   toolbarId="instructor_stimulus"
                   toolbarSize="SM"
-                  placeholder="Enter instructor stimulus"
+                  placeholder={t("component.options.enterDistractorRationaleQuestion")}
                   onChange={value => _change("instructorStimulus", value)}
                   value={get(item, "instructorStimulus", "")}
                 />
               </WidgetFRInput>
             </Col>
+          </Row>
 
+          <Row gutter={60}>
             <Col md={12}>
               <Label data-cy="sample_answer">{t("component.options.explanation")}</Label>
 
               <WidgetFRInput>
                 <QuestionTextArea
-                  placeholder="Enter sample answer"
+                  placeholder={t("component.options.enterSampleAnswer")}
                   toolbarId="sample_answer"
                   toolbarSize="SM"
                   onChange={value => _change("metadata.sampleAnswer", value)}

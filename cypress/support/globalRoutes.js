@@ -8,4 +8,6 @@ export default function initGlobalRoutes() {
   cy.route("GET", "**/user-folder").as("user-folder");
   cy.route("GET", "**test**").as("testdetail");
   cy.route("GET", "**/question/**").as("question");
+  cy.route("POST", "**users").as("users");
+  cy.route("POST", "**//search//items").as("searchItem");
 }

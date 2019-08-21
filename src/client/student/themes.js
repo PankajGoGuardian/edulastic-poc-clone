@@ -1,4 +1,4 @@
-import { themeColor, themeColorLighter, themeColorLight, themeColorBreadcrumb } from "@edulastic/colors";
+import { themeColor, themeColorLighter, themeColorLight, themeColorBreadcrumb, title } from "@edulastic/colors";
 import edulasticDefaultLogo from "./assets/logo.svg";
 
 export const themes = {
@@ -176,10 +176,10 @@ export const themes = {
       reportListAnswerLabelFontSize: "0.8rem"
     },
     skillReport: {
-      skillReportTitleColor: "#4aac8b",
-      skillReportTitleFontSize: "16px",
+      skillReportTitleColor: title,
+      skillReportTitleFontSize: "22px",
       RelationTitleColor: "#434b5d",
-      RelationTitleFontSize: "14px",
+      RelationTitleFontSize: "16px",
       greenColor: "#1fe3a1",
       yellowColor: "#fdcc3b",
       redColor: "#ee1658",
@@ -188,14 +188,14 @@ export const themes = {
       gradeColumnTagBgColor: "#d7faee",
       gradeColumnTagColor: "#4aac8b",
       gradeColumnTagTextSize: "10px",
-      tableHeaderBgColor: "#f5f9fe",
-      tableHeaderTextColor: "#434b5d",
-      tableHeaderHoverBgColor: "#f2f2f2",
+      tableHeaderBgColor: "transparent",
+      tableHeaderTextColor: "#AAAFB5",
+      tableHeaderHoverBgColor: "transparent",
       tableHeaderHoverTextColor: "#434b5d",
-      tableHeaderTextSize: "13px",
-      tableDataBgColor: "white",
+      tableHeaderTextSize: "12px",
+      tableDataBgColor: "#F8F8F8",
       tableDataBgBorderColor: "#f8f8f8",
-      tableDataTextColor: "rgba(0, 0, 0, 0.65)",
+      tableDataTextColor: title,
       tableDataFontSize: "13px"
     },
     manageClass: {
@@ -235,11 +235,11 @@ export const themes = {
       cardArchiveStatusBgColor: "rgba(0, 176, 255, 0.2)",
       cardArchiveStatusTextColor: "#0083be",
       cardArchiveStatusTextSize: "10px",
-      cardInfoContentColor: "#434B5D"
+      cardInfoContentColor: title
     },
     profile: {
       userHeadingTextSize: "22px",
-      userHeadingTextColor: "#434B5D",
+      userHeadingTextColor: title,
       userHeadingTextWeight: "bold",
       userSubTitleTextSize: "13px",
       userSubTitleTextColor: "#434b5d",

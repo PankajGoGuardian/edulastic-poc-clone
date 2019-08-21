@@ -297,7 +297,7 @@ const ActionContainer = ({
       />
 
       <AddStudentDivider>
-        <TitleWarapper>Student</TitleWarapper>
+        <TitleWarapper>Students</TitleWarapper>
         <DividerDiv />
         <ButtonsWrapper>
           {active ? (

@@ -120,7 +120,7 @@ const renderMarksContainer = (board, xMin, xMax, containerSettings) => {
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
 
   const polygonCoords = [[xMin, containerY], [xMin, -1.75], [xMax, -1.75], [xMax, containerY]];
-  return board.$board.create("polygon", polygonCoords, {
+  const container = board.$board.create("polygon", polygonCoords, {
     fixed: true,
     withLines: false,
     fillOpacity: 1,
@@ -129,11 +129,22 @@ const renderMarksContainer = (board, xMin, xMax, containerSettings) => {
       visible: false
     }
   });
+
+  const label = board.$board.create("text", [xMin, containerY, "Drag Drop Values"], {
+    fixed: true,
+    anchorY: "bottom",
+    cssClass: "marks-container-title",
+    highlightCssClass: "marks-container-title"
+  });
+
+  board.marksContainer = container;
+  board.marksContainerLabel = label;
 };
 
 const updateMarksContainer = (board, xMin, xMax, containerSettings) => {
   board.$board.removeObject(board.marksContainer);
-  board.marksContainer = renderMarksContainer(board, xMin, xMax, containerSettings);
+  board.$board.removeObject(board.marksContainerLabel);
+  renderMarksContainer(board, xMin, xMax, containerSettings);
 };
 
 const getConfig = mark => ({

@@ -20,7 +20,7 @@ const CorItem = styled.div`
   background-color: #fff;
 
   &:before {
-    content: ${({ index }) => `'${index + 1}'`};
+    content: ${({ index }) => `'${index}'`};
     display: flex;
     justify-content: center;
     align-items: center;

@@ -227,6 +227,23 @@ const OrderList = ({
     return false;
   });
 
+  const getStemNumeration = i => {
+    if (item) {
+      if (item.uiStyle) {
+        switch (item.uiStyle.validationStemNumeration) {
+          case "upper-alpha":
+            return String.fromCharCode(i + 65);
+          case "lower-alpha":
+            return String.fromCharCode(i + 65).toLowerCase();
+          default:
+            break;
+        }
+      }
+    }
+
+    return i + 1;
+  };
+
   return (
     <Fragment>
       {view === EDIT && (
@@ -271,6 +288,7 @@ const OrderList = ({
               axis={axis}
               columns={columns}
               helperClass="sortableHelper"
+              item={item}
             />
           )}
 
@@ -289,13 +307,14 @@ const OrderList = ({
                 axis={axis}
                 columns={columns}
                 helperClass="sortableHelper"
+                item={item}
               />
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
-                <ItemsWrapper styleType={styleType}>
+                <ItemsWrapper styleType={styleType} columns={columns}>
                   {correctAnswers.map((correctAnswer, i) => (
                     <CorrectAnswerItem theme={theme}>
                       <Text>
-                        <Index>{i + 1}</Index>
+                        <Index>{getStemNumeration(i)}</Index>
                         <FlexContainer justifyContent="center" style={{ width: "100%" }}>
                           <QuestionText>
                             <MathFormulaDisplay
@@ -315,7 +334,7 @@ const OrderList = ({
                     {Object.keys(alternateAnswers).map(key => (
                       <CorrectAnswerItem theme={theme}>
                         <Text>
-                          <Index>{key}</Index>
+                          <Index>{getStemNumeration(i)}</Index>
                           <FlexContainer justifyContent="center" style={{ width: "100%" }}>
                             <QuestionText>
                               <MathFormulaDisplay

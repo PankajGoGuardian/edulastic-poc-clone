@@ -841,7 +841,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [1, 2, 0, 3]
+            value: [0, 1, 2, 3]
           },
           altResponses: []
         },

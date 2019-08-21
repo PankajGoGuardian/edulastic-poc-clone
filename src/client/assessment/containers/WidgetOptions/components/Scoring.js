@@ -121,7 +121,7 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {isAutomarkChecked && !showSelect && (
+        {/* {isAutomarkChecked && !showSelect && (
           <Row gutter={60} center>
             <Col md={12}>
               <FormGroup center>
@@ -138,7 +138,7 @@ class Scoring extends Component {
               </FormGroup>
             </Col>
           </Row>
-        )}
+        )} */}
 
         {isAutomarkChecked && showSelect && (
           <Row gutter={60}>
@@ -163,7 +163,8 @@ class Scoring extends Component {
                 </Col>
               </React.Fragment>
             )}
-            <Col md={12}>
+
+            {/* <Col md={12}>
               <FormGroup center>
                 <Input
                   data-cy="minscore"
@@ -176,7 +177,7 @@ class Scoring extends Component {
                 />
                 <Label>{t("component.options.minScore")}</Label>
               </FormGroup>
-            </Col>
+            </Col>  */}
 
             {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
               <Col md={12}>

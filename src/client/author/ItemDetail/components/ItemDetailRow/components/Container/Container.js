@@ -60,7 +60,7 @@ class Container extends Component {
     onAdd(object);
   };
 
-  renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout }) => (
+  renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout, previewTab }) => (
     <ItemDetailWidget
       widget={widget}
       onEdit={this.onEditWidgetClick(widget, rowIndex)}
@@ -69,12 +69,14 @@ class Container extends Component {
       itemData={this.props.itemData}
       rowIndex={rowIndex}
       flowLayout={flowLayout}
+      previewTab={previewTab}
     />
   );
 
   renderWidgets = () => {
-    const { row, dragging, rowIndex, itemData, setItemLevelScore, view } = this.props;
+    const { row, dragging, rowIndex, itemData, setItemLevelScore, view, previewTab } = this.props;
     const { tabIndex } = this.state;
+
     return (
       <WidgetContainer flowLayout={row.flowLayout}>
         {view !== "edit" && !row.widgets.length && itemData.itemLevelScoring && (
@@ -102,9 +104,9 @@ class Container extends Component {
             )}
             {!!row.tabs.length &&
               tabIndex === widget.tabIndex &&
-              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout })}
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout, previewTab })}
             {!row.tabs.length &&
-              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout })}
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout, previewTab })}
           </React.Fragment>
         ))}
       </WidgetContainer>

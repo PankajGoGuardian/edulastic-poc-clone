@@ -483,6 +483,7 @@ class Container extends Component {
                   row={row}
                   view={view}
                   rowIndex={i}
+                  previewTab={"show"}
                   itemData={item}
                   count={rows.length}
                   onAdd={this.handleAdd}

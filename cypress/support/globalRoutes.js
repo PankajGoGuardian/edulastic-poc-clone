@@ -11,4 +11,5 @@ export default function initGlobalRoutes() {
   cy.route("POST", "**users").as("users");
   cy.route("POST", "**//search//items").as("searchItem");
   cy.route("POST", "**//school//search").as("schoolSearch");
+  cy.route("POST", "**//search//tests").as("searchTest");
 }

@@ -19,11 +19,12 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
         const pageURL = "author/items";
         cy.setResolution(size);
         cy.visit(`/${pageURL}`); // go to the required page usign url
-        cy.wait("@curriculum"); // wait for xhr to finish
+        cy.wait("@searchItem");
         search.clearAll();
+        cy.wait("@searchItem");
         search.setCollection("Private Library");
-        cy.contains("13 questions found");
-        cy.wait(500);
+        cy.wait("@searchItem");
+        search.scrollFiltersToTop();
         cy.matchImageSnapshot(); // take screenshot and comapare
       });
 

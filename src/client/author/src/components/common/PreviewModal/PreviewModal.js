@@ -228,8 +228,8 @@ class PreviewModal extends React.Component {
                 style={{ width: "100%" }}
                 questions={allWidgets}
                 viewComponent="authorPreviewPopup"
-                checkAnswer={checkAnswer}
-                showAnswer={showAnswer}
+                handleCheckAnswer={checkAnswer}
+                handleShowAnswer={showAnswer}
                 allowDuplicate={allowDuplicate}
                 isEditable={isEditable && authorHasPermission}
                 isPassage={isPassage}

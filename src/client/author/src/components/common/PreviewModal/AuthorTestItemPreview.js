@@ -75,8 +75,8 @@ class AuthorTestItemPreview extends Component {
       qIndex,
       evaluation,
       previewTab,
-      checkAnswer,
-      showAnswer,
+      handleCheckAnswer,
+      handleShowAnswer,
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
@@ -152,8 +152,8 @@ class AuthorTestItemPreview extends Component {
   renderRightButtons = () => {
     const {
       isAnswerBtnVisible,
-      checkAnswer,
-      showAnswer,
+      handleCheckAnswer,
+      handleShowAnswer,
       isPassage,
       item,
       goToItem,
@@ -177,8 +177,8 @@ class AuthorTestItemPreview extends Component {
         <ButtonsWrapper justifyContent="flex-end">
           {isAnswerBtnVisible && (
             <>
-              <EvaluateButton onClick={checkAnswer}>CHECK ANSWER</EvaluateButton>
-              <EvaluateButton onClick={showAnswer}>SHOW ANSWER</EvaluateButton>
+              <EvaluateButton onClick={handleCheckAnswer}>CHECK ANSWER</EvaluateButton>
+              <EvaluateButton onClick={handleShowAnswer}>SHOW ANSWER</EvaluateButton>
             </>
           )}
           <EvaluateButton onClick={clearView}>CLEAR</EvaluateButton>

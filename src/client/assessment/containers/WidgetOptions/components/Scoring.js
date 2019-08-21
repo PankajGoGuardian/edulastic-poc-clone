@@ -121,25 +121,6 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {/* {isAutomarkChecked && !showSelect && (
-          <Row gutter={60} center>
-            <Col md={12}>
-              <FormGroup center>
-                <Input
-                  data-cy="minscore"
-                  type="number"
-                  disabled={questionData.validation.unscored}
-                  value={questionData.validation.minScoreIfAttempted}
-                  onChange={e => handleChangeValidation("minScoreIfAttempted", +e.target.value)}
-                  size="large"
-                  style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                />
-                <Label>{t("component.options.minScore")}</Label>
-              </FormGroup>
-            </Col>
-          </Row>
-        )} */}
-
         {isAutomarkChecked && showSelect && (
           <Row gutter={60}>
             {scoringTypes.length > 1 && (
@@ -164,20 +145,6 @@ class Scoring extends Component {
               </React.Fragment>
             )}
 
-            {/* <Col md={12}>
-              <FormGroup center>
-                <Input
-                  data-cy="minscore"
-                  type="number"
-                  disabled={questionData.validation.unscored}
-                  value={questionData.validation.minScoreIfAttempted}
-                  onChange={e => handleChangeValidation("minScoreIfAttempted", +e.target.value)}
-                  size="large"
-                  style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                />
-                <Label>{t("component.options.minScore")}</Label>
-              </FormGroup>
-            </Col>  */}
 
             {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
               <Col md={12}>

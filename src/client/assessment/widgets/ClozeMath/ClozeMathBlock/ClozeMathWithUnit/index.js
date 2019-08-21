@@ -315,7 +315,7 @@ class ClozeMathWithUnit extends React.Component {
 
 const MathWithUnit = ({ resprops = {}, id }) => {
   const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
-  const { mathUnits } = answers;
+  const { mathUnits = {} } = answers;
 
   const response = find(responseContainers, cont => cont.id === id);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";

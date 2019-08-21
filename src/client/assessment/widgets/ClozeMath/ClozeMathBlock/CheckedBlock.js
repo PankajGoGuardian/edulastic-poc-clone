@@ -45,13 +45,13 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
         isMath ? (
           <CheckBoxedMathBox
             value={
-              userAnswer.value.search("=") === -1
+              userAnswer && userAnswer.value.search("=") === -1
                 ? `${userAnswer.value} ${unit}`
-                : userAnswer.value.replace(/=/gm, ` ${unit}=`)
+                : userAnswer && userAnswer.value.replace(/=/gm, ` ${unit}=`)
             }
           />
         ) : (
-          userAnswer.value
+          userAnswer && userAnswer.value
         )
       }
     >
@@ -63,14 +63,14 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
           {isMath ? (
             <CheckBoxedMathBox
               value={
-                userAnswer.value.search("=") === -1
+                userAnswer && userAnswer.value.search("=") === -1
                   ? `${userAnswer.value} ${unit}`
-                  : userAnswer.value.replace(/=/gm, ` ${unit}=`)
+                  : userAnswer && userAnswer.value.replace(/=/gm, ` ${unit}=`)
               }
               style={{ height, width, minWidth: "unset", display: "block" }}
             />
           ) : (
-            userAnswer.value
+            userAnswer && userAnswer.value
           )}
         </span>
         {userAnswer && !isUndefined(evaluation[id]) && (

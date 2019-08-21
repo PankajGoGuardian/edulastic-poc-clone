@@ -205,7 +205,6 @@ const resetMyPassword = data =>
     data
   });
 
-
 const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCode, userDetails }) => {
   return api
     .callApi({

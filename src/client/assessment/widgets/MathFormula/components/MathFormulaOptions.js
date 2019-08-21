@@ -97,6 +97,7 @@ const MathFormulaOptions = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
         renderExtra={
+          // eslint-disable-next-line react/jsx-wrap-multilines
           <CustomKeys
             blocks={customKeys}
             onChange={changeCustomKey}

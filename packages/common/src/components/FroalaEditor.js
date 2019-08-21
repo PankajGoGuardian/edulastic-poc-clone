@@ -64,6 +64,7 @@ FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="custom-toolbar-bt
 FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">Text Input</span>`);
 FroalaEditor.DefineIconTemplate("textdropdown", `<span class="custom-toolbar-btn">Text Dropdown</span>`);
 FroalaEditor.DefineIconTemplate("mathinput", `<span class="custom-toolbar-btn">Math Input</span>`);
+FroalaEditor.DefineIconTemplate("mathunit", `<span class="custom-toolbar-btn">Math w/ units</span>`);
 FroalaEditor.DefineIconTemplate("paragraphNumber", `<span class="custom-toolbar-btn">PN</span>`);
 
 const symbols = ["basic", "intermediate", "advanced", "units_si", "units_us", "all"];
@@ -324,6 +325,7 @@ const CustomEditor = ({
         "textinput",
         "textdropdown",
         "mathinput",
+        "mathunit",
         "paragraphnumber",
         "response",
         "specialCharacters"
@@ -428,7 +430,9 @@ const CustomEditor = ({
               if (!cursorEl || !cursorEl.tagName) return;
 
               if (
-                ["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT", "PARAGRAPHNUMBER"].includes(cursorEl.tagName)
+                ["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT", "PARAGRAPHNUMBER", "MATHUNIT"].includes(
+                  cursorEl.tagName
+                )
               ) {
                 cursorEl.remove();
                 this.selection.save();
@@ -521,6 +525,7 @@ const CustomEditor = ({
             cmd === "textinput" ||
             cmd === "textdropdown" ||
             cmd === "mathinput" ||
+            cmd === "mathunit" ||
             cmd === "response" ||
             cmd === "paragraphNumber"
           ) {
@@ -595,6 +600,7 @@ const CustomEditor = ({
     additionalToolbarOptions.includes("textinput") ||
     additionalToolbarOptions.includes("response") ||
     additionalToolbarOptions.includes("mathinput") ||
+    additionalToolbarOptions.includes("mathunit") ||
     additionalToolbarOptions.includes("textdropdown") ||
     additionalToolbarOptions.includes("responseBoxes") ||
     additionalToolbarOptions.includes("paragraphNumber");
@@ -681,7 +687,21 @@ const CustomEditor = ({
       }
     });
 
-    // Dropdown Toobar button for MathInput/TextDropDown/TextInput mathinput
+    // Register mathunit command for Math Unit button
+    FroalaEditor.DefineIcon("mathunit", { NAME: "mathunit", template: "mathunit" });
+    FroalaEditor.RegisterCommand("mathunit", {
+      title: "Math w/ units",
+      focus: true,
+      undo: true,
+      refreshAfterCallback: true,
+      callback() {
+        if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
+        this.html.insert(`&nbsp;<MathUnit id="${uuid()}" contentEditable="false"></MathUnit>&nbsp;`);
+        this.undo.saveStep();
+      }
+    });
+
+    // Dropdown Toobar button for MathInput/TextDropDown/TextInput/MathUnits
     FroalaEditor.DefineIcon("responseBoxes", { NAME: "responseBoxes", template: "responseBoxes" });
     FroalaEditor.RegisterCommand("responseBoxes", {
       type: "dropdown",
@@ -691,7 +711,8 @@ const CustomEditor = ({
       options: {
         textinput: "Text Input",
         textdropdown: "Text Dropdown",
-        mathinput: "Math Input"
+        mathinput: "Math Input",
+        mathunit: "Math w/ units"
       },
       callback: function(_, op) {
         // OP is registered commands

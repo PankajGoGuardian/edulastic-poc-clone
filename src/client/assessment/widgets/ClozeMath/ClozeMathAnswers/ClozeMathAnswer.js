@@ -46,12 +46,7 @@ class ClozeMathAnswer extends Component {
       toggleAdditional
     } = this.props;
     const { showAdditionals } = this.state;
-    const {
-      responseContainers: responseContainers = [],
-      uiStyle: uiStyle,
-      allowedVariables = {},
-      allowNumericOnly = {}
-    } = item;
+    const { responseContainers: responseContainers = [], uiStyle, allowedVariables = {}, allowNumericOnly = {} } = item;
     const _changeMethod = (methodId, methodIndex) => (prop, val) => {
       onChange({ methodId, methodIndex, prop, value: val });
     };
@@ -133,6 +128,7 @@ ClozeMathAnswer.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onChangeAllowedOptions: PropTypes.func.isRequired,
+  toggleAdditional: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired

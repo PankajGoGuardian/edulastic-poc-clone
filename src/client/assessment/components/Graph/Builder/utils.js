@@ -595,6 +595,61 @@ export function* nameGenerator() {
   }
 }
 
+export const nameGen = elements => {
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+  let indexArray = [];
+  let newLetter = "A";
+
+  elements.forEach(element => {
+    if (element) {
+      alphabet.forEach((letter, index) => {
+        if (letter === element.labelHTML) {
+          if (!indexArray.some(idx => index === idx)) {
+            indexArray.push(index);
+          }
+        }
+
+        Object.values(element.ancestors).forEach(ancestor => {
+          if (ancestor) {
+            if (letter === ancestor.labelHTML) {
+              if (!indexArray.some(idx => index === idx)) {
+                indexArray.push(index);
+              }
+            }
+          }
+        });
+      });
+    }
+  });
+
+  if (indexArray.length < alphabet.length) {
+    for (let i = 0; i <= alphabet.length; i++) {
+      if (!indexArray.some(index => index === i)) {
+        newLetter = alphabet[i];
+        return newLetter;
+      }
+    }
+  } else {
+    for (let j = 0; j <= alphabet.length; i++) {
+      for (let i = 0; i <= alphabet.length; i++) {
+        if (
+          !elements.some(
+            element =>
+              element &&
+              (element.labelHTML === alphabet[j] + alphabet[i] ||
+                Object.values(element.ancestors).some(
+                  ancestor => ancestor && ancestor.labelHTML === alphabet[j] + alphabet[i]
+                ))
+          )
+        ) {
+          newLetter = alphabet[j] + alphabet[i];
+          return newLetter;
+        }
+      }
+    }
+  }
+};
+
 export function objectLabelComparator(a, b) {
   if (typeof a.label === "string" && typeof b.label === "string") {
     if (a.label.length > b.label.length) {

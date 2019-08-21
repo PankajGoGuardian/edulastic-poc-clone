@@ -47,6 +47,7 @@ import {
   isInPolygon,
   objectLabelComparator,
   nameGenerator,
+  nameGen,
   setLabel
 } from "./utils";
 import _events from "./events";
@@ -331,6 +332,42 @@ class Board {
         return Tangent.clean(this);
       case CONSTANT.TOOLS.SECANT:
         return Secant.clean(this);
+      default:
+        return false;
+    }
+  }
+
+  getPoints() {
+    switch (this.currentTool) {
+      case CONSTANT.TOOLS.POINT:
+        return null;
+      case CONSTANT.TOOLS.LINE:
+      case CONSTANT.TOOLS.RAY:
+      case CONSTANT.TOOLS.SEGMENT:
+      case CONSTANT.TOOLS.VECTOR:
+        return Line.getPoints();
+      case CONSTANT.TOOLS.CIRCLE:
+        return Circle.getPoints();
+      case CONSTANT.TOOLS.POLYGON:
+        return Polygon.getPoints();
+      case CONSTANT.TOOLS.SIN:
+        return Sin.getPoints();
+      case CONSTANT.TOOLS.PARABOLA:
+        return Parabola.getPoints();
+      case CONSTANT.TOOLS.ELLIPSE:
+        return Ellipse.getPoints();
+      case CONSTANT.TOOLS.HYPERBOLA:
+        return Hyperbola.getPoints();
+      case CONSTANT.TOOLS.EXPONENT:
+        return Exponent.getPoints();
+      case CONSTANT.TOOLS.LOGARITHM:
+        return Logarithm.getPoints();
+      case CONSTANT.TOOLS.POLYNOM:
+        return Polynom.getPoints();
+      case CONSTANT.TOOLS.TANGENT:
+        return Tangent.getPoints();
+      case CONSTANT.TOOLS.SECANT:
+        return Secant.getPoints();
       default:
         return false;
     }
@@ -962,10 +999,6 @@ class Board {
   loadFromConfig(flatCfg) {
     // get name of the last object by label and reset objectNameGenerator with it
     flatCfg.sort(objectLabelComparator);
-    if (typeof flatCfg[0] === "object") {
-      this.objectNameGenerator.next(flatCfg[0].label);
-    }
-
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {

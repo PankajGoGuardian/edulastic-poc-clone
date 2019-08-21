@@ -45,9 +45,6 @@ import {
   calcUnitX,
   handleSnap,
   isInPolygon,
-  objectLabelComparator,
-  nameGenerator,
-  nameGen,
   setLabel
 } from "./utils";
 import _events from "./events";
@@ -130,8 +127,6 @@ class Board {
 
     this.creatingHandler = () => {};
     this.setCreatingHandler();
-
-    this.objectNameGenerator = nameGenerator();
   }
 
   addDragDropValue(value, x, y) {
@@ -178,29 +173,6 @@ class Board {
     }
 
     return false;
-  }
-
-  setElementsFixedAttribute(fixed) {
-    if (!this.elements) {
-      return;
-    }
-
-    this.elements.forEach(element => {
-      if (element.type === 100 || element.latexIsBroken) {
-        return;
-      }
-      element.setAttribute({ fixed });
-      if (element.ancestors) {
-        Object.values(element.ancestors).forEach(ancestor => {
-          ancestor.setAttribute({ fixed });
-        });
-      }
-      if (element.borders) {
-        element.borders.forEach(border => {
-          border.setAttribute({ fixed });
-        });
-      }
-    });
   }
 
   setDrawingObject(drawingObject) {
@@ -269,9 +241,6 @@ class Board {
       case CONSTANT.TOOLS.POLYNOM:
         this.creatingHandler = Polynom.onHandler();
         break;
-      case CONSTANT.TOOLS.LABEL:
-        this.creatingHandler = Label.onHandler();
-        return;
       case CONSTANT.TOOLS.ANNOTATION:
         this.creatingHandler = Annotation.onHandler();
         return;
@@ -337,40 +306,21 @@ class Board {
     }
   }
 
-  getPoints() {
-    switch (this.currentTool) {
-      case CONSTANT.TOOLS.POINT:
-        return null;
-      case CONSTANT.TOOLS.LINE:
-      case CONSTANT.TOOLS.RAY:
-      case CONSTANT.TOOLS.SEGMENT:
-      case CONSTANT.TOOLS.VECTOR:
-        return Line.getPoints();
-      case CONSTANT.TOOLS.CIRCLE:
-        return Circle.getPoints();
-      case CONSTANT.TOOLS.POLYGON:
-        return Polygon.getPoints();
-      case CONSTANT.TOOLS.SIN:
-        return Sin.getPoints();
-      case CONSTANT.TOOLS.PARABOLA:
-        return Parabola.getPoints();
-      case CONSTANT.TOOLS.ELLIPSE:
-        return Ellipse.getPoints();
-      case CONSTANT.TOOLS.HYPERBOLA:
-        return Hyperbola.getPoints();
-      case CONSTANT.TOOLS.EXPONENT:
-        return Exponent.getPoints();
-      case CONSTANT.TOOLS.LOGARITHM:
-        return Logarithm.getPoints();
-      case CONSTANT.TOOLS.POLYNOM:
-        return Polynom.getPoints();
-      case CONSTANT.TOOLS.TANGENT:
-        return Tangent.getPoints();
-      case CONSTANT.TOOLS.SECANT:
-        return Secant.getPoints();
-      default:
-        return false;
-    }
+  getTempPoints() {
+    return [
+      ...Line.getPoints(),
+      ...Circle.getPoints(),
+      ...Polygon.getPoints(),
+      ...Sin.getPoints(),
+      ...Parabola.getPoints(),
+      ...Ellipse.getPoints(),
+      ...Hyperbola.getPoints(),
+      ...Exponent.getPoints(),
+      ...Logarithm.getPoints(),
+      ...Polynom.getPoints(),
+      ...Tangent.getPoints(),
+      ...Secant.getPoints()
+    ];
   }
 
   /**
@@ -655,7 +605,6 @@ class Board {
     this.abortTool();
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
-    this.objectNameGenerator.next(true);
   }
 
   resetAnswers() {
@@ -997,8 +946,6 @@ class Board {
   }
 
   loadFromConfig(flatCfg) {
-    // get name of the last object by label and reset objectNameGenerator with it
-    flatCfg.sort(objectLabelComparator);
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {

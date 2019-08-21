@@ -72,7 +72,7 @@ function create(board, usrCoords, id = null) {
   point.on("mouseout", () => board.handleElementMouseOut(point));
 
   if (board.drawingObject === null) {
-    setLabel(point, nameGen(board.elements.concat(board.getPoints())));
+    setLabel(point, nameGen(board.elements.concat(board.getTempPoints())));
   }
 
   return point;

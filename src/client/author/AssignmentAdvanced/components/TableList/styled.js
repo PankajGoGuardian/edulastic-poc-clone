@@ -6,7 +6,21 @@ import { white, darkGrey, secondaryTextColor, authorAssignment, tabletWidth, tes
 const { assignmentStatusBg } = authorAssignment;
 const {
   authorAssignmentConstants: {
-    assignmentStatus: { NOT_OPEN, IN_PROGRESS, IN_GRADING, NOT_GRADED, GRADES_HELD, DONE, SUBMITTED, NOT_STARTED }
+    assignmentStatus: {
+      NOT_OPEN,
+      IN_PROGRESS,
+      IN_PROGRESS_PAUSED,
+      IN_GRADING,
+      IN_GRADING_PAUSED,
+      NOT_GRADED,
+      NOT_GRADED_PAUSED,
+      GRADES_HELD,
+      GRADES_HELD_PAUSED,
+      DONE,
+      SUBMITTED,
+      SUBMITTED_PAUSED,
+      NOT_STARTED
+    }
   }
 } = testActivity;
 
@@ -15,14 +29,19 @@ const defineStatusBg = status => {
     case NOT_OPEN:
       return assignmentStatusBg.NOT_OPEN;
     case IN_PROGRESS:
+    case IN_PROGRESS_PAUSED:
       return assignmentStatusBg.IN_PROGRESS;
     case IN_GRADING:
+    case IN_GRADING_PAUSED:
       return assignmentStatusBg.IN_GRADING;
     case NOT_GRADED:
+    case NOT_GRADED_PAUSED:
       return assignmentStatusBg.NOT_GRADED;
     case GRADES_HELD:
+    case GRADES_HELD_PAUSED:
       return assignmentStatusBg.GRADES_HELD;
     case SUBMITTED:
+    case SUBMITTED_PAUSED:
       return assignmentStatusBg.SUBMITTED;
     case NOT_STARTED:
       return assignmentStatusBg.NOT_STARTED;

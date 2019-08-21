@@ -589,6 +589,7 @@ class SchoolAdminTable extends Component {
           );
         })}
         <StyledTable
+          role={role}
           rowKey={record => record._id}
           rowSelection={rowSelection}
           dataSource={Object.values(result)}

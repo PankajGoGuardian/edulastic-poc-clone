@@ -75,6 +75,8 @@ class AuthorTestItemPreview extends Component {
       qIndex,
       evaluation,
       previewTab,
+      checkAnswer,
+      showAnswer,
       ...restProps
     } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;

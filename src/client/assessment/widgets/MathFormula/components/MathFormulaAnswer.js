@@ -26,11 +26,10 @@ class MathFormulaAnswer extends Component {
       onChange({ index, prop, value: val });
     };
 
-    const { minWidth, minHeight } = response;
+    const { minWidth, expectedAnsMinHeight } = response;
     const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
     cssStyles.width = cssStyles.width || minWidth;
-    cssStyles.height = cssStyles.height || minHeight;
-
+    cssStyles.height = cssStyles.height || expectedAnsMinHeight;
     return (
       <div>
         {answer.map((method, i) => (
@@ -44,6 +43,7 @@ class MathFormulaAnswer extends Component {
             onChangeKeypad={onChangeKeypad}
             onChangeAllowedOptions={onChangeAllowedOptions}
             allowedVariables={item.allowedVariables || ""}
+            allowNumericOnly={item.allowNumericOnly || false}
             onChangeShowDropdown={onChangeShowDropdown}
             onAdd={onAdd}
             keypadOffset={keypadOffset}

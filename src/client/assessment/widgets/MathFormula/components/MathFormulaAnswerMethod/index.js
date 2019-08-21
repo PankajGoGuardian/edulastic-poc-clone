@@ -63,6 +63,7 @@ const MathFormulaAnswerMethod = ({
   renderExtra,
   keypadMode, // need only for Math w/Unit in cloze Math
   customUnits, // need only for Math w/Unit in cloze Math
+  allowNumericOnly,
   t
 }) => {
   const showAdditional = get(item, "showAdditional", false);
@@ -308,7 +309,7 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={{ allowNumericOnly: item.allowNumericOnly }}
+              options={{ allowNumericOnly }}
               onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
@@ -366,6 +367,7 @@ const MathFormulaAnswerMethod = ({
                 symbols={isShowDropdown ? ["basic"] : item.symbols}
                 restrictKeys={isShowDropdown ? [] : restrictKeys}
                 customKeys={isShowDropdown ? [] : customKeys}
+                allowNumericOnly={allowNumericOnly || false}
                 style={style}
                 numberPad={item.numberPad}
                 onChangeKeypad={onChangeKeypad}
@@ -483,6 +485,7 @@ MathFormulaAnswerMethod.propTypes = {
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   allowedVariables: PropTypes.string.isRequired,
+  allowNumericOnly: PropTypes.bool.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired,
   toggleAdditional: PropTypes.func.isRequired,

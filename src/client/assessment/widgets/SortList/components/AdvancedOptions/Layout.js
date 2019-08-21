@@ -9,6 +9,7 @@ import OrientationSelect from "../../../../components/OrientationSelect";
 
 import { Layout } from "../../../../containers/WidgetOptions/components";
 import Question from "../../../../components/Question";
+import { StemNumerationOption } from "../../../../containers/WidgetOptions/components";
 
 class LayoutWrapper extends Component {
   render() {
@@ -41,6 +42,15 @@ class LayoutWrapper extends Component {
                 onChange={val => {
                   onUiChange("orientation", val);
                 }}
+              />
+            </Col>
+          </Row>
+
+          <Row gutter={60}>
+            <Col md={12}>
+              <StemNumerationOption
+                onChange={val => onUiChange("validationStemNumeration", val)}
+                value={get(item, "uiStyle.validationStemNumeration", "numerical")}
               />
             </Col>
           </Row>

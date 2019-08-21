@@ -53,7 +53,7 @@ const Item = ({ valid, preview, theme, dragHandle, renderIndex, item }) => (
     {dragHandle && <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />}
     {preview && valid !== undefined && (
       <IndexBox preview={preview} valid={valid}>
-        {renderIndex + 1}
+        {renderIndex}
       </IndexBox>
     )}
     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
@@ -66,7 +66,7 @@ Item.propTypes = {
   preview: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
   dragHandle: PropTypes.bool.isRequired,
-  renderIndex: PropTypes.number.isRequired,
+  renderIndex: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired
 };
 

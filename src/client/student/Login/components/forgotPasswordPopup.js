@@ -7,11 +7,7 @@ import { get, trim } from "lodash";
 import { white, greenDark, orange } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { isEmailValid } from "../../../common/utils/helpers";
-import {
-  requestNewPasswordAction,
-  resetPasswordRequestStateAction,
-  requestNewPasswordResetControlAction
-} from "./../ducks";
+import { requestNewPasswordAction, requestNewPasswordResetControlAction } from "./../ducks";
 
 const ForgotPasswordPopup = props => {
   const {
@@ -23,13 +19,12 @@ const ForgotPasswordPopup = props => {
     requestNewPassword,
     user,
     districtPolicy,
-    resetPasswordRequestState,
     requestNewPasswordResetControl
   } = props;
   const { requestingNewPassword, requestNewPasswordSuccess } = user;
 
   useEffect(() => {
-    resetPasswordRequestState();
+    requestNewPasswordResetControl();
   }, []);
 
   const onCancelForgotPassword = () => {
@@ -114,7 +109,9 @@ const ForgotPasswordForm = props => {
     event.preventDefault();
     const { form } = props;
     form.validateFieldsAndScroll((err, { email }) => {
-      _onSubmit(email);
+      if (!err) {
+        _onSubmit(email);
+      }
     });
   };
 
@@ -295,7 +292,6 @@ const enhance = compose(
     }),
     {
       requestNewPassword: requestNewPasswordAction,
-      resetPasswordRequestState: resetPasswordRequestStateAction,
       requestNewPasswordResetControl: requestNewPasswordResetControlAction
     }
   )

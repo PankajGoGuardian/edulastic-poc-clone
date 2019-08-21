@@ -565,8 +565,12 @@ const CustomEditor = ({
 
   // Math Modal related functions
   const saveMathModal = latex => {
+    if (!latex) {
+      //close the modal and return back if nothing was entered
+      setMathModal(false);
+      return;
+    }
     EditorRef.current.selection.restore();
-
     const mathHtml = getMathHtml(latex);
     if (currentMathEl) {
       currentMathEl.innerHTML = mathHtml;

@@ -307,6 +307,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
     );
   };
 
+  const toggleAdditional = val => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.showAdditional = val;
+      })
+    );
+  };
+
   const mathAnswers = get(item, "validation.validResponse.value", []);
   const inputAnswers = get(item, "validation.validResponse.textinput.value", []);
   const dropDownAnswers = get(item, "validation.validResponse.dropdown.value", []);
@@ -384,6 +392,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   onAdd={_addCorrectMethod}
                   onDelete={_deleteCorrectMethod}
                   answers={[answer]}
+                  toggleAdditional={toggleAdditional}
                   onChangeKeypad={onChangeKeypad}
                   toggleAdditional={toggleAdditional}
                 />

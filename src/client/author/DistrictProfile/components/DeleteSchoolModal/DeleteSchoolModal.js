@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { compose } from "redux";
 import { Button, Form, Input } from "antd";
 import styled from "styled-components";
@@ -6,34 +6,29 @@ import { ConfirmationModal } from "../../../../author/src/components/common/Conf
 
 import { borders, backgrounds, themeColor } from "@edulastic/colors";
 
-const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
-  const [disableButton, setButtonState] = useState(true);
-
+const DeleteSchoolModal = ({ visible, toggleModal, form, removeSchool, selectedSchool }) => {
   const handleResponse = e => {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        if (values && values.confirmationText && values.confirmationText.toUpperCase() === "DELETE") deleteProfile();
+        if (values && values.confirmationText && values.confirmationText.toUpperCase() === "REMOVE") removeSchool();
       }
     });
   };
 
   const Footer = [
-    <Button ghost onClick={() => toggleModal("DELETE_ACCOUNT", false)}>
+    <Button ghost onClick={() => toggleModal("REMOVE_SCHOOL", false)}>
       NO, CANCEL
     </Button>,
-    <Button disabled={disableButton} onClick={handleResponse}>
-      YES, DELETE
-    </Button>
+    <Button onClick={handleResponse}>YES, REMOVE</Button>
   ];
 
-  const Title = [<Heading>Delete My Account</Heading>];
+  const Title = [<Heading>Remove</Heading>];
 
   const validateText = (rule, value, callback) => {
-    if (value && value.toUpperCase() !== "DELETE") {
-      setButtonState(true);
+    if (value && value.toUpperCase() !== "REMOVE") {
+      callback("Please enter REMOVE in the field.");
     } else {
-      setButtonState(false);
       callback();
     }
   };
@@ -46,12 +41,17 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
       visible={visible}
       footer={Footer}
       textAlign={"center"}
-      onCancel={() => toggleModal("DELETE_ACCOUNT", false)}
+      onCancel={() => toggleModal("REMOVE_SCHOOL", false)}
+      width={700}
     >
       <ModalBody>
-        <span>Are you sure want to delete this account?</span>
         <span>
-          If sure, please type <span style={{ color: themeColor }}>DELETE</span> in the space below to proceed.
+          You are about to remove the school <strong>{selectedSchool.name}</strong>.
+        </span>
+        <span>All assessment and questions shared with {selectedSchool.name} would be moved to private Library.</span>
+        <span>
+          This action can NOT be undone, please type <span style={{ color: themeColor }}>REMOVE</span> in the space
+          below to proceed.
         </span>
         <FormItem>
           {form.getFieldDecorator("confirmationText", {
@@ -64,7 +64,7 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
                 validator: validateText
               }
             ]
-          })(<TextInput type="text" />)}
+          })(<Input type="text" />)}
         </FormItem>
       </ModalBody>
     </ConfirmationModal>
@@ -73,17 +73,21 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
 
 const enhance = compose(Form.create());
 
-export default enhance(DeleteAccountModal);
+export default enhance(DeleteSchoolModal);
 
 const ModalBody = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
+  width: 80%;
+  margin: auto;
+  span {
+    margin-bottom: 15px;
+  }
 `;
 
 const FormItem = styled(Form.Item)`
-  width: 80%;
+  width: 100%;
   display: inline-block;
   margin: 10px;
   .ant-input {
@@ -96,8 +100,4 @@ const FormItem = styled(Form.Item)`
 
 const Heading = styled.h4`
   font-weight: 600;
-`;
-
-const TextInput = styled(Input)`
-  text-align: center;
 `;

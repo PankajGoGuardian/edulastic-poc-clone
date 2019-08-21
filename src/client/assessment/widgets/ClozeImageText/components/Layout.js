@@ -114,8 +114,8 @@ class Layout extends Component {
             <Row gutter={20}>
               <Col md={12}>
                 <StemNumerationOption
-                  onChange={val => changeUiStyle("validation_stem_numeration", val)}
-                  value={get(item, "uiStyle.validation_stem_numeration", "numerical")}
+                  onChange={val => changeUiStyle("validationStemNumeration", val)}
+                  value={get(item, "uiStyle.validationStemNumeration", "numerical")}
                 />
               </Col>
               <Col md={12}>

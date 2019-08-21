@@ -68,12 +68,14 @@ const MathFormula = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          <Template
-            item={item}
-            setQuestionData={setQuestionData}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          />
+          {item.templateDisplay && (
+            <Template
+              item={item}
+              setQuestionData={setQuestionData}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+            />
+          )}
           <MathFormulaAnswers
             item={item}
             setQuestionData={setQuestionData}

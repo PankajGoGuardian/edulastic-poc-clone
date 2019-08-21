@@ -220,7 +220,7 @@ class ClassHeader extends Component {
     } = this.props;
 
     const { showDropdown, visible, isPauseModalVisible, isCloseModalVisible, modalInputVal = "" } = this.state;
-    const { endDate, startDate, releaseScore, isPaused = false, open } = additionalData;
+    const { endDate, startDate, releaseScore, isPaused = false, open, closed } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
     const canOpen =
@@ -229,9 +229,13 @@ class ClassHeader extends Component {
       (startDate || open) &&
       canCloseClass.includes(classId) &&
       !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
-    const canPause = startDate || open;
+    const canPause = (startDate || open) && !closed;
     const assignmentStatusForDisplay =
-      assignmentStatus === "NOT OPEN" && startDate && startDate < moment() ? "IN PROGRESS" : assignmentStatus;
+      assignmentStatus === "NOT OPEN" && startDate && startDate < moment()
+        ? "IN PROGRESS"
+        : closed
+        ? "DONE"
+        : assignmentStatus;
     const menu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />

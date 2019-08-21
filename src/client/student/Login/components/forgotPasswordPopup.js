@@ -127,24 +127,19 @@ const ForgotPasswordForm = props => {
             },
             {
               required: true,
-              message: t("component.signup.teacher.validemail")
+              message: t("common.forgotpassworderror")
             },
             {
               type: "string",
-              message: t("component.signup.teacher.validemail")
+              message: t("common.forgotpassworderror")
             },
             {
               validator: (rule, value, callback) =>
-                isEmailValid(rule, value, callback, "both", t("component.signup.teacher.validemail"))
+                isEmailValid(rule, value, callback, "both", t("common.forgotpassworderror"))
             }
           ]
         })(
-          <Input
-            className="email-input"
-            type="email"
-            placeholder="Enter Registered Username or Email"
-            autoComplete="new-password"
-          />
+          <Input className="email-input" placeholder="Enter Registered Username or Email" autoComplete="new-password" />
         )}
       </Form.Item>
       <div className="model-buttons">

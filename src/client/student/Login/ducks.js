@@ -591,11 +591,11 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
-  const districtPolicy = yield select(signupDistrictPolicySelector);
+  const generalSettings = yield select(signupGeneralSettingsSelector);
   let districtId;
-  if (districtPolicy) {
-    localStorage.setItem("thirdPartySignOnDistrictPolicy", JSON.stringify(districtPolicy));
-    districtId = districtPolicy.orgId;
+  if (generalSettings) {
+    localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
+    districtId = generalSettings.orgId;
   }
 
   try {
@@ -630,20 +630,23 @@ function* googleLogin({ payload }) {
 }
 
 function* googleSSOLogin({ payload }) {
-  let districtPolicy = localStorage.getItem("thirdPartySignOnDistrictPolicy");
-  if (districtPolicy) {
-    districtPolicy = JSON.parse(districtPolicy);
-    payload.districtId = districtPolicy.orgId;
+  const _payload = { ...payload };
+
+  let generalSettings = localStorage.getItem("thirdPartySignOnGeneralSettings");
+  if (generalSettings) {
+    generalSettings = JSON.parse(generalSettings);
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
   }
 
   try {
-    if (payload.edulasticRole === "student") {
+    if (_payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
       if (classCode) {
-        payload.classCode = classCode;
+        _payload.classCode = classCode;
       }
     }
-    const res = yield call(authApi.googleSSOLogin, payload);
+    const res = yield call(authApi.googleSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
     yield call(message.error, get(e, "data.message", "Google Login failed"));
@@ -651,15 +654,15 @@ function* googleSSOLogin({ payload }) {
   }
   localStorage.removeItem("thirdPartySignOnRole");
   localStorage.removeItem("thirdPartySignOnClassCode");
-  localStorage.removeItem("thirdPartySignOnDistrictPolicy");
+  localStorage.removeItem("thirdPartySignOnGeneralSettings");
 }
 
 function* msoLogin({ payload }) {
-  const districtPolicy = yield select(signupDistrictPolicySelector);
+  const generalSettings = yield select(signupGeneralSettingsSelector);
   let districtId;
-  if (districtPolicy) {
-    localStorage.setItem("thirdPartySignOnDistrictPolicy", JSON.stringify(districtPolicy));
-    districtId = districtPolicy.orgId;
+  if (generalSettings) {
+    localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
+    districtId = generalSettings.orgId;
   }
 
   try {
@@ -692,20 +695,23 @@ function* msoLogin({ payload }) {
 }
 
 function* msoSSOLogin({ payload }) {
-  let districtPolicy = localStorage.getItem("thirdPartySignOnDistrictPolicy");
-  if (districtPolicy) {
-    districtPolicy = JSON.parse(districtPolicy);
-    payload.districtId = districtPolicy.orgId;
+  const _payload = { ...payload };
+
+  let generalSettings = localStorage.getItem("thirdPartySignOnGeneralSettings");
+  if (generalSettings) {
+    generalSettings = JSON.parse(generalSettings);
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
   }
 
   try {
-    if (payload.edulasticRole === "student") {
+    if (_payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
       if (classCode) {
-        payload.classCode = classCode;
+        _payload.classCode = classCode;
       }
     }
-    const res = yield call(authApi.msoSSOLogin, payload);
+    const res = yield call(authApi.msoSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
     yield call(message.error, get(e, "data.message", "MSO Login failed"));
@@ -713,7 +719,7 @@ function* msoSSOLogin({ payload }) {
   }
   localStorage.removeItem("thirdPartySignOnRole");
   localStorage.removeItem("thirdPartySignOnClassCode");
-  localStorage.removeItem("thirdPartySignOnDistrictPolicy");
+  localStorage.removeItem("thirdPartySignOnGeneralSettings");
 }
 
 function* cleverLogin({ payload }) {

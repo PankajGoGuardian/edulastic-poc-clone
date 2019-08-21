@@ -4,13 +4,12 @@ import { Button, Form, Input } from "antd";
 import styled from "styled-components";
 import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
 
-import { borders, backgrounds, themeColor } from "@edulastic/colors";
+import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
 
 const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
   const [disableButton, setButtonState] = useState(true);
 
   const handleResponse = e => {
-    e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (values && values.confirmationText && values.confirmationText.toUpperCase() === "DELETE") deleteProfile();
@@ -22,18 +21,19 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
     <Button ghost onClick={() => toggleModal("DELETE_ACCOUNT", false)}>
       NO, CANCEL
     </Button>,
-    <Button disabled={disableButton} onClick={handleResponse}>
+    <YesButton disabled={disableButton} onClick={handleResponse}>
       YES, DELETE
-    </Button>
+    </YesButton>
   ];
 
   const Title = [<Heading>Delete My Account</Heading>];
 
   const validateText = (rule, value, callback) => {
-    if (value && value.toUpperCase() !== "DELETE") {
-      setButtonState(true);
-    } else {
+    if (value && value.toUpperCase() === "DELETE") {
       setButtonState(false);
+      callback();
+    } else {
+      setButtonState(true);
       callback();
     }
   };
@@ -56,10 +56,6 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
         <FormItem>
           {form.getFieldDecorator("confirmationText", {
             rules: [
-              {
-                required: true,
-                message: "Please type the required Text."
-              },
               {
                 validator: validateText
               }
@@ -100,4 +96,10 @@ const Heading = styled.h4`
 
 const TextInput = styled(Input)`
   text-align: center;
+`;
+
+const YesButton = styled(Button)`
+  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
+  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
+  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
 `;

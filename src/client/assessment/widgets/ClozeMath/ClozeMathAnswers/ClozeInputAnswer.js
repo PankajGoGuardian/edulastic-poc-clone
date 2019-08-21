@@ -34,7 +34,7 @@ class ClozeInputAnswer extends Component {
   render() {
     const {
       answers,
-      item: { uiStyle: uiStyle, responseContainers: responseContainers }
+      item: { uiStyle, responseContainers }
     } = this.props;
 
     return (
@@ -67,7 +67,8 @@ class ClozeInputAnswer extends Component {
 
 ClozeInputAnswer.propTypes = {
   answers: PropTypes.array.isRequired,
-  onChange: PropTypes.func.isRequired
+  onChange: PropTypes.func.isRequired,
+  item: PropTypes.object.isRequired
 };
 
 export default withNamespaces("assessment")(ClozeInputAnswer);

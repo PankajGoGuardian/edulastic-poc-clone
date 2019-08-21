@@ -281,7 +281,7 @@ class ProfileBody extends React.Component {
               <UserDetail>
                 <SubHeader>
                   <Title>Instructor Information</Title>
-                  {!isEditProfile && ["teacher", "district-admin"].includes(user.role) ? (
+                  {!isEditProfile && ["teacher", "district-admin", "school-admin"].includes(user.role) ? (
                     <>
                       <EditProfileButton
                         type="primary"

@@ -10,6 +10,9 @@ const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, showDr
 
   useEffect(() => {
     if (show) {
+      if (mathInputRef.current) {
+        mathInputRef.current.setFocus();
+      }
       setLatex(value);
     }
   }, [show]);

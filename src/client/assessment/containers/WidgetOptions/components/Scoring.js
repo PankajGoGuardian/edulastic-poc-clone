@@ -142,24 +142,27 @@ class Scoring extends Component {
 
         {isAutomarkChecked && showSelect && (
           <Row gutter={60}>
-            <Col md={24} style={{ margin: 0 }}>
-              <Label>{t("component.options.scoringType")}</Label>
-            </Col>
-            <Col md={12}>
-              <SelectWrapper
-                size="large"
-                data-cy="scoringType"
-                value={questionData.validation.scoringType}
-                onChange={value => handleChangeValidation("scoringType", value)}
-              >
-                {scoringTypes.map(({ value: val, label }) => (
-                  <Select.Option data-cy={val} key={val} value={val}>
-                    {label}
-                  </Select.Option>
-                ))}
-              </SelectWrapper>
-            </Col>
-
+            {scoringTypes.length > 1 && (
+              <React.Fragment>
+                <Col md={24} style={{ margin: 0 }}>
+                  <Label>{t("component.options.scoringType")}</Label>
+                </Col>
+                <Col md={12}>
+                  <SelectWrapper
+                    size="large"
+                    data-cy="scoringType"
+                    value={questionData.validation.scoringType}
+                    onChange={value => handleChangeValidation("scoringType", value)}
+                  >
+                    {scoringTypes.map(({ value: val, label }) => (
+                      <Select.Option data-cy={val} key={val} value={val}>
+                        {label}
+                      </Select.Option>
+                    ))}
+                  </SelectWrapper>
+                </Col>
+              </React.Fragment>
+            )}
             <Col md={12}>
               <FormGroup center>
                 <Input

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { themeColorLight, themeColor } from "@edulastic/colors";
+import { themeColorLight, themeColor, inputBgGrey, linkColor1 } from "@edulastic/colors";
 
 class TextField extends Component {
   state = {
@@ -14,10 +14,22 @@ class TextField extends Component {
   };
 
   render() {
-    const { icon, height, style, containerStyle, onChange, onBlur, type, minimum, maximum, ...restProps } = this.props;
+    const {
+      icon,
+      height,
+      width,
+      style,
+      containerStyle,
+      onChange,
+      onBlur,
+      type,
+      minimum,
+      maximum,
+      ...restProps
+    } = this.props;
     const { referenceEditable } = this.state;
     return (
-      <Container height={height} style={containerStyle}>
+      <Container height={height} width={width} style={containerStyle}>
         <Field
           disabled={!referenceEditable}
           type={!type ? "text" : type}
@@ -41,6 +53,7 @@ class TextField extends Component {
 TextField.propTypes = {
   icon: PropTypes.any,
   height: PropTypes.string,
+  width: PropTypes.string,
   style: PropTypes.object,
   containerStyle: PropTypes.object,
   onChange: PropTypes.func.isRequired,
@@ -50,6 +63,7 @@ TextField.propTypes = {
 TextField.defaultProps = {
   icon: null,
   height: "45px",
+  width: "100%",
   style: {},
   containerStyle: {},
   onBlur: () => {}
@@ -60,7 +74,7 @@ export default TextField;
 const Container = styled.span`
   position: relative;
   height: ${({ height }) => height};
-  width: 100%;
+  width: ${({ width }) => width};
 `;
 
 const Icon = styled.span`
@@ -82,14 +96,16 @@ const Icon = styled.span`
 
 const Field = styled.input`
   border: 1px solid ${props => (props.referenceEditable ? themeColorLight : "#E1E1E1")};
+  background: ${inputBgGrey};
   border-radius: 4px;
   min-height: 100%;
   width: 100%;
   padding: 10px 35px;
-  color: #7a7a7a;
+  color: ${linkColor1};
   outline: none;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.2px;
+  text-align: center;
   ::placeholder {
     font-style: italic;
     color: #b1b1b1;

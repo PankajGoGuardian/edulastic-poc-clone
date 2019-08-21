@@ -184,7 +184,7 @@ class Item extends Component {
               <ViewButtonStyled onClick={this.previewItem}>
                 <IconEye /> {t("component.item.view")}
               </ViewButtonStyled>
-              <AddButtonStyled onClick={this.handleToggleItemToCart(item)}>
+              <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
                 {selectedToCart ? "Remove" : <IconPlus />}
               </AddButtonStyled>
             </ViewButton>

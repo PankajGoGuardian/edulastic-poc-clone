@@ -65,12 +65,13 @@ const MathFormulaAnswerMethod = ({
 
     if (method === methodsConst.IS_FACTORISED && !newOptions.field) {
       newOptions.field = fieldsConst.INTEGER;
+      onChange("options", newOptions);
     }
     if (method === methodsConst.EQUIV_VALUE) {
-      newOptions.allowNumericOnly = true;
+      onChangeAllowedOptions("allowNumericOnly", true);
+    } else {
+      onChangeAllowedOptions("allowNumericOnly", false);
     }
-
-    onChange("options", newOptions);
   }, [method]);
 
   useEffect(() => {

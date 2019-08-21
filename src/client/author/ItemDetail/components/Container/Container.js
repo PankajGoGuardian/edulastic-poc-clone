@@ -482,7 +482,6 @@ class Container extends Component {
                   key={passage ? i + 1 : i}
                   row={row}
                   view={view}
-                  showAnswer
                   rowIndex={i}
                   itemData={item}
                   count={rows.length}

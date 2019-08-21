@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick, get } from "lodash";
@@ -18,6 +18,7 @@ import { Rule } from "./options/Rule";
 import Units from "./options/Units";
 import { AdditionalToggle, AdditionalContainer, AdditionalCompareUsing } from "./styled/Additional";
 import { Container } from "./styled/Container";
+import { ExpectAnswer } from "./styled/ExpectAnswer";
 import { StyledRow } from "./styled/StyledRow";
 
 import {
@@ -351,9 +352,9 @@ const MathFormulaAnswerMethod = ({
 
   return (
     <Container data-cy="math-formula-answer">
-      <StyledRow gutter={8}>
+      <ExpectAnswer>
         {!methodOptions.includes("noExpeced") && (
-          <Col span={index === 0 ? 12 : 11}>
+          <div>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInput
               hideKeypad={item.showDropdown}
@@ -372,28 +373,23 @@ const MathFormulaAnswerMethod = ({
                 onChange("value", val);
               }}
             />
-          </Col>
+          </div>
         )}
         {index > 0 ? (
-          <Col span={2} style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
+          <div style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
             {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
-          </Col>
+          </div>
         ) : null}
         {item.isUnits && (
-          <Col
-            span={index === 0 ? 12 : 11}
-            style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 25 : 5 }}
-          >
-            <UnitsDropdown
-              item={item}
-              options={options}
-              onChange={changeOptions}
-              keypadOffset={keypadOffset}
-              onChangeShowDropdown={onChangeShowDropdown}
-            />
-          </Col>
+          <UnitsDropdown
+            item={item}
+            options={options}
+            onChange={changeOptions}
+            keypadOffset={keypadOffset}
+            onChangeShowDropdown={onChangeShowDropdown}
+          />
         )}
-      </StyledRow>
+      </ExpectAnswer>
 
       {methodOptions.includes("field") && (
         <StyledRow gutter={60}>
@@ -476,7 +472,8 @@ MathFormulaAnswerMethod.defaultProps = {
   method: "",
   style: {},
   options: {},
-  onDelete: undefined
+  onDelete: undefined,
+  toggleAdditional: () => null
 };
 
 export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

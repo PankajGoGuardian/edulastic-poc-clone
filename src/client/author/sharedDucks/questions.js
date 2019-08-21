@@ -90,12 +90,14 @@ const updateQuestion = (state, { payload }) => {
   if (groupPossibleResponses === true && groupPossibleResponses !== prevGroupPossibleResponsesState) {
     // toggle group response on - update first group responses with possible responses
     newPayload = produce(payload, draft => {
-      draft.possibleResponseGroups[0].responses = draft.possibleResponses;
+      !draft.possibleResponseGroups[0]
+        ? (draft.possibleResponseGroups = [{ title: "Group 1", responses: draft.possibleResponses }])
+        : (draft.possibleResponseGroups[0].responses = draft.possibleResponses);
     });
   } else if (groupPossibleResponses === false && groupPossibleResponses !== prevGroupPossibleResponsesState) {
     // toggle group response off - put back updated first group responses
     newPayload = produce(payload, draft => {
-      draft.possibleResponses = draft.possibleResponseGroups[0].responses;
+      draft.possibleResponses = (draft.possibleResponseGroups[0] && draft.possibleResponseGroups[0].responses) || [];
     });
   }
 

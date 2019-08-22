@@ -12,8 +12,7 @@ const Rectangles = ({
   previewTab,
   evaluation,
   isExpressGrader,
-  isAnswerModifiable,
-  isReviewTab
+  isAnswerModifiable
 }) => {
   const total = rows * columns;
   const offset = fractionNumber * total;
@@ -22,51 +21,21 @@ const Rectangles = ({
       {Array(total)
         .fill()
         .map((_, index) => {
-          let fillColor;
+          let fillColor = lightBlue;
           const _selected = selected.includes(index + 1 + offset);
-          if (previewTab === "show") {
-            if (isAnswerModifiable && isExpressGrader === undefined) {
-              //showAnswer tab and test review page (show userAnswers with green or redDark)
-              fillColor = _selected ? green : lightBlue;
-            } else if (!isAnswerModifiable && !isExpressGrader) {
-              // in LCB (show userAttempted answers as redDark or green)
-              if (_selected) {
-                fillColor = evaluation
-                  ? evaluation[index + 1 + offset] || isReviewTab
-                    ? green
-                    : redDark
-                  : mainBlueColor;
-              } else {
-                fillColor = lightBlue;
-              }
-            } else if (isExpressGrader) {
-              if (!isAnswerModifiable) {
-                //inExprssGrader and editResponse if false (show userAnswers in greed or redDark)
-                if (_selected) {
-                  fillColor = evaluation
-                    ? evaluation[index + 1 + offset] || isReviewTab
-                      ? green
-                      : redDark
-                    : mainBlueColor;
-                } else {
-                  fillColor = lightBlue;
-                }
-              } else {
-                //inExprssGrader and editResponse if true
-                fillColor = _selected ? mainBlueColor : lightBlue;
-              }
-            }
-          } else if (previewTab === "check") {
-            //checkAnswer tab (show userAttempted answers as redDark or green)
-            if (_selected) {
-              fillColor = evaluation ? (evaluation[index + 1 + offset] ? green : redDark) : mainBlueColor;
-            } else {
-              fillColor = lightBlue;
-            }
-          } else {
-            //edit mode as well as clear
+          if (previewTab === "edit" || previewTab === "clear") {
+            // edit mode as well as clear
             fillColor = _selected ? mainBlueColor : lightBlue;
+          } else if (_selected) {
+            // show answers with highlighting (correct: green, wrong: darkRed)
+            fillColor = evaluation ? (evaluation[index + 1 + offset] === true ? green : redDark) : mainBlueColor;
           }
+          if (isExpressGrader && isAnswerModifiable && _selected) {
+            // in expressGrader and edit response is on
+            // override default highlighting with darkBlue color when selected
+            fillColor = mainBlueColor;
+          }
+
           return (
             <Rectangle
               id={index + 1 + offset}

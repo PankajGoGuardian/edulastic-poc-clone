@@ -43,13 +43,15 @@ class Scoring extends Component {
       if (!newData.validation) {
         newData.validation = {};
       }
-
       if (
         (param === "maxScore" || param === "penalty" || param === "minScoreIfAttempted" || param === "") &&
         value < 0
       ) {
         newData.validation[param] = 0;
       } else {
+        if (param === "automarkable" && !value) {
+          newData.validation.scoringType = evaluationType.EXACT_MATCH;
+        }
         newData.validation[param] = value;
       }
 
@@ -144,7 +146,6 @@ class Scoring extends Component {
                 </Col>
               </React.Fragment>
             )}
-
 
             {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
               <Col md={12}>

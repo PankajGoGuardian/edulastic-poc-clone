@@ -203,7 +203,7 @@ class ClozeMathWithUnit extends React.Component {
     mathRef.current.focus();
   };
 
-  saveAnswer = () => {
+  saveAnswer = fromUnit => {
     const { resprops = {}, id } = this.props;
     const { latex, showKeyboard } = this.state;
     const { save, item, answers = {} } = resprops;
@@ -214,7 +214,7 @@ class ClozeMathWithUnit extends React.Component {
     } = item;
     const { index } = find(mathUnits, res => res.id === id) || {};
 
-    if (!showKeyboard && latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
+    if ((!showKeyboard && latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) || fromUnit) {
       save({ ..._userAnwers[id], value: latex, index }, "mathUnits", id);
     }
   };
@@ -227,9 +227,9 @@ class ClozeMathWithUnit extends React.Component {
     save({ ...this.userAnswer, unit }, "mathUnits", id);
   };
 
-  onFocusUnitDropdown = () => {
+  onDropdownVisibleChange = () => {
     this.closeMathBoard();
-    this.saveAnswer();
+    this.saveAnswer(true);
   };
 
   getStyles = uiStyles => {
@@ -296,7 +296,7 @@ class ClozeMathWithUnit extends React.Component {
           unit={unit}
           customUnits={customUnits}
           onChange={this.onChangeUnit}
-          onFocus={this.onFocusUnitDropdown}
+          onDropdownVisibleChange={this.onDropdownVisibleChange}
           keypadMode={keypadMode}
           height={height || "auto"}
         />

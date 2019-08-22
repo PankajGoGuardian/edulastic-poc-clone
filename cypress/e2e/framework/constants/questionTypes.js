@@ -34,5 +34,17 @@ export const queColor = {
 };
 
 export const questionGroup = {
-  MCQ: "Multiple Choice"
+  MCQ: "Multiple Choice",
+  FILL_IN_BLANK: "Fill in the Blanks",
+  CLASSIFICATION: "Classify, Match & Order",
+  READ: "Reading & Comprehension",
+  HIGHLIGHT: "Highlight",
+  MATH: "Math",
+  GRAPH: "Graphing",
+  CHART: "Charts",
+  CHEM: "Chemistry",
+  MULTI: "Multipart",
+  VID: "Video & Text",
+  RULER: "Rulers & Calculators",
+  OTHER: "Other"
 };

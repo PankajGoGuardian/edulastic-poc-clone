@@ -222,7 +222,7 @@ const moveUsersToOtherClass = ({ districtId, destinationClassCode, sourceClassCo
 
 const removeSchool = data =>
   api.callApi({
-    url: `${prefix}/${data.userId}/institution/${data.schoolId}/remove`,
+    url: `${prefix}/institution/${data.schoolId}/remove`,
     method: "put",
     data
   });

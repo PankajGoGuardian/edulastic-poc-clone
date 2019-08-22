@@ -374,7 +374,8 @@
       "inputLabel": "Value",
       "exactMatch": "Exact Match",
       "anyTextContaining": "Any text containing",
-      "correctAnswers": "Correct Answers"
+      "correctAnswers": "Correct Answers",
+      "alternateAnswers": "Alternate Answer"
     },
     "orderlist": {
       "composequestion": "Question",

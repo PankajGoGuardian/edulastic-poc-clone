@@ -9,7 +9,7 @@ export const defaultConfig = {
   type: CONSTANT.TOOLS.EXPONENT,
   fixed: false,
   strokeWidth: 2,
-  highlightStrokeWidth: 1
+  highlightStrokeWidth: 2
 };
 
 const makeCallback = (p1, p2) => x => {

@@ -6,7 +6,10 @@ import { getLabelParameters } from "../settings";
 import { handleSnap } from "../utils";
 
 export const defaultConfig = {
-  hasInnerPoints: true,
+  hasInnerPoints: true
+};
+
+const bordersDefaultConfig = {
   strokeWidth: 2,
   highlightStrokeWidth: 2
 };
@@ -19,12 +22,17 @@ let points = [];
 let lines = [];
 
 function create(board, polygonPoints, id = null) {
-  const newPolygon = board.$board.create("polygon", polygonPoints, {
+  const attrs = {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.POLYGON],
     label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON),
     id
-  });
+  };
+  attrs.borders = {
+    ...bordersDefaultConfig,
+    ...attrs.borders
+  };
+  const newPolygon = board.$board.create("polygon", polygonPoints, attrs);
   newPolygon.labelIsVisible = true;
   handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
   newPolygon.borders.forEach(border => {
@@ -115,12 +123,17 @@ function flatConfigPoints(pointsConfig) {
 }
 
 function parseConfig() {
-  return {
+  const attrs = {
     highlightFillOpacity: 0.3,
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.POLYGON],
     label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON)
   };
+  attrs.borders = {
+    ...bordersDefaultConfig,
+    ...attrs.borders
+  };
+  return attrs;
 }
 
 function getPoints() {

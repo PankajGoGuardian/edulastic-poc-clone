@@ -2,5 +2,7 @@ export default {
   firstarrow: false,
   lastarrow: true,
   straightfirst: false,
-  straightlast: true
+  straightlast: true,
+  strokewidth: 2,
+  highlightstrokewidth: 2
 };

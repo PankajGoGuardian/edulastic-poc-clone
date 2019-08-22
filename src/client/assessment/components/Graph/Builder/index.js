@@ -836,8 +836,8 @@ class Board {
         highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYGON]: {
-        ...defaultBgObjectParameters(),
         ...Polygon.parseConfig(),
+        ...defaultBgObjectParameters(),
         borders: defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.PARABOLA]: {
@@ -1211,6 +1211,15 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elAttrs = {
+                  ...Polygon.parseConfig(),
+                  ...attrs,
+                  id: el.id
+                };
+                elAttrs.borders = {
+                  ...Polygon.parseConfig().borders,
+                  ...attrs.borders
+                };
                 const polygon = this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
@@ -1219,11 +1228,7 @@ class Board {
                       objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
                     })
                   ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    id: el.id
-                  }
+                  elAttrs
                 );
                 polygon.labelIsVisible = el.labelIsVisible;
                 handleSnap(polygon, Object.values(polygon.ancestors), this);
@@ -1679,8 +1684,18 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs =>
-                this.createElement(
+              objectCreator: attrs => {
+                const elAttrs = {
+                  ...Polygon.parseConfig(),
+                  ...attrs,
+                  fixed: true
+                };
+                elAttrs.borders = {
+                  ...Polygon.parseConfig().borders,
+                  ...attrs.borders
+                };
+
+                return this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
                     mixProps({
@@ -1688,12 +1703,9 @@ class Board {
                       objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
                     })
                   ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    fixed: true
-                  }
-                )
+                  elAttrs
+                );
+              }
             })
           );
           break;

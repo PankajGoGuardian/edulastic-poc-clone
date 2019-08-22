@@ -1,7 +1,6 @@
 .graph-shape-label {
   border-radius: 5px;
   text-align: center;
-  cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -9,6 +9,7 @@ const jxgType = 98;
 
 const defaultConfig = {
   fixed: null,
+  strokeWidth: 2,
   highlightStrokeWidth: 2
 };
 

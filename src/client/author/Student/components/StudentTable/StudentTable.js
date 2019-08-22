@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, split, unset, pickBy, identity } from "lodash";
+import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
 import * as moment from "moment";
 import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
@@ -107,11 +107,15 @@ class StudentTable extends Component {
     this.columns = [
       {
         title: "Name",
-        render: (_, { _source: { firstName, lastName } = {} }) => (
-          <span>
-            {firstName === "Anonymous" ? "-" : firstName} {lastName}
-          </span>
-        ),
+        render: (_, { _source }) => {
+          const firstName = get(_source, "firstName", "");
+          const lastName = get(_source, "lastName", "");
+          return (
+            <span>
+              {firstName === "Anonymous" || isEmpty(firstName) ? "-" : firstName} {lastName}
+            </span>
+          );
+        },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "_source.firstName", "");

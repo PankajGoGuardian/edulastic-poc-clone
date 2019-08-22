@@ -17,41 +17,44 @@ import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
 
 const OrderListReportItem = SortableElement(
-  ({ children, correctText, correct, showAnswers, ind, t, theme, columns, styleType }) => (
-    <Fragment>
-      <Container styleType={styleType} columns={columns} correct={correct}>
-        <Text>
-          <Index>{ind}</Index>
-          <FlexContainer justifyContent="center">
-            <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: children }} />
-          </FlexContainer>
-          {correct && (
-            <IconWrapper color={theme.widgets.orderList.correctIconWrapperColor}>
-              <IconCheck />
-            </IconWrapper>
-          )}
-          {!correct && (
-            <IconWrapper color={theme.widgets.orderList.incorrectIconWrapperColor}>
-              <IconClose />
-            </IconWrapper>
-          )}
-        </Text>
-      </Container>
-      {showAnswers && !correct && (
-        <CorrectAnswerItem>
+  ({ children, correctText, correct, showAnswers, ind, t, theme, columns, styleType }) => {
+    console.log("correct is", correct);
+    return (
+      <Fragment>
+        <Container styleType={styleType} columns={columns} correct={correct}>
           <Text>
-            <FlexContainer>
-              <Index color={theme.widgets.orderList.incorrectIndexColor}>{ind}</Index>
-              <QuestionText>
-                <span>{t("component.orderlist.correctanswer")}</span>{" "}
-                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: correctText }} />
-              </QuestionText>
+            <Index>{ind}</Index>
+            <FlexContainer justifyContent="center">
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: children }} />
             </FlexContainer>
+            {correct && (
+              <IconWrapper color={theme.widgets.orderList.correctIconWrapperColor}>
+                <IconCheck />
+              </IconWrapper>
+            )}
+            {correct === false && (
+              <IconWrapper color={theme.widgets.orderList.incorrectIconWrapperColor}>
+                <IconClose />
+              </IconWrapper>
+            )}
           </Text>
-        </CorrectAnswerItem>
-      )}
-    </Fragment>
-  )
+        </Container>
+        {showAnswers && !correct && (
+          <CorrectAnswerItem>
+            <Text>
+              <FlexContainer>
+                <Index color={theme.widgets.orderList.incorrectIndexColor}>{ind}</Index>
+                <QuestionText>
+                  <span>{t("component.orderlist.correctanswer")}</span>{" "}
+                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: correctText }} />
+                </QuestionText>
+              </FlexContainer>
+            </Text>
+          </CorrectAnswerItem>
+        )}
+      </Fragment>
+    );
+  }
 );
 
 OrderListReportItem.propTypes = {

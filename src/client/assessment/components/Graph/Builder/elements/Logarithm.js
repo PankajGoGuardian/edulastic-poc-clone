@@ -8,7 +8,8 @@ const jxgType = 94;
 export const defaultConfig = {
   type: CONSTANT.TOOLS.LOGARITHM,
   fixed: false,
-  strokeWidth: 2
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
 };
 
 const makeCallback = (p1, p2) => x => {

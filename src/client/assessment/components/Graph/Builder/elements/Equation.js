@@ -8,7 +8,8 @@ import { fixLatex, getPropsByLineType, handleSnap } from "../utils";
 const jxgType = 98;
 
 const defaultConfig = {
-  fixed: null
+  fixed: null,
+  highlightStrokeWidth: 2
 };
 
 function isLine(xMin, xMax, equationLeft, equationRight) {

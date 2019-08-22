@@ -6,7 +6,9 @@ import { getLabelParameters } from "../settings";
 import { handleSnap } from "../utils";
 
 export const defaultConfig = {
-  hasInnerPoints: true
+  hasInnerPoints: true,
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
 };
 
 function isStart(startPointCoords, testPointCoords) {

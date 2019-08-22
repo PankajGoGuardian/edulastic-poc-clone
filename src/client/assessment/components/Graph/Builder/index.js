@@ -833,8 +833,7 @@ class Board {
       [CONSTANT.TOOLS.CIRCLE]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYGON]: {
         ...defaultBgObjectParameters(),
@@ -844,62 +843,52 @@ class Board {
       [CONSTANT.TOOLS.PARABOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.ELLIPSE]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.HYPERBOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.SIN]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.TANGENT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.SECANT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.EXPONENT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.LOGARITHM]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYNOM]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.EQUATION]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.ANNOTATION]: {
         fixed: true

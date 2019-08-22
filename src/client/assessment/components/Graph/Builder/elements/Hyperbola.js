@@ -7,7 +7,8 @@ const jxgType = 90;
 
 export const defaultConfig = {
   fixed: false,
-  strokeWidth: 2
+  strokeWidth: 2,
+  highlightStrokeWidth: 1
 };
 
 let points = [];

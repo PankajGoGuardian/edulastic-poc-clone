@@ -6,7 +6,9 @@ import { getLabelParameters } from "../settings";
 
 export const defaultConfig = {
   firstarrow: true,
-  lastarrow: true
+  lastarrow: true,
+  strokewidth: 2,
+  highlightstrokewidth: 2
 };
 
 let points = [];

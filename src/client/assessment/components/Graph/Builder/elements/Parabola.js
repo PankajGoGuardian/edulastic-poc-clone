@@ -9,7 +9,8 @@ const jxgType = 97;
 export const defaultConfig = {
   type: CONSTANT.TOOLS.PARABOLA,
   fixed: false,
-  strokeWidth: 2
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
 };
 
 let tempToolPoints = [];

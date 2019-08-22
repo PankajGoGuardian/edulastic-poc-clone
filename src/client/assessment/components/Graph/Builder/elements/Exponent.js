@@ -8,7 +8,8 @@ const jxgType = 93;
 export const defaultConfig = {
   type: CONSTANT.TOOLS.EXPONENT,
   fixed: false,
-  strokeWidth: 2
+  strokeWidth: 2,
+  highlightStrokeWidth: 1
 };
 
 const makeCallback = (p1, p2) => x => {

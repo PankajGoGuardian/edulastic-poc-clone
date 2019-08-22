@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import { OptionsList } from "../styled/OptionsList";
 import Option from "./Option";
+import { FlexContainer } from "@edulastic/common";
 
 const Options = ({
   options,
@@ -14,10 +15,27 @@ const Options = ({
   multipleResponses,
   ...restProps
 }) => {
-  return (
-    <OptionsList styleType={styleType}>
-      {options.map((option, index) => (
+  const noOfColumns = (uiStyle.columns != 0 && uiStyle.columns) || options.length;
+  const noOfColElements = Math.ceil(options.length / noOfColumns);
+  let startIndex = 0;
+
+  const renderOptionList = () => {
+    const optionList = [];
+    for (let column = 1; column <= noOfColumns; column++) {
+      optionList.push(getOption(startIndex, noOfColElements * column));
+      startIndex += noOfColElements;
+    }
+    return optionList;
+  };
+
+  const getOption = (startIndex, lastIndex) => (
+    <FlexContainer
+      justifyContent="left"
+      style={{ marginBottom: styleType === "primary" || uiStyle.type === "block" ? "17px" : "0" }}
+    >
+      {options.slice(startIndex, lastIndex).map((option, index) => (
         <Option
+          maxWidth={`${(1 / noOfColElements) * 100}%`}
           key={option.value}
           index={index}
           uiStyle={uiStyle}
@@ -30,8 +48,10 @@ const Options = ({
           {...restProps}
         />
       ))}
-    </OptionsList>
+    </FlexContainer>
   );
+
+  return <OptionsList styleType={styleType}>{renderOptionList()}</OptionsList>;
 };
 
 Options.propTypes = {

@@ -1994,7 +1994,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["intermediate", "general", "qwerty"],
+        symbols: ["basic", "intermediate", "general"],
         hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
@@ -2034,7 +2034,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["basic", "units_us", "units_si"],
+        symbols: ["units_us", "units_si", "qwerty"],
         hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType

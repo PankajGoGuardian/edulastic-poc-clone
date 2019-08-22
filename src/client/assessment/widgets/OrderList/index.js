@@ -55,7 +55,7 @@ const OrderList = ({
   previewTab,
   smallSize,
   item,
-  userAnswer,
+  userAnswer: _userAnswer,
   testItem,
   evaluation,
   setQuestionData,
@@ -74,14 +74,7 @@ const OrderList = ({
   const [correctTab, setCorrectTab] = useState(0);
   const answerContext = useContext(AnswerContext);
 
-  useEffect(() => {
-    if (view === PREVIEW && !disableResponse) {
-      const { list = [] } = item;
-      if (list.length !== userAnswer.length) {
-        saveAnswer(list.map((q, i) => i));
-      }
-    }
-  }, [view, previewTab]);
+  const userAnswer = _userAnswer || get(item, "list", []).map((_, i) => i);
 
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
   const styleType = get(item, "uiStyle.type", "button");

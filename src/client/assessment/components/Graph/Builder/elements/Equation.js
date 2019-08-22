@@ -2,7 +2,7 @@ import { CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
 import { fixLatex } from "../utils";
 
-const jxgType = 98;
+export const jxgType = 98;
 
 const defaultConfig = {
   fixed: true,

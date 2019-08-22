@@ -1,8 +1,17 @@
+import JXG from "jsxgraph";
 import { isEqual } from "lodash";
 import { parse } from "mathjs";
 import { Colors, CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
-import { fixLatex, isInPolygon } from "../utils";
+import { fixLatex, isInPolygon, calcLineLatex } from "../utils";
+import { jxgType as exponentJxgType } from "./Exponent";
+import { jxgType as hyperbolaJxgType } from "./Hyperbola";
+import { jxgType as logarithmJxgType } from "./Logarithm";
+import { jxgType as parabolaJxgType } from "./Parabola";
+import { jxgType as polynomJxgType } from "./Polynom";
+import { jxgType as sinJxgType } from "./Sin";
+import { jxgType as tangentJxgType } from "./Tangent";
+import { jxgType as equationJxgType } from "./Equation";
 
 const jxgType = 100;
 
@@ -42,13 +51,66 @@ function onHandler() {
     const stepX = rnd(0.002 * Math.abs(xMax - xMin));
     const stepY = rnd(0.002 * Math.abs(yMax - yMin));
 
-    const funcs = board.elements
-      .filter(el => el.latex && !el.latexIsBroken)
-      .map(item => {
-        const fixedLatex = fixLatex(item.latex);
-        const func = parse(fixedLatex.latexFunc);
+    const availableTypes = [
+      JXG.OBJECT_TYPE_CIRCLE,
+      JXG.OBJECT_TYPE_CONIC,
+      JXG.OBJECT_TYPE_LINE,
+      JXG.OBJECT_TYPE_POLYGON,
+      exponentJxgType,
+      hyperbolaJxgType,
+      logarithmJxgType,
+      parabolaJxgType,
+      polynomJxgType,
+      sinJxgType,
+      tangentJxgType,
+      equationJxgType
+    ];
 
-        return (x, y) => func.eval({ x, y }) > 0;
+    const funcs = board.elements
+      .filter(el => availableTypes.includes(el.type) && !el.latexIsBroken)
+      .map(item => {
+        if (item.latex) {
+          const fixedLatex = fixLatex(item.latex);
+          const func = parse(fixedLatex.latexFunc);
+
+          return (x, y) => func.eval({ x, y }) > 0;
+        }
+
+        switch (item.type) {
+          case JXG.OBJECT_TYPE_CIRCLE:
+            return () => true;
+          case JXG.OBJECT_TYPE_CONIC:
+            return () => true;
+          case JXG.OBJECT_TYPE_LINE: {
+            const lineLatex = calcLineLatex(
+              { x: item.point1.X(), y: item.point1.Y() },
+              { x: item.point2.X(), y: item.point2.Y() }
+            );
+            const fixedLatex = fixLatex(lineLatex);
+            const func = parse(fixedLatex.latexFunc);
+            return (x, y) => func.eval({ x, y }) > 0;
+          }
+          case JXG.OBJECT_TYPE_POLYGON: {
+            const vertices = Object.values(item.ancestors).map(anc => ({ x: anc.X(), y: anc.Y() }));
+            return (x, y) => isInPolygon({ x, y }, vertices);
+          }
+          case exponentJxgType:
+            return () => true;
+          case hyperbolaJxgType:
+            return () => true;
+          case logarithmJxgType:
+            return () => true;
+          case parabolaJxgType:
+            return () => true;
+          case polynomJxgType:
+            return () => true;
+          case sinJxgType:
+            return () => true;
+          case tangentJxgType:
+            return () => true;
+          default:
+            return () => true;
+        }
       });
 
     function calc(x, y) {

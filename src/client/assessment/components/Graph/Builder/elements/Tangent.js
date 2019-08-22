@@ -3,7 +3,7 @@ import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
 import { getLabelParameters } from "../settings";
 
-const jxgType = 91;
+export const jxgType = 91;
 
 export const defaultConfig = {
   type: CONSTANT.TOOLS.TANGENT,

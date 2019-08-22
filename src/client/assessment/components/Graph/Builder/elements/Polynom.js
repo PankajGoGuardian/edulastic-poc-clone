@@ -3,7 +3,7 @@ import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
 import { getLabelParameters } from "../settings";
 
-const jxgType = 95;
+export const jxgType = 95;
 
 export const defaultConfig = {
   hasInnerPoints: true,

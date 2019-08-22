@@ -544,6 +544,26 @@ export function fixLatex(latex) {
   };
 }
 
+export function calcLineLatex(point1, point2) {
+  const x1 = point1.x;
+  const y1 = point1.y;
+  const x2 = point2.x;
+  const y2 = point2.y;
+
+  // vertical line
+  if (x1 === x2) {
+    return `x=${x1}`;
+  }
+
+  const a = (y2 - y1) / (x2 - x1);
+  const c = (x2 * y1 - x1 * y2) / (x2 - x1);
+  const part1 = a === 1 ? "x" : a === 0 ? "" : `${a}x`;
+  const part2 = c === 0 ? "" : c > 0 && part1.length !== 0 ? `+${c}` : c;
+
+  const right = `${part1}${part2}`;
+  return `y=${right.length !== 0 ? right : 0}`;
+}
+
 export function isInPolygon(testPoint, vertices) {
   if (vertices.length < 3) {
     return false;

@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { get } from "lodash";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
-import { List, Typography, Icon, Button, Row, Col } from "antd";
+import { List, Typography, Icon, Button, Row, Col, message } from "antd";
 
 import { StandardsProficiencyDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 import {
@@ -88,7 +88,7 @@ function StandardsProficiency(props) {
   const createStandardProficiency = () => {
     const name = window.prompt("Please enter the name of the standard proficiency");
     if (name === "") {
-      alert("Name cannot be empty");
+      message.error("Name cannot be empty");
     } else if (name) {
       create({ ...defaultData, name, orgId: props.orgId, orgType: "district" });
     }

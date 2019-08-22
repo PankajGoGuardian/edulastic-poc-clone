@@ -70,7 +70,7 @@ export const ColumnContentArea = styled.div`
   width: ${props => props.width};
   background: #fff;
   border-radius: 10px;
-  height: 70vh;
+  height: ${props => (props.isAuthoring ? "auto" : "70vh")};
   display: ${props => (props.hideColumn ? "none" : "initial")};
 `;
 

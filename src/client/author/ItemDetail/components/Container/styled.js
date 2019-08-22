@@ -12,6 +12,7 @@ export const Content = styled(Paper)`
 export const PreviewContent = styled(Content)`
   padding: ${props => (props.padding ? props.padding : "0px")};
   min-height: 50px;
+  background-color: ${props => (props.view === "preview" ? "transparent" : white)};
   @media (max-width: ${mobileWidth}) {
     & > div {
       padding: 0;

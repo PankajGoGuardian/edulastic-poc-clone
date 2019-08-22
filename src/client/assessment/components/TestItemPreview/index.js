@@ -110,18 +110,14 @@ class TestItemPreview extends Component {
             .filter((_, i) => !collapsed.includes(i))
             .map((col, i) => (
               <>
-                {i > 0 && showCollapseButtons ? (
+                {i > 0 && showCollapseButtons && (
                   <Divider>
                     <CollapseBtn className="fa fa-arrow-left" onClick={() => this.setCollapseView(i, "left")} />
                     <CollapseBtn className="fa fa-arrow-right" onClick={() => this.setCollapseView(i, "right")} />
                   </Divider>
-                ) : (
-                  ""
                 )}
-                {collapseDirection === "left" ? (
+                {collapseDirection === "left" && (
                   <CollapseBtn className="fa fa-arrow-right" onClick={this.setCollapseView} />
-                ) : (
-                  ""
                 )}
                 <TestItemCol
                   {...restProps}
@@ -142,10 +138,8 @@ class TestItemPreview extends Component {
                   disableResponse={disableResponse}
                   LCBPreviewModal={LCBPreviewModal}
                 />
-                {collapseDirection === "right" ? (
+                {collapseDirection === "right" && (
                   <CollapseBtn className="fa fa-arrow-left" onClick={this.setCollapseView} />
-                ) : (
-                  ""
                 )}
               </>
             ))}

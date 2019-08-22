@@ -164,7 +164,7 @@ class Item extends Component {
         {isShowPreviewModal && (
           <PreviewModal
             isVisible={isShowPreviewModal}
-            page="addItems"
+            page="itemList"
             showEvaluationButtons
             onClose={this.closeModal}
             data={{ ...item, id: item._id }}

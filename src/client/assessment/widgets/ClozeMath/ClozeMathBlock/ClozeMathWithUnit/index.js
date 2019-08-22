@@ -102,7 +102,12 @@ class ClozeMathWithUnit extends React.Component {
     if (!wrappedRef.current || !window.$) {
       return;
     }
-    if (wrappedRef && !wrappedRef.current.contains(target) && !$(target).hasClass("ant-select-dropdown-menu-item")) {
+    if (
+      wrappedRef &&
+      !wrappedRef.current.contains(target) &&
+      !$(target).hasClass("ant-select-dropdown-menu-item") &&
+      !$(target).hasClass("ant-select-dropdown-menu")
+    ) {
       this.setState({ showKeyboard: false }, this.saveAnswer);
     }
   };

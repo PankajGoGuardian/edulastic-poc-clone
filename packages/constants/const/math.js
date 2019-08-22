@@ -42,7 +42,7 @@ const mathInputTypes = {
   SUCCESS: "success"
 };
 
-const units = [{ value: "units_si", label: "Units (SI)" }, { value: "units_us", label: "Units (US)" }];
+const units = [{ value: "units_us", label: "Units (US)" }, { value: "units_si", label: "Units (SI)" }];
 
 const symbols = [
   { value: "basic", label: "Basic" },

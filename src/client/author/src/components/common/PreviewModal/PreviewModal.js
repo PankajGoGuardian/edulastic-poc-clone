@@ -27,6 +27,7 @@ import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
 import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
 import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
+import AuthorTestItemPreview from "./AuthorTestItemPreview";
 
 const { duplicateTestItem } = testItemsApi;
 class PreviewModal extends React.Component {
@@ -106,8 +107,9 @@ class PreviewModal extends React.Component {
     }
   };
 
-  goToItem = itemId => {
-    const { setQuestionsForPassage, setPrevewItem, item, testItemPreviewData } = this.props;
+  goToItem = page => {
+    const { setQuestionsForPassage, setPrevewItem, item, testItemPreviewData, passage } = this.props;
+    const itemId = passage.testItems[page - 1];
     if (!(testItemPreviewData && testItemPreviewData.data)) {
       setPrevewItem(item);
     }
@@ -182,97 +184,34 @@ class PreviewModal extends React.Component {
     }
     return (
       <PreviewModalWrapper
-        bodyStyle={{ padding: 20 }}
-        width="60%"
+        bodyStyle={{ padding: 30 }}
+        width="70%"
         visible={isVisible}
         onCancel={this.closeModal}
         footer={null}
+        centered
       >
         <HeadingWrapper>
           <Title>Preview</Title>
           {isPassage && page === "addItems" && (
-            <ButtonsWrapper>
-              <Button
-                style={{
-                  marginRight: "20px",
-                  border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
-                  color: this.isAddOrRemove ? themeColor : "#ff0099"
-                }}
-                onClick={this.handleSelection}
-              >
-                {this.isAddOrRemove ? "ADD" : "REMOVE"}
+            <ButtonsWrapper added={this.isAddOrRemove}>
+              <Button onClick={this.handleSelection}>
+                {this.isAddOrRemove ? (
+                  <>
+                    <PlusIcon>+</PlusIcon>
+                    {" ADD PASSAGE TO TEST"}
+                  </>
+                ) : (
+                  <>
+                    <PlusIcon>-</PlusIcon>
+                    {" REMOVE"}
+                  </>
+                )}
               </Button>
             </ButtonsWrapper>
           )}
         </HeadingWrapper>
         <ModalContentArea>
-          {showEvaluationButtons && (
-            <ButtonsContainer>
-              <ButtonsWrapper>
-                {allowDuplicate && (
-                  <EduButton
-                    title="Duplicate"
-                    style={{ width: 42, padding: 0, borderColor: themeColor }}
-                    size="large"
-                    onClick={this.handleDuplicateTestItem}
-                  >
-                    <IconDuplicate color={themeColor} />
-                  </EduButton>
-                )}
-                {authorHasPermission && isEditable && (
-                  <EduButton
-                    title="Edit item"
-                    style={{ width: 42, padding: 0, borderColor: themeColor }}
-                    size="large"
-                    onClick={this.editTestItem}
-                  >
-                    <IconPencilEdit color={themeColor} />
-                  </EduButton>
-                )}
-                {isPassage && page === "addItems" && (
-                  <ItemsListDropDown
-                    value={item._id}
-                    showArrow={false}
-                    optionLabelProp={"children"}
-                    onChange={v => {
-                      this.goToItem(v);
-                    }}
-                  >
-                    {passageTestItems.map((v, ind) => (
-                      <Select.Option value={v}>{ind + 1}</Select.Option>
-                    ))}
-                  </ItemsListDropDown>
-                )}
-              </ButtonsWrapper>
-              <ButtonsWrapper>
-                {isAnswerBtnVisible && (
-                  <>
-                    <Button
-                      onClick={checkAnswer}
-                      style={{ fontSize: "11px", height: "28px", borderColor: themeColor, color: themeColor }}
-                    >
-                      {" "}
-                      Check Answer{" "}
-                    </Button>
-                    <Button
-                      onClick={showAnswer}
-                      style={{ fontSize: "11px", height: "28px", borderColor: themeColor, color: themeColor }}
-                    >
-                      {" "}
-                      Show Answer{" "}
-                    </Button>
-                  </>
-                )}
-                <Button
-                  onClick={this.clearView}
-                  style={{ fontSize: "11px", height: "28px", borderColor: themeColor, color: themeColor }}
-                >
-                  {" "}
-                  Clear{" "}
-                </Button>
-              </ButtonsWrapper>
-            </ButtonsContainer>
-          )}
           {scrollElement && <DragScrollContainer scrollWrraper={scrollElement} height={50} />}
           <QuestionWrapper padding="0px" innerRef={this.mountedQuestion}>
             {loading || item === null || passageLoading ? (
@@ -280,7 +219,7 @@ class PreviewModal extends React.Component {
                 <Spin tip="" />
               </ProgressContainer>
             ) : (
-              <TestItemPreview
+              <AuthorTestItemPreview
                 cols={allRows}
                 preview={preview}
                 previewTab={preview}
@@ -288,6 +227,20 @@ class PreviewModal extends React.Component {
                 scrolling={item.scrolling}
                 style={{ width: "100%" }}
                 questions={allWidgets}
+                viewComponent="authorPreviewPopup"
+                handleCheckAnswer={checkAnswer}
+                handleShowAnswer={showAnswer}
+                allowDuplicate={allowDuplicate}
+                isEditable={isEditable && authorHasPermission}
+                isPassage={isPassage}
+                passageTestItems={passageTestItems}
+                handleDuplicateTestItem={this.handleDuplicateTestItem}
+                editTestItem={this.editTestItem}
+                clearView={this.clearView}
+                goToItem={this.goToItem}
+                isAnswerBtnVisible={isAnswerBtnVisible}
+                item={item}
+                page={page}
                 showCollapseBtn
               />
             )}
@@ -373,13 +326,21 @@ const PreviewModalWrapper = styled(Modal)`
   .ant-modal-content {
     background: transparent;
     box-shadow: none;
+    .ant-modal-close {
+      top: 22px;
+      right: 18px;
+    }
+    .ant-modal-close-icon {
+      font-size: 25px;
+      color: #000;
+    }
   }
 `;
 
 const HeadingWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 10px 10px 20px 10px;
   justify-content: space-between;
   margin-top: -15px;
 `;
@@ -389,42 +350,49 @@ const Title = styled.div`
   font-size: 20px;
 `;
 
-const ModalContentArea = styled.div`
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-`;
-
-const ButtonsContainer = styled(FlexContainer)`
-  background: ${white};
-  padding: 15px 15px 0px 35px;
-  justify-content: space-between;
-  flex-basis: 400px;
-  border-radius: 10px 10px 0px 0px;
-`;
-
 const ButtonsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  button {
+    margin-right: 40px;
+    background-color: ${props => (!props.added ? "#fff" : themeColor)};
+    color: ${props => (!props.added ? themeColor : "#fff")};
+    height: 45px;
+    width: 210px;
+    font-size: 11px;
+    &:hover {
+      color: ${themeColor};
+    }
+    &:active,&:focus{
+      background-color: ${props => (!props.added ? "#fff" : themeColor)};
+      color: ${props => (!props.added ? themeColor : "#fff")};
+    }
+    &:hover,&:active,&:focus{
+      span{
+      position:absolute;
+    }
+  }
   * {
     margin: 0 10px;
   }
 `;
 
-const QuestionWrapper = styled.div`
-  border-radius: 0px 0px 10px 10px;
-  height: calc(100vh - 180px);
-  background: ${white};
-  padding: ${props => (props.padding ? props.padding : "20px")};
-  overflow: auto;
+export const PlusIcon = styled.span`
+  position: absolute;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 1px solid ${themeColor};
+  color: ${themeColor};
+  left: 0px;
+  top: 12px;
+  font-size: 18px;
+  line-height: 1;
 `;
 
-const ItemsListDropDown = styled(Select)`
-  .ant-select-selection {
-    margin: 0;
-    border: 1px solid ${themeColor};
-    color: ${themeColor};
-  }
-  .ant-select-selection-selected-value {
-    padding: 5px 8px;
-    margin: 0;
-  }
-`;
+const QuestionWrapper = styled.div``;
+
+const ModalContentArea = styled.div``;

@@ -27,8 +27,10 @@ const ClozeMathUnitAnswer = ({ answer, onChange, item, onChangeKeypad, onChangeA
     }
     if (window.$ && opened) {
       // eslint-disable-next-line no-undef
-      const popupHeight = $(".ant-select-dropdown").height() || 250;
-      setCollapseHeight(popupHeight + 60);
+      let popupHeight = $(".ant-select-dropdown").height() || 250;
+      popupHeight += 60;
+
+      setCollapseHeight(popupHeight < 204 ? 204 : popupHeight);
     }
   };
   const dropdownUnit = (

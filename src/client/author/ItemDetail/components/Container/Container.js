@@ -70,6 +70,7 @@ import { changePreviewTabAction } from "../../../ItemAdd/ducks";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { questionType } from "@edulastic/constants";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import AuthorTestItemPreview from "../../../src/components/common/PreviewModal/AuthorTestItemPreview";
 
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -311,13 +312,13 @@ class Container extends Component {
   };
 
   renderPreview = () => {
-    const { rows, preview, questions, item: itemProps, passage } = this.props;
+    const { rows, preview, questions, item: itemProps, passage, view } = this.props;
     const item = itemProps || {};
 
     let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
     return (
-      <PreviewContent>
-        <TestItemPreview
+      <PreviewContent view={view}>
+        <AuthorTestItemPreview
           cols={allRows}
           previewTab={preview}
           preview={preview}
@@ -325,7 +326,9 @@ class Container extends Component {
           scrolling={item.scrolling}
           style={{ width: "100%" }}
           questions={questions}
-          showCollapseBtn
+          item={item}
+          isAnswerBtnVisible={false}
+          page={"itemAuthoring"}
         />
       </PreviewContent>
     );

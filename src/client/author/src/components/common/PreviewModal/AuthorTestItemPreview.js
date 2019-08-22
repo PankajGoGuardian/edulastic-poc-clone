@@ -117,7 +117,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderLeftButtons = () => {
-    const { allowDuplicate, handleDuplicateTestItem, isEditable, editTestItem, isPassage, cols } = this.props;
+    const { allowDuplicate, handleDuplicateTestItem, isEditable, editTestItem, cols } = this.props;
     return (
       <>
         <ButtonsContainer>
@@ -181,7 +181,7 @@ class AuthorTestItemPreview extends Component {
               <EvaluateButton onClick={handleShowAnswer}>SHOW ANSWER</EvaluateButton>
             </>
           )}
-          <EvaluateButton onClick={clearView}>CLEAR</EvaluateButton>
+          {page !== "itemAuthoring" && <EvaluateButton onClick={clearView}>CLEAR</EvaluateButton>}
         </ButtonsWrapper>
       </>
     );
@@ -254,7 +254,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   render() {
-    const { cols } = this.props;
+    const { cols, page } = this.props;
     const { collapseDirection } = this.state;
     let questionCount = 0;
     cols
@@ -275,7 +275,11 @@ class AuthorTestItemPreview extends Component {
             return (
               <>
                 {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-                <ColumnContentArea width={collapseDirection ? "90%" : col.dimension || "auto"} hide={hideColumn}>
+                <ColumnContentArea
+                  isAuthoring={page === "itemAuthoring"}
+                  width={collapseDirection ? "90%" : col.dimension || "auto"}
+                  hide={hideColumn}
+                >
                   {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
                   {this.renderColumns(col)}
                 </ColumnContentArea>

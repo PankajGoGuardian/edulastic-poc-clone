@@ -227,6 +227,8 @@ class ClassHeader extends Component {
       canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
     const canClose =
       (startDate || open) &&
+      !closed &&
+      assignmentStatus !== "DONE" &&
       canCloseClass.includes(classId) &&
       !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
     const canPause = (startDate || open) && !closed;

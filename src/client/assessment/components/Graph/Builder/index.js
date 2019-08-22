@@ -366,8 +366,9 @@ class Board {
     this.disableResponse = value;
   }
 
-  createEditButton(menuHandler) {
+  createEditButton(menuHandler, disabled = false) {
     this.editButton = EditButton.createButton(this, menuHandler);
+    this.editButton.disabled = disabled;
   }
 
   checkEditButtonCall(element) {
@@ -380,6 +381,9 @@ class Board {
   }
 
   handleElementMouseOver(element, event) {
+    if (this.editButton.disabled) {
+      return;
+    }
     if (this.checkEditButtonCall(element)) {
       let coords;
       if (JXG.isPoint(element)) {
@@ -399,6 +403,9 @@ class Board {
 
   handleStackedElementsMouseEvents(element) {
     element.on("mouseover", event => {
+      if (this.editButton.disabled) {
+        return;
+      }
       if (this.checkEditButtonCall(element)) {
         const pointsUnderMouse = this.$board
           .getAllObjectsUnderMouse(event)

@@ -4,14 +4,14 @@ import { CheckboxContainer } from "./CheckboxContainer";
 import { MultiChoiceContent } from "./MultiChoiceContent";
 
 export const Label = styled.label`
-
   cursor: ${({ uiStyle }) => {
     if (uiStyle.type === "block") {
       return "pointer";
     }
   }};
 
-  & div, span {
+  & div,
+  span {
     cursor: ${({ uiStyle }) => {
       if (uiStyle.type === "block") {
         return "pointer";
@@ -45,12 +45,11 @@ export const Label = styled.label`
       return "2px";
     }
   }};
-  flex:1;
+  flex: 1;
   position: relative;
   display: inline-block;
   padding: ${props => (props.styleType === "primary" ? "0" : "9px 0px")};
-  padding-left: ${props => (props.styleType === "primary" ? "17px" : "25px")};
-  /* padding-left: ${props => (props.smallSize ? 5 : 20)}px; */
+  padding-left: ${props => (props.styleType === "primary" ? "15px" : "25px")};
   border: ${props =>
     props.styleType === "primary"
       ? `1px solid ${dashBorderColor}`
@@ -74,17 +73,13 @@ export const Label = styled.label`
   max-width: ${props => props.maxWidth || "100%"};
   border-radius: ${props =>
     props.styleType === "primary" || props.uiStyle.type === "block" ? "4px" : "0px 10px 10px 0px"};
-  min-height: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "40px" : "auto")};
+  min-height: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "44px" : "auto")};
   box-shadow: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "none" : "none")};
   display: flex;
   align-items: center;
-  /* margin: ${props => (props.setAnswers ? "5px 0" : "10px 0")}; */
-  /* width: ${props => props.width || "100%"}; */
 
-  &:hover {
-    /* border: dotted 1px ${props => props.theme.widgets.multipleChoice.labelBorderHoverColor};
-    border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelBorderHoverColor};
-    cursor: pointer; */
+  &:not(:first-child) {
+    margin-top: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "12px" : "0")};
   }
   &.checked {
     background-color: ${props => props.theme.widgets.multipleChoice.labelCheckedBgColor};
@@ -94,20 +89,17 @@ export const Label = styled.label`
   }
   &.right {
     background-color: ${props => props.theme.widgets.multipleChoice.labelRightBgColor};
-    border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelRightBorderColor};
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-radius: 8px;
+    border: none;
     min-width: 100%;
-  }
-  &.right:hover {
-    border-color: transparent;
+    padding-right: 50px;
   }
   &.wrong {
     background-color: ${props => props.theme.widgets.multipleChoice.labelWrongBgColor};
-    border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelWrongBorderColor};
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    min-width: 100%; 
+    border-radius: 8px;
+    border: none;
+    min-width: 100%;
+    padding-right: 50px;
   }
   &.preview {
     cursor: initial;

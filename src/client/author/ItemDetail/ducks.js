@@ -907,15 +907,9 @@ function* convertToPassageWithQuestions({ payload }) {
         content: ""
       }
     });
-    const { _id: passageId } = passage;
 
     yield put(addPassageAction(passage));
-    yield put({
-      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
-      payload: {
-        canAddMultipleItems: canAddMultipleItems
-      }
-    });
+
     yield put(
       addQuestionAction({
         id: uuid(),
@@ -934,6 +928,7 @@ function* convertToPassageWithQuestions({ payload }) {
         pathname: "/author/questions/create",
         state: {
           isPassageWithQuestions: true,
+          canAddMultipleItems: !!canAddMultipleItems,
           backUrl,
           tabIndex: 0
         }
@@ -947,8 +942,15 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
-    const { backUrl, tabIndex } = yield select(state => get(state, "router.location.state"), {});
+    const { backUrl, tabIndex, canAddMultipleItems } = yield select(state => get(state, "router.location.state"), {});
     const pathname = yield select(state => get(state, "router.location.pathname"), {});
+
+    yield put({
+      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
+      payload: {
+        canAddMultipleItems: canAddMultipleItems
+      }
+    });
 
     const isEdit = pathname.includes("edit");
     const passage = yield select(getPassageSelector);

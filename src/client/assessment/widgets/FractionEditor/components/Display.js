@@ -8,6 +8,7 @@ import Circles from "./Circles";
 import Rectangles from "./Rectangles";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
 import { CLEAR, SHOW } from "../../../constants/constantsForQuestions";
+import CorrectAnswerBox from "./CorrectAnswerBox";
 
 const Display = ({
   saveAnswer,
@@ -26,12 +27,6 @@ const Display = ({
   let selected = userAnswer;
   const hideAnnotations = get(item, "options.hideAnnotations", false);
   const answerContext = useContext(AnswerContext);
-
-  if ((previewTab === "show" && answerContext.isAnswerModifiable && !answerContext.expressGrader) || isReviewTab) {
-    selected = Array(get(item, "validation.validResponse.value", 1))
-      .fill()
-      .map((_, i) => i + 1);
-  }
 
   const handleSelect = index => {
     if (
@@ -92,6 +87,15 @@ const Display = ({
           })}
         {!hideAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
       </FlexContainer>
+
+      {previewTab === SHOW && (
+        <CorrectAnswerBox
+          fractionProperties={fractionProperties}
+          selected={Array(get(item, "validation.validResponse.value", 1))
+            .fill()
+            .map((_, i) => i + 1)}
+        />
+      )}
     </FlexContainer>
   );
 };

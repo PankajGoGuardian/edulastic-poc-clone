@@ -114,7 +114,7 @@ function StandardsProficiency(props) {
             rowKey="_id"
             header={
               <Button type="primary" onClick={() => createStandardProficiency()} style={{ marginBottom: 5 }}>
-                + Add profile
+                + Create New Profile
               </Button>
             }
             renderItem={(profile, index) => (

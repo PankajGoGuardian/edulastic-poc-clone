@@ -5,7 +5,11 @@ import { getLabelParameters } from "../settings";
 
 const jxgType = 90;
 
-export const defaultConfig = { fixed: false };
+export const defaultConfig = {
+  fixed: false,
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
+};
 
 let points = [];
 

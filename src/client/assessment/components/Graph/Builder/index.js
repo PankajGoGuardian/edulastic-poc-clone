@@ -819,73 +819,62 @@ class Board {
       [CONSTANT.TOOLS.CIRCLE]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYGON]: {
-        ...defaultBgObjectParameters(),
         ...Polygon.parseConfig(),
+        ...defaultBgObjectParameters(),
         borders: defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.PARABOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.ELLIPSE]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.HYPERBOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.SIN]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.TANGENT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.SECANT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.EXPONENT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.LOGARITHM]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYNOM]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.EQUATION]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.ANNOTATION]: {
         fixed: true
@@ -1202,6 +1191,15 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elAttrs = {
+                  ...Polygon.parseConfig(),
+                  ...attrs,
+                  id: el.id
+                };
+                elAttrs.borders = {
+                  ...Polygon.parseConfig().borders,
+                  ...attrs.borders
+                };
                 const polygon = this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
@@ -1210,11 +1208,7 @@ class Board {
                       objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
                     })
                   ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    id: el.id
-                  }
+                  elAttrs
                 );
                 polygon.labelIsVisible = el.labelIsVisible;
                 handleSnap(polygon, Object.values(polygon.ancestors), this);
@@ -1670,8 +1664,18 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs =>
-                this.createElement(
+              objectCreator: attrs => {
+                const elAttrs = {
+                  ...Polygon.parseConfig(),
+                  ...attrs,
+                  fixed: true
+                };
+                elAttrs.borders = {
+                  ...Polygon.parseConfig().borders,
+                  ...attrs.borders
+                };
+
+                return this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
                     mixProps({
@@ -1679,12 +1683,9 @@ class Board {
                       objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
                     })
                   ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    fixed: true
-                  }
-                )
+                  elAttrs
+                );
+              }
             })
           );
           break;

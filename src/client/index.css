@@ -2072,3 +2072,7 @@ span.token.active-word {
 .sortableHelper {
   z-index: 10000;
 }
+
+.ant-modal .ant-switch-checked {
+  background-color: #00ad50;
+}

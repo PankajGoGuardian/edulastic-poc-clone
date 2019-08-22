@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
@@ -74,7 +74,7 @@ const OrderList = ({
   const [correctTab, setCorrectTab] = useState(0);
   const answerContext = useContext(AnswerContext);
 
-  const userAnswer = _userAnswer || get(item, "list", []).map((_, i) => i);
+  const userAnswer = !isEmpty(_userAnswer) ? _userAnswer : get(item, "list", []).map((_, i) => i);
 
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
   const styleType = get(item, "uiStyle.type", "button");
@@ -389,7 +389,6 @@ OrderList.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   item: {},
-  userAnswer: [],
   testItem: false,
   evaluation: "",
   advancedAreOpen: false,

@@ -163,7 +163,7 @@ class AuthorTestItemPreview extends Component {
     } = this.props;
     return (
       <>
-        {isPassage && passageTestItems.length > 1 && page === "addItems" && (
+        {isPassage && passageTestItems.length > 1 && (page === "addItems" || page === "itemList") && (
           <PassageNavigation>
             <span>PASSAGE ITEMS </span>
             <Pagination

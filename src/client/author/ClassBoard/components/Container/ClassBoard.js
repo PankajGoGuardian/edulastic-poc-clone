@@ -510,7 +510,8 @@ class ClassBoard extends Component {
     const firstQuestionEntities = get(entities, [0, "questionActivities"], []);
     const unselectedStudents = entities.filter(x => !selectedStudents[x.studentId]);
     const disableMarkAbsent =
-      (assignmentStatus.toLowerCase() == "not open" && additionalData.startDate > Date.now()) ||
+      (assignmentStatus.toLowerCase() == "not open" &&
+        ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
     return (
@@ -562,7 +563,7 @@ class ClassBoard extends Component {
         />
         <CardDetailsContainer>
           <StyledFlexContainer justifyContent="space-between">
-            <PaginationInfo>
+            <PaginationInfo xs={24} md={8}>
               &lt; &nbsp; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> &nbsp;/&nbsp;
               <AnchorLink
                 to={
@@ -577,7 +578,7 @@ class ClassBoard extends Component {
               <Anchor>{additionalData.className}</Anchor>
             </PaginationInfo>
 
-            <StudentButtonDiv data-cy="studentnQuestionTab">
+            <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
               <BothButton
                 style={{ marginLeft: "20px" }}

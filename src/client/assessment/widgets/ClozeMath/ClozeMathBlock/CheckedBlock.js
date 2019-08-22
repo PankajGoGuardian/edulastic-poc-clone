@@ -30,6 +30,7 @@ const CheckBoxedMathBox = ({ value, style }) => {
 const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick }) => {
   const { responseIds } = item;
   const { index } = find(responseIds[type], res => res.id === id);
+  const { unit = "" } = userAnswer || {};
 
   let checkBoxClass = "";
 
@@ -38,7 +39,22 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
   }
 
   return (
-    <Tooltip placement="bottomLeft" title={isMath ? <CheckBoxedMathBox value={userAnswer.value} /> : userAnswer.value}>
+    <Tooltip
+      placement="bottomLeft"
+      title={
+        isMath ? (
+          <CheckBoxedMathBox
+            value={
+              userAnswer && userAnswer.value.search("=") === -1
+                ? `${userAnswer.value} ${unit}`
+                : userAnswer && userAnswer.value.replace(/=/gm, ` ${unit}=`)
+            }
+          />
+        ) : (
+          userAnswer && userAnswer.value
+        )
+      }
+    >
       <CheckBox className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick} style={{ height }}>
         <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
           {index + 1}
@@ -46,11 +62,15 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
         <span className="value" style={{ width, alignItems: "center" }}>
           {isMath ? (
             <CheckBoxedMathBox
-              value={userAnswer.value}
+              value={
+                userAnswer && userAnswer.value.search("=") === -1
+                  ? `${userAnswer.value} ${unit}`
+                  : userAnswer && userAnswer.value.replace(/=/gm, ` ${unit}=`)
+              }
               style={{ height, width, minWidth: "unset", display: "block" }}
             />
           ) : (
-            userAnswer.value
+            userAnswer && userAnswer.value
           )}
         </span>
         {userAnswer && !isUndefined(evaluation[id]) && (

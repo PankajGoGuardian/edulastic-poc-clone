@@ -193,7 +193,8 @@ class SideMenu extends Component {
       lastName,
       logout,
       userRole,
-      className
+      className,
+      profileThumbnail
     } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
@@ -310,7 +311,7 @@ class SideMenu extends Component {
                     onVisibleChange={this.handleVisibleChange}
                   >
                     <div>
-                      <img src={Profile} alt="Profile" />
+                      {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}
                       <Tooltip title={userName}>
                         <div style={{ paddingLeft: 11 }}>
                           {!isCollapsed && !isMobile && <UserName>{userName || "Zack Oliver"}</UserName>}
@@ -367,7 +368,8 @@ const enhance = compose(
       lastName: get(state.user, "user.lastName", ""),
       userRole: get(state.user, "user.role", ""),
       lastPlayList: getLastPlayListSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      profileThumbnail: get(state.user, "user.thumbnail")
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )
@@ -884,6 +886,16 @@ const UserInfoButton = styled.div`
       margin: 0;
     }
   }
+`;
+
+const PseudoDiv = styled.div`
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  left: 0;
+  border-radius: 50%;
+  background: #dddddd;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 `;
 
 const Logo = styled(IconHeader)`

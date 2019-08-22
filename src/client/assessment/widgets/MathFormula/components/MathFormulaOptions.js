@@ -97,6 +97,7 @@ const MathFormulaOptions = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
         renderExtra={
+          // eslint-disable-next-line react/jsx-wrap-multilines
           <CustomKeys
             blocks={customKeys}
             onChange={changeCustomKey}
@@ -110,8 +111,8 @@ const MathFormulaOptions = ({
       />
 
       <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
-        <Extras.Distractors />
-        <Extras.Hints />
+        <Extras.Distractors visible={false} />
+        <Extras.Hints visible={false} />
       </Extras>
     </WidgetOptions>
   );

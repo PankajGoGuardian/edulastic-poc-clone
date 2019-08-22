@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick, get } from "lodash";
@@ -18,7 +18,9 @@ import { Rule } from "./options/Rule";
 import Units from "./options/Units";
 import { AdditionalToggle, AdditionalContainer, AdditionalCompareUsing } from "./styled/Additional";
 import { Container } from "./styled/Container";
+import { ExpectAnswer } from "./styled/ExpectAnswer";
 import { StyledRow } from "./styled/StyledRow";
+import { MathInputWrapper } from "./styled/MathInputWrapper";
 
 import {
   AllowedVariables,
@@ -27,7 +29,9 @@ import {
   Field,
   SignificantDecimalPlaces,
   Tolerance,
-  UnitsDropdown
+  UnitsDropdown,
+  DefaultKeyPadMode,
+  CustomUnit
 } from "./options";
 
 const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
@@ -55,31 +59,37 @@ const MathFormulaAnswerMethod = ({
   style = {},
   keypadOffset,
   allowedVariables,
+  toggleAdditional,
+  showDefaultMode,
+  renderExtra,
+  keypadMode, // need only for Math w/Unit in cloze Math
+  customUnits, // need only for Math w/Unit in cloze Math
+  allowNumericOnly,
   t
 }) => {
-  const [isActive, toggleAdditional] = useState(false);
+  const showAdditional = get(item, "showAdditional", false);
   useEffect(() => {
     const newOptions = clearOptions(method, { ...options });
 
     if (method === methodsConst.IS_FACTORISED && !newOptions.field) {
       newOptions.field = fieldsConst.INTEGER;
+      onChange("options", newOptions);
     }
     if (method === methodsConst.EQUIV_VALUE) {
-      newOptions.allowNumericOnly = true;
+      onChangeAllowedOptions("allowNumericOnly", true);
+    } else {
+      onChangeAllowedOptions("allowNumericOnly", false);
     }
-
-    onChange("options", newOptions);
   }, [method]);
 
   useEffect(() => {
-    let compareMethod = methodsConst.EQUIV_VALUE;
-    if (!item.showDropdown) {
-      compareMethod = methodsConst.EQUIV_SYMBOLIC;
+    if (item.isUnits) {
+      let compareMethod = methodsConst.EQUIV_VALUE;
+      if (!item.showDropdown) {
+        compareMethod = methodsConst.EQUIV_SYMBOLIC;
+      }
+      onChange("method", compareMethod);
     }
-    onChange("method", compareMethod);
-    // if (onChangeKeypad) onChangeKeypad("units_us");
-    // handleChangeAdditionals(`${method}_${index}`, "pop");
-    // handleChangeAdditionals(`${compareMethod}_${index}`, "push");
   }, [item.showDropdown]);
 
   const changeOptions = (prop, val) => {
@@ -301,7 +311,7 @@ const MathFormulaAnswerMethod = ({
             <CheckOption
               dataCy="answer-allow-numeric-only"
               optionKey="allowNumericOnly"
-              options={{ allowNumericOnly: item.allowNumericOnly }}
+              options={{ allowNumericOnly }}
               onChange={onChangeAllowedOptions}
               label={t("component.math.allowNumericOnly")}
             />
@@ -349,48 +359,47 @@ const MathFormulaAnswerMethod = ({
 
   return (
     <Container data-cy="math-formula-answer">
-      <StyledRow gutter={8}>
+      <ExpectAnswer>
         {!methodOptions.includes("noExpeced") && (
-          <Col span={index === 0 ? 12 : 11}>
+          <div>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
-            <MathInput
-              hideKeypad={item.showDropdown}
-              symbols={isShowDropdown ? ["basic"] : item.symbols}
-              restrictKeys={isShowDropdown ? [] : restrictKeys}
-              customKeys={isShowDropdown ? [] : customKeys}
-              style={style}
-              numberPad={item.numberPad}
-              onChangeKeypad={onChangeKeypad}
-              value={value}
-              showDropdown
-              ALLOW
-              TOLERANCE
-              onInput={val => {
-                onChange("value", val);
-              }}
-            />
-          </Col>
+            <MathInputWrapper>
+              <MathInput
+                hideKeypad={item.showDropdown}
+                symbols={isShowDropdown ? ["basic"] : item.symbols}
+                restrictKeys={isShowDropdown ? [] : restrictKeys}
+                customKeys={isShowDropdown ? [] : customKeys}
+                allowNumericOnly={allowNumericOnly || false}
+                style={style}
+                numberPad={item.numberPad}
+                onChangeKeypad={onChangeKeypad}
+                value={value}
+                showDropdown
+                ALLOW
+                TOLERANCE
+                onInput={val => {
+                  onChange("value", val);
+                }}
+              />
+              {renderExtra}
+            </MathInputWrapper>
+          </div>
         )}
         {index > 0 ? (
-          <Col span={2} style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
+          <div style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
             {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
-          </Col>
+          </div>
         ) : null}
         {item.isUnits && (
-          <Col
-            span={index === 0 ? 12 : 11}
-            style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 25 : 5 }}
-          >
-            <UnitsDropdown
-              item={item}
-              options={options}
-              onChange={changeOptions}
-              keypadOffset={keypadOffset}
-              onChangeShowDropdown={onChangeShowDropdown}
-            />
-          </Col>
+          <UnitsDropdown
+            item={item}
+            options={options}
+            onChange={changeOptions}
+            keypadOffset={keypadOffset}
+            onChangeShowDropdown={onChangeShowDropdown}
+          />
         )}
-      </StyledRow>
+      </ExpectAnswer>
 
       {methodOptions.includes("field") && (
         <StyledRow gutter={60}>
@@ -399,12 +408,24 @@ const MathFormulaAnswerMethod = ({
           </Col>
         </StyledRow>
       )}
-
-      <AdditionalToggle active={isActive} onClick={() => toggleAdditional(!isActive)}>
+      {/* This needs only for Math w/Units in ClozMath type */}
+      {showDefaultMode && (
+        <StyledRow gutter={20}>
+          <Label data-cy="unit-dropdown-default-mode">{t("component.options.defaultMode")}</Label>
+          <Col span={6}>
+            <DefaultKeyPadMode onChange={onChange} keypadMode={keypadMode} />
+          </Col>
+          {keypadMode === "custom" && (
+            <Col span={8}>
+              <CustomUnit onChange={onChange} customUnits={customUnits} />
+            </Col>
+          )}
+        </StyledRow>
+      )}
+      <AdditionalToggle active={showAdditional} onClick={() => toggleAdditional(!showAdditional)}>
         {t("component.math.additionalOptions")}
       </AdditionalToggle>
-
-      {isActive ? (
+      {showAdditional ? (
         <AdditionalContainer>
           <FlexContainer justifyContent="space-between" alignItems="none">
             <AdditionalCompareUsing>
@@ -453,7 +474,7 @@ MathFormulaAnswerMethod.propTypes = {
   onChangeShowDropdown: PropTypes.func.isRequired,
   onChangeAllowedOptions: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
-  onDelete: PropTypes.func,
+  onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   options: PropTypes.object,
   value: PropTypes.string,
@@ -462,8 +483,14 @@ MathFormulaAnswerMethod.propTypes = {
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   allowedVariables: PropTypes.string.isRequired,
+  allowNumericOnly: PropTypes.bool.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  keypadOffset: PropTypes.number.isRequired
+  keypadOffset: PropTypes.number.isRequired,
+  toggleAdditional: PropTypes.func.isRequired,
+  keypadMode: PropTypes.string,
+  customUnits: PropTypes.string,
+  showDefaultMode: PropTypes.bool,
+  renderExtra: PropTypes.any
 };
 
 MathFormulaAnswerMethod.defaultProps = {
@@ -471,7 +498,10 @@ MathFormulaAnswerMethod.defaultProps = {
   method: "",
   style: {},
   options: {},
-  onDelete: undefined
+  showDefaultMode: false,
+  customUnits: "",
+  keypadMode: "",
+  renderExtra: null
 };
 
 export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

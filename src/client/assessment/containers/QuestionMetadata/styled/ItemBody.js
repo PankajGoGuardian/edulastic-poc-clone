@@ -56,6 +56,10 @@ export const ItemBody = styled.div`
     margin-left: 22px;
   }
 
+  .tagsSelect .ant-select-selection__rendered {
+    margin-left: 10px;
+  }
+
   .ant-select-arrow-icon {
     color: ${props => props.theme.questionMetadata.antSelectArrowIconColor};
   }

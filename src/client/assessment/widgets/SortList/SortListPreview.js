@@ -303,6 +303,7 @@ const SortListPreview = ({
           altList={altResponseCorrectList}
           altResponses={altResponses}
           correctList={validResponse}
+          item={item}
         />
       )}
     </Paper>

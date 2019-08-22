@@ -19,7 +19,8 @@
       "validemail": "The input is not valid Email!",
       "emptypassword": "Please input your password!"
     },
-    "policyviolation": "Enrollment for your school district is restricted. Please contact your administrator for assistance."
+    "policyviolation": "Enrollment for your school district is restricted. Please contact your administrator for assistance.",
+    "forgotpassworderror": "Please provide registered Username or Email."
   },
   "component": {
     "signup": {

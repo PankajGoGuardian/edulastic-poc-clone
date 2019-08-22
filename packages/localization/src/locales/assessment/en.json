@@ -11,7 +11,8 @@
       "exactMatch": "Exact match",
       "partialMatch": "Partial match",
       "mainTitle": "Options",
-      "annotations": "Annotations"
+      "annotations": "Annotations",
+      "hideAnnotations": "Hide Annotations"
     },
     "correctAnswers": {
       "setCorrectAnswers": "Set Correct Answer(s)"
@@ -25,6 +26,7 @@
     "checkAnswer": "Check answer",
     "hint": "Hint",
     "addANewHint": "Add a new hint",
+    "enterHintForTheProblem": "Enter a hint for the problem",
     "options": {
       "autoexpandoninput": "AUTO EXPAND ON INPUT",
       "instant_feedback": "Check answer button",
@@ -74,7 +76,7 @@
       "fontsize": "Font Size",
       "responsecontainerglobal": "Response Box (global)",
       "responseBox": "Response Box",
-      "responseBoxOverride": "Box Sizes (override)",
+      "responseBoxOverride": "Response Box Sizes (override)",
       "widthpx": "Width (px)",
       "heightpx": "Height (px)",
       "lineWidth": "Line width (px)",
@@ -109,6 +111,7 @@
       "textBlocks": "Text Blocks",
       "customkeys": "Custom Keys",
       "addTextBlock": "Add new text block",
+      "addNewKey": "Add new key",
       "addResponseContainer": "Add new response box",
       "additionalOptions": "Additional Options",
       "stimulusReviewOnly": "Stimulus (review only)",
@@ -202,7 +205,9 @@
       "solution": "Solution",
       "overallDistractorRationale": "Overall Distractor Rationale",
       "explanation": "Explanation",
-      "display": "Display"
+      "display": "Display",
+      "enterDistractorRationaleQuestion": "Enter distractor rationale for the question",
+      "enterSampleAnswer": "Enter sample answer"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -310,6 +315,7 @@
       "enterQuestion": "Enter question",
       "list": "List",
       "addNew": "Add new",
+      "duplicatedResponses": "Duplicated responses",
       "dragItemsTitle": "Drag & Drop the answer",
       "correctAnswers": "Correct Answers",
       "alternateAnswers": "Alternate Answers"
@@ -368,7 +374,8 @@
       "inputLabel": "Value",
       "exactMatch": "Exact Match",
       "anyTextContaining": "Any text containing",
-      "correctAnswers": "Correct Answers"
+      "correctAnswers": "Correct Answers",
+      "alternateAnswers": "Alternate Answer"
     },
     "orderlist": {
       "composequestion": "Question",
@@ -767,7 +774,7 @@
       "mathQuill": "MathQuill",
       "heading": "Heading",
       "contentsTitle": "Title",
-      "contents": "Contents",
+      "contents": "Content",
       "enterPassageContentHere": "Enter passage content here",
       "contentPages": "Content pages",
       "add": "Add",

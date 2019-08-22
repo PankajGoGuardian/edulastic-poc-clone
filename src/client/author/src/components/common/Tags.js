@@ -22,9 +22,9 @@ const Tags = ({ tags = [], labelStyle, type, show }) => {
 
   return (
     <Labels>
-      {visibleTags.map((tag, i) => (
+      {visibleTags.map(({ tagName }, i) => (
         <Label style={labelStyle} key={i} type={type}>
-          {tag}
+          {tagName}
         </Label>
       ))}
       {hiddenTags && !!hiddenTags.length && (

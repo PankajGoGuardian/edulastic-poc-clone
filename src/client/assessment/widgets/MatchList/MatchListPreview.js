@@ -74,7 +74,8 @@ const MatchListPreview = ({
     stimulus,
     list,
     validation,
-    shuffleOptions
+    shuffleOptions,
+    duplicatedResponses = false
   } = item;
 
   const alternateAnswers = {};
@@ -116,7 +117,9 @@ const MatchListPreview = ({
   );
 
   const [dragItems, setDragItems] = useState(
-    getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
+    duplicatedResponses
+      ? getPossibleResponses()
+      : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
   );
 
   useEffect(() => {
@@ -125,7 +128,11 @@ const MatchListPreview = ({
         ? userAnswer
         : Array.from({ length: list.length }).fill(null)
     );
-    setDragItems(getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
+    setDragItems(
+      duplicatedResponses
+        ? getPossibleResponses()
+        : getPossibleResponses().filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
+    );
   }, [userAnswer, posResponses, possibleResponseGroups]);
 
   const preview = previewTab === CHECK || previewTab === SHOW;
@@ -135,21 +142,22 @@ const MatchListPreview = ({
   const onDrop = (itemCurrent, itemTo) => {
     const answers = cloneDeep(ans);
     const dItems = cloneDeep(dragItems);
-
+    const { item, sourceFlag, sourceIndex } = itemCurrent;
     if (itemTo.flag === "ans") {
-      if (dItems.includes(itemCurrent.item)) {
-        dItems.splice(dItems.indexOf(itemCurrent.item), 1);
+      if (dItems.includes(item)) {
+        dItems.splice(dItems.indexOf(item), 1);
       }
-      if (answers[itemTo.index] && answers[itemTo.index] !== itemCurrent.item) {
+      if (answers[itemTo.index] && answers[itemTo.index] !== item) {
         dItems.push(ans[itemTo.index]);
       }
-      if (answers.includes(itemCurrent.item)) {
-        answers[answers.indexOf(itemCurrent.item)] = null;
+      if (sourceFlag === "ans") {
+        answers[sourceIndex] = null;
+      } else if (!duplicatedResponses && answers.includes(item)) {
+        answers[answers.indexOf(item)] = null;
       }
-
-      answers[itemTo.index] = itemCurrent.item;
-    } else if (answers.includes(itemCurrent.item)) {
-      answers[answers.indexOf(itemCurrent.item)] = null;
+      answers[itemTo.index] = item;
+    } else if (answers.includes(item)) {
+      answers[renderIndex] = null;
       dItems.push(itemCurrent.item);
     }
 
@@ -171,6 +179,14 @@ const MatchListPreview = ({
     setQuestionData(
       produce(item, draft => {
         draft.shuffleOptions = !item.shuffleOptions;
+      })
+    );
+  };
+
+  const handleDuplicatedResponsesChange = () => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.duplicatedResponses = !item.duplicatedResponses;
       })
     );
   };
@@ -223,6 +239,21 @@ const MatchListPreview = ({
     alignItems: listPosition === "right" || listPosition === "left" ? "center" : "initial"
   };
 
+  const getStemNumeration = i => {
+    if (item.uiStyle) {
+      switch (item.uiStyle.validationStemNumeration) {
+        case "upper-alpha":
+          return String.fromCharCode(i + 65);
+        case "lower-alpha":
+          return String.fromCharCode(i + 65).toLowerCase();
+        default:
+          break;
+      }
+    }
+
+    return i + 1;
+  };
+
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructorStimulus}</InstructorStimulus>
@@ -264,7 +295,7 @@ const MatchListPreview = ({
                   preview={preview}
                   correct={altAnswers.includes(ans[i])}
                   flag="ans"
-                  renderIndex={i}
+                  renderIndex={getStemNumeration(i)}
                   onDrop={onDrop}
                   item={ans[i]}
                   width="100%"
@@ -396,13 +427,22 @@ const MatchListPreview = ({
         )}
       </div>
       {view === "edit" && (
-        <Checkbox
-          className="additional-options"
-          key={`shuffleOptions_${item.shuffleOptions}`}
-          onChange={handleShuffleChange}
-          label={t("component.cloze.dragDrop.shuffleoptions")}
-          checked={item.shuffleOptions}
-        />
+        <React.Fragment>
+          <Checkbox
+            className="additional-options"
+            key={`shuffleOptions_${item.shuffleOptions}`}
+            onChange={handleShuffleChange}
+            label={t("component.cloze.dragDrop.shuffleoptions")}
+            checked={item.shuffleOptions}
+          />
+          <Checkbox
+            className="additional-options"
+            key="duplicatedResponses"
+            onChange={handleDuplicatedResponsesChange}
+            label={t("component.matchList.duplicatedResponses")}
+            checked={!!item.duplicatedResponses}
+          />
+        </React.Fragment>
       )}
       {previewTab === SHOW || isReviewTab ? (
         <Fragment>
@@ -412,7 +452,7 @@ const MatchListPreview = ({
                 <CorTitle>
                   <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
-                <CorItem index={i}>
+                <CorItem index={getStemNumeration(i)}>
                   <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
                 </CorItem>
               </FlexContainer>
@@ -426,7 +466,7 @@ const MatchListPreview = ({
                   <CorTitle>
                     <MathFormulaDisplay style={centerContent} dangerouslySetInnerHTML={{ __html: list[i] }} />
                   </CorTitle>
-                  <CorItem index={i}>
+                  <CorItem index={getStemNumeration(i)}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
                   </CorItem>
                 </FlexContainer>

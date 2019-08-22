@@ -42,6 +42,8 @@ const mathInputTypes = {
   SUCCESS: "success"
 };
 
+const units = [{ value: "units_us", label: "Units (US)" }, { value: "units_si", label: "Units (SI)" }];
+
 const symbols = [
   { value: "basic", label: "Basic" },
   { value: "intermediate", label: "Intermediate" },
@@ -153,6 +155,7 @@ module.exports = {
   decimalSeparators,
   syntaxes,
   mathInputTypes,
+  units,
   symbols,
   symbolsAll,
   modes,

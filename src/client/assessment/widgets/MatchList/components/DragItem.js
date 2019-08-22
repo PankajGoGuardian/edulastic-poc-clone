@@ -21,7 +21,7 @@ const specSource = {
     if (props.previewTab !== CLEAR && typeof props.changePreviewTab === "function") {
       props.changePreviewTab();
     }
-    return { item: props.item };
+    return { item: props.item, sourceFlag: props.flag, sourceIndex: props.renderIndex };
   },
 
   endDrag(props, monitor) {
@@ -70,7 +70,7 @@ const DragItem = ({
         <DragPreview isDragging={isDragging} {...restProps}>
           {itemView}
         </DragPreview>
-        {preview && <Index correct={correct}>{renderIndex + 1}</Index>}
+        {preview && <Index correct={correct}>{renderIndex}</Index>}
         {itemView}
         {preview && (
           <div style={{ marginRight: 15 }}>

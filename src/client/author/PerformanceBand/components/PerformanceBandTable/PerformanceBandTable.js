@@ -3,6 +3,8 @@ import { Table, Input, Form, Icon, Checkbox, Button, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
+import produce from "immer";
+import ColorPicker from "../Container/ColorPicker";
 
 import {
   receivePerformanceBandAction,
@@ -78,7 +80,6 @@ class EditableCell extends React.Component {
     if (!isNaN(value)) {
       const sameRow = dataSource.filter(item => item.key === record.key);
       const sameDownRow = dataSource.filter(item => item.key === record.key + 1);
-
       if (sameRow[0].from < parseInt(value)) callback(`To value should be less than ${sameRow[0].from}`);
       else if (sameDownRow[0].to + 1 > parseInt(value))
         callback(`To value shouldn't be less than ${sameDownRow[0].to}`);
@@ -181,7 +182,7 @@ class EditableCell extends React.Component {
   }
 }
 
-class PerformanceBandTable extends React.Component {
+export class PerformanceBandTable extends React.Component {
   constructor(props) {
     super(props);
     this.columns = [
@@ -189,15 +190,22 @@ class PerformanceBandTable extends React.Component {
         title: "",
         dataIndex: "name",
         width: "20%",
-        editable: true,
+        editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <React.Fragment>
               {record.name}&nbsp;
-              <Icon type="edit" theme="twoTone" />
+              {this.props.readOnly ? null : <Icon type="edit" theme="twoTone" />}
             </React.Fragment>
           );
         }
+      },
+      {
+        title: "color",
+        dataIndex: "color",
+        render: (color, record) => (
+          <ColorPicker disabled={this.props.readOnly} value={color} onChange={c => this.changeColor(c, record.key)} />
+        )
       },
       {
         title: "Above or At Standard",
@@ -209,6 +217,7 @@ class PerformanceBandTable extends React.Component {
               <Checkbox
                 defaultChecked={record.aboveOrAtStandard}
                 checked={record.aboveOrAtStandard}
+                disabled={this.props.readOnly}
                 onChange={e => this.changeAbove(e, record.key)}
               />
             </StyledDivCenter>
@@ -231,17 +240,21 @@ class PerformanceBandTable extends React.Component {
         title: "To",
         dataIndex: "to",
         width: "20%",
-        editable: true,
+        editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <StyledButton onClick={e => this.onClickFromTo(e, record.key, "to", -1)}>
-                <StyledIcon type="minus" />
-              </StyledButton>
+              {!this.props.readOnly ? (
+                <StyledButton onClick={e => this.onClickFromTo(e, record.key, "to", -1)}>
+                  <StyledIcon type="minus" />
+                </StyledButton>
+              ) : null}
               <StyledProP>{record.to}%</StyledProP>
-              <StyledButton onClick={e => this.onClickFromTo(e, record.key, "to", 1)}>
-                <StyledIcon type="plus" />
-              </StyledButton>
+              {!this.props.readOnly ? (
+                <StyledButton disabled={this.props.readOnly} onClick={e => this.onClickFromTo(e, record.key, "to", 1)}>
+                  <StyledIcon type="plus" />
+                </StyledButton>
+              ) : null}
             </StyledColFromTo>
           );
         }
@@ -250,7 +263,7 @@ class PerformanceBandTable extends React.Component {
         title: "",
         dataIndex: "operation",
         render: (text, record) =>
-          this.state.dataSource.length >= 1 ? (
+          this.state.dataSource.length >= 1 && !this.props.readOnly ? (
             <StyledDivCenter>
               <a href="javascript:;" onClick={e => this.handleDelete(e, record.key)}>
                 <Icon type="delete" theme="twoTone" />
@@ -269,7 +282,9 @@ class PerformanceBandTable extends React.Component {
 
   componentDidMount() {
     const { loadPerformanceBand, userOrgId } = this.props;
-    loadPerformanceBand({ orgId: userOrgId });
+    if (loadPerformanceBand) {
+      loadPerformanceBand({ orgId: userOrgId });
+    }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -316,6 +331,16 @@ class PerformanceBandTable extends React.Component {
     this.props.setPerformanceBandData(dataSource);
   };
 
+  changeColor = (color, key) => {
+    const index = this.state.dataSource.findIndex(x => x.key === key);
+
+    const data = produce(this.state.dataSource, ds => {
+      ds[index].color = color;
+    });
+    this.setState({ isChangeState: true, dataSource: data });
+    this.props.setPerformanceBandData(data);
+  };
+
   handleDelete = (e, key) => {
     const dataSource = [...this.state.dataSource];
     if (dataSource.length <= 2) {
@@ -341,6 +366,7 @@ class PerformanceBandTable extends React.Component {
       key: Math.max(...keyArray) + 1,
       name: "Performance Band" + (Math.max(...keyArray) + 1),
       aboveOrAtStandard: true,
+      color: "#576BA9",
       from: 0,
       to: 0
     };
@@ -440,16 +466,27 @@ class PerformanceBandTable extends React.Component {
         <StyledBottomDiv>
           {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
           {performanceBandId.length == 0 ? (
-            <StyledSaveButton type="primary" onClick={this.updatePerformanceBand}>
+            <StyledSaveButton disabled={this.props.readOnly} type="primary" onClick={this.updatePerformanceBand}>
               Create
             </StyledSaveButton>
           ) : (
-            <StyledSaveButton type="primary" onClick={this.updatePerformanceBand} disabled={!isChangeState}>
+            <StyledSaveButton
+              disabled={this.props.readOnly}
+              type="primary"
+              onClick={this.updatePerformanceBand}
+              disabled={!isChangeState}
+            >
               Save
             </StyledSaveButton>
           )}
 
-          <Button type="primary" shape="round" onClick={this.handleAdd} ghost disabled={isAddDisable}>
+          <Button
+            type="primary"
+            shape="round"
+            onClick={this.handleAdd}
+            ghost
+            disabled={isAddDisable || this.props.readOnly}
+          >
             + Add Band
           </Button>
         </StyledBottomDiv>

@@ -27,7 +27,9 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
 
     forEach(metric.records, record => {
       scaleData[record.bandName] = parseInt(record.totalAssigned);
-      const calculatedPercentage = round(percentage(parseInt(record.totalAssigned), parseInt(metric.totalAssigned)));
+      const calculatedPercentage = round(
+        percentage(parseInt(record.totalAssigned), sumBy(metric.records, el => parseFloat(el.totalAssigned)))
+      );
       scaleData[`${record.bandName} Percentage`] =
         record.bandName == leastProficiency.name ? -calculatedPercentage : calculatedPercentage;
 
@@ -38,8 +40,12 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
       }
     });
 
-    scaleData["aboveStandard Percentage"] = round(percentage(scaleData.aboveStandard, metric.totalAssigned));
-    scaleData["belowStandard Percentage"] = -round(percentage(scaleData.belowStandard, metric.totalAssigned));
+    scaleData["aboveStandard Percentage"] = round(
+      percentage(scaleData.aboveStandard, sumBy(metric.records, el => parseFloat(el.totalAssigned)))
+    );
+    scaleData["belowStandard Percentage"] = -round(
+      percentage(scaleData.belowStandard, sumBy(metric.records, el => parseFloat(el.totalAssigned)))
+    );
 
     return {
       ...scaleData,
@@ -48,7 +54,6 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
       uniqId: metric.uniqId
     };
   });
-
   return convertedBandData;
 };
 
@@ -95,7 +100,7 @@ export const parseData = (rawData = {}) => {
 
   const parsedData = map(groupedTestsByType, records => {
     const { assessmentDate, testId, testType } = records[0];
-    const totalAssigned = sumBy(records, test => parseInt(test.totalAssigned));
+    const totalAssigned = parseInt(records[0].totalAssigned);
     const totalScore = sumBy(records, test => parseFloat(test.totalScore || 0));
     const totalMaxScore = sumBy(records, test => parseFloat(test.maxScore || 0) * parseInt(test.totalAssigned));
 

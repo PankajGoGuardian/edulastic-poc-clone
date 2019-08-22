@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
@@ -55,7 +55,7 @@ const OrderList = ({
   previewTab,
   smallSize,
   item,
-  userAnswer,
+  userAnswer: _userAnswer,
   testItem,
   evaluation,
   setQuestionData,
@@ -74,14 +74,7 @@ const OrderList = ({
   const [correctTab, setCorrectTab] = useState(0);
   const answerContext = useContext(AnswerContext);
 
-  useEffect(() => {
-    if (view === PREVIEW && !disableResponse) {
-      const { list = [] } = item;
-      if (list.length !== userAnswer.length) {
-        saveAnswer(list.map((q, i) => i));
-      }
-    }
-  }, [view, previewTab]);
+  const userAnswer = !isEmpty(_userAnswer) ? _userAnswer : get(item, "list", []).map((_, i) => i);
 
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
   const styleType = get(item, "uiStyle.type", "button");
@@ -227,6 +220,23 @@ const OrderList = ({
     return false;
   });
 
+  const getStemNumeration = i => {
+    if (item) {
+      if (item.uiStyle) {
+        switch (item.uiStyle.validationStemNumeration) {
+          case "upper-alpha":
+            return String.fromCharCode(i + 65);
+          case "lower-alpha":
+            return String.fromCharCode(i + 65).toLowerCase();
+          default:
+            break;
+        }
+      }
+    }
+
+    return i + 1;
+  };
+
   return (
     <Fragment>
       {view === EDIT && (
@@ -271,6 +281,7 @@ const OrderList = ({
               axis={axis}
               columns={columns}
               helperClass="sortableHelper"
+              item={item}
             />
           )}
 
@@ -289,13 +300,14 @@ const OrderList = ({
                 axis={axis}
                 columns={columns}
                 helperClass="sortableHelper"
+                item={item}
               />
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
                 <ItemsWrapper styleType={styleType} columns={columns}>
                   {correctAnswers.map((correctAnswer, i) => (
                     <CorrectAnswerItem theme={theme}>
                       <Text>
-                        <Index>{i + 1}</Index>
+                        <Index>{getStemNumeration(i)}</Index>
                         <FlexContainer justifyContent="center" style={{ width: "100%" }}>
                           <QuestionText>
                             <MathFormulaDisplay
@@ -312,10 +324,10 @@ const OrderList = ({
               {hasAltAnswers && (
                 <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
                   <ItemsWrapper styleType={styleType}>
-                    {Object.keys(alternateAnswers).map(key => (
+                    {Object.keys(alternateAnswers).map((key, i) => (
                       <CorrectAnswerItem theme={theme}>
                         <Text>
-                          <Index>{key}</Index>
+                          <Index>{getStemNumeration(i)}</Index>
                           <FlexContainer justifyContent="center" style={{ width: "100%" }}>
                             <QuestionText>
                               <MathFormulaDisplay
@@ -377,7 +389,6 @@ OrderList.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   item: {},
-  userAnswer: [],
   testItem: false,
   evaluation: "",
   advancedAreOpen: false,

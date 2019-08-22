@@ -1,5 +1,6 @@
 import React from "react";
-import { Input, Row, Col, Select, Modal } from "antd";
+import get from "lodash/get";
+import { Input, Row, Col, Select, Modal, Checkbox } from "antd";
 import { FlexContainer } from "@edulastic/common";
 
 import Question from "../../../components/Question/index";
@@ -49,6 +50,17 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
           ...draft.fractionProperties,
           [prop]: +value > 1 ? +value : 1,
           selected: [1]
+        };
+      })
+    );
+  };
+
+  const handleOptionsChange = (prop, value) => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.options = {
+          ...draft.options,
+          [prop]: value
         };
       })
     );
@@ -142,6 +154,14 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
           </Col>
         </Row>
       )}
+      <Row gutter={20} style={{ margin: "10px 0px" }}>
+        <Checkbox
+          checked={get(item, "options.hideAnnotations", false)}
+          onChange={e => handleOptionsChange("hideAnnotations", e.target.checked)}
+        >
+          {t("common.options.hideAnnotations")}
+        </Checkbox>
+      </Row>
     </Question>
   );
 };

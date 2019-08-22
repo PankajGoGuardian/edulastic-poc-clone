@@ -124,7 +124,17 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, currentPath, firstName, middleName, lastName, logout, isSidebarCollapsed, t } = this.props;
+    const {
+      windowWidth,
+      currentPath,
+      firstName,
+      middleName,
+      lastName,
+      logout,
+      isSidebarCollapsed,
+      t,
+      profileThumbnail
+    } = this.props;
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
     const page = currentPath.split("/").filter(item => !!item)[1];
     const menuIndex = getIndex(page, menuItems);
@@ -240,7 +250,7 @@ class SideMenu extends Component {
                     onVisibleChange={this.handleVisibleChange}
                   >
                     <div>
-                      <img src={Profile} alt="Profile" />
+                      {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}
                       <Tooltip title={userName}>
                         <div style={{ paddingLeft: 11 }}>
                           {!isSidebarCollapsed && <UserName>{userName || "Zack Oliver"}</UserName>}
@@ -288,7 +298,8 @@ const enhance = compose(
       firstName: get(user, "user.firstName", ""),
       middleName: get(user, "user.middleName", ""),
       lastName: get(user, "user.lastName", ""),
-      isSidebarCollapsed: ui.isSidebarCollapsed
+      isSidebarCollapsed: ui.isSidebarCollapsed,
+      profileThumbnail: get(user, "user.thumbnail")
     }),
     { logout: logoutAction, toggleSideBar: toggleSideBarAction }
   )
@@ -806,6 +817,16 @@ const UserInfoButton = styled.div`
   @media (max-width: ${largeDesktopWidth}) {
     width: 47px;
   }
+`;
+
+const PseudoDiv = styled.div`
+  width: 60px;
+  height: 60px;
+  position: absolute;
+  left: 0;
+  border-radius: 50%;
+  background: #dddddd;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 `;
 
 const DropdownBtn = styled(Dropdown)`

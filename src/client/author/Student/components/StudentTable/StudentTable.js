@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, split, unset, pickBy, identity } from "lodash";
+import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
 import * as moment from "moment";
 import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
@@ -26,7 +26,7 @@ import { UserFormModal as EditStudentFormModal } from "../../../../common/compon
 import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
 import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
-import AddStudentsToOtherClass from "./AddStudentToOtherClass";
+import { AddStudentsToOtherClassModal } from "./AddStudentToOtherClass";
 
 import {
   addMultiStudentsRequestAction,
@@ -107,11 +107,15 @@ class StudentTable extends Component {
     this.columns = [
       {
         title: "Name",
-        render: (_, { _source: { firstName, lastName } = {} }) => (
-          <span>
-            {firstName === "Anonymous" ? "-" : firstName} {lastName}
-          </span>
-        ),
+        render: (_, { _source }) => {
+          const firstName = get(_source, "firstName", "");
+          const lastName = get(_source, "lastName", "");
+          return (
+            <span>
+              {firstName === "Anonymous" || isEmpty(firstName) ? "-" : firstName} {lastName}
+            </span>
+          );
+        },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "_source.firstName", "");
@@ -476,7 +480,7 @@ class StudentTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
-    let showActive = this.state.showActive ? 1 : 0;
+    const { showActive } = this.state;
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {
@@ -497,18 +501,20 @@ class StudentTable extends Component {
     if (searchByName) {
       search["name"] = searchByName;
     }
-
-    return {
+    const queryObj = {
       search,
       districtId: userOrgId,
       role: "student",
       limit: 25,
-      page: currentPage,
+      page: currentPage
       // uncomment after elastic search is fixed
-      status: showActive
       // sortField,
       // order
     };
+    if (showActive) {
+      queryObj["status"] = 1;
+    }
+    return queryObj;
   };
 
   loadFilteredList = () => {
@@ -761,7 +767,9 @@ class StudentTable extends Component {
             }
           />
         )}
-        <AddStudentsToOtherClass
+        <AddStudentsToOtherClassModal
+          titleText="Add Student(s) to another class"
+          buttonText="Add Student(s)"
           {...addStudentsToOtherClassData}
           handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedRowKeys })}
           onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}

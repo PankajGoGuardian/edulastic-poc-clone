@@ -90,7 +90,7 @@ class MathInput extends React.PureComponent {
     const { restrictKeys, allowNumericOnly } = this.props;
 
     if (allowNumericOnly) {
-      if (!e.key.match(/[^a-zA-Z]/g)) {
+      if (!e.key.match(/[0-9+-.%/]/g)) {
         e.preventDefault();
         e.stopPropagation();
       }
@@ -183,9 +183,9 @@ class MathInput extends React.PureComponent {
       restrictKeys,
       customKeys,
       hideKeypad,
+      allowNumericOnly,
       onInnerFieldClick
     } = this.props;
-
     return (
       <MathInputStyles
         fullWidth={fullWidth}
@@ -216,6 +216,7 @@ class MathInput extends React.PureComponent {
                 customKeys={customKeys}
                 showResponse={showResponse}
                 showDropdown={showDropdown}
+                allowNumericOnly={allowNumericOnly}
                 onChangeKeypad={onChangeKeypad}
                 onInput={(key, command) => this.onInput(key, command)}
               />

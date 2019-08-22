@@ -37,13 +37,18 @@ export const AddPassageBtnContainer = styled.div`
     &:hover {
       color: ${themeColor};
     }
-    &:last-child {
-      background-color: #fff;
-      color: ${themeColor};
-    }
+
     &:focus > span:first-child,
     &:active > span:first-child {
       position: absolute;
+    }
+    &:last-child {
+      background-color: #fff;
+      color: ${themeColor};
+      &:focus > span,
+      &:active > span {
+        position: relative;
+      }
     }
   }
 `;

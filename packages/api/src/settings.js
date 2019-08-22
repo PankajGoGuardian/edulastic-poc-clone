@@ -146,12 +146,21 @@ const createStandardsProficiency = data =>
     })
     .then(result => result.data.result);
 
-const updateStandardsProficiency = data =>
+const updateStandardsProficiency = ({ _id, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/standards-proficiency/`,
+      url: `${prefix}/standards-proficiency/${_id}`,
       method: "put",
       data
+    })
+    .then(result => result.data.result);
+
+const deleteStandardsProficiency = (_id, districtId) =>
+  api
+    .callApi({
+      url: `${prefix}/standards-proficiency/${_id}`,
+      params: { districtId: districtId },
+      method: "delete"
     })
     .then(result => result.data.result);
 
@@ -173,14 +182,23 @@ const createPerformanceBand = data =>
     })
     .then(result => result.data.result);
 
-const updatePerformanceBand = data =>
+const updatePerformanceBand = ({ _id, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/performance-band/`,
+      url: `${prefix}/performance-band/${_id}`,
       method: "put",
       data
     })
     .then(result => result.data.result);
+
+const deletePerformanceBand = (_id, districtId) =>
+  api
+    .callApi({
+      url: `${prefix}/performance-band/${_id}`,
+      params: { districtId: districtId },
+      method: "delete"
+    })
+    .then(result => result.data);
 
 // interested standards
 const getInterestedStandards = ({ orgId }) =>
@@ -226,8 +244,10 @@ export default {
   getStandardsProficiency,
   createStandardsProficiency,
   updateStandardsProficiency,
+  deleteStandardsProficiency,
   getPerformanceBand,
   createPerformanceBand,
+  deletePerformanceBand,
   updatePerformanceBand,
   getInterestedStandards,
   saveInterestedStandards,

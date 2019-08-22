@@ -35,9 +35,18 @@ class ClozeMathAnswer extends Component {
   };
 
   render() {
-    const { answers, onChange, onAdd, onDelete, item, onChangeKeypad, onChangeAllowedOptions } = this.props;
+    const {
+      answers,
+      onChange,
+      onAdd,
+      onDelete,
+      item,
+      onChangeKeypad,
+      onChangeAllowedOptions,
+      toggleAdditional
+    } = this.props;
     const { showAdditionals } = this.state;
-    const { responseContainers: responseContainers = [], uiStyle: uiStyle, allowedVariables = {} } = item;
+    const { responseContainers: responseContainers = [], uiStyle, allowedVariables = {}, allowNumericOnly = {} } = item;
     const _changeMethod = (methodId, methodIndex) => (prop, val) => {
       onChange({ methodId, methodIndex, prop, value: val });
     };
@@ -98,7 +107,9 @@ class ClozeMathAnswer extends Component {
                     style={{ width, height }}
                     onChangeKeypad={onChangeKeypad}
                     onChangeAllowedOptions={onChangeAllowedOptions}
+                    allowNumericOnly={allowNumericOnly[answer.index] || false}
                     allowedVariables={allowedVariables[answer.index] || ""}
+                    toggleAdditional={toggleAdditional}
                     {...method}
                   />
                 ))}
@@ -117,6 +128,7 @@ ClozeMathAnswer.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onChangeAllowedOptions: PropTypes.func.isRequired,
+  toggleAdditional: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired

@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { compose } from "redux";
 import { Button, Form, Input } from "antd";
 import styled from "styled-components";
 import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
 
-import { borders, backgrounds, themeColor } from "@edulastic/colors";
+import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
 
 const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
+  const [disableButton, setButtonState] = useState(true);
+
   const handleResponse = e => {
-    e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (values && values.confirmationText && values.confirmationText.toUpperCase() === "DELETE") deleteProfile();
@@ -17,18 +18,22 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
   };
 
   const Footer = [
-    <Button ghost onClick={() => toggleModal(false)}>
-      No, Cancel
+    <Button ghost onClick={() => toggleModal("DELETE_ACCOUNT", false)}>
+      NO, CANCEL
     </Button>,
-    <Button onClick={handleResponse}>Yes, Delete</Button>
+    <YesButton disabled={disableButton} onClick={handleResponse}>
+      YES, DELETE
+    </YesButton>
   ];
 
   const Title = [<Heading>Delete My Account</Heading>];
 
   const validateText = (rule, value, callback) => {
-    if (value && value.toUpperCase() !== "DELETE") {
-      callback("Please enter DELETE in the field.");
+    if (value && value.toUpperCase() === "DELETE") {
+      setButtonState(false);
+      callback();
     } else {
+      setButtonState(true);
       callback();
     }
   };
@@ -41,7 +46,7 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
       visible={visible}
       footer={Footer}
       textAlign={"center"}
-      onCancel={() => toggleModal(false)}
+      onCancel={() => toggleModal("DELETE_ACCOUNT", false)}
     >
       <ModalBody>
         <span>Are you sure want to delete this account?</span>
@@ -52,14 +57,10 @@ const DeleteAccountModal = ({ visible, toggleModal, form, deleteProfile }) => {
           {form.getFieldDecorator("confirmationText", {
             rules: [
               {
-                required: true,
-                message: "Please type the required Text."
-              },
-              {
                 validator: validateText
               }
             ]
-          })(<Input type="text" />)}
+          })(<TextInput type="text" />)}
         </FormItem>
       </ModalBody>
     </ConfirmationModal>
@@ -91,4 +92,14 @@ const FormItem = styled(Form.Item)`
 
 const Heading = styled.h4`
   font-weight: 600;
+`;
+
+const TextInput = styled(Input)`
+  text-align: center;
+`;
+
+const YesButton = styled(Button)`
+  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
+  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
+  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
 `;

@@ -12,10 +12,9 @@ import NoDataNotification from "../../common/components/NoDataNotification";
 
 const SkillReportContainer = ({ flag, skillReport, fetchSkillReport, classId }) => {
   useEffect(() => {
-    fetchSkillReport(classId);
+    if (classId) fetchSkillReport(classId);
   }, []);
   return (
-    <React.Fragment>
       <MainContainer flag={flag}>
         <Header flag={flag} titleText="common.skillReportTitle" />
         {isEmpty(skillReport) ? (
@@ -24,7 +23,6 @@ const SkillReportContainer = ({ flag, skillReport, fetchSkillReport, classId }) 
           <SkillReportMainContent skillReport={skillReport} />
         )}
       </MainContainer>
-    </React.Fragment>
   );
 };
 

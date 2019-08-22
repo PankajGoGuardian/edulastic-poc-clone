@@ -164,7 +164,7 @@ class Item extends Component {
         {isShowPreviewModal && (
           <PreviewModal
             isVisible={isShowPreviewModal}
-            page="addItems"
+            page="itemList"
             showEvaluationButtons
             onClose={this.closeModal}
             data={{ ...item, id: item._id }}
@@ -184,7 +184,7 @@ class Item extends Component {
               <ViewButtonStyled onClick={this.previewItem}>
                 <IconEye /> {t("component.item.view")}
               </ViewButtonStyled>
-              <AddButtonStyled onClick={this.handleToggleItemToCart(item)}>
+              <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
                 {selectedToCart ? "Remove" : <IconPlus />}
               </AddButtonStyled>
             </ViewButton>

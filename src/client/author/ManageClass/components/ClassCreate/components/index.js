@@ -37,6 +37,7 @@ export const FieldLabel = ({
       { required: true, message: "Please enter a valid class name" },
       { max: 256, message: "Must less than 256 characters!" }
     ],
+    tags: [],
     startDate: [{ validator: checkStartDate, message: "Should be later than the today!" }],
     endDate: [{ validator: checkEndDate, message: "Should be later than the Start date" }],
     institutionId: [{ required: true, message: "Please select a School." }]

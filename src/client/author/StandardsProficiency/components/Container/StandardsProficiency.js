@@ -15,10 +15,9 @@ import {
   receiveStandardsProficiencyAction,
   setEditingIndexAction
 } from "../../ducks";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
 
 const title = "Manage District";
-const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
 const defaultData = {
   calcAttribute: 5,
@@ -58,22 +57,27 @@ const defaultData = {
 };
 
 function ProfileRow(props) {
-  const { _id, index, deleteRow, setEditing, active } = props;
+  const { _id, index, deleteRow, setEditing, active, readOnly } = props;
   return (
     <List.Item style={{ display: "block" }}>
       <Row>
         <Col span={12}>{get(props, "profile.name", "Untitled")}</Col>
         <Col span={12}>
           <Button.Group>
-            <Button onClick={() => setEditing(index)}>{active ? "Close" : "Edit"}</Button>
-            <Button onClick={() => deleteRow(_id)}>delete</Button>
+            <Button onClick={() => setEditing(index)}>{active ? "Close" : readOnly ? "View" : "Edit"}</Button>
+            {readOnly ? null : <Button onClick={() => deleteRow(_id)}>delete</Button>}
           </Button.Group>
         </Col>
       </Row>
       {active && (
         <Row>
           <Col>
-            <StandardsProficiencyTable name={get(props, "profile.name", "Untitled")} index={index} _id={_id} />
+            <StandardsProficiencyTable
+              readOnly={readOnly}
+              name={get(props, "profile.name", "Untitled")}
+              index={index}
+              _id={_id}
+            />
           </Col>
         </Row>
       )}
@@ -84,6 +88,10 @@ function ProfileRow(props) {
 function StandardsProficiency(props) {
   const { loading, updating, creating, history, list, create, update, remove, editingIndex, setEditingIndex } = props;
   const showSpin = loading || updating || creating;
+  const menuActive =
+    props.role === "school-admin"
+      ? { mainMenu: "Standards Proficiency" }
+      : { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
   const createStandardProficiency = () => {
     const name = window.prompt("Please enter the name of the standard proficiency");
@@ -119,6 +127,7 @@ function StandardsProficiency(props) {
             }
             renderItem={(profile, index) => (
               <ProfileRow
+                readOnly={props.role === "school-admin" && get(profile, "createdBy._id") != props.userId}
                 setEditing={setEditingIndex}
                 index={index}
                 profile={profile}
@@ -141,6 +150,8 @@ const enhance = connect(
     creating: get(state, ["standardsProficiencyReducer", "creating"], false),
     profiles: get(state, ["standardsProficiencyReducer", "data"], []),
     orgId: getUserOrgId(state),
+    role: getUserRole(state),
+    userId: getUserId(state),
     editingIndex: get(state, "standardsProficiencyReducer.editingIndex")
   }),
   {

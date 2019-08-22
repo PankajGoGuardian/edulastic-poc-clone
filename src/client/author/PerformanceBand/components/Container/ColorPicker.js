@@ -39,7 +39,7 @@ function ColorPicker(props) {
         placement="bottom"
         trigger="click"
         visible={visible}
-        onVisibleChange={v => setVisible(v)}
+        onVisibleChange={v => !props.disabled && setVisible(v)}
       >
         <div style={{ width: 30 }}>
           <ColorBox style={{ height: 30, width: 30, display: "inline-block" }} color={value} />{" "}

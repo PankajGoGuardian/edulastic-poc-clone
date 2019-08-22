@@ -14,7 +14,7 @@ const Wrapper = styled(Layout)`
   width: 100%;
 `;
 
-const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, location, logout }) => {
+const Assignments = ({ activeClasses, allClasses, loadAllClasses, changeClass, loading, location, logout }) => {
   const activeEnrolledClasses = (activeClasses || []).filter(c => c.status == "1");
 
   // location is available as prop when we are navigating through link from student manage class
@@ -33,6 +33,7 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
       activeEnrolledClasses.push(classItem);
     }
   }
+
   return (
     <Wrapper>
       <Header
@@ -49,7 +50,7 @@ const Assignments = ({ activeClasses, loadAllClasses, changeClass, loading, loca
 
 export default connect(
   state => ({
-    // allClasses: state.studentEnrollClassList.allClasses,
+    allClasses: state.studentEnrollClassList.allClasses,
     activeClasses: state.studentEnrollClassList.filteredClasses,
     loading: state.studentEnrollClassList.loading
   }),

@@ -8,7 +8,7 @@ import { IconFilterClass } from "@edulastic/icons";
 
 import { getClasses, getCurrentGroup, changeClassAction } from "../Login/ducks";
 
-const ClassSelector = ({ t, classList, currentGroup, changeClass }) => {
+const ClassSelector = ({ t, classList, currentGroup, changeClass, archievedClass, allClasses }) => {
   const [isShown, setShown] = useState(false);
 
   useEffect(() => {
@@ -18,10 +18,11 @@ const ClassSelector = ({ t, classList, currentGroup, changeClass }) => {
     }
     if (currentGroup != "") {
       //not all classes
+
       const currentGroupInList = classList.find(x => x._id === currentGroup);
       if (!currentGroupInList) {
         //currently selected class is not in the list. so selecting first available class
-        if (classList.length > 0) {
+        if (classList.length > 0 && !sessionStorage.temporaryClass) {
           changeClass(classList[0]._id);
         }
       }
@@ -47,6 +48,12 @@ const ClassSelector = ({ t, classList, currentGroup, changeClass }) => {
               All classes
             </Select.Option>
           )}
+
+          {sessionStorage.getItem("temporaryClass") && (
+            <Select.Option key={sessionStorage.temporaryClass} value={sessionStorage.temporaryClass}>
+              {allClasses.find(clazz => clazz._id === sessionStorage.temporaryClass).name}
+            </Select.Option>
+          )}
           {classList.map((cl, i) => (
             <Select.Option key={cl._id} value={cl._id}>
               {cl.name}
@@ -64,7 +71,8 @@ ClassSelector.propTypes = {
 
 const stateToProps = state => ({
   // classes: getClasses(state),
-  currentGroup: getCurrentGroup(state)
+  currentGroup: getCurrentGroup(state),
+  allClasses: state.studentEnrollClassList.allClasses
 });
 export default connect(
   stateToProps,

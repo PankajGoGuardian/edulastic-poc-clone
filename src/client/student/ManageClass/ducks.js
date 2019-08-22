@@ -5,7 +5,6 @@ import { enrollmentApi } from "@edulastic/api";
 export const GET_ENROLL_CLASSES_REQUEST = "[auth] load enroll classes request";
 export const GET_ENROLL_CLASSES_SUCCESS = "[auth] load enroll classes request success";
 export const GET_ENROLL_CLASSES_FAIL = "[auth] load enroll classes request fail";
-
 export const SET_FILTER_CLASS = "[manage class] set active class";
 
 export const getEnrollClassAction = createAction(GET_ENROLL_CLASSES_REQUEST);

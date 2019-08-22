@@ -128,11 +128,6 @@ class StandardsProficiencyTable extends React.Component {
     ];
   }
 
-  componentDidMount() {
-    const { loadStandardsProficiency, userOrgId } = this.props;
-    loadStandardsProficiency({ orgId: userOrgId });
-  }
-
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       data: nextProps.standardsProficiency,
@@ -166,7 +161,7 @@ class StandardsProficiencyTable extends React.Component {
         newData.push(row);
       }
       this.setState({ editingKey: "", isAdding: false, isChangeState: true });
-      this.props.setScaleData(newData);
+      this.props.setScaleData({ data: newData, _id: this.props._id });
     });
   };
 
@@ -203,7 +198,7 @@ class StandardsProficiencyTable extends React.Component {
       isChangeState: true,
       isAdding: true
     });
-    this.props.setScaleData([...data, newData]);
+    this.props.setScaleData({ data: [...data, newData], _id: this.props._id });
   };
 
   handleDelete = key => {
@@ -219,12 +214,12 @@ class StandardsProficiencyTable extends React.Component {
     });
 
     this.setState({ isChangeState: true });
-    this.props.setScaleData(newData);
+    this.props.setScaleData({ data: newData, _id: this.props._id });
   };
 
   changeCalcType = e => {
     this.setState({ isChangeState: true });
-    this.props.setCalcType(e.target.value);
+    this.props.setCalcType({ data: e.target.value, _id: this.props._id });
   };
 
   saveScale = e => {
@@ -264,15 +259,15 @@ class StandardsProficiencyTable extends React.Component {
 
     this.setState({ isChangeState: false });
     if (standardsProficiencyID.length == 0) this.props.createStandardProficiency(updateData);
-    else this.props.updateStandardsProficiency(updateData);
+    else this.props.updateStandardsProficiency({ ...updateData, _id: this.props._id, name: this.props.name });
   };
 
   onChangeCalcAttr = (e, keyName) => {
     const { value } = e.target;
     const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
     if ((!Number.isNaN(value) && reg.test(value)) || value === "" || value === "-") {
-      if (keyName === "DECAYING_AVERAGE") this.props.setDecayingAttrValue(value);
-      else if (keyName === "MOVING_AVERAGE") this.props.setMovingAttrValue(value);
+      if (keyName === "DECAYING_AVERAGE") this.props.setDecayingAttrValue({ data: value, _id: this.props._id });
+      else if (keyName === "MOVING_AVERAGE") this.props.setMovingAttrValue({ data: value, _id: this.props._id });
       this.setState({ isChangeState: true });
     }
   };
@@ -386,16 +381,15 @@ const EditableStandardsProficiencyTable = Form.create()(StandardsProficiencyTabl
 
 const enhance = compose(
   connect(
-    state => ({
-      standardsProficiency: get(state, ["standardsProficiencyReducer", "data", "scale"], []),
+    (state, ownProps) => ({
+      standardsProficiency: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "scale"], []),
       userOrgId: getUserOrgId(state),
-      calcType: get(state, ["standardsProficiencyReducer", "data", "calcType"], ""),
-      calcDecayingAttr: get(state, ["standardsProficiencyReducer", "data", "calcDecayingAttr"], 0),
-      calcMovingAvrAttr: get(state, ["standardsProficiencyReducer", "data", "calcMovingAvrAttr"], 0),
-      standardsProficiencyID: get(state, ["standardsProficiencyReducer", "data", "_id"], "")
+      calcType: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcType"], ""),
+      calcDecayingAttr: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcDecayingAttr"], 0),
+      calcMovingAvrAttr: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "calcMovingAvrAttr"], 0),
+      standardsProficiencyID: get(state, ["standardsProficiencyReducer", "data", ownProps.index, "_id"], "")
     }),
     {
-      loadStandardsProficiency: receiveStandardsProficiencyAction,
       updateStandardsProficiency: updateStandardsProficiencyAction,
       createStandardProficiency: createStandardsProficiencyAction,
       setScaleData: setScaleDataAction,

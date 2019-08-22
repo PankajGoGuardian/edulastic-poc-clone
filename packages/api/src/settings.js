@@ -146,12 +146,21 @@ const createStandardsProficiency = data =>
     })
     .then(result => result.data.result);
 
-const updateStandardsProficiency = data =>
+const updateStandardsProficiency = ({ _id, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/standards-proficiency/`,
+      url: `${prefix}/standards-proficiency/${_id}`,
       method: "put",
       data
+    })
+    .then(result => result.data.result);
+
+const deleteStandardsProficiency = (_id, districtId) =>
+  api
+    .callApi({
+      url: `${prefix}/standards-proficiency/${_id}`,
+      params: { districtId: districtId },
+      method: "delete"
     })
     .then(result => result.data.result);
 
@@ -235,6 +244,7 @@ export default {
   getStandardsProficiency,
   createStandardsProficiency,
   updateStandardsProficiency,
+  deleteStandardsProficiency,
   getPerformanceBand,
   createPerformanceBand,
   deletePerformanceBand,

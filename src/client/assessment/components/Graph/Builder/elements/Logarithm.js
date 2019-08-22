@@ -62,6 +62,7 @@ function clean(board) {
   points = [];
   return result;
 }
+
 function getConfig(logarithm) {
   return {
     _type: logarithm.type,

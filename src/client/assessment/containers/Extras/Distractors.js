@@ -17,7 +17,7 @@ import Question from "../../components/Question";
 
 const SortableListWithAddButton = withAddButton(SortableList);
 
-const Distractors = ({ t, setQuestionData, item, advancedAreOpen, fillSections, cleanSections }) => {
+const Distractors = ({ t, setQuestionData, item, advancedAreOpen, fillSections, cleanSections, visible }) => {
   const prop = "distractor_rationale_response_level";
 
   const _change = change({ item, setQuestionData, prop });
@@ -32,6 +32,7 @@ const Distractors = ({ t, setQuestionData, item, advancedAreOpen, fillSections, 
       fillSections={fillSections}
       cleanSections={cleanSections}
       advancedAreOpen={advancedAreOpen}
+      visible={visible}
     >
       <Fragment>
         <Subtitle>{t("component.options.distractorTitle")}</Subtitle>
@@ -61,13 +62,15 @@ Distractors.propTypes = {
   item: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  visible: PropTypes.bool
 };
 
 Distractors.defaultProps = {
   fillSections: () => {},
   cleanSections: () => {},
-  advancedAreOpen: false
+  advancedAreOpen: false,
+  visible: true
 };
 
 const enhance = compose(

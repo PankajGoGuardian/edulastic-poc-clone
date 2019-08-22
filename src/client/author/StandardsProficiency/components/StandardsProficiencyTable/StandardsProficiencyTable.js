@@ -107,7 +107,7 @@ class StandardsProficiencyTable extends React.Component {
                   </EditableContext.Consumer>
                   <a onClick={() => this.cancel(record.key)}>Cancel</a>
                 </span>
-              ) : (
+              ) : props.readOnly ? null : (
                 <React.Fragment>
                   <StyledButton disabled={editingKey !== ""} onClick={() => this.edit(record.key)} title="Edit">
                     <Icon type="edit" theme="twoTone" />
@@ -311,12 +311,14 @@ class StandardsProficiencyTable extends React.Component {
               Note: Teachers can edit the performance threshould while assigning
             </StyledDescription>
           </InfoDiv>
-          <SaveButtonDiv>
-            {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
-            <Button type="primary" onClick={this.saveScale} disabled={!isChangeState}>
-              Save
-            </Button>
-          </SaveButtonDiv>
+          {this.props.readOnly ? null : (
+            <SaveButtonDiv>
+              {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
+              <Button type="primary" onClick={this.saveScale} disabled={!isChangeState}>
+                Save
+              </Button>
+            </SaveButtonDiv>
+          )}
         </TopDiv>
 
         <EditableContext.Provider value={this.props.form}>
@@ -328,9 +330,11 @@ class StandardsProficiencyTable extends React.Component {
             pagination={false}
           />
         </EditableContext.Provider>
-        <StyledAddButton type="primary" shape="round" onClick={this.handleAdd} ghost>
-          + Add Level
-        </StyledAddButton>
+        {this.props.readOnly ? null : (
+          <StyledAddButton type="primary" shape="round" onClick={this.handleAdd} ghost>
+            + Add Level
+          </StyledAddButton>
+        )}
         <StyledMasterDiv>
           <StyledH3>Mastery Calculation Method</StyledH3>
           <StyledUl>
@@ -338,7 +342,12 @@ class StandardsProficiencyTable extends React.Component {
             <li>Standards based scores persist across classes(they do NOT reset automatically)</li>
             <li>Mastery score is rounded up when the calcaulated score is at/above mid point between two levels</li>
           </StyledUl>
-          <StyledRadioGroup defaultValue={calcType} onChange={this.changeCalcType} value={calcType}>
+          <StyledRadioGroup
+            disabled={this.props.readOnly}
+            defaultValue={calcType}
+            onChange={this.changeCalcType}
+            value={calcType}
+          >
             <Radio value="MOST_RECENT">Most Recent</Radio>
             <Radio value="MAX_SCORE">Max Score</Radio>
             <Radio value="MODE_SCORE">Mode Score</Radio>
@@ -349,6 +358,7 @@ class StandardsProficiencyTable extends React.Component {
                 <React.Fragment>
                   <StyledLabel>Decay %</StyledLabel>
                   <StyledAverageInput
+                    disabled={props.readOnly}
                     defaultValue={calcDecayingAttr}
                     value={calcDecayingAttr}
                     maxLength={2}
@@ -363,6 +373,7 @@ class StandardsProficiencyTable extends React.Component {
                 <React.Fragment>
                   <StyledLabel>Not of Assesments</StyledLabel>
                   <StyledAverageInput
+                    disabled={props.readOnly}
                     defaultValue={calcMovingAvrAttr}
                     value={calcMovingAvrAttr}
                     onChange={e => this.onChangeCalcAttr(e, "MOVING_AVERAGE")}

@@ -4,13 +4,13 @@ import { compose } from "redux";
 import { get } from "lodash";
 import { createReducer } from "redux-starter-kit";
 import uuid from "uuid/v1";
-import { List, Row, Col, Button } from "antd";
+import { List, Row, Col, Button, message } from "antd";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import PerformanceBandTable, {
   PerformanceBandTable as PerformanceBandTableDumb
 } from "../PerformanceBandTable/PerformanceBandTable";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
 import {
   createPerformanceBandAction,
   updatePerformanceBandAction,
@@ -23,7 +23,6 @@ import ColorPicker from "./ColorPicker";
 import { StyledContent, StyledLayout, SpinContainer, StyledSpin, PerformanceBandDiv } from "./styled";
 
 const title = "Manage District";
-const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
 
 function ProfileRow({
   name,
@@ -35,7 +34,8 @@ function ProfileRow({
   updatePerformanceBand,
   savePerformance,
   remove,
-  update: updateToServer
+  update: updateToServer,
+  readOnly
 }) {
   const setPerf = payload => {
     updatePerformanceBand({ _id, data: payload });
@@ -48,14 +48,17 @@ function ProfileRow({
           <h3>{name}</h3>
         </Col>
         <Col span={12}>
-          <Button onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}>edit</Button>{" "}
-          <Button onClick={() => remove(_id)}>delete</Button>
+          <Button onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}>
+            {readOnly ? "view" : "edit"}
+          </Button>
+
+          {readOnly ? null : <Button onClick={() => remove(_id)}>delete</Button>}
         </Col>
       </Row>
 
       {active ? (
         <Row>
-          <Col span={23}>
+          <Col span={24}>
             <PerformanceBandTableDumb
               performanceBandId={_id}
               dataSource={performanceBand}
@@ -63,6 +66,7 @@ function ProfileRow({
               updatePerformanceBand={() => {
                 updateToServer(_id);
               }}
+              readOnly={readOnly}
               setPerformanceBandData={setPerf}
             />
           </Col>
@@ -73,7 +77,12 @@ function ProfileRow({
 }
 
 export function PerformanceBandAlt(props) {
-  const { loading, updating, creating, history, list, create, update, remove, profiles } = props;
+  const menuActive =
+    props.role === "school-admin"
+      ? { mainMenu: "Performance Bands" }
+      : { mainMenu: "Settings", subMenu: "Performance Bands" };
+
+  const { loading, updating, creating, history, list, create, update, remove, profiles, currentUserId } = props;
   const showSpin = loading || updating || creating;
   useEffect(() => {
     list();
@@ -100,7 +109,7 @@ export function PerformanceBandAlt(props) {
       };
       create(initialObj);
     } else {
-      alert("name can't be empty");
+      message.error("name can't be empty");
     }
   };
 
@@ -110,7 +119,7 @@ export function PerformanceBandAlt(props) {
       <StyledContent>
         <StyledLayout>
           <Button type="primary" style={{ marginBottom: "5px" }} onClick={addProfile}>
-            + Add Profile
+            + Create new Profile
           </Button>
           <List
             dataSource={profiles}
@@ -121,6 +130,7 @@ export function PerformanceBandAlt(props) {
                 {...profile}
                 remove={remove}
                 update={update}
+                readOnly={props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")}
                 setEditingIndex={setEditingIndex}
                 active={editingIndex === profile._id}
                 updatePerformanceBand={props.updateLocal}
@@ -143,7 +153,9 @@ const enhance = compose(
       updating: get(state, ["performanceBandReducer", "updating"], false),
       creating: get(state, ["performanceBandReducer", "creating"], false),
       profiles: get(state, ["performanceBandReducer", "profiles"], []),
-      orgId: getUserOrgId(state)
+      orgId: getUserOrgId(state),
+      role: getUserRole(state),
+      currentUserId: getUserId(state)
     }),
     {
       list: receivePerformanceBandAction,

@@ -49,10 +49,13 @@ const AnswerBox = ({
 
   mathUnitAnswers.map(ans => {
     const { index } = find(mathUnits, d => d.id === ans.id) || { index: 0 };
-    const { unit = "" } = ans.options;
+    let { unit = "" } = ans.options;
+    if (unit.search("f") !== -1) {
+      unit = `\\text{${unit}}`;
+    }
     return validAnswers.push({
       index,
-      value: ans.value.search("=") === -1 ? `${ans.value} ${unit}` : ans.value.replace(/=/gm, ` ${unit}=`),
+      value: ans.value.search("=") === -1 ? `${ans.value}\\ ${unit}` : ans.value.replace(/=/gm, `\\ ${unit}=`),
       isMath: true
     });
   });
@@ -104,12 +107,17 @@ const AnswerBox = ({
     if (altMathUnitAnswers[altIndex]) {
       altMathUnitAnswers[altIndex].map(answer => {
         const { index } = find(mathUnits, d => d.id === answer.id) || { index: 0 };
-        const { unit = "" } = answer.options;
+        let { unit = "" } = answer.options;
+        if (unit.search("f") !== -1) {
+          unit = `\\text{${unit}}`;
+        }
         if (answer.value) {
           return _altAnswers.push({
             index,
             value:
-              answer.value.search("=") === -1 ? `${answer.value} ${unit}` : answer.value.replace(/=/gm, ` ${unit}=`),
+              answer.value.search("=") === -1
+                ? `${answer.value}\\ ${unit}`
+                : answer.value.replace(/=/gm, `\\ ${unit}=`),
             isMath: true
           });
         }

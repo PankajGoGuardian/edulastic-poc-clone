@@ -38,6 +38,7 @@ import { CustomSelect } from "./styled/SubjectAndGradeSelect";
 import SecondBlock from "./SecondBlock";
 import AlignmentRow from "./AlignmentRow";
 import { getInterestedCurriculumsSelector } from "../../../author/src/selectors/user";
+import { getAllTagsAction, getAllTagsSelector, addNewTagAction } from "../../../author/TestPage/ducks";
 
 const { Title } = Typography;
 
@@ -58,6 +59,9 @@ const QuestionMetadata = ({
   curriculumStandards,
   getCurriculumStandards,
   curriculums,
+  getAllTags,
+  allTagsData,
+  addNewTag,
   getCurriculums,
   removeAlignment,
   interestedCurriculums,
@@ -71,16 +75,17 @@ const QuestionMetadata = ({
     if (curriculums.length === 0) {
       getCurriculums();
     }
+    getAllTags({ type: "testitem" });
   }, []);
 
   const handleDelete = curriculumId => () => {
     removeAlignment(curriculumId);
   };
 
-  const handleChangeTags = ({ target: { value } }) => {
+  const handleChangeTags = tags => {
     const newQuestionData = {
       ...questionData,
-      tags: value.split(",").map(tag => tag.trim())
+      tags
     };
     setQuestionData(newQuestionData);
   };
@@ -154,6 +159,8 @@ const QuestionMetadata = ({
           depthOfKnowledge={questionData.depthOfKnowledge}
           authorDifficulty={questionData.authorDifficulty}
           tags={questionData.tags}
+          allTagsData={allTagsData}
+          addNewTag={addNewTag}
           onChangeTags={handleChangeTags}
           onQuestionDataSelect={handleQuestionDataSelect}
         />
@@ -211,6 +218,7 @@ const enhance = compose(
       curriculumStandardsLoading: standardsSelector(state).loading,
       curriculumStandards: getStandardsListSelector(state),
       questionData: getQuestionDataSelector(state),
+      allTagsData: getAllTagsSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       alignment: getDictionariesAlignmentsSelector(state)
     }),
@@ -222,6 +230,8 @@ const enhance = compose(
       setQuestionData: setQuestionDataAction,
       addAlignment: addNewAlignmentAction,
       removeAlignment: removeExistedAlignmentAction,
+      getAllTags: getAllTagsAction,
+      addNewTag: addNewTagAction,
       editAlignment: updateDictAlignmentAction
     }
   )

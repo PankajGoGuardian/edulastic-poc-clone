@@ -38,7 +38,7 @@ class Layout extends Component {
       fontsize: "normal",
       stemnumeration: "",
       widthpx: 140,
-      heightpx: 35,
+      heightpx: 36,
       placeholder: "",
       responsecontainerindividuals: []
     },

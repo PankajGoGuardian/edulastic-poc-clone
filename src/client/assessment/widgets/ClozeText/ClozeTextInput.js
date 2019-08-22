@@ -215,10 +215,16 @@ const CustomInput = styled.div`
   margin: 0px 4px;
   position: relative;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+
+  .ant-input {
+    border-radius: 0px 4px 4px 0px;
+  }
 `;
 
 const IndexBox = styled.div`
   padding: 3px 10px;
+  width: 40px;
+  justify-content: center;
   color: white;
   display: inline-flex;
   align-items: center;

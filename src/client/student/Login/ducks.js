@@ -591,11 +591,11 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
-  const districtPolicy = yield select(signupDistrictPolicySelector);
+  const generalSettings = yield select(signupGeneralSettingsSelector);
   let districtId;
-  if (districtPolicy) {
-    localStorage.setItem("thirdPartySignOnDistrictPolicy", JSON.stringify(districtPolicy));
-    districtId = districtPolicy.orgId;
+  if (generalSettings) {
+    localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
+    districtId = generalSettings.orgId;
   }
 
   try {
@@ -630,20 +630,23 @@ function* googleLogin({ payload }) {
 }
 
 function* googleSSOLogin({ payload }) {
-  let districtPolicy = localStorage.getItem("thirdPartySignOnDistrictPolicy");
-  if (districtPolicy) {
-    districtPolicy = JSON.parse(districtPolicy);
-    payload.districtId = districtPolicy.orgId;
+  const _payload = { ...payload };
+
+  let generalSettings = localStorage.getItem("thirdPartySignOnGeneralSettings");
+  if (generalSettings) {
+    generalSettings = JSON.parse(generalSettings);
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
   }
 
   try {
-    if (payload.edulasticRole === "student") {
+    if (_payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
       if (classCode) {
-        payload.classCode = classCode;
+        _payload.classCode = classCode;
       }
     }
-    const res = yield call(authApi.googleSSOLogin, payload);
+    const res = yield call(authApi.googleSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
     yield call(message.error, get(e, "data.message", "Google Login failed"));
@@ -651,15 +654,15 @@ function* googleSSOLogin({ payload }) {
   }
   localStorage.removeItem("thirdPartySignOnRole");
   localStorage.removeItem("thirdPartySignOnClassCode");
-  localStorage.removeItem("thirdPartySignOnDistrictPolicy");
+  localStorage.removeItem("thirdPartySignOnGeneralSettings");
 }
 
 function* msoLogin({ payload }) {
-  const districtPolicy = yield select(signupDistrictPolicySelector);
+  const generalSettings = yield select(signupGeneralSettingsSelector);
   let districtId;
-  if (districtPolicy) {
-    localStorage.setItem("thirdPartySignOnDistrictPolicy", JSON.stringify(districtPolicy));
-    districtId = districtPolicy.orgId;
+  if (generalSettings) {
+    localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
+    districtId = generalSettings.orgId;
   }
 
   try {
@@ -692,20 +695,23 @@ function* msoLogin({ payload }) {
 }
 
 function* msoSSOLogin({ payload }) {
-  let districtPolicy = localStorage.getItem("thirdPartySignOnDistrictPolicy");
-  if (districtPolicy) {
-    districtPolicy = JSON.parse(districtPolicy);
-    payload.districtId = districtPolicy.orgId;
+  const _payload = { ...payload };
+
+  let generalSettings = localStorage.getItem("thirdPartySignOnGeneralSettings");
+  if (generalSettings) {
+    generalSettings = JSON.parse(generalSettings);
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
   }
 
   try {
-    if (payload.edulasticRole === "student") {
+    if (_payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
       if (classCode) {
-        payload.classCode = classCode;
+        _payload.classCode = classCode;
       }
     }
-    const res = yield call(authApi.msoSSOLogin, payload);
+    const res = yield call(authApi.msoSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
     yield call(message.error, get(e, "data.message", "MSO Login failed"));
@@ -713,7 +719,7 @@ function* msoSSOLogin({ payload }) {
   }
   localStorage.removeItem("thirdPartySignOnRole");
   localStorage.removeItem("thirdPartySignOnClassCode");
-  localStorage.removeItem("thirdPartySignOnDistrictPolicy");
+  localStorage.removeItem("thirdPartySignOnGeneralSettings");
 }
 
 function* cleverLogin({ payload }) {
@@ -833,11 +839,12 @@ function* resetPasswordRequestSaga({ payload }) {
 
 function* resetMyPasswordRequestSaga({ payload }) {
   try {
-    const result = yield call(userApi.resetMyPassword, payload);
+    yield call(userApi.resetMyPassword, payload);
     yield call(message.success, "Password changed successfully");
     yield put({ type: RESET_MY_PASSWORD_SUCCESS });
   } catch (e) {
-    yield call(message.error, e && e.data ? e.data.message : "Failed to reset password.");
+    console.error(e);
+    yield call(message.error, "Failed to reset password.");
     yield put({
       type: RESET_MY_PASSWORD_FAILED
     });
@@ -846,11 +853,12 @@ function* resetMyPasswordRequestSaga({ payload }) {
 
 function* updateProfileImageSaga({ payload }) {
   try {
-    const result = yield call(userApi.updateUser, payload);
+    yield call(userApi.updateUser, payload);
     yield call(message.success, "Thumbnail changed successfully");
     yield put({ type: UPDATE_PROFILE_IMAGE_PATH_SUCCESS, payload: payload.data.thumbnail });
   } catch (e) {
-    yield call(message.error, e && e.data ? e.data.message : "Failed to Update Image");
+    console.error(e);
+    yield call(message.error, "Failed to Update Image");
     yield put({
       type: UPDATE_PROFILE_IMAGE_PATH_FAILED
     });
@@ -862,7 +870,8 @@ function* updateUserDetailsSaga({ payload }) {
     yield call(message.success, "User details updated successfully.");
     yield put({ type: UPDATE_USER_DETAILS_SUCCESS, payload: result });
   } catch (e) {
-    yield call(message.error, e && e.data ? e.data.message : "Update user details failed.");
+    console.error(e);
+    yield call(message.error, "Update user details failed.");
     yield put({
       type: UPDATE_USER_DETAILS_FAILED
     });
@@ -875,7 +884,8 @@ function* deleteAccountSaga({ payload }) {
     yield call(message.success, "Account deleted successfully.");
     yield put({ type: LOGOUT });
   } catch (e) {
-    yield call(message.error, e && e.data ? e.data.message : "Unable to delete Account");
+    console.error(e);
+    yield call(message.error, "Unable to delete Account");
   }
 }
 
@@ -886,7 +896,8 @@ function* updateInterestedCurriculumsSaga({ payload }) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: payload.curriculums });
   } catch (e) {
     yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED });
-    yield call(message.error, e && e.data ? e.data.message : "Failed to update Standard sets");
+    console.error(e);
+    yield call(message.error, "Failed to update Standard sets");
   }
 }
 
@@ -897,7 +908,8 @@ function* removeSchoolSaga({ payload }) {
     yield put({ type: REMOVE_SCHOOL_SUCCESS, payload: payload.schoolId });
   } catch (e) {
     yield put({ type: REMOVE_SCHOOL_FAILED });
-    yield call(message.error, e && e.data ? e.data.message : "Failed to remove requested school");
+    console.error(e);
+    yield call(message.error, "Failed to remove requested school");
   }
 }
 

@@ -1,14 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { compose } from "redux";
 import { Button, Form, Input } from "antd";
 import styled from "styled-components";
 import { ConfirmationModal } from "../../../../author/src/components/common/ConfirmationModal";
 
-import { borders, backgrounds, themeColor } from "@edulastic/colors";
+import { borders, backgrounds, themeColor, whiteSmoke, numBtnColors, white } from "@edulastic/colors";
 
 const DeleteSchoolModal = ({ visible, toggleModal, form, removeSchool, selectedSchool }) => {
+  const [disableButton, setButtonState] = useState(true);
+
   const handleResponse = e => {
-    e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (values && values.confirmationText && values.confirmationText.toUpperCase() === "REMOVE") removeSchool();
@@ -20,15 +21,19 @@ const DeleteSchoolModal = ({ visible, toggleModal, form, removeSchool, selectedS
     <Button ghost onClick={() => toggleModal("REMOVE_SCHOOL", false)}>
       NO, CANCEL
     </Button>,
-    <Button onClick={handleResponse}>YES, REMOVE</Button>
+    <YesButton disabled={disableButton} onClick={handleResponse}>
+      YES, REMOVE
+    </YesButton>
   ];
 
   const Title = [<Heading>Remove</Heading>];
 
   const validateText = (rule, value, callback) => {
-    if (value && value.toUpperCase() !== "REMOVE") {
-      callback("Please enter REMOVE in the field.");
+    if (value && value.toUpperCase() === "REMOVE") {
+      setButtonState(false);
+      callback();
     } else {
+      setButtonState(true);
       callback();
     }
   };
@@ -57,14 +62,10 @@ const DeleteSchoolModal = ({ visible, toggleModal, form, removeSchool, selectedS
           {form.getFieldDecorator("confirmationText", {
             rules: [
               {
-                required: true,
-                message: "Please type the required Text."
-              },
-              {
                 validator: validateText
               }
             ]
-          })(<Input type="text" />)}
+          })(<TextInput type="text" />)}
         </FormItem>
       </ModalBody>
     </ConfirmationModal>
@@ -100,4 +101,14 @@ const FormItem = styled(Form.Item)`
 
 const Heading = styled.h4`
   font-weight: 600;
+`;
+
+const TextInput = styled(Input)`
+  text-align: center;
+`;
+
+const YesButton = styled(Button)`
+  color: ${props => (props.disabled ? "rgba(0, 0, 0, 0.25)" : white)} !important;
+  background-color: ${props => (props.disabled ? whiteSmoke : themeColor)} !important;
+  border-color: ${props => (props.disabled ? numBtnColors.borderColor : themeColor)} !important;
 `;

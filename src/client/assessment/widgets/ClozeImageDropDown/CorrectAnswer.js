@@ -103,6 +103,8 @@ class CorrectAnswer extends Component {
               min={0}
               step={0.5}
               data-cy="point-field"
+              height="40px"
+              width="auto"
               style={{ "font-weight": "600", color: "#434B4F" }}
             />
             <Points>{t("component.correctanswers.points")}</Points>

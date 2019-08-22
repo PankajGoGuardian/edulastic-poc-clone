@@ -52,17 +52,19 @@ const AssessmentDetails = ({
               : t("common.common")}
           </TestType>
         </CardTitle>
-        <CardDate>
-          <Icon type={theme.assignment.cardTimeIconType} />
-          <DueDetails data-cy="date">
-            {type === "assignment"
-              ? new Date(startDate) > new Date()
-                ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
-                : t("common.dueOn")
-              : t("common.finishedIn")}{" "}
-            {formatTime(dueDate)}
-          </DueDetails>
-        </CardDate>
+        {!!dueDate && (
+          <CardDate>
+            <Icon type={theme.assignment.cardTimeIconType} />
+            <DueDetails data-cy="date">
+              {type === "assignment"
+                ? new Date(startDate) > new Date()
+                  ? `${t("common.opensIn")} ${formatTime(startDate)} and ${t("common.dueOn")}`
+                  : t("common.dueOn")
+                : t("common.finishedIn")}{" "}
+              {formatTime(dueDate)}
+            </DueDetails>
+          </CardDate>
+        )}
         <StatusWrapper>
           {type === "assignment" ? (
             <React.Fragment>

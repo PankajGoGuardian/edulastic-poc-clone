@@ -331,7 +331,7 @@ const OrderList = ({
               {hasAltAnswers && (
                 <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
                   <ItemsWrapper styleType={styleType}>
-                    {Object.keys(alternateAnswers).map(key => (
+                    {Object.keys(alternateAnswers).map((key, i) => (
                       <CorrectAnswerItem theme={theme}>
                         <Text>
                           <Index>{getStemNumeration(i)}</Index>

@@ -482,8 +482,8 @@ class Container extends Component {
                   key={passage ? i + 1 : i}
                   row={row}
                   view={view}
-                  showAnswer
                   rowIndex={i}
+                  previewTab={"show"}
                   itemData={item}
                   count={rows.length}
                   onAdd={this.handleAdd}
@@ -654,7 +654,7 @@ class Container extends Component {
                             <Pagination
                               total={passageTestItems.length}
                               pageSize={1}
-                              defaultCurrent={passageTestItems.findIndex(i => i === item._id) + 1}
+                              defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
                               onChange={this.goToItem}
                             />
                           </>

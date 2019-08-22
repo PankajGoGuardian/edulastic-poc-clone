@@ -2,7 +2,7 @@ import JXG from "jsxgraph";
 import { CONSTANT, Colors } from "../config";
 import { defaultPointParameters, getLabelParameters } from "../settings";
 import EditButton from "./EditButton";
-import { setLabel } from "../utils";
+import { setLabel, nameGen } from "../utils";
 
 function roundCoords(coords) {
   return [Math.round(coords[1]), Math.round(coords[2])];
@@ -72,7 +72,7 @@ function create(board, usrCoords, id = null) {
   point.on("mouseout", () => board.handleElementMouseOut(point));
 
   if (board.drawingObject === null) {
-    setLabel(point, board.objectNameGenerator.next().value);
+    setLabel(point, nameGen(board.elements.concat(board.getTempPoints())));
   }
 
   return point;

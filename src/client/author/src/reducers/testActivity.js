@@ -221,6 +221,7 @@ const reducer = (state = initialState, { type, payload }) => {
         additionalData: {
           ...state.additionalData,
           canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId),
+          closed: true,
           classesCanBeMarked: [...state.additionalData.classesCanBeMarked, payload.classId]
         }
       };

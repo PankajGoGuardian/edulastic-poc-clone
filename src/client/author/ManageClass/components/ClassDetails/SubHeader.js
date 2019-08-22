@@ -75,6 +75,7 @@ const SubHeader = ({
       <RightContent>
         <AnchorLink to="/author/assignments">View Assessments</AnchorLink>
         {allowGoogleLogin !== false &&
+          active === 1 &&
           (isUserGoogleLoggedIn ? (
             <i
               style={{ cursor: "pointer", marginLeft: "8px", display: "flex" }}

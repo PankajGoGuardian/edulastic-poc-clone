@@ -3,7 +3,10 @@ import FileHelper from "../framework/util/fileHelper";
 
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 
-describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
+// TODO : unskip and fix the unknown hanging issue in cypress
+// https://github.com/cypress-io/cypress/issues/2294
+// provided work around did not work
+describe.skip(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}`, () => {
   context(`manage classs page`, () => {
     before("set token", () => {
       cy.fixture("users").then(users => {

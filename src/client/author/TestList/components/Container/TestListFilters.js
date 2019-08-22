@@ -126,7 +126,9 @@ const TestListFilters = ({
       )}
       <FilerHeading justifyContent="space-between">
         <Title>FILTERS</Title>
-        <ClearAll onClick={clearFilter}>CLEAR ALL</ClearAll>
+        <ClearAll data-cy="clearAll" onClick={clearFilter}>
+          CLEAR ALL
+        </ClearAll>
       </FilerHeading>
       <TestFiltersNav items={filterMenuItems} onSelect={handleLabelSearch} search={search} />
       {mappedfilterData.map((filterItem, index) => (

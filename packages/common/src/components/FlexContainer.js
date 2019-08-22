@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { mediumDesktopWidth } from "@edulastic/colors";
+import { mobileWidthMax, mediumDesktopWidth } from "@edulastic/colors";
 
 const FlexContainer = styled.div`
   display: flex;
@@ -26,6 +26,10 @@ const FlexContainer = styled.div`
     button svg {
       display: inline-block;
     }
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    flex-wrap: wrap;
   }
 `;
 

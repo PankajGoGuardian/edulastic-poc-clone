@@ -45,11 +45,13 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
       it(`'select page' when resolution is '${size}'`, () => {
         cy.setResolution(size);
         cy.visit(`/${PAGE}`);
-        cy.contains("Request a new School").should("be.visible");
+        cy.wait("@schoolSearch");
+        cy.contains("Collaborate with your colleagues and more").should("be.visible");
         cy.matchImageSnapshot();
       });
 
-      it(`'request new school' page when resolution is '${size}'`, () => {
+      // skipping below test as option is now hidden temperarely
+      it.skip(`'request new school' page when resolution is '${size}'`, () => {
         cy.setResolution(size);
         cy.contains("Request a new School").click();
         // eslint-disable-next-line cypress/no-unnecessary-waiting

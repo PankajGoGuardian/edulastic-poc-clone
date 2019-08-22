@@ -841,7 +841,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [1, 2, 0, 3]
+            value: [0, 1, 2, 3]
           },
           altResponses: []
         },
@@ -1994,7 +1994,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["intermediate", "general", "qwerty"],
+        symbols: ["basic", "intermediate", "general"],
         hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
@@ -2034,7 +2034,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["basic", "units_us", "units_si"],
+        symbols: ["units_us", "units_si", "qwerty"],
         hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
@@ -2046,7 +2046,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       data: {
         title: "Math, Text & Dropdown",
         stimulus:
-          '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
+          '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;,&nbsp;<mathunit contenteditable="false"></mathunit>&nbsp;</p>',
         templateDisplay: true,
         type: questionType.EXPRESSION_MULTIPART,
         responseIds: {

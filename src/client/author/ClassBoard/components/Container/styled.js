@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Card, Checkbox, Button, Menu } from "antd";
+import { Card, Checkbox, Button, Menu, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 import {
@@ -32,10 +32,11 @@ export const AnchorLink = styled(Link)`
   color: ${linkColor};
 `;
 
-export const PaginationInfo = styled.span`
+export const PaginationInfo = styled(Col)`
   font-weight: 600;
   display: flex;
-  max-width: 50vw;
+  align-items: center;
+  max-width: 100%;
   font-size: 11px;
   color: ${linkColor};
   @media (max-width: ${mobileWidth}) {
@@ -99,7 +100,11 @@ export const StyledCard = styled(Card)`
   }
 `;
 
-export const StudentButtonDiv = styled.div`
+export const StudentButtonDiv = styled(Col)`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
   .ant-btn-primary {
     background-color: #0e93dc;
   }

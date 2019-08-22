@@ -8,8 +8,11 @@ export const CustomUnit = ({ onChange, customUnits }) => {
   const onBlurHandler = e => {
     onChange("customUnits", e.target.value);
   };
+
+  // this will need to restrict special characters in the future.
+  // eslint-disable-next-line no-unused-vars
   const onKeyPressHandler = e => {
-    const isSpecialChar = !(e.key.length > 1 || e.key.match(/[^a-zA-Z,]/g));
+    const isSpecialChar = !(e.key.length > 1 || e.key.match(/[^a-zA-Z,\s]/g));
     const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
     if (!(isSpecialChar || isArrowOrShift)) {
       const isValidKey = customUnits.includes(e.key);
@@ -30,7 +33,7 @@ export const CustomUnit = ({ onChange, customUnits }) => {
 
   return (
     <StyledInput
-      onKeyPress={onKeyPressHandler}
+      // onKeyPress={onKeyPressHandler}
       data-cy="custom-unit"
       size="large"
       value={keys}

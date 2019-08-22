@@ -18,7 +18,7 @@ function AddStudentsToOtherClass({
   selectedUsersInfo = [],
   askUserConfirmation
 }) {
-  const [userConfirmModalVisiblie, setUserConfirmModalVisiblie] = useState(false);
+  const [isConfirmationModalVisible, setIsConfirmationModalVisible] = useState(false);
   const [cofirmationText, setConfimationText] = useState("");
   useEffect(() => {
     const { groupInfo: { name, institutionName, primaryTeacherId, owners = [] } = {} } = destinationClassData || {};
@@ -45,7 +45,7 @@ function AddStudentsToOtherClass({
   };
   const handleOkClick = () => {
     if (askUserConfirmation) {
-      setUserConfirmModalVisiblie(true);
+      setIsConfirmationModalVisible(true);
     } else {
       formSubmitConfirmed();
     }
@@ -102,28 +102,26 @@ function AddStudentsToOtherClass({
     </Modal>
   ) : (
     <>
-      {userConfirmModalVisiblie && (
-        <ConfirmationModal
-          title="Move User(s)"
-          show={userConfirmModalVisiblie}
-          onOk={() => {
-            formSubmitConfirmed();
-            setUserConfirmModalVisiblie(false);
-          }}
-          onCancel={() => {
-            setConfimationText("");
-            setUserConfirmModalVisiblie(false);
-          }}
-          inputVal={cofirmationText}
-          onInputChange={e => setConfimationText(e.target.value)}
-          expectedVal="MOVE"
-          bodyText={
-            "Are you sure you want to move the selected user(s) ? Once moved, existing assessment data will no longer be available for the selected users."
-          }
-          okText="Yes,Move"
-          canUndone
-        />
-      )}
+      <ConfirmationModal
+        title="Move User(s)"
+        show={isConfirmationModalVisible}
+        onOk={() => {
+          formSubmitConfirmed();
+          setIsConfirmationModalVisible(false);
+        }}
+        onCancel={() => {
+          setConfimationText("");
+          setIsConfirmationModalVisible(false);
+        }}
+        inputVal={cofirmationText}
+        onInputChange={e => setConfimationText(e.target.value)}
+        expectedVal="MOVE"
+        bodyText={
+          "Are you sure you want to move the selected user(s) ? Once moved, existing assessment data will no longer be available for the selected users."
+        }
+        okText="Yes,Move"
+        canUndone
+      />
 
       <StyledModal
         visible={showModal}

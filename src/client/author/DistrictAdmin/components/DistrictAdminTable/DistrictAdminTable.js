@@ -391,7 +391,7 @@ class DistrictAdminTable extends Component {
     const queryObj = {
       search,
       districtId: userOrgId,
-      role: "student",
+      role: "district-admin",
       limit: 25,
       page: currentPage
       // uncomment after elastic search is fixed

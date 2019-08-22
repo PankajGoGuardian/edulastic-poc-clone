@@ -436,7 +436,7 @@ class TeacherTable extends Component {
     const queryObj = {
       search,
       districtId: userOrgId,
-      role: "student",
+      role: "teacher",
       limit: 25,
       page: currentPage
       // uncomment after elastic search is fixed

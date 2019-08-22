@@ -28,7 +28,8 @@ const Option = props => {
     styleType,
     multipleResponses,
     isReviewTab,
-    testItem
+    testItem,
+    maxWidth
   } = props;
   let className = "";
   let correctAnswers = [];
@@ -164,6 +165,7 @@ const Option = props => {
     // <Label width={width} smallSize={smallSize} className={className} showAnswer>
     // TODO setup label background color for each option
     <Label
+      maxWidth={maxWidth}
       smallSize={smallSize}
       className={className}
       showAnswer={showAnswer}

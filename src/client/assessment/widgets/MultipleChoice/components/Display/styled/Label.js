@@ -45,7 +45,7 @@ export const Label = styled.label`
       return "2px";
     }
   }};
-
+  flex:1;
   position: relative;
   display: inline-block;
   padding: ${props => (props.styleType === "primary" ? "0" : "9px 0px")};
@@ -71,7 +71,7 @@ export const Label = styled.label`
 
     return color;
   }};
-  max-width: "100%";
+  max-width: ${props => props.maxWidth || "100%"};
   border-radius: ${props =>
     props.styleType === "primary" || props.uiStyle.type === "block" ? "4px" : "0px 10px 10px 0px"};
   min-height: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "40px" : "auto")};
@@ -81,10 +81,6 @@ export const Label = styled.label`
   /* margin: ${props => (props.setAnswers ? "5px 0" : "10px 0")}; */
   /* width: ${props => props.width || "100%"}; */
 
-
-  &:not(:first-child) {
-    margin-top: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "17px" : "0")};
-  }
   &:hover {
     /* border: dotted 1px ${props => props.theme.widgets.multipleChoice.labelBorderHoverColor};
     border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelBorderHoverColor};

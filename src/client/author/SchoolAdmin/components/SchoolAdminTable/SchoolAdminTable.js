@@ -390,7 +390,7 @@ class SchoolAdminTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
-    let showActive = this.state.showActive ? 1 : 0;
+    const { showActive } = this.state;
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {
@@ -411,17 +411,20 @@ class SchoolAdminTable extends Component {
       search["name"] = searchByName;
     }
 
-    return {
+    const queryObj = {
       search,
       districtId: userOrgId,
       role: "school-admin",
       limit: 25,
-      page: currentPage,
+      page: currentPage
       // uncomment after elastic search is fixed
-      status: showActive
       // sortField,
       // order
     };
+    if (showActive) {
+      queryObj["status"] = 1;
+    }
+    return queryObj;
   };
 
   loadFilteredList = () => {

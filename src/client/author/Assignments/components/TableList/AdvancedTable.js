@@ -207,11 +207,10 @@ class AdvancedTable extends Component {
     const { perPage, current, columns } = this.state;
 
     const rowSelection = {
-      selectedRowKeys: selectedRows,
+      selectedRowKeys: selectedRows.map(item => `${item.testId}_${item.testType}`),
       onChange: (_, rows) => {
         if (onSelectRow) {
-          const selectedRowKeys = rows.map(item => item.key);
-          onSelectRow(selectedRowKeys);
+          onSelectRow(rows);
         }
       }
     };
@@ -233,7 +232,7 @@ class AdvancedTable extends Component {
         <TableData
           columns={columns}
           rowSelection={rowSelection}
-          dataSource={assignmentsSummary.map(item => ({ ...item, key: item.testId }))}
+          dataSource={assignmentsSummary.map(item => ({ ...item, key: `${item.testId}_${item.testType}` }))}
           onRow={row => ({
             onClick: () => this.goToAdvancedView(row)
           })}

@@ -78,7 +78,7 @@ export const Label = styled.label`
   display: flex;
   align-items: center;
 
-  &:not(:first-child) {
+  &(:first-child) {
     margin-top: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "12px" : "0")};
   }
   &.checked {
@@ -91,14 +91,12 @@ export const Label = styled.label`
     background-color: ${props => props.theme.widgets.multipleChoice.labelRightBgColor};
     border-radius: 8px;
     border: none;
-    min-width: 100%;
     padding-right: 50px;
   }
   &.wrong {
     background-color: ${props => props.theme.widgets.multipleChoice.labelWrongBgColor};
     border-radius: 8px;
     border: none;
-    min-width: 100%;
     padding-right: 50px;
   }
   &.preview {

@@ -79,6 +79,7 @@ class LoginContainer extends React.Component {
       isSignupUsingDaURL,
       districtPolicy,
       districtShortName,
+      generalSettings,
       googleLogin,
       cleverLogin,
       msoLogin
@@ -100,6 +101,9 @@ class LoginContainer extends React.Component {
             <Col xs={24} sm={18} md={10} lg={9} xl={9}>
               <FormWrapper>
                 <FormHead>
+                  {isSignupUsingDaURL && generalSettings && generalSettings.logo ? (
+                    <DistrictLogo src={generalSettings.logo} />
+                  ) : null}
                   <h3 align="center">
                     {Partners.boxTitle === "Login" ? (
                       <b>{Partners.boxTitle}</b>
@@ -279,6 +283,13 @@ const FormHead = styled(Row)`
     color: white;
     margin: 5px 0px 15px;
   }
+`;
+
+const DistrictLogo = styled.img`
+  background: transparent;
+  max-height: 300px;
+  width: 100%;
+  object-fit: contain;
 `;
 
 const ThirdPartyLoginBtn = styled(Col)`

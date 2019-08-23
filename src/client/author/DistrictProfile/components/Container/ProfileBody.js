@@ -679,23 +679,26 @@ const ProfileImgWrapper = styled.div`
   border-radius: 10px;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: ${extraDesktopWidth}) {
+  margin-right: 10px;
+  margin-bottom: 20px @media (max-width: ${extraDesktopWidth}) {
     width: 300px;
     height: 250px;
     margin-right: 10px;
+    margin-bottom: 20px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
     max-width: 250px;
     max-height: 200px;
     margin-right: 10px;
+    margin-bottom: 20px;
   }
 
   @media (max-width: ${desktopWidth}) {
     max-width: 200px;
     max-height: 200px;
     margin-right: 20px;
+    margin-bottom: 20px;
   }
 `;
 

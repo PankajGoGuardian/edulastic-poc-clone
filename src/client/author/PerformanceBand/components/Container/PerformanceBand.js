@@ -4,7 +4,8 @@ import { compose } from "redux";
 import { get } from "lodash";
 import { createReducer } from "redux-starter-kit";
 import uuid from "uuid/v1";
-import { List, Row, Col, Button, message } from "antd";
+import { List, Row, Col, Button, message, Modal, Input } from "antd";
+import styled from "styled-components";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import PerformanceBandTable, {
@@ -35,14 +36,35 @@ function ProfileRow({
   savePerformance,
   remove,
   update: updateToServer,
-  readOnly
+  readOnly,
+  loading
 }) {
   const setPerf = payload => {
     updatePerformanceBand({ _id, data: payload });
   };
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
 
   return (
     <List.Item style={{ display: "block" }}>
+      <Modal
+        title="Delete Profile"
+        visible={confirmVisible}
+        footer={[
+          <Button disabled={deleteText != "DELETE"} loading={loading} onClick={() => remove(_id)}>
+            Yes, Delete
+          </Button>,
+          <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
+        ]}
+      >
+        <div className="content">
+          <p>
+            <b>{name}</b> will be removed permanently and can’t be used in future tests. This action can NOT be undone.
+            If you are sure, please type DELETE in the space below.
+          </p>
+        </div>
+        <Input value={deleteText} onChange={e => setDeleteText(e.target.value)} />
+      </Modal>
       <Row>
         <Col span={12}>
           <h3>{name}</h3>
@@ -52,7 +74,7 @@ function ProfileRow({
             {readOnly ? "view" : "edit"}
           </Button>
 
-          {readOnly ? null : <Button onClick={() => remove(_id)}>delete</Button>}
+          {readOnly ? null : <Button onClick={() => setConfirmVisible(true)}>delete</Button>}
         </Col>
       </Row>
 
@@ -93,6 +115,10 @@ export function PerformanceBandAlt(props) {
     const name = prompt("name of the profile?");
 
     if (name) {
+      if (profiles.find(p => p.name === name)) {
+        message.error(`Profile with name "${name}" already exists. Please try with a different name`);
+        return;
+      }
       const initialObj = {
         name,
         orgId: props.orgId,
@@ -118,6 +144,11 @@ export function PerformanceBandAlt(props) {
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout>
+          {showSpin ? (
+            <SpinContainer>
+              <StyledSpin size="large" />
+            </SpinContainer>
+          ) : null}
           <Button type="primary" style={{ marginBottom: "5px" }} onClick={addProfile}>
             + Create new Profile
           </Button>
@@ -129,6 +160,7 @@ export function PerformanceBandAlt(props) {
               <ProfileRow
                 {...profile}
                 remove={remove}
+                loading={loading}
                 update={update}
                 readOnly={props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")}
                 setEditingIndex={setEditingIndex}

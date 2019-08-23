@@ -78,9 +78,6 @@ export const Label = styled.label`
   display: flex;
   align-items: center;
 
-  &(:first-child) {
-    margin-top: ${props => (props.styleType === "primary" || props.uiStyle.type === "block" ? "12px" : "0")};
-  }
   &.checked {
     background-color: ${props => props.theme.widgets.multipleChoice.labelCheckedBgColor};
     border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelCheckedBorderColor};

@@ -82,7 +82,8 @@ export const reducer = createReducer(initialState, {
           calcType: calcType,
           calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcAttribute : 65,
           calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcAttribute : 5,
-          scale: scaleData
+          scale: scaleData,
+          createdBy: el.createdBy
         });
       } else {
         state.data.push({

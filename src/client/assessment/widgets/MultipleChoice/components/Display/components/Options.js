@@ -35,9 +35,9 @@ const Options = ({
     >
       {options.slice(startIndex, lastIndex).map((option, index) => (
         <Option
-          maxWidth={`${(1 / noOfColumns) * 100}%`}
+          maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
           key={option.value}
-          index={index}
+          index={startIndex + index}
           uiStyle={uiStyle}
           item={option}
           validation={validation}

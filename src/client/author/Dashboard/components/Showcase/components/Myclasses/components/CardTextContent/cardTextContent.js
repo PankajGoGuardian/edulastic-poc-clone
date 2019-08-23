@@ -58,7 +58,7 @@ export const CardTextContent = ({ data, history }) => {
             >
               <Row>
                 <Tooltip title={asgnTitle} placement="topLeft">
-                  <TextDiv>{asgnTitle}</TextDiv>
+                  <TextDiv color="#30404F">{asgnTitle}</TextDiv>
                 </Tooltip>
               </Row>
               <Row>

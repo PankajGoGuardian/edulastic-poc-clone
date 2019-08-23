@@ -6,7 +6,7 @@ import { MathKeyboard } from "@edulastic/common";
 
 const { Option } = Select;
 
-const SelectUnit = ({ onChange, onFocus, unit, customUnits, keypadMode, preview, height }) => {
+const SelectUnit = ({ onChange, onDropdownVisibleChange, unit, customUnits, keypadMode, preview, height }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode));
 
   if (keypadMode === "custom") {
@@ -21,7 +21,14 @@ const SelectUnit = ({ onChange, onFocus, unit, customUnits, keypadMode, preview,
   };
 
   return (
-    <StyledSelect onChange={onChangeUnit} onFocus={onFocus} value={unit} preview={preview} height={height}>
+    <StyledSelect
+      onChange={onChangeUnit}
+      value={unit}
+      preview={preview}
+      height={height}
+      getPopupContainer={trigger => trigger.parentNode}
+      onDropdownVisibleChange={onDropdownVisibleChange}
+    >
       {allBtns.map((btn, i) => (
         <Option value={btn.handler} key={i}>
           {btn.label}
@@ -33,7 +40,7 @@ const SelectUnit = ({ onChange, onFocus, unit, customUnits, keypadMode, preview,
 
 SelectUnit.propTypes = {
   onChange: PropTypes.func.isRequired,
-  onFocus: PropTypes.func.isRequired,
+  onDropdownVisibleChange: PropTypes.func.isRequired,
   keypadMode: PropTypes.string.isRequired,
   unit: PropTypes.string.isRequired,
   customUnits: PropTypes.string,

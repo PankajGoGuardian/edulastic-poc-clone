@@ -10,7 +10,6 @@ import { CheckBox } from "./styled/CheckBox";
 
 const CheckBoxedMathBox = ({ value, style }) => {
   const filedRef = useRef();
-
   const replaceWithMathQuill = () => {
     if (!window.MathQuill || !filedRef.current) {
       return;
@@ -30,8 +29,10 @@ const CheckBoxedMathBox = ({ value, style }) => {
 const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick }) => {
   const { responseIds } = item;
   const { index } = find(responseIds[type], res => res.id === id);
-  const { unit = "" } = userAnswer || {};
-
+  let { unit = "" } = userAnswer || {};
+  if (unit.search("f") !== -1) {
+    unit = `\\text{${unit}}`;
+  }
   let checkBoxClass = "";
 
   if (userAnswer && evaluation[id] !== undefined) {
@@ -46,8 +47,8 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
           <CheckBoxedMathBox
             value={
               userAnswer && userAnswer.value.search("=") === -1
-                ? `${userAnswer.value} ${unit}`
-                : userAnswer && userAnswer.value.replace(/=/gm, ` ${unit}=`)
+                ? `${userAnswer.value}\\ ${unit}`
+                : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
             }
           />
         ) : (
@@ -64,8 +65,8 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
             <CheckBoxedMathBox
               value={
                 userAnswer && userAnswer.value.search("=") === -1
-                  ? `${userAnswer.value} ${unit}`
-                  : userAnswer && userAnswer.value.replace(/=/gm, ` ${unit}=`)
+                  ? `${userAnswer.value}\\ ${unit}`
+                  : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
               }
               style={{ height, width, minWidth: "unset", display: "block" }}
             />

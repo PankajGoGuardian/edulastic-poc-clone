@@ -128,6 +128,7 @@ const Container = styled.div`
 `;
 
 const UploadWrapper = styled.div`
+  margin: 10px;
   .ant-upload-select {
     min-width: 100%;
     border: none;
@@ -154,7 +155,7 @@ const Image = styled.div`
   border-radius: 50%;
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
 `;
 

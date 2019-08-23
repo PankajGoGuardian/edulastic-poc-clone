@@ -86,19 +86,18 @@ class ProfileBody extends React.Component {
 
   compareToFirstPassword = (rule, value, callback) => {
     const { form, t } = this.props;
-    if (value && value !== form.getFieldValue("password")) {
-      callback(t("common.title.confirmPasswordMess"));
-    } else {
-      callback();
-    }
+    if (value && value.length < 4) callback(t("common.title.confirmPasswordLengthErrorMessage"));
+    else if (value && value !== form.getFieldValue("password")) callback(t("common.title.confirmPasswordMess"));
+    else callback();
   };
 
   validateToNextPassword = (rule, value, callback) => {
-    const { form } = this.props;
+    const { form, t } = this.props;
     const { confirmDirty } = this.state;
     if (value && confirmDirty) {
       form.validateFields(["confirmPassword"], { force: true });
     }
+    if (value && value.length < 4) callback(t("common.title.passwordLengthErrorMessage"));
     callback();
   };
 

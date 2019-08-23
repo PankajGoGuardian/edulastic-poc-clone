@@ -209,10 +209,13 @@ const TokenHighlightPreview = ({
   };
 
   const tokenList = mode === "custom" ? mergedTokens : item.templeWithTokens;
-  const allCorrectAnswers = [item.validation.validResponse.value];
-  item.validation.altResponses.forEach(altAnswers => {
-    allCorrectAnswers.push(altAnswers.value);
-  }, []);
+  let allCorrectAnswers = [];
+  if (item.validation) {
+    allCorrectAnswers = [item.validation.validResponse.value];
+    item.validation.altResponses.forEach(altAnswers => {
+      allCorrectAnswers.push(altAnswers.value);
+    }, []);
+  }
 
   return (
     <Paper

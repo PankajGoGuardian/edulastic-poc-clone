@@ -568,6 +568,7 @@ const CustomEditor = ({
     if (!latex) {
       //close the modal and return back if nothing was entered
       setMathModal(false);
+      EditorRef.current.selection.restore(); // set cursor at the end of content
       return;
     }
     EditorRef.current.selection.restore();

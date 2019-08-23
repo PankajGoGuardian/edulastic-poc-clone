@@ -16,6 +16,7 @@ function create(board, circlePoints, id = null) {
     id
   });
   newLine.labelIsVisible = true;
+  newLine.color = "";
   handleSnap(newLine, Object.values(newLine.ancestors), board);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -52,6 +53,7 @@ function getConfig(circle) {
     id: circle.id,
     label: circle.labelHTML || false,
     labelIsVisible: circle.labelIsVisible,
+    color: circle.color,
     points: Object.keys(circle.ancestors)
       .sort()
       .map(n => Point.getConfig(circle.ancestors[n]))

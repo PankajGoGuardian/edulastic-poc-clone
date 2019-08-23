@@ -5,6 +5,7 @@ import { IconClose } from "@edulastic/icons";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import { Row } from "../../../../styled/WidgetOptions/Row";
+import { ChromePicker } from "react-color";
 
 export const ElementSettingsMenu = ({ element, handleClose, advancedElementSettings }) => {
   if (!element) {
@@ -14,6 +15,7 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
   const [labelText, handleLabelTextChange] = useState(element.label || "");
   const [labelIsVisible, handleLabelVisibility] = useState(element.labelIsVisible);
   const [pointIsVisible, handlePointVisibility] = useState(element.pointIsVisible);
+  const [elementColor, handleColorChange] = useState(element.color);
 
   const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
 
@@ -27,7 +29,7 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
           <Subtitle style={{ margin: 0 }}>{capitalizeFirstLetter(element.type)} settings</Subtitle>
           <IconClose
             style={{ cursor: "pointer", marginLeft: "auto" }}
-            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible)}
+            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible, elementColor)}
           />
         </Row>
         <Row style={{ marginBottom: "20px" }}>
@@ -62,9 +64,12 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
           </Fragment>
         )}
         <Row>
+          <ChromePicker color={elementColor} onChangeComplete={color => handleColorChange(color.hex)} />
+        </Row>
+        <Row>
           <Button
-            style={{ minWidth: 227, minHeight: 40, marginRight: "0.7em", borderRadius: "4px" }}
-            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible)}
+            style={{ minWidth: 227, minHeight: 40, marginTop: "10px", marginRight: "0.7em", borderRadius: "4px" }}
+            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible, elementColor)}
             color="primary"
             outlined
           >

@@ -344,6 +344,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       id: element.id,
       label: element.label,
       labelIsVisible: element.labelIsVisible,
+      color: element.color,
       text: element.text
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
@@ -388,6 +389,7 @@ export function flat2nestedConfig(config) {
           colors: element.colors || null,
           label: element.label,
           labelIsVisible: element.labelIsVisible,
+          color: element.color,
           latex,
           subType,
           text
@@ -404,6 +406,7 @@ export function flat2nestedConfig(config) {
           if (type === CONSTANT.TOOLS.POINT) {
             acc[id].pointIsVisible = element.pointIsVisible;
             acc[id].labelIsVisible = element.labelIsVisible;
+            acc[id].color = element.color;
           }
         } else {
           acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);

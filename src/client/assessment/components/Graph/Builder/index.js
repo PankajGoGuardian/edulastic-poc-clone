@@ -1055,6 +1055,7 @@ class Board {
               el,
               objectCreator: attrs => {
                 const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));
+                const elColor = el.color || "#00b2ff";
                 const point = this.createElement(name, points, {
                   ...props,
                   ...attrs,
@@ -1062,14 +1063,19 @@ class Board {
                   highlightFillColor:
                     attrs.bgShapes && !el.pointIsVisible
                       ? "transparent"
-                      : attrs.highlightFillColor || props.highlightFillColor,
+                      : elColor || attrs.highlightFillColor || props.highlightFillColor,
                   highlightStrokeColor:
                     attrs.bgShapes && !el.pointIsVisible
                       ? "transparent"
-                      : attrs.highlightStrokeColor || props.highlightStrokeColor,
-                  fillColor: attrs.bgShapes && !el.pointIsVisible ? "transparent" : attrs.fillColor || props.fillColor,
+                      : elColor || attrs.highlightStrokeColor || props.highlightStrokeColor,
+                  fillColor:
+                    attrs.bgShapes && !el.pointIsVisible
+                      ? "transparent"
+                      : elColor || attrs.fillColor || props.fillColor,
                   strokeColor:
-                    attrs.bgShapes && !el.pointIsVisible ? "transparent" : attrs.strokeColor || props.fillColor,
+                    attrs.bgShapes && !el.pointIsVisible
+                      ? "transparent"
+                      : elColor || attrs.strokeColor || props.fillColor,
                   label: {
                     ...props.label,
                     visibile: attrs.bgShapes ? el.labelIsVisible : true
@@ -1094,6 +1100,7 @@ class Board {
                 point.on("mouseout", () => this.handleElementMouseOut(point));
                 point.pointIsVisible = props.visible;
                 point.labelIsVisible = props.label.visible;
+                point.color = el.color;
 
                 return point;
               }
@@ -1105,6 +1112,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const line = this.createElement(
                   "line",
                   [
@@ -1120,12 +1128,17 @@ class Board {
                   {
                     ...Line.parseConfig(el.type),
                     ...attrs,
+                    fillColor: elColor,
+                    strokeColor: elColor,
+                    highlightStrokeColor: elColor,
+                    highlightFillColor: elColor,
                     id: el.id
                   }
                 );
                 handleSnap(line, Object.values(line.ancestors), this);
                 this.handleStackedElementsMouseEvents(line);
                 line.labelIsVisible = el.labelIsVisible;
+                line.color = el.color;
                 return line;
               }
             })
@@ -1136,6 +1149,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const circle = this.createElement(
                   "circle",
                   [
@@ -1151,12 +1165,15 @@ class Board {
                   {
                     ...Circle.parseConfig(),
                     ...attrs,
+                    strokeColor: elColor,
+                    highlightStrokeColor: elColor,
                     id: el.id
                   }
                 );
                 handleSnap(circle, Object.values(circle.ancestors), this);
                 this.handleStackedElementsMouseEvents(circle);
                 circle.labelIsVisible = el.labelIsVisible;
+                circle.color = el.color;
                 return circle;
               }
             })
@@ -1167,6 +1184,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const newLine = this.createElement(
                   "ellipse",
                   [
@@ -1186,10 +1204,13 @@ class Board {
                   {
                     ...Ellipse.parseConfig(),
                     ...attrs,
+                    strokeColor: elColor,
+                    highlightStrokeColor: elColor,
                     id: el.id
                   }
                 );
                 newLine.labelIsVisible = el.labelIsVisible;
+                newLine.color = el.color;
                 handleSnap(newLine, Object.values(newLine.ancestors), this);
                 this.handleStackedElementsMouseEvents(newLine);
                 return newLine;
@@ -1202,6 +1223,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const polygon = this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
@@ -1213,10 +1235,15 @@ class Board {
                   {
                     ...Polygon.parseConfig(),
                     ...attrs,
+                    // fillColor: elColor,
+                    strokeColor: elColor,
+                    highlightStrokeColor: elColor,
+                    // highlightFillColor: elColor,
                     id: el.id
                   }
                 );
                 polygon.labelIsVisible = el.labelIsVisible;
+                polygon.color = el.color;
                 handleSnap(polygon, Object.values(polygon.ancestors), this);
                 polygon.borders.forEach(border => {
                   border.on("up", () => {
@@ -1244,6 +1271,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const newLine = this.createElement(
                   "hyperbola",
                   [
@@ -1263,11 +1291,16 @@ class Board {
                   {
                     ...Hyperbola.parseConfig(),
                     ...attrs,
+                    // fillColor: elColor,
+                    strokeColor: elColor,
+                    highlightStrokeColor: elColor,
+                    // highlightFillColor: elColor,
                     id: el.id
                   }
                 );
                 newLine.type = 90;
                 newLine.labelIsVisible = el.labelIsVisible;
+                newLine.color = el.color;
                 handleSnap(newLine, Object.values(newLine.ancestors), this);
                 this.handleStackedElementsMouseEvents(newLine);
                 return newLine;
@@ -1280,6 +1313,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const [name, [makeFn, points], props] = Tangent.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1291,6 +1325,10 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  // fillColor: elColor,
+                  strokeColor: elColor,
+                  highlightStrokeColor: elColor,
+                  // highlightFillColor: elColor,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1300,6 +1338,7 @@ class Board {
                 newElem.type = 91;
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
+                newElem.color = el.color;
                 handleSnap(newElem, Object.values(newElem.ancestors), this);
                 this.handleStackedElementsMouseEvents(newElem);
                 return newElem;
@@ -1312,6 +1351,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const [name, [makeFn, points], props] = Secant.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1323,6 +1363,10 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  // fillColor: elColor,
+                  strokeColor: elColor,
+                  highlightStrokeColor: elColor,
+                  // highlightFillColor: elColor,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1332,6 +1376,7 @@ class Board {
                 newElem.type = 92;
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
+                newElem.color = el.color;
                 handleSnap(newElem, Object.values(newElem.ancestors), this);
                 this.handleStackedElementsMouseEvents(newElem);
                 return newElem;
@@ -1344,6 +1389,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const [name, [makeFn, points], props] = Exponent.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1355,6 +1401,10 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  // fillColor: elColor,
+                  strokeColor: elColor,
+                  highlightStrokeColor: elColor,
+                  // highlightFillColor: elColor,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1364,6 +1414,7 @@ class Board {
                 newElem.type = 93;
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
+                newElem.color = el.color;
                 handleSnap(newElem, Object.values(newElem.ancestors), this);
                 this.handleStackedElementsMouseEvents(newElem);
                 return newElem;
@@ -1376,6 +1427,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const [name, [makeFn, points], props] = Logarithm.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1387,6 +1439,10 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  // fillColor: elColor,
+                  strokeColor: elColor,
+                  highlightStrokeColor: elColor,
+                  // highlightFillColor: elColor,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1396,6 +1452,7 @@ class Board {
                 newElem.type = 94;
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
+                newElem.color = el.color;
                 handleSnap(newElem, Object.values(newElem.ancestors), this);
                 this.handleStackedElementsMouseEvents(newElem);
                 return newElem;
@@ -1408,6 +1465,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const [name, [makeFn, points], props] = Polynom.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1419,11 +1477,16 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  // fillColor: elColor,
+                  strokeColor: elColor,
+                  highlightStrokeColor: elColor,
+                  // highlightFillColor: elColor,
                   id: el.id
                 });
                 newElem.type = 95;
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
+                newElem.color = el.color;
                 newElem.ancestors = Polynom.flatConfigPoints(points);
                 handleSnap(newElem, Object.values(newElem.ancestors), this);
                 this.handleStackedElementsMouseEvents(newElem);
@@ -1437,6 +1500,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const [name, [makeFn, points], props] = Sin.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1448,6 +1512,10 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
+                  // fillColor: elColor,
+                  strokeColor: elColor,
+                  highlightStrokeColor: elColor,
+                  // highlightFillColor: elColor,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1457,6 +1525,7 @@ class Board {
                 newElem.type = 96;
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
+                newElem.color = el.color;
                 handleSnap(newElem, Object.values(newElem.ancestors), this);
                 this.handleStackedElementsMouseEvents(newElem);
                 return newElem;
@@ -1469,6 +1538,7 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elColor = el.color || "#00b2ff";
                 const props = Parabola.parseConfig();
                 const points = el.points.map(pointEl =>
                   mixProps({
@@ -1479,9 +1549,14 @@ class Board {
                 const newElem = Parabola.renderElement(this, points, {
                   ...props,
                   ...attrs,
+                  // fillColor: elColor,
+                  strokeColor: elColor,
+                  highlightStrokeColor: elColor,
+                  // highlightFillColor: elColor,
                   id: el.id
                 });
                 newElem.labelIsVisible = el.labelIsVisible;
+                newElem.color = el.color;
                 return newElem;
               }
             })
@@ -1994,15 +2069,20 @@ class Board {
       ...attrs,
       visible: true,
       highlightFillColor:
-        bgShapes && !el.pointIsVisible ? "transparent" : attrs.highlightFillColor || props.highlightFillColor,
+        bgShapes && !el.pointIsVisible
+          ? "transparent"
+          : el.color || attrs.highlightFillColor || props.highlightFillColor,
       highlightStrokeColor:
-        bgShapes && !el.pointIsVisible ? "transparent" : attrs.highlightStrokeColor || props.highlightStrokeColor,
-      fillColor: bgShapes && !el.pointIsVisible ? "transparent" : attrs.fillColor || props.fillColor,
-      strokeColor: bgShapes && !el.pointIsVisible ? "transparent" : attrs.strokeColor || props.fillColor,
+        bgShapes && !el.pointIsVisible
+          ? "transparent"
+          : el.color || attrs.highlightStrokeColor || props.highlightStrokeColor,
+      fillColor: bgShapes && !el.pointIsVisible ? "transparent" : el.color || attrs.fillColor || props.fillColor,
+      strokeColor: bgShapes && !el.pointIsVisible ? "transparent" : el.color || attrs.strokeColor || props.fillColor,
       id: el.id
     });
     point.pointIsVisible = props.visible;
     point.labelIsVisible = props.label.visible;
+    point.color = el.color;
     point.on("mouseover", event => this.handleElementMouseOver(point, event));
     point.on("mouseout", () => this.handleElementMouseOut(point));
     return point;

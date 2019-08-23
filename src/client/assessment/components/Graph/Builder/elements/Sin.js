@@ -28,6 +28,7 @@ function create(board, sinPoints, id = null) {
     id
   });
   newLine.labelIsVisible = true;
+  newLine.color = "";
   newLine.type = jxgType;
   newLine.addParents(sinPoints);
   newLine.ancestors = {
@@ -69,6 +70,7 @@ function getConfig(sine) {
     type: CONSTANT.TOOLS.SIN,
     id: sine.id,
     label: sine.labelHTML || false,
+    color: sine.color || "",
     labelIsVisible: sine.labelIsVisible,
     points: Object.keys(sine.ancestors)
       .sort()

@@ -46,6 +46,7 @@ function create(board, polynomPoints, id = null) {
     id
   });
   newPolynom.labelIsVisible = true;
+  newPolynom.color = "";
   newPolynom.type = jxgType;
   newPolynom.addParents(polynomPoints);
   newPolynom.ancestors = flatConfigPoints(polynomPoints);
@@ -93,6 +94,7 @@ function getConfig(polynom) {
     type: CONSTANT.TOOLS.POLYNOM,
     id: polynom.id,
     label: polynom.labelHTML || false,
+    color: polynom.color || "",
     labelIsVisible: polynom.labelIsVisible,
     points: Object.keys(polynom.ancestors)
       .sort()

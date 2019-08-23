@@ -28,6 +28,7 @@ function create(board, secantPoints, id = null) {
     id
   });
   newLine.labelIsVisible = true;
+  newLine.color = "";
   newLine.type = jxgType;
   newLine.addParents(secantPoints);
   newLine.ancestors = {
@@ -68,6 +69,7 @@ function getConfig(secant) {
     id: secant.id,
     label: secant.labelHTML || false,
     labelIsVisible: secant.labelIsVisible,
+    color: secant.color || "",
     points: Object.keys(secant.ancestors)
       .sort()
       .map(n => Point.getConfig(secant.ancestors[n]))

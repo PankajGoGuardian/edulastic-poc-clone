@@ -49,6 +49,7 @@ function create(board, usrCoords, id = null) {
 
   point.pointIsVisible = true;
   point.labelIsVisible = true;
+  point.color = "";
 
   point.on("up", () => {
     if (point.dragged) {
@@ -92,7 +93,8 @@ function getConfig(point) {
     id: point.id,
     label: point.labelHTML || false,
     labelIsVisible: point.labelIsVisible,
-    pointIsVisible: point.pointIsVisible
+    pointIsVisible: point.pointIsVisible,
+    color: point.color || ""
   };
 }
 
@@ -107,7 +109,8 @@ function parseConfig(config, pointParameters) {
       label: {
         ...getLabelParameters(JXG.OBJECT_TYPE_POINT),
         visible: config.labelIsVisible
-      }
+      },
+      color: config.color
     }
   ];
 }

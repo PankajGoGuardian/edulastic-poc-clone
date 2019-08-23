@@ -177,7 +177,7 @@ class GraphContainer extends PureComponent {
 
   handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
 
-  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility) => {
+  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility, color) => {
     const { setValue, setElementsStash } = this.props;
     const { elementId } = this.state;
     const config = this._graph.getConfig();
@@ -187,6 +187,14 @@ class GraphContainer extends PureComponent {
       updateElement.label = labelText;
       updateElement.pointIsVisible = pointVisibility;
       updateElement.labelIsVisible = labelVisibility;
+      updateElement.color = color;
+
+      if (updateElement.subElementsIds) {
+        Object.values(updateElement.subElementsIds).forEach(subElementId => {
+          const subElement = config.filter(element => element.id === subElementId)[0];
+          subElement.color = color;
+        });
+      }
 
       setValue(config);
       setElementsStash(config, this.getStashId());

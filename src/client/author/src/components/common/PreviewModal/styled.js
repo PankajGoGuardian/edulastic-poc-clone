@@ -137,23 +137,37 @@ export const Divider = styled.div`
 `;
 
 export const CollapseBtn = styled.i`
-    cursor: pointer;
-    font-size: 15px;
-    cursor: pointer;
-    padding: 10px 20px;
-    color: ${themeColor};
-    &.fa-arrow-right{
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background-color:${props => (props.collapseDirection === "left" ? themeColor : "#fff")}
-    color:${props => (props.collapseDirection === "left" ? "#fff" : themeColor)}
+  cursor: pointer;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 5px 15px;
+  color: ${themeColor};
+  ${props => {
+    if (props.right) {
+      return `border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+          background-color:${props.collapseDirection === "left" ? themeColor : "#fff"};
+          color:${props.collapseDirection === "left" ? "#fff" : themeColor};
+          svg{
+            fill:${props.collapseDirection === "left" ? "#fff" : themeColor};
+            &:hover{
+              fill:${props.collapseDirection === "left" ? "#fff" : themeColor};
+            }
+          }`;
     }
-    &.fa-arrow-left{
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    background-color:${props => (props.collapseDirection === "right" ? themeColor : "#fff")}
-    color:${props => (props.collapseDirection === "right" ? "#fff" : themeColor)}
+    if (props.left) {
+      return `border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        background-color:${props.collapseDirection === "right" ? themeColor : "#fff"}
+        color:${props.collapseDirection === "right" ? "#fff" : themeColor};
+        svg{
+          fill:${props.collapseDirection === "right" ? "#fff" : themeColor};
+          &:hover{
+            fill:${props.collapseDirection === "right" ? "#fff" : themeColor};
+          }
+        }`;
     }
+  }}
 `;
 
 export const IconArrow = styled(Icon)`

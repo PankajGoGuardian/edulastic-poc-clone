@@ -169,3 +169,5 @@ export { default as IconFilterClass } from "./src/IconFilterClass";
 export { default as IconVolumeUp } from "./src/IconVolumeUp";
 export { default as IconNoVolume } from "./src/IconNoVolume";
 export { default as IconFeedback } from "./src/IconFeedback";
+export { default as IconArrowLeft } from "./src/IconArrowLeft";
+export { default as IconArrowRight } from "./src/IconArrowRight";

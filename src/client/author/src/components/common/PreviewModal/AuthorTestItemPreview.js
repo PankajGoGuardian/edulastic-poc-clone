@@ -3,7 +3,7 @@ import { Pagination } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor } from "@edulastic/colors";
 import { Tabs, EduButton } from "@edulastic/common";
-import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
+import { IconPencilEdit, IconDuplicate, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 
 import { themes } from "../../../../../assessment/themes";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
@@ -125,17 +125,17 @@ class AuthorTestItemPreview extends Component {
             {allowDuplicate && (
               <EduButton
                 title="Duplicate"
-                style={{ width: 42, padding: 0, borderColor: themeColor }}
+                style={{ width: 42, padding: 0, borderColor: themeColor, paddingTop: "5px" }}
                 size="large"
                 onClick={handleDuplicateTestItem}
               >
-                <IconDuplicate color={themeColor} />
+                <IconCopy color={themeColor} />
               </EduButton>
             )}
             {isEditable && (
               <EduButton
                 title="Edit item"
-                style={{ width: 42, padding: 0, borderColor: themeColor }}
+                style={{ width: 42, padding: 0, borderColor: themeColor, paddingTop: "5px" }}
                 size="large"
                 onClick={editTestItem}
               >
@@ -238,16 +238,12 @@ class AuthorTestItemPreview extends Component {
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
         <div>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            className="fa fa-arrow-left"
-            onClick={() => this.setCollapseView("left")}
-          />
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            className="fa fa-arrow-right"
-            onClick={() => this.setCollapseView("right")}
-          />
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
+            <IconArrowLeft />
+          </CollapseBtn>
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
+            <IconArrowRight />
+          </CollapseBtn>
         </div>
       </Divider>
     );

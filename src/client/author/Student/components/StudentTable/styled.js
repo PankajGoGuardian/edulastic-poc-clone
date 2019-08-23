@@ -4,7 +4,7 @@ import { StyledTable as Table } from "../../../../admin/Common/StyledComponents"
 
 export const StyledTable = styled(Table)`
   .ant-table {
-    &-row: hover {
+    &-row:hover {
       a {
         visibility: visible;
       }

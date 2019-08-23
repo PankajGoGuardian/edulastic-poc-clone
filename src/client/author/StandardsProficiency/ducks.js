@@ -153,6 +153,7 @@ function* receiveStandardsProficiencySaga({ payload }) {
   payload = payload || { orgId: defaultOrgId };
   try {
     const standardsProficiency = yield call(settingsApi.getStandardsProficiency, payload);
+    standardsProficiency.sort((el1, el2) => (el1._id > el2._id ? -1 : 1));
     yield put(receiveStandardsProficiencySuccessAction(standardsProficiency));
   } catch (err) {
     const errorMessage = "Receive StandardsProficiency is failing";
@@ -175,12 +176,11 @@ function* updateStandardsProficiencySaga({ payload }) {
 function* createStandardsProficiencySaga({ payload }) {
   const { index, ..._payload } = payload;
   try {
-    const lastIndex = (yield select(state => get(state, "standardsProficiencyReducer.data", []))).length;
     const createStandardsProficiency = yield call(settingsApi.createStandardsProficiency, _payload);
     yield put(createStandardsProficiencySuccessAction({ ...createStandardsProficiency, index }));
     yield put(receiveStandardsProficiencyAction());
 
-    yield put(setEditingIndexAction(lastIndex));
+    yield put(setEditingIndexAction(0));
   } catch (err) {
     console.error(err);
     const errorMessage = "Update StandardsProficiency is failing";

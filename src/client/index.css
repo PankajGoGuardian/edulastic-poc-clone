@@ -2053,6 +2053,10 @@ span.token.active-word {
   color: #00ad50;
 }
 
+.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+  color: #00ad50;
+}
+
 .ant-select-focused .ant-select-selection,
 .ant-select-selection:focus,
 .ant-select-selection:active {

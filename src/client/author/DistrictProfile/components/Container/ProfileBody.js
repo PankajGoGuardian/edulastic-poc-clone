@@ -124,7 +124,7 @@ class ProfileBody extends React.Component {
       });
     }
     const standardsData = {
-      orgId: user.orgData.districtId,
+      orgId: user._id,
       orgType: "teacher",
       curriculums: curriculumsData
     };

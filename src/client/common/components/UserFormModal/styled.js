@@ -16,6 +16,11 @@ export const StyledModal = styled(Modal)`
 export const Form = styled(AntdForm)`
   background: ${white};
   padding: 20px;
+  .ant-input-affix-wrapper {
+    .ant-input-prefix {
+      width: 15px;
+    }
+  }
 `;
 export const Title = styled.div`
   color: ${themeColor};

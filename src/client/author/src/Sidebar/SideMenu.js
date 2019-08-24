@@ -106,6 +106,8 @@ class SideMenu extends Component {
         if (item.label === "PlayList Library") return item;
       });
     }
+
+    this.sideMenuRef = React.createRef();
   }
   get MenuItems() {
     const { lastPlayList, isSidebarCollapsed } = this.props;
@@ -152,14 +154,6 @@ class SideMenu extends Component {
     }
   };
 
-  handleProfileClick = () => {
-    const { windowWidth } = this.props;
-    this.toggleDropdown();
-    if (windowWidth <= parseFloat(tabletWidth)) {
-      this.toggleMenu();
-    }
-  };
-
   toggleMenu = () => {
     const { toggleSideBar } = this.props;
     toggleSideBar();
@@ -173,6 +167,19 @@ class SideMenu extends Component {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
 
+  onClickFooterDropDownMenu = ({ item, key, keyPath, domEvent }) => {
+    const { logout } = this.props;
+    if (key === "0") {
+      // onClickLogout
+      this.toggleMenu();
+      logout();
+    } else if (key === "1") {
+      // onClickLogoutProfile
+      this.toggleDropdown();
+      this.toggleMenu();
+    }
+  };
+
   onOutsideEvent = event => {
     const { isSidebarCollapsed } = this.props;
 
@@ -180,6 +187,13 @@ class SideMenu extends Component {
       this.toggleMenu();
       this.setState({ isVisible: false });
     }
+  };
+
+  getInitials = () => {
+    const { firstName, lastName } = this.props;
+    if (firstName && lastName) return `${firstName[0] + lastName[0]}`;
+    else if (firstName) return `${firstName.substr(0, 2)}`;
+    else if (lastName) return `${lastName.substr(0, 2)}`;
   };
 
   render() {
@@ -191,7 +205,6 @@ class SideMenu extends Component {
       firstName,
       middleName,
       lastName,
-      logout,
       userRole,
       className,
       profileThumbnail
@@ -206,14 +219,14 @@ class SideMenu extends Component {
 
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} isCollapsed={isCollapsed}>
-        <Menu>
+        <Menu onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="0" className="removeSelectedBorder">
-            <a onClick={logout}>
+            <a>
               <LogoutIcon type="logout" /> {isCollapsed ? "" : "SIGN OUT"}
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
-            <Link to="/author/profile" onClick={this.handleProfileClick}>
+            <Link to="/author/profile">
               <IconDropdown type="user" /> {isCollapsed ? "" : "MY PROFILE"}
             </Link>
           </Menu.Item>
@@ -226,6 +239,7 @@ class SideMenu extends Component {
         className={`${!isCollapsed ? "full" : ""} ${className}`}
         onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
         isCollapsed={isCollapsed}
+        innerRef={this.sideMenuRef}
       >
         <SideBar
           collapsed={isCollapsed}
@@ -309,9 +323,14 @@ class SideMenu extends Component {
                     placement="topCenter"
                     isVisible={isVisible}
                     onVisibleChange={this.handleVisibleChange}
+                    getPopupContainer={() => this.sideMenuRef.current}
                   >
                     <div>
-                      {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}
+                      {profileThumbnail ? (
+                        <img src={profileThumbnail} alt="Profile" />
+                      ) : (
+                        <PseudoDiv>{this.getInitials()}</PseudoDiv>
+                      )}
                       <Tooltip title={userName}>
                         <div style={{ paddingLeft: 11 }}>
                           {!isCollapsed && !isMobile && <UserName>{userName || "Zack Oliver"}</UserName>}
@@ -896,6 +915,11 @@ const PseudoDiv = styled.div`
   border-radius: 50%;
   background: #dddddd;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 60px;
+  text-align: center;
+  text-transform: uppercase;
 `;
 
 const Logo = styled(IconHeader)`

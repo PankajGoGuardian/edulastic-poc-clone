@@ -201,56 +201,47 @@ export default {
     [TOOLS.SIN]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.TANGENT]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.SECANT]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.EXPONENT]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.LOGARITHM]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.POLYNOM]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.PARABOLA]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.HYPERBOLA]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.EQUATION]: {
       fillColor: "transparent",
       strokeColor: "#ee1658",
-      highlightStrokeColor: "#ee1658",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#ee1658"
     },
     [TOOLS.AREA]: {
       fillColor: "#ee1658",
@@ -328,56 +319,47 @@ export default {
     [TOOLS.SIN]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.TANGENT]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.SECANT]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.EXPONENT]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.LOGARITHM]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.POLYNOM]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.PARABOLA]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.HYPERBOLA]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.EQUATION]: {
       fillColor: "transparent",
       strokeColor: "#1fe3a1",
-      highlightStrokeColor: "#1fe3a1",
-      highlightStrokeWidth: 1
+      highlightStrokeColor: "#1fe3a1"
     },
     [TOOLS.AREA]: {
       fillColor: "#1fe3a1",

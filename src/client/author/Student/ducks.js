@@ -305,7 +305,8 @@ export const reducer = createReducer(initialState, {
     state.mutliStudentsProvider = payload;
   },
   [RESET_FETCHED_CLASS_DETAILS_USING_CLASSCODE]: state => {
-    state.addStudentsToOtherClass.destinationClassData = {};
+    state.addStudentsToOtherClass.destinationClassData = null;
+    state.addStudentsToOtherClass.successData = null;
   },
   [MOVE_USERS_TO_OTHER_CLASS]: state => {
     state.movingUsersToOtherClass = true;

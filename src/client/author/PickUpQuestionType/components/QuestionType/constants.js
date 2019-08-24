@@ -1132,7 +1132,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         }/></textinput>&nbsp;</p>`,
         uiStyle: {
           fontsize: "normal",
-          heightpx: 35,
+          heightpx: 36,
           placeholder: "",
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
@@ -2030,7 +2030,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         custom_keys: ["m", "km", "cm", "mm"],
         uiStyle: {
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 36,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],

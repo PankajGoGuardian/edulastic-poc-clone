@@ -730,6 +730,10 @@ export const themes = {
       graphPlacement: {
         dragDropTitleFontWeight: "700",
         dragDropTitleFontSize: "12px"
+      },
+      quadrants: {
+        dragDropTitleFontWeight: "700",
+        dragDropTitleFontSize: "12px"
       }
     }
   }

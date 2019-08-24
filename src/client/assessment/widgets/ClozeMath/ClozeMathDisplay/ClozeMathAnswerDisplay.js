@@ -5,13 +5,22 @@ import { MathDisplay } from "@edulastic/common";
 
 const ClozeMathAnswerDisplay = ({ resprops, id }) => {
   const { answers = {}, uiStyles } = resprops;
-  const { maths: _userAnwers } = answers;
-  const latex = _userAnwers[id] ? _userAnwers[id].value : "";
+  const { maths = {}, mathUnits = {} } = answers;
+  const userAnswers = { ...maths, ...mathUnits };
+  const { value = "", options = {} } = userAnswers[id] || {};
+  let { unit } = options;
+
+  if (unit && unit.search("f") !== -1) {
+    unit = `\\text{${unit}}`;
+  }
+
   return (
     <MathDisplay
       template="\MathQuillMathField{}"
       styles={{ height: uiStyles.height || "31px", width: uiStyles.width }}
-      innerValues={[latex]}
+      innerValues={[
+        unit ? (value.search("=") === -1 ? `${value}\\ ${unit}` : value.replace(/=/gm, `\\ ${unit}=`)) : value
+      ]}
     />
   );
 };

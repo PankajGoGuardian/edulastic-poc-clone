@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -57,6 +57,12 @@ class AdminHeader extends Component {
       case "Users":
         history.push(`/author/users/district-admin`);
         return;
+      case "Performance Bands":
+        history.push(`/author/settings/performance-bands`);
+        return;
+      case "Standards Proficiency":
+        history.push(`/author/settings/standards-proficiency`);
+        return;
     }
   };
 
@@ -111,6 +117,12 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Courses" key={"Courses"} />
             <StyledTabPane tab="Class Enrollment" key={"Class Enrollment"} />
             <StyledTabPane tab="Groups" key={"Groups"} />
+
+            {role === roleuser.SCHOOL_ADMIN ? <StyledTabPane tab="Performance Bands" key="Performance Bands" /> : null}
+
+            {role === roleuser.SCHOOL_ADMIN ? (
+              <StyledTabPane tab="Standards Proficiency" key="Standards Proficiency" />
+            ) : null}
             {role === roleuser.DISTRICT_ADMIN ? <StyledTabPane tab="Settings" key={"Settings"} /> : null}
           </StyledTabs>
         </AdminHeaderContent>

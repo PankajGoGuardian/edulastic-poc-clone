@@ -10,10 +10,10 @@ import { getClassListSelector } from "../../duck";
 import { getUserOrgId, getSchoolsByUserRoleSelector } from "../../../src/selectors/user";
 import { receiveSchoolsAction } from "../../../Schools/ducks";
 import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
-import { getTestsSelector } from "../../../TestList/ducks";
 
 import { ClassListFilter, StyledRowLabel, StyledTable, ClassListContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
+import { getTestSelector } from "../../../TestPage/ducks";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -28,7 +28,7 @@ const convertTableData = row => ({
   className: row.name,
   teacher: findTeacherName(row),
   subject: row.subject,
-  grades: row.grades
+  grades: row.grades.join(",")
 });
 
 class ClassList extends React.Component {
@@ -42,34 +42,58 @@ class ClassList extends React.Component {
     classList: PropTypes.array.isRequired,
     selectedClasses: PropTypes.array.isRequired,
     selectClass: PropTypes.func.isRequired,
-    tests: PropTypes.func.isRequired,
+    test: PropTypes.object,
     match: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
-    const { match, tests } = props;
-    const { testId } = match.params;
-    const { grades = [], subjects = [] } = find(tests, item => item._id === testId) || {};
-
     this.state = {
       searchTerms: {
         institutionIds: [],
-        subjects: subjects.map(subject => lowerCase(subject)),
-        grades,
+        subjects: [],
+        grades: [],
         active: [1]
       }
     };
   }
 
   componentDidMount() {
-    const { schools, loadSchoolsData, courseList, loadCourseListData, userOrgId } = this.props;
-    this.loadClassList();
+    const { schools, test, loadSchoolsData, courseList, loadCourseListData, userOrgId } = this.props;
+
     if (isEmpty(schools)) {
       loadSchoolsData({ districtId: userOrgId });
     }
     if (isEmpty(courseList)) {
       loadCourseListData({ districtId: userOrgId });
+    }
+    const { subjects = [], grades = [] } = test;
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        searchTerms: {
+          ...prevState.searchTerms,
+          grades,
+          subjects
+        }
+      };
+    }, this.loadClassList);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { test } = this.props;
+    if (prevProps.test._id !== test._id) {
+      const { subjects = [], grades = [] } = test;
+      this.setState(prevState => {
+        return {
+          ...prevState,
+          searchTerms: {
+            ...prevState.searchTerms,
+            grades,
+            subjects
+          }
+        };
+      }, this.loadClassList);
     }
   }
 
@@ -78,6 +102,7 @@ class ClassList extends React.Component {
     const { searchTerms } = this.state;
     loadClassListData({
       districtId: userOrgId,
+      queryType: "OR",
       search: searchTerms,
       page: 1,
       limit: 10000
@@ -195,7 +220,7 @@ class ClassList extends React.Component {
               onChange={changeField("subjects")}
             >
               {allSubjects.map(({ value, text }) => (
-                <Select.Option key={value} value={lowerCase(value)}>
+                <Select.Option key={value} value={value}>
                   {text}
                 </Select.Option>
               ))}
@@ -234,7 +259,7 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       schools: getSchoolsByUserRoleSelector(state),
       courseList: getCourseListSelector(state),
-      tests: getTestsSelector(state)
+      test: getTestSelector(state)
     }),
     {
       loadClassListData: receiveClassListAction,

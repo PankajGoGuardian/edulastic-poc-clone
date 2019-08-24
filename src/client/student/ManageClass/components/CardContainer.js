@@ -1,14 +1,23 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Row, Col, Button, Spin } from "antd";
 import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
+import { connect } from "react-redux";
+import { changeClassAction } from "../../Login/ducks";
 
-const ClassCard = ({ t, classItem, windowWidth }) => {
+const ClassCard = ({ t, classItem, windowWidth, history, changeClass }) => {
   const { name, owners, parent, startDate, endDate, subject, grades, active, status, standardSets } = classItem;
   const { name: instructorName } = owners.find(owner => owner.id === parent.id);
+
+  const handleVisitClass = () => {
+    sessionStorage.setItem("temporaryClass", classItem._id);
+    history.push("/home/reports");
+    changeClass(sessionStorage.temporaryClass);
+  };
+
   return (
     <Col xs={24} md={12} lg={windowWidth >= 1024 && windowWidth <= 1300 ? 8 : 6} xxl={6}>
       <ManageClassCardContent>
@@ -68,18 +77,25 @@ const ClassCard = ({ t, classItem, windowWidth }) => {
             </InfoContent>
           </Col>
 
-          <Link
-            to={active === 1 ? { pathname: "/home/assignments", classItem } : { pathname: "/home/reports", classItem }}
-          >
-            <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
-          </Link>
+          {active === 1 && (
+            <Link to={{ pathname: "/home/assignments", classItem }}>
+              <VisitClassButton>{t("common.visitClass")}</VisitClassButton>
+            </Link>
+          )}
+
+          {active === 0 && <VisitClassButton onClick={handleVisitClass}>{t("common.visitClass")}</VisitClassButton>}
         </CardBody>
       </ManageClassCardContent>
     </Col>
   );
 };
 
-export default withWindowSizes(ClassCard);
+export default connect(
+  state => {},
+  {
+    changeClass: changeClassAction
+  }
+)(withWindowSizes(withRouter(ClassCard)));
 
 ClassCard.propTypes = {
   t: PropTypes.func.isRequired,

@@ -190,12 +190,12 @@ export class PerformanceBandTable extends React.Component {
         title: "",
         dataIndex: "name",
         width: "20%",
-        editable: true,
+        editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <React.Fragment>
               {record.name}&nbsp;
-              <Icon type="edit" theme="twoTone" />
+              {this.props.readOnly ? null : <Icon type="edit" theme="twoTone" />}
             </React.Fragment>
           );
         }
@@ -203,7 +203,9 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "color",
         dataIndex: "color",
-        render: (color, record) => <ColorPicker value={color} onChange={c => this.changeColor(c, record.key)} />
+        render: (color, record) => (
+          <ColorPicker disabled={this.props.readOnly} value={color} onChange={c => this.changeColor(c, record.key)} />
+        )
       },
       {
         title: "Above or At Standard",
@@ -215,6 +217,7 @@ export class PerformanceBandTable extends React.Component {
               <Checkbox
                 defaultChecked={record.aboveOrAtStandard}
                 checked={record.aboveOrAtStandard}
+                disabled={this.props.readOnly}
                 onChange={e => this.changeAbove(e, record.key)}
               />
             </StyledDivCenter>
@@ -237,17 +240,21 @@ export class PerformanceBandTable extends React.Component {
         title: "To",
         dataIndex: "to",
         width: "20%",
-        editable: true,
+        editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <StyledButton onClick={e => this.onClickFromTo(e, record.key, "to", -1)}>
-                <StyledIcon type="minus" />
-              </StyledButton>
+              {!this.props.readOnly ? (
+                <StyledButton onClick={e => this.onClickFromTo(e, record.key, "to", -1)}>
+                  <StyledIcon type="minus" />
+                </StyledButton>
+              ) : null}
               <StyledProP>{record.to}%</StyledProP>
-              <StyledButton onClick={e => this.onClickFromTo(e, record.key, "to", 1)}>
-                <StyledIcon type="plus" />
-              </StyledButton>
+              {!this.props.readOnly ? (
+                <StyledButton disabled={this.props.readOnly} onClick={e => this.onClickFromTo(e, record.key, "to", 1)}>
+                  <StyledIcon type="plus" />
+                </StyledButton>
+              ) : null}
             </StyledColFromTo>
           );
         }
@@ -256,7 +263,7 @@ export class PerformanceBandTable extends React.Component {
         title: "",
         dataIndex: "operation",
         render: (text, record) =>
-          this.state.dataSource.length >= 1 ? (
+          this.state.dataSource.length >= 1 && !this.props.readOnly ? (
             <StyledDivCenter>
               <a href="javascript:;" onClick={e => this.handleDelete(e, record.key)}>
                 <Icon type="delete" theme="twoTone" />
@@ -455,20 +462,37 @@ export class PerformanceBandTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <Table components={components} rowClassName={() => "editable-row"} dataSource={dataSource} columns={columns} />
+        <Table
+          components={components}
+          rowClassName={() => "editable-row"}
+          dataSource={dataSource}
+          pagination={false}
+          columns={columns}
+        />
         <StyledBottomDiv>
           {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
           {performanceBandId.length == 0 ? (
-            <StyledSaveButton type="primary" onClick={this.updatePerformanceBand}>
+            <StyledSaveButton disabled={this.props.readOnly} type="primary" onClick={this.updatePerformanceBand}>
               Create
             </StyledSaveButton>
           ) : (
-            <StyledSaveButton type="primary" onClick={this.updatePerformanceBand} disabled={!isChangeState}>
+            <StyledSaveButton
+              disabled={this.props.readOnly}
+              type="primary"
+              onClick={this.updatePerformanceBand}
+              disabled={!isChangeState}
+            >
               Save
             </StyledSaveButton>
           )}
 
-          <Button type="primary" shape="round" onClick={this.handleAdd} ghost disabled={isAddDisable}>
+          <Button
+            type="primary"
+            shape="round"
+            onClick={this.handleAdd}
+            ghost
+            disabled={isAddDisable || this.props.readOnly}
+          >
             + Add Band
           </Button>
         </StyledBottomDiv>

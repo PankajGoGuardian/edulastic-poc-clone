@@ -64,6 +64,7 @@ const MathFormulaAnswerMethod = ({
   renderExtra,
   keypadMode, // need only for Math w/Unit in cloze Math
   customUnits, // need only for Math w/Unit in cloze Math
+  containerHeight,
   allowNumericOnly,
   t
 }) => {
@@ -358,7 +359,7 @@ const MathFormulaAnswerMethod = ({
   const isShowDropdown = item.isUnits && item.showDropdown;
 
   return (
-    <Container data-cy="math-formula-answer">
+    <Container data-cy="math-formula-answer" style={{ height: containerHeight }}>
       <ExpectAnswer>
         {!methodOptions.includes("noExpeced") && (
           <div>
@@ -490,6 +491,7 @@ MathFormulaAnswerMethod.propTypes = {
   keypadMode: PropTypes.string,
   customUnits: PropTypes.string,
   showDefaultMode: PropTypes.bool,
+  containerHeight: PropTypes.any,
   renderExtra: PropTypes.any
 };
 
@@ -500,6 +502,7 @@ MathFormulaAnswerMethod.defaultProps = {
   options: {},
   showDefaultMode: false,
   customUnits: "",
+  containerHeight: "auto",
   keypadMode: "",
   renderExtra: null
 };

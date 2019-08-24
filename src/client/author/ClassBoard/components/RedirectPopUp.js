@@ -146,12 +146,12 @@ const RedirectPopUp = ({
           >
             {allStudents.map(
               x =>
-                enrollmentStatus[x._id] === "1" && (
+                enrollmentStatus[x._id] == "1" && (
                   <Option
                     key={x._id}
                     value={x._id}
                     disabled={disabledList.includes(x._id)}
-                    data={`${x.firstName}${x.lastName}${x.email}${x.username}`}
+                    data={`${x.firstName}${x.lastName || ""}${x.email || ""}${x.username || ""}`}
                   >
                     {getUserName(x)}
                   </Option>

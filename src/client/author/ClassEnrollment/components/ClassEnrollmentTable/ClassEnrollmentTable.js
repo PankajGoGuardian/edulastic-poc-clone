@@ -214,6 +214,17 @@ class ClassEnrollmentTable extends React.Component {
     });
   };
 
+  onCloseAddStudentsToOtherClassModal = () => {
+    const { resetClassDetails } = this.props;
+    this.setState({ addStudentsModalVisible: false });
+    resetClassDetails();
+  };
+  onCloseMoveUsersToOtherClassModal = () => {
+    const { resetClassDetails } = this.props;
+    this.setState({ moveUsersModalVisible: false });
+    resetClassDetails();
+  };
+
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
@@ -369,7 +380,6 @@ class ClassEnrollmentTable extends React.Component {
     const {
       fetchClassDetailsUsingCode,
       validatedClassDetails,
-      resetClassDetails,
       classEnrollmentData,
       addStudentsToOtherClassData,
       putStudentsToOtherClass,
@@ -584,9 +594,7 @@ class ClassEnrollmentTable extends React.Component {
           titleText="Add Student(s) to another class"
           buttonText="Add Student(s)"
           handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedUserIds })}
-          onCloseModal={() => {
-            this.setState({ addStudentsModalVisible: false });
-          }}
+          onCloseModal={this.onCloseAddStudentsToOtherClassModal}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
         />
 
@@ -603,11 +611,10 @@ class ClassEnrollmentTable extends React.Component {
               userDetails: selectedUserIds
             })
           }
-          onCloseModal={() => {
-            this.setState({ moveUsersModalVisible: false });
-          }}
+          onCloseModal={this.onCloseMoveUsersToOtherClassModal}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           selectedUsersInfo={selectedUsersInfo}
+          askUserConfirmation
         />
       </StyledTableContainer>
     );

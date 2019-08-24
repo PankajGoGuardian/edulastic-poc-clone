@@ -4,13 +4,14 @@ import { compose } from "redux";
 import { get } from "lodash";
 import { createReducer } from "redux-starter-kit";
 import uuid from "uuid/v1";
-import { List, Row, Col, Button } from "antd";
+import { List, Row, Col, Button, message, Modal, Input } from "antd";
+import styled from "styled-components";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import PerformanceBandTable, {
   PerformanceBandTable as PerformanceBandTableDumb
 } from "../PerformanceBandTable/PerformanceBandTable";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
 import {
   createPerformanceBandAction,
   updatePerformanceBandAction,
@@ -23,7 +24,6 @@ import ColorPicker from "./ColorPicker";
 import { StyledContent, StyledLayout, SpinContainer, StyledSpin, PerformanceBandDiv } from "./styled";
 
 const title = "Manage District";
-const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
 
 function ProfileRow({
   name,
@@ -35,27 +35,52 @@ function ProfileRow({
   updatePerformanceBand,
   savePerformance,
   remove,
-  update: updateToServer
+  update: updateToServer,
+  readOnly,
+  loading
 }) {
   const setPerf = payload => {
     updatePerformanceBand({ _id, data: payload });
   };
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
 
   return (
     <List.Item style={{ display: "block" }}>
+      <Modal
+        title="Delete Profile"
+        visible={confirmVisible}
+        footer={[
+          <Button disabled={deleteText != "DELETE"} loading={loading} onClick={() => remove(_id)}>
+            Yes, Delete
+          </Button>,
+          <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
+        ]}
+      >
+        <div className="content">
+          <p>
+            <b>{name}</b> will be removed permanently and can’t be used in future tests. This action can NOT be undone.
+            If you are sure, please type DELETE in the space below.
+          </p>
+        </div>
+        <Input value={deleteText} onChange={e => setDeleteText(e.target.value)} />
+      </Modal>
       <Row>
         <Col span={12}>
           <h3>{name}</h3>
         </Col>
         <Col span={12}>
-          <Button onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}>edit</Button>{" "}
-          <Button onClick={() => remove(_id)}>delete</Button>
+          <Button onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}>
+            {readOnly ? "view" : "edit"}
+          </Button>
+
+          {readOnly ? null : <Button onClick={() => setConfirmVisible(true)}>delete</Button>}
         </Col>
       </Row>
 
       {active ? (
         <Row>
-          <Col span={23}>
+          <Col span={24}>
             <PerformanceBandTableDumb
               performanceBandId={_id}
               dataSource={performanceBand}
@@ -63,6 +88,7 @@ function ProfileRow({
               updatePerformanceBand={() => {
                 updateToServer(_id);
               }}
+              readOnly={readOnly}
               setPerformanceBandData={setPerf}
             />
           </Col>
@@ -73,7 +99,12 @@ function ProfileRow({
 }
 
 export function PerformanceBandAlt(props) {
-  const { loading, updating, creating, history, list, create, update, remove, profiles } = props;
+  const menuActive =
+    props.role === "school-admin"
+      ? { mainMenu: "Performance Bands" }
+      : { mainMenu: "Settings", subMenu: "Performance Bands" };
+
+  const { loading, updating, creating, history, list, create, update, remove, profiles, currentUserId } = props;
   const showSpin = loading || updating || creating;
   useEffect(() => {
     list();
@@ -84,6 +115,10 @@ export function PerformanceBandAlt(props) {
     const name = prompt("name of the profile?");
 
     if (name) {
+      if (profiles.find(p => p.name === name)) {
+        message.error(`Profile with name "${name}" already exists. Please try with a different name`);
+        return;
+      }
       const initialObj = {
         name,
         orgId: props.orgId,
@@ -100,7 +135,7 @@ export function PerformanceBandAlt(props) {
       };
       create(initialObj);
     } else {
-      alert("name can't be empty");
+      message.error("name can't be empty");
     }
   };
 
@@ -109,8 +144,13 @@ export function PerformanceBandAlt(props) {
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout>
+          {showSpin ? (
+            <SpinContainer>
+              <StyledSpin size="large" />
+            </SpinContainer>
+          ) : null}
           <Button type="primary" style={{ marginBottom: "5px" }} onClick={addProfile}>
-            + Add Profile
+            + Create new Profile
           </Button>
           <List
             dataSource={profiles}
@@ -120,7 +160,9 @@ export function PerformanceBandAlt(props) {
               <ProfileRow
                 {...profile}
                 remove={remove}
+                loading={loading}
                 update={update}
+                readOnly={props.role != "district-admin" && currentUserId != get(profile, "createdBy._id")}
                 setEditingIndex={setEditingIndex}
                 active={editingIndex === profile._id}
                 updatePerformanceBand={props.updateLocal}
@@ -143,7 +185,9 @@ const enhance = compose(
       updating: get(state, ["performanceBandReducer", "updating"], false),
       creating: get(state, ["performanceBandReducer", "creating"], false),
       profiles: get(state, ["performanceBandReducer", "profiles"], []),
-      orgId: getUserOrgId(state)
+      orgId: getUserOrgId(state),
+      role: getUserRole(state),
+      currentUserId: getUserId(state)
     }),
     {
       list: receivePerformanceBandAction,

@@ -72,7 +72,7 @@ const ItemDetailContainer = ({
   // the store could have values from previous load, in that case
   // makes sure its the one we intend to load. also, if its the same question loaded,
   // makes sure currentQuestionId is there in case of singleQuestionview
-  if (isLoading || item._id !== itemId || (isSingleQuestionView && !currentQuestionId && !isMultipart))
+  if (isLoading || item._id !== itemId)
     return (
       <div>
         <Spin />

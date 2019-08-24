@@ -120,7 +120,8 @@ const ClozeMathPreview = ({
     const keynameMap = {
       textinput: "inputs",
       dropdown: "dropDowns",
-      value: "maths"
+      value: "maths",
+      mathUnits: "mathUnits"
     };
 
     if (item.validation.validResponse) {
@@ -129,15 +130,11 @@ const ClozeMathPreview = ({
           testUserAnswer[keynameMap[keyName]] = {};
           if (keyName !== "value") {
             item.validation.validResponse[keyName].value.forEach(answerItem => {
-              testUserAnswer[keynameMap[keyName]][answerItem.id] = {
-                value: answerItem.value
-              };
+              testUserAnswer[keynameMap[keyName]][answerItem.id] = { ...answerItem };
             });
           } else {
             item.validation.validResponse.value.forEach(answerItem => {
-              testUserAnswer[keynameMap[keyName]][answerItem[0].id] = {
-                value: answerItem[0].value
-              };
+              testUserAnswer[keynameMap[keyName]][answerItem[0].id] = { ...answerItem[0] };
             });
           }
         }

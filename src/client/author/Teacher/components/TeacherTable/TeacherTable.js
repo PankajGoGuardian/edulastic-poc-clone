@@ -134,7 +134,7 @@ class TeacherTable extends Component {
         width: 150
       },
       {
-        title: "Class Count",
+        title: "Classes",
         dataIndex: "classCount",
         width: 50
       },

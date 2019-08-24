@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import uuid from "uuid/v4";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy, uniq, isEmpty } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, flatten, pull, uniqBy, uniq, isEmpty } from "lodash";
 import { testItemsApi, passageApi, itemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
@@ -224,12 +224,14 @@ export const getPassageSelector = createSelector(
   state => state.passage
 );
 
+/**
+ * check if item has only a single question widget.
+ */
 export const isSingleQuestionViewSelector = createSelector(
   getItemDetailSelector,
   (item = {}) => {
-    const { resources = [], questions = [] } = item.data || {};
-
-    return resources.length === 0 && questions.length === 1;
+    let widgets = flatten(item.rows).reduce((widgets, row) => [...widgets, ...row.widgets], []);
+    return widgets.length === 1;
   }
 );
 
@@ -907,15 +909,9 @@ function* convertToPassageWithQuestions({ payload }) {
         content: ""
       }
     });
-    const { _id: passageId } = passage;
 
     yield put(addPassageAction(passage));
-    yield put({
-      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
-      payload: {
-        canAddMultipleItems: canAddMultipleItems
-      }
-    });
+
     yield put(
       addQuestionAction({
         id: uuid(),
@@ -934,6 +930,7 @@ function* convertToPassageWithQuestions({ payload }) {
         pathname: "/author/questions/create",
         state: {
           isPassageWithQuestions: true,
+          canAddMultipleItems: !!canAddMultipleItems,
           backUrl,
           tabIndex: 0
         }
@@ -947,8 +944,15 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
-    const { backUrl, tabIndex } = yield select(state => get(state, "router.location.state"), {});
+    const { backUrl, tabIndex, canAddMultipleItems } = yield select(state => get(state, "router.location.state"), {});
     const pathname = yield select(state => get(state, "router.location.pathname"), {});
+
+    yield put({
+      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
+      payload: {
+        canAddMultipleItems: canAddMultipleItems
+      }
+    });
 
     const isEdit = pathname.includes("edit");
     const passage = yield select(getPassageSelector);

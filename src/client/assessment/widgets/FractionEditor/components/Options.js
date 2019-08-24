@@ -55,17 +55,6 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
     );
   };
 
-  const handleOptionsChange = (prop, value) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.options = {
-          ...draft.options,
-          [prop]: value
-        };
-      })
-    );
-  };
-
   return (
     <Question
       section="main"
@@ -154,14 +143,6 @@ const Options = ({ fillSections, cleanSections, t, produce, setQuestionData, ite
           </Col>
         </Row>
       )}
-      <Row gutter={20} style={{ margin: "10px 0px" }}>
-        <Checkbox
-          checked={get(item, "options.hideAnnotations", false)}
-          onChange={e => handleOptionsChange("hideAnnotations", e.target.checked)}
-        >
-          {t("common.options.hideAnnotations")}
-        </Checkbox>
-      </Row>
     </Question>
   );
 };

@@ -1,7 +1,7 @@
 import { Row, Col, Divider, Icon, Button } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import styled from "styled-components";
-import { white, themeColorLight } from "@edulastic/colors";
+import { mediumDesktopWidth, white, themeColorLight } from "@edulastic/colors";
 
 export const SliderButton = styled(Button)`
   width: 40px;
@@ -26,6 +26,10 @@ export const SideContentContainer = styled.div`
   z-index: 300;
   top: 96px;
   right: 0;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    top: 60px;
+  }
 `;
 
 export const SideContentWrapper = styled.div`

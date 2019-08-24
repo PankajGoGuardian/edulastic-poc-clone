@@ -3,7 +3,7 @@ import { Pagination } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor } from "@edulastic/colors";
 import { Tabs, EduButton } from "@edulastic/common";
-import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
+import { IconPencilEdit, IconDuplicate, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 
 import { themes } from "../../../../../assessment/themes";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
@@ -117,7 +117,7 @@ class AuthorTestItemPreview extends Component {
   };
 
   renderLeftButtons = () => {
-    const { allowDuplicate, handleDuplicateTestItem, isEditable, editTestItem, isPassage, cols } = this.props;
+    const { allowDuplicate, handleDuplicateTestItem, isEditable, editTestItem, cols } = this.props;
     return (
       <>
         <ButtonsContainer>
@@ -125,17 +125,17 @@ class AuthorTestItemPreview extends Component {
             {allowDuplicate && (
               <EduButton
                 title="Duplicate"
-                style={{ width: 42, padding: 0, borderColor: themeColor }}
+                style={{ width: 42, padding: 0, borderColor: themeColor, paddingTop: "5px" }}
                 size="large"
                 onClick={handleDuplicateTestItem}
               >
-                <IconDuplicate color={themeColor} />
+                <IconCopy color={themeColor} />
               </EduButton>
             )}
             {isEditable && (
               <EduButton
                 title="Edit item"
-                style={{ width: 42, padding: 0, borderColor: themeColor }}
+                style={{ width: 42, padding: 0, borderColor: themeColor, paddingTop: "5px" }}
                 size="large"
                 onClick={editTestItem}
               >
@@ -181,7 +181,7 @@ class AuthorTestItemPreview extends Component {
               <EvaluateButton onClick={handleShowAnswer}>SHOW ANSWER</EvaluateButton>
             </>
           )}
-          <EvaluateButton onClick={clearView}>CLEAR</EvaluateButton>
+          {page !== "itemAuthoring" && <EvaluateButton onClick={clearView}>CLEAR</EvaluateButton>}
         </ButtonsWrapper>
       </>
     );
@@ -238,23 +238,19 @@ class AuthorTestItemPreview extends Component {
     return (
       <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
         <div>
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            className="fa fa-arrow-left"
-            onClick={() => this.setCollapseView("left")}
-          />
-          <CollapseBtn
-            collapseDirection={collapseDirection}
-            className="fa fa-arrow-right"
-            onClick={() => this.setCollapseView("right")}
-          />
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("left")} left>
+            <IconArrowLeft />
+          </CollapseBtn>
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.setCollapseView("right")} right>
+            <IconArrowRight />
+          </CollapseBtn>
         </div>
       </Divider>
     );
   };
 
   render() {
-    const { cols } = this.props;
+    const { cols, page } = this.props;
     const { collapseDirection } = this.state;
     let questionCount = 0;
     cols
@@ -275,7 +271,11 @@ class AuthorTestItemPreview extends Component {
             return (
               <>
                 {(i > 0 || collapseDirection === "left") && this.renderCollapseButtons(i)}
-                <ColumnContentArea width={collapseDirection ? "90%" : col.dimension || "auto"} hide={hideColumn}>
+                <ColumnContentArea
+                  isAuthoring={page === "itemAuthoring"}
+                  width={collapseDirection ? "90%" : col.dimension || "auto"}
+                  hide={hideColumn}
+                >
                   {i === 0 ? this.renderLeftButtons() : this.renderRightButtons()}
                   {this.renderColumns(col)}
                 </ColumnContentArea>

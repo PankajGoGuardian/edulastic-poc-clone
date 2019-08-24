@@ -510,7 +510,8 @@ class ClassBoard extends Component {
     const firstQuestionEntities = get(entities, [0, "questionActivities"], []);
     const unselectedStudents = entities.filter(x => !selectedStudents[x.studentId]);
     const disableMarkAbsent =
-      (assignmentStatus.toLowerCase() == "not open" && additionalData.startDate > Date.now()) ||
+      (assignmentStatus.toLowerCase() == "not open" &&
+        ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
     return (

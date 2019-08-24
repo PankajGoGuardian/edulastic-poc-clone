@@ -34,5 +34,69 @@ export const queColor = {
 };
 
 export const questionGroup = {
-  MCQ: "Multiple Choice"
+  MCQ: "Multiple Choice",
+  FILL_IN_BLANK: "Fill in the Blanks",
+  CLASSIFICATION: "Classify, Match & Order",
+  READ: "Reading & Comprehension",
+  HIGHLIGHT: "Highlight",
+  MATH: "Math",
+  GRAPH: "Graphing",
+  CHART: "Charts",
+  CHEM: "Chemistry",
+  MULTI: "Multipart",
+  VID: "Video & Text",
+  RULER: "Rulers & Calculators",
+  OTHER: "Other"
+};
+
+export const questionTypeMap = {
+  "Multiple Choice": [
+    "Multiple choice - standard",
+    "True or false",
+    "Multiple choice - multiple response",
+    "Multiple choice - block layout",
+    "Choice matrix - standard",
+    "Choice matrix - inline",
+    "Choice matrix - labels"
+  ],
+  "Fill in the Blanks": [
+    "Cloze with Drag & Drop",
+    "Cloze with Drop Down",
+    "Cloze with Text",
+    "Label Image with Drag & Drop",
+    "Label Image with Drop Down",
+    "Label Image with Text"
+  ],
+  "Classify, Match & Order": ["Sort List", "Classification", "Match list", "OrderList"],
+  "Reading & Comprehension": [
+    "Essay with rich text",
+    "Essay with plain text",
+    "Short text",
+    "Passage with Multiple parts",
+    "Passage with Questions"
+  ],
+  Highlight: ["Highlight Image", "Shading", "Hotspot", "Token highlight"],
+  Math: [
+    "Expression & Formula",
+    "Numeric Entry",
+    "Complete the Equation",
+    "Equations & Inequalities",
+    "Matrices",
+    "Units",
+    "Math essay"
+  ],
+  Graphing: [
+    "Graphing",
+    "Graphing in the 1st quadrant",
+    "Graph Placement",
+    "Number line with plot",
+    "Number line with drag & drop",
+    "Fraction Editor"
+  ],
+  Charts: ["Line plot", "Dot plot", "Histogram", "Bar chart", "Line chart"],
+  Chemistry: [],
+  Multipart: ["Math, Text & Dropdown", "Combination Multipart"],
+  "Video & Text": ["Video"],
+  "Rulers & Calculators": ["Protractor"],
+  Other: []
 };

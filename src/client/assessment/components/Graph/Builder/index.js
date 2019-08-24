@@ -966,6 +966,7 @@ class Board {
         return newElement;
       })
     );
+    Area.setAreasForEquations(this);
   }
 
   loadAnswersFromConfig(flatCfg) {
@@ -993,6 +994,7 @@ class Board {
         return newElement;
       })
     );
+    Area.setAreasForEquations(this);
   }
 
   loadSegments(elements) {

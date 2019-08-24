@@ -591,8 +591,13 @@ function renderElement(board, element, params) {
   let line = null;
   const fixedLatex = fixLatex(latex);
 
+  let dash;
+  if (fixedLatex.compSign === "<" || fixedLatex.compSign === ">") {
+    dash = 2;
+  }
+
   try {
-    const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, params);
+    const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, { ...params, dash });
     cv.update();
     line = cv.result;
   } catch (ex) {
@@ -604,6 +609,7 @@ function renderElement(board, element, params) {
   }
 
   line.latex = latex;
+  line.fixedLatex = fixedLatex;
   line.type = jxgType;
   line.subType = null;
   return line;

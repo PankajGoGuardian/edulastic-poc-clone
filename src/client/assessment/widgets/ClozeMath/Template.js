@@ -43,8 +43,9 @@ class Template extends Component {
   render() {
     const { t, item, setQuestionData, fillSections, cleanSections } = this.props;
 
-    const _reduceResponseIds = tmpl => {
+    const _reduceResponseIds = (tmpl, prevIds = {}) => {
       const newResponseId = cloneDeep(initResponseId);
+      const { mathUnits = [] } = prevIds;
       if (!window.$) {
         return newResponseId;
       }
@@ -59,7 +60,12 @@ class Template extends Component {
         } else if (tagName === "mathinput") {
           newResponseId.maths.push({ index, id });
         } else if (tagName === "mathunit") {
-          newResponseId.mathUnits.push({ index, id, keypadMode: math.units[0].value });
+          const prev = mathUnits.find(m => m.id === id);
+          if (prev) {
+            newResponseId.mathUnits.push({ ...prev, index });
+          } else {
+            newResponseId.mathUnits.push({ index, id, keypadMode: math.units[0].value });
+          }
         } else if (tagName === "textdropdown") {
           newResponseId.dropDowns.push({ index, id });
         }
@@ -343,7 +349,7 @@ class Template extends Component {
       const newItem = produce(item, draft => {
         draft.stimulus = val;
 
-        draft.responseIds = _reduceResponseIds(draft.stimulus);
+        draft.responseIds = _reduceResponseIds(draft.stimulus, draft.responseIds);
 
         draft.validation = _reduceValidation(draft.responseIds, draft.validation);
 

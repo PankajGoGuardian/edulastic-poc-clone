@@ -114,7 +114,8 @@ class Layout extends Component {
               disabled={false}
               containerStyle={{ width: 120 }}
               onChange={e => changeUiStyle("columns", +e.target.value)}
-              value={uiStyle.columns || 0}
+              min={1}
+              value={uiStyle.columns || 1}
             />
           </Col>
         </Row>

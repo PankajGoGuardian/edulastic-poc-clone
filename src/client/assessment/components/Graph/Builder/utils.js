@@ -584,3 +584,11 @@ export function setLabel(element, label) {
 
   element.labelHTML = label;
 }
+
+export function chooseColor(color) {
+  const elColor = color.length > 0 ? color : "#00b2ff";
+  return {
+    strokeColor: elColor,
+    highlightStrokeColor: elColor
+  };
+}

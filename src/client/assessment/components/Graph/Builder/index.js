@@ -45,7 +45,8 @@ import {
   calcUnitX,
   handleSnap,
   isInPolygon,
-  setLabel
+  setLabel,
+  chooseColor
 } from "./utils";
 import _events from "./events";
 
@@ -366,8 +367,9 @@ class Board {
     this.disableResponse = value;
   }
 
-  createEditButton(menuHandler) {
+  createEditButton(menuHandler, disabled = false) {
     this.editButton = EditButton.createButton(this, menuHandler);
+    this.editButton.disabled = disabled;
   }
 
   checkEditButtonCall(element) {
@@ -380,6 +382,9 @@ class Board {
   }
 
   handleElementMouseOver(element, event) {
+    if (this.editButton.disabled) {
+      return;
+    }
     if (this.checkEditButtonCall(element)) {
       let coords;
       if (JXG.isPoint(element)) {
@@ -399,6 +404,9 @@ class Board {
 
   handleStackedElementsMouseEvents(element) {
     element.on("mouseover", event => {
+      if (this.editButton.disabled) {
+        return;
+      }
       if (this.checkEditButtonCall(element)) {
         const pointsUnderMouse = this.$board
           .getAllObjectsUnderMouse(event)
@@ -819,73 +827,62 @@ class Board {
       [CONSTANT.TOOLS.CIRCLE]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYGON]: {
-        ...defaultBgObjectParameters(),
         ...Polygon.parseConfig(),
+        ...defaultBgObjectParameters(),
         borders: defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.PARABOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.ELLIPSE]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.HYPERBOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.SIN]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.TANGENT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.SECANT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.EXPONENT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.LOGARITHM]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYNOM]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.EQUATION]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.ANNOTATION]: {
         fixed: true
@@ -1095,7 +1092,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const line = this.createElement(
                   "line",
                   [
@@ -1111,10 +1107,7 @@ class Board {
                   {
                     ...Line.parseConfig(el.type),
                     ...attrs,
-                    fillColor: elColor,
-                    strokeColor: elColor,
-                    highlightStrokeColor: elColor,
-                    highlightFillColor: elColor,
+                    ...chooseColor(el.baseColor),
                     id: el.id
                   }
                 );
@@ -1132,7 +1125,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const circle = this.createElement(
                   "circle",
                   [
@@ -1148,8 +1140,7 @@ class Board {
                   {
                     ...Circle.parseConfig(),
                     ...attrs,
-                    strokeColor: elColor,
-                    highlightStrokeColor: elColor,
+                    ...chooseColor(el.baseColor),
                     id: el.id
                   }
                 );
@@ -1167,7 +1158,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const newLine = this.createElement(
                   "ellipse",
                   [
@@ -1187,8 +1177,7 @@ class Board {
                   {
                     ...Ellipse.parseConfig(),
                     ...attrs,
-                    strokeColor: elColor,
-                    highlightStrokeColor: elColor,
+                    ...chooseColor(el.baseColor),
                     id: el.id
                   }
                 );
@@ -1206,7 +1195,16 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
+                const elAttrs = {
+                  ...Polygon.parseConfig(),
+                  ...attrs,
+                  ...chooseColor(el.baseColor),
+                  id: el.id
+                };
+                elAttrs.borders = {
+                  ...Polygon.parseConfig().borders,
+                  ...attrs.borders
+                };
                 const polygon = this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
@@ -1215,13 +1213,7 @@ class Board {
                       objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
                     })
                   ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    strokeColor: elColor,
-                    highlightStrokeColor: elColor,
-                    id: el.id
-                  }
+                  elAttrs
                 );
                 polygon.labelIsVisible = el.labelIsVisible;
                 polygon.baseColor = el.baseColor;
@@ -1252,7 +1244,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const newLine = this.createElement(
                   "hyperbola",
                   [
@@ -1272,8 +1263,7 @@ class Board {
                   {
                     ...Hyperbola.parseConfig(),
                     ...attrs,
-                    strokeColor: elColor,
-                    highlightStrokeColor: elColor,
+                    ...chooseColor(el.baseColor),
                     id: el.id
                   }
                 );
@@ -1292,7 +1282,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const [name, [makeFn, points], props] = Tangent.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1304,8 +1293,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  strokeColor: elColor,
-                  highlightStrokeColor: elColor,
+                  ...chooseColor(el.baseColor),
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1328,7 +1316,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const [name, [makeFn, points], props] = Secant.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1340,8 +1327,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  strokeColor: elColor,
-                  highlightStrokeColor: elColor,
+                  ...chooseColor(el.baseColor),
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1364,7 +1350,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const [name, [makeFn, points], props] = Exponent.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1376,8 +1361,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  strokeColor: elColor,
-                  highlightStrokeColor: elColor,
+                  ...chooseColor(el.baseColor),
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1400,7 +1384,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const [name, [makeFn, points], props] = Logarithm.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1412,8 +1395,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  strokeColor: elColor,
-                  highlightStrokeColor: elColor,
+                  ...chooseColor(el.baseColor),
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1436,7 +1418,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const [name, [makeFn, points], props] = Polynom.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1448,8 +1429,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  strokeColor: elColor,
-                  highlightStrokeColor: elColor,
+                  ...chooseColor(el.baseColor),
                   id: el.id
                 });
                 newElem.type = 95;
@@ -1469,7 +1449,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const [name, [makeFn, points], props] = Sin.parseConfig(
                   el.points.map(pointEl =>
                     mixProps({
@@ -1481,8 +1460,7 @@ class Board {
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  strokeColor: elColor,
-                  highlightStrokeColor: elColor,
+                  ...chooseColor(el.baseColor),
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1505,7 +1483,6 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const elColor = el.baseColor.length > 0 ? el.baseColor : "#00b2ff";
                 const props = Parabola.parseConfig();
                 const points = el.points.map(pointEl =>
                   mixProps({
@@ -1516,8 +1493,7 @@ class Board {
                 const newElem = Parabola.renderElement(this, points, {
                   ...props,
                   ...attrs,
-                  strokeColor: elColor,
-                  highlightStrokeColor: elColor,
+                  ...chooseColor(el.baseColor),
                   id: el.id
                 });
                 newElem.labelIsVisible = el.labelIsVisible;
@@ -1710,8 +1686,18 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs =>
-                this.createElement(
+              objectCreator: attrs => {
+                const elAttrs = {
+                  ...Polygon.parseConfig(),
+                  ...attrs,
+                  fixed: true
+                };
+                elAttrs.borders = {
+                  ...Polygon.parseConfig().borders,
+                  ...attrs.borders
+                };
+
+                return this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
                     mixProps({
@@ -1719,12 +1705,9 @@ class Board {
                       objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
                     })
                   ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    fixed: true
-                  }
-                )
+                  elAttrs
+                );
+              }
             })
           );
           break;

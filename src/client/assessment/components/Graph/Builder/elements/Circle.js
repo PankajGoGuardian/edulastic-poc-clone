@@ -4,7 +4,10 @@ import { CONSTANT, Colors } from "../config";
 import { getLabelParameters } from "../settings";
 import { handleSnap } from "../utils";
 
-export const defaultConfig = {};
+export const defaultConfig = {
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
+};
 
 let points = [];
 

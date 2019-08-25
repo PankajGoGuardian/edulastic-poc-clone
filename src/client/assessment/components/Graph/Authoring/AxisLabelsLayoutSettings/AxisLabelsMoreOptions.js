@@ -489,6 +489,14 @@ class AxisLabelsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Checkbox
+                label={t("component.graphing.labelsoptions.showLabels")}
+                name="showLabels"
+                onChange={() => this.handleNumberlineCheckboxChange("showLabels", numberlineAxis.showLabels)}
+                checked={numberlineAxis.showLabels}
+              />
+            </Col>
+            <Col md={12}>
+              <Checkbox
                 label={t("component.graphing.labelsoptions.showmin")}
                 name="labelShowMin"
                 onChange={() => this.handleNumberlineCheckboxChange("labelShowMin", numberlineAxis.labelShowMin)}

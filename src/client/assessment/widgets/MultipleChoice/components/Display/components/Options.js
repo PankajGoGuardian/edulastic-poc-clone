@@ -15,15 +15,15 @@ const Options = ({
   multipleResponses,
   ...restProps
 }) => {
-  const noOfColumns = (uiStyle.columns != 0 && uiStyle.columns) || options.length;
-  const noOfColElements = Math.ceil(options.length / noOfColumns);
+  const noOfColumns = uiStyle.columns || 1;
+  const noOfRows = Math.ceil(options.length / noOfColumns);
   let startIndex = 0;
-
   const renderOptionList = () => {
     const optionList = [];
-    for (let column = 1; column <= noOfColumns; column++) {
-      optionList.push(getOption(startIndex, noOfColElements * column));
-      startIndex += noOfColElements;
+    for (let row = 1; row <= noOfRows; row++) {
+      const lastIndex = noOfColumns * row;
+      optionList.push(getOption(startIndex, lastIndex));
+      startIndex = lastIndex;
     }
     return optionList;
   };
@@ -35,9 +35,9 @@ const Options = ({
     >
       {options.slice(startIndex, lastIndex).map((option, index) => (
         <Option
-          maxWidth={`${(1 / noOfColElements) * 100}%`}
+          maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
           key={option.value}
-          index={index}
+          index={startIndex + index}
           uiStyle={uiStyle}
           item={option}
           validation={validation}

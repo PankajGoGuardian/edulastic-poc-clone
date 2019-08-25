@@ -66,6 +66,8 @@ class SideMenu extends Component {
     this.state = {
       isVisible: false
     };
+
+    this.sideMenuRef = React.createRef();
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
@@ -105,10 +107,15 @@ class SideMenu extends Component {
     this.setState(prevState => ({ isVisible: !prevState.isVisible }));
   };
 
-  handleProfileClick = () => {
-    const { windowWidth } = this.props;
-    this.toggleDropdown();
-    if (windowWidth <= parseFloat(tabletWidth)) {
+  onClickFooterDropDownMenu = ({ item, key, keyPath, domEvent }) => {
+    const { logout } = this.props;
+    if (key === "0") {
+      // onClickLogout
+      this.toggleMenu();
+      logout();
+    } else if (key === "1") {
+      // onClickLogoutProfile
+      this.toggleDropdown();
       this.toggleMenu();
     }
   };
@@ -130,7 +137,6 @@ class SideMenu extends Component {
       firstName,
       middleName,
       lastName,
-      logout,
       isSidebarCollapsed,
       t,
       profileThumbnail
@@ -141,14 +147,14 @@ class SideMenu extends Component {
     const isMobile = windowWidth <= parseFloat(tabletWidth);
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} className="footerDropWrap" isSidebarCollapsed={isSidebarCollapsed}>
-        <Menu>
+        <Menu onClick={this.onClickFooterDropDownMenu}>
           <Menu.Item key="0" className="removeSelectedBorder">
-            <a onClick={logout}>
+            <a>
               <LogoutIcon type="logout" /> {isSidebarCollapsed ? "" : t("common.signOutText")}
             </a>
           </Menu.Item>
           <Menu.Item key="1" className="removeSelectedBorder">
-            <Link to="/home/profile" onClick={this.handleProfileClick}>
+            <Link to="/home/profile">
               <IconDropdown type="user" /> {isSidebarCollapsed ? "" : t("common.myProfileText")}
             </Link>
           </Menu.Item>
@@ -161,6 +167,7 @@ class SideMenu extends Component {
         className={`${!isSidebarCollapsed ? "full" : ""}`}
         onClick={isSidebarCollapsed && !isMobile ? this.toggleMenu : null}
         isSidebarCollapsed={isSidebarCollapsed}
+        innerRef={this.sideMenuRef}
       >
         <SideBar
           collapsed={isSidebarCollapsed}
@@ -248,6 +255,7 @@ class SideMenu extends Component {
                     isVisible={isVisible}
                     isSidebarCollapsed={isSidebarCollapsed}
                     onVisibleChange={this.handleVisibleChange}
+                    getPopupContainer={() => this.sideMenuRef.current}
                   >
                     <div>
                       {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}

@@ -105,7 +105,10 @@ class GraphAnswers extends Component {
       if (type !== "point") {
         result.pointLabels = Object.values(elem.subElementsIds).map(pointId => {
           const point = value.find(item => item.id === pointId);
-          return point ? point.label : "";
+          return {
+            label: point ? point.label : "",
+            baseColor: point.baseColor
+          };
         });
       }
 

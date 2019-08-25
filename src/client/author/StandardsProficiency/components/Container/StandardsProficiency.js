@@ -5,7 +5,7 @@ import { compose } from "redux";
 import { get } from "lodash";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
-import { List, Typography, Icon, Button, Row, Col, message } from "antd";
+import { List, Typography, Icon, Button, Row, Col, message, Modal, Input } from "antd";
 
 import { StandardsProficiencyDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 import {
@@ -57,15 +57,38 @@ const defaultData = {
 };
 
 function ProfileRow(props) {
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
+
   const { _id, index, deleteRow, setEditing, active, readOnly } = props;
   return (
     <List.Item style={{ display: "block" }}>
+      <Modal
+        title="Delete Profile"
+        onCancel={() => setConfirmVisible(false)}
+        visible={confirmVisible}
+        footer={[
+          <Button disabled={deleteText != "DELETE"} loading={props.loading} onClick={() => deleteRow(_id)}>
+            Yes, Delete
+          </Button>,
+          <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
+        ]}
+      >
+        <div className="content">
+          <p>
+            <b>{props.profile.name}</b> will be removed permanently and can’t be used in future tests. This action can
+            NOT be undone. If you are sure, please type DELETE in the space below.
+          </p>
+        </div>
+        <Input value={deleteText} onChange={e => setDeleteText(e.target.value)} />
+      </Modal>
+
       <Row>
         <Col span={12}>{get(props, "profile.name", "Untitled")}</Col>
         <Col span={12}>
           <Button.Group>
             <Button onClick={() => setEditing(index)}>{active ? "Close" : readOnly ? "View" : "Edit"}</Button>
-            {readOnly ? null : <Button onClick={() => deleteRow(_id)}>delete</Button>}
+            {readOnly ? null : <Button onClick={() => setConfirmVisible(true)}>delete</Button>}
           </Button.Group>
         </Col>
       </Row>
@@ -98,6 +121,10 @@ function StandardsProficiency(props) {
     if (name === "") {
       message.error("Name cannot be empty");
     } else if (name) {
+      if (props.profiles.find(p => p.name === name)) {
+        message.error(`Profile with name "${name}" already exists. Please try with a different name`);
+        return;
+      }
       create({ ...defaultData, name, orgId: props.orgId, orgType: "district" });
     }
   };
@@ -134,6 +161,7 @@ function StandardsProficiency(props) {
                 _id={profile._id}
                 active={index === editingIndex}
                 deleteRow={remove}
+                loading={showSpin}
               />
             )}
           />

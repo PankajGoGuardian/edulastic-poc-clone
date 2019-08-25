@@ -157,7 +157,7 @@ const MatchListPreview = ({
       }
       answers[itemTo.index] = item;
     } else if (answers.includes(item)) {
-      answers[renderIndex] = null;
+      answers[sourceIndex] = null;
       dItems.push(itemCurrent.item);
     }
 
@@ -295,7 +295,8 @@ const MatchListPreview = ({
                   preview={preview}
                   correct={altAnswers.includes(ans[i])}
                   flag="ans"
-                  renderIndex={getStemNumeration(i)}
+                  renderIndex={i}
+                  displayIndex={getStemNumeration(i)}
                   onDrop={onDrop}
                   item={ans[i]}
                   width="100%"

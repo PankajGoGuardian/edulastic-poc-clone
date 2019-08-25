@@ -7,7 +7,9 @@ const jxgType = 95;
 
 export const defaultConfig = {
   hasInnerPoints: true,
-  fixed: false
+  fixed: false,
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
 };
 
 function isStart(startPointCoords, testPointCoords) {

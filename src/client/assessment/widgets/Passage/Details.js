@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 import produce from "immer";
-import { Col, Checkbox, Select, Row } from "antd";
+import { Checkbox, Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -19,6 +19,8 @@ import { StyledInput } from "./styled/StyledInput";
 import { Subtitle } from "../../styled/Subtitle";
 import { WidgetFRInput } from "../../styled/Widget";
 import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
 
 const List = withAddButton(QuillSortableList);
 
@@ -87,80 +89,66 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
     <div>
       <Question
         section="main"
-        label={t("component.passage.heading")}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      >
-        <Subtitle>{t("component.passage.heading")}</Subtitle>
-        <WidgetFRInput>
-          <QuestionTextArea
-            onChange={value => handleChange("heading", value)}
-            value={item.heading || ""}
-            border="border"
-            toolbarId="heading"
-          />
-        </WidgetFRInput>
-      </Question>
-      <Question
-        section="main"
-        label={t("component.passage.contentsTitle")}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      >
-        <Subtitle>{t("component.passage.contentsTitle")}</Subtitle>
-        <WidgetFRInput>
-          <QuestionTextArea
-            onChange={value => handleChange("contentsTitle", value)}
-            value={item.contentsTitle || ""}
-            border="border"
-            toolbarId="contents_title"
-          />
-        </WidgetFRInput>
-      </Question>
-      <Question
-        section="main"
-        label={t("component.passage.contents")}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      >
-        {!item.paginated_content && (
-          <Col span={24}>
-            <Subtitle>{t("component.passage.contents")}</Subtitle>
-            <QuestionTextArea
-              placeholder={t("component.passage.enterPassageContentHere")}
-              onChange={value => handleChange("content", value)}
-              value={item.content}
-              additionalToolbarOptions={["paragraphNumber"]}
-              border="border"
-              toolbarId="passage_content"
-            />
-          </Col>
-        )}
-        {item.paginated_content && item.pages && !!item.pages.length && (
-          <Col span={24}>
-            <Subtitle>{t("component.passage.contentPages")}</Subtitle>
-            <List
-              items={item.pages}
-              buttonText={t("component.passage.add")}
-              onAdd={handleAddPage}
-              onSortEnd={handleSortPagesEnd}
-              useDragHandle
-              onRemove={handleRemovePage}
-              onChange={handleChangePage}
-            />
-          </Col>
-        )}
-      </Question>
-
-      <Question
-        section="main"
         label={t("component.passage.details")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
         <Subtitle>{t("component.passage.details")}</Subtitle>
-        <Row gutter={12}>
-          <Col span={12}>
+        <Row gutter={30}>
+          <Col marginBottom="20px" span={24}>
+            <Label>{t("component.passage.heading")}</Label>
+            <WidgetFRInput>
+              <QuestionTextArea
+                onChange={value => handleChange("heading", value)}
+                value={item.heading || ""}
+                border="border"
+                toolbarId="heading"
+              />
+            </WidgetFRInput>
+          </Col>
+          <Col marginBottom="20px" span={24}>
+            <Label>{t("component.passage.contentsTitle")}</Label>
+            <WidgetFRInput>
+              <QuestionTextArea
+                onChange={value => handleChange("contentsTitle", value)}
+                value={item.contentsTitle || ""}
+                border="border"
+                toolbarId="contents_title"
+              />
+            </WidgetFRInput>
+          </Col>
+
+          <Col marginBottom="20px" span={24}>
+            {!item.paginated_content && (
+              <div>
+                <Label>{t("component.passage.contents")}</Label>
+                <QuestionTextArea
+                  placeholder={t("component.passage.enterPassageContentHere")}
+                  onChange={value => handleChange("content", value)}
+                  value={item.content}
+                  additionalToolbarOptions={["paragraphNumber"]}
+                  border="border"
+                  toolbarId="passage_content"
+                />
+              </div>
+            )}
+            {item.paginated_content && item.pages && !!item.pages.length && (
+              <div>
+                <Label>{t("component.passage.contentPages")}</Label>
+                <List
+                  items={item.pages}
+                  buttonText={t("component.passage.add")}
+                  onAdd={handleAddPage}
+                  onSortEnd={handleSortPagesEnd}
+                  useDragHandle
+                  onRemove={handleRemovePage}
+                  onChange={handleChangePage}
+                />
+              </div>
+            )}
+          </Col>
+
+          <Col marginBottom="20px" span={12}>
             <Label>{t("component.passage.fleschKincaid")}</Label>
             <StyledInput
               size="large"
@@ -168,7 +156,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               onChange={e => handleChange("flesch_kincaid", e.target.value)}
             />
           </Col>
-          <Col span={12}>
+          <Col marginBottom="20px" span={12}>
             <Label>{t("component.passage.lexile")}</Label>
             <StyledInput
               size="large"
@@ -176,61 +164,48 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               onChange={e => handleChange("lexile", e.target.value)}
             />
           </Col>
-        </Row>
-      </Question>
 
-      <Question
-        section="main"
-        label={t("component.passage.instructorStimulus")}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      >
-        <Col span={24}>
-          <Subtitle>{t("component.passage.instructorStimulus")}</Subtitle>
-          <WidgetFRInput>
-            <QuestionTextArea
-              onChange={value => handleChange("instructorStimulus", value)}
-              value={item.instructorStimulus || ""}
-              border="border"
-              toolbarId="instructor_stimulus"
-            />
-          </WidgetFRInput>
-        </Col>
-        <Col span={24} style={{ marginTop: "15px" }}>
-          <Checkbox
-            checked={item.paginated_content}
-            onChange={e => handleChange("paginated_content", e.target.checked)}
-            tabIndex={1}
-          >
-            <b>{t("component.passage.enablePaginatedContent")}</b>
-          </Checkbox>
-        </Col>
-      </Question>
-      {item.isMath && (
-        <Question
-          section="main"
-          label={t("component.passage.mathRenderer")}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        >
-          <Col span={12}>
-            <Subtitle>{t("component.passage.mathRenderer")}</Subtitle>
-            <Select
-              size="large"
-              value={item.math_renderer}
-              style={{ width: "100%" }}
-              onChange={value => handleChange("math_renderer", value)}
+          <Col marginBottom="20px" span={12}>
+            <Label>{t("component.passage.instructorStimulus")}</Label>
+            <WidgetFRInput>
+              <QuestionTextArea
+                onChange={value => handleChange("instructorStimulus", value)}
+                value={item.instructorStimulus || ""}
+                border="border"
+                toolbarId="instructor_stimulus"
+              />
+            </WidgetFRInput>
+          </Col>
+          <Col marginBottom="20px" span={24}>
+            <Checkbox
+              checked={item.paginated_content}
+              onChange={e => handleChange("paginated_content", e.target.checked)}
               tabIndex={1}
             >
-              {rendererOptions.map(({ value: val, label }) => (
-                <Select.Option key={val} value={val}>
-                  {label}
-                </Select.Option>
-              ))}
-            </Select>
+              <b>{t("component.passage.enablePaginatedContent")}</b>
+            </Checkbox>
           </Col>
-        </Question>
-      )}
+
+          {item.isMath && (
+            <Col marginBottom="20px" span={12}>
+              <Label>{t("component.passage.mathRenderer")}</Label>
+              <Select
+                size="large"
+                value={item.math_renderer}
+                style={{ width: "100%" }}
+                onChange={value => handleChange("math_renderer", value)}
+                tabIndex={1}
+              >
+                {rendererOptions.map(({ value: val, label }) => (
+                  <Select.Option key={val} value={val}>
+                    {label}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+          )}
+        </Row>
+      </Question>
     </div>
   );
 };

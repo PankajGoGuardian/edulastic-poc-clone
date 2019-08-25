@@ -37,6 +37,7 @@ class DrawingObjects extends Component {
     const { drawingObjects } = this.props;
     return (
       <Container>
+        <Title>CLICK TO SELECT</Title>
         {drawingObjects.map((drawingObject, index) => (
           <Button
             style={{ boxShadow: `inset 0 0 1em ${drawingObject.baseColor}` }}
@@ -85,4 +86,11 @@ const Button = styled.div`
     color: ${whiteSmoke};
     box-shadow: none;
   }
+`;
+
+export const Title = styled.div`
+  padding: 5px;
+  width: 100%;
+  font-size: ${props => props.theme.widgets.quadrants.dragDropTitleFontSize};
+  font-weight: ${props => props.theme.widgets.quadrants.dragDropTitleFontWeight};
 `;

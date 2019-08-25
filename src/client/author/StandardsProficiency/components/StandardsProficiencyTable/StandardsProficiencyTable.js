@@ -107,7 +107,7 @@ class StandardsProficiencyTable extends React.Component {
                   </EditableContext.Consumer>
                   <a onClick={() => this.cancel(record.key)}>Cancel</a>
                 </span>
-              ) : props.readOnly ? null : (
+              ) : this.props.readOnly ? null : (
                 <React.Fragment>
                   <StyledButton disabled={editingKey !== ""} onClick={() => this.edit(record.key)} title="Edit">
                     <Icon type="edit" theme="twoTone" />
@@ -358,7 +358,7 @@ class StandardsProficiencyTable extends React.Component {
                 <React.Fragment>
                   <StyledLabel>Decay %</StyledLabel>
                   <StyledAverageInput
-                    disabled={props.readOnly}
+                    disabled={this.props.readOnly}
                     defaultValue={calcDecayingAttr}
                     value={calcDecayingAttr}
                     maxLength={2}
@@ -373,7 +373,7 @@ class StandardsProficiencyTable extends React.Component {
                 <React.Fragment>
                   <StyledLabel>Not of Assesments</StyledLabel>
                   <StyledAverageInput
-                    disabled={props.readOnly}
+                    disabled={this.props.readOnly}
                     defaultValue={calcMovingAvrAttr}
                     value={calcMovingAvrAttr}
                     onChange={e => this.onChangeCalcAttr(e, "MOVING_AVERAGE")}

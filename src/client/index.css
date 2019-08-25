@@ -759,11 +759,11 @@ input[type="checkbox"] {
 } */
 
 .response-btn.check-answer {
-  min-height: 35px;
+  min-height: 36px;
   display: inline-flex;
   position: relative;
   top: 0;
-  min-width: 130px;
+  min-width: 150px;
   margin: 5px;
   font-weight: 700;
   font-size: 13px;
@@ -778,17 +778,17 @@ input[type="checkbox"] {
 .check-answer .index {
   color: white;
   align-items: center;
-  width: 30px;
+  width: 40px;
   justify-content: center;
 }
 
 .check-answer .text {
   display: inline-flex;
   flex: 1;
-  text-align: center;
+  text-align: left;
   color: #878282;
   align-items: center;
-  padding: 8px 20px 8px 7px;
+  padding: 8px 20px 8px 10px;
 }
 
 .check-answer.wrong .index {
@@ -799,7 +799,7 @@ input[type="checkbox"] {
 .check-answer.wrong .text {
   background: #fce0e8;
   color: #878282;
-  padding: 8px 20px 8px 7px;
+  padding: 8px 20px 8px 10px;
   width: calc(100% - 30px);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -817,7 +817,7 @@ input[type="checkbox"] {
 .check-answer.right .text {
   background: #d3fea6;
   color: #878282;
-  padding: 8px 20px 8px 7px;
+  padding: 8px 20px 8px 10px;
   width: calc(100% - 30px);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -834,8 +834,8 @@ input[type="checkbox"] {
 .check-answer.showanswer .text {
   background: #fff;
   color: #878282;
-  padding: 8px;
-  min-height: 32px;
+  padding: 8px 20px 8px 10px;
+  min-height: 36px;
 }
 
 .correctanswer-box {
@@ -1072,7 +1072,7 @@ textinput::before {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   /* min-height: 35px; 5043*/
 }
 
@@ -2050,6 +2050,10 @@ span.token.active-word {
 
 .ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on,
 .ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on {
+  color: #00ad50;
+}
+
+.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
   color: #00ad50;
 }
 

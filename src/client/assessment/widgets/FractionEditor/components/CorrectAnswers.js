@@ -16,7 +16,6 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
   const { fractionProperties = {} } = item;
   const { selected, sectors = 7, fractionType, rows, columns, count } = fractionProperties;
   const totalSelections = fractionType === "circles" ? count * sectors : count * (rows * columns);
-  const hideAnnotations = get(item, "options.hideAnnotations", false);
   const handleCorrectAnswerChange = e => {
     const value = +e.target.value;
     if (value > 0) {
@@ -115,14 +114,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
                 />
               );
             })}
-          {!hideAnnotations && (
-            <AnnotationRnd
-              bounds={"window"}
-              question={item}
-              setQuestionData={setQuestionData}
-              disableDragging={false}
-            />
-          )}
+          <AnnotationRnd bounds={"window"} question={item} setQuestionData={setQuestionData} disableDragging={false} />
         </FlexContainer>
       </FlexContainer>
     </Question>

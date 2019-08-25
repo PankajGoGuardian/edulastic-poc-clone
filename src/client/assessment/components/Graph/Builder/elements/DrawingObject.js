@@ -14,7 +14,7 @@ import {
   Sin,
   Tangent
 } from ".";
-import { setLabel } from "../utils";
+import { setLabel, chooseColor } from "../utils";
 
 function onHandler(board, event) {
   const {
@@ -39,7 +39,7 @@ function onHandler(board, event) {
     const points = [];
     const offsets = [[0, 0], [1, 1], [2, 0]];
 
-    drawingObject.pointLabels.forEach((label, i) => {
+    drawingObject.pointLabels.forEach((subPoint, i) => {
       if (i > 2 && (drawingObject.type === CONSTANT.TOOLS.ELLIPSE || drawingObject.type === CONSTANT.TOOLS.HYPERBOLA)) {
         return;
       }
@@ -54,7 +54,14 @@ function onHandler(board, event) {
         y = coords.usrCoords[2] - (i - 2) * deltaY;
       }
       const point = Point.create(board, [x, y]);
-      setLabel(point, label);
+      setLabel(point, subPoint.label);
+      const color = subPoint.baseColor.length > 0 ? subPoint.baseColor : "#00b2ff";
+      point.setAttribute({
+        highlightFillColor: color,
+        highlightStrokeColor: color,
+        fillColor: color,
+        strokeColor: color
+      });
       points.push(point);
     });
 
@@ -101,6 +108,11 @@ function onHandler(board, event) {
       default:
         return;
     }
+  }
+  if (newElement) {
+    newElement.setAttribute({
+      ...chooseColor(drawingObject.baseColor)
+    });
   }
 
   setLabel(newElement, drawingObject.label);

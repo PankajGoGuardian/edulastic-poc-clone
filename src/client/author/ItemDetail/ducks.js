@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import uuid from "uuid/v4";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy, uniq, isEmpty } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, flatten, pull, uniqBy, uniq, isEmpty } from "lodash";
 import { testItemsApi, passageApi, itemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
@@ -224,12 +224,14 @@ export const getPassageSelector = createSelector(
   state => state.passage
 );
 
+/**
+ * check if item has only a single question widget.
+ */
 export const isSingleQuestionViewSelector = createSelector(
   getItemDetailSelector,
   (item = {}) => {
-    const { resources = [], questions = [] } = item.data || {};
-
-    return resources.length === 0 && questions.length === 1;
+    let widgets = flatten(item.rows).reduce((widgets, row) => [...widgets, ...row.widgets], []);
+    return widgets.length === 1;
   }
 );
 

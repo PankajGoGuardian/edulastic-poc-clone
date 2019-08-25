@@ -462,7 +462,13 @@ export class PerformanceBandTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <Table components={components} rowClassName={() => "editable-row"} dataSource={dataSource} columns={columns} />
+        <Table
+          components={components}
+          rowClassName={() => "editable-row"}
+          dataSource={dataSource}
+          pagination={false}
+          columns={columns}
+        />
         <StyledBottomDiv>
           {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
           {performanceBandId.length == 0 ? (

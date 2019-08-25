@@ -194,7 +194,11 @@ const StaticMath = ({
       <div ref={containerRef} className="input" onBlur={onBlurInput}>
         <div
           className="input__math"
-          style={{ minWidth: style.width, minHeight: style.height }}
+          style={{
+            minWidth: style.width,
+            minHeight: style.height,
+            fontSize: style.fontSize ? style.fontSize : "inherit"
+          }}
           data-cy="answer-math-input-style"
         >
           <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />

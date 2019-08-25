@@ -40,7 +40,6 @@ const Link = styled.a`
   }
 
   span {
-    font-size: 15px;
     font-weight: 500;
     max-width: 470px;
   }

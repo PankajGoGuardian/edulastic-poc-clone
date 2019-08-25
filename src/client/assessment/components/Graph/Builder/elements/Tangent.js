@@ -28,7 +28,7 @@ function create(board, tangentPoints, id = null) {
     id
   });
   newLine.labelIsVisible = true;
-  newLine.color = "";
+  newLine.color = "#00b2ff";
   newLine.type = jxgType;
   newLine.addParents(tangentPoints);
   newLine.ancestors = {
@@ -70,7 +70,7 @@ function getConfig(tangent) {
     type: CONSTANT.TOOLS.TANGENT,
     id: tangent.id,
     label: tangent.labelHTML || false,
-    color: tangent.color || "",
+    color: tangent.color || "#00b2ff",
     labelIsVisible: tangent.labelIsVisible,
     points: Object.keys(tangent.ancestors)
       .sort()

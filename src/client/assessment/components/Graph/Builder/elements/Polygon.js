@@ -24,7 +24,7 @@ function create(board, polygonPoints, id = null) {
     id
   });
   newPolygon.labelIsVisible = true;
-  newPolygon.color = "";
+  newPolygon.color = "#00b2ff";
   handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
   newPolygon.borders.forEach(border => {
     border.on("up", () => {
@@ -99,7 +99,7 @@ function getConfig(polygon) {
     type: CONSTANT.TOOLS.POLYGON,
     id: polygon.id,
     label: polygon.labelHTML || false,
-    color: polygon.color || "",
+    color: polygon.color || "#00b2ff",
     labelIsVisible: polygon.labelIsVisible,
     points: Object.keys(polygon.ancestors)
       .sort()

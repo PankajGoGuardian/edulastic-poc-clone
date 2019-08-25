@@ -65,7 +65,7 @@ function renderElement(board, points, params) {
     [points[1].id]: points[1]
   };
   newLine.labelIsVisible = true;
-  newLine.color = "";
+  newLine.color = "#00b2ff";
   handleSnap(newLine, Object.values(newLine.ancestors), board, updateCoords);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -112,7 +112,7 @@ function getConfig(parabola) {
     id: parabola.id,
     label: parabola.labelHTML || false,
     labelIsVisible: parabola.labelIsVisible,
-    color: parabola.color || "",
+    color: parabola.color || "#00b2ff",
     points: Object.keys(parabola.ancestors)
       .sort()
       .map(n => Point.getConfig(parabola.ancestors[n]))

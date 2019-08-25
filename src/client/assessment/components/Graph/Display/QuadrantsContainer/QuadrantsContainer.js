@@ -203,6 +203,14 @@ class GraphContainer extends PureComponent {
     this.setState({ elementSettingsAreOpened: false });
   };
 
+  resetColors = () => {
+    const { setValue } = this.props;
+    const config = this._graph.getConfig();
+
+    config.forEach(cfg => (cfg.color = "#00b2ff"));
+    setValue(config);
+  };
+
   setDefaultToolState() {
     this.setState({ selectedTool: this.getDefaultTool() });
   }
@@ -289,7 +297,7 @@ class GraphContainer extends PureComponent {
       elements
     } = this.props;
 
-    const { tools } = toolbar;
+    const { tools, drawingPrompt } = toolbar;
     const { resourcesLoaded } = this.state;
 
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
@@ -396,6 +404,10 @@ class GraphContainer extends PureComponent {
       }
 
       this.setElementsToGraph(prevProps);
+
+      if (prevProps.toolbar.drawingPrompt === "byObjects" && drawingPrompt === "byTools") {
+        this.resetColors();
+      }
     }
 
     if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
@@ -697,7 +709,7 @@ class GraphContainer extends PureComponent {
       graphData,
       setQuestionData
     } = this.props;
-    const { tools } = toolbar;
+    const { tools, drawingPrompt } = toolbar;
     const { selectedTool, elementSettingsAreOpened, elementId } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
@@ -762,6 +774,7 @@ class GraphContainer extends PureComponent {
               <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
               {elementSettingsAreOpened && this._graph && (
                 <ElementSettingsMenu
+                  showColorPicker={drawingPrompt === "byObjects" && view === "edit"}
                   advancedElementSettings={advancedElementSettings}
                   element={this._graph.getConfig().filter(element => element.id === elementId)[0]}
                   handleClose={this.handleElementSettingsMenuClose}

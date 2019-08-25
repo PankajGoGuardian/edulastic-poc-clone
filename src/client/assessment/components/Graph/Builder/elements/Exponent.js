@@ -28,7 +28,7 @@ function create(board, expPoints, id = null) {
     id
   });
   newLine.labelIsVisible = true;
-  newLine.color = "";
+  newLine.color = "#00b2ff";
   newLine.type = jxgType;
   newLine.addParents(expPoints);
   newLine.ancestors = {
@@ -71,7 +71,7 @@ function getConfig(exponent) {
     id: exponent.id,
     label: exponent.labelHTML || false,
     labelIsVisible: exponent.labelIsVisible,
-    color: exponent.color || "",
+    color: exponent.color || "#00b2ff",
     points: Object.keys(exponent.ancestors)
       .sort()
       .map(n => Point.getConfig(exponent.ancestors[n]))

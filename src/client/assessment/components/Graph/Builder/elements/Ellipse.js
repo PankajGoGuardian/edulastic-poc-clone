@@ -16,7 +16,7 @@ function create(board, ellipsePoints, id = null) {
     id
   });
   newLine.labelIsVisible = true;
-  newLine.color = "";
+  newLine.color = "#00b2ff";
   handleSnap(newLine, Object.values(newLine.ancestors), board);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -53,7 +53,7 @@ function getConfig(ellipse) {
     id: ellipse.id,
     label: ellipse.labelHTML || false,
     labelIsVisible: ellipse.labelIsVisible,
-    color: ellipse.color || "",
+    color: ellipse.color || "#00b2ff",
     points: Object.keys(ellipse.ancestors)
       .sort()
       .map(n => Point.getConfig(ellipse.ancestors[n]))

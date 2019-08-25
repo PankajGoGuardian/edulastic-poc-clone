@@ -49,7 +49,7 @@ function create(board, usrCoords, id = null) {
 
   point.pointIsVisible = true;
   point.labelIsVisible = true;
-  point.color = "";
+  point.color = "#00b2ff";
 
   point.on("up", () => {
     if (point.dragged) {
@@ -94,7 +94,7 @@ function getConfig(point) {
     label: point.labelHTML || false,
     labelIsVisible: point.labelIsVisible,
     pointIsVisible: point.pointIsVisible,
-    color: point.color || ""
+    color: point.color || "#00b2ff"
   };
 }
 

@@ -34,7 +34,7 @@ function create(board, logPoints, id = null) {
     [logPoints[1].id]: logPoints[1]
   };
   newLine.labelIsVisible = true;
-  newLine.color = "#00b2ff";
+  newLine.baseColor = "#00b2ff";
   handleSnap(newLine, Object.values(newLine.ancestors), board);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -71,7 +71,7 @@ function getConfig(logarithm) {
     id: logarithm.id,
     label: logarithm.labelHTML || false,
     labelIsVisible: logarithm.labelIsVisible,
-    color: logarithm.color || "#00b2ff",
+    baseColor: logarithm.baseColor || "#00b2ff",
     points: Object.keys(logarithm.ancestors)
       .sort()
       .map(n => Point.getConfig(logarithm.ancestors[n]))

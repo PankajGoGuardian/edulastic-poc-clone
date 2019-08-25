@@ -19,7 +19,7 @@ function create(board, linePoints, type, id = null) {
     id
   });
   newLine.labelIsVisible = true;
-  newLine.color = "#00b2ff";
+  newLine.baseColor = "#00b2ff";
   handleSnap(newLine, Object.values(newLine.ancestors), board);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -56,7 +56,7 @@ function getConfig(line) {
     id: line.id,
     label: line.labelHTML || false,
     labelIsVisible: line.labelIsVisible,
-    color: line.color || "#00b2ff",
+    baseColor: line.baseColor || "#00b2ff",
     points: Object.keys(line.ancestors)
       .sort()
       .map(n => Point.getConfig(line.ancestors[n]))

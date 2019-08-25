@@ -49,7 +49,7 @@ function create(board, usrCoords, id = null) {
 
   point.pointIsVisible = true;
   point.labelIsVisible = true;
-  point.color = "#00b2ff";
+  point.baseColor = "#00b2ff";
 
   point.on("up", () => {
     if (point.dragged) {
@@ -79,6 +79,20 @@ function create(board, usrCoords, id = null) {
   return point;
 }
 
+function chooseColor(color, bgShapes, pointIsVisible, props, attrs) {
+  const elColor = color.length > 0 ? color : "#00b2ff";
+  return {
+    highlightFillColor:
+      bgShapes && !pointIsVisible ? "transparent" : elColor || attrs.highlightFillColor || props.highlightFillColor,
+    highlightStrokeColor:
+      bgShapes && !pointIsVisible ? "transparent" : elColor || attrs.highlightFillColor || props.highlightFillColor,
+    fillColor:
+      bgShapes && !pointIsVisible ? "transparent" : elColor || attrs.highlightFillColor || props.highlightFillColor,
+    strokeColor:
+      bgShapes && !pointIsVisible ? "transparent" : elColor || attrs.highlightFillColor || props.highlightFillColor
+  };
+}
+
 function onHandler(board, event, id = null) {
   const coords = board.getCoords(event);
   return create(board, coords.usrCoords, id);
@@ -94,7 +108,7 @@ function getConfig(point) {
     label: point.labelHTML || false,
     labelIsVisible: point.labelIsVisible,
     pointIsVisible: point.pointIsVisible,
-    color: point.color || "#00b2ff"
+    baseColor: point.baseColor || "#00b2ff"
   };
 }
 
@@ -110,7 +124,7 @@ function parseConfig(config, pointParameters) {
         ...getLabelParameters(JXG.OBJECT_TYPE_POINT),
         visible: config.labelIsVisible
       },
-      color: config.color
+      baseColor: config.baseColor
     }
   ];
 }
@@ -121,5 +135,6 @@ export default {
   parseConfig,
   roundCoords,
   findPoint,
-  create
+  create,
+  chooseColor
 };

@@ -35,11 +35,11 @@ class DrawingObjects extends Component {
 
   render() {
     const { drawingObjects } = this.props;
-
     return (
       <Container>
         {drawingObjects.map((drawingObject, index) => (
           <Button
+            style={{ boxShadow: `inset 0 0 1em ${drawingObject.baseColor}` }}
             key={`drawing-object-${index}`}
             onClick={() => this.onClick(drawingObject)}
             className={drawingObject.disabled ? "disabled" : drawingObject.selected ? "selected" : ""}

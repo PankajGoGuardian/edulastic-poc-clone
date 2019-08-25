@@ -187,12 +187,12 @@ class GraphContainer extends PureComponent {
       updateElement.label = labelText;
       updateElement.pointIsVisible = pointVisibility;
       updateElement.labelIsVisible = labelVisibility;
-      updateElement.color = color;
+      updateElement.baseColor = color;
 
       if (updateElement.subElementsIds) {
         Object.values(updateElement.subElementsIds).forEach(subElementId => {
           const subElement = config.filter(element => element.id === subElementId)[0];
-          subElement.color = color;
+          subElement.baseColor = color;
         });
       }
 
@@ -207,7 +207,7 @@ class GraphContainer extends PureComponent {
     const { setValue } = this.props;
     const config = this._graph.getConfig();
 
-    config.forEach(cfg => (cfg.color = "#00b2ff"));
+    config.forEach(cfg => (cfg.baseColor = "#00b2ff"));
     setValue(config);
   };
 

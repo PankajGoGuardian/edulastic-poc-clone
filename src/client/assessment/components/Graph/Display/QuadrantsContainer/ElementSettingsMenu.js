@@ -15,7 +15,7 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
   const [labelText, handleLabelTextChange] = useState(element.label || "");
   const [labelIsVisible, handleLabelVisibility] = useState(element.labelIsVisible);
   const [pointIsVisible, handlePointVisibility] = useState(element.pointIsVisible);
-  const [elementColor, handleColorChange] = useState(element.color);
+  const [elementColor, handleColorChange] = useState(element.baseColor);
   const [isColorpickerVisible, handleColorpickerVisibility] = useState(false);
 
   const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);

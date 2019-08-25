@@ -18,7 +18,7 @@ function create(board, hypPoints, id = null) {
   });
   newLine.type = jxgType;
   newLine.labelIsVisible = true;
-  newLine.color = "#00b2ff";
+  newLine.baseColor = "#00b2ff";
   handleSnap(newLine, Object.values(newLine.ancestors), board);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -55,7 +55,7 @@ function getConfig(hyperbola) {
     id: hyperbola.id,
     label: hyperbola.labelHTML || false,
     labelIsVisible: hyperbola.labelIsVisible,
-    color: hyperbola.color || "#00b2ff",
+    baseColor: hyperbola.baseColor || "#00b2ff",
     points: Object.keys(hyperbola.ancestors)
       .sort()
       .map(n => Point.getConfig(hyperbola.ancestors[n]))

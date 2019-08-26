@@ -145,30 +145,30 @@ class ClozeText extends Component {
   handleAddAnswer = userAnswer => {
     const { saveAnswer, setQuestionData, item } = this.props;
     const { uiStyle } = item;
-    let newAnswer = cloneDeep(userAnswer);
-    saveAnswer(newAnswer);
+    saveAnswer(userAnswer);
     if (uiStyle.globalSettings) {
       setQuestionData(
         produce(item, draft => {
-          newAnswer = newAnswer.filter(ans => !!ans);
-          newAnswer.forEach(ans => {
-            const { id, value, index } = ans;
-            const splitWidth = Math.max(value.split("").length * 9, 100);
-            const width = Math.min(splitWidth, 400);
-            const ind = findIndex(draft.uiStyle.responsecontainerindividuals, container => container.id === id);
-            if (ind === -1) {
-              draft.uiStyle.responsecontainerindividuals.push({
-                id,
-                index,
-                previewWidth: width
-              });
-            } else {
-              draft.uiStyle.responsecontainerindividuals[ind] = {
-                ...draft.uiStyle.responsecontainerindividuals[ind],
-                previewWidth: width
-              };
-            }
-          });
+          userAnswer
+            .filter(ans => !!ans)
+            .forEach(ans => {
+              const { id, value, index } = ans;
+              const splitWidth = Math.max(value.split("").length * 9, 100);
+              const width = Math.min(splitWidth, 400);
+              const ind = findIndex(draft.uiStyle.responsecontainerindividuals, container => container.id === id);
+              if (ind === -1) {
+                draft.uiStyle.responsecontainerindividuals.push({
+                  id,
+                  index,
+                  previewWidth: width
+                });
+              } else {
+                draft.uiStyle.responsecontainerindividuals[ind] = {
+                  ...draft.uiStyle.responsecontainerindividuals[ind],
+                  previewWidth: width
+                };
+              }
+            });
         })
       );
     }

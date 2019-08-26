@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import produce from "immer";
 import { shuffle, isUndefined, isEmpty, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
 import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
@@ -18,9 +19,12 @@ import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/
 
 class Display extends Component {
   selectChange = (value, index) => {
-    const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
-    newAnswers[index] = value;
-    changeAnswers(newAnswers);
+    const { onChange: changeAnswers, userSelections } = this.props;
+    changeAnswers(
+      produce(userSelections, draft => {
+        draft[index] = value;
+      })
+    );
   };
 
   shuffle = arr => {

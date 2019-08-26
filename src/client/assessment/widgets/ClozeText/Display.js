@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import produce from "immer";
 import styled from "styled-components";
 import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
@@ -99,27 +100,30 @@ class ClozeTextDisplay extends Component {
     return { btnStyle, responseBtnStyle };
   };
 
-  selectChange = (value, id) => {
-    const { onChange: changeAnswers, userSelections: newAnswers, responseIds } = this.props;
-    const changedIndex = findIndex(newAnswers, answer => (answer ? answer.id : "") === id);
-    if (changedIndex !== -1) {
-      newAnswers[changedIndex].value = value;
-    } else {
-      const resbtn = find(responseIds, res => res.id === id);
-      newAnswers[resbtn.index] = { value, index: resbtn.index, id };
-    }
-    changeAnswers(newAnswers, id, Math.min(Math.max(value.length * 8, 100), 400));
+  onChangeUserAnswer = (value, id) => {
+    const { onChange: changeAnswers, userSelections, responseIds } = this.props;
+    changeAnswers(
+      produce(userSelections, draft => {
+        const changedIndex = findIndex(draft, (answer = {}) => answer.id === id);
+        if (changedIndex !== -1) {
+          draft[changedIndex].value = value;
+        } else {
+          const resbtn = find(responseIds, res => res.id === id);
+          draft[resbtn.index] = { value, index: resbtn.index, id };
+        }
+      })
+    );
   };
 
   _changeInput = ({ value, id, type }) => {
     if (type === "number") {
       value = +value;
       if (typeof value === "number" && !Number.isNaN(value)) {
-        this.selectChange(value, id);
+        this.onChangeUserAnswer(value, id);
       }
       return;
     }
-    this.selectChange(value, id);
+    this.onChangeUserAnswer(value, id);
   };
 
   render() {

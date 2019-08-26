@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import produce from "immer";
 import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash";
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
@@ -30,19 +31,24 @@ class ClozeDropDownDisplay extends Component {
   }
 
   selectChange = (value, index, id) => {
-    const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
-    const changedIndex = findIndex(newAnswers, answer => (answer ? answer.id : "") === id);
-    if (changedIndex !== -1) {
-      newAnswers[changedIndex] = { value, index, id };
-      changeAnswers(newAnswers);
-    } else {
-      const {
-        item: { responseIds }
-      } = this.props;
-      const response = find(responseIds, res => res.id === id);
-      newAnswers[response.index] = { value, index, id };
-      changeAnswers(newAnswers);
-    }
+    const {
+      onChange: changeAnswers,
+      userSelections,
+      item: { responseIds }
+    } = this.props;
+
+    changeAnswers(
+      produce(userSelections, draft => {
+        const changedIndex = findIndex(draft, (answer = {}) => answer.id === id);
+        draft[index] = value;
+        if (changedIndex !== -1) {
+          draft[changedIndex] = { value, index, id };
+        } else {
+          const response = find(responseIds, res => res.id === id);
+          draft[response.index] = { value, index, id };
+        }
+      })
+    );
   };
 
   shuffle = arr => {

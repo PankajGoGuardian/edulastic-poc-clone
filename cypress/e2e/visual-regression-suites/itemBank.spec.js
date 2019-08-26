@@ -6,11 +6,11 @@ import { questionGroup, questionTypeMap } from "../framework/constants/questionT
 import Header from "../framework/author/itemList/itemDetail/header";
 import EditItemPage from "../framework/author/itemList/itemDetail/editPage";
 
-const { SMALL_DESKTOP_WIDTH } = screenSizes;
+const { SMALL_DESKTOP_WIDTH, MAX_TAB_WIDTH } = screenSizes;
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const heightSrollOffSet = 300;
 const questionGroups = Cypress._.values(questionGroup);
-const pageURL = "author/items/5d567ee4157ae702559b9b77/item-detail";
+const pageURL = "author/items/5d638ea92043b09e9abe1324/item-detail";
 const itemHeader = new Header();
 const editItem = new EditItemPage();
 const search = new SearchFilters();
@@ -114,12 +114,37 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
               });
             });
 
-            it(`when resolution is ${size} - top`, () => {
-              cy.scrollTo("top");
+            it(`when resolution is ${size} - 'edit'`, () => {
+              const scrollOffset = size[1] > MAX_TAB_WIDTH ? 60 : 120;
               cy.wait(1000);
               cy.matchImageSnapshot();
+
+              cy.isPageScrollPresent(scrollOffset).then(({ hasScroll, minScrolls, scrollSize }) => {
+                console.log("hasScroll, minSrolls, scrollSize", hasScroll, minScrolls, scrollSize);
+                // if edit page has scroll then scroll and capture multiple snapshots
+                if (hasScroll) {
+                  let scrollNum = 1;
+                  let scrollInPixel = scrollSize;
+                  let currentTestContext = Cypress.mocha.getRunner().currentRunnable;
+                  let screenshotFileName = currentTestContext.title;
+
+                  while (currentTestContext.parent && currentTestContext.parent.title.length > 0) {
+                    screenshotFileName = `${currentTestContext.parent.title} -- ${screenshotFileName}`;
+                    currentTestContext = currentTestContext.parent;
+                  }
+
+                  while (scrollNum <= minScrolls) {
+                    cy.scrollTo(0, scrollInPixel);
+                    cy.wait(500);
+                    cy.matchImageSnapshot(`${screenshotFileName} - scroll-${scrollNum}`);
+                    scrollNum += 1;
+                    scrollInPixel += scrollSize;
+                  }
+                }
+              });
             });
 
+            /* 
             it(`when resolution is ${size} - scrolled`, () => {
               cy.scrollTo(0, size[1] - heightSrollOffSet);
               cy.wait(500);
@@ -131,7 +156,7 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
               cy.wait(500);
               cy.matchImageSnapshot();
             });
-
+             */
             it(`when resolution is ${size} - 'preview'`, () => {
               itemHeader.preview();
               cy.wait(500);

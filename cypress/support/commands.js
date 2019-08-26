@@ -44,6 +44,18 @@ Cypress.Commands.add("createUser", overrides => {
     .then(({ body }) => body.user);
 });
 
+Cypress.Commands.add("isPageScrollPresent", scrollOffset => {
+  return cy.document().then(doc => {
+    const scroll = {
+      hasScroll: doc.body.scrollHeight > doc.body.clientHeight,
+      minScrolls: Cypress._.ceil(doc.body.scrollHeight / (doc.body.clientHeight - scrollOffset)) - 1,
+      scrollSize: doc.body.clientHeight - scrollOffset
+    };
+    // console.log("scroll", JSON.stringify(scroll));
+    return scroll;
+  });
+});
+
 Cypress.Commands.add("clearToken", () => window.localStorage.clear());
 
 Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username, password = "snapwiz") => {

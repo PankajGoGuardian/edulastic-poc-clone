@@ -753,7 +753,7 @@ class Display extends Component {
               }}
               ref={this.responseBoxContainerRef}
             >
-              <RelativeContainer containerWidth={responseBoxContainerWidth}>{responseBoxLayout}</RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
             <div
               style={{
@@ -798,7 +798,7 @@ class Display extends Component {
               }}
               ref={this.responseBoxContainerRef}
             >
-              <RelativeContainer containerWidth={responseBoxContainerWidth}>{responseBoxLayout}</RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
           </div>
         )}

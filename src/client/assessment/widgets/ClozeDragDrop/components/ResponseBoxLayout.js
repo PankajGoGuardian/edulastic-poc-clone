@@ -39,72 +39,78 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                 <div key={index} className="group">
                   <h3>{groupResponse.title}</h3>
                   {groupResponse.options &&
-                    groupResponse.options.map((option, itemIndex) => (
-                      <div
-                        key={itemIndex}
-                        className="draggable_box"
-                        style={{
-                          fontSize: smallSize ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize : fontSize
-                        }}
-                      >
-                        {!dragHandler && (
-                          <Draggable onDrop={onDrop} data={`${option.value}_${index}`}>
-                            <MathSpan dangerouslySetInnerHTML={{ __html: option.label || "" }} />
-                          </Draggable>
-                        )}
-                        {dragHandler && (
-                          <React.Fragment>
-                            <Draggable onDrop={onDrop} data={`${option.value}_${index}`}>
-                              <i
-                                className="fa fa-arrows-alt"
-                                style={{
-                                  fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                                }}
-                              />
-                              <MathSpan dangerouslySetInnerHTML={{ __html: option.label || "" }} />
+                    groupResponse.options.map((option, itemIndex) => {
+                      const { value, label = "" } = option;
+                      return (
+                        <div
+                          key={itemIndex}
+                          className="draggable_box"
+                          style={{
+                            fontSize: smallSize ? theme.widgets.clozeDragDrop.groupDraggableBoxSmallFontSize : fontSize
+                          }}
+                        >
+                          {!dragHandler && (
+                            <Draggable onDrop={onDrop} data={`${value}_${index}`}>
+                              <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                             </Draggable>
-                          </React.Fragment>
-                        )}
-                      </div>
-                    ))}
+                          )}
+                          {dragHandler && (
+                            <React.Fragment>
+                              <Draggable onDrop={onDrop} data={`${value}_${index}`}>
+                                <i
+                                  className="fa fa-arrows-alt"
+                                  style={{
+                                    fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                                  }}
+                                />
+                                <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                              </Draggable>
+                            </React.Fragment>
+                          )}
+                        </div>
+                      );
+                    })}
                 </div>
               );
             }
             return <React.Fragment key={index} />;
           })}
         {!hasGroupResponses &&
-          responses.map((option, index) => (
-            <div
-              id={`response-item-${index}`}
-              key={option.value}
-              className="draggable_box"
-              style={{
-                fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
-                fontWeight: smallSize
-                  ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
-                  : theme.widgets.clozeDragDrop.draggableBoxFontWeight
-              }}
-            >
-              {!dragHandler && (
-                <Draggable onDrop={onDrop} data={option.value}>
-                  <MathSpan dangerouslySetInnerHTML={{ __html: option.label || "" }} />
-                </Draggable>
-              )}
-              {dragHandler && (
-                <React.Fragment>
-                  <Draggable onDrop={onDrop} data={option.value}>
-                    <i
-                      className="fa fa-arrows-alt"
-                      style={{
-                        fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
-                      }}
-                    />
-                    <MathSpan dangerouslySetInnerHTML={{ __html: option.label || "" }} />
+          responses.map((option, index) => {
+            const { label, value } = option;
+            return (
+              <div
+                id={`response-item-${index}`}
+                key={value}
+                className="draggable_box"
+                style={{
+                  fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
+                  fontWeight: smallSize
+                    ? theme.widgets.clozeDragDrop.draggableBoxSmallFontWeight
+                    : theme.widgets.clozeDragDrop.draggableBoxFontWeight
+                }}
+              >
+                {!dragHandler && (
+                  <Draggable onDrop={onDrop} data={value}>
+                    <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
                   </Draggable>
-                </React.Fragment>
-              )}
-            </div>
-          ))}
+                )}
+                {dragHandler && (
+                  <React.Fragment>
+                    <Draggable onDrop={onDrop} data={value}>
+                      <i
+                        className="fa fa-arrows-alt"
+                        style={{
+                          fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
+                        }}
+                      />
+                      <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
+                    </Draggable>
+                  </React.Fragment>
+                )}
+              </div>
+            );
+          })}
       </div>
     </Droppable>
   );

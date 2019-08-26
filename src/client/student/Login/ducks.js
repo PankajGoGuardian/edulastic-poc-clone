@@ -8,7 +8,13 @@ import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
-import { getWordsInURLPathName } from "../../common/utils/helpers";
+import {
+  getWordsInURLPathName,
+  getDistrictSignOutUrl,
+  setSignOutUrl,
+  getSignOutUrl,
+  removeSignOutUrl
+} from "../../common/utils/helpers";
 import { userPickFields } from "../../common/utils/static/user";
 import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../Signup/duck";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -359,6 +365,11 @@ function* login({ payload }) {
       localStorage.removeItem("loginRedirectUrl");
       yield put(push(redirectUrl));
     }
+
+    if (generalSettings) {
+      setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+    }
+
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {
@@ -401,11 +412,13 @@ const checkEmailPolicy = (policy, role, email) => {
 
 function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
+  const generalSettings = yield select(signupGeneralSettingsSelector);
 
   let districtId;
-  if (districtPolicy) {
-    districtId = districtPolicy.orgId;
+  if (generalSettings) {
+    districtId = generalSettings.orgId;
   }
+
   try {
     const { name, email, password, role, classCode, policyViolation } = payload;
     let nameList = name.split(" ");
@@ -458,6 +471,10 @@ function* signup({ payload }) {
       TokenStorage.selectAccessToken(user._id, user.role);
       yield put(signupSuccessAction(result));
       localStorage.removeItem("loginRedirectUrl");
+
+      if (generalSettings) {
+        setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+      }
 
       // Important redirection code removed, redirect code already present in /src/client/App.js
       // it receives new user props in each steps of teacher signup and for other roles
@@ -571,7 +588,9 @@ function* logout() {
   try {
     localStorage.clear();
     yield put({ type: "RESET" });
-    yield put(push("/login"));
+
+    yield put(push(getSignOutUrl()));
+    removeSignOutUrl();
   } catch (e) {
     console.log(e);
   }
@@ -596,6 +615,8 @@ function* googleLogin({ payload }) {
   if (generalSettings) {
     localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
     districtId = generalSettings.orgId;
+
+    setSignOutUrl(getDistrictSignOutUrl(generalSettings));
   }
 
   try {
@@ -650,7 +671,9 @@ function* googleSSOLogin({ payload }) {
     yield put(getUserDataAction(res));
   } catch (e) {
     yield call(message.error, get(e, "data.message", "Google Login failed"));
-    yield put(push("/login"));
+
+    yield put(push(getSignOutUrl()));
+    removeSignOutUrl();
   }
   localStorage.removeItem("thirdPartySignOnRole");
   localStorage.removeItem("thirdPartySignOnClassCode");
@@ -663,6 +686,8 @@ function* msoLogin({ payload }) {
   if (generalSettings) {
     localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
     districtId = generalSettings.orgId;
+
+    setSignOutUrl(getDistrictSignOutUrl(generalSettings));
   }
 
   try {
@@ -715,7 +740,9 @@ function* msoSSOLogin({ payload }) {
     yield put(getUserDataAction(res));
   } catch (e) {
     yield call(message.error, get(e, "data.message", "MSO Login failed"));
-    yield put(push("/login"));
+
+    yield put(push(getSignOutUrl()));
+    removeSignOutUrl();
   }
   localStorage.removeItem("thirdPartySignOnRole");
   localStorage.removeItem("thirdPartySignOnClassCode");
@@ -772,7 +799,9 @@ function* getUserData({ payload: res }) {
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (e) {
     yield call(message.error, "Failed to fetch user data.");
-    yield put(push("/login"));
+
+    yield put(push(getSignOutUrl()));
+    removeSignOutUrl();
   }
 }
 
@@ -814,9 +843,14 @@ function* requestNewPasswordSaga({ payload }) {
 function* resetPasswordUserSaga({ payload }) {
   try {
     const res = yield call(userApi.fetchResetPasswordUser, payload);
-    yield put({ type: RESET_PASSWORD_USER_SUCCESS, payload: res });
+    if (res) {
+      yield put({ type: RESET_PASSWORD_USER_SUCCESS, payload: res });
+    } else {
+      yield put(push("/login"));
+    }
   } catch (e) {
     yield call(message.error, e && e.data ? e.data.message : "Failed to user data.");
+    yield put(push("/login"));
   }
 }
 

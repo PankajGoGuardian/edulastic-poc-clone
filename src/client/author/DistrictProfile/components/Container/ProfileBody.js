@@ -193,13 +193,7 @@ class ProfileBody extends React.Component {
           <DetailData>
             <InputItemWrapper>
               {getFieldDecorator("title", {
-                initialValue: user.title,
-                rules: [
-                  {
-                    required: true,
-                    message: t("common.title.userTitle")
-                  }
-                ]
+                initialValue: user.title
               })(
                 <Select>
                   <Option value="Mr.">Mr.</Option>
@@ -232,13 +226,7 @@ class ProfileBody extends React.Component {
           <DetailData>
             <InputItemWrapper>
               {getFieldDecorator("lastName", {
-                initialValue: user.lastName,
-                rules: [
-                  {
-                    required: true,
-                    message: t("common.title.lastName")
-                  }
-                ]
+                initialValue: user.lastName
               })(<Input type="text" />)}
             </InputItemWrapper>{" "}
           </DetailData>

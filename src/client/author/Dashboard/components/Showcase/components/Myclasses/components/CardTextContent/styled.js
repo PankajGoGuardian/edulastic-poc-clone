@@ -43,7 +43,7 @@ export const Image = styled.img`
 `;
 
 export const TextDiv = styled.p`
-  color: ${props => (props.color ? props.color : lightBlue)};
+  color: ${lightBlue};
   size: 12px;
   text-overflow: ellipsis;
   display: block;

@@ -211,10 +211,14 @@ function* launchAssignment({ payload }) {
     const role = yield select(getUserRole);
     const { assignmentId, groupId } = payload;
     if (role === "student") {
-      const [assignment, testActivities] = yield Promise.all([
+      let [assignment, testActivities] = yield Promise.all([
         assignmentApi.getById(assignmentId),
         assignmentApi.fetchTestActivities(assignmentId, groupId)
       ]);
+      const userId = yield select(getCurrentUserId);
+      const classIds = yield select(getClassIds);
+      assignment = transformAssignmentForRedirect(groupId, userId, classIds, assignment);
+
       const lastActivity = _maxBy(testActivities, "createdAt");
       const { testId, testType = "assessment" } = assignment;
 

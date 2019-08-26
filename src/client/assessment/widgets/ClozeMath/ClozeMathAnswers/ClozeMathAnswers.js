@@ -246,11 +246,13 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
   //   );
   // };
 
-  const handleAllowedOptions = mathInputIndex => (option, variables) => {
+  const handleAllowedOptions = (type, mathInputIndex) => (option, variables) => {
     setQuestionData(
       produce(item, draft => {
-        draft[option] = draft[option] || {};
-        draft[option][mathInputIndex] = variables;
+        const prop = draft.responseIds[type].find(el => el.index === mathInputIndex);
+        if (prop) {
+          prop[option] = variables;
+        }
       })
     );
   };
@@ -323,7 +325,13 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
           orderedAnswers.push({ index: r.index, type: key, ..._answer });
         } else if (key === "maths") {
           const _answer = find(mathAnswers, valid => valid[0].id === r.id);
-          orderedAnswers.push({ value: _answer, index: r.index, type: key });
+          orderedAnswers.push({
+            value: _answer,
+            index: r.index,
+            type: key,
+            allowNumericOnly: r.allowNumericOnly,
+            allowedVariables: r.allowedVariables
+          });
         } else if (key === "dropDowns") {
           const _answer = find(dropDownAnswers, valid => valid.id === r.id);
           orderedAnswers.push({ index: r.index, type: key, ..._answer });
@@ -380,7 +388,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   key={index}
                   onChange={_changeCorrectMethod}
                   // onChangeAllowedOptions={handleAllowedVariables}
-                  onChangeAllowedOptions={handleAllowedOptions(index)}
+                  onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
                   onAdd={_addCorrectMethod}
                   onDelete={_deleteCorrectMethod}
                   answers={[answer]}
@@ -397,7 +405,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   key={index}
                   item={item}
                   onChange={_changeAltMethod(correctTab - 1)}
-                  onChangeAllowedOptions={handleAllowedOptions(index)}
+                  onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
                   onAdd={_addAltMethod(correctTab - 1)}
                   onDelete={_deleteAltMethod(correctTab - 1)}
                   answers={[altAnswer]}
@@ -435,7 +443,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   item={item}
                   answer={answer}
                   onChange={_onChangeMathUnitAnswer(null)}
-                  onChangeAllowedOptions={handleAllowedOptions(index)}
+                  onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
                   onChangeKeypad={onChangeKeypad}
                   toggleAdditional={toggleAdditional}
                 />
@@ -450,7 +458,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections, 
                   item={item}
                   answer={altAnswer}
                   onChange={_onChangeMathUnitAnswer(correctTab - 1)}
-                  onChangeAllowedOptions={handleAllowedOptions(index)}
+                  onChangeAllowedOptions={handleAllowedOptions(answer.type, index)}
                   onChangeKeypad={onChangeKeypad}
                   toggleAdditional={toggleAdditional}
                 />

@@ -85,10 +85,10 @@ class ClozeMathInput extends React.Component {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
     const {
-      responseIds: { maths }
+      responseIds: { maths = [] }
     } = item;
-    const { index } = find(maths, res => res.id === id) || {};
-    if (item.allowNumericOnly && item.allowNumericOnly[index]) {
+    const { allowNumericOnly } = find(maths, res => res.id === id) || {};
+    if (allowNumericOnly) {
       if (!e.key.match(/[0-9+-./%]/g)) {
         e.preventDefault();
         e.stopPropagation();
@@ -239,12 +239,11 @@ class ClozeMathInput extends React.Component {
   get restrictKeys() {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
-    const { allowedVariables = {} } = item;
     const {
       responseIds: { maths }
     } = item;
-    const { index } = find(maths, res => res.id === id) || {};
-    return allowedVariables[index] ? allowedVariables[index].split(",").map(segment => segment.trim()) : [];
+    const { allowedVariables = "" } = find(maths, res => res.id === id) || {};
+    return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
   render() {

@@ -253,12 +253,11 @@ class ClozeMathWithUnit extends React.Component {
   get restrictKeys() {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
-    const { allowedVariables = {} } = item;
     const {
       responseIds: { mathUnits }
     } = item;
-    const { index } = find(mathUnits, res => res.id === id) || {};
-    return allowedVariables[index] ? allowedVariables[index].split(",").map(segment => segment.trim()) : [];
+    const { allowedVariables } = find(mathUnits, res => res.id === id) || {};
+    return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
   render() {

@@ -76,10 +76,8 @@ const MathFormulaAnswerMethod = ({
       newOptions.field = fieldsConst.INTEGER;
       onChange("options", newOptions);
     }
-    if (method === methodsConst.EQUIV_VALUE) {
+    if (method === methodsConst.EQUIV_VALUE && allowNumericOnly === null) {
       onChangeAllowedOptions("allowNumericOnly", true);
-    } else {
-      onChangeAllowedOptions("allowNumericOnly", false);
     }
   }, [method]);
 
@@ -484,7 +482,7 @@ MathFormulaAnswerMethod.propTypes = {
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   allowedVariables: PropTypes.string.isRequired,
-  allowNumericOnly: PropTypes.bool.isRequired,
+  allowNumericOnly: PropTypes.any.isRequired,
   windowWidth: PropTypes.number.isRequired,
   keypadOffset: PropTypes.number.isRequired,
   toggleAdditional: PropTypes.func.isRequired,
@@ -504,7 +502,8 @@ MathFormulaAnswerMethod.defaultProps = {
   customUnits: "",
   containerHeight: "auto",
   keypadMode: "",
-  renderExtra: null
+  renderExtra: null,
+  allowNumericOnly: null
 };
 
 export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

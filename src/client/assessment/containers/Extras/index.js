@@ -65,8 +65,8 @@ class Extras extends Component {
                   placeholder={t("component.options.enterSampleAnswer")}
                   toolbarId="sample_answer"
                   toolbarSize="SM"
-                  onChange={value => _change("metadata.sampleAnswer", value)}
-                  value={get(item, "metadata.sampleAnswer", "")}
+                  onChange={value => _change("sampleAnswer", value)}
+                  value={get(item, "sampleAnswer", "")}
                 />
               </WidgetFRInput>
             </Col>

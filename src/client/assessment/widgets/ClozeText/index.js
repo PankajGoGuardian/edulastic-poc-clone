@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, isEqual, get, findIndex } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
+import uuid from "uuid/v4";
 import { Paper, Checkbox, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -105,6 +106,7 @@ class ClozeText extends Component {
         });
         draft.validation.altResponses.push({
           score: 1,
+          id: uuid(),
           value: validAnswers
         });
       })
@@ -118,6 +120,15 @@ class ClozeText extends Component {
         if (draft.validation.altResponses && draft.validation.altResponses.length) {
           draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
         }
+      })
+    );
+  };
+
+  handleRemoveAltResponsesMixMatch = () => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.validation.altResponses = [];
       })
     );
   };
@@ -238,6 +249,7 @@ class ClozeText extends Component {
                     responseIds={item.responseIds}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
+                    handleRemoveAltResponsesMixMatch={this.handleRemoveAltResponsesMixMatch}
                     cleanSections={cleanSections}
                     fillSections={fillSections}
                     view={view}

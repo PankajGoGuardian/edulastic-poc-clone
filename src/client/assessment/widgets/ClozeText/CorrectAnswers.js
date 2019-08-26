@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, findIndex } from "lodash";
+import produce from "immer";
+import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tab, Tabs, TabContainer } from "@edulastic/common";
@@ -29,27 +31,38 @@ class CorrectAnswers extends Component {
       validation,
       validation: { mixAndMatch = false },
       t,
-      onRemoveAltResponses
+      onRemoveAltResponses,
+      handleRemoveAltResponsesMixMatch
     } = this.props;
 
     if (validation.altResponses && validation.altResponses.length) {
-      return validation.altResponses.map((res, i) =>
-        // hiding other tabs when mixAndMatch (only show 1 tab for altResponses)
-        // not removing other tabs as user might toggle, so need to show other tabs then
-        mixAndMatch && i >= 1 ? null : (
+      if (mixAndMatch) {
+        return (
           <Tab
             close
-            key={i}
             onClose={() => {
-              onRemoveAltResponses(i);
+              handleRemoveAltResponsesMixMatch();
               this.setState({ value: 0 });
             }}
-            label={`${t("component.correctanswers.alternate")} ${i + 1}`}
+            label={`${t("component.correctanswers.alternate")}`}
             IconPosition="right"
             type="primary"
           />
-        )
-      );
+        );
+      }
+      return validation.altResponses.map((res, i) => (
+        <Tab
+          close
+          key={i}
+          onClose={() => {
+            onRemoveAltResponses(i);
+            this.setState({ value: 0 });
+          }}
+          label={`${t("component.correctanswers.alternate")} ${i + 1}`}
+          IconPosition="right"
+          type="primary"
+        />
+      ));
     }
     return null;
   };
@@ -114,12 +127,65 @@ class CorrectAnswers extends Component {
 
     const updatedAltResponses = newData.validation.altResponses;
     updatedAltResponses[tabIndex] = {
+      ...updatedAltResponses[tabIndex],
       score: newData.validation.altResponses[tabIndex].score,
       value: answers
     };
 
     newData.validation.altResponses = updatedAltResponses;
     setQuestionData(newData);
+  };
+
+  updateAltAnswersMixMatch = ({ id, tabId, value }) => {
+    const { question, setQuestionData } = this.props;
+    setQuestionData(
+      produce(question, draft => {
+        draft.validation.altResponses = draft.validation.altResponses.map(alt => {
+          if (alt.id === tabId) {
+            alt.value = alt.value.filter(resp => !(resp.id === id && resp.value === value));
+          }
+          return alt;
+        });
+      })
+    );
+  };
+
+  addAltAnswerMixMatch = ({ index, value }) => {
+    const { question, setQuestionData } = this.props;
+    setQuestionData(
+      produce(question, draft => {
+        let updated = false;
+        draft.validation.altResponses.forEach(altResponse => {
+          const _index = altResponse.value.findIndex(resp => resp.index === index);
+          if (_index !== -1 && altResponse.value[_index].value === "") {
+            altResponse.value[_index].value = value;
+            updated = true;
+          } else if (_index === -1 && !updated) {
+            const resp = draft.responseIds.find(resp => resp.index === index);
+            altResponse.value.push({
+              id: resp.id,
+              index,
+              value
+            });
+            updated = true;
+          }
+        });
+        if (!updated) {
+          // need to add a new tab for alternate answers
+          const validAnswers = draft.validation.validResponse.value.map(answer => {
+            if (answer.index === index) {
+              return { ...answer, value, index };
+            }
+            return { ...answer, value: "" };
+          });
+          draft.validation.altResponses.push({
+            score: draft.validation.validResponse.score,
+            id: uuid(),
+            value: validAnswers
+          });
+        }
+      })
+    );
   };
 
   handleUpdateCorrectScore = points => {
@@ -193,9 +259,10 @@ class CorrectAnswers extends Component {
                     {validation.mixAndMatch && (
                       <MixMatchCorrectAnswer
                         uiStyle={uiStyle}
-                        response={validation.validResponse}
-                        alternateResponse={alter}
-                        onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
+                        validResponse={validation.validResponse}
+                        alternateResponse={validation.altResponses}
+                        onUpdateValidationValue={answers => this.updateAltAnswersMixMatch(answers)}
+                        addAltAnswerMixMatch={answer => this.addAltAnswerMixMatch(answer)}
                       />
                     )}
                     {!validation.mixAndMatch && (

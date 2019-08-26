@@ -800,7 +800,7 @@ export function* updateItemSaga({ payload }) {
 export const hasStandards = question => {
   const alignments = get(question, "alignment", []);
   if (!alignments.length) return false;
-  const hasDomain = alignments.some(i => i.domains && i.domains.length);
+  const hasDomain = alignments.some(i => i.domains && i.domains.length && !i.isEquivalentStandard);
   return !!hasDomain;
 };
 

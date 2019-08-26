@@ -25,30 +25,41 @@ class CorrectAnswers extends Component {
   };
 
   renderAltResponses = () => {
-    const { validation, t, onRemoveAltResponses } = this.props;
+    const {
+      validation,
+      validation: { mixAndMatch = false },
+      t,
+      onRemoveAltResponses
+    } = this.props;
 
     if (validation.altResponses && validation.altResponses.length) {
-      return validation.altResponses.map((res, i) => (
-        <Tab
-          close
-          key={i}
-          onClose={() => {
-            onRemoveAltResponses(i);
-            this.setState({ value: 0 });
-          }}
-          label={`${t("component.correctanswers.alternate")} ${i + 1}`}
-          IconPosition="right"
-          type="primary"
-        />
-      ));
+      return validation.altResponses.map((res, i) =>
+        // hiding other tabs when mixAndMatch (only show 1 tab for altResponses)
+        // not removing other tabs as user might toggle, so need to show other tabs then
+        mixAndMatch && i >= 1 ? null : (
+          <Tab
+            close
+            key={i}
+            onClose={() => {
+              onRemoveAltResponses(i);
+              this.setState({ value: 0 });
+            }}
+            label={`${t("component.correctanswers.alternate")} ${i + 1}`}
+            IconPosition="right"
+            type="primary"
+          />
+        )
+      );
     }
     return null;
   };
 
   renderPlusButton = () => {
     const { onAddAltResponses, validation } = this.props;
-    const { alt_responses = [] } = validation;
-
+    const { altResponses = [], mixAndMatch = false } = validation;
+    // only need one altResponses block
+    // removing the button when mixNmatch and altResponses are > 1
+    if (mixAndMatch && altResponses.length >= 1) return null;
     return (
       <Button
         style={{
@@ -59,7 +70,7 @@ class CorrectAnswers extends Component {
           marginLeft: 20
         }}
         icon={<IconPlus fill="#fff" />}
-        disabled={validation.mixAndMatch && alt_responses.length >= 1}
+        disabled={validation.mixAndMatch && altResponses.length >= 1}
         onClick={() => {
           this.handleTabChange(validation.altResponses.length + 1);
           onAddAltResponses();

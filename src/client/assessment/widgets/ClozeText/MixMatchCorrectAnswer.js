@@ -5,6 +5,7 @@ import { get, find, isArray } from "lodash";
 import { Tag, Input } from "antd";
 import { response as responseDimensions } from "@edulastic/constants";
 import { dashBorderColor, white } from "@edulastic/colors";
+import FlexContainer from "@edulastic/common/src/components/FlexContainer";
 
 const MixMatchCorrectAnswer = ({ response, alternateResponse, uiStyle, onUpdateValidationValue }) => {
   const [newValues, setNewTag] = useState({});
@@ -58,29 +59,47 @@ const MixMatchCorrectAnswer = ({ response, alternateResponse, uiStyle, onUpdateV
     setNewTag({ [id]: e.target.value });
   };
 
-  return correctValues.map(({ id, index, value }) => (
-    <AnswerContainer>
-      <CorrectAnswer style={btnStyle}>
-        <div className="index">{index + 1}</div>
-        <div className="text">{value}</div>
-      </CorrectAnswer>
-      <AlterAnswer key={id}>
-        {getAnswersFromAlter(id).map((tag, answerIndex) => (
-          <Tag key={tag} closable onClose={handleClose(id, answerIndex, index)}>
-            {tag}
-          </Tag>
-        ))}
-        <Input
-          type="text"
-          size="small"
-          value={newValues[id]}
-          onChange={handleInputChange(id)}
-          onBlur={handleInputConfirm(id, index)}
-          onPressEnter={handleInputConfirm(id, index)}
-        />
-      </AlterAnswer>
-    </AnswerContainer>
-  ));
+  const correctAnswersBlock = (
+    // render all correct answers
+    <FlexContainer flexDirection="column" alignItems="flex-start">
+      {correctValues.map(({ id, index, value }) => (
+        <CorrectAnswer style={btnStyle}>
+          <div className="index">{index + 1}</div>
+          <div className="text">{value}</div>
+        </CorrectAnswer>
+      ))}
+    </FlexContainer>
+  );
+
+  const altAnswerBlock = (
+    // render as many inputs as correct answers
+    <FlexContainer flexDirection="column" alignItems="flex-start">
+      {correctValues.map(({ id, index, value }) => (
+        <AlterAnswer key={id}>
+          {getAnswersFromAlter(id).map((tag, answerIndex) => (
+            <Tag key={tag} closable onClose={handleClose(id, answerIndex, index)}>
+              {tag}
+            </Tag>
+          ))}
+          <Input
+            type="text"
+            size="small"
+            value={newValues[id]}
+            onChange={handleInputChange(id)}
+            onBlur={handleInputConfirm(id, index)}
+            onPressEnter={handleInputConfirm(id, index)}
+          />
+        </AlterAnswer>
+      ))}
+    </FlexContainer>
+  );
+
+  return (
+    <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+      {correctAnswersBlock}
+      {altAnswerBlock}
+    </FlexContainer>
+  );
 };
 
 MixMatchCorrectAnswer.propTypes = {
@@ -92,15 +111,11 @@ MixMatchCorrectAnswer.propTypes = {
 
 export default MixMatchCorrectAnswer;
 
-const AnswerContainer = styled.div`
-  display: flex;
-  margin-bottom: 8px;
-`;
-
 const CorrectAnswer = styled.div`
   display: flex;
   height: 44px;
   margin-right: 16px;
+  margin-bottom: 8px;
   .index {
     padding: 8px 14px;
     color: ${white};
@@ -130,6 +145,7 @@ const AlterAnswer = styled.div`
   border: 1px ${dashBorderColor} solid;
   padding-left: 8px;
   background: ${white};
+  margin-bottom: 8px;
   .ant-input {
     border: 0px;
     padding: 8px;

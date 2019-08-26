@@ -20,7 +20,7 @@ const CheckboxTemplateBoxLayout = ({
   imageAlterText,
   responseBtnStyle,
   userSelections,
-  stemnumeration,
+  stemNumeration,
   evaluation,
   fontSize,
   imageUrl,
@@ -68,7 +68,7 @@ const CheckboxTemplateBoxLayout = ({
         } else {
           btnStyle.width = btnStyle.width;
         }
-        const indexStr = helpers.getNumeration(dropTargetIndex, stemnumeration);
+        const indexStr = helpers.getNumeration(dropTargetIndex, stemNumeration);
         const status = evaluation[dropTargetIndex] ? "right" : "wrong";
         return (
           <React.Fragment key={index}>
@@ -88,7 +88,7 @@ const CheckboxTemplateBoxLayout = ({
                     ${evaluation[dropTargetIndex] ? "right" : "wrong"}`}
                 onClick={onClickHandler}
               >
-                <span className="index index-box">{indexStr}</span>
+                {showAnswer && <span className="index index-box">{indexStr}</span>}
                 <div className="text container" title={userSelections[dropTargetIndex]}>
                   <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
                     {userSelections[dropTargetIndex]}
@@ -121,7 +121,7 @@ const CheckboxTemplateBoxLayout = ({
                     show-answer`}
                 onClick={onClickHandler}
               >
-                <span className="index index-box">{indexStr}</span>
+                {showAnswer && <span className="index index-box">{indexStr}</span>}
                 <div className="text container" title={userSelections[dropTargetIndex]}>
                   <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
                     {userSelections[dropTargetIndex]}
@@ -150,7 +150,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   imageOptions: PropTypes.object.isRequired,
   responseBtnStyle: PropTypes.object.isRequired,
   userSelections: PropTypes.array.isRequired,
-  stemnumeration: PropTypes.string.isRequired,
+  stemNumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool.isRequired,
   imageUrl: PropTypes.string.isRequired,

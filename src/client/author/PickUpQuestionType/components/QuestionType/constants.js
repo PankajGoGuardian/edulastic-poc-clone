@@ -1057,7 +1057,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140,
           heightpx: 0,
           wordwrap: false,
@@ -1096,7 +1096,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140,
           heightpx: 0,
           wordwrap: false,
@@ -1136,7 +1136,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           placeholder: "",
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140
         },
         responseIds: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],

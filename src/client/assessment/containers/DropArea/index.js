@@ -69,7 +69,7 @@ const DropArea = ({ updateData, item, showIndex = true, setQuestionData, disable
   };
 
   const getIndex = index => {
-    const stemNumeration = get(item, "uiStyle.stemnumeration");
+    const stemNumeration = get(item, "uiStyle.stemNumeration");
     return helpers.getNumeration(index, stemNumeration);
   };
 

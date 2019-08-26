@@ -402,7 +402,7 @@ class Display extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? `${uiStyle.widthpx}px` : null,
@@ -660,7 +660,7 @@ class Display extends Component {
             annotations={renderAnnotations()}
             image={renderImage()}
             snapItems={renderSnapItems()}
-            stemnumeration={stemnumeration}
+            stemNumeration={stemNumeration}
             showAnswer={showAnswer}
             checkAnswer={checkAnswer}
             userSelections={userAnswers}
@@ -865,7 +865,7 @@ Display.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,

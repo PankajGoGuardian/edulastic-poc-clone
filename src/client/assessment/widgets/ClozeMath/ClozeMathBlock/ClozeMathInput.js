@@ -287,7 +287,7 @@ class ClozeMathInput extends React.Component {
 }
 
 const MathInput = ({ resprops = {}, id }) => {
-  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(responseContainers, cont => cont.id === id);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
@@ -298,6 +298,7 @@ const MathInput = ({ resprops = {}, id }) => {
       width={width}
       height={height}
       evaluation={evaluation}
+      showIndex={showIndex}
       userAnswer={_mathAnswers[id]}
       item={item}
       id={id}

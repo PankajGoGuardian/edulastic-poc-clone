@@ -303,7 +303,6 @@ class ClozeText extends Component {
                 instructorStimulus={itemForPreview.instructorStimulus}
                 item={itemForPreview}
                 responseIds={item.responseIds}
-                showIndex
                 view={view}
                 previewTab={previewTab}
                 showAnswer={previewTab === "show"}

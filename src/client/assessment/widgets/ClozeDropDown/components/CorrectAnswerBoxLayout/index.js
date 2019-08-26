@@ -2,10 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { isEmpty } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
+import { getStemNumeration } from "../../../../utils/helpers";
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
 import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
 
-const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseIds, t }) => {
+const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseIds, t, stemNumeration }) => {
   const getLabel = id => {
     if (isEmpty(altResponses)) {
       const correctAnswer = userAnswers.find(answer => (answer ? answer.id : "") === id);
@@ -30,7 +31,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altResponses, responseI
       <div>
         {responseIds.map(response => (
           <div key={response.index} className="response-btn check-answer showanswer">
-            <span className="index">{response.index + 1}</span>
+            <span className="index">{getStemNumeration(stemNumeration, response.index)}</span>
             <span className="text">{getLabel(response.id)}</span>
           </div>
         ))}
@@ -43,6 +44,7 @@ CorrectAnswerBoxLayout.propTypes = {
   fontSize: PropTypes.string,
   altResponses: PropTypes.array,
   userAnswers: PropTypes.array,
+  stemNumeration: PropTypes.string.isRequired,
   responseIds: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired
 };

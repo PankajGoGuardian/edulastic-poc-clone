@@ -4,7 +4,9 @@ import { isEmpty } from "lodash";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 
-const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnswers, responseIds, t }) => {
+import { getStemNumeration } from "../../../utils/helpers";
+
+const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnswers, responseIds, stemNumeration, t }) => {
   const getLabel = id => {
     if (isEmpty(altAnswers)) {
       const correctAnswer = userAnswers.find(answer => (answer ? answer.id : "") === id);
@@ -32,7 +34,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnswers, responseIds
           return (
             label && (
               <div key={response.index} className="response-btn check-answer showanswer">
-                <span className="index">{response.index + 1}</span>
+                <span className="index">{getStemNumeration(stemNumeration, response.index)}</span>
                 <span className="text">{label}</span>
               </div>
             )
@@ -48,6 +50,7 @@ CorrectAnswerBoxLayout.propTypes = {
   userAnswers: PropTypes.array,
   altAnswers: PropTypes.array,
   responseIds: PropTypes.array.isRequired,
+  stemNumeration: PropTypes.string.isRequired,
   t: PropTypes.func.isRequired
 };
 

@@ -126,7 +126,7 @@ class ClozeDropDownDisplay extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(theme.fontSize || "normal", true);
-    const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { placeholder, responsecontainerindividuals, stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
     let maxLineHeight = smallSize ? 50 : 40;
@@ -141,6 +141,7 @@ class ClozeDropDownDisplay extends Component {
           groupResponses={options}
           userAnswers={item.validation.validResponse && item.validation.validResponse.value}
           responseIds={item.responseIds}
+          stemNumeration={stemNumeration}
         />
         {hasAltAnswers && (
           <CorrectAnswerBoxLayout
@@ -148,6 +149,7 @@ class ClozeDropDownDisplay extends Component {
             groupResponses={options}
             altResponses={item.validation.altResponses}
             responseIds={item.responseIds}
+            stemNumeration={stemNumeration}
           />
         )}
       </React.Fragment>
@@ -167,11 +169,11 @@ class ClozeDropDownDisplay extends Component {
       options: responses,
       onChange: this.selectChange,
       responsecontainerindividuals,
-      stemNumeration: stemnumeration,
+      stemNumeration: stemNumeration,
       previewTab,
       changePreviewTab,
       userAnswers: userSelections || [],
-      showIndex: showAnswer || checkAnswer,
+      showIndex: showAnswer,
       cAnswers: get(item, "validation.validResponse.value", []),
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
@@ -246,7 +248,7 @@ ClozeDropDownDisplay.defaultProps = {
   },
   uiStyle: {
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     placeholder: null,

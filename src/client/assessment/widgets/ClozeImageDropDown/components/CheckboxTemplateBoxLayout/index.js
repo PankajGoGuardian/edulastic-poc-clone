@@ -26,7 +26,7 @@ const CheckboxTemplateBoxLayout = ({
   responseBtnStyle,
   fontSize,
   userSelections,
-  stemnumeration,
+  stemNumeration,
   // uiStyle,
   // imagescale,
   evaluation,
@@ -77,7 +77,7 @@ const CheckboxTemplateBoxLayout = ({
           btnStyle.width = btnStyle.widthpx;
         }
         let indexStr = "";
-        switch (stemnumeration) {
+        switch (stemNumeration) {
           case "lowercase": {
             indexStr = ALPHABET[dropTargetIndex];
             break;
@@ -139,7 +139,7 @@ const CheckboxTemplateBoxLayout = ({
                 show-answer`}
                 onClick={onClickHandler}
               >
-                <span className="index index-box">{indexStr}</span>
+                {showAnswer && <span className="index index-box">{indexStr}</span>}
                 <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
                   {userSelections.length > 0 && status === "right" && <RightIcon />}
@@ -164,7 +164,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   responseContainers: PropTypes.array.isRequired,
   responseBtnStyle: PropTypes.object.isRequired,
   userSelections: PropTypes.array.isRequired,
-  stemnumeration: PropTypes.string.isRequired,
+  stemNumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
   // uiStyle: PropTypes.any,
   // imagescale: PropTypes.bool,

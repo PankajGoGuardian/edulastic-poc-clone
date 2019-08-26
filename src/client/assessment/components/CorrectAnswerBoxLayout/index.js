@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
+import { getStemNumeration } from "../../utils/helpers";
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
 import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
 
@@ -15,6 +16,7 @@ const CorrectAnswerBoxLayout = ({
   cleanValue,
   groupResponses,
   btnStyle,
+  stemNumeration,
   t
 }) => {
   let results;
@@ -60,7 +62,7 @@ const CorrectAnswerBoxLayout = ({
               <h3>{groupResponses[key] && groupResponses[key].title}</h3>
               {results[key].map((value, itemId) => (
                 <div key={itemId} className="response-btn check-answer showanswer" style={btnStyle}>
-                  <span className="index">{index + 1}</span>
+                  <span className="index">{getStemNumeration(stemNumeration, index)}</span>
                   <span className="text">{Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}</span>
                 </div>
               ))}
@@ -69,7 +71,7 @@ const CorrectAnswerBoxLayout = ({
         {!hasGroupResponses &&
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer" style={btnStyle}>
-              <span className="index">{index + 1}</span>
+              <span className="index">{getStemNumeration(stemNumeration, index)}</span>
               <span className="text">
                 {Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue ? getLabel(result) : result}
               </span>
@@ -88,7 +90,8 @@ CorrectAnswerBoxLayout.propTypes = {
   t: PropTypes.func.isRequired,
   cleanValue: PropTypes.bool,
   btnStyle: PropTypes.object,
-  altAnsIndex: PropTypes.number
+  altAnsIndex: PropTypes.number,
+  stemNumeration: PropTypes.string
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -98,6 +101,7 @@ CorrectAnswerBoxLayout.defaultProps = {
   userAnswers: [],
   cleanValue: false,
   altAnsIndex: 0,
+  stemNumeration: "numerical",
   btnStyle: {}
 };
 

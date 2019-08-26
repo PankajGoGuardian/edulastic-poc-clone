@@ -297,7 +297,7 @@ class ClozeDragDropDisplay extends Component {
 
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
 
@@ -310,7 +310,7 @@ class ClozeDragDropDisplay extends Component {
       userAnswers,
       responseIDs,
       isReviewTab,
-      stemnumeration,
+      stemNumeration,
       responseBtnStyle,
       hasGroupResponses,
       userSelections: userAnswers,
@@ -359,6 +359,7 @@ class ClozeDragDropDisplay extends Component {
           groupResponses={options}
           userAnswers={validation.validResponse && validation.validResponse.value}
           btnStyle={btnStyle}
+          stemNumeration={stemNumeration}
         />
         {(item.validation.altResponses || []).map((ele, ind) => (
           <CorrectAnswerBoxLayout
@@ -368,6 +369,7 @@ class ClozeDragDropDisplay extends Component {
             userAnswers={ele.value}
             altAnsIndex={ind + 1}
             btnStyle={btnStyle}
+            stemNumeration={stemNumeration}
           />
         ))}
       </>
@@ -509,7 +511,7 @@ ClozeDragDropDisplay.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,

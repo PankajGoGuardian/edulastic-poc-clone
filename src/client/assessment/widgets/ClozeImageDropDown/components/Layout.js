@@ -196,8 +196,8 @@ class Layout extends Component {
                 <SelectWrapper>
                   <OptionSelect
                     size="large"
-                    onChange={val => changeUiStyle("stemnumeration", val)}
-                    value={uiStyle.stemnumeration}
+                    onChange={val => changeUiStyle("stemNumeration", val)}
+                    value={uiStyle.stemNumeration}
                   >
                     {stemnumerationOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>
@@ -380,7 +380,7 @@ Layout.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "",
+    stemNumeration: "",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,

@@ -136,7 +136,7 @@ class Display extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { heightpx, wordwrap, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { heightpx, wordwrap, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
@@ -262,7 +262,7 @@ class Display extends Component {
         canvasWidth={canvasWidth}
         imageAlterText={imageAlterText}
         imagescale={imagescale}
-        stemnumeration={stemnumeration}
+        stemNumeration={stemNumeration}
         fontSize={fontSize}
         uiStyle={uiStyle}
         showAnswer={showAnswer}
@@ -366,7 +366,7 @@ Display.defaultProps = {
   imageAlterText: "",
   uiStyle: {
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,

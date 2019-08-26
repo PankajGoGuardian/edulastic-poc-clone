@@ -135,7 +135,6 @@ class ClozeTextDisplay extends Component {
       instructorStimulus,
       item,
       showQuestionNumber,
-      showIndex,
       disableResponse,
       qIndex,
       userSelections,
@@ -149,7 +148,7 @@ class ClozeTextDisplay extends Component {
     const { parsedTemplate } = this.state;
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
-    const { responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { responsecontainerindividuals, stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
     let maxLineHeight = smallSize ? 50 : 40;
@@ -160,7 +159,6 @@ class ClozeTextDisplay extends Component {
       qIndex,
       uiStyle,
       fontSize,
-      showIndex,
       showAnswer,
       checkAnswer,
       evaluation,
@@ -176,7 +174,7 @@ class ClozeTextDisplay extends Component {
       userAnswers: userSelections,
       onChange: this._changeInput,
       responsecontainerindividuals,
-      stemNumeration: stemnumeration,
+      stemNumeration: stemNumeration,
       placeholder: btnStyle.placeholder,
       cAnswers: get(item, "validation.validResponse.value", [])
     };
@@ -200,6 +198,7 @@ class ClozeTextDisplay extends Component {
           groupResponses={options}
           userAnswers={validation.validResponse && validation.validResponse.value}
           responseIds={responseIds}
+          stemNumeration={stemNumeration}
         />
         {!isEmpty(item.validation.altResponses) && (
           <CorrectAnswerBoxLayout
@@ -207,6 +206,7 @@ class ClozeTextDisplay extends Component {
             groupResponses={options}
             altAnswers={item.validation.altResponses}
             responseIds={item.responseIds}
+            stemNumeration={stemNumeration}
           />
         )}
       </>
@@ -234,7 +234,6 @@ class ClozeTextDisplay extends Component {
 ClozeTextDisplay.propTypes = {
   options: PropTypes.object,
   onChange: PropTypes.func,
-  showIndex: PropTypes.bool,
   showAnswer: PropTypes.bool,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
@@ -267,13 +266,12 @@ ClozeTextDisplay.defaultProps = {
   evaluation: {},
   checkAnswer: false,
   userSelections: [],
-  showIndex: false,
   smallSize: false,
   item: {},
   validation: {},
   uiStyle: {
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 140,
     heightpx: 0,
     placeholder: null,

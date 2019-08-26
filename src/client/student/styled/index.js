@@ -182,7 +182,7 @@ export const Title = styled.h3`
   font-size: 18px;
   font-weight: bold;
   line-height: 24px;
-  color: ${title};
+  color: ${props => props.theme.headerTitleSecondaryTextColor || title};
   display: block;
   margin-top: 28px;
   margin-left: 12px;

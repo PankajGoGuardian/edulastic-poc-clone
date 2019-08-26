@@ -116,10 +116,26 @@ const AssignmentSelectClass = styled.div`
   }
 
   .ant-select-selection {
-    border: 0px;
     background-color: ${props => props.theme.headerDropdownBgColor};
     color: ${props => props.theme.headerDropdownTextColor};
     font-size: ${props => props.theme.headerDropdownFontSize};
+    border: ${props =>
+      props.theme.headerDropdownBorderColor ? `1px solid ${props.theme.headerDropdownBorderColor}` : "0px"};
+  }
+
+  .ant-select-dropdown-menu-item {
+    background-color: ${props => props.theme.headerDropdownItemBgColor};
+    color: ${props => props.theme.headerDropdownTextColor};
+
+    &.ant-select-dropdown-menu-item-selected {
+      background-color: ${props => props.theme.headerDropdownItemBgSelectedColor};
+      color: ${props => props.theme.headerDropdownItemTextSelectedColor};
+    }
+
+    &:hover {
+      background-color: ${props => props.theme.headerDropdownItemBgHoverColor} !important;
+      color: ${props => props.theme.headerDropdownItemTextHoverColor} !important;
+    }
   }
 
   .ant-select-selection__rendered {

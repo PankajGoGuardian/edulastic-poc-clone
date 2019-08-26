@@ -12,6 +12,7 @@ import { changeClassAction, logoutAction } from "../../Login/ducks";
 
 const Wrapper = styled(Layout)`
   width: 100%;
+  background-color: ${props => props.theme.sectionBackgroundColor};
 `;
 
 const Assignments = ({ activeClasses, allClasses, loadAllClasses, changeClass, loading, location, logout }) => {

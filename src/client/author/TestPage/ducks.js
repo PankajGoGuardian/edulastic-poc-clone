@@ -19,9 +19,8 @@ import {
 import { loadQuestionsAction } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
-import { getItemsSubjectAndGradeAction } from "./components/AddItems/ducks";
+import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
 import { helpers } from "@edulastic/common";
-import { togglePassageConfirmModalAction } from "./components/AddItems/ducks";
 // constants
 
 const testItemStatusConstants = {
@@ -425,6 +424,7 @@ function* receiveTestByIdSaga({ payload }) {
     const questions = getQuestions(entity.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
+    yield put(setTestItemsAction(entity.testItems.map(item => item._id)));
     if (entity.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
         subject: get(entity, "subjects[0]", "Other Subjects"),

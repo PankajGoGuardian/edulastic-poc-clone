@@ -276,14 +276,11 @@ class Container extends PureComponent {
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
-    // TODO: fix this shit!!
-    const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
     switch (current) {
       case "addItems":
         return (
           <AddItems
             onAddItems={this.handleAddItems}
-            selectedItems={selectedItems}
             current={current}
             isEditable={isEditable}
             onSaveTestId={this.handleSaveTestId}

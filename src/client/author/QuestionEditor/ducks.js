@@ -412,7 +412,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     if (isTestFlow) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
-      const nextTestItems = [...(testItems.data ? testItems.data : testItems), itemDetail._id];
+      const nextTestItems = [...testItems, itemDetail._id];
 
       yield put(setTestItemsAction(nextTestItems));
 

@@ -773,7 +773,7 @@ export function* updateItemSaga({ payload }) {
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
-      const nextTestItems = [...(testItems.data ? testItems.data : testItems), item._id];
+      const nextTestItems = [...testItems, item._id];
 
       yield put(setTestItemsAction(nextTestItems));
 

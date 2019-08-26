@@ -331,6 +331,7 @@ class Contaier extends Component {
         checkAnswer={checkAnswer}
         showAnswer={showAnswer}
         search={search}
+        page="itemList"
       />
     ));
   };
@@ -466,7 +467,7 @@ const enhance = compose(
       creating: getTestItemCreatingSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      selectedCartItems: getSelectedItemSelector(state).data,
+      selectedCartItems: getSelectedItemSelector(state),
       defaultGrades: getDefaultGradesSelector(state),
       defaultSubject: getDefaultSubjectSelector(state),
       interestedGrades: getInterestedGradesSelector(state),

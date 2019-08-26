@@ -54,7 +54,7 @@ ModalCreateTest.propTypes = {
 
 export default connect(
   state => ({
-    amountOfSelectedItems: getSelectedItemSelector(state).data.length
+    amountOfSelectedItems: getSelectedItemSelector(state).length
   }),
   {
     createTestFromCart: createTestFromCartAction

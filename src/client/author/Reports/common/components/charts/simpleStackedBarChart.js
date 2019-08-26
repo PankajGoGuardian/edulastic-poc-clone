@@ -54,6 +54,7 @@ export const SimpleStackedBarChart = ({
   lineYDomain = [0, 110],
   lineChartDataKey = false,
   lineProps = {},
+  lineDotProps = {},
   lineTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   lineYTickFormatter = _yTickFormatter,
   lineYAxisLabel = ""
@@ -222,7 +223,7 @@ export const SimpleStackedBarChart = ({
               }
             />
             {chartData.map((entry, index) => {
-              return <Cell key={entry[xAxisDataKey]} fill={"#c0c0c0"} />;
+              return <Cell key={entry[xAxisDataKey]} fill={"#e5e5e5"} />;
             })}
           </Bar>
           {lineChartDataKey ? (
@@ -239,11 +240,14 @@ export const SimpleStackedBarChart = ({
             <Line
               activeDot={{
                 onMouseOver: () => setDotActive(true),
-                onMouseLeave: () => setDotActive(false)
+                onMouseLeave: () => setDotActive(false),
+                r: 5,
+                ...lineDotProps
               }}
               yAxisId="lineChart"
               type="linear"
               dataKey={lineChartDataKey}
+              dot={lineDotProps}
               {...lineProps}
             />
           ) : null}

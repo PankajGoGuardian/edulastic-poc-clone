@@ -5,7 +5,7 @@ import { ticks } from "d3-array";
 import { getHSLFromRange1 } from "../../../../../common/util";
 import { SimpleStackedBarChart } from "../../../../../common/components/charts/simpleStackedBarChart";
 import { CustomChartCursor } from "../../../../../common/components/charts/chartUtils/customChartCursor";
-import { fadedBlack } from "@edulastic/colors";
+import { fadedBlack, themeColor } from "@edulastic/colors";
 
 import { getSecondsFormattedTimeInMins } from "../../utils/helpers";
 
@@ -86,7 +86,8 @@ export const SimpleStackedBarWithLineChartContainer = ({ chartData, filter, onBa
       lineYDomain={lineYDomain}
       lineTicks={ticks(0, lineYDomain[1], 10)}
       lineChartDataKey="avgTimeSecs"
-      lineProps={{ stroke: "#ff7300", strokeWidth: "5px" }}
+      lineProps={{ stroke: themeColor, strokeWidth: 3 }}
+      lineDotProps={{ stroke: "#ffffff", strokeWidth: 4 }}
       lineYAxisLabel="Time (mins)"
     />
   );

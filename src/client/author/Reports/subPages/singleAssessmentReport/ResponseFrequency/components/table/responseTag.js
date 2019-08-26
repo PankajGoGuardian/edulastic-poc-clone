@@ -79,14 +79,18 @@ export class ResponseTag extends Component {
     let value = Number(get(this.props, "data.value", 0));
 
     let style = this.props.data.isCorrect
-      ? { borderColor: getHSLFromRange1(100) }
+      ? { borderColor: getHSLFromRange1(100), color: getHSLFromRange1(100) }
       : value > this.props.incorrectFrequencyThreshold
-      ? { borderColor: getHSLFromRange2(100 - value) }
+      ? { borderColor: getHSLFromRange2(100 - value), color: getHSLFromRange2(100 - value) }
       : { borderColor: "#cccccc" };
 
     if (this.props.isPrinting) {
       return this.getPrintableTag(style, name, value);
     }
+
+    const textStyle = {
+      color: style.borderColor
+    };
 
     return (
       <StyledTag style={style}>
@@ -113,8 +117,15 @@ const StyledTag = styled.div`
   margin: 2px 5px;
   text-align: center;
   padding: 3px 10px;
-  min-width: 100px;
+  min-width: 80px;
+  display: flex;
   p {
     margin: 2px;
+    &:nth-child(1) {
+      flex-grow: 0;
+    }
+    &:nth-child(2) {
+      flex-grow: 1;
+    }
   }
 `;

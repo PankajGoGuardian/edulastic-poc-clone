@@ -170,20 +170,27 @@ export const StyledTable = styled(Table)`
     }
     overflow: auto;
     table {
+      border-collapse: collapse;
+      border-spacing: 0px 10px;
       thead {
         tr {
+          background: transparent;
+          text-transform: uppercase;
           th {
             padding: 8px;
             text-align: left;
             font-weight: 900;
             font-size: 12px;
+            border: 0px;
+            color: ${darkGrey} !important;
+            padding-bottom: 30px !important;
 
             .ant-table-column-sorters {
               display: inline;
             }
           }
           th.ant-table-column-has-actions.ant-table-column-has-sorters {
-            padding: 8px !important;
+            padding-bottom: 30px;
 
             .ant-table-column-sorter {
               right: 3px;
@@ -233,6 +240,9 @@ export const StyledTable = styled(Table)`
 
       tbody {
         tr {
+          background-color: #f3f3f4;
+          font-weight: bold;
+          margin-bottom: 10px;
           border-bottom: solid 1px ${fadedGrey};
 
           td:nth-last-child(-n + ${props => props.centerAligned || 0}) {
@@ -248,6 +258,7 @@ export const StyledTable = styled(Table)`
             padding: 10px;
             text-align: left;
             font-size: 12px;
+            border-bottom: 10px solid white;
 
             &:nth-last-child(-n + ${props => props.colouredCellsNo}) {
               padding: 0px;

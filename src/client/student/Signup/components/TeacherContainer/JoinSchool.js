@@ -80,8 +80,13 @@ const JoinSchool = ({
     if (isSignupUsingDaURL) {
       setSchool(_school);
     } else if (!isSignupUsingDaURL && _school) {
+      let signOnMethod = "userNameAndPassword";
+      signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
+      signOnMethod = userInfo.cleverId ? "cleverSignOn" : signOnMethod;
+      signOnMethod = userInfo.googleId ? "googleSignOn" : signOnMethod;
+
       checkDistrictPolicyRequestAction({
-        data: { districtId: _school.districtId, email, type: userInfo.role },
+        data: { districtId: _school.districtId, email, type: userInfo.role, signOnMethod },
         error: { message: t("common.policyviolation") }
       });
       setTempSchool(_school);

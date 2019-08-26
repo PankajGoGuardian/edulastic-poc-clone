@@ -370,7 +370,7 @@ function* login({ payload }) {
 
 const checkEmailPolicy = (policy, role, email) => {
   if (!policy) {
-    return true;
+    return { status: true, message: "", error: "", role: role };
   }
   let inputDomain = email.split("@")[1];
   let allowedDomains;
@@ -406,7 +406,6 @@ function* signup({ payload }) {
   if (districtPolicy) {
     districtId = districtPolicy.orgId;
   }
-
   try {
     const { name, email, password, role, classCode, policyViolation } = payload;
     let nameList = name.split(" ");
@@ -464,7 +463,9 @@ function* signup({ payload }) {
       // it receives new user props in each steps of teacher signup and for other roles
     }
   } catch (err) {
-    const errorMessage = "Email already exist";
+    const { role } = payload;
+    let errorMessage = "Email already exists. Please sign in to your account.";
+    errorMessage = role === roleuser.STUDENT ? "Username/" + errorMessage : errorMessage;
     const msg1 = get(err, "data.message", "");
     const msg2 = get(err, "message", "");
     const msg = msg1 || msg2 || errorMessage;

@@ -89,7 +89,7 @@ class StudentSignup extends React.Component {
             name,
             role: "student",
             classCode,
-            policyviolation: t("common.policyviolation"),
+            policyViolation: t("common.policyviolation"),
             districtId: districtPolicy ? districtPolicy.orgId : undefined
           });
         }

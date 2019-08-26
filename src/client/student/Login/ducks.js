@@ -393,9 +393,9 @@ const checkEmailPolicy = (policy, role, email) => {
       : allowedDomains.includes(inputDomain.toLocaleLowerCase())) ||
     !allowedDomains.length
   ) {
-    return true;
+    return { status: true, message: "", error: "", role: role };
   } else {
-    return false;
+    return { status: false, message: "This email id is not allowed in your district", error: "domain", role: role };
   }
 };
 
@@ -414,10 +414,9 @@ function* signup({ payload }) {
     if (!nameList.length) {
       throw { message: "Please provide your full name." };
     }
-    if (!checkEmailPolicy(districtPolicy, role, email)) {
-      throw {
-        message: policyViolation
-      };
+    const allow = checkEmailPolicy(districtPolicy, role, email);
+    if (!allow.status) {
+      throw allow;
     }
 
     let firstName;

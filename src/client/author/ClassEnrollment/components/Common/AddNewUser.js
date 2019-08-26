@@ -117,12 +117,13 @@ class AddNewUserForm extends React.Component {
       buttonText,
       fetchClassDetailsUsingCode,
       validatedClassDetails,
-      addNewUser
+      addNewUser,
+      resetClassDetails
     } = this.props;
 
     const { usernameFieldValue, schoolFieldVisible, schoolsState } = this.state;
     const isValidClassCode = get(validatedClassDetails, "isValidClassCode", false);
-    const class_name = get(validatedClassDetails, "groupInfo.name", "");
+    const _className = get(validatedClassDetails, "groupInfo.name", "");
     const { keys } = this.state;
     const title = (
       <Title>
@@ -167,16 +168,22 @@ class AddNewUserForm extends React.Component {
               <Field name="code">
                 <legend>Class Code</legend>
                 <Form.Item>
-                  {getFieldDecorator("code", {})(
+                  {getFieldDecorator("code", {
+                    rules: [{ required: true, message: "Please enter valid class code" }]
+                  })(
                     <Input
                       onBlur={evt => {
                         const classCodeValue = evt.target.value.trim();
                         if (classCodeValue.length) fetchClassDetailsUsingCode(classCodeValue);
                       }}
+                      onChange={evt => {
+                        const classCodeValue = evt.target.value.trim();
+                        if (!classCodeValue.length) resetClassDetails();
+                      }}
                       placeholder="Enter Class Code"
                     />
                   )}
-                  {!isEmpty(class_name) && class_name}
+                  {!isEmpty(_className) && `class name : ${_className}`}
                 </Form.Item>
               </Field>
               <Field name="email">

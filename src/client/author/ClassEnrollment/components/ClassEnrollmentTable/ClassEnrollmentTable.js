@@ -384,7 +384,8 @@ class ClassEnrollmentTable extends React.Component {
       addStudentsToOtherClassData,
       putStudentsToOtherClass,
       userOrgId,
-      moveUsersToOtherClass
+      moveUsersToOtherClass,
+      resetClassDetails
     } = this.props;
 
     const tableDataSource = classEnrollmentData.map(item => {
@@ -585,6 +586,7 @@ class ClassEnrollmentTable extends React.Component {
             validatedClassDetails={validatedClassDetails}
             wrappedComponentRef={this.saveFormRef}
             userOrgId={userOrgId}
+            resetClassDetails={resetClassDetails}
           />
         )}
 

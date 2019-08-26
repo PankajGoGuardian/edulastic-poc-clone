@@ -35,7 +35,9 @@ import {
   setAddStudentsToOtherClassVisiblityAction,
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction,
-  setMultiStudentsProviderAction
+  setMultiStudentsProviderAction,
+  getValidatedClassDetails,
+  resetFetchedClassDetailsAction
 } from "../../ducks";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
@@ -567,7 +569,9 @@ class StudentTable extends Component {
       putStudentsToOtherClass,
       fetchClassDetailsUsingCode,
       features,
-      setProvider
+      setProvider,
+      validatedClassDetails,
+      resetClassDetails
     } = this.props;
 
     const actionMenu = (
@@ -735,6 +739,8 @@ class StudentTable extends Component {
             showClassCodeField={true}
             fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
             showTtsField
+            validatedClassDetails={validatedClassDetails}
+            resetClassDetails={resetClassDetails}
           />
         )}
         {studentDetailsModalVisible && (
@@ -793,7 +799,8 @@ const enhance = compose(
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      validatedClassDetails: getValidatedClassDetails(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -821,7 +828,8 @@ const enhance = compose(
       setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
-      setProvider: setMultiStudentsProviderAction
+      setProvider: setMultiStudentsProviderAction,
+      resetClassDetails: resetFetchedClassDetailsAction
     }
   )
 );

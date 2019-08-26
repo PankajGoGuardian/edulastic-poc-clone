@@ -80,9 +80,9 @@ export const setAndSavePassageItemsAction = createAction(SET_AND_SAVE_PASSAGE_IT
 export const getAllTagsAction = createAction(GET_ALL_TAGS_IN_DISTRICT);
 export const setAllTagsAction = createAction(SET_ALL_TAGS);
 
-export const receiveTestByIdAction = id => ({
+export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
-  payload: { id }
+  payload: { id, requestLatest, editAssigned }
 });
 
 export const receiveTestByIdSuccess = entity => ({
@@ -414,7 +414,10 @@ const getQuestions = (testItems = []) => {
 function* receiveTestByIdSaga({ payload }) {
   try {
     const createdItems = yield select(getTestCreatedItemsSelector);
-    let entity = yield call(testsApi.getById, payload.id, { data: true });
+    let entity = yield call(testsApi.getById, payload.id, { data: true, requestLatest: payload.requestLatest });
+    if (entity._id !== payload.id) {
+      yield put(push(`/author/tests/${entity._id}${payload.editAssigned ? "/editAssigned" : "#review"}`));
+    }
     entity.testItems = entity.testItems.map(testItem =>
       createdItems.length > 0 && createdItems[0]._id === testItem._id ? createdItems[0] : testItem
     );
@@ -475,16 +478,11 @@ function* createTestSaga({ payload }) {
       }
     });
 
-    if (regrade) {
-      yield put(setCreateSuccessAction());
-      yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
-    } else {
-      const hash = payload.toReview ? "#review" : "";
-      yield put(createTestSuccessAction(entity));
-      yield put(replace(`/author/tests/${entity._id}${hash}`));
+    const hash = payload.toReview ? "#review" : "";
+    yield put(createTestSuccessAction(entity));
+    yield put(replace(`/author/tests/${entity._id}${hash}`));
 
-      yield call(message.success, "Test created");
-    }
+    yield call(message.success, "Test created");
   } catch (err) {
     const errorMessage = "Failed to create test!";
     yield call(message.error, errorMessage);

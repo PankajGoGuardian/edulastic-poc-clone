@@ -116,7 +116,7 @@ class Container extends PureComponent {
       );
     }
     if (match.params.id && match.params.id != "undefined") {
-      receiveTestById(match.params.id);
+      receiveTestById(match.params.id, true, editAssigned);
     } else {
       this.setState({ current: "description" });
       clearTestAssignments([]);
@@ -375,15 +375,7 @@ class Container extends PureComponent {
       return message.error("Please add a valid password");
     }
     if (test._id) {
-      if (editAssigned) {
-        newTest.versioned = true;
-        delete newTest.authors;
-        if (this.validateTest(newTest)) {
-          createTest(newTest);
-        }
-      } else {
-        updateTest(test._id, newTest);
-      }
+      updateTest(test._id, newTest);
     } else {
       createTest(newTest);
     }

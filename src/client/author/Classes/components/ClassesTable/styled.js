@@ -17,10 +17,16 @@ export const StyledTableContainer = styled.div`
   }
 `;
 export const StyledTable = styled(Table)`
-  .ant-table-row {
-    &: hover {
+  .ant-table {
+    &-row:hover {
       a {
         visibility: visible;
+      }
+    }
+    &-tbody,
+    &-thead {
+      & > tr :nth-last-of-type(-n + 2) {
+        text-align: end;
       }
     }
   }

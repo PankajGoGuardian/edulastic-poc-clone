@@ -126,7 +126,8 @@ class AssignTest extends React.Component {
 
   handleAssign = () => {
     const { assignment } = this.state;
-    const { saveAssignment } = this.props;
+    const { saveAssignment, isAssigning } = this.props;
+    if (isAssigning) return;
     if (assignment.requirePassword === false) {
       delete assignment.assignmentPassword;
     } else if (
@@ -149,7 +150,14 @@ class AssignTest extends React.Component {
   };
 
   renderHeaderButton = () => (
-    <AssignButton data-cy="assignButton" onClick={this.handleAssign} color="secondary" variant="create" shadow="none">
+    <AssignButton
+      data-cy="assignButton"
+      onClick={this.handleAssign}
+      color="secondary"
+      variant="create"
+      shadow="none"
+      disabled={this.props.isAssigning}
+    >
       ASSIGN
     </AssignButton>
   );
@@ -259,7 +267,8 @@ export default connect(
     userOrgId: getUserOrgId(state),
     playlist: getPlaylistSelector(state),
     testItem: getTestSelector(state),
-    userRole: getUserRole(state)
+    userRole: getUserRole(state),
+    isAssigning: state.authorTestAssignments.isAssigning
   }),
   {
     loadClassList: receiveClassListAction,

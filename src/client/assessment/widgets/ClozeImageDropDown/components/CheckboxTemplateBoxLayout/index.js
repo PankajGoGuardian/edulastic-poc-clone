@@ -99,8 +99,8 @@ const CheckboxTemplateBoxLayout = ({
               <div
                 style={{
                   ...btnStyle,
-                  height: `${parseInt(responseContainer.height, 10)}px`,
-                  width: `${parseInt(responseContainer.width, 10)}px`,
+                  // height: `${parseInt(responseContainer.height, 10)}px`,
+                  // width: `${parseInt(responseContainer.width, 10)}px`,
                   minWidth,
                   minHeight
                 }}
@@ -126,8 +126,6 @@ const CheckboxTemplateBoxLayout = ({
               <div
                 style={{
                   ...btnStyle,
-                  height: `${parseInt(responseContainer.height, 10)}px`,
-                  width: `${parseInt(responseContainer.width, 10)}px`,
                   minWidth,
                   minHeight
                 }}

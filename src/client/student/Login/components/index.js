@@ -34,6 +34,7 @@ const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtSh
           isSignupUsingDaURL={isSignupUsingDaURL}
           districtPolicy={districtPolicy}
           districtShortName={districtShortName}
+          generalSettings={generalSettings}
         />
         <LoginContainer
           Partners={Partners[partnerCheck]}

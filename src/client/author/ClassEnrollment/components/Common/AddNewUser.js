@@ -8,6 +8,11 @@ import { isEmailValid } from "../../../../common/utils/helpers";
 
 import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
 
+import keyIcon from "../../../../student/assets/key-icon.svg";
+import hashIcon from "../../../../student/assets/hashtag-icon.svg";
+import userIcon from "../../../../student/assets/user-icon.svg";
+import mailIcon from "../../../../student/assets/mail-icon.svg";
+
 const { Panel } = Collapse;
 class AddNewUserForm extends React.Component {
   state = {
@@ -172,6 +177,7 @@ class AddNewUserForm extends React.Component {
                     rules: [{ required: true, message: "Please enter valid class code" }]
                   })(
                     <Input
+                      prefix={<img src={hashIcon} alt="" />}
                       onBlur={evt => {
                         const classCodeValue = evt.target.value.trim();
                         if (classCodeValue.length) fetchClassDetailsUsingCode(classCodeValue);
@@ -192,7 +198,13 @@ class AddNewUserForm extends React.Component {
                   {getFieldDecorator("email", {
                     validateTrigger: ["onBlur"],
                     rules: [{ validator: this.validateEmailValue }]
-                  })(<Input placeholder="Enter Username/email" onChange={e => this.setUsername(e.target.value)} />)}
+                  })(
+                    <Input
+                      prefix={<img src={mailIcon} alt="" />}
+                      placeholder="Enter Username/email"
+                      onChange={e => this.setUsername(e.target.value)}
+                    />
+                  )}
                 </Form.Item>
               </Field>
               <Field name="role">
@@ -210,20 +222,22 @@ class AddNewUserForm extends React.Component {
                 </Form.Item>
               </Field>
               <Field name="fullName">
-                <legend>Full Name</legend>
+                <legend>Name of user</legend>
                 <Form.Item>
                   {getFieldDecorator("fullName", {
                     rules: [
                       { required: true, message: "Please provide user full name" },
                       { max: 128, message: "Must less than 128 characters!" }
                     ]
-                  })(<Input placeholder="Enter the full name of the user" />)}
+                  })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the name of user" />)}
                 </Form.Item>
               </Field>
               <Field name="password">
                 <legend>Password</legend>
                 <Form.Item>
-                  {getFieldDecorator("password")(<Input type="password" placeholder="Enter Password" />)}
+                  {getFieldDecorator("password")(
+                    <Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Enter Password" />
+                  )}
                 </Form.Item>
               </Field>
               <Field name="confirmPassword">
@@ -231,7 +245,7 @@ class AddNewUserForm extends React.Component {
                 <Form.Item>
                   {getFieldDecorator("confirmPassword", {
                     rules: [{ validator: this.confirmPwdCheck, message: "Retyped password do not match." }]
-                  })(<Input type="password" placeholder="Confirm Password" />)}
+                  })(<Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Confirm Password" />)}
                 </Form.Item>
               </Field>
               {schoolFieldVisible && (

@@ -111,7 +111,8 @@ class ClozeTextDisplay extends Component {
           const resbtn = find(responseIds, res => res.id === id);
           draft[resbtn.index] = { value, index: resbtn.index, id };
         }
-      })
+      }),
+      id
     );
   };
 

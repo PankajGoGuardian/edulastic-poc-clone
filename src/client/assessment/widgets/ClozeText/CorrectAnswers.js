@@ -104,8 +104,8 @@ class CorrectAnswers extends Component {
         value: answers
       }
     };
+    newData.validation.validResponse = updatedValidation.validResponse;
     if (uiStyle.globalSettings) {
-      newData.validation.validResponse = updatedValidation.validResponse;
       newData.uiStyle.responsecontainerindividuals = newData.uiStyle.responsecontainerindividuals || [];
       const index = findIndex(newData.uiStyle.responsecontainerindividuals, container => container.id === id);
       if (index === -1) {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { get, debounce } from "lodash";
 import { Form, Input, Row, Col, Select, Button, Modal, Spin } from "antd";
-import { schoolApi, userApi } from "@edulastic/api";
+import { schoolApi, userApi, tagsApi } from "@edulastic/api";
 import { ModalFormItem } from "./styled";
 import selectsData from "../../../../TestPage/components/common/selectsData";
 
@@ -15,7 +15,8 @@ class AddClassModal extends Component {
       schoolList: [],
       fetchingSchool: false,
       teacherList: [],
-      fetchingTeacher: []
+      fetchingTeacher: [],
+      searchValue: undefined
     };
     this.fetchSchool = debounce(this.fetchSchool, 1000);
     this.fetchTeacher = debounce(this._fetchTeacher, 1000);
@@ -26,6 +27,7 @@ class AddClassModal extends Component {
     this.props.form.validateFieldsAndScroll((err, user) => {
       if (!err) {
         const { teacher, name, institutionId, subject, tags, courseId, grades } = user;
+        const { allTagsData } = this.props;
         const teacherArr = [];
         for (let i = 0; i < teacher.length; i++) {
           teacherArr.push(teacher[i].key);
@@ -36,7 +38,7 @@ class AddClassModal extends Component {
           owners: teacherArr,
           institutionId: institutionId.key,
           subject: subject ? subject : "Other Subjects",
-          tags,
+          tags: tags.map(t => allTagsData.find(o => o._id === t)),
           courseId,
           // here multiple grades has to be sent as a comma separated string
           grades: grades,
@@ -126,9 +128,43 @@ class AddClassModal extends Component {
     });
   };
 
+  selectTags = async id => {
+    const { setFieldsValue, getFieldValue } = this.props.form;
+    const { searchValue } = this.state;
+    const { allTagsData, addNewTag } = this.props;
+    let newTag = {};
+    if (id === searchValue) {
+      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "group" });
+      newTag = { _id, tagName };
+      addNewTag(newTag);
+    } else {
+      newTag = allTagsData.find(tag => tag._id === id);
+    }
+    const tagsSelected = getFieldValue("tags");
+    const newTags = [...tagsSelected, newTag._id];
+    setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
+    this.setState({ searchValue: undefined });
+  };
+
+  deselectTags = id => {
+    const { setFieldsValue, getFieldValue } = this.props.form;
+    const tagsSelected = getFieldValue("tags");
+    const newTags = tagsSelected.filter(tag => tag !== id);
+    setFieldsValue({ tags: newTags });
+  };
+
+  searchTags = async value => {
+    const { allTagsData } = this.props;
+    if (allTagsData.some(tag => tag.tagName === value)) {
+      this.setState({ searchValue: undefined });
+    } else {
+      this.setState({ searchValue: value });
+    }
+  };
+
   render() {
-    const { modalVisible, coursesForDistrictList } = this.props;
-    const { fetchingSchool, schoolList, fetchingTeacher, teacherList } = this.state;
+    const { modalVisible, coursesForDistrictList, allTagsData } = this.props;
+    const { fetchingSchool, schoolList, fetchingTeacher, teacherList, searchValue } = this.state;
 
     const { getFieldDecorator } = this.props.form;
     return (
@@ -210,7 +246,32 @@ class AddClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Tags">
-              {getFieldDecorator("tags")(<Select placeholder="Please enter 2 or more characters" mode="tags" />)}
+              {getFieldDecorator("tags")(
+                <Select
+                  data-cy="tagsSelect"
+                  mode="multiple"
+                  style={{ marginBottom: 0 }}
+                  optionLabelProp="title"
+                  placeholder="Select Tags"
+                  onSearch={this.searchTags}
+                  onSelect={this.selectTags}
+                  onDeselect={this.deselectTags}
+                  filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+                >
+                  {!!searchValue ? (
+                    <Select.Option key={0} value={searchValue} title={searchValue}>
+                      {`${searchValue} (Create new Tag )`}
+                    </Select.Option>
+                  ) : (
+                    ""
+                  )}
+                  {allTagsData.map(({ tagName, _id }) => (
+                    <Select.Option key={_id} value={_id} title={tagName}>
+                      {tagName}
+                    </Select.Option>
+                  ))}
+                </Select>
+              )}
             </ModalFormItem>
           </Col>
         </Row>

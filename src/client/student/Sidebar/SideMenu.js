@@ -239,8 +239,6 @@ class SideMenu extends Component {
                     isVisible={isVisible}
                     isSidebarCollapsed={isSidebarCollapsed}
                     className={`userinfoBtn ${isSidebarCollapsed ? "active" : ""}`}
-                    onVisibleChange={this.handleVisibleChange}
-                    getPopupContainer={() => this.sideMenuRef.current}
                   >
                     <DropdownBtn
                       onClick={this.toggleDropdown}
@@ -255,7 +253,8 @@ class SideMenu extends Component {
                       placement="topCenter"
                       isVisible={isVisible}
                       isSidebarCollapsed={isSidebarCollapsed}
-                      className={`userinfoBtn ${isSidebarCollapsed ? "active" : ""}`}
+                      onVisibleChange={this.handleVisibleChange}
+                      getPopupContainer={() => this.sideMenuRef.current}
                     >
                       <div>
                         {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}

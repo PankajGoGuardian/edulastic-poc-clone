@@ -3,6 +3,8 @@ import { Modal, Form, Input, Table, Spin, Icon } from "antd";
 import { StyledModal, Title, ActionButton, Field, FooterDiv } from "./styled";
 import { IconUser } from "@edulastic/icons";
 import ConfirmationModal from "../../../../../common/components/ConfirmationModal";
+import { get } from "lodash";
+import { ThemeButton } from "../../../../src/components/common/ThemeButton";
 
 function AddStudentsToOtherClass({
   titleText,
@@ -73,23 +75,33 @@ function AddStudentsToOtherClass({
   return successData ? (
     <Modal
       visible={showModal}
-      title="Student enrollment status"
+      title="Student Details"
       width="800px"
-      onOk={onCloseModal}
+      footer={[
+        <ThemeButton type="primary" onClick={onCloseModal}>
+          Done
+        </ThemeButton>
+      ]}
       onCancel={onCloseModal}
     >
       <Table
         rowKey={record => record.username}
+        pagination={false}
         columns={[
+          {
+            title: "Name",
+            dataIndex: "firstName",
+            key: "firstName",
+            render: (_, record) => {
+              const firstName = get(record, "firstName", "");
+              const lastName = get(record, "lastName", "");
+              return `${firstName} ${lastName}`;
+            }
+          },
           {
             title: "Username",
             dataIndex: "username",
             key: "username"
-          },
-          {
-            title: "First Name",
-            dataIndex: "firstName",
-            key: "firstName"
           },
           {
             title: "Status",

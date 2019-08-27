@@ -5,7 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { Row, Col } from "antd";
 import { Link } from "react-router-dom";
-import { themeColor } from "@edulastic/colors";
+import { themeColor, mobileWidthMax } from "@edulastic/colors";
 import {
   getPartnerGetStartedUrl,
   getDistrictGetStartedUrl,
@@ -25,7 +25,7 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShort
         t("common.policyviolation")
       ) : (
         <>
-          <span>{t("common.donthaveanaccount")}</span>
+          <DontHaveAccountText>{t("common.donthaveanaccount")}</DontHaveAccountText>
           <Link
             to={
               isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
@@ -66,6 +66,17 @@ const RegistrationHeader = styled(Row)`
     text-transform: uppercase;
     border-radius: 4px;
     background: ${themeColor};
+
+    @media (max-width: ${mobileWidthMax}) {
+      padding: 8px 35px;
+      font-size: 11px;
+    }
+  }
+`;
+
+const DontHaveAccountText = styled.span`
+  @media (max-width: ${mobileWidthMax}) {
+    display: none;
   }
 `;
 

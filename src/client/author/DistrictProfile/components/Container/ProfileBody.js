@@ -27,6 +27,7 @@ import {
 import { Wrapper } from "../../../../student/styled/index";
 import DeleteAccountModal from "../DeleteAccountModal/DeleteAccountModal";
 import DeleteSchoolModal from "../DeleteSchoolModal/DeleteSchoolModal";
+import EmailConfirmModal from "../EmailConfirmModal/EmailConfirmModal";
 import StandardSetModal from "../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal";
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
@@ -41,7 +42,8 @@ class ProfileBody extends React.Component {
     showModal: false,
     selectedSchool: null,
     showDeleteSchoolModal: false,
-    showStandardSetsModal: false
+    showStandardSetsModal: false,
+    showEmailConfirmModal: false
   };
 
   handleSubmit = e => {
@@ -51,31 +53,56 @@ class ProfileBody extends React.Component {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         if (isEditProfile) {
-          updateUserDetails({
-            data: {
-              districtId: user.districtId,
-              email: values.email,
-              firstName: values.firstName,
-              lastName: values.lastName,
-              title: values.title
-            },
-            userId: user._id
-          });
+          if (values.email === user.email) {
+            updateUserDetails({
+              data: {
+                districtId: user.districtId,
+                email: values.email,
+                firstName: values.firstName,
+                lastName: values.lastName,
+                title: values.title
+              },
+              userId: user._id,
+              isLogout: false
+            });
+            this.setState({ isEditProfile: false });
+          } else {
+            this.setState({ showEmailConfirmModal: true });
+          }
         }
         if (showChangePassword) {
           resetMyPassword({
             newPassword: values.password,
-            username: isEditProfile ? values.email : user.email
+            username: user.email
           });
+          this.setState({ showChangePassword: false });
         }
-        this.setState({ isEditProfile: false, showChangePassword: false });
       }
     });
   };
 
+  handleChangeEmail = () => {
+    const {
+      form: { getFieldValue },
+      user,
+      updateUserDetails
+    } = this.props;
+    updateUserDetails({
+      data: {
+        districtId: user.districtId,
+        email: getFieldValue("email"),
+        firstName: getFieldValue("firstName"),
+        lastName: getFieldValue("lastName"),
+        title: getFieldValue("title")
+      },
+      userId: user._id,
+      isLogout: true
+    });
+    this.setState({ showEmailConfirmModal: false, isEditProfile: false });
+  };
+
   handleCancel = e => {
     e.preventDefault();
-    const { form } = this.props;
     this.setState({ isEditProfile: false, showChangePassword: false });
   };
 
@@ -105,6 +132,7 @@ class ProfileBody extends React.Component {
   toggleModal = (modalType, value) => {
     if (modalType === "DELETE_ACCOUNT") this.setState({ showModal: value });
     else if (modalType === "REMOVE_SCHOOL") this.setState({ showDeleteSchoolModal: value, selectedSchool: null });
+    else if (modalType === "EMAIL_CONFIRM") this.setState({ showEmailConfirmModal: false, isEditProfile: false });
   };
 
   hideMyStandardSetsModal = () => {
@@ -282,7 +310,8 @@ class ProfileBody extends React.Component {
       showModal,
       selectedSchool,
       showDeleteSchoolModal,
-      showStandardSetsModal
+      showStandardSetsModal,
+      showEmailConfirmModal
     } = this.state;
 
     const interestedStaData = {
@@ -434,6 +463,13 @@ class ProfileBody extends React.Component {
             closeModal={this.hideMyStandardSetsModal}
             standardList={curriculums}
             interestedStaData={interestedStaData}
+          />
+        )}
+        {showEmailConfirmModal && (
+          <EmailConfirmModal
+            visible={showEmailConfirmModal}
+            toggleModal={this.toggleModal}
+            changeEmail={this.handleChangeEmail}
           />
         )}
       </LayoutContent>

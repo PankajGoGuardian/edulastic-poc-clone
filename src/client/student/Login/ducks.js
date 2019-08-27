@@ -903,9 +903,13 @@ function* updateUserDetailsSaga({ payload }) {
     const result = yield call(userApi.updateUser, payload);
     yield call(message.success, "User details updated successfully.");
     yield put({ type: UPDATE_USER_DETAILS_SUCCESS, payload: result });
+    if (payload.isLogout) {
+      yield call(message.success, "Logging Out !");
+      yield put({ type: LOGOUT });
+    }
   } catch (e) {
     console.error(e);
-    yield call(message.error, "Update user details failed.");
+    yield call(message.error, "Failed to update user details.");
     yield put({
       type: UPDATE_USER_DETAILS_FAILED
     });

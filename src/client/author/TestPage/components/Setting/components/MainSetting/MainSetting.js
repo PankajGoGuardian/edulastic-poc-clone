@@ -42,7 +42,6 @@ import PeformanceBand from "./PeformanceBand";
 const {
   settingCategories,
   settingCategoriesFeatureMap,
-  performanceBandsData,
   type,
   navigations,
   completionTypes,
@@ -175,21 +174,6 @@ class MainSetting extends Component {
     });
   };
 
-  onPerformanceBandUpdate = item => {
-    const { setTestData, entity = {} } = this.props;
-    const { performanceBands } = entity;
-    const newPerformanceBands = {
-      ...performanceBands,
-      [item]: {
-        ...performanceBands[item],
-        isAbove: !performanceBands[item].isAbove
-      }
-    };
-    setTestData({
-      performanceBands: newPerformanceBands
-    });
-  };
-
   handleBlur = e => {
     this.setState({ inputBlur: true });
   };
@@ -225,7 +209,9 @@ class MainSetting extends Component {
       markAsDone,
       maxAttempts,
       grades,
-      subjects
+      subjects,
+      performanceBand,
+      standardGradingScale
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -604,14 +590,19 @@ class MainSetting extends Component {
             )}
             {availableFeatures.includes("performanceBands") ? (
               <Block id="performance-bands" smallSize={isSmallSize}>
-                <PeformanceBand />
+                <PeformanceBand
+                  setSettingsData={val => this.updateTestData("performanceBand")(val)}
+                  performanceBand={performanceBand}
+                />
               </Block>
             ) : (
               ""
             )}
-            <Block id="performance-bands" smallSize={isSmallSize}>
-              <Title>Standard based grading scale</Title>
-              <StandardProficiencyTable />
+            <Block id="standards-proficiency" smallSize={isSmallSize}>
+              <StandardProficiencyTable
+                standardGradingScale={standardGradingScale}
+                setSettingsData={val => this.updateTestData("standardGradingScale")(val)}
+              />
             </Block>
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
               <Block id="title" smallSize={isSmallSize}>

@@ -16,6 +16,7 @@ import {
   red,
   fadedGreen
 } from "@edulastic/colors";
+import { userApi } from "@edulastic/api";
 import {
   resetMyPasswordAction,
   updateUserDetailsAction,
@@ -49,22 +50,22 @@ class ProfileBody extends React.Component {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        if (showChangePassword) {
-          resetMyPassword({
-            newPassword: values.password,
-            username: user.email
-          });
-        }
         if (isEditProfile) {
           updateUserDetails({
             data: {
               districtId: user.districtId,
-              email: user.email,
+              email: values.email,
               firstName: values.firstName,
               lastName: values.lastName,
               title: values.title
             },
             userId: user._id
+          });
+        }
+        if (showChangePassword) {
+          resetMyPassword({
+            newPassword: values.password,
+            username: isEditProfile ? values.email : user.email
           });
         }
         this.setState({ isEditProfile: false, showChangePassword: false });
@@ -180,6 +181,20 @@ class ProfileBody extends React.Component {
     this.setState({ showStandardSetsModal: true });
   };
 
+  checkUser = async (rule, value, callback) => {
+    const { user, t } = this.props;
+
+    if (value !== user.email) {
+      const result = await userApi.checkUser({
+        username: value,
+        districtId: user.districtId
+      });
+
+      if (result.length > 0) callback(t("common.title.emailAlreadyExistsMessage"));
+    }
+    callback();
+  };
+
   getEditProfileContent = () => {
     const {
       t,
@@ -233,7 +248,23 @@ class ProfileBody extends React.Component {
         </DetailRow>
         <DetailRow>
           <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
-          <DetailData>{user.email}</DetailData>
+          <DetailData>
+            <InputItemWrapper>
+              {getFieldDecorator("email", {
+                initialValue: user.email,
+                rules: [
+                  { validator: this.checkUser },
+                  { required: true, message: t("common.title.invalidEmailMessage") },
+                  {
+                    // validation so that no white spaces are allowed
+                    message: t("common.title.invalidEmailMessage"),
+                    pattern: /^\S*$/
+                  },
+                  { max: 256, message: t("common.title.emailLengthMessage") }
+                ]
+              })(<Input type="text" />)}
+            </InputItemWrapper>{" "}
+          </DetailData>
         </DetailRow>
       </Details>
     );

@@ -305,7 +305,8 @@ class AddItems extends PureComponent {
       testItemsList,
       setDataAndSave,
       setTestItems,
-      selectedRows
+      selectedRows,
+      gotoSummary
     } = this.props;
     const { search } = this.state;
     if (items.length < 1) {
@@ -336,6 +337,7 @@ class AddItems extends PureComponent {
         setDataAndSave={setDataAndSave}
         setTestItems={setTestItems}
         selectedRows={selectedRows}
+        gotoSummary={gotoSummary}
         page={"addItems"}
       />
     ));

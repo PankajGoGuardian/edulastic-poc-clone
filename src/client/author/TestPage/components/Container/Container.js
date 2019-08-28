@@ -190,7 +190,7 @@ class Container extends PureComponent {
     } = this.props;
     const { authors, testItems = [] } = test;
     const { editEnable } = this.state;
-    if (!this.props.test.title) {
+    if (!this.props.test.title.trim().length) {
       return;
     }
 
@@ -363,7 +363,7 @@ class Container extends PureComponent {
 
   handleSave = () => {
     const { test, updateTest, createTest, editAssigned } = this.props;
-    if (!test.title) {
+    if (!test.title.trim().length) {
       return message.error("Name field is required");
     }
     const newTest = this.modifyTest();

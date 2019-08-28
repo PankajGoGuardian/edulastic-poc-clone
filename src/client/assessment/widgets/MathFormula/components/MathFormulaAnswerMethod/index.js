@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick, get } from "lodash";
 import styled from "styled-components";
-import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
+import { MathInput, withWindowSizes, FlexContainer, StaticMath } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
@@ -346,6 +346,22 @@ const MathFormulaAnswerMethod = ({
   const customKeys = get(item, "customKeys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
 
+  const studentTemplate = item.template && item.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
+  const mathInputProps = {
+    hideKeypad: item.showDropdown,
+    symbols: isShowDropdown ? ["basic"] : item.symbols,
+    restrictKeys: isShowDropdown ? [] : restrictKeys,
+    allowNumericOnly: allowNumericOnly || false,
+    customKeys: isShowDropdown ? [] : customKeys,
+    numberPad: item.numberPad,
+    onInput: val => {
+      onChange("value", val);
+    },
+    onBlur: () => null,
+    onChangeKeypad,
+    style
+  };
+  // TODO need to update innerVlaues if the question is using Template like Matrices
   return (
     <Container data-cy="math-formula-answer" style={{ height: containerHeight }}>
       <ExpectAnswer>
@@ -353,23 +369,8 @@ const MathFormulaAnswerMethod = ({
           <div>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
-              <MathInput
-                hideKeypad={item.showDropdown}
-                symbols={isShowDropdown ? ["basic"] : item.symbols}
-                restrictKeys={isShowDropdown ? [] : restrictKeys}
-                customKeys={isShowDropdown ? [] : customKeys}
-                allowNumericOnly={allowNumericOnly || false}
-                style={style}
-                numberPad={item.numberPad}
-                onChangeKeypad={onChangeKeypad}
-                value={value}
-                showDropdown
-                ALLOW
-                TOLERANCE
-                onInput={val => {
-                  onChange("value", val);
-                }}
-              />
+              {!item.templateDisplay && <MathInput {...mathInputProps} value={value} showDropdown ALLOW TOLERANCE />}
+              {item.templateDisplay && <StaticMath {...mathInputProps} latex={studentTemplate} innerValues={[123]} />}
               {renderExtra}
             </MathInputWrapper>
           </div>
@@ -492,8 +493,7 @@ MathFormulaAnswerMethod.defaultProps = {
   customUnits: "",
   containerHeight: "auto",
   keypadMode: "",
-  renderExtra: null,
-  allowNumericOnly: null
+  renderExtra: null
 };
 
 export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

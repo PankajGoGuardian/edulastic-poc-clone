@@ -37,6 +37,7 @@ class MathFormulaPreview extends Component {
     userAnswer: PropTypes.any,
     disableResponse: PropTypes.bool.isRequired,
     testItem: PropTypes.bool,
+    answerContextConfig: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     showQuestionNumber: PropTypes.bool
   };
@@ -215,8 +216,11 @@ class MathFormulaPreview extends Component {
       studentTemplate,
       testItem,
       theme,
-      disableResponse
+      userAnswer,
+      disableResponse,
+      answerContextConfig
     } = this.props;
+    const { expressGrader, isAnswerModifiable } = answerContextConfig;
     const { innerValues } = this.state;
 
     const { minWidth, minHeight } = response;
@@ -249,6 +253,9 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectBorderColor
       };
     }
+    if (expressGrader && isAnswerModifiable) {
+      statusColor = theme.widgets.mathFormula.inputColor;
+    }
     cssStyles.width = cssStyles.width || minWidth;
     cssStyles.height = cssStyles.height || minHeight;
 
@@ -262,9 +269,13 @@ class MathFormulaPreview extends Component {
     // in Units type, this need when the show dropdown option is true
     const correctUnit = get(item, "validation.validResponse.value[0].options.unit", "");
 
-    const statusIcon = latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+    let statusIcon = latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
       <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
     );
+
+    if (expressGrader && isAnswerModifiable) {
+      statusIcon = null;
+    }
 
     return (
       <div>
@@ -299,7 +310,7 @@ class MathFormulaPreview extends Component {
             style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
           >
             <MathInputWrapper width={cssStyles.width}>
-              {this.isStatic() && (
+              {this.isStatic() && !disableResponse && (
                 <StaticMath
                   symbols={item.symbols}
                   restrictKeys={this.restrictKeys}
@@ -315,6 +326,11 @@ class MathFormulaPreview extends Component {
                   innerValues={innerValues}
                   onInnerFieldClick={() => this.onInnerFieldClick()}
                 />
+              )}
+              {this.isStatic() && disableResponse && (
+                <MathInputSpan style={{ background: statusColor }}>
+                  <MathSpanWrapper latex={userAnswer || ""} />
+                </MathInputSpan>
               )}
               {!this.isStatic() && !disableResponse && (
                 <MathInput

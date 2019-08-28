@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { trim } from "lodash";
-import { Col, Form, Input } from "antd";
+import { Col, Form, Input, message } from "antd";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -65,7 +65,8 @@ class Signup extends React.Component {
   };
 
   state = {
-    confirmDirty: false
+    confirmDirty: false,
+    signupError: {}
   };
 
   regExp = new RegExp("^[A-Za-z0-9 ]+$");
@@ -81,7 +82,8 @@ class Signup extends React.Component {
             email: trim(email),
             name: trim(name),
             role: "teacher",
-            policyViolation: t("common.policyviolation")
+            policyViolation: t("common.policyviolation"),
+            errorCallback: this.errorCallback
           });
         } else if (invitedUser) {
           const fullName = getFullNameFromString(trim(name));
@@ -122,9 +124,33 @@ class Signup extends React.Component {
     }
   };
 
+  onChangeEmail = () => {
+    this.setState(state => ({
+      ...state,
+      signupError: {
+        ...state.signupError,
+        email: ""
+      }
+    }));
+  };
+
+  errorCallback = error => {
+    if (error === "Email already exists. Please sign in to your account.") {
+      this.setState(state => ({
+        ...state,
+        signupError: {
+          ...state.signupError,
+          email: "error"
+        }
+      }));
+    } else {
+      message.error(error);
+    }
+  };
+
   render() {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldError },
       t,
       image,
       isSignupUsingDaURL,
@@ -147,6 +173,18 @@ class Signup extends React.Component {
 
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
     const partner = Partners[partnerKey];
+
+    const emailError =
+      (this.state.signupError.email && (
+        <span>
+          Email already exists. Please{" "}
+          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+            sign in
+          </Link>{" "}
+          to your account.
+        </span>
+      )) ||
+      getFieldError("email");
 
     return (
       <div>
@@ -269,7 +307,12 @@ class Signup extends React.Component {
                                 />
                               )}
                             </FormItem>
-                            <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
+                            <FormItem
+                              {...formItemLayout}
+                              label={t("component.signup.teacher.signupidlabel")}
+                              validateStatus={emailError ? "error" : "success"}
+                              help={emailError}
+                            >
                               {getFieldDecorator("email", {
                                 validateFirst: true,
                                 initialValue: invitedUser ? invitedUserDetails.email : "",
@@ -303,6 +346,7 @@ class Signup extends React.Component {
                                   type="email"
                                   autoComplete="new-password"
                                   disabled={invitedUser}
+                                  onChange={this.onChangeEmail}
                                 />
                               )}
                             </FormItem>

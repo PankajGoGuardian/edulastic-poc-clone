@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Col, Form, Input } from "antd";
+import { Col, Form, Input, message } from "antd";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { trim, get } from "lodash";
@@ -27,13 +27,7 @@ import {
   MobileViewLinks,
   DesktopVieLinks
 } from "../styled";
-import {
-  signupAction,
-  googleLoginAction,
-  msoLoginAction,
-  signupSetPolicyViolationAction,
-  studentSignupCheckClasscodeAction
-} from "../../Login/ducks";
+import { signupAction, googleLoginAction, msoLoginAction, studentSignupCheckClasscodeAction } from "../../Login/ducks";
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
@@ -76,7 +70,8 @@ class StudentSignup extends React.Component {
 
   state = {
     confirmDirty: false,
-    method: ""
+    method: "",
+    signupError: {}
   };
 
   handleSubmit = e => {
@@ -99,7 +94,8 @@ class StudentSignup extends React.Component {
             role: "student",
             classCode,
             policyViolation: t("common.policyviolation"),
-            districtId: districtPolicy ? districtPolicy.orgId : undefined
+            districtId: districtPolicy ? districtPolicy.orgId : undefined,
+            errorCallback: this.errorCallback
           });
         }
       }
@@ -118,19 +114,61 @@ class StudentSignup extends React.Component {
     });
   };
 
-  onClassCodeChange = () => {
-    const { signupSetPolicyViolationAction } = this.props;
-    signupSetPolicyViolationAction("");
+  onChangeEmail = () => {
+    this.setState(state => ({
+      ...state,
+      signupError: {
+        ...state.signupError,
+        usernameOrEmail: ""
+      }
+    }));
   };
 
-  onClassCodeBlur = event => {
+  onChangeClassCode = () => {
+    this.setState(state => ({
+      ...state,
+      signupError: {
+        ...state.signupError,
+        classCode: ""
+      }
+    }));
+  };
+
+  onBlurClassCode = event => {
     const { studentSignupCheckClasscodeAction, districtPolicy } = this.props;
-    studentSignupCheckClasscodeAction({
-      classCode: event.currentTarget.value,
-      role: "student",
-      signOnMethod: "userNameAndPassword",
-      districtId: districtPolicy ? districtPolicy.orgId : undefined
-    });
+    if (event.currentTarget.value) {
+      studentSignupCheckClasscodeAction({
+        reqData: {
+          classCode: event.currentTarget.value,
+          role: "student",
+          signOnMethod: "userNameAndPassword",
+          districtId: districtPolicy ? districtPolicy.orgId : undefined
+        },
+        errorCallback: this.errorCallback
+      });
+    }
+  };
+
+  errorCallback = error => {
+    if (error === "Username/Email already exists. Please sign in to your account.") {
+      this.setState(state => ({
+        ...state,
+        signupError: {
+          ...state.signupError,
+          usernameOrEmail: "error"
+        }
+      }));
+    } else if (error === "Please provide a valid class code.") {
+      this.setState(state => ({
+        ...state,
+        signupError: {
+          ...state.signupError,
+          classCode: "Please provide a valid class code."
+        }
+      }));
+    } else {
+      message.error(error);
+    }
   };
 
   renderGeneralFormFields = () => {
@@ -143,7 +181,21 @@ class StudentSignup extends React.Component {
       districtShortName
     } = this.props;
 
-    const classCodeError = this.props.signupPolicyViolation || getFieldError("classCode");
+    const partnerKey = getPartnerKeyFromUrl(location.pathname);
+    const partner = Partners[partnerKey];
+
+    const classCodeError = this.state.signupError.classCode || getFieldError("classCode");
+    const usernameEmailError =
+      (this.state.signupError.usernameOrEmail && (
+        <span>
+          Username/Email already exists. Please{" "}
+          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+            sign in
+          </Link>{" "}
+          to your account.
+        </span>
+      )) ||
+      getFieldError("email");
 
     return (
       <>
@@ -167,8 +219,8 @@ class StudentSignup extends React.Component {
               prefix={<img src={hashIcon} alt="" />}
               data-cy="classCode"
               placeholder="Class code"
-              onChange={this.onClassCodeChange}
-              onBlur={this.onClassCodeBlur}
+              onChange={this.onChangeClassCode}
+              onBlur={this.onBlurClassCode}
             />
           )}
         </FormItem>
@@ -182,7 +234,12 @@ class StudentSignup extends React.Component {
             ]
           })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} placeholder="Name" />)}
         </FormItem>
-        <FormItem {...formItemLayout} label={t("component.signup.student.signupidlabel")}>
+        <FormItem
+          {...formItemLayout}
+          label={t("component.signup.student.signupidlabel")}
+          validateStatus={usernameEmailError ? "error" : "success"}
+          help={usernameEmailError}
+        >
           {getFieldDecorator("email", {
             validateFirst: true,
             initialValue: "",
@@ -203,7 +260,14 @@ class StudentSignup extends React.Component {
                   isEmailValid(rule, value, callback, "both", t("common.validation.validemail"))
               }
             ]
-          })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} placeholder="Email" />)}
+          })(
+            <Input
+              data-cy="email"
+              prefix={<img src={mailIcon} alt="" />}
+              placeholder="Email"
+              onChange={this.onChangeEmail}
+            />
+          )}
         </FormItem>
         <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
           {getFieldDecorator("password", {
@@ -248,15 +312,23 @@ class StudentSignup extends React.Component {
 
   renderGoogleORMSOForm = () => {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldError },
       t,
       isSignupUsingDaURL,
       generalSettings,
       districtPolicy,
       districtShortName
     } = this.props;
+
+    const classCodeError = this.state.signupError.classCode || getFieldError("classCode");
+
     return (
-      <FormItem {...formItemLayout}>
+      <FormItem
+        {...formItemLayout}
+        label={t("component.signup.student.signupclasslabel")}
+        validateStatus={classCodeError ? "error" : "success"}
+        help={classCodeError}
+      >
         {getFieldDecorator("classCode", {
           rules: [
             {
@@ -264,7 +336,15 @@ class StudentSignup extends React.Component {
               message: t("component.signup.student.validclasscode")
             }
           ]
-        })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" />)}{" "}
+        })(
+          <Input
+            prefix={<img src={hashIcon} alt="" />}
+            data-cy="classCode"
+            placeholder="Class code"
+            onChange={this.onChangeClassCode}
+            onBlur={this.onBlurClassCode}
+          />
+        )}{" "}
       </FormItem>
     );
   };
@@ -411,14 +491,11 @@ const SignupForm = Form.create()(StudentSignup);
 const enhance = compose(
   withNamespaces("login"),
   connect(
-    state => ({
-      signupPolicyViolation: get(state, "user.signupPolicyViolation", false)
-    }),
+    state => ({}),
     {
       signup: signupAction,
       googleLoginAction,
       msoLoginAction,
-      signupSetPolicyViolationAction,
       studentSignupCheckClasscodeAction
     }
   )

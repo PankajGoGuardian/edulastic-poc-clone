@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Col, Form, Input } from "antd";
+import { Col, Form, Input, message } from "antd";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { trim } from "lodash";
@@ -55,7 +55,8 @@ class AdminSignup extends React.Component {
   };
 
   state = {
-    confirmDirty: false
+    confirmDirty: false,
+    signupError: {}
   };
 
   handleSubmit = e => {
@@ -67,7 +68,8 @@ class AdminSignup extends React.Component {
           password,
           email,
           name,
-          role: "admin"
+          role: "admin",
+          errorCallback: this.errorCallback
         });
       }
     });
@@ -88,9 +90,33 @@ class AdminSignup extends React.Component {
     }
   };
 
+  onChangeEmail = () => {
+    this.setState(state => ({
+      ...state,
+      signupError: {
+        ...state.signupError,
+        email: ""
+      }
+    }));
+  };
+
+  errorCallback = error => {
+    if (error === "Email already exists. Please sign in to your account.") {
+      this.setState(state => ({
+        ...state,
+        signupError: {
+          ...state.signupError,
+          email: "error"
+        }
+      }));
+    } else {
+      message.error(error);
+    }
+  };
+
   render() {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldError },
       t
     } = this.props;
 
@@ -105,6 +131,14 @@ class AdminSignup extends React.Component {
 
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
     const partner = Partners[partnerKey];
+
+    const emailError =
+      (this.state.signupError.email && (
+        <span>
+          Email already exists. Please <Link to={getPartnerLoginUrl(partner)}>sign in</Link> to your account.
+        </span>
+      )) ||
+      getFieldError("email");
 
     return (
       <div>
@@ -168,7 +202,12 @@ class AdminSignup extends React.Component {
                               ]
                             })(<Input prefix={<img src={userIcon} alt="" />} />)}
                           </FormItem>
-                          <FormItem {...formItemLayout} label={t("component.signup.admin.signupidlabel")}>
+                          <FormItem
+                            {...formItemLayout}
+                            label={t("component.signup.admin.signupidlabel")}
+                            validateStatus={emailError ? "error" : "success"}
+                            help={emailError}
+                          >
                             {getFieldDecorator("email", {
                               validateFirst: true,
                               initialValue: "",
@@ -189,7 +228,13 @@ class AdminSignup extends React.Component {
                                     isEmailValid(rule, value, callback, "email", t("common.validation.validemail"))
                                 }
                               ]
-                            })(<Input prefix={<img src={mailIcon} alt="" />} />)}
+                            })(
+                              <Input
+                                prefix={<img src={mailIcon} alt="" />}
+                                type="email"
+                                onChange={this.onChangeEmail}
+                              />
+                            )}
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
                             {getFieldDecorator("password", {

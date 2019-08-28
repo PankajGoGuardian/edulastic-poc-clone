@@ -27,7 +27,7 @@ const ManageDistrictSearchForm = Form.create({ name: "manageDistrictSearchForm" 
       validateFields((err, { districtSearchOption, districtSearchValue }) => {
         if (!err) {
           getDistrictDataAction({
-            [districtSearchOption]: districtSearchOption
+            [districtSearchOption]: districtSearchValue
           });
         }
       });

@@ -1,6 +1,6 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
-import { handleSnap } from "../utils";
+import { handleSnap, colorGenerator } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 94;
@@ -23,9 +23,11 @@ const makeCallback = (p1, p2) => x => {
 let points = [];
 
 function create(board, logPoints, id = null) {
+  const baseColor = colorGenerator(board.elements.length);
   const newLine = board.$board.create("functiongraph", [makeCallback(...logPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.LOGARITHM],
+    ...chooseColor(board.coloredElements, baseColor, null),
     label: getLabelParameters(jxgType),
     id
   });
@@ -36,7 +38,7 @@ function create(board, logPoints, id = null) {
     [logPoints[1].id]: logPoints[1]
   };
   newLine.labelIsVisible = true;
-  newLine.baseColor = "#00b2ff";
+  newLine.baseColor = baseColor;
   handleSnap(newLine, Object.values(newLine.ancestors), board);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -92,6 +94,25 @@ function parseConfig(pointsConfig) {
   ];
 }
 
+function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
+  let elementColor;
+
+  if (priorityColor && priorityColor.length > 0) {
+    elementColor = priorityColor;
+  } else if (!priorityColor && coloredElements && !bgShapes) {
+    elementColor = color && color.length > 0 ? color : "#00b2ff";
+  } else if (!priorityColor && !coloredElements && !bgShapes) {
+    elementColor = "#00b2ff";
+  } else if (bgShapes) {
+    elementColor = "#ccc";
+  }
+
+  return {
+    strokeColor: elementColor,
+    highlightStrokeColor: elementColor
+  };
+}
+
 function getPoints() {
   return points;
 }
@@ -102,5 +123,6 @@ export default {
   parseConfig,
   clean,
   getPoints,
-  create
+  create,
+  chooseColor
 };

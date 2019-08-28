@@ -1,6 +1,6 @@
 import JXG from "jsxgraph";
 import { Point } from ".";
-import { getLineTypeByProp, getPropsByLineType, handleSnap } from "../utils";
+import { getLineTypeByProp, getPropsByLineType, handleSnap, colorGenerator } from "../utils";
 import { Colors, CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
 
@@ -14,14 +14,16 @@ export const defaultConfig = {
 let points = [];
 
 function create(board, linePoints, type, id = null) {
+  const baseColor = colorGenerator(board.elements.length);
   const newLine = board.$board.create("line", linePoints, {
     ...getPropsByLineType(type),
     ...Colors.default[CONSTANT.TOOLS.LINE],
+    ...chooseColor(board.coloredElements, baseColor, null),
     label: getLabelParameters(JXG.OBJECT_TYPE_LINE),
     id
   });
   newLine.labelIsVisible = true;
-  newLine.baseColor = "#00b2ff";
+  newLine.baseColor = baseColor;
   handleSnap(newLine, Object.values(newLine.ancestors), board);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -58,7 +60,7 @@ function getConfig(line) {
     id: line.id,
     label: line.labelHTML || false,
     labelIsVisible: line.labelIsVisible,
-    baseColor: line.baseColor || "#00b2ff",
+    baseColor: line.baseColor,
     points: Object.keys(line.ancestors)
       .sort()
       .map(n => Point.getConfig(line.ancestors[n]))
@@ -70,6 +72,25 @@ function parseConfig(type) {
     ...getPropsByLineType(type),
     ...Colors.default[CONSTANT.TOOLS.LINE],
     label: getLabelParameters(JXG.OBJECT_TYPE_LINE)
+  };
+}
+
+function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
+  let elementColor;
+
+  if (priorityColor && priorityColor.length > 0) {
+    elementColor = priorityColor;
+  } else if (!priorityColor && coloredElements && !bgShapes) {
+    elementColor = color && color.length > 0 ? color : "#00b2ff";
+  } else if (!priorityColor && !coloredElements && !bgShapes) {
+    elementColor = "#00b2ff";
+  } else if (bgShapes) {
+    elementColor = "#ccc";
+  }
+
+  return {
+    strokeColor: elementColor,
+    highlightStrokeColor: elementColor
   };
 }
 
@@ -85,5 +106,6 @@ export default {
   parseConfig,
   clean,
   getPoints,
-  create
+  create,
+  chooseColor
 };

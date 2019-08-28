@@ -1,6 +1,6 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
-import { handleSnap } from "../utils";
+import { handleSnap, colorGenerator } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 96;
@@ -23,14 +23,16 @@ const makeCallback = (p1, p2) => x => {
 let points = [];
 
 function create(board, sinPoints, id = null) {
+  const baseColor = colorGenerator(board.elements.length);
   const newLine = board.$board.create("functiongraph", [makeCallback(...sinPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.SIN],
+    ...chooseColor(board.coloredElements, baseColor, null),
     label: getLabelParameters(jxgType),
     id
   });
   newLine.labelIsVisible = true;
-  newLine.baseColor = "#00b2ff";
+  newLine.baseColor = baseColor;
   newLine.type = jxgType;
   newLine.addParents(sinPoints);
   newLine.ancestors = {
@@ -72,7 +74,7 @@ function getConfig(sine) {
     type: CONSTANT.TOOLS.SIN,
     id: sine.id,
     label: sine.labelHTML || false,
-    baseColor: sine.baseColor || "#00b2ff",
+    baseColor: sine.baseColor,
     labelIsVisible: sine.labelIsVisible,
     points: Object.keys(sine.ancestors)
       .sort()
@@ -92,6 +94,25 @@ function parseConfig(pointsConfig) {
   ];
 }
 
+function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
+  let elementColor;
+
+  if (priorityColor && priorityColor.length > 0) {
+    elementColor = priorityColor;
+  } else if (!priorityColor && coloredElements && !bgShapes) {
+    elementColor = color && color.length > 0 ? color : "#00b2ff";
+  } else if (!priorityColor && !coloredElements && !bgShapes) {
+    elementColor = "#00b2ff";
+  } else if (bgShapes) {
+    elementColor = "#ccc";
+  }
+
+  return {
+    strokeColor: elementColor,
+    highlightStrokeColor: elementColor
+  };
+}
+
 function getPoints() {
   return points;
 }
@@ -102,5 +123,6 @@ export default {
   parseConfig,
   clean,
   getPoints,
-  create
+  create,
+  chooseColor
 };

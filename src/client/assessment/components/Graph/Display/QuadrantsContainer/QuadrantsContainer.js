@@ -22,7 +22,7 @@ import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQues
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
 import { makeBorder } from "../../Builder";
-import { CONSTANT, Colors } from "../../Builder/config";
+import { CONSTANT } from "../../Builder/config";
 import {
   defaultGraphParameters,
   defaultPointParameters,
@@ -61,14 +61,14 @@ const getColoredElems = (elements, compareResult) => {
 
         if (detail && detail.result) {
           newEl = {
-            colors: Colors.green[el.type],
-            ...el
+            ...el,
+            priorityColor: "#1fe3a1"
           };
           result = true;
         } else {
           newEl = {
-            colors: Colors.red[el.type],
-            ...el
+            ...el,
+            priorityColor: "#ee1658"
           };
         }
 
@@ -91,13 +91,13 @@ const getColoredElems = (elements, compareResult) => {
         let newEl = {};
         if (detail && detail.result) {
           newEl = {
-            colors: Colors.green[el.type],
-            ...el
+            ...el,
+            priorityColor: "#1fe3a1"
           };
         } else {
           newEl = {
-            colors: Colors.red[el.type],
-            ...el
+            ...el,
+            priorityColor: "#ee1658"
           };
         }
         return newEl;
@@ -112,8 +112,8 @@ const getColoredElems = (elements, compareResult) => {
 const getCorrectAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
-      colors: Colors.green[el.type],
-      ...el
+      ...el,
+      priorityColor: "#1fe3a1"
     }));
   }
   return answerArr;
@@ -203,14 +203,6 @@ class GraphContainer extends PureComponent {
     this.setState({ elementSettingsAreOpened: false });
   };
 
-  resetColors = () => {
-    const { setValue } = this.props;
-    const config = this._graph.getConfig();
-
-    config.forEach(cfg => (cfg.baseColor = "#00b2ff"));
-    setValue(config);
-  };
-
   setDefaultToolState() {
     this.setState({ selectedTool: this.getDefaultTool() });
   }
@@ -223,6 +215,7 @@ class GraphContainer extends PureComponent {
       yAxesParameters,
       layout,
       gridParams,
+      bgShapes,
       bgImgOptions,
       backgroundShapes,
       toolbar,
@@ -231,7 +224,7 @@ class GraphContainer extends PureComponent {
       disableResponse
     } = this.props;
 
-    const { tools } = toolbar;
+    const { tools, drawingPrompt } = toolbar;
     const { resourcesLoaded } = this.state;
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
@@ -273,6 +266,10 @@ class GraphContainer extends PureComponent {
         this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
       }
 
+      if (drawingPrompt === "byObjects" && !bgShapes) {
+        this._graph.enableColoredElements();
+      }
+
       this.setElementsToGraph();
     }
 
@@ -288,6 +285,7 @@ class GraphContainer extends PureComponent {
       yAxesParameters,
       layout,
       gridParams,
+      bgShapes,
       bgImgOptions,
       backgroundShapes,
       toolbar,
@@ -403,11 +401,15 @@ class GraphContainer extends PureComponent {
         }
       }
 
-      this.setElementsToGraph(prevProps);
-
       if (prevProps.toolbar.drawingPrompt === "byObjects" && drawingPrompt === "byTools") {
-        this.resetColors();
+        this._graph.disableColoredElements();
       }
+
+      if (prevProps.toolbar.drawingPrompt === "byTools" && drawingPrompt === "byObjects" && !bgShapes) {
+        this._graph.enableColoredElements();
+      }
+
+      this.setElementsToGraph(prevProps);
     }
 
     if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
@@ -510,12 +512,13 @@ class GraphContainer extends PureComponent {
       return;
     }
 
-    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, setValue } = this.props;
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab, setValue, toolbar } = this.props;
+    const { drawingPrompt } = toolbar;
 
     // correct answers blocks
     if (elementsIsCorrect) {
       this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements));
+      this._graph.loadFromConfig(getCorrectAnswer(elements), true, true);
       return;
     }
 
@@ -524,7 +527,7 @@ class GraphContainer extends PureComponent {
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(coloredElements);
+      this._graph.loadFromConfig(coloredElements, true, true);
       return;
     }
 
@@ -533,12 +536,13 @@ class GraphContainer extends PureComponent {
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(coloredElements);
+      this._graph.loadFromConfig(coloredElements, false, false);
       return;
     }
 
     if (
       !isEqual(elements, this._graph.getConfig()) ||
+      (prevProps.toolbar && prevProps.toolbar.drawingPrompt !== drawingPrompt) ||
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.reset();
@@ -774,7 +778,7 @@ class GraphContainer extends PureComponent {
               <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
               {elementSettingsAreOpened && this._graph && (
                 <ElementSettingsMenu
-                  showColorPicker={drawingPrompt === "byObjects" && view === "edit"}
+                  showColorPicker={drawingPrompt === "byObjects" && view === "edit" && !bgShapes}
                   advancedElementSettings={advancedElementSettings}
                   element={this._graph.getConfig().filter(element => element.id === elementId)[0]}
                   handleClose={this.handleElementSettingsMenuClose}

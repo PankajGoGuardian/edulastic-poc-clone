@@ -1,6 +1,6 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
-import { handleSnap } from "../utils";
+import { handleSnap, colorGenerator } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 92;
@@ -23,14 +23,16 @@ const makeCallback = (p1, p2) => x => {
 let points = [];
 
 function create(board, secantPoints, id = null) {
+  const baseColor = colorGenerator(board.elements.length);
   const newLine = board.$board.create("functiongraph", [makeCallback(...secantPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.SECANT],
+    ...chooseColor(board.coloredElements, baseColor, null),
     label: getLabelParameters(jxgType),
     id
   });
   newLine.labelIsVisible = true;
-  newLine.baseColor = "#00b2ff";
+  newLine.baseColor = baseColor;
   newLine.type = jxgType;
   newLine.addParents(secantPoints);
   newLine.ancestors = {
@@ -71,7 +73,7 @@ function getConfig(secant) {
     id: secant.id,
     label: secant.labelHTML || false,
     labelIsVisible: secant.labelIsVisible,
-    baseColor: secant.baseColor || "#00b2ff",
+    baseColor: secant.baseColor,
     points: Object.keys(secant.ancestors)
       .sort()
       .map(n => Point.getConfig(secant.ancestors[n]))
@@ -90,6 +92,25 @@ function parseConfig(pointsConfig) {
   ];
 }
 
+function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
+  let elementColor;
+
+  if (priorityColor && priorityColor.length > 0) {
+    elementColor = priorityColor;
+  } else if (!priorityColor && coloredElements && !bgShapes) {
+    elementColor = color && color.length > 0 ? color : "#00b2ff";
+  } else if (!priorityColor && !coloredElements && !bgShapes) {
+    elementColor = "#00b2ff";
+  } else if (bgShapes) {
+    elementColor = "#ccc";
+  }
+
+  return {
+    strokeColor: elementColor,
+    highlightStrokeColor: elementColor
+  };
+}
+
 function getPoints() {
   return points;
 }
@@ -100,5 +121,6 @@ export default {
   parseConfig,
   clean,
   getPoints,
-  create
+  create,
+  chooseColor
 };

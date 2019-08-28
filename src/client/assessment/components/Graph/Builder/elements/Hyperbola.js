@@ -1,6 +1,6 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
-import { handleSnap } from "../utils";
+import { handleSnap, colorGenerator } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 90;
@@ -14,15 +14,17 @@ export const defaultConfig = {
 let points = [];
 
 function create(board, hypPoints, id = null) {
+  const baseColor = colorGenerator(board.elements.length);
   const newLine = board.$board.create("hyperbola", hypPoints, {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.HYPERBOLA],
+    ...chooseColor(board.coloredElements, baseColor, null),
     label: getLabelParameters(jxgType),
     id
   });
   newLine.type = jxgType;
   newLine.labelIsVisible = true;
-  newLine.baseColor = "#00b2ff";
+  newLine.baseColor = baseColor;
   handleSnap(newLine, Object.values(newLine.ancestors), board);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -59,7 +61,7 @@ function getConfig(hyperbola) {
     id: hyperbola.id,
     label: hyperbola.labelHTML || false,
     labelIsVisible: hyperbola.labelIsVisible,
-    baseColor: hyperbola.baseColor || "#00b2ff",
+    baseColor: hyperbola.baseColor,
     points: Object.keys(hyperbola.ancestors)
       .sort()
       .map(n => Point.getConfig(hyperbola.ancestors[n]))
@@ -74,6 +76,25 @@ function parseConfig() {
   };
 }
 
+function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
+  let elementColor;
+
+  if (priorityColor && priorityColor.length > 0) {
+    elementColor = priorityColor;
+  } else if (!priorityColor && coloredElements && !bgShapes) {
+    elementColor = color && color.length > 0 ? color : "#00b2ff";
+  } else if (!priorityColor && !coloredElements && !bgShapes) {
+    elementColor = "#00b2ff";
+  } else if (bgShapes) {
+    elementColor = "#ccc";
+  }
+
+  return {
+    strokeColor: elementColor,
+    highlightStrokeColor: elementColor
+  };
+}
+
 function getPoints() {
   return points;
 }
@@ -84,5 +105,6 @@ export default {
   clean,
   parseConfig,
   getPoints,
-  create
+  create,
+  chooseColor
 };

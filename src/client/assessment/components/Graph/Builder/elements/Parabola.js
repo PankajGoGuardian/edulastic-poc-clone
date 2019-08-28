@@ -1,7 +1,7 @@
 import JXG from "jsxgraph";
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
-import { handleSnap } from "../utils";
+import { handleSnap, colorGenerator } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 97;
@@ -67,7 +67,7 @@ function renderElement(board, points, params) {
     [points[1].id]: points[1]
   };
   newLine.labelIsVisible = true;
-  newLine.baseColor = "#00b2ff";
+  newLine.baseColor = params.baseColor;
   handleSnap(newLine, Object.values(newLine.ancestors), board, updateCoords);
   board.handleStackedElementsMouseEvents(newLine);
 
@@ -75,9 +75,12 @@ function renderElement(board, points, params) {
 }
 
 function create(board, parabolaPoints, id = null) {
+  const baseColor = colorGenerator(board.elements.length);
   const params = {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.PARABOLA],
+    ...chooseColor(board.coloredElements, baseColor, false, null),
+    baseColor,
     label: getLabelParameters(jxgType),
     id
   };
@@ -114,10 +117,29 @@ function getConfig(parabola) {
     id: parabola.id,
     label: parabola.labelHTML || false,
     labelIsVisible: parabola.labelIsVisible,
-    baseColor: parabola.baseColor || "#00b2ff",
+    baseColor: parabola.baseColor,
     points: Object.keys(parabola.ancestors)
       .sort()
       .map(n => Point.getConfig(parabola.ancestors[n]))
+  };
+}
+
+function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
+  let elementColor;
+
+  if (priorityColor && priorityColor.length > 0) {
+    elementColor = priorityColor;
+  } else if (!priorityColor && coloredElements && !bgShapes) {
+    elementColor = color && color.length > 0 ? color : "#00b2ff";
+  } else if (!priorityColor && !coloredElements && !bgShapes) {
+    elementColor = "#00b2ff";
+  } else if (bgShapes) {
+    elementColor = "#ccc";
+  }
+
+  return {
+    strokeColor: elementColor,
+    highlightStrokeColor: elementColor
   };
 }
 
@@ -140,5 +162,6 @@ export default {
   parseConfig,
   getPoints,
   renderElement,
-  create
+  create,
+  chooseColor
 };

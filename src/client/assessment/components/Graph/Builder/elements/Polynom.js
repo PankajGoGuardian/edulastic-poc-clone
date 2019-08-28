@@ -1,6 +1,6 @@
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
-import { handleSnap } from "../utils";
+import { handleSnap, colorGenerator } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 95;
@@ -41,14 +41,16 @@ function flatConfigPoints(pointsConfig) {
 }
 
 function create(board, polynomPoints, id = null) {
+  const baseColor = colorGenerator(board.elements.length);
   const newPolynom = board.$board.create("functiongraph", [makeCallback(...polynomPoints)], {
     ...defaultConfig,
     ...Colors.default[CONSTANT.TOOLS.POLYNOM],
+    ...chooseColor(board.coloredElements, baseColor, null),
     label: getLabelParameters(jxgType),
     id
   });
   newPolynom.labelIsVisible = true;
-  newPolynom.baseColor = "#00b2ff";
+  newPolynom.baseColor = baseColor;
   newPolynom.type = jxgType;
   newPolynom.addParents(polynomPoints);
   newPolynom.ancestors = flatConfigPoints(polynomPoints);
@@ -63,14 +65,20 @@ function onHandler() {
     const newPoint = Point.onHandler(board, event);
     newPoint.isTemp = true;
     if (!points.length) {
-      newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
+      newPoint.setAttribute({
+        fillColor: "#000",
+        strokeColor: "#000",
+        highlightStrokeColor: "#000",
+        highlightFillColor: "#000"
+      });
       points.push(newPoint);
       return;
     }
 
     if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
+      const baseColor = colorGenerator(board.elements.length);
       board.$board.removeObject(newPoint);
-      points[0].setAttribute(Colors.default[CONSTANT.TOOLS.POINT]);
+      points[0].setAttribute({ ...Point.chooseColor(board.coloredElements, baseColor, false, true, null) });
       points.forEach(point => {
         point.isTemp = false;
       });
@@ -96,7 +104,7 @@ function getConfig(polynom) {
     type: CONSTANT.TOOLS.POLYNOM,
     id: polynom.id,
     label: polynom.labelHTML || false,
-    baseColor: polynom.baseColor || "#00b2ff",
+    baseColor: polynom.baseColor,
     labelIsVisible: polynom.labelIsVisible,
     points: Object.keys(polynom.ancestors)
       .sort()
@@ -116,6 +124,25 @@ function parseConfig(pointsConfig) {
   ];
 }
 
+function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
+  let elementColor;
+
+  if (priorityColor && priorityColor.length > 0) {
+    elementColor = priorityColor;
+  } else if (!priorityColor && coloredElements && !bgShapes) {
+    elementColor = color && color.length > 0 ? color : "#00b2ff";
+  } else if (!priorityColor && !coloredElements && !bgShapes) {
+    elementColor = "#00b2ff";
+  } else if (bgShapes) {
+    elementColor = "#ccc";
+  }
+
+  return {
+    strokeColor: elementColor,
+    highlightStrokeColor: elementColor
+  };
+}
+
 function getPoints() {
   return points;
 }
@@ -127,5 +154,6 @@ export default {
   clean,
   flatConfigPoints,
   getPoints,
-  create
+  create,
+  chooseColor
 };

@@ -123,6 +123,8 @@ class Board {
 
     this.drawingObject = null;
 
+    this.coloredElements = false;
+
     this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
 
@@ -361,6 +363,14 @@ class Board {
         }
       }
     });
+  }
+
+  enableColoredElements() {
+    this.coloredElements = true;
+  }
+
+  disableColoredElements() {
+    this.coloredElements = false;
   }
 
   setDisableResponse(value) {
@@ -892,19 +902,23 @@ class Board {
       }
     };
     this.bgElements.push(
-      ...this.loadObjects(config, ({ objectCreator, el }) => {
-        const { type, colors = {} } = el;
-        const newElement = objectCreator({
-          ...objectOptions[type],
-          ...colors,
-          bgShapes: true
-        });
+      ...this.loadObjects(
+        config,
+        ({ objectCreator, el }) => {
+          const { type, colors = {} } = el;
+          const newElement = objectCreator({
+            ...objectOptions[type],
+            ...colors,
+            bgShapes: true
+          });
 
-        if (el.labelIsVisible) {
-          setLabel(newElement, el.label);
-        }
-        return newElement;
-      })
+          if (el.labelIsVisible) {
+            setLabel(newElement, el.label);
+          }
+          return newElement;
+        },
+        true
+      )
     );
   }
 
@@ -942,58 +956,63 @@ class Board {
     );
   }
 
-  loadFromConfig(flatCfg) {
+  loadFromConfig(flatCfg, answers = false, fixed = false) {
     const config = flat2nestedConfig(flatCfg);
-    this.elements.push(
-      ...this.loadObjects(config, ({ objectCreator, el }) => {
-        const newElement = objectCreator({
-          ...Colors.default[
-            (type => {
-              if (
-                type === CONSTANT.TOOLS.LINE ||
-                type === CONSTANT.TOOLS.RAY ||
-                type === CONSTANT.TOOLS.SEGMENT ||
-                type === CONSTANT.TOOLS.VECTOR
-              ) {
-                return CONSTANT.TOOLS.LINE;
-              }
-              return type;
-            })(el.type)
-          ],
-          ...el.colors
-        });
+    answers
+      ? this.answers.push(
+          ...this.loadObjects(
+            config,
+            ({ objectCreator, el }) => {
+              const newElement = objectCreator({
+                ...Colors.default[
+                  (type => {
+                    if (
+                      type === CONSTANT.TOOLS.LINE ||
+                      type === CONSTANT.TOOLS.RAY ||
+                      type === CONSTANT.TOOLS.SEGMENT ||
+                      type === CONSTANT.TOOLS.VECTOR
+                    ) {
+                      return CONSTANT.TOOLS.LINE;
+                    }
+                    return type;
+                  })(el.type)
+                ],
+                ...el.colors
+              });
 
-        setLabel(newElement, el.label);
-        return newElement;
-      })
-    );
-  }
+              setLabel(newElement, el.label);
+              return newElement;
+            },
+            fixed
+          )
+        )
+      : this.elements.push(
+          ...this.loadObjects(
+            config,
+            ({ objectCreator, el }) => {
+              const newElement = objectCreator({
+                ...Colors.default[
+                  (type => {
+                    if (
+                      type === CONSTANT.TOOLS.LINE ||
+                      type === CONSTANT.TOOLS.RAY ||
+                      type === CONSTANT.TOOLS.SEGMENT ||
+                      type === CONSTANT.TOOLS.VECTOR
+                    ) {
+                      return CONSTANT.TOOLS.LINE;
+                    }
+                    return type;
+                  })(el.type)
+                ],
+                ...el.colors
+              });
 
-  loadAnswersFromConfig(flatCfg) {
-    const config = flat2nestedConfig(flatCfg);
-    this.answers.push(
-      ...this.loadAnswersObjects(config, ({ objectCreator, el }) => {
-        const newElement = objectCreator({
-          ...Colors.default[
-            (type => {
-              if (
-                type === CONSTANT.TOOLS.LINE ||
-                type === CONSTANT.TOOLS.RAY ||
-                type === CONSTANT.TOOLS.SEGMENT ||
-                type === CONSTANT.TOOLS.VECTOR
-              ) {
-                return CONSTANT.TOOLS.LINE;
-              }
-              return type;
-            })(el.type)
-          ],
-          ...el.colors
-        });
-
-        setLabel(newElement, el.label);
-        return newElement;
-      })
-    );
+              setLabel(newElement, el.label);
+              return newElement;
+            },
+            fixed
+          )
+        );
   }
 
   loadSegments(elements) {
@@ -1042,7 +1061,7 @@ class Board {
    * @param {array} objects
    * @see getConfig
    */
-  loadObjects(objectArray, mixProps) {
+  loadObjects(objectArray, mixProps, fixed = false) {
     const objects = [];
     objectArray.forEach(el => {
       switch (el._type) {
@@ -1056,29 +1075,38 @@ class Board {
                   ...props,
                   ...attrs,
                   visible: true,
-                  ...Point.chooseColor(el.baseColor, attrs.bgShapes, el.pointIsVisible, props, attrs),
+                  ...Point.chooseColor(
+                    this.coloredElements,
+                    el.baseColor,
+                    attrs.bgShapes,
+                    el.pointIsVisible,
+                    el.priorityColor
+                  ),
+                  fixed,
                   label: {
                     ...props.label,
                     visibile: attrs.bgShapes ? el.labelIsVisible : true
                   },
                   id: el.id
                 });
-                point.on("up", () => {
-                  if (point.dragged) {
-                    point.dragged = false;
-                    this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
-                  }
-                });
-                point.on("drag", e => {
-                  if (e.movementX === 0 && e.movementY === 0) {
-                    return;
-                  }
-                  point.dragged = true;
-                  this.dragged = true;
-                  EditButton.cleanButton(this, point);
-                });
-                point.on("mouseover", event => this.handleElementMouseOver(point, event));
-                point.on("mouseout", () => this.handleElementMouseOut(point));
+                if (!fixed) {
+                  point.on("up", () => {
+                    if (point.dragged) {
+                      point.dragged = false;
+                      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+                    }
+                  });
+                  point.on("drag", e => {
+                    if (e.movementX === 0 && e.movementY === 0) {
+                      return;
+                    }
+                    point.dragged = true;
+                    this.dragged = true;
+                    EditButton.cleanButton(this, point);
+                  });
+                  point.on("mouseover", event => this.handleElementMouseOver(point, event));
+                  point.on("mouseout", () => this.handleElementMouseOut(point));
+                }
                 point.pointIsVisible = props.visible;
                 point.labelIsVisible = props.label.visible;
                 point.baseColor = el.baseColor;
@@ -1097,22 +1125,27 @@ class Board {
                   [
                     mixProps({
                       el: el.points[0],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[0], attributes, attrs.bgShapes, fixed)
                     }),
                     mixProps({
                       el: el.points[1],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[1], attributes, attrs.bgShapes, fixed)
                     })
                   ],
                   {
                     ...Line.parseConfig(el.type),
                     ...attrs,
-                    ...chooseColor(el.baseColor),
+                    ...Line.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                    fixed,
                     id: el.id
                   }
                 );
-                handleSnap(line, Object.values(line.ancestors), this);
-                this.handleStackedElementsMouseEvents(line);
+                if (!fixed) {
+                  handleSnap(line, Object.values(line.ancestors), this);
+                  this.handleStackedElementsMouseEvents(line);
+                }
                 line.labelIsVisible = el.labelIsVisible;
                 line.baseColor = el.baseColor;
                 return line;
@@ -1130,22 +1163,27 @@ class Board {
                   [
                     mixProps({
                       el: el.points[0],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[0], attributes, attrs.bgShapes, fixed)
                     }),
                     mixProps({
                       el: el.points[1],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[1], attributes, attrs.bgShapes, fixed)
                     })
                   ],
                   {
                     ...Circle.parseConfig(),
                     ...attrs,
-                    ...chooseColor(el.baseColor),
+                    ...Circle.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                    fixed,
                     id: el.id
                   }
                 );
-                handleSnap(circle, Object.values(circle.ancestors), this);
-                this.handleStackedElementsMouseEvents(circle);
+                if (!fixed) {
+                  handleSnap(circle, Object.values(circle.ancestors), this);
+                  this.handleStackedElementsMouseEvents(circle);
+                }
                 circle.labelIsVisible = el.labelIsVisible;
                 circle.baseColor = el.baseColor;
                 return circle;
@@ -1163,28 +1201,34 @@ class Board {
                   [
                     mixProps({
                       el: el.points[0],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[0], attributes, attrs.bgShapes, fixed)
                     }),
                     mixProps({
                       el: el.points[1],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[1], attributes, attrs.bgShapes, fixed)
                     }),
                     mixProps({
                       el: el.points[2],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[2], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[2], attributes, attrs.bgShapes, fixed)
                     })
                   ],
                   {
                     ...Ellipse.parseConfig(),
                     ...attrs,
-                    ...chooseColor(el.baseColor),
+                    ...Ellipse.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                    fixed,
                     id: el.id
                   }
                 );
                 newLine.labelIsVisible = el.labelIsVisible;
                 newLine.baseColor = el.baseColor;
-                handleSnap(newLine, Object.values(newLine.ancestors), this);
-                this.handleStackedElementsMouseEvents(newLine);
+                if (!fixed) {
+                  handleSnap(newLine, Object.values(newLine.ancestors), this);
+                  this.handleStackedElementsMouseEvents(newLine);
+                }
                 return newLine;
               }
             })
@@ -1198,42 +1242,47 @@ class Board {
                 const elAttrs = {
                   ...Polygon.parseConfig(),
                   ...attrs,
-                  ...chooseColor(el.baseColor),
+                  ...Polygon.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                  fixed,
                   id: el.id
                 };
                 elAttrs.borders = {
                   ...Polygon.parseConfig().borders,
-                  ...attrs.borders
+                  ...attrs.borders,
+                  ...Polygon.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor)
                 };
                 const polygon = this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(pointEl, attributes, attrs.bgShapes, fixed)
                     })
                   ),
                   elAttrs
                 );
                 polygon.labelIsVisible = el.labelIsVisible;
                 polygon.baseColor = el.baseColor;
-                handleSnap(polygon, Object.values(polygon.ancestors), this);
-                polygon.borders.forEach(border => {
-                  border.on("up", () => {
-                    if (border.dragged) {
-                      border.dragged = false;
-                      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
-                    }
+                if (!fixed) {
+                  handleSnap(polygon, Object.values(polygon.ancestors), this);
+                  polygon.borders.forEach(border => {
+                    border.on("up", () => {
+                      if (border.dragged) {
+                        border.dragged = false;
+                        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+                      }
+                    });
+                    border.on("drag", e => {
+                      if (e.movementX === 0 && e.movementY === 0) {
+                        return;
+                      }
+                      border.dragged = true;
+                      this.dragged = true;
+                    });
                   });
-                  border.on("drag", e => {
-                    if (e.movementX === 0 && e.movementY === 0) {
-                      return;
-                    }
-                    border.dragged = true;
-                    this.dragged = true;
-                  });
-                });
-                this.handleStackedElementsMouseEvents(polygon);
+                  this.handleStackedElementsMouseEvents(polygon);
+                }
                 return polygon;
               }
             })
@@ -1249,29 +1298,35 @@ class Board {
                   [
                     mixProps({
                       el: el.points[0],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[0], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[0], attributes, attrs.bgShapes, fixed)
                     }),
                     mixProps({
                       el: el.points[1],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[1], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[1], attributes, attrs.bgShapes, fixed)
                     }),
                     mixProps({
                       el: el.points[2],
-                      objectCreator: attributes => this.createPointFromConfig(el.points[2], attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(el.points[2], attributes, attrs.bgShapes, fixed)
                     })
                   ],
                   {
                     ...Hyperbola.parseConfig(),
                     ...attrs,
-                    ...chooseColor(el.baseColor),
+                    ...Hyperbola.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                    fixed,
                     id: el.id
                   }
                 );
                 newLine.type = 90;
                 newLine.labelIsVisible = el.labelIsVisible;
                 newLine.baseColor = el.baseColor;
-                handleSnap(newLine, Object.values(newLine.ancestors), this);
-                this.handleStackedElementsMouseEvents(newLine);
+                if (!fixed) {
+                  handleSnap(newLine, Object.values(newLine.ancestors), this);
+                  this.handleStackedElementsMouseEvents(newLine);
+                }
                 return newLine;
               }
             })
@@ -1286,14 +1341,16 @@ class Board {
                   el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(pointEl, attributes, attrs.bgShapes, fixed)
                     })
                   )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  ...chooseColor(el.baseColor),
+                  ...Tangent.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                  fixed,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1304,8 +1361,10 @@ class Board {
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
                 newElem.baseColor = el.baseColor;
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                this.handleStackedElementsMouseEvents(newElem);
+                if (!fixed) {
+                  handleSnap(newElem, Object.values(newElem.ancestors), this);
+                  this.handleStackedElementsMouseEvents(newElem);
+                }
                 return newElem;
               }
             })
@@ -1320,14 +1379,16 @@ class Board {
                   el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(pointEl, attributes, attrs.bgShapes, fixed)
                     })
                   )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  ...chooseColor(el.baseColor),
+                  ...Secant.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                  fixed,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1338,8 +1399,10 @@ class Board {
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
                 newElem.baseColor = el.baseColor;
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                this.handleStackedElementsMouseEvents(newElem);
+                if (!fixed) {
+                  handleSnap(newElem, Object.values(newElem.ancestors), this);
+                  this.handleStackedElementsMouseEvents(newElem);
+                }
                 return newElem;
               }
             })
@@ -1354,14 +1417,16 @@ class Board {
                   el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(pointEl, attributes, attrs.bgShapes, fixed)
                     })
                   )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  ...chooseColor(el.baseColor),
+                  ...Exponent.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                  fixed,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1372,8 +1437,10 @@ class Board {
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
                 newElem.baseColor = el.baseColor;
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                this.handleStackedElementsMouseEvents(newElem);
+                if (!fixed) {
+                  handleSnap(newElem, Object.values(newElem.ancestors), this);
+                  this.handleStackedElementsMouseEvents(newElem);
+                }
                 return newElem;
               }
             })
@@ -1388,14 +1455,16 @@ class Board {
                   el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(pointEl, attributes, attrs.bgShapes, fixed)
                     })
                   )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  ...chooseColor(el.baseColor),
+                  ...Logarithm.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                  fixed,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1406,8 +1475,10 @@ class Board {
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
                 newElem.baseColor = el.baseColor;
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                this.handleStackedElementsMouseEvents(newElem);
+                if (!fixed) {
+                  handleSnap(newElem, Object.values(newElem.ancestors), this);
+                  this.handleStackedElementsMouseEvents(newElem);
+                }
                 return newElem;
               }
             })
@@ -1422,14 +1493,16 @@ class Board {
                   el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(pointEl, attributes, attrs.bgShapes, fixed)
                     })
                   )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  ...chooseColor(el.baseColor),
+                  ...Polynom.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                  fixed,
                   id: el.id
                 });
                 newElem.type = 95;
@@ -1437,8 +1510,10 @@ class Board {
                 newElem.labelIsVisible = el.labelIsVisible;
                 newElem.baseColor = el.baseColor;
                 newElem.ancestors = Polynom.flatConfigPoints(points);
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                this.handleStackedElementsMouseEvents(newElem);
+                if (!fixed) {
+                  handleSnap(newElem, Object.values(newElem.ancestors), this);
+                  this.handleStackedElementsMouseEvents(newElem);
+                }
                 return newElem;
               }
             })
@@ -1453,14 +1528,16 @@ class Board {
                   el.points.map(pointEl =>
                     mixProps({
                       el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
+                      objectCreator: attributes =>
+                        this.createPointFromConfig(pointEl, attributes, attrs.bgShapes, fixed)
                     })
                   )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
                   ...attrs,
-                  ...chooseColor(el.baseColor),
+                  ...Sin.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                  fixed,
                   id: el.id
                 });
                 newElem.ancestors = {
@@ -1471,8 +1548,10 @@ class Board {
                 newElem.addParents(points);
                 newElem.labelIsVisible = el.labelIsVisible;
                 newElem.baseColor = el.baseColor;
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                this.handleStackedElementsMouseEvents(newElem);
+                if (!fixed) {
+                  handleSnap(newElem, Object.values(newElem.ancestors), this);
+                  this.handleStackedElementsMouseEvents(newElem);
+                }
                 return newElem;
               }
             })
@@ -1487,13 +1566,15 @@ class Board {
                 const points = el.points.map(pointEl =>
                   mixProps({
                     el: pointEl,
-                    objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
+                    objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes, fixed)
                   })
                 );
+
                 const newElem = Parabola.renderElement(this, points, {
                   ...props,
                   ...attrs,
-                  ...chooseColor(el.baseColor),
+                  ...Parabola.chooseColor(this.coloredElements, el.baseColor, attrs.bgShapes, el.priorityColor),
+                  fixed,
                   id: el.id
                 });
                 newElem.labelIsVisible = el.labelIsVisible;
@@ -1559,440 +1640,9 @@ class Board {
               objectCreator: attrs =>
                 DragDrop.renderElement(this, {
                   ...el,
-                  ...attrs
-                })
-            })
-          );
-          break;
-        default:
-          throw new Error("Unknown element:", el);
-      }
-    });
-    return objects;
-  }
-
-  /**
-   *
-   * @param {array} objects
-   * @see getConfig
-   */
-  loadAnswersObjects(objectArray, mixProps) {
-    const objects = [];
-    objectArray.forEach(el => {
-      switch (el._type) {
-        case JXG.OBJECT_TYPE_POINT:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));
-                return this.createElement(name, points, {
-                  ...props,
                   ...attrs,
-                  visible: true,
-                  fixed: true
-                });
-              }
-            })
-          );
-          break;
-        case JXG.OBJECT_TYPE_LINE:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs =>
-                this.createElement(
-                  "line",
-                  [
-                    mixProps({
-                      el: el.points[0],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[0], attributes)
-                    }),
-                    mixProps({
-                      el: el.points[1],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[1], attributes)
-                    })
-                  ],
-                  {
-                    ...Line.parseConfig(el.type),
-                    ...attrs,
-                    fixed: true
-                  }
-                )
-            })
-          );
-          break;
-        case JXG.OBJECT_TYPE_CIRCLE:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs =>
-                this.createElement(
-                  "circle",
-                  [
-                    mixProps({
-                      el: el.points[0],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[0], attributes)
-                    }),
-                    mixProps({
-                      el: el.points[1],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[1], attributes)
-                    })
-                  ],
-                  {
-                    ...Circle.parseConfig(),
-                    ...attrs,
-                    fixed: true
-                  }
-                )
-            })
-          );
-          break;
-        case JXG.OBJECT_TYPE_CONIC:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const newLine = this.createElement(
-                  "ellipse",
-                  [
-                    mixProps({
-                      el: el.points[0],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[0], attributes)
-                    }),
-                    mixProps({
-                      el: el.points[1],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[1], attributes)
-                    }),
-                    mixProps({
-                      el: el.points[2],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[2], attributes)
-                    })
-                  ],
-                  {
-                    ...Ellipse.parseConfig(),
-                    ...attrs,
-                    fixed: true
-                  }
-                );
-
-                handleSnap(newLine, Object.values(newLine.ancestors), this);
-                return newLine;
-              }
-            })
-          );
-          break;
-        case JXG.OBJECT_TYPE_POLYGON:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const elAttrs = {
-                  ...Polygon.parseConfig(),
-                  ...attrs,
-                  fixed: true
-                };
-                elAttrs.borders = {
-                  ...Polygon.parseConfig().borders,
-                  ...attrs.borders
-                };
-
-                return this.createElement(
-                  "polygon",
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  ),
-                  elAttrs
-                );
-              }
-            })
-          );
-          break;
-        case 90:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const newLine = this.createElement(
-                  "hyperbola",
-                  [
-                    mixProps({
-                      el: el.points[0],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[0], attributes)
-                    }),
-                    mixProps({
-                      el: el.points[1],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[1], attributes)
-                    }),
-                    mixProps({
-                      el: el.points[2],
-                      objectCreator: attributes => this.createAnswerPointFromConfig(el.points[2], attributes)
-                    })
-                  ],
-                  {
-                    ...Hyperbola.parseConfig(),
-                    ...attrs,
-                    fixed: true
-                  }
-                );
-
-                newLine.type = 90;
-                handleSnap(newLine, Object.values(newLine.ancestors), this);
-
-                return newLine;
-              }
-            })
-          );
-          break;
-        case 91:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Tangent.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.type = 91;
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                return newElem;
-              }
-            })
-          );
-          break;
-        case 92:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Secant.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.type = 92;
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                return newElem;
-              }
-            })
-          );
-          break;
-        case 93:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Exponent.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.type = 93;
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                return newElem;
-              }
-            })
-          );
-          break;
-        case 94:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Logarithm.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.type = 94;
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                return newElem;
-              }
-            })
-          );
-          break;
-        case 95:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Polynom.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-                newElem.type = 95;
-                newElem.addParents(points);
-                newElem.ancestors = Polynom.flatConfigPoints(points);
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                return newElem;
-              }
-            })
-          );
-          break;
-        case 96:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Sin.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
-                );
-                const newElem = this.createElement(name, makeFn(points), {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.type = 96;
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors), this);
-                return newElem;
-              }
-            })
-          );
-          break;
-        case 97:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const props = Parabola.parseConfig();
-                const points = el.points.map(pointEl =>
-                  mixProps({
-                    el: pointEl,
-                    objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                  })
-                );
-
-                return Parabola.renderElement(this, points, {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-              }
-            })
-          );
-          break;
-        case 98:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => {
-                const props = Equation.parseConfig();
-
-                let points = null;
-                if (el.points) {
-                  points = el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes =>
-                        this.createAnswerPointFromConfig(pointEl, {
-                          ...attributes,
-                          snapToGrid: false
-                        })
-                    })
-                  );
-                }
-
-                return Equation.renderElement(this, el, points, {
-                  ...props,
-                  ...attrs,
-                  fixed: true
-                });
-              }
-            })
-          );
-          break;
-        case 100:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs => Area.renderElement(this, el, { ...attrs })
-            })
-          );
-          break;
-        case 101:
-          objects.push(
-            mixProps({
-              el,
-              objectCreator: attrs =>
-                DragDrop.renderElement(this, {
-                  ...el,
-                  ...attrs,
-                  fixed: true
+                  colors: DragDrop.chooseColor(el.priorityColor),
+                  fixed
                 })
             })
           );
@@ -2010,20 +1660,23 @@ class Board {
    * @param {Object} attrs provided attributes
    * @see Point::getConfig
    */
-  createPointFromConfig(el, attrs, bgShapes = false) {
+  createPointFromConfig(el, attrs, bgShapes = false, fixed = false) {
     const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));
     const point = this.createElement(name, points, {
       ...props,
       ...attrs,
       visible: true,
-      ...Point.chooseColor(el.baseColor, bgShapes, el.pointIsVisible, props, attrs),
+      ...Point.chooseColor(this.coloredElements, el.baseColor, bgShapes, el.pointIsVisible, el.priorityColor),
+      fixed,
       id: el.id
     });
     point.pointIsVisible = props.visible;
     point.labelIsVisible = props.label.visible;
     point.baseColor = el.baseColor;
-    point.on("mouseover", event => this.handleElementMouseOver(point, event));
-    point.on("mouseout", () => this.handleElementMouseOut(point));
+    if (!el.priorityColor) {
+      point.on("mouseover", event => this.handleElementMouseOver(point, event));
+      point.on("mouseout", () => this.handleElementMouseOut(point));
+    }
     return point;
   }
 

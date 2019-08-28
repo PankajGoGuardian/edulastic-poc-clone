@@ -77,6 +77,22 @@ function renderElement(board, element) {
   return newElement;
 }
 
+function chooseColor(priorityColor = null) {
+  let elementColor;
+  if (priorityColor && priorityColor.length > 0) {
+    elementColor = priorityColor;
+  } else {
+    elementColor = "#00b2ff";
+  }
+
+  return {
+    highlightFillColor: elementColor,
+    highlightStrokeColor: elementColor,
+    fillColor: elementColor,
+    strokeColor: elementColor
+  };
+}
+
 function getConfig(dragDrop) {
   return {
     _type: dragDrop.type,
@@ -91,5 +107,6 @@ function getConfig(dragDrop) {
 
 export default {
   renderElement,
-  getConfig
+  getConfig,
+  chooseColor
 };

@@ -46,14 +46,14 @@ const getColoredElems = (elements, compareResult) => {
 
         if (detail && detail.result) {
           newEl = {
-            colors: Colors.green[el.type],
-            ...el
+            ...el,
+            priorityColor: "#1fe3a1"
           };
           result = true;
         } else {
           newEl = {
-            colors: Colors.red[el.type],
-            ...el
+            ...el,
+            priorityColor: "#ee1658"
           };
         }
 
@@ -76,13 +76,13 @@ const getColoredElems = (elements, compareResult) => {
         let newEl = {};
         if (detail && detail.result) {
           newEl = {
-            colors: Colors.green[el.type],
-            ...el
+            ...el,
+            priorityColor: "#1fe3a1"
           };
         } else {
           newEl = {
-            colors: Colors.red[el.type],
-            ...el
+            ...el,
+            priorityColor: "#ee1658"
           };
         }
         return newEl;
@@ -97,8 +97,8 @@ const getColoredElems = (elements, compareResult) => {
 const getCorrectAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
-      colors: Colors.green[el.type],
-      ...el
+      ...el,
+      priorityColor: "#1fe3a1"
     }));
   }
   return answerArr;
@@ -399,7 +399,7 @@ class PlacementContainer extends PureComponent {
     // correct answers blocks
     if (elementsIsCorrect) {
       this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements));
+      this._graph.loadFromConfig(getCorrectAnswer(elements), true, true);
       return;
     }
 
@@ -408,7 +408,7 @@ class PlacementContainer extends PureComponent {
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(coloredElements);
+      this._graph.loadFromConfig(coloredElements, true, true);
       return;
     }
 

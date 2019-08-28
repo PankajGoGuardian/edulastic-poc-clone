@@ -332,6 +332,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
     ) {
       if (!acc[id]) {
         acc[id] = element;
+        acc[id].priorityColor = element.priorityColor || null;
       }
       if (isSub) {
         acc[id].subElement = true;
@@ -345,6 +346,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       label: element.label,
       labelIsVisible: element.labelIsVisible,
       baseColor: element.baseColor,
+      priorityColor: element.priorityColor || null,
       text: element.text
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
@@ -387,6 +389,7 @@ export function flat2nestedConfig(config) {
           type,
           _type: element._type,
           colors: element.colors || null,
+          priorityColor: element.priorityColor || null,
           label: element.label,
           labelIsVisible: element.labelIsVisible,
           baseColor: element.baseColor,
@@ -403,10 +406,12 @@ export function flat2nestedConfig(config) {
         ) {
           acc[id].x = element.x;
           acc[id].y = element.y;
+          acc[id].priorityColor = element.priorityColor || null;
           if (type === CONSTANT.TOOLS.POINT) {
             acc[id].pointIsVisible = element.pointIsVisible;
             acc[id].labelIsVisible = element.labelIsVisible;
             acc[id].baseColor = element.baseColor;
+            acc[id].priorityColor = element.priorityColor || null;
           }
         } else {
           acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
@@ -591,4 +596,35 @@ export function chooseColor(color) {
     strokeColor: elColor,
     highlightStrokeColor: elColor
   };
+}
+
+export function colorGenerator(elements) {
+  const colorPool = [
+    "#FFCC66",
+    "#FF9900",
+    "#663300",
+    "#FF6600",
+    "#660000",
+    "#FF0000",
+    "#CC0033",
+    "#330000",
+    "#FF0066",
+    "#660033",
+    "#990066",
+    "#9900CC",
+    "#330099",
+    "#330066",
+    "#003333",
+    "#006633",
+    "#009933",
+    "#003300",
+    "#00CC33"
+  ];
+
+  if (elements > colorPool.length) {
+    const currentIndex = elements % colorPool.length;
+    return colorPool[currentIndex];
+  } else {
+    return colorPool[elements];
+  }
 }

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { get, debounce } from "lodash";
-import { Form, Input, Row, Col, Select, Button, Modal, Spin } from "antd";
+import { Form, Input, Row, Col, Select, Modal, Spin } from "antd";
 import { schoolApi, userApi, tagsApi } from "@edulastic/api";
 import { ModalFormItem } from "./styled";
 import selectsData from "../../../../TestPage/components/common/selectsData";
+import { ThemeButton } from "../../../../src/components/common/ThemeButton";
 
 const { Option } = Select;
 const { allGrades } = selectsData;
@@ -175,9 +176,9 @@ class AddClassModal extends Component {
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
-          <Button type="primary" key="submit" onClick={this.onAddClass}>
-            Add Class >
-          </Button>
+          <ThemeButton type="primary" key="submit" onClick={this.onAddClass}>
+            Add Class &gt;
+          </ThemeButton>
         ]}
       >
         <Row>

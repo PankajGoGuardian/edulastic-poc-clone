@@ -10,7 +10,7 @@ const { SMALL_DESKTOP_WIDTH, MAX_TAB_WIDTH } = screenSizes;
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const heightSrollOffSet = 300;
 const questionGroups = Cypress._.values(questionGroup);
-const pageURL = "author/items/5d638ea92043b09e9abe1324/item-detail";
+const pageURL = "author/items/5d653a557973777cde063a7d/item-detail";
 const itemHeader = new Header();
 const editItem = new EditItemPage();
 const search = new SearchFilters();
@@ -119,44 +119,11 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
               cy.wait(1000);
               cy.matchImageSnapshot();
 
-              cy.isPageScrollPresent(scrollOffset).then(({ hasScroll, minScrolls, scrollSize }) => {
-                console.log("hasScroll, minSrolls, scrollSize", hasScroll, minScrolls, scrollSize);
-                // if edit page has scroll then scroll and capture multiple snapshots
-                if (hasScroll) {
-                  let scrollNum = 1;
-                  let scrollInPixel = scrollSize;
-                  let currentTestContext = Cypress.mocha.getRunner().currentRunnable;
-                  let screenshotFileName = currentTestContext.title;
-
-                  while (currentTestContext.parent && currentTestContext.parent.title.length > 0) {
-                    screenshotFileName = `${currentTestContext.parent.title} -- ${screenshotFileName}`;
-                    currentTestContext = currentTestContext.parent;
-                  }
-
-                  while (scrollNum <= minScrolls) {
-                    cy.scrollTo(0, scrollInPixel);
-                    cy.wait(500);
-                    cy.matchImageSnapshot(`${screenshotFileName} - scroll-${scrollNum}`);
-                    scrollNum += 1;
-                    scrollInPixel += scrollSize;
-                  }
-                }
+              cy.isPageScrollPresent().then(({ hasScroll }) => {
+                if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
               });
             });
 
-            /* 
-            it(`when resolution is ${size} - scrolled`, () => {
-              cy.scrollTo(0, size[1] - heightSrollOffSet);
-              cy.wait(500);
-              cy.matchImageSnapshot();
-            });
-
-            it(`when resolution is ${size} - bottom`, () => {
-              cy.scrollTo("bottom");
-              cy.wait(500);
-              cy.matchImageSnapshot();
-            });
-             */
             it(`when resolution is ${size} - 'preview'`, () => {
               itemHeader.preview();
               cy.wait(500);

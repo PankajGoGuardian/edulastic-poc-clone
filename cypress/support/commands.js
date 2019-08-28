@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 // eslint-disable-next-line spaced-comment
 /// <reference types="Cypress"/>
 import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
@@ -44,7 +45,7 @@ Cypress.Commands.add("createUser", overrides => {
     .then(({ body }) => body.user);
 });
 
-Cypress.Commands.add("isPageScrollPresent", scrollOffset => {
+Cypress.Commands.add("isPageScrollPresent", (scrollOffset = 10) => {
   return cy.document().then(doc => {
     const scroll = {
       hasScroll: doc.body.scrollHeight > doc.body.clientHeight,
@@ -53,6 +54,30 @@ Cypress.Commands.add("isPageScrollPresent", scrollOffset => {
     };
     // console.log("scroll", JSON.stringify(scroll));
     return scroll;
+  });
+});
+
+Cypress.Commands.add("scrollPageAndMatchImageSnapshots", scrollOffset => {
+  cy.isPageScrollPresent(scrollOffset).then(({ hasScroll, minScrolls, scrollSize }) => {
+    if (hasScroll) {
+      let scrollNum = 1;
+      let scrollInPixel = scrollSize;
+      let currentTestContext = Cypress.mocha.getRunner().currentRunnable;
+      let screenshotFileName = currentTestContext.title;
+
+      while (currentTestContext.parent && currentTestContext.parent.title.length > 0) {
+        screenshotFileName = `${currentTestContext.parent.title} -- ${screenshotFileName}`;
+        currentTestContext = currentTestContext.parent;
+      }
+
+      while (scrollNum <= minScrolls) {
+        cy.scrollTo(0, scrollInPixel);
+        cy.wait(500);
+        cy.matchImageSnapshot(`${screenshotFileName} - scroll-${scrollNum}`);
+        scrollNum += 1;
+        scrollInPixel += scrollSize;
+      }
+    } else cy.log("Page scroll not found, not taking scrolled screenshots");
   });
 });
 
@@ -115,7 +140,7 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   } else {
     cy.visit("/home/assignments");
   } */
-  cy.wait("@assignment");
+  // cy.wait("@assignment");
 });
 
 Cypress.Commands.add(

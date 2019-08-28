@@ -2022,12 +2022,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "100cm=1m"
+                value: "100\\ \\text{feet}"
               }
             ]
           }
         },
-        custom_keys: ["m", "km", "cm", "mm"],
+        customKeys: ["m", "km", "cm", "mm"],
         uiStyle: {
           widthpx: 140,
           heightpx: 36,

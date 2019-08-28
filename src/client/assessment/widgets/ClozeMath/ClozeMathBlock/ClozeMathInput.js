@@ -254,7 +254,7 @@ class ClozeMathInput extends React.Component {
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
-    const customKeys = get(item, "custom_keys", []);
+    const customKeys = get(item, "customKeys", []);
 
     return (
       <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>

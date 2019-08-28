@@ -56,7 +56,7 @@ const UnitsDropdownPure = ({
   };
 
   const symbol = get(item, "symbols", [])[0]; // units_us units_si
-  const customKeys = get(item, "custom_keys", []);
+  const customKeys = get(item, "customKeys", []);
 
   const allBtns = customKeys.map(key => ({
     handler: key,
@@ -70,17 +70,6 @@ const UnitsDropdownPure = ({
     height: uiStyle.heightpx || response.minHeight
   };
 
-  // if (isObject(symbol) || symbol === "units_us" || symbol === "units_si") {
-  //   allBtns = MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
-  //     if (isObject(symbol) && symbol.value.includes(btn.handler)) {
-  //       btn.types.push(symbol.label);
-  //     }
-  //     return btn;
-  //   })
-  //     .filter(btn => btn.types.includes(isObject(symbol) ? symbol.label : symbol))
-  //     .concat(allBtns);
-  // }
-
   const getLabel = handler => {
     const seleted = allBtns.find(btn => btn.handler === handler) || {};
     return seleted.label;
@@ -91,12 +80,6 @@ const UnitsDropdownPure = ({
       scrollToKeypad();
     }
   }, [keypadOffset]);
-
-  useEffect(() => {
-    if (!item.showDropdown) {
-      onChange("unit", null);
-    }
-  }, [item.showDropdown]);
 
   return (
     <>
@@ -173,7 +156,7 @@ const enhance = compose(
 export const UnitsDropdown = enhance(UnitsDropdownPure);
 
 const UniteSelet = styled(Select)`
-  min-width: 80px;
+  min-width: 85px;
   .ant-select-selection {
     padding: 5px 2px;
     background: ${({ statusColor }) => statusColor || white};

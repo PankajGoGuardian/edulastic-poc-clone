@@ -81,16 +81,6 @@ const MathFormulaAnswerMethod = ({
     }
   }, [method]);
 
-  useEffect(() => {
-    if (item.isUnits) {
-      let compareMethod = methodsConst.EQUIV_VALUE;
-      if (!item.showDropdown) {
-        compareMethod = methodsConst.EQUIV_SYMBOLIC;
-      }
-      onChange("method", compareMethod);
-    }
-  }, [item.showDropdown]);
-
   const changeOptions = (prop, val) => {
     const newOptions = {
       ...options,
@@ -353,7 +343,7 @@ const MathFormulaAnswerMethod = ({
     });
 
   const restrictKeys = allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
-  const customKeys = get(item, "custom_keys", []);
+  const customKeys = get(item, "customKeys", []);
   const isShowDropdown = item.isUnits && item.showDropdown;
 
   return (

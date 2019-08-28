@@ -256,7 +256,7 @@ class MathFormulaPreview extends Component {
       ? item.validation.validResponse.value.map(validResponse => validResponse.value)
       : [];
 
-    const customKeys = get(item, "custom_keys", []);
+    const customKeys = get(item, "customKeys", []);
     const allowNumericOnly = get(item, "allowNumericOnly", false);
 
     // in Units type, this need when the show dropdown option is true

@@ -141,9 +141,10 @@ class ProfileBody extends React.Component {
 
   updateMyStandardSets = updatedStandards => {
     const { curriculums, updateInterestedCurriculums, user } = this.props;
+
     const curriculumsData = [];
     for (let i = 0; i < updatedStandards.length; i++) {
-      const selStandards = curriculums.filter(item => item.curriculum._id === updatedStandards[i]._id);
+      const selStandards = curriculums.filter(item => item.curriculum === updatedStandards[i]);
       curriculumsData.push({
         _id: selStandards[0]._id,
         name: selStandards[0].curriculum,
@@ -151,11 +152,13 @@ class ProfileBody extends React.Component {
         grades: selStandards[0].grades
       });
     }
+
     const standardsData = {
       orgId: user._id,
       orgType: "teacher",
       curriculums: curriculumsData
     };
+
     updateInterestedCurriculums(standardsData);
     this.hideMyStandardSetsModal();
   };

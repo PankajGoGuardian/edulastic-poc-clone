@@ -28,7 +28,7 @@ const convertTableData = row => ({
   className: row.name,
   teacher: findTeacherName(row),
   subject: row.subject,
-  grades: row.grades.join(",")
+  grades: row.grades || ""
 });
 
 class ClassList extends React.Component {

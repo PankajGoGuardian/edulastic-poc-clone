@@ -17,7 +17,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     checked,
     item,
     onInnerClick,
-    uiStyles = {}
+    uiStyles = {},
+    showIndex
   } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
 
@@ -37,6 +38,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       item={item}
       userAnswer={_dropDownAnswers[id]}
       id={id}
+      showIndex={showIndex}
       evaluation={evaluation}
       type="dropDowns"
       onInnerClick={onInnerClick}

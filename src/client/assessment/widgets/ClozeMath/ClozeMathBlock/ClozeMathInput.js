@@ -85,10 +85,10 @@ class ClozeMathInput extends React.Component {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
     const {
-      responseIds: { maths }
+      responseIds: { maths = [] }
     } = item;
-    const { index } = find(maths, res => res.id === id) || {};
-    if (item.allowNumericOnly && item.allowNumericOnly[index]) {
+    const { allowNumericOnly } = find(maths, res => res.id === id) || {};
+    if (allowNumericOnly) {
       if (!e.key.match(/[0-9+-./%]/g)) {
         e.preventDefault();
         e.stopPropagation();
@@ -239,12 +239,11 @@ class ClozeMathInput extends React.Component {
   get restrictKeys() {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
-    const { allowedVariables = {} } = item;
     const {
       responseIds: { maths }
     } = item;
-    const { index } = find(maths, res => res.id === id) || {};
-    return allowedVariables[index] ? allowedVariables[index].split(",").map(segment => segment.trim()) : [];
+    const { allowedVariables = "" } = find(maths, res => res.id === id) || {};
+    return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
   render() {
@@ -255,7 +254,7 @@ class ClozeMathInput extends React.Component {
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
-    const customKeys = get(item, "custom_keys", []);
+    const customKeys = get(item, "customKeys", []);
 
     return (
       <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>
@@ -288,7 +287,7 @@ class ClozeMathInput extends React.Component {
 }
 
 const MathInput = ({ resprops = {}, id }) => {
-  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(responseContainers, cont => cont.id === id);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
@@ -299,6 +298,7 @@ const MathInput = ({ resprops = {}, id }) => {
       width={width}
       height={height}
       evaluation={evaluation}
+      showIndex={showIndex}
       userAnswer={_mathAnswers[id]}
       item={item}
       id={id}

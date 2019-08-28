@@ -1,11 +1,11 @@
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useMemo, useState, useContext } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 
-import { Paper } from "@edulastic/common";
+import { Paper, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
@@ -42,6 +42,7 @@ const MathFormula = ({
   changePreview,
   ...restProps
 }) => {
+  const answerContextConfig = useContext(AnswerContext);
   const [keypadOffset, setOffset] = useState(0);
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -88,7 +89,7 @@ const MathFormula = ({
             uiStyle={item.uiStyle}
             item={item}
             responseContainers={item.responseContainers}
-            customKeys={item.custom_keys}
+            customKeys={item.customKeys}
             stimulusReview={item.stimulusReview}
             instructorStimulus={item.instructorStimulus}
             metadata={item.metadata}
@@ -113,6 +114,7 @@ const MathFormula = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
             changePreview={changePreview}
+            answerContextConfig={answerContextConfig}
             {...restProps}
           />
         </Wrapper>

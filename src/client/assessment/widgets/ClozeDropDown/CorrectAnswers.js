@@ -193,7 +193,7 @@ CorrectAnswers.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "",
+    stemNumeration: "",
     widthpx: 0,
     heightpx: 0,
     placeholder: ""

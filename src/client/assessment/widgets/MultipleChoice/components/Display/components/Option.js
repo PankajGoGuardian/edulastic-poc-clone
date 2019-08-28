@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { isEmpty, flatten } from "lodash";
 
@@ -12,6 +12,7 @@ import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
 import { getFontSize } from "../../../../../utils/helpers";
+import { AnswerContext } from "@edulastic/common";
 
 const Option = props => {
   const {
@@ -31,6 +32,7 @@ const Option = props => {
     testItem,
     maxWidth
   } = props;
+  const answerContext = useContext(AnswerContext);
   let className = "";
   let correctAnswers = [];
   if (!isEmpty(validation)) {
@@ -53,7 +55,7 @@ const Option = props => {
       validAnswers = [validation.validResponse, ...validation.altResponses];
     }
 
-    if (flatten(validAnswers.map(v => v.value)).includes(item.value)) {
+    if (flatten(validAnswers.map(v => v.value)).includes(item.value) && !answerContext.isAnswerModifiable) {
       className = "right";
     } else if (isSelected) {
       if (validAnswers.some(ans => ans.value.includes(item.value))) {

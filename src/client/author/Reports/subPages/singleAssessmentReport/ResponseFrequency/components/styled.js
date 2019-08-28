@@ -128,7 +128,6 @@ export const StyledTable = styled(Table)`
 `;
 
 export const StyledResponseTagContainer = styled(Col)`
-  flex: 1 1 100px;
   @media print {
     margin-bottom: 10px;
     flex: none;

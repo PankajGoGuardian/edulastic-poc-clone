@@ -26,7 +26,12 @@ const CheckBoxedMathBox = ({ value, style }) => {
   return <span className="value" ref={filedRef} style={style} />;
 };
 
-const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick }) => {
+CheckBoxedMathBox.propTypes = {
+  value: PropTypes.string.isRequired,
+  style: PropTypes.object.isRequired
+};
+
+const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick, showIndex }) => {
   const { responseIds } = item;
   const { index } = find(responseIds[type], res => res.id === id);
   let { unit = "" } = userAnswer || {};
@@ -57,9 +62,11 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
       }
     >
       <CheckBox className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick} style={{ height }}>
-        <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
-          {index + 1}
-        </span>
+        {showIndex && (
+          <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+            {index + 1}
+          </span>
+        )}
         <span className="value" style={{ width, alignItems: "center" }}>
           {isMath ? (
             <CheckBoxedMathBox
@@ -88,6 +95,7 @@ CheckedBlock.propTypes = {
   item: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
+  showIndex: PropTypes.bool,
   isMath: PropTypes.bool,
   onInnerClick: PropTypes.func,
   width: PropTypes.string,
@@ -96,6 +104,7 @@ CheckedBlock.propTypes = {
 
 CheckedBlock.defaultProps = {
   isMath: false,
+  showIndex: false,
   userAnswer: "",
   onInnerClick: () => {},
   width: 120,

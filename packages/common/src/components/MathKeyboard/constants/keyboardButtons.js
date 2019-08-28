@@ -589,6 +589,12 @@ export const KEYBOARD_BUTTONS_ALL = [
   },
   // Units (US)
   {
+    handler: "\\text{feet}",
+    label: "feet",
+    types: ["all", "units_us"],
+    command: "cmd"
+  },
+  {
     handler: "oz",
     label: "oz",
     types: ["all", "units_us"],
@@ -1244,6 +1250,12 @@ export const KEYBOARD_BUTTONS = [
     handler: "ms",
     label: "ms",
     types: ["all", "units_si"],
+    command: "cmd"
+  },
+  {
+    handler: "\\text{feet}",
+    label: "feet",
+    types: ["all", "units_us"],
     command: "cmd"
   },
   {

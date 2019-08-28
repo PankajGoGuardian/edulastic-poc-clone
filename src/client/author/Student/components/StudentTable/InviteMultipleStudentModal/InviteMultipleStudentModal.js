@@ -344,7 +344,7 @@ class InviteMultipleStudentModal extends Component {
                 <Row>
                   <Col span={24}>
                     <ModalFormItem label="Select School">
-                      {getFieldDecorator("InstitutionId", {
+                      {getFieldDecorator("institutionId", {
                         rules: [
                           {
                             required: true,

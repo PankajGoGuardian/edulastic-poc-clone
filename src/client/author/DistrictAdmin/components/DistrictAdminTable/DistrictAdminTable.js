@@ -117,7 +117,7 @@ class DistrictAdminTable extends Component {
       },
       {
         title: "SSO",
-        dataIndex: "_source.sso",
+        dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 200
       }

@@ -263,8 +263,8 @@ function* createSchoolsSaga({ payload }) {
 function* deleteSchoolsSaga({ payload }) {
   try {
     // for (let i = 0; i < payload.length; i++) {
-    const result = yield call(schoolApi.deleteSchool, payload);
-    message.success(result);
+    yield call(schoolApi.deleteSchool, payload);
+    message.success("School(s) has been successfully deactivated");
     yield put(deleteSchoolsSuccessAction(payload.schoolIds));
   } catch (err) {
     const errorMessage = "Delete School is failing";

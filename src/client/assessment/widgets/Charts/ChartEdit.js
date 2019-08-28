@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
+import { questionType } from "@edulastic/constants";
 import Annotations from "../../components/Annotations/Annotations";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
@@ -54,7 +55,15 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
   const handleAddPoint = () => {
     setQuestionData(
       produce(item, draft => {
-        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: yAxisMin };
+        let initValue = yAxisMin;
+        if (
+          draft.type === questionType.HISTOGRAM ||
+          draft.type === questionType.BAR_CHART ||
+          draft.type === questionType.LINE_CHART
+        ) {
+          initValue = yAxisMax;
+        }
+        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: initValue };
 
         draft.chart_data.data.push({ ...newPoint });
 
@@ -124,12 +133,20 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
   const handleAddAnswer = () => {
     setQuestionData(
       produce(item, draft => {
+        let initValue = yAxisMin;
+        if (
+          draft.type === questionType.HISTOGRAM ||
+          draft.type === questionType.BAR_CHART ||
+          draft.type === questionType.LINE_CHART
+        ) {
+          initValue = yAxisMax;
+        }
         if (!draft.validation.altResponses) {
           draft.validation.altResponses = [];
         }
         draft.validation.altResponses.push({
           score: 1,
-          value: draft.validation.validResponse.value.map(chartData => ({ ...chartData, y: yAxisMin }))
+          value: draft.validation.validResponse.value.map(chartData => ({ ...chartData, y: initValue }))
         });
       })
     );

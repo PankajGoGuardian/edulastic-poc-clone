@@ -46,6 +46,10 @@ export const AssignButton = styled(Button)`
     color: ${white};
     border-color: ${themeColorLight};
   }
+  [disabled] {
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 `;
 
 export const StyledCard = styled(Card)`

@@ -773,7 +773,7 @@ export function* updateItemSaga({ payload }) {
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
-      const nextTestItems = [...(testItems.data ? testItems.data : testItems), item._id];
+      const nextTestItems = [...testItems, item._id];
 
       yield put(setTestItemsAction(nextTestItems));
 
@@ -800,7 +800,7 @@ export function* updateItemSaga({ payload }) {
 export const hasStandards = question => {
   const alignments = get(question, "alignment", []);
   if (!alignments.length) return false;
-  const hasDomain = alignments.some(i => i.domains && i.domains.length);
+  const hasDomain = alignments.some(i => i.domains && i.domains.length && !i.isEquivalentStandard);
   return !!hasDomain;
 };
 

@@ -119,12 +119,12 @@ class PreviewModal extends React.Component {
   };
 
   handleSelection = () => {
-    const { setDataAndSave, selectedRows, test, gotoSummary, item, setTestItems, setSelectedTests } = this.props;
+    const { setDataAndSave, selectedRows, test, gotoSummary, item, setTestItems } = this.props;
     if (!test.title) {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
-    let keys = [...(selectedRows.data || [])];
+    let keys = [...(selectedRows || [])];
     if (test.safeBrowser && !test.sebPassword) {
       return message.error("Please add a valid password");
     }
@@ -136,13 +136,12 @@ class PreviewModal extends React.Component {
       setDataAndSave({ addToTest: false, item: { _id: item._id } });
     }
     setTestItems(keys);
-    setSelectedTests(keys);
   };
 
   get isAddOrRemove() {
     const { item, selectedRows } = this.props;
-    if (selectedRows && selectedRows.data && selectedRows.data.length) {
-      return !selectedRows.data.includes(item._id);
+    if (selectedRows && selectedRows.length) {
+      return !selectedRows.includes(item._id);
     }
     return true;
   }

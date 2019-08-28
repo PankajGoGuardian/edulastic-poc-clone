@@ -16,6 +16,7 @@ export const userPickFields = [
   "middleName",
   "msoId",
   "orgData",
+  "lastSigninSSO",
   "role",
   "title",
   "thumbnail"

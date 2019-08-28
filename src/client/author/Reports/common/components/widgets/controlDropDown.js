@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import styled from "styled-components";
 import { partial } from "lodash";
-import { fadedGrey, black, themeColor } from "@edulastic/colors";
+import { fadedGrey, lightGreySecondary, black, whiteSmoke, themeColor } from "@edulastic/colors";
 
 import { useInternalEffect } from "../../hooks/useInternalEffect";
 
@@ -112,11 +112,22 @@ const StyledDiv = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
+
     &.ant-btn.ant-dropdown-trigger {
+      font-weight: bold;
+      background-color: ${lightGreySecondary};
       border-color: ${fadedGrey};
+
+      &.ant-dropdown-open {
+        background-color: transparent;
+      }
+
       &:hover,
       &:focus {
         border-color: ${themeColor};
+        color: ${themeColor};
+      }
+      i {
         color: ${themeColor};
       }
     }
@@ -132,6 +143,17 @@ const StyledDiv = styled.div`
 const StyledControlDropDown = styled(ControlDropDown)`
   max-height: 250px;
   overflow: auto;
+
+  .ant-dropdown-menu-item {
+    font-weight: bold;
+  }
+
+  .ant-dropdown-menu-item-selected,
+  .ant-dropdown-menu-item-active {
+    background-color: ${themeColor};
+    color: #ffffff;
+  }
+
   .ant-dropdown-menu-item-disabled {
     font-weight: 900;
     color: ${black};

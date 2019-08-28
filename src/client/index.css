@@ -788,6 +788,7 @@ input[type="checkbox"] {
   text-align: left;
   color: #878282;
   align-items: center;
+  height: 100%;
   padding: 8px 20px 8px 10px;
 }
 
@@ -912,6 +913,7 @@ textinput {
   min-height: 35px;
   white-space: nowrap;
 }
+
 paragraphnumber {
   padding: 0 5px;
   margin-right: 10px;
@@ -923,13 +925,14 @@ paragraphnumber {
   position: relative;
   min-width: 20px;
 }
+
 response {
   min-width: 120px;
   min-height: 30px;
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  margin: 2px 2px;
+  margin: 2px;
   border-radius: 10px;
   overflow: hidden;
   border: 2px black dotted;
@@ -1909,7 +1912,6 @@ span.token.active-word {
 .katex .mfrac .frac-line {
   min-height: 1vh !important;
 }
-
 @media (max-width: 992px) {
   .jsx-parser p {
     font-size: 14px;
@@ -1960,9 +1962,9 @@ span.token.active-word {
 }
 
 .fr-toolbar .fr-command.fr-btn[data-cmd="response"],
-.fr-toolbar .fr-command.fr-btn[data-cmd="textinput"],
 .fr-toolbar .fr-command.fr-btn[data-cmd="responseBoxes"],
-.fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"] {
+.fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"],
+.fr-toolbar .fr-command.fr-btn[data-cmd="textinput"] {
   border: 1px #000 dotted;
   height: 34px;
   padding: 0 4px;
@@ -2018,24 +2020,24 @@ span.token.active-word {
 }
 
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
-.ant-select-focused .ant-select-selection,
-.ant-select-selection:focus,
-.ant-select-selection:hover,
-.ant-select-selection:active,
+.ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled),
 .ant-input:hover,
-.ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled) {
+.ant-select-focused .ant-select-selection,
+.ant-select-selection:active,
+.ant-select-selection:focus,
+.ant-select-selection:hover {
   border-color: #00ad50;
 }
 
 .ant-btn-background-ghost.ant-btn-primary,
-.ant-btn-background-ghost.ant-btn-primary:hover,
-.ant-btn-background-ghost.ant-btn-primary:focus {
+.ant-btn-background-ghost.ant-btn-primary:focus,
+.ant-btn-background-ghost.ant-btn-primary:hover {
   color: #00ad50;
   border-color: #00ad50;
 }
 
-.ant-btn:hover,
-.ant-btn:focus {
+.ant-btn:focus,
+.ant-btn:hover {
   border-color: #00ad50;
 }
 
@@ -2048,8 +2050,8 @@ span.token.active-word {
   background-color: #00ad50;
 }
 
-.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on,
-.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on {
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on,
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on {
   color: #00ad50;
 }
 
@@ -2058,9 +2060,9 @@ span.token.active-word {
 }
 
 .ant-select-focused .ant-select-selection,
-.ant-select-selection:focus,
-.ant-select-selection:active {
-  box-shadow: 0px 0px 1px 1px #5eb50066;
+.ant-select-selection:active,
+.ant-select-selection:focus {
+  box-shadow: 0 0 1px 1px #5eb50066;
 }
 
 .ant-modal-wrap.test-preview-modal {

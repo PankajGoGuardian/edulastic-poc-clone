@@ -56,6 +56,7 @@ class ItemFilter extends Component {
                     {t("component.itemlist.filter.clearAll")}
                   </Clear>
                 </MainFilterHeader>
+                <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
                 <Search
                   search={search}
                   showStatus={search.filter !== items[0].filter}

@@ -427,7 +427,7 @@ class ClassBoard extends Component {
 
   updateDisabledList = (studId, status) => {
     const { disabledList, absentList } = this.state;
-    if (status === "NOT STARTED" || status === "IN PROGRESS" || status === "REDIRECTED") {
+    if (status === "Not Started" || status === "In Progress" || status === "Redirected") {
       if (!disabledList.includes(studId)) {
         this.setState({ disabledList: [...disabledList, studId] });
       }
@@ -437,7 +437,7 @@ class ClassBoard extends Component {
         this.setState({ disabledList: [...disabledList.slice(0, index), ...disabledList.slice(index + 1)] });
       }
     }
-    if (status === "ABSENT") {
+    if (status === "Absent") {
       if (!absentList.includes(studId)) {
         this.setState({ absentList: [...absentList, studId] });
       }

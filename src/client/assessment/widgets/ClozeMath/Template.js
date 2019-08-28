@@ -45,7 +45,7 @@ class Template extends Component {
 
     const _reduceResponseIds = (tmpl, prevIds = {}) => {
       const newResponseId = cloneDeep(initResponseId);
-      const { mathUnits = [] } = prevIds;
+      const { mathUnits = [], maths = [] } = prevIds;
       if (!window.$) {
         return newResponseId;
       }
@@ -58,7 +58,8 @@ class Template extends Component {
         if (tagName === "textinput") {
           newResponseId.inputs.push({ index, id });
         } else if (tagName === "mathinput") {
-          newResponseId.maths.push({ index, id });
+          const { allowNumericOnly, allowedVariables } = maths.find(box => box.id === id) || {};
+          newResponseId.maths.push({ index, id, allowNumericOnly: allowNumericOnly, allowedVariables });
         } else if (tagName === "mathunit") {
           const prev = mathUnits.find(m => m.id === id);
           if (prev) {

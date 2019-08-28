@@ -197,7 +197,8 @@ const StaticMath = ({
           style={{
             minWidth: style.width,
             minHeight: style.height,
-            fontSize: style.fontSize ? style.fontSize : "inherit"
+            fontSize: style.fontSize ? style.fontSize : "inherit",
+            background: style.background
           }}
           data-cy="answer-math-input-style"
         >

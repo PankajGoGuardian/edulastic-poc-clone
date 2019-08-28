@@ -52,12 +52,12 @@ const AssessmentSummary = props => {
       ) : (
         <>
           <UpperContainer type="flex">
-            <Col className="sub-container district-statistics" xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Col className="sub-container district-statistics" xs={24} sm={24} md={18} lg={18} xl={18}>
               <StyledCard>
                 <Stats name={state.assessmentName} data={state.metricInfo} role={props.role} />
               </StyledCard>
             </Col>
-            <Col className="sub-container chart-container" xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Col className="sub-container chart-container" xs={24} sm={24} md={6} lg={6} xl={6}>
               <StyledCard>
                 <StyledH3>Students in Performance Bands (%)</StyledH3>
                 <SimplePieChart data={state.bandInfo} />

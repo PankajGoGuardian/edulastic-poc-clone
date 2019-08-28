@@ -5,7 +5,14 @@ import styled from "styled-components";
 import { compose } from "redux";
 import { trim } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { themeColor, themeColorLighter } from "@edulastic/colors";
+import {
+  themeColor,
+  themeColorLighter,
+  tabletWidth,
+  mediumDesktopWidth,
+  middleMobileWidth,
+  grey
+} from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
 import { isDistrictPolicyAllowed, isEmailValid } from "../../../common/utils/helpers";
@@ -96,12 +103,12 @@ class LoginContainer extends React.Component {
 
     return (
       <LoginContentWrapper>
-        <Col xs={18} offset={3}>
+        <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
           <RegistrationBody type="flex" justify={Partners.position}>
-            <Col xs={24} sm={18} md={10} lg={9} xl={9}>
+            <Col xs={24} sm={18} md={14} lg={9} xl={9}>
               <FormWrapper>
                 <FormHead>
-                  {isSignupUsingDaURL && generalSettings && generalSettings.logo ? (
+                  {isSignupUsingDaURL & generalSettings && generalSettings.logo ? (
                     <DistrictLogo src={generalSettings.logo} />
                   ) : null}
                   <h3 align="center">
@@ -243,18 +250,24 @@ const enhance = compose(
 
 export default enhance(LoginForm);
 
-const LoginContentWrapper = styled.div``;
+const LoginContentWrapper = styled(Row)`
+  position: relative;
+`;
 
 const RegistrationBody = styled(Row)`
-  padding-top: 30px;
-  @media (min-width: 1366px) {
+  padding: 30px 0px 65px;
+
+  @media (min-width: ${mediumDesktopWidth}) {
+    justify-content: center;
+  }
+  @media (max-width: ${tabletWidth}) {
     justify-content: center;
   }
 `;
 
 const Copyright = styled(Row)`
   font-size: 10px;
-  color: #dddddd;
+  color: ${grey};
   text-align: center;
   margin: 25px 0px;
   position: absolute;
@@ -282,6 +295,10 @@ const FormHead = styled(Row)`
   h3 {
     color: white;
     margin: 5px 0px 15px;
+
+    @media (max-width: ${tabletWidth}) {
+      font-size: 26px;
+    }
   }
 `;
 
@@ -304,6 +321,10 @@ const ThirdPartyLoginBtn = styled(Col)`
     float: left;
     width: 14px;
   }
+
+  @media (max-width: ${tabletWidth}) {
+    font-size: 11px;
+  }
 `;
 
 const FormBody = styled(Row)`
@@ -312,6 +333,10 @@ const FormBody = styled(Row)`
     margin-bottom: 20px;
     margin-top: 5px;
     font-size: 13px;
+
+    @media (max-width: ${tabletWidth}) {
+      font-size: 16px;
+    }
   }
   form {
     .ant-form-item {
@@ -328,6 +353,13 @@ const FormBody = styled(Row)`
           &:after {
             content: "";
           }
+        }
+      }
+
+      @media (max-width: ${tabletWidth}) {
+        padding: 0px;
+        label {
+          font-size: 14px;
         }
       }
     }
@@ -347,6 +379,13 @@ const FormBody = styled(Row)`
       a {
         line-height: normal;
         font-size: 10px;
+
+        @media (max-width: ${tabletWidth}) {
+          font-size: 14px;
+        }
+        @media (max-width: ${middleMobileWidth}) {
+          font-size: 10px;
+        }
       }
       label {
         float: left;

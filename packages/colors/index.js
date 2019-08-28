@@ -57,6 +57,7 @@ export const lightBlue3 = "#3793dc";
 export const lightBlue4 = "#40a1ee";
 export const lightBlue5 = "#91d5dc";
 export const lightBlue6 = "#c8e8f6";
+export const lightBlue7 = "#4e95f3";
 export const darkBlue = "#0080b9";
 export const darkBlue1 = "#157ad8";
 export const darkBlueSecondary = "#0288d1";

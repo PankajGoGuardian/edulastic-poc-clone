@@ -8,19 +8,9 @@ import { Pagination, Spin, message } from "antd";
 
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { IconPlusCircle } from "@edulastic/icons";
+import { IconPlusCircle, IconFilter } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
-import {
-  Container,
-  MainList,
-  ListItems,
-  ItemsTableContainer,
-  StyledButton,
-  ItemsMenu,
-  QuestionsFound,
-  ItemsPagination,
-  ListWrapper
-} from "./styled";
+import { StyledButton, ItemsMenu, QuestionsFound, ItemsPagination } from "./styled";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../src/selectors/testItem";
 import {
@@ -37,23 +27,32 @@ import {
   getTestsItemsLimitSelector,
   getTestsItemsPageSelector,
   receiveTestItemsAction,
-  getPassageConfirmModalStateSelector,
-  togglePassageConfirmModalAction
+  setTestItemsAction,
+  getSelectedItemSelector
 } from "./ducks";
 import {
   setAndSavePassageItemsAction,
-  getPassageItemsCountSelector,
   previewCheckAnswerAction,
-  previewShowAnswerAction
+  previewShowAnswerAction,
+  setTestDataAndUpdateAction
 } from "../../ducks";
-import ItemsTable from "../common/ItemsTable/ItemsTable";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
 import { getClearSearchState, filterMenuItems } from "../../../ItemList";
-import ModalCreateTestItem from "../ModalCreateTestItem/ModalCreateTestItem";
-import PassageConfirmationModal from "../PassageConfirmationModal/PassageConfirmationModal";
-
-import PreviewModal from "../../../src/components/common/PreviewModal";
+import {
+  Container,
+  ListItems,
+  Element,
+  ShowLeftFilterButton,
+  SpinContainer,
+  PaginationContainer
+} from "../../../ItemList/components/Container/styled";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { white } from "ansi-colors";
+import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
+import { MEDIUM_DESKTOP_WIDTH } from "../../../../assessment/constants/others";
+import { getInterestedCurriculumsSelector, getUserId } from "../../../src/selectors/user";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
+import Item from "../../../ItemList/components/Item/Item";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -63,7 +62,6 @@ class AddItems extends PureComponent {
     onAddItems: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
     isEditable: PropTypes.bool,
-    selectedItems: PropTypes.array.isRequired,
     windowWidth: PropTypes.number.isRequired,
     page: PropTypes.number.isRequired,
     limit: PropTypes.number.isRequired,
@@ -93,14 +91,12 @@ class AddItems extends PureComponent {
   state = {
     search: getClearSearchState(),
     questionCreateType: "Duplicate",
-    selectedTestItems: [],
-    isShowPreviewModal: false,
-    previewData: {}
+    isShowFilter: true
   };
 
   componentDidMount() {
     const { search } = this.state;
-    const { selectedItems, getCurriculums, receiveTestItems, limit, test, curriculums } = this.props;
+    const { getCurriculums, receiveTestItems, limit, test, curriculums } = this.props;
     const selectedSubjects = test.subjects.filter(item => !!item);
     const newSearch = {
       ...search,
@@ -108,7 +104,6 @@ class AddItems extends PureComponent {
       subject: selectedSubjects.length ? selectedSubjects[0] : ""
     };
     this.setState({
-      selectedTestItems: selectedItems,
       search: newSearch
     });
     if (!curriculums.length) getCurriculums();
@@ -120,6 +115,7 @@ class AddItems extends PureComponent {
     const { search } = this.state;
     receiveTestItems(search, 1, limit);
   };
+
   handleLabelSearch = e => {
     const { search } = this.state;
     const { limit, receiveTestItems } = this.props;
@@ -149,8 +145,7 @@ class AddItems extends PureComponent {
       onSaveTestId,
       createTestItem,
       test: { _id: testId, title },
-      clearDictAlignment,
-      history
+      clearDictAlignment
     } = this.props;
     if (!title) {
       return message.error("Name field cannot be empty");
@@ -251,12 +246,6 @@ class AddItems extends PureComponent {
     );
   };
 
-  handlePaginationChange = newPage => {
-    const { receiveTestItems, limit } = this.props;
-    const { search } = this.state;
-    receiveTestItems(search, newPage, limit);
-  };
-
   renderPagination = () => {
     const { windowWidth, count, page } = this.props;
     return (
@@ -272,12 +261,6 @@ class AddItems extends PureComponent {
     );
   };
 
-  setSelectedTestItems = value => {
-    this.setState({
-      selectedTestItems: value
-    });
-  };
-
   setAuthoredByMeFilter = () => {
     this.setState(prev => ({
       search: {
@@ -287,52 +270,84 @@ class AddItems extends PureComponent {
     }));
   };
 
-  handleResponse = value => {
-    const { togglePassageConfirmModal, setAndSavePassageItems } = this.props;
-    togglePassageConfirmModal(false);
-    if (value) {
-      return setAndSavePassageItems();
+  toggleFilter = () => {
+    const { isShowFilter } = this.state;
+
+    this.setState({
+      isShowFilter: !isShowFilter
+    });
+  };
+
+  handlePaginationChange = page => {
+    const { search } = this.state;
+    const { receiveTestItems, limit } = this.props;
+    const _this = this;
+    const spinner = document.querySelector(`.${this.spinner.state.generatedClassName}`);
+    spinner.classList.add("active");
+
+    setTimeout(() => {
+      receiveTestItems(search, page, limit);
+      _this.itemsScrollBar._container.scrollTop = 0;
+    }, 350);
+  };
+
+  renderItems = () => {
+    const {
+      items,
+      test,
+      history,
+      windowWidth,
+      addItemToCart,
+      userId,
+      checkAnswer,
+      showAnswer,
+      interestedCurriculums,
+      testItemsList,
+      setDataAndSave,
+      setTestItems,
+      selectedRows
+    } = this.props;
+    const { search } = this.state;
+    if (items.length < 1) {
+      return (
+        <NoDataNotification
+          heading={"Items Not Available"}
+          description={
+            'There are currently no items available for this filter. You can create new item by clicking the "CREATE ITEM" button.'
+          }
+        />
+      );
     }
-    this.setState({ isShowPreviewModal: true });
-  };
-
-  closeModal = () => {
-    this.setState({ isShowPreviewModal: false });
-  };
-
-  setPreviewModalData = previewData => {
-    this.setState({ previewData });
-  };
-
-  previewItem = previewData => {
-    this.setState({ isShowPreviewModal: true, previewData });
+    return items.map(item => (
+      <Item
+        key={`Item_${item._id}`}
+        item={item}
+        history={history}
+        userId={userId}
+        windowWidth={windowWidth}
+        onToggleToCart={addItemToCart}
+        selectedToCart={selectedRows ? selectedRows.includes(item._id) : false}
+        interestedCurriculums={interestedCurriculums}
+        checkAnswer={checkAnswer}
+        showAnswer={showAnswer}
+        search={search}
+        test={test}
+        testItemsList={testItemsList}
+        setDataAndSave={setDataAndSave}
+        setTestItems={setTestItems}
+        selectedRows={selectedRows}
+        page={"addItems"}
+      />
+    ));
   };
 
   render() {
-    const {
-      windowWidth,
-      curriculums,
-      getCurriculumStandards,
-      curriculumStandards,
-      loading,
-      items,
-      isEditable,
-      onAddItems,
-      t,
-      createTestItemModalVisible,
-      count,
-      gotoSummary,
-      togglePassageConfirmModal,
-      passageConfirmModalVisible,
-      passageItemsCount,
-      checkAnswer,
-      showAnswer
-    } = this.props;
+    const { windowWidth, curriculums, getCurriculumStandards, curriculumStandards, loading, t, count } = this.props;
 
-    const { search, selectedTestItems, questionCreateType, isShowPreviewModal, previewData } = this.state;
+    const { search, isShowFilter } = this.state;
     return (
-      <Container>
-        <MainList id="main-list">
+      <>
+        <Container>
           <ItemFilter
             onSearchFieldChange={this.handleSearchFieldChange}
             onSearchInputChange={this.handleSearchInputChange}
@@ -347,10 +362,22 @@ class AddItems extends PureComponent {
             items={filterMenuItems}
             t={t}
           />
-
-          <ListItems id="item-list">
-            <PerfectScrollbar>
-              <ItemsTableContainer>
+          <ListItems isShowFilter={isShowFilter}>
+            <Element>
+              {windowWidth < MEDIUM_DESKTOP_WIDTH && (
+                <ShowLeftFilterButton isShowFilter={isShowFilter} variant="filter" onClick={this.toggleFilter}>
+                  <IconFilter color={isShowFilter ? white : themeColor} width={20} height={20} />
+                </ShowLeftFilterButton>
+              )}
+              <Paper borderRadius="0px" padding="0px">
+                <SpinContainer
+                  ref={e => {
+                    this.spinner = e;
+                  }}
+                  className={loading ? "active" : ""}
+                >
+                  <Spin size="large" />
+                </SpinContainer>
                 <ItemsMenu>
                   <QuestionsFound>{count} questions found</QuestionsFound>
                   <StyledButton
@@ -363,58 +390,24 @@ class AddItems extends PureComponent {
                     <span>Create new Item</span>
                   </StyledButton>
                 </ItemsMenu>
-                <ListWrapper borderRadius="0px" boxShadow="none" padding="0px">
-                  {loading && <Spin size="large" />}
-                  {!loading && (
-                    <ItemsTable
-                      items={items}
-                      setSelectedTests={this.setSelectedTestItems}
-                      selectedTests={selectedTestItems}
-                      onAddItems={onAddItems}
-                      testId={this.props.match.params.id}
-                      search={search}
-                      showModal={true}
-                      isEditable={isEditable}
-                      gotoSummary={gotoSummary}
-                      previewItem={this.previewItem}
-                      setPreviewModalData={this.setPreviewModalData}
-                    />
-                  )}
-                  {!loading && this.renderPagination()}
-                </ListWrapper>
-              </ItemsTableContainer>
-            </PerfectScrollbar>
+                <PerfectScrollbar
+                  ref={e => {
+                    this.itemsScrollBar = e;
+                  }}
+                  style={{ padding: windowWidth > 768 ? "0px 30px 30px" : "0px" }}
+                >
+                  {this.renderItems()}
+                  {windowWidth > SMALL_DESKTOP_WIDTH && this.renderPagination()}
+                </PerfectScrollbar>
+              </Paper>
+
+              {windowWidth < SMALL_DESKTOP_WIDTH && (
+                <PaginationContainer>{this.renderPagination()}</PaginationContainer>
+              )}
+            </Element>
           </ListItems>
-        </MainList>
-        {createTestItemModalVisible && (
-          <ModalCreateTestItem type={questionCreateType} setAuthoredByMeFilter={this.setAuthoredByMeFilter} />
-        )}
-        {passageConfirmModalVisible && (
-          <PassageConfirmationModal
-            visible={passageConfirmModalVisible}
-            togglePassageConfirmationModal={togglePassageConfirmModal}
-            itemsCount={passageItemsCount}
-            handleResponse={this.handleResponse}
-          />
-        )}
-        {isShowPreviewModal && (
-          <PreviewModal
-            isVisible={isShowPreviewModal}
-            testId={this.props.match.params.id}
-            isEditable={isEditable}
-            page="addItems"
-            showEvaluationButtons
-            checkAnswer={() => checkAnswer({ ...previewData.item, id: previewData.id, isItem: true })}
-            showAnswer={() => showAnswer(previewData)}
-            addDuplicate={this.handleDuplicateItem}
-            onClose={this.closeModal}
-            data={previewData}
-            onAddItems={onAddItems}
-            gotoSummary={gotoSummary}
-            setSelectedTests={this.setSelectedTestItems}
-          />
-        )}
-      </Container>
+        </Container>
+      </>
     );
   }
 }
@@ -433,8 +426,10 @@ const enhance = compose(
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
       createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
-      passageConfirmModalVisible: getPassageConfirmModalStateSelector(state),
-      passageItemsCount: getPassageItemsCountSelector(state)
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
+      userId: getUserId(state),
+      testItemsList: getTestItemsSelector(state),
+      selectedRows: getSelectedItemSelector(state)
     }),
     {
       receiveTestItems: receiveTestItemsAction,
@@ -443,10 +438,11 @@ const enhance = compose(
       clearDictStandards: clearDictStandardsAction,
       clearDictAlignment: clearDictAlignmentAction,
       createTestItem: createTestItemAction,
-      togglePassageConfirmModal: togglePassageConfirmModalAction,
       setAndSavePassageItems: setAndSavePassageItemsAction,
       checkAnswer: previewCheckAnswerAction,
-      showAnswer: previewShowAnswerAction
+      showAnswer: previewShowAnswerAction,
+      setDataAndSave: setTestDataAndUpdateAction,
+      setTestItems: setTestItemsAction
     }
   )
 );

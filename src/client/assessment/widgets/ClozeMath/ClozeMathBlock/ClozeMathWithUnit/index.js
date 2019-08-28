@@ -253,12 +253,11 @@ class ClozeMathWithUnit extends React.Component {
   get restrictKeys() {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
-    const { allowedVariables = {} } = item;
     const {
       responseIds: { mathUnits }
     } = item;
-    const { index } = find(mathUnits, res => res.id === id) || {};
-    return allowedVariables[index] ? allowedVariables[index].split(",").map(segment => segment.trim()) : [];
+    const { allowedVariables } = find(mathUnits, res => res.id === id) || {};
+    return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
   render() {
@@ -273,7 +272,7 @@ class ClozeMathWithUnit extends React.Component {
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
-    const customKeys = get(item, "custom_keys", []);
+    const customKeys = get(item, "customKeys", []);
 
     return (
       <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>

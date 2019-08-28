@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, findIndex } from "lodash";
+import produce from "immer";
+import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tab, Tabs, TabContainer } from "@edulastic/common";
@@ -25,9 +27,29 @@ class CorrectAnswers extends Component {
   };
 
   renderAltResponses = () => {
-    const { validation, t, onRemoveAltResponses } = this.props;
+    const {
+      validation,
+      validation: { mixAndMatch = false },
+      t,
+      onRemoveAltResponses,
+      handleRemoveAltResponsesMixMatch
+    } = this.props;
 
     if (validation.altResponses && validation.altResponses.length) {
+      if (mixAndMatch) {
+        return (
+          <Tab
+            close
+            onClose={() => {
+              handleRemoveAltResponsesMixMatch();
+              this.setState({ value: 0 });
+            }}
+            label={`${t("component.correctanswers.alternate")}`}
+            IconPosition="right"
+            type="primary"
+          />
+        );
+      }
       return validation.altResponses.map((res, i) => (
         <Tab
           close
@@ -47,8 +69,10 @@ class CorrectAnswers extends Component {
 
   renderPlusButton = () => {
     const { onAddAltResponses, validation } = this.props;
-    const { alt_responses = [] } = validation;
-
+    const { altResponses = [], mixAndMatch = false } = validation;
+    // only need one altResponses block
+    // removing the button when mixNmatch and altResponses are > 1
+    if (mixAndMatch && altResponses.length >= 1) return null;
     return (
       <Button
         style={{
@@ -59,7 +83,7 @@ class CorrectAnswers extends Component {
           marginLeft: 20
         }}
         icon={<IconPlus fill="#fff" />}
-        disabled={validation.mixAndMatch && alt_responses.length >= 1}
+        disabled={validation.mixAndMatch && altResponses.length >= 1}
         onClick={() => {
           this.handleTabChange(validation.altResponses.length + 1);
           onAddAltResponses();
@@ -80,8 +104,8 @@ class CorrectAnswers extends Component {
         value: answers
       }
     };
+    newData.validation.validResponse = updatedValidation.validResponse;
     if (uiStyle.globalSettings) {
-      newData.validation.validResponse = updatedValidation.validResponse;
       newData.uiStyle.responsecontainerindividuals = newData.uiStyle.responsecontainerindividuals || [];
       const index = findIndex(newData.uiStyle.responsecontainerindividuals, container => container.id === id);
       if (index === -1) {
@@ -103,12 +127,65 @@ class CorrectAnswers extends Component {
 
     const updatedAltResponses = newData.validation.altResponses;
     updatedAltResponses[tabIndex] = {
+      ...updatedAltResponses[tabIndex],
       score: newData.validation.altResponses[tabIndex].score,
       value: answers
     };
 
     newData.validation.altResponses = updatedAltResponses;
     setQuestionData(newData);
+  };
+
+  updateAltAnswersMixMatch = ({ id, tabId, value }) => {
+    const { question, setQuestionData } = this.props;
+    setQuestionData(
+      produce(question, draft => {
+        draft.validation.altResponses = draft.validation.altResponses.map(alt => {
+          if (alt.id === tabId) {
+            alt.value = alt.value.filter(resp => !(resp.id === id && resp.value === value));
+          }
+          return alt;
+        });
+      })
+    );
+  };
+
+  addAltAnswerMixMatch = ({ index, value }) => {
+    const { question, setQuestionData } = this.props;
+    setQuestionData(
+      produce(question, draft => {
+        let updated = false;
+        draft.validation.altResponses.forEach(altResponse => {
+          const _index = altResponse.value.findIndex(resp => resp.index === index);
+          if (_index !== -1 && altResponse.value[_index].value === "") {
+            altResponse.value[_index].value = value;
+            updated = true;
+          } else if (_index === -1 && !updated) {
+            const resp = draft.responseIds.find(resp => resp.index === index);
+            altResponse.value.push({
+              id: resp.id,
+              index,
+              value
+            });
+            updated = true;
+          }
+        });
+        if (!updated) {
+          // need to add a new tab for alternate answers
+          const validAnswers = draft.validation.validResponse.value.map(answer => {
+            if (answer.index === index) {
+              return { ...answer, value, index };
+            }
+            return { ...answer, value: "" };
+          });
+          draft.validation.altResponses.push({
+            score: draft.validation.validResponse.score,
+            id: uuid(),
+            value: validAnswers
+          });
+        }
+      })
+    );
   };
 
   handleUpdateCorrectScore = points => {
@@ -182,9 +259,10 @@ class CorrectAnswers extends Component {
                     {validation.mixAndMatch && (
                       <MixMatchCorrectAnswer
                         uiStyle={uiStyle}
-                        response={validation.validResponse}
-                        alternateResponse={alter}
-                        onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
+                        validResponse={validation.validResponse}
+                        alternateResponse={validation.altResponses}
+                        onUpdateValidationValue={answers => this.updateAltAnswersMixMatch(answers)}
+                        addAltAnswerMixMatch={answer => this.addAltAnswerMixMatch(answer)}
                       />
                     )}
                     {!validation.mixAndMatch && (
@@ -241,7 +319,7 @@ CorrectAnswers.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "",
+    stemNumeration: "",
     widthpx: 0,
     heightpx: 0,
     placeholder: ""

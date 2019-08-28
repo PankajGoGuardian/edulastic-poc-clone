@@ -101,7 +101,9 @@ const Settings = ({
     penalty = tempTestSettings.penalty,
     requirePassword = tempTestSettings.requirePassword,
     assignmentPassword = tempTestSettings.assignmentPassword,
-    maxAttempts = tempTestSettings.maxAttempts
+    maxAttempts = tempTestSettings.maxAttempts,
+    performanceBand = tempTestSettings.performanceBand,
+    standardGradingScale = tempTestSettings.standardGradingScale
   } = assignmentSettings;
 
   return (
@@ -382,12 +384,17 @@ const Settings = ({
           gradeSubject={gradeSubject}
         >
           <StyledDiv>
-            <PeformanceBand />
+            <PeformanceBand
+              setSettingsData={val => overRideSettings("performanceBand", val)}
+              performanceBand={performanceBand}
+            />
           </StyledDiv>
         </FeaturesSwitch>
         <StyledDiv>
-          <Col span={16}>Standard based grading scale</Col>
-          <StandardProficiencyTable />
+          <StandardProficiencyTable
+            standardGradingScale={standardGradingScale}
+            setSettingsData={val => overRideSettings("standardGradingScale", val)}
+          />
         </StyledDiv>
       </StyledDiv>
     </SettingsWrapper>

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 import { compose } from "redux";
+import produce from "immer";
 import styled, { withTheme } from "styled-components";
 
 import {
@@ -10,7 +11,8 @@ import {
   InstructorStimulus,
   MathSpan,
   CorrectAnswersContainer,
-  QuestionNumberLabel
+  QuestionNumberLabel,
+  AnswerContext
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -35,6 +37,10 @@ const TokenHighlightPreview = ({
   mode,
   t
 }) => {
+  const answerContextConfig = useContext(AnswerContext);
+  const { expressGrader, isAnswerModifiable } = answerContextConfig;
+  const isExpressGrader = previewTab === SHOW && expressGrader;
+
   const initialArray = (item.templeWithTokens || []).map((el, i) => ({
     value: el.value,
     index: i,
@@ -217,6 +223,53 @@ const TokenHighlightPreview = ({
     }, []);
   }
 
+  const getClassNameForExpressGrader = index => {
+    const { selected } = userAnswer.find(elem => elem.index === index) || {};
+    return selected ? "active-word token answer" : "token answer";
+  };
+
+  const getStylesForExpressGrader = index => {
+    if (isAnswerModifiable) {
+      return;
+    }
+    const { selected: con } = userAnswer.find(elem => elem.index === index) || {};
+    let resultStyle = {};
+
+    if (con && !!rightAnswers.find(el => el.index === index && el.selected)) {
+      resultStyle = {
+        background: theme.widgets.tokenHighlight.correctResultBgColor,
+        borderColor: theme.widgets.tokenHighlight.correctResultBorderColor
+      };
+    } else if (con) {
+      resultStyle = {
+        background: theme.widgets.tokenHighlight.incorrectResultBgColor,
+        borderColor: theme.widgets.tokenHighlight.incorrectResultBorderColor
+      };
+    } else {
+      resultStyle = {};
+    }
+
+    return resultStyle;
+  };
+
+  const handleSelectForExpressGrader = tokenIndex => () => {
+    saveAnswer(
+      produce(userAnswer, draft => {
+        let selectedItems = draft.filter(answer => answer.selected).length;
+        draft.forEach(elem => {
+          if (elem.index === tokenIndex) {
+            if (!elem.selected) {
+              selectedItems += 1;
+            }
+            if (selectedItems < item.maxSelection || !item.maxSelection) {
+              elem.selected = !elem.selected;
+            }
+          }
+        });
+      })
+    );
+  };
+
   return (
     <Paper
       data-cy="previewWrapper"
@@ -232,19 +285,35 @@ const TokenHighlightPreview = ({
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 
-      {tokenList.map((el, i) =>
-        el.active ? (
-          <MathSpan
-            onClick={!disableResponse ? handleSelect(i) : () => {}}
-            dangerouslySetInnerHTML={{ __html: el.value }}
-            style={preview || disableResponse ? getStyles(i, disableResponse) : {}}
-            key={i}
-            className={getClass(i)}
-          />
-        ) : (
-          <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
-        )
-      )}
+      {!isExpressGrader &&
+        tokenList.map((el, i) =>
+          el.active ? (
+            <MathSpan
+              onClick={!disableResponse ? handleSelect(i) : () => {}}
+              dangerouslySetInnerHTML={{ __html: el.value }}
+              style={preview || disableResponse ? getStyles(i, disableResponse) : {}}
+              key={i}
+              className={getClass(i)}
+            />
+          ) : (
+            <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
+          )
+        )}
+
+      {isExpressGrader &&
+        tokenList.map((el, i) =>
+          el.active ? (
+            <MathSpan
+              onClick={isAnswerModifiable ? handleSelectForExpressGrader(i) : () => {}}
+              dangerouslySetInnerHTML={{ __html: el.value }}
+              style={getStylesForExpressGrader(i)}
+              key={i}
+              className={getClassNameForExpressGrader(i)}
+            />
+          ) : (
+            <MathSpan className="token without-cursor" dangerouslySetInnerHTML={{ __html: el.value }} key={i} />
+          )
+        )}
       {previewTab === SHOW &&
         allCorrectAnswers.map((correctAnswers, correctGroupIndex) => {
           const title =

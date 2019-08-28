@@ -2,33 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Table, Select } from "antd";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { getUserOrgId } from "../../../../../src/selectors/user";
-import { receiveStandardsProficiencyAction } from "../../../../../StandardsProficiency/ducks";
 import { Title } from "./styled";
 import { white, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 
-const StandardProficiencyTable = ({
-  loadStandardsProficiency,
-  standardsData,
-  userOrgId,
-  setSettingsData,
-  standardGradingScale = {}
-}) => {
-  const [selectedStandardId, setSelectedStandard] = useState(standardGradingScale._id || "");
-
-  useEffect(() => {
-    loadStandardsProficiency({ orgId: userOrgId });
-  }, []);
-
+const StandardProficiencyTable = ({ standardsData, setSettingsData, standardGradingScale = {} }) => {
   const handleProfileChange = val => {
-    setSelectedStandard(val);
-    const selectedStandardData = standardsData.find(o => o._id === selectedStandardId) ||
-      standardsData[0] || { scale: [] };
+    const selectedStandardData = standardsData.find(o => o._id === val) || standardsData[0] || { scale: [] };
     setSettingsData({ _id: selectedStandardData._id, name: selectedStandardData.name });
   };
 
-  const selectedStandardData = standardsData.find(o => o._id === selectedStandardId) ||
+  const selectedStandardData = standardsData.find(o => o._id === standardGradingScale._id) ||
     standardsData[0] || { scale: [] };
   const standardsProficiency = selectedStandardData.scale.map(item => ({ ...item, key: item._id }));
   const columns = [
@@ -69,7 +53,7 @@ const StandardProficiencyTable = ({
     <>
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Standard based grading scale</span>
-        <Select style={{ width: "150px" }} value={selectedStandardId} onChange={val => handleProfileChange(val)}>
+        <Select style={{ width: "150px" }} value={standardGradingScale._id} onChange={val => handleProfileChange(val)}>
           {standardsData.map(standardData => {
             return (
               <Select.Option key={standardData._id} value={standardData._id}>
@@ -86,12 +70,9 @@ const StandardProficiencyTable = ({
 
 export default connect(
   state => ({
-    standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
-    userOrgId: getUserOrgId(state)
+    standardsData: get(state, ["standardsProficiencyReducer", "data"], [])
   }),
-  {
-    loadStandardsProficiency: receiveStandardsProficiencyAction
-  }
+  null
 )(StandardProficiencyTable);
 
 export const StyledTable = styled(Table)`

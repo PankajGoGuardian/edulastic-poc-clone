@@ -24,7 +24,8 @@ import {
   publishTestAction,
   getTestStatusSelector,
   setRegradeOldIdAction,
-  getTestCreatedItemsSelector
+  getTestCreatedItemsSelector,
+  getDefaultTestSettingsAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -96,7 +97,8 @@ class Container extends PureComponent {
       clearTestAssignments,
       editAssigned,
       createdItems = [],
-      setRegradeOldId
+      setRegradeOldId,
+      getDefaultTestSettings
     } = this.props;
     const self = this;
     if (location.hash === "#review") {
@@ -133,6 +135,7 @@ class Container extends PureComponent {
     window.onbeforeunload = () => {
       return this.beforeUnload();
     };
+    getDefaultTestSettings();
   }
 
   componentDidUpdate() {
@@ -536,7 +539,9 @@ const enhance = compose(
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),
       updated: get(state, "tests.updated", false),
-      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
+      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
+      standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
+      performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], [])
     }),
     {
       createTest: createTestAction,
@@ -550,7 +555,8 @@ const enhance = compose(
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
-      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
+      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
+      getDefaultTestSettings: getDefaultTestSettingsAction
     }
   )
 );

@@ -3,31 +3,16 @@ import { connect } from "react-redux";
 import { Table, Checkbox, Select } from "antd";
 import styled from "styled-components";
 import { white, themeColor } from "@edulastic/colors";
-import { receivePerformanceBandAction } from "../../../../../PerformanceBand/ducks";
-import { getUserOrgId } from "../../../../../src/selectors/user";
 import { performanceBandSelector } from "../../../../../AssignTest/duck";
 import { Title } from "./styled";
 
-const PerformanceBands = ({
-  fetchPerformanceBand,
-  userOrgId,
-  performanceBandsData,
-  setSettingsData,
-  performanceBand = {}
-}) => {
-  const [selectedBandId, setSelectedBand] = useState(performanceBand._id || "");
-
-  useEffect(() => {
-    fetchPerformanceBand({ orgId: userOrgId });
-  }, []);
-
+const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBand = {} }) => {
   const handleProfileChange = val => {
-    setSelectedBand(val);
     const selectedBandsData = performanceBandsData.find(o => o._id === val);
     setSettingsData({ _id: selectedBandsData._id, name: selectedBandsData.name });
   };
 
-  const selectedBandsData = performanceBandsData.find(o => o._id === selectedBandId) ||
+  const selectedBandsData = performanceBandsData.find(o => o._id === performanceBand._id) ||
     performanceBandsData[0] || { performanceBand: [] };
   const performanceBands = selectedBandsData.performanceBand;
 
@@ -70,7 +55,7 @@ const PerformanceBands = ({
     <>
       <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
         <span>Performance Bands</span>
-        <Select style={{ width: "150px" }} value={selectedBandId} onChange={val => handleProfileChange(val)}>
+        <Select style={{ width: "150px" }} value={performanceBand._id} onChange={val => handleProfileChange(val)}>
           {performanceBandsData.map(bandsData => {
             return (
               <Select.Option key={bandsData._id} value={bandsData._id}>
@@ -89,12 +74,9 @@ const PerformanceBands = ({
 
 export default connect(
   state => ({
-    performanceBandsData: performanceBandSelector(state),
-    userOrgId: getUserOrgId(state)
+    performanceBandsData: performanceBandSelector(state)
   }),
-  {
-    fetchPerformanceBand: receivePerformanceBandAction
-  }
+  null
 )(PerformanceBands);
 
 export const StyledTable = styled(Table)`

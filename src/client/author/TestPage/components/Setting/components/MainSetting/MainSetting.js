@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox, Form } from "antd";
+import { get } from "lodash";
+import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox } from "antd";
 
 import { test } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
 import { red, green, blueBorder } from "@edulastic/colors";
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
-import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
-import ListCard from "../Card/Card";
+import {
+  setTestDataAction,
+  getTestEntitySelector,
+  defaultTestTypeProfilesSelector,
+  testTypeAsProfileNameType
+} from "../../../../ducks";
 import UiTime from "../UiTime/UiTime";
 import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
 
@@ -56,7 +61,7 @@ const {
 
 const { Option } = Select;
 
-const { ASSESSMENT, PRACTICE } = type;
+const { ASSESSMENT, PRACTICE, COMMON } = type;
 
 const testTypes = {
   [ASSESSMENT]: "Asessment",
@@ -128,20 +133,41 @@ class MainSetting extends Component {
   };
 
   updateTestData = key => value => {
-    const { setTestData, setMaxAttempts } = this.props;
+    const { setTestData, setMaxAttempts, performanceBandsData, standardsData, defaultTestTypeProfiles } = this.props;
     switch (key) {
       case "testType":
-        if (value === ASSESSMENT) {
+        const testProfileType = testTypeAsProfileNameType[value];
+        const defaultBandId = defaultTestTypeProfiles.performanceBand[testProfileType];
+        const defaultStandardId = defaultTestTypeProfiles.standardProficiency[testProfileType];
+        const performanceBand = performanceBandsData.find(item => item._id === defaultBandId);
+        const standardGradingScale = standardsData.find(item => item._id === defaultStandardId);
+        if (value === ASSESSMENT || value === COMMON) {
           setMaxAttempts(1);
           setTestData({
             releaseScore: releaseGradeLabels.DONT_RELEASE,
-            maxAnswerChecks: 0
+            maxAnswerChecks: 0,
+            performanceBand: {
+              name: performanceBand.name,
+              _id: performanceBand._id
+            },
+            standardGradingScale: {
+              name: standardGradingScale.name,
+              _id: standardGradingScale._id
+            }
           });
         } else {
           setMaxAttempts(3);
           setTestData({
             releaseScore: releaseGradeLabels.WITH_ANSWERS,
-            maxAnswerChecks: 3
+            maxAnswerChecks: 3,
+            performanceBand: {
+              name: performanceBand.name,
+              _id: performanceBand._id
+            },
+            standardGradingScale: {
+              name: standardGradingScale.name,
+              _id: standardGradingScale._id
+            }
           });
         }
         break;
@@ -784,7 +810,10 @@ export default connect(
   state => ({
     entity: getTestEntitySelector(state),
     features: getUserFeatures(state),
-    userRole: getUserRole(state)
+    userRole: getUserRole(state),
+    defaultTestTypeProfiles: defaultTestTypeProfilesSelector(state),
+    standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
+    performanceBandsData: get(state, ["performanceBandReducer", "profiles"], [])
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

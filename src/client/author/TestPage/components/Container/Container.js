@@ -138,12 +138,6 @@ class Container extends PureComponent {
     getDefaultTestSettings();
   }
 
-  componentDidUpdate() {
-    const { editAssigned, match, setRegradeOldId } = this.props;
-    if (editAssigned) {
-      setRegradeOldId(match.params.id);
-    }
-  }
   beforeUnload = () => {
     const {
       test,

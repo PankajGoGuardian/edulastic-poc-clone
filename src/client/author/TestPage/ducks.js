@@ -641,7 +641,7 @@ function* publishTestSaga({ payload }) {
       yield put(push(`/author/assignments/${id}`));
     } else {
       if (oldId || isUsed) {
-        yield put(push(`/author/assignments/regrade/new/${id}/old/${test.origTestId}`));
+        yield put(push(`/author/assignments/regrade/new/${id}/old/${test.previousTestId}`));
         yield put(setRegradeOldIdAction(undefined));
       } else {
         yield put(push(`/author/tests/${id}/publish`));

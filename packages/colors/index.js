@@ -125,6 +125,7 @@ export const numBtnColors = { color: "#707070", borderColor: "#D9D9D9", backgrou
 export const smallMobileWidth = "325px";
 export const middleMobileWidth = "476px";
 export const mobileWidth = "480px";
+export const mobileWidthLarge = "575px";
 export const mobileWidthMax = "767px";
 export const tabletWidth = "768px";
 export const desktopWidth = "992px";

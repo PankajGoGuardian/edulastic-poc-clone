@@ -171,3 +171,4 @@ export { default as IconNoVolume } from "./src/IconNoVolume";
 export { default as IconFeedback } from "./src/IconFeedback";
 export { default as IconArrowLeft } from "./src/IconArrowLeft";
 export { default as IconArrowRight } from "./src/IconArrowRight";
+export { default as IconELogo } from "./src/IconELogo";

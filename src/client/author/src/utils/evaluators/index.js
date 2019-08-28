@@ -11,7 +11,7 @@ import {
   clozeImageDropDown,
   clozeImageText,
   shortText,
-  math,
+  // math,
   tokenhighlight,
   clozeDragDrop,
   essayRichText,
@@ -19,7 +19,7 @@ import {
   choiceMatrix,
   charts,
   graph,
-  clozeMath,
+  // clozeMath,
   fractionEditor
 } from "@edulastic/evaluators";
 
@@ -32,9 +32,10 @@ const evaluators = {
   [questionType.CLOZE_IMAGE_DRAG_DROP]: clozeImageDragDrop,
   [questionType.CLOZE_IMAGE_DROP_DOWN]: clozeImageDropDown,
   [questionType.CLOZE_IMAGE_TEXT]: clozeImageText,
-  [questionType.MATH]: math,
-  [questionType.CLOZE_MATH]: clozeMath,
-  [questionType.EXPRESSION_MULTIPART]: clozeMath,
+  // evaluation will handled at the backend
+  // [questionType.MATH]: math,
+  // [questionType.CLOZE_MATH]: clozeMath,
+  // [questionType.EXPRESSION_MULTIPART]: clozeMath,
   [questionType.CLOZE_DRAG_DROP]: clozeDragDrop,
   [questionType.HIGHLIGHT_IMAGE]: essayRichText,
   [questionType.SHORT_TEXT]: shortText,

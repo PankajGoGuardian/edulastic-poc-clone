@@ -47,59 +47,55 @@ class ProfileBody extends React.Component {
   };
 
   handleSubmit = e => {
-    const { form, user, resetMyPassword, updateUserDetails } = this.props;
+    const { form, user } = this.props;
     const { showChangePassword, isEditProfile } = this.state;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        if (isEditProfile) {
-          if (values.email === user.email) {
-            updateUserDetails({
-              data: {
-                districtId: user.districtId,
-                email: values.email,
-                firstName: values.firstName,
-                lastName: values.lastName,
-                title: values.title
-              },
-              userId: user._id,
-              isLogout: false
-            });
-            this.setState({ isEditProfile: false });
-          } else {
-            this.setState({ showEmailConfirmModal: true });
-          }
-        }
-        if (showChangePassword) {
-          resetMyPassword({
-            newPassword: values.password,
-            username: user.email
-          });
-          this.setState({ showChangePassword: false });
+        const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId;
+
+        if (
+          isnotNormalLogin ||
+          (isEditProfile && values.email === user.email) ||
+          (!isEditProfile && showChangePassword)
+        ) {
+          this.handleUpdateDetails(false);
+        } else {
+          this.setState({ showEmailConfirmModal: true });
         }
       }
     });
   };
 
   handleChangeEmail = () => {
+    this.handleUpdateDetails(true);
+  };
+
+  handleUpdateDetails(isLogout) {
     const {
       form: { getFieldValue },
       user,
       updateUserDetails
     } = this.props;
+    const { showChangePassword, isEditProfile } = this.state;
+    const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId;
+
+    var data = {
+      districtId: user.districtId,
+      email: isEditProfile && !isnotNormalLogin ? getFieldValue("email") : user.email,
+      firstName: isEditProfile ? getFieldValue("firstName") : user.firstName,
+      lastName: isEditProfile ? getFieldValue("lastName") : user.lastName,
+      title: isEditProfile ? getFieldValue("title") : user.title
+    };
+    if (showChangePassword) data["password"] = getFieldValue("password");
+
     updateUserDetails({
-      data: {
-        districtId: user.districtId,
-        email: getFieldValue("email"),
-        firstName: getFieldValue("firstName"),
-        lastName: getFieldValue("lastName"),
-        title: getFieldValue("title")
-      },
+      data,
       userId: user._id,
-      isLogout: true
+      isLogout: isLogout
     });
-    this.setState({ showEmailConfirmModal: false, isEditProfile: false });
-  };
+    this.setState({ showEmailConfirmModal: false, isEditProfile: false, showChangePassword: false });
+  }
 
   handleCancel = e => {
     e.preventDefault();
@@ -279,23 +275,27 @@ class ProfileBody extends React.Component {
         </DetailRow>
         <DetailRow>
           <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
-          <DetailData>
-            <InputItemWrapper>
-              {getFieldDecorator("email", {
-                initialValue: user.email,
-                rules: [
-                  { validator: this.checkUser },
-                  { required: true, message: t("common.title.invalidEmailMessage") },
-                  {
-                    // validation so that no white spaces are allowed
-                    message: t("common.title.invalidEmailMessage"),
-                    pattern: /^\S*$/
-                  },
-                  { max: 256, message: t("common.title.emailLengthMessage") }
-                ]
-              })(<Input type="text" />)}
-            </InputItemWrapper>{" "}
-          </DetailData>
+          {user.googleId || user.canvasId || user.cliId || user.cleverId ? (
+            <DetailData>{user.email}</DetailData>
+          ) : (
+            <DetailData>
+              <InputItemWrapper>
+                {getFieldDecorator("email", {
+                  initialValue: user.email,
+                  rules: [
+                    { validator: this.checkUser },
+                    { required: true, message: t("common.title.invalidEmailMessage") },
+                    {
+                      // validation so that no white spaces are allowed
+                      message: t("common.title.invalidEmailMessage"),
+                      pattern: /^\S*$/
+                    },
+                    { max: 256, message: t("common.title.emailLengthMessage") }
+                  ]
+                })(<Input type="text" />)}
+              </InputItemWrapper>{" "}
+            </DetailData>
+          )}
         </DetailRow>
       </Details>
     );
@@ -906,6 +906,7 @@ const InputItemWrapper = styled(FormItem)`
   }
   .ant-select-selection__rendered{
     line-height:40px;
+    margin: 0 24px !important;
   }
 `;
 

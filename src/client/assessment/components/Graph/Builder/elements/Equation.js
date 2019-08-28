@@ -1,3 +1,4 @@
+import { graphEvaluateApi } from "@edulastic/api";
 import { CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
 import { fixLatex } from "../utils";
@@ -590,6 +591,18 @@ function renderElement(board, element, params) {
 
   let line = null;
   const fixedLatex = fixLatex(latex);
+
+  graphEvaluateApi.convert({ latex }).then(result => {
+    console.log(result);
+  });
+
+  graphEvaluateApi
+    .evaluate({
+      input: []
+    })
+    .then(result => {
+      console.log(result);
+    });
 
   let dash;
   if (fixedLatex.compSign === "<" || fixedLatex.compSign === ">") {

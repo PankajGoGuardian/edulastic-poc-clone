@@ -19,6 +19,7 @@ export { default as API_CONFIG } from "./src/config";
 export { default as groupApi } from "./src/group";
 export { default as enrollmentApi } from "./src/enrollment";
 export { default as evaluateApi } from "./src/evaluate";
+export { default as graphEvaluateApi } from "./src/graphEvaluate";
 export { default as userApi } from "./src/user";
 export { default as curriculumSequencesApi } from "./src/curriculumSequence";
 export { default as userContextApi } from "./src/userContext";

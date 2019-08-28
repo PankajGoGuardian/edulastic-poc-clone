@@ -60,6 +60,7 @@ const Points = ({
                 />
               ) : (
                 <Circle
+                  interactive
                   key={`circle-${index}`}
                   onMouseEnter={handleMouseAction(index)}
                   onMouseLeave={handleMouseAction(null)}

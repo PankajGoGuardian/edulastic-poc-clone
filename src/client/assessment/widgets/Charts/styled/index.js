@@ -10,7 +10,7 @@ export const Line = styled.line`
 `;
 
 export const Circle = styled.circle`
-  pointer-events: none;
+  pointer-events: ${({ interactive }) => (interactive ? "auto" : "none")};
   cursor: pointer;
   position: relative;
   z-index: 10;

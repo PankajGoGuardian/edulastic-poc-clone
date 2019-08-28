@@ -42,7 +42,7 @@ const updateById = (id, item, testId) => {
     algoVariablesEnabled,
     owner,
     sharedWith,
-    origTestItemId,
+    previousTestItemId,
     ...data
   } = formatData(item);
   return api

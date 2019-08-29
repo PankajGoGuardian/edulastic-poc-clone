@@ -64,7 +64,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.widthpx = widthpx1;
     btnStyle.heightpx = heightpx1;
   }
-  console.log(btnStyle);
+
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
 
   return (

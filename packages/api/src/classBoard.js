@@ -19,12 +19,13 @@ const testActivity = ({ assignmentId, classId }) =>
     })
     .then(result => result.data);
 
-const releaseScore = ({ assignmentId, classId, releaseScore }) =>
+const releaseScore = ({ assignmentId, classId, releaseScore, testId, filterState }) =>
   api
     .callApi({
       method: "put",
-      url: `${prefix}/${assignmentId}/group/${classId}/releaseScore`,
-      data: { releaseScore }
+      url: `${prefix}/${assignmentId}/test/${testId}/group/${classId}/releaseScore`,
+      data: { releaseScore },
+      params: filterState
     })
     .then(result => result.data);
 

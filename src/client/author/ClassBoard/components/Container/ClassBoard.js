@@ -315,10 +315,11 @@ class ClassBoard extends Component {
   isMobile = () => window.innerWidth < 480;
 
   handleReleaseScore = () => {
-    const { match, setReleaseScore, showScore } = this.props;
+    const { match, setReleaseScore, showScore, additionalData } = this.props;
     const { assignmentId, classId } = match.params;
+    const { testId } = additionalData;
     const isReleaseScore = !showScore;
-    setReleaseScore(assignmentId, classId, isReleaseScore);
+    setReleaseScore(assignmentId, classId, isReleaseScore, testId);
   };
 
   handleMarkAsDone = () => {

@@ -35,7 +35,9 @@ import {
   setAddStudentsToOtherClassVisiblityAction,
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction,
-  setMultiStudentsProviderAction
+  setMultiStudentsProviderAction,
+  getValidatedClassDetails,
+  resetFetchedClassDetailsAction
 } from "../../ducks";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
@@ -138,7 +140,7 @@ class StudentTable extends Component {
       },
       {
         title: "SSO",
-        dataIndex: "_source.sso",
+        dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 100
       },
@@ -172,7 +174,12 @@ class StudentTable extends Component {
   }
 
   componentDidMount() {
-    this.loadFilteredList();
+    const { dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+    } else {
+      this.loadFilteredList();
+    }
   }
 
   static getDerivedStateFromProps(nextProps, state) {
@@ -480,7 +487,7 @@ class StudentTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
-    const { showActive } = this.state;
+    let { showActive } = this.state;
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {
@@ -567,7 +574,9 @@ class StudentTable extends Component {
       putStudentsToOtherClass,
       fetchClassDetailsUsingCode,
       features,
-      setProvider
+      setProvider,
+      validatedClassDetails,
+      resetClassDetails
     } = this.props;
 
     const actionMenu = (
@@ -735,6 +744,8 @@ class StudentTable extends Component {
             showClassCodeField={true}
             fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
             showTtsField
+            validatedClassDetails={validatedClassDetails}
+            resetClassDetails={resetClassDetails}
           />
         )}
         {studentDetailsModalVisible && (
@@ -793,7 +804,8 @@ const enhance = compose(
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      validatedClassDetails: getValidatedClassDetails(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -821,7 +833,8 @@ const enhance = compose(
       setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
-      setProvider: setMultiStudentsProviderAction
+      setProvider: setMultiStudentsProviderAction,
+      resetClassDetails: resetFetchedClassDetailsAction
     }
   )
 );

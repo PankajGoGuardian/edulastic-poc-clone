@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, cloneDeep } from "lodash";
+import { get, cloneDeep, isEmpty } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import {
@@ -40,6 +40,7 @@ import { getUserOrgId, getUser } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 import { receiveTeachersListAction, getTeachersListSelector } from "../../../Teacher/ducks";
+import { addNewTagAction, getAllTagsAction, getAllTagsSelector } from "../../../TestPage/ducks";
 
 const { Option } = Select;
 
@@ -98,8 +99,14 @@ class ClassesTable extends Component {
   }
 
   componentDidMount() {
-    const { userOrgId, loadClassListData } = this.props;
-    this.loadFilteredList();
+    const { userOrgId, loadClassListData, getAllTags, dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+    } else {
+      this.loadFilteredList();
+    }
+
+    getAllTags({ type: "group" });
   }
 
   // onHeaderCell = colName => {
@@ -552,7 +559,9 @@ class ClassesTable extends Component {
       setBulkEditVisibility,
       setBulkEditMode,
       setBulkEditUpdateView,
-      bulkUpdateClasses
+      bulkUpdateClasses,
+      allTagsData,
+      addNewTag
     } = this.props;
 
     const rowSelection = {
@@ -714,6 +723,8 @@ class ClassesTable extends Component {
             userOrgId={userOrgId}
             searchCourseList={searchCourseList}
             coursesForDistrictList={coursesForDistrictList}
+            allTagsData={allTagsData}
+            addNewTag={addNewTag}
           />
         )}
 
@@ -725,6 +736,8 @@ class ClassesTable extends Component {
             userOrgId={userOrgId}
             searchCourseList={searchCourseList}
             coursesForDistrictList={coursesForDistrictList}
+            allTagsData={allTagsData}
+            addNewTag={addNewTag}
           />
         )}
 
@@ -766,7 +779,8 @@ const enhance = compose(
       totalClassCount: get(state, ["classesReducer", "totalClassCount"], 0),
       teacherList: getTeachersListSelector(state),
       schoolsData: getSchoolsSelector(state),
-      bulkEditData: getBulkEditSelector(state)
+      bulkEditData: getBulkEditSelector(state),
+      allTagsData: getAllTagsSelector(state)
     }),
     {
       createClass: createClassAction,
@@ -779,7 +793,9 @@ const enhance = compose(
       setBulkEditVisibility: setBulkEditVisibilityAction,
       setBulkEditMode: setBulkEditModeAction,
       setBulkEditUpdateView: setBulkEditUpdateViewAction,
-      bulkUpdateClasses: bulkUpdateClassesAction
+      bulkUpdateClasses: bulkUpdateClassesAction,
+      getAllTags: getAllTagsAction,
+      addNewTag: addNewTagAction
     }
   )
 );

@@ -5,7 +5,7 @@ import { isEqual, find, clamp } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { response } from "@edulastic/constants";
+import { response as responseDimensions } from "@edulastic/constants";
 
 import { Checkbox } from "antd";
 
@@ -24,6 +24,7 @@ import Question from "../../components/Question";
 class Layout extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
+    responseIds: PropTypes.array.isRequired,
     uiStyle: PropTypes.object,
     t: PropTypes.func.isRequired,
     multipleLine: PropTypes.bool,
@@ -36,7 +37,7 @@ class Layout extends Component {
     uiStyle: {
       responsecontainerposition: "bottom",
       fontsize: "normal",
-      stemnumeration: "",
+      stemNumeration: "",
       widthpx: 140,
       heightpx: 36,
       placeholder: "",
@@ -61,7 +62,7 @@ class Layout extends Component {
 
   handleBlur = () => {
     const { onChange, uiStyle } = this.props;
-    const { minWidth, maxWidth } = response;
+    const { minWidth, maxWidth } = responseDimensions;
     const width = uiStyle.widthpx;
     let { responsecontainerindividuals: responses } = uiStyle;
     if (uiStyle.globalSettings) {
@@ -93,7 +94,7 @@ class Layout extends Component {
 
   handleBlurHeightGlobal = () => {
     const { onChange, uiStyle } = this.props;
-    const { minHeight, maxHeight } = response;
+    const { minHeight, maxHeight } = responseDimensions;
     const { heightpx: height } = uiStyle;
     if (height < minHeight || height > maxHeight) {
       onChange("uiStyle", {
@@ -106,7 +107,7 @@ class Layout extends Component {
   handleBlurIndividualHeight = index => {
     const { uiStyle, onChange } = this.props;
     const { responsecontainerindividuals: resp } = uiStyle;
-    const { minHeight, maxHeight } = response;
+    const { minHeight, maxHeight } = responseDimensions;
     let height = resp[index].heightpx;
     if (height && (height < minHeight || height > maxHeight)) {
       height = clamp(height, minHeight, maxHeight);
@@ -146,8 +147,8 @@ class Layout extends Component {
       const ind = responsecontainerindividuals.length;
       const response = find(responseIds, resp => resp.index === ind);
       responsecontainerindividuals.push({
-        id: !!response ? response.id : "",
-        index: !!response ? response.index : "",
+        id: response ? response.id : "",
+        index: response ? response.index : "",
         widthpx: 0,
         heightpx: 0,
         placeholder: ""
@@ -168,7 +169,7 @@ class Layout extends Component {
     };
 
     const calculateRightWidth = value => {
-      const { minWidth, maxWidth } = response;
+      const { minWidth, maxWidth } = responseDimensions;
       return clamp(value, minWidth, maxWidth);
     };
 
@@ -189,10 +190,6 @@ class Layout extends Component {
         ? // eslint-disable-next-line react/destructuring-assignment
           this.state.input || 0
         : responsecontainerindividual.widthpx;
-
-    const getMainWidthInputValue = () =>
-      // eslint-disable-next-line react/destructuring-assignment
-      isEqual(this.widthInput, this.state.focused) ? this.state.input || 0 : uiStyle.widthpx;
 
     const onFocusHandler = (responsecontainerindividual, index) => () => {
       if (responsecontainerindividual !== undefined && index !== undefined) {
@@ -217,26 +214,6 @@ class Layout extends Component {
           <Subtitle>{t("component.options.display")}</Subtitle>
           <Row gutter={20}>
             <Col md={12}>
-              <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
-              <SelectWrapper>
-                <Select
-                  onChange={val => changeUiStyle("stemnumeration", val)}
-                  options={[
-                    { value: "numerical", label: t("component.options.numerical") },
-                    {
-                      value: "uppercase",
-                      label: t("component.options.uppercasealphabet")
-                    },
-                    {
-                      value: "lowercase",
-                      label: t("component.options.lowercasealphabet")
-                    }
-                  ]}
-                  value={uiStyle.stemnumeration}
-                />
-              </SelectWrapper>
-            </Col>
-            <Col md={12}>
               <Label>{t("component.options.fontSize")}</Label>
               <SelectWrapper>
                 <Select
@@ -249,6 +226,26 @@ class Layout extends Component {
                     { value: "xxlarge", label: t("component.options.huge") }
                   ]}
                   value={uiStyle.fontsize}
+                />
+              </SelectWrapper>
+            </Col>
+            <Col md={12}>
+              <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
+              <SelectWrapper>
+                <Select
+                  onChange={val => changeUiStyle("stemNumeration", val)}
+                  options={[
+                    { value: "numerical", label: t("component.options.numerical") },
+                    {
+                      value: "uppercase",
+                      label: t("component.options.uppercasealphabet")
+                    },
+                    {
+                      value: "lowercase",
+                      label: t("component.options.lowercasealphabet")
+                    }
+                  ]}
+                  value={uiStyle.stemNumeration}
                 />
               </SelectWrapper>
             </Col>
@@ -288,8 +285,8 @@ class Layout extends Component {
                 onBlur={this.handleBlur}
                 onChange={e => changeUiStyle("widthpx", +e.target.value)}
                 value={uiStyle.widthpx}
-                minimum={response.minWidth}
-                maximum={response.maxWidth}
+                minimum={responseDimensions.minWidth}
+                maximum={responseDimensions.maxWidth}
               />
             </Col>
             <Col md={12}>

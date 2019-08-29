@@ -278,27 +278,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           data: [
             {
               x: "Bar 1",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 2",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 3",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 4",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 5",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 6",
-              y: 0
+              y: 70
             }
           ],
           name: "Chart title"
@@ -325,27 +325,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [
               {
                 x: "Bar 1",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 2",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 3",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 4",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 5",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 6",
-                y: 0
+                y: 70
               }
             ]
           },
@@ -369,27 +369,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           data: [
             {
               x: "Bar 1",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 2",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 3",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 4",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 5",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 6",
-              y: 0
+              y: 70
             }
           ],
           name: "Chart title"
@@ -415,27 +415,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [
               {
                 x: "Bar 1",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 2",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 3",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 4",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 5",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 6",
-                y: 0
+                y: 70
               }
             ]
           },
@@ -459,27 +459,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           data: [
             {
               x: "Bar 1",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 2",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 3",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 4",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 5",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 6",
-              y: 0
+              y: 70
             }
           ],
           name: "Chart title"
@@ -506,27 +506,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [
               {
                 x: "Bar 1",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 2",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 3",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 4",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 5",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 6",
-                y: 0
+                y: 70
               }
             ]
           },
@@ -1057,7 +1057,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140,
           heightpx: 0,
           wordwrap: false,
@@ -1096,7 +1096,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140,
           heightpx: 0,
           wordwrap: false,
@@ -1136,7 +1136,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           placeholder: "",
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140
         },
         responseIds: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
@@ -2022,12 +2022,12 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "100cm=1m"
+                value: "100\\ \\text{feet}"
               }
             ]
           }
         },
-        custom_keys: ["m", "km", "cm", "mm"],
+        customKeys: ["m", "km", "cm", "mm"],
         uiStyle: {
           widthpx: 140,
           heightpx: 36,

@@ -87,9 +87,18 @@ const addStudents = ({ assignmentId, classId, students, endDate }) =>
     })
     .then(response => response.data.result);
 
+const testActivitiesForStudent = ({ studentId, assignmentId, groupId }) =>
+  api
+    .callApi({
+      method: "get",
+      url: `${prefix}/${assignmentId}/group/${groupId}/student/${studentId}/test-activity`
+    })
+    .then(response => response.data.result);
+
 export default {
   gradebook,
   testActivity,
+  testActivitiesForStudent,
   releaseScore,
   markAsDone,
   togglePause,

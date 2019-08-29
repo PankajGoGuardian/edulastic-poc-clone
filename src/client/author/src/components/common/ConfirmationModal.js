@@ -3,7 +3,8 @@ import { white, themeColor, title, titleColor, lightGreySecondary } from "@edula
 import styled from "styled-components";
 
 export const ConfirmationModal = styled(Modal)`
-  min-width: 600px;
+  min-width: ${props => (props.modalWidth ? props.modalWidth : "600px")};
+  top: ${props => (props.top ? props.top : "100px")};
   .ant-modal-content {
     background: ${lightGreySecondary};
     padding: 20px;

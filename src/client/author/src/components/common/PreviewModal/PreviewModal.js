@@ -3,16 +3,13 @@ import React from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { get, keyBy, intersection, uniq } from "lodash";
-import { Spin, Button, Modal, Select } from "antd";
+import { Spin, Button, Modal, message } from "antd";
 import styled from "styled-components";
-import { FlexContainer, EduButton } from "@edulastic/common";
 import { withRouter } from "react-router-dom";
 
 import { questionType } from "@edulastic/constants";
-import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi, passageApi } from "@edulastic/api";
-import { white, themeColor } from "@edulastic/colors";
-import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
+import { themeColor } from "@edulastic/colors";
 import DragScrollContainer from "../../../../../assessment/components/DragScrollContainer";
 import {
   getItemDetailSelectorForPreview,
@@ -119,12 +116,13 @@ class PreviewModal extends React.Component {
   };
 
   handleSelection = () => {
-    const { setDataAndSave, selectedRows, test, gotoSummary, item, setTestItems, setSelectedTests } = this.props;
-    if (!test.title) {
+    const { setDataAndSave, selectedRows, test, gotoSummary, item, setTestItems, page } = this.props;
+    if (!test.title.trim().length && page !== "itemList") {
+      this.closeModal();
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
-    let keys = [...(selectedRows.data || [])];
+    let keys = [...(selectedRows || [])];
     if (test.safeBrowser && !test.sebPassword) {
       return message.error("Please add a valid password");
     }
@@ -136,13 +134,12 @@ class PreviewModal extends React.Component {
       setDataAndSave({ addToTest: false, item: { _id: item._id } });
     }
     setTestItems(keys);
-    setSelectedTests(keys);
   };
 
   get isAddOrRemove() {
     const { item, selectedRows } = this.props;
-    if (selectedRows && selectedRows.data && selectedRows.data.length) {
-      return !selectedRows.data.includes(item._id);
+    if (selectedRows && selectedRows.length) {
+      return !selectedRows.includes(item._id);
     }
     return true;
   }

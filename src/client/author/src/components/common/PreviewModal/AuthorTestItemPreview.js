@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Pagination } from "antd";
 import { ThemeProvider } from "styled-components";
 import { themeColor } from "@edulastic/colors";
-import { Tabs, EduButton } from "@edulastic/common";
-import { IconPencilEdit, IconDuplicate, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
+import { Tabs, EduButton, withWindowSizes } from "@edulastic/common";
+import { IconPencilEdit, IconArrowLeft, IconArrowRight, IconCopy } from "@edulastic/icons";
 
 import { themes } from "../../../../../assessment/themes";
 import QuestionWrapper from "../../../../../assessment/components/QuestionWrapper";
@@ -289,4 +289,4 @@ class AuthorTestItemPreview extends Component {
   }
 }
 
-export default AuthorTestItemPreview;
+export default withWindowSizes(AuthorTestItemPreview);

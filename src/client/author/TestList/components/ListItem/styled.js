@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { themeColor, fadedGrey, lightGrey, darkGrey, red } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 import { Col, Rate, Row } from "antd";
+import IconELogo from "@edulastic/icons/src/IconELogo";
 
 export const Container = styled.div`
   display: flex;
@@ -55,6 +56,18 @@ export const TestStatus = styled.span`
   text-transform: uppercase;
   font-weight: bold;
   margin-bottom: ${props => (props.view === "tile" ? "10px" : 0)};
+`;
+
+export const EdulasticVerified = styled(IconELogo)`
+  ${props => {
+    if (props.bottom) {
+      return `margin-left:10px;`;
+    } else {
+      return `position: absolute;
+      top: 10px;
+      right: 10px;`;
+    }
+  }};
 `;
 
 export const StatusWrapper = styled.div`

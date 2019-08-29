@@ -199,7 +199,7 @@ export const StyledFilterInput = styled(Search)`
 `;
 export const StyledSchoolSearch = styled(Search)`
   margin-left: 20px;
-  width: 465px;
+  width: 350px;
 `;
 export const StyledActionDropDown = styled(Dropdown)`
   margin-left: auto;

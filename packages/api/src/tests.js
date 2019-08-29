@@ -81,6 +81,15 @@ const getDefaultImage = ({ subject, standard }) =>
     })
     .then(result => result.data.result.image);
 
+const getDefaultTestSettings = ({ orgId, params = {} }) =>
+  api
+    .callApi({
+      url: `${prefix}/default-test-settings/${orgId}`,
+      method: "get",
+      params
+    })
+    .then(result => result.data.result);
+
 export default {
   getAll,
   getById,
@@ -89,5 +98,6 @@ export default {
   getDefaultImage,
   publishTest,
   getPublicTest,
-  getByV1Id
+  getByV1Id,
+  getDefaultTestSettings
 };

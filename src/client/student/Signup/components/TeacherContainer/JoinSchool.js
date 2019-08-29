@@ -8,7 +8,7 @@ import { Row, Col } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClose } from "@edulastic/icons";
-import { themeColor, white, title, fadedGreen, cardBg } from "@edulastic/colors";
+import { themeColor, white, title, fadedGreen, cardBg, mobileWidthMax } from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
@@ -32,9 +32,11 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
     <OptionBody>
       <SchoolInfo>
         <span>{school.schoolName || school.name}</span>
-        {`${schoolLocation.city ? schoolLocation.city + ", " : ""} ${
-          schoolLocation.state ? schoolLocation.state + ", " : ""
-        } ${schoolLocation.zip ? schoolLocation.zip : ""}`}
+        <div>
+          {`${schoolLocation.city ? schoolLocation.city + ", " : ""} ${
+            schoolLocation.state ? schoolLocation.state + ", " : ""
+          } ${schoolLocation.zip ? schoolLocation.zip : ""}`}
+        </div>
       </SchoolInfo>
       {school.districtName ? (
         <DistrictInfo>
@@ -80,8 +82,13 @@ const JoinSchool = ({
     if (isSignupUsingDaURL) {
       setSchool(_school);
     } else if (!isSignupUsingDaURL && _school) {
+      let signOnMethod = "userNameAndPassword";
+      signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
+      signOnMethod = userInfo.cleverId ? "cleverSignOn" : signOnMethod;
+      signOnMethod = userInfo.googleId ? "googleSignOn" : signOnMethod;
+
       checkDistrictPolicyRequestAction({
-        data: { districtId: _school.districtId, email, type: userInfo.role },
+        data: { districtId: _school.districtId, email, type: userInfo.role, signOnMethod },
         error: { message: t("common.policyviolation") }
       });
       setTempSchool(_school);
@@ -164,16 +171,16 @@ const JoinSchool = ({
   return (
     <>
       <JoinSchoolBody>
-        <Col xs={18} offset={3}>
-          <Row type="flex" align="middle">
-            <BannerText md={12}>
+        <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
+          <FlexWrapper type="flex" align="middle">
+            <BannerText xs={24} sm={18} md={12}>
               <SchoolIcon src={schoolIcon} alt="" />
               <h3>
-                Join your school <br /> community
+                {t("component.signup.teacher.joinschool")} <br /> {t("common.community")}
               </h3>
-              <div>Collaborate with your colleagues and more</div>
+              <h5>{t("component.signup.teacher.collaboratetext")}</h5>
             </BannerText>
-            <Col md={12}>
+            <Col xs={24} sm={18} md={12}>
               <SelectForm>
                 {selected ? (
                   <SchoolSelected>
@@ -188,7 +195,7 @@ const JoinSchool = ({
                     data={dropdownSchoolData}
                     onSearchTextChange={handleSearch}
                     iconType={"down"}
-                    placeholder="Search school by Zip, name or City"
+                    placeholder={t("component.signup.teacher.searchschool")}
                     ItemTemplate={SchoolDropDownItemTemplate}
                     minHeight="70px"
                     selectCB={changeSchool}
@@ -198,16 +205,15 @@ const JoinSchool = ({
                     disabled={tempSelected ? true : false}
                   />
                 )}
-
                 <Actions>
                   {/* I want to home school removed temporarily */}
                   {/* <AnchorBtn> I want to homeschool</AnchorBtn> */}
                   {!isSignupUsingDaURL && !districtId ? (
-                    <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn>
+                    <AnchorBtn onClick={toggleModal}> {t("component.signup.teacher.requestnewschool")}</AnchorBtn>
                   ) : null}
                   {selected && selected.districtName ? (
                     <DistrictName>
-                      <span>District: </span>
+                      <span>{t("common.district")}: </span>
                       {selected.districtName}
                     </DistrictName>
                   ) : (
@@ -219,13 +225,13 @@ const JoinSchool = ({
                   <>
                     <TeacherCarousel />
                     <ProceedBtn onClick={handleSubmit} disabled={updateUserWithSchoolLoading}>
-                      Proceed
+                      {t("common.proceed")}
                     </ProceedBtn>
                   </>
                 )}
               </SelectForm>
             </Col>
-          </Row>
+          </FlexWrapper>
         </Col>
       </JoinSchoolBody>
       {showModal ? <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} /> : null}
@@ -267,9 +273,16 @@ const enhance = compose(
 export default enhance(JoinSchool);
 
 const JoinSchoolBody = styled(Row)`
-  padding-top: 80px;
+  padding: 60px 0px;
   background: white;
-  height: calc(100vh - 93px);
+  min-height: calc(100vh - 93px);
+`;
+
+const FlexWrapper = styled(Row)`
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const BannerText = styled(Col)`
@@ -283,11 +296,20 @@ const BannerText = styled(Col)`
     margin-bottom: 15px;
     color: ${title};
   }
-
-  div {
+  h5 {
     font-size: 13px;
     margin-top: 10px;
     color: ${title};
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    margin-bottom: 30px;
+    h3 {
+      font-weight: 400;
+    }
+    h5 {
+      font-size: 16px;
+    }
   }
 `;
 
@@ -379,22 +401,18 @@ const ProceedBtn = styled(Button)`
 `;
 
 const OptionBody = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
   width: 100%;
 `;
 
 const SchoolInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   span {
     font-weight: 600;
+    width: 100%;
   }
 `;
 
 const DistrictInfo = styled.div`
+  width: 100%;
   span {
     font-weight: 600;
   }

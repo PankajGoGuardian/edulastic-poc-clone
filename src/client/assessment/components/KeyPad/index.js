@@ -27,7 +27,7 @@ export default class KeyPad extends React.Component {
 
   keyboardButtons = symbol => {
     const { item } = this.props;
-    const customKeys = get(item, "custom_keys", []);
+    const customKeys = get(item, "customKeys", []);
 
     const customKeysBtns = customKeys.map(key => ({
       handler: key,
@@ -65,7 +65,7 @@ export default class KeyPad extends React.Component {
       btns = btns.concat(new Array(numOfBtns - btns.length).fill({ types: [symbol], label: "" }));
     }
     if (isObject(symbol)) {
-      const customKeys = get(item, "custom_keys", []);
+      const customKeys = get(item, "customKeys", []);
 
       return (
         <CustomGroup

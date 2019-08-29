@@ -103,7 +103,7 @@ const Sidebar = ({
           size="large"
           placeholder={isPlaylist ? `Enter a playlist name` : `Enter the test name`}
         />
-        {!title && <ErrorWrapper>Test should have title</ErrorWrapper>}
+        {!title.trim().length && <ErrorWrapper>Test should have title</ErrorWrapper>}
         <MainTitle>Description</MainTitle>
         <SummaryTextArea
           value={description}

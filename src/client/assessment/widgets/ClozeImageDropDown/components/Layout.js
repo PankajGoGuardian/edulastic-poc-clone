@@ -122,15 +122,22 @@ class Layout extends Component {
 
     const addNewResponseContainer = () => {
       const { responsecontainerindividuals } = uiStyle;
-      responsecontainerindividuals.push({
-        widthpx: 0,
-        heightpx: 0,
-        placeholder: ""
-      });
-      onChange("uiStyle", {
-        ...uiStyle,
-        responsecontainerindividuals
-      });
+      const diff = differenceBy(responses, responsecontainerindividuals, "id");
+      const _response = diff[0];
+      if (_response) {
+        const index = findIndex(responses, resp => resp.id === _response.id);
+        responsecontainerindividuals.push({
+          widthpx: 0,
+          heightpx: 0,
+          placeholder: "",
+          index,
+          id: _response.id
+        });
+        onChange("uiStyle", {
+          ...uiStyle,
+          responsecontainerindividuals
+        });
+      }
     };
 
     const stemnumerationOptions = [
@@ -159,6 +166,11 @@ class Layout extends Component {
       { value: "bottom", label: t("component.options.bottom") }
     ];
 
+    if (uiStyle.responsecontainerindividuals) {
+      // show in proper order
+      // in case one deletes one response from between and then adds another
+      uiStyle.responsecontainerindividuals = uiStyle.responsecontainerindividuals.sort((r1, r2) => r1.index - r2.index);
+    }
     return (
       <React.Fragment>
         <Question
@@ -196,8 +208,8 @@ class Layout extends Component {
                 <SelectWrapper>
                   <OptionSelect
                     size="large"
-                    onChange={val => changeUiStyle("stemnumeration", val)}
-                    value={uiStyle.stemnumeration}
+                    onChange={val => changeUiStyle("stemNumeration", val)}
+                    value={uiStyle.stemNumeration}
                   >
                     {stemnumerationOptions.map(({ value: val, label }) => (
                       <Select.Option key={val} value={val}>
@@ -380,7 +392,7 @@ Layout.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "",
+    stemNumeration: "",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,

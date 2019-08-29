@@ -6,11 +6,11 @@ import { questionGroup, questionTypeMap } from "../framework/constants/questionT
 import Header from "../framework/author/itemList/itemDetail/header";
 import EditItemPage from "../framework/author/itemList/itemDetail/editPage";
 
-const { SMALL_DESKTOP_WIDTH } = screenSizes;
+const { SMALL_DESKTOP_WIDTH, MAX_TAB_WIDTH } = screenSizes;
 const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const heightSrollOffSet = 300;
 const questionGroups = Cypress._.values(questionGroup);
-const pageURL = "author/items/5d567ee4157ae702559b9b77/item-detail";
+const pageURL = "author/items/5d653a557973777cde063a7d/item-detail";
 const itemHeader = new Header();
 const editItem = new EditItemPage();
 const search = new SearchFilters();
@@ -114,22 +114,14 @@ describe(`visual regression tests - ${FileHelper.getSpecName(Cypress.spec.name)}
               });
             });
 
-            it(`when resolution is ${size} - top`, () => {
-              cy.scrollTo("top");
+            it(`when resolution is ${size} - 'edit'`, () => {
+              const scrollOffset = size[1] > MAX_TAB_WIDTH ? 60 : 120;
               cy.wait(1000);
               cy.matchImageSnapshot();
-            });
 
-            it(`when resolution is ${size} - scrolled`, () => {
-              cy.scrollTo(0, size[1] - heightSrollOffSet);
-              cy.wait(500);
-              cy.matchImageSnapshot();
-            });
-
-            it(`when resolution is ${size} - bottom`, () => {
-              cy.scrollTo("bottom");
-              cy.wait(500);
-              cy.matchImageSnapshot();
+              cy.isPageScrollPresent().then(({ hasScroll }) => {
+                if (hasScroll) cy.scrollPageAndMatchImageSnapshots(scrollOffset);
+              });
             });
 
             it(`when resolution is ${size} - 'preview'`, () => {

@@ -189,10 +189,11 @@ class MathInput extends React.PureComponent {
     return (
       <MathInputStyles
         fullWidth={fullWidth}
+        className={className}
+        fontStyle={symbols[0] === "units_si" || symbols[0] === "units_us" ? "normal" : "italic"}
         width={style.width}
         height={style.height}
         fontSize={style.fontSize}
-        className={className}
       >
         <div
           ref={this.containerRef}
@@ -209,7 +210,8 @@ class MathInput extends React.PureComponent {
             style={{
               minWidth: style.width,
               minHeight: style.height,
-              fontSize: style.fontSize ? style.fontSize : "inherit"
+              fontSize: style.fontSize ? style.fontSize : "inherit",
+              background: style.background
             }}
             data-cy="answer-math-input-field"
           >

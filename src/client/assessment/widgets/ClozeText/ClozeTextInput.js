@@ -80,7 +80,6 @@ const ClozeTextInput = ({ resprops, id }) => {
     style,
     placeholder,
     type = "text",
-    showIndex = true,
     userAnswers,
     disableResponse,
     responseIds,
@@ -161,7 +160,6 @@ const ClozeTextInput = ({ resprops, id }) => {
       style={{ ...style, width: "max-content", height: "auto" }}
       title={value.length ? value : null}
     >
-      {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
         type={type}

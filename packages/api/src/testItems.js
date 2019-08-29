@@ -42,7 +42,7 @@ const updateById = (id, item, testId) => {
     algoVariablesEnabled,
     owner,
     sharedWith,
-    origTestItemId,
+    previousTestItemId,
     ...data
   } = formatData(item);
   return api
@@ -64,7 +64,7 @@ const create = data =>
     .then(result => result.data.result);
 
 const update = ({ id, item }) => {
-  const { updatedAt, createdAt, ...data } = formatData(item);
+  const { updatedAt, createdAt, previousTestItemId, ...data } = formatData(item);
   return api
     .callApi({
       url: `${prefix}/${id}`,

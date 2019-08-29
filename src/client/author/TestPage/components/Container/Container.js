@@ -24,7 +24,8 @@ import {
   publishTestAction,
   getTestStatusSelector,
   setRegradeOldIdAction,
-  getTestCreatedItemsSelector
+  getTestCreatedItemsSelector,
+  getDefaultTestSettingsAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -96,7 +97,8 @@ class Container extends PureComponent {
       clearTestAssignments,
       editAssigned,
       createdItems = [],
-      setRegradeOldId
+      setRegradeOldId,
+      getDefaultTestSettings
     } = this.props;
     const self = this;
     if (location.hash === "#review") {
@@ -116,7 +118,7 @@ class Container extends PureComponent {
       );
     }
     if (match.params.id && match.params.id != "undefined") {
-      receiveTestById(match.params.id);
+      receiveTestById(match.params.id, true, editAssigned);
     } else {
       this.setState({ current: "description" });
       clearTestAssignments([]);
@@ -133,14 +135,9 @@ class Container extends PureComponent {
     window.onbeforeunload = () => {
       return this.beforeUnload();
     };
+    getDefaultTestSettings();
   }
 
-  componentDidUpdate() {
-    const { editAssigned, match, setRegradeOldId } = this.props;
-    if (editAssigned) {
-      setRegradeOldId(match.params.id);
-    }
-  }
   beforeUnload = () => {
     const {
       test,
@@ -187,7 +184,7 @@ class Container extends PureComponent {
     } = this.props;
     const { authors, testItems = [] } = test;
     const { editEnable } = this.state;
-    if (!this.props.test.title) {
+    if (!this.props.test.title.trim().length) {
       return;
     }
 
@@ -276,14 +273,11 @@ class Container extends PureComponent {
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
 
-    // TODO: fix this shit!!
-    const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
     switch (current) {
       case "addItems":
         return (
           <AddItems
             onAddItems={this.handleAddItems}
-            selectedItems={selectedItems}
             current={current}
             isEditable={isEditable}
             onSaveTestId={this.handleSaveTestId}
@@ -363,7 +357,7 @@ class Container extends PureComponent {
 
   handleSave = () => {
     const { test, updateTest, createTest, editAssigned } = this.props;
-    if (!test.title) {
+    if (!test.title.trim().length) {
       return message.error("Name field is required");
     }
     const newTest = this.modifyTest();
@@ -375,15 +369,7 @@ class Container extends PureComponent {
       return message.error("Please add a valid password");
     }
     if (test._id) {
-      if (editAssigned) {
-        newTest.versioned = true;
-        delete newTest.authors;
-        if (this.validateTest(newTest)) {
-          createTest(newTest);
-        }
-      } else {
-        updateTest(test._id, newTest);
-      }
+      updateTest(test._id, newTest);
     } else {
       createTest(newTest);
     }
@@ -547,7 +533,9 @@ const enhance = compose(
       testStatus: getTestStatusSelector(state),
       userId: get(state, "user.user._id", ""),
       updated: get(state, "tests.updated", false),
-      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
+      itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),
+      standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
+      performanceBandsData: get(state, ["performanceBandDistrict", "profiles"], [])
     }),
     {
       createTest: createTestAction,
@@ -561,7 +549,8 @@ const enhance = compose(
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
-      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
+      getItemsSubjectAndGrade: getItemsSubjectAndGradeAction,
+      getDefaultTestSettings: getDefaultTestSettingsAction
     }
   )
 );

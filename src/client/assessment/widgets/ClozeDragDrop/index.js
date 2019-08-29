@@ -135,8 +135,8 @@ class ClozeDragDrop extends Component {
     const Wrapper = testItem ? EmptyWrapper : Paper;
     const { expressGrader, isAnswerModifiable } = answerContextConfig;
 
-    const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
     const isClearAnswer = previewTab === "clear" || (isAnswerModifiable && expressGrader);
+    const isCheckAnswer = previewTab === "check" || (expressGrader && !isAnswerModifiable);
     const isShowAnswer = previewTab === "show" && !expressGrader;
 
     return (
@@ -227,32 +227,30 @@ class ClozeDragDrop extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {(isCheckAnswer || isClearAnswer || isShowAnswer) && (
-              <Display
-                view={view}
-                item={item}
-                checkAnswer={previewTab === "check"}
-                showAnswer={previewTab === "show"}
-                preview={previewTab === "clear"}
-                hasGroupResponses={item.hasGroupResponses}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions
-                }}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                evaluation={evaluation}
-                responseIDs={item.responseIds}
-                validation={item.validation}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
-                {...restProps}
-              />
-            )}
+            <Display
+              view={view}
+              item={item}
+              preview={isClearAnswer}
+              checkAnswer={isCheckAnswer}
+              showAnswer={isShowAnswer}
+              hasGroupResponses={item.hasGroupResponses}
+              configureOptions={{
+                duplicatedResponses,
+                showDraghandle,
+                shuffleOptions
+              }}
+              smallSize={smallSize}
+              options={previewDisplayOptions}
+              stimulus={previewStimulus}
+              uiStyle={uiStyle}
+              userSelections={userAnswer}
+              onChange={this.handleAddAnswer}
+              evaluation={evaluation}
+              responseIDs={item.responseIds}
+              validation={item.validation}
+              key={previewDisplayOptions && previewStimulus && uiStyle}
+              {...restProps}
+            />
           </Wrapper>
         )}
       </WithResources>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import styled from "styled-components";
 import { Select, TextField, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { isEqual, clamp } from "lodash";
@@ -145,9 +145,6 @@ class Layout extends Component {
       }
     };
 
-    const textFieldStyles = {
-      maxWidth: 280
-    };
     return (
       <Question
         section="advanced"
@@ -157,54 +154,57 @@ class Layout extends Component {
         cleanSections={cleanSections}
       >
         <Subtitle>{t("component.options.display")}</Subtitle>
-        <Row>
-          <Col md={6}>
+        <Row gutter={20}>
+          <Col md={12}>
             <Label>{t("component.options.responsecontainerposition")}</Label>
-            <Select
-              style={{ width: "80%" }}
-              onChange={val => changeUiStyle("responsecontainerposition", val)}
-              options={[
-                { value: "top", label: t("component.options.top") },
-                { value: "bottom", label: t("component.options.bottom") },
-                { value: "right", label: t("component.options.right") },
-                { value: "left", label: t("component.options.left") }
-              ]}
-              value={uiStyle.responsecontainerposition}
-            />
+            <FieldWrapper>
+              <Select
+                onChange={val => changeUiStyle("responsecontainerposition", val)}
+                options={[
+                  { value: "top", label: t("component.options.top") },
+                  { value: "bottom", label: t("component.options.bottom") },
+                  { value: "right", label: t("component.options.right") },
+                  { value: "left", label: t("component.options.left") }
+                ]}
+                value={uiStyle.responsecontainerposition}
+              />
+            </FieldWrapper>
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
-            <Select
-              style={{ width: "80%" }}
-              onChange={val => changeUiStyle("stemnumeration", val)}
-              options={[
-                { value: "numerical", label: t("component.options.numerical") },
-                {
-                  value: "uppercase",
-                  label: t("component.options.uppercasealphabet")
-                },
-                {
-                  value: "lowercase",
-                  label: t("component.options.lowercasealphabet")
-                }
-              ]}
-              value={uiStyle.stemnumeration}
-            />
+            <FieldWrapper>
+              <Select
+                onChange={val => changeUiStyle("stemNumeration", val)}
+                options={[
+                  { value: "numerical", label: t("component.options.numerical") },
+                  {
+                    value: "uppercase",
+                    label: t("component.options.uppercasealphabet")
+                  },
+                  {
+                    value: "lowercase",
+                    label: t("component.options.lowercasealphabet")
+                  }
+                ]}
+                value={uiStyle.stemNumeration}
+              />
+            </FieldWrapper>
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t("component.options.fontSize")}</Label>
-            <Select
-              style={{ width: "80%" }}
-              onChange={fontsize => changeUiStyle("fontsize", fontsize)}
-              options={[
-                { value: "small", label: t("component.options.small") },
-                { value: "normal", label: t("component.options.normal") },
-                { value: "large", label: t("component.options.large") },
-                { value: "xlarge", label: t("component.options.extraLarge") },
-                { value: "xxlarge", label: t("component.options.huge") }
-              ]}
-              value={uiStyle.fontsize}
-            />
+            <FieldWrapper>
+              <Select
+                onChange={fontsize => changeUiStyle("fontsize", fontsize)}
+                options={[
+                  { value: "small", label: t("component.options.small") },
+                  { value: "normal", label: t("component.options.normal") },
+                  { value: "large", label: t("component.options.large") },
+                  { value: "xlarge", label: t("component.options.extraLarge") },
+                  { value: "xxlarge", label: t("component.options.huge") }
+                ]}
+                value={uiStyle.fontsize}
+              />
+            </FieldWrapper>
           </Col>
         </Row>
         <Row>
@@ -219,8 +219,8 @@ class Layout extends Component {
             <Label>{t("component.options.responsecontainerglobal")}</Label>
           </Col>
         </Row>
-        <Row>
-          <Col md={6}>
+        <Row gutter={20}>
+          <Col md={12}>
             <Label>{t("component.options.widthpx")}</Label>
             <TextField
               type="number"
@@ -228,21 +228,17 @@ class Layout extends Component {
                 this.widthInput = ref;
               }}
               disabled={false}
-              containerStyle={{ width: 350 }}
-              style={textFieldStyles}
               onFocus={onFocusHandler()}
               onBlur={onWidthInputBlur()}
               onChange={this.handleInputChange}
               value={getMainWidthInputValue()}
             />
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t("component.options.heightpx")}</Label>
             <TextField
               type="number"
               disabled={false}
-              containerStyle={{ width: 350 }}
-              style={textFieldStyles}
               onBlur={this.handleBlurGlobalHeight}
               onChange={e => changeUiStyle("heightpx", +e.target.value)}
               value={uiStyle.heightpx}
@@ -250,7 +246,7 @@ class Layout extends Component {
           </Col>
         </Row>
         <Row>
-          <Col md={6}>
+          <Col md={12}>
             <Checkbox
               onChange={() => changeUiStyle("wordwrap", !uiStyle.wordwrap)}
               label={t("component.options.wordwrap")}
@@ -271,8 +267,8 @@ class Layout extends Component {
                 <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
               </Col>
             </Row>
-            <Row>
-              <Col md={6}>
+            <Row gutter={20}>
+              <Col md={12}>
                 <Label>{t("component.options.widthpx")}</Label>
                 <TextField
                   type="number"
@@ -280,21 +276,17 @@ class Layout extends Component {
                     this[`individualWidth${index}`] = ref;
                   }}
                   disabled={false}
-                  containerStyle={{ width: 350 }}
-                  style={textFieldStyles}
                   onFocus={onFocusHandler(responsecontainerindividual, index)}
                   onBlur={onWidthInputBlur(index)}
                   onChange={this.handleInputChange}
                   value={getIndividualWidthInputValue(responsecontainerindividual, index)}
                 />
               </Col>
-              <Col md={6}>
+              <Col md={12}>
                 <Label>{t("component.options.heightpx")}</Label>
                 <TextField
                   type="number"
                   disabled={false}
-                  containerStyle={{ width: 350 }}
-                  style={textFieldStyles}
                   onBlur={() => this.handleBlurIndividualHeight(index)}
                   onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
                   value={responsecontainerindividual.heightpx}
@@ -302,7 +294,7 @@ class Layout extends Component {
               </Col>
             </Row>
             <Row>
-              <Col md={6}>
+              <Col md={12}>
                 <Checkbox
                   onChange={() => changeIndividualUiStyle("wordwrap", !responsecontainerindividual.wordwrap, index)}
                   label={t("component.options.wordwrap")}
@@ -337,7 +329,7 @@ Layout.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "",
+    stemNumeration: "",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
@@ -349,3 +341,9 @@ Layout.defaultProps = {
 };
 
 export default React.memo(withNamespaces("assessment")(Layout));
+
+const FieldWrapper = styled.div`
+  & > div {
+    min-width: 100%;
+  }
+`;

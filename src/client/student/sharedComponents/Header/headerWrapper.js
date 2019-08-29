@@ -69,6 +69,7 @@ const FixedHeader = styled(Affix)`
 `;
 
 const AssignmentsHeader = styled(Layout.Header)`
+  border-bottom: 2px solid ${props => props.theme.headerBorderColor};
   background-color: ${props => props.theme.headerBgColor || "#00AD50"};
   color: ${props => props.theme.headerTitleTextColor};
   display: flex;

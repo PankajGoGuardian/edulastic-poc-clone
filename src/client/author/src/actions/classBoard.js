@@ -25,11 +25,15 @@ import {
   UPDATE_REMOVED_STUDENTS_LIST,
   REMOVE_STUDENTS,
   UPDATE_STUDENTS_LIST,
+  SET_CURRENT_TESTACTIVITY,
+  GET_ALL_TESTACTIVITIES_FOR_STUDENT,
+  SET_ALL_TESTACTIVITIES_FOR_STUDENT,
   UPDATE_CLASS_STUDENTS_LIST,
   FETCH_STUDENTS,
   ADD_STUDENTS,
   SET_STUDENTS_GRADEBOOK
 } from "../constants/actions";
+import { createAction } from "redux-starter-kit";
 
 export const receiveClassResponseAction = data => ({
   type: RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -169,3 +173,7 @@ export const setIsPausedAction = payload => ({
   type: SET_IS_PAUSED,
   payload
 });
+
+export const setCurrentTestActivityIdAction = createAction(SET_CURRENT_TESTACTIVITY);
+export const getAllTestActivitiesForStudentAction = createAction(GET_ALL_TESTACTIVITIES_FOR_STUDENT);
+export const setAllTestActivitiesForStudentAction = createAction(SET_ALL_TESTACTIVITIES_FOR_STUDENT);

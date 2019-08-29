@@ -122,10 +122,6 @@ export const Widget = styled.div`
     min-height: 42px !important;
   }
 
-  .input__math {
-    padding: 12px 2px;
-  }
-
   .mq-root-block,
   .mq-math-mode .mq-root-block {
     margin: 0;

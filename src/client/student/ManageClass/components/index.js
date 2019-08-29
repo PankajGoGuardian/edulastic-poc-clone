@@ -10,6 +10,7 @@ import { getEnrollClassAction, setFilterClassAction } from "../ducks";
 
 const Wrapper = styled(Layout)`
   width: 100%;
+  background-color: ${props => props.theme.sectionBackgroundColor};
 `;
 
 const ManageClass = ({ allClasses, filterClasses, loadAllClasses, loading, setClassList }) => {

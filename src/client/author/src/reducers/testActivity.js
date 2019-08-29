@@ -10,10 +10,12 @@ import {
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
   SET_IS_PAUSED,
+  SET_CURRENT_TESTACTIVITY,
   UPDATE_REMOVED_STUDENTS_LIST,
   UPDATE_STUDENTS_LIST,
   UPDATE_CLASS_STUDENTS_LIST,
-  SET_STUDENTS_GRADEBOOK
+  SET_STUDENTS_GRADEBOOK,
+  SET_ALL_TESTACTIVITIES_FOR_STUDENT
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 import { createFakeData } from "../../ClassBoard/utils";
@@ -38,6 +40,8 @@ const initialState = {
   entities: [],
   removedStudents: [],
   classStudents: [],
+  currentTestActivityId: "",
+  allTestActivitiesForStudent: [],
   error: null,
   loading: false,
   presentationMode: false
@@ -56,6 +60,18 @@ const reducer = (state = initialState, { type, payload }) => {
         entities: transformGradeBookResponse(payload.gradebookData),
         additionalData: payload.additionalData,
         removedStudents: payload.gradebookData.exStudents
+      };
+
+    case SET_CURRENT_TESTACTIVITY:
+      return {
+        ...state,
+        currentTestActivityId: payload
+      };
+
+    case SET_ALL_TESTACTIVITIES_FOR_STUDENT:
+      return {
+        ...state,
+        allTestActivitiesForStudent: payload
       };
     case REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD:
       let entity = payload;

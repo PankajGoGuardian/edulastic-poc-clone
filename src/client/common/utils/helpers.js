@@ -167,3 +167,19 @@ export const getFullNameFromString = name => {
     lastName
   };
 };
+
+export const getDistrictSignOutUrl = generalSettings => {
+  return `/district/${generalSettings.shortName}`;
+};
+
+export const setSignOutUrl = url => {
+  sessionStorage.setItem("signOutUrl", url);
+};
+
+export const getSignOutUrl = url => {
+  return sessionStorage.getItem("signOutUrl") || "/login";
+};
+
+export const removeSignOutUrl = () => {
+  return sessionStorage.removeItem("signOutUrl");
+};

@@ -39,12 +39,12 @@ const NoDataBox = styled.div`
     margin-bottom: 15px;
   }
   h4 {
-    color: #304050;
+    color: ${props => (props.theme.assignment && props.theme.assignment.helpHeadingTextColor) || "#304050"};
     font-size: 18px;
     font-weight: 600;
   }
   p {
-    color: #848993;
+    color: ${props => (props.theme.assignment && props.theme.assignment.helpTextColor) || "#848993"};
     font-size: 12px;
     line-height: 22px;
   }

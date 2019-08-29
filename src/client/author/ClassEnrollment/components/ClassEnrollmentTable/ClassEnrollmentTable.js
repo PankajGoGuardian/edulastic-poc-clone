@@ -17,7 +17,8 @@ import {
   StyledPagination,
   StyledFilterButton,
   UserNameContainer,
-  UserName
+  UserName,
+  StyledTableButton
 } from "./styled";
 
 import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
@@ -225,6 +226,25 @@ class ClassEnrollmentTable extends React.Component {
     resetClassDetails();
   };
 
+  handleDeactivateUser = record => {
+    const { id, role, code } = record;
+    const { classEnrollmentData } = this.props;
+    const selectedUsersInfo = classEnrollmentData.filter(data => {
+      const _classCode = get(data, "group.code");
+      const userId = get(data, "user._id");
+      return _classCode === code && userId === id;
+    });
+    if (role === "teacher") {
+      message.error("Please select only student to remove");
+    } else {
+      this.setState({
+        selectedUserIds: [id],
+        selectedUsersInfo,
+        removeStudentsModalVisible: true
+      });
+    }
+  };
+
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
   // -----|-----|-----|-----| FILTER RELATED BEGIN |-----|-----|-----|----- //
@@ -384,7 +404,8 @@ class ClassEnrollmentTable extends React.Component {
       addStudentsToOtherClassData,
       putStudentsToOtherClass,
       userOrgId,
-      moveUsersToOtherClass
+      moveUsersToOtherClass,
+      resetClassDetails
     } = this.props;
 
     const tableDataSource = classEnrollmentData.map(item => {
@@ -421,15 +442,15 @@ class ClassEnrollmentTable extends React.Component {
     );
     const columnsData = [
       {
-        title: "Class Code",
-        dataIndex: "code",
-        sorter: (a, b) => a.code.localeCompare(b.code),
-        width: 200
-      },
-      {
         title: "Class Name",
         dataIndex: "name",
         sorter: (a, b) => a.name.localeCompare(b.name),
+        width: 200
+      },
+      {
+        title: "Class Code",
+        dataIndex: "code",
+        sorter: (a, b) => a.code.localeCompare(b.code),
         width: 200
       },
       {
@@ -449,6 +470,18 @@ class ClassEnrollmentTable extends React.Component {
         dataIndex: "role",
         sorter: (a, b) => a.role.localeCompare(b.role),
         width: 200
+      },
+      {
+        dataIndex: "id",
+        render: (_, record) => {
+          return (
+            <StyledTableButton key={record.key} onClick={() => this.handleDeactivateUser(record)} title="Deactivate">
+              <Icon type="delete" theme="twoTone" />
+            </StyledTableButton>
+          );
+        },
+        textWrap: "word-break",
+        width: 100
       }
     ];
     const roleFilterOptions = ["Teacher", "Student"];
@@ -574,19 +607,19 @@ class ClassEnrollmentTable extends React.Component {
           }
           okText="Yes, Remove"
         />
-        {addUserFormModalVisible && (
-          <AddNewUserModal
-            showModal={addUserFormModalVisible}
-            formTitle="Add Student(s) to Class"
-            closeModal={this.onCloseAddNewUserModal}
-            buttonText="Add Student(s)"
-            addNewUser={this.addNewUser}
-            fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
-            validatedClassDetails={validatedClassDetails}
-            wrappedComponentRef={this.saveFormRef}
-            userOrgId={userOrgId}
-          />
-        )}
+
+        <AddNewUserModal
+          showModal={addUserFormModalVisible}
+          formTitle="Add User to Class"
+          closeModal={this.onCloseAddNewUserModal}
+          buttonText="Add Student(s)"
+          addNewUser={this.addNewUser}
+          fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+          validatedClassDetails={validatedClassDetails}
+          wrappedComponentRef={this.saveFormRef}
+          userOrgId={userOrgId}
+          resetClassDetails={resetClassDetails}
+        />
 
         <AddStudentsToOtherClassModal
           {...addStudentsToOtherClassData}
@@ -597,7 +630,6 @@ class ClassEnrollmentTable extends React.Component {
           onCloseModal={this.onCloseAddStudentsToOtherClassModal}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
         />
-
         <MoveUsersToOtherClassModal
           {...addStudentsToOtherClassData}
           showModal={moveUsersModalVisible}

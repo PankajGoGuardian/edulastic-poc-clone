@@ -5,14 +5,15 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, debounce, find } from "lodash";
 import styled from "styled-components";
-import { Form, Modal, Button, Input, Select } from "antd";
-import { lightGrey3, linkColor, themeColor, white } from "@edulastic/colors";
-import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
+import { Form, Modal, Button, Input, Select, Row, Col } from "antd";
+import { lightGrey3, linkColor, themeColor, white, mobileWidthLarge } from "@edulastic/colors";
 import { countryApi } from "@edulastic/api";
+import { withNamespaces } from "@edulastic/localization";
+import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { searchDistrictsRequestAction, createAndJoinSchoolRequestAction } from "../../duck";
 import { states } from "./constants";
-const { Option } = Select;
 
+const { Option } = Select;
 class RequestSchool extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
@@ -21,7 +22,8 @@ class RequestSchool extends React.Component {
     districts: PropTypes.array.isRequired,
     isSearching: PropTypes.bool.isRequired,
     searchDistrict: PropTypes.func.isRequired,
-    userInfo: PropTypes.object.isRequired
+    userInfo: PropTypes.object.isRequired,
+    t: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -120,32 +122,31 @@ class RequestSchool extends React.Component {
   };
 
   render() {
-    const { isOpen, handleCancel, form, isSearching, autocompleteDistricts } = this.props;
+    const { isOpen, handleCancel, form, isSearching, autocompleteDistricts, t } = this.props;
     const { getFieldDecorator } = form;
     const { keyword, countryList, stateList } = this.state;
     const country = form.getFieldValue("country");
 
     const title = (
       <Title>
-        <label>Request a new school</label>
-        <br />
-        Please fill the details to add a new school, Edualstic Support will create the school after verifying the data
+        <h4>{t("component.signup.teacher.requestnewschool")}</h4>
+        <span>{t("component.signup.teacher.infotext")}</span>
       </Title>
     );
 
     const footer = (
       <ActionButton onClick={this.handleSubmit} type="primary" htmlType="submit">
-        Request a new school
+        {t("component.signup.teacher.requestnewschool")}
       </ActionButton>
     );
 
     const formItemLayout = {
       labelCol: {
-        xs: { span: 16 },
+        xs: { span: 24 },
         sm: { span: 4 }
       },
       wrapperCol: {
-        xs: { span: 8 },
+        xs: { span: 24 },
         sm: { span: 20 }
       }
     };
@@ -163,8 +164,8 @@ class RequestSchool extends React.Component {
     ));
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={handleCancel} width="50%">
-        <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={handleCancel} width="450px">
+        <FormWrapper {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="Name">
             {getFieldDecorator("name", {
               validateTrigger: ["onChange", "onBlur"],
@@ -213,8 +214,11 @@ class RequestSchool extends React.Component {
               rules: [{ required: false, message: "Please provide a valid city." }]
             })(<Input placeholder="Enter your school city" />)}
           </Form.Item>
-          <FlexItems>
-            <Form.Item label="Zip">
+          <FlexItems type="flex" align="middle">
+            <Col xs={24} sm={4}>
+              <Label>Zip:</Label>
+            </Col>
+            <Col xs={24} sm={8}>
               {getFieldDecorator("zip", {
                 validateTrigger: ["onChange", "onBlur"],
                 rules: [
@@ -222,8 +226,11 @@ class RequestSchool extends React.Component {
                   { required: true, message: "Please provide a valid zip code." }
                 ]
               })(<Input placeholder="Enter Zip Code" />)}
-            </Form.Item>
-            <Form.Item label="State">
+            </Col>
+            <Col xs={24} sm={4}>
+              <Label>State:</Label>
+            </Col>
+            <Col xs={24} sm={8}>
               {getFieldDecorator("state", {
                 rules: [{ required: false, message: "Please provide a valid state." }],
                 initialValue: states[0]
@@ -236,7 +243,7 @@ class RequestSchool extends React.Component {
                   <Input placeholder="Enter state" />
                 )
               )}
-            </Form.Item>
+            </Col>
           </FlexItems>
 
           <Form.Item label="Country">
@@ -255,7 +262,7 @@ class RequestSchool extends React.Component {
               </Select>
             )}
           </Form.Item>
-        </Form>
+        </FormWrapper>
       </StyledModal>
     );
   }
@@ -264,6 +271,7 @@ class RequestSchool extends React.Component {
 const RequestSchoolModal = Form.create({ name: "request_school" })(RequestSchool);
 
 const enhance = compose(
+  withNamespaces("login"),
   withRouter,
   connect(
     state => ({
@@ -289,12 +297,13 @@ const StyledModal = styled(Modal)`
     display: flex;
     justify-content: center;
     border-top: 0px;
-    padding: 0px 16px 32px;
+    padding: 0px 24px 24px;
   }
 
   .ant-form-item {
     text-align: center;
     display: flex;
+    align-items: center;
   }
   .ant-form-item-required::before {
     display: none;
@@ -321,7 +330,9 @@ const StyledModal = styled(Modal)`
       text-align: left;
     }
   }
-
+  .ant-form-item-control {
+    line-height: normal;
+  }
   .ant-form > .ant-form-item:nth-child(2) {
     .ant-form-item-control-wrapper {
       display: flex;
@@ -333,6 +344,46 @@ const StyledModal = styled(Modal)`
           display: flex;
           margin: 0;
         }
+      }
+    }
+  }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    &.ant-modal {
+      min-width: 90%;
+      top: 20px;
+    }
+    .ant-row.ant-form-item {
+      margin-bottom: 15px;
+      &:nth-last-child(1) {
+        margin: 0px;
+      }
+    }
+  }
+`;
+
+const Label = styled.div`
+  font-weight: 600;
+  text-align: right;
+  color: rgba(0, 0, 0, 0.85);
+  font-size: 14px;
+  margin-right: 8px;
+
+  @media (max-width: ${mobileWidthLarge}) {
+    text-align: left;
+  }
+`;
+
+const FormWrapper = styled(Form)`
+  .ant-row .ant-form-item-label {
+    line-height: normal;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    .ant-row {
+      flex-direction: column;
+      .ant-form-item-label {
+        text-align: left;
+        padding: 0px;
       }
     }
   }
@@ -355,38 +406,36 @@ const ActionButton = styled(Button)`
   &:hover {
     background: ${themeColor};
   }
+
+  @media (max-width: ${mobileWidthLarge}) {
+    min-width: 100%;
+  }
 `;
 
 const Title = styled.div`
   color: ${linkColor};
   font-size: 12px;
-  label {
+  h4 {
     font-weight: 800;
     font-size: 18px;
   }
-`;
 
-const FlexItems = styled.div`
-  display: flex;
-  align-items: flex-end;
-  padding-left: 8.9%;
-  justify-content: flex-start;
-  .ant-form-item:nth-child(2) {
-    width: 50%;
-    margin-left: 5px;
-  }
-  .ant-form-item:nth-child(1) {
-    width: 50%;
-    margin-right: 5px;
-  }
-  .ant-form-item-control {
-    line-height: initial;
+  @media (max-width: ${mobileWidthLarge}) {
+    text-align: center;
+    font-size: 14px;
+    h4 {
+      font-size: 22px;
+    }
   }
 `;
 
-const CreateDistrict = styled.div`
-  display: flex;
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
+const FlexItems = styled(Row)`
+  margin-bottom: 24px;
+
+  @media (max-width: ${mobileWidthLarge}) {
+    margin-bottom: 15px;
+    .ant-col:nth-child(2) {
+      margin-bottom: 15px;
+    }
+  }
 `;

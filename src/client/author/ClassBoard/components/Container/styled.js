@@ -9,8 +9,14 @@ import {
   white,
   linkColor,
   tabGrey,
+  grey,
   mainTextColor,
-  title
+  title,
+  green,
+  red,
+  greyishDarker2,
+  black,
+  cardTitleColor
 } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 
@@ -282,4 +288,22 @@ export const StyledAnc = styled(Button)`
     border: none;
     outline: none;
   }
+`;
+
+export const ScoreHeader = styled.div`
+  font-size: 11px;
+  margin-bottom: 5px;
+  color: ${cardTitleColor};
+  font-weight: 800;
+`;
+
+export const ScoreChangeWrapper = styled.div`
+  color: ${props => (props.scoreChange > 0 ? green : props.scoreChange < 0 ? red : cardTitleColor)};
+  font-size: 30px;
+  font-weight: 800;
+`;
+
+export const ScoreWrapper = styled.div`
+  font-size: 30px;
+  color: ${black};
 `;

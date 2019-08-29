@@ -1,31 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Row, Col, Form, Input, Button } from "antd";
-import styled from "styled-components";
+import { Col, Form, Input, message } from "antd";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { trim } from "lodash";
-import { isEmailValid } from "../../../../common/utils/helpers";
 import { withNamespaces } from "@edulastic/localization";
-import {
-  themeColor,
-  greyGraphstroke,
-  grey,
-  white,
-  darkBlue1,
-  greenDark1,
-  greenDark2,
-  greenDark3,
-  lightGreen2
-} from "@edulastic/colors";
 import { connect } from "react-redux";
+import {
+  RegistrationWrapper,
+  FlexWrapper,
+  RegistrationHeader,
+  BannerText,
+  LinkDiv,
+  RegistrationBody,
+  Copyright,
+  FormWrapper,
+  FormHead,
+  ThirdPartyLoginBtn,
+  InfoBox,
+  InfoIcon,
+  FormBody,
+  RegisterButton,
+  CircleDiv,
+  AlreadyhaveAccount,
+  MobileViewLinks,
+  DesktopVieLinks
+} from "../../styled";
 import { signupAction } from "../../../Login/ducks";
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
   getPartnerLoginUrl,
   getPartnerStudentSignupUrl,
-  getPartnerTeacherSignupUrl
+  getPartnerTeacherSignupUrl,
+  isEmailValid
 } from "../../../../common/utils/helpers";
 import { Partners } from "../../../../common/utils/static/partnerData";
 
@@ -47,7 +55,8 @@ class AdminSignup extends React.Component {
   };
 
   state = {
-    confirmDirty: false
+    confirmDirty: false,
+    signupError: {}
   };
 
   handleSubmit = e => {
@@ -59,7 +68,8 @@ class AdminSignup extends React.Component {
           password,
           email,
           name,
-          role: "admin"
+          role: "admin",
+          errorCallback: this.errorCallback
         });
       }
     });
@@ -80,9 +90,33 @@ class AdminSignup extends React.Component {
     }
   };
 
+  onChangeEmail = () => {
+    this.setState(state => ({
+      ...state,
+      signupError: {
+        ...state.signupError,
+        email: ""
+      }
+    }));
+  };
+
+  errorCallback = error => {
+    if (error === "Email already exists. Please sign in to your account.") {
+      this.setState(state => ({
+        ...state,
+        signupError: {
+          ...state.signupError,
+          email: "error"
+        }
+      }));
+    } else {
+      message.error(error);
+    }
+  };
+
   render() {
     const {
-      form: { getFieldDecorator },
+      form: { getFieldDecorator, getFieldError },
       t
     } = this.props;
 
@@ -98,6 +132,14 @@ class AdminSignup extends React.Component {
     const partnerKey = getPartnerKeyFromUrl(location.pathname);
     const partner = Partners[partnerKey];
 
+    const emailError =
+      (this.state.signupError.email && (
+        <span>
+          Email already exists. Please <Link to={getPartnerLoginUrl(partner)}>sign in</Link> to your account.
+        </span>
+      )) ||
+      getFieldError("email");
+
     return (
       <div>
         {!validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
@@ -107,23 +149,25 @@ class AdminSignup extends React.Component {
               <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
             </Col>
             <Col span={12} align="right">
-              <span>{t("component.signup.alreadyhaveanaccount")}</span>
+              <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
               <Link to={getPartnerLoginUrl(partner)}>{t("common.signinbtn")}</Link>
             </Col>
           </RegistrationHeader>
           <RegistrationBody type="flex" align="middle">
-            <Col xs={18} offset={3}>
-              <Row type="flex" align="middle">
+            <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
+              <FlexWrapper type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
                     {t("common.edulastictext")} <br /> {t("component.signup.admin.foradmin")}
                   </h1>
-                  <LinkDiv>
-                    <Link to={getPartnerTeacherSignupUrl(partner)}>{t("component.signup.signupasteacher")}</Link>
-                  </LinkDiv>
-                  <LinkDiv>
-                    <Link to={getPartnerStudentSignupUrl(partner)}>{t("component.signup.signupasstudent")}</Link>
-                  </LinkDiv>
+                  <DesktopVieLinks>
+                    <LinkDiv>
+                      <Link to={getPartnerTeacherSignupUrl(partner)}>{t("component.signup.signupasteacher")}</Link>
+                    </LinkDiv>
+                    <LinkDiv>
+                      <Link to={getPartnerStudentSignupUrl(partner)}>{t("component.signup.signupasstudent")}</Link>
+                    </LinkDiv>
+                  </DesktopVieLinks>
                 </BannerText>
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
@@ -158,7 +202,12 @@ class AdminSignup extends React.Component {
                               ]
                             })(<Input prefix={<img src={userIcon} alt="" />} />)}
                           </FormItem>
-                          <FormItem {...formItemLayout} label={t("component.signup.admin.signupidlabel")}>
+                          <FormItem
+                            {...formItemLayout}
+                            label={t("component.signup.admin.signupidlabel")}
+                            validateStatus={emailError ? "error" : "success"}
+                            help={emailError}
+                          >
                             {getFieldDecorator("email", {
                               validateFirst: true,
                               initialValue: "",
@@ -179,7 +228,13 @@ class AdminSignup extends React.Component {
                                     isEmailValid(rule, value, callback, "email", t("common.validation.validemail"))
                                 }
                               ]
-                            })(<Input prefix={<img src={mailIcon} alt="" />} />)}
+                            })(
+                              <Input
+                                prefix={<img src={mailIcon} alt="" />}
+                                type="email"
+                                onChange={this.onChangeEmail}
+                              />
+                            )}
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
                             {getFieldDecorator("password", {
@@ -201,7 +256,17 @@ class AdminSignup extends React.Component {
                     </FormBody>
                   </FormWrapper>
                 </Col>
-              </Row>
+                <MobileViewLinks>
+                  <BannerText>
+                    <LinkDiv>
+                      <Link to={getPartnerTeacherSignupUrl(partner)}>{t("component.signup.signupasteacher")}</Link>
+                    </LinkDiv>
+                    <LinkDiv>
+                      <Link to={getPartnerStudentSignupUrl(partner)}>{t("component.signup.signupasstudent")}</Link>
+                    </LinkDiv>
+                  </BannerText>
+                </MobileViewLinks>
+              </FlexWrapper>
             </Col>
           </RegistrationBody>
           <CircleDiv size={64} right={118} top={320} />
@@ -227,204 +292,3 @@ const enhance = compose(
 );
 
 export default enhance(SignupForm);
-
-const RegistrationWrapper = styled.div`
-  background: ${greyGraphstroke} url(${props => props.image});
-  background-position: top center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  margin: 0px;
-  padding: 0px;
-  min-height: 100vh;
-  height: 100%;
-  width: 100%;
-`;
-
-const RegistrationHeader = styled(Row)`
-  padding: 16px 24px;
-  color: white;
-  span {
-    font-size: 12px;
-    margin-right: 20px;
-  }
-  a {
-    padding: 8px 48px;
-    text-decoration: none;
-    color: white;
-    text-transform: uppercase;
-    border-radius: 4px;
-    background: ${themeColor};
-  }
-`;
-
-const BannerText = styled(Col)`
-  color: white;
-  h1 {
-    color: white;
-    font-size: 46px;
-    line-height: 1.3;
-    letter-spacing: -2px;
-    font-weight: 700;
-    margin-top: 0px;
-    margin-bottom: 15px;
-  }
-  a {
-    font-size: 11px;
-    margin-top: 10px;
-    font-weight: 600;
-    color: white;
-  }
-  div {
-    font-size: 13px;
-    margin-top: 10px;
-  }
-`;
-
-const RegistrationBody = styled(Row)`
-  min-height: calc(100vh - 120px);
-`;
-
-const Copyright = styled(Row)`
-  font-size: 10px;
-  color: ${grey};
-  text-align: center;
-  margin: 25px 0px 10px;
-`;
-
-const FormWrapper = styled.div`
-  background: white;
-  overflow: hidden;
-  border-radius: 8px;
-  position: relative;
-  z-index: 1;
-`;
-
-const FormHead = styled(Row)`
-  background: ${darkBlue1};
-  background: ${`-moz-radial-gradient(ellipse at center, ${lightGreen2} 16%, ${greenDark1} 100%)`};
-  background: ${`-webkit-radial-gradient(ellipse at center,  ${lightGreen2} 16%, ${greenDark1} 100%)`};
-  background: ${`radial-gradient(ellipse at center, ${lightGreen2} 16%, ${greenDark1} 100%)`};
-  padding: 15px;
-  h3 {
-    color: white;
-    margin: 5px 0px 15px;
-  }
-`;
-
-const ThirdPartyLoginBtn = styled(Col)`
-  background: ${white};
-  margin-top: 5px;
-  border-radius: 4px;
-  text-align: center;
-  font-size: 10px;
-  padding: 8px;
-  cursor: pointer;
-  img {
-    float: left;
-    width: 14px;
-  }
-`;
-
-const InfoBox = styled(Col)`
-  margin-top: 10px;
-  font-size: 9px;
-  color: white;
-`;
-
-const InfoIcon = styled(Col)`
-  color: rgba(0, 0, 0, 0.44);
-  text-align: center;
-  padding-top: 4px;
-  img {
-    width: 14px;
-    filter: contrast(2);
-  }
-`;
-
-const FormBody = styled(Row)`
-  padding: 15px;
-  h5 {
-    margin-bottom: 20px;
-    margin-top: 5px;
-    font-size: 13px;
-  }
-  form {
-    .ant-form-item {
-      margin-bottom: 10px;
-    }
-    .ant-form-item-label {
-      text-align: left;
-      line-height: normal;
-      margin-bottom: 3px;
-      label {
-        font-size: 12px;
-        &.ant-form-item-required {
-          &:before,
-          &:after {
-            content: "";
-          }
-        }
-      }
-    }
-    .ant-input:focus {
-      border: 1px solid ${greenDark2};
-    }
-    .has-error {
-      .ant-form-explain,
-      .ant-form-split {
-        font-size: 10px;
-      }
-    }
-    .ant-form-item-children {
-      width: 100%;
-      float: left;
-      label,
-      a {
-        line-height: normal;
-        font-size: 10px;
-      }
-      label {
-        float: left;
-      }
-    }
-  }
-  .ant-input-affix-wrapper .ant-input-prefix {
-    width: 15px;
-  }
-`;
-
-const RegisterButton = styled(Button)`
-  width: 100%;
-  background: ${themeColor};
-  border-color: ${themeColor};
-  font-size: 13px;
-  color: ${white};
-  font-weight: 600;
-  &:hover,
-  &:focus {
-    border-color: ${themeColor};
-    background: ${themeColor};
-  }
-`;
-
-const LinkDiv = styled.div`
-  a {
-    padding-bottom: 2px;
-    border-bottom: 2px ${themeColor} solid;
-  }
-`;
-
-const CircleDiv = styled.div`
-  height: ${({ size }) => size || 0}px;
-  width: ${({ size }) => size || 0}px;
-  top: ${({ top }) => top}px;
-  left: ${({ left }) => left}px;
-  bottom: ${({ bottom }) => bottom}px;
-  right: ${({ right }) => right}px;
-  background: ${greenDark3};
-  border-radius: 50%;
-  position: fixed;
-  opacity: 0.6;
-  z-index: 0;
-`;

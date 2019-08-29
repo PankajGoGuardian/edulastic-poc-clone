@@ -1,7 +1,7 @@
 import FileHelper from "../framework/util/fileHelper";
 
 const PAGE = ["studentsignup", "signup", "adminsignup"];
-const SCREEN_SIZES = [[1024, 768]]; // Cypress.config("SCREEN_SIZES");
+const SCREEN_SIZES = Cypress.config("SCREEN_SIZES");
 const BASE_URL = Cypress.config("API_URL");
 const userEmail = "test.teacher.aug13@snapwiz.com";
 const userBody = {

@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox, Form } from "antd";
+import { get } from "lodash";
+import { Anchor, Input, Row, Col, Radio, Switch, Select, Checkbox } from "antd";
 
 import { test } from "@edulastic/constants";
 import { withWindowScroll } from "@edulastic/common";
 import { red, green, blueBorder } from "@edulastic/colors";
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
-import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
-import ListCard from "../Card/Card";
+import {
+  setTestDataAction,
+  getTestEntitySelector,
+  defaultTestTypeProfilesSelector,
+  testTypeAsProfileNameType
+} from "../../../../ducks";
 import UiTime from "../UiTime/UiTime";
 import { isFeatureAccessible } from "../../../../../../features/components/FeaturesSwitch";
 
@@ -42,7 +47,6 @@ import PeformanceBand from "./PeformanceBand";
 const {
   settingCategories,
   settingCategoriesFeatureMap,
-  performanceBandsData,
   type,
   navigations,
   completionTypes,
@@ -57,7 +61,7 @@ const {
 
 const { Option } = Select;
 
-const { ASSESSMENT, PRACTICE } = type;
+const { ASSESSMENT, PRACTICE, COMMON } = type;
 
 const testTypes = {
   [ASSESSMENT]: "Asessment",
@@ -129,20 +133,41 @@ class MainSetting extends Component {
   };
 
   updateTestData = key => value => {
-    const { setTestData, setMaxAttempts } = this.props;
+    const { setTestData, setMaxAttempts, performanceBandsData, standardsData, defaultTestTypeProfiles } = this.props;
     switch (key) {
       case "testType":
-        if (value === ASSESSMENT) {
+        const testProfileType = testTypeAsProfileNameType[value];
+        const defaultBandId = defaultTestTypeProfiles.performanceBand[testProfileType];
+        const defaultStandardId = defaultTestTypeProfiles.standardProficiency[testProfileType];
+        const performanceBand = performanceBandsData.find(item => item._id === defaultBandId);
+        const standardGradingScale = standardsData.find(item => item._id === defaultStandardId);
+        if (value === ASSESSMENT || value === COMMON) {
           setMaxAttempts(1);
           setTestData({
             releaseScore: releaseGradeLabels.DONT_RELEASE,
-            maxAnswerChecks: 0
+            maxAnswerChecks: 0,
+            performanceBand: {
+              name: performanceBand.name,
+              _id: performanceBand._id
+            },
+            standardGradingScale: {
+              name: standardGradingScale.name,
+              _id: standardGradingScale._id
+            }
           });
         } else {
           setMaxAttempts(3);
           setTestData({
             releaseScore: releaseGradeLabels.WITH_ANSWERS,
-            maxAnswerChecks: 3
+            maxAnswerChecks: 3,
+            performanceBand: {
+              name: performanceBand.name,
+              _id: performanceBand._id
+            },
+            standardGradingScale: {
+              name: standardGradingScale.name,
+              _id: standardGradingScale._id
+            }
           });
         }
         break;
@@ -172,21 +197,6 @@ class MainSetting extends Component {
     this.setState({ [key]: featVal });
     setTestData({
       [key]: featVal
-    });
-  };
-
-  onPerformanceBandUpdate = item => {
-    const { setTestData, entity = {} } = this.props;
-    const { performanceBands } = entity;
-    const newPerformanceBands = {
-      ...performanceBands,
-      [item]: {
-        ...performanceBands[item],
-        isAbove: !performanceBands[item].isAbove
-      }
-    };
-    setTestData({
-      performanceBands: newPerformanceBands
     });
   };
 
@@ -225,7 +235,9 @@ class MainSetting extends Component {
       markAsDone,
       maxAttempts,
       grades,
-      subjects
+      subjects,
+      performanceBand,
+      standardGradingScale
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -604,14 +616,19 @@ class MainSetting extends Component {
             )}
             {availableFeatures.includes("performanceBands") ? (
               <Block id="performance-bands" smallSize={isSmallSize}>
-                <PeformanceBand />
+                <PeformanceBand
+                  setSettingsData={val => this.updateTestData("performanceBand")(val)}
+                  performanceBand={performanceBand}
+                />
               </Block>
             ) : (
               ""
             )}
-            <Block id="performance-bands" smallSize={isSmallSize}>
-              <Title>Standard based grading scale</Title>
-              <StandardProficiencyTable />
+            <Block id="standards-proficiency" smallSize={isSmallSize}>
+              <StandardProficiencyTable
+                standardGradingScale={standardGradingScale}
+                setSettingsData={val => this.updateTestData("standardGradingScale")(val)}
+              />
             </Block>
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
               <Block id="title" smallSize={isSmallSize}>
@@ -793,7 +810,10 @@ export default connect(
   state => ({
     entity: getTestEntitySelector(state),
     features: getUserFeatures(state),
-    userRole: getUserRole(state)
+    userRole: getUserRole(state),
+    defaultTestTypeProfiles: defaultTestTypeProfilesSelector(state),
+    standardsData: get(state, ["standardsProficiencyReducer", "data"], []),
+    performanceBandsData: get(state, ["performanceBandReducer", "profiles"], [])
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

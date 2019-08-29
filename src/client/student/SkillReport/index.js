@@ -15,14 +15,14 @@ const SkillReportContainer = ({ flag, skillReport, fetchSkillReport, classId }) 
     if (classId) fetchSkillReport(classId);
   }, []);
   return (
-      <MainContainer flag={flag}>
-        <Header flag={flag} titleText="common.skillReportTitle" />
-        {isEmpty(skillReport) ? (
-          <NoDataNotification heading={"No Skill Reports "} description={"You don't have any skill reports."} />
-        ) : (
-          <SkillReportMainContent skillReport={skillReport} />
-        )}
-      </MainContainer>
+    <MainContainer flag={flag}>
+      <Header flag={flag} titleText="common.skillReportTitle" />
+      {isEmpty(skillReport) ? (
+        <NoDataNotification heading={"No Skill Reports "} description={"You don't have any skill reports."} />
+      ) : (
+        <SkillReportMainContent skillReport={skillReport} />
+      )}
+    </MainContainer>
   );
 };
 

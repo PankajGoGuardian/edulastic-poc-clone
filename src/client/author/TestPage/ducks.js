@@ -834,16 +834,16 @@ function* showAnswerSaga({ payload }) {
 
     const evaluation = yield createShowAnswerData(questions, answers);
     yield put({
-      type: ADD_ITEM_EVALUATION,
+      type: CHANGE_PREVIEW,
       payload: {
-        ...evaluation
+        view: "show"
       }
     });
 
     yield put({
-      type: CHANGE_PREVIEW,
+      type: ADD_ITEM_EVALUATION,
       payload: {
-        view: "show"
+        ...evaluation
       }
     });
   } catch (e) {

@@ -180,11 +180,7 @@ class ClassBoard extends Component {
     const { testId: prevTestId } = prevState;
     if (testId !== prevTestId) {
       loadClassResponses({ testId });
-      const firstStudentId = get(
-        testActivity.filter(x => !!x.testActivityId),
-        [0, "studentId"],
-        false
-      );
+      const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
       getAllTestActivitiesForStudent({ studentId: firstStudentId, assignmentId, groupId: classId });
     }
   }
@@ -249,9 +245,11 @@ class ClassBoard extends Component {
   };
 
   getTestActivityId = (data, student) => {
-    return ((!student ? data.find(item => !!item.testActivityId)
-      : data.find(item => !!item.testActivityId && item.studentId == student))
-      || {}).testActivityId;
+    return (
+      (!student
+        ? data.find(item => !!item.testActivityId)
+        : data.find(item => !!item.testActivityId && item.studentId == student)) || {}
+    ).testActivityId;
   };
 
   onTabChange = (e, name, selectedStudentId) => {
@@ -517,13 +515,9 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params;
     const classname = additionalData ? additionalData.classes : [];
     const isMobile = this.isMobile();
-    const studentTestActivity = studentResponse && studentResponse.testActivity || {};
+    const studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
     const selectedStudentsKeys = Object.keys(selectedStudents);
-    const firstStudentId = get(
-      testActivity.filter(x => !!x.testActivityId),
-      [0, "studentId"],
-      false
-    );
+    const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
     const firstQuestionEntities = get(testActivity, [0, "questionActivities"], []);
     const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
@@ -790,17 +784,17 @@ class ClassBoard extends Component {
             <React.Fragment>
               <StudentGrapContainer>
                 <StyledCard bordered={false} paddingTop={15}>
-                    <StudentSelect
+                  <StudentSelect
                     style={{ width: "200px" }}
                     students={testActivity}
-                      selectedStudent={selectedStudentId}
-                      studentResponse={qActivityByStudent}
-                      handleChange={value => {
+                    selectedStudent={selectedStudentId}
+                    studentResponse={qActivityByStudent}
+                    handleChange={value => {
                       getAllTestActivitiesForStudent({ studentId: value, assignmentId, groupId: classId });
-                        this.setState({ selectedStudentId: value });
-                      }}
-                      isPresentationMode={isPresentationMode}
-                    />
+                      this.setState({ selectedStudentId: value });
+                    }}
+                    isPresentationMode={isPresentationMode}
+                  />
                   <div style={{ width: "100%", display: "flex" }}>
                     <BarGraph
                       gradebook={gradebook}
@@ -812,8 +806,12 @@ class ClassBoard extends Component {
                     <div>
                       <Select
                         style={{ width: "200px" }}
-                        value={allTestActivitiesForStudent.includes(currentTestActivityId || testActivityId) ? currentTestActivityId || testActivityId : ""}
-                        onChange={(testActivityId) => {
+                        value={
+                          allTestActivitiesForStudent.includes(currentTestActivityId || testActivityId)
+                            ? currentTestActivityId || testActivityId
+                            : ""
+                        }
+                        onChange={testActivityId => {
                           loadStudentResponses({ testActivityId, groupId: classId });
                           setCurrentTestActivityId(testActivityId);
                         }}
@@ -821,31 +819,45 @@ class ClassBoard extends Component {
                         {allTestActivitiesForStudent.map((testActivityId, index) => (
                           <Select.Option key={index} value={testActivityId}>
                             {`Attempt ${index + 1}`}
-                          </Select.Option>)
-
-                        )}
+                          </Select.Option>
+                        ))}
                       </Select>
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
-                        <div style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}>
+                        <div
+                          style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
+                        >
                           <ScoreHeader>TOTAL SCORE</ScoreHeader>
                           <ScoreWrapper>{studentTestActivity.score || 0}</ScoreWrapper>
-                          <div style={{ border: "solid 1px black", width: "50px" }}></div>
+                          <div style={{ border: "solid 1px black", width: "50px" }} />
                           <ScoreWrapper>{studentTestActivity.maxScore || 0}</ScoreWrapper>
                         </div>
-                        <div style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}>
+                        <div
+                          style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
+                        >
                           <ScoreHeader>SCORE</ScoreHeader>
                           <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
                             {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${studentTestActivity.scoreChange || 0}`}
                           </ScoreChangeWrapper>
-                          <ScoreHeader style={{fontSize:"10px"}}>
+                          <ScoreHeader style={{ fontSize: "10px" }}>
                             <span title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses">
-                            Improvement
+                              Improvement
                             </span>
-                            </ScoreHeader>
+                          </ScoreHeader>
                         </div>
                       </div>
-                      <ScoreHeader style={{fontSize:"12px"}}> {`STATUS  `} <span style={{ color: black, textTransform:"capitalize" }}>{studentTestActivity.graded || ""}</span></ScoreHeader>
-                      <ScoreHeader style={{fontSize:"12px"}}>{`SUBMITTED ON  `}<span style={{ color: black }}>{moment(studentTestActivity.endDate).format("d MMMM, YYYY")}</span></ScoreHeader>
+                      <ScoreHeader style={{ fontSize: "12px" }}>
+                        {" "}
+                        {`STATUS  `}{" "}
+                        <span style={{ color: black, textTransform: "capitalize" }}>
+                          {studentTestActivity.graded || ""}
+                        </span>
+                      </ScoreHeader>
+                      <ScoreHeader style={{ fontSize: "12px" }}>
+                        {`SUBMITTED ON  `}
+                        <span style={{ color: black }}>
+                          {moment(studentTestActivity.endDate).format("d MMMM, YYYY")}
+                        </span>
+                      </ScoreHeader>
                     </div>
                   </div>
                 </StyledCard>

@@ -52,7 +52,7 @@ class ProfileBody extends React.Component {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId;
+        const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId || !!user.msoId;
 
         if (
           isnotNormalLogin ||
@@ -78,7 +78,7 @@ class ProfileBody extends React.Component {
       updateUserDetails
     } = this.props;
     const { showChangePassword, isEditProfile } = this.state;
-    const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId;
+    const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId || !!user.msoId;
 
     var data = {
       districtId: user.districtId,
@@ -275,7 +275,7 @@ class ProfileBody extends React.Component {
         </DetailRow>
         <DetailRow>
           <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
-          {user.googleId || user.canvasId || user.cliId || user.cleverId ? (
+          {user.googleId || user.canvasId || user.cliId || user.cleverId || !!user.msoId ? (
             <DetailData>{user.email}</DetailData>
           ) : (
             <DetailData>
@@ -538,30 +538,29 @@ const ProfileContentWrapper = styled.div`
 `;
 
 const SchoolWrapper = styled.div`
-width: 1150px
-height: 80px;
-background-color:white;
-box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-border-radius: 10px;
-padding: 15px;
-display:flex;
-align-items:center;
-margin-top:20px;
+  width: 1150px;
+  background-color: white;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
 
-@media (max-width: ${extraDesktopWidth}) {
-  width: 800px;
-  padding: 20px;
-}
+  @media (max-width: ${extraDesktopWidth}) {
+    width: 800px;
+    padding: 20px;
+  }
 
-@media (max-width: ${largeDesktopWidth}) {
-  width: 735px;
-  padding:15px;
-}
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 735px;
+    padding: 15px;
+  }
 
-@media (max-width: ${desktopWidth}) {
-  width: 600px;
-  padding:10px;
-}
+  @media (max-width: ${desktopWidth}) {
+    width: 600px;
+    padding: 10px;
+  }
 `;
 
 const SchoolLabel = styled.span`
@@ -618,6 +617,7 @@ const StyledTag = styled(Tag)`
   border: none;
   font-weight: 600;
   padding: 2px 5px 2px 10px;
+  margin: 5px;
   i {
     color: ${themeColor} !important;
     margin-left: 10px !important;

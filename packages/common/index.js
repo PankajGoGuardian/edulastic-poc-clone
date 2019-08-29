@@ -51,3 +51,6 @@ export { default as AnswerContext } from "./src/contexts/AnswerContext";
 export { default as ScratchPadContext } from "./src/contexts/ScratchPadContext";
 // realtime hook
 export { default as useRealtimeV2 } from "./src/useRealtimeV2";
+
+// Mobile
+export { MenuIcon } from "./src/components/MenuIcon";

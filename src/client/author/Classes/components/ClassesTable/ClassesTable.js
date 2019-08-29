@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, cloneDeep } from "lodash";
+import { get, cloneDeep, isEmpty } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import {
@@ -99,8 +99,13 @@ class ClassesTable extends Component {
   }
 
   componentDidMount() {
-    const { userOrgId, loadClassListData, getAllTags } = this.props;
-    this.loadFilteredList();
+    const { userOrgId, loadClassListData, getAllTags, dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+    } else {
+      this.loadFilteredList();
+    }
+
     getAllTags({ type: "group" });
   }
 

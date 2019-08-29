@@ -174,7 +174,12 @@ class StudentTable extends Component {
   }
 
   componentDidMount() {
-    this.loadFilteredList();
+    const { dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+    } else {
+      this.loadFilteredList();
+    }
   }
 
   static getDerivedStateFromProps(nextProps, state) {

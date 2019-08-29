@@ -16,7 +16,8 @@ const menuActive = { mainMenu: "Users", subMenu: "Teacher" };
 
 class Teacher extends Component {
   render() {
-    const { loading, creating, updating, deleting, history, routeKey } = this.props;
+    const { loading, creating, updating, deleting, history, routeKey, location } = this.props;
+    const { state: dataPassedWithRoute } = location;
     const showSpin = loading || updating || deleting || creating;
 
     // issue : click on current active tab , doesn't re-renders page, because there is no state/route change //
@@ -34,7 +35,7 @@ class Teacher extends Component {
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <TeacherTable />
+            <TeacherTable dataPassedWithRoute={dataPassedWithRoute} />
           </StyledLayout>
         </StyledContent>
       </TeacherDiv>

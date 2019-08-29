@@ -8,8 +8,7 @@ export const CorrectAnswerHeader = styled.div`
   border: 1px solid ${sectionBorder};
   padding: 15px;
   border-radius: 3px;
-  display: flex;
-  align-items: center;
+  display: block;
 
   span {
     font-size: 12px;

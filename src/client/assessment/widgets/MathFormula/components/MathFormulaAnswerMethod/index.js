@@ -369,8 +369,12 @@ const MathFormulaAnswerMethod = ({
           <div>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
             <MathInputWrapper>
-              {!item.templateDisplay && <MathInput {...mathInputProps} value={value} showDropdown ALLOW TOLERANCE />}
-              {item.templateDisplay && <StaticMath {...mathInputProps} latex={studentTemplate} innerValues={[123]} />}
+              {(!item.templateDisplay || !item.template) && (
+                <MathInput {...mathInputProps} value={value} showDropdown ALLOW TOLERANCE />
+              )}
+              {item.template && item.templateDisplay && (
+                <StaticMath {...mathInputProps} latex={studentTemplate} innerValues={[123]} />
+              )}
               {renderExtra}
             </MathInputWrapper>
           </div>

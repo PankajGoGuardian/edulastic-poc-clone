@@ -218,18 +218,3 @@ const CustomInput = styled.div`
     border-radius: 0px 4px 4px 0px;
   }
 `;
-
-const IndexBox = styled.div`
-  padding: 3px 10px;
-  width: 40px;
-  justify-content: center;
-  color: white;
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
-  background: #878282;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  align-self: stretch;
-  height: auto;
-`;

@@ -19,7 +19,8 @@ import {
   searchSchoolByDistrictRequestAction,
   joinSchoolRequestAction,
   updateUserWithSchoolLoadingSelector,
-  checkDistrictPolicyRequestAction
+  checkDistrictPolicyRequestAction,
+  createAndJoinSchoolRequestAction
 } from "../../duck";
 import { getUserIPZipCode, getUserOrgId } from "../../../../author/src/selectors/user";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
@@ -59,6 +60,7 @@ const JoinSchool = ({
   newSchool,
   userInfo,
   joinSchool,
+  createAndJoinSchoolRequestAction,
   updateUserWithSchoolLoading,
   ipZipCode,
   checkDistrictPolicy,
@@ -71,6 +73,7 @@ const JoinSchool = ({
   const [tempSelected, setTempSchool] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [prevCheckDistrictPolicy, setPrevCheckDistrictPolicy] = useState(checkDistrictPolicy);
+  const [homeSchool, setHomeSchool] = useState(false);
   const autoCompleteRef = useRef(null);
 
   const toggleModal = () => setShowModal(!showModal);
@@ -151,7 +154,7 @@ const JoinSchool = ({
   }, []);
 
   useEffect(() => {
-    if (newSchool._id) {
+    if (newSchool._id && !homeSchool) {
       setSchool(newSchool._id);
     }
   }, [newSchool]);
@@ -167,6 +170,42 @@ const JoinSchool = ({
       };
     });
   }, [schools]);
+
+  const onClickHomeSchool = event => {
+    const schoolAndDistrictNamePrefix = userInfo.firstName + (userInfo.lastName ? userInfo.lastName + " " : " ");
+    const districtName = schoolAndDistrictNamePrefix + "HOME SCHOOL DISTRICT";
+    const schoolName = schoolAndDistrictNamePrefix + "HOME SCHOOL";
+
+    const body = {
+      name: schoolName,
+      districtName: districtName,
+      location: {
+        city: userInfo.firstName,
+        state: "Alaska",
+        zip: userInfo.firstName,
+        address: userInfo.firstName,
+        country: "United States"
+      },
+      requestNewSchool: true,
+      homeSchool: true
+    };
+
+    const { firstName, middleName, lastName } = userInfo;
+    createAndJoinSchoolRequestAction({
+      createSchool: body,
+      joinSchool: {
+        data: {
+          currentSignUpState: "PREFERENCE_NOT_SELECTED",
+          email: userInfo.email,
+          firstName,
+          middleName,
+          lastName
+        },
+        userId: userInfo._id
+      }
+    });
+    setHomeSchool(true);
+  };
 
   return (
     <>
@@ -206,8 +245,7 @@ const JoinSchool = ({
                   />
                 )}
                 <Actions>
-                  {/* I want to home school removed temporarily */}
-                  {/* <AnchorBtn> I want to homeschool</AnchorBtn> */}
+                  <AnchorBtn onClick={onClickHomeSchool}> I want to homeschool</AnchorBtn>
                   {!isSignupUsingDaURL && !districtId ? (
                     <AnchorBtn onClick={toggleModal}> {t("component.signup.teacher.requestnewschool")}</AnchorBtn>
                   ) : null}
@@ -265,6 +303,7 @@ const enhance = compose(
       searchSchool: searchSchoolRequestAction,
       searchSchoolByDistrictRequestAction: searchSchoolByDistrictRequestAction,
       joinSchool: joinSchoolRequestAction,
+      createAndJoinSchoolRequestAction: createAndJoinSchoolRequestAction,
       checkDistrictPolicyRequestAction
     }
   )

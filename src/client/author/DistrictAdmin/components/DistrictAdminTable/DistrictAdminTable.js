@@ -371,7 +371,7 @@ class DistrictAdminTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
-    const { showActive } = this.state;
+    let { showActive } = this.state;
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {

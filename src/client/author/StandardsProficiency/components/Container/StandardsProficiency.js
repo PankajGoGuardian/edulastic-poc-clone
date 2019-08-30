@@ -123,6 +123,12 @@ function StandardsProficiency(props) {
     if (name === "") {
       message.error("Name cannot be empty");
     } else if (name) {
+      // needed for unicode aware length
+      if (!([...name].length <= 150)) {
+        message.error("Sorry! Maximum length of Profile Name is 150 characters");
+        return;
+      }
+
       if (props.profiles.find(p => (p.name || "").toLowerCase() === name.toLowerCase())) {
         message.error(`Profile with name "${name}" already exists. Please try with a different name`);
         return;

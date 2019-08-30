@@ -315,7 +315,7 @@ export class PerformanceBandTable extends React.Component {
         title: this.props.readOnly ? "" : <StyledAddBandButton onClick={this.handleAdd}>ADD BAND</StyledAddBandButton>,
         dataIndex: "operation",
         render: (text, record) =>
-          this.state.dataSource.length >= 1 && !this.props.readOnly ? (
+          this.state.dataSource.length >= 3 && !this.props.readOnly ? (
             <StyledDivCenter>
               <a href="javascript:;" onClick={e => this.handleDelete(e, record.key)}>
                 <Icon type="delete" theme="filled" twoToneColor={themeColor} />

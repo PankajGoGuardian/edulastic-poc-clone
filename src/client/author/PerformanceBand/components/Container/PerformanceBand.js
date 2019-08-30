@@ -173,6 +173,11 @@ export function PerformanceBandAlt(props) {
     const name = prompt("name of the profile?");
 
     if (name) {
+      // needed for unicode aware length
+      if (!([...name].length <= 150)) {
+        message.error("Sorry! Maximum length of Profile Name is 150 characters");
+        return;
+      }
       if (profiles.find(p => (p.name || "").toLowerCase() === name.toLocaleLowerCase())) {
         message.error(`Profile with name "${name}" already exists. Please try with a different name`);
         return;

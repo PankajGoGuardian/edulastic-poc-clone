@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { Table, Input, Form, Icon, Checkbox, Button, message, Slider, Row, Col } from "antd";
+import React from "react";
+import { Table, Input, Form, Icon, Checkbox, message, Slider, Row, Col } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 import produce from "immer";
-import ColorPicker, { colors as colorsList } from "../Container/ColorPicker";
-import { themeColor, themeColorLighter } from "@edulastic/colors";
 import styled from "styled-components";
+import { themeColor, white } from "@edulastic/colors";
+import ColorPicker, { colors as colorsList } from "../Container/ColorPicker";
 
 import {
   receivePerformanceBandAction,
@@ -21,15 +21,14 @@ import { getUserOrgId } from "../../../src/selectors/user";
 import {
   StyledTableContainer,
   StyledColFromTo,
-  StyledButton,
-  StyledProP,
-  StyledIcon,
   StyledBottomDiv,
   StyledSaveButton,
   StyledDivCenter,
   StyledEnableContainer,
-  SaveAlert
+  SaveAlert,
+  PercentText
 } from "./styled";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -43,6 +42,8 @@ const EditableRow = ({ form, index, ...props }) => (
 const EditableFormRow = Form.create()(EditableRow);
 
 const StyledSlider = styled(Slider)`
+  margin: 0px;
+  min-height: 20px;
   .ant-slider-rail,
   .ant-slider-track,
   .ant-slider-step {
@@ -65,15 +66,14 @@ const StyledSlider = styled(Slider)`
   }
 `;
 
-const StyledAddBandButton = styled(Button)`
+const StyledAddBandButton = styled(ThemeButton)`
   border-radius: 4px;
-  background-color: ${themeColor};
-  color: #fff;
+  color: ${white};
   height: 34px;
   width: 159px;
   text-align: center;
   line-height: 34px;
-  font-size: 12px;
+  font-size: 11px;
 `;
 
 class EditableCell extends React.Component {
@@ -223,9 +223,9 @@ export class PerformanceBandTable extends React.Component {
     super(props);
     this.columns = [
       {
-        title: "",
+        title: "Band Name",
         dataIndex: "name",
-        width: "25%",
+        width: "15%",
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (
@@ -243,6 +243,7 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "Above or At Standard",
         dataIndex: "aboveOrAtStandard",
+        width: "20%",
         render: (text, record) => {
           return (
             <StyledDivCenter>
@@ -259,12 +260,12 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "From",
         dataIndex: "from",
-        width: "30%",
+        width: "25%",
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <Row type="flex" style={{ flex: "1 1 auto" }}>
-                <Col style={{ paddingTop: "10px", color: themeColorLighter }}>{record.from}%</Col>
+              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
+                <PercentText>{record.from}%</PercentText>
                 <Col style={{ flex: "1 1 auto" }}>
                   <StyledSlider
                     disabled={this.props.readOnly}
@@ -286,13 +287,13 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "To",
         dataIndex: "to",
-        width: "30%",
+        width: "25%",
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <Row type="flex" style={{ flex: "1 1 auto" }}>
-                <Col style={{ paddingTop: "10px", color: themeColorLighter }}>{record.to}%</Col>
+              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
+                <PercentText>{record.to}%</PercentText>
                 <Col style={{ flex: "1 1 auto" }}>
                   <StyledSlider
                     disabled={this.props.readOnly}
@@ -314,6 +315,7 @@ export class PerformanceBandTable extends React.Component {
       {
         title: this.props.readOnly ? "" : <StyledAddBandButton onClick={this.handleAdd}>ADD BAND</StyledAddBandButton>,
         dataIndex: "operation",
+        width: "15%",
         render: (text, record) =>
           this.state.dataSource.length >= 1 && !this.props.readOnly ? (
             <StyledDivCenter>

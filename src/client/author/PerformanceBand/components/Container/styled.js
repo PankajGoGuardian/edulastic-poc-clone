@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { Layout, Spin, List } from "antd";
-import { themeColor, lightGreySecondary, white } from "@edulastic/colors";
+import { Layout, Spin } from "antd";
+import { themeColor, white } from "@edulastic/colors";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 const { Content } = Layout;
 
@@ -19,7 +20,7 @@ export const StyledLayout = styled(Layout)`
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   background: #fff;
-  padding: 30px 40px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   pointer-events: ${props => (props.loading === "true" ? "none" : "auto")}
@@ -42,4 +43,26 @@ export const StyledSpin = styled(Spin)`
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
+`;
+
+export const CreateProfile = styled(ThemeButton)`
+  font-size: 11px;
+  text-transform: uppercase;
+  height: 45px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  i {
+    width: 19px;
+    height: 19px;
+    background: ${white};
+    color: ${themeColor};
+    line-height: 20px;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-style: normal;
+    font-size: 20px;
+    text-align: center;
+  }
 `;

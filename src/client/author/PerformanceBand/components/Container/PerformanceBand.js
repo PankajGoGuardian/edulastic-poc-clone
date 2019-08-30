@@ -1,29 +1,21 @@
-import React, { Component, useReducer, useState, useEffect } from "react";
+import { lightGreySecondary, themeColor, white, sectionBorder } from "@edulastic/colors";
+import { Button, Col, Icon, Input, List, message, Modal, Row } from "antd";
+import { get } from "lodash";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-import { createReducer } from "redux-starter-kit";
-import uuid from "uuid/v1";
-import { List, Row, Col, Button, message, Modal, Input, Icon } from "antd";
 import styled from "styled-components";
-
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import PerformanceBandTable, {
-  PerformanceBandTable as PerformanceBandTableDumb
-} from "../PerformanceBandTable/PerformanceBandTable";
-import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
+import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import {
   createPerformanceBandAction,
-  updatePerformanceBandAction,
   deletePerformanceBandAction,
   receivePerformanceBandAction,
-  setPerformanceBandLocalAction
+  setPerformanceBandLocalAction,
+  updatePerformanceBandAction
 } from "../../ducks";
-import ColorPicker from "./ColorPicker";
-
-import { StyledContent, StyledLayout, SpinContainer, StyledSpin, PerformanceBandDiv } from "./styled";
-
-import { white, lightGreySecondary, themeColor } from "@edulastic/colors";
+import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
+import { CreateProfile, PerformanceBandDiv, SpinContainer, StyledContent, StyledLayout, StyledSpin } from "./styled";
 
 const title = "Manage District";
 const ListItemStyled = styled(List.Item)`
@@ -36,17 +28,21 @@ const ListItemStyled = styled(List.Item)`
 const RowStyled = styled(Row)`
   background: ${white};
 `;
+
 const StyledProfileRow = styled(Row)`
-  padding-left: 30px;
+  display: block;
+  padding: 0px 20px;
   background-color: ${lightGreySecondary};
-  height: 47px;
-  line-height: 47px;
-  box-sizing: border-box;
-  border: 1px solid #e1e1e1;
+  border: 1px solid ${sectionBorder} !important;
   margin-bottom: 7px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   h3 {
     font-weight: 500;
     font-size: 15px;
+    margin: 0px;
   }
 `;
 
@@ -59,9 +55,9 @@ const StyledProfileCol = styled(Col)`
   align-content: center;
   & > i.anticon {
     color: ${themeColor};
-    height: 13px;
-    width: 13px;
-    padding-right: 32px;
+    height: 15px;
+    width: 15px;
+    margin-left: 20px;
   }
 `;
 
@@ -200,9 +196,11 @@ export function PerformanceBandAlt(props) {
               <StyledSpin size="large" />
             </SpinContainer>
           ) : null}
-          <Button type="primary" style={{ marginBottom: "5px" }} onClick={addProfile}>
-            + Create new Profile
-          </Button>
+          <Row type="flex" justify="end">
+            <CreateProfile type="primary" onClick={addProfile}>
+              <i>+</i> Create new Profile
+            </CreateProfile>
+          </Row>
           <StyledList
             dataSource={profiles}
             rowKey="_id"

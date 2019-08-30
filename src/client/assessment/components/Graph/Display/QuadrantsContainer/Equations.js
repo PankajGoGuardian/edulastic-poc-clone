@@ -84,6 +84,7 @@ class Equations extends Component {
       id: `jxgEq-${Math.random().toString(36)}`
     });
     setEquations(newEquations);
+
     this.setApiLatex(emptyEquation.latex, newEquations.length - 1);
   };
 

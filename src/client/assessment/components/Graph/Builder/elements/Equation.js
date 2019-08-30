@@ -585,7 +585,8 @@ function renderElement(board, element, params) {
     latex,
     labelHTML: label,
     subType: null,
-    latexIsBroken: true
+    latexIsBroken: true,
+    apiLatex: null
   };
 
   if (!apiLatex) {
@@ -617,6 +618,7 @@ function renderElement(board, element, params) {
   line.fixedLatex = fixedLatex;
   line.type = jxgType;
   line.subType = null;
+  line.apiLatex = apiLatex;
   return line;
 }
 
@@ -635,6 +637,7 @@ function getConfig(equation) {
     latex: equation.latex,
     label: equation.labelHTML || false,
     subType: equation.subType,
+    apiLatex: equation.apiLatex,
     points
   };
 }

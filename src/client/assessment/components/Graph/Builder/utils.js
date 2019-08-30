@@ -323,7 +323,7 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
-    const { id, type, points, latex, subType } = element;
+    const { id, type, points, latex, subType, apiLatex } = element;
     if (
       type === CONSTANT.TOOLS.POINT ||
       type === CONSTANT.TOOLS.ANNOTATION ||
@@ -349,6 +349,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
     if (type === CONSTANT.TOOLS.EQUATION) {
       acc[id].latex = latex;
       acc[id].subType = subType;
+      acc[id].apiLatex = apiLatex;
       if (points && points[0] && points[1]) {
         acc[id].subElementsIds = {
           startPoint: points[0].id,
@@ -378,7 +379,16 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 export function flat2nestedConfig(config) {
   return Object.values(
     config.reduce((acc, element) => {
-      const { id, type, subElement = false, latex = null, subType = null, points, text = null } = element;
+      const {
+        id,
+        type,
+        subElement = false,
+        latex = null,
+        subType = null,
+        points,
+        text = null,
+        apiLatex = null
+      } = element;
 
       if (!acc[id] && !subElement) {
         acc[id] = {
@@ -390,7 +400,8 @@ export function flat2nestedConfig(config) {
           labelIsVisible: element.labelIsVisible,
           latex,
           subType,
-          text
+          text,
+          apiLatex
         };
         if (type === CONSTANT.TOOLS.AREA) {
           acc[id].points = points;

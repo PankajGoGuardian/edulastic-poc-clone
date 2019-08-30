@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import NoDataIcon from "./nodata.svg";
+import { mobileWidth } from "@edulastic/colors";
 
 const NoDataNotification = ({ heading, description }) => (
   <Wrapper>
@@ -23,6 +24,10 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   display: flex;
+
+  @media screen and (max-width: ${mobileWidth}) {
+    min-width: 100px;
+  }
 `;
 const NoDataBox = styled.div`
   width: 300px;

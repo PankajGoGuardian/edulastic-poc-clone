@@ -901,6 +901,7 @@ const UserInfoButton = styled.div`
       pointer-events: none;
       background: transparent;
     }
+
     .footerDropdown {
       padding: 0;
       border-radius: 50%;

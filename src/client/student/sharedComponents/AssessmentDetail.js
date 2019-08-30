@@ -175,7 +175,7 @@ const Thumbnail = styled.img`
   
   @media(max-width: ${mobileWidthMax}) {
     width: calc(100% - 14px);
-    height: 20vw;
+    height: 90.5px;
     display: block;
     margin: 0 auto;
   }	 
@@ -224,6 +224,7 @@ const CardTitle = styled.div`
 
   @media (max-width: ${mobileWidthMax}) {
     font-size: 16px;
+    text-align: center;
   }
 `;
 
@@ -260,6 +261,7 @@ const CardDate = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     font-size: 13px;
     padding-bottom: 13px;
+    padding-top: 10px;
   }
 `;
 

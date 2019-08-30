@@ -5,7 +5,16 @@ import PropTypes from "prop-types";
 import { Layout, Form, Input, Button, Icon } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { extraDesktopWidth, largeDesktopWidth, desktopWidth, borders, backgrounds } from "@edulastic/colors";
+import {
+  extraDesktopWidth,
+  largeDesktopWidth,
+  desktopWidth,
+  mobileWidthMax,
+  borders,
+  backgrounds,
+  dashBorderColor,
+  lightGreySecondary
+} from "@edulastic/colors";
 import { resetMyPasswordAction } from "../../Login/ducks";
 import ProfileImage from "../../assets/Profile.png";
 import { Wrapper } from "../../styled";
@@ -72,11 +81,15 @@ class ProfileContainer extends React.Component {
       <LayoutContent flag={flag}>
         <Wrapper display="flex" bgColor="#f0f2f5" boxShadow="none" minHeight="max-content">
           <ProfileImgWrapper>
-            <Photo />
+            <Photo height={200} windowWidth={200} />
           </ProfileImgWrapper>
           <ProfileContentWrapper>
+            <TitleName>Welcome {user.firstName}</TitleName>
+            <ProfileImgMobileWrapper>
+              <Photo height={100} windowWidth={100} mode="small" />
+            </ProfileImgMobileWrapper>
             <UserDetail>
-              <Title>Instructor Information</Title>
+              <Title>{t("common.title.instructor")}</Title>
               <Details>
                 <DetailRow>
                   <DetailTitle>{t("common.title.firstNameInputLabel")}</DetailTitle>
@@ -84,11 +97,11 @@ class ProfileContainer extends React.Component {
                 </DetailRow>
                 <DetailRow>
                   <DetailTitle>{t("common.title.lastNameInputLabel")}</DetailTitle>
-                  <DetailData>{user.lastName || ""}</DetailData>
+                  <DetailData>{user.lastName || "N/A"}</DetailData>
                 </DetailRow>
                 <DetailRow>
                   <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
-                  <DetailData>{user.email}</DetailData>
+                  <DetailData>{user.email || "N/A"}</DetailData>
                 </DetailRow>
               </Details>
             </UserDetail>
@@ -173,6 +186,16 @@ ProfileContainer.propTypes = {
   user: PropTypes.object.isRequired
 };
 
+const TitleName = styled.h1`
+  text-align: center;
+  font-weight: 600;
+  display: none;
+
+  @media (max-width: ${mobileWidthMax}) {
+    display: block;
+  }
+`;
+
 const LayoutContent = styled(Layout.Content)`
   width: 100%;
 `;
@@ -197,6 +220,11 @@ const ProfileContentWrapper = styled.div`
   @media (max-width: ${desktopWidth}) {
     width: 600px;
     padding:10px;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    width: 100%;
+    padding: 20px;
   }
 `;
 
@@ -227,11 +255,24 @@ const Title = styled.h3`
     font-size: 18px;
     margin-bottom: 11px;
   }
+
+  @media (max-width: ${mobileWidthMax}) {
+    display: none;
+  }
 `;
 
 const UserSubTitle = styled.p`
   color: ${props => props.theme.profile.userSubTitleTextColor};
   font-size: ${props => props.theme.profile.userSubTitleTextSize};
+`;
+
+const ProfileImgMobileWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  @media (min-width: ${mobileWidthMax}) {
+    display: none;
+  }
 `;
 
 const ProfileImgWrapper = styled.div`
@@ -266,10 +307,17 @@ const ProfileImgWrapper = styled.div`
     margin-right: 20px;
     margin-bottom: 20px;
   }
+
+  @media (max-width: ${mobileWidthMax}) {
+    display: none;
+  }
 `;
 
 const Details = styled.div`
   margin: 30px 0px 0px 25px;
+  @media screen and (max-width: ${mobileWidthMax}) {
+    margin: 0px;
+  }
 `;
 
 const DetailRow = styled.div`
@@ -279,13 +327,24 @@ const DetailTitle = styled.span`
   font-size: 15px;
   color: ${props => props.theme.profile.formInputLabelColor};
   font-weight: 600;
-  width: 20%;
+  width: 40%;
   display: inline-block;
+  @media screen and (max-width: ${mobileWidthMax}) {
+    width: 100%;
+  }
 `;
 const DetailData = styled.span`
   font-size: 15px;
   color: grey;
   display: inline-block;
+  @media screen and (max-width: ${mobileWidthMax}) {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid ${dashBorderColor};
+    background-color: ${lightGreySecondary};
+    padding: 8px 24px;
+  }
 `;
 
 const Label = styled.label`
@@ -300,6 +359,10 @@ const ChangePasswordToggleButton = styled.div`
   span {
     margin-right: 20px;
     font-weight: 600;
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    padding-left: 5px;
   }
 `;
 
@@ -362,6 +425,10 @@ const FormWrapper = styled(Form)`
       height: 40px;
     }
   }
+
+  @media (max-width: ${mobileWidthMax}) {
+    margin: 0px;
+  }
 `;
 
 const FormItemWrapper = styled(FormItem)`
@@ -388,6 +455,10 @@ const FormButtonWrapper = styled.div`
   text-align: center;
   float: right;
   padding-right: 20px;
+  @media (max-width: ${mobileWidthMax}) {
+    float: none;
+    padding-right: 0px;
+  }
 `;
 
 const SaveButton = styled(Button)`

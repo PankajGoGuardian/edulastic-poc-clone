@@ -285,6 +285,7 @@ const ColorDescriptionRow = styled(Row)`
 const FlexCol = styled(Col)`
   display: flex;
   align-items: center;
+  margin: 15px 0px;
 `;
 
 const SpaceLeft = styled.div`
@@ -302,6 +303,9 @@ const QuestionText = styled(Col)`
   font-size: ${props => props.theme.attemptReview.questiontextSize};
   color: ${props => props.theme.attemptReview.questiontextColor};
   font-weight: bold;
+  @media screen and (max-width: 768px) {
+    text-align: center;
+  }
 `;
 
 const AnsweredTypeButtonContainer = styled.div`

@@ -54,3 +54,6 @@ export { default as useRealtimeV2 } from "./src/useRealtimeV2";
 
 // Mobile
 export { MenuIcon } from "./src/components/MenuIcon";
+
+// Math Utils
+export { getInnerValuesForStatic } from "./src/utils/mathUtils";

@@ -744,6 +744,7 @@
       "isSimplified": "Check if expression is simplified",
       "isFactorised": "Check if expression is factored",
       "isExpanded": "Check if expression is expanded",
+      "isTrue": "Check if true",
       "stringMatch": "Plain Text",
       "equivSyntax": "Equivalent Syntax",
       "isDecimal": "Check if number is a decimal",

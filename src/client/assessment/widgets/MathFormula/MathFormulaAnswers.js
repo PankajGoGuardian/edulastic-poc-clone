@@ -84,7 +84,8 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
             methods.IS_FACTORISED,
             methods.IS_EXPANDED,
             methods.IS_TRUE,
-            methods.EQUIV_SYNTAX
+            methods.EQUIV_SYNTAX,
+            methods.CHECK_IF_TRUE
           ].includes(draft.validation.validResponse.value[index].method)
         ) {
           delete draft.validation.validResponse.value[index].value;

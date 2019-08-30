@@ -1894,7 +1894,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Complete the Equation",
         isMath: true,
         stimulus: "",
-        template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} = ${EMBED_RESPONSE}`,
+        template: `${EMBED_RESPONSE}+${EMBED_RESPONSE}=${EMBED_RESPONSE}`,
         templateDisplay: true,
         type: questionType.MATH,
         validation: {
@@ -1907,7 +1907,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "x+y"
+                value: "x+y=z"
               }
             ]
           }

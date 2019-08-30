@@ -9,7 +9,8 @@ import {
   MathFormulaDisplay,
   MathDisplay,
   FlexContainer,
-  QuestionNumberLabel
+  QuestionNumberLabel,
+  getInnerValuesForStatic
 } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 
@@ -49,8 +50,6 @@ class MathFormulaPreview extends Component {
     showQuestionNumber: false
   };
 
-  studentRef = React.createRef();
-
   state = {
     innerValues: []
   };
@@ -67,10 +66,22 @@ class MathFormulaPreview extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { studentTemplate, type: previewType } = this.props;
-    const { studentTemplate: prevStudentTemplate, type: prevPreviewType } = prevProps;
+    const {
+      studentTemplate,
+      type: previewType,
+      answerContextConfig: { expressGrader, isAnswerModifiable }
+    } = this.props;
+    const {
+      studentTemplate: prevStudentTemplate,
+      type: prevPreviewType,
+      answerContextConfig: { isAnswerModifiable: prevIsAnswerModifiable }
+    } = prevProps;
 
-    if ((previewType !== prevPreviewType && previewType === CLEAR) || studentTemplate !== prevStudentTemplate) {
+    if (
+      (previewType !== prevPreviewType && previewType === CLEAR) ||
+      studentTemplate !== prevStudentTemplate ||
+      (expressGrader && isAnswerModifiable && isAnswerModifiable !== prevIsAnswerModifiable)
+    ) {
       this.updateStaticMathFromUserAnswer();
     }
   }
@@ -114,20 +125,8 @@ class MathFormulaPreview extends Component {
 
     if (!this.isStatic()) return;
 
-    const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regexTemplate = new RegExp(
-      escapeRegExp(studentTemplate).replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
-      "g"
-    );
-
-    if (userAnswer && userAnswer.length > 0) {
-      const userInnerValues = regexTemplate.exec(userAnswer);
-      if (userInnerValues && userInnerValues.length > 0) {
-        this.setState({ innerValues: userInnerValues.slice(1) });
-      }
-    } else {
-      this.setState({ innerValues: [] });
-    }
+    const innerValues = getInnerValuesForStatic(studentTemplate, userAnswer);
+    this.setState({ innerValues });
   }
 
   onUserResponse(latexv) {
@@ -318,7 +317,6 @@ class MathFormulaPreview extends Component {
                   customKeys={customKeys}
                   numberPad={item.numberPad}
                   hideKeypad={item.isUnits && item.showDropdown}
-                  ref={this.studentRef}
                   onInput={latexv => this.onUserResponse(latexv)}
                   onBlur={latexv => this.onBlur(latexv)}
                   style={{ background: statusColor, ...cssStyles }}

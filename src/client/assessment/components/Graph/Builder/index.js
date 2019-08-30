@@ -1,6 +1,5 @@
 import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
-import { AUTO_VALUE, AUTO_HEIGHT_VALUE } from "./config/constants";
 import {
   Point,
   Line,
@@ -45,7 +44,8 @@ import {
   calcUnitX,
   handleSnap,
   isInPolygon,
-  setLabel
+  setLabel,
+  getClosestTick
 } from "./utils";
 import _events from "./events";
 
@@ -91,10 +91,6 @@ class Board {
     this.stacksUnderMouse = true;
 
     this.creatingHandlerIsDisabled = false;
-
-    this.marksContainer = null;
-
-    this.marksContainerLabel = null;
 
     this.numberlineSnapToTicks = true;
     /**
@@ -148,6 +144,33 @@ class Board {
     };
 
     this.elements.push(DragDrop.renderElement(this, element, {}));
+    return true;
+  }
+
+  addMark(value, x, y) {
+    const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], this.$board);
+    const [xMin, yMax, xMax, yMin] = this.$board.getBoundingBox();
+    if (
+      coords.usrCoords[1] < xMin ||
+      coords.usrCoords[1] > xMax ||
+      coords.usrCoords[2] < yMin ||
+      coords.usrCoords[2] > yMax
+    ) {
+      return false;
+    }
+
+    let position = coords.usrCoords[1];
+    if (this.numberlineSnapToTicks) {
+      position = getClosestTick(coords.usrCoords[1], this.numberlineAxis);
+    }
+
+    const mark = {
+      id: value.id,
+      point: value.text,
+      position
+    };
+
+    this.elements.push(Mark.onHandler(this, mark));
     return true;
   }
 
@@ -433,35 +456,17 @@ class Board {
     });
   }
 
-  resetOutOfLineMarks() {
-    const { canvas } = this.numberlineSettings;
-    this.elements.forEach(mark => {
-      if (mark.X() < canvas.xMin || mark.X() > canvas.xMax) {
-        const setCoords = JXG.COORDS_BY_USER;
-        mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
-      }
-    });
-  }
-
-  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue = () => {}, setCalculatedHeight = () => {}) {
+  updateNumberlineSettings(canvas, numberlineAxis, layout) {
     this.numberlineSettings = {
       canvas,
       numberlineAxis,
-      layout,
-      setValue,
-      setCalculatedHeight
+      layout
     };
 
     Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
 
     if (this.graphType === "axisLabels") {
-      let { height } = layout;
-      if (height === AUTO_VALUE) {
-        height = layout.autoCalcHeight || AUTO_HEIGHT_VALUE;
-      } else if (Number.isNaN(Number.parseFloat(height))) {
-        height = 0;
-      }
-      this.resizeContainer(layout.width, height);
+      this.resizeContainer(layout.width, layout.height);
     } else {
       this.updateStackSettings(
         numberlineAxis.stackResponses,
@@ -478,19 +483,6 @@ class Board {
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(canvas, xMargin));
 
     Numberline.updateCoords(this);
-
-    if (this.graphType === "axisLabels") {
-      Mark.updateMarksContainer(this, canvas.xMin - xMargin, canvas.xMax + xMargin, {
-        position: layout.pointBoxPosition,
-        yMax: canvas.yMax,
-        yMin: canvas.yMin
-      });
-      if (!first && this.numberlineAxis) {
-        this.resetOutOfLineMarks();
-        Mark.alignMarks(this);
-        setValue();
-      }
-    }
 
     this.updateTitle({
       position: layout.titlePosition,
@@ -530,10 +522,9 @@ class Board {
         return;
       }
 
-      const setCoords = JXG.COORDS_BY_USER;
-      mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
-      Mark.alignMarks(this);
-      this.numberlineSettings.setValue();
+      this.elements = this.elements.filter(element => element.id !== mark.id);
+      this.removeObject(mark);
+      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
     });
   }
 
@@ -551,13 +542,10 @@ class Board {
   }
 
   // Render marks
-  renderMarks(marks, markCoords = []) {
+  renderMarks(marks = []) {
     marks.forEach(mark => {
-      const markCoord = markCoords.find(el => el.id === mark.id);
-      this.elements.push(Mark.onHandler(this, markCoord, mark));
+      this.elements.push(Mark.onHandler(this, mark));
     });
-
-    Mark.alignMarks(this);
   }
 
   removeMarks() {
@@ -710,7 +698,7 @@ class Board {
   }
 
   getMarks() {
-    return this.elements.map(mark => Mark.getConfig(mark)).filter(mark => mark.mounted);
+    return this.elements.map(mark => Mark.getConfig(mark));
   }
 
   getSegments() {
@@ -907,15 +895,10 @@ class Board {
     );
   }
 
-  loadMarksAnswers(marks, markCoords) {
-    if (markCoords) {
-      marks.forEach(mark => {
-        const markCoord = markCoords.find(el => el.id === mark.id);
-        if (markCoord) {
-          this.answers.push(Mark.onHandler(this, { ...markCoord, fixed: true }, mark));
-        }
-      });
-    }
+  loadMarksAnswers(marks = []) {
+    marks.forEach(mark => {
+      this.answers.push(Mark.onHandler(this, { ...mark, fixed: true }));
+    });
   }
 
   loadSegmentsAnswers(segments) {

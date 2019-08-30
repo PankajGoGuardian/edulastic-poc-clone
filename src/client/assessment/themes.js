@@ -734,6 +734,10 @@ export const themes = {
       quadrants: {
         dragDropTitleFontWeight: "700",
         dragDropTitleFontSize: "12px"
+      },
+      axisLabels: {
+        responseBoxTitleFontWeight: "700",
+        responseBoxTitleFontSize: "12px"
       }
     }
   }

@@ -2,7 +2,7 @@ import JXG from "jsxgraph";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
 import { calcMeasure, getClosestTick } from "../utils";
-import { AUTO_VALUE } from "../config/constants";
+import { CONSTANT } from "../config";
 
 const deleteIconPattern =
   '<svg id="{iconId}" class="delete-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.728 16.702">' +
@@ -16,219 +16,72 @@ const snapMark = (mark, board) => {
   mark.on("up", () => {
     const {
       canvas,
-      layout: { linePosition, pointBoxPosition },
-      setValue
+      layout: { linePosition }
     } = board.numberlineSettings;
 
     const setCoords = JXG.COORDS_BY_USER;
-    let x;
-    let y;
-
     const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-    const lineY = canvas.yMax - (yMeasure / 100) * linePosition;
-    const containerY = canvas.yMax - (yMeasure / 100) * pointBoxPosition;
 
-    if (mark.Y() >= containerY && mark.X() < canvas.xMin) {
-      y = lineY;
+    const y = canvas.yMax - (yMeasure / 100) * linePosition;
+    let x;
+    if (board.numberlineSnapToTicks) {
       x = getClosestTick(mark.X(), board.numberlineAxis);
-    } else if (mark.Y() >= containerY && mark.X() > canvas.xMax) {
-      y = lineY;
-      x = getClosestTick(mark.X(), board.numberlineAxis);
-    } else if (mark.Y() >= containerY && mark.X() < canvas.xMax && mark.X() > canvas.xMin) {
-      y = lineY;
-      if (board.numberlineSnapToTicks) {
-        x = getClosestTick(mark.X(), board.numberlineAxis);
-      } else {
-        x = mark.X();
-      }
     } else {
-      y = mark.Y();
       x = mark.X();
     }
 
-    let cssClass = mark.visProp.cssclass;
-    cssClass = cssClass.replace(" mounted", "");
-    if (mark.Y() >= containerY) {
-      cssClass += " mounted";
-    }
-    mark.setAttribute({
-      cssClass,
-      highlightCssClass: cssClass
-    });
-
     mark.setPosition(setCoords, [x, y]);
-
-    setValue();
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
   });
 };
 
-const onHandler = (board, coords, data) => {
+const onHandler = (board, value) => {
   const {
     canvas,
-    layout: { linePosition, pointBoxPosition }
+    layout: { linePosition }
   } = board.numberlineSettings;
 
   const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const lineY = canvas.yMax - (yMeasure / 100) * linePosition;
-  const containerY = canvas.yMax - (yMeasure / 100) * pointBoxPosition;
-  const [xMin, , , yMin] = board.$board.getBoundingBox();
-  let x = xMin;
-  let y = yMin;
-  if (coords) {
-    x = coords.position;
-    y = lineY;
-  }
+  const x = value.position;
+  const y = lineY;
 
-  let content = replaceLatexesWithMathHtml(data.text);
+  let content = replaceLatexesWithMathHtml(value.point);
 
-  if (!coords || !coords.fixed) {
-    const deleteIconId = `mark-delete-${data.id}`;
+  if (!value.fixed) {
+    const deleteIconId = `mark-delete-${value.id}`;
     content += deleteIconPattern.replace(/{iconId}/g, deleteIconId);
   }
 
   content = `<div class='mark-content'>${content}</div>`;
 
+  const cssClass = `fr-box mark mounted ${value.className ? value.className : ""}`;
+
   const mark = board.$board.create("text", [x, y, content], {
-    id: coords && coords.fixed ? null : data.id,
+    id: value.fixed ? null : value.id,
     anchorX: "middle",
     anchorY: "bottom",
-    fixed: coords && coords.fixed,
-    cssClass: "fr-box mark"
-  });
-
-  if (!coords || !coords.fixed) {
-    snapMark(mark, board);
-  }
-
-  let cssClass = `fr-box mark ${coords && coords.className ? coords.className : ""}`;
-  if (mark.Y() >= containerY) {
-    cssClass += " mounted";
-  }
-
-  mark.setAttribute({
+    fixed: !!value.fixed,
     cssClass,
     highlightCssClass: cssClass
   });
 
-  mark.labelHTML = data.text;
+  if (!value.fixed) {
+    snapMark(mark, board);
+  }
+
+  mark.labelHTML = value.point;
 
   return mark;
 };
 
-const renderMarksContainer = (board, xMin, xMax, containerSettings) => {
-  const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
-
-  const polygonCoords = [[xMin, containerY], [xMin, -1.75], [xMax, -1.75], [xMax, containerY]];
-  const container = board.$board.create("polygon", polygonCoords, {
-    fixed: true,
-    withLines: false,
-    fillOpacity: 1,
-    fillColor: "#efefef",
-    vertices: {
-      visible: false
-    }
-  });
-
-  const label = board.$board.create("text", [xMin, containerY, "Drag Drop Values"], {
-    fixed: true,
-    anchorY: "bottom",
-    cssClass: "marks-container-title",
-    highlightCssClass: "marks-container-title"
-  });
-
-  board.marksContainer = container;
-  board.marksContainerLabel = label;
-};
-
-const updateMarksContainer = (board, xMin, xMax, containerSettings) => {
-  board.$board.removeObject(board.marksContainer);
-  board.$board.removeObject(board.marksContainerLabel);
-  renderMarksContainer(board, xMin, xMax, containerSettings);
-};
-
 const getConfig = mark => ({
-  mounted: mark.visProp.cssclass.includes("mounted"),
   position: +mark.X().toFixed(4),
   point: mark.labelHTML,
   id: mark.id
 });
 
-const alignMarks = board => {
-  const {
-    numberlineAxis: { separationDistanceX, separationDistanceY, shuffleAnswerChoices },
-    canvas,
-    layout: { linePosition, pointBoxPosition, height: layoutHeight },
-    setCalculatedHeight
-  } = board.numberlineSettings;
-
-  const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const lineY = canvas.yMax - (yMeasure / 100) * linePosition;
-  const containerY = canvas.yMax - (yMeasure / 100) * pointBoxPosition;
-
-  const [xMin, yMax, xMax, yMin] = board.$board.getBoundingBox();
-  const pxInUnitX = board.$board.canvasWidth / (xMax - xMin);
-  const pxInUnitY = board.$board.canvasHeight / (yMax - yMin);
-  const marginLeft = separationDistanceX / pxInUnitX;
-  const marginTop = separationDistanceY / pxInUnitY;
-
-  let offsetX = xMin; // right side of previous mark
-  let offsetY = containerY; // bottom side of previous marks line
-  let minY = 10; // y position of lowest mark
-
-  function shuffle(array) {
-    array.sort(() => Math.random() - 0.5);
-  }
-  if (shuffleAnswerChoices) {
-    shuffle(board.elements);
-  }
-
-  board.elements.forEach(mark => {
-    if (mark.Y() === lineY) {
-      return;
-    }
-
-    const rect = mark.rendNode.getBoundingClientRect();
-    const height = rect.height / pxInUnitY;
-    const width = rect.width / pxInUnitX;
-    const setCoords = JXG.COORDS_BY_USER;
-
-    if (offsetX + marginLeft + width > xMax) {
-      offsetX = xMin;
-      offsetY -= marginTop + height;
-    }
-
-    const x = offsetX + marginLeft + width / 2;
-    const y = offsetY - (marginTop + height);
-    minY = Math.min(y, minY);
-    mark.setPosition(setCoords, [x, y]);
-    mark.setAttribute({
-      cssClass: "fr-box mark",
-      highlightCssClass: "fr-box mark"
-    });
-
-    offsetX = x + width / 2;
-  });
-
-  // set auto calculated height if needed
-  if (layoutHeight !== AUTO_VALUE) {
-    return;
-  }
-
-  const extraHeight = (yMin - minY) * pxInUnitY;
-  if (extraHeight <= 0) {
-    return;
-  }
-
-  const containerHeight = (board.$board.canvasHeight * (100 - pointBoxPosition)) / 100;
-  const newContainerHeight = containerHeight + extraHeight + separationDistanceY;
-  const newHeight = +((newContainerHeight * 100) / (100 - pointBoxPosition) + 3).toFixed(4);
-  setCalculatedHeight(newHeight);
-};
-
 export default {
   onHandler,
-  updateMarksContainer,
-  getConfig,
-  alignMarks
+  getConfig
 };

@@ -1715,7 +1715,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           separationDistanceY: 20,
           renderingBase: "min-value-based",
           specificPoints: "",
-          fractionsFormat: "not-normalized-fractions"
+          fractionsFormat: "not-normalized-fractions",
+          responseBoxPosition: "bottom"
         },
         uiStyle: {
           gridVisible: false,
@@ -1742,13 +1743,13 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           xTickDistance: 1,
           yTickDistance: 0,
           layoutWidth: 600,
-          layoutHeight: "auto",
+          layoutHeight: 150,
           layoutMargin: 0,
           layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y",
-          titlePosition: 55,
-          linePosition: 34,
+          titlePosition: 75,
+          linePosition: 50,
           pointBoxPosition: 60
         },
         backgroundImage: {

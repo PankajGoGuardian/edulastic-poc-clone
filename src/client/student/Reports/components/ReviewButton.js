@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { mobileWidthMax, extraDesktopWidth } from "@edulastic/colors";
 
 //components
 import styled from "styled-components";
 import Review from "../../styled/AssignmentCardButton";
-import { mobileWidthMax } from "@edulastic/colors";
 
 // show review button
 const ReviewButton = ({ testActivityId, title, t, attempted, activityReview, classId, testId, isPaused }) => (
@@ -45,8 +45,9 @@ const ReviewButtonLink = styled(Link)`
   button {
     max-width: 100%;
   }
-  @media screen and (min-width: ${mobileWidthMax}) {
-    margin: 0;
+  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
+    margin: 0px;
+    width: auto;
   }
   @media screen and (min-width: 1025px) {
     margin-right: 0px;

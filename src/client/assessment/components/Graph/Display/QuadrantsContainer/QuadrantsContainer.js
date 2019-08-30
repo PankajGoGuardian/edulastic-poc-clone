@@ -229,7 +229,7 @@ class GraphContainer extends PureComponent {
       this._graph.createEditButton(this.handleElementSettingsMenuOpen);
       this._graph.setDisableResponse(disableResponse);
 
-      if (view === "edit" && !disableResponse) {
+      if (view === EDIT && !disableResponse) {
         this._graph.setEditButtonStatus(false);
       } else {
         this._graph.setEditButtonStatus(true);
@@ -298,7 +298,7 @@ class GraphContainer extends PureComponent {
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
 
-      if (view === "edit" && !disableResponse) {
+      if (view === EDIT && !disableResponse) {
         this._graph.setEditButtonStatus(false);
       } else {
         this._graph.setEditButtonStatus(true);
@@ -731,7 +731,7 @@ class GraphContainer extends PureComponent {
               fontSize={bgShapes ? 12 : layout.fontSize}
             />
           )}
-          {!this.drawingObjectsAreVisible() && !disableResponse && view === "edit" && (
+          {!this.drawingObjectsAreVisible() && !disableResponse && view === EDIT && (
             <Equations equations={equations} setEquations={this.setEquations} />
           )}
           <JSXBoxWithDrawingObjectsWrapper>

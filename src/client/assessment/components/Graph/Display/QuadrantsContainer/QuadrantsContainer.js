@@ -212,7 +212,8 @@ class GraphContainer extends PureComponent {
       toolbar,
       setElementsStash,
       graphData,
-      disableResponse
+      disableResponse,
+      view
     } = this.props;
 
     const { tools } = toolbar;
@@ -225,7 +226,7 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
-      if (!disableResponse) {
+      if (!disableResponse && view === "edit") {
         this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
       }
       this._graph.setDisableResponse(disableResponse);
@@ -278,7 +279,8 @@ class GraphContainer extends PureComponent {
       disableResponse,
       previewTab,
       changePreviewTab,
-      elements
+      elements,
+      view
     } = this.props;
 
     const { tools } = toolbar;
@@ -291,7 +293,7 @@ class GraphContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
-      if (prevProps.disableResponse && !disableResponse) {
+      if (prevProps.disableResponse && !disableResponse && (prevProps.view !== "edit" && view === "edit")) {
         this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
       }
 
@@ -722,7 +724,7 @@ class GraphContainer extends PureComponent {
               fontSize={bgShapes ? 12 : layout.fontSize}
             />
           )}
-          {!this.drawingObjectsAreVisible() && !disableResponse && (
+          {!this.drawingObjectsAreVisible() && !disableResponse && view === "edit" && (
             <Equations equations={equations} setEquations={this.setEquations} />
           )}
           <JSXBoxWithDrawingObjectsWrapper>

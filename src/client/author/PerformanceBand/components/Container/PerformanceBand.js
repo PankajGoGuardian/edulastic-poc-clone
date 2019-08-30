@@ -101,7 +101,14 @@ function ProfileRow({
           <Button disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
             Yes, Delete
           </Button>,
-          <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
+          <Button
+            onClick={() => {
+              setConfirmVisible(false);
+              setDeleteText("");
+            }}
+          >
+            No, Cancel
+          </Button>
         ]}
       >
         <div className="content">

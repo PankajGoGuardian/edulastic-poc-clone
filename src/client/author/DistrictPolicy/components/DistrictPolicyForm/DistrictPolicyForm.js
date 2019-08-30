@@ -9,7 +9,8 @@ import {
   receiveDistrictPolicyAction,
   updateDistrictPolicyAction,
   createDistrictPolicyAction,
-  changeDistrictPolicyAction
+  changeDistrictPolicyAction,
+  receiveSchoolPolicyAction
 } from "../../ducks";
 import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
@@ -62,13 +63,12 @@ class DistrictPolicyForm extends Component {
   }
 
   componentDidMount() {
-    /**
-     * TODO: handle schoolId
-     */
-    const { loadDistrictPolicy, userOrgId, role, schoolId } = this.props;
-    // const payload = role === "district-admin" ? { orgId: userOrgId } : { orgType: "school", orgId: schoolId }
-    const payload = { orgId: userOrgId };
-    loadDistrictPolicy(payload);
+    const { loadDistrictPolicy, userOrgId, role, schoolId, loadSchoolPolicy } = this.props;
+    if (role === "school-admin") {
+      loadSchoolPolicy(schoolId);
+    } else {
+      loadDistrictPolicy({ orgId: userOrgId });
+    }
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -156,6 +156,8 @@ class DistrictPolicyForm extends Component {
   };
 
   onSave = () => {
+    const { role, schoolId } = this.props;
+    const isSchoolLevel = role === "school-admin";
     const districtPolicyData = { ...this.state.districtPolicy };
     const { allowDomainForTeacherValidate, allowDomainForStudentValidate, allowDomainForSchoolValidate } = this.state;
 
@@ -178,8 +180,8 @@ class DistrictPolicyForm extends Component {
     }
 
     const updateData = {
-      orgId: this.props.userOrgId,
-      orgType: "district",
+      orgId: isSchoolLevel ? schoolId : this.props.userOrgId,
+      orgType: isSchoolLevel ? "institution" : "district",
       userNameAndPassword: districtPolicyData.userNameAndPassword,
       googleSignOn: districtPolicyData.googleSignOn,
       office365SignOn: districtPolicyData.office365SignOn,
@@ -188,6 +190,7 @@ class DistrictPolicyForm extends Component {
       studentSignUp: districtPolicyData.studentSignUp,
       searchAndAddStudents: districtPolicyData.searchAndAddStudents,
       googleUsernames: districtPolicyData.googleUsernames,
+      schoolAdminSettingsAccess: districtPolicyData.schoolAdminSettingsAccess,
       office365Usernames: districtPolicyData.office365Usernames,
       firstNameAndLastName: districtPolicyData.firstNameAndLastName,
       allowedDomainForTeachers: districtPolicyData.allowedDomainForTeachers.length
@@ -223,12 +226,14 @@ class DistrictPolicyForm extends Component {
     if (districtPolicy.hasOwnProperty("_id")) {
       saveBtnStr = "Save";
     }
+    const { role } = this.props;
+    const isSchoolLevel = role === "school-admin";
 
     return (
       <StyledFormDiv>
         <Form>
           <StyledRow>
-            <StyledLabel>District Signon Policy:</StyledLabel>
+            <StyledLabel>{isSchoolLevel ? "School" : "District"} Signon Policy:</StyledLabel>
             <StyledElementDiv>
               <Checkbox
                 checked={districtPolicy.userNameAndPassword}
@@ -248,7 +253,7 @@ class DistrictPolicyForm extends Component {
             </StyledElementDiv>
           </StyledRow>
           <StyledRow>
-            <StyledLabel>District Sing-up Policy:</StyledLabel>
+            <StyledLabel> {isSchoolLevel ? "School" : "District"} Sign-up Policy:</StyledLabel>
             <StyledElementDiv>
               <Checkbox checked={districtPolicy.teacherSignUp} onChange={e => this.change(e, "teacherSignUp")}>
                 Allow Teachers to sign-up
@@ -295,6 +300,17 @@ class DistrictPolicyForm extends Component {
               </Checkbox>
             </StyledElementDiv>
           </StyledRow>
+          {isSchoolLevel ? null : (
+            <StyledRow>
+              <StyledLabel>Allow School Level Admin</StyledLabel>
+              <StyledElementDiv>
+                <Checkbox
+                  checked={districtPolicy.schoolAdminSettingsAccess}
+                  onChange={e => this.change(e, "schoolAdminSettingsAccess")}
+                />
+              </StyledElementDiv>
+            </StyledRow>
+          )}
           <StyledRow>
             <StyledLabel>
               Allowed Domain for
@@ -364,16 +380,18 @@ class DistrictPolicyForm extends Component {
 
 const enhance = compose(
   connect(
-    state => ({
-      districtPolicy: get(state, ["districtPolicyReducer", "data"], []),
+    (state, { role }) => ({
+      districtPolicy: get(state, ["districtPolicyReducer", role === "school-admin" ? "schoolData" : "data"], []),
       userOrgId: getUserOrgId(state),
-      role: getUserRole
+      role: getUserRole(state),
+      schoolId: get(state, "user.saSettingsSchool")
     }),
     {
       loadDistrictPolicy: receiveDistrictPolicyAction,
       updateDistrictPolicy: updateDistrictPolicyAction,
       createDistrictPolicy: createDistrictPolicyAction,
-      changeDistrictPolicyData: changeDistrictPolicyAction
+      changeDistrictPolicyData: changeDistrictPolicyAction,
+      loadSchoolPolicy: receiveSchoolPolicyAction
     }
   )
 );

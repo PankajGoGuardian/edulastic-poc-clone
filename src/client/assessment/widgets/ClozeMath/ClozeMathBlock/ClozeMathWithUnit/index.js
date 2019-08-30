@@ -14,6 +14,10 @@ class ClozeMathWithUnit extends React.Component {
     resprops: PropTypes.object.isRequired
   };
 
+  state = {
+    showKeyboard: false
+  };
+
   constructor(props) {
     super(props);
     this.mathRef = React.createRef();

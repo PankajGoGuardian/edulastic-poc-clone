@@ -49,6 +49,7 @@ const ManageDistrictSearchForm = Form.create({ name: "manageDistrictSearchForm" 
         onSelect={onDistrictSelect}
         dataSource={dataSource}
         loading={loading}
+        filterOption={false}
       />
     );
   }

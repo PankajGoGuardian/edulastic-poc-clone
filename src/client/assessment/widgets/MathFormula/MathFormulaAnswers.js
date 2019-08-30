@@ -174,33 +174,23 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
             }
             if (!v) {
               value.method = methods.EQUIV_SYMBOLIC;
-              let { unit = "" } = value.options;
-              if (unit === "feet") {
-                unit = "\\text{feet}";
-              }
-              value.value = `${value.value}\\ ${unit}`;
               delete value.options.unit;
             } else {
               value.method = methods.EQUIV_VALUE;
-              const { value: val = "" } = value;
-              const arr = val.split("\\ ");
-              let _unit = arr.pop().replace("\\", "");
-              if (_unit.search("feet") !== -1) {
-                _unit = "feet";
-              }
-              value.options.unit = _unit;
-              value.value = arr.join("");
+              value.options.unit = "feet";
             }
           });
         } else {
           draft.validation.altResponses[answerIndex].value.forEach(value => {
+            if (!value.options) {
+              value.options = {};
+            }
             if (!v) {
-              if (value.options) {
-                delete value.options.unit;
-              }
               value.method = methods.EQUIV_SYMBOLIC;
+              delete value.options.unit;
             } else {
               value.method = methods.EQUIV_VALUE;
+              value.options.unit = "feet";
             }
           });
         }

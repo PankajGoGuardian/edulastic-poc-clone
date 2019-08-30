@@ -871,7 +871,11 @@ class ClassBoard extends Component {
                         {" "}
                         {`STATUS  `}{" "}
                         <span style={{ color: black, textTransform: "capitalize" }}>
-                          {studentTestActivity.graded || ""}
+                          {studentTestActivity.status === 2
+                            ? "Absent"
+                            : studentTestActivity.status === 1
+                            ? "Submitted"
+                            : "In Progress" || ""}
                         </span>
                       </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>

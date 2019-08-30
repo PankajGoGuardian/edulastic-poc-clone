@@ -14,7 +14,8 @@ const BarsAxises = ({ lines, gridParams, displayAxisLabel, displayGridlines, set
   const getParts = index => {
     const cloneOfString = lines[index].x;
     const resultArray = [];
-    const partStep = Math.floor((step * 0.8) / 7);
+    let partStep = Math.floor((step * 0.8) / 7);
+    partStep = Math.max(partStep, 1);
     let startIndex = 0;
     while (startIndex < cloneOfString.length) {
       startIndex += partStep;

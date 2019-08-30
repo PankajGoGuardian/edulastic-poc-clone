@@ -86,7 +86,7 @@ class ClozeMathInput extends React.Component {
     } = item;
     const { allowNumericOnly } = find(maths, res => res.id === id) || {};
     if (allowNumericOnly) {
-      if (!e.key.match(/[0-9+-./%]/g)) {
+      if (!e.key.match(/[0-9+-./%^]/g)) {
         e.preventDefault();
         e.stopPropagation();
       }

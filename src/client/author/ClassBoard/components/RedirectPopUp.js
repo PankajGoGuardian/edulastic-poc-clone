@@ -7,14 +7,14 @@ import { ConfirmationModal } from "../../src/components/common/ConfirmationModal
 import { BodyContainer } from "./styled";
 
 const QuestionDelivery = {
-  ALL: "ALL",
-  SKIPPED_WRONG: "SKIPPED_AND_WRONG"
+  ALL: "All",
+  SKIPPED_WRONG: "Skipped and Wrong"
 };
 
 const ShowPreviousAttempt = {
-  SCORE_FEEDBACK: "SCORE_AND_FEEDBACK",
-  STUDENT_RESPONSE_FEEDBACK: "STUDENT_RESPONSE_AND_FEEDBACK",
-  FEEDBACK_ONLY: "FEEDBACK_ONLY"
+  SCORE_AND_FEEDBACK: "Score & Feedback",
+  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Feedback",
+  FEEDBACK_ONLY: "Feedback only"
 };
 
 const RadioGroup = Radio.Group;

@@ -6,7 +6,7 @@ import { compose } from "redux";
 import HeaderWrapper from "../../../../student/sharedComponents/Header/headerWrapper";
 
 const ProfileHeader = ({ t }) => (
-  <HeaderWrapper>
+  <HeaderWrapper borderBottom="none">
     <Title>{t("common.profileTitle")}</Title>
   </HeaderWrapper>
 );

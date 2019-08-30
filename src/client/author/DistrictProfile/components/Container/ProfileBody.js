@@ -22,7 +22,8 @@ import {
   updateUserDetailsAction,
   deleteAccountAction,
   updateInterestedCurriculumsAction,
-  removeSchoolAction
+  removeSchoolAction,
+  removeInterestedCurriculumsAction
 } from "../../../../student/Login/ducks";
 import { Wrapper } from "../../../../student/styled/index";
 import DeleteAccountModal from "../DeleteAccountModal/DeleteAccountModal";
@@ -43,7 +44,8 @@ class ProfileBody extends React.Component {
     selectedSchool: null,
     showDeleteSchoolModal: false,
     showStandardSetsModal: false,
-    showEmailConfirmModal: false
+    showEmailConfirmModal: false,
+    showSaveStandSetsBtn: false
   };
 
   handleSubmit = e => {
@@ -159,6 +161,23 @@ class ProfileBody extends React.Component {
     this.hideMyStandardSetsModal();
   };
 
+  handleSaveStandardSets = () => {
+    const { updateInterestedCurriculums, user } = this.props;
+    const standardsData = {
+      orgId: user._id,
+      orgType: "teacher",
+      curriculums: user.orgData.interestedCurriculums
+    };
+    updateInterestedCurriculums(standardsData);
+    this.setState({ showSaveStandSetsBtn: false });
+  };
+
+  removeStandardSet = id => {
+    const { removeInterestedCurriculum } = this.props;
+    removeInterestedCurriculum(id);
+    this.setState({ showSaveStandSetsBtn: true });
+  };
+
   deleteProfile = () => {
     const { deleteAccount, user } = this.props;
     this.toggleModal("DELETE_ACCOUNT", false);
@@ -183,13 +202,13 @@ class ProfileBody extends React.Component {
 
   getStandardSets = () => {
     const { user } = this.props;
-    const schools = user.orgData.interestedCurriculums.map(curriculum => (
+    const curriculums = user.orgData.interestedCurriculums.map(curriculum => (
       <StyledTag id={curriculum._id}>
         {curriculum.name}
-        <Icon type="close" />
+        <Icon type="close" onClick={() => this.removeStandardSet(curriculum._id)} />
       </StyledTag>
     ));
-    return schools;
+    return curriculums;
   };
 
   handleRemoveSchool = e => {
@@ -314,7 +333,8 @@ class ProfileBody extends React.Component {
       selectedSchool,
       showDeleteSchoolModal,
       showStandardSetsModal,
-      showEmailConfirmModal
+      showEmailConfirmModal,
+      showSaveStandSetsBtn
     } = this.state;
 
     const interestedStaData = {
@@ -440,9 +460,14 @@ class ProfileBody extends React.Component {
                 <SchoolWrapper>
                   <StandardSetsLabel>Standard Sets</StandardSetsLabel>
                   <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
-                  <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
-                    Select your standard sets
-                  </SelectSetsButton>
+                  <div style={{ width: "min-content" }}>
+                    {showSaveStandSetsBtn && (
+                      <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
+                    )}
+                    <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
+                      Select your standard sets
+                    </SelectSetsButton>
+                  </div>
                 </SchoolWrapper>
               </>
             )}
@@ -496,7 +521,8 @@ const enhance = compose(
       deleteAccount: deleteAccountAction,
       updateInterestedCurriculums: updateInterestedCurriculumsAction,
       getDictCurriculums: getDictCurriculumsAction,
-      removeSchool: removeSchoolAction
+      removeSchool: removeSchoolAction,
+      removeInterestedCurriculum: removeInterestedCurriculumsAction
     }
   )
 );
@@ -609,6 +635,14 @@ const SelectSetsButton = styled(Button)`
   i {
     font-size: 14px;
   }
+`;
+
+const SaveStandardSetsBtn = styled(SelectSetsButton)`
+  margin: 5px 15px;
+  :hover{
+    color ${themeColor};
+  }
+
 `;
 
 const StyledTag = styled(Tag)`

@@ -518,11 +518,12 @@ class ClassBoard extends Component {
     const classname = additionalData ? additionalData.classes : [];
     const isMobile = this.isMobile();
     let studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
-    studentTestActivity.timeSpent =
-      (studentResponse &&
+    studentTestActivity.timeSpent = Math.floor(
+      ((studentResponse &&
         studentResponse.questionActivities &&
         studentResponse.questionActivities.reduce((acc, qa) => (acc += qa.timeSpent), 0)) ||
-      0;
+        0) / 1000
+    );
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);

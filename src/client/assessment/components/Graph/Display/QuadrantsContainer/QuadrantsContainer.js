@@ -226,16 +226,14 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
-      if (!disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
-      }
+      this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
+      this._graph.setDisableResponse(disableResponse);
 
-      if (view === "edit") {
+      if (view === "edit" && !disableResponse) {
         this._graph.setEditButtonStatus(false);
       } else {
         this._graph.setEditButtonStatus(true);
       }
-      this._graph.setDisableResponse(disableResponse);
 
       this._graph.resizeContainer(layout.width, layout.height);
       this._graph.setGraphParameters({
@@ -299,15 +297,10 @@ class GraphContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
-      if (prevProps.disableResponse && !disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
-      }
 
-      if (prevProps.view !== "edit" && view === "edit") {
+      if (view === "edit" && !disableResponse) {
         this._graph.setEditButtonStatus(false);
-      }
-
-      if (prevProps.view === "edit" && view !== "edit") {
+      } else {
         this._graph.setEditButtonStatus(true);
       }
 

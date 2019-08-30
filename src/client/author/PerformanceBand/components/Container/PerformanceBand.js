@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { get } from "lodash";
 import { createReducer } from "redux-starter-kit";
 import uuid from "uuid/v1";
-import { List, Row, Col, Button, message, Modal, Input } from "antd";
+import { List, Row, Col, Button, message, Modal, Input, Icon } from "antd";
 import styled from "styled-components";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
@@ -23,7 +23,53 @@ import ColorPicker from "./ColorPicker";
 
 import { StyledContent, StyledLayout, SpinContainer, StyledSpin, PerformanceBandDiv } from "./styled";
 
+import { white, lightGreySecondary, themeColor } from "@edulastic/colors";
+
 const title = "Manage District";
+const ListItemStyled = styled(List.Item)`
+  display: block;
+  background-color: #fff;
+  border: 0;
+  padding: 0;
+`;
+
+const RowStyled = styled(Row)`
+  background: ${white};
+`;
+const StyledProfileRow = styled(Row)`
+  padding-left: 30px;
+  background-color: ${lightGreySecondary};
+  height: 47px;
+  line-height: 47px;
+  box-sizing: border-box;
+  border: 1px solid #e1e1e1;
+  margin-bottom: 7px;
+  h3 {
+    font-weight: 500;
+    font-size: 15px;
+  }
+`;
+
+const StyledProfileCol = styled(Col)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  align-content: center;
+  & > i.anticon {
+    color: ${themeColor};
+    height: 13px;
+    width: 13px;
+    padding-right: 32px;
+  }
+`;
+
+const StyledList = styled(List)`
+  .ant-list-item {
+    border: 0;
+  }
+`;
 
 function ProfileRow({
   name,
@@ -46,7 +92,7 @@ function ProfileRow({
   const [deleteText, setDeleteText] = useState("");
 
   return (
-    <List.Item style={{ display: "block" }}>
+    <ListItemStyled>
       <Modal
         title="Delete Profile"
         visible={confirmVisible}
@@ -65,21 +111,28 @@ function ProfileRow({
         </div>
         <Input value={deleteText} onChange={e => setDeleteText(e.target.value)} />
       </Modal>
-      <Row>
+      <StyledProfileRow type="flex">
         <Col span={12}>
           <h3>{name}</h3>
         </Col>
-        <Col span={12}>
-          <Button onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}>
-            {readOnly ? "view" : "edit"}
-          </Button>
-
-          {readOnly ? null : <Button onClick={() => setConfirmVisible(true)}>delete</Button>}
-        </Col>
-      </Row>
+        <StyledProfileCol span={12}>
+          {readOnly ? null : (
+            <Icon type="edit" theme="filled" onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))} />
+          )}
+          <Icon type="copy" onClick={() => {}} />
+          {readOnly ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
+          {
+            <Icon
+              type={active ? "up" : "down"}
+              theme="outlined"
+              onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}
+            />
+          }
+        </StyledProfileCol>
+      </StyledProfileRow>
 
       {active ? (
-        <Row>
+        <RowStyled>
           <Col span={24}>
             <PerformanceBandTableDumb
               performanceBandId={_id}
@@ -92,17 +145,14 @@ function ProfileRow({
               setPerformanceBandData={setPerf}
             />
           </Col>
-        </Row>
+        </RowStyled>
       ) : null}
-    </List.Item>
+    </ListItemStyled>
   );
 }
 
 export function PerformanceBandAlt(props) {
-  const menuActive =
-    props.role === "school-admin"
-      ? { mainMenu: "Performance Bands" }
-      : { mainMenu: "Settings", subMenu: "Performance Bands" };
+  const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
 
   const { loading, updating, creating, history, list, create, update, remove, profiles, currentUserId } = props;
   const showSpin = loading || updating || creating;
@@ -152,9 +202,8 @@ export function PerformanceBandAlt(props) {
           <Button type="primary" style={{ marginBottom: "5px" }} onClick={addProfile}>
             + Create new Profile
           </Button>
-          <List
+          <StyledList
             dataSource={profiles}
-            bordered
             rowKey="_id"
             renderItem={profile => (
               <ProfileRow

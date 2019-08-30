@@ -1,7 +1,19 @@
 import React, { useReducer, useState, useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { themeColor } from "@edulastic/colors";
 
 import { Popover, Button, Row, Col, Icon } from "antd";
+
+const StyledIcon = styled(Icon)`
+  vertical-align: middle;
+  margin-top: -20px;
+  padding-left: 5px;
+  padding-right: 6px;
+  cursor: pointer;
+  path {
+    fill: ${themeColor};
+  }
+`;
 
 //"#576BA9","#A1C3EA","#F39300","#FEC571","#3DB04E","#74E27A","#AFA515","#EBDD54"
 function ColorPicker(props) {
@@ -19,7 +31,8 @@ function ColorPicker(props) {
           <Col span={6}>
             <ColorBox
               color={color}
-              onClick={() => {
+              onClick={e => {
+                e.stopPropagation();
                 if (props.onChange) {
                   props.onChange(color);
                 }
@@ -33,7 +46,7 @@ function ColorPicker(props) {
   );
 
   return (
-    <div>
+    <div style={{ display: "inline-block", verticalAlign: "middle", marginTop: 7 }}>
       <Popover
         content={content}
         placement="bottom"
@@ -41,10 +54,22 @@ function ColorPicker(props) {
         visible={visible}
         onVisibleChange={v => !props.disabled && setVisible(v)}
       >
-        <div style={{ width: 30 }}>
-          <ColorBox style={{ height: 30, width: 30, display: "inline-block" }} color={value} />{" "}
-          <Icon style={{ display: "block", marginTop: -7 }} type="down" />
+        <div
+          style={{ width: 20, display: "inline-block" }}
+          onClick={e => {
+            e.stopPropagation();
+            setVisible(true);
+          }}
+        >
+          <ColorBox style={{ height: 20, width: 20, display: "inline-block" }} color={value} />
         </div>
+        <StyledIcon
+          onClick={e => {
+            e.stopPropagation();
+            setVisible(true);
+          }}
+          type="down"
+        />
       </Popover>
     </div>
   );

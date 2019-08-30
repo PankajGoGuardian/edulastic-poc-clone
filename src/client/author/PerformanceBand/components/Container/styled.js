@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Layout, Spin } from "antd";
+import { Layout, Spin, List } from "antd";
+import { themeColor, lightGreySecondary, white } from "@edulastic/colors";
 
 const { Content } = Layout;
 

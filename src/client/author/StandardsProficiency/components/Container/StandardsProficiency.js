@@ -111,10 +111,7 @@ function ProfileRow(props) {
 function StandardsProficiency(props) {
   const { loading, updating, creating, history, list, create, update, remove, editingIndex, setEditingIndex } = props;
   const showSpin = loading || updating || creating;
-  const menuActive =
-    props.role === "school-admin"
-      ? { mainMenu: "Standards Proficiency" }
-      : { mainMenu: "Settings", subMenu: "Standards Proficiency" };
+  const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
   const createStandardProficiency = () => {
     const name = window.prompt("Please enter the name of the standard proficiency");

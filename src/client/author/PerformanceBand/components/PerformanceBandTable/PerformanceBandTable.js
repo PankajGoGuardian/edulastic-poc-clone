@@ -296,7 +296,6 @@ export class PerformanceBandTable extends React.Component {
                 <Col style={{ flex: "1 1 auto" }}>
                   <StyledSlider
                     disabled={this.props.readOnly}
-                    css={sliderCss}
                     onChange={v => {
                       const delta = v - record.to;
                       this.onClickFromTo(v, record.key, "to", delta);

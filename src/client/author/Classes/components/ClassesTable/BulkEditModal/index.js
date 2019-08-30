@@ -5,6 +5,7 @@ import { tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { getUser } from "../../../../src/selectors/user";
+import { debounce } from "lodash";
 import { addNewTagAction, getAllTagsAction } from "../../../../TestPage/ducks";
 
 const { Button } = StyledComponents;
@@ -57,12 +58,12 @@ function BulkEditModal({
     });
   };
 
-  const fetchCoursesForDistrict = searchVal => {
-    const searchParams = searchVal
+  const fetchCoursesForDistrict = debounce(searchValue => {
+    const searchParams = searchValue
       ? {
           search: {
-            name: { type: "cont", value: searchVal },
-            number: { type: "cont", value: searchVal },
+            name: [{ type: "cont", value: searchValue }],
+            number: [{ type: "cont", value: searchValue }],
             operator: "or"
           }
         }
@@ -75,7 +76,7 @@ function BulkEditModal({
       ...searchParams
     };
     searchCourseList(data);
-  };
+  }, 1000);
 
   const selectTags = async id => {
     let newTag = {};
@@ -119,6 +120,7 @@ function BulkEditModal({
               notFoundContent={null}
               placeholder="Please enter 1 or more characters"
               onChange={val => setValue(val)}
+              filterOption={false}
             >
               {coursesForDistrictList.map(course => (
                 <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>

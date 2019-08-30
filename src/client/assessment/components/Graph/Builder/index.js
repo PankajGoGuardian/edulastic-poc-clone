@@ -394,6 +394,10 @@ class Board {
     this.editButton.disabled = disabled;
   }
 
+  setEditButtonStatus(disabled) {
+    this.editButton.disabled = disabled;
+  }
+
   checkEditButtonCall(element) {
     return (
       this.elements.some(elem => elem.id === element.id) ||
@@ -404,7 +408,7 @@ class Board {
   }
 
   handleElementMouseOver(element, event) {
-    if (!this.editButton || this.editButton.disabled) {
+    if (this.editButton.disabled) {
       return;
     }
     if (this.checkEditButtonCall(element)) {
@@ -419,7 +423,7 @@ class Board {
   }
 
   handleElementMouseOut(element) {
-    if (this.editButton) {
+    if (!this.editButton.disabled) {
       if (this.checkEditButtonCall(element)) {
         EditButton.hideButton(this, element);
       }

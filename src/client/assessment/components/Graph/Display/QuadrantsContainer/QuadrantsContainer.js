@@ -226,8 +226,14 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
-      if (!disableResponse && view === "edit") {
+      if (!disableResponse) {
         this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
+      }
+
+      if (view === "edit") {
+        this._graph.setEditButtonStatus(false);
+      } else {
+        this._graph.setEditButtonStatus(true);
       }
       this._graph.setDisableResponse(disableResponse);
 
@@ -293,8 +299,16 @@ class GraphContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
-      if (prevProps.disableResponse && !disableResponse && (prevProps.view !== "edit" && view === "edit")) {
+      if (prevProps.disableResponse && !disableResponse) {
         this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
+      }
+
+      if (prevProps.view !== "edit" && view === "edit") {
+        this._graph.setEditButtonStatus(false);
+      }
+
+      if (prevProps.view === "edit" && view !== "edit") {
+        this._graph.setEditButtonStatus(true);
       }
 
       if (

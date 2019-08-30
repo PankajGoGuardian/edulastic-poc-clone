@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
 import * as moment from "moment";
@@ -153,7 +154,25 @@ class StudentTable extends Component {
       {
         title: "Classes",
         dataIndex: "classCount",
-        width: 50
+        width: 50,
+        render: (classCount, record) => {
+          const username = get(record, "_source.username", "");
+          return (
+            <Link
+              to={{
+                pathname: "/author/Class-Enrollment",
+                state: {
+                  filtersColumn: "username",
+                  filtersValue: "eq",
+                  filterStr: username,
+                  filterAdded: true
+                }
+              }}
+            >
+              {classCount}
+            </Link>
+          );
+        }
       },
       {
         dataIndex: "_id",

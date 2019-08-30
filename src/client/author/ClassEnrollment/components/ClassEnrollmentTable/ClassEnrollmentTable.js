@@ -2,7 +2,7 @@ import React from "react";
 import { Icon, message, Button, Menu, Select } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, unset, pickBy, identity, uniqBy } from "lodash";
+import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
 import moment from "moment";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { AddNewUserModal } from "../Common/AddNewUser";
@@ -63,7 +63,12 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   componentDidMount() {
-    this.loadClassEnrollmentList();
+    const { dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadClassEnrollmentList);
+    } else {
+      this.loadClassEnrollmentList();
+    }
   }
 
   renderUserNames() {

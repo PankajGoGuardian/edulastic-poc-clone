@@ -546,6 +546,48 @@ export function fixLatex(latex) {
   };
 }
 
+export function fixApiLatex(latex) {
+  let splitExpr = latex.split("<=");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = "<=";
+    return { latexFunc, compSign };
+  }
+
+  splitExpr = latex.split(">=");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = ">=";
+    return { latexFunc, compSign };
+  }
+
+  splitExpr = latex.split("<");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = "<";
+    return { latexFunc, compSign };
+  }
+
+  splitExpr = latex.split(">");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = ">";
+    return { latexFunc, compSign };
+  }
+
+  splitExpr = latex.split("=");
+  if (splitExpr.length === 2) {
+    const latexFunc = splitExpr[0];
+    const compSign = "=";
+    return { latexFunc, compSign };
+  }
+
+  return {
+    latexFunc: latex,
+    compSign: "="
+  };
+}
+
 export function calcLineLatex(point1, point2) {
   const x1 = point1.x;
   const y1 = point1.y;

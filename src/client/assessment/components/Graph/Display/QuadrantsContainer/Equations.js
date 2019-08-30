@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import styled from "styled-components";
 
+import { graphEvaluateApi } from "@edulastic/api";
 import { Button, MathInput } from "@edulastic/common";
+
 import { CONSTANT } from "../../Builder/config";
 import DeleteButton from "../../common/DeleteButton";
 
@@ -44,15 +46,34 @@ class Equations extends Component {
     if (oldValue === newValue) {
       return;
     }
+
     const { equations, setEquations } = this.props;
     const newEquations = cloneDeep(equations);
     newEquations[index] = {
-      ...emptyEquation,
-      id: `jsxEq-${Math.random().toString(36)}`,
-      latex: newValue,
-      label: newEquations[index].label
+      ...newEquations[index],
+      apiLatex: null,
+      latex: newValue
     };
+
     setEquations(newEquations);
+
+    this.setApiLatex(newValue, index);
+  };
+
+  setApiLatex = (latex, index) => {
+    graphEvaluateApi.convert({ latex }).then(result => {
+      const { equations, setEquations } = this.props;
+      const newEquations = cloneDeep(equations);
+      if (!newEquations[index]) {
+        return;
+      }
+      newEquations[index] = {
+        ...newEquations[index],
+        apiLatex: result
+      };
+
+      setEquations(newEquations);
+    });
   };
 
   handleAddEquation = () => {
@@ -63,6 +84,7 @@ class Equations extends Component {
       id: `jxgEq-${Math.random().toString(36)}`
     });
     setEquations(newEquations);
+    this.setApiLatex(emptyEquation.latex, newEquations.length - 1);
   };
 
   handleDeleteEquation = index => {

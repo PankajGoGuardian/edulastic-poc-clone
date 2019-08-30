@@ -1,7 +1,6 @@
-import { graphEvaluateApi } from "@edulastic/api";
 import { CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
-import { fixLatex } from "../utils";
+import { fixApiLatex } from "../utils";
 
 export const jxgType = 98;
 
@@ -579,7 +578,7 @@ class CanvasPlotter {
 }
 
 function renderElement(board, element, params) {
-  const { latex, id, label } = element;
+  const { latex, id, label, apiLatex } = element;
   const elementWithErrorLatex = {
     type: jxgType,
     id,
@@ -589,20 +588,13 @@ function renderElement(board, element, params) {
     latexIsBroken: true
   };
 
+  if (!apiLatex) {
+    return elementWithErrorLatex;
+  }
+
   let line = null;
-  const fixedLatex = fixLatex(latex);
 
-  graphEvaluateApi.convert({ latex }).then(result => {
-    console.log(result);
-  });
-
-  graphEvaluateApi
-    .evaluate({
-      input: []
-    })
-    .then(result => {
-      console.log(result);
-    });
+  const fixedLatex = fixApiLatex(apiLatex);
 
   let dash;
   if (fixedLatex.compSign === "<" || fixedLatex.compSign === ">") {

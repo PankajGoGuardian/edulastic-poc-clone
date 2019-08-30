@@ -39,9 +39,9 @@ class MCQBlockLayoutPage extends MCQStandardPage {
 
       if (setAns) {
         const { correct, points } = setAns;
-        /* this.getPoints()
-          .clear()
-          .type(points); */
+        this.getPoints()
+          .clear({ force: true })
+          .type(`{selectAll}${points}`);
 
         this.getAllAnsChoicesLabel()
           .find("input:checked")
@@ -54,8 +54,8 @@ class MCQBlockLayoutPage extends MCQStandardPage {
         });
 
         this.header.save();
-        item.updateItemLevelScore(points);
-        item.header.save(true);
+        /*  item.updateItemLevelScore(points);
+        item.header.save(true); */
       }
     });
   }

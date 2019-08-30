@@ -29,8 +29,10 @@ export const queColor = {
   RIGHT: "rgb(94, 181, 0)",
   WRONG: "rgb(243, 95, 95)",
   SKIP: "rgb(229, 229, 229)",
-  BLUE: "rgb(23, 116, 240)",
-  CLEAR_DAY: "rgb(225, 251, 242)"
+  GREEN: "rgb(23, 116, 240)",
+  CLEAR_DAY: "rgb(225, 251, 242)",
+  LIGHT_GREEN: "rgba(31, 227, 161, 0.118)",
+  LIGHT_RED: "rgba(238, 22, 88, 0.118)"
 };
 
 export const questionGroup = {
@@ -95,7 +97,7 @@ export const questionTypeMap = {
   ],
   Charts: ["Line plot", "Dot plot", "Histogram", "Bar chart", "Line chart"],
   Chemistry: [],
-  Multipart: ["Math, Text & Dropdown", "Combination Multipart"],
+  Multipart: ["Math, Text & Dropdown"],
   "Video & Text": ["Video"],
   "Rulers & Calculators": ["Protractor"],
   Other: []

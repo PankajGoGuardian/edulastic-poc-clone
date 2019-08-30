@@ -39,9 +39,9 @@ class MCQTrueFalsePage extends MCQStandardPage {
 
       if (setAns) {
         const { correct, points } = setAns;
-        /* this.getPoints()
-          .clear()
-          .type(points); */
+        this.getPoints()
+          .clear({ force: true })
+          .type(`{selectAll}${points}`);
 
         // uncheck default ans
         this.getAllAnsChoicesLabel()
@@ -53,9 +53,9 @@ class MCQTrueFalsePage extends MCQStandardPage {
           .click();
 
         this.header.save();
-        item.updateItemLevelScore(points);
+        // item.updateItemLevelScore(points);
       }
-      item.header.save(true);
+      // item.header.save(true);
     });
   }
 }

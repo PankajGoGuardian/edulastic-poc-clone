@@ -763,6 +763,7 @@ class ClassesTable extends Component {
           bulkUpdateClasses={this._bulkUpdateClasses}
           searchCourseList={searchCourseList}
           coursesForDistrictList={coursesForDistrictList}
+          allTagsData={allTagsData}
         />
       </StyledTableContainer>
     );

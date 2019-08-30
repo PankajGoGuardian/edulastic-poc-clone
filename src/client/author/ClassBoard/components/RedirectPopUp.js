@@ -7,14 +7,14 @@ import { ConfirmationModal } from "../../src/components/common/ConfirmationModal
 import { BodyContainer } from "./styled";
 
 const QuestionDelivery = {
-  ALL: "Student Response & Feedback",
-  SKIPPED_WRONG: "Skipped and Wrong"
+  ALL: "ALL",
+  SKIPPED_WRONG: "SKIPPED_AND_WRONG"
 };
 
 const ShowPreviousAttempt = {
-  SCORE_FEEDBACK: "Score & Feedback",
-  STUDENT_RESPONSE_FEEDBACK: "Student Response & Feedback",
-  FEEDBACK_ONLY: "Feedback only"
+  SCORE_FEEDBACK: "SCORE_AND_FEEDBACK",
+  STUDENT_RESPONSE_FEEDBACK: "STUDENT_RESPONSE_AND_FEEDBACK",
+  FEEDBACK_ONLY: "FEEDBACK_ONLY"
 };
 
 const RadioGroup = Radio.Group;
@@ -92,6 +92,8 @@ const RedirectPopUp = ({
         _id: groupId,
         specificStudents: type === "entire" ? false : true,
         students: type === "entire" ? [] : selected,
+        showPreviousAttempt: showPrevAttempt,
+        QuestionDelivery: qDeliveryState,
         endDate: +dueDate
       });
       closePopup();
@@ -215,8 +217,8 @@ const RedirectPopUp = ({
                 onChange={val => setshowPrevAttempt(val)}
                 style={{ width: "100%" }}
               >
-                {Object.keys(ShowPreviousAttempt).map(item => (
-                  <Option key="1" value={item}>
+                {Object.keys(ShowPreviousAttempt).map((item, index) => (
+                  <Option key={index} value={item}>
                     {ShowPreviousAttempt[item]}
                   </Option>
                 ))}

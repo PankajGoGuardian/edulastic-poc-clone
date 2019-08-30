@@ -93,7 +93,7 @@ const RedirectPopUp = ({
         specificStudents: type === "entire" ? false : true,
         students: type === "entire" ? [] : selected,
         showPreviousAttempt: showPrevAttempt,
-        QuestionDelivery: qDeliveryState,
+        // QuestionDelivery: qDeliveryState,
         endDate: +dueDate
       });
       closePopup();

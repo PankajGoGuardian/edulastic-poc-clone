@@ -120,6 +120,7 @@ class ClozeDropDownDisplay extends Component {
       showQuestionNumber,
       userSelections,
       isReviewTab,
+      isExpressGrader,
       theme,
       previewTab,
       changePreviewTab
@@ -140,28 +141,29 @@ class ClozeDropDownDisplay extends Component {
 
     const hasAltAnswers = item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
 
-    const answerBox = showAnswer ? (
-      <React.Fragment>
-        <CorrectAnswerBoxLayout
-          fontSize={fontSize}
-          groupResponses={options}
-          userAnswers={item.validation.validResponse && item.validation.validResponse.value}
-          responseIds={item.responseIds}
-          stemNumeration={stemNumeration}
-        />
-        {hasAltAnswers && (
+    const answerBox =
+      showAnswer || isExpressGrader ? (
+        <React.Fragment>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
-            altResponses={item.validation.altResponses}
+            userAnswers={item.validation.validResponse && item.validation.validResponse.value}
             responseIds={item.responseIds}
             stemNumeration={stemNumeration}
           />
-        )}
-      </React.Fragment>
-    ) : (
-      <div />
-    );
+          {hasAltAnswers && (
+            <CorrectAnswerBoxLayout
+              fontSize={fontSize}
+              groupResponses={options}
+              altResponses={item.validation.altResponses}
+              responseIds={item.responseIds}
+              stemNumeration={stemNumeration}
+            />
+          )}
+        </React.Fragment>
+      ) : (
+        <div />
+      );
     const resProps = {
       item,
       qIndex,
@@ -175,7 +177,7 @@ class ClozeDropDownDisplay extends Component {
       options: responses,
       onChange: this.selectChange,
       responsecontainerindividuals,
-      stemNumeration: stemNumeration,
+      stemNumeration,
       previewTab,
       changePreviewTab,
       userAnswers: userSelections || [],
@@ -232,6 +234,7 @@ ClozeDropDownDisplay.propTypes = {
   item: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
+  isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   theme: PropTypes.object
@@ -262,6 +265,7 @@ ClozeDropDownDisplay.defaultProps = {
   },
   showQuestionNumber: false,
   isReviewTab: false,
+  isExpressGrader: false,
   qIndex: null
 };
 

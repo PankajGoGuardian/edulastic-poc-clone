@@ -227,6 +227,7 @@ class ClozeDropDown extends Component {
               onChange={this.handleAddAnswer}
               evaluation={evaluation}
               instructorStimulus={instructorStimulus}
+              isExpressGrader={answerContextConfig.expressGrader && previewTab === "show"}
               {...restProps}
             />
           </Wrapper>

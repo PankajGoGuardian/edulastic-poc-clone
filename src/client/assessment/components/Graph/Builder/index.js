@@ -389,9 +389,9 @@ class Board {
     this.disableResponse = value;
   }
 
-  createEditButton(menuHandler, disabled = false) {
+  createEditButton(menuHandler) {
     this.editButton = EditButton.createButton(this, menuHandler);
-    this.editButton.disabled = disabled;
+    this.editButton.disabled = false;
   }
 
   setEditButtonStatus(disabled) {

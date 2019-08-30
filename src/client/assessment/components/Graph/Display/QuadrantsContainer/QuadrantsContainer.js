@@ -226,7 +226,7 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
-      this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
+      this._graph.createEditButton(this.handleElementSettingsMenuOpen);
       this._graph.setDisableResponse(disableResponse);
 
       if (view === "edit" && !disableResponse) {

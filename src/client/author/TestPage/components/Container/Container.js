@@ -440,7 +440,6 @@ class Container extends PureComponent {
   };
 
   handlePublishTest = (assignFlow = false) => {
-    console.log("assf", assignFlow);
     const { publishTest, test, match } = this.props;
     const { _id } = test;
     if (this.validateTest(test)) {

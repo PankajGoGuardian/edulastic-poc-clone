@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get, keyBy } from "lodash";
+import { get, keyBy, isEmpty } from "lodash";
 import { message, Dropdown, Select } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -13,7 +13,8 @@ import {
   IconRedirect,
   IconPrint,
   IconAddStudents,
-  IconRemove
+  IconRemove,
+  IconInfo
 } from "@edulastic/icons";
 // actions
 import {
@@ -516,7 +517,12 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params;
     const classname = additionalData ? additionalData.classes : [];
     const isMobile = this.isMobile();
-    const studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
+    let studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
+    studentTestActivity.timeSpent =
+      (studentResponse &&
+        studentResponse.questionActivities &&
+        studentResponse.questionActivities.reduce((acc, qa) => (acc += qa.timeSpent), 0)) ||
+      0;
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
@@ -744,6 +750,7 @@ class ClassBoard extends Component {
                   endDate={additionalData.endDate || additionalData.closedDate}
                   studentUnselect={this.onUnselectCardOne}
                   viewResponses={(e, selected) => {
+                    getAllTestActivitiesForStudent({ studentId: selected, assignmentId, groupId: classId });
                     this.onTabChange(e, "Student", selected);
                   }}
                   isPresentationMode={isPresentationMode}
@@ -805,24 +812,26 @@ class ClassBoard extends Component {
                       studentResponse={studentResponse}
                     />
                     <div>
-                      <Select
-                        style={{ width: "200px" }}
-                        value={
-                          allTestActivitiesForStudent.includes(currentTestActivityId || testActivityId)
-                            ? currentTestActivityId || testActivityId
-                            : ""
-                        }
-                        onChange={testActivityId => {
-                          loadStudentResponses({ testActivityId, groupId: classId });
-                          setCurrentTestActivityId(testActivityId);
-                        }}
-                      >
-                        {allTestActivitiesForStudent.map((testActivityId, index) => (
-                          <Select.Option key={index} value={testActivityId}>
-                            {`Attempt ${index + 1}`}
-                          </Select.Option>
-                        ))}
-                      </Select>
+                      {allTestActivitiesForStudent.length > 1 && (
+                        <Select
+                          style={{ width: "200px" }}
+                          value={
+                            allTestActivitiesForStudent.includes(currentTestActivityId || testActivityId)
+                              ? currentTestActivityId || testActivityId
+                              : ""
+                          }
+                          onChange={testActivityId => {
+                            loadStudentResponses({ testActivityId, groupId: classId });
+                            setCurrentTestActivityId(testActivityId);
+                          }}
+                        >
+                          {[...allTestActivitiesForStudent].reverse().map((testActivityId, index) => (
+                            <Select.Option key={index} value={testActivityId}>
+                              {`Attempt ${allTestActivitiesForStudent.length - index}`}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      )}
                       <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div
                           style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
@@ -839,13 +848,25 @@ class ClassBoard extends Component {
                           <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
                             {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${studentTestActivity.scoreChange || 0}`}
                           </ScoreChangeWrapper>
-                          <ScoreHeader style={{ fontSize: "10px" }}>
-                            <span title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses">
-                              Improvement
+                          <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
+                            <span>{`Improvement `}</span>
+                            <span
+                              style={{ marginLeft: "2px" }}
+                              title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
+                            >
+                              <IconInfo />
                             </span>
                           </ScoreHeader>
                         </div>
                       </div>
+                      <ScoreHeader style={{ fontSize: "12px" }}>
+                        {" "}
+                        {`TIME (min) `}{" "}
+                        <span style={{ color: black, textTransform: "capitalize" }}>
+                          {`${Math.floor(studentTestActivity.timeSpent / 60)}:${studentTestActivity.timeSpent % 60}` ||
+                            ""}
+                        </span>
+                      </ScoreHeader>
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {" "}
                         {`STATUS  `}{" "}

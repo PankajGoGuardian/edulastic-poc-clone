@@ -71,6 +71,15 @@ class DistrictPolicyForm extends Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    /**
+     * school selection is changed
+     */
+    if (prevProps.schoolId != this.props.schoolId && this.props.schoolId) {
+      loadSchoolPolicy(this.props.schoolId);
+    }
+  }
+
   static getDerivedStateFromProps(nextProps) {
     const defaultDistrictPolicy = {
       userNameAndPassword: true,

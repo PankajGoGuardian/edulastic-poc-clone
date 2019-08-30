@@ -7,7 +7,7 @@ import { get } from "lodash";
 function SaSchoolSelect({ schools, selected, setSchool }) {
   return (
     <Row>
-      <Col span={4} push={20}>
+      <Col span={4} push={19}>
         <Select value={selected} onChange={v => setSchool(v)}>
           {schools.map(s => (
             <Select.Option value={s._id}>{s.name}</Select.Option>

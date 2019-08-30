@@ -67,8 +67,13 @@ function ProfileRow(props) {
         title="Delete Profile"
         onCancel={() => setConfirmVisible(false)}
         visible={confirmVisible}
+        closable={false}
         footer={[
-          <Button disabled={deleteText != "DELETE"} loading={props.loading} onClick={() => deleteRow(_id)}>
+          <Button
+            disabled={deleteText.toUpperCase() != "DELETE"}
+            loading={props.loading}
+            onClick={() => deleteRow(_id)}
+          >
             Yes, Delete
           </Button>,
           <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
@@ -118,7 +123,7 @@ function StandardsProficiency(props) {
     if (name === "") {
       message.error("Name cannot be empty");
     } else if (name) {
-      if (props.profiles.find(p => p.name === name)) {
+      if (props.profiles.find(p => (p.name || "").toLowerCase() === name.toLowerCase())) {
         message.error(`Profile with name "${name}" already exists. Please try with a different name`);
         return;
       }

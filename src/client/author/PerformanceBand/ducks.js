@@ -130,6 +130,7 @@ function* receivePerformanceBandSaga({ payload }) {
   payload = payload || { orgId: defaultOrgId };
   try {
     const performanceBand = yield call(settingsApi.getPerformanceBand, payload);
+    performanceBand.sort((el1, el2) => (el1._id > el2._id ? -1 : 1));
     yield put(receivePerformanceBandSuccessAction(performanceBand));
   } catch (err) {
     const errorMessage = "Receive PerformanceBand is failing";

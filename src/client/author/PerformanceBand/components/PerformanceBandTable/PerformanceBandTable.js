@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 import produce from "immer";
-import ColorPicker from "../Container/ColorPicker";
+import ColorPicker, { colors as colorsList } from "../Container/ColorPicker";
 import { themeColor, themeColorLighter } from "@edulastic/colors";
 import styled from "styled-components";
 
@@ -387,12 +387,25 @@ export class PerformanceBandTable extends React.Component {
 
   changeColor = (color, key) => {
     const index = this.state.dataSource.findIndex(x => x.key === key);
+    const colorExists = this.state.dataSource
+      .filter((x, ind) => ind != index)
+      .map(x => x.color)
+      .includes(color);
 
+    if (colorExists) {
+      message.error("Please select a different color. The selected color is already used for different Band");
+      return;
+    }
     const data = produce(this.state.dataSource, ds => {
       ds[index].color = color;
     });
     this.setState({ isChangeState: true, dataSource: data });
     this.props.setPerformanceBandData(data);
+  };
+
+  getUnusedColor = () => {
+    const existingColors = this.state.dataSource.map(x => x.color);
+    return colorsList.find(x => !existingColors.includes(x));
   };
 
   handleDelete = (e, key) => {
@@ -420,7 +433,7 @@ export class PerformanceBandTable extends React.Component {
       key: Math.max(...keyArray) + 1,
       name: "Performance Band" + (Math.max(...keyArray) + 1),
       aboveOrAtStandard: true,
-      color: "#576BA9",
+      color: this.getUnusedColor() || "#fff",
       from: 0,
       to: 0
     };

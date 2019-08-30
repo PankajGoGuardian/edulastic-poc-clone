@@ -96,8 +96,9 @@ function ProfileRow({
       <Modal
         title="Delete Profile"
         visible={confirmVisible}
+        closable={false}
         footer={[
-          <Button disabled={deleteText != "DELETE"} loading={loading} onClick={() => remove(_id)}>
+          <Button disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
             Yes, Delete
           </Button>,
           <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
@@ -165,7 +166,7 @@ export function PerformanceBandAlt(props) {
     const name = prompt("name of the profile?");
 
     if (name) {
-      if (profiles.find(p => p.name === name)) {
+      if (profiles.find(p => (p.name || "").toLowerCase() === name.toLocaleLowerCase())) {
         message.error(`Profile with name "${name}" already exists. Please try with a different name`);
         return;
       }

@@ -3,6 +3,15 @@ import { Form, Input } from "antd";
 
 export const EditableLabelDiv = styled.div`
   display: flex;
+  .not-editing-input {
+    border: none;
+    width: auto;
+    box-shadow: none;
+    caret-color: transparent;
+  }
+  .not-editing-input:focus {
+    box-shadow: none;
+  }
 `;
 
 export const StyledFormItem = styled(Form.Item)`

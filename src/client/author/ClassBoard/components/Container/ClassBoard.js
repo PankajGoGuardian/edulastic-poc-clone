@@ -524,6 +524,13 @@ class ClassBoard extends Component {
         studentResponse.questionActivities.reduce((acc, qa) => (acc += qa.timeSpent), 0)) ||
         0) / 1000
     );
+    let { score = 0, maxScore = 0, scoreChange = 0, status } = studentTestActivity;
+    if (studentResponse && !isEmpty(studentResponse.questionActivities) && status === 0) {
+      studentResponse.questionActivities.forEach(uqa => {
+        score += uqa.score;
+        maxScore += uqa.maxScore;
+      });
+    }
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
@@ -838,9 +845,9 @@ class ClassBoard extends Component {
                           style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
                         >
                           <ScoreHeader>TOTAL SCORE</ScoreHeader>
-                          <ScoreWrapper>{studentTestActivity.score || 0}</ScoreWrapper>
+                          <ScoreWrapper>{score || 0}</ScoreWrapper>
                           <div style={{ border: "solid 1px black", width: "50px" }} />
-                          <ScoreWrapper>{studentTestActivity.maxScore || 0}</ScoreWrapper>
+                          <ScoreWrapper>{maxScore || 0}</ScoreWrapper>
                         </div>
                         {allTestActivitiesForStudent.length > 1 && (
                           <div
@@ -878,7 +885,9 @@ class ClassBoard extends Component {
                           {studentTestActivity.status === 2
                             ? "Absent"
                             : studentTestActivity.status === 1
-                            ? "Submitted"
+                            ? studentTestActivity.graded === "GRADED"
+                              ? "Graded"
+                              : "Submitted"
                             : "In Progress" || ""}
                         </span>
                       </ScoreHeader>

@@ -8,7 +8,16 @@ import { Row, Col } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClose } from "@edulastic/icons";
-import { themeColor, white, title, fadedGreen, cardBg, mobileWidthMax } from "@edulastic/colors";
+import {
+  themeColor,
+  white,
+  title,
+  fadedGreen,
+  cardBg,
+  mobileWidthMax,
+  mobileWidth,
+  mobileWidthLarge
+} from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
@@ -440,20 +449,34 @@ const ProceedBtn = styled(Button)`
 `;
 
 const OptionBody = styled.div`
+  display: flex;
   width: 100%;
+  @media (max-width: ${mobileWidthLarge}) {
+    flex-direction: column;
+  }
 `;
 
 const SchoolInfo = styled.div`
+  width: 50%;
   span {
     font-weight: 600;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
   }
 `;
 
 const DistrictInfo = styled.div`
-  width: 100%;
+  align-self: flex-end;
+  text-align: end;
+  width: 50%;
   span {
     font-weight: 600;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    align-self: flex-start;
+    text-align: start;
+    width: 100%;
   }
 `;
 

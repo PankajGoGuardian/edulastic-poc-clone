@@ -721,6 +721,7 @@ export const themes = {
       },
       chart: {
         bgColor: "#fff",
+        axisLabelFontWeight: "bold",
         labelStrokeColor: "#42d184"
       },
       fractionEditor: {

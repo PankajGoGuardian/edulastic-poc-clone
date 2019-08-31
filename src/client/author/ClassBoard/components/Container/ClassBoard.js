@@ -842,23 +842,26 @@ class ClassBoard extends Component {
                           <div style={{ border: "solid 1px black", width: "50px" }} />
                           <ScoreWrapper>{studentTestActivity.maxScore || 0}</ScoreWrapper>
                         </div>
-                        <div
-                          style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
-                        >
-                          <ScoreHeader>SCORE</ScoreHeader>
-                          <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
-                            {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${studentTestActivity.scoreChange || 0}`}
-                          </ScoreChangeWrapper>
-                          <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
-                            <span>{`Improvement `}</span>
-                            <span
-                              style={{ marginLeft: "2px" }}
-                              title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
-                            >
-                              <IconInfo />
-                            </span>
-                          </ScoreHeader>
-                        </div>
+                        {allTestActivitiesForStudent.length > 1 && (
+                          <div
+                            style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
+                          >
+                            <ScoreHeader>SCORE</ScoreHeader>
+                            <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
+                              {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${studentTestActivity.scoreChange ||
+                                0}`}
+                            </ScoreChangeWrapper>
+                            <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
+                              <span>{`Improvement `}</span>
+                              <span
+                                style={{ marginLeft: "2px" }}
+                                title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
+                              >
+                                <IconInfo />
+                              </span>
+                            </ScoreHeader>
+                          </div>
+                        )}
                       </div>
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {" "}

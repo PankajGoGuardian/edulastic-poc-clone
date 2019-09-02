@@ -282,7 +282,7 @@ export const transformGradeBookResponse = ({
         const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
         const submitted = testActivity.status == testActivityStatus.SUBMITTED;
         const absent = testActivity.status === testActivityStatus.ABSENT;
-        const redirected = testActivity.redirected;
+        const redirected = testActivity.previouslyRedirected;
         const testActivityId = testActivity._id;
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId];

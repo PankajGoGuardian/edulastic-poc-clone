@@ -137,8 +137,17 @@ export const AddButtonStyled = styled(Button)`
   font-weight: 600;
   text-transform: uppercase;
   margin-left: 10px;
-  color: ${themeColor};
+  color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+  border-color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)} !important;
   padding: 0 15px;
+
+  &.ant-btn {
+    &:hover,
+    &:focus,
+    &:active {
+      color: ${({ selectedToCart }) => (selectedToCart ? red : themeColor)};
+    }
+  }
 
   svg {
     max-width: 13px;

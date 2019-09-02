@@ -5,11 +5,12 @@ import { withNamespaces } from "@edulastic/localization";
 import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import produce from "immer";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
 import { withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
-import { Row, Col, Switch, Layout, Select, Button, Modal } from "antd";
+import { Row, Col, Layout, Button, Modal, Pagination } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -46,7 +47,16 @@ import {
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
-import { Content, ItemDetailWrapper, PreviewContent, ButtonClose, BackLink, ContentWrapper } from "./styled";
+import {
+  Content,
+  ItemDetailWrapper,
+  PreviewContent,
+  ButtonClose,
+  BackLink,
+  ContentWrapper,
+  PassageNavigation,
+  AddRemoveButtonWrapper
+} from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
@@ -60,6 +70,7 @@ import { changePreviewTabAction } from "../../../ItemAdd/ducks";
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
 import { questionType } from "@edulastic/constants";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
+import AuthorTestItemPreview from "../../../src/components/common/PreviewModal/AuthorTestItemPreview";
 
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -301,13 +312,13 @@ class Container extends Component {
   };
 
   renderPreview = () => {
-    const { rows, preview, questions, item: itemProps, passage } = this.props;
+    const { rows, preview, questions, item: itemProps, passage, view } = this.props;
     const item = itemProps || {};
 
     let allRows = !!item.passageId ? [passage.structure, ...rows] : rows;
     return (
-      <PreviewContent>
-        <TestItemPreview
+      <PreviewContent view={view}>
+        <AuthorTestItemPreview
           cols={allRows}
           previewTab={preview}
           preview={preview}
@@ -315,7 +326,9 @@ class Container extends Component {
           scrolling={item.scrolling}
           style={{ width: "100%" }}
           questions={questions}
-          showCollapseBtn
+          item={item}
+          isAnswerBtnVisible={false}
+          page={"itemAuthoring"}
         />
       </PreviewContent>
     );
@@ -377,14 +390,15 @@ class Container extends Component {
     /**
      * assuming this method is going to be called only when type is passageWithQuestions
      */
-    const data = {
-      ...defaultEmptyItem,
-      canAddMultipleItems: true,
-      isPassageWithQuestions: true,
-      multipartItem: true,
-      passageId: passage._id
-    };
-    this.props.createItem(data);
+    const item = produce(defaultEmptyItem, draft => {
+      draft.rows[0].dimension = "50%";
+      draft.canAddMultipleItems = true;
+      draft.canAddMultipleItems = true;
+      draft.isPassageWithQuestions = true;
+      draft.multipartItem = true;
+      draft.passageId = passage._id;
+    });
+    this.props.createItem(item);
   };
 
   handleRemoveItemRequest = () => {
@@ -412,8 +426,13 @@ class Container extends Component {
     });
   };
 
-  goToItem = id => {
-    this.props.history.push({ pathname: `/author/items/${id}/item-detail`, state: { resetView: false } });
+  goToItem = page => {
+    const { passage, history } = this.props;
+    const _id = passage.testItems[page - 1];
+    history.push({
+      pathname: `/author/items/${_id}/item-detail`,
+      state: { resetView: false }
+    });
   };
 
   handleCollapse = dir => {
@@ -426,6 +445,9 @@ class Container extends Component {
     const { collapseDirection } = this.state;
     const { rows, item, updateTabTitle, windowWidth, passage, view } = this.props;
     const passageWithQuestions = !!item.passageId;
+    const useTabsLeft = passageWithQuestions
+      ? !!get(passage, ["structure", "tabs", "length"], 0)
+      : !!get(rows, [0, "tabs", "length"], 0);
     const collapseLeft = collapseDirection === "left";
     const collapseRight = collapseDirection === "right";
     return (
@@ -447,6 +469,7 @@ class Container extends Component {
               right={false}
               handleCollapse={this.handleCollapse}
               collapseDirection={collapseDirection}
+              useTabsLeft={useTabsLeft}
             />
           )}
           {rows &&
@@ -462,8 +485,8 @@ class Container extends Component {
                   key={passage ? i + 1 : i}
                   row={row}
                   view={view}
-                  showAnswer
                   rowIndex={i}
+                  previewTab={"show"}
                   itemData={item}
                   count={rows.length}
                   onAdd={this.handleAdd}
@@ -475,6 +498,7 @@ class Container extends Component {
                   right={(!!item.passageId && i === 0) || i === 1}
                   handleCollapse={this.handleCollapse}
                   collapseDirection={collapseDirection}
+                  useTabsLeft={useTabsLeft}
                 />
               );
             })}
@@ -546,7 +570,6 @@ class Container extends Component {
       .some(widgetType => widgetType === questionType.PASSAGE);
 
     const layoutType = isPassage ? COMPACT : DEFAULT;
-
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
         <ConfirmationModal
@@ -626,45 +649,30 @@ class Container extends Component {
               <Col md={24}>
                 {windowWidth > MAX_MOBILE_WIDTH ? (
                   <SecondHeadBar breadCrumbQType={breadCrumbQType} breadcrumb={isTestFlow ? breadCrumb : undefined}>
-                    {item.canAddMultipleItems && passage && (
-                      <Row type="flex" style={{ width: 145 }} justify="end">
-                        <Col span={12}>
-                          {!!passageTestItems.length && (
-                            <Select
-                              value={item._id}
-                              onChange={v => {
-                                this.goToItem(v);
-                              }}
-                            >
-                              {passage.testItems.map((v, ind) => (
-                                <Select.Option value={v}>{ind + 1}</Select.Option>
-                              ))}
-                            </Select>
-                          )}
-                        </Col>
-                        <Col span={12}>
-                          {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
-                            <Button.Group>
-                              <Button
-                                disabled={this.props.itemDeleting}
-                                onClick={this.addItemToPassage}
-                                style={{ display: "inline" }}
-                                size="small"
-                              >
-                                +
-                              </Button>
-                              <Button
-                                disabled={this.props.itemDeleting}
-                                onClick={this.handleRemoveItemRequest}
-                                style={{ display: "inline" }}
-                                size="small"
-                              >
-                                -
-                              </Button>
-                            </Button.Group>
-                          )}
-                        </Col>
-                      </Row>
+                    {item.canAddMultipleItems && passage && view !== "metadata" && (
+                      <PassageNavigation>
+                        {passageTestItems.length > 1 && (
+                          <>
+                            <span>PASSAGE ITEMS </span>
+                            <Pagination
+                              total={passageTestItems.length}
+                              pageSize={1}
+                              defaultCurrent={passageTestItems.findIndex(i => i === item.versionId) + 1}
+                              onChange={this.goToItem}
+                            />
+                          </>
+                        )}
+                        {((!!rows[0] && !!rows[0].widgets.length) || passage.testItems.length > 1) && (
+                          <AddRemoveButtonWrapper>
+                            <Button disabled={this.props.itemDeleting} onClick={this.handleRemoveItemRequest}>
+                              - ITEM
+                            </Button>
+                            <Button disabled={this.props.itemDeleting} onClick={this.addItemToPassage}>
+                              + ITEM
+                            </Button>
+                          </AddRemoveButtonWrapper>
+                        )}
+                      </PassageNavigation>
                     )}
                     {view === "preview" && (
                       <RightActionButtons col={12}>

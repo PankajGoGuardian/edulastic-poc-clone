@@ -29,6 +29,15 @@ var _math = require("./math");
 
 var _clozeText = _interopRequireDefault(require("./clozeText"));
 
+// combine unit and value for the clozeMath type Math w/Unit
+var combineUnitAndExpression = function combineUnitAndExpression(expression, unit) {
+  if (expression.search("=") === -1) {
+    return expression + unit;
+  }
+
+  return expression.replace(/=/gm, "".concat(unit, "="));
+};
+
 var mathEval =
   /*#__PURE__*/
   (function() {
@@ -61,11 +70,25 @@ var mathEval =
                               value: validResponses[id]
                             });
                             answers = (validResponses[id] || []).map(function(item) {
+                              var _item$options = item.options,
+                                options = _item$options === void 0 ? {} : _item$options;
+
+                              if (options.unit) {
+                                return combineUnitAndExpression(item.value, options.unit);
+                              }
+
                               return item.value;
                             });
                             requests = answers.map(function(ans) {
+                              var value = userResponse[id].value;
+                              var unit = userResponse[id].unit;
+
+                              if (unit) {
+                                value = combineUnitAndExpression(value, unit);
+                              }
+
                               var data = {
-                                input: userResponse[id].value.replace(/\\ /g, " "),
+                                input: value.replace(/\\ /g, " "),
                                 expected: ans ? ans.replace(/\\ /g, " ") : "",
                                 checks: checks
                               };
@@ -159,6 +182,8 @@ var normalEvaluator =
           dropDowns,
           _userResponse$maths,
           maths,
+          _userResponse$mathUni,
+          mathUnits,
           score,
           maxScore,
           allEvaluations,
@@ -170,6 +195,7 @@ var normalEvaluator =
           dropDownEvaluation,
           clozeTextEvaluation,
           mathEvaluation,
+          _mathEvaluation,
           correctCount,
           answersCount,
           scoreOfAnswer,
@@ -199,7 +225,9 @@ var normalEvaluator =
                   (_userResponse$dropDow = userResponse.dropDowns),
                   (dropDowns = _userResponse$dropDow === void 0 ? {} : _userResponse$dropDow),
                   (_userResponse$maths = userResponse.maths),
-                  (maths = _userResponse$maths === void 0 ? {} : _userResponse$maths);
+                  (maths = _userResponse$maths === void 0 ? {} : _userResponse$maths),
+                  (_userResponse$mathUni = userResponse.mathUnits),
+                  (mathUnits = _userResponse$mathUni === void 0 ? {} : _userResponse$mathUni);
                 score = 0;
                 maxScore = 0;
                 allEvaluations = [];
@@ -208,7 +236,7 @@ var normalEvaluator =
 
               case 8:
                 if (!(i < validAnswers.length)) {
-                  _context3.next = 32;
+                  _context3.next = 37;
                   break;
                 }
 
@@ -270,9 +298,29 @@ var normalEvaluator =
                 evaluations = (0, _objectSpread2["default"])({}, evaluations, mathEvaluation);
 
               case 20:
+                if (!validAnswers[i].mathUnits) {
+                  _context3.next = 25;
+                  break;
+                }
+
+                _context3.next = 23;
+                return mathEval({
+                  userResponse: mathUnits,
+                  validation: {
+                    scoringType: "exactMatch",
+                    validResponse: validAnswers[i].mathUnits
+                  }
+                });
+
+              case 23:
+                _mathEvaluation = _context3.sent;
+                evaluations = (0, _objectSpread2["default"])({}, evaluations, _mathEvaluation);
+
+              case 25:
                 correctCount = Object.values(evaluations).filter(_identity2["default"]).length;
                 answersCount =
                   (0, _get2["default"])(validAnswers[i].dropdown, ["value", "length"], 0) +
+                  (0, _get2["default"])(validAnswers[i].mathUnits, ["value", "length"], 0) +
                   (0, _get2["default"])(validAnswers[i], ["value", "length"], 0) +
                   (0, _get2["default"])(validAnswers[i].textinput, ["value", "length"], 0);
                 scoreOfAnswer = maxScore / answersCount;
@@ -290,12 +338,12 @@ var normalEvaluator =
                   score: currentScore
                 });
 
-              case 29:
+              case 34:
                 i++;
                 _context3.next = 8;
                 break;
 
-              case 32:
+              case 37:
                 selectedEvaluation = (0, _maxBy2["default"])(allEvaluations, "score");
 
                 if (score === 0) {
@@ -318,7 +366,7 @@ var normalEvaluator =
                   maxScore: maxScore
                 });
 
-              case 37:
+              case 42:
               case "end":
                 return _context3.stop();
             }
@@ -430,12 +478,22 @@ var mixAndMatchMathEvaluator =
                                 var checks = (0, _math.getChecks)({
                                   value: [validAnswer]
                                 });
-                                var expected = (validAnswer.value || "").replace(/\\ /g, " ");
-                                var input = userResponse[id].value.replace(/\\ /g, " ");
+                                var expected = validAnswer.value || "";
+                                var input = userResponse[id].value;
+                                var options = validAnswer.options;
+
+                                if (options.unit) {
+                                  expected = combineUnitAndExpression(validAnswer.value, options.unit);
+                                }
+
+                                if (userResponse[id].unit) {
+                                  input = combineUnitAndExpression(userResponse[id].value, userResponse[id].unit);
+                                }
+
                                 return (0, _math.evaluate)({
-                                  input: input,
                                   checks: checks,
-                                  expected: expected
+                                  input: input.replace(/\\ /g, " "),
+                                  expected: expected.replace(/\\ /g, " ")
                                 });
                               });
                               _context4.next = 5;
@@ -518,14 +576,18 @@ var mixAndMatchEvaluator =
           dropDowns,
           _userResponse$maths2,
           maths,
+          _userResponse$mathUni2,
+          mathUnits,
           alt_inputs,
           alt_dropdowns,
+          altMathUnits,
           questionScore,
           score,
           optionCount,
           clozeTextEvaluation,
           dropDownEvaluation,
           mathEvaluation,
+          mathUnitsEvaluation,
           evaluation,
           correctAnswerCount,
           wrongAnswerCount,
@@ -551,7 +613,9 @@ var mixAndMatchEvaluator =
                   (_userResponse$dropDow2 = userResponse.dropDowns),
                   (dropDowns = _userResponse$dropDow2 === void 0 ? {} : _userResponse$dropDow2),
                   (_userResponse$maths2 = userResponse.maths),
-                  (maths = _userResponse$maths2 === void 0 ? {} : _userResponse$maths2);
+                  (maths = _userResponse$maths2 === void 0 ? {} : _userResponse$maths2),
+                  (_userResponse$mathUni2 = userResponse.mathUnits),
+                  (mathUnits = _userResponse$mathUni2 === void 0 ? {} : _userResponse$mathUni2);
                 alt_inputs = altResponses.map(function(alt_res) {
                   return (0, _objectSpread2["default"])(
                     {
@@ -568,10 +632,19 @@ var mixAndMatchEvaluator =
                     alt_res.dropdown
                   );
                 });
+                altMathUnits = altResponses.map(function(alt_res) {
+                  return (0, _objectSpread2["default"])(
+                    {
+                      score: 1
+                    },
+                    alt_res.mathUnits
+                  );
+                });
                 questionScore = (validResponse && validResponse.score) || 1;
                 score = 0;
                 optionCount =
                   (0, _get2["default"])(validResponse.dropdown, ["value", "length"], 0) +
+                  (0, _get2["default"])(validResponse.mathUnits, ["value", "length"], 0) +
                   (0, _get2["default"])(validResponse, ["value", "length"], 0) +
                   (0, _get2["default"])(validResponse.textinput, ["value", "length"], 0); // cloze-text evaluation!
 
@@ -616,11 +689,11 @@ var mixAndMatchEvaluator =
                 _context6.t1 = validResponse;
 
                 if (!_context6.t1) {
-                  _context6.next = 15;
+                  _context6.next = 16;
                   break;
                 }
 
-                _context6.next = 14;
+                _context6.next = 15;
                 return mixAndMatchMathEvaluator({
                   userResponse: maths,
                   validation: {
@@ -629,26 +702,58 @@ var mixAndMatchEvaluator =
                   }
                 });
 
-              case 14:
+              case 15:
                 _context6.t1 = _context6.sent;
 
-              case 15:
+              case 16:
                 _context6.t0 = _context6.t1;
 
                 if (_context6.t0) {
-                  _context6.next = 18;
+                  _context6.next = 19;
                   break;
                 }
 
                 _context6.t0 = {};
 
-              case 18:
+              case 19:
                 mathEvaluation = _context6.t0;
+                _context6.t3 = validResponse.mathUnits;
+
+                if (!_context6.t3) {
+                  _context6.next = 25;
+                  break;
+                }
+
+                _context6.next = 24;
+                return mixAndMatchMathEvaluator({
+                  userResponse: mathUnits,
+                  validation: {
+                    validResponse: validResponse.mathUnits,
+                    altResponses: altMathUnits
+                  }
+                });
+
+              case 24:
+                _context6.t3 = _context6.sent;
+
+              case 25:
+                _context6.t2 = _context6.t3;
+
+                if (_context6.t2) {
+                  _context6.next = 28;
+                  break;
+                }
+
+                _context6.t2 = {};
+
+              case 28:
+                mathUnitsEvaluation = _context6.t2;
                 evaluation = (0, _objectSpread2["default"])(
                   {},
                   dropDownEvaluation,
                   clozeTextEvaluation,
-                  mathEvaluation
+                  mathEvaluation,
+                  mathUnitsEvaluation
                 );
                 correctAnswerCount = Object.values(evaluation).filter(_identity2["default"]).length;
                 wrongAnswerCount = Object.values(evaluation).filter(function(i) {
@@ -673,7 +778,7 @@ var mixAndMatchEvaluator =
                   maxScore: questionScore
                 });
 
-              case 25:
+              case 35:
               case "end":
                 return _context6.stop();
             }

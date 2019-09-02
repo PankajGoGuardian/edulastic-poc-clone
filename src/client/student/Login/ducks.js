@@ -3,12 +3,18 @@ import { pick, last, get, set } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
 import { push } from "connected-react-router";
-import { authApi, userApi, TokenStorage } from "@edulastic/api";
+import { authApi, userApi, TokenStorage, settingsApi } from "@edulastic/api";
 import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
-import { getWordsInURLPathName } from "../../common/utils/helpers";
+import {
+  getWordsInURLPathName,
+  getDistrictSignOutUrl,
+  setSignOutUrl,
+  getSignOutUrl,
+  removeSignOutUrl
+} from "../../common/utils/helpers";
 import { userPickFields } from "../../common/utils/static/user";
 import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../Signup/duck";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
@@ -26,7 +32,6 @@ export const GET_USER_DATA = "[auth] get user data from sso response";
 export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
 export const SINGUP_SUCCESS = "[auth] signup success";
-export const SIGNUP_SET_POLICY_VIOLATION = "[auth] signup set policy violation";
 export const FETCH_USER = "[auth] fetch user";
 export const FETCH_V1_REDIRECT = "[v1 redirect] fetch";
 export const LOGOUT = "[auth] logout";
@@ -47,10 +52,7 @@ export const RESET_PASSWORD_USER_SUCCESS = "[auth] reset password user success";
 export const RESET_PASSWORD_REQUEST = "[auth] reset password request";
 export const RESET_PASSWORD_FAILED = "[auth] reset password failed";
 export const RESET_PASSWORD_SUCCESS = "[auth] reset password success";
-export const RESET_PASSWORD_REQUEST_STATE = "[auth] reset password request state variable";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST = "[auth] student signup check classcode request";
-export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup check classcode success";
-export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
 export const UPDATE_DEFAULT_GRADES = "[user] update default grades";
 export const UPDATE_DEFAULT_SUBJECT = "[user] update default subject";
 export const GET_INVITE_DETAILS_REQUEST = "[auth] get invite details request";
@@ -64,6 +66,13 @@ export const UPDATE_USER_DETAILS_REQUEST = "[user] update user details";
 export const UPDATE_USER_DETAILS_SUCCESS = "[user] update user details success";
 export const UPDATE_USER_DETAILS_FAILED = "[user] update user details failed";
 export const DELETE_ACCOUNT_REQUEST = "[auth] delete account";
+export const UPDATE_INTERESTED_CURRICULUMS_REQUEST = "[user] update interested curriculums request";
+export const UPDATE_INTERESTED_CURRICULUMS_SUCCESS = "[user] update interested curriculums success";
+export const UPDATE_INTERESTED_CURRICULUMS_FAILED = "[user] update interested curriculums failed";
+export const REMOVE_SCHOOL_REQUEST = "[user] remove school request";
+export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
+export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
+export const REMOVE_INTERESTED_CURRICULUMS_REQUEST = "[user] remove interested curriculums request";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -77,7 +86,6 @@ export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN);
 export const setUserAction = createAction(SET_USER);
 export const signupAction = createAction(SIGNUP);
 export const signupSuccessAction = createAction(SINGUP_SUCCESS);
-export const signupSetPolicyViolationAction = createAction(SIGNUP_SET_POLICY_VIOLATION);
 export const fetchUserAction = createAction(FETCH_USER);
 export const fetchV1RedirectAction = createAction(FETCH_V1_REDIRECT);
 export const logoutAction = createAction(LOGOUT);
@@ -89,7 +97,6 @@ export const requestNewPasswordResetControlAction = createAction(REQUEST_NEW_PAS
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST);
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST);
 export const studentSignupCheckClasscodeAction = createAction(STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST);
-export const resetPasswordRequestStateAction = createAction(RESET_PASSWORD_REQUEST_STATE);
 export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
 export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 export const getInviteDetailsAction = createAction(GET_INVITE_DETAILS_REQUEST);
@@ -98,6 +105,9 @@ export const resetMyPasswordAction = createAction(RESET_MY_PASSWORD_REQUEST);
 export const updateProfileImageAction = createAction(UPDATE_PROFILE_IMAGE_PATH_REQUEST);
 export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST);
 export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
+export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
+export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
+export const removeInterestedCurriculumsAction = createAction(REMOVE_INTERESTED_CURRICULUMS_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -168,22 +178,7 @@ export default createReducer(initialState, {
   [SET_USER_GOOGLE_LOGGED_IN]: (state, { payload }) => {
     state.user.isUserGoogleLoggedIn = payload;
   },
-  [SIGNUP]: state => {
-    state.signupPolicyViolation = "";
-  },
   [SINGUP_SUCCESS]: setUser,
-  [SIGNUP_SET_POLICY_VIOLATION]: (state, { payload }) => {
-    state.signupPolicyViolation = payload;
-  },
-  [STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST]: (state, { payload }) => {
-    state.signupPolicyViolation = "";
-  },
-  [STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS]: (state, { payload }) => {
-    state.signupPolicyViolation = "";
-  },
-  [STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED]: (state, { payload }) => {
-    state.signupPolicyViolation = payload;
-  },
   [REQUEST_NEW_PASSWORD_REQUEST]: state => {
     state.requestingNewPassword = true;
     state.requestNewPasswordSuccess = false;
@@ -197,9 +192,6 @@ export default createReducer(initialState, {
   },
   [REQUEST_NEW_PASSWORD_RESET_CONTROL]: state => {
     state.requestingNewPassword = false;
-    state.requestNewPasswordSuccess = false;
-  },
-  [RESET_PASSWORD_REQUEST_STATE]: state => {
     state.requestNewPasswordSuccess = false;
   },
   [RESET_PASSWORD_USER_SUCCESS]: (state, { payload }) => {
@@ -242,14 +234,44 @@ export default createReducer(initialState, {
     state.updatingUserDetails = true;
   },
   [UPDATE_USER_DETAILS_SUCCESS]: (state, { payload }) => {
-    delete state.updatingUserDetails,
-      (state.user = {
-        ...state.user,
-        ...payload
-      });
+    delete state.updatingUserDetails;
+    state.user = {
+      ...state.user,
+      ...payload
+    };
   },
   [UPDATE_USER_DETAILS_FAILED]: state => {
     delete state.updatingUserDetails;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_REQUEST]: state => {
+    state.updatingInterestedCurriculums = true;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_SUCCESS]: (state, { payload }) => {
+    state.updatingInterestedCurriculums = undefined;
+    state.user.orgData.interestedCurriculums = payload;
+  },
+  [UPDATE_INTERESTED_CURRICULUMS_FAILED]: state => {
+    state.updatingInterestedCurriculums = undefined;
+  },
+  [REMOVE_SCHOOL_REQUEST]: state => {
+    state.removingSchool = true;
+  },
+  [REMOVE_SCHOOL_SUCCESS]: (state, { payload }) => {
+    state.removingSchool = undefined;
+    const updatedSchoolIds = state.user.institutionIds.filter(id => id !== payload);
+    const updatedSchools = state.user.orgData.schools.filter(school => school._id !== payload);
+    state.user.institutionIds = updatedSchoolIds;
+    state.user.orgData.institutionIds = updatedSchoolIds;
+    state.user.orgData.schools = updatedSchools;
+  },
+  [REMOVE_SCHOOL_FAILED]: state => {
+    state.removingSchool = undefined;
+  },
+  [REMOVE_INTERESTED_CURRICULUMS_REQUEST]: (state, { payload }) => {
+    const updatedCurriculums = state.user.orgData.interestedCurriculums.filter(
+      curriculum => curriculum._id !== payload
+    );
+    state.user.orgData.interestedCurriculums = updatedCurriculums;
   }
 });
 
@@ -307,8 +329,15 @@ export const getUserFeatures = createSelector(
 const routeSelector = state => state.router.location.pathname;
 
 function* login({ payload }) {
+  const _payload = { ...payload };
+  const generalSettings = yield select(signupGeneralSettingsSelector);
+  if (generalSettings) {
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
+  }
+
   try {
-    const result = yield call(authApi.login, payload);
+    const result = yield call(authApi.login, _payload);
     const user = pick(result, userPickFields);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
@@ -325,18 +354,23 @@ function* login({ payload }) {
       localStorage.removeItem("loginRedirectUrl");
       yield put(push(redirectUrl));
     }
+
+    if (generalSettings) {
+      setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+    }
+
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {
     console.error(err);
     const errorMessage = "Invalid username or password";
-    yield call(message.error, errorMessage);
+    yield call(message.error, get(err, "data.message", errorMessage));
   }
 }
 
 const checkEmailPolicy = (policy, role, email) => {
   if (!policy) {
-    return true;
+    return { status: true, message: "", error: "", role: role };
   }
   let inputDomain = email.split("@")[1];
   let allowedDomains;
@@ -359,26 +393,31 @@ const checkEmailPolicy = (policy, role, email) => {
       : allowedDomains.includes(inputDomain.toLocaleLowerCase())) ||
     !allowedDomains.length
   ) {
-    return true;
+    return { status: true, message: "", error: "", role: role };
   } else {
-    return false;
+    return { status: false, message: "This email id is not allowed in your district", error: "domain", role: role };
   }
 };
 
 function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
+  const generalSettings = yield select(signupGeneralSettingsSelector);
+
+  let districtId;
+  if (generalSettings) {
+    districtId = generalSettings.orgId;
+  }
 
   try {
-    const { name, email, password, role, classCode, policyViolation, districtId } = payload;
+    const { name, email, password, role, classCode, policyViolation } = payload;
     let nameList = name.split(" ");
     nameList = nameList.filter(item => (item && item.trim() ? true : false));
     if (!nameList.length) {
       throw { message: "Please provide your full name." };
     }
-    if (!checkEmailPolicy(districtPolicy, role, email)) {
-      throw {
-        message: policyViolation
-      };
+    const allow = checkEmailPolicy(districtPolicy, role, email);
+    if (!allow.status) {
+      throw allow;
     }
 
     let firstName;
@@ -413,7 +452,12 @@ function* signup({ payload }) {
     const { message: _responseMsg, result } = response;
 
     if (_responseMsg && !result) {
-      yield call(message.error, _responseMsg);
+      const { errorCallback } = payload;
+      if (errorCallback) {
+        errorCallback(_responseMsg);
+      } else {
+        yield call(message.error, _responseMsg);
+      }
     } else {
       const user = pick(result, userPickFields);
 
@@ -422,16 +466,24 @@ function* signup({ payload }) {
       yield put(signupSuccessAction(result));
       localStorage.removeItem("loginRedirectUrl");
 
+      if (generalSettings) {
+        setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+      }
+
       // Important redirection code removed, redirect code already present in /src/client/App.js
       // it receives new user props in each steps of teacher signup and for other roles
     }
   } catch (err) {
-    const errorMessage = "Email already exist";
+    const { role } = payload;
+    let errorMessage = "Email already exists. Please sign in to your account.";
+    errorMessage = role === roleuser.STUDENT ? "Username/" + errorMessage : errorMessage;
     const msg1 = get(err, "data.message", "");
     const msg2 = get(err, "message", "");
     const msg = msg1 || msg2 || errorMessage;
-    if (msg === "Please provide a valid class code.") {
-      yield put(signupSetPolicyViolationAction(msg));
+
+    const { errorCallback } = payload;
+    if (errorCallback) {
+      errorCallback(msg);
     } else {
       yield call(message.error, msg);
     }
@@ -532,7 +584,9 @@ function* logout() {
   try {
     localStorage.clear();
     yield put({ type: "RESET" });
-    yield put(push("/login"));
+
+    yield put(push(getSignOutUrl()));
+    removeSignOutUrl();
   } catch (e) {
     console.log(e);
   }
@@ -552,6 +606,15 @@ function* changeClass({ payload }) {
 }
 
 function* googleLogin({ payload }) {
+  const generalSettings = yield select(signupGeneralSettingsSelector);
+  let districtId;
+  if (generalSettings) {
+    localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
+    districtId = generalSettings.orgId;
+
+    setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+  }
+
   try {
     let classCode = "";
     let role = "";
@@ -568,7 +631,12 @@ function* googleLogin({ payload }) {
     }
 
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "googleSignOn", role });
+      const validate = yield call(authApi.validateClassCode, {
+        classCode,
+        signOnMethod: "googleSignOn",
+        role,
+        districtId
+      });
     }
 
     const res = yield call(authApi.googleLogin);
@@ -579,22 +647,45 @@ function* googleLogin({ payload }) {
 }
 
 function* googleSSOLogin({ payload }) {
+  const _payload = { ...payload };
+
+  let generalSettings = localStorage.getItem("thirdPartySignOnGeneralSettings");
+  if (generalSettings) {
+    generalSettings = JSON.parse(generalSettings);
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
+  }
+
   try {
-    if (payload.edulasticRole === "student") {
+    if (_payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
       if (classCode) {
-        payload.classCode = classCode;
+        _payload.classCode = classCode;
       }
     }
-    const res = yield call(authApi.googleSSOLogin, payload);
+    const res = yield call(authApi.googleSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
     yield call(message.error, get(e, "data.message", "Google Login failed"));
-    yield put(push("/login"));
+
+    yield put(push(getSignOutUrl()));
+    removeSignOutUrl();
   }
+  localStorage.removeItem("thirdPartySignOnRole");
+  localStorage.removeItem("thirdPartySignOnClassCode");
+  localStorage.removeItem("thirdPartySignOnGeneralSettings");
 }
 
 function* msoLogin({ payload }) {
+  const generalSettings = yield select(signupGeneralSettingsSelector);
+  let districtId;
+  if (generalSettings) {
+    localStorage.setItem("thirdPartySignOnGeneralSettings", JSON.stringify(generalSettings));
+    districtId = generalSettings.orgId;
+
+    setSignOutUrl(getDistrictSignOutUrl(generalSettings));
+  }
+
   try {
     let classCode = "";
     let role = "";
@@ -610,7 +701,12 @@ function* msoLogin({ payload }) {
       }
     }
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "office365SignOn", role });
+      const validate = yield call(authApi.validateClassCode, {
+        classCode,
+        signOnMethod: "office365SignOn",
+        role,
+        districtId
+      });
     }
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
@@ -620,19 +716,33 @@ function* msoLogin({ payload }) {
 }
 
 function* msoSSOLogin({ payload }) {
+  const _payload = { ...payload };
+
+  let generalSettings = localStorage.getItem("thirdPartySignOnGeneralSettings");
+  if (generalSettings) {
+    generalSettings = JSON.parse(generalSettings);
+    _payload.districtId = generalSettings.orgId;
+    _payload.districtName = generalSettings.name;
+  }
+
   try {
-    if (payload.edulasticRole === "student") {
+    if (_payload.edulasticRole === "student") {
       let classCode = localStorage.getItem("thirdPartySignOnClassCode");
       if (classCode) {
-        payload.classCode = classCode;
+        _payload.classCode = classCode;
       }
     }
-    const res = yield call(authApi.msoSSOLogin, payload);
+    const res = yield call(authApi.msoSSOLogin, _payload);
     yield put(getUserDataAction(res));
   } catch (e) {
     yield call(message.error, get(e, "data.message", "MSO Login failed"));
-    yield put(push("/login"));
+
+    yield put(push(getSignOutUrl()));
+    removeSignOutUrl();
   }
+  localStorage.removeItem("thirdPartySignOnRole");
+  localStorage.removeItem("thirdPartySignOnClassCode");
+  localStorage.removeItem("thirdPartySignOnGeneralSettings");
 }
 
 function* cleverLogin({ payload }) {
@@ -685,7 +795,9 @@ function* getUserData({ payload: res }) {
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (e) {
     yield call(message.error, "Failed to fetch user data.");
-    yield put(push("/login"));
+
+    yield put(push(getSignOutUrl()));
+    removeSignOutUrl();
   }
 }
 
@@ -727,9 +839,14 @@ function* requestNewPasswordSaga({ payload }) {
 function* resetPasswordUserSaga({ payload }) {
   try {
     const res = yield call(userApi.fetchResetPasswordUser, payload);
-    yield put({ type: RESET_PASSWORD_USER_SUCCESS, payload: res });
+    if (res) {
+      yield put({ type: RESET_PASSWORD_USER_SUCCESS, payload: res });
+    } else {
+      yield put(push("/login"));
+    }
   } catch (e) {
     yield call(message.error, e && e.data ? e.data.message : "Failed to user data.");
+    yield put(push("/login"));
   }
 }
 
@@ -752,11 +869,12 @@ function* resetPasswordRequestSaga({ payload }) {
 
 function* resetMyPasswordRequestSaga({ payload }) {
   try {
-    const result = yield call(userApi.resetMyPassword, payload);
+    yield call(userApi.resetMyPassword, payload);
     yield call(message.success, "Password changed successfully");
     yield put({ type: RESET_MY_PASSWORD_SUCCESS });
   } catch (e) {
-    yield call(message.error, e && e.data ? e.data.message : "Failed to reset password.");
+    console.error(e);
+    yield call(message.error, "Failed to reset password.");
     yield put({
       type: RESET_MY_PASSWORD_FAILED
     });
@@ -765,11 +883,12 @@ function* resetMyPasswordRequestSaga({ payload }) {
 
 function* updateProfileImageSaga({ payload }) {
   try {
-    const result = yield call(userApi.updateUser, payload);
+    yield call(userApi.updateUser, payload);
     yield call(message.success, "Thumbnail changed successfully");
     yield put({ type: UPDATE_PROFILE_IMAGE_PATH_SUCCESS, payload: payload.data.thumbnail });
   } catch (e) {
-    yield call(message.error, e && e.data ? e.data.message : "Failed to Update Image");
+    console.error(e);
+    yield call(message.error, "Failed to Update Image");
     yield put({
       type: UPDATE_PROFILE_IMAGE_PATH_FAILED
     });
@@ -780,8 +899,13 @@ function* updateUserDetailsSaga({ payload }) {
     const result = yield call(userApi.updateUser, payload);
     yield call(message.success, "User details updated successfully.");
     yield put({ type: UPDATE_USER_DETAILS_SUCCESS, payload: result });
+    if (payload.isLogout) {
+      yield call(message.success, "Logging Out !");
+      yield put({ type: LOGOUT });
+    }
   } catch (e) {
-    yield call(message.error, e && e.data ? e.data.message : "Update user details failed.");
+    console.error(e);
+    yield call(message.error, "Failed to update user details.");
     yield put({
       type: UPDATE_USER_DETAILS_FAILED
     });
@@ -794,22 +918,44 @@ function* deleteAccountSaga({ payload }) {
     yield call(message.success, "Account deleted successfully.");
     yield put({ type: LOGOUT });
   } catch (e) {
-    yield call(message.error, e && e.data ? e.data.message : "Unable to delete Account");
+    console.error(e);
+    yield call(message.error, "Unable to delete Account");
+  }
+}
+
+function* updateInterestedCurriculumsSaga({ payload }) {
+  try {
+    yield call(settingsApi.updateInterestedStandards, payload);
+    yield call(message.success, "Standard sets updated successfully.");
+    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_SUCCESS, payload: payload.curriculums });
+  } catch (e) {
+    yield put({ type: UPDATE_INTERESTED_CURRICULUMS_FAILED });
+    console.error(e);
+    yield call(message.error, "Failed to update Standard sets");
+  }
+}
+
+function* removeSchoolSaga({ payload }) {
+  try {
+    yield call(userApi.removeSchool, payload);
+    yield call(message.success, "Requested school removed successfully.");
+    yield put({ type: REMOVE_SCHOOL_SUCCESS, payload: payload.schoolId });
+  } catch (e) {
+    yield put({ type: REMOVE_SCHOOL_FAILED });
+    console.error(e);
+    yield call(message.error, "Failed to remove requested school");
   }
 }
 
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
-    const result = yield call(authApi.validateClassCode, payload);
-    yield put({
-      type: STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS
-    });
+    const result = yield call(authApi.validateClassCode, payload.reqData);
   } catch (e) {
-    console.log(e);
-    yield put({
-      type: STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED,
-      payload: e.data.message
-    });
+    if (payload.errorCallback) {
+      payload.errorCallback(e.data.message);
+    } else {
+      yield call(message.error, e.data.message);
+    }
   }
 }
 
@@ -861,4 +1007,6 @@ export function* watcherSaga() {
   yield takeLatest(UPDATE_PROFILE_IMAGE_PATH_REQUEST, updateProfileImageSaga);
   yield takeLatest(UPDATE_USER_DETAILS_REQUEST, updateUserDetailsSaga);
   yield takeLatest(DELETE_ACCOUNT_REQUEST, deleteAccountSaga);
+  yield takeLatest(UPDATE_INTERESTED_CURRICULUMS_REQUEST, updateInterestedCurriculumsSaga);
+  yield takeLatest(REMOVE_SCHOOL_REQUEST, removeSchoolSaga);
 }

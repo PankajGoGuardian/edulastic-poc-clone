@@ -7,7 +7,7 @@ import { get } from "lodash";
 import { Tabs } from "@edulastic/common";
 import ItemDetailWidget from "../ItemDetailWidget/ItemDetailWidget";
 import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
-import { getItemDetailDraggingSelector } from "../../../../ducks";
+import { getItemDetailDraggingSelector, useTabsAction } from "../../../../ducks";
 import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
 import {
@@ -16,7 +16,8 @@ import {
   TabContainer,
   WidgetContainer,
   AddPassageBtnContainer,
-  CollapseBtn
+  CollapseBtn,
+  PlusIcon
 } from "./styled";
 // src/client/author/ItemDetail/ducks.js
 import { setItemLevelScoreAction } from "../../../../ducks";
@@ -59,22 +60,23 @@ class Container extends Component {
     onAdd(object);
   };
 
-  renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout, showAnswer }) => (
+  renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout, previewTab }) => (
     <ItemDetailWidget
       widget={widget}
-      showAnswer={showAnswer}
       onEdit={this.onEditWidgetClick(widget, rowIndex)}
       onDelete={this.onDeleteWidgetClick(widgetIndex)}
       widgetIndex={widgetIndex}
       itemData={this.props.itemData}
       rowIndex={rowIndex}
       flowLayout={flowLayout}
+      previewTab={previewTab}
     />
   );
 
   renderWidgets = () => {
-    const { row, dragging, rowIndex, itemData, setItemLevelScore, view, showAnswer = false } = this.props;
+    const { row, dragging, rowIndex, itemData, setItemLevelScore, view, previewTab } = this.props;
     const { tabIndex } = this.state;
+
     return (
       <WidgetContainer flowLayout={row.flowLayout}>
         {view !== "edit" && !row.widgets.length && itemData.itemLevelScoring && (
@@ -102,9 +104,9 @@ class Container extends Component {
             )}
             {!!row.tabs.length &&
               tabIndex === widget.tabIndex &&
-              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout, showAnswer })}
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout, previewTab })}
             {!row.tabs.length &&
-              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout, showAnswer })}
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout, previewTab })}
           </React.Fragment>
         ))}
       </WidgetContainer>
@@ -141,8 +143,10 @@ class Container extends Component {
       handleAddToPassage,
       left,
       right,
+      useTabs,
       handleCollapse,
-      collapseDirection
+      collapseDirection,
+      useTabsLeft
     } = this.props;
     const { tabIndex } = this.state;
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
@@ -192,8 +196,15 @@ class Container extends Component {
         )}
         {isPassageQuestion && (
           <AddPassageBtnContainer>
-            <Button onClick={() => handleAddToPassage("video", tabIndex)}> Add Video</Button>{" "}
-            <Button onClick={() => handleAddToPassage("passage", tabIndex)}> Add Passage </Button>
+            <Button onClick={() => handleAddToPassage("video", tabIndex)}>
+              <PlusIcon>+</PlusIcon>ADD VIDEO
+            </Button>
+            <Button onClick={() => handleAddToPassage("passage", tabIndex)}>
+              <PlusIcon>+</PlusIcon>ADD PASSAGE
+            </Button>
+            <Button tabsBtn onClick={() => useTabs({ rowIndex: 0, isUseTabs: !useTabsLeft })}>
+              {useTabsLeft ? "REMOVE TABS" : "ADD TABS"}
+            </Button>
           </AddPassageBtnContainer>
         )}
       </Content>
@@ -207,7 +218,8 @@ const enhance = compose(
       dragging: getItemDetailDraggingSelector(state)
     }),
     {
-      setItemLevelScore: setItemLevelScoreAction
+      setItemLevelScore: setItemLevelScoreAction,
+      useTabs: useTabsAction
     }
   )
 );

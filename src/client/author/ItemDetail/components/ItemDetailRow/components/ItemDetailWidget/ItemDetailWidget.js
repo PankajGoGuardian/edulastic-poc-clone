@@ -32,7 +32,7 @@ const ItemDetailWidget = ({
   setItemLevelScore,
   setQuestionScore,
   rowIndex,
-  showAnswer = false
+  previewTab
 }) => {
   const { layoutType } = useContext(ItemDetailContext);
   const [showButtons, setShowButtons] = useState(!flowLayout);
@@ -54,11 +54,11 @@ const ItemDetailWidget = ({
             {(widget.widgetType === "question" || widget.widgetType === "resource") && (
               <QuestionWrapper
                 testItem
-                showAnswer={showAnswer}
                 qIndex={widgetIndex}
                 type={widget.type}
                 view="preview"
                 questionId={widget.reference}
+                previewTab={previewTab}
                 data={{ ...question, smallSize: true }}
                 flowLayout={flowLayout}
                 disableResponse

@@ -6,6 +6,8 @@ import { MainContainer, LeftWrapper, MidWrapper, RightWrapper, Image, FieldValue
 import defaultImage from "../../../src/assets/manageclass/abstract.jpg";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { Tag } from "antd";
+import { themeColor, white } from "@edulastic/colors";
 
 const { allGrades, allSubjects } = selectsData;
 
@@ -40,8 +42,13 @@ const MainInfo = ({ entity = {} }) => {
       <LeftWrapper>
         <Image src={thumbnail || defaultImage} alt="Class" />
         <FieldValue>
-          <label>Tags :</label>
-          {tags && tags.map((tag, index) => <span key={index}>{tag}</span>)}
+          <label>Tags :&nbsp;</label>
+          {tags &&
+            tags.map(({ _id, tagName }, index) => (
+              <Tag style={{ color: white, minWidth: "0px" }} color={themeColor} key={index}>
+                {tagName}
+              </Tag>
+            ))}
         </FieldValue>
       </LeftWrapper>
       <MidWrapper>

@@ -30,7 +30,7 @@ import {
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
-import { TestStatus, StatusWrapper, UsageWrapper } from "../ListItem/styled";
+import { TestStatus, EdulasticVerified } from "../ListItem/styled";
 
 class Item extends Component {
   static propTypes = {
@@ -102,7 +102,18 @@ class Item extends Component {
 
   render() {
     const {
-      item: { title, tags = [], analytics, _source, thumbnail, status, _id: testId, description, permission },
+      item: {
+        title,
+        tags = [],
+        analytics,
+        _source,
+        thumbnail,
+        status,
+        _id: testId,
+        description,
+        permission,
+        collectionName = ""
+      },
       item,
       authorName,
       owner,
@@ -158,6 +169,7 @@ class Item extends Component {
                   </Button>
                 )}
               </ButtonWrapper>
+              {collectionName === "edulastic_certified" && <EdulasticVerified width={30} height={30} />}
             </Header>
           }
         >

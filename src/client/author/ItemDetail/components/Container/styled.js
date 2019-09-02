@@ -1,5 +1,5 @@
 import { Paper } from "@edulastic/common";
-import { mobileWidth, themeColor, white } from "@edulastic/colors";
+import { mobileWidth, themeColor, white, linkColor } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Content = styled(Paper)`
@@ -12,6 +12,7 @@ export const Content = styled(Paper)`
 export const PreviewContent = styled(Content)`
   padding: ${props => (props.padding ? props.padding : "0px")};
   min-height: 50px;
+  background-color: ${props => (props.view === "preview" ? "transparent" : white)};
   @media (max-width: ${mobileWidth}) {
     & > div {
       padding: 0;
@@ -22,6 +23,34 @@ export const PreviewContent = styled(Content)`
 export const ContentWrapper = styled.div`
   padding: 10px 30px;
 `;
+
+export const PassageNavigation = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-size: 11px;
+  color: ${linkColor};
+  .ant-pagination {
+    margin: 0 10px;
+    &li {
+      .ant-pagination-item a {
+        color: ${linkColor};
+      }
+    }
+  }
+  .ant-btn {
+    border: none;
+    box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
+    margin-right: 10px;
+    border-radius: 4px;
+    color: ${themeColor};
+    height: 29px;
+    width: 75px;
+    font-size: 11px;
+  }
+`;
+
+export const AddRemoveButtonWrapper = styled.div``;
 
 export const ItemDetailWrapper = styled.div`
   display: flex;

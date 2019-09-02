@@ -19,6 +19,7 @@ module.exports = {
     { id: "check-answer-tries-per-question", title: "Check Answer Tries Per Question" },
     { id: "evaluation-method", title: "Evaluation Method" },
     { id: "performance-bands", title: "Performance Bands" },
+    { id: "standards-proficiency", title: "Standards Proficiency" },
     { id: "title", title: "Title" },
     { id: "navigations", title: "Navigations / Control" },
     { id: "accessibility", title: "Accessibility" },
@@ -41,28 +42,6 @@ module.exports = {
     "evaluation-method": "assessmentSuperPowersEvaluationMethod",
     "check-answer-tries-per-question": "assessmentSuperPowersCheckAnswerTries",
     "performance-bands": "performanceBands"
-  },
-  performanceBandsData: {
-    ADVANCED: {
-      bands: "Advanced",
-      from: "100%"
-    },
-    MASTERY: {
-      bands: "Mastery",
-      from: "100%"
-    },
-    BASIC: {
-      bands: "Basic",
-      from: "100%"
-    },
-    APPROACHING_BASIC: {
-      bands: "Approaching Basic",
-      from: "100%"
-    },
-    UNSATISFACTORY: {
-      bands: "Unsatisfactory",
-      from: "100%"
-    }
   },
   navigations: [
     "Intro Item",

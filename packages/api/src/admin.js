@@ -1,5 +1,6 @@
 import API from "./utils/API";
 import { message } from "antd";
+import qs from "qs";
 
 const api = new API();
 const prefix = "/clever/";
@@ -9,7 +10,8 @@ const searchUpdateDistrict = params =>
     .callApi({
       url: `districts`,
       method: "get",
-      params
+      params,
+      paramsSerializer: params => qs.stringify(params)
     })
     .then(({ data }) => data);
 

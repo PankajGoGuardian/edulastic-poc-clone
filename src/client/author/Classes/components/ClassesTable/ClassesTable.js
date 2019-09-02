@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, cloneDeep } from "lodash";
+import { get, cloneDeep, isEmpty } from "lodash";
+import { Link } from "react-router-dom";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import {
@@ -40,6 +41,7 @@ import { getUserOrgId, getUser } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 import { receiveTeachersListAction, getTeachersListSelector } from "../../../Teacher/ducks";
+import { addNewTagAction, getAllTagsAction, getAllTagsSelector } from "../../../TestPage/ducks";
 
 const { Option } = Select;
 
@@ -98,8 +100,14 @@ class ClassesTable extends Component {
   }
 
   componentDidMount() {
-    const { userOrgId, loadClassListData } = this.props;
-    this.loadFilteredList();
+    const { userOrgId, loadClassListData, getAllTags, dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+    } else {
+      this.loadFilteredList();
+    }
+
+    getAllTags({ type: "group" });
   }
 
   // onHeaderCell = colName => {
@@ -505,10 +513,28 @@ class ClassesTable extends Component {
         title: "Users",
         dataIndex: "_source.studentCount",
         editable: true,
-        render: (studentCount = 0) => studentCount,
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => a._source.studentCount - b._source.studentCount,
-        width: 50
+        width: 50,
+        render: (_, record) => {
+          const studentCount = get(record, "_source.studentCount", 0);
+          const classCode = get(record, "_source.code", "");
+          return (
+            <Link
+              to={{
+                pathname: "/author/Class-Enrollment",
+                state: {
+                  filtersColumn: "code",
+                  filtersValue: "eq",
+                  filterStr: classCode,
+                  filterAdded: true
+                }
+              }}
+            >
+              {studentCount}
+            </Link>
+          );
+        }
       },
       {
         dataIndex: "_id",
@@ -552,7 +578,9 @@ class ClassesTable extends Component {
       setBulkEditVisibility,
       setBulkEditMode,
       setBulkEditUpdateView,
-      bulkUpdateClasses
+      bulkUpdateClasses,
+      allTagsData,
+      addNewTag
     } = this.props;
 
     const rowSelection = {
@@ -714,6 +742,8 @@ class ClassesTable extends Component {
             userOrgId={userOrgId}
             searchCourseList={searchCourseList}
             coursesForDistrictList={coursesForDistrictList}
+            allTagsData={allTagsData}
+            addNewTag={addNewTag}
           />
         )}
 
@@ -725,6 +755,8 @@ class ClassesTable extends Component {
             userOrgId={userOrgId}
             searchCourseList={searchCourseList}
             coursesForDistrictList={coursesForDistrictList}
+            allTagsData={allTagsData}
+            addNewTag={addNewTag}
           />
         )}
 
@@ -750,6 +782,7 @@ class ClassesTable extends Component {
           bulkUpdateClasses={this._bulkUpdateClasses}
           searchCourseList={searchCourseList}
           coursesForDistrictList={coursesForDistrictList}
+          allTagsData={allTagsData}
         />
       </StyledTableContainer>
     );
@@ -766,7 +799,8 @@ const enhance = compose(
       totalClassCount: get(state, ["classesReducer", "totalClassCount"], 0),
       teacherList: getTeachersListSelector(state),
       schoolsData: getSchoolsSelector(state),
-      bulkEditData: getBulkEditSelector(state)
+      bulkEditData: getBulkEditSelector(state),
+      allTagsData: getAllTagsSelector(state)
     }),
     {
       createClass: createClassAction,
@@ -779,7 +813,9 @@ const enhance = compose(
       setBulkEditVisibility: setBulkEditVisibilityAction,
       setBulkEditMode: setBulkEditModeAction,
       setBulkEditUpdateView: setBulkEditUpdateViewAction,
-      bulkUpdateClasses: bulkUpdateClassesAction
+      bulkUpdateClasses: bulkUpdateClassesAction,
+      getAllTags: getAllTagsAction,
+      addNewTag: addNewTagAction
     }
   )
 );

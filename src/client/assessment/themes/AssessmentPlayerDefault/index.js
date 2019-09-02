@@ -48,6 +48,7 @@ import { saveScratchPadAction } from "../../actions/userWork";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
+import { setUserAnswerAction } from "../../actions/answers.js";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -95,7 +96,8 @@ class AssessmentPlayerDefault extends React.Component {
     answerChecksUsedForItem: PropTypes.number.isRequired,
     previewPlayer: PropTypes.bool.isRequired,
     saveScratchPad: PropTypes.func.isRequired,
-    LCBPreviewModal: PropTypes.any.isRequired
+    LCBPreviewModal: PropTypes.any.isRequired,
+    setUserAnswer: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -186,12 +188,13 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   saveHistory = data => {
-    const { saveScratchPad, items, currentItem } = this.props;
+    const { saveScratchPad, items, currentItem, setUserAnswer } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
 
     saveScratchPad({
       [items[currentItem]._id]: data
     });
+    setUserAnswer(items[currentItem].data.questions[0].id, { answered: true });
   };
 
   handleUndo = () => {
@@ -481,7 +484,8 @@ const enhance = compose(
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
       toggleBookmark: toggleBookmarkAction,
-      checkAnswer: checkAnswerEvaluation
+      checkAnswer: checkAnswerEvaluation,
+      setUserAnswer: setUserAnswerAction
     }
   )
 );

@@ -1,12 +1,22 @@
 import moment from "moment";
 
-export const formatTime = time => {
-  if (typeof time === "string") {
-    if (isNaN(Number(time))) {
-      time = new Date(time);
+export const normaliseTime = time => {
+  let copiedTime = time;
+  if (typeof copiedTime === "string") {
+    if (isNaN(Number(copiedTime))) {
+      copiedTime = new Date(copiedTime);
     } else {
-      time = Number(time);
+      copiedTime = Number(copiedTime);
     }
   }
-  return moment(time).format("MMM, DD YYYY HH:mm:ss");
+
+  return copiedTime;
+};
+
+export const formatTime = time => {
+  return moment(normaliseTime(time)).format("MMM, DD YYYY HH:mm:ss");
+};
+
+export const formatDateAndTime = time => {
+  return moment(normaliseTime(time)).format("MMM DD, HH:mm A");
 };

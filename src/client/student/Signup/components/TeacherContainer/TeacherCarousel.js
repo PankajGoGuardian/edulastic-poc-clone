@@ -107,8 +107,18 @@ const CarouselWrapper = styled.div`
   .slick-track {
     display: flex;
   }
-  .ant-carousel .slick-slide {
-    min-width: 135px;
+  .ant-carousel .slick-slider {
+    .slick-slide {
+      min-width: 135px;
+    }
+
+    .ant-btn:not([disabled]):active,
+    .ant-btn {
+      border: 0px;
+      i {
+        color: ${themeColor};
+      }
+    }
   }
 `;
 

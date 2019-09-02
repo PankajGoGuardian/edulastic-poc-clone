@@ -173,7 +173,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         xAxisLabel: "X Axis",
         yAxisLabel: "Y Axis",
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -262,7 +262,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         xAxisLabel: "X Axis",
         yAxisLabel: "Y Axis",
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -278,27 +278,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           data: [
             {
               x: "Bar 1",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 2",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 3",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 4",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 5",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 6",
-              y: 0
+              y: 70
             }
           ],
           name: "Chart title"
@@ -325,27 +325,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [
               {
                 x: "Bar 1",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 2",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 3",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 4",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 5",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 6",
-                y: 0
+                y: 70
               }
             ]
           },
@@ -353,7 +353,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         xAxisLabel: "X Axis",
         yAxisLabel: "Y Axis",
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -369,27 +369,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           data: [
             {
               x: "Bar 1",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 2",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 3",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 4",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 5",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 6",
-              y: 0
+              y: 70
             }
           ],
           name: "Chart title"
@@ -415,27 +415,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [
               {
                 x: "Bar 1",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 2",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 3",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 4",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 5",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 6",
-                y: 0
+                y: 70
               }
             ]
           },
@@ -443,7 +443,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         xAxisLabel: "X Axis",
         yAxisLabel: "Y Axis",
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -459,27 +459,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           data: [
             {
               x: "Bar 1",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 2",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 3",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 4",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 5",
-              y: 0
+              y: 70
             },
             {
               x: "Bar 6",
-              y: 0
+              y: 70
             }
           ],
           name: "Chart title"
@@ -506,27 +506,27 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             value: [
               {
                 x: "Bar 1",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 2",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 3",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 4",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 5",
-                y: 0
+                y: 70
               },
               {
                 x: "Bar 6",
-                y: 0
+                y: 70
               }
             ]
           },
@@ -534,7 +534,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         xAxisLabel: "X Axis",
         yAxisLabel: "Y Axis",
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -557,7 +557,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1
           }
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -587,7 +587,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -622,7 +622,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           altResponses: []
         },
         multipleResponses: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -645,7 +645,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -687,7 +687,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           { id: "test27", value: "formula", active: true },
           { id: "test28", value: "specialCharacters", active: true }
         ],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -706,7 +706,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         showWordCount: true,
         uiStyle: { minHeight: 300 },
         validation: { validResponse: { score: 1 }, maxScore: 1 },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -726,7 +726,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -750,7 +750,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           altResponses: []
         },
         multipleResponses: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -774,7 +774,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           altResponses: []
         },
         multipleResponses: true,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -798,7 +798,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           altResponses: []
         },
         multipleResponses: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -823,7 +823,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           altResponses: []
         },
         multipleResponses: true,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -841,11 +841,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           scoringType: EXACT_MATCH,
           validResponse: {
             score: 1,
-            value: [1, 2, 0, 3]
+            value: [0, 1, 2, 3]
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -913,7 +913,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -942,7 +942,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -962,7 +962,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -989,7 +989,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           altResponses: []
         },
         multipleResponses: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1015,7 +1015,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1042,7 +1042,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1057,7 +1057,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140,
           heightpx: 0,
           wordwrap: false,
@@ -1076,7 +1076,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1096,7 +1096,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         uiStyle: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140,
           heightpx: 0,
           wordwrap: false,
@@ -1114,7 +1114,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1132,11 +1132,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         }/></textinput>&nbsp;</p>`,
         uiStyle: {
           fontsize: "normal",
-          heightpx: 35,
+          heightpx: 36,
           placeholder: "",
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
-          stemnumeration: "",
+          stemNumeration: "",
           widthpx: 140
         },
         responseIds: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
@@ -1148,7 +1148,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           },
           altResponses: []
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1188,7 +1188,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
           { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
         ],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1233,7 +1233,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         sampleAnswer: "",
         distractorRationalePerResponse: "",
         distractorRationaleOptions: [],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1274,7 +1274,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         sampleAnswer: "",
         distractorRationalePerResponse: "",
         distractorRationaleOptions: [],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1354,7 +1354,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         background_shapes: [],
         multipleResponses: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1434,7 +1434,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         background_shapes: [],
         multipleResponses: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1525,7 +1525,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         backgroundShapes: [],
         multipleResponses: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1629,7 +1629,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           altResponses: [],
           rounding: "none"
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1646,7 +1646,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         width: 530,
         height: 265,
         rotate: true,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1715,7 +1715,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           separationDistanceY: 20,
           renderingBase: "min-value-based",
           specificPoints: "",
-          fractionsFormat: "not-normalized-fractions"
+          fractionsFormat: "not-normalized-fractions",
+          responseBoxPosition: "bottom"
         },
         uiStyle: {
           gridVisible: false,
@@ -1742,13 +1743,13 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           xTickDistance: 1,
           yTickDistance: 0,
           layoutWidth: 600,
-          layoutHeight: "auto",
+          layoutHeight: 150,
           layoutMargin: 0,
           layoutSnapto: "grid",
           xAxisLabel: "X",
           yAxisLabel: "Y",
-          titlePosition: 55,
-          linePosition: 34,
+          titlePosition: 75,
+          linePosition: 50,
           pointBoxPosition: 60
         },
         backgroundImage: {
@@ -1762,7 +1763,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         background_shapes: [],
         multipleResponses: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1776,7 +1777,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         heading: "Section 3",
         math_renderer: "",
         content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items.",
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       list: ["Item A", "Item B"],
       onSelectQuestionType
@@ -1810,7 +1811,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           hideControls: false,
           captionURL: ""
         },
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1843,10 +1844,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["units_si", "units_us", "qwerty"],
+        symbols: ["basic", "units_us", "units_si"],
         template: EMBED_RESPONSE,
         templateDisplay: false,
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1882,7 +1883,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1894,7 +1895,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         title: "Complete the Equation",
         isMath: true,
         stimulus: "",
-        template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} = ${EMBED_RESPONSE}`,
+        template: `${EMBED_RESPONSE}+${EMBED_RESPONSE}=${EMBED_RESPONSE}`,
         templateDisplay: true,
         type: questionType.MATH,
         validation: {
@@ -1907,7 +1908,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
                 options: {
                   inverseResult: false
                 },
-                value: "x+y"
+                value: "x+y=z"
               }
             ]
           }
@@ -1918,7 +1919,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1959,7 +1960,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["basic", "qwerty"],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -1994,8 +1995,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        symbols: ["intermediate", "general", "qwerty"],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        symbols: ["basic", "intermediate", "general"],
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -2018,24 +2019,24 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
             score: 1,
             value: [
               {
-                method: "equivSymbolic",
+                method: math.methods.EQUIV_VALUE,
                 options: {
                   inverseResult: false
                 },
-                value: "100cm=1m"
+                value: "100\\ \\text{feet}"
               }
             ]
           }
         },
-        custom_keys: ["m", "km", "cm", "mm"],
+        customKeys: ["m", "km", "cm", "mm"],
         uiStyle: {
           widthpx: 140,
-          heightpx: 35,
+          heightpx: 36,
           type: "floating-keyboard"
         },
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
         symbols: ["units_us", "units_si", "qwerty"],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -2046,7 +2047,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       data: {
         title: "Math, Text & Dropdown",
         stimulus:
-          '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
+          '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;,&nbsp;<mathunit contenteditable="false"></mathunit>&nbsp;</p>',
         templateDisplay: true,
         type: questionType.EXPRESSION_MULTIPART,
         responseIds: {
@@ -2090,7 +2091,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         responseContainers: [],
         symbols: ["basic", "qwerty"],
         numberPad: ["1", "2", "3", "+", "4", "5", "6", "-", "7", "8", "9", "\\times", "0", ".", "divide", "\\div"],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -2125,7 +2126,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         metadata: {},
         isMath: true,
         symbols: ["basic", "qwerty"],
-        hints: [{ value: uuids[0], label: "Hint A" }]
+        hints: [{ value: uuids[0], label: "" }]
       },
       onSelectQuestionType
     },
@@ -2209,7 +2210,8 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           columns: 2,
           sectors: 7,
           selected: [1]
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     }

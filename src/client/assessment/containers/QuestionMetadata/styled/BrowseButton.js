@@ -6,6 +6,10 @@ const BrowseButton = styled(Button)`
   color: ${props => props.theme.questionMetadata.selectSuffixIconColor};
   font-weight: 600;
   width: 100%;
+  &:hover,
+  &:focus {
+    color: ${props => props.theme.questionMetadata.selectSuffixIconColor};
+  }
 `;
 
 export default BrowseButton;

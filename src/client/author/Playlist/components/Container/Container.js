@@ -52,6 +52,7 @@ import {
   getDefaultGradesSelector
 } from "../../../src/selectors/user";
 import { updateDefaultGradesAction, updateDefaultSubjectAction } from "../../../../student/Login/ducks";
+import NoDataNotification from "../../../../common/components/NoDataNotification";
 
 const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -342,6 +343,14 @@ class TestList extends Component {
     const { blockStyle } = this.state;
     if (loading) {
       return <Spin size="large" />;
+    }
+    if (playlists.length < 1) {
+      return (
+        <NoDataNotification
+          heading={"Playlists not available"}
+          description={`There are no playlists found for this filter.You can create new playlist by clicking the "NEW PLAYLIST" button.`}
+        />
+      );
     }
     return (
       <Row gutter={24} type="flex">

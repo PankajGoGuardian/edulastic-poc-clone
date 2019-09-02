@@ -174,6 +174,7 @@ class ComposeQuestion extends Component {
   getImageDimensions = (url, isNew) => {
     const { item, setQuestionData } = this.props;
     const { maxWidth, maxHeight } = clozeImage;
+    const { imageRndRef } = this;
     const img = new Image();
     // eslint-disable-next-line func-names
     img.addEventListener("load", function() {
@@ -206,6 +207,9 @@ class ComposeQuestion extends Component {
             updateVariables(draft);
           })
         );
+        if (isNew) {
+          imageRndRef.current.updateSize({ width: wid, height: heig });
+        }
       })(width, height);
     });
     img.src = url;

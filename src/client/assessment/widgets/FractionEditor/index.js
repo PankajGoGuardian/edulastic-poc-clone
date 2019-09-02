@@ -10,6 +10,7 @@ import Options from "./components/Options";
 import Display from "./components/Display";
 import Annotations from "../../components/Annotations/Annotations";
 import Question from "../../components/Question";
+import ExtraSection from "./components/Extras";
 
 const FractionEditor = props => {
   const {
@@ -27,7 +28,8 @@ const FractionEditor = props => {
     userAnswer,
     disableResponse,
     changePreviewTab,
-    isReviewTab
+    isReviewTab,
+    advancedAreOpen
   } = props;
   return (
     <>
@@ -65,6 +67,7 @@ const FractionEditor = props => {
           >
             <Annotations question={item} setQuestionData={setQuestionData} editable />
           </Question>
+          <ExtraSection fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
         </ContentArea>
       ) : (
         <Display

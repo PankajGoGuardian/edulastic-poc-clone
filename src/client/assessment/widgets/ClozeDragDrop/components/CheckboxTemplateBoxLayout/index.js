@@ -4,13 +4,12 @@ import striptags from "striptags";
 import { MathSpan } from "@edulastic/common";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
+import { getStemNumeration } from "../../../../utils/helpers";
 import { CheckboxContainer } from "./styled/CheckboxContainer";
 import { CheckBoxTemplateBox } from "./styled/CheckBoxTemplateBox";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
-
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
@@ -31,23 +30,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     userSelections.length > 0 && evaluation.length > 0 ? (evaluation[dropTargetIndex] ? "right" : "wrong") : null;
 
   const choiceAttempted = userSelections.length > 0 ? !!userSelections[dropTargetIndex] : null;
-  // eslint-disable-next-line no-unused-vars
-  let indexStr;
-  switch (stemNumeration) {
-    case "lowercase": {
-      indexStr = ALPHABET[dropTargetIndex];
-      break;
-    }
-    case "uppercase": {
-      indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-      break;
-    }
-    case "numerical": {
-      indexStr = dropTargetIndex + 1;
-      break;
-    }
-    default:
-  }
+
+  const indexStr = getStemNumeration(stemNumeration, dropTargetIndex);
+
   const btnStyle = { ...responseBtnStyle };
   const response = responsecontainerindividuals.find(resp => resp.id === id) || {};
   const heightpx = response && response.heightpx;
@@ -114,7 +99,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${showAnswer ? "show-answer" : ""}`}
               style={btnStyle}
             >
-              <span className="index">{dropTargetIndex + 1}</span>
+              {showAnswer && <span className="index">{indexStr}</span>}
               <span className="text">{getLabel(dropTargetIndex)}</span>
 
               <IconWrapper>
@@ -140,7 +125,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             ${showAnswer ? "show-answer" : ""}`}
               style={btnStyle}
             >
-              <span className="index">{dropTargetIndex + 1}</span>
+              {showAnswer && <span className="index">{indexStr}</span>}
               <span className="text">{getLabel(dropTargetIndex)}</span>
 
               <IconWrapper>
@@ -165,7 +150,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               ${choiceAttempted ? status : ""}`}
               style={{ ...btnStyle, margin: "2px 4px" }}
             >
-              <span className="index">{dropTargetIndex + 1}</span>
+              {showAnswer && <span className="index">{indexStr}</span>}
               <span className="text">{getLabel(dropTargetIndex)}</span>
 
               <IconWrapper>
@@ -186,7 +171,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               ${choiceAttempted ? status : ""}`}
               style={{ ...btnStyle, margin: "2px 4px" }}
             >
-              <span className="index">{dropTargetIndex + 1}</span>
+              {showAnswer && <span className="index">{indexStr}</span>}
               <span className="text">{getLabel(dropTargetIndex)}</span>
 
               <IconWrapper>

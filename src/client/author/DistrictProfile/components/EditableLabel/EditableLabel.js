@@ -12,6 +12,8 @@ class EditableLabel extends React.Component {
       validateStatus: "success",
       validateMsg: ""
     };
+
+    this.inputRef = React.createRef();
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -36,6 +38,10 @@ class EditableLabel extends React.Component {
     const { value, validateStatus } = this.state;
     const { requiredStatus, valueName, setProfileValue, isSpaceEnable } = this.props;
 
+    this.setState({
+      editing: false
+    });
+
     if (validateStatus === "error") return;
     if ((!value || value.length == 0) && requiredStatus) {
       this.setState({
@@ -45,12 +51,17 @@ class EditableLabel extends React.Component {
       return;
     }
 
-    this.setState({
-      editing: false
-    });
-
-    if (isSpaceEnable) setProfileValue(valueName, value.toString().replace(/\s\s+/g, " "));
-    else setProfileValue(valueName, value.toString().replace(/\s/g, ""));
+    if (typeof value === "string") {
+      if (isSpaceEnable)
+        setProfileValue(
+          valueName,
+          value
+            .toString()
+            .replace(/\s\s+/g, " ")
+            .trim()
+        );
+      else setProfileValue(valueName, value.toString().replace(/\s/g, ""));
+    }
   };
 
   handleChange = e => {
@@ -82,8 +93,17 @@ class EditableLabel extends React.Component {
       validateMsg
     });
 
-    if (isSpaceEnable) this.props.setProfileValue(valueName, e.target.value.toString().replace(/\s\s+/g, " "));
-    else this.props.setProfileValue(valueName, e.target.value.toString().replace(/\s/g, ""));
+    if (typeof e.target.value === "string") {
+      if (isSpaceEnable)
+        this.props.setProfileValue(
+          valueName,
+          e.target.value
+            .toString()
+            .replace(/\s\s+/g, " ")
+            .trim()
+        );
+      else this.props.setProfileValue(valueName, e.target.value.toString().replace(/\s/g, ""));
+    }
   };
 
   onClickLabel = () => {
@@ -91,38 +111,42 @@ class EditableLabel extends React.Component {
       editing: true
     });
     this.props.updateEditing(true);
+    this.inputRef.current.focus();
   };
 
   render() {
     const { editing, value, validateStatus, validateMsg } = this.state;
     const { valueName, requiredStatus } = this.props;
+    const { getFieldDecorator } = this.props.form;
     const italicStatus = valueName === "NCES Code" ? "true" : "false";
+
     return (
       <EditableLabelDiv>
         <StyledLabel>{valueName}:</StyledLabel>
-        {editing ? (
-          <StyledFormItem
-            validateStatus={validateStatus}
-            help={validateMsg}
-            required={requiredStatus}
-            formLayout="horizontal"
-          >
+        <StyledFormItem validateStatus={validateStatus} help={validateMsg} formLayout="horizontal">
+          {getFieldDecorator(valueName, {
+            initialValue: value,
+            rules: [
+              {
+                required: requiredStatus
+              }
+            ]
+          })(
             <StyledInput
               onBlur={this.onInputBlur}
               onChange={this.handleChange}
-              defaultValue={value}
-              value={value}
               autoFocus
               isItalic={italicStatus}
               placeholder={valueName}
+              readOnly={!editing}
+              className={!editing ? "not-editing-input" : null}
+              innerRef={this.inputRef}
             />
-          </StyledFormItem>
-        ) : (
-          <LabelContainer onClick={this.onClickLabel}>
-            <StyledP>{value}</StyledP>
-            <Icon type="edit" theme="twoTone" />
-          </LabelContainer>
-        )}
+          )}
+        </StyledFormItem>
+        <LabelContainer onClick={this.onClickLabel}>
+          {!editing ? <Icon type="edit" theme="twoTone" /> : null}
+        </LabelContainer>
       </EditableLabelDiv>
     );
   }

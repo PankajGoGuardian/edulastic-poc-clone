@@ -1,8 +1,12 @@
 import React, { useState } from "react";
-import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker } from "antd";
+import { Button as AntdButton, Icon, Modal, Radio, Table, Select, DatePicker, Form } from "antd";
 import { StyledComponents } from "@edulastic/common";
+import { tagsApi } from "@edulastic/api";
 import { connect } from "react-redux";
+import { compose } from "redux";
 import { getUser } from "../../../../src/selectors/user";
+import { debounce } from "lodash";
+import { addNewTagAction, getAllTagsAction } from "../../../../TestPage/ducks";
 
 const { Button } = StyledComponents;
 const { Option } = Select;
@@ -24,30 +28,42 @@ function BulkEditModal({
   bulkUpdateClasses,
   searchCourseList,
   coursesForDistrictList,
-  userDetails
+  userDetails,
+  form,
+  allTagsData,
+  addNewTag
 }) {
   const [value, setValue] = useState("");
+  const [searchValue, setSearchValue] = useState(undefined);
   const radioStyle = {
     display: "block",
     height: "30px",
     lineHeight: "30px"
   };
 
+  const { setFieldsValue, getFieldValue, getFieldDecorator } = form;
+
   const handleSubmit = () => {
+    let updatedData = value;
+    if (updateMode === "tags") {
+      const tags = getFieldValue("tags");
+      updatedData = tags.map(t => allTagsData.find(o => o._id === t));
+    }
+
     bulkUpdateClasses({
       groupIds: selectedIds,
       districtId,
-      [updateMode]: value,
+      [updateMode]: updatedData,
       institutionIds: userDetails.institutionIds
     });
   };
 
-  const fetchCoursesForDistrict = searchValue => {
+  const fetchCoursesForDistrict = debounce(searchValue => {
     const searchParams = searchValue
       ? {
           search: {
-            name: { type: "cont", value: searchValue },
-            number: { type: "cont", value: searchValue },
+            name: [{ type: "cont", value: searchValue }],
+            number: [{ type: "cont", value: searchValue }],
             operator: "or"
           }
         }
@@ -60,6 +76,35 @@ function BulkEditModal({
       ...searchParams
     };
     searchCourseList(data);
+  }, 1000);
+
+  const selectTags = async id => {
+    let newTag = {};
+    if (id === searchValue) {
+      const { _id, tagName } = await tagsApi.create({ tagName: searchValue, tagType: "group" });
+      newTag = { _id, tagName };
+      addNewTag(newTag);
+    } else {
+      newTag = allTagsData.find(tag => tag._id === id);
+    }
+    const tagsSelected = getFieldValue("tags");
+    const newTags = [...tagsSelected, newTag._id];
+    setFieldsValue({ tags: newTags.filter(t => t !== searchValue) });
+    setSearchValue(undefined);
+  };
+
+  const deselectTags = id => {
+    const tagsSelected = getFieldValue("tags");
+    const newTags = tagsSelected.filter(tag => tag !== id);
+    setFieldsValue({ tags: newTags });
+  };
+
+  const searchTags = async value => {
+    if (allTagsData.some(tag => tag.tagName === value)) {
+      setSearchValue(undefined);
+    } else {
+      setSearchValue(value);
+    }
   };
 
   const renderEditableView = () => {
@@ -75,6 +120,7 @@ function BulkEditModal({
               notFoundContent={null}
               placeholder="Please enter 1 or more characters"
               onChange={val => setValue(val)}
+              filterOption={false}
             >
               {coursesForDistrictList.map(course => (
                 <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
@@ -85,13 +131,33 @@ function BulkEditModal({
       case "tags":
         return (
           <div>
-            <span>Add tag(s) to all selected classes</span>
-            <Select
-              style={{ width: "100%" }}
-              placeholder="Please enter 2 or more characters"
-              mode="tags"
-              onChange={val => setValue(val)}
-            />
+            <div>Add tag(s) to all selected classes</div>
+            {getFieldDecorator("tags")(
+              <Select
+                data-cy="tagsSelect"
+                mode="multiple"
+                style={{ marginBottom: 0, width: "100%" }}
+                optionLabelProp="title"
+                placeholder="Select Tags"
+                onSearch={searchTags}
+                onSelect={selectTags}
+                onDeselect={deselectTags}
+                filterOption={(input, option) => option.props.title.toLowerCase().includes(input.toLowerCase())}
+              >
+                {!!searchValue ? (
+                  <Select.Option key={0} value={searchValue} title={searchValue}>
+                    {`${searchValue} (Create new Tag )`}
+                  </Select.Option>
+                ) : (
+                  ""
+                )}
+                {allTagsData.map(({ tagName, _id }) => (
+                  <Select.Option key={_id} value={_id} title={tagName}>
+                    {tagName}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
           </div>
         );
       case "endDate":
@@ -134,16 +200,36 @@ function BulkEditModal({
             rowKey={record => record._id}
             dataSource={selectedClasses}
             pagination={false}
-            columns={[
-              {
-                title: "Name",
-                dataIndex: "_source.name"
-              },
-              {
-                title: CONFIG[updateMode],
-                dataIndex: `_source.${updateMode}`
-              }
-            ]}
+            columns={
+              updateMode === "tags"
+                ? [
+                    {
+                      title: "Name",
+                      dataIndex: "_source.name"
+                    },
+                    {
+                      title: CONFIG[updateMode],
+                      dataIndex: `_source.${updateMode}`,
+                      render: tags =>
+                        tags.map((tag, i, tags) => (
+                          <span key={tag._id} style={{ margin: "3px" }}>
+                            {tag.tagName}
+                            {+i + 1 < tags.length ? ", " : ""}
+                          </span>
+                        ))
+                    }
+                  ]
+                : [
+                    {
+                      title: "Name",
+                      dataIndex: "_source.name"
+                    },
+                    {
+                      title: CONFIG[updateMode],
+                      dataIndex: `_source.${updateMode}`
+                    }
+                  ]
+            }
           />
           {renderEditableView()}
         </>
@@ -169,7 +255,12 @@ function BulkEditModal({
   );
 }
 
-export default connect(
-  state => ({ userDetails: getUser(state) }),
-  {}
-)(BulkEditModal);
+const enhance = compose(
+  connect(
+    state => ({ userDetails: getUser(state) }),
+    { getAllTags: getAllTagsAction, addNewTag: addNewTagAction }
+  ),
+  Form.create()
+);
+
+export default enhance(BulkEditModal);

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
-import { cloneDeep, isObject, difference } from "lodash"; // , findIndex
+import { cloneDeep, isObject } from "lodash"; // , findIndex
 
 import { withNamespaces } from "@edulastic/localization";
 import { evaluationType, questionType } from "@edulastic/constants";
@@ -34,27 +34,26 @@ const MathFormulaOptions = ({
       if (isObject(keypadMode)) {
         return;
       }
-      const _keys = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(btn => btn.label);
-      const diffKeys = difference(customKeys, _keys);
-      onChange("custom_keys", _keys.concat(diffKeys));
-    } else {
-      onChange("custom_keys", []);
+      onChange(
+        "customKeys",
+        MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(keypadMode)).map(btn => btn.label)
+      );
     }
-  }, [item.showDropdown, item.symbols]);
+  }, [item.symbols]);
   const changeCustomKey = ({ index, value }) => {
     const newCustomKeys = cloneDeep(customKeys);
     newCustomKeys[index] = value;
-    onChange("custom_keys", newCustomKeys);
+    onChange("customKeys", newCustomKeys);
   };
 
   const addCustomKey = () => {
-    onChange("custom_keys", [...customKeys, ""]);
+    onChange("customKeys", [...customKeys, ""]);
   };
 
   const deleteCustomKey = index => {
     const newCustomKeys = cloneDeep(customKeys);
     newCustomKeys.splice(index, 1);
-    onChange("custom_keys", newCustomKeys);
+    onChange("customKeys", newCustomKeys);
   };
 
   const scoringTypes = [
@@ -97,6 +96,7 @@ const MathFormulaOptions = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
         renderExtra={
+          // eslint-disable-next-line react/jsx-wrap-multilines
           <CustomKeys
             blocks={customKeys}
             onChange={changeCustomKey}
@@ -110,8 +110,8 @@ const MathFormulaOptions = ({
       />
 
       <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
-        <Extras.Distractors />
-        <Extras.Hints />
+        <Extras.Distractors visible={false} />
+        <Extras.Hints visible={false} />
       </Extras>
     </WidgetOptions>
   );

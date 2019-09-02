@@ -155,6 +155,11 @@ function* createAssessmentSaga({ payload }) {
     } else {
       const { user } = yield select(getUserSelector);
       const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
+      const item = {
+        itemId: testItem._id,
+        maxScore: testItem.maxScore,
+        questions: {}
+      };
       const newAssessment = {
         ...initialTestState,
         title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
@@ -162,7 +167,7 @@ function* createAssessmentSaga({ payload }) {
           id: user._id,
           name
         },
-        testItems: [testItem._id],
+        testItems: [item],
         docUrl: fileURI,
         releaseScore: "DONT_RELEASE",
         assignments: undefined,

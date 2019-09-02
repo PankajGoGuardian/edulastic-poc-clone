@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import produce from "immer";
 import { shuffle, isUndefined, isEmpty, get, maxBy } from "lodash";
 import { withTheme } from "styled-components";
 import { Stimulus, QuestionNumberLabel } from "@edulastic/common";
@@ -18,9 +19,12 @@ import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/
 
 class Display extends Component {
   selectChange = (value, index) => {
-    const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
-    newAnswers[index] = value;
-    changeAnswers(newAnswers);
+    const { onChange: changeAnswers, userSelections } = this.props;
+    changeAnswers(
+      produce(userSelections, draft => {
+        draft[index] = value;
+      })
+    );
   };
 
   shuffle = arr => {
@@ -136,7 +140,7 @@ class Display extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { heightpx, wordwrap, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { heightpx, wordwrap, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
@@ -262,7 +266,7 @@ class Display extends Component {
         canvasWidth={canvasWidth}
         imageAlterText={imageAlterText}
         imagescale={imagescale}
-        stemnumeration={stemnumeration}
+        stemNumeration={stemNumeration}
         fontSize={fontSize}
         uiStyle={uiStyle}
         showAnswer={showAnswer}
@@ -366,7 +370,7 @@ Display.defaultProps = {
   imageAlterText: "",
   uiStyle: {
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,

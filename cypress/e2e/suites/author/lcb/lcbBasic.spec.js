@@ -9,6 +9,7 @@ import StandardBasedReportPage from "../../../framework/author/assignments/stand
 import TestLibrary from "../../../framework/author/tests/testLibraryPage";
 import BarGraph from "../../../framework/author/assignments/barGraphs";
 import Helpers from "../../../framework/util/Helpers";
+import TeacherSideBar from "../../../framework/author/SideBarPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
@@ -22,7 +23,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         email: "auto.lcb.student02@yopmail.com",
         stuName: "Student02 2nd",
         attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right", Q6: "right", Q7: "right" },
-        status: "SUBMITTED"
+        status: "Submitted"
       }
     ],
     redirectedData: [
@@ -30,7 +31,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         email: "auto.lcb.student01@yopmail.com",
         stuName: "Student01 1st",
         attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong", Q6: "wrong", Q7: "wrong" },
-        status: "SUBMITTED"
+        status: "Submitted"
       }
     ],
     attemptsData: [
@@ -38,13 +39,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         email: "auto.lcb.student01@yopmail.com",
         stuName: "Student01 1st",
         attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right", Q6: "right", Q7: "right" },
-        status: "SUBMITTED"
+        status: "Submitted"
       },
       {
         email: "auto.lcb.student02@yopmail.com",
         stuName: "Student02 2nd",
         attempt: { Q1: "right", Q2: "wrong", Q3: "right", Q4: "skip", Q5: "wrong", Q6: "skip", Q7: "right" },
-        status: "SUBMITTED"
+        status: "Submitted"
       },
       {
         email: "auto.lcb.student03@yopmail.com",
@@ -58,24 +59,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           Q6: "right",
           Q7: "skip"
         },
-        status: "SUBMITTED"
+        status: "Submitted"
       },
       {
         email: "auto.lcb.student04@yopmail.com",
         stuName: "Student04 4th",
         attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong", Q6: "wrong", Q7: "wrong" },
-        status: "SUBMITTED"
+        status: "Submitted"
       },
       {
         email: "auto.lcb.student05@yopmail.com",
         stuName: "Student05 5th",
         attempt: { Q1: "right", Q2: "skip", Q3: "wrong", Q4: "skip", Q5: "right", Q6: "right", Q7: "skip" },
-        status: "IN PROGRESS"
+        status: "In Progress"
       },
       {
         email: "auto.lcb.student06@yopmail.com",
         stuName: "Student06 6th",
-        status: "NOT STARTED",
+        status: "Not Started",
         attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip", Q6: "skip", Q7: "skip" }
       }
     ]
@@ -111,6 +112,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const expressg = new ExpressGraderPage();
   const sbrPage = new StandardBasedReportPage();
   const testLibrary = new TestLibrary();
+  const teacherSidebar = new TeacherSideBar();
   const bargraph = new BarGraph();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
   const queBarData = bargraph.getQueBarData(queList, attemptsData);
@@ -137,8 +139,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     cy.deleteAllAssignments(student, teacher);
     cy.login("teacher", teacher);
     testLibrary.createTest("LCB_1").then(() => {
-      testLibrary.header.clickOnAssign();
-      // cy.visit("/author/assignments/5d03b20e1a45d47f9752fe02");
+      testLibrary.clickOnAssign();
+      // cy.visit("/author/assignments/5d679824d6e32098986182ff");
       // cy.wait(10000);
       testLibrary.assignPage.selectClass(className);
       testLibrary.assignPage.clickOnAssign();
@@ -158,6 +160,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
   before("login as teacher and to lcb of assignment", () => {
     cy.login("teacher", teacher);
+    teacherSidebar.clickOnAssignment();
     authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
   });
 
@@ -275,13 +278,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       });
 
       submittedStudentList.forEach(studentName => {
-        //  ["Student01"].forEach(studentName => {
-        it(` > using button for student :: ${studentName}`, () => {
+        // ["Student01 1st"].forEach(studentName => {
+        it(` > navigate all quetions using button for student :: ${studentName}`, () => {
           const { attempt } = statsMap[studentName];
           expressg.verifyResponsesInGridStudentLevel(studentName, attempt, questionTypeMap, false);
         });
 
-        it(` > using keyboard key for student :: ${studentName}`, () => {
+        it(` > navigate all que using keyboard key for student :: ${studentName}`, () => {
           const { attempt } = statsMap[studentName];
           expressg.verifyResponsesInGridStudentLevel(studentName, attempt, questionTypeMap, true);
         });
@@ -289,12 +292,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
       queList.forEach(queNum => {
         // ["Q1"].forEach(queNum => {
-        it(` > using button for que :: ${queNum} `, () => {
+        it(` > navigate all students using button for que :: ${queNum} `, () => {
           const attempt = submittedQueCentric[queNum];
           expressg.verifyResponsesInGridQuestionLevel(queNum, attempt, questionTypeMap, false);
         });
 
-        it(` > using keyboard key for que :: ${queNum} `, () => {
+        it(` > navigate all students using keyboard key for que :: ${queNum} `, () => {
           const attempt = submittedQueCentric[queNum];
           expressg.verifyResponsesInGridQuestionLevel(queNum, attempt, questionTypeMap, true);
         });
@@ -311,7 +314,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe.skip(" > verify redirect", () => {
+  describe(" > verify redirect", () => {
     before("calculate redirected stats", () => {
       redirectedData.forEach(attempts => {
         const { attempt, stuName, status } = attempts;
@@ -426,7 +429,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe.skip(" > verify score update", () => {
+  describe(" > verify score update", () => {
     before("question centric view", () => {
       lcb.clickonQuestionsTab();
     });

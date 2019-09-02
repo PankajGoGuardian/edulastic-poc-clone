@@ -1,7 +1,7 @@
 import { Radio, Switch } from "antd";
 import styled from "styled-components";
 
-import { mobileWidth, tabletWidth, white, themeColor } from "@edulastic/colors";
+import { mobileWidth, tabletWidth, white, themeColor, smallDesktopWidth, grey } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
@@ -18,6 +18,11 @@ export const Container = styled.div`
     padding-left: 2px;
   }
 
+  @media (max-width: ${smallDesktopWidth}) {
+    .scrollbar-container {
+      height: calc(100vh - 90px);
+    }
+  }
   @media (max-width: ${mobileWidth}) {
     padding: 0 26px 45px 26px;
   }
@@ -27,6 +32,17 @@ export const LeftWrapper = styled.div`
   min-width: 230px;
   max-width: 230px;
   margin-top: 10px;
+
+  @media (max-width: ${smallDesktopWidth}) {
+    position: fixed;
+    top: 50px;
+    left: 100px;
+    background: white;
+    padding: 15px;
+    box-shadow: 0px 2px 5px 0px #dfdfdf;
+    height: calc(100vh - 50px);
+    z-index: 1;
+  }
 `;
 
 export const FixedWrapper = styled.div`
@@ -140,6 +156,11 @@ export const FilterButton = styled(Button)`
   &:hover {
     outline: unset;
     color: ${props => (props.isShowFilter ? white : themeColor)};
+  }
+
+  @media (max-width: ${smallDesktopWidth}) {
+    margin-left: ${props => (props.showFilter ? "180px" : "-20px")};
+    margin-top: ${props => (props.showFilter ? "-25px" : "34px")};
   }
 `;
 

@@ -7,7 +7,7 @@ import { FlexContainer, AnswerContext, helpers } from "@edulastic/common";
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
 import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionIndex, QuestionCheckbox } from "./styled";
-import { getQuestionType } from "../../../../../dataUtils";
+import { getQuestionType, markQuestionLabel } from "../../../../../dataUtils";
 
 const transformItemRow = ([row], qid) => [
   {
@@ -46,6 +46,7 @@ export const SortableItem = ({
   metaInfoData,
   onPreview,
   questions,
+  setQuestionNumber,
   mobile
 }) => {
   // const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
@@ -56,7 +57,6 @@ export const SortableItem = ({
   const items = testItem.itemLevelScoring
     ? [{ item, question: (testItem.data && testItem.data.questions[0]) || {} }]
     : splitItems(item, testItem);
-
   return (
     <TestItemWrapper data-cy={metaInfoData.id}>
       {mobile ? (
@@ -106,6 +106,8 @@ export const SortableItem = ({
         </FlexContainer>
       ) : (
         items.map(({ item: _item, question }, index) => {
+          //pick only questions required for the current loop and create question number for the same
+          const rowQuestions = setQuestionNumber(_item);
           return (
             <FlexContainer justifyContent="space-between" alignItems="flex-start">
               <FlexContainer alignItems="flex-start" style={{ width: "85%" }}>
@@ -134,7 +136,7 @@ export const SortableItem = ({
                     disableResponse
                     verticalDivider={item.verticalDivider}
                     scrolling={item.scrolling}
-                    questions={questions}
+                    questions={rowQuestions}
                     windowWidth="100%"
                     isReviewTab
                     testItem
@@ -200,6 +202,7 @@ const List = SortableContainer(
       return audio;
     };
 
+    const setQuestionNumber = markQuestionLabel(questions);
     return (
       <div>
         {rows.map((item, i) => (
@@ -219,6 +222,7 @@ const List = SortableContainer(
                 testItems[i].data.questions &&
                 (testItems[i].data.questions.find(e => e.depthOfKnowledge) || {}).depthOfKnowledge
             }}
+            setQuestionNumber={setQuestionNumber}
             index={i}
             owner={owner}
             indx={i}

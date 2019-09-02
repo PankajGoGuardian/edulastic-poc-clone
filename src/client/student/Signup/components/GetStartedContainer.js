@@ -5,7 +5,8 @@ import styled from "styled-components";
 import { Link, Redirect } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { themeColor, mainTextColor, greyGraphstroke, greenDark3, grey } from "@edulastic/colors";
+import { themeColor, mainTextColor, greyGraphstroke, tabletWidth, mobileWidthMax } from "@edulastic/colors";
+import { RegistrationHeader, RegistrationBody, Copyright, CircleDiv, AlreadyhaveAccount } from "../styled";
 import {
   getPartnerKeyFromUrl,
   validatePartnerUrl,
@@ -20,7 +21,6 @@ import {
 } from "../../../common/utils/helpers";
 import { Partners } from "../../../common/utils/static/partnerData";
 
-import loginBg from "../../assets/bg-login.png";
 import studentBg from "../../assets/small-bg-student.png";
 import teacherBg from "../../assets/small-bg-teacher.png";
 import adminBg from "../../assets/small-bg-adm.png";
@@ -47,7 +47,7 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
           <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
         </Col>
         <Col span={12} align="right">
-          <span>{t("component.signup.alreadyhaveanaccount")}</span>
+          <AlreadyhaveAccount>{t("component.signup.alreadyhaveanaccount")}</AlreadyhaveAccount>
           <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
             {t("common.signinbtn")}
           </Link>
@@ -148,27 +148,6 @@ const RegistrationBg = styled.img`
   height: 102%;
 `;
 
-const RegistrationHeader = styled(Row)`
-  padding: 16px 24px;
-  color: white;
-  span {
-    font-size: 12px;
-    margin-right: 20px;
-  }
-  a {
-    padding: 8px 48px;
-    text-decoration: none;
-    color: white;
-    text-transform: uppercase;
-    border-radius: 4px;
-    background: ${themeColor};
-  }
-`;
-
-const RegistrationBody = styled(Row)`
-  min-height: calc(100vh - 120px);
-`;
-
 const BannerText = styled(Col)`
   text-align: center;
   h1 {
@@ -184,6 +163,18 @@ const BannerText = styled(Col)`
     color: white;
     line-height: 1.7;
     font-size: 13px;
+  }
+
+  @media (max-width: ${tabletWidth}) {
+    h1 {
+      font-size: 35px;
+    }
+    h4 {
+      font-size: 16px;
+      br {
+        display: none;
+      }
+    }
   }
 `;
 
@@ -212,6 +203,17 @@ const ChooseSignupBox = styled(Row)`
     background: transparent;
     justify-content: center;
   }
+
+  @media (max-width: ${mobileWidthMax}) {
+    width: 100%;
+    h3 {
+      display: none;
+    }
+    .signupbox-container {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
 `;
 
 const StudentSignupBox = styled(Link)`
@@ -236,6 +238,16 @@ const StudentSignupBox = styled(Link)`
     padding: 8px 4px;
     border-radius: 4px;
   }
+
+  @media (max-width: ${mobileWidthMax}) {
+    width: 215px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    span {
+      padding: 11px 4px;
+    }
+  }
 `;
 
 const TeacherSignupBox = styled(StudentSignupBox)`
@@ -250,25 +262,4 @@ const AdminSignupBox = styled(StudentSignupBox)`
   background-position: top center;
   background-size: 102% 102%;
   background-repeat: no-repeat;
-`;
-
-const Copyright = styled(Row)`
-  font-size: 10px;
-  color: ${grey};
-  text-align: center;
-  margin: 25px 0px 10px;
-`;
-
-const CircleDiv = styled.div`
-  height: ${({ size }) => size || 0}px;
-  width: ${({ size }) => size || 0}px;
-  top: ${({ top }) => top}px;
-  left: ${({ left }) => left}px;
-  bottom: ${({ bottom }) => bottom}px;
-  right: ${({ right }) => right}px;
-  background: ${greenDark3};
-  border-radius: 50%;
-  position: absolute;
-  opacity: 0.6;
-  z-index: 0;
 `;

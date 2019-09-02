@@ -12,4 +12,13 @@ export const StyledPagination = styled(Pagination)`
   align-self: flex-end;
 `;
 
-export const StyledTable = styled(Table)``;
+export const StyledTable = styled(Table)`
+  .ant-table {
+    &-tbody,
+    &-thead {
+      & > tr :nth-last-of-type(-n + 2) {
+        text-align: end;
+      }
+    }
+  }
+`;

@@ -13,7 +13,9 @@ import {
   setIsPausedAction,
   updateRemovedStudentsAction,
   updateClassStudentsAction,
-  setStudentsGradeBookAction
+  setCurrentTestActivityIdAction,
+  setStudentsGradeBookAction,
+  setAllTestActivitiesForStudentAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -35,7 +37,8 @@ import {
   TOGGLE_PAUSE_ASSIGNMENT,
   REMOVE_STUDENTS,
   FETCH_STUDENTS,
-  ADD_STUDENTS
+  ADD_STUDENTS,
+  GET_ALL_TESTACTIVITIES_FOR_STUDENT
 } from "../src/constants/actions";
 import { isNullOrUndefined } from "util";
 
@@ -194,6 +197,17 @@ function* addStudentsSaga({ payload }) {
   }
 }
 
+function* getAllTestActivitiesForStudentSaga({ payload }) {
+  try {
+    const { assignmentId, groupId, studentId } = payload;
+    const result = yield call(classBoardApi.testActivitiesForStudent, { assignmentId, groupId, studentId });
+    yield put(setAllTestActivitiesForStudentAction(result));
+    yield put(setCurrentTestActivityIdAction(""));
+  } catch (err) {
+    yield call(message.error, "fetching all test activities failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -207,6 +221,7 @@ export function* watcherSaga() {
     yield takeEvery(MARK_AS_ABSENT, markAbsentSaga),
     yield takeEvery(REMOVE_STUDENTS, removeStudentsSaga),
     yield takeEvery(FETCH_STUDENTS, fetchStudentsByClassSaga),
+    yield takeEvery(GET_ALL_TESTACTIVITIES_FOR_STUDENT, getAllTestActivitiesForStudentSaga),
     yield takeEvery(ADD_STUDENTS, addStudentsSaga)
   ]);
 }
@@ -214,33 +229,18 @@ export function* watcherSaga() {
 export const stateGradeBookSelector = state => state.author_classboard_gradebook;
 export const stateTestActivitySelector = state => state.author_classboard_testActivity;
 
-export const getAggregateByQuestion = (entities, studentId) => {
-  if (!entities) {
-    return {};
-  }
-  const total = entities.length;
-  let submittedEntities = entities.filter(x => x.status === "submitted");
-  const activeEntities = entities.filter(
-    x => x.status === "inProgress" || (x.status === "submitted") | (x.status === "graded")
-  );
-  let questionsOrder = {};
-  if (entities.length > 0) {
-    questionsOrder = entities[0].questionActivities.reduce((acc, cur, ind) => {
-      acc[cur._id] = ind;
-      return acc;
-    }, {});
-  }
-  const submittedNumber = submittedEntities.length;
-  // TODO: handle absent
-  const absentNumber = 0;
-  const scores = activeEntities.map(({ score, maxScore }) => score / maxScore).reduce((prev, cur) => prev + cur, 0);
-  const submittedScoresAverage = activeEntities.length > 0 ? scores / activeEntities.length : 0;
-  // const startedEntities = entities.filter(x => x.status !== "notStarted");
-  const questionMap = {};
-  if (studentId) {
-    entities = entities.filter(x => x.studentId === studentId);
-  }
+export const getCurrentTestActivityIdSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.currentTestActivityId || ""
+);
 
+export const getAllTestActivitiesForStudentSelector = createSelector(
+  stateTestActivitySelector,
+  state => state.allTestActivitiesForStudent || []
+);
+
+export const getItemSummary = (entities, questionsOrder) => {
+  const questionMap = {};
   for (const entity of entities) {
     const { questionActivities } = entity;
     for (let {
@@ -316,12 +316,42 @@ export const getAggregateByQuestion = (entities, studentId) => {
   for (const question in questionMap) {
     questionMap[question].avgTimeSpent = questionMap[question].timeSpent / questionMap[question].attemptsNum;
   }
-  const itemsSummary = sortBy(_values(questionMap), [x => questionsOrder[x._id]]);
+  return sortBy(_values(questionMap), [x => questionsOrder[x._id]]);
+};
+
+export const getAggregateByQuestion = (entities, studentId) => {
+  if (!entities) {
+    return {};
+  }
+  const total = entities.length;
+  let submittedEntities = entities.filter(x => x.status === "submitted");
+  const activeEntities = entities.filter(
+    x => x.status === "inProgress" || (x.status === "submitted") | (x.status === "graded")
+  );
+  let questionsOrder = {};
+  if (entities.length > 0) {
+    questionsOrder = entities[0].questionActivities.reduce((acc, cur, ind) => {
+      acc[cur._id] = ind;
+      return acc;
+    }, {});
+  }
+  const submittedNumber = submittedEntities.length;
+  // TODO: handle absent
+  const absentNumber = 0;
+  const scores = activeEntities.map(({ score, maxScore }) => score / maxScore).reduce((prev, cur) => prev + cur, 0);
+  const submittedScoresAverage = activeEntities.length > 0 ? scores / activeEntities.length : 0;
+  // const startedEntities = entities.filter(x => x.status !== "notStarted");
+  if (studentId) {
+    entities = entities.filter(x => x.studentId === studentId);
+  }
+
+  const itemsSummary = getItemSummary(entities, questionsOrder);
   const result = {
     total,
     submittedNumber,
     absentNumber,
     avgScore: submittedScoresAverage,
+    questionsOrder,
     itemsSummary
   };
   return result;

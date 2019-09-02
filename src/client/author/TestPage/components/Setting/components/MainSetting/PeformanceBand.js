@@ -1,72 +1,45 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { Table, Checkbox, Icon } from "antd";
-import styled, { css } from "styled-components";
+import { Table, Checkbox, Select } from "antd";
+import styled from "styled-components";
 import { white, themeColor } from "@edulastic/colors";
-import { setTestDataAction } from "../../../../ducks";
-import { receivePerformanceBandAction } from "../../../../../PerformanceBand/ducks";
-import { getUserOrgId } from "../../../../../src/selectors/user";
 import { performanceBandSelector } from "../../../../../AssignTest/duck";
+import { Title } from "./styled";
 
-const PerformanceBands = ({ setTestData, fetchPerformanceBand, userOrgId, performanceBandsData }) => {
-  useEffect(() => {
-    fetchPerformanceBand({ orgId: userOrgId });
-  }, []);
-
-  const handleIsAbove = (isChecked, index) => {
-    const newPerformanceBands = performanceBandsData.map((item, i) =>
-      i === index ? { ...item, aboveOrAtStandard: !isChecked } : item
-    );
-
-    setTestData({
-      performanceBandsData: newPerformanceBands
-    });
+const PerformanceBands = ({ performanceBandsData, setSettingsData, performanceBand = {} }) => {
+  const handleProfileChange = val => {
+    const selectedBandsData = performanceBandsData.find(o => o._id === val);
+    setSettingsData({ _id: selectedBandsData._id, name: selectedBandsData.name });
   };
 
-  /**
-   *
-   * @param {*} index current row index
-   * @param {*} dir direction of the click (+ || -)
-   */
-  const onPerformanceBandChange = (index, dir) => {
-    let { to } = performanceBandsData[index];
-    const previousBandTo = index ? performanceBandsData[index - 1].to : 100;
-    // We can decrease current band value only if the next band value has difference greater than one
-    if (dir === "decrease" && to > performanceBandsData[index + 1].to + 1) {
-      to--;
-    }
-    // We can increase current band value only if the previous band value has difference greater than one
-    else if (dir === "increase" && to < previousBandTo) {
-      to++;
-    } else {
-      return;
-    }
-    const newPerformanceBands = [...performanceBandsData];
-    // updated TO value will be assigned to next FROM value of the next band
-    newPerformanceBands[index].to = newPerformanceBands[index + 1].from = to;
-    setTestData({
-      performanceBandsData: newPerformanceBands
-    });
-  };
+  const selectedBandsData = performanceBandsData.find(o => o._id === performanceBand._id) ||
+    performanceBandsData[0] || { performanceBand: [] };
+  const performanceBands = selectedBandsData.performanceBand;
 
   const columns = [
     {
-      title: "Performance Bands",
+      title: "Name",
       dataIndex: "name",
-      width: "35%",
-      key: "name"
+      width: "25%",
+      render: (text, record) => {
+        return (
+          <NameColumn>
+            <StyledBox color={record.color} /> <StyleTextWrapper>{text}</StyleTextWrapper>
+          </NameColumn>
+        );
+      }
     },
     {
       title: "ABOVE OR AT STANDARD",
       dataIndex: "aboveOrAtStandard",
       width: "25%",
       key: "aboveOrAtStandard",
-      render: (value, _, index) => <Checkbox checked={value} onClick={() => handleIsAbove(value, index)} />
+      render: value => <Checkbox disabled checked={value} />
     },
     {
       title: "FROM",
       dataIndex: "from",
-      width: "15%",
+      width: "25%",
       key: "from",
       render: text => <span>{`${text}%`}</span>
     },
@@ -75,42 +48,35 @@ const PerformanceBands = ({ setTestData, fetchPerformanceBand, userOrgId, perfor
       width: "25%",
       key: "to",
       dataIndex: "to",
-      className: "action-wrapper",
-      render: (text, row, index) => {
-        const nextBandTo = index ? performanceBandsData[index - 1].to : 100;
-        const previousBandTo = index < performanceBandsData.length - 1 ? performanceBandsData[index + 1].to : 0;
-        const disableDecrease = row.to === 0 || previousBandTo + 1 === row.to;
-        const disableIncrease = row.to === 0 || row.to === 100 || nextBandTo === row.to + 1;
-        return (
-          <div>
-            <ChangeValueBtns
-              type="minus-circle"
-              disabled={disableDecrease}
-              onClick={() => !disableDecrease && onPerformanceBandChange(index, "decrease")}
-            />
-            {`${text}%`}
-            <ChangeValueBtns
-              type="plus-circle"
-              disabled={disableIncrease}
-              onClick={() => !disableIncrease && onPerformanceBandChange(index, "increase")}
-            />
-          </div>
-        );
-      }
+      render: text => <span>{`${text}%`}</span>
     }
   ];
-  return <StyledTable columns={columns} dataSource={performanceBandsData} pagination={false} />;
+  return (
+    <>
+      <Title style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+        <span>Performance Bands</span>
+        <Select style={{ width: "150px" }} value={performanceBand._id} onChange={val => handleProfileChange(val)}>
+          {performanceBandsData.map(bandsData => {
+            return (
+              <Select.Option key={bandsData._id} value={bandsData._id}>
+                {bandsData.name}
+              </Select.Option>
+            );
+          })}
+        </Select>
+      </Title>
+      {performanceBands && !!performanceBands.length && (
+        <StyledTable dataSource={performanceBands} columns={columns} pagination={false} />
+      )}
+    </>
+  );
 };
 
 export default connect(
   state => ({
-    performanceBandsData: performanceBandSelector(state),
-    userOrgId: getUserOrgId(state)
+    performanceBandsData: performanceBandSelector(state)
   }),
-  {
-    setTestData: setTestDataAction,
-    fetchPerformanceBand: receivePerformanceBandAction
-  }
+  null
 )(PerformanceBands);
 
 export const StyledTable = styled(Table)`
@@ -129,15 +95,6 @@ export const StyledTable = styled(Table)`
       text-align: center;
       font-size: ${({ isAdvanced }) => (isAdvanced ? "10px" : "12px")};
       padding: 8px;
-
-      &:first-child {
-        font-size: ${({ isAdvanced }) => (isAdvanced ? "14px" : "20px")};
-        font-weight: bold;
-        text-transform: unset;
-        color: #434b5d;
-        text-align: left;
-        padding-left: 20px;
-      }
     }
     .ant-table-tbody > tr > td {
       border-bottom: 15px;
@@ -146,38 +103,22 @@ export const StyledTable = styled(Table)`
       background: #f8f8f8;
       text-align: center;
       padding: 8px;
-
-      &:first-child {
-        text-align: left;
-        padding-left: 20px;
-      }
-      &.action-wrapper {
-        div {
-          display: flex;
-          justify-content: space-around;
-          align-items: center;
-        }
-      }
     }
   }
 `;
 
-const Disabled = css`
-  cursor: not-allowed;
-  pointer-events: none;
-  color: grey;
-  border: grey;
-  svg {
-    fill: grey;
-  }
+const NameColumn = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
-const ChangeValueBtns = styled(Icon)`
-  svg {
-    fill: ${themeColor};
-    font-size: 18px;
-  }
-  &.anticon[tabindex] {
-    ${props => props.disabled && Disabled};
-  }
+const StyledBox = styled.span`
+  width: 20px;
+  height: 20px;
+  background: ${props => props.color};
+  border: 1px solid ${themeColor};
+`;
+const StyleTextWrapper = styled.span`
+  margin-left: 10px;
 `;

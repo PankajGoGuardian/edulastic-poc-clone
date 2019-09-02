@@ -1,13 +1,16 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { withTheme } from "styled-components";
 import get from "lodash/get";
 import PropTypes from "prop-types";
+import Switch from "antd/lib/switch";
 
 import { Stimulus, FlexContainer, QuestionNumberLabel, AnswerContext } from "@edulastic/common";
 import Circles from "./Circles";
 import Rectangles from "./Rectangles";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
 import { CLEAR, SHOW } from "../../../constants/constantsForQuestions";
+import CorrectAnswerBox from "./CorrectAnswerBox";
+import SwitchWrapper from "../styled/SwitchWrapper";
 
 const Display = ({
   saveAnswer,
@@ -20,19 +23,13 @@ const Display = ({
   changePreviewTab,
   isReviewTab
 }) => {
-  const { fractionProperties = {} } = item;
+  const { fractionProperties = {}, annotations = [] } = item;
   const fractionType = fractionProperties.fractionType;
   const count = fractionProperties.count || 1;
   let selected = userAnswer;
-
   const answerContext = useContext(AnswerContext);
-
-  if ((previewTab === "show" && answerContext.isAnswerModifiable && !answerContext.expressGrader) || isReviewTab) {
-    selected = Array(get(item, "validation.validResponse.value", 1))
-      .fill()
-      .map((_, i) => i + 1);
-  }
-
+  const hasAnnotations = annotations.length > 0;
+  const [showAnnotations, toggleAnnotationsVibility] = useState(hasAnnotations);
   const handleSelect = index => {
     if (
       previewTab === "check" ||
@@ -50,13 +47,24 @@ const Display = ({
     }
     saveAnswer(_userAnswer);
   };
-
   return (
     <FlexContainer justifyContent="flex-start" flexDirection="column" alignItems="flex-start" flexWrap="wrap">
-      {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
-      <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
+      <FlexContainer style={{ width: "100%" }} justifyContent="space-between">
+        <FlexContainer>
+          {showQuestionNumber && <QuestionNumberLabel>{item.qLabel}: </QuestionNumberLabel>}
+          <Stimulus style={{ marginTop: "14px" }} dangerouslySetInnerHTML={{ __html: stimulus }} />
+        </FlexContainer>
+        {hasAnnotations && answerContext.isAnswerModifiable && (
+          <FlexContainer>
+            <span>Show Annotatations</span>
+            <SwitchWrapper>
+              <Switch defaultChecked={showAnnotations} onChange={checked => toggleAnnotationsVibility(checked)} />
+            </SwitchWrapper>
+          </FlexContainer>
+        )}
+      </FlexContainer>
       <FlexContainer
-        style={{ position: "relative", maxWidth: "100%", overflow: "auto" }}
+        style={{ overflow: "auto", position: "relative", height: "425px", width: "700px" }}
         flexWrap="wrap"
         justifyContent="flex-start"
       >
@@ -90,8 +98,17 @@ const Display = ({
               />
             );
           })}
-        <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />
+        {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
       </FlexContainer>
+
+      {previewTab === SHOW && (
+        <CorrectAnswerBox
+          fractionProperties={fractionProperties}
+          selected={Array(get(item, "validation.validResponse.value", 1))
+            .fill()
+            .map((_, i) => i + 1)}
+        />
+      )}
     </FlexContainer>
   );
 };

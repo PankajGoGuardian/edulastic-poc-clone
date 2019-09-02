@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { keyBy, get } from "lodash";
@@ -12,12 +12,20 @@ import { getItemSelector, itemHasUserWorkSelector } from "../../sharedDucks/Test
 import TestPreviewModal from "../../../author/Assignments/components/Container/TestPreviewModal";
 const { releaseGradeLabels } = testConstants;
 
-const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) => {
+const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork, passages = [] }) => {
   const [showModal, setModal] = useState(false);
   const { releaseScore = "" } = testActivityById;
-  const questions = keyBy([...get(item, "data.questions", []), ...get(item, "data.resources", [])], "id");
-  const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "clear";
+  const questions = keyBy(get(item, "data.questions", []), "id");
+  const resources = keyBy(get(item, "data.resources", []), "id");
 
+  let allWidgets = { ...questions, ...resources };
+  let itemRows = item.rows;
+  if (item.passageId) {
+    const passage = passages.find(p => p._id === item.passageId) || {};
+    itemRows = [passage.structure, ...itemRows];
+    allWidgets = { ...allWidgets, ...keyBy(passage.data, "id") };
+  }
+  const preview = releaseScore === releaseGradeLabels.WITH_ANSWERS ? "show" : "clear";
   const closeModal = () => setModal(false);
 
   return (
@@ -29,8 +37,8 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
             <TestItemPreview
               view="preview"
               preview={preview}
-              cols={item.rows || []}
-              questions={questions}
+              cols={itemRows || []}
+              questions={allWidgets}
               verticalDivider={item.verticalDivider}
               scrolling={item.scrolling}
               releaseScore={releaseScore}
@@ -54,6 +62,7 @@ const ReportListContent = ({ item = {}, flag, testActivityById, hasUserWork }) =
 export default connect(
   state => ({
     item: getItemSelector(state),
+    passages: state.studentReport.passages,
     hasUserWork: itemHasUserWorkSelector(state),
     testActivityById: get(state, `[studentReport][testActivity]`, {})
   }),

@@ -113,6 +113,12 @@ export const MathInputStyles = styled.div`
     }
   }
 
+  .mq-math-mode var,
+  .mq-math-mode i,
+  .mq-math-mode i.mq-font {
+    font-style: ${props => props.fontStyle};
+  }
+
   @media (max-width: ${mobileWidth}) {
     .keyboard__main {
       display: flex;

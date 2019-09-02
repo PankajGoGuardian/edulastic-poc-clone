@@ -5,7 +5,14 @@ import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
 import { Upload, Spin, message } from "antd";
-import { themeColor, white, greyishDarker2 } from "@edulastic/colors";
+import {
+  themeColor,
+  white,
+  greyishDarker2,
+  extraDesktopWidth,
+  largeDesktopWidth,
+  desktopWidth
+} from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { beforeUpload } from "@edulastic/common";
 import { updateProfileImageAction } from "../../../../student/Login/ducks";
@@ -51,7 +58,7 @@ class Photo extends React.Component {
   render() {
     const { height, windowWidth, imageUrl } = this.props;
     const uploadButton = (
-      <Container height="250" width="250">
+      <Container>
         <Image alt="Profile">
           <Backdrop />
         </Image>
@@ -74,8 +81,8 @@ class Photo extends React.Component {
     return (
       <UploadWrapper>
         <Upload {...props}>
-          <Container height="250" width="250">
-            <ImageContainer height="250">
+          <Container>
+            <ImageContainer>
               {loading ? (
                 <ImageLoading />
               ) : imageUrl ? (
@@ -115,19 +122,53 @@ export default connect(
 )(Photo);
 
 const Container = styled.div`
-  height: ${props => props.height}px;
-  width: ${props => props.width}px;
+  height: 250px;
+  width: 250px;
   position: relative;
   border-radius: 50%;
   background: #dddddd;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    width: 180px;
+    height: 180px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    max-width: 150px;
+    max-height: 150px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    max-width: 150px;
+    max-height: 150px;
+  }
 `;
 
 const UploadWrapper = styled.div`
+  margin: 10px;
   .ant-upload-select {
     min-width: 100%;
     border: none;
     padding: 0px !important;
     height: 250px;
+  }
+
+  @media (max-width: ${extraDesktopWidth}) {
+    .ant-upload-select {
+      height: 180px;
+    }
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    .ant-upload-select {
+      height: 150px;
+    }
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    .ant-upload-select {
+      height: 150px;
+    }
   }
 
   .ant-upload {
@@ -149,7 +190,7 @@ const Image = styled.div`
   border-radius: 50%;
   background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
   background-position: center center;
-  background-size: cover;
+  background-size: contain;
   background-repeat: no-repeat;
 `;
 
@@ -178,7 +219,18 @@ const Camera = styled.div`
 
 const ImageContainer = styled.div`
   width: 100%;
-  height: ${props => props.height}px;
+  height: 250px;
   overflow: hidden;
   border-radius: 50%;
+  @media (max-width: ${extraDesktopWidth}) {
+    height: 180px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    max-height: 150px;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    max-height: 150px;
+  }
 `;

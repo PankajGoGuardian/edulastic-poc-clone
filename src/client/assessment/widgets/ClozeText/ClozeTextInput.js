@@ -80,7 +80,6 @@ const ClozeTextInput = ({ resprops, id }) => {
     style,
     placeholder,
     type = "text",
-    showIndex = true,
     userAnswers,
     disableResponse,
     responseIds,
@@ -161,7 +160,6 @@ const ClozeTextInput = ({ resprops, id }) => {
       style={{ ...style, width: "max-content", height: "auto" }}
       title={value.length ? value : null}
     >
-      {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
         type={type}
@@ -215,17 +213,8 @@ const CustomInput = styled.div`
   margin: 0px 4px;
   position: relative;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-`;
 
-const IndexBox = styled.div`
-  padding: 3px 10px;
-  color: white;
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
-  background: #878282;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  align-self: stretch;
-  height: auto;
+  .ant-input {
+    border-radius: 0px 4px 4px 0px;
+  }
 `;

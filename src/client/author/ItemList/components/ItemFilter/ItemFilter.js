@@ -52,8 +52,11 @@ class ItemFilter extends Component {
               <Affix>
                 <MainFilterHeader>
                   <Title>{t("component.itemlist.filter.filters")}</Title>
-                  <Clear onClick={onClearSearch}>{t("component.itemlist.filter.clearAll")}</Clear>
+                  <Clear data-cy="clearAll" onClick={onClearSearch}>
+                    {t("component.itemlist.filter.clearAll")}
+                  </Clear>
                 </MainFilterHeader>
+                <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
                 <Search
                   search={search}
                   showStatus={search.filter !== items[0].filter}

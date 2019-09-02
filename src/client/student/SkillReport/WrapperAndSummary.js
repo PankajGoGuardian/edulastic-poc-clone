@@ -2,10 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { extraDesktopWidth, mediumDesktopWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import * as S from "./styled";
 import StyledTable from "../styled/Table";
 import TableSection from "./SkillTableSection";
+
+import { Wrapper } from "../styled";
 
 const computeColumns = t => [
   {
@@ -49,6 +52,7 @@ const SkillReportMainContent = ({ skillReport, t }) => {
   // console.log('skillReport',skillReport);
   if (skillReport) {
     const getDomainScoreDetails = id =>
+      skillReport.reports.reportData.domainLevel &&
       skillReport.reports.reportData.domainLevel.filter(item => item.domain_id === id);
     sumData = skillReport.reports.curriculum.domains.map(domain => {
       const reportData = getDomainScoreDetails(domain._id)[0] || {};
@@ -63,15 +67,15 @@ const SkillReportMainContent = ({ skillReport, t }) => {
     });
   }
   return (
-    <S.SkillReportContainer>
-      <S.AssignmentContentWrap>
+    <React.Fragment>
+      <WrapperContent>
         <S.SummaryTitle>{t("common.skillSummary")}</S.SummaryTitle>
         <StyledTable columns={summaryColumns} dataSource={sumData} pagination={false} />
-      </S.AssignmentContentWrap>
+      </WrapperContent>
       {sumData.map((summary, index) => (
         <TableSection summary={summary} dataSource={sumData} skillReport={skillReport} key={index} />
       ))}
-    </S.SkillReportContainer>
+    </React.Fragment>
   );
 };
 
@@ -96,4 +100,17 @@ const Circle = styled.div`
       : props.theme.skillReport.redColor};
   }
   margin-left: 18px;
+`;
+
+const WrapperContent = styled(Wrapper)`
+  padding: 32px 39px;
+  min-height: 0;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    padding: 27px 23px;
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 26px 22px;
+  }
 `;

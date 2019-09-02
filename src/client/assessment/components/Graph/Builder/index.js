@@ -1,6 +1,5 @@
 import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
-import { AUTO_VALUE, AUTO_HEIGHT_VALUE } from "./config/constants";
 import {
   Point,
   Line,
@@ -45,9 +44,8 @@ import {
   calcUnitX,
   handleSnap,
   isInPolygon,
-  objectLabelComparator,
-  nameGenerator,
-  setLabel
+  setLabel,
+  getClosestTick
 } from "./utils";
 import _events from "./events";
 
@@ -94,8 +92,6 @@ class Board {
 
     this.creatingHandlerIsDisabled = false;
 
-    this.marksContainer = null;
-
     this.numberlineSnapToTicks = true;
     /**
      * Board settings
@@ -127,8 +123,6 @@ class Board {
 
     this.creatingHandler = () => {};
     this.setCreatingHandler();
-
-    this.objectNameGenerator = nameGenerator();
   }
 
   addDragDropValue(value, x, y) {
@@ -150,6 +144,33 @@ class Board {
     };
 
     this.elements.push(DragDrop.renderElement(this, element, {}));
+    return true;
+  }
+
+  addMark(value, x, y) {
+    const coords = new JXG.Coords(JXG.COORDS_BY_SCREEN, [x, y], this.$board);
+    const [xMin, yMax, xMax, yMin] = this.$board.getBoundingBox();
+    if (
+      coords.usrCoords[1] < xMin ||
+      coords.usrCoords[1] > xMax ||
+      coords.usrCoords[2] < yMin ||
+      coords.usrCoords[2] > yMax
+    ) {
+      return false;
+    }
+
+    let position = coords.usrCoords[1];
+    if (this.numberlineSnapToTicks) {
+      position = getClosestTick(coords.usrCoords[1], this.numberlineAxis);
+    }
+
+    const mark = {
+      id: value.id,
+      point: value.text,
+      position
+    };
+
+    this.elements.push(Mark.onHandler(this, mark));
     return true;
   }
 
@@ -175,29 +196,6 @@ class Board {
     }
 
     return false;
-  }
-
-  setElementsFixedAttribute(fixed) {
-    if (!this.elements) {
-      return;
-    }
-
-    this.elements.forEach(element => {
-      if (element.type === 100 || element.latexIsBroken) {
-        return;
-      }
-      element.setAttribute({ fixed });
-      if (element.ancestors) {
-        Object.values(element.ancestors).forEach(ancestor => {
-          ancestor.setAttribute({ fixed });
-        });
-      }
-      if (element.borders) {
-        element.borders.forEach(border => {
-          border.setAttribute({ fixed });
-        });
-      }
-    });
   }
 
   setDrawingObject(drawingObject) {
@@ -266,9 +264,6 @@ class Board {
       case CONSTANT.TOOLS.POLYNOM:
         this.creatingHandler = Polynom.onHandler();
         break;
-      case CONSTANT.TOOLS.LABEL:
-        this.creatingHandler = Label.onHandler();
-        return;
       case CONSTANT.TOOLS.ANNOTATION:
         this.creatingHandler = Annotation.onHandler();
         return;
@@ -334,6 +329,23 @@ class Board {
     }
   }
 
+  getTempPoints() {
+    return [
+      ...Line.getPoints(),
+      ...Circle.getPoints(),
+      ...Polygon.getPoints(),
+      ...Sin.getPoints(),
+      ...Parabola.getPoints(),
+      ...Ellipse.getPoints(),
+      ...Hyperbola.getPoints(),
+      ...Exponent.getPoints(),
+      ...Logarithm.getPoints(),
+      ...Polynom.getPoints(),
+      ...Tangent.getPoints(),
+      ...Secant.getPoints()
+    ];
+  }
+
   /**
    * Add event 'Up'
    */
@@ -377,8 +389,9 @@ class Board {
     this.disableResponse = value;
   }
 
-  createEditButton(menuHandler) {
+  createEditButton(menuHandler, disabled = false) {
     this.editButton = EditButton.createButton(this, menuHandler);
+    this.editButton.disabled = disabled;
   }
 
   checkEditButtonCall(element) {
@@ -391,6 +404,9 @@ class Board {
   }
 
   handleElementMouseOver(element, event) {
+    if (this.editButton.disabled) {
+      return;
+    }
     if (this.checkEditButtonCall(element)) {
       let coords;
       if (JXG.isPoint(element)) {
@@ -410,6 +426,9 @@ class Board {
 
   handleStackedElementsMouseEvents(element) {
     element.on("mouseover", event => {
+      if (this.editButton.disabled) {
+        return;
+      }
       if (this.checkEditButtonCall(element)) {
         const pointsUnderMouse = this.$board
           .getAllObjectsUnderMouse(event)
@@ -437,35 +456,17 @@ class Board {
     });
   }
 
-  resetOutOfLineMarks() {
-    const { canvas } = this.numberlineSettings;
-    this.elements.forEach(mark => {
-      if (mark.X() < canvas.xMin || mark.X() > canvas.xMax) {
-        const setCoords = JXG.COORDS_BY_USER;
-        mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
-      }
-    });
-  }
-
-  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue = () => {}, setCalculatedHeight = () => {}) {
+  updateNumberlineSettings(canvas, numberlineAxis, layout) {
     this.numberlineSettings = {
       canvas,
       numberlineAxis,
-      layout,
-      setValue,
-      setCalculatedHeight
+      layout
     };
 
     Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
 
     if (this.graphType === "axisLabels") {
-      let { height } = layout;
-      if (height === AUTO_VALUE) {
-        height = layout.autoCalcHeight || AUTO_HEIGHT_VALUE;
-      } else if (Number.isNaN(Number.parseFloat(height))) {
-        height = 0;
-      }
-      this.resizeContainer(layout.width, height);
+      this.resizeContainer(layout.width, layout.height);
     } else {
       this.updateStackSettings(
         numberlineAxis.stackResponses,
@@ -482,19 +483,6 @@ class Board {
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(canvas, xMargin));
 
     Numberline.updateCoords(this);
-
-    if (this.graphType === "axisLabels") {
-      Mark.updateMarksContainer(this, canvas.xMin - xMargin, canvas.xMax + xMargin, {
-        position: layout.pointBoxPosition,
-        yMax: canvas.yMax,
-        yMin: canvas.yMin
-      });
-      if (!first && this.numberlineAxis) {
-        this.resetOutOfLineMarks();
-        Mark.alignMarks(this);
-        setValue();
-      }
-    }
 
     this.updateTitle({
       position: layout.titlePosition,
@@ -534,10 +522,9 @@ class Board {
         return;
       }
 
-      const setCoords = JXG.COORDS_BY_USER;
-      mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
-      Mark.alignMarks(this);
-      this.numberlineSettings.setValue();
+      this.elements = this.elements.filter(element => element.id !== mark.id);
+      this.removeObject(mark);
+      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
     });
   }
 
@@ -555,13 +542,10 @@ class Board {
   }
 
   // Render marks
-  renderMarks(marks, markCoords = []) {
+  renderMarks(marks = []) {
     marks.forEach(mark => {
-      const markCoord = markCoords.find(el => el.id === mark.id);
-      this.elements.push(Mark.onHandler(this, markCoord, mark));
+      this.elements.push(Mark.onHandler(this, mark));
     });
-
-    Mark.alignMarks(this);
   }
 
   removeMarks() {
@@ -616,7 +600,6 @@ class Board {
     this.abortTool();
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
-    this.objectNameGenerator.next(true);
   }
 
   resetAnswers() {
@@ -715,7 +698,7 @@ class Board {
   }
 
   getMarks() {
-    return this.elements.map(mark => Mark.getConfig(mark)).filter(mark => mark.mounted);
+    return this.elements.map(mark => Mark.getConfig(mark));
   }
 
   getSegments() {
@@ -831,73 +814,62 @@ class Board {
       [CONSTANT.TOOLS.CIRCLE]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYGON]: {
-        ...defaultBgObjectParameters(),
         ...Polygon.parseConfig(),
+        ...defaultBgObjectParameters(),
         borders: defaultBgObjectParameters()
       },
       [CONSTANT.TOOLS.PARABOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.ELLIPSE]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.HYPERBOLA]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.SIN]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.TANGENT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.SECANT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.EXPONENT]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.LOGARITHM]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.POLYNOM]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.EQUATION]: {
         ...defaultBgObjectParameters(),
         fillColor: "transparent",
-        highlightFillColor: "transparent",
-        highlightStrokeWidth: 1
+        highlightFillColor: "transparent"
       },
       [CONSTANT.TOOLS.ANNOTATION]: {
         fixed: true
@@ -923,15 +895,10 @@ class Board {
     );
   }
 
-  loadMarksAnswers(marks, markCoords) {
-    if (markCoords) {
-      marks.forEach(mark => {
-        const markCoord = markCoords.find(el => el.id === mark.id);
-        if (markCoord) {
-          this.answers.push(Mark.onHandler(this, { ...markCoord, fixed: true }, mark));
-        }
-      });
-    }
+  loadMarksAnswers(marks = []) {
+    marks.forEach(mark => {
+      this.answers.push(Mark.onHandler(this, { ...mark, fixed: true }));
+    });
   }
 
   loadSegmentsAnswers(segments) {
@@ -958,12 +925,6 @@ class Board {
   }
 
   loadFromConfig(flatCfg) {
-    // get name of the last object by label and reset objectNameGenerator with it
-    flatCfg.sort(objectLabelComparator);
-    if (typeof flatCfg[0] === "object") {
-      this.objectNameGenerator.next(flatCfg[0].label);
-    }
-
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {
@@ -1220,6 +1181,15 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
+                const elAttrs = {
+                  ...Polygon.parseConfig(),
+                  ...attrs,
+                  id: el.id
+                };
+                elAttrs.borders = {
+                  ...Polygon.parseConfig().borders,
+                  ...attrs.borders
+                };
                 const polygon = this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
@@ -1228,11 +1198,7 @@ class Board {
                       objectCreator: attributes => this.createPointFromConfig(pointEl, attributes, attrs.bgShapes)
                     })
                   ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    id: el.id
-                  }
+                  elAttrs
                 );
                 polygon.labelIsVisible = el.labelIsVisible;
                 handleSnap(polygon, Object.values(polygon.ancestors), this);
@@ -1688,8 +1654,18 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs =>
-                this.createElement(
+              objectCreator: attrs => {
+                const elAttrs = {
+                  ...Polygon.parseConfig(),
+                  ...attrs,
+                  fixed: true
+                };
+                elAttrs.borders = {
+                  ...Polygon.parseConfig().borders,
+                  ...attrs.borders
+                };
+
+                return this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
                     mixProps({
@@ -1697,12 +1673,9 @@ class Board {
                       objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
                     })
                   ),
-                  {
-                    ...Polygon.parseConfig(),
-                    ...attrs,
-                    fixed: true
-                  }
-                )
+                  elAttrs
+                );
+              }
             })
           );
           break;

@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import produce from "immer";
 import styled from "styled-components";
 import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
@@ -99,27 +100,31 @@ class ClozeTextDisplay extends Component {
     return { btnStyle, responseBtnStyle };
   };
 
-  selectChange = (value, id) => {
-    const { onChange: changeAnswers, userSelections: newAnswers, responseIds } = this.props;
-    const changedIndex = findIndex(newAnswers, answer => (answer ? answer.id : "") === id);
-    if (changedIndex !== -1) {
-      newAnswers[changedIndex].value = value;
-    } else {
-      const resbtn = find(responseIds, res => res.id === id);
-      newAnswers[resbtn.index] = { value, index: resbtn.index, id };
-    }
-    changeAnswers(newAnswers, id, Math.min(Math.max(value.length * 8, 100), 400));
+  onChangeUserAnswer = (value, id) => {
+    const { onChange: changeAnswers, userSelections, responseIds } = this.props;
+    changeAnswers(
+      produce(userSelections, draft => {
+        const changedIndex = findIndex(draft, (answer = {}) => answer.id === id);
+        if (changedIndex !== -1) {
+          draft[changedIndex].value = value;
+        } else {
+          const resbtn = find(responseIds, res => res.id === id);
+          draft[resbtn.index] = { value, index: resbtn.index, id };
+        }
+      }),
+      id
+    );
   };
 
   _changeInput = ({ value, id, type }) => {
     if (type === "number") {
       value = +value;
       if (typeof value === "number" && !Number.isNaN(value)) {
-        this.selectChange(value, id);
+        this.onChangeUserAnswer(value, id);
       }
       return;
     }
-    this.selectChange(value, id);
+    this.onChangeUserAnswer(value, id);
   };
 
   render() {
@@ -135,7 +140,6 @@ class ClozeTextDisplay extends Component {
       instructorStimulus,
       item,
       showQuestionNumber,
-      showIndex,
       disableResponse,
       qIndex,
       userSelections,
@@ -149,7 +153,7 @@ class ClozeTextDisplay extends Component {
     const { parsedTemplate } = this.state;
     // Layout Options
     const fontSize = this.getFontSize(uiStyle.fontsize);
-    const { responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { responsecontainerindividuals, stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
     let maxLineHeight = smallSize ? 50 : 40;
@@ -160,7 +164,6 @@ class ClozeTextDisplay extends Component {
       qIndex,
       uiStyle,
       fontSize,
-      showIndex,
       showAnswer,
       checkAnswer,
       evaluation,
@@ -168,6 +171,7 @@ class ClozeTextDisplay extends Component {
       changePreviewTab,
       responseIds,
       isReviewTab,
+      stemNumeration,
       userSelections,
       disableResponse,
       style: btnStyle,
@@ -176,7 +180,6 @@ class ClozeTextDisplay extends Component {
       userAnswers: userSelections,
       onChange: this._changeInput,
       responsecontainerindividuals,
-      stemNumeration: stemnumeration,
       placeholder: btnStyle.placeholder,
       cAnswers: get(item, "validation.validResponse.value", [])
     };
@@ -193,26 +196,29 @@ class ClozeTextDisplay extends Component {
       />
     );
 
-    const answerBox = showAnswer ? (
-      <>
-        <CorrectAnswerBoxLayout
-          fontSize={fontSize}
-          groupResponses={options}
-          userAnswers={validation.validResponse && validation.validResponse.value}
-          responseIds={responseIds}
-        />
-        {!isEmpty(item.validation.altResponses) && (
+    const answerBox =
+      previewTab === "show" ? (
+        <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
-            altAnswers={item.validation.altResponses}
-            responseIds={item.responseIds}
+            userAnswers={validation.validResponse && validation.validResponse.value}
+            responseIds={responseIds}
+            stemNumeration={stemNumeration}
           />
-        )}
-      </>
-    ) : (
-      <div />
-    );
+          {!isEmpty(item.validation.altResponses) && (
+            <CorrectAnswerBoxLayout
+              fontSize={fontSize}
+              groupResponses={options}
+              altAnswers={item.validation.altResponses}
+              responseIds={item.responseIds}
+              stemNumeration={stemNumeration}
+            />
+          )}
+        </>
+      ) : (
+        <div />
+      );
 
     return (
       <div style={{ fontSize }}>
@@ -234,7 +240,6 @@ class ClozeTextDisplay extends Component {
 ClozeTextDisplay.propTypes = {
   options: PropTypes.object,
   onChange: PropTypes.func,
-  showIndex: PropTypes.bool,
   showAnswer: PropTypes.bool,
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
@@ -267,13 +272,12 @@ ClozeTextDisplay.defaultProps = {
   evaluation: {},
   checkAnswer: false,
   userSelections: [],
-  showIndex: false,
   smallSize: false,
   item: {},
   validation: {},
   uiStyle: {
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 140,
     heightpx: 0,
     placeholder: null,

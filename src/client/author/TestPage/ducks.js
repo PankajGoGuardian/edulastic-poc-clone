@@ -1,11 +1,11 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import { test } from "@edulastic/constants";
+import { test, roleuser } from "@edulastic/constants";
 import { call, put, all, takeEvery, select, actionChannel, take } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq } from "lodash";
-import { testItemsApi, testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
+import { keyBy as _keyBy, omit, get, uniqBy, uniq as _uniq, isEmpty } from "lodash";
+import { testsApi, assignmentApi, contentSharingApi, tagsApi } from "@edulastic/api";
 import moment from "moment";
 import produce from "immer";
 import {
@@ -19,9 +19,11 @@ import {
 import { loadQuestionsAction } from "../sharedDucks/questions";
 import { evaluateItem } from "../src/utils/evalution";
 import createShowAnswerData from "../src/utils/showAnswer";
-import { getItemsSubjectAndGradeAction } from "./components/AddItems/ducks";
+import { getItemsSubjectAndGradeAction, setTestItemsAction } from "./components/AddItems/ducks";
 import { helpers } from "@edulastic/common";
-import { togglePassageConfirmModalAction } from "./components/AddItems/ducks";
+import { getUserRole, getUserOrgData } from "../src/selectors/user";
+import { receivePerformanceBandSuccessAction } from "../PerformanceBand/ducks";
+import { receiveStandardsProficiencySuccessAction } from "../StandardsProficiency/ducks";
 // constants
 
 const testItemStatusConstants = {
@@ -66,7 +68,12 @@ export const REPLACE_TEST_ITEMS = "[test] replace test items";
 export const UPDATE_TEST_DEFAULT_IMAGE = "[test] update default thumbnail image";
 export const SET_PASSAGE_ITEMS = "[tests] set passage items";
 export const SET_AND_SAVE_PASSAGE_ITEMS = "[tests] set and save passage items";
-
+export const GET_ALL_TAGS_IN_DISTRICT = "[test] get all tags in district";
+export const SET_ALL_TAGS = "[test] set all tags";
+export const ADD_NEW_TAG = "[test] add new tag";
+export const RECEIVE_DEFAULT_TEST_SETTINGS = "[tests] receive default test settings";
+export const SET_DEFAULT_TEST_TYPE_PROFILES = "[tests] set default test type profiles";
+export const PUBLISH_FOR_REGRADE = "[tests] publish test for regrade";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -75,10 +82,14 @@ export const replaceTestItemsAction = createAction(REPLACE_TEST_ITEMS);
 export const updateDefaultThumbnailAction = createAction(UPDATE_TEST_DEFAULT_IMAGE);
 export const setPassageItemsAction = createAction(SET_PASSAGE_ITEMS);
 export const setAndSavePassageItemsAction = createAction(SET_AND_SAVE_PASSAGE_ITEMS);
+export const getAllTagsAction = createAction(GET_ALL_TAGS_IN_DISTRICT);
+export const setAllTagsAction = createAction(SET_ALL_TAGS);
+export const getDefaultTestSettingsAction = createAction(RECEIVE_DEFAULT_TEST_SETTINGS);
+export const publishForRegradeAction = createAction(PUBLISH_FOR_REGRADE);
 
-export const receiveTestByIdAction = id => ({
+export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
-  payload: { id }
+  payload: { id, requestLatest, editAssigned }
 });
 
 export const receiveTestByIdSuccess = entity => ({
@@ -163,6 +174,8 @@ export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIS
 export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const setCreatedItemToTestAction = createAction(SET_CREATED_ITEM_TO_TEST);
 export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TEST);
+export const addNewTagAction = createAction(ADD_NEW_TAG);
+export const setDefaultTestTypeProfilesAction = createAction(SET_DEFAULT_TEST_TYPE_PROFILES);
 
 export const defaultImage = "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg";
 //reducer
@@ -224,7 +237,40 @@ const initialState = {
   regradeTestId: "",
   createdItems: [],
   sharedUsersList: [],
-  passageItems: []
+  passageItems: [],
+  tagsList: [],
+  defaultTestTypeProfiles: {}
+};
+
+export const testTypeAsProfileNameType = {
+  [test.type.ASSESSMENT]: "common",
+  [test.type.PRACTICE]: "practice",
+  [test.type.COMMON]: "class"
+};
+
+const getDefaultScales = (state, payload) => {
+  const { performanceBandProfiles, standardsProficiencyProfiles, defaultTestTypeProfiles } = payload;
+  const testType = testTypeAsProfileNameType[state.entity.testType];
+  const bandId =
+    performanceBandProfiles.find(item => item._id === defaultTestTypeProfiles.performanceBand[testType]) || {};
+  const standardId =
+    standardsProficiencyProfiles.find(item => item._id === defaultTestTypeProfiles.standardProficiency[testType]) || {};
+  const performanceBand = isEmpty(state.entity.performanceBand)
+    ? {
+        name: bandId.name,
+        _id: bandId._id
+      }
+    : state.entity.performanceBand;
+  const standardGradingScale = isEmpty(state.entity.standardGradingScale)
+    ? {
+        name: standardId.name,
+        _id: standardId._id
+      }
+    : state.entity.standardGradingScale;
+  return {
+    performanceBand,
+    standardGradingScale
+  };
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -291,6 +337,16 @@ export const reducer = (state = initialState, { type, payload }) => {
           thumbnail: payload.fileUrl
         },
         updated: true
+      };
+    case SET_ALL_TAGS:
+      return {
+        ...state,
+        tagsList: payload
+      };
+    case ADD_NEW_TAG:
+      return {
+        ...state,
+        tagsList: [...state.tagsList, payload]
       };
     case SET_MAX_ATTEMPT:
       return {
@@ -375,6 +431,17 @@ export const reducer = (state = initialState, { type, payload }) => {
         },
         passageItems: []
       };
+    case SET_DEFAULT_TEST_TYPE_PROFILES:
+      const { performanceBand = {}, standardGradingScale = {} } = getDefaultScales(state, payload);
+      return {
+        ...state,
+        defaultTestTypeProfiles: payload.defaultTestTypeProfiles,
+        entity: {
+          ...state.entity,
+          performanceBand,
+          standardGradingScale
+        }
+      };
     default:
       return state;
   }
@@ -398,11 +465,18 @@ const getQuestions = (testItems = []) => {
 function* receiveTestByIdSaga({ payload }) {
   try {
     const createdItems = yield select(getTestCreatedItemsSelector);
-    let entity = yield call(testsApi.getById, payload.id, { data: true });
-    entity.testItems = uniqBy([...createdItems, ...entity.testItems], "_id");
+    let entity = yield call(testsApi.getById, payload.id, { data: true, requestLatest: payload.requestLatest });
+    if (entity._id !== payload.id) {
+      yield put(push(`/author/tests/${entity._id}${payload.editAssigned ? "/editAssigned" : "#review"}`));
+    }
+    entity.testItems = entity.testItems.map(testItem =>
+      createdItems.length > 0 && createdItems[0]._id === testItem._id ? createdItems[0] : testItem
+    );
+    entity.testItems = uniqBy([...entity.testItems, ...createdItems], "_id");
     const questions = getQuestions(entity.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
+    yield put(setTestItemsAction(entity.testItems.map(item => item._id)));
     if (entity.thumbnail === defaultImage) {
       const thumbnail = yield call(testsApi.getDefaultImage, {
         subject: get(entity, "subjects[0]", "Other Subjects"),
@@ -446,6 +520,7 @@ function* createTestSaga({ payload }) {
       maxScore: helpers.getPoints(o),
       questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o)) : {}
     }));
+
     let entity = yield call(testsApi.create, dataToSend);
     entity = { ...entity, ...payload.data };
     yield put({
@@ -455,16 +530,11 @@ function* createTestSaga({ payload }) {
       }
     });
 
-    if (regrade) {
-      yield put(setCreateSuccessAction());
-      yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
-    } else {
-      const hash = payload.toReview ? "#review" : "";
-      yield put(createTestSuccessAction(entity));
-      yield put(replace(`/author/tests/${entity._id}${hash}`));
+    const hash = payload.toReview ? "#review" : "";
+    yield put(createTestSuccessAction(entity));
+    yield put(replace(`/author/tests/${entity._id}${hash}`));
 
-      yield call(message.success, "Test created");
-    }
+    yield call(message.success, "Test created");
   } catch (err) {
     const errorMessage = "Failed to create test!";
     yield call(message.error, errorMessage);
@@ -510,14 +580,15 @@ function* updateTestSaga({ payload }) {
         maxScore: scoring[o._id] || helpers.getPoints(o),
         questions: o.data ? helpers.getQuestionLevelScore(o.data.questions, helpers.getPoints(o), scoring[o._id]) : {}
       }));
+
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
     if (oldId != newId && newId) {
       if (!payload.assignFlow) {
         yield call(message.success, "Test versioned");
+        yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
       }
-      yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
     } else {
       if (!payload.assignFlow) {
         yield call(message.success, "Test saved as Draft");
@@ -558,7 +629,6 @@ function* shareTestSaga({ payload }) {
 function* publishTestSaga({ payload }) {
   try {
     let { _id: id, test, assignFlow } = payload;
-    const { isUsed } = test;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
     yield call(updateTestSaga, { payload: { id, data: test, assignFlow: true } });
@@ -567,20 +637,28 @@ function* publishTestSaga({ payload }) {
     if (!assignFlow) {
       yield call(message.success, "Successfully published");
     }
-    const oldId = yield select(state => state.tests.regradeTestId);
     if (assignFlow) {
       yield put(push(`/author/assignments/${id}`));
     } else {
-      if (oldId || isUsed) {
-        yield put(push(`/author/assignments/regrade/new/${id}/old/${test.origTestId}`));
-        yield put(setRegradeOldIdAction(undefined));
-      } else {
-        yield put(push(`/author/tests/${id}/publish`));
-      }
+      yield put(push(`/author/tests/${id}/publish`));
     }
   } catch (e) {
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
+  }
+}
+
+/**
+ *
+ * @param {*} payload should be test ID
+ */
+function* publishForRegrade({ payload }) {
+  try {
+    const test = yield select(getTestSelector);
+    yield call(updateTestSaga, { payload: { id: payload, data: test, assignFlow: true } });
+    yield call(testsApi.publishTest, payload);
+  } catch (e) {
+    yield call(message.error, "publish failed");
   }
 }
 
@@ -765,21 +843,60 @@ function* showAnswerSaga({ payload }) {
 
     const evaluation = yield createShowAnswerData(questions, answers);
     yield put({
-      type: ADD_ITEM_EVALUATION,
-      payload: {
-        ...evaluation
-      }
-    });
-
-    yield put({
       type: CHANGE_PREVIEW,
       payload: {
         view: "show"
       }
     });
+
+    yield put({
+      type: ADD_ITEM_EVALUATION,
+      payload: {
+        ...evaluation
+      }
+    });
   } catch (e) {
     message.error("failed loading answer");
     console.log("error showing answer", e);
+  }
+}
+
+function* getAllTagsSaga({ payload }) {
+  try {
+    const tags = yield call(tagsApi.getAll, payload.type);
+    yield put({
+      type: SET_ALL_TAGS,
+      payload: tags
+    });
+  } catch (e) {
+    yield call(message.error("Get All Tags failed"));
+  }
+}
+
+function* getDefaultTestSettingsSaga() {
+  try {
+    const role = yield select(getUserRole);
+    const orgData = yield select(getUserOrgData);
+    let payload = {
+      orgId: orgData.districtId,
+      params: { orgType: "district" }
+    };
+
+    if (role !== roleuser.DISTRICT_ADMIN && orgData.institutionIds.length) {
+      payload = {
+        orgId: orgData.institutionIds[0] || orgData.districtId,
+        params: {
+          orgType: "institution"
+        }
+      };
+    }
+    const defaultTestSettings = yield call(testsApi.getDefaultTestSettings, payload);
+    const { performanceBandProfiles, standardsProficiencyProfiles } = defaultTestSettings;
+    yield put(receivePerformanceBandSuccessAction(performanceBandProfiles));
+    yield put(receiveStandardsProficiencySuccessAction(standardsProficiencyProfiles));
+    yield put(setDefaultTestTypeProfilesAction(defaultTestSettings));
+  } catch (e) {
+    yield call(message.error("Get default settings failed"));
   }
 }
 
@@ -795,7 +912,10 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
     yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
     yield takeEvery(PREVIEW_CHECK_ANSWER, checkAnswerSaga),
-    yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga)
+    yield takeEvery(GET_ALL_TAGS_IN_DISTRICT, getAllTagsSaga),
+    yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga),
+    yield takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
+    yield takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade)
   ]);
   while (true) {
     const { payload } = yield take(requestChan);
@@ -816,6 +936,11 @@ export const getPassageItemsCountSelector = createSelector(
 export const getTestSelector = createSelector(
   stateSelector,
   state => state.entity
+);
+
+export const defaultTestTypeProfilesSelector = createSelector(
+  stateSelector,
+  state => state.defaultTestTypeProfiles
 );
 export const getDefaultThumbnailSelector = createSelector(
   stateSelector,
@@ -909,4 +1034,9 @@ export const getTestItemsRowsSelector = createSelector(
 export const getTestCreatedItemsSelector = createSelector(
   stateSelector,
   state => get(state, "createdItems", [])
+);
+
+export const getAllTagsSelector = createSelector(
+  stateSelector,
+  state => get(state, "tagsList", [])
 );

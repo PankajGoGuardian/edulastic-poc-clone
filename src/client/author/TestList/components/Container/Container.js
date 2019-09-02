@@ -173,7 +173,7 @@ class TestList extends Component {
           ...prevState.search,
           subject: subjects && subjects[0],
           grades,
-          tags
+          tags: []
         },
         selectedTests,
         editFlow,
@@ -186,7 +186,7 @@ class TestList extends Component {
           ...search,
           subject: subjects && subjects[0],
           grades,
-          tags
+          tags: []
         }
       });
     } else {
@@ -514,7 +514,10 @@ class TestList extends Component {
     }
     if (tests.length < 1) {
       return (
-        <NoDataNotification heading={"Tests not available"} description={"There are no tests found for this filter."} />
+        <NoDataNotification
+          heading={"Tests not available"}
+          description={`There are no tests found for this filter.You can create new item by clicking the "AUTHOR TEST" button.`}
+        />
       );
     }
 
@@ -622,12 +625,14 @@ class TestList extends Component {
             renderFilter={() => (
               <StyleChangeWrapper>
                 <IconTile
+                  data-cy="tileView"
                   onClick={() => this.handleStyleChange("tile")}
                   width={18}
                   height={18}
                   color={blockStyle === "tile" ? white : grey}
                 />
                 <IconList
+                  data-cy="listView"
                   onClick={() => this.handleStyleChange("horizontal")}
                   width={18}
                   height={18}

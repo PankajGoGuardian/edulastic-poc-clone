@@ -164,7 +164,7 @@ class Display extends Component {
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { height, wordwrap, stemnumeration, responsecontainerindividuals } = uiStyle;
+    const { height, wordwrap, stemNumeration, responsecontainerindividuals } = uiStyle;
 
     const responseBtnStyle = {
       width: uiStyle.width !== 0 ? uiStyle.width : "auto",
@@ -228,7 +228,7 @@ class Display extends Component {
             if (btnStyle && btnStyle.width === 0) {
               btnStyle.width = responseBtnStyle.width;
             }
-            const indexNumber = helpers.getNumeration(dropTargetIndex, stemnumeration);
+            const indexNumber = helpers.getNumeration(dropTargetIndex, stemNumeration);
             const responseWidth = parseInt(responseContainer.width, 10);
             return (
               <div
@@ -280,7 +280,7 @@ class Display extends Component {
         canvasHeight={canvasHeight}
         canvasWidth={canvasWidth}
         imageAlterText={imageAlterText}
-        stemnumeration={stemnumeration}
+        stemNumeration={stemNumeration}
         fontSize={fontSize}
         imageOptions={imageOptions}
         showAnswer={showAnswer}
@@ -298,6 +298,7 @@ class Display extends Component {
           fontSize={fontSize}
           groupResponses={options}
           userAnswers={validation.validResponse && validation.validResponse.value}
+          stemNumeration={stemNumeration}
         />
         {altResponses.map((altResponse, index) => (
           <CorrectAnswerBoxLayout
@@ -305,6 +306,7 @@ class Display extends Component {
             groupResponses={options}
             userAnswers={altResponse.value}
             altAnsIndex={index + 1}
+            stemNumeration={stemNumeration}
           />
         ))}
       </React.Fragment>
@@ -372,7 +374,7 @@ Display.defaultProps = {
   imageWidth: 600,
   uiStyle: {
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     width: 0,
     height: 0,
     wordwrap: false

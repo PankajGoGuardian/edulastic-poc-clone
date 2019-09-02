@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { mobileWidthMax, extraDesktopWidth } from "@edulastic/colors";
 
 //components
 import styled from "styled-components";
@@ -42,17 +43,17 @@ const ReviewButtonLink = styled(Link)`
   margin: 10px 15px 0 10px;
   width: 200px;
   button {
-    margin: 0;
     max-width: 100%;
+  }
+  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
+    margin: 0px;
+    width: auto;
   }
   @media screen and (min-width: 1025px) {
     margin-right: 0px;
   }
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: ${mobileWidthMax}) {
     width: 80%;
     margin: 10px 0 0;
-  }
-  @media screen and (max-width: 767px) {
-    width: 100%;
   }
 `;

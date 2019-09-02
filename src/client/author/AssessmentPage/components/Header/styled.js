@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { white, green } from "@edulastic/colors";
+import { white, green, draftColor } from "@edulastic/colors";
 
 export const Status = styled.span`
   display: inline-block;
@@ -8,7 +8,7 @@ export const Status = styled.span`
   height: 18px;
   margin-left: 18px;
   color: ${white};
-  background: #0e93dc;
+  background: ${draftColor};
   font-size: 9px;
   text-transform: uppercase;
   border-radius: 4px;

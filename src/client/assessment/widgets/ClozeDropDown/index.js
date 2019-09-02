@@ -104,8 +104,7 @@ class ClozeDropDown extends Component {
 
   handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
-    const newAnswer = cloneDeep(userAnswer);
-    saveAnswer(newAnswer);
+    saveAnswer(userAnswer);
   };
 
   render() {

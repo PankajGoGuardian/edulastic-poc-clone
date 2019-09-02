@@ -10,6 +10,7 @@ export const Line = styled.line`
 `;
 
 export const Circle = styled.circle`
+  pointer-events: ${({ interactive }) => (interactive ? "auto" : "none")};
   cursor: pointer;
   position: relative;
   z-index: 10;
@@ -37,6 +38,7 @@ export const ActiveBar = styled.rect`
 `;
 
 export const StrokedRect = styled.rect`
+  pointer-events: none;
   z-index: 1;
   stroke: ${({ hoverState }) => (hoverState ? "black" : "none")};
   stroke-width: 2;

@@ -10,6 +10,7 @@ const MathSpan = withMathFormula(styled.span.attrs({
   display: inline;
   user-select: ${({ selectableText }) => (selectableText ? "text" : "none")} ;
   max-width: 400px;
+  word-break: break-word;
   || {font-size: ${fonts.previewFontSize};}    ${/* Parent style OR'd with child style */ ""} 
   font-weight: ${fonts.previewFontWeight};
 

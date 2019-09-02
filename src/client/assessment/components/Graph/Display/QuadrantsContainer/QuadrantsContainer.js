@@ -226,7 +226,7 @@ class GraphContainer extends PureComponent {
 
     if (this._graph) {
       if (!disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
       }
       this._graph.setDisableResponse(disableResponse);
 
@@ -292,7 +292,7 @@ class GraphContainer extends PureComponent {
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
       if (prevProps.disableResponse && !disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
       }
 
       if (

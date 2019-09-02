@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import styled from "styled-components";
 import { partial } from "lodash";
-import { fadedGrey, black, themeColor } from "@edulastic/colors";
+import { fadedGrey, lightGreySecondary, black, whiteSmoke, themeColor } from "@edulastic/colors";
 
 import { useInternalEffect } from "../../hooks/useInternalEffect";
 
@@ -36,8 +36,6 @@ const ControlDropDown = ({
 }) => {
   const [selected, setSelected] = useState(by);
   const [isActive, setActive] = useState(false);
-
-  const toggleDropdown = () => setActive(prevState => !prevState);
 
   useInternalEffect(() => {
     let item = null;
@@ -78,8 +76,8 @@ const ControlDropDown = ({
 
   const handleMenuClick = useCallback(
     event => {
-      toggleDropdown();
       const _selected = { key: event.key, title: event.item.props.title };
+      setActive(false);
       setSelected(_selected);
       if (selectCB) {
         selectCB(event, _selected, comData);
@@ -88,10 +86,16 @@ const ControlDropDown = ({
     [selectCB]
   );
 
+  const title = selected.title || prefix;
+
   return (
     <StyledDiv className={`${containerClassName} control-dropdown`}>
-      <Dropdown overlay={partial(CustomMenu, className, data, handleMenuClick, prefix, selected)} trigger={trigger}>
-        <Button title={prefix} onClick={toggleDropdown}>
+      <Dropdown
+        onVisibleChange={setActive}
+        overlay={partial(CustomMenu, className, data, handleMenuClick, prefix, selected)}
+        trigger={trigger}
+      >
+        <Button title={title}>
           {(showPrefixOnSelected ? prefix + " " : "") + selected.title}
           {isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />}
         </Button>
@@ -108,11 +112,22 @@ const StyledDiv = styled.div`
     display: flex;
     justify-content: start;
     align-items: center;
+
     &.ant-btn.ant-dropdown-trigger {
+      font-weight: bold;
+      background-color: ${lightGreySecondary};
       border-color: ${fadedGrey};
+
+      &.ant-dropdown-open {
+        background-color: transparent;
+      }
+
       &:hover,
       &:focus {
         border-color: ${themeColor};
+        color: ${themeColor};
+      }
+      i {
         color: ${themeColor};
       }
     }
@@ -128,6 +143,17 @@ const StyledDiv = styled.div`
 const StyledControlDropDown = styled(ControlDropDown)`
   max-height: 250px;
   overflow: auto;
+
+  .ant-dropdown-menu-item {
+    font-weight: bold;
+  }
+
+  .ant-dropdown-menu-item-selected,
+  .ant-dropdown-menu-item-active {
+    background-color: ${themeColor};
+    color: #ffffff;
+  }
+
   .ant-dropdown-menu-item-disabled {
     font-weight: 900;
     color: ${black};

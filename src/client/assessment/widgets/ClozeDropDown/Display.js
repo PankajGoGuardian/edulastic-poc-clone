@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import produce from "immer";
 import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash";
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
@@ -30,19 +31,24 @@ class ClozeDropDownDisplay extends Component {
   }
 
   selectChange = (value, index, id) => {
-    const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
-    const changedIndex = findIndex(newAnswers, answer => (answer ? answer.id : "") === id);
-    if (changedIndex !== -1) {
-      newAnswers[changedIndex] = { value, index, id };
-      changeAnswers(newAnswers);
-    } else {
-      const {
-        item: { responseIds }
-      } = this.props;
-      const response = find(responseIds, res => res.id === id);
-      newAnswers[response.index] = { value, index, id };
-      changeAnswers(newAnswers);
-    }
+    const {
+      onChange: changeAnswers,
+      userSelections,
+      item: { responseIds }
+    } = this.props;
+
+    changeAnswers(
+      produce(userSelections, draft => {
+        const changedIndex = findIndex(draft, (answer = {}) => answer.id === id);
+        draft[index] = value;
+        if (changedIndex !== -1) {
+          draft[changedIndex] = { value, index, id };
+        } else {
+          const response = find(responseIds, res => res.id === id);
+          draft[response.index] = { value, index, id };
+        }
+      })
+    );
   };
 
   shuffle = arr => {
@@ -126,7 +132,7 @@ class ClozeDropDownDisplay extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(theme.fontSize || "normal", true);
-    const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { placeholder, responsecontainerindividuals, stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
     let maxLineHeight = smallSize ? 50 : 40;
@@ -141,6 +147,7 @@ class ClozeDropDownDisplay extends Component {
           groupResponses={options}
           userAnswers={item.validation.validResponse && item.validation.validResponse.value}
           responseIds={item.responseIds}
+          stemNumeration={stemNumeration}
         />
         {hasAltAnswers && (
           <CorrectAnswerBoxLayout
@@ -148,6 +155,7 @@ class ClozeDropDownDisplay extends Component {
             groupResponses={options}
             altResponses={item.validation.altResponses}
             responseIds={item.responseIds}
+            stemNumeration={stemNumeration}
           />
         )}
       </React.Fragment>
@@ -167,11 +175,11 @@ class ClozeDropDownDisplay extends Component {
       options: responses,
       onChange: this.selectChange,
       responsecontainerindividuals,
-      stemNumeration: stemnumeration,
+      stemNumeration: stemNumeration,
       previewTab,
       changePreviewTab,
       userAnswers: userSelections || [],
-      showIndex: showAnswer || checkAnswer,
+      showIndex: showAnswer,
       cAnswers: get(item, "validation.validResponse.value", []),
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
@@ -246,7 +254,7 @@ ClozeDropDownDisplay.defaultProps = {
   },
   uiStyle: {
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     placeholder: null,

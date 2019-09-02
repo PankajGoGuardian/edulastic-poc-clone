@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import { NormalDropDown } from "./normalDropDown";
+import { themeColor } from "@edulastic/colors";
+import { ControlDropDown } from "./controlDropDown";
 
 export const FilterDropDownWithDropDown = ({ className, updateCB, data, values }) => {
   const [visible, setVisible] = useState(false);
@@ -20,32 +22,37 @@ export const FilterDropDownWithDropDown = ({ className, updateCB, data, values }
     <StyledMenu className={`${className}`} onClick={handleMenuClick}>
       {data.map((item, index) => {
         return (
-          <Menu.Item key={item.key}>
-            <p>{item.title}</p>
-            <StyledDropDown
+          <StyledControlDropDownContainer>
+            <p className="menu-title">{item.title}</p>
+            <ControlDropDown
+              key={item.key}
               by={values && values[item.key] ? values[item.key] : item.data[0]}
-              updateCB={updateNormalDropDownCB}
+              selectCB={updateNormalDropDownCB}
               data={item.data}
               comData={item.key}
             />
-          </Menu.Item>
+          </StyledControlDropDownContainer>
         );
       })}
     </StyledMenu>
   );
 
   return (
-    <div className={`${className}`}>
-      <Dropdown overlay={menu} visible={visible} onVisibleChange={handleVisibleChange}>
+    <div className={`${className || ""}`}>
+      <Dropdown overlay={menu} visible={visible} onVisibleChange={handleVisibleChange} trigger={["click"]}>
         <Button>
-          <Icon type="filter" />
+          <StyledIcon type="filter" />
         </Button>
       </Dropdown>
     </div>
   );
 };
 const StyledMenu = styled(Menu)`
-  min-width: 250px;
+  min-width: 230px;
+`;
+
+const StyledIcon = styled(Icon)`
+  color: ${themeColor};
 `;
 
 const StyledDropDown = styled(NormalDropDown)`
@@ -68,5 +75,22 @@ const StyledDropDown = styled(NormalDropDown)`
 
   .ant-dropdown-menu-item {
     white-space: normal;
+  }
+`;
+
+const StyledControlDropDownContainer = styled.div`
+  padding: 10px;
+
+  p.menu-title {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+
+  .control-dropdown {
+    margin: 0px;
+
+    .ant-btn {
+      width: 100%;
+    }
   }
 `;

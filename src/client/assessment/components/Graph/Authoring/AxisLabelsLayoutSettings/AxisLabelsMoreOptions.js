@@ -151,6 +151,12 @@ class AxisLabelsMoreOptions extends Component {
     return fontSizeList.find(item => item.value === parseInt(numberlineAxis.fontSize, 10));
   };
 
+  getResponseBoxPositionItem = () => {
+    const { responseBoxPositionList, graphData } = this.props;
+    const { numberlineAxis } = graphData;
+    return responseBoxPositionList.find(item => item.id === (numberlineAxis.responseBoxPosition || "bottom"));
+  };
+
   changeFontSize = event => {
     const { setNumberline, graphData } = this.props;
     const { numberlineAxis } = graphData;
@@ -189,6 +195,12 @@ class AxisLabelsMoreOptions extends Component {
     }
   };
 
+  changeResponseBoxPosition = event => {
+    const { setNumberline, graphData } = this.props;
+    const { numberlineAxis } = graphData;
+    setNumberline({ ...numberlineAxis, responseBoxPosition: event });
+  };
+
   render() {
     const { currentFractionItem, currentRenderingBaseItem, ticksDistance } = this.state;
 
@@ -197,6 +209,7 @@ class AxisLabelsMoreOptions extends Component {
       fontSizeList,
       fractionsFormatList,
       renderingBaseList,
+      responseBoxPositionList,
       fillSections,
       cleanSections,
       graphData,
@@ -276,7 +289,9 @@ class AxisLabelsMoreOptions extends Component {
                 onChange={this.handleOptionsInputChange}
               />
             </Col>
+          </Row>
 
+          <Row gutter={60}>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.titleposition")}</Label>
               <MoreOptionsInput
@@ -287,18 +302,9 @@ class AxisLabelsMoreOptions extends Component {
                 onChange={this.handleOptionsInputChange}
               />
             </Col>
+          </Row>
 
-            <Col md={12}>
-              <Label>{t("component.graphing.layoutoptions.pointboxposition")}</Label>
-              <MoreOptionsInput
-                type="text"
-                name="pointBoxPosition"
-                placeholder="0"
-                value={uiStyle.pointBoxPosition === 0 ? null : uiStyle.pointBoxPosition}
-                onChange={this.handleOptionsInputChange}
-              />
-            </Col>
-
+          <Row gutter={60}>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.separationdistancex")}</Label>
               <MoreOptionsInput
@@ -350,6 +356,22 @@ class AxisLabelsMoreOptions extends Component {
                 {fontSizeList.map(option => (
                   <Select.Option data-cy={option.id} key={option.value}>
                     {t(option.label)}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+
+            <Col md={12}>
+              <Label>{t("component.options.responsecontainerposition")}</Label>
+              <Select
+                data-cy="responseBoxPosition"
+                style={{ width: "100%" }}
+                onChange={this.changeResponseBoxPosition}
+                value={this.getResponseBoxPositionItem().label}
+              >
+                {responseBoxPositionList.map(option => (
+                  <Select.Option data-cy={option.id} key={option.id}>
+                    {option.label}
                   </Select.Option>
                 ))}
               </Select>
@@ -489,6 +511,14 @@ class AxisLabelsMoreOptions extends Component {
             </Col>
             <Col md={12}>
               <Checkbox
+                label={t("component.graphing.labelsoptions.showLabels")}
+                name="showLabels"
+                onChange={() => this.handleNumberlineCheckboxChange("showLabels", numberlineAxis.showLabels)}
+                checked={numberlineAxis.showLabels}
+              />
+            </Col>
+            <Col md={12}>
+              <Checkbox
                 label={t("component.graphing.labelsoptions.showmin")}
                 name="labelShowMin"
                 onChange={() => this.handleNumberlineCheckboxChange("labelShowMin", numberlineAxis.labelShowMin)}
@@ -523,6 +553,7 @@ AxisLabelsMoreOptions.propTypes = {
   fontSizeList: PropTypes.array.isRequired,
   fractionsFormatList: PropTypes.array.isRequired,
   renderingBaseList: PropTypes.array.isRequired,
+  responseBoxPositionList: PropTypes.array.isRequired,
   setOptions: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,

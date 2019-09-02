@@ -1,24 +1,28 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { isEmpty } from "lodash";
 
 import Header from "../sharedComponents/Header";
 import SkillReportMainContent from "./WrapperAndSummary";
 
 import MainContainer from "../styled/mainContainer";
 import { fetchSkillReportByClassID as fetchSkillReportAction, classSelector } from "./ducks";
+import NoDataNotification from "../../common/components/NoDataNotification";
 
 const SkillReportContainer = ({ flag, skillReport, fetchSkillReport, classId }) => {
   useEffect(() => {
-    fetchSkillReport(classId);
+    if (classId) fetchSkillReport(classId);
   }, []);
   return (
-    <React.Fragment>
-      <MainContainer flag={flag}>
-        <Header flag={flag} titleText="common.skillReportTitle" />
+    <MainContainer flag={flag}>
+      <Header flag={flag} titleText="common.skillReportTitle" />
+      {isEmpty(skillReport) ? (
+        <NoDataNotification heading={"No Skill Reports "} description={"You don't have any skill reports."} />
+      ) : (
         <SkillReportMainContent skillReport={skillReport} />
-      </MainContainer>
-    </React.Fragment>
+      )}
+    </MainContainer>
   );
 };
 

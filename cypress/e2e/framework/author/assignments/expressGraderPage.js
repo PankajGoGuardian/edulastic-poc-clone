@@ -69,12 +69,15 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   clickOnExit = (updated = false) => {
     cy.get("#react-app").then(() => {
       if (Cypress.$('[data-cy="exitbutton"]').length === 1) {
+        /* 
         if (updated) {
           cy.server();
-          cy.route("GET", "**/test-activity").as("test-activity");
+          cy.route("GET", "**test-activity").as("test-activity");
           cy.get('[data-cy="exitbutton"]').click({ force: true });
           cy.wait("@test-activity");
-        } else cy.get('[data-cy="exitbutton"]').click({ force: true });
+        } else 
+         */
+        cy.get('[data-cy="exitbutton"]').click({ force: true });
       }
     });
   };
@@ -86,7 +89,13 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       .find("span")
       .should("have.text", `${Cypress._.round(perf)}%`)
       .parent()
-      .should("contain", `(${score})`);
+      .should(
+        "contain",
+        `(${score
+          .split("/")
+          .map(s => s.trim())
+          .join("/")})`
+      );
   };
 
   getScoreforQueNum = queNum => {
@@ -108,7 +117,13 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       .find("span")
       .should("have.text", `${Cypress._.round(perf, 1)}%`)
       .parent()
-      .should("contain", score);
+      .should(
+        "contain",
+        score
+          .split("/")
+          .map(s => s.trim())
+          .join("/")
+      );
   };
 
   verifyScoreForStudent = (queNum, points, attemptType, attemptData, queKey) => {

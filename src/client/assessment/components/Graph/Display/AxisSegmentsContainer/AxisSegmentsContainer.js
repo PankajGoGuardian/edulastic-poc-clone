@@ -254,7 +254,7 @@ class AxisSegmentsContainer extends PureComponent {
         snapSizeX: numberlineAxis.ticksDistance
       });
 
-      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, true);
+      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
 
       this.setElementsToGraph();
     }
@@ -304,7 +304,7 @@ class AxisSegmentsContainer extends PureComponent {
         !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
         !isEqual(layout, prevProps.layout)
       ) {
-        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, false);
+        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout);
       }
 
       this.setElementsToGraph(prevProps);

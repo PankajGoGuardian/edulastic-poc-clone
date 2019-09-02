@@ -92,9 +92,10 @@ const bgObjectParameters = {
   fillColor: "#ccc",
   strokeColor: "#ccc",
   fixed: true,
-  highlightFillOpacity: 1,
   highlightStrokeColor: "#ccc",
-  highlightFillColor: "#ccc"
+  highlightFillColor: "#ccc",
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
 };
 
 const bgImageParameters = {

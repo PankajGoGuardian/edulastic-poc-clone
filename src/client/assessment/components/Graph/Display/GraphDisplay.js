@@ -433,13 +433,13 @@ class GraphDisplay extends Component {
         showLabels: numberlineAxis && numberlineAxis.showLabels,
         labelShowMax: numberlineAxis && numberlineAxis.labelShowMax,
         labelShowMin: numberlineAxis && numberlineAxis.labelShowMin,
-        shuffleAnswerChoices: numberlineAxis && numberlineAxis.shuffleAnswerChoices
+        shuffleAnswerChoices: numberlineAxis && numberlineAxis.shuffleAnswerChoices,
+        responseBoxPosition: (numberlineAxis && numberlineAxis.responseBoxPosition) || "bottom"
       },
       layout: {
-        width: uiStyle.layoutWidth,
+        width: parseInt(uiStyle.layoutWidth, 10),
         margin: uiStyle.layoutMargin,
-        height: uiStyle.layoutHeight,
-        autoCalcHeight: uiStyle.autoCalcHeight,
+        height: uiStyle.layoutHeight === "auto" ? 150 : parseInt(uiStyle.layoutHeight, 10),
         snapTo: uiStyle.layoutSnapto,
         fontSize: getFontSizeVal(uiStyle.currentFontSize),
         titlePosition: parseInt(uiStyle.titlePosition, 10),
@@ -488,21 +488,10 @@ class GraphDisplay extends Component {
       previewTab,
       changePreviewTab,
       disableResponse,
-      setCalculatedHeight: this.setCalculatedHeight,
       elementsIsCorrect,
       setQuestionData,
       graphData
     };
-  };
-
-  setCalculatedHeight = height => {
-    const { setQuestionData, graphData } = this.props;
-    const newGraphData = cloneDeep(graphData);
-    newGraphData.uiStyle = {
-      ...newGraphData.uiStyle,
-      autoCalcHeight: height
-    };
-    setQuestionData(newGraphData);
   };
 
   render() {
@@ -539,7 +528,8 @@ GraphDisplay.propTypes = {
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
-  elementsIsCorrect: PropTypes.bool
+  elementsIsCorrect: PropTypes.bool,
+  advancedElementSettings: PropTypes.bool
 };
 
 GraphDisplay.defaultProps = {

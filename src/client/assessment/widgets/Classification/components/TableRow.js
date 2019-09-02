@@ -65,7 +65,7 @@ const TableRow = ({
   };
 
   const changeWrapperH = () => {
-    const { responseOptions } = item;
+    const { responseOptions = [] } = item;
     let maxH = 0;
     for (let i = 0; i < dropContainerHeightList.length; i += 1) {
       const { y = 0, height: _h = 0 } = responseOptions[i] || {};

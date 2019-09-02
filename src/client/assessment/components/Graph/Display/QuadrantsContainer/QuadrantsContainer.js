@@ -212,7 +212,8 @@ class GraphContainer extends PureComponent {
       toolbar,
       setElementsStash,
       graphData,
-      disableResponse
+      disableResponse,
+      view
     } = this.props;
 
     const { tools } = toolbar;
@@ -225,10 +226,14 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
-      if (!disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
-      }
+      this._graph.createEditButton(this.handleElementSettingsMenuOpen);
       this._graph.setDisableResponse(disableResponse);
+
+      if (view === EDIT && !disableResponse) {
+        this._graph.setEditButtonStatus(false);
+      } else {
+        this._graph.setEditButtonStatus(true);
+      }
 
       this._graph.resizeContainer(layout.width, layout.height);
       this._graph.setGraphParameters({
@@ -278,7 +283,8 @@ class GraphContainer extends PureComponent {
       disableResponse,
       previewTab,
       changePreviewTab,
-      elements
+      elements,
+      view
     } = this.props;
 
     const { tools } = toolbar;
@@ -291,8 +297,11 @@ class GraphContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
-      if (prevProps.disableResponse && !disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen, this.drawingObjectsAreVisible());
+
+      if (view === EDIT && !disableResponse) {
+        this._graph.setEditButtonStatus(false);
+      } else {
+        this._graph.setEditButtonStatus(true);
       }
 
       if (
@@ -722,7 +731,7 @@ class GraphContainer extends PureComponent {
               fontSize={bgShapes ? 12 : layout.fontSize}
             />
           )}
-          {!this.drawingObjectsAreVisible() && !disableResponse && (
+          {!this.drawingObjectsAreVisible() && !disableResponse && view === EDIT && (
             <Equations equations={equations} setEquations={this.setEquations} />
           )}
           <JSXBoxWithDrawingObjectsWrapper>

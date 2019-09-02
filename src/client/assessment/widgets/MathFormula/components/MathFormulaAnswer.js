@@ -43,7 +43,7 @@ class MathFormulaAnswer extends Component {
             onChangeKeypad={onChangeKeypad}
             onChangeAllowedOptions={onChangeAllowedOptions}
             allowedVariables={item.allowedVariables || ""}
-            allowNumericOnly={item.allowNumericOnly || false}
+            allowNumericOnly={item.allowNumericOnly}
             onChangeShowDropdown={onChangeShowDropdown}
             onAdd={onAdd}
             keypadOffset={keypadOffset}

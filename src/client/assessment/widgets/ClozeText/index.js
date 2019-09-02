@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, isEqual, get, findIndex } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
+import uuid from "uuid/v4";
 import { Paper, Checkbox, WithResources, AnswerContext } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -105,6 +106,7 @@ class ClozeText extends Component {
         });
         draft.validation.altResponses.push({
           score: 1,
+          id: uuid(),
           value: validAnswers
         });
       })
@@ -118,6 +120,15 @@ class ClozeText extends Component {
         if (draft.validation.altResponses && draft.validation.altResponses.length) {
           draft.validation.altResponses = draft.validation.altResponses.filter((response, i) => i !== index);
         }
+      })
+    );
+  };
+
+  handleRemoveAltResponsesMixMatch = () => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.validation.altResponses = [];
       })
     );
   };
@@ -145,30 +156,30 @@ class ClozeText extends Component {
   handleAddAnswer = userAnswer => {
     const { saveAnswer, setQuestionData, item } = this.props;
     const { uiStyle } = item;
-    let newAnswer = cloneDeep(userAnswer);
-    saveAnswer(newAnswer);
+    saveAnswer(userAnswer);
     if (uiStyle.globalSettings) {
       setQuestionData(
         produce(item, draft => {
-          newAnswer = newAnswer.filter(ans => !!ans);
-          newAnswer.forEach(ans => {
-            const { id, value, index } = ans;
-            const splitWidth = Math.max(value.split("").length * 9, 100);
-            const width = Math.min(splitWidth, 400);
-            const ind = findIndex(draft.uiStyle.responsecontainerindividuals, container => container.id === id);
-            if (ind === -1) {
-              draft.uiStyle.responsecontainerindividuals.push({
-                id,
-                index,
-                previewWidth: width
-              });
-            } else {
-              draft.uiStyle.responsecontainerindividuals[ind] = {
-                ...draft.uiStyle.responsecontainerindividuals[ind],
-                previewWidth: width
-              };
-            }
-          });
+          userAnswer
+            .filter(ans => !!ans)
+            .forEach(ans => {
+              const { id, value, index } = ans;
+              const splitWidth = Math.max(value.split("").length * 9, 100);
+              const width = Math.min(splitWidth, 400);
+              const ind = findIndex(draft.uiStyle.responsecontainerindividuals, container => container.id === id);
+              if (ind === -1) {
+                draft.uiStyle.responsecontainerindividuals.push({
+                  id,
+                  index,
+                  previewWidth: width
+                });
+              } else {
+                draft.uiStyle.responsecontainerindividuals[ind] = {
+                  ...draft.uiStyle.responsecontainerindividuals[ind],
+                  previewWidth: width
+                };
+              }
+            });
         })
       );
     }
@@ -238,6 +249,7 @@ class ClozeText extends Component {
                     responseIds={item.responseIds}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
+                    handleRemoveAltResponsesMixMatch={this.handleRemoveAltResponsesMixMatch}
                     cleanSections={cleanSections}
                     fillSections={fillSections}
                     view={view}
@@ -287,32 +299,29 @@ class ClozeText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {(isCheckAnswer || isClearAnswer || isShowAnswer) && (
-              <Display
-                checkAnswer={previewTab === "check"}
-                configureOptions={{
-                  shuffleOptions
-                }}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                evaluation={evaluation}
-                instructorStimulus={itemForPreview.instructorStimulus}
-                item={itemForPreview}
-                responseIds={item.responseIds}
-                showIndex
-                view={view}
-                previewTab={previewTab}
-                showAnswer={previewTab === "show"}
-                validation={itemForPreview.validation}
-                preview={previewTab === "clear"}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
-                {...restProps}
-              />
-            )}
+            <Display
+              checkAnswer={isCheckAnswer}
+              showAnswer={isShowAnswer}
+              preview={isClearAnswer}
+              configureOptions={{
+                shuffleOptions
+              }}
+              smallSize={smallSize}
+              options={previewDisplayOptions}
+              stimulus={previewStimulus}
+              userSelections={userAnswer}
+              uiStyle={uiStyle}
+              onChange={this.handleAddAnswer}
+              evaluation={evaluation}
+              instructorStimulus={itemForPreview.instructorStimulus}
+              item={itemForPreview}
+              responseIds={item.responseIds}
+              view={view}
+              previewTab={previewTab}
+              validation={itemForPreview.validation}
+              key={previewDisplayOptions && previewStimulus && uiStyle}
+              {...restProps}
+            />
           </Wrapper>
         )}
       </WithResources>

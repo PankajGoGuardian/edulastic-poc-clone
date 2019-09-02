@@ -49,6 +49,10 @@ export const Block = styled.div`
     align-items: center;
   }
 
+  .tagsSelect .ant-select-selection__choice__content {
+    text-transform: none;
+  }
+
   .ant-select-remove-icon svg {
     fill: ${themeColor};
     width: 12px;

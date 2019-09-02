@@ -297,7 +297,7 @@ class ClozeDragDropDisplay extends Component {
 
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
 
@@ -310,7 +310,7 @@ class ClozeDragDropDisplay extends Component {
       userAnswers,
       responseIDs,
       isReviewTab,
-      stemnumeration,
+      stemNumeration,
       responseBtnStyle,
       hasGroupResponses,
       userSelections: userAnswers,
@@ -359,6 +359,7 @@ class ClozeDragDropDisplay extends Component {
           groupResponses={options}
           userAnswers={validation.validResponse && validation.validResponse.value}
           btnStyle={btnStyle}
+          stemNumeration={stemNumeration}
         />
         {(item.validation.altResponses || []).map((ele, ind) => (
           <CorrectAnswerBoxLayout
@@ -368,6 +369,7 @@ class ClozeDragDropDisplay extends Component {
             userAnswers={ele.value}
             altAnsIndex={ind + 1}
             btnStyle={btnStyle}
+            stemNumeration={stemNumeration}
           />
         ))}
       </>
@@ -376,6 +378,15 @@ class ClozeDragDropDisplay extends Component {
     );
     const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+
+    const responseBoxStyle = {
+      height: "100%",
+      maxWidth: "30%",
+      borderRadius: 10,
+      marginRight: responsecontainerposition === "left" ? 15 : null,
+      marginLeft: responsecontainerposition === "right" ? 15 : null,
+      background: theme.widgets.clozeDragDrop.responseBoxBgColor
+    };
     const questionContent = (
       <div>
         {responsecontainerposition === "top" && (
@@ -405,18 +416,7 @@ class ClozeDragDropDisplay extends Component {
         )}
         {responsecontainerposition === "left" && (
           <AnswerContainer position={responsecontainerposition}>
-            <div
-              hidden={checkAnswer || showAnswer}
-              style={{
-                height: "100%",
-                maxWidth: "30%",
-                marginRight: 15,
-                borderRadius: 10,
-                background: theme.widgets.clozeDragDrop.responseBoxBgColor,
-                display: "flex",
-                justifyContent: "center"
-              }}
-            >
+            <div hidden={checkAnswer || showAnswer} style={responseBoxStyle}>
               {responseBoxLayout}
             </div>
             <div style={{ borderRadius: 10, flex: 1 }}>{templateBoxLayoutContainer}</div>
@@ -425,18 +425,7 @@ class ClozeDragDropDisplay extends Component {
         {responsecontainerposition === "right" && (
           <AnswerContainer position={responsecontainerposition}>
             <div style={{ flex: 1, borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
-            <div
-              hidden={checkAnswer || showAnswer}
-              style={{
-                height: "100%",
-                maxWidth: "30%",
-                marginLeft: 15,
-                borderRadius: 10,
-                background: theme.widgets.clozeDragDrop.responseBoxBgColor,
-                display: "flex",
-                justifyContent: "center"
-              }}
-            >
+            <div hidden={checkAnswer || showAnswer} style={responseBoxStyle}>
               {responseBoxLayout}
             </div>
           </AnswerContainer>
@@ -509,7 +498,7 @@ ClozeDragDropDisplay.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,

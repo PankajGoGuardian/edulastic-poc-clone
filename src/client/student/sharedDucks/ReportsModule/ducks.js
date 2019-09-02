@@ -13,6 +13,7 @@ export const SET_CURRENT_REPORT = "[studentReport] set current testActivityId";
 export const SET_FILTER = "[studentReport] set filter";
 export const ADD_REPORT_REALTIME = "[studentAssignment] add report realtime";
 export const SET_TESTACTIVITY = "[studentReport] set current testActivity";
+export const SET_PASSAGES_DATA = "[studentReport] set passages data";
 
 // actions
 export const setReportsAction = createAction(SET_REPORTS);
@@ -21,6 +22,7 @@ export const setCurrentReportAction = createAction(SET_CURRENT_REPORT);
 export const setFilterAction = createAction(SET_FILTER);
 export const addRealtimeReportAction = createAction(ADD_REPORT_REALTIME);
 export const setTestActivityAction = createAction(SET_TESTACTIVITY);
+export const setPassagesDataAction = createAction(SET_PASSAGES_DATA);
 
 // initialState
 const initialState = {
@@ -28,6 +30,7 @@ const initialState = {
   allIds: [],
   current: "",
   testActivity: {},
+  passages: [],
   filter: "all"
 };
 
@@ -59,12 +62,17 @@ const setTestActivity = (state, { payload }) => {
   state.testActivity = payload;
 };
 
+const setPassagesData = (state, { payload }) => {
+  state.passages = payload;
+};
+
 export default createReducer(initialState, {
   [SET_REPORTS]: setReports,
   [SET_CURRENT_REPORT]: setCurrentReport,
   [UPDATE_TEST_ACTIVITY]: updateReports,
   [SET_FILTER]: setFilter,
   [SET_TESTACTIVITY]: setTestActivity,
+  [SET_PASSAGES_DATA]: setPassagesData,
   [ADD_REPORT_REALTIME]: (state, { payload: report }) => {
     if (Array.isArray(report)) {
       for (let el of report) {

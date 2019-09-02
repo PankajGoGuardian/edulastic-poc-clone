@@ -1,5 +1,6 @@
 import { Paper } from "@edulastic/common";
 import styled from "styled-components";
+import { mediumDesktopWidth } from "@edulastic/colors";
 
 export const Container = styled(Paper)`
   margin: 120px auto 0 auto;
@@ -9,6 +10,10 @@ export const Container = styled(Paper)`
   border: none;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    margin: 100px auto 0 auto;
+  }
 `;
 
 export const CardBox = styled.div`

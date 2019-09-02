@@ -391,7 +391,6 @@ function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
     yield put({
       type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_FAILED
     });
-    yield call(message.error, payload.error.message);
     yield put(push("/login"));
   }
 }

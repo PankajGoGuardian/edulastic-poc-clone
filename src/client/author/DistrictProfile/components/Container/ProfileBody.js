@@ -16,16 +16,19 @@ import {
   red,
   fadedGreen
 } from "@edulastic/colors";
+import { userApi } from "@edulastic/api";
 import {
   resetMyPasswordAction,
   updateUserDetailsAction,
   deleteAccountAction,
   updateInterestedCurriculumsAction,
-  removeSchoolAction
+  removeSchoolAction,
+  removeInterestedCurriculumsAction
 } from "../../../../student/Login/ducks";
 import { Wrapper } from "../../../../student/styled/index";
 import DeleteAccountModal from "../DeleteAccountModal/DeleteAccountModal";
 import DeleteSchoolModal from "../DeleteSchoolModal/DeleteSchoolModal";
+import EmailConfirmModal from "../EmailConfirmModal/EmailConfirmModal";
 import StandardSetModal from "../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal";
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
@@ -40,41 +43,64 @@ class ProfileBody extends React.Component {
     showModal: false,
     selectedSchool: null,
     showDeleteSchoolModal: false,
-    showStandardSetsModal: false
+    showStandardSetsModal: false,
+    showEmailConfirmModal: false,
+    showSaveStandSetsBtn: false
   };
 
   handleSubmit = e => {
-    const { form, user, resetMyPassword, updateUserDetails } = this.props;
+    const { form, user } = this.props;
     const { showChangePassword, isEditProfile } = this.state;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        if (showChangePassword) {
-          resetMyPassword({
-            newPassword: values.password,
-            username: user.email
-          });
+        const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId || !!user.msoId;
+
+        if (
+          isnotNormalLogin ||
+          (isEditProfile && values.email === user.email) ||
+          (!isEditProfile && showChangePassword)
+        ) {
+          this.handleUpdateDetails(false);
+        } else {
+          this.setState({ showEmailConfirmModal: true });
         }
-        if (isEditProfile) {
-          updateUserDetails({
-            data: {
-              districtId: user.districtId,
-              email: user.email,
-              firstName: values.firstName,
-              lastName: values.lastName,
-              title: values.title
-            },
-            userId: user._id
-          });
-        }
-        this.setState({ isEditProfile: false, showChangePassword: false });
       }
     });
   };
 
+  handleChangeEmail = () => {
+    this.handleUpdateDetails(true);
+  };
+
+  handleUpdateDetails(isLogout) {
+    const {
+      form: { getFieldValue },
+      user,
+      updateUserDetails
+    } = this.props;
+    const { showChangePassword, isEditProfile } = this.state;
+    const isnotNormalLogin = !!user.googleId || !!user.canvasId || !!user.cliId || !!user.cleverId || !!user.msoId;
+
+    var data = {
+      districtId: user.districtId,
+      email: isEditProfile && !isnotNormalLogin ? getFieldValue("email") : user.email,
+      firstName: isEditProfile ? getFieldValue("firstName") : user.firstName,
+      lastName: isEditProfile ? getFieldValue("lastName") : user.lastName,
+      title: isEditProfile ? getFieldValue("title") : user.title
+    };
+    if (showChangePassword) data["password"] = getFieldValue("password");
+
+    updateUserDetails({
+      data,
+      userId: user._id,
+      isLogout: isLogout
+    });
+    this.setState({ showEmailConfirmModal: false, isEditProfile: false, showChangePassword: false });
+  }
+
   handleCancel = e => {
     e.preventDefault();
-    const { form } = this.props;
     this.setState({ isEditProfile: false, showChangePassword: false });
   };
 
@@ -86,25 +112,25 @@ class ProfileBody extends React.Component {
 
   compareToFirstPassword = (rule, value, callback) => {
     const { form, t } = this.props;
-    if (value && value !== form.getFieldValue("password")) {
-      callback(t("common.title.confirmPasswordMess"));
-    } else {
-      callback();
-    }
+    if (value && value.length < 4) callback(t("common.title.confirmPasswordLengthErrorMessage"));
+    else if (value && value !== form.getFieldValue("password")) callback(t("common.title.confirmPasswordMess"));
+    else callback();
   };
 
   validateToNextPassword = (rule, value, callback) => {
-    const { form } = this.props;
+    const { form, t } = this.props;
     const { confirmDirty } = this.state;
     if (value && confirmDirty) {
       form.validateFields(["confirmPassword"], { force: true });
     }
+    if (value && value.length < 4) callback(t("common.title.passwordLengthErrorMessage"));
     callback();
   };
 
   toggleModal = (modalType, value) => {
     if (modalType === "DELETE_ACCOUNT") this.setState({ showModal: value });
     else if (modalType === "REMOVE_SCHOOL") this.setState({ showDeleteSchoolModal: value, selectedSchool: null });
+    else if (modalType === "EMAIL_CONFIRM") this.setState({ showEmailConfirmModal: false, isEditProfile: false });
   };
 
   hideMyStandardSetsModal = () => {
@@ -113,9 +139,10 @@ class ProfileBody extends React.Component {
 
   updateMyStandardSets = updatedStandards => {
     const { curriculums, updateInterestedCurriculums, user } = this.props;
+
     const curriculumsData = [];
     for (let i = 0; i < updatedStandards.length; i++) {
-      const selStandards = curriculums.filter(item => item.curriculum._id === updatedStandards[i]._id);
+      const selStandards = curriculums.filter(item => item.curriculum === updatedStandards[i]);
       curriculumsData.push({
         _id: selStandards[0]._id,
         name: selStandards[0].curriculum,
@@ -123,13 +150,32 @@ class ProfileBody extends React.Component {
         grades: selStandards[0].grades
       });
     }
+
     const standardsData = {
-      orgId: user.orgData.districtId,
+      orgId: user._id,
       orgType: "teacher",
       curriculums: curriculumsData
     };
+
     updateInterestedCurriculums(standardsData);
     this.hideMyStandardSetsModal();
+  };
+
+  handleSaveStandardSets = () => {
+    const { updateInterestedCurriculums, user } = this.props;
+    const standardsData = {
+      orgId: user._id,
+      orgType: "teacher",
+      curriculums: user.orgData.interestedCurriculums
+    };
+    updateInterestedCurriculums(standardsData);
+    this.setState({ showSaveStandSetsBtn: false });
+  };
+
+  removeStandardSet = id => {
+    const { removeInterestedCurriculum } = this.props;
+    removeInterestedCurriculum(id);
+    this.setState({ showSaveStandSetsBtn: true });
   };
 
   deleteProfile = () => {
@@ -156,13 +202,13 @@ class ProfileBody extends React.Component {
 
   getStandardSets = () => {
     const { user } = this.props;
-    const schools = user.orgData.interestedCurriculums.map(curriculum => (
+    const curriculums = user.orgData.interestedCurriculums.map(curriculum => (
       <StyledTag id={curriculum._id}>
         {curriculum.name}
-        <Icon type="close" />
+        <Icon type="close" onClick={() => this.removeStandardSet(curriculum._id)} />
       </StyledTag>
     ));
-    return schools;
+    return curriculums;
   };
 
   handleRemoveSchool = e => {
@@ -181,6 +227,20 @@ class ProfileBody extends React.Component {
     this.setState({ showStandardSetsModal: true });
   };
 
+  checkUser = async (rule, value, callback) => {
+    const { user, t } = this.props;
+
+    if (value !== user.email) {
+      const result = await userApi.checkUser({
+        username: value,
+        districtId: user.districtId
+      });
+
+      if (result.length > 0) callback(t("common.title.emailAlreadyExistsMessage"));
+    }
+    callback();
+  };
+
   getEditProfileContent = () => {
     const {
       t,
@@ -194,13 +254,7 @@ class ProfileBody extends React.Component {
           <DetailData>
             <InputItemWrapper>
               {getFieldDecorator("title", {
-                initialValue: user.title,
-                rules: [
-                  {
-                    required: true,
-                    message: t("common.title.userTitle")
-                  }
-                ]
+                initialValue: user.title
               })(
                 <Select>
                   <Option value="Mr.">Mr.</Option>
@@ -233,20 +287,34 @@ class ProfileBody extends React.Component {
           <DetailData>
             <InputItemWrapper>
               {getFieldDecorator("lastName", {
-                initialValue: user.lastName,
-                rules: [
-                  {
-                    required: true,
-                    message: t("common.title.lastName")
-                  }
-                ]
+                initialValue: user.lastName
               })(<Input type="text" />)}
             </InputItemWrapper>{" "}
           </DetailData>
         </DetailRow>
         <DetailRow>
           <DetailTitle>{t("common.title.emailUsernameLabel")}</DetailTitle>
-          <DetailData>{user.email}</DetailData>
+          {user.googleId || user.canvasId || user.cliId || user.cleverId || !!user.msoId ? (
+            <DetailData>{user.email}</DetailData>
+          ) : (
+            <DetailData>
+              <InputItemWrapper>
+                {getFieldDecorator("email", {
+                  initialValue: user.email,
+                  rules: [
+                    { validator: this.checkUser },
+                    { required: true, message: t("common.title.invalidEmailMessage") },
+                    {
+                      // validation so that no white spaces are allowed
+                      message: t("common.title.invalidEmailMessage"),
+                      pattern: /^\S*$/
+                    },
+                    { max: 256, message: t("common.title.emailLengthMessage") }
+                  ]
+                })(<Input type="text" />)}
+              </InputItemWrapper>{" "}
+            </DetailData>
+          )}
         </DetailRow>
       </Details>
     );
@@ -264,7 +332,9 @@ class ProfileBody extends React.Component {
       showModal,
       selectedSchool,
       showDeleteSchoolModal,
-      showStandardSetsModal
+      showStandardSetsModal,
+      showEmailConfirmModal,
+      showSaveStandSetsBtn
     } = this.state;
 
     const interestedStaData = {
@@ -281,7 +351,7 @@ class ProfileBody extends React.Component {
               <UserDetail>
                 <SubHeader>
                   <Title>Instructor Information</Title>
-                  {!isEditProfile && ["teacher", "district-admin"].includes(user.role) ? (
+                  {!isEditProfile && ["teacher", "district-admin", "school-admin"].includes(user.role) ? (
                     <>
                       <EditProfileButton
                         type="primary"
@@ -390,9 +460,14 @@ class ProfileBody extends React.Component {
                 <SchoolWrapper>
                   <StandardSetsLabel>Standard Sets</StandardSetsLabel>
                   <StandardSetsList>{this.getStandardSets()}</StandardSetsList>
-                  <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
-                    Select your standard sets
-                  </SelectSetsButton>
+                  <div style={{ width: "min-content" }}>
+                    {showSaveStandSetsBtn && (
+                      <SaveStandardSetsBtn onClick={this.handleSaveStandardSets}>SAVE</SaveStandardSetsBtn>
+                    )}
+                    <SelectSetsButton onClick={this.handleSelectStandardButton} type="primary">
+                      Select your standard sets
+                    </SelectSetsButton>
+                  </div>
                 </SchoolWrapper>
               </>
             )}
@@ -418,6 +493,13 @@ class ProfileBody extends React.Component {
             interestedStaData={interestedStaData}
           />
         )}
+        {showEmailConfirmModal && (
+          <EmailConfirmModal
+            visible={showEmailConfirmModal}
+            toggleModal={this.toggleModal}
+            changeEmail={this.handleChangeEmail}
+          />
+        )}
       </LayoutContent>
     );
   }
@@ -439,7 +521,8 @@ const enhance = compose(
       deleteAccount: deleteAccountAction,
       updateInterestedCurriculums: updateInterestedCurriculumsAction,
       getDictCurriculums: getDictCurriculumsAction,
-      removeSchool: removeSchoolAction
+      removeSchool: removeSchoolAction,
+      removeInterestedCurriculum: removeInterestedCurriculumsAction
     }
   )
 );
@@ -481,30 +564,29 @@ const ProfileContentWrapper = styled.div`
 `;
 
 const SchoolWrapper = styled.div`
-width: 1150px
-height: 80px;
-background-color:white;
-box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-border-radius: 10px;
-padding: 15px;
-display:flex;
-align-items:center;
-margin-top:20px;
+  width: 1150px;
+  background-color: white;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
 
-@media (max-width: ${extraDesktopWidth}) {
-  width: 800px;
-  padding: 20px;
-}
+  @media (max-width: ${extraDesktopWidth}) {
+    width: 800px;
+    padding: 20px;
+  }
 
-@media (max-width: ${largeDesktopWidth}) {
-  width: 735px;
-  padding:15px;
-}
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 735px;
+    padding: 15px;
+  }
 
-@media (max-width: ${desktopWidth}) {
-  width: 600px;
-  padding:10px;
-}
+  @media (max-width: ${desktopWidth}) {
+    width: 600px;
+    padding: 10px;
+  }
 `;
 
 const SchoolLabel = styled.span`
@@ -555,12 +637,21 @@ const SelectSetsButton = styled(Button)`
   }
 `;
 
+const SaveStandardSetsBtn = styled(SelectSetsButton)`
+  margin: 5px 15px;
+  :hover{
+    color ${themeColor};
+  }
+
+`;
+
 const StyledTag = styled(Tag)`
   background-color: ${fadedGreen};
   color: ${themeColor};
   border: none;
   font-weight: 600;
   padding: 2px 5px 2px 10px;
+  margin: 5px;
   i {
     color: ${themeColor} !important;
     margin-left: 10px !important;
@@ -679,23 +770,26 @@ const ProfileImgWrapper = styled.div`
   border-radius: 10px;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: ${extraDesktopWidth}) {
+  margin-right: 10px;
+  margin-bottom: 20px @media (max-width: ${extraDesktopWidth}) {
     width: 300px;
     height: 250px;
     margin-right: 10px;
+    margin-bottom: 20px;
   }
 
   @media (max-width: ${largeDesktopWidth}) {
     max-width: 250px;
     max-height: 200px;
     margin-right: 10px;
+    margin-bottom: 20px;
   }
 
   @media (max-width: ${desktopWidth}) {
     max-width: 200px;
     max-height: 200px;
     margin-right: 20px;
+    margin-bottom: 20px;
   }
 `;
 
@@ -846,6 +940,7 @@ const InputItemWrapper = styled(FormItem)`
   }
   .ant-select-selection__rendered{
     line-height:40px;
+    margin: 0 24px !important;
   }
 `;
 

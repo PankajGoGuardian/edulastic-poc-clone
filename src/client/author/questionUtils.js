@@ -88,7 +88,7 @@ export const isIncompleteQuestion = item => {
 
   // item doesnt have a stimulus?
   if (!item.stimulus) {
-    return [true, "Question text shouldnot be empty"];
+    return [true, "Question text should not be empty"];
   }
 
   // if item doesnt have options just return at this point.

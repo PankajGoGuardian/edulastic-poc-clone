@@ -4,7 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 import produce from "immer";
-import { Col, Checkbox, Select, Row } from "antd";
+import { Checkbox, Select } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -19,6 +19,8 @@ import { StyledInput } from "./styled/StyledInput";
 import { Subtitle } from "../../styled/Subtitle";
 import { WidgetFRInput } from "../../styled/Widget";
 import { Label } from "../../styled/WidgetOptions/Label";
+import { Row } from "../../styled/WidgetOptions/Row";
+import { Col } from "../../styled/WidgetOptions/Col";
 
 const List = withAddButton(QuillSortableList);
 
@@ -124,7 +126,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         cleanSections={cleanSections}
       >
         {!item.paginated_content && (
-          <Col span={24}>
+          <div>
             <Subtitle>{t("component.passage.contents")}</Subtitle>
             <QuestionTextArea
               placeholder={t("component.passage.enterPassageContentHere")}
@@ -134,10 +136,10 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               border="border"
               toolbarId="passage_content"
             />
-          </Col>
+          </div>
         )}
         {item.paginated_content && item.pages && !!item.pages.length && (
-          <Col span={24}>
+          <div>
             <Subtitle>{t("component.passage.contentPages")}</Subtitle>
             <List
               items={item.pages}
@@ -148,10 +150,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               onRemove={handleRemovePage}
               onChange={handleChangePage}
             />
-          </Col>
+          </div>
         )}
       </Question>
-
       <Question
         section="main"
         label={t("component.passage.details")}
@@ -159,8 +160,8 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
         cleanSections={cleanSections}
       >
         <Subtitle>{t("component.passage.details")}</Subtitle>
-        <Row gutter={12}>
-          <Col span={12}>
+        <Row gutter={30}>
+          <Col marginBottom="20px" span={12}>
             <Label>{t("component.passage.fleschKincaid")}</Label>
             <StyledInput
               size="large"
@@ -168,7 +169,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               onChange={e => handleChange("flesch_kincaid", e.target.value)}
             />
           </Col>
-          <Col span={12}>
+          <Col marginBottom="20px" span={12}>
             <Label>{t("component.passage.lexile")}</Label>
             <StyledInput
               size="large"
@@ -178,34 +179,37 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
           </Col>
         </Row>
       </Question>
-
       <Question
         section="main"
         label={t("component.passage.instructorStimulus")}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Col span={24}>
-          <Subtitle>{t("component.passage.instructorStimulus")}</Subtitle>
-          <WidgetFRInput>
-            <QuestionTextArea
-              onChange={value => handleChange("instructorStimulus", value)}
-              value={item.instructorStimulus || ""}
-              border="border"
-              toolbarId="instructor_stimulus"
-            />
-          </WidgetFRInput>
-        </Col>
-        <Col span={24} style={{ marginTop: "15px" }}>
-          <Checkbox
-            checked={item.paginated_content}
-            onChange={e => handleChange("paginated_content", e.target.checked)}
-            tabIndex={1}
-          >
-            <b>{t("component.passage.enablePaginatedContent")}</b>
-          </Checkbox>
-        </Col>
+        <Subtitle>{t("component.passage.instructorStimulus")}</Subtitle>
+
+        <Row gutter={30}>
+          <Col marginBottom="20px" span={24}>
+            <WidgetFRInput>
+              <QuestionTextArea
+                onChange={value => handleChange("instructorStimulus", value)}
+                value={item.instructorStimulus || ""}
+                border="border"
+                toolbarId="instructor_stimulus"
+              />
+            </WidgetFRInput>
+          </Col>
+          <Col marginBottom="20px" span={24}>
+            <Checkbox
+              checked={item.paginated_content}
+              onChange={e => handleChange("paginated_content", e.target.checked)}
+              tabIndex={1}
+            >
+              <b>{t("component.passage.enablePaginatedContent")}</b>
+            </Checkbox>
+          </Col>
+        </Row>
       </Question>
+
       {item.isMath && (
         <Question
           section="main"
@@ -213,22 +217,20 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
           fillSections={fillSections}
           cleanSections={cleanSections}
         >
-          <Col span={12}>
-            <Subtitle>{t("component.passage.mathRenderer")}</Subtitle>
-            <Select
-              size="large"
-              value={item.math_renderer}
-              style={{ width: "100%" }}
-              onChange={value => handleChange("math_renderer", value)}
-              tabIndex={1}
-            >
-              {rendererOptions.map(({ value: val, label }) => (
-                <Select.Option key={val} value={val}>
-                  {label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Col>
+          <Subtitle>{t("component.passage.mathRenderer")}</Subtitle>
+          <Select
+            size="large"
+            value={item.math_renderer}
+            style={{ width: "100%" }}
+            onChange={value => handleChange("math_renderer", value)}
+            tabIndex={1}
+          >
+            {rendererOptions.map(({ value: val, label }) => (
+              <Select.Option key={val} value={val}>
+                {label}
+              </Select.Option>
+            ))}
+          </Select>
         </Question>
       )}
     </div>

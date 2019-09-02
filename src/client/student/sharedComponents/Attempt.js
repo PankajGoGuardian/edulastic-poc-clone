@@ -2,8 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { themeColor, mobileWidthMax, lightGreySecondary } from "@edulastic/colors";
 
-import { formatTime } from "../utils";
+import { formatDateAndTime } from "../utils";
 
 const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, releaseGradeLabels, classId }) => {
   const { correct = 0, wrong = 0, maxScore = 0, score = 0 } = data;
@@ -13,7 +14,7 @@ const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, r
     <AttemptsData>
       <RowData pagetype={type === "reports"}>
         <AnswerAndScore>
-          <span data-cy="date">{formatTime(data.createdAt)}</span>
+          <span data-cy="date">{formatDateAndTime(data.createdAt)}</span>
         </AnswerAndScore>
         {releaseScore !== releaseGradeLabels.DONT_RELEASE && (
           <React.Fragment>
@@ -53,6 +54,9 @@ Attempt.propTypes = {
 
 const AttemptsData = styled.div`
   margin-top: 7px;
+  @media (max-width: ${mobileWidthMax}) {
+    margin: 7px 7px 0px 7px;
+  }
 `;
 
 const AnswerAndScore = styled.div`
@@ -65,8 +69,11 @@ const AnswerAndScore = styled.div`
     font-weight: bold;
     color: #434b5d;
   }
-  @media screen and (max-width: 767px) {
-    width: 33%;
+  @media screen and (max-width: ${mobileWidthMax}) {
+    flex-basis: 25%;
+    &:nth-child(1) {
+      flex-basis: 50%;
+    }
   }
 `;
 
@@ -85,7 +92,7 @@ const AnswerAndScoreReview = styled(AnswerAndScore)`
   @media screen and (min-width: 769px) {
     width: 200px;
   }
-  @media screen and (max-width: 767px) {
+  @media screen and (max-width: ${mobileWidthMax}) {
     width: 33%;
   }
 `;
@@ -102,22 +109,29 @@ const RowData = styled.div`
   align-items: center;
   border-radius: 4px;
   height: 30px;
-  @media screen and (max-width: 767px) {
+  background-color: ${lightGreySecondary};
+  @media screen and (max-width: ${mobileWidthMax}) {
     height: auto;
+    justify-content: space-between;
+    padding: 3px;
   }
   div {
-    background-color: #f8f8f8;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    @media screen and (max-width: 767px) {
+    @media screen and (max-width: ${mobileWidthMax}) {
       justify-content: flex-start;
     }
   }
   span {
-    font-size: 12px !important;
+    font-size: 10px !important;
     font-weight: 600 !important;
     color: #9ca0a9;
+  }
+  a {
+    span {
+      color: ${themeColor};
+    }
   }
 `;

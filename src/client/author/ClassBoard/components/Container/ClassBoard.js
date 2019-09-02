@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get, keyBy } from "lodash";
-import { message, Dropdown } from "antd";
+import { get, keyBy, isEmpty } from "lodash";
+import { message, Dropdown, Select } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -13,7 +13,8 @@ import {
   IconRedirect,
   IconPrint,
   IconAddStudents,
-  IconRemove
+  IconRemove,
+  IconInfo
 } from "@edulastic/icons";
 // actions
 import {
@@ -22,7 +23,10 @@ import {
   releaseScoreAction,
   markAsDoneAction,
   markAbsentAction,
-  removeStudentAction
+  removeStudentAction,
+  setCurrentTestActivityIdAction,
+  getAllTestActivitiesForStudentAction,
+  receiveStudentResponseAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
@@ -37,7 +41,10 @@ import {
   showScoreSelector,
   getMarkAsDoneEnableSelector,
   getQLabelsSelector,
-  removedStudentsSelector
+  removedStudentsSelector,
+  getCurrentTestActivityIdSelector,
+  getAllTestActivitiesForStudentSelector,
+  getStudentResponseSelector
 } from "../../ducks";
 
 import {
@@ -89,11 +96,16 @@ import {
   MenuItems,
   CaretUp,
   DropMenu,
-  CardDetailsContainer
+  CardDetailsContainer,
+  ScoreHeader,
+  ScoreChangeWrapper,
+  ScoreWrapper
 } from "./styled";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import AddStudentsPopup from "../AddStudentsPopup";
 import { getUserRole, getUserOrgId } from "../../../src/selectors/user";
+import moment from "moment";
+import { black } from "@edulastic/colors";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -163,11 +175,14 @@ class ClassBoard extends Component {
   }
 
   componentDidUpdate(_, prevState) {
-    const { loadClassResponses, additionalData = {} } = this.props;
+    const { loadClassResponses, additionalData = {}, match, testActivity, getAllTestActivitiesForStudent } = this.props;
     const { testId } = additionalData;
+    const { assignmentId, classId } = match.params;
     const { testId: prevTestId } = prevState;
     if (testId !== prevTestId) {
       loadClassResponses({ testId });
+      const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
+      getAllTestActivitiesForStudent({ studentId: firstStudentId, assignmentId, groupId: classId });
     }
   }
 
@@ -230,14 +245,12 @@ class ClassBoard extends Component {
     history.push(`${match.url}/create`);
   };
 
-  getTestActivity = data => {
-    let id = null;
-    data.forEach(item => {
-      if (item.testActivityId) {
-        id = item.testActivityId;
-      }
-    });
-    return id;
+  getTestActivityId = (data, student) => {
+    return (
+      (!student
+        ? data.find(item => !!item.testActivityId)
+        : data.find(item => !!item.testActivityId && item.studentId == student)) || {}
+    ).testActivityId;
   };
 
   onTabChange = (e, name, selectedStudentId) => {
@@ -303,10 +316,11 @@ class ClassBoard extends Component {
   isMobile = () => window.innerWidth < 480;
 
   handleReleaseScore = () => {
-    const { match, setReleaseScore, showScore } = this.props;
+    const { match, setReleaseScore, showScore, additionalData } = this.props;
     const { assignmentId, classId } = match.params;
+    const { testId } = additionalData;
     const isReleaseScore = !showScore;
-    setReleaseScore(assignmentId, classId, isReleaseScore);
+    setReleaseScore(assignmentId, classId, isReleaseScore, testId);
   };
 
   handleMarkAsDone = () => {
@@ -427,7 +441,7 @@ class ClassBoard extends Component {
 
   updateDisabledList = (studId, status) => {
     const { disabledList, absentList } = this.state;
-    if (status === "NOT STARTED" || status === "IN PROGRESS" || status === "REDIRECTED") {
+    if (status === "Not Started" || status === "In Progress" || status === "Redirected") {
       if (!disabledList.includes(studId)) {
         this.setState({ disabledList: [...disabledList, studId] });
       }
@@ -437,7 +451,7 @@ class ClassBoard extends Component {
         this.setState({ disabledList: [...disabledList.slice(0, index), ...disabledList.slice(index + 1)] });
       }
     }
-    if (status === "ABSENT") {
+    if (status === "Absent") {
       if (!absentList.includes(studId)) {
         this.setState({ absentList: [...absentList, studId] });
       }
@@ -459,7 +473,6 @@ class ClassBoard extends Component {
       additionalData = {
         classes: []
       },
-      testActivity: studentItems,
       selectedStudents,
       setSelected,
       allStudents,
@@ -469,11 +482,16 @@ class ClassBoard extends Component {
       enableMarkAsDone,
       showScore,
       isPresentationMode,
-      entities,
       labels,
       userRole,
       districtId,
       assignmentStatus,
+      currentTestActivityId,
+      allTestActivitiesForStudent,
+      setCurrentTestActivityId,
+      studentResponse,
+      loadStudentResponses,
+      getAllTestActivitiesForStudent,
       enrollmentStatus
     } = this.props;
     const {
@@ -497,20 +515,30 @@ class ClassBoard extends Component {
       showAddStudentsPopup
     } = this.state;
     const { assignmentId, classId } = match.params;
-    const testActivityId = this.getTestActivity(testActivity);
     const classname = additionalData ? additionalData.classes : [];
     const isMobile = this.isMobile();
-
-    const selectedStudentsKeys = Object.keys(selectedStudents);
-    const firstStudentId = get(
-      entities.filter(x => x.testActivityId && !x.redirect && x.status != "absent" && x.present),
-      [0, "studentId"],
-      false
+    let studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
+    studentTestActivity.timeSpent = Math.floor(
+      ((studentResponse &&
+        studentResponse.questionActivities &&
+        studentResponse.questionActivities.reduce((acc, qa) => (acc += qa.timeSpent), 0)) ||
+        0) / 1000
     );
-    const firstQuestionEntities = get(entities, [0, "questionActivities"], []);
-    const unselectedStudents = entities.filter(x => !selectedStudents[x.studentId]);
+    let { score = 0, maxScore = 0, scoreChange = 0, status } = studentTestActivity;
+    if (studentResponse && !isEmpty(studentResponse.questionActivities) && status === 0) {
+      studentResponse.questionActivities.forEach(uqa => {
+        score += uqa.score;
+        maxScore += uqa.maxScore;
+      });
+    }
+    const selectedStudentsKeys = Object.keys(selectedStudents);
+    const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
+    const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
+    const firstQuestionEntities = get(testActivity, [0, "questionActivities"], []);
+    const unselectedStudents = testActivity.filter(x => !selectedStudents[x.studentId]);
     const disableMarkAbsent =
-      (assignmentStatus.toLowerCase() == "not open" && additionalData.startDate > Date.now()) ||
+      (assignmentStatus.toLowerCase() == "not open" &&
+        ((additionalData.startDate && additionalData.startDate > Date.now()) || !additionalData.open)) ||
       assignmentStatus.toLowerCase() === "graded";
     const existingStudents = testActivity.map(item => item.studentId);
     return (
@@ -562,7 +590,7 @@ class ClassBoard extends Component {
         />
         <CardDetailsContainer>
           <StyledFlexContainer justifyContent="space-between">
-            <PaginationInfo>
+            <PaginationInfo xs={24} md={8}>
               &lt; &nbsp; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> &nbsp;/&nbsp;
               <AnchorLink
                 to={
@@ -577,7 +605,7 @@ class ClassBoard extends Component {
               <Anchor>{additionalData.className}</Anchor>
             </PaginationInfo>
 
-            <StudentButtonDiv data-cy="studentnQuestionTab">
+            <StudentButtonDiv xs={24} md={16} data-cy="studentnQuestionTab">
               <PresentationToggleSwitch groupId={classId} />
               <BothButton
                 style={{ marginLeft: "20px" }}
@@ -597,7 +625,7 @@ class ClassBoard extends Component {
                 active={selectedTab === "questionView"}
                 disabled={!firstStudentId}
                 onClick={() => {
-                  const firstQuestion = get(this.props, ["entities", 0, "questionActivities", 0]);
+                  const firstQuestion = get(this.props, ["testActivity", 0, "questionActivities", 0]);
                   if (!firstQuestion) {
                     console.warn("no question activities");
                     return;
@@ -632,7 +660,7 @@ class ClassBoard extends Component {
                   <CheckContainer>
                     <StyledCheckbox
                       checked={unselectedStudents.length === 0}
-                      indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < entities.length}
+                      indeterminate={unselectedStudents.length > 0 && unselectedStudents.length < testActivity.length}
                       onChange={this.onSelectAllChange}
                     >
                       {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
@@ -730,6 +758,7 @@ class ClassBoard extends Component {
                   endDate={additionalData.endDate || additionalData.closedDate}
                   studentUnselect={this.onUnselectCardOne}
                   viewResponses={(e, selected) => {
+                    getAllTestActivitiesForStudent({ studentId: selected, assignmentId, groupId: classId });
                     this.onTabChange(e, "Student", selected);
                   }}
                   isPresentationMode={isPresentationMode}
@@ -767,33 +796,114 @@ class ClassBoard extends Component {
             </React.Fragment>
           )}
 
-          {selectedTab === "Student" && studentItems && (
+          {selectedTab === "Student" && testActivity && (
             <React.Fragment>
               <StudentGrapContainer>
                 <StyledCard bordered={false} paddingTop={15}>
-                  <BarGraph
-                    gradebook={gradebook}
-                    testActivity={testActivity}
-                    studentId={selectedStudentId}
-                    studentview
+                  <StudentSelect
+                    style={{ width: "200px" }}
+                    students={testActivity}
+                    selectedStudent={selectedStudentId}
                     studentResponse={qActivityByStudent}
-                  >
-                    <StudentSelect
-                      students={studentItems}
-                      selectedStudent={selectedStudentId}
-                      studentResponse={qActivityByStudent}
-                      handleChange={value => {
-                        this.setState({ selectedStudentId: value });
-                      }}
-                      isPresentationMode={isPresentationMode}
+                    handleChange={value => {
+                      getAllTestActivitiesForStudent({ studentId: value, assignmentId, groupId: classId });
+                      this.setState({ selectedStudentId: value });
+                    }}
+                    isPresentationMode={isPresentationMode}
+                  />
+                  <div style={{ width: "100%", display: "flex" }}>
+                    <BarGraph
+                      gradebook={gradebook}
+                      testActivity={testActivity}
+                      studentId={selectedStudentId}
+                      studentview
+                      studentResponse={studentResponse}
                     />
-                  </BarGraph>
+                    <div>
+                      {allTestActivitiesForStudent.length > 1 && (
+                        <Select
+                          style={{ width: "200px" }}
+                          value={
+                            allTestActivitiesForStudent.includes(currentTestActivityId || testActivityId)
+                              ? currentTestActivityId || testActivityId
+                              : ""
+                          }
+                          onChange={testActivityId => {
+                            loadStudentResponses({ testActivityId, groupId: classId });
+                            setCurrentTestActivityId(testActivityId);
+                          }}
+                        >
+                          {[...allTestActivitiesForStudent].reverse().map((testActivityId, index) => (
+                            <Select.Option key={index} value={testActivityId}>
+                              {`Attempt ${allTestActivitiesForStudent.length - index}`}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      )}
+                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                        <div
+                          style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
+                        >
+                          <ScoreHeader>TOTAL SCORE</ScoreHeader>
+                          <ScoreWrapper>{score || 0}</ScoreWrapper>
+                          <div style={{ border: "solid 1px black", width: "50px" }} />
+                          <ScoreWrapper>{maxScore || 0}</ScoreWrapper>
+                        </div>
+                        {allTestActivitiesForStudent.length > 1 && (
+                          <div
+                            style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
+                          >
+                            <ScoreHeader>SCORE</ScoreHeader>
+                            <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
+                              {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${studentTestActivity.scoreChange ||
+                                0}`}
+                            </ScoreChangeWrapper>
+                            <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
+                              <span>{`Improvement `}</span>
+                              <span
+                                style={{ marginLeft: "2px" }}
+                                title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
+                              >
+                                <IconInfo />
+                              </span>
+                            </ScoreHeader>
+                          </div>
+                        )}
+                      </div>
+                      <ScoreHeader style={{ fontSize: "12px" }}>
+                        {" "}
+                        {`TIME (min) `}{" "}
+                        <span style={{ color: black, textTransform: "capitalize" }}>
+                          {`${Math.floor(studentTestActivity.timeSpent / 60)}:${studentTestActivity.timeSpent % 60}` ||
+                            ""}
+                        </span>
+                      </ScoreHeader>
+                      <ScoreHeader style={{ fontSize: "12px" }}>
+                        {" "}
+                        {`STATUS  `}{" "}
+                        <span style={{ color: black, textTransform: "capitalize" }}>
+                          {studentTestActivity.status === 2
+                            ? "Absent"
+                            : studentTestActivity.status === 1
+                            ? studentTestActivity.graded === "GRADED"
+                              ? "Graded"
+                              : "Submitted"
+                            : "In Progress" || ""}
+                        </span>
+                      </ScoreHeader>
+                      <ScoreHeader style={{ fontSize: "12px" }}>
+                        {`SUBMITTED ON  `}
+                        <span style={{ color: black }}>
+                          {moment(studentTestActivity.endDate).format("d MMMM, YYYY")}
+                        </span>
+                      </ScoreHeader>
+                    </div>
+                  </div>
                 </StyledCard>
               </StudentGrapContainer>
               <StudentContainer
                 classResponse={classResponse}
-                testActivity={testActivity}
-                studentItems={studentItems}
+                studentItems={testActivity}
                 selectedStudent={selectedStudentId}
                 isPresentationMode={isPresentationMode}
               />
@@ -823,7 +933,7 @@ class ClassBoard extends Component {
                   selected={selectedQuestion}
                   justifyContent="flex-end"
                   handleChange={value => {
-                    const { _id: qid, testItemId } = entities[0].questionActivities[value];
+                    const { _id: qid, testItemId } = testActivity[0].questionActivities[value];
                     this.setState({ selectedQuestion: value, selectedQid: qid, testItemId });
                   }}
                 />
@@ -851,9 +961,11 @@ const enhance = compose(
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
       testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
-      entities: get(state, ["author_classboard_testActivity", "entities"], []),
+      studentResponse: getStudentResponseSelector(state),
       qActivityByStudent: stateStudentResponseSelector(state),
       showScore: showScoreSelector(state),
+      currentTestActivityId: getCurrentTestActivityIdSelector(state),
+      allTestActivitiesForStudent: getAllTestActivitiesForStudentSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       enrollmentStatus: get(state, "author_classboard_testActivity.data.enrollmentStatus", {}),
@@ -864,8 +976,11 @@ const enhance = compose(
     {
       loadTestActivity: receiveTestActivitydAction,
       loadClassResponses: receiveClassResponseAction,
+      loadStudentResponses: receiveStudentResponseAction,
       studentSelect: gradebookSelectStudentAction,
       studentUnselect: gradebookUnSelectStudentAction,
+      getAllTestActivitiesForStudent: getAllTestActivitiesForStudentAction,
+      setCurrentTestActivityId: setCurrentTestActivityIdAction,
       studentUnselectAll: gradebookUnSelectAllAction,
       setSelected: gradebookSetSelectedAction,
       setReleaseScore: releaseScoreAction,
@@ -903,6 +1018,5 @@ ClassBoard.propTypes = {
   isPresentationMode: PropTypes.bool,
   testQuestionActivities: PropTypes.array,
   qActivityByStudent: PropTypes.any,
-  entities: PropTypes.array,
   labels: PropTypes.array
 };

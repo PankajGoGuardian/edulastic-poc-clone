@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { compose } from "redux";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
@@ -93,11 +94,15 @@ class TeacherTable extends Component {
     this.columns = [
       {
         title: "Name",
-        render: (_, { _source: { firstName, lastName } = {} }) => (
-          <span>
-            {firstName === "Anonymous" ? "-" : firstName} {lastName}
-          </span>
-        ),
+        render: (_, { _source }) => {
+          const firstName = get(_source, "firstName", "");
+          const lastName = get(_source, "lastName", "");
+          return (
+            <span>
+              {firstName === "Anonymous" || isEmpty(firstName) ? "-" : firstName} {lastName}
+            </span>
+          );
+        },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "_source.firstName", "");
@@ -119,7 +124,7 @@ class TeacherTable extends Component {
       },
       {
         title: "SSO",
-        dataIndex: "_source.sso",
+        dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 100
       },
@@ -130,9 +135,27 @@ class TeacherTable extends Component {
         width: 150
       },
       {
-        title: "Class Count",
+        title: "Classes",
         dataIndex: "classCount",
-        width: 50
+        width: 50,
+        render: (classCount, record) => {
+          const username = get(record, "_source.username", "");
+          return (
+            <Link
+              to={{
+                pathname: "/author/Class-Enrollment",
+                state: {
+                  filtersColumn: "username",
+                  filtersValue: "eq",
+                  filterStr: username,
+                  filterAdded: true
+                }
+              }}
+            >
+              {classCount}
+            </Link>
+          );
+        }
       },
       {
         dataIndex: "_id",
@@ -152,7 +175,12 @@ class TeacherTable extends Component {
   }
 
   componentDidMount() {
-    this.loadFilteredList();
+    const { dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+    } else {
+      this.loadFilteredList();
+    }
   }
 
   static getDerivedStateFromProps(nextProps, state) {
@@ -412,8 +440,7 @@ class TeacherTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
-    let showActive = this.state.showActive ? 1 : 0;
-
+    let { showActive } = this.state;
     let search = {};
     for (let [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;
@@ -434,17 +461,20 @@ class TeacherTable extends Component {
       search["name"] = searchByName;
     }
 
-    return {
+    const queryObj = {
       search,
       districtId: userOrgId,
       role: "teacher",
       limit: 25,
-      page: currentPage,
+      page: currentPage
       // uncomment after elastic search is fixed
-      status: showActive
       // sortField,
       // order
     };
+    if (showActive) {
+      queryObj["status"] = 1;
+    }
+    return queryObj;
   };
 
   loadFilteredList = () => {

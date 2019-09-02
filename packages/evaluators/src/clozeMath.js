@@ -2,16 +2,39 @@ import { flatten, groupBy, identity, get, maxBy } from "lodash";
 import { evaluate, getChecks } from "./math";
 import clozeTextEvaluator from "./clozeText";
 
+// combine unit and value for the clozeMath type Math w/Unit
+
+const combineUnitAndExpression = (expression, unit) => {
+  if (expression.search("=") === -1) {
+    return expression + unit;
+  }
+  return expression.replace(/=/gm, `${unit}=`);
+};
+
 const mathEval = async ({ userResponse, validation }) => {
   const validResponses = groupBy(flatten(validation.validResponse.value), "id");
   const evaluation = {};
   // parallelize network request!!
   for (const id of Object.keys(userResponse)) {
     const checks = getChecks({ value: validResponses[id] });
-    const answers = (validResponses[id] || []).map(item => item.value);
+
+    const answers = (validResponses[id] || []).map(item => {
+      const { options = {} } = item;
+      if (options.unit) {
+        return combineUnitAndExpression(item.value, options.unit);
+      }
+      return item.value;
+    });
+
     const requests = answers.map(ans => {
+      let { value } = userResponse[id];
+      const { unit } = userResponse[id];
+      if (unit) {
+        value = combineUnitAndExpression(value, unit);
+      }
+
       const data = {
-        input: userResponse[id].value.replace(/\\ /g, " "),
+        input: value.replace(/\\ /g, " "),
         expected: ans ? ans.replace(/\\ /g, " ") : "",
         checks
       };
@@ -47,7 +70,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     allowSingleLetterMistake = false
   } = validation;
 
-  const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;
+  const { inputs = {}, dropDowns = {}, maths = {}, mathUnits = {} } = userResponse;
   let score = 0;
   let maxScore = 0;
   const allEvaluations = [];
@@ -92,10 +115,22 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
       evaluations = { ...evaluations, ...mathEvaluation };
     }
 
+    if (validAnswers[i].mathUnits) {
+      const mathEvaluation = await mathEval({
+        userResponse: mathUnits,
+        validation: {
+          scoringType: "exactMatch",
+          validResponse: validAnswers[i].mathUnits
+        }
+      });
+      evaluations = { ...evaluations, ...mathEvaluation };
+    }
+
     const correctCount = Object.values(evaluations).filter(identity).length;
 
     const answersCount =
       get(validAnswers[i].dropdown, ["value", "length"], 0) +
+      get(validAnswers[i].mathUnits, ["value", "length"], 0) +
       get(validAnswers[i], ["value", "length"], 0) +
       get(validAnswers[i].textinput, ["value", "length"], 0);
 
@@ -152,9 +187,19 @@ const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
     const validAnswers = answersById[id];
     const calculations = validAnswers.map(validAnswer => {
       const checks = getChecks({ value: [validAnswer] });
-      const expected = (validAnswer.value || "").replace(/\\ /g, " ");
-      const input = userResponse[id].value.replace(/\\ /g, " ");
-      return evaluate({ input, checks, expected });
+      let expected = validAnswer.value || "";
+      let input = userResponse[id].value;
+
+      const { options } = validAnswer;
+      if (options.unit) {
+        expected = combineUnitAndExpression(validAnswer.value, options.unit);
+      }
+
+      if (userResponse[id].unit) {
+        input = combineUnitAndExpression(userResponse[id].value, userResponse[id].unit);
+      }
+
+      return evaluate({ checks, input: input.replace(/\\ /g, " "), expected: expected.replace(/\\ /g, " ") });
     });
 
     const result = await Promise.all(calculations);
@@ -179,15 +224,17 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
     allowSingleLetterMistake = false
   } = validation;
 
-  const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;
+  const { inputs = {}, dropDowns = {}, maths = {}, mathUnits = {} } = userResponse;
   const alt_inputs = altResponses.map(alt_res => ({ score: 1, ...alt_res.textinput }));
   const alt_dropdowns = altResponses.map(alt_res => ({ score: 1, ...alt_res.dropdown }));
+  const altMathUnits = altResponses.map(alt_res => ({ score: 1, ...alt_res.mathUnits }));
 
   const questionScore = (validResponse && validResponse.score) || 1;
 
   let score = 0;
   const optionCount =
     get(validResponse.dropdown, ["value", "length"], 0) +
+    get(validResponse.mathUnits, ["value", "length"], 0) +
     get(validResponse, ["value", "length"], 0) +
     get(validResponse.textinput, ["value", "length"], 0);
 
@@ -233,10 +280,23 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
       }))) ||
     {};
 
+  // mathUnits evaluations
+  const mathUnitsEvaluation =
+    (validResponse.mathUnits &&
+      (await mixAndMatchMathEvaluator({
+        userResponse: mathUnits,
+        validation: {
+          validResponse: validResponse.mathUnits,
+          altResponses: altMathUnits
+        }
+      }))) ||
+    {};
+
   const evaluation = {
     ...dropDownEvaluation,
     ...clozeTextEvaluation,
-    ...mathEvaluation
+    ...mathEvaluation,
+    ...mathUnitsEvaluation
   };
 
   const correctAnswerCount = Object.values(evaluation).filter(identity).length;

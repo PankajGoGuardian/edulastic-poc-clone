@@ -22,6 +22,7 @@ import Header from "./Header";
 import LeftFields from "./LeftFields";
 import RightFields from "./RightFields";
 import { Container, FormTitle, LeftContainer, RightContainer } from "./styled";
+import { getAllTagsAction, addNewTagAction, getAllTagsSelector } from "../../../TestPage/ducks";
 
 class ClassEdit extends React.Component {
   static propTypes = {
@@ -55,7 +56,7 @@ class ClassEdit extends React.Component {
   }
 
   componentDidMount() {
-    const { curriculums, getCurriculums, selctedClass, loadStudents, match } = this.props;
+    const { curriculums, getCurriculums, selctedClass, loadStudents, match, getAllTags } = this.props;
     if (isEmpty(selctedClass)) {
       const { classId } = match.params;
       loadStudents({ classId });
@@ -64,16 +65,17 @@ class ClassEdit extends React.Component {
     if (isEmpty(curriculums)) {
       getCurriculums();
     }
+    getAllTags({ type: "group" });
   }
 
   handleSubmit = e => {
     e.preventDefault();
-    const { form, userId, userOrgData } = this.props;
+    const { form, userId, userOrgData, allTagsData } = this.props;
     const { districtId } = userOrgData;
     form.validateFields((err, values) => {
       if (!err) {
         const { updateClass, curriculums, selctedClass } = this.props;
-        const { standardSets, endDate, startDate } = values;
+        const { standardSets, endDate, startDate, tags } = values;
         const { _id: classId } = selctedClass;
 
         const updatedStandardsSets = standardSets.map(el => {
@@ -93,6 +95,7 @@ class ClassEdit extends React.Component {
         values.standardSets = updatedStandardsSets;
         values.endDate = moment(endDate).format("x");
         values.startDate = moment(startDate).format("x");
+        values.tags = tags.map(t => allTagsData.find(o => o._id === t));
 
         const editedClassValues = Object.assign({}, values);
         if (editedClassValues.courseId === "") {
@@ -141,9 +144,11 @@ class ClassEdit extends React.Component {
       classLoaded,
       filteredCurriculums,
       setSubject,
+      allTagsData,
+      addNewTag,
       selectedSubject
     } = this.props;
-    const { getFieldDecorator, getFieldValue } = form;
+    const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
 
     const {
       _id: classId,
@@ -174,6 +179,9 @@ class ClassEdit extends React.Component {
                   getFieldValue={getFieldValue}
                   thumbnailUri={thumbnail}
                   tags={tags}
+                  setFieldsValue={setFieldsValue}
+                  allTagsData={allTagsData}
+                  addNewTag={addNewTag}
                 />
               </LeftContainer>
               <RightContainer>
@@ -223,6 +231,7 @@ const enhance = compose(
         updating: get(state, "manageClass.updating"),
         selctedClass: get(state, "manageClass.entity", {}),
         classLoaded: get(state, "manageClass.classLoaded"),
+        allTagsData: getAllTagsSelector(state),
         filteredCurriculums: getFormattedCurriculumsSelector(state, { subject: selectedSubject }),
         selectedSubject
       };
@@ -232,6 +241,8 @@ const enhance = compose(
       updateClass: updateClassAction,
       searchCourseList: receiveSearchCourseAction,
       loadStudents: fetchStudentsByIdAction,
+      getAllTags: getAllTagsAction,
+      addNewTag: addNewTagAction,
       setSubject: setSubjectAction
     }
   )

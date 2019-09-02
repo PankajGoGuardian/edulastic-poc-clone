@@ -721,6 +721,7 @@ export const themes = {
       },
       chart: {
         bgColor: "#fff",
+        axisLabelFontWeight: "bold",
         labelStrokeColor: "#42d184"
       },
       fractionEditor: {
@@ -730,6 +731,14 @@ export const themes = {
       graphPlacement: {
         dragDropTitleFontWeight: "700",
         dragDropTitleFontSize: "12px"
+      },
+      quadrants: {
+        dragDropTitleFontWeight: "700",
+        dragDropTitleFontSize: "12px"
+      },
+      axisLabels: {
+        responseBoxTitleFontWeight: "700",
+        responseBoxTitleFontSize: "12px"
       }
     }
   }

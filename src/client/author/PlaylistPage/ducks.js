@@ -4,7 +4,7 @@ import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get } from "lodash";
-import { testsApi, assignmentApi, curriculumSequencesApi, contentSharingApi } from "@edulastic/api";
+import { curriculumSequencesApi, contentSharingApi } from "@edulastic/api";
 import produce from "immer";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 
@@ -32,7 +32,6 @@ export const RECEIVE_PLAYLIST_BY_ID_ERROR = "[playlists] receive playlist by id 
 export const SET_TEST_DATA = "[playlists] set playlist data";
 export const SET_DEFAULT_TEST_DATA = "[playlists] set default playlist data";
 export const SET_TEST_EDIT_ASSIGNED = "[playlists] set edit assigned";
-export const REGRADE_TEST = "[regrade] set regrade data";
 export const TEST_SHARE = "[playlists] send playlist share request";
 export const PLAYLIST_PUBLISH = "[playlists] publish playlist";
 export const UPDATE_TEST_STATUS = "[playlists] update playlist status";
@@ -113,10 +112,6 @@ export const setCreateSuccessAction = () => ({
 });
 
 export const setTestEditAssignedAction = createAction(SET_TEST_EDIT_ASSIGNED);
-export const setRegradeSettingsDataAction = payload => ({
-  type: REGRADE_TEST,
-  payload
-});
 
 export const sendTestShareAction = createAction(TEST_SHARE);
 export const publishPlaylistAction = createAction(PLAYLIST_PUBLISH);
@@ -447,16 +442,6 @@ function* updatePlaylistSaga({ payload }) {
   }
 }
 
-function* updateRegradeDataSaga({ payload }) {
-  try {
-    yield call(assignmentApi.regrade, payload);
-    yield call(message.success, "Success update");
-  } catch (e) {
-    const errorMessage = "Update test is failing";
-    yield call(message.error, errorMessage);
-  }
-}
-
 function* shareTestSaga({ payload }) {
   try {
     yield call(contentSharingApi.shareContent, payload);
@@ -547,7 +532,6 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_PLAYLIST_BY_ID_REQUEST, receivePlaylistByIdSaga),
     yield takeEvery(CREATE_PLAYLIST_REQUEST, createPlaylistSaga),
     yield takeEvery(UPDATE_PLAYLIST_REQUEST, updatePlaylistSaga),
-    yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(PLAYLIST_PUBLISH, publishPlaylistSaga),
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Button, Input, Cascader, message } from "antd";
 import { desktopWidth } from "@edulastic/colors";
+import { ThemeButton } from "../../src/components/common/ThemeButton";
 
 /**
  * @typedef {object} Module
@@ -99,9 +100,9 @@ class AddUnitModalBody extends React.Component {
           <Button data-cy="addModuleCancel" type="primary" ghost key="back" onClick={handleAddModule}>
             CANCEL
           </Button>
-          <Button data-cy="addModuleSave" key="submit" type="primary" onClick={this.addModuleToPlaylist}>
+          <ThemeButton data-cy="addModuleSave" key="submit" type="primary" onClick={this.addModuleToPlaylist}>
             ADD
-          </Button>
+          </ThemeButton>
         </ModalFooter>
       </div>
     );

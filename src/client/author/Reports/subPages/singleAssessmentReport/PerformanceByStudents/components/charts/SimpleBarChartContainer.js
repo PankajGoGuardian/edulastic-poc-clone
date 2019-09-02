@@ -3,6 +3,7 @@ import { maxBy, ceil, get } from "lodash";
 import { BarChart, XAxis, YAxis, CartesianGrid, Bar, ReferenceArea, LabelList } from "recharts";
 import { NonSelectableResponsiveContainer } from "../styled";
 import { createTicks, getInterval } from "../../util/transformers";
+import { lightBlue7 } from "@edulastic/colors";
 
 const xAxisLabel = {
   value: "Score",
@@ -70,9 +71,17 @@ const SimpleBarChartContainer = ({ data, setRange, range }) => {
         onMouseUp={onMouseUp}
       >
         <XAxis label={xAxisLabel} interval={0} dataKey="name" scale={"linear"} />
-        <YAxis domain={domain} yAxisId="1" label={yAxisLabel} ticks={ticks} tick={renderYAxisLabel(maxStudentCount)} />
+        <YAxis
+          axisLine={false}
+          padding={{ left: 100, right: 100 }}
+          domain={domain}
+          yAxisId="1"
+          label={yAxisLabel}
+          ticks={ticks}
+          tick={renderYAxisLabel(maxStudentCount)}
+        />
         <CartesianGrid stroke="#eee" vertical={false} />
-        <Bar yAxisId="1" dataKey="studentCount" fill="#2b78b5">
+        <Bar yAxisId="1" dataKey="studentCount" fill={lightBlue7}>
           <LabelList position="top" content={renderLabel} />
         </Bar>
         {showSelectedArea ? <ReferenceArea yAxisId="1" x1={left} x2={right} strokeOpacity={0.3} /> : null}

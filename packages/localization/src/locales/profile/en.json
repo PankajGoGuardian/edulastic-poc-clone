@@ -19,7 +19,13 @@
       "save": "save",
       "editProfile": "Edit Profile",
       "deleteAccount": "Delete My Account",
-      "confirmPasswordMess": "Password didn't match."
+      "confirmPasswordMess": "Password didn't match.",
+      "passwordLengthErrorMessage": "Password is too short - must be at least 4 characters.",
+      "confirmPasswordLengthErrorMessage": "Please enter at least 4 characters.",
+      "instructor": "Instructor Information",
+      "emailAlreadyExistsMessage": "Email/Username already exists.",
+      "invalidEmailMessage": "Please provide valid Username or Email id",
+      "emailLengthMessage": "Must less than 256 characters!"
     }
   }
 }

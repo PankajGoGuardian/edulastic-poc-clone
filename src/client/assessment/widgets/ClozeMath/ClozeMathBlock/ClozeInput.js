@@ -14,7 +14,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
     checked,
     item,
     onInnerClick,
-    uiStyles = {}
+    uiStyles = {},
+    showIndex
   } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
   const val = _inputsAnwers[id] ? _inputsAnwers[id].value : "";
@@ -30,6 +31,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
       width={width}
       height={height}
       evaluation={evaluation}
+      showIndex={showIndex}
       userAnswer={_inputsAnwers[id]}
       id={id}
       item={item}

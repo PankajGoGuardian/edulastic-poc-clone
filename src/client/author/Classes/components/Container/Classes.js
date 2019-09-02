@@ -15,7 +15,8 @@ const menuActive = { mainMenu: "Classes", subMenu: "" };
 
 class Classes extends Component {
   render() {
-    const { loading, updating, deleting, creating, history } = this.props;
+    const { loading, updating, deleting, creating, history, location } = this.props;
+    const { state: dataPassedWithRoute } = location;
     const showSpin = loading || updating || deleting || creating;
 
     return (
@@ -28,7 +29,7 @@ class Classes extends Component {
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <ClassesTable />
+            <ClassesTable dataPassedWithRoute={dataPassedWithRoute} />
           </StyledLayout>
         </StyledContent>
       </ClassesDiv>

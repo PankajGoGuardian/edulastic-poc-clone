@@ -65,6 +65,8 @@ class CorrectAnswer extends Component {
               disabled={false}
               min={0}
               step={0.5}
+              height="40px"
+              width="auto"
               style={{ "font-size": "12px", "font-weight": "600", color: selectColor }}
             />
             <span>{t("component.correctanswers.points")}</span>

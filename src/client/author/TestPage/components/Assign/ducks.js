@@ -4,7 +4,7 @@ import { message } from "antd";
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { assignmentApi, testsApi } from "@edulastic/api";
-import { all, call, put, takeEvery, select } from "redux-saga/effects";
+import { all, call, put, takeEvery, select, takeLatest } from "redux-saga/effects";
 import { replace, push } from "connected-react-router";
 import { SET_ASSIGNMENT, SET_TEST_DATA, getTestSelector, getTestIdSelector } from "../../ducks";
 import { formatAssignment } from "./utils";
@@ -20,6 +20,7 @@ export const LOAD_ASSIGNMENTS = "[assignments] load assignments";
 export const DELETE_ASSIGNMENT = "[assignments] delete assignment";
 export const REMOVE_ASSIGNMENT = "[assignments] remove assignment";
 export const SET_CURRENT_ASSIGNMENT = "[assignments] set current editing assignment";
+export const SET_ASSIGNMENT_SAVING = "[assignments] set assignment saving state";
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT);
@@ -29,9 +30,11 @@ export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT);
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT);
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS);
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT);
+export const setAssignmentSavingAction = createAction(SET_ASSIGNMENT_SAVING);
 
 const initialState = {
   isLoading: false,
+  isAssigning: false,
   assignments: [],
   current: "" // id of the current one being edited
 };
@@ -43,6 +46,7 @@ const setAssignment = (state, { payload }) => {
 
 const addAssignment = (state, { payload }) => {
   let isExisting = false;
+  state.isAssigning = false;
   state.assignments = state.assignments.map(item => {
     if (item._id === payload._id) {
       isExisting = true;
@@ -64,6 +68,10 @@ const removeAssignment = (state, { payload }) => {
   state.assignments = state.assignments.filter(item => item._id !== payload);
 };
 
+const setAssignmentIsSaving = (state, { payload }) => {
+  state.isAssigning = payload;
+};
+
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: state => {
     state.isLoading = true;
@@ -71,7 +79,8 @@ export const reducer = createReducer(initialState, {
   [LOAD_ASSIGNMENTS]: setAssignment,
   [SET_ASSIGNMENT]: addAssignment,
   [SET_CURRENT_ASSIGNMENT]: setCurrent,
-  [REMOVE_ASSIGNMENT]: removeAssignment
+  [REMOVE_ASSIGNMENT]: removeAssignment,
+  [SET_ASSIGNMENT_SAVING]: setAssignmentIsSaving
 });
 
 // selectors
@@ -101,6 +110,7 @@ export const getCurrentAssignmentSelector = createSelector(
 function* saveAssignment({ payload }) {
   try {
     let testIds;
+    yield put(setAssignmentSavingAction(true));
     if (!payload.playlistModuleId && !payload.playlistId) {
       testIds = [yield select(getTestIdSelector)];
     } else {
@@ -111,6 +121,7 @@ function* saveAssignment({ payload }) {
       } else {
         const module = playlist.modules.filter(module => module._id === payload.playlistModuleId);
         if (!module || !(module && module.length)) {
+          yield put(setAssignmentSavingAction(false));
           return message.error("Module not found in playlist");
         }
         module &&
@@ -118,6 +129,7 @@ function* saveAssignment({ payload }) {
             testIds.push(dat.contentId);
           });
         if (!testIds.length) {
+          yield put(setAssignmentSavingAction(false));
           return message.error("No test in module");
         }
       }
@@ -137,6 +149,7 @@ function* saveAssignment({ payload }) {
     const assignedBy = yield select(getUserNameSelector);
     // if no class is selected dont bother sending a request.
     if (!payload.class.length) {
+      yield put(setAssignmentSavingAction(false));
       return;
     }
     const startDate = payload.startDate && moment(payload.startDate).valueOf();
@@ -187,6 +200,7 @@ function* saveAssignment({ payload }) {
     const successMessage = `Assign ${payload.playlistModuleId ? "module" : "test"} is successed!`;
     yield call(message.success, successMessage);
     yield put(setAssignmentAction(assignment));
+    yield put(setAssignmentSavingAction(false));
     const assignmentId = result[0]._id;
     yield put(
       push(
@@ -237,7 +251,7 @@ function* deleteAssignment({ payload }) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(SAVE_ASSIGNMENT, saveAssignment),
+    yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment)
   ]);

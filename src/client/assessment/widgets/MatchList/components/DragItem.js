@@ -48,6 +48,7 @@ const DragItem = ({
   correct,
   preview,
   renderIndex,
+  displayIndex,
   getStyles,
   width,
   centerContent,
@@ -70,7 +71,7 @@ const DragItem = ({
         <DragPreview isDragging={isDragging} {...restProps}>
           {itemView}
         </DragPreview>
-        {preview && <Index correct={correct}>{renderIndex}</Index>}
+        {preview && <Index correct={correct}>{displayIndex}</Index>}
         {itemView}
         {preview && (
           <div style={{ marginRight: 15 }}>

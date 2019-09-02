@@ -173,7 +173,7 @@ class TestList extends Component {
           ...prevState.search,
           subject: subjects && subjects[0],
           grades,
-          tags
+          tags: []
         },
         selectedTests,
         editFlow,
@@ -186,7 +186,7 @@ class TestList extends Component {
           ...search,
           subject: subjects && subjects[0],
           grades,
-          tags
+          tags: []
         }
       });
     } else {

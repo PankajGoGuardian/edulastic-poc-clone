@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
-import { Row, Col } from "antd";
 import styled from "styled-components";
+import { Row, Col } from "antd";
 import { StyledH3, Capitalized } from "../../../../common/styled";
 import { greyish, greyishDarker1, greenSomeWhatDark, fadedBlack } from "@edulastic/colors";
+import StatItem from "./StatItem";
 
 export const Stats = props => {
   const defaultState = {
@@ -72,35 +73,13 @@ export const Stats = props => {
         <Capitalized>{rolesMap[props.role]}</Capitalized> Statistics of {props.name}
       </StyledH3>
       <StyledInnerRow type="flex" justify="start" className="average-stats">
-        <Col>
-          <p className="stats-title">Average Score</p>
-          <div className="stats-value">
-            <p>
-              <span className="stats-value-big">{state.avgScore}</span>
-              <span className="stats-value-small">/ {Math.round(state.total)}</span>
-            </p>
-          </div>
-        </Col>
-        <Col>
-          <p className="stats-title">Average Student Score</p>
-          <p className="stats-value">
-            <span className="stats-value-big">{state.avgStudentScore}%</span>
-          </p>
-        </Col>
+        <StatItem heading="Average Score" value={`${state.avgScore}/${Math.round(state.total)}`} />
+        <StatItem heading="Average Student Score" value={state.avgStudentScore} />
       </StyledInnerRow>
-      <StyledInnerRow type="flex" justify="start" className="students-stats">
-        <Col>
-          <p className="students-title">Students Assigned</p>
-          <p className="students-value">{state.studentsAssigned}</p>
-        </Col>
-        <Col>
-          <p className="students-title">Students Graded</p>
-          <p className="students-value">{state.studentsGraded}</p>
-        </Col>
-        <Col>
-          <p className="students-title">Students Absent</p>
-          <p className="students-value">{state.studentsAbsent}</p>
-        </Col>
+      <StyledInnerRow type="flex" justify="start" className="average-stats">
+        <StatItem heading="Students Assigned" value={state.studentsAssigned} />
+        <StatItem heading="Students Graded" value={state.studentsGraded} />
+        <StatItem heading="Students Absent" value={state.studentsAbsent} />
       </StyledInnerRow>
     </StyledRow>
   );
@@ -115,51 +94,8 @@ const StyledRow = styled(Row)`
     flex-wrap: nowrap;
     min-height: 110px;
 
-    > div {
-      padding: 10px;
-      flex: 1 1 50%;
-      background-color: ${greyish};
-
-      .stats-title {
-        font-size: 17px;
-        font-weight: 600;
-      }
-      .stats-value {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        .stats-value-big {
-          font-size: 35px;
-          font-weight: 900;
-          color: ${greenSomeWhatDark};
-        }
-        .stats-value-small {
-          font-size: 25px;
-        }
-      }
-    }
-  }
-
-  .students-stats {
-    > div {
-      flex: 1;
-      padding: 10px;
-
-      .students-title {
-        flex-grow: 1;
-        font-size: 17px;
-        font-weight: 600;
-      }
-      .students-value {
-        color: ${fadedBlack};
-        font-size: 35px;
-        border-right: solid 1px ${greyishDarker1};
-      }
-    }
-    >div: nth-child(3) {
-      .students-value:last-child {
-        border-right: none;
-      }
+    .ant-col:first-child {
+      margin-left: 0px;
     }
   }
 `;
@@ -170,7 +106,6 @@ const StyledInnerRow = styled(Row)`
 
   > div {
     display: flex;
-    flex-direction: column;
     margin: 5px;
   }
 `;

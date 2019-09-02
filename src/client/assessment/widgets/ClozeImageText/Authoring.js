@@ -219,6 +219,7 @@ class Authoring extends Component {
   getImageDimensions = (url, isNew) => {
     const { item, setQuestionData } = this.props;
     const { maxWidth, maxHeight } = clozeImage;
+    const { imageRndRef } = this;
     const img = new Image();
 
     img.addEventListener("load", function() {
@@ -251,6 +252,9 @@ class Authoring extends Component {
             updateVariables(draft);
           })
         );
+        if (isNew) {
+          imageRndRef.current.updateSize({ width: wid, height: heig });
+        }
       })(width, height);
     });
     img.src = url;

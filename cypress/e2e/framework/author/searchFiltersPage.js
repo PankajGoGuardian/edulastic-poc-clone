@@ -14,9 +14,17 @@ export default class SearchFilters {
     this.waitForSearchResponse();
   };
 
-  clearAll = () => cy.contains("Clear all").click({ force: true });
+  clearAll = () => cy.get('[data-cy="clearAll"]').click({ force: true });
 
   setCollection = collection => {
     CypressHelper.selectDropDownByAttribute("Collections", collection);
   };
+
+  scrollFiltersToTop = () =>
+    cy
+      .get(".scrollbar-container")
+      .eq(1)
+      .then($elem => {
+        $elem.scrollTop(0);
+      });
 }

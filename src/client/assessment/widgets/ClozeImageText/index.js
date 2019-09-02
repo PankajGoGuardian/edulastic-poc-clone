@@ -267,39 +267,37 @@ class ClozeImageText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {(isCheckAnswer || isClearAnswer || isShowAnswer) && (
-              <Display
-                checkAnswer={previewTab === "check"}
-                options={previewDisplayOptions}
-                question={previewStimulus}
-                uiStyle={uiStyle}
-                item={itemForPreview}
-                templateMarkUp={itemForPreview.templateMarkUp}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                imageAlterText={item.imageAlterText}
-                responseContainers={itemForPreview.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                evaluation={evaluation}
-                qIndex={qIndex}
-                imageOptions={item.imageOptions}
-                showAnswer={previewTab === "show"}
-                validation={itemForPreview.validation}
-                preview={previewTab === "clear"}
-                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                backgroundColor={item.background}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
-                maxRespCount={item.maxRespCount}
-                {...restProps}
-              />
-            )}
+            <Display
+              checkAnswer={isCheckAnswer}
+              showAnswer={isShowAnswer}
+              preview={isClearAnswer}
+              options={previewDisplayOptions}
+              question={previewStimulus}
+              uiStyle={uiStyle}
+              item={itemForPreview}
+              templateMarkUp={itemForPreview.templateMarkUp}
+              userSelections={userAnswer}
+              onChange={this.handleAddAnswer}
+              configureOptions={{
+                duplicatedResponses,
+                showDraghandle,
+                shuffleOptions,
+                transparentResponses
+              }}
+              imageAlterText={item.imageAlterText}
+              responseContainers={itemForPreview.responses}
+              imageUrl={item.imageUrl}
+              imageWidth={item.imageWidth}
+              evaluation={evaluation}
+              qIndex={qIndex}
+              imageOptions={item.imageOptions}
+              validation={itemForPreview.validation}
+              showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+              backgroundColor={item.background}
+              key={previewDisplayOptions && previewStimulus && uiStyle}
+              maxRespCount={item.maxRespCount}
+              {...restProps}
+            />
           </Wrapper>
         )}
       </React.Fragment>

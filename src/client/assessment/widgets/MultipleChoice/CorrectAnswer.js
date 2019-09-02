@@ -68,6 +68,8 @@ class CorrectAnswer extends Component {
               onBlur={this.updateScore}
               disabled={false}
               min={0}
+              height="40px"
+              width="auto"
               step={0.5}
             />
             <span>{t("component.correctanswers.points")}</span>

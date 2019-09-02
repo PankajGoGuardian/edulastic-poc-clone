@@ -20,7 +20,7 @@ export const StyledTable = styled(Table)`
   .ant-table-row {
     &: hover {
       button#onHoverVisible {
-        opacity: 100;
+        opacity: ${props => (props.role === "school-admin" ? "0" : "100")};
       }
     }
   }

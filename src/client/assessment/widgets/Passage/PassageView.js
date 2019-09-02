@@ -44,8 +44,8 @@ const PassageView = ({ item, preview, showQuestionNumber, qIndex, flowLayout }) 
           <Stimulus id="paginatedContents" dangerouslySetInnerHTML={{ __html: item.pages[page - 1] }} />
 
           <Pagination
+            style={{ justifyContent: "center" }}
             pageSize={1}
-            simple
             hideOnSinglePage
             onChange={pageNum => setPage(pageNum)}
             current={page}

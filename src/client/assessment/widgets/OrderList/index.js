@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
@@ -55,7 +55,7 @@ const OrderList = ({
   previewTab,
   smallSize,
   item,
-  userAnswer,
+  userAnswer: _userAnswer,
   testItem,
   evaluation,
   setQuestionData,
@@ -74,14 +74,7 @@ const OrderList = ({
   const [correctTab, setCorrectTab] = useState(0);
   const answerContext = useContext(AnswerContext);
 
-  useEffect(() => {
-    if (view === PREVIEW && !disableResponse) {
-      const { list = [] } = item;
-      if (list.length !== userAnswer.length) {
-        saveAnswer(list.map((q, i) => i));
-      }
-    }
-  }, [view, previewTab]);
+  const userAnswer = !isEmpty(_userAnswer) ? _userAnswer : get(item, "list", []).map((_, i) => i);
 
   const fontSize = getFontSize(get(item, "uiStyle.fontsize", "normal"));
   const styleType = get(item, "uiStyle.type", "button");
@@ -211,22 +204,6 @@ const OrderList = ({
     initialAnswers = userAnswer.length > 0 ? userAnswer : itemForPreview.list.map((q, i) => i);
   }
 
-  const evaluationFromAnswers = userAnswer.map((answer, index) => {
-    if (answer === correctAnswers[index]) {
-      return true;
-    }
-
-    if (hasAltAnswers) {
-      for (const altAnswers of itemForPreview.validation.altResponses) {
-        if (altAnswers.value[index] === answer) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  });
-
   const getStemNumeration = i => {
     if (item) {
       if (item.uiStyle) {
@@ -243,6 +220,38 @@ const OrderList = ({
 
     return i + 1;
   };
+
+  const evaluationForCheckAnswer = evaluation || (item && item.activity ? item.activity.evaluation : evaluation);
+
+  const checkAnswerOptionComponent = isEmpty(evaluationForCheckAnswer) ? (
+    <OrderListPreview
+      onSortEnd={onSortPreviewEnd}
+      questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
+      smallSize={smallSize}
+      listStyle={{ fontSize }}
+      styleType={styleType}
+      axis={axis}
+      columns={columns}
+      disableResponse={disableResponse}
+      helperClass="sortableHelper"
+    />
+  ) : (
+    <OrderListReport
+      onSortEnd={onSortPreviewEnd}
+      questionsList={itemForPreview.list}
+      previewIndexesList={userAnswer}
+      evaluation={evaluationForCheckAnswer}
+      validation={itemForPreview.validation}
+      list={itemForPreview.list}
+      styleType={styleType}
+      listStyle={{ fontSize }}
+      disableResponse={disableResponse}
+      axis={axis}
+      columns={columns}
+      helperClass="sortableHelper"
+      item={item}
+    />
+  );
 
   return (
     <Fragment>
@@ -277,38 +286,11 @@ const OrderList = ({
             />
           </QuestionTitleWrapper>
 
-          {previewTab === CHECK && (
-            <OrderListReport
-              onSortEnd={onSortPreviewEnd}
-              questionsList={itemForPreview.list}
-              previewIndexesList={userAnswer}
-              evaluation={evaluation || (item && item.activity ? item.activity.evaluation : evaluation)}
-              listStyle={{ fontSize }}
-              styleType={styleType}
-              axis={axis}
-              columns={columns}
-              helperClass="sortableHelper"
-              item={item}
-            />
-          )}
+          {previewTab === CHECK && checkAnswerOptionComponent}
 
           {previewTab === SHOW || isReviewTab ? (
             <Fragment>
-              <OrderListReport
-                onSortEnd={onSortPreviewEnd}
-                questionsList={itemForPreview.list}
-                previewIndexesList={userAnswer}
-                evaluation={evaluationFromAnswers}
-                validation={itemForPreview.validation}
-                list={itemForPreview.list}
-                styleType={styleType}
-                listStyle={{ fontSize }}
-                disableResponse={disableResponse}
-                axis={axis}
-                columns={columns}
-                helperClass="sortableHelper"
-                item={item}
-              />
+              {checkAnswerOptionComponent}
               <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
                 <ItemsWrapper styleType={styleType} columns={columns}>
                   {correctAnswers.map((correctAnswer, i) => (
@@ -331,7 +313,7 @@ const OrderList = ({
               {hasAltAnswers && (
                 <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
                   <ItemsWrapper styleType={styleType}>
-                    {Object.keys(alternateAnswers).map(key => (
+                    {Object.keys(alternateAnswers).map((key, i) => (
                       <CorrectAnswerItem theme={theme}>
                         <Text>
                           <Index>{getStemNumeration(i)}</Index>
@@ -396,7 +378,6 @@ OrderList.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   item: {},
-  userAnswer: [],
   testItem: false,
   evaluation: "",
   advancedAreOpen: false,

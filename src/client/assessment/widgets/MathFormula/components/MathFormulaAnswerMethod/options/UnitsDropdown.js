@@ -10,6 +10,7 @@ import { FlexContainer } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 import { textColor, mainTextColor, white } from "@edulastic/colors";
+import { Label } from "../../../../../styled/WidgetOptions/Label";
 import { toggleAdvancedSections } from "../../../../../actions/questions";
 
 const { Option } = Select;
@@ -55,7 +56,7 @@ const UnitsDropdownPure = ({
   };
 
   const symbol = get(item, "symbols", [])[0]; // units_us units_si
-  const customKeys = get(item, "custom_keys", []);
+  const customKeys = get(item, "customKeys", []);
 
   const allBtns = customKeys.map(key => ({
     handler: key,
@@ -69,17 +70,6 @@ const UnitsDropdownPure = ({
     height: uiStyle.heightpx || response.minHeight
   };
 
-  // if (isObject(symbol) || symbol === "units_us" || symbol === "units_si") {
-  //   allBtns = MathKeyboard.KEYBOARD_BUTTONS.map(btn => {
-  //     if (isObject(symbol) && symbol.value.includes(btn.handler)) {
-  //       btn.types.push(symbol.label);
-  //     }
-  //     return btn;
-  //   })
-  //     .filter(btn => btn.types.includes(isObject(symbol) ? symbol.label : symbol))
-  //     .concat(allBtns);
-  // }
-
   const getLabel = handler => {
     const seleted = allBtns.find(btn => btn.handler === handler) || {};
     return seleted.label;
@@ -91,14 +81,8 @@ const UnitsDropdownPure = ({
     }
   }, [keypadOffset]);
 
-  useEffect(() => {
-    if (!item.showDropdown) {
-      onChange("unit", null);
-    }
-  }, [item.showDropdown]);
-
   return (
-    <FlexContainer alignItems="center" justifyContent="flex-start">
+    <>
       {item.showDropdown && (
         <UniteSelet
           value={preview ? selected : options ? options.unit : ""}
@@ -115,22 +99,24 @@ const UnitsDropdownPure = ({
         </UniteSelet>
       )}
       {!preview && (
-        <FlexContainer alignItems="center" justifyContent="flex-start">
-          <FlexContainer flexDirection="column" alignItems="flex-start" justifyContent="flex-start">
-            <FieldLabel>{t("component.math.showDropdown")}</FieldLabel>
-            <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
+        <FlexContainer justifyContent="flex-end" style={{ width: "100%" }}>
+          <FlexContainer alignItems="flex-start" flexDirection="column">
+            <Label data-cy="answer-math-unit-dropdown">{t("component.math.showDropdown")}</Label>
+            <FlexContainer style={{ height: styles.height || 35, flexWrap: "wrap" }} justifyContent="flex-start">
+              <Radio.Group onChange={onChnageRadioGroup} value={item.showDropdown ? "dropdown" : "keypad"}>
+                <Radio value="dropdown">
+                  <FieldLabel>{t("component.math.dropdown")}</FieldLabel>
+                </Radio>
+                <Radio value="keypad">
+                  <FieldLabel>{t("component.math.keypad")}</FieldLabel>
+                </Radio>
+              </Radio.Group>
+              <CustomKeyLink onClick={handlePressCustomize}>{t("component.math.customizeunits")}</CustomKeyLink>
+            </FlexContainer>
           </FlexContainer>
-          <Radio.Group onChange={onChnageRadioGroup} value={item.showDropdown ? "dropdown" : "keypad"}>
-            <Radio value="dropdown">
-              <FieldLabel>{t("component.math.dropdown")}</FieldLabel>
-            </Radio>
-            <Radio value="keypad">
-              <FieldLabel>{t("component.math.keypad")}</FieldLabel>
-            </Radio>
-          </Radio.Group>
         </FlexContainer>
       )}
-    </FlexContainer>
+    </>
   );
 };
 
@@ -170,7 +156,7 @@ const enhance = compose(
 export const UnitsDropdown = enhance(UnitsDropdownPure);
 
 const UniteSelet = styled(Select)`
-  min-width: 80px;
+  min-width: 85px;
   .ant-select-selection {
     padding: 5px 2px;
     background: ${({ statusColor }) => statusColor || white};

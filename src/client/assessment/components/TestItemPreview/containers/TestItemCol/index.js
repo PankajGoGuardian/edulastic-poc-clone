@@ -95,14 +95,7 @@ class TestItemCol extends Component {
     const { col, style, windowWidth, ...restProps } = this.props;
     const { value } = this.state;
     return (
-      <Container
-        value={value}
-        style={{
-          ...style,
-          width: windowWidth < SMALL_DESKTOP_WIDTH ? "100%" : "100%"
-        }}
-        width={col.dimension}
-      >
+      <Container value={value} style={style} width={col.dimension || "auto"}>
         {col.tabs && !!col.tabs.length && windowWidth >= MAX_MOBILE_WIDTH && (
           <Tabs value={value} onChange={this.handleTabChange}>
             {col.tabs.map((tab, tabIndex) => (

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { compose } from "redux";
-import { get, split, unset, pickBy, identity } from "lodash";
+import { get, split, unset, pickBy, identity, isEmpty } from "lodash";
 import * as moment from "moment";
 import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
@@ -35,7 +36,9 @@ import {
   setAddStudentsToOtherClassVisiblityAction,
   addStudentsToOtherClassAction,
   fetchClassDetailsUsingCodeAction,
-  setMultiStudentsProviderAction
+  setMultiStudentsProviderAction,
+  getValidatedClassDetails,
+  resetFetchedClassDetailsAction
 } from "../../ducks";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
@@ -107,11 +110,15 @@ class StudentTable extends Component {
     this.columns = [
       {
         title: "Name",
-        render: (_, { _source: { firstName, lastName } = {} }) => (
-          <span>
-            {firstName === "Anonymous" ? "-" : firstName} {lastName}
-          </span>
-        ),
+        render: (_, { _source }) => {
+          const firstName = get(_source, "firstName", "");
+          const lastName = get(_source, "lastName", "");
+          return (
+            <span>
+              {firstName === "Anonymous" || isEmpty(firstName) ? "-" : firstName} {lastName}
+            </span>
+          );
+        },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "_source.firstName", "");
@@ -134,7 +141,7 @@ class StudentTable extends Component {
       },
       {
         title: "SSO",
-        dataIndex: "_source.sso",
+        dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 100
       },
@@ -147,7 +154,25 @@ class StudentTable extends Component {
       {
         title: "Classes",
         dataIndex: "classCount",
-        width: 50
+        width: 50,
+        render: (classCount, record) => {
+          const username = get(record, "_source.username", "");
+          return (
+            <Link
+              to={{
+                pathname: "/author/Class-Enrollment",
+                state: {
+                  filtersColumn: "username",
+                  filtersValue: "eq",
+                  filterStr: username,
+                  filterAdded: true
+                }
+              }}
+            >
+              {classCount}
+            </Link>
+          );
+        }
       },
       {
         dataIndex: "_id",
@@ -168,7 +193,12 @@ class StudentTable extends Component {
   }
 
   componentDidMount() {
-    this.loadFilteredList();
+    const { dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+    } else {
+      this.loadFilteredList();
+    }
   }
 
   static getDerivedStateFromProps(nextProps, state) {
@@ -476,7 +506,7 @@ class StudentTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
-    let showActive = this.state.showActive ? 1 : 0;
+    let { showActive } = this.state;
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {
@@ -497,18 +527,20 @@ class StudentTable extends Component {
     if (searchByName) {
       search["name"] = searchByName;
     }
-
-    return {
+    const queryObj = {
       search,
       districtId: userOrgId,
       role: "student",
       limit: 25,
-      page: currentPage,
+      page: currentPage
       // uncomment after elastic search is fixed
-      status: showActive
       // sortField,
       // order
     };
+    if (showActive) {
+      queryObj["status"] = 1;
+    }
+    return queryObj;
   };
 
   loadFilteredList = () => {
@@ -561,7 +593,9 @@ class StudentTable extends Component {
       putStudentsToOtherClass,
       fetchClassDetailsUsingCode,
       features,
-      setProvider
+      setProvider,
+      validatedClassDetails,
+      resetClassDetails
     } = this.props;
 
     const actionMenu = (
@@ -729,6 +763,8 @@ class StudentTable extends Component {
             showClassCodeField={true}
             fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
             showTtsField
+            validatedClassDetails={validatedClassDetails}
+            resetClassDetails={resetClassDetails}
           />
         )}
         {studentDetailsModalVisible && (
@@ -787,7 +823,8 @@ const enhance = compose(
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
-      features: getUserFeatures(state)
+      features: getUserFeatures(state),
+      validatedClassDetails: getValidatedClassDetails(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -815,7 +852,8 @@ const enhance = compose(
       setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
       putStudentsToOtherClass: addStudentsToOtherClassAction,
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,
-      setProvider: setMultiStudentsProviderAction
+      setProvider: setMultiStudentsProviderAction,
+      resetClassDetails: resetFetchedClassDetailsAction
     }
   )
 );

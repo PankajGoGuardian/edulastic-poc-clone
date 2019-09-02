@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -15,6 +15,7 @@ import {
 } from "./styled";
 
 import { getUserRole } from "../../../selectors/user";
+import { get } from "lodash";
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -97,7 +98,7 @@ class AdminHeader extends Component {
   };
 
   render() {
-    const { title, active, count = 0, role } = this.props;
+    const { title, active, count = 0, role, schoolLevelAdminSettings } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
       <AdminHeaderWrapper>
@@ -111,12 +112,16 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Courses" key={"Courses"} />
             <StyledTabPane tab="Class Enrollment" key={"Class Enrollment"} />
             <StyledTabPane tab="Groups" key={"Groups"} />
-            {role === roleuser.DISTRICT_ADMIN ? <StyledTabPane tab="Settings" key={"Settings"} /> : null}
+
+            {role === roleuser.DISTRICT_ADMIN || (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ? (
+              <StyledTabPane tab="Settings" key={"Settings"} />
+            ) : null}
           </StyledTabs>
         </AdminHeaderContent>
         {active.mainMenu === "Settings" && (
           <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
             {role === "district-admin" ? <StyledTabPane tab="District Policies" key={"District Policies"} /> : null}
+            {role === roleuser.SCHOOL_ADMIN ? <StyledTabPane tab="School Policies" key={"District Policies"} /> : null}
             <StyledTabPane tab="Test Settings" key={"Test Settings"} />
             <StyledTabPane tab="Term" key={"Term"} />
             <StyledTabPane tab="Interested Standards" key={"Interested Standards"} />
@@ -139,7 +144,8 @@ class AdminHeader extends Component {
 
 export default connect(
   state => ({
-    role: getUserRole(state)
+    role: getUserRole(state),
+    schoolLevelAdminSettings: get(state, "districtPolicyReducer.data.schoolAdminSettingsAccess", false)
   }),
   {}
 )(AdminHeader);

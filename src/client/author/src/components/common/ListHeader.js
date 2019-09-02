@@ -4,9 +4,9 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { FlexContainer, Button } from "@edulastic/common";
-import { mobileWidth, tabletWidth, desktopWidth, mediumDesktopWidth, white, themeColor } from "@edulastic/colors";
-import { IconPlusCircle, IconMenuOpenClose } from "@edulastic/icons";
+import { FlexContainer, Button, MenuIcon } from "@edulastic/common";
+import { mobileWidth, desktopWidth, mediumDesktopWidth, white, themeColor } from "@edulastic/colors";
+import { IconPlusCircle } from "@edulastic/icons";
 import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
 import { toggleSideBarAction } from "../../actions/toggleMenu";
@@ -199,18 +199,6 @@ export const Title = styled.h1`
   padding: 0;
   @media (max-width: ${mediumDesktopWidth}) {
     font-size: 18px;
-  }
-`;
-
-const MenuIcon = styled(IconMenuOpenClose)`
-  display: none;
-  fill: ${white};
-  width: 18px;
-  margin-right: 25px !important;
-  pointer-events: all;
-
-  @media (max-width: ${tabletWidth}) {
-    display: block;
   }
 `;
 

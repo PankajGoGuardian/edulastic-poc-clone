@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Row, Button, Input, Form } from "antd";
+import { Row, Button, Form } from "antd";
+import { themeColor } from "@edulastic/colors";
 
 export const StyledFormDiv = styled.div`
   display: flex;
@@ -23,13 +24,15 @@ export const StyledLabel = styled.label`
 
 export const SaveButton = styled(Button)`
   color: white;
-  border: 1px solid #00b0ff;
+  border: 1px solid ${themeColor};
   min-width: 85px;
-  background: #00b0ff;
+  background: ${themeColor};
   margin-left: auto;
-  &:hover {
+  &:hover,
+  &:focus {
+    color: ${themeColor};
     background: #fff;
-    border-color: #40a9ff;
+    border-color: ${themeColor};
   }
 `;
 

@@ -26,7 +26,7 @@ class Layout extends Component {
     uiStyle: {
       responsecontainerposition: "bottom",
       fontsize: "normal",
-      stemnumeration: "",
+      stemNumeration: "",
       widthpx: 0,
       heightpx: 0,
       wordwrap: false,
@@ -100,7 +100,7 @@ class Layout extends Component {
               <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
               <SelectWrapper>
                 <Select
-                  onChange={val => changeUiStyle("stemnumeration", val)}
+                  onChange={val => changeUiStyle("stemNumeration", val)}
                   options={[
                     { value: "numerical", label: t("component.options.numerical") },
                     {
@@ -112,7 +112,7 @@ class Layout extends Component {
                       label: t("component.options.lowercasealphabet")
                     }
                   ]}
-                  value={uiStyle.stemnumeration}
+                  value={uiStyle.stemNumeration}
                 />
               </SelectWrapper>
             </Col>

@@ -11,7 +11,7 @@ import {
   createDistrictPolicyAction,
   changeDistrictPolicyAction
 } from "../../ducks";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 import { Form, Checkbox, Radio, message, Input } from "antd";
 const RadioGroup = Radio.Group;
@@ -62,8 +62,13 @@ class DistrictPolicyForm extends Component {
   }
 
   componentDidMount() {
-    const { loadDistrictPolicy, userOrgId } = this.props;
-    loadDistrictPolicy({ orgId: userOrgId });
+    /**
+     * TODO: handle schoolId
+     */
+    const { loadDistrictPolicy, userOrgId, role, schoolId } = this.props;
+    // const payload = role === "district-admin" ? { orgId: userOrgId } : { orgType: "school", orgId: schoolId }
+    const payload = { orgId: userOrgId };
+    loadDistrictPolicy(payload);
   }
 
   static getDerivedStateFromProps(nextProps) {
@@ -361,7 +366,8 @@ const enhance = compose(
   connect(
     state => ({
       districtPolicy: get(state, ["districtPolicyReducer", "data"], []),
-      userOrgId: getUserOrgId(state)
+      userOrgId: getUserOrgId(state),
+      role: getUserRole
     }),
     {
       loadDistrictPolicy: receiveDistrictPolicyAction,

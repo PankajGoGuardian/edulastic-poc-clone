@@ -14,5 +14,4 @@ export const BackLink = styled.span`
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   cursor: pointer;
   display: inline-block;
-  margin: 0 0 26px 25px;
 `;

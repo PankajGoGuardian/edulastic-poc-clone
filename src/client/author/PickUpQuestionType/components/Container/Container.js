@@ -328,7 +328,9 @@ class Container extends Component {
               <BackLink to={`/author/items/${window.location.pathname.split("/")[3]}/item-detail`}>
                 Back to Item Detail
               </BackLink>
-              <SelectWidget onClick={this.toggleCategories}>Select widget</SelectWidget>
+              <SelectWidget data-cy="selectWidget" onClick={this.toggleCategories}>
+                Select widget
+              </SelectWidget>
             </MobileButtons>
             <PaddingDiv
               style={{

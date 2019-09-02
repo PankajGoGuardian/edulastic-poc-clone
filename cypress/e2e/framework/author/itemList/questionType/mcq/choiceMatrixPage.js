@@ -3,7 +3,7 @@ import Header from "../../itemDetail/header";
 import Helpers from "../../../../util/Helpers";
 import EditItemPage from "../../itemDetail/editPage";
 import { questionType, questionGroup, questionTypeKey } from "../../../../constants/questionTypes";
-import { CypressHelper } from "../../../../util/cypressHelpers";
+import CypressHelper from "../../../../util/cypressHelpers";
 
 class ChoiceMatrixStandardPage {
   constructor() {
@@ -123,13 +123,9 @@ class ChoiceMatrixStandardPage {
 
   selectScoringType(option) {
     const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
-    cy.get('[data-cy="scoringType"]')
-      .should("be.visible")
-      .click();
+    cy.get('[data-cy="scoringType"]').click({ force: true });
 
-    cy.get(selectOp)
-      .should("be.visible")
-      .click();
+    cy.get(selectOp).click({ force: true });
 
     cy.get('[data-cy="scoringType"]')
       .find(".ant-select-selection-selected-value")
@@ -461,7 +457,7 @@ class ChoiceMatrixStandardPage {
           }
           choices.forEach((choice, index) => {
             this.getChoiceByIndex(index)
-              .clear()
+              .clear({ force: true })
               .type(choice);
           });
         });
@@ -490,10 +486,10 @@ class ChoiceMatrixStandardPage {
 
       if (setAns) {
         const { correct, points, evaluation } = setAns;
-        /*  this.getPoints()
-          .clear()
-          .type(`{rightarrow}${points}`);
- */
+        this.getPoints()
+          .clear({ force: true })
+          .type(`{selectAll}${points}`);
+
         Object.keys(correct).forEach(chKey => {
           this.getCorrectAnsTableRow()
             .contains(chKey)
@@ -510,12 +506,13 @@ class ChoiceMatrixStandardPage {
         // set evaluation type
         if (evaluation) {
           // this.getEnableAutoScoring().click({ force: true });
-          CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
+          // CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
+          this.selectScoringType(evaluation);
         }
 
         this.header.save();
-        item.updateItemLevelScore(points);
-        item.header.save(true);
+        /*  item.updateItemLevelScore(points);
+        item.header.save(true); */
       }
     });
   }

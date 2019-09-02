@@ -1,16 +1,29 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { get, find, isArray } from "lodash";
+import get from "lodash/get";
 import { Tag, Input } from "antd";
 import { response as responseDimensions } from "@edulastic/constants";
 import { dashBorderColor, white } from "@edulastic/colors";
+import FlexContainer from "@edulastic/common/src/components/FlexContainer";
 
-const MixMatchCorrectAnswer = ({ response, alternateResponse, uiStyle, onUpdateValidationValue }) => {
-  const [newValues, setNewTag] = useState({});
+const MixMatchCorrectAnswer = ({
+  validResponse,
+  alternateResponse,
+  uiStyle,
+  onUpdateValidationValue,
+  addAltAnswerMixMatch
+}) => {
+  const correctValues = get(validResponse, "value", []);
+  const [newValues, setNewTag] = useState(correctValues.reduce((obj, _, i) => ({ ...obj, [i]: "" }), {}));
+  const altResponses = [];
+  alternateResponse.forEach(altResponse => {
+    altResponse.value.forEach(resp => {
+      altResponses[resp.index] = altResponses[resp.index] || [];
+      altResponses[resp.index].push({ ...resp, tabId: altResponse.id });
+    });
+  });
 
-  const correctValues = get(response, "value", []);
-  const alterValues = get(alternateResponse, "value", []);
   const { widthpx } = uiStyle;
   const btnStyle = {
     minWidth: `${responseDimensions.minWidth}px`,
@@ -18,69 +31,73 @@ const MixMatchCorrectAnswer = ({ response, alternateResponse, uiStyle, onUpdateV
     width: widthpx !== 0 ? widthpx : 140
   };
 
-  const getAnswersFromAlter = id => {
-    const altVal = find(alterValues, _val => _val.id === id);
-    if (altVal) {
-      if (isArray(altVal.value)) {
-        return altVal.value;
-      }
-    }
-    return [];
+  const handleClose = ({ id, tabId, value }) => {
+    onUpdateValidationValue({ id, tabId, value });
   };
 
-  const handleClose = (id, removedIndex, valueIndex) => () => {
-    const answres = getAnswersFromAlter(id);
-    answres.splice(removedIndex, 1);
-    alterValues.splice(valueIndex, 1, {
-      id,
-      valueIndex,
-      value: answres
-    });
-    onUpdateValidationValue(alterValues);
+  const handleInputConfirm = answerIndex => {
+    if (!newValues[answerIndex].trim().length) return;
+    addAltAnswerMixMatch({ index: answerIndex, value: newValues[answerIndex] });
+    setNewTag({ ...newValues, [answerIndex]: "" });
   };
 
-  const handleInputConfirm = (id, index) => () => {
-    if (!newValues[id]) {
-      return;
-    }
-    const answres = getAnswersFromAlter(id);
-    answres.push(newValues[id]);
-    alterValues.splice(index, 1, {
-      id,
-      index,
-      value: answres
-    });
-    onUpdateValidationValue(alterValues);
-    setNewTag({ [id]: "" });
+  const handleInputChange = answerIndex => e => {
+    setNewTag({ ...newValues, [answerIndex]: e.target.value });
   };
 
-  const handleInputChange = id => e => {
-    setNewTag({ [id]: e.target.value });
-  };
+  const correctAnswersBlock = (
+    // render all correct answers
+    <FlexContainer flexDirection="column" alignItems="flex-start">
+      {correctValues.map(({ id, index, value }) => (
+        <CorrectAnswer style={btnStyle}>
+          <div className="index">{index + 1}</div>
+          <div className="text">{value}</div>
+        </CorrectAnswer>
+      ))}
+    </FlexContainer>
+  );
 
-  return correctValues.map(({ id, index, value }) => (
-    <AnswerContainer>
-      <CorrectAnswer style={btnStyle}>
-        <div className="index">{index + 1}</div>
-        <div className="text">{value}</div>
-      </CorrectAnswer>
-      <AlterAnswer key={id}>
-        {getAnswersFromAlter(id).map((tag, answerIndex) => (
-          <Tag key={tag} closable onClose={handleClose(id, answerIndex, index)}>
-            {tag}
-          </Tag>
-        ))}
-        <Input
-          type="text"
-          size="small"
-          value={newValues[id]}
-          onChange={handleInputChange(id)}
-          onBlur={handleInputConfirm(id, index)}
-          onPressEnter={handleInputConfirm(id, index)}
-        />
-      </AlterAnswer>
-    </AnswerContainer>
-  ));
+  const altAnswerBlock = (
+    // render as many inputs as correct answers
+    <FlexContainer flexDirection="column" alignItems="flex-start" flexWrap="wrap" style={{ width: "70%" }}>
+      {correctValues.map((_, answerIndex) => (
+        <AlterAnswer id={answerIndex}>
+          {altResponses[answerIndex] &&
+            altResponses[answerIndex].map(({ id, value, tabId }) => (
+              <FlexContainer justifyContent="flex-start" key={id}>
+                {value.length > 0 && (
+                  <Tag
+                    className={id}
+                    closable
+                    onClose={e => {
+                      e.preventDefault();
+                      handleClose({ id, tabId, value });
+                    }}
+                  >
+                    {value}
+                  </Tag>
+                )}
+              </FlexContainer>
+            ))}
+          <Input
+            type="text"
+            size="small"
+            placeholder="+ Alt Ans"
+            value={newValues[answerIndex]}
+            onChange={handleInputChange(answerIndex)}
+            onBlur={e => handleInputConfirm(answerIndex)}
+          />
+        </AlterAnswer>
+      ))}
+    </FlexContainer>
+  );
+
+  return (
+    <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+      {correctAnswersBlock}
+      {altAnswerBlock}
+    </FlexContainer>
+  );
 };
 
 MixMatchCorrectAnswer.propTypes = {
@@ -92,15 +109,11 @@ MixMatchCorrectAnswer.propTypes = {
 
 export default MixMatchCorrectAnswer;
 
-const AnswerContainer = styled.div`
-  display: flex;
-  margin-bottom: 8px;
-`;
-
 const CorrectAnswer = styled.div`
   display: flex;
   height: 44px;
   margin-right: 16px;
+  margin-bottom: 8px;
   .index {
     padding: 8px 14px;
     color: ${white};
@@ -130,6 +143,9 @@ const AlterAnswer = styled.div`
   border: 1px ${dashBorderColor} solid;
   padding-left: 8px;
   background: ${white};
+  margin-bottom: 8px;
+  max-width: 100%;
+  flex-wrap: wrap;
   .ant-input {
     border: 0px;
     padding: 8px;
@@ -141,5 +157,7 @@ const AlterAnswer = styled.div`
 
   .ant-tag {
     padding: 4px 8px;
+    margin-right: 4px;
+    white-space: pre-wrap;
   }
 `;

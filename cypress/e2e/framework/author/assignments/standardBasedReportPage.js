@@ -150,7 +150,7 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
       .then(ele => {
         cy.wrap(ele)
           .find("div")
-          .should("have.text", `${stdPerf}%`);
+          .should("have.text", `${stdPerf}`);
       });
 
     cy.get("@row")

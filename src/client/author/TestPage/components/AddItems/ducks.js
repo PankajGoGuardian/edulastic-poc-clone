@@ -12,7 +12,6 @@ export const SET_TEST_ITEMS_REQUEST = "[addItems] set items request";
 export const SET_TEST_ITEM_REQUEST = "[addItems] set passage item request";
 export const CLEAR_SELECTED_ITEMS = "[addItems] clear selected items";
 export const GET_ITEMS_SUBJECT_AND_GRADE = "[addItems] get subjects and grades";
-export const TOGGLE_PASSAGE_CONFIRM_MODAL = "[addItems] toggle passage confirm modal";
 // actions
 
 export const receiveTestItemsSuccess = (items, count, page, limit) => ({
@@ -43,7 +42,7 @@ export const receiveTestItemsAction = (search, page, limit) => ({
 
 export const setTestItemsAction = data => ({
   type: SET_TEST_ITEMS_REQUEST,
-  payload: { data }
+  payload: data
 });
 export const setItemFromPassageAction = data => ({
   type: SET_TEST_ITEM_REQUEST,
@@ -59,11 +58,6 @@ export const getItemsSubjectAndGradeAction = data => ({
   payload: data
 });
 
-export const togglePassageConfirmModalAction = data => ({
-  type: TOGGLE_PASSAGE_CONFIRM_MODAL,
-  payload: data
-});
-
 // reducer
 
 const initialState = {
@@ -73,14 +67,11 @@ const initialState = {
   page: 1,
   limit: 10,
   count: 0,
-  selectedItems: {
-    data: []
-  },
+  selectedItems: [],
   itemsSubjectAndGrade: {
     subjects: [],
     grades: []
-  },
-  showPassageConfirmModal: false
+  }
 };
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -106,7 +97,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_TEST_ITEM_REQUEST:
       return {
         ...state,
-        selectedItems: { ...state.selectedItems, data: [...state.selectedItems.data, payload] }
+        selectedItems: [...state.selectedItems, payload]
       };
     case CLEAR_SELECTED_ITEMS:
       return {
@@ -121,11 +112,6 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         itemsSubjectAndGrade: payload
-      };
-    case TOGGLE_PASSAGE_CONFIRM_MODAL:
-      return {
-        ...state,
-        showPassageConfirmModal: payload
       };
     default:
       return state;

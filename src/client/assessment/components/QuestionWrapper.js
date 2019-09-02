@@ -312,10 +312,6 @@ class QuestionWrapper extends Component {
       userAnswerProps.userAnswer = userAnswer;
     }
 
-    if (isUndefined(restProps.userAnswer)) {
-      restProps.userAnswer = [];
-    }
-
     if (data.id) {
       /**
        * adding `key` forces the component to re-render when `id` changes.

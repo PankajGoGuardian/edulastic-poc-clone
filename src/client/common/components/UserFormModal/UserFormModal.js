@@ -7,7 +7,9 @@ import { userApi } from "@edulastic/api";
 import { isEmailValid } from "../../utils/helpers";
 
 import { StyledModal, Title, ActionButton, PanelHeader, Field, Form, FooterDiv } from "./styled";
-
+import userIcon from "../../../student/assets/user-icon.svg";
+import mailIcon from "../../../student/assets/mail-icon.svg";
+import keyIcon from "../../../student/assets/key-icon.svg";
 const { Panel } = Collapse;
 class UserForm extends React.Component {
   state = {
@@ -131,7 +133,13 @@ class UserForm extends React.Component {
                   <Form.Item>
                     {getFieldDecorator("username", {
                       initialValue: get(_source, "username", get(_source, "username", ""))
-                    })(<Input placeholder="Enter Username/email" disabled={true} />)}
+                    })(
+                      <Input
+                        prefix={<img src={mailIcon} alt="" />}
+                        placeholder="Enter Username/email"
+                        disabled={true}
+                      />
+                    )}
                   </Form.Item>
                 </Field>
               )}
@@ -142,7 +150,13 @@ class UserForm extends React.Component {
                     {getFieldDecorator("email", {
                       rules: [{ required: true, message: "Please enter valid username" }],
                       initialValue: get(_source, "username", get(_source, "email", ""))
-                    })(<Input placeholder="Enter Username/email" disabled={true} />)}
+                    })(
+                      <Input
+                        prefix={<img src={mailIcon} alt="" />}
+                        placeholder="Enter Username/email"
+                        disabled={true}
+                      />
+                    )}
                   </Form.Item>
                 </Field>
               )}
@@ -155,14 +169,14 @@ class UserForm extends React.Component {
                       { max: 128, message: "Must less than 128 characters!" }
                     ],
                     initialValue: get(_source, "firstName", "")
-                  })(<Input placeholder="Enter the first name of the user" />)}
+                  })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the first name of the user" />)}
                 </Form.Item>
               </Field>
               <Field name="lastName">
                 <legend>Last name</legend>
                 <Form.Item>
                   {getFieldDecorator("lastName", { initialValue: get(_source, "lastName", "") })(
-                    <Input placeholder="Enter the last name of the user" />
+                    <Input prefix={<img src={userIcon} alt="" />} placeholder="Enter the last name of the user" />
                   )}
                 </Form.Item>
               </Field>
@@ -174,14 +188,16 @@ class UserForm extends React.Component {
                       validateTrigger: ["onBlur"],
                       rules: [{ validator: this.validateEmailValue }],
                       initialValue: get(_source, "email", get(_source, "email", ""))
-                    })(<Input placeholder="Enter email" />)}
+                    })(<Input prefix={<img src={mailIcon} alt="" />} placeholder="Enter email" />)}
                   </Form.Item>
                 </Field>
               )}
               <Field name="password">
                 <legend>Password</legend>
                 <Form.Item>
-                  {getFieldDecorator("password")(<Input type="password" placeholder="Enter Password" />)}
+                  {getFieldDecorator("password")(
+                    <Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Enter Password" />
+                  )}
                 </Form.Item>
               </Field>
               <Field name="confirmPassword">
@@ -189,7 +205,7 @@ class UserForm extends React.Component {
                 <Form.Item>
                   {getFieldDecorator("confirmPassword", {
                     rules: [{ validator: this.confirmPwdCheck, message: "Retyped password do not match." }]
-                  })(<Input type="password" placeholder="Confirm Password" />)}
+                  })(<Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Confirm Password" />)}
                 </Form.Item>
               </Field>
             </Panel>

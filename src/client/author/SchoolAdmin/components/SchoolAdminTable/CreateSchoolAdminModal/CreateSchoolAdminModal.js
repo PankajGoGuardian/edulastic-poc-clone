@@ -113,13 +113,14 @@ class CreateSchoolAdminModal extends React.Component {
 
   fetchSchool = async value => {
     this.setState({ schoolList: [], fetching: true });
+    const searchParam = value ? { search: { name: [{ type: "cont", value }] } } : {};
     const schoolListData = await schoolApi.getSchools({
       districtId: this.props.userOrgId,
       limit: 25,
       page: 1,
       sortField: "name",
       order: "asc",
-      search: { name: [{ type: "cont", value }] }
+      ...searchParam
     });
     this.setState({ schoolList: schoolListData.data, fetching: false });
   };
@@ -213,6 +214,7 @@ class CreateSchoolAdminModal extends React.Component {
                   filterOption={false}
                   onSearch={this.fetchSchool}
                   onChange={this.handleChange}
+                  onFocus={this.fetchSchool}
                 >
                   {schoolList.map(school => (
                     <Option key={school._id} value={school._id}>

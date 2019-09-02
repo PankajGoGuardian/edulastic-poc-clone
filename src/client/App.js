@@ -117,7 +117,8 @@ class App extends Component {
         } else if (role === "student") {
           defaultRoute = "/home/assignments";
         } else if (role === "district-admin" || role === "school-admin") {
-          defaultRoute = "/author/dashboard";
+          // redirecting da & sa to assignments after login as their dashboard page is not implemented
+          defaultRoute = "/author/assignments";
         } else if (user.user && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
           defaultRoute = "/auth";
         }

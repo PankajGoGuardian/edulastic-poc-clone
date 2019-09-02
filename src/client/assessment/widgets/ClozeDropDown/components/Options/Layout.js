@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { isEqual, clamp, differenceBy } from "lodash";
+import styled from "styled-components";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -144,10 +145,6 @@ class Layout extends Component {
       }
     };
 
-    const textFieldStyles = {
-      maxWidth: 280
-    };
-
     return (
       <Question
         section="advanced"
@@ -157,21 +154,42 @@ class Layout extends Component {
         cleanSections={cleanSections}
       >
         <Subtitle>{t("component.options.display")}</Subtitle>
-        <Row>
-          <Col md={6}>
+        <Row gutter={20}>
+          <Col md={12}>
             <Label>{t("component.options.fontSize")}</Label>
-            <Select
-              style={{ width: "80%" }}
-              onChange={fontsize => changeUiStyle("fontsize", fontsize)}
-              options={[
-                { value: "small", label: t("component.options.small") },
-                { value: "normal", label: t("component.options.normal") },
-                { value: "large", label: t("component.options.large") },
-                { value: "xlarge", label: t("component.options.extraLarge") },
-                { value: "xxlarge", label: t("component.options.huge") }
-              ]}
-              value={uiStyle.fontsize}
-            />
+            <FieldWrapper>
+              <Select
+                onChange={fontsize => changeUiStyle("fontsize", fontsize)}
+                options={[
+                  { value: "small", label: t("component.options.small") },
+                  { value: "normal", label: t("component.options.normal") },
+                  { value: "large", label: t("component.options.large") },
+                  { value: "xlarge", label: t("component.options.extraLarge") },
+                  { value: "xxlarge", label: t("component.options.huge") }
+                ]}
+                value={uiStyle.fontsize}
+              />
+            </FieldWrapper>
+          </Col>
+          <Col md={12}>
+            <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
+            <FieldWrapper>
+              <Select
+                onChange={val => changeUiStyle("stemNumeration", val)}
+                options={[
+                  { value: "numerical", label: t("component.options.numerical") },
+                  {
+                    value: "uppercase",
+                    label: t("component.options.uppercasealphabet")
+                  },
+                  {
+                    value: "lowercase",
+                    label: t("component.options.lowercasealphabet")
+                  }
+                ]}
+                value={uiStyle.stemNumeration}
+              />
+            </FieldWrapper>
           </Col>
         </Row>
         <Row marginTop={13}>
@@ -179,8 +197,8 @@ class Layout extends Component {
             <Label>{t("component.options.responsecontainerglobal")}</Label>
           </Col>
         </Row>
-        <Row>
-          <Col md={6}>
+        <Row gutter={20}>
+          <Col md={12}>
             <Label>{t("component.options.widthpx")}</Label>
             <TextField
               ref={ref => {
@@ -188,22 +206,18 @@ class Layout extends Component {
               }}
               type="number"
               disabled={false}
-              containerStyle={{ width: 350 }}
-              style={textFieldStyles}
               onFocus={onFocusHandler()}
               onBlur={onWidthInputBlur()}
               onChange={this.handleInputChange}
               value={getMainWidthInputValue()}
             />
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t("component.options.heightpx")}</Label>
             <TextField
               type="number"
               ref={this.globalHeight}
               disabled={false}
-              containerStyle={{ width: 350 }}
-              style={textFieldStyles}
               onBlur={this.handleBlurGlobalHeight}
               onChange={e => changeUiStyle("heightpx", +e.target.value)}
               value={uiStyle.heightpx}
@@ -231,8 +245,8 @@ class Layout extends Component {
                   <Delete onClick={() => removeIndividual(respIndex)}>X</Delete>
                 </Col>
               </Row>
-              <Row>
-                <Col md={6}>
+              <Row gutter={20}>
+                <Col md={8}>
                   <Label>{t("component.options.widthpx")}</Label>
                   <TextField
                     ref={ref => {
@@ -240,32 +254,26 @@ class Layout extends Component {
                     }}
                     type="number"
                     disabled={false}
-                    containerStyle={{ width: 350 }}
-                    style={textFieldStyles}
                     onFocus={onFocusHandler(responsecontainerindividual, respIndex)}
                     onBlur={onWidthInputBlur(respIndex)}
                     onChange={this.handleInputChange}
                     value={getIndividualWidthInputValue(responsecontainerindividual, respIndex)}
                   />
                 </Col>
-                <Col md={6}>
+                <Col md={8}>
                   <Label>{t("component.options.heightpx")}</Label>
                   <TextField
                     type="number"
                     disabled={false}
-                    containerStyle={{ width: 350 }}
-                    style={textFieldStyles}
                     onBlur={() => this.handleBlurIndividualHeight(respIndex)}
                     onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, respIndex)}
                     value={responsecontainerindividual.heightpx}
                   />
                 </Col>
-                <Col md={6}>
+                <Col md={8}>
                   <Label>{t("component.options.placeholder")}</Label>
                   <TextField
                     disabled={false}
-                    containerStyle={{ width: 350 }}
-                    style={textFieldStyles}
                     onChange={e => changeIndividualUiStyle("placeholder", e.target.value, respIndex)}
                     value={responsecontainerindividual.placeholder}
                   />
@@ -298,7 +306,7 @@ Layout.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "",
+    stemNumeration: "",
     widthpx: 0,
     heightpx: 0,
     placeholder: "",
@@ -311,3 +319,9 @@ Layout.defaultProps = {
 };
 
 export default React.memo(withNamespaces("assessment")(Layout));
+
+const FieldWrapper = styled.div`
+  & > div {
+    min-width: 100%;
+  }
+`;

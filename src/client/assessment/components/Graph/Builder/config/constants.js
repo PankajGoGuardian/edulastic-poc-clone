@@ -66,6 +66,3 @@ export const FRACTIONS_FORMAT = {
   NORMALIZED: "normalized-fractions",
   IMPROPER: "improper-fractions"
 };
-
-export const AUTO_VALUE = "auto";
-export const AUTO_HEIGHT_VALUE = 250;

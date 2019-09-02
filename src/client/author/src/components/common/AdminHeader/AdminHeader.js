@@ -15,6 +15,7 @@ import {
 } from "./styled";
 
 import { getUserRole } from "../../../selectors/user";
+import { get } from "lodash";
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -57,12 +58,6 @@ class AdminHeader extends Component {
       case "Users":
         history.push(`/author/users/district-admin`);
         return;
-      case "Performance Bands":
-        history.push(`/author/settings/performance-bands`);
-        return;
-      case "Standards Proficiency":
-        history.push(`/author/settings/standards-proficiency`);
-        return;
     }
   };
 
@@ -103,7 +98,7 @@ class AdminHeader extends Component {
   };
 
   render() {
-    const { title, active, count = 0, role } = this.props;
+    const { title, active, count = 0, role, schoolLevelAdminSettings } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
       <AdminHeaderWrapper>
@@ -118,17 +113,15 @@ class AdminHeader extends Component {
             <StyledTabPane tab="Class Enrollment" key={"Class Enrollment"} />
             <StyledTabPane tab="Groups" key={"Groups"} />
 
-            {role === roleuser.SCHOOL_ADMIN ? <StyledTabPane tab="Performance Bands" key="Performance Bands" /> : null}
-
-            {role === roleuser.SCHOOL_ADMIN ? (
-              <StyledTabPane tab="Standards Proficiency" key="Standards Proficiency" />
+            {role === roleuser.DISTRICT_ADMIN || (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings) ? (
+              <StyledTabPane tab="Settings" key={"Settings"} />
             ) : null}
-            {role === roleuser.DISTRICT_ADMIN ? <StyledTabPane tab="Settings" key={"Settings"} /> : null}
           </StyledTabs>
         </AdminHeaderContent>
         {active.mainMenu === "Settings" && (
           <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
             {role === "district-admin" ? <StyledTabPane tab="District Policies" key={"District Policies"} /> : null}
+            {role === roleuser.SCHOOL_ADMIN ? <StyledTabPane tab="School Policies" key={"District Policies"} /> : null}
             <StyledTabPane tab="Test Settings" key={"Test Settings"} />
             <StyledTabPane tab="Term" key={"Term"} />
             <StyledTabPane tab="Interested Standards" key={"Interested Standards"} />
@@ -151,7 +144,8 @@ class AdminHeader extends Component {
 
 export default connect(
   state => ({
-    role: getUserRole(state)
+    role: getUserRole(state),
+    schoolLevelAdminSettings: get(state, "districtPolicyReducer.data.schoolAdminSettingsAccess", false)
   }),
   {}
 )(AdminHeader);

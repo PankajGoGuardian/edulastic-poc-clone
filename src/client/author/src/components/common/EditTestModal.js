@@ -4,6 +4,7 @@ import { ConfirmationModal } from "./ConfirmationModal";
 
 const EditTestModal = ({ visible, onCancel, onOk, isUsed = false }) => (
   <ConfirmationModal
+    centered
     visible={visible}
     onCancel={onCancel}
     title="Edit"

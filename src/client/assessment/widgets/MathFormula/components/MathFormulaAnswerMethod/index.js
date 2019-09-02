@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick, get } from "lodash";
 import styled from "styled-components";
-import { MathInput, withWindowSizes, FlexContainer, StaticMath } from "@edulastic/common";
+import { MathInput, withWindowSizes, FlexContainer, StaticMath, getInnerValuesForStatic } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
@@ -347,6 +347,7 @@ const MathFormulaAnswerMethod = ({
   const isShowDropdown = item.isUnits && item.showDropdown;
 
   const studentTemplate = item.template && item.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
+  const innerValues = getInnerValuesForStatic(studentTemplate, value);
   const mathInputProps = {
     hideKeypad: item.showDropdown,
     symbols: isShowDropdown ? ["basic"] : item.symbols,
@@ -361,7 +362,7 @@ const MathFormulaAnswerMethod = ({
     onChangeKeypad,
     style
   };
-  // TODO need to update innerVlaues if the question is using Template like Matrices
+
   return (
     <Container data-cy="math-formula-answer" style={{ height: containerHeight }}>
       <ExpectAnswer>
@@ -373,7 +374,7 @@ const MathFormulaAnswerMethod = ({
                 <MathInput {...mathInputProps} value={value} showDropdown ALLOW TOLERANCE />
               )}
               {item.template && item.templateDisplay && (
-                <StaticMath {...mathInputProps} latex={studentTemplate} innerValues={[123]} />
+                <StaticMath {...mathInputProps} latex={studentTemplate} innerValues={innerValues} />
               )}
               {renderExtra}
             </MathInputWrapper>

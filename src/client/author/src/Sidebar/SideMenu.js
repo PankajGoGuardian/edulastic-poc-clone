@@ -442,6 +442,9 @@ const FixedSidebar = styled.div`
     z-index: 1000;
     max-width: 245px;
     display: block !important;
+    .scrollbar-container {
+      padding-top: 25px;
+    }
   }
 `;
 const SideBar = styled(Layout.Sider)`
@@ -508,7 +511,7 @@ const SideBar = styled(Layout.Sider)`
     max-width: 0px;
     min-width: 0px;
     width: 0px;
-    background-color: rgba(251, 250, 252, 0.94);
+    background-color: rgba(251, 250, 252, 0.99);
 
     .mobileCloseIcon {
       position: absolute;
@@ -898,6 +901,7 @@ const UserInfoButton = styled.div`
       pointer-events: none;
       background: transparent;
     }
+
     .footerDropdown {
       padding: 0;
       border-radius: 50%;

@@ -90,7 +90,7 @@ class MathInput extends React.PureComponent {
     const { restrictKeys, allowNumericOnly } = this.props;
 
     if (allowNumericOnly) {
-      if (!e.key.match(/[0-9+-.%/]/g)) {
+      if (!e.key.match(/[0-9+-.%^/]/g)) {
         e.preventDefault();
         e.stopPropagation();
       }

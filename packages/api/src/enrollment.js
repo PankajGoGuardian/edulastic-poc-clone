@@ -73,7 +73,7 @@ const fetchClassEnrollmentUsers = data => {
       data,
       method: "post"
     })
-    .then(result => result.data.result);
+    .then(result => result.data);
 };
 export default {
   fetch,

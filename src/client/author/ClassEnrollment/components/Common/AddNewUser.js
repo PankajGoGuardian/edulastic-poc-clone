@@ -12,13 +12,16 @@ import keyIcon from "../../../../student/assets/key-icon.svg";
 import hashIcon from "../../../../student/assets/hashtag-icon.svg";
 import userIcon from "../../../../student/assets/user-icon.svg";
 import mailIcon from "../../../../student/assets/mail-icon.svg";
+import { selectColor } from "@edulastic/colors";
+
+const { Option } = Select;
 
 const { Panel } = Collapse;
 class AddNewUserForm extends React.Component {
   state = {
     keys: ["basic"],
     usernameFieldValue: "",
-    schoolFieldVisible: false,
+    role: "student",
     schoolsState: {
       list: [],
       value: [],
@@ -60,18 +63,11 @@ class AddNewUserForm extends React.Component {
     }
     callback();
   };
-  onRoleChange = value => {
-    if (value === "student") {
-      this.setState({
-        ...this.state,
-        schoolFieldVisible: false
-      });
-    } else {
-      this.setState({
-        ...this.state,
-        schoolFieldVisible: true
-      });
-    }
+  onRoleChange = role => {
+    this.setState({
+      ...this.state,
+      role
+    });
   };
   fetchSchool = async value => {
     const { userOrgId: districtId } = this.props;
@@ -105,7 +101,7 @@ class AddNewUserForm extends React.Component {
     this.setState({
       ...this.state,
       schoolsState: {
-        list: [],
+        ...this.state.schoolsState,
         fetching: false,
         value: value
       }
@@ -119,14 +115,13 @@ class AddNewUserForm extends React.Component {
       showModal,
       formTitle,
       modalData: { _source } = {},
-      buttonText,
       fetchClassDetailsUsingCode,
       validatedClassDetails,
       addNewUser,
       resetClassDetails
     } = this.props;
 
-    const { usernameFieldValue, schoolFieldVisible, schoolsState } = this.state;
+    const { usernameFieldValue, role, schoolsState } = this.state;
     const isValidClassCode = get(validatedClassDetails, "isValidClassCode", false);
     const _className = get(validatedClassDetails, "groupInfo.name", "");
     const { keys } = this.state;
@@ -144,7 +139,7 @@ class AddNewUserForm extends React.Component {
         </ActionButton>
 
         <ActionButton type="primary" onClick={() => addNewUser()} disabled={!isValidClassCode}>
-          {buttonText || `Yes, Update`}
+          {role === "student" ? "Yes, Add Student" : "Yes, Add User"}
           <Icon type="right" />
         </ActionButton>
       </FooterDiv>
@@ -248,7 +243,7 @@ class AddNewUserForm extends React.Component {
                   })(<Input prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Confirm Password" />)}
                 </Form.Item>
               </Field>
-              {schoolFieldVisible && (
+              {role === "teacher" && (
                 <Field name="institutionIds">
                   <legend>Select School</legend>
                   <Form.Item>

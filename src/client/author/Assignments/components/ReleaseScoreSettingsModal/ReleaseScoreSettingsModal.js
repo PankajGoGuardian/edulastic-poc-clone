@@ -11,7 +11,7 @@ const ReleaseScoreSettingsModal = ({
   showReleaseGradeSettings,
   onCloseReleaseScoreSettings,
   updateReleaseScoreSettings,
-  releaseScore,
+  releaseScore = "",
   features
 }) => {
   const releaseScoreRef = useRef();

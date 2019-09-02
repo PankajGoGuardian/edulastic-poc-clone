@@ -1,8 +1,8 @@
 import React from "react";
-import { Icon, message, Button, Menu } from "antd";
+import { Icon, message, Button, Menu, Select } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, unset, pickBy, identity, uniqBy } from "lodash";
+import { get, unset, pickBy, identity, uniqBy, isEmpty } from "lodash";
 import moment from "moment";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 import { AddNewUserModal } from "../Common/AddNewUser";
@@ -24,7 +24,7 @@ import {
 import { createAdminUserAction, deleteAdminUserAction } from "../../../SchoolAdmin/ducks";
 import { getUserOrgId, getUser } from "../../../src/selectors/user";
 import { getFullNameFromString } from "../../../../common/utils/helpers";
-import { getClassEnrollmentUsersSelector } from "../../ducks";
+import { getClassEnrollmentUsersSelector, getClassEnrollmentUsersCountSelector } from "../../ducks";
 
 import { AddStudentsToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
 import { AddStudentsToOtherClassModal as MoveUsersToOtherClassModal } from "../../../Student/components/StudentTable/AddStudentToOtherClass";
@@ -34,6 +34,8 @@ import {
   fetchClassDetailsUsingCodeAction,
   moveUsersToOtherClassAction
 } from "../../../Student/ducks";
+
+const { Option } = Select;
 
 class ClassEnrollmentTable extends React.Component {
   constructor(props) {
@@ -61,7 +63,12 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   componentDidMount() {
-    this.loadClassEnrollmentList();
+    const { dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadClassEnrollmentList);
+    } else {
+      this.loadClassEnrollmentList();
+    }
   }
 
   renderUserNames() {
@@ -244,6 +251,9 @@ class ClassEnrollmentTable extends React.Component {
       });
     }
   };
+  setPageNo = page => {
+    this.setState({ currentPage: page }, this.loadClassEnrollmentList);
+  };
 
   // -----|-----|-----|-----| ACTIONS RELATED ENDED |-----|-----|-----|----- //
 
@@ -275,20 +285,31 @@ class ClassEnrollmentTable extends React.Component {
 
     this.setState({ filtersData: _filtersData });
   };
-  changeFilterText = (e, key) => {
-    let fetchFilterData = false;
+  changeRoleValue = (value, key) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
-      if (item.filtersColumn && item.filtersColumn === "role") fetchFilterData = true;
       if (index === key) {
         return {
           ...item,
-          filterStr: fetchFilterData ? e : e.target.value
+          filterStr: value,
+          filterAdded: value !== "" ? true : false
         };
       }
       return item;
     });
-    if (fetchFilterData) this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList);
-    else this.setState({ filtersData: _filtersData });
+
+    this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList);
+  };
+  changeFilterText = (e, key) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      if (index === key) {
+        return {
+          ...item,
+          filterStr: e.target.value
+        };
+      }
+      return item;
+    });
+    this.setState({ filtersData: _filtersData });
   };
 
   addFilter = (e, key) => {
@@ -395,7 +416,9 @@ class ClassEnrollmentTable extends React.Component {
       selectedUserIds,
       selectedUsersInfo,
       addStudentsModalVisible,
-      moveUsersModalVisible
+      moveUsersModalVisible,
+      currentPage,
+      pageNo
     } = this.state;
     const {
       fetchClassDetailsUsingCode,
@@ -405,7 +428,8 @@ class ClassEnrollmentTable extends React.Component {
       putStudentsToOtherClass,
       userOrgId,
       moveUsersToOtherClass,
-      resetClassDetails
+      resetClassDetails,
+      totalUsers
     } = this.props;
 
     const tableDataSource = classEnrollmentData.map(item => {
@@ -529,12 +553,14 @@ class ClassEnrollmentTable extends React.Component {
           {filtersColumn === "role" ? (
             <StyledFilterSelect
               placeholder="Select a value"
-              onChange={e => this.changeFilterText(e, i)}
+              onChange={v => this.changeRoleValue(v, i)}
               disabled={isFilterTextDisable}
               value={filterStr}
             >
               {roleFilterOptions.map(item => (
-                <Option value={item.toLowerCase()}>{item}</Option>
+                <Option key={item} value={item.toLowerCase()}>
+                  {item}
+                </Option>
               ))}
             </StyledFilterSelect>
           ) : (
@@ -590,6 +616,14 @@ class ClassEnrollmentTable extends React.Component {
           pagination={false}
           scroll={{ y: 500 }}
         />
+        <StyledPagination
+          defaultCurrent={1}
+          current={currentPage}
+          pageSize={25}
+          total={totalUsers}
+          hideOnSinglePage={true}
+          onChange={page => this.setPageNo(page)}
+        />
         <ConfirmationModal
           title="Remove Student(s)"
           show={removeStudentsModalVisible}
@@ -612,7 +646,6 @@ class ClassEnrollmentTable extends React.Component {
           showModal={addUserFormModalVisible}
           formTitle="Add User to Class"
           closeModal={this.onCloseAddNewUserModal}
-          buttonText="Add Student(s)"
           addNewUser={this.addNewUser}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           validatedClassDetails={validatedClassDetails}
@@ -659,7 +692,8 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       userDetails: getUser(state),
       classEnrollmentData: getClassEnrollmentUsersSelector(state),
-      addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state)
+      addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state),
+      totalUsers: getClassEnrollmentUsersCountSelector(state)
     }),
     {
       createAdminUser: createAdminUserAction,

@@ -697,7 +697,7 @@ export function* updateItemSaga({ payload }) {
       draft.map((q, index) => {
         if (index === 0) return q;
         else {
-          q.scoringDisabled = itemLevelScoring ? true : undefined;
+          q.scoringDisabled = itemLevelScoring ? true : false;
           return q;
         }
       });
@@ -813,8 +813,20 @@ function* saveTestItemSaga() {
   const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
   const data = yield select(getItemDetailSelector);
   const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
-  const questions = widgets.filter(item => !resourceTypes.includes(item.type));
+  let questions = widgets.filter(item => !resourceTypes.includes(item.type));
   const resources = widgets.filter(item => resourceTypes.includes(item.type));
+  questions = produce(questions, draft => {
+    for (let [ind, q] of questions.entries()) {
+      if (ind === 0) {
+        continue;
+      }
+      if (data.itemLevelScoring) {
+        q.scoringDisabled = true;
+      } else {
+        q.scoringDisabled = false;
+      }
+    }
+  });
 
   data.data = {
     questions,
@@ -864,7 +876,7 @@ function* publishTestItemSaga({ payload }) {
     }
     yield call(message.success, "Item created successfully");
   } catch (e) {
-    console.log("publish error", e);
+    console.warn("publish error", e);
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
   }

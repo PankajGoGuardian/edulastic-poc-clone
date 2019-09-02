@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { get } from "lodash";
 
@@ -482,9 +483,23 @@ class CoursesTable extends React.Component {
         dataIndex: "classCount",
         editable: true,
         width: 100,
-        render: (text, record) => {
-          const strClassCount = record.classCount == 0 ? "-" : record.classCount;
-          return <React.Fragment>{strClassCount}</React.Fragment>;
+        render: (classCount, record) => {
+          const courseName = get(record, "name", "");
+          return (
+            <Link
+              to={{
+                pathname: "/author/Classes",
+                state: {
+                  filtersColumn: "courses",
+                  filtersValue: "eq",
+                  filterStr: courseName,
+                  filterAdded: true
+                }
+              }}
+            >
+              {classCount}
+            </Link>
+          );
         }
       },
       {
@@ -545,6 +560,7 @@ class CoursesTable extends React.Component {
             value={filtersData[i].filtersColumn}
           >
             <Option value="">Select a column</Option>
+            <Option value="name">Course Name</Option>
             <Option value="number">Course Number</Option>
           </StyledFilterSelect>
 

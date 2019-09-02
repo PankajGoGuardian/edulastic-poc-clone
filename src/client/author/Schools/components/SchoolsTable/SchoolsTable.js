@@ -718,9 +718,11 @@ class SchoolsTable extends React.Component {
               <StyledTableButton onClick={() => this.onEditSchool(record.key)} title="Edit">
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
-                <Icon type="delete" theme="twoTone" />
-              </StyledTableButton>
+              {role === roleuser.DISTRICT_ADMIN && (
+                <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
+                  <Icon type="delete" theme="twoTone" />
+                </StyledTableButton>
+              )}
             </React.Fragment>
           );
         }

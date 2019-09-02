@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Row } from "antd";
 import { white } from "@edulastic/colors";
+
 export const Image = styled.img`
   width: 100%;
   height: 120px;
@@ -32,6 +33,7 @@ export const IconWrapper = styled.div`
   line-height: 1rem;
   background: ${white};
   cursor: pointer;
+  float: right;
 `;
 export const TextDiv = styled.p`
   font-size: 18px;

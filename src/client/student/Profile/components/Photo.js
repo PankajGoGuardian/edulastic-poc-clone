@@ -51,13 +51,13 @@ class Photo extends React.Component {
   };
 
   render() {
-    const { height, windowWidth, imageUrl } = this.props;
+    const { height = 250, windowWidth = 250, imageUrl, size = "", mode = "" } = this.props;
     const uploadButton = (
-      <Container height="250" width="250">
+      <Container height={height} width={windowWidth}>
         <Image alt="Profile">
           <Backdrop />
         </Image>
-        <Camera>
+        <Camera mode={mode}>
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
       </Container>
@@ -74,10 +74,10 @@ class Photo extends React.Component {
     };
 
     return (
-      <UploadWrapper>
+      <UploadWrapper height={height}>
         <Upload {...props}>
-          <Container height="250" width="250">
-            <ImageContainer height="250">
+          <Container height={height} width={windowWidth}>
+            <ImageContainer height={height}>
               {loading ? (
                 <ImageLoading />
               ) : imageUrl ? (
@@ -86,7 +86,7 @@ class Photo extends React.Component {
                 uploadButton
               )}
             </ImageContainer>
-            <Camera>
+            <Camera mode={mode}>
               <IconPhotoCamera color={white} width="20px" />
             </Camera>
           </Container>
@@ -133,7 +133,7 @@ const UploadWrapper = styled.div`
     min-width: 100%;
     border: none;
     padding: 0px !important;
-    height: 250px;
+    height: ${props => props.height}px;
   }
 
   .ant-upload {
@@ -180,6 +180,12 @@ const Camera = styled.div`
   justify-content: center;
   z-index: 1;
   cursor: pointer;
+  ${props =>
+    props.mode == "small"
+      ? ` right: 0px;
+    left: auto;
+    bottom: 0px;`
+      : ""}
 `;
 
 const ImageContainer = styled.div`

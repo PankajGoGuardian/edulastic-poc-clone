@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Collapse, Icon } from "antd";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
+import { response as defaultResponse } from "@edulastic/constants";
 
 import MathFormulaAnswerMethod from "../../../MathFormula/components/MathFormulaAnswerMethod";
 import SelectUnit from "./SelectUnit";
@@ -15,7 +16,7 @@ const ClozeMathUnitAnswer = ({ answer, onChange, item, onChangeKeypad, onChangeA
   const { responseContainers: responseContainers = [], uiStyle, allowedVariables = {} } = item;
   const response = responseContainers.find(cont => cont.index === answer.index);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.minWidth}px` || "auto";
-  const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+  const height = response && response.heightpx ? `${response.heightpx}px` : `${defaultResponse.minHeight}px`;
 
   const _changeValue = answerId => (prop, val) => {
     onChange({ answerId, prop, value: val });

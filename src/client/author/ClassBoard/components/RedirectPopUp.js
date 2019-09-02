@@ -7,13 +7,13 @@ import { ConfirmationModal } from "../../src/components/common/ConfirmationModal
 import { BodyContainer } from "./styled";
 
 const QuestionDelivery = {
-  ALL: "Student Response & Feedback",
+  ALL: "All",
   SKIPPED_WRONG: "Skipped and Wrong"
 };
 
 const ShowPreviousAttempt = {
-  SCORE_FEEDBACK: "Score & Feedback",
-  STUDENT_RESPONSE_FEEDBACK: "Student Response & Feedback",
+  SCORE_AND_FEEDBACK: "Score & Feedback",
+  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Feedback",
   FEEDBACK_ONLY: "Feedback only"
 };
 
@@ -92,12 +92,14 @@ const RedirectPopUp = ({
         _id: groupId,
         specificStudents: type === "entire" ? false : true,
         students: type === "entire" ? [] : selected,
+        showPreviousAttempt: showPrevAttempt,
+        // QuestionDelivery: qDeliveryState,
         endDate: +dueDate
       });
       closePopup();
     }
     setLoading(false);
-  }, [studentsToRedirect, assignmentId, dueDate, groupId]);
+  }, [studentsToRedirect, assignmentId, dueDate, groupId, showPrevAttempt, qDeliveryState]);
 
   const disabledEndDate = endDate => {
     if (!endDate) {
@@ -210,13 +212,9 @@ const RedirectPopUp = ({
           <Col span={12}>
             <h4>Show Previous attempt</h4>
             <Row>
-              <Select
-                defaultValue={showPrevAttempt}
-                onChange={val => setshowPrevAttempt(val)}
-                style={{ width: "100%" }}
-              >
-                {Object.keys(ShowPreviousAttempt).map(item => (
-                  <Option key="1" value={item}>
+              <Select value={showPrevAttempt} onChange={val => setshowPrevAttempt(val)} style={{ width: "100%" }}>
+                {Object.keys(ShowPreviousAttempt).map((item, index) => (
+                  <Option key={index} value={item}>
                     {ShowPreviousAttempt[item]}
                   </Option>
                 ))}

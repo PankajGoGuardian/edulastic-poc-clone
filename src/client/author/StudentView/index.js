@@ -241,7 +241,7 @@ class StudentViewContainer extends Component {
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             <ClassQuestions
               currentStudent={currentStudent || {}}
-              questionActivities={studentResponse.questionActivities}
+              questionActivities={studentResponse.questionActivities || []}
               classResponse={classResponseProcessed}
               testItemsOrder={testItemsOrder}
               studentViewFilter={filter}

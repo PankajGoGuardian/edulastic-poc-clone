@@ -26,7 +26,15 @@ const withGrid = WrappedComponent => {
 
     return (
       <FlexContainer justifyContent="flex-start" style={{ background: theme.widgets.chart.bgColor, overflowX: "auto" }}>
-        <FlexContainer style={{ transform: "rotate(-90deg)", width: 40, whiteSpace: "nowrap", marginTop: margin }}>
+        <FlexContainer
+          style={{
+            transform: "rotate(-90deg)",
+            width: 40,
+            whiteSpace: "nowrap",
+            marginTop: margin,
+            fontWeight: theme.widgets.chart.axisLabelFontWeight
+          }}
+        >
           {yAxisLabel}
         </FlexContainer>
         <div style={{ position: "relative" }}>
@@ -46,7 +54,15 @@ const withGrid = WrappedComponent => {
             {name}
           </FlexContainer>
           <WrappedComponent {...props} toggleBarDragging={toggleBarDragging} />
-          <FlexContainer style={{ width, marginTop: 10, marginLeft: padding / 2 }} justifyContent="center">
+          <FlexContainer
+            style={{
+              width,
+              marginTop: 10,
+              marginLeft: padding / 2,
+              fontWeight: theme.widgets.chart.axisLabelFontWeight
+            }}
+            justifyContent="center"
+          >
             {xAxisLabel}
           </FlexContainer>
         </div>

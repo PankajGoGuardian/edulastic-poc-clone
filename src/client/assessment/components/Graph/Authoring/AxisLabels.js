@@ -33,15 +33,30 @@ class GraphAxisLabels extends Component {
 
   handleQuestionsChange = (index, value) => {
     const { setQuestionData, graphData } = this.props;
-    const labels = cloneDeep(graphData.list);
+    const list = cloneDeep(graphData.list);
 
-    labels[index].text = value;
-    setQuestionData({ ...graphData, list: labels });
+    list[index].text = value;
+
+    const responses = [graphData.validation.validResponse, ...graphData.validation.altResponses];
+    responses.forEach(response => {
+      const responseValue = response.value.find(el => el.id === list[index].id);
+      if (responseValue) {
+        responseValue.point = value;
+      }
+    });
+
+    setQuestionData({ ...graphData, list });
   };
 
   handleDeleteQuestion = index => {
     const { setQuestionData, graphData } = this.props;
+
     const filteredItems = cloneDeep(graphData.list).filter((q, i) => i !== index);
+
+    const responses = [graphData.validation.validResponse, ...graphData.validation.altResponses];
+    responses.forEach(response => {
+      response.value = response.value.filter(el => el.id !== graphData.list[index].id);
+    });
 
     setQuestionData({ ...graphData, list: filteredItems });
   };

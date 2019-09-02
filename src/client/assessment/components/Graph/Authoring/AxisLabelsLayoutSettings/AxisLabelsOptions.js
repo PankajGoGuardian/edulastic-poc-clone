@@ -85,6 +85,25 @@ const AxisLabelsOptions = ({
     }
   ];
 
+  const responseBoxPositionList = [
+    {
+      id: "top",
+      label: t("component.options.top")
+    },
+    {
+      id: "bottom",
+      label: t("component.options.bottom")
+    },
+    {
+      id: "right",
+      label: t("component.options.right")
+    },
+    {
+      id: "left",
+      label: t("component.options.left")
+    }
+  ];
+
   return (
     <Fragment>
       <AxisLabelsMoreOptions
@@ -98,6 +117,7 @@ const AxisLabelsOptions = ({
         fontSizeList={fontSizeList}
         renderingBaseList={renderingBaseList}
         fractionsFormatList={fractionsFormatList}
+        responseBoxPositionList={responseBoxPositionList}
         graphData={graphData}
         advancedAreOpen={advancedAreOpen}
       />

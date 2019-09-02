@@ -67,8 +67,13 @@ function ProfileRow(props) {
         title="Delete Profile"
         onCancel={() => setConfirmVisible(false)}
         visible={confirmVisible}
+        closable={false}
         footer={[
-          <Button disabled={deleteText != "DELETE"} loading={props.loading} onClick={() => deleteRow(_id)}>
+          <Button
+            disabled={deleteText.toUpperCase() != "DELETE"}
+            loading={props.loading}
+            onClick={() => deleteRow(_id)}
+          >
             Yes, Delete
           </Button>,
           <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
@@ -111,17 +116,14 @@ function ProfileRow(props) {
 function StandardsProficiency(props) {
   const { loading, updating, creating, history, list, create, update, remove, editingIndex, setEditingIndex } = props;
   const showSpin = loading || updating || creating;
-  const menuActive =
-    props.role === "school-admin"
-      ? { mainMenu: "Standards Proficiency" }
-      : { mainMenu: "Settings", subMenu: "Standards Proficiency" };
+  const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
   const createStandardProficiency = () => {
     const name = window.prompt("Please enter the name of the standard proficiency");
     if (name === "") {
       message.error("Name cannot be empty");
     } else if (name) {
-      if (props.profiles.find(p => p.name === name)) {
+      if (props.profiles.find(p => (p.name || "").toLowerCase() === name.toLowerCase())) {
         message.error(`Profile with name "${name}" already exists. Please try with a different name`);
         return;
       }

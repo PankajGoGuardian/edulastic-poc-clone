@@ -59,12 +59,16 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent, featu
     },
     {
       title: "Google User",
-      dataIndex: "googleId",
+      dataIndex: "lastSigninSSO",
       width: "20%",
       defaultSortOrder: "descend",
-      render: googleId => (
+      render: lastSigninSSO => (
         <span>
-          {!!googleId ? <Icon type="check-circle" theme="filled" /> : <Icon type="close-circle" theme="filled" />}
+          {lastSigninSSO === "google" ? (
+            <Icon type="check-circle" theme="filled" />
+          ) : (
+            <Icon type="close-circle" theme="filled" />
+          )}
         </span>
       )
     },

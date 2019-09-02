@@ -72,6 +72,7 @@ export const UPDATE_INTERESTED_CURRICULUMS_FAILED = "[user] update interested cu
 export const REMOVE_SCHOOL_REQUEST = "[user] remove school request";
 export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
 export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
+export const REMOVE_INTERESTED_CURRICULUMS_REQUEST = "[user] remove interested curriculums request";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -106,6 +107,7 @@ export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST)
 export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
 export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
 export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
+export const removeInterestedCurriculumsAction = createAction(REMOVE_INTERESTED_CURRICULUMS_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -264,6 +266,12 @@ export default createReducer(initialState, {
   },
   [REMOVE_SCHOOL_FAILED]: state => {
     state.removingSchool = undefined;
+  },
+  [REMOVE_INTERESTED_CURRICULUMS_REQUEST]: (state, { payload }) => {
+    const updatedCurriculums = state.user.orgData.interestedCurriculums.filter(
+      curriculum => curriculum._id !== payload
+    );
+    state.user.orgData.interestedCurriculums = updatedCurriculums;
   }
 });
 

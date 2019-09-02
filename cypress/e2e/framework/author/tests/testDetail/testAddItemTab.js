@@ -24,13 +24,13 @@ export default class TestAddItemTab {
 
   addItemById = itemId =>
     cy
-      .get(`[data-row-key="${itemId}"]`)
+      .get(`[data-cy="${itemId}"]`)
       .contains("ADD")
       .click({ force: true });
 
   removeItemById = itemId =>
     cy
-      .get(`[data-row-key="${itemId}"]`)
+      .get(`[data-cy="${itemId}"]`)
       .contains("REMOVE")
       .click({ force: true });
 }

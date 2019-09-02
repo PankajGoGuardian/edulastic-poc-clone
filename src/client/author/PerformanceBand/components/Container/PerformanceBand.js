@@ -1,29 +1,71 @@
-import React, { Component, useReducer, useState, useEffect } from "react";
+import { lightGreySecondary, themeColor, white, sectionBorder } from "@edulastic/colors";
+import { Button, Col, Icon, Input, List, message, Modal, Row } from "antd";
+import { get } from "lodash";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-import { createReducer } from "redux-starter-kit";
-import uuid from "uuid/v1";
-import { List, Row, Col, Button, message, Modal, Input } from "antd";
 import styled from "styled-components";
-
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import PerformanceBandTable, {
-  PerformanceBandTable as PerformanceBandTableDumb
-} from "../PerformanceBandTable/PerformanceBandTable";
-import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
+import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import {
   createPerformanceBandAction,
-  updatePerformanceBandAction,
   deletePerformanceBandAction,
   receivePerformanceBandAction,
-  setPerformanceBandLocalAction
+  setPerformanceBandLocalAction,
+  updatePerformanceBandAction
 } from "../../ducks";
-import ColorPicker from "./ColorPicker";
-
-import { StyledContent, StyledLayout, SpinContainer, StyledSpin, PerformanceBandDiv } from "./styled";
+import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
+import { CreateProfile, PerformanceBandDiv, SpinContainer, StyledContent, StyledLayout, StyledSpin } from "./styled";
 
 const title = "Manage District";
+const ListItemStyled = styled(List.Item)`
+  display: block;
+  background-color: #fff;
+  border: 0;
+  padding: 0;
+`;
+
+const RowStyled = styled(Row)`
+  background: ${white};
+`;
+
+const StyledProfileRow = styled(Row)`
+  display: block;
+  padding: 0px 20px;
+  background-color: ${lightGreySecondary};
+  border: 1px solid ${sectionBorder} !important;
+  margin-bottom: 7px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  h3 {
+    font-weight: 500;
+    font-size: 15px;
+    margin: 0px;
+  }
+`;
+
+const StyledProfileCol = styled(Col)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  align-content: center;
+  & > i.anticon {
+    color: ${themeColor};
+    height: 15px;
+    width: 15px;
+    margin-left: 20px;
+  }
+`;
+
+const StyledList = styled(List)`
+  .ant-list-item {
+    border: 0;
+  }
+`;
 
 function ProfileRow({
   name,
@@ -46,12 +88,13 @@ function ProfileRow({
   const [deleteText, setDeleteText] = useState("");
 
   return (
-    <List.Item style={{ display: "block" }}>
+    <ListItemStyled>
       <Modal
         title="Delete Profile"
         visible={confirmVisible}
+        closable={false}
         footer={[
-          <Button disabled={deleteText != "DELETE"} loading={loading} onClick={() => remove(_id)}>
+          <Button disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
             Yes, Delete
           </Button>,
           <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
@@ -65,21 +108,28 @@ function ProfileRow({
         </div>
         <Input value={deleteText} onChange={e => setDeleteText(e.target.value)} />
       </Modal>
-      <Row>
+      <StyledProfileRow type="flex">
         <Col span={12}>
           <h3>{name}</h3>
         </Col>
-        <Col span={12}>
-          <Button onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}>
-            {readOnly ? "view" : "edit"}
-          </Button>
-
-          {readOnly ? null : <Button onClick={() => setConfirmVisible(true)}>delete</Button>}
-        </Col>
-      </Row>
+        <StyledProfileCol span={12}>
+          {readOnly ? null : (
+            <Icon type="edit" theme="filled" onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))} />
+          )}
+          <Icon type="copy" onClick={() => {}} />
+          {readOnly ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
+          {
+            <Icon
+              type={active ? "up" : "down"}
+              theme="outlined"
+              onClick={() => setEditingIndex(x => (x != _id ? _id : undefined))}
+            />
+          }
+        </StyledProfileCol>
+      </StyledProfileRow>
 
       {active ? (
-        <Row>
+        <RowStyled>
           <Col span={24}>
             <PerformanceBandTableDumb
               performanceBandId={_id}
@@ -92,17 +142,14 @@ function ProfileRow({
               setPerformanceBandData={setPerf}
             />
           </Col>
-        </Row>
+        </RowStyled>
       ) : null}
-    </List.Item>
+    </ListItemStyled>
   );
 }
 
 export function PerformanceBandAlt(props) {
-  const menuActive =
-    props.role === "school-admin"
-      ? { mainMenu: "Performance Bands" }
-      : { mainMenu: "Settings", subMenu: "Performance Bands" };
+  const menuActive = { mainMenu: "Settings", subMenu: "Performance Bands" };
 
   const { loading, updating, creating, history, list, create, update, remove, profiles, currentUserId } = props;
   const showSpin = loading || updating || creating;
@@ -115,7 +162,7 @@ export function PerformanceBandAlt(props) {
     const name = prompt("name of the profile?");
 
     if (name) {
-      if (profiles.find(p => p.name === name)) {
+      if (profiles.find(p => (p.name || "").toLowerCase() === name.toLocaleLowerCase())) {
         message.error(`Profile with name "${name}" already exists. Please try with a different name`);
         return;
       }
@@ -149,12 +196,13 @@ export function PerformanceBandAlt(props) {
               <StyledSpin size="large" />
             </SpinContainer>
           ) : null}
-          <Button type="primary" style={{ marginBottom: "5px" }} onClick={addProfile}>
-            + Create new Profile
-          </Button>
-          <List
+          <Row type="flex" justify="end">
+            <CreateProfile type="primary" onClick={addProfile}>
+              <i>+</i> Create new Profile
+            </CreateProfile>
+          </Row>
+          <StyledList
             dataSource={profiles}
-            bordered
             rowKey="_id"
             renderItem={profile => (
               <ProfileRow

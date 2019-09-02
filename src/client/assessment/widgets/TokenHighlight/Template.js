@@ -57,16 +57,68 @@ class Template extends Component {
 
     const handleTemplateClick = i => () => {
       const newTemplate = cloneDeep(template);
-      setQuestionData(
-        produce(item, draft => {
-          newTemplate[i].active = !newTemplate[i].active;
+      if (mode !== CUSTOM_MODE) {
+        setQuestionData(
+          produce(item, draft => {
+            newTemplate[i].active = !newTemplate[i].active;
 
-          draft.templeWithTokens = newTemplate;
+            draft.templeWithTokens = newTemplate;
 
-          setTemplate(newTemplate);
-          updateVariables(draft);
-        })
-      );
+            setTemplate(newTemplate);
+            updateVariables(draft);
+          })
+        );
+      }
+    };
+
+    const handleCustomTokenize = () => {
+      const newTemplate = cloneDeep(template);
+      if (mode === CUSTOM_MODE) {
+        let userSelection;
+        if (window.getSelection) {
+          userSelection = window.getSelection();
+        } else {
+          userSelection = document.createRange();
+        }
+
+        const selection = userSelection.getRangeAt(0);
+        console.log(selection);
+        // console.log(selection, newTemplate);
+        //
+        // const { endOffset, startOffset } = selection;
+
+        // if (endOffset === startOffset) {
+        //   console.log("select text!!!");
+        //   return;
+        // }
+        // const allText = newTemplate[i].value;
+        // const t1 = allText.slice(0, startOffset);
+        // const t2 = allText.slice(startOffset, endOffset);
+        // const t3 = allText.slice(endOffset, allText.length);
+        // const newTokenArray = [];
+        // newTokenArray[0] = {
+        //   value: t1,
+        //   active: false
+        // };
+        // newTokenArray[1] = {
+        //   value: t2,
+        //   active: true
+        // };
+        // newTokenArray[2] = {
+        //   value: t3,
+        //   active: false
+        // };
+
+        // newTemplate.splice(i, 1, ...newTokenArray);
+
+        // setQuestionData(
+        //   produce(item, draft => {
+        //     draft.templeWithTokens = newTemplate;
+        //     setTemplate(newTemplate);
+        //     updateVariables(draft);
+        //   })
+        // );
+      }
     };
 
     return (
@@ -124,15 +176,17 @@ class Template extends Component {
                   {t("component.tokenHighlight.custom")}
                 </ModeButton>
               </Container>
-
-              {template.map((el, i) => (
-                <MathSpan
-                  onClick={handleTemplateClick(i)}
-                  dangerouslySetInnerHTML={{ __html: el.value }}
-                  key={i}
-                  className={el.active ? `active-word token ${mode}` : "token"}
-                />
-              ))}
+              <div onMouseUp={handleCustomTokenize}>
+                {template.map((el, i) => (
+                  <MathSpan
+                    onClick={handleTemplateClick(i)}
+                    selectableText={mode === CUSTOM_MODE}
+                    dangerouslySetInnerHTML={{ __html: el.value }}
+                    key={i}
+                    className={el.active ? `active-word token ${mode}` : "token"}
+                  />
+                ))}
+              </div>
             </Fragment>
           ) : null}
         </Question>

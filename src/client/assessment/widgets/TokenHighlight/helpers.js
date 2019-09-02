@@ -66,20 +66,21 @@ export const getWordsArray = initialArr => {
 };
 
 export const getCustomArray = initialArr =>
-  (
+  [
     initialArr
       .join("")
-      .replace("&nbsp;", " ")
+      // .replace("&nbsp;", " ")
       .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
-      .match(/(.*?)(([\s]+([\s]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
-  )
-    .flatMap(el => {
-      el = el.split(" ").map(e => {
-        if (!e) {
-          return " ";
-        }
-        return e;
-      });
-      return el;
-    })
+      .replace(/<br>/g, "")
+    // .match(/(.*?)(([\s]+([\s]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
+  ]
+    // .flatMap(el => {
+    //   el = el.split(" ").map(e => {
+    //     if (!e) {
+    //       return " ";
+    //     }
+    //     return e;
+    //   });
+    //   return el;
+    // })
     .map(el => ({ value: `${el}`, active: false }));

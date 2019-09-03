@@ -19,11 +19,13 @@ import {
   setQuestionsForPassageAction,
   clearPreviewAction
 } from "./ducks";
+
 import { getCollectionsSelector } from "../../../selectors/user";
 import { changePreviewAction } from "../../../actions/view";
 import { clearAnswersAction } from "../../../actions/answers";
 import { getSelectedItemSelector, setTestItemsAction } from "../../../../TestPage/components/AddItems/ducks";
 import { setTestDataAndUpdateAction, getTestSelector } from "../../../../TestPage/ducks";
+import { clearItemDetailAction } from "../../../../ItemDetail/ducks";
 import AuthorTestItemPreview from "./AuthorTestItemPreview";
 
 const { duplicateTestItem } = testItemsApi;
@@ -83,8 +85,11 @@ class PreviewModal extends React.Component {
   };
 
   editTestItem = () => {
-    const { data, history, testId } = this.props;
+    const { data, history, testId, clearItemStore } = this.props;
     const itemId = data.id;
+    // itemDetail store has leftovers from previous visit to the page,
+    // clearing it before navigation.
+    clearItemStore();
     if (testId) {
       history.push(`/author/tests/${testId}/createItem/${itemId}`);
     } else {
@@ -300,7 +305,8 @@ const enhance = compose(
       setQuestionsForPassage: setQuestionsForPassageAction,
       clearPreview: clearPreviewAction,
       setDataAndSave: setTestDataAndUpdateAction,
-      setTestItems: setTestItemsAction
+      setTestItems: setTestItemsAction,
+      clearItemStore: clearItemDetailAction
     }
   )
 );

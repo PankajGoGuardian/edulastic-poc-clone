@@ -65,22 +65,47 @@ export const getWordsArray = initialArr => {
     .map(el => ({ value: `${el}`, active: true }));
 };
 
-export const getCustomArray = initialArr =>
-  [
+export const getCustomArray = initialArr => {
+  const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
+  let i = 0;
+  return [
     initialArr
       .join("")
-      // .replace("&nbsp;", " ")
+      .replace("&nbsp;", " ")
       .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
       .replace(/<br>/g, "")
-    // .match(/(.*?)(([\s]+([\s]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
-  ]
-    // .flatMap(el => {
-    //   el = el.split(" ").map(e => {
-    //     if (!e) {
-    //       return " ";
-    //     }
-    //     return e;
-    //   });
-    //   return el;
-    // })
-    .map(el => ({ value: `${el}`, active: false }));
+  ].map(el => {
+    if (mathArray && el.indexOf("<span></span>") !== -1) {
+      el = el.replace("<span></span>", mathArray[i]);
+      i++;
+    }
+    return { value: `${el}`, active: false };
+  });
+};
+
+export const getCustomTokenTemplate = tokens => {
+  const template = tokens.map((token, index) => {
+    if (token.active) {
+      return `<span class='token active-word' sequence='${index}'>${token.value}</span>`;
+    }
+    return token.value;
+  });
+  return template.join("");
+};
+
+export const removeTokenFromHtml = str => {
+  const tokenArr = [];
+  const regex = new RegExp('<span(.*?)class="token active-word"(.*?)>(.*?)</span>', "g");
+  let match = regex.exec(str);
+
+  while (match !== null) {
+    tokenArr.push(match.splice(3));
+    match = regex.exec(str);
+  }
+
+  tokenArr.forEach(elem => {
+    const replaceStr = elem.splice(0);
+    str = str.replace(new RegExp(`<span(.*?)class="token active-word"(.*?)>${replaceStr}</span>`), replaceStr);
+  });
+  return str;
+};

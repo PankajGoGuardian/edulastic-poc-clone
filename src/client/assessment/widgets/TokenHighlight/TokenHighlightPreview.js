@@ -165,7 +165,7 @@ const TokenHighlightPreview = ({
     }
 
     setAnswers(newAnswers);
-    saveAnswer(newAnswers);
+    saveAnswer(newAnswers, true);
   };
 
   const validate = () => {
@@ -351,7 +351,6 @@ TokenHighlightPreview.propTypes = {
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
   disableResponse: PropTypes.bool,
   mode: PropTypes.string,
   t: PropTypes.func.isRequired
@@ -363,7 +362,6 @@ TokenHighlightPreview.defaultProps = {
   userAnswer: [],
   editCorrectAnswers: [],
   showQuestionNumber: false,
-  qIndex: null,
   disableResponse: false,
   mode: ""
 };

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Icon, Radio, Button, message } from "antd";
+import { Form, Icon, Radio, Button, message, Row } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -23,7 +23,9 @@ import {
   StyledAverageRadioDiv,
   StyledAverageInput,
   StyledLabel,
-  StyledScoreDiv
+  StyledScoreDiv,
+  InputOption,
+  RadioWrap
 } from "./styled";
 import { ScoreColorSpan } from "./StandardsProficiencyEditableCell/styled";
 
@@ -89,7 +91,11 @@ class StandardsProficiencyTable extends React.Component {
         }
       },
       {
-        title: "",
+        title: this.props.readOnly ? null : (
+          <StyledAddButton type="primary" onClick={this.handleAdd}>
+            ADD LEVEL
+          </StyledAddButton>
+        ),
         dataIndex: "operation",
         render: (text, record) => {
           const { editingKey } = this.state;
@@ -330,11 +336,6 @@ class StandardsProficiencyTable extends React.Component {
             pagination={false}
           />
         </EditableContext.Provider>
-        {this.props.readOnly ? null : (
-          <StyledAddButton type="primary" shape="round" onClick={this.handleAdd} ghost>
-            + Add Level
-          </StyledAddButton>
-        )}
         <StyledMasterDiv>
           <StyledH3>Mastery Calculation Method</StyledH3>
           <StyledUl>
@@ -348,40 +349,60 @@ class StandardsProficiencyTable extends React.Component {
             onChange={this.changeCalcType}
             value={calcType}
           >
-            <Radio value="MOST_RECENT">Most Recent</Radio>
-            <Radio value="MAX_SCORE">Max Score</Radio>
-            <Radio value="MODE_SCORE">Mode Score</Radio>
-            <Radio value="AVERAGE">Simple Average</Radio>
-            <StyledAverageRadioDiv>
-              <Radio value="DECAYING_AVERAGE">Decaying Average</Radio>
-              {calcType === "DECAYING_AVERAGE" && (
-                <React.Fragment>
-                  <StyledLabel>Decay %</StyledLabel>
-                  <StyledAverageInput
-                    disabled={this.props.readOnly}
-                    defaultValue={calcDecayingAttr}
-                    value={calcDecayingAttr}
-                    maxLength={2}
-                    onChange={e => this.onChangeCalcAttr(e, "DECAYING_AVERAGE")}
-                  />
-                </React.Fragment>
-              )}
-            </StyledAverageRadioDiv>
-            <StyledAverageRadioDiv>
-              <Radio value="MOVING_AVERAGE">Moving Average</Radio>
-              {calcType === "MOVING_AVERAGE" && (
-                <React.Fragment>
-                  <StyledLabel>Not of Assesments</StyledLabel>
-                  <StyledAverageInput
-                    disabled={this.props.readOnly}
-                    defaultValue={calcMovingAvrAttr}
-                    value={calcMovingAvrAttr}
-                    onChange={e => this.onChangeCalcAttr(e, "MOVING_AVERAGE")}
-                  />
-                </React.Fragment>
-              )}
-            </StyledAverageRadioDiv>
-            <Radio value="POWER_LAW">Power Law</Radio>
+            <Row>
+              <RadioWrap xs={24} md={12} lg={8}>
+                <Radio value="MOST_RECENT">Most Recent</Radio>
+              </RadioWrap>
+              <RadioWrap xs={24} md={12} lg={8}>
+                <Radio value="AVERAGE">Simple Average</Radio>
+              </RadioWrap>
+              <RadioWrap xs={24} md={12} lg={8}>
+                <Radio value="MAX_SCORE">Max Score</Radio>
+              </RadioWrap>
+              <RadioWrap xs={24} md={12} lg={8}>
+                <Radio value="POWER_LAW">Power Law</Radio>
+              </RadioWrap>
+              <RadioWrap xs={24} md={12} lg={8}>
+                <Radio value="MODE_SCORE">Mode Score</Radio>
+              </RadioWrap>
+              <RadioWrap xs={24} md={12} lg={8}>
+                <StyledAverageRadioDiv direction="column">
+                  <Radio value="DECAYING_AVERAGE">Decaying Average</Radio>
+                  <InputOption margin={calcType === "DECAYING_AVERAGE" ? "5px" : "0px"}>
+                    {calcType === "DECAYING_AVERAGE" && (
+                      <React.Fragment>
+                        <StyledLabel>Decay %</StyledLabel>
+                        <StyledAverageInput
+                          disabled={this.props.readOnly}
+                          defaultValue={calcDecayingAttr}
+                          value={calcDecayingAttr}
+                          maxLength={2}
+                          onChange={e => this.onChangeCalcAttr(e, "DECAYING_AVERAGE")}
+                        />
+                      </React.Fragment>
+                    )}
+                  </InputOption>
+                </StyledAverageRadioDiv>
+              </RadioWrap>
+              <RadioWrap xs={24} md={12} lg={8}>
+                <StyledAverageRadioDiv direction="column">
+                  <Radio value="MOVING_AVERAGE">Moving Average</Radio>
+                  <InputOption margin={calcType === "MOVING_AVERAGE" ? "5px" : "0px"}>
+                    {calcType === "MOVING_AVERAGE" && (
+                      <React.Fragment>
+                        <StyledLabel>Not of Assesments</StyledLabel>
+                        <StyledAverageInput
+                          disabled={this.props.readOnly}
+                          defaultValue={calcMovingAvrAttr}
+                          value={calcMovingAvrAttr}
+                          onChange={e => this.onChangeCalcAttr(e, "MOVING_AVERAGE")}
+                        />
+                      </React.Fragment>
+                    )}
+                  </InputOption>
+                </StyledAverageRadioDiv>
+              </RadioWrap>
+            </Row>
           </StyledRadioGroup>
         </StyledMasterDiv>
       </StyledTableContainer>

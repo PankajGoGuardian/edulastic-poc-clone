@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Layout, Spin } from "antd";
-import { themeColor, white } from "@edulastic/colors";
+import { Layout, Spin, Input, List, Col, Row } from "antd";
+import { themeColor, white, mediumDesktopWidth, lightGreySecondary, sectionBorder } from "@edulastic/colors";
 import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 const { Content } = Layout;
@@ -11,8 +11,12 @@ export const PerformanceBandDiv = styled.div`
 `;
 
 export const StyledContent = styled(Content)`
-  width: 95%;
-  margin: 150px 30px 10px 30px;
+  width: 100%;
+  padding: 126px 30px 30px;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 90px 30px 30px;
+  }
 `;
 
 export const StyledLayout = styled(Layout)`
@@ -64,5 +68,62 @@ export const CreateProfile = styled(ThemeButton)`
     font-style: normal;
     font-size: 20px;
     text-align: center;
+  }
+`;
+
+export const ModalInput = styled(Input)`
+  background: ${lightGreySecondary};
+  border-color: ${sectionBorder};
+  border-radius: 2px;
+  height: 40px;
+  margin-top: 10px;
+`;
+
+export const ListItemStyled = styled(List.Item)`
+  display: block;
+  background-color: #fff;
+  border: 0;
+  padding: 0;
+`;
+
+export const RowStyled = styled(Row)`
+  background: ${white};
+`;
+
+export const StyledProfileRow = styled(Row)`
+  display: block;
+  padding: 0px 20px;
+  background-color: ${lightGreySecondary};
+  border: 1px solid ${sectionBorder} !important;
+  margin-bottom: 7px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  h3 {
+    font-weight: 500;
+    font-size: 15px;
+    margin: 0px;
+  }
+`;
+
+export const StyledProfileCol = styled(Col)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  align-content: center;
+  & > i.anticon {
+    color: ${themeColor};
+    height: 15px;
+    width: 15px;
+    margin-left: 20px;
+  }
+`;
+
+export const StyledList = styled(List)`
+  .ant-list-item {
+    border: 0;
   }
 `;

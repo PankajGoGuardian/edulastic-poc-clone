@@ -244,7 +244,7 @@ const Template = ({
               <MathSpan
                 onMouseUp={handleCustomTokenize}
                 onClick={handleCustomTokenClick}
-                selectableText={mode === CUSTOM_MODE}
+                selectableText
                 dangerouslySetInnerHTML={{
                   __html: customTokenTemplate
                 }}

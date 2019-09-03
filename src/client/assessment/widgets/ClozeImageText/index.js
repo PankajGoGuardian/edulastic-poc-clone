@@ -296,6 +296,7 @@ class ClozeImageText extends Component {
               backgroundColor={item.background}
               key={previewDisplayOptions && previewStimulus && uiStyle}
               maxRespCount={item.maxRespCount}
+              isExpressGrader={expressGrader && previewTab === "show"}
               {...restProps}
             />
           </Wrapper>

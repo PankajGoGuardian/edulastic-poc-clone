@@ -276,6 +276,7 @@ class ClozeDragDropDisplay extends Component {
       isReviewTab,
       flowLayout,
       showQuestionNumber,
+      isExpressGrader,
       question,
       view
     } = this.props;
@@ -351,7 +352,7 @@ class ClozeDragDropDisplay extends Component {
         onDrop={!disableResponse ? this.onDrop : () => {}}
       />
     );
-    const correctAnswerBoxLayout = showAnswer ? (
+    const correctAnswerBoxLayout = (
       <>
         <CorrectAnswerBoxLayout
           hasGroupResponses={hasGroupResponses}
@@ -373,11 +374,9 @@ class ClozeDragDropDisplay extends Component {
           />
         ))}
       </>
-    ) : (
-      <div />
     );
     const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
-    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+    const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     const responseBoxStyle = {
       height: "100%",
@@ -467,6 +466,7 @@ ClozeDragDropDisplay.propTypes = {
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool,
+  isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   view: PropTypes.string,
   responseIDs: PropTypes.array.isRequired,
@@ -506,6 +506,7 @@ ClozeDragDropDisplay.defaultProps = {
   },
   showQuestionNumber: false,
   flowLayout: false,
+  isExpressGrader: false,
   isReviewTab: false
   // qIndex: null
 };

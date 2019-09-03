@@ -93,7 +93,7 @@ class AnnotationsRnd extends Component {
     );
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { question } = this.props;
     // Resize annotation box to accomodate content (by changing its height)
     if (question && question.annotations) {
@@ -101,17 +101,22 @@ class AnnotationsRnd extends Component {
 
       annotations
         .filter(a => a.value)
-        .forEach(annotation => {
-          const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
-          const { value } = annotation;
+        .forEach((annotation, i) => {
+          if (
+            prevProps.question.annotations[i].size.width !== annotation.size.width &&
+            prevProps.question.annotation[i].size.height !== annotation.size.height
+          ) {
+            const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
+            const { value } = annotation;
 
-          const minCharArea = value.length * 14;
-          const currentCharArea = (width * height) / 14;
-          let hc = height;
-          if (minCharArea > currentCharArea) {
-            hc = height * (minCharArea / currentCharArea) - height;
-            const delta = { width: 0, height: hc };
-            this.handleAnnotationSize(delta, annotation.id);
+            const minCharArea = value.length * 14;
+            const currentCharArea = (width * height) / 14;
+            let hc = height;
+            if (minCharArea > currentCharArea) {
+              hc = height * (minCharArea / currentCharArea) - height;
+              const delta = { width: 0, height: hc };
+              this.handleAnnotationSize(delta, annotation.id);
+            }
           }
         });
     }

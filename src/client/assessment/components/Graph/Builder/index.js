@@ -362,8 +362,12 @@ class Board {
     this.disableResponse = value;
   }
 
-  createEditButton(menuHandler, disabled = false) {
+  createEditButton(menuHandler) {
     this.editButton = EditButton.createButton(this, menuHandler);
+    this.editButton.disabled = false;
+  }
+
+  setEditButtonStatus(disabled) {
     this.editButton.disabled = disabled;
   }
 
@@ -392,41 +396,45 @@ class Board {
   }
 
   handleElementMouseOut(element) {
-    if (this.checkEditButtonCall(element)) {
-      EditButton.hideButton(this, element);
+    if (!this.editButton.disabled) {
+      if (this.checkEditButtonCall(element)) {
+        EditButton.hideButton(this, element);
+      }
     }
   }
 
   handleStackedElementsMouseEvents(element) {
-    element.on("mouseover", event => {
-      if (this.editButton.disabled) {
-        return;
-      }
-      if (this.checkEditButtonCall(element)) {
-        const pointsUnderMouse = this.$board
-          .getAllObjectsUnderMouse(event)
-          .filter(mouseElement => mouseElement.elType === "point");
-
-        if (pointsUnderMouse.length === 0) {
-          this.stacksUnderMouse = false;
-          this.handleElementMouseOver(element, event);
-        } else {
-          this.stacksUnderMouse = true;
+    if (this.editButton) {
+      element.on("mouseover", event => {
+        if (this.editButton.disabled) {
+          return;
         }
-      }
-    });
+        if (this.checkEditButtonCall(element)) {
+          const pointsUnderMouse = this.$board
+            .getAllObjectsUnderMouse(event)
+            .filter(mouseElement => mouseElement.elType === "point");
 
-    element.on("mouseout", () => {
-      if (!this.stacksUnderMouse && this.checkEditButtonCall(element)) {
-        this.handleElementMouseOut(element);
-      }
-    });
+          if (pointsUnderMouse.length === 0) {
+            this.stacksUnderMouse = false;
+            this.handleElementMouseOver(element, event);
+          } else {
+            this.stacksUnderMouse = true;
+          }
+        }
+      });
 
-    element.on("drag", () => {
-      if (this.checkEditButtonCall(element)) {
-        EditButton.cleanButton(this, element);
-      }
-    });
+      element.on("mouseout", () => {
+        if (!this.stacksUnderMouse && this.checkEditButtonCall(element)) {
+          this.handleElementMouseOut(element);
+        }
+      });
+
+      element.on("drag", () => {
+        if (this.checkEditButtonCall(element)) {
+          EditButton.cleanButton(this, element);
+        }
+      });
+    }
   }
 
   updateNumberlineSettings(canvas, numberlineAxis, layout) {

@@ -147,6 +147,7 @@ class ClozeTextDisplay extends Component {
       changePreviewTab,
       responseIds,
       isReviewTab,
+      isExpressGrader,
       view
     } = this.props;
 
@@ -197,7 +198,7 @@ class ClozeTextDisplay extends Component {
     );
 
     const answerBox =
-      previewTab === "show" ? (
+      showAnswer || isExpressGrader ? (
         <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
@@ -255,6 +256,7 @@ ClozeTextDisplay.propTypes = {
   item: PropTypes.object,
   disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
+  isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   qIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
@@ -287,6 +289,7 @@ ClozeTextDisplay.defaultProps = {
   template: "",
   showQuestionNumber: false,
   disableResponse: false,
+  isExpressGrader: false,
   isReviewTab: false,
   qIndex: null
 };

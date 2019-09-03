@@ -206,10 +206,10 @@ class Container extends PureComponent {
   };
 
   handleAssign = () => {
-    const { test, history, match } = this.props;
+    const { test, history, match, updated } = this.props;
     const { status } = test;
     if (this.validateTest(test)) {
-      if (status !== statusConstants.PUBLISHED) {
+      if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true);
       } else {
         const { id } = match.params;

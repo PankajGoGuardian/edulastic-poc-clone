@@ -388,6 +388,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       context(" > verify after attempt", () => {
         before("teacher login", () => {
           cy.login("teacher", teacher);
+          teacherSidebar.clickOnAssignment();
           authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
         });
 

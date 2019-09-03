@@ -24,11 +24,29 @@ import { removeUserAnswerAction } from "../../../assessment/actions/answers";
 import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
 
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
-import { SET_ANSWER } from "../../../assessment/constants/actions";
 
 function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
   try {
-    const item = yield call(testItemsApi.create, data);
+    // create a empty item and put it in store.
+    const item = {
+      _id: "new",
+      rows: [{ tabs: [], dimension: "100%", widgets: [], flowLayout: false, content: "" }],
+      columns: [],
+      tags: [],
+      status: "draft",
+      createdBy: {},
+      maxScore: 0,
+      active: 1,
+      grades: [],
+      subjects: [],
+      standards: [],
+      curriculums: [],
+      itemLevelScoring: true,
+      multipartItem: false,
+      isPassageWithQuestions: false,
+      canAddMultipleItems: false
+    };
+
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: item
@@ -41,8 +59,7 @@ function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
     }
   } catch (err) {
     console.error(err);
-    const errorMessage = "Create item is failed";
-    yield call(message.error, errorMessage);
+    yield call(message.error, "create item failed");
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage }

@@ -295,6 +295,7 @@ class ClozeImageDropDown extends Component {
               onChange={this.handleAddAnswer}
               qIndex={qIndex}
               imageOptions={item.imageOptions}
+              isExpressGrader={answerContextConfig.expressGrader && previewTab === "show"}
               {...restProps}
             />
           </Wrapper>

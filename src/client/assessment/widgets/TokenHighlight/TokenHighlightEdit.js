@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, find } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import produce from "immer";
 
@@ -56,7 +56,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         updateVariables(draft);
       })
     );
-  }, [mode, item.template, correctTab]);
+  }, [mode, item.template]);
 
   const handleAddAnswer = () => {
     setQuestionData(
@@ -88,9 +88,22 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
-  const handleAnswerChange = ans => {
+  const handleAnswerChange = (ans, click) => {
     setQuestionData(
       produce(item, draft => {
+        // keep previous correct answer on changing custom token, not on clicking token.
+        if (mode === CUSTOM_MODE && !click) {
+          let prevAnswers = draft.validation.validResponse.value;
+          if (correctTab !== 0) {
+            prevAnswers = draft.validation.altResponses[correctTab - 1].value;
+          }
+          ans.forEach(elem => {
+            const exist = find(prevAnswers, pans => pans.value === elem.value && pans.selected);
+            if (exist) {
+              elem.selected = true;
+            }
+          });
+        }
         if (correctTab === 0) {
           draft.validation.validResponse.value = ans;
         } else {

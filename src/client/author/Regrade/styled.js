@@ -1,5 +1,5 @@
 import { Button, Table } from "antd";
-import { white, green, boxShadowDefault } from "@edulastic/colors";
+import { white, boxShadowDefault, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -17,9 +17,9 @@ export const Title = styled.h1`
 `;
 
 export const ApplyButton = styled(Button)`
-  background: ${green};
+  background: ${white};
   border: 0;
-  color: ${white};
+  color: ${themeColor};
   padding: 6px 35px;
   font-size: 16px;
   height: auto;

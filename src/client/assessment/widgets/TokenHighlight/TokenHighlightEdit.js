@@ -56,7 +56,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         updateVariables(draft);
       })
     );
-  }, [mode, item.template, correctTab]);
+  }, [mode, item.template]);
 
   const handleAddAnswer = () => {
     setQuestionData(

@@ -607,13 +607,14 @@ class SchoolsTable extends React.Component {
           return (
             <Link
               to={{
-                pathname: "/author/users/teacher",
-                state: {
-                  filtersColumn: "institutionNames",
-                  filtersValue: "eq",
-                  filterStr: name,
-                  filterAdded: true
-                }
+                pathname: "/author/users/teacher"
+                // uncomment after school filter is implemented in backend
+                // state: {
+                //   filtersColumn: "institutionNames",
+                //   filtersValue: "eq",
+                //   filterStr: name,
+                //   filterAdded: true
+                // }
               }}
             >
               {teachersCount}
@@ -651,13 +652,14 @@ class SchoolsTable extends React.Component {
           return (
             <Link
               to={{
-                pathname: "/author/users/student",
-                state: {
-                  filtersColumn: "institutionNames",
-                  filtersValue: "eq",
-                  filterStr: name,
-                  filterAdded: true
-                }
+                pathname: "/author/users/student"
+                // uncomment after school filter is implemented in backend
+                // state: {
+                //   filtersColumn: "institutionNames",
+                //   filtersValue: "eq",
+                //   filterStr: name,
+                //   filterAdded: true
+                // }
               }}
             >
               {studentsCount}

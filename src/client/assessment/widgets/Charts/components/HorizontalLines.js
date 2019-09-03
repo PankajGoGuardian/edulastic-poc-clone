@@ -17,8 +17,8 @@ const HorizontalLines = ({ gridParams, displayGridlines, paddingTop }) => {
     if (yAxis.length <= labelsAmount) {
       return true;
     } else {
-      const tmp = Math.ceil((yAxis.length - 2) / labelsAmount);
-      if (index % tmp === 0) {
+      const labelsFrequency = Math.ceil((yAxis.length - 2) / labelsAmount);
+      if (index % labelsFrequency === 0) {
         return true;
       } else {
         return false;

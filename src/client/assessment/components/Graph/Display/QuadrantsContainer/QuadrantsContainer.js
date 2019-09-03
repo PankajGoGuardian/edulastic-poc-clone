@@ -48,6 +48,11 @@ import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
 import { ElementSettingsMenu } from "./ElementSettingsMenu";
 
+const trueColor = "#1fe3a1";
+const errorColor = "#ee1658";
+const defaultColor = "#00b2ff";
+const bgColor = "#ccc";
+
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
@@ -62,13 +67,13 @@ const getColoredElems = (elements, compareResult) => {
         if (detail && detail.result) {
           newEl = {
             ...el,
-            priorityColor: "#1fe3a1"
+            priorityColor: trueColor
           };
           result = true;
         } else {
           newEl = {
             ...el,
-            priorityColor: "#ee1658"
+            priorityColor: errorColor
           };
         }
 
@@ -92,12 +97,12 @@ const getColoredElems = (elements, compareResult) => {
         if (detail && detail.result) {
           newEl = {
             ...el,
-            priorityColor: "#1fe3a1"
+            priorityColor: trueColor
           };
         } else {
           newEl = {
             ...el,
-            priorityColor: "#ee1658"
+            priorityColor: errorColor
           };
         }
         return newEl;
@@ -113,7 +118,7 @@ const getCorrectAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
       ...el,
-      priorityColor: "#1fe3a1"
+      priorityColor: trueColor
     }));
   }
   return answerArr;
@@ -177,7 +182,13 @@ class GraphContainer extends PureComponent {
 
   handleElementSettingsMenuOpen = elementId => this.setState({ elementSettingsAreOpened: true, elementId });
 
-  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility, color) => {
+  handleElementSettingsMenuClose = (labelText, labelVisibility, pointVisibility, color, notSave = false) => {
+    this.setState({ elementSettingsAreOpened: false });
+
+    if (notSave) {
+      return;
+    }
+
     const { setValue, setElementsStash } = this.props;
     const { elementId } = this.state;
     const config = this._graph.getConfig();
@@ -199,8 +210,6 @@ class GraphContainer extends PureComponent {
       setValue(config);
       setElementsStash(config, this.getStashId());
     }
-
-    this.setState({ elementSettingsAreOpened: false });
   };
 
   setDefaultToolState() {
@@ -215,7 +224,6 @@ class GraphContainer extends PureComponent {
       yAxesParameters,
       layout,
       gridParams,
-      bgShapes,
       bgImgOptions,
       backgroundShapes,
       toolbar,
@@ -224,7 +232,7 @@ class GraphContainer extends PureComponent {
       disableResponse
     } = this.props;
 
-    const { tools, drawingPrompt } = toolbar;
+    const { tools } = toolbar;
     const { resourcesLoaded } = this.state;
 
     this._graph = makeBorder(this._graphId, graphData.graphType);
@@ -263,13 +271,14 @@ class GraphContainer extends PureComponent {
       });
       this._graph.setBgImage(bgImgOptions);
       if (resourcesLoaded) {
-        this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+        const bgShapeValues = backgroundShapes.values.map(el => ({
+          ...el,
+          priorityColor: bgColor
+        }));
+        this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
       }
 
-      if (drawingPrompt === "byObjects" && !bgShapes) {
-        this._graph.enableColoredElements();
-      }
-
+      this.setPriorityColor();
       this.setElementsToGraph();
     }
 
@@ -285,7 +294,6 @@ class GraphContainer extends PureComponent {
       yAxesParameters,
       layout,
       gridParams,
-      bgShapes,
       bgImgOptions,
       backgroundShapes,
       toolbar,
@@ -295,7 +303,7 @@ class GraphContainer extends PureComponent {
       elements
     } = this.props;
 
-    const { tools, drawingPrompt } = toolbar;
+    const { tools } = toolbar;
     const { resourcesLoaded } = this.state;
 
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
@@ -397,23 +405,31 @@ class GraphContainer extends PureComponent {
       ) {
         this._graph.resetBg();
         if (resourcesLoaded) {
-          this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+          const bgShapeValues = backgroundShapes.values.map(el => ({
+            ...el,
+            priorityColor: bgColor
+          }));
+          this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
         }
       }
 
-      if (prevProps.toolbar.drawingPrompt === "byObjects" && drawingPrompt === "byTools") {
-        this._graph.disableColoredElements();
-      }
-
-      if (prevProps.toolbar.drawingPrompt === "byTools" && drawingPrompt === "byObjects" && !bgShapes) {
-        this._graph.enableColoredElements();
-      }
-
+      this.setPriorityColor();
       this.setElementsToGraph(prevProps);
     }
 
     if ((previewTab === CHECK || previewTab === SHOW) && !isEqual(elements, prevProps.elements)) {
       changePreviewTab(CLEAR);
+    }
+  }
+
+  setPriorityColor() {
+    const { bgShapes, toolbar } = this.props;
+    const { drawingPrompt } = toolbar;
+
+    if (bgShapes || drawingPrompt === "byTools") {
+      this._graph.setPriorityColor(defaultColor);
+    } else {
+      this._graph.setPriorityColor(null);
     }
   }
 
@@ -518,7 +534,7 @@ class GraphContainer extends PureComponent {
     // correct answers blocks
     if (elementsIsCorrect) {
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(getCorrectAnswer(elements), true, true);
+      this._graph.loadAnswersFromConfig(getCorrectAnswer(elements));
       return;
     }
 
@@ -527,7 +543,7 @@ class GraphContainer extends PureComponent {
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(coloredElements, true, true);
+      this._graph.loadAnswersFromConfig(coloredElements);
       return;
     }
 
@@ -536,7 +552,7 @@ class GraphContainer extends PureComponent {
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(coloredElements, false, false);
+      this._graph.loadFromConfig(coloredElements);
       return;
     }
 
@@ -625,7 +641,6 @@ class GraphContainer extends PureComponent {
 
         return <IconLabel {...newOptions} />;
       },
-      annotation: () => "annotation",
       area: () => "area"
     };
 
@@ -658,7 +673,6 @@ class GraphContainer extends PureComponent {
     "hyperbola",
     "polygon",
     "parabola",
-    "annotation",
     "area"
   ];
 
@@ -694,8 +708,13 @@ class GraphContainer extends PureComponent {
       return;
     }
     this.setState({ resourcesLoaded: true });
+
+    const bgShapeValues = backgroundShapes.values.map(el => ({
+      ...el,
+      priorityColor: bgColor
+    }));
     this._graph.resetBg();
-    this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+    this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
     this.setElementsToGraph();
   };
 

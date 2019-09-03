@@ -1,11 +1,12 @@
 import React, { Fragment, useState } from "react";
+import ColorPicker from "rc-color-picker";
 import PropTypes from "prop-types";
 import { Checkbox, Paper, Button, FroalaEditor } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import { Row } from "../../../../styled/WidgetOptions/Row";
-import { ChromePicker } from "react-color";
+import utils from "../../common/utils";
 
 export const ElementSettingsMenu = ({ element, handleClose, advancedElementSettings, showColorPicker }) => {
   if (!element) {
@@ -16,9 +17,6 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
   const [labelIsVisible, handleLabelVisibility] = useState(element.labelIsVisible);
   const [pointIsVisible, handlePointVisibility] = useState(element.pointIsVisible);
   const [elementColor, handleColorChange] = useState(element.baseColor);
-  const [isColorpickerVisible, handleColorpickerVisibility] = useState(false);
-
-  const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
 
   return (
     <Fragment>
@@ -27,10 +25,10 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
         style={{ position: "absolute", top: "125px", right: "61px", left: "21px", zIndex: "10", padding: "20px 10px" }}
       >
         <Row style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "20px" }}>
-          <Subtitle style={{ margin: 0 }}>{capitalizeFirstLetter(element.type)} settings</Subtitle>
+          <Subtitle style={{ margin: 0 }}>{utils.capitalizeFirstLetter(element.type)} settings</Subtitle>
           <IconClose
             style={{ cursor: "pointer", marginLeft: "auto" }}
-            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible, elementColor)}
+            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible, elementColor, true)}
           />
         </Row>
         <Row style={{ marginBottom: "20px" }}>
@@ -65,18 +63,9 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
           </Fragment>
         )}
         {showColorPicker && (
-          <Fragment>
-            <Row style={{ marginBottom: "20px" }} onClick={() => handleColorpickerVisibility(!isColorpickerVisible)}>
-              <p style={{ fontSize: "18px", textAlign: "left", margin: "0", cursor: "pointer" }}>
-                {isColorpickerVisible ? "Hide" : "Show"} color picker
-              </p>
-            </Row>
-            {isColorpickerVisible && (
-              <Row style={{ marginBottom: "20px" }}>
-                <ChromePicker color={elementColor} onChangeComplete={color => handleColorChange(color.hex)} />
-              </Row>
-            )}
-          </Fragment>
+          <div style={{ marginBottom: "20px" }}>
+            <ColorPicker onChange={value => handleColorChange(value.color)} animation="slide-up" color={elementColor} />
+          </div>
         )}
         <Row>
           <Button
@@ -96,5 +85,6 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
 ElementSettingsMenu.propTypes = {
   element: PropTypes.object.isRequired,
   handleClose: PropTypes.func.isRequired,
-  advancedElementSettings: PropTypes.bool.isRequired
+  advancedElementSettings: PropTypes.bool.isRequired,
+  showColorPicker: PropTypes.bool.isRequired
 };

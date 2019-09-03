@@ -1,7 +1,6 @@
 import JXG from "jsxgraph";
 import { Point } from ".";
-import { getLineTypeByProp, getPropsByLineType, handleSnap, colorGenerator } from "../utils";
-import { Colors, CONSTANT } from "../config";
+import { getLineTypeByProp, getPropsByLineType, handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
 export const defaultConfig = {
@@ -13,19 +12,41 @@ export const defaultConfig = {
 
 let points = [];
 
-function create(board, linePoints, type, id = null) {
-  const baseColor = colorGenerator(board.elements.length);
+function getColorParams(color) {
+  return {
+    fillColor: color,
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: color
+  };
+}
+
+function create(board, object, linePoints, type, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor, priorityColor } = object;
+
   const newLine = board.$board.create("line", linePoints, {
     ...getPropsByLineType(type),
-    ...Colors.default[CONSTANT.TOOLS.LINE],
-    ...chooseColor(board.coloredElements, baseColor, null),
-    label: getLabelParameters(JXG.OBJECT_TYPE_LINE),
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(JXG.OBJECT_TYPE_LINE),
+      visible: labelIsVisible
+    },
+    fixed,
     id
   });
-  newLine.labelIsVisible = true;
-  newLine.baseColor = baseColor;
-  handleSnap(newLine, Object.values(newLine.ancestors), board);
-  board.handleStackedElementsMouseEvents(newLine);
+  newLine.labelIsVisible = object.labelIsVisible;
+  newLine.baseColor = object.baseColor;
+
+  if (!fixed) {
+    handleSnap(newLine, Object.values(newLine.ancestors), board);
+    board.handleStackedElementsMouseEvents(newLine);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newLine, label);
+  }
 
   return newLine;
 }
@@ -39,7 +60,12 @@ function onLineHandler(type) {
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newLine = create(board, points, type);
+      const object = {
+        label: false,
+        labelIsVisible: true,
+        baseColor: colorGenerator(board.elements.length)
+      };
+      const newLine = create(board, object, points, type);
       points = [];
       return newLine;
     }
@@ -67,34 +93,7 @@ function getConfig(line) {
   };
 }
 
-function parseConfig(type) {
-  return {
-    ...getPropsByLineType(type),
-    ...Colors.default[CONSTANT.TOOLS.LINE],
-    label: getLabelParameters(JXG.OBJECT_TYPE_LINE)
-  };
-}
-
-function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
-  let elementColor;
-
-  if (priorityColor && priorityColor.length > 0) {
-    elementColor = priorityColor;
-  } else if (!priorityColor && coloredElements && !bgShapes) {
-    elementColor = color && color.length > 0 ? color : "#00b2ff";
-  } else if (!priorityColor && !coloredElements && !bgShapes) {
-    elementColor = "#00b2ff";
-  } else if (bgShapes) {
-    elementColor = "#ccc";
-  }
-
-  return {
-    strokeColor: elementColor,
-    highlightStrokeColor: elementColor
-  };
-}
-
-function getPoints() {
+function getTempPoints() {
   return points;
 }
 
@@ -103,9 +102,8 @@ export default {
     return onLineHandler(type);
   },
   getConfig,
-  parseConfig,
   clean,
-  getPoints,
+  getTempPoints,
   create,
-  chooseColor
+  getColorParams
 };

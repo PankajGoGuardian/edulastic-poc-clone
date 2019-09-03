@@ -1,12 +1,11 @@
 import { Point } from ".";
-import { CONSTANT, Colors } from "../config";
-import { handleSnap, colorGenerator } from "../utils";
+import { CONSTANT } from "../config";
+import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 92;
 
 export const defaultConfig = {
-  type: CONSTANT.TOOLS.SECANT,
   fixed: false,
   strokeWidth: 2,
   highlightStrokeWidth: 2
@@ -22,25 +21,48 @@ const makeCallback = (p1, p2) => x => {
 
 let points = [];
 
-function create(board, secantPoints, id = null) {
-  const baseColor = colorGenerator(board.elements.length);
+function getColorParams(color) {
+  return {
+    fillColor: "transparent",
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: "transparent"
+  };
+}
+
+function create(board, object, secantPoints, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor, priorityColor } = object;
+
   const newLine = board.$board.create("functiongraph", [makeCallback(...secantPoints)], {
     ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.SECANT],
-    ...chooseColor(board.coloredElements, baseColor, null),
-    label: getLabelParameters(jxgType),
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(jxgType),
+      visible: labelIsVisible
+    },
+    fixed,
     id
   });
-  newLine.labelIsVisible = true;
-  newLine.baseColor = baseColor;
   newLine.type = jxgType;
+  newLine.labelIsVisible = object.labelIsVisible;
+  newLine.baseColor = object.baseColor;
+
   newLine.addParents(secantPoints);
   newLine.ancestors = {
     [secantPoints[0].id]: secantPoints[0],
     [secantPoints[1].id]: secantPoints[1]
   };
-  handleSnap(newLine, Object.values(newLine.ancestors), board);
-  board.handleStackedElementsMouseEvents(newLine);
+
+  if (!fixed) {
+    handleSnap(newLine, Object.values(newLine.ancestors), board);
+    board.handleStackedElementsMouseEvents(newLine);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newLine, label);
+  }
 
   return newLine;
 }
@@ -48,11 +70,18 @@ function create(board, secantPoints, id = null) {
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
-    if (newPoint) {
-      points.push(newPoint);
-    }
+    newPoint.isTemp = true;
+    points.push(newPoint);
     if (points.length === 2) {
-      const newLine = create(board, points);
+      points.forEach(point => {
+        point.isTemp = false;
+      });
+      const object = {
+        label: false,
+        labelIsVisible: true,
+        baseColor: colorGenerator(board.elements.length)
+      };
+      const newLine = create(board, object, points);
       points = [];
       return newLine;
     }
@@ -80,47 +109,15 @@ function getConfig(secant) {
   };
 }
 
-function parseConfig(pointsConfig) {
-  return [
-    "functiongraph",
-    [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
-    {
-      ...defaultConfig,
-      ...Colors.default[CONSTANT.TOOLS.SECANT],
-      label: getLabelParameters(jxgType)
-    }
-  ];
-}
-
-function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
-  let elementColor;
-
-  if (priorityColor && priorityColor.length > 0) {
-    elementColor = priorityColor;
-  } else if (!priorityColor && coloredElements && !bgShapes) {
-    elementColor = color && color.length > 0 ? color : "#00b2ff";
-  } else if (!priorityColor && !coloredElements && !bgShapes) {
-    elementColor = "#00b2ff";
-  } else if (bgShapes) {
-    elementColor = "#ccc";
-  }
-
-  return {
-    strokeColor: elementColor,
-    highlightStrokeColor: elementColor
-  };
-}
-
-function getPoints() {
+function getTempPoints() {
   return points;
 }
 
 export default {
+  jxgType,
   onHandler,
   getConfig,
-  parseConfig,
   clean,
-  getPoints,
-  create,
-  chooseColor
+  getTempPoints,
+  create
 };

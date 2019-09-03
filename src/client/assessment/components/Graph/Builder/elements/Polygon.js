@@ -1,11 +1,11 @@
 import JXG from "jsxgraph";
-import { Point } from ".";
-import segmentConfig from "./Segment";
-import { CONSTANT, Colors } from "../config";
+import { Point, Line } from ".";
+import { CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
-import { handleSnap, colorGenerator } from "../utils";
+import { handleSnap, colorGenerator, setLabel } from "../utils";
 
-export const defaultConfig = {
+const defaultConfig = {
+  highlightFillOpacity: 0.3,
   hasInnerPoints: true
 };
 
@@ -14,6 +14,15 @@ const bordersDefaultConfig = {
   highlightStrokeWidth: 2
 };
 
+function getColorParams(color) {
+  return {
+    fillColor: color,
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: color
+  };
+}
+
 function isStart(startPointCoords, testPointCoords) {
   return startPointCoords[1] === testPointCoords[1] && startPointCoords[2] === testPointCoords[2];
 }
@@ -21,42 +30,51 @@ function isStart(startPointCoords, testPointCoords) {
 let points = [];
 let lines = [];
 
-function create(board, polygonPoints, id = null) {
-  const baseColor = colorGenerator(board.elements.length);
-  const attrs = {
-    ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.POLYGON],
-    ...chooseColor(board.coloredElements, baseColor, null),
-    label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON),
-    id
-  };
-  attrs.borders = {
-    ...bordersDefaultConfig,
-    ...attrs.borders,
-    ...chooseColor(board.coloredElements, baseColor, null)
-  };
-  const newPolygon = board.$board.create("polygon", polygonPoints, attrs);
-  newPolygon.labelIsVisible = true;
-  newPolygon.baseColor = baseColor;
-  handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
-  newPolygon.borders.forEach(border => {
-    border.on("up", () => {
-      if (border.dragged) {
-        border.dragged = false;
-        board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
-      }
-    });
-    border.on("drag", e => {
-      if (e.movementX === 0 && e.movementY === 0) {
-        return;
-      }
-      border.dragged = true;
-      board.dragged = true;
-    });
-  });
+function create(board, object, polygonPoints, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
 
-  board.handleStackedElementsMouseEvents(newPolygon);
-  polygonPoints.forEach(point => point.setAttribute({ ...chooseColor(board.coloredElements, baseColor, null, true) }));
+  const { id = null, label, baseColor, priorityColor } = object;
+
+  const newPolygon = board.$board.create("polygon", polygonPoints, {
+    ...defaultConfig,
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(JXG.OBJECT_TYPE_POLYGON),
+      visible: labelIsVisible
+    },
+    borders: {
+      ...bordersDefaultConfig,
+      ...getColorParams(priorityColor || board.priorityColor || baseColor)
+    },
+    fixed,
+    id
+  });
+  newPolygon.labelIsVisible = object.labelIsVisible;
+  newPolygon.baseColor = object.baseColor;
+
+  if (!fixed) {
+    handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
+    newPolygon.borders.forEach(border => {
+      border.on("up", () => {
+        if (border.dragged) {
+          border.dragged = false;
+          board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+        }
+      });
+      border.on("drag", e => {
+        if (e.movementX === 0 && e.movementY === 0) {
+          return;
+        }
+        border.dragged = true;
+        board.dragged = true;
+      });
+    });
+    board.handleStackedElementsMouseEvents(newPolygon);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newPolygon, label);
+  }
 
   return newPolygon;
 }
@@ -66,12 +84,7 @@ function onHandler() {
     const newPoint = Point.onHandler(board, event);
     newPoint.isTemp = true;
     if (!points.length) {
-      newPoint.setAttribute({
-        fillColor: "#000",
-        strokeColor: "#000",
-        highlightStrokeColor: "#000",
-        highlightFillColor: "#000"
-      });
+      newPoint.setAttribute(Point.getColorParams("#000"));
       points.push(newPoint);
       return;
     }
@@ -80,14 +93,20 @@ function onHandler() {
       // wait 3 points
       // handle closing polygon
       if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
-        const baseColor = colorGenerator(board.elements.length);
         board.$board.removeObject(newPoint);
         lines.map(board.$board.removeObject.bind(board.$board));
-        points[0].setAttribute({ ...Point.chooseColor(board.coloredElements, baseColor, false, true, null) });
+
+        const baseColor = colorGenerator(board.elements.length);
+        points[0].setAttribute(Point.getColorParams(board.priorityColor || baseColor));
         points.forEach(point => {
           point.isTemp = false;
         });
-        const newPolygon = create(board, points);
+        const object = {
+          label: false,
+          labelIsVisible: true,
+          baseColor
+        };
+        const newPolygon = create(board, object, points);
         points = [];
         lines = [];
         return newPolygon;
@@ -95,10 +114,19 @@ function onHandler() {
     }
     if (points.length > 0) {
       lines.push(
-        board.$board.create("line", [points[points.length - 1], newPoint], {
-          ...segmentConfig,
-          ...Colors.default[CONSTANT.TOOLS.LINE]
-        })
+        Line.create(
+          board,
+          {
+            label: false,
+            labelIsVisible: true,
+            baseColor: colorGenerator(board.elements.length)
+          },
+          [points[points.length - 1], newPoint],
+          CONSTANT.TOOLS.SEGMENT,
+          {
+            fixed: true
+          }
+        )
       );
     }
     points.push(newPoint);
@@ -134,52 +162,15 @@ function flatConfigPoints(pointsConfig) {
   }, {});
 }
 
-function parseConfig() {
-  const attrs = {
-    highlightFillOpacity: 0.3,
-    ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.POLYGON],
-    label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON)
-  };
-  attrs.borders = {
-    ...bordersDefaultConfig,
-    ...attrs.borders
-  };
-  return attrs;
-}
-
-function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
-  let elementColor;
-
-  if (priorityColor && priorityColor.length > 0) {
-    elementColor = priorityColor;
-  } else if (!priorityColor && coloredElements && !bgShapes) {
-    elementColor = color && color.length > 0 ? color : "#00b2ff";
-  } else if (!priorityColor && !coloredElements && !bgShapes) {
-    elementColor = "#00b2ff";
-  } else if (bgShapes) {
-    elementColor = "#ccc";
-  }
-
-  return {
-    strokeColor: elementColor,
-    highlightStrokeColor: elementColor,
-    fillColor: elementColor,
-    highlightFillColor: elementColor
-  };
-}
-
-function getPoints() {
+function getTempPoints() {
   return points;
 }
 
 export default {
   onHandler,
   getConfig,
-  parseConfig,
   clean,
   flatConfigPoints,
-  getPoints,
-  create,
-  chooseColor
+  getTempPoints,
+  create
 };

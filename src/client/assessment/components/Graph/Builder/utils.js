@@ -324,12 +324,7 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
     const { id, type, points, latex, subType } = element;
-    if (
-      type === CONSTANT.TOOLS.POINT ||
-      type === CONSTANT.TOOLS.ANNOTATION ||
-      type === CONSTANT.TOOLS.AREA ||
-      type === CONSTANT.TOOLS.DRAG_DROP
-    ) {
+    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.AREA || type === CONSTANT.TOOLS.DRAG_DROP) {
       if (!acc[id]) {
         acc[id] = element;
         acc[id].priorityColor = element.priorityColor || null;
@@ -388,7 +383,6 @@ export function flat2nestedConfig(config) {
           id,
           type,
           _type: element._type,
-          colors: element.colors || null,
           priorityColor: element.priorityColor || null,
           label: element.label,
           labelIsVisible: element.labelIsVisible,
@@ -399,11 +393,7 @@ export function flat2nestedConfig(config) {
         };
         if (type === CONSTANT.TOOLS.AREA) {
           acc[id].points = points;
-        } else if (
-          type === CONSTANT.TOOLS.POINT ||
-          type === CONSTANT.TOOLS.ANNOTATION ||
-          type === CONSTANT.TOOLS.DRAG_DROP
-        ) {
+        } else if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP) {
           acc[id].x = element.x;
           acc[id].y = element.y;
           acc[id].priorityColor = element.priorityColor || null;
@@ -590,41 +580,28 @@ export function setLabel(element, label) {
   element.labelHTML = label;
 }
 
-export function chooseColor(color) {
-  const elColor = color.length > 0 ? color : "#00b2ff";
-  return {
-    strokeColor: elColor,
-    highlightStrokeColor: elColor
-  };
-}
-
-export function colorGenerator(elements) {
+export function colorGenerator(index) {
   const colorPool = [
-    "#FFCC66",
-    "#FF9900",
-    "#663300",
-    "#FF6600",
-    "#660000",
-    "#FF0000",
-    "#CC0033",
-    "#330000",
-    "#FF0066",
-    "#660033",
-    "#990066",
-    "#9900CC",
-    "#330099",
-    "#330066",
-    "#003333",
-    "#006633",
-    "#009933",
-    "#003300",
-    "#00CC33"
+    "#595e98",
+    "#0b7e50",
+    "#0becdd",
+    "#99723b",
+    "#96c3b3",
+    "#ae1084",
+    "#753d96",
+    "#9a1d04",
+    "#67d0da",
+    "#aa878e",
+    "#50d070",
+    "#e07354",
+    "#1e9301",
+    "#9198f4",
+    "#f0496b",
+    "#9c39f2",
+    "#a5d4d8",
+    "#0cf073",
+    "#de2bc3"
   ];
 
-  if (elements > colorPool.length) {
-    const currentIndex = elements % colorPool.length;
-    return colorPool[currentIndex];
-  } else {
-    return colorPool[elements];
-  }
+  return colorPool[index % colorPool.length];
 }

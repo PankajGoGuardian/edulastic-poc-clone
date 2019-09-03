@@ -10,10 +10,9 @@ function rnd(num) {
   return +num.toFixed(3);
 }
 
-function renderElement(board, el, attrs = {}) {
+function renderElement(board, el) {
   const newElement = board.$board.create("polygon", el.points.map(p => [p.x, p.y]), {
     ...Colors.default[CONSTANT.TOOLS.AREA],
-    ...attrs,
     label: getLabelParameters(jxgType),
     hasInnerPoints: false,
     highlighted: false,
@@ -274,6 +273,7 @@ function getConfig(area) {
 }
 
 export default {
+  jxgType,
   onHandler,
   getConfig,
   renderElement

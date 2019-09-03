@@ -1,12 +1,11 @@
 import { Point } from ".";
-import { CONSTANT, Colors } from "../config";
-import { handleSnap, colorGenerator } from "../utils";
+import { CONSTANT } from "../config";
+import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 95;
 
 export const defaultConfig = {
-  hasInnerPoints: true,
   fixed: false,
   strokeWidth: 2,
   highlightStrokeWidth: 2
@@ -33,6 +32,15 @@ const makeCallback = (...points) => x => {
 
 let points = [];
 
+function getColorParams(color) {
+  return {
+    fillColor: "transparent",
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: "transparent"
+  };
+}
+
 function flatConfigPoints(pointsConfig) {
   return pointsConfig.reduce((acc, p, i) => {
     acc[i] = p;
@@ -40,22 +48,36 @@ function flatConfigPoints(pointsConfig) {
   }, {});
 }
 
-function create(board, polynomPoints, id = null) {
-  const baseColor = colorGenerator(board.elements.length);
+function create(board, object, polynomPoints, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor, priorityColor } = object;
+
   const newPolynom = board.$board.create("functiongraph", [makeCallback(...polynomPoints)], {
     ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.POLYNOM],
-    ...chooseColor(board.coloredElements, baseColor, null),
-    label: getLabelParameters(jxgType),
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(jxgType),
+      visible: labelIsVisible
+    },
+    fixed,
     id
   });
-  newPolynom.labelIsVisible = true;
-  newPolynom.baseColor = baseColor;
   newPolynom.type = jxgType;
+  newPolynom.labelIsVisible = object.labelIsVisible;
+  newPolynom.baseColor = object.baseColor;
+
   newPolynom.addParents(polynomPoints);
   newPolynom.ancestors = flatConfigPoints(polynomPoints);
-  handleSnap(newPolynom, Object.values(newPolynom.ancestors), board);
-  board.handleStackedElementsMouseEvents(newPolynom);
+
+  if (!fixed) {
+    handleSnap(newPolynom, Object.values(newPolynom.ancestors), board);
+    board.handleStackedElementsMouseEvents(newPolynom);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newPolynom, label);
+  }
 
   return newPolynom;
 }
@@ -65,24 +87,25 @@ function onHandler() {
     const newPoint = Point.onHandler(board, event);
     newPoint.isTemp = true;
     if (!points.length) {
-      newPoint.setAttribute({
-        fillColor: "#000",
-        strokeColor: "#000",
-        highlightStrokeColor: "#000",
-        highlightFillColor: "#000"
-      });
+      newPoint.setAttribute(Point.getColorParams("#000"));
       points.push(newPoint);
       return;
     }
 
     if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
-      const baseColor = colorGenerator(board.elements.length);
       board.$board.removeObject(newPoint);
-      points[0].setAttribute({ ...Point.chooseColor(board.coloredElements, baseColor, false, true, null) });
+
+      const baseColor = colorGenerator(board.elements.length);
+      points[0].setAttribute(Point.getColorParams(board.priorityColor || baseColor));
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newPolynom = create(board, points);
+      const object = {
+        label: false,
+        labelIsVisible: true,
+        baseColor
+      };
+      const newPolynom = create(board, object, points);
       points = [];
       return newPolynom;
     }
@@ -112,48 +135,16 @@ function getConfig(polynom) {
   };
 }
 
-function parseConfig(pointsConfig) {
-  return [
-    "functiongraph",
-    [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
-    {
-      ...defaultConfig,
-      ...Colors.default[CONSTANT.TOOLS.POLYNOM],
-      label: getLabelParameters(jxgType)
-    }
-  ];
-}
-
-function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
-  let elementColor;
-
-  if (priorityColor && priorityColor.length > 0) {
-    elementColor = priorityColor;
-  } else if (!priorityColor && coloredElements && !bgShapes) {
-    elementColor = color && color.length > 0 ? color : "#00b2ff";
-  } else if (!priorityColor && !coloredElements && !bgShapes) {
-    elementColor = "#00b2ff";
-  } else if (bgShapes) {
-    elementColor = "#ccc";
-  }
-
-  return {
-    strokeColor: elementColor,
-    highlightStrokeColor: elementColor
-  };
-}
-
-function getPoints() {
+function getTempPoints() {
   return points;
 }
 
 export default {
+  jxgType,
   onHandler,
   getConfig,
-  parseConfig,
   clean,
   flatConfigPoints,
-  getPoints,
-  create,
-  chooseColor
+  getTempPoints,
+  create
 };

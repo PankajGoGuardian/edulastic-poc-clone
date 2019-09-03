@@ -1,19 +1,27 @@
 import JXG from "jsxgraph";
 import { Point } from ".";
-import { CONSTANT, Colors } from "../config";
-import { handleSnap, colorGenerator } from "../utils";
+import { CONSTANT } from "../config";
+import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 97;
 
 export const defaultConfig = {
-  type: CONSTANT.TOOLS.PARABOLA,
   fixed: false,
   strokeWidth: 2,
   highlightStrokeWidth: 2
 };
 
 let tempToolPoints = [];
+
+function getColorParams(color) {
+  return {
+    fillColor: "transparent",
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: "transparent"
+  };
+}
 
 const getBuildElementsCoords = points => {
   const coords = {
@@ -42,8 +50,23 @@ const getBuildElementsCoords = points => {
   return coords;
 };
 
-function renderElement(board, points, params) {
-  const coords = getBuildElementsCoords(points);
+function create(board, object, parabolaPoints, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor, priorityColor } = object;
+
+  const params = {
+    ...defaultConfig,
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(jxgType),
+      visible: labelIsVisible
+    },
+    fixed,
+    id
+  };
+
+  const coords = getBuildElementsCoords(parabolaPoints);
   const dirPoint1 = board.$board.create("point", coords.dirPoint1, { visible: false });
   const dirPoint2 = board.$board.create("point", coords.dirPoint2, { visible: false });
   const directrix = board.$board.create("line", [dirPoint1, dirPoint2], { visible: false });
@@ -51,40 +74,34 @@ function renderElement(board, points, params) {
   const newLine = board.$board.create("parabola", [focus, directrix], params);
 
   function updateCoords() {
-    const newCoords = getBuildElementsCoords(points);
+    const newCoords = getBuildElementsCoords(parabolaPoints);
     dirPoint1.setPositionDirectly(JXG.COORDS_BY_USER, newCoords.dirPoint1);
     dirPoint2.setPositionDirectly(JXG.COORDS_BY_USER, newCoords.dirPoint2);
     focus.setPositionDirectly(JXG.COORDS_BY_USER, newCoords.focus);
   }
 
-  points[0].on("drag", updateCoords);
-  points[1].on("drag", updateCoords);
-
   newLine.type = jxgType;
-  newLine.addParents(...points, focus, dirPoint1, dirPoint2);
+  newLine.labelIsVisible = object.labelIsVisible;
+  newLine.baseColor = object.baseColor;
+
+  newLine.addParents(...parabolaPoints, focus, dirPoint1, dirPoint2);
   newLine.ancestors = {
-    [points[0].id]: points[0],
-    [points[1].id]: points[1]
+    [parabolaPoints[0].id]: parabolaPoints[0],
+    [parabolaPoints[1].id]: parabolaPoints[1]
   };
-  newLine.labelIsVisible = true;
-  newLine.baseColor = params.baseColor;
-  handleSnap(newLine, Object.values(newLine.ancestors), board, updateCoords);
-  board.handleStackedElementsMouseEvents(newLine);
+
+  if (!fixed) {
+    handleSnap(newLine, Object.values(newLine.ancestors), board, updateCoords);
+    parabolaPoints[0].on("drag", updateCoords);
+    parabolaPoints[1].on("drag", updateCoords);
+    board.handleStackedElementsMouseEvents(newLine);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newLine, label);
+  }
 
   return newLine;
-}
-
-function create(board, parabolaPoints, id = null) {
-  const baseColor = colorGenerator(board.elements.length);
-  const params = {
-    ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.PARABOLA],
-    ...chooseColor(board.coloredElements, baseColor, false, null),
-    baseColor,
-    label: getLabelParameters(jxgType),
-    id
-  };
-  return renderElement(board, parabolaPoints, params);
 }
 
 function onHandler() {
@@ -96,7 +113,12 @@ function onHandler() {
       tempToolPoints.forEach(point => {
         point.isTemp = false;
       });
-      const newLine = create(board, tempToolPoints);
+      const object = {
+        label: false,
+        labelIsVisible: true,
+        baseColor: colorGenerator(board.elements.length)
+      };
+      const newLine = create(board, object, tempToolPoints);
       tempToolPoints = [];
       return newLine;
     }
@@ -124,44 +146,16 @@ function getConfig(parabola) {
   };
 }
 
-function chooseColor(coloredElements, color, bgShapes, priorityColor = null) {
-  let elementColor;
-
-  if (priorityColor && priorityColor.length > 0) {
-    elementColor = priorityColor;
-  } else if (!priorityColor && coloredElements && !bgShapes) {
-    elementColor = color && color.length > 0 ? color : "#00b2ff";
-  } else if (!priorityColor && !coloredElements && !bgShapes) {
-    elementColor = "#00b2ff";
-  } else if (bgShapes) {
-    elementColor = "#ccc";
-  }
-
-  return {
-    strokeColor: elementColor,
-    highlightStrokeColor: elementColor
-  };
-}
-
-function parseConfig() {
-  return {
-    ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.PARABOLA],
-    label: getLabelParameters(jxgType)
-  };
-}
-
-function getPoints() {
+function getTempPoints() {
   return tempToolPoints;
 }
 
 export default {
+  jxgType,
   onHandler,
   getConfig,
   clean,
-  parseConfig,
-  getPoints,
-  renderElement,
+  getTempPoints,
   create,
-  chooseColor
+  getColorParams
 };

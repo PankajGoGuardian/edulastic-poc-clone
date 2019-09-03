@@ -198,7 +198,6 @@ class GraphDisplay extends Component {
       toolbar,
       controlbar,
       annotation,
-      id,
       graphType,
       list
     } = graphData;

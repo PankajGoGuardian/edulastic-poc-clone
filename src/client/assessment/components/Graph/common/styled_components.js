@@ -374,9 +374,6 @@ export const PaperWrapper = styled(Paper)`
     padding: ${({ flowLayout }) => (flowLayout ? "0px" : "23px 20px;")};
     margin-bottom: 15px;
   }
-  @media screen and (min-width: ${tabletWidth}) {
-    max-width: 70%;
-  }
 `;
 
 export const GraphToolbar = styled.div`

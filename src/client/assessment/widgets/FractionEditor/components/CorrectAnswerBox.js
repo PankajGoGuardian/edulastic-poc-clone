@@ -8,7 +8,6 @@ import Rectangles from "./Rectangles";
 import Circles from "./Circles";
 
 const CorrectAnswerBox = ({ fractionProperties, selected }) => {
-  console.log("selected", selected);
   const { count, rows, columns, sectors, fractionType } = fractionProperties;
   /**
    * creating an object with keys as selected fractions and value to true
@@ -21,7 +20,7 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
     return obj;
   }, {});
   return (
-    <StyledCorrectAnswerbox style={{ width: "100%", overflow: "auto" }}>
+    <StyledCorrectAnswerbox style={{ width: "100%" }}>
       <CorrectAnswerTitle>Correct Answer</CorrectAnswerTitle>
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
         {Array(count)

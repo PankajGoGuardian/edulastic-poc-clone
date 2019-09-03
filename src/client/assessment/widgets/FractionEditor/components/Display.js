@@ -68,6 +68,7 @@ const Display = ({
         flexWrap="wrap"
         justifyContent="flex-start"
         alignItems="flex-start"
+        padding="16px"
       >
         <FlexContainer alignItems="flex-start" flexDirection="column" style={{ width: "100%" }} flexWrap="wrap">
           {Array(count)

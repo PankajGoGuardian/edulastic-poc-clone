@@ -108,6 +108,15 @@ const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfi
                   />
                   <Route
                     exact
+                    path="/author/regrade/:id/success"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <SuccessPage {...props} isRegradeSuccess />
+                      </Suspense>
+                    )}
+                  />
+                  <Route
+                    exact
                     path={`${match.url}/assignments/:testId`}
                     component={props => <AssignTest {...props} />}
                   />

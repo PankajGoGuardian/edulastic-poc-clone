@@ -609,6 +609,7 @@ function* updateRegradeDataSaga({ payload }) {
   try {
     yield call(assignmentApi.regrade, payload);
     yield call(message.success, "Success update");
+    yield put(push(`/author/regrade/${payload.newTestId}/success`));
   } catch (e) {
     const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);

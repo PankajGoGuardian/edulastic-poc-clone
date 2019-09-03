@@ -26,7 +26,7 @@ export default WrappedComponent => {
                 }
               }}
               step={0.5}
-              style={{ width: 140, textAlign: "center", fontSize: 14 }}
+              style={{ width: 140, textAlign: "center", fontSize: 14, background: "#F8F8FB" }}
               size="large"
               min={0.5}
             />

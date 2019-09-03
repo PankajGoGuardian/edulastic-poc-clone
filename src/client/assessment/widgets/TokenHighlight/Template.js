@@ -256,7 +256,6 @@ const Template = ({
               template.map((el, i) => (
                 <MathSpan
                   onClick={handleTemplateClick(i)}
-                  selectableText={mode === CUSTOM_MODE}
                   dangerouslySetInnerHTML={{ __html: el.value }}
                   key={i}
                   className={el.active ? `active-word token ${mode}` : "token"}

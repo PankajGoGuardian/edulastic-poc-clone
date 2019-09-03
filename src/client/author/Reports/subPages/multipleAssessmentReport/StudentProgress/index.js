@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { get, head, capitalize } from "lodash";
+import { get, head, capitalize, orderBy } from "lodash";
 import { connect } from "react-redux";
 import { getReportsStudentProgress, getReportsStudentProgressLoader, getStudentProgressRequestAction } from "./ducks";
 import { getReportsMARFilterData } from "../common/filterDataDucks";
@@ -59,7 +59,8 @@ const StudentProgress = ({
 
   const { metricInfo = [] } = get(studentProgress, "data.result", {});
   const { orgData = [], testData = [], bandInfo = DefaultBandInfo } = get(MARFilterData, "data.result", {});
-  const [data, trendCount] = useGetBandData(metricInfo, compareBy.key, orgData, selectedTrend, bandInfo);
+  let [data, trendCount] = useGetBandData(metricInfo, compareBy.key, orgData, selectedTrend, bandInfo);
+  data = orderBy(data, ["firstName", "lastName"], ["asc", "asc"]);
 
   if (loading) {
     return (

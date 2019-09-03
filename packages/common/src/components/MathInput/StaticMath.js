@@ -126,8 +126,9 @@ const StaticMath = ({
 
   const onInputKeyboard = (key, command = "cmd") => {
     if (!currentInnerField) return;
-
-    if (key === "left_move") {
+    if (key === "in") {
+      currentInnerField.write("in");
+    } else if (key === "left_move") {
       currentInnerField.keystroke("Left");
     } else if (key === "right_move") {
       currentInnerField.keystroke("Right");

@@ -186,7 +186,7 @@ class ClozeMathWithUnit extends React.Component {
       btnStyle.fontSize = uiStyles.fontSize;
     }
     if (uiStyles.width) {
-      btnStyle.width = uiStyles.width;
+      btnStyle.minWidth = uiStyles.width;
     }
     return uiStyles;
   };
@@ -223,7 +223,7 @@ class ClozeMathWithUnit extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>
+      <div ref={this.wrappedRef} style={{ margin: "0 4px", display: "inline-block" }}>
         <span
           ref={this.mathRef}
           onClick={this.showKeyboardModal}
@@ -260,7 +260,7 @@ class ClozeMathWithUnit extends React.Component {
             />
           </KeyboardWrapper>
         )}
-      </span>
+      </div>
     );
   }
 }

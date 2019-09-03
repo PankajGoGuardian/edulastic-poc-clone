@@ -207,7 +207,7 @@ class ClozeMathInput extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>
+      <div ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px", display: "inline-block" }}>
         <span
           ref={this.mathRef}
           onClick={this.showKeyboardModal}
@@ -231,7 +231,7 @@ class ClozeMathInput extends React.Component {
             />
           </KeyboardWrapper>
         )}
-      </span>
+      </div>
     );
   }
 }

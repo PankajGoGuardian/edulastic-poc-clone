@@ -174,7 +174,7 @@ export function PerformanceBandAlt(props) {
 
     if (name) {
       // needed for unicode aware length
-      if (!([...name].length <= 150)) {
+      if ([...name].length > 150) {
         message.error("Sorry! Maximum length of Profile Name is 150 characters");
         return;
       }

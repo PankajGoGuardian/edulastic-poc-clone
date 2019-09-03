@@ -362,7 +362,7 @@ class ClozeDragDropDisplay extends Component {
           btnStyle={btnStyle}
           stemNumeration={stemNumeration}
         />
-        {(item.validation.altResponses || []).map((ele, ind) => (
+        {((item.validation && item.validation.altResponses) || []).map((ele, ind) => (
           <CorrectAnswerBoxLayout
             hasGroupResponses={hasGroupResponses}
             fontSize={fontSize}

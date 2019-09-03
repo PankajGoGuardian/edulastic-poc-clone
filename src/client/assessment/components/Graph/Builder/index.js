@@ -621,6 +621,8 @@ class Board {
     if (typeof obj === "string") {
       this.$board.removeObject(obj);
     } else if (obj.elType !== "point" && obj.elType !== "text") {
+      if (obj.rendNodeTriangleEnd) obj.rendNodeTriangleEnd.remove();
+      if (obj.rendNodeTriangleStart) obj.rendNodeTriangleStart.remove();
       if (obj.getParents) obj.getParents().map(this.removeObject.bind(this));
       if (obj.elType === "curve") this.$board.removeObject(obj);
     } else {

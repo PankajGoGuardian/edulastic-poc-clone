@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
+import { test } from "@edulastic/constants";
 import {
   receiveTestByIdAction,
   getTestSelector,
@@ -43,11 +44,7 @@ import { Divider } from "antd";
 import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assignments";
 import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
 
-const statusConstants = {
-  DRAFT: "draft",
-  ARCHIVED: "archived",
-  PUBLISHED: "published"
-};
+const { statusConstants } = test;
 
 const sharedWithPriorityOrder = ["Public", "District", "School"];
 

@@ -7,6 +7,8 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
+import { test } from "@edulastic/constants";
+
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
@@ -48,12 +50,7 @@ import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 
 const { getDefaultImage } = testsApi;
-
-export const statusConstants = {
-  DRAFT: "draft",
-  ARCHIVED: "archived",
-  PUBLISHED: "published"
-};
+const { statusConstants } = test;
 
 class Container extends PureComponent {
   propTypes = {

@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { FlexContainer, EduButton } from "@edulastic/common";
+import { test } from "@edulastic/constants";
 import {
   IconAddItems,
   IconReview,
@@ -25,6 +26,7 @@ import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 import EditTestModal from "../../../src/components/common/EditTestModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
 import { publishForRegradeAction } from "../../ducks";
+const { statusConstants } = test;
 
 export const navButtonsTest = [
   {
@@ -119,7 +121,7 @@ const TestPageHeader = ({
   };
 
   const handlePublish = () => {
-    if (isUsed && updated) {
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
       setCurrentAction("publish");
       return setShowRegradePopup(true);
     }
@@ -127,7 +129,7 @@ const TestPageHeader = ({
   };
 
   const handleAssign = () => {
-    if (isUsed && updated) {
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
       setCurrentAction("assign");
       return setShowRegradePopup(true);
     }

@@ -1,13 +1,27 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { compose } from "redux";
 import { get } from "lodash";
+import { List, Button, Row, Col, message, Modal, Input, Icon } from "antd";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
-import { List, Typography, Icon, Button, Row, Col, message, Modal, Input } from "antd";
+import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
 
-import { StandardsProficiencyDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
+import {
+  CreateProfile,
+  ModalInput,
+  StandardsProficiencyDiv,
+  StyledContent,
+  StyledLayout,
+  SpinContainer,
+  StyledSpin,
+  ListItemStyled,
+  RowStyled,
+  StyledProfileRow,
+  StyledProfileCol,
+  StyledList
+} from "./styled";
 import {
   createStandardsProficiencyAction,
   updateStandardsProficiencyAction,
@@ -62,21 +76,23 @@ function ProfileRow(props) {
 
   const { _id, index, deleteRow, setEditing, active, readOnly } = props;
   return (
-    <List.Item style={{ display: "block" }}>
-      <Modal
+    <ListItemStyled>
+      <ProfileModal
         title="Delete Profile"
         onCancel={() => setConfirmVisible(false)}
         visible={confirmVisible}
-        closable={false}
+        textAlign="left"
         footer={[
+          <Button ghost onClick={() => setConfirmVisible(false)}>
+            NO, CANCEL
+          </Button>,
           <Button
             disabled={deleteText.toUpperCase() != "DELETE"}
             loading={props.loading}
             onClick={() => deleteRow(_id)}
           >
-            Yes, Delete
-          </Button>,
-          <Button onClick={() => setConfirmVisible(false)}>No, Cancel</Button>
+            YES, DELETE
+          </Button>
         ]}
       >
         <div className="content">
@@ -85,21 +101,22 @@ function ProfileRow(props) {
             NOT be undone. If you are sure, please type DELETE in the space below.
           </p>
         </div>
-        <Input value={deleteText} onChange={e => setDeleteText(e.target.value)} />
-      </Modal>
+        <ModalInput value={deleteText} onChange={e => setDeleteText(e.target.value)} />
+      </ProfileModal>
 
-      <Row>
+      <StyledProfileRow type="flex">
         <Col span={12}>{get(props, "profile.name", "Untitled")}</Col>
-        <Col span={12}>
-          <Button.Group>
-            <Button onClick={() => setEditing(index)}>{active ? "Close" : readOnly ? "View" : "Edit"}</Button>
-            {readOnly ? null : <Button onClick={() => setConfirmVisible(true)}>delete</Button>}
-          </Button.Group>
-        </Col>
-      </Row>
+        <StyledProfileCol span={12}>
+          {readOnly ? null : <Icon type="edit" theme="filled" onClick={() => setEditing(index)} />}
+          <Icon type="copy" onClick={() => {}} />
+          {readOnly ? null : <Icon type="delete" theme="filled" onClick={() => setConfirmVisible(true)} />}
+          {<Icon type={active ? "up" : "down"} theme="outlined" onClick={() => setEditing(index)} />}
+        </StyledProfileCol>
+      </StyledProfileRow>
+
       {active && (
-        <Row>
-          <Col>
+        <RowStyled>
+          <Col span={24}>
             <StandardsProficiencyTable
               readOnly={readOnly}
               name={get(props, "profile.name", "Untitled")}
@@ -107,9 +124,9 @@ function ProfileRow(props) {
               _id={_id}
             />
           </Col>
-        </Row>
+        </RowStyled>
       )}
-    </List.Item>
+    </ListItemStyled>
   );
 }
 
@@ -118,8 +135,11 @@ function StandardsProficiency(props) {
   const showSpin = loading || updating || creating;
   const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [profileName, setProfileName] = useState("");
+
   const createStandardProficiency = () => {
-    const name = window.prompt("Please enter the name of the standard proficiency");
+    const name = profileName;
     if (name === "") {
       message.error("Name cannot be empty");
     } else if (name) {
@@ -134,6 +154,7 @@ function StandardsProficiency(props) {
         return;
       }
       create({ ...defaultData, name, orgId: props.orgId, orgType: "district" });
+      setConfirmVisible(false);
     }
   };
 
@@ -146,20 +167,41 @@ function StandardsProficiency(props) {
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout loading={showSpin ? "true" : "false"}>
+          <AdminSubHeader active={menuActive} history={history} />
           {showSpin && (
             <SpinContainer>
               <StyledSpin size="large" />
             </SpinContainer>
           )}
-          <List
+
+          <Row type="flex" justify="end">
+            <ProfileModal
+              title="Create New Profile"
+              visible={confirmVisible}
+              onCancel={() => setConfirmVisible(false)}
+              bodyHeight="100px"
+              textAlign="left"
+              footer={[
+                <Button ghost onClick={() => setConfirmVisible(false)}>
+                  CANCEL
+                </Button>,
+                <Button disabled={profileName === ""} loading={loading} onClick={() => createStandardProficiency()}>
+                  CREATE
+                </Button>
+              ]}
+            >
+              <h4>PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY</h4>
+              <ModalInput value={profileName} onChange={e => setProfileName(e.target.value)} />
+            </ProfileModal>
+            <CreateProfile type="primary" onClick={() => setConfirmVisible(true)}>
+              <i>+</i> Create new Profile
+            </CreateProfile>
+          </Row>
+
+          <StyledList
             dataSource={props.profiles}
             bordered
             rowKey="_id"
-            header={
-              <Button type="primary" onClick={() => createStandardProficiency()} style={{ marginBottom: 5 }}>
-                + Create New Profile
-              </Button>
-            }
             renderItem={(profile, index) => (
               <ProfileRow
                 readOnly={props.role === "school-admin" && get(profile, "createdBy._id") != props.userId}

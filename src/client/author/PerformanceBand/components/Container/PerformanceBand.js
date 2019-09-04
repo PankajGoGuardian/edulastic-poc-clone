@@ -1,85 +1,44 @@
-import React, { Component, useReducer, useState, useEffect } from "react";
+import { Button, Col, Icon, message, Row } from "antd";
+import { get } from "lodash";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
-import { createReducer } from "redux-starter-kit";
-import uuid from "uuid/v1";
-import { List, Row, Col, Button, message, Modal, Input, Icon } from "antd";
-import styled from "styled-components";
-
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
-import PerformanceBandTable, {
-  PerformanceBandTable as PerformanceBandTableDumb
-} from "../PerformanceBandTable/PerformanceBandTable";
-import { getUserOrgId, getUserRole, getUserId } from "../../../src/selectors/user";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
+import { getUserId, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import { ConfirmationModal as ProfileModal } from "../../../src/components/common/ConfirmationModal";
 import {
   createPerformanceBandAction,
-  updatePerformanceBandAction,
   deletePerformanceBandAction,
   receivePerformanceBandAction,
-  setPerformanceBandLocalAction
+  setPerformanceBandLocalAction,
+  updatePerformanceBandAction
 } from "../../ducks";
-import ColorPicker from "./ColorPicker";
-
-import { StyledContent, StyledLayout, SpinContainer, StyledSpin, PerformanceBandDiv } from "./styled";
-
-import { white, lightGreySecondary, themeColor } from "@edulastic/colors";
+import { PerformanceBandTable as PerformanceBandTableDumb } from "../PerformanceBandTable/PerformanceBandTable";
+import {
+  CreateProfile,
+  ModalInput,
+  PerformanceBandDiv,
+  SpinContainer,
+  StyledContent,
+  StyledLayout,
+  StyledSpin,
+  ListItemStyled,
+  RowStyled,
+  StyledProfileRow,
+  StyledProfileCol,
+  StyledList
+} from "./styled";
 
 const title = "Manage District";
-const ListItemStyled = styled(List.Item)`
-  display: block;
-  background-color: #fff;
-  border: 0;
-  padding: 0;
-`;
-
-const RowStyled = styled(Row)`
-  background: ${white};
-`;
-const StyledProfileRow = styled(Row)`
-  padding-left: 30px;
-  background-color: ${lightGreySecondary};
-  height: 47px;
-  line-height: 47px;
-  box-sizing: border-box;
-  border: 1px solid #e1e1e1;
-  margin-bottom: 7px;
-  h3 {
-    font-weight: 500;
-    font-size: 15px;
-  }
-`;
-
-const StyledProfileCol = styled(Col)`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-flow: row nowrap;
-  justify-content: flex-end;
-  align-content: center;
-  & > i.anticon {
-    color: ${themeColor};
-    height: 13px;
-    width: 13px;
-    padding-right: 32px;
-  }
-`;
-
-const StyledList = styled(List)`
-  .ant-list-item {
-    border: 0;
-  }
-`;
 
 function ProfileRow({
   name,
   performanceBand,
   _id,
-  index,
   setEditingIndex,
   active,
   updatePerformanceBand,
-  savePerformance,
   remove,
   update: updateToServer,
   readOnly,
@@ -93,21 +52,20 @@ function ProfileRow({
 
   return (
     <ListItemStyled>
-      <Modal
+      <ProfileModal
         title="Delete Profile"
         visible={confirmVisible}
-        closable={false}
+        onCancel={() => setConfirmVisible(false)}
+        textAlign="left"
         footer={[
-          <Button disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
-            Yes, Delete
-          </Button>,
-          <Button
-            onClick={() => {
+          <Button ghost onClick={() => {
               setConfirmVisible(false);
               setDeleteText("");
-            }}
-          >
-            No, Cancel
+            }}>
+            NO, CANCEL
+          </Button>,
+          <Button disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
+            YES, DELETE
           </Button>
         ]}
       >
@@ -117,8 +75,8 @@ function ProfileRow({
             If you are sure, please type DELETE in the space below.
           </p>
         </div>
-        <Input value={deleteText} onChange={e => setDeleteText(e.target.value)} />
-      </Modal>
+        <ModalInput value={deleteText} onChange={e => setDeleteText(e.target.value)} />
+      </ProfileModal>
       <StyledProfileRow type="flex">
         <Col span={12}>
           <h3>{name}</h3>
@@ -168,9 +126,11 @@ export function PerformanceBandAlt(props) {
     list();
   }, []);
   const [editingIndex, setEditingIndex] = useState();
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [profileName, setProfileName] = useState("");
 
   const addProfile = () => {
-    const name = prompt("name of the profile?");
+    const name = profileName;
 
     if (name) {
       // needed for unicode aware length
@@ -197,6 +157,7 @@ export function PerformanceBandAlt(props) {
         ]
       };
       create(initialObj);
+      setConfirmVisible(false);
     } else {
       message.error("name can't be empty");
     }
@@ -207,14 +168,35 @@ export function PerformanceBandAlt(props) {
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout>
+          <AdminSubHeader active={menuActive} history={history} />
           {showSpin ? (
             <SpinContainer>
               <StyledSpin size="large" />
             </SpinContainer>
           ) : null}
-          <Button type="primary" style={{ marginBottom: "5px" }} onClick={addProfile}>
-            + Create new Profile
-          </Button>
+          <Row type="flex" justify="end">
+            <ProfileModal
+              title="Create New Profile"
+              visible={confirmVisible}
+              onCancel={() => setConfirmVisible(false)}
+              bodyHeight="100px"
+              textAlign="left"
+              footer={[
+                <Button ghost onClick={() => setConfirmVisible(false)}>
+                  CANCEL
+                </Button>,
+                <Button disabled={profileName === ""} loading={loading} onClick={addProfile}>
+                  CREATE
+                </Button>
+              ]}
+            >
+              <h4>NAME OF THE PROFILE</h4>
+              <ModalInput value={profileName} onChange={e => setProfileName(e.target.value)} />
+            </ProfileModal>
+            <CreateProfile type="primary" onClick={() => setConfirmVisible(true)}>
+              <i>+</i> Create new Profile
+            </CreateProfile>
+          </Row>
           <StyledList
             dataSource={profiles}
             rowKey="_id"

@@ -143,15 +143,17 @@ Cypress.Commands.add("deleteTest", test => {
 });
 
 Cypress.Commands.add("saveItemDetailToDelete", itemId => {
-  cy.readFile(`${deleteTestDataFile}`).then(json => {
-    if (!json.testItems) json.testItems = [];
-    const item = {
-      _id: itemId,
-      authToken: getAccessToken()
-    };
-    json.testItems.push(item);
-    cy.writeFile(`${deleteTestDataFile}`, json);
-  });
+  if (itemId) {
+    cy.readFile(`${deleteTestDataFile}`).then(json => {
+      if (!json.testItems) json.testItems = [];
+      const item = {
+        _id: itemId,
+        authToken: getAccessToken()
+      };
+      json.testItems.push(item);
+      cy.writeFile(`${deleteTestDataFile}`, json);
+    });
+  }
 });
 
 Cypress.Commands.add("saveTestDetailToDelete", testId => {

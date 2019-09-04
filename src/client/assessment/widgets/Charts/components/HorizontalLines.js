@@ -9,13 +9,24 @@ const HorizontalLines = ({ gridParams, displayGridlines, paddingTop }) => {
   const { yAxisMax, yAxisMin, stepSize, width, fractionFormat } = gridParams;
   const yAxis = getYAxis(yAxisMax, yAxisMin, stepSize);
   const padding = getPadding(yAxis);
+  const labelsAmount = Math.ceil(
+    Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(yAxisMax, gridParams)) / 19
+  );
+
+  const displayLabel = index => {
+    if (yAxis.length <= labelsAmount) {
+      return true;
+    }
+    const labelsFrequency = Math.ceil((yAxis.length - 2) / labelsAmount);
+    return index % labelsFrequency === 0;
+  };
 
   return (
     <g>
-      {yAxis.map(dot => (
+      {yAxis.map((dot, index) => (
         <Fragment>
           <Text textAnchor="start" x={0} y={convertUnitToPx(dot, gridParams) + paddingTop} transform="translate(0, 5)">
-            <AxisLabel fractionFormat={fractionFormat} value={dot} />
+            {displayLabel(index) && <AxisLabel fractionFormat={fractionFormat} value={dot} />}
           </Text>
           {displayGridlines && (
             <Line

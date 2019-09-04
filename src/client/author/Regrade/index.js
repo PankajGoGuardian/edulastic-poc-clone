@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { message } from "antd";
+import { withRouter } from "react-router-dom";
 
 import { fetchAssignmentsAction } from "../TestPage/components/Assign/ducks";
 import { setRegradeSettingsDataAction } from "../TestPage/ducks";
@@ -15,7 +16,7 @@ const RegradeTypes = {
 };
 const RegradeKeys = ["ALL", "THIS_SCHOOL_YEAR", "SPECIFIC"];
 
-const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSettings, districtId }) => {
+const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSettings, districtId, history }) => {
   const { oldTestId, newTestId } = match.params;
 
   const settings = {
@@ -63,9 +64,14 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
     }
     setRegradeSettings(regradeSettings);
   };
+
+  const onCancelRegrade = () => {
+    history.push(`/author/tests/${newTestId}/publish`);
+  };
+
   return (
     <Fragment>
-      <Header onApplySettings={onApplySettings} />
+      <Header onApplySettings={onApplySettings} onCancelRegrade={onCancelRegrade} />
       <MainContent
         assignments={assignments}
         RegradeTypes={RegradeTypes}
@@ -81,13 +87,15 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
   );
 };
 
-export default connect(
-  state => ({
-    assignments: state.authorTestAssignments.assignments,
-    districtId: get(state, ["user", "user", "orgData", "districtId"])
-  }),
-  {
-    getAssignmentsByTestId: fetchAssignmentsAction,
-    setRegradeSettings: setRegradeSettingsDataAction
-  }
-)(Regrade);
+export default withRouter(
+  connect(
+    state => ({
+      assignments: state.authorTestAssignments.assignments,
+      districtId: get(state, ["user", "user", "orgData", "districtId"])
+    }),
+    {
+      getAssignmentsByTestId: fetchAssignmentsAction,
+      setRegradeSettings: setRegradeSettingsDataAction
+    }
+  )(Regrade)
+);

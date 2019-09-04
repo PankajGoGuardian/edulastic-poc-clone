@@ -1,21 +1,10 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-
 import { roleuser } from "@edulastic/constants";
-
-import {
-  AdminHeaderContent,
-  StyledTitle,
-  StyledTabs,
-  StyledTabPane,
-  StyledSubMenu,
-  AdminHeaderWrapper,
-  Title
-} from "./styled";
-
-import { getUserRole } from "../../../selectors/user";
 import { get } from "lodash";
+import { AdminHeaderContent, StyledTabs, StyledTabPane, AdminHeaderWrapper, Title } from "./styled";
+import { getUserRole } from "../../../selectors/user";
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -61,44 +50,8 @@ class AdminHeader extends Component {
     }
   };
 
-  onSubTab = (key, e) => {
-    const { history } = this.props;
-    switch (key) {
-      case "District Policies":
-        history.push(`/author/settings/districtpolicies`);
-        return;
-      case "Test Settings":
-        history.push(`/author/settings/testsettings`);
-        return;
-      case "Term":
-        history.push(`/author/settings/term`);
-        return;
-      case "Performance Bands":
-        history.push(`/author/settings/performance-bands`);
-        return;
-      case "Standards Proficiency":
-        history.push(`/author/settings/standards-proficiency`);
-        return;
-      case "Student":
-        history.push(`/author/users/student`);
-        return;
-      case "Teacher":
-        history.push(`/author/users/teacher`);
-        return;
-      case "District Admin":
-        history.push(`/author/users/district-admin`);
-        return;
-      case "School Admin":
-        history.push(`/author/users/school-admin`);
-        return;
-      case "Interested Standards":
-        history.push(`/author/settings/interested-standards`);
-        return;
-    }
-  };
-
   render() {
-    const { title, active, count = 0, role, schoolLevelAdminSettings } = this.props;
+    const { active, count = 0, role, schoolLevelAdminSettings } = this.props;
     const SchoolTabtext = count > 0 ? `Schools (${count})` : "Schools";
     return (
       <AdminHeaderWrapper>
@@ -118,25 +71,6 @@ class AdminHeader extends Component {
             ) : null}
           </StyledTabs>
         </AdminHeaderContent>
-        {active.mainMenu === "Settings" && (
-          <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
-            {role === "district-admin" ? <StyledTabPane tab="District Policies" key={"District Policies"} /> : null}
-            {role === roleuser.SCHOOL_ADMIN ? <StyledTabPane tab="School Policies" key={"District Policies"} /> : null}
-            <StyledTabPane tab="Test Settings" key={"Test Settings"} />
-            <StyledTabPane tab="Term" key={"Term"} />
-            <StyledTabPane tab="Interested Standards" key={"Interested Standards"} />
-            <StyledTabPane tab="Performance Bands" key={"Performance Bands"} />
-            <StyledTabPane tab="Standards Proficiency" key={"Standards Proficiency"} />
-          </StyledSubMenu>
-        )}
-        {active.mainMenu === "Users" && (
-          <StyledSubMenu mode="horizontal" defaultActiveKey={active.subMenu} onTabClick={this.onSubTab}>
-            {role === "district-admin" ? <StyledTabPane tab="District Admin" key={"District Admin"} /> : null}
-            <StyledTabPane tab="School Admin" key={"School Admin"} />
-            <StyledTabPane tab="Teacher" key={"Teacher"} />
-            <StyledTabPane tab="Student" key={"Student"} />
-          </StyledSubMenu>
-        )}
       </AdminHeaderWrapper>
     );
   }

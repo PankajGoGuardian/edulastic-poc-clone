@@ -1,10 +1,9 @@
 export default class CypressHelper {
   static selectDropDownByAttribute = (dataCYAttributeValue, textToSelect) => {
-    cy.get(`[data-cy="${dataCYAttributeValue}"]`).click();
-
+    cy.get(`[data-cy="${dataCYAttributeValue}"]`).click({ force: true });
     cy.get(".ant-select-dropdown-menu-item")
       .contains(textToSelect)
-      .click();
+      .click({ force: true });
 
     cy.focused().blur();
   };

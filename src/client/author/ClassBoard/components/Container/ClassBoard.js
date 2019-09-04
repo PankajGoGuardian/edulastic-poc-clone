@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get, keyBy, isEmpty } from "lodash";
+import { get, keyBy, isEmpty, round } from "lodash";
 import { message, Dropdown, Select } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -518,11 +518,19 @@ class ClassBoard extends Component {
     const classname = additionalData ? additionalData.classes : [];
     const isMobile = this.isMobile();
     let studentTestActivity = (studentResponse && studentResponse.testActivity) || {};
-    studentTestActivity.timeSpent =
-      (studentResponse &&
+    studentTestActivity.timeSpent = Math.floor(
+      ((studentResponse &&
         studentResponse.questionActivities &&
         studentResponse.questionActivities.reduce((acc, qa) => (acc += qa.timeSpent), 0)) ||
-      0;
+        0) / 1000
+    );
+    let { score = 0, maxScore = 0, scoreChange = 0, status } = studentTestActivity;
+    if (studentResponse && !isEmpty(studentResponse.questionActivities) && status === 0) {
+      studentResponse.questionActivities.forEach(uqa => {
+        score += uqa.score;
+        maxScore += uqa.maxScore;
+      });
+    }
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const firstStudentId = get(testActivity.filter(x => !!x.testActivityId), [0, "studentId"], false);
     const testActivityId = this.getTestActivityId(testActivity, selectedStudentId || firstStudentId);
@@ -837,27 +845,32 @@ class ClassBoard extends Component {
                           style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
                         >
                           <ScoreHeader>TOTAL SCORE</ScoreHeader>
-                          <ScoreWrapper>{studentTestActivity.score || 0}</ScoreWrapper>
+                          <ScoreWrapper>{round(score, 2) || 0}</ScoreWrapper>
                           <div style={{ border: "solid 1px black", width: "50px" }} />
-                          <ScoreWrapper>{studentTestActivity.maxScore || 0}</ScoreWrapper>
+                          <ScoreWrapper>{round(maxScore, 2) || 0}</ScoreWrapper>
                         </div>
-                        <div
-                          style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
-                        >
-                          <ScoreHeader>SCORE</ScoreHeader>
-                          <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
-                            {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${studentTestActivity.scoreChange || 0}`}
-                          </ScoreChangeWrapper>
-                          <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
-                            <span>{`Improvement `}</span>
-                            <span
-                              style={{ marginLeft: "2px" }}
-                              title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
-                            >
-                              <IconInfo />
-                            </span>
-                          </ScoreHeader>
-                        </div>
+                        {allTestActivitiesForStudent.length > 1 && (
+                          <div
+                            style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
+                          >
+                            <ScoreHeader>SCORE</ScoreHeader>
+                            <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
+                              {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${round(
+                                studentTestActivity.scoreChange,
+                                2
+                              ) || 0}`}
+                            </ScoreChangeWrapper>
+                            <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
+                              <span>{`Improvement `}</span>
+                              <span
+                                style={{ marginLeft: "2px" }}
+                                title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
+                              >
+                                <IconInfo />
+                              </span>
+                            </ScoreHeader>
+                          </div>
+                        )}
                       </div>
                       <ScoreHeader style={{ fontSize: "12px" }}>
                         {" "}
@@ -874,7 +887,9 @@ class ClassBoard extends Component {
                           {studentTestActivity.status === 2
                             ? "Absent"
                             : studentTestActivity.status === 1
-                            ? "Submitted"
+                            ? studentTestActivity.graded === "GRADED"
+                              ? "Graded"
+                              : "Submitted"
                             : "In Progress" || ""}
                         </span>
                       </ScoreHeader>

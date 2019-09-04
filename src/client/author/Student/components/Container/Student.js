@@ -7,6 +7,7 @@ import { get } from "lodash";
 import { StudentDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 
 import StudentTable from "../StudentTable/StudentTable";
 
@@ -29,6 +30,7 @@ class Student extends Component {
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
+            <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />

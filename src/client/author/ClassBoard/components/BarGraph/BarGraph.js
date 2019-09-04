@@ -90,7 +90,7 @@ export default class BarGraph extends Component {
         if (isEmpty(studentResponse)) {
           itemsSummary = filtered.itemsSummary;
         } else {
-          itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder);
+          itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder, itemsSummary);
         }
       }
     }

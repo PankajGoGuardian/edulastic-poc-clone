@@ -283,6 +283,7 @@ class Item extends Component {
               </ViewButton>
             ) : (
               <StyledButton
+                data-cy={item._id}
                 loading={selectedId === item._id}
                 onClick={() => this.handleSelection(item)}
                 style={{

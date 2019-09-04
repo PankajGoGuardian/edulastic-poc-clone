@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Layout, Spin, Row, Button, Radio } from "antd";
+import { mediumDesktopWidth } from "@edulastic/colors";
 
 const RadioGroup = Radio.Group;
 const { Content } = Layout;
@@ -10,8 +11,12 @@ export const DistrictPolicyDiv = styled.div`
 `;
 
 export const StyledContent = styled.div`
-  width: 95%;
-  margin: 140px auto 10px auto;
+  width: 100%;
+  padding: 126px 30px 30px;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 90px 30px 30px;
+  }
 `;
 
 export const StyledLayout = styled.div`
@@ -19,7 +24,7 @@ export const StyledLayout = styled.div`
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   background: #fff;
-  padding: 30px 60px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
   pointer-events: ${props => (props.loading === "true" ? "none" : "auto")}

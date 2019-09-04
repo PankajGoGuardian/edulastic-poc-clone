@@ -1,14 +1,14 @@
-import React, { useReducer, useState, useEffect } from "react";
-import styled, { css } from "styled-components";
-import { themeColor } from "@edulastic/colors";
+import React, { useState } from "react";
+import styled from "styled-components";
+import { themeColor, sectionBorder } from "@edulastic/colors";
 
-import { Popover, Button, Row, Col, Icon } from "antd";
+import { Popover, Row, Col, Icon } from "antd";
 
 const StyledIcon = styled(Icon)`
   vertical-align: middle;
   margin-top: -20px;
-  padding-left: 5px;
-  padding-right: 6px;
+  padding: 0px 5px;
+  font-size: 10px;
   cursor: pointer;
   path {
     fill: ${themeColor};
@@ -78,7 +78,7 @@ const ColorBox = styled.div`
   width: 100%;
   height: 20px;
   box-sizing: border-box;
-  border: 1px solid #00ad50;
+  border: 1px solid ${sectionBorder};
   margin-bottom: 4px;
   cursor: pointer;
   background-color: ${({ color }) => `${color}`};

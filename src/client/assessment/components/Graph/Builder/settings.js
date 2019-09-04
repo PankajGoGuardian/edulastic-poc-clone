@@ -1,5 +1,6 @@
 import JXG from "jsxgraph";
 import { tickLabel } from "./utils";
+import { Tangent, Logarithm, Sin, Parabola } from "./elements";
 
 /**
  * Graph parameters
@@ -88,16 +89,6 @@ const gridParameters = {
   showGrid: true
 };
 
-const bgObjectParameters = {
-  fillColor: "#ccc",
-  strokeColor: "#ccc",
-  fixed: true,
-  highlightStrokeColor: "#ccc",
-  highlightFillColor: "#ccc",
-  strokeWidth: 2,
-  highlightStrokeWidth: 2
-};
-
 const bgImageParameters = {
   urlImg: "",
   coords: [0, 0],
@@ -127,40 +118,33 @@ export const getLabelPositionParameters = elementType => {
         anchorX: "left",
         anchorY: "bottom"
       };
-    case 96:
+    case Sin.jxgType:
       return {
         position: "lft",
         offset: [10, 0],
         anchorX: "left",
         anchorY: "middle"
       };
-    case 97:
+    case Parabola.jxgType:
       return {
         position: "top",
         offset: [0, -10],
         anchorX: "middle",
         anchorY: "top"
       };
-    case 94:
+    case Logarithm.jxgType:
       return {
         position: "rt",
         offset: [-10, 0],
         anchorX: "right",
         anchorY: "middle"
       };
-    case 91:
+    case Tangent.jxgType:
       return {
         position: "top",
         offset: [0, -10],
         anchorX: "middle",
         anchorY: "middle"
-      };
-    case 99:
-      return {
-        position: "lft",
-        offset: [10, 10],
-        anchorX: "left",
-        anchorY: "top"
       };
     default:
       return {
@@ -189,8 +173,6 @@ export const numberlineGraphParametersToBoundingbox = (coords, margin) => [
   coords.xMax + margin,
   coords.yMin
 ];
-
-export const defaultBgObjectParameters = () => ({ ...bgObjectParameters });
 
 export const defaultAxesParameters = () => ({ ...axesParameters });
 

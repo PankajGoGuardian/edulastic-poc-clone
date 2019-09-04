@@ -1,7 +1,8 @@
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
-import { CONSTANT, Colors } from "../config";
+import { CONSTANT } from "../config";
 import { defaultPointParameters } from "../settings";
+import { Point } from ".";
 
 const deleteIconPattern =
   '<svg id="{iconId}" class="delete-drag-drop" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.728 16.702">' +
@@ -13,13 +14,14 @@ const deleteIconPattern =
 
 const jxgType = 101;
 
-function renderElement(board, element) {
-  const { id, text, x, y, fixed, colors } = element;
+function create(board, object, settings) {
+  const { fixed = false } = settings;
+
+  const { id = null, x, y, text, priorityColor } = object;
 
   const point = board.$board.create("point", [x, y], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
-    ...Colors.default[CONSTANT.TOOLS.POINT],
-    ...colors,
+    ...Point.getColorParams(priorityColor || board.priorityColor),
     fixed
   });
 
@@ -66,10 +68,12 @@ function renderElement(board, element) {
     }
   };
 
-  point.on("up", upHandler);
-  point.on("drag", dragHandler);
-  mark.on("up", upHandler);
-  mark.on("drag", dragHandler);
+  if (!fixed) {
+    point.on("up", upHandler);
+    point.on("drag", dragHandler);
+    mark.on("up", upHandler);
+    mark.on("drag", dragHandler);
+  }
 
   newElement.type = jxgType;
   newElement.labelHTML = text;
@@ -90,6 +94,7 @@ function getConfig(dragDrop) {
 }
 
 export default {
-  renderElement,
+  jxgType,
+  create,
   getConfig
 };

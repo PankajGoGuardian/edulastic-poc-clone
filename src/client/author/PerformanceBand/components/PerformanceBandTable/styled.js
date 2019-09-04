@@ -1,38 +1,40 @@
 import styled from "styled-components";
-import { Button, Row, Col, Icon, Input } from "antd";
+import { Row, Col, Icon } from "antd";
+import { cardTitleColor, white, sectionBorder, themeColorLighter } from "@edulastic/colors";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  // tr:nth-child(2n) {
-  //   background-color: #fafafa !important;
-  // }
-
-  .ant-table-thead > tr > th {
-    text-align: center;
-    text-transform: uppercase;
-    background-color: #fff;
-    font-size: 11px;
-    font-weight: bold;
-    color: #aaafb5;
-    box-sizing: border-box;
-    height: 47px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+  .ant-table-thead {
+    & > tr {
+      border: 1px solid ${sectionBorder};
+      & > th {
+        text-align: center;
+        text-transform: uppercase;
+        background-color: ${white};
+        font-size: 11px;
+        font-weight: bold;
+        color: ${cardTitleColor};
+        height: 45px;
+        padding: 5px 10px;
+        &:nth-child(1) {
+          text-align: left;
+        }
+      }
+    }
   }
-
-  .ant-table-tbody tr:hover > td {
-    background-color: #fff;
-  }
-
-  .ant-table-tbody tr > td {
-    padding: 4px 4px;
-    border: 0;
-  }
-
-  .ant-table-thead > tr {
-    border: 1px solid #e1e1e1;
+  .ant-table-tbody {
+    tr {
+      & > td {
+        padding: 10px;
+        border: 0;
+      }
+      &:hover > td {
+        background-color: ${white};
+      }
+    }
   }
 `;
 
@@ -52,17 +54,26 @@ export const StyledBottomDiv = styled.div`
   margin-top: 20px;
 `;
 
-export const StyledSaveButton = styled(Button)`
-  margin-right: 20px;
+export const StyledSaveButton = styled(ThemeButton)`
   margin-bottom: 15px;
   text-transform: uppercase;
+  font-size: 12px;
   border-radius: 4px;
-  color: #fff;
+  color: ${white};
 `;
 
 export const StyledColFromTo = styled.div`
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
+  width: 80%;
+  margin: 0px auto;
+`;
+
+export const PercentText = styled(Col)`
+  color: ${themeColorLighter};
+  margin-right: 15px;
+  margin-top: -2px;
 `;
 
 export const StyledButton = styled.a`

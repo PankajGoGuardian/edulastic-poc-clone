@@ -86,7 +86,7 @@ class ClozeMathInput extends React.Component {
     } = item;
     const { allowNumericOnly } = find(maths, res => res.id === id) || {};
     if (allowNumericOnly) {
-      if (!e.key.match(/[0-9+-./%]/g)) {
+      if (!e.key.match(/[0-9+-./%^]/g)) {
         e.preventDefault();
         e.stopPropagation();
       }
@@ -207,31 +207,33 @@ class ClozeMathInput extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>
-        <span
-          ref={this.mathRef}
-          onClick={this.showKeyboardModal}
-          style={{
-            ...btnStyle,
-            width: width || "auto",
-            height: height || "auto",
-            padding: "5px 11px 4px"
-          }}
-        />
-        {showKeyboard && (
-          <KeyboardWrapper innerRef={this.mathKeyboardRef}>
-            <MathKeyboard
-              onInput={this.onInput}
-              onClose={() => {}}
-              symbols={item.symbols}
-              numberPad={item.numberPad}
-              restrictKeys={this.restrictKeys}
-              customKeys={customKeys}
-              showResponse={false}
-            />
-          </KeyboardWrapper>
-        )}
-      </span>
+      <div ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px", display: "inline-block" }}>
+        <Wrapper>
+          <span
+            ref={this.mathRef}
+            onClick={this.showKeyboardModal}
+            style={{
+              ...btnStyle,
+              width: width || "auto",
+              height: height || "auto",
+              padding: "5px 11px 4px"
+            }}
+          />
+          {showKeyboard && (
+            <KeyboardWrapper innerRef={this.mathKeyboardRef}>
+              <MathKeyboard
+                onInput={this.onInput}
+                onClose={() => {}}
+                symbols={item.symbols}
+                numberPad={item.numberPad}
+                restrictKeys={this.restrictKeys}
+                customKeys={customKeys}
+                showResponse={false}
+              />
+            </KeyboardWrapper>
+          )}
+        </Wrapper>
+      </div>
     );
   }
 }
@@ -272,4 +274,15 @@ const KeyboardWrapper = styled.div`
   width: 40%;
   position: absolute;
   z-index: 100;
+`;
+
+const Wrapper = styled.div`
+  span {
+    font-weight: 600;
+    font-style: unset;
+    var {
+      font-weight: 600;
+      font-style: unset;
+    }
+  }
 `;

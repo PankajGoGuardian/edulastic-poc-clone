@@ -239,8 +239,13 @@ export const getAllTestActivitiesForStudentSelector = createSelector(
   state => state.allTestActivitiesForStudent || []
 );
 
-export const getItemSummary = (entities, questionsOrder) => {
+export const getItemSummary = (entities, questionsOrder, itemsSummary) => {
   const questionMap = {};
+  let testItemsDataKeyed = {};
+  if (itemsSummary) {
+    testItemsDataKeyed = keyBy(itemsSummary, "_id");
+  }
+
   for (const entity of entities) {
     const { questionActivities } = entity;
     for (let {
@@ -256,14 +261,15 @@ export const getItemSummary = (entities, questionsOrder) => {
       maxScore,
       graded,
       qLabel,
-      barLabel
+      barLabel,
+      qid
     } of questionActivities.filter(x => !x.disabled)) {
       let skippedx = false;
       if (!questionMap[_id]) {
         questionMap[_id] = {
           _id,
-          qLabel,
-          barLabel,
+          qLabel: get(testItemsDataKeyed, [qid, "qLabel"]) || qLabel,
+          barLabel: get(testItemsDataKeyed, [qid, "barLabel"]) || barLabel,
           itemLevelScoring: false,
           itemId: null,
           attemptsNum: 0,
@@ -326,7 +332,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
   const total = entities.length;
   let submittedEntities = entities.filter(x => x.status === "submitted");
   const activeEntities = entities.filter(
-    x => x.status === "inProgress" || (x.status === "submitted") | (x.status === "graded")
+    x => x.status === "inProgress" || x.status === "submitted" || x.status === "graded"
   );
   let questionsOrder = {};
   if (entities.length > 0) {

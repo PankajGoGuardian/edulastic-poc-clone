@@ -1,26 +1,51 @@
 import JXG from "jsxgraph";
 import { Point } from ".";
-import { CONSTANT, Colors } from "../config";
+import { CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
-import { handleSnap } from "../utils";
+import { handleSnap, colorGenerator, setLabel } from "../utils";
 
-export const defaultConfig = {
+const defaultConfig = {
   strokeWidth: 2,
   highlightStrokeWidth: 2
 };
 
 let points = [];
 
-function create(board, circlePoints, id = null) {
+function getColorParams(color) {
+  return {
+    fillColor: "transparent",
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: "transparent"
+  };
+}
+
+function create(board, object, circlePoints, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor, priorityColor } = object;
+
   const newLine = board.$board.create("circle", circlePoints, {
     ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.CIRCLE],
-    label: getLabelParameters(JXG.OBJECT_TYPE_CIRCLE),
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(JXG.OBJECT_TYPE_CIRCLE),
+      visible: labelIsVisible
+    },
+    fixed,
     id
   });
-  newLine.labelIsVisible = true;
-  handleSnap(newLine, Object.values(newLine.ancestors), board);
-  board.handleStackedElementsMouseEvents(newLine);
+  newLine.labelIsVisible = object.labelIsVisible;
+  newLine.baseColor = object.baseColor;
+
+  if (!fixed) {
+    handleSnap(newLine, Object.values(newLine.ancestors), board);
+    board.handleStackedElementsMouseEvents(newLine);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newLine, label);
+  }
 
   return newLine;
 }
@@ -34,7 +59,12 @@ function onHandler() {
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newLine = create(board, points);
+      const object = {
+        label: false,
+        labelIsVisible: true,
+        baseColor: colorGenerator(board.elements.length)
+      };
+      const newLine = create(board, object, points);
       points = [];
       return newLine;
     }
@@ -55,21 +85,14 @@ function getConfig(circle) {
     id: circle.id,
     label: circle.labelHTML || false,
     labelIsVisible: circle.labelIsVisible,
+    baseColor: circle.baseColor,
     points: Object.keys(circle.ancestors)
       .sort()
       .map(n => Point.getConfig(circle.ancestors[n]))
   };
 }
 
-function parseConfig() {
-  return {
-    ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.CIRCLE],
-    label: getLabelParameters(JXG.OBJECT_TYPE_CIRCLE)
-  };
-}
-
-function getPoints() {
+function getTempPoints() {
   return points;
 }
 
@@ -77,7 +100,6 @@ export default {
   onHandler,
   getConfig,
   clean,
-  parseConfig,
-  getPoints,
+  getTempPoints,
   create
 };

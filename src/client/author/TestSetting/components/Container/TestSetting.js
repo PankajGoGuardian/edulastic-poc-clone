@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { get } from "lodash";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import { Radio } from "antd";
 
 import {
@@ -97,6 +98,7 @@ class TestSetting extends Component {
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={updating || loading || creating ? "true" : "false"}>
+            <AdminSubHeader active={menuActive} history={history} />
             {(updating || loading || creating) && (
               <SpinContainer>
                 <StyledSpin size="large" />

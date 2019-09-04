@@ -106,7 +106,7 @@ function* loadTest({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
 
     let { testItems, passages } = test;
-    markQuestionLabel(testItems);
+
     const settings = {
       calcType:
         (testActivity && testActivity.testActivity.calcType) || test.calcType || testContants.calculatorTypes.NONE,
@@ -145,7 +145,7 @@ function* loadTest({ payload }) {
         [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
         yield put(setShuffledOptions(shuffles));
       }
-
+      markQuestionLabel(testItems);
       yield put({
         type: SET_TEST_ACTIVITY_ID,
         payload: { testActivityId }

@@ -20,6 +20,7 @@ import {
 } from "./styled";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import StandardSetModal from "../StandardSetsModal/StandardSetsModal";
 // actions
 import {
@@ -177,6 +178,7 @@ class InterestedStandards extends Component {
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
+            <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />

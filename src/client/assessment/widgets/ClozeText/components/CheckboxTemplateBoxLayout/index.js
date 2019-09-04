@@ -15,6 +15,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
     evaluation,
     showAnswer,
+    style,
     uiStyle = {},
     responseBtnStyle,
     fontSize,
@@ -48,21 +49,13 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = btnStyle.heightpx;
   }
 
-  const response = find(responsecontainerindividuals, resp => resp.index === index);
+  const responseStyle = find(responsecontainerindividuals, resp => resp.id === id);
   if (uiStyle.globalSettings) {
-    btnStyle.width = (response && response.previewWidth) || uiStyle.widthpx;
-    btnStyle.height = uiStyle.heightpx;
+    btnStyle.width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+    btnStyle.height = style.height || "auto";
   } else {
-    btnStyle.width = (response && response.widthpx) || uiStyle.widthpx || "auto";
-    btnStyle.height = (response && response.heightpx) || uiStyle.heightpx || "auto";
-  }
-
-  if (responsecontainerindividuals && responsecontainerindividuals[index]) {
-    const { widthpx: widthpx1, heightpx: heightpx1 } = responsecontainerindividuals[index];
-    btnStyle.width = widthpx1;
-    btnStyle.height = heightpx1;
-    btnStyle.widthpx = widthpx1;
-    btnStyle.heightpx = heightpx1;
+    btnStyle.width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
+    btnStyle.height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
   }
 
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);

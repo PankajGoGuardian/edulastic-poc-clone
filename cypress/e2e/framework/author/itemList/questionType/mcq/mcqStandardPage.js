@@ -111,6 +111,7 @@ class MCQStandardPage {
 
   addNewChoice() {
     cy.get('[data-cy="add-new-ch"]')
+      .eq(0)
       .should("be.visible")
       .click();
     return this;
@@ -325,8 +326,12 @@ class MCQStandardPage {
           .contains(correct)
           .click();
 
+        this.getPoints()
+          .clear({ force: true })
+          .type(`{selectAll}${points}`);
+
         this.header.save();
-        item.updateItemLevelScore(points).then(() => item.header.save(true));
+        // item.updateItemLevelScore(points).then(() => item.header.save(true));
       }
     });
   }

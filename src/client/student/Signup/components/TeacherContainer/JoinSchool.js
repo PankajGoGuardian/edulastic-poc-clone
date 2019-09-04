@@ -8,7 +8,16 @@ import { Row, Col } from "antd";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { IconClose } from "@edulastic/icons";
-import { themeColor, white, title, fadedGreen, cardBg, mobileWidthMax } from "@edulastic/colors";
+import {
+  themeColor,
+  white,
+  title,
+  fadedGreen,
+  cardBg,
+  mobileWidthMax,
+  mobileWidth,
+  mobileWidthLarge
+} from "@edulastic/colors";
 
 import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
@@ -20,7 +29,8 @@ import {
   joinSchoolRequestAction,
   updateUserWithSchoolLoadingSelector,
   checkDistrictPolicyRequestAction,
-  createAndJoinSchoolRequestAction
+  createAndJoinSchoolRequestAction,
+  fetchSchoolTeachersRequestAction
 } from "../../duck";
 import { getUserIPZipCode, getUserOrgId } from "../../../../author/src/selectors/user";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
@@ -61,11 +71,14 @@ const JoinSchool = ({
   userInfo,
   joinSchool,
   createAndJoinSchoolRequestAction,
+  fetchSchoolTeachersRequestAction,
   updateUserWithSchoolLoading,
+  createSchoolRequestPending,
   ipZipCode,
   checkDistrictPolicy,
   districtId,
   isSignupUsingDaURL,
+  schoolTeachers,
   t
 }) => {
   const { email, firstName, middleName, lastName } = userInfo;
@@ -82,8 +95,21 @@ const JoinSchool = ({
 
   const changeSchool = value => {
     const _school = find(schools, item => item.schoolId === value.key);
+
     if (isSignupUsingDaURL) {
       setSchool(_school);
+
+      let teacherSearch = {
+        limit: 20,
+        page: 1,
+        type: "SIGNUP",
+        search: {
+          role: "teacher"
+        },
+        districtId: _school.districtId,
+        institutionIds: [_school.schoolId]
+      };
+      fetchSchoolTeachersRequestAction(teacherSearch);
     } else if (!isSignupUsingDaURL && _school) {
       let signOnMethod = "userNameAndPassword";
       signOnMethod = userInfo.msoId ? "office365SignOn" : signOnMethod;
@@ -107,6 +133,18 @@ const JoinSchool = ({
       setSchool(null);
     } else {
       setSchool(tempSelected);
+
+      let teacherSearch = {
+        limit: 20,
+        page: 1,
+        type: "SIGNUP",
+        search: {
+          role: "teacher"
+        },
+        districtId: tempSelected.districtId,
+        institutionIds: [tempSelected.schoolId]
+      };
+      fetchSchoolTeachersRequestAction(teacherSearch);
     }
     setTempSchool(null);
   }
@@ -172,6 +210,10 @@ const JoinSchool = ({
   }, [schools]);
 
   const onClickHomeSchool = event => {
+    if (createSchoolRequestPending || updateUserWithSchoolLoading) {
+      return;
+    }
+
     const schoolAndDistrictNamePrefix = userInfo.firstName + (userInfo.lastName ? userInfo.lastName + " " : " ");
     const districtName = schoolAndDistrictNamePrefix + "HOME SCHOOL DISTRICT";
     const schoolName = schoolAndDistrictNamePrefix + "HOME SCHOOL";
@@ -261,8 +303,11 @@ const JoinSchool = ({
 
                 {selected && (
                   <>
-                    <TeacherCarousel />
-                    <ProceedBtn onClick={handleSubmit} disabled={updateUserWithSchoolLoading}>
+                    {schoolTeachers.length > 0 ? <TeacherCarousel teachers={schoolTeachers} /> : null}
+                    <ProceedBtn
+                      onClick={handleSubmit}
+                      disabled={createSchoolRequestPending || updateUserWithSchoolLoading}
+                    >
                       {t("common.proceed")}
                     </ProceedBtn>
                   </>
@@ -296,15 +341,18 @@ const enhance = compose(
       newSchool: get(state, "signup.newSchool", {}),
       checkDistrictPolicy: get(state, "signup.checkDistrictPolicy", false),
       updateUserWithSchoolLoading: updateUserWithSchoolLoadingSelector(state),
+      createSchoolRequestPending: get(state, "signup.createSchoolRequestPending", false),
       ipZipCode: getUserIPZipCode(state),
-      districtId: getUserOrgId(state)
+      districtId: getUserOrgId(state),
+      schoolTeachers: get(state, "signup.schoolTeachers", [])
     }),
     {
       searchSchool: searchSchoolRequestAction,
       searchSchoolByDistrictRequestAction: searchSchoolByDistrictRequestAction,
       joinSchool: joinSchoolRequestAction,
       createAndJoinSchoolRequestAction: createAndJoinSchoolRequestAction,
-      checkDistrictPolicyRequestAction
+      checkDistrictPolicyRequestAction,
+      fetchSchoolTeachersRequestAction
     }
   )
 );
@@ -440,20 +488,34 @@ const ProceedBtn = styled(Button)`
 `;
 
 const OptionBody = styled.div`
+  display: flex;
   width: 100%;
+  @media (max-width: ${mobileWidthLarge}) {
+    flex-direction: column;
+  }
 `;
 
 const SchoolInfo = styled.div`
+  width: 50%;
   span {
     font-weight: 600;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
     width: 100%;
   }
 `;
 
 const DistrictInfo = styled.div`
-  width: 100%;
+  align-self: flex-end;
+  text-align: end;
+  width: 50%;
   span {
     font-weight: 600;
+  }
+  @media (max-width: ${mobileWidthLarge}) {
+    align-self: flex-start;
+    text-align: start;
+    width: 100%;
   }
 `;
 

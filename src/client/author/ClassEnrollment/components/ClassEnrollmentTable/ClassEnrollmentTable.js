@@ -646,7 +646,6 @@ class ClassEnrollmentTable extends React.Component {
           showModal={addUserFormModalVisible}
           formTitle="Add User to Class"
           closeModal={this.onCloseAddNewUserModal}
-          buttonText="Add Student(s)"
           addNewUser={this.addNewUser}
           fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
           validatedClassDetails={validatedClassDetails}

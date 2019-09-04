@@ -36,6 +36,7 @@ import TestItemPreview from "../../components/TestItemPreview";
 import DragScrollContainer from "../../components/DragScrollContainer";
 import {
   LARGE_DESKTOP_WIDTH,
+  SMALL_DESKTOP_WIDTH,
   MEDIUM_DESKTOP_WIDTH,
   IPAD_PORTRAIT_WIDTH,
   MAX_MOBILE_WIDTH
@@ -400,7 +401,7 @@ class AssessmentPlayerDefault extends React.Component {
                         isBookmarked={isBookmarked}
                       />
                     )}
-                    {windowWidth >= LARGE_DESKTOP_WIDTH && (
+                    {windowWidth >= SMALL_DESKTOP_WIDTH && (
                       <ToolBar
                         changeMode={this.handleModeChange}
                         changeCaculateMode={this.handleModeCaculate}

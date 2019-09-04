@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import striptags from "striptags";
 
-import { secondaryTextColor, white, whiteSmoke } from "@edulastic/colors";
+import { secondaryTextColor, white, whiteSmoke, fadedBlack } from "@edulastic/colors";
 
 import utils from "../../common/utils";
 
@@ -35,12 +35,12 @@ class DrawingObjects extends Component {
 
   render() {
     const { drawingObjects } = this.props;
-
     return (
       <Container>
         <Title>CLICK TO SELECT</Title>
         {drawingObjects.map((drawingObject, index) => (
           <Button
+            style={{ boxShadow: `inset 0 0 1em ${drawingObject.baseColor}` }}
             key={`drawing-object-${index}`}
             onClick={() => this.onClick(drawingObject)}
             className={drawingObject.disabled ? "disabled" : drawingObject.selected ? "selected" : ""}
@@ -73,18 +73,19 @@ const Button = styled.div`
   margin-bottom: 5px;
   color: ${secondaryTextColor};
   cursor: pointer;
-  transition: background-color 0.1s ease-in;
+  transition: background-color 0.1s ease-in, border-color 0.1s ease-in;
+  border-radius: 4px;
+  border: 1px solid transparent;
 
   &.selected,
   &:hover {
-    background-color: ${white};
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
+    border-color: ${fadedBlack};
   }
 
   &.disabled,
   &.disabled:hover {
     color: ${whiteSmoke};
-    box-shadow: none;
+    border-color: transparent;
   }
 `;
 

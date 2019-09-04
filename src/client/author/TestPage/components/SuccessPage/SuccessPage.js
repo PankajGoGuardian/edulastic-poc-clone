@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { get } from "lodash";
+import { test } from "@edulastic/constants";
 import {
   receiveTestByIdAction,
   getTestSelector,
@@ -43,11 +44,7 @@ import { Divider } from "antd";
 import { receiveAssignmentByAssignmentIdAction } from "../../../src/actions/assignments";
 import { getCurrentAssignmentSelector } from "../../../src/selectors/assignments";
 
-const statusConstants = {
-  DRAFT: "draft",
-  ARCHIVED: "archived",
-  PUBLISHED: "published"
-};
+const { statusConstants } = test;
 
 const sharedWithPriorityOrder = ["Public", "District", "School"];
 
@@ -75,9 +72,9 @@ class SuccessPage extends React.Component {
   }
 
   handleAssign = () => {
-    const { test, history, isAssignSuccess } = this.props;
+    const { test, history, isAssignSuccess, isRegradeSuccess } = this.props;
     const { _id } = test;
-    if (isAssignSuccess) {
+    if (isAssignSuccess || isRegradeSuccess) {
       history.push(`/author/assignments`);
     } else {
       history.push(`/author/assignments/${_id}`);
@@ -91,7 +88,7 @@ class SuccessPage extends React.Component {
   };
 
   renderHeaderButton = () => {
-    const { isAssignSuccess, isPlaylist } = this.props;
+    const { isAssignSuccess, isPlaylist, isRegradeSuccess } = this.props;
     return (
       !isPlaylist && (
         <AssignButton
@@ -101,7 +98,7 @@ class SuccessPage extends React.Component {
           variant="create"
           shadow="none"
         >
-          {isAssignSuccess ? "VIEW RESPONSE" : "ASSIGN"}
+          {isAssignSuccess || isRegradeSuccess ? "VIEW RESPONSE" : "ASSIGN"}
         </AssignButton>
       )
     );
@@ -122,7 +119,7 @@ class SuccessPage extends React.Component {
   }
 
   render() {
-    const { test, isPlaylist, playlist, isAssignSuccess, assignment = {}, userId } = this.props;
+    const { test, isPlaylist, playlist, isAssignSuccess, isRegradeSuccess, assignment = {}, userId } = this.props;
     const { isShareModalVisible } = this.state;
     const { title, _id, status, thumbnail, scoring = {}, grades, subjects, authors = [] } = isPlaylist
       ? playlist
@@ -183,8 +180,8 @@ class SuccessPage extends React.Component {
           <SecondHeader>
             <BreadCrumb data={isPlaylist ? playlistBreadCrumbData : breadCrumbData} style={{ position: "unset" }} />
           </SecondHeader>
-          <FlexContainerWrapper isAssignSuccess={isAssignSuccess}>
-            {isAssignSuccess && (
+          <FlexContainerWrapper isAssignSuccess={isAssignSuccess || isRegradeSuccess}>
+            {(isAssignSuccess || isRegradeSuccess) && (
               <FlexContainerWrapperLeft>
                 <ImageWrapper imgUrl={thumbnail} />
                 <FlexShareWithBox width={"100%"}>
@@ -192,7 +189,7 @@ class SuccessPage extends React.Component {
                 </FlexShareWithBox>
               </FlexContainerWrapperLeft>
             )}
-            <FlexContainerWrapperRight isAssignSuccess={isAssignSuccess}>
+            <FlexContainerWrapperRight isAssignSuccess={isAssignSuccess || isRegradeSuccess}>
               {isAssignSuccess && (
                 <>
                   <FlexTitle>Success!</FlexTitle>
@@ -203,6 +200,18 @@ class SuccessPage extends React.Component {
                     Your students can begin work on this assessment right away.You can monitor student progress and
                     responses by clicking on the &nbsp;
                     <span style={{ color: themeColor }}>View Response</span>&nbsp; button.
+                  </FlexText>
+                  <Divider />
+                </>
+              )}
+              {isRegradeSuccess && (
+                <>
+                  <FlexTitle>Success!</FlexTitle>
+                  <FlexTextWrapper>
+                    Regrade request for <b>{title}</b> is raised.
+                  </FlexTextWrapper>
+                  <FlexText>
+                    New changes will be reflecting in all selected assignment once the regrade process is completed.
                   </FlexText>
                   <Divider />
                 </>
@@ -276,6 +285,7 @@ export default enhance(SuccessPage);
 SuccessPage.propTypes = {
   match: PropTypes.object.isRequired,
   isAssignSuccess: PropTypes.bool,
+  isRegradeSuccess: PropTypes.bool,
   test: PropTypes.object,
   playlist: PropTypes.object,
   fetchPlaylistById: PropTypes.func.isRequired,

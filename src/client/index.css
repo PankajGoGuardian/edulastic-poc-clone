@@ -1264,9 +1264,8 @@ p {
 span.token,
 span.token > *,
 span.token.answer {
-  padding: 1px;
   line-height: 28px;
-  margin: 0 2px;
+  margin-left: 1px;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0);
 }
@@ -2080,4 +2079,18 @@ span.token.active-word {
 
 .ant-modal .ant-switch-checked {
   background-color: #00ad50;
+}
+
+iframe {
+  display: block;
+  min-width: 855px;
+  min-height: 455px;
+  background: #fff;
+}
+
+@media (min-width: 1281px) {
+  iframe {
+    max-width: 700px;
+    max-height: 383px;
+  }
 }

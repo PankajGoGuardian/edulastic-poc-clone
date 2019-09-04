@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get, keyBy, isEmpty } from "lodash";
+import { get, keyBy, isEmpty, round } from "lodash";
 import { message, Dropdown, Select } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -845,9 +845,9 @@ class ClassBoard extends Component {
                           style={{ display: "flex", flexDirection: "column", padding: "10px", alignItems: "center" }}
                         >
                           <ScoreHeader>TOTAL SCORE</ScoreHeader>
-                          <ScoreWrapper>{score || 0}</ScoreWrapper>
+                          <ScoreWrapper>{round(score, 2) || 0}</ScoreWrapper>
                           <div style={{ border: "solid 1px black", width: "50px" }} />
-                          <ScoreWrapper>{maxScore || 0}</ScoreWrapper>
+                          <ScoreWrapper>{round(maxScore, 2) || 0}</ScoreWrapper>
                         </div>
                         {allTestActivitiesForStudent.length > 1 && (
                           <div
@@ -855,8 +855,10 @@ class ClassBoard extends Component {
                           >
                             <ScoreHeader>SCORE</ScoreHeader>
                             <ScoreChangeWrapper scoreChange={studentTestActivity.scoreChange}>
-                              {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${studentTestActivity.scoreChange ||
-                                0}`}
+                              {`${studentTestActivity.scoreChange > 0 ? "+" : ""}${round(
+                                studentTestActivity.scoreChange,
+                                2
+                              ) || 0}`}
                             </ScoreChangeWrapper>
                             <ScoreHeader style={{ fontSize: "10px", display: "flex" }}>
                               <span>{`Improvement `}</span>

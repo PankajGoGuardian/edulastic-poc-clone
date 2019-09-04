@@ -1,4 +1,4 @@
-import { map, forEach, find } from "lodash";
+import { map, forEach, find, orderBy } from "lodash";
 import next from "immer";
 import { getProficiencyBand } from "../../../../common/util";
 
@@ -11,10 +11,14 @@ export const augmentWithBand = (metricInfo = [], bandInfo = []) =>
     });
   });
 
-export const augmentWithStudentInfo = (metricInfo = [], orgData = []) =>
-  map(metricInfo, student => {
+export const augmentWithStudentInfo = (metricInfo = [], orgData = []) => {
+  let data = map(metricInfo, student => {
     // get the related organisation
     const relatedOrg = find(orgData, org => org.groupId === student.groupId) || {};
     const { groupName = "N/A", schoolName = "N/A", teacherName = "N/A" } = relatedOrg;
     return { ...student, groupName, schoolName, teacherName };
   });
+
+  //sorting data in accessending order of student name
+  return orderBy(data, ["firstName", "lastName"], ["asc", "asc"]);
+};

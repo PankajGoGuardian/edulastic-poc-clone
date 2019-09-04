@@ -1,12 +1,11 @@
 import { Point } from ".";
-import { CONSTANT, Colors } from "../config";
-import { handleSnap } from "../utils";
+import { CONSTANT } from "../config";
+import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 93;
 
 export const defaultConfig = {
-  type: CONSTANT.TOOLS.EXPONENT,
   fixed: false,
   strokeWidth: 2,
   highlightStrokeWidth: 2
@@ -22,22 +21,48 @@ const makeCallback = (p1, p2) => x => {
 
 let points = [];
 
-function create(board, expPoints, id = null) {
+function getColorParams(color) {
+  return {
+    fillColor: "transparent",
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: "transparent"
+  };
+}
+
+function create(board, object, expPoints, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor, priorityColor } = object;
+
   const newLine = board.$board.create("functiongraph", [makeCallback(...expPoints)], {
     ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.EXPONENT],
-    label: getLabelParameters(jxgType),
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(jxgType),
+      visible: labelIsVisible
+    },
+    fixed,
     id
   });
-  newLine.labelIsVisible = true;
   newLine.type = jxgType;
+  newLine.labelIsVisible = object.labelIsVisible;
+  newLine.baseColor = object.baseColor;
+
   newLine.addParents(expPoints);
   newLine.ancestors = {
     [expPoints[0].id]: expPoints[0],
     [expPoints[1].id]: expPoints[1]
   };
-  handleSnap(newLine, Object.values(newLine.ancestors), board);
-  board.handleStackedElementsMouseEvents(newLine);
+
+  if (!fixed) {
+    handleSnap(newLine, Object.values(newLine.ancestors), board);
+    board.handleStackedElementsMouseEvents(newLine);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newLine, label);
+  }
 
   return newLine;
 }
@@ -51,7 +76,12 @@ function onHandler() {
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newLine = create(board, points);
+      const object = {
+        label: false,
+        labelIsVisible: true,
+        baseColor: colorGenerator(board.elements.length)
+      };
+      const newLine = create(board, object, points);
       points = [];
       return newLine;
     }
@@ -72,33 +102,22 @@ function getConfig(exponent) {
     id: exponent.id,
     label: exponent.labelHTML || false,
     labelIsVisible: exponent.labelIsVisible,
+    baseColor: exponent.baseColor,
     points: Object.keys(exponent.ancestors)
       .sort()
       .map(n => Point.getConfig(exponent.ancestors[n]))
   };
 }
 
-function parseConfig(pointsConfig) {
-  return [
-    "functiongraph",
-    [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
-    {
-      ...defaultConfig,
-      ...Colors.default[CONSTANT.TOOLS.EXPONENT],
-      label: getLabelParameters(jxgType)
-    }
-  ];
-}
-
-function getPoints() {
+function getTempPoints() {
   return points;
 }
 
 export default {
+  jxgType,
   onHandler,
   getConfig,
-  parseConfig,
   clean,
-  getPoints,
+  getTempPoints,
   create
 };

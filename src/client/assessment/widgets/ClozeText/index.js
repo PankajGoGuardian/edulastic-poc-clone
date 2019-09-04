@@ -320,6 +320,7 @@ class ClozeText extends Component {
               previewTab={previewTab}
               validation={itemForPreview.validation}
               key={previewDisplayOptions && previewStimulus && uiStyle}
+              isExpressGrader={expressGrader && previewTab === "show"}
               {...restProps}
             />
           </Wrapper>

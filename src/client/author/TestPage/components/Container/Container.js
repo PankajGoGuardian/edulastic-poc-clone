@@ -7,6 +7,8 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
+import { test } from "@edulastic/constants";
+
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
@@ -48,12 +50,7 @@ import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 
 const { getDefaultImage } = testsApi;
-
-const statusConstants = {
-  DRAFT: "draft",
-  ARCHIVED: "archived",
-  PUBLISHED: "published"
-};
+const { statusConstants } = test;
 
 class Container extends PureComponent {
   propTypes = {
@@ -206,10 +203,10 @@ class Container extends PureComponent {
   };
 
   handleAssign = () => {
-    const { test, history, match } = this.props;
+    const { test, history, match, updated } = this.props;
     const { status } = test;
     if (this.validateTest(test)) {
-      if (status !== statusConstants.PUBLISHED) {
+      if (status !== statusConstants.PUBLISHED || updated) {
         this.handlePublishTest(true);
       } else {
         const { id } = match.params;

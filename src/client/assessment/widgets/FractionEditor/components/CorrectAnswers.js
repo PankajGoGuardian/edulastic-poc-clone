@@ -3,7 +3,7 @@ import { Input, message } from "antd";
 import get from "lodash/get";
 import PropTypes from "prop-types";
 import produce from "immer";
-
+import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 import Question from "../../../components/Question/index";
 import { Subtitle } from "../../../styled/Subtitle";
@@ -11,6 +11,7 @@ import Circles from "./Circles";
 import Rectangles from "./Rectangles";
 import Divider from "../styled/Divider";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
+import { CorrectAnswerHeader } from "../styled/CorrectAnswerHeader";
 
 const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item }) => {
   const { fractionProperties = {} } = item;
@@ -65,15 +66,15 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
       cleanSections={cleanSections}
     >
       <Subtitle>{t("common.correctAnswers.setCorrectAnswers")}</Subtitle>
-      <FlexContainer justifyContent="flex-start" marginBottom="1em">
+      <CorrectAnswerHeader>
         <Input
           type="number"
           value={get(item, "validation.validResponse.score", 1)}
           onChange={handleCorrectAnswerPointsChange}
-          style={{ width: "190px", marginRight: "5px" }}
+          style={{ width: "140px", marginRight: "25px", background: "#F8F8FB" }}
         />
-        POINTS
-      </FlexContainer>
+        <span>{t("component.correctanswers.points")}</span>
+      </CorrectAnswerHeader>
       <FlexContainer justifyContent="flex-start">
         <FlexContainer flexDirection="column">
           <Input
@@ -135,4 +136,4 @@ CorrectAnswers.defaultProps = {
   cleanSections: () => {}
 };
 
-export default CorrectAnswers;
+export default withNamespaces("assessment")(CorrectAnswers);

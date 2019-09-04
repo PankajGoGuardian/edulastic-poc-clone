@@ -65,7 +65,7 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     altResponses = [],
     scoringType,
     minScoreIfAttempted,
-    penalty,
+    penalty = 0,
     ignoreCase = false,
     allowSingleLetterMistake = false
   } = validation;
@@ -219,7 +219,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
     altResponses = [],
     // scoringType,
     minScoreIfAttempted = 0,
-    penalty,
+    penalty = 0,
     ignoreCase = false,
     allowSingleLetterMistake = false
   } = validation;

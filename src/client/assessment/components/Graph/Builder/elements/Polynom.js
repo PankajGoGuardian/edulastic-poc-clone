@@ -1,12 +1,11 @@
 import { Point } from ".";
-import { CONSTANT, Colors } from "../config";
-import { handleSnap } from "../utils";
+import { CONSTANT } from "../config";
+import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
 const jxgType = 95;
 
 export const defaultConfig = {
-  hasInnerPoints: true,
   fixed: false,
   strokeWidth: 2,
   highlightStrokeWidth: 2
@@ -33,6 +32,15 @@ const makeCallback = (...points) => x => {
 
 let points = [];
 
+function getColorParams(color) {
+  return {
+    fillColor: "transparent",
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: "transparent"
+  };
+}
+
 function flatConfigPoints(pointsConfig) {
   return pointsConfig.reduce((acc, p, i) => {
     acc[i] = p;
@@ -40,19 +48,36 @@ function flatConfigPoints(pointsConfig) {
   }, {});
 }
 
-function create(board, polynomPoints, id = null) {
+function create(board, object, polynomPoints, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor, priorityColor } = object;
+
   const newPolynom = board.$board.create("functiongraph", [makeCallback(...polynomPoints)], {
     ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.POLYNOM],
-    label: getLabelParameters(jxgType),
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(jxgType),
+      visible: labelIsVisible
+    },
+    fixed,
     id
   });
-  newPolynom.labelIsVisible = true;
   newPolynom.type = jxgType;
+  newPolynom.labelIsVisible = object.labelIsVisible;
+  newPolynom.baseColor = object.baseColor;
+
   newPolynom.addParents(polynomPoints);
   newPolynom.ancestors = flatConfigPoints(polynomPoints);
-  handleSnap(newPolynom, Object.values(newPolynom.ancestors), board);
-  board.handleStackedElementsMouseEvents(newPolynom);
+
+  if (!fixed) {
+    handleSnap(newPolynom, Object.values(newPolynom.ancestors), board);
+    board.handleStackedElementsMouseEvents(newPolynom);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newPolynom, label);
+  }
 
   return newPolynom;
 }
@@ -62,18 +87,25 @@ function onHandler() {
     const newPoint = Point.onHandler(board, event);
     newPoint.isTemp = true;
     if (!points.length) {
-      newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
+      newPoint.setAttribute(Point.getColorParams("#000"));
       points.push(newPoint);
       return;
     }
 
     if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
       board.$board.removeObject(newPoint);
-      points[0].setAttribute(Colors.default[CONSTANT.TOOLS.POINT]);
+
+      const baseColor = colorGenerator(board.elements.length);
+      points[0].setAttribute(Point.getColorParams(board.priorityColor || baseColor));
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newPolynom = create(board, points);
+      const object = {
+        label: false,
+        labelIsVisible: true,
+        baseColor
+      };
+      const newPolynom = create(board, object, points);
       points = [];
       return newPolynom;
     }
@@ -95,6 +127,7 @@ function getConfig(polynom) {
     type: CONSTANT.TOOLS.POLYNOM,
     id: polynom.id,
     label: polynom.labelHTML || false,
+    baseColor: polynom.baseColor,
     labelIsVisible: polynom.labelIsVisible,
     points: Object.keys(polynom.ancestors)
       .sort()
@@ -102,28 +135,16 @@ function getConfig(polynom) {
   };
 }
 
-function parseConfig(pointsConfig) {
-  return [
-    "functiongraph",
-    [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
-    {
-      ...defaultConfig,
-      ...Colors.default[CONSTANT.TOOLS.POLYNOM],
-      label: getLabelParameters(jxgType)
-    }
-  ];
-}
-
-function getPoints() {
+function getTempPoints() {
   return points;
 }
 
 export default {
+  jxgType,
   onHandler,
   getConfig,
-  parseConfig,
   clean,
   flatConfigPoints,
-  getPoints,
+  getTempPoints,
   create
 };

@@ -1,9 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { get } from "lodash";
 import { Carousel, Icon, Button } from "antd";
 import { themeColor, fadedGreen } from "@edulastic/colors";
 import Profile from "../../../assets/Profile.png";
+import { getFullNameFromAsString, getInitialsFromName } from "../../../../common/utils/helpers";
 
 const PrevButton = ({ onClick }) => (
   <StyledNextButton onClick={onClick} type="link">
@@ -33,18 +35,20 @@ NextButton.defaultProps = {
   onClick: () => null
 };
 
-const Card = () => (
-  <CardWrapper>
-    <TeacherInfo>
-      <img src={Profile} alt="Profile" />
-      <TeacherName>Joe Mac</TeacherName>
-    </TeacherInfo>
-    <SchoolInfo>
-      <CircleMark>bt</CircleMark>
-      <SchoolName>Big Tea</SchoolName>
-    </SchoolInfo>
-  </CardWrapper>
-);
+const Card = ({ teacher }) => {
+  return (
+    <CardWrapper>
+      <TeacherInfo>
+        {teacher.thumbnail ? (
+          <img src={teacher.thumbnail} alt="Profile" />
+        ) : (
+          <CircleMark>{getInitialsFromName(teacher)}</CircleMark>
+        )}
+        <TeacherName>{getFullNameFromAsString(teacher)}</TeacherName>
+      </TeacherInfo>
+    </CardWrapper>
+  );
+};
 
 const carouselOptions = {
   dots: false,
@@ -83,22 +87,18 @@ const carouselOptions = {
   ]
 };
 
-const TeacherCarousel = () => (
-  <CarouselWrapper>
-    <TeacherCount>54 teachers from this school use Edulastic</TeacherCount>
-    <Carousel {...carouselOptions}>
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-      <Card />
-    </Carousel>
-  </CarouselWrapper>
-);
+const TeacherCarousel = ({ teachers }) => {
+  return (
+    <CarouselWrapper>
+      <TeacherCount>{teachers.length}+ teachers from this school use Edulastic</TeacherCount>
+      <Carousel {...carouselOptions}>
+        {teachers.map((item, index) => {
+          return <Card teacher={item._source} />;
+        })}
+      </Carousel>
+    </CarouselWrapper>
+  );
+};
 
 export default TeacherCarousel;
 
@@ -109,7 +109,9 @@ const CarouselWrapper = styled.div`
   }
   .ant-carousel .slick-slider {
     .slick-slide {
-      min-width: 135px;
+      min-width: 70px;
+      display: flex;
+      justify-content: center;
     }
 
     .ant-btn:not([disabled]):active,
@@ -130,6 +132,7 @@ const TeacherCount = styled.div`
 const CardWrapper = styled.div`
   display: flex;
   align-items: center;
+  width: 60px;
   img {
     width: 60px;
     height: 60px;

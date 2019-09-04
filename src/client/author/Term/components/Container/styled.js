@@ -1,24 +1,28 @@
 import styled from "styled-components";
 import { Layout, Spin } from "antd";
+import { mediumDesktopWidth } from "@edulastic/colors";
 
 const { Content } = Layout;
 
 export const TermDiv = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: #fff;
 `;
 
 export const StyledContent = styled(Content)`
   width: 100%;
-  margin: 140px 30px 10px 30px;
+  padding: 126px 30px 30px;
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 90px 30px 30px;
+  }
 `;
 
 export const StyledLayout = styled(Layout)`
   position: relative;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius:10px;
-  padding:1rem;
+  padding: 30px;
   background: #fff;
   display: flex;
   flex-direction: column;

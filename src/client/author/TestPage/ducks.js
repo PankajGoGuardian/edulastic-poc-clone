@@ -609,6 +609,7 @@ function* updateRegradeDataSaga({ payload }) {
   try {
     yield call(assignmentApi.regrade, payload);
     yield call(message.success, "Success update");
+    yield put(push(`/author/regrade/${payload.newTestId}/success`));
   } catch (e) {
     const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);
@@ -656,7 +657,9 @@ function* publishForRegrade({ payload }) {
   try {
     const test = yield select(getTestSelector);
     yield call(updateTestSaga, { payload: { id: payload, data: test, assignFlow: true } });
-    yield call(testsApi.publishTest, payload);
+    const newTestId = yield select(getTestIdSelector);
+    yield call(testsApi.publishTest, newTestId);
+    yield put(push(`/author/assignments/regrade/new/${newTestId}/old/${test.previousTestId}`));
   } catch (e) {
     yield call(message.error, "publish failed");
   }

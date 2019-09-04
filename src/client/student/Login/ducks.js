@@ -74,7 +74,10 @@ export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
 export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
 export const REMOVE_INTERESTED_CURRICULUMS_REQUEST = "[user] remove interested curriculums request";
 
+export const SET_SETTINGS_SA_SCHOOL = "[user] set sa settings school";
+
 // actions
+export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
 export const loginAction = createAction(LOGIN);
 export const googleLoginAction = createAction(GOOGLE_LOGIN);
 export const cleverLoginAction = createAction(CLEVER_LOGIN);
@@ -131,6 +134,10 @@ const setUser = (state, { payload }) => {
   set(state.user, "orgData.defaultClass", defaultClass);
   set(state.user, "orgData.selectedGrades", defaultGrades);
   set(state.user, "orgData.selectedSubject", defaultSubject);
+  if (payload.role === "school-admin" && get(payload, "orgData.schools[0]._id")) {
+    //setting first school as default on initial load
+    state.saSettingsSchool = get(payload, "orgData.schools[0]._id");
+  }
   state.isAuthenticated = true;
   state.authenticating = false;
   state.signupStatus = payload.currentSignUpState;
@@ -155,6 +162,9 @@ const getCurrentPath = () => {
 
 export default createReducer(initialState, {
   [SET_USER]: setUser,
+  [SET_SETTINGS_SA_SCHOOL]: (state, { payload }) => {
+    state.saSettingsSchool = payload;
+  },
   [CHANGE_CLASS]: (state, { payload }) => {
     if (!(state.user && state.user.orgData)) {
       return state;

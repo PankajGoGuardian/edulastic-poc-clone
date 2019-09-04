@@ -112,7 +112,9 @@ export default class QuestionResponsePage {
   };
 
   verifyOptionDisabled = option => {
-    this.getDropDown().click();
+    this.getDropDown()
+      .eq(0)
+      .click();
     this.getDropDownMenu()
       .contains(option)
       .should("have.class", "ant-select-dropdown-menu-item-disabled");
@@ -125,7 +127,7 @@ export default class QuestionResponsePage {
     this.getDropDown().click();
     this.getDropDownMenu()
       .contains(queNum)
-      .click();
+      .click({ force: true });
     if (queNum !== "Q1") cy.wait("@question");
   };
 

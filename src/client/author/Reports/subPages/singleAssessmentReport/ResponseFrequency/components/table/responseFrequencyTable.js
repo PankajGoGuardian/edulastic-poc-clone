@@ -3,7 +3,7 @@ import { Component } from "react";
 import { StyledCard, StyledTable } from "../styled";
 import { CustomTableTooltip } from "../../../../../common/components/customTableTooltip";
 import { Row, Col } from "antd";
-import { find } from "lodash";
+import { find, keyBy } from "lodash";
 import { ResponseTag } from "./responseTag";
 import { getHSLFromRange1, downloadCSV } from "../../../../../common/util";
 import PrintableTable from "../../../../../common/components/tables/PrintableTable";
@@ -123,7 +123,7 @@ export class ResponseFrequencyTable extends Component {
       let numToAlp = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       let arr = [];
       let { corr_cnt = 0, incorr_cnt = 0, skip_cnt = 0, part_cnt = 0 } = record;
-      let sum = corr_cnt + incorr_cnt + skip_cnt + part_cnt;
+      let sum = corr_cnt + incorr_cnt + part_cnt;
       if (sum == 0) sum = 1;
       if (!data || Object.keys(data).length === 0) {
         arr.push({
@@ -193,6 +193,7 @@ export class ResponseFrequencyTable extends Component {
           selectedMap[arr[i].key] = true;
         }
 
+        const validation = keyBy(record.validation);
         for (let i = 0; i < record.options.length; i++) {
           if (!selectedMap[numToAlp[i]]) {
             arr.push({
@@ -200,7 +201,7 @@ export class ResponseFrequencyTable extends Component {
               count: 0,
               name: numToAlp[i],
               key: numToAlp[i],
-              isCorrect: false,
+              isCorrect: !!validation[record.options[i].value],
               isUnselected: true,
               record: record
             });

@@ -28,7 +28,7 @@ export const ConfirmationModal = styled(Modal)`
       box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.07);
       border-radius: 4px;
       text-align: ${props => (props.textAlign ? props.textAlign : "center")};
-      min-height: 180px;
+      min-height: ${({ bodyHeight }) => bodyHeight || "180px"};
       p {
         font-size: 16px;
         color: ${titleColor};

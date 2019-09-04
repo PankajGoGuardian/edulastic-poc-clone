@@ -1,5 +1,5 @@
 import LCBHeader from "./lcbHeader";
-import { studentSide as asgnStatus, studentSide } from "../../constants/assignmentStatus";
+import { studentSide as asgnStatus, studentSide, teacherSide } from "../../constants/assignmentStatus";
 import QuestionResponsePage from "./QuestionResponsePage";
 import { attemptTypes } from "../../constants/questionTypes";
 
@@ -126,16 +126,18 @@ class LiveClassboardPage {
 
   getViewResponseByIndex = index => cy.get('[data-cy="viewResponse"]').eq(index);
 
+  getViewResponseByStudentName = stuName => this.getStudentCardByStudentName(stuName).find('[data-cy="viewResponse"]');
+
   getStudentPerformanceByIndex = index => cy.get('[data-cy="studentPerformance"]').eq(index);
 
   verifyStudentCard(studentName, status, score, performance, queAttempt) {
     const queCards = Object.keys(queAttempt).map(queNum => queAttempt[queNum]);
     this.getCardIndex(studentName).then(index => {
-      // TODO : remove log once flow is commplted
+      /*  // TODO : remove log once flow is commplted
       console.log(
         "stduent stats :: ",
         `${studentName}, ${status}, ${score}, ${performance}, ${JSON.stringify(queAttempt)} , ${queCards}`
-      );
+      ); */
       this.getStudentStatusByIndex(index).should(
         "have.text",
         status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status
@@ -143,18 +145,22 @@ class LiveClassboardPage {
       this.getStudentScoreByIndex(index).should("have.text", score);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);
-      if (status !== studentSide.NOT_STARTED) {
+      if ([studentSide.NOT_STARTED, teacherSide.REDIRECTED].indexOf(status) === -1) {
         cy.server();
         cy.route("GET", "**/test-activity/**").as("test-activity");
-        this.getViewResponseByIndex(index)
+        // this.getViewResponseByIndex(index)
+        this.getViewResponseByStudentName(studentName)
           .should("be.exist")
           .click()
           .then(() => {
             cy.wait("@test-activity");
-            cy.get(".ant-select-selection-selected-value").should("have.text", studentName);
+            cy.get(".ant-select-selection-selected-value")
+              .eq(0)
+              .should("have.text", studentName);
           });
         this.clickOnCardViewTab();
-      } else this.getViewResponseByIndex(index).should("not.be.exist");
+        // } else this.getViewResponseByIndex(index).should("not.be.exist");
+      } else this.getViewResponseByStudentName(studentName).should("not.be.exist");
     });
   }
 
@@ -177,16 +183,25 @@ class LiveClassboardPage {
   clickOnRedirectSubmit = () => {
     cy.server();
     cy.route("POST", "**/redirect").as("redirect");
+    cy.route("GET", "**/test-activity").as("testactivity");
     this.getRedirecPopUp()
-      .contains("span", "submit")
+      .contains("span", "SUBMIT")
       .click({ force: true });
-    cy.wait("@redirect");
+    cy.wait("@redirect").then(xhr => {
+      expect(xhr.status).to.equal(200);
+      expect(xhr.response.body.result).to.eq("Assignment Redirect is successful");
+    });
+
+    // FIXME: page doesn't update unless refresh on Cypress only,
+    // need to revisit h. for now reloading the page to verify redirected stats
+    cy.reload();
+    cy.wait("@testactivity");
   };
 
   verifyStudentsOnRedirectPopUp = student =>
     this.getRedirecPopUp()
       .find(".ant-select-selection__choice")
-      .contains(student)
+      .contains(student.split(" ")[0])
       .should("be.exist");
 
   verifyQuestion = queCount =>

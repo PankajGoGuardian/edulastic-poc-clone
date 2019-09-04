@@ -183,7 +183,6 @@ class MathInput extends React.PureComponent {
       restrictKeys,
       customKeys,
       hideKeypad,
-      allowNumericOnly,
       onInnerFieldClick
     } = this.props;
     return (
@@ -192,7 +191,6 @@ class MathInput extends React.PureComponent {
         className={className}
         fontStyle={symbols[0] === "units_si" || symbols[0] === "units_us" ? "normal" : "italic"}
         width={style.width}
-        height={style.height}
         fontSize={style.fontSize}
       >
         <div
@@ -227,7 +225,6 @@ class MathInput extends React.PureComponent {
                 customKeys={customKeys}
                 showResponse={showResponse}
                 showDropdown={showDropdown}
-                allowNumericOnly={allowNumericOnly}
                 onChangeKeypad={onChangeKeypad}
                 onInput={(key, command) => this.onInput(key, command)}
               />

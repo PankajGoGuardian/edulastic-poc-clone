@@ -97,7 +97,7 @@ class Scoring extends Component {
 
         {isAutomarkChecked && (
           <Row gutter={60} center>
-            <Col md={12}>
+            <Col md={11}>
               <Checkbox
                 data-cy="unscoredChk"
                 checked={questionData.validation.unscored}
@@ -107,7 +107,7 @@ class Scoring extends Component {
                 {t("component.options.unscored")}
               </Checkbox>
             </Col>
-            <Col md={12}>
+            <Col md={13}>
               <FormGroup center>
                 <Input
                   type="number"

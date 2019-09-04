@@ -1,6 +1,9 @@
 import styled from "styled-components";
-import { Select, Button, Radio, Input } from "antd";
+import { Radio, Input, Col } from "antd";
+import { title } from "@edulastic/colors";
 import { StyledTable as Table } from "../../../../common/styled";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
+
 const RadioGroup = Radio.Group;
 
 export const StyledTableContainer = styled.div`
@@ -32,18 +35,21 @@ export const StyledTable = styled(Table)`
 `;
 
 export const TopDiv = styled.div`
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	margin-bottom: 20px
-	align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px 15px;
 `;
 
 export const InfoDiv = styled.div`
   display: column;
 `;
 
-export const StyledH3 = styled.h3``;
+export const StyledH3 = styled.h3`
+  font-size: 16px;
+  color: ${title};
+  margin-bottom: 0px;
+`;
 
 export const StyledDescription = styled.p``;
 
@@ -65,34 +71,43 @@ export const SaveAlert = styled.p`
   line-height: 32px;
 `;
 
-export const StyledAddButton = styled(Button)`
-  align-self: flex-end;
-  margin-top: 20px;
-  margin-bottom: 20px;
+export const StyledAddButton = styled(ThemeButton)`
+  height: 34px;
+  font-size: 12px;
 `;
 
-export const StyledMasterDiv = styled.div``;
+export const StyledMasterDiv = styled.div`
+  padding: 25px 15px 15px;
+`;
 
 export const StyledUl = styled.ul`
   padding-left: 24px;
 `;
 
 export const StyledRadioGroup = styled(RadioGroup)`
-  display: flex;
-  flex-direction: column;
-
-  .ant-radio-wrapper {
-    margin-bottom: 5px;
+  padding: 20px 0px;
+  width: 100%;
+  .ant-radio + span {
+    font-size: 12px;
   }
+`;
+
+export const InputOption = styled.div`
+  margin-top: ${({ margin }) => margin || "0px"};
+`;
+
+export const RadioWrap = styled(Col)`
+  padding-bottom: 20px;
 `;
 
 export const StyledAverageRadioDiv = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: ${({ direction }) => direction || "row"};
 `;
 
 export const StyledLabel = styled.label`
   margin-right: 5px;
+  font-size: 12px;
 `;
 
 export const StyledAverageInput = styled(Input)`

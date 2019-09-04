@@ -117,4 +117,5 @@ const MainContainer = styled.div`
 
 const Wrapper = styled.div`
   position: relative;
+  margin-bottom: 15vh;
 `;

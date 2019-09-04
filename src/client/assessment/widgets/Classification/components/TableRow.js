@@ -1,4 +1,4 @@
-/* eslint-disable func-names */
+/* eslint-disable */
 import React, { useLayoutEffect, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
@@ -227,15 +227,16 @@ const TableRow = ({
 
   useLayoutEffect(() => {
     if (window.$ && wrapperRef.current) {
-      // eslint-disable-next-line no-undef
       $(".answer-draggable-wrapper").each(function(index) {
-        // eslint-disable-next-line no-undef
-        $(this).on("DOMSubtreeModified", function() {
+        const wraperElem = this;
+        const observer = new MutationObserver(function() {
           setTimeout(() => {
-            dropContainerHeightList[index] = this.clientHeight;
+            dropContainerHeightList[index] = wraperElem.clientHeight;
             changeWrapperH();
           });
         });
+        const config = { childList: true, subtree: true };
+        observer.observe(this, config);
       });
     }
   });

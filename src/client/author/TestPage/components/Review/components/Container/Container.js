@@ -29,8 +29,8 @@ import { clearDictAlignmentAction } from "../../../../../src/actions/dictionarie
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 
-const getTotalScore = ({ testItems = [], scoring }) =>
-  testItems.map(item => (scoring && scoring[item._id]) || helpers.getPoints(item)).reduce((total, s) => total + s, 0);
+const getTotalScore = ({ testItems = [], scoring = {} }) =>
+  testItems.map(item => scoring[item._id] || helpers.getPoints(item)).reduce((total, s) => total + s, 0);
 
 const getStandardWiseSummary = (question, point) => {
   let standardSummary;

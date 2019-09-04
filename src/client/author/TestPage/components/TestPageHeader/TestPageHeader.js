@@ -104,7 +104,6 @@ const TestPageHeader = ({
   const [currentAction, setCurrentAction] = useState("");
   const onRegradeConfirm = () => {
     publishForRegrade(test._id);
-    history.push(`/author/assignments/regrade/new/${test._id}/old/${test.previousTestId}`);
   };
 
   const onCancelRegrade = () => {

@@ -120,6 +120,7 @@ export const Divider = styled.div`
   position: relative;
   background-color: ${props => (props.isCollapsed ? "#e5e5e5" : "transparent")};
   border-radius: 10px;
+  z-index: 1;
   > div {
     position: absolute;
     background: #fff;

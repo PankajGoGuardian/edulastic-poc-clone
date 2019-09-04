@@ -8,7 +8,7 @@ import styled from "styled-components";
 import produce from "immer";
 import { questionType as constantsQuestionType } from "@edulastic/constants";
 import { withWindowSizes, AnswerContext } from "@edulastic/common";
-import { IconClose } from "@edulastic/icons";
+import { IconClose, IconArrowRight, IconArrowLeft } from "@edulastic/icons";
 import { cloneDeep, get, uniq, intersection } from "lodash";
 import { Row, Col, Layout, Button, Modal, Pagination } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
@@ -62,7 +62,6 @@ import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
-import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
 import { CLEAR } from "../../../../assessment/constants/constantsForQuestions";
 import { clearAnswersAction } from "../../../src/actions/answers";
@@ -71,6 +70,7 @@ import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/conte
 import { questionType } from "@edulastic/constants";
 import { ConfirmationModal } from "../../../src/components/common/ConfirmationModal";
 import AuthorTestItemPreview from "../../../src/components/common/PreviewModal/AuthorTestItemPreview";
+import { CollapseBtn, Divider } from "../../../src/components/common/PreviewModal/styled";
 
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -441,6 +441,22 @@ class Container extends Component {
     }));
   };
 
+  renderCollapseButtons = i => {
+    const { collapseDirection } = this.state;
+    return (
+      <Divider isCollapsed={!!collapseDirection} collapseDirection={collapseDirection}>
+        <div>
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("left")} left>
+            <IconArrowLeft />
+          </CollapseBtn>
+          <CollapseBtn collapseDirection={collapseDirection} onClick={() => this.handleCollapse("right")} right>
+            <IconArrowRight />
+          </CollapseBtn>
+        </div>
+      </Divider>
+    );
+  };
+
   renderEdit = () => {
     const { collapseDirection } = this.state;
     const { rows, item, updateTabTitle, windowWidth, passage, view } = this.props;
@@ -453,7 +469,7 @@ class Container extends Component {
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ItemDetailWrapper padding="0px">
-          {passageWithQuestions && !collapseLeft && (
+          {passageWithQuestions && (
             <ItemDetailRow
               row={passage.structure}
               key="0"
@@ -465,43 +481,36 @@ class Container extends Component {
               onEditWidget={this.handleEditPassageWidget}
               handleAddToPassage={this.handleAddToPassage}
               onDeleteWidget={this.handleDeletePassageWidget}
-              left={true}
-              right={false}
-              handleCollapse={this.handleCollapse}
-              collapseDirection={collapseDirection}
+              hideColumn={collapseLeft}
+              isCollapsed={!!collapseDirection}
               useTabsLeft={useTabsLeft}
             />
           )}
-          {rows &&
-            rows.map((row, i) => {
-              if (collapseLeft && i === 0 && !passageWithQuestions) {
-                return "";
-              }
-              if (collapseRight && (i === 1 || (passageWithQuestions && i === 0))) {
-                return "";
-              }
-              return (
-                <ItemDetailRow
-                  key={passage ? i + 1 : i}
-                  row={row}
-                  view={view}
-                  rowIndex={i}
-                  previewTab={"show"}
-                  itemData={item}
-                  count={rows.length}
-                  onAdd={this.handleAdd}
-                  windowWidth={windowWidth}
-                  onDeleteWidget={this.handleDeleteWidget(i)}
-                  onEditWidget={this.handleEditWidget}
-                  onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
-                  left={!item.passageId && i === 0 && rows.length > 1}
-                  right={(!!item.passageId && i === 0) || i === 1}
-                  handleCollapse={this.handleCollapse}
-                  collapseDirection={collapseDirection}
-                  useTabsLeft={useTabsLeft}
-                />
-              );
-            })}
+          {rows.map((row, i) => (
+            <>
+              {((rows.length > 1 && i === 1) || (passageWithQuestions && i === 0)) && this.renderCollapseButtons()}
+              <ItemDetailRow
+                key={passage ? i + 1 : i}
+                row={row}
+                view={view}
+                rowIndex={i}
+                previewTab={"show"}
+                itemData={item}
+                count={rows.length}
+                onAdd={this.handleAdd}
+                windowWidth={windowWidth}
+                onDeleteWidget={this.handleDeleteWidget(i)}
+                onEditWidget={this.handleEditWidget}
+                onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                hideColumn={
+                  (collapseLeft && !passageWithQuestions && i === 0) ||
+                  (collapseRight && (i === 1 || passageWithQuestions))
+                }
+                isCollapsed={!!collapseDirection}
+                useTabsLeft={useTabsLeft}
+              />
+            </>
+          ))}
         </ItemDetailWrapper>
       </AnswerContext.Provider>
     );

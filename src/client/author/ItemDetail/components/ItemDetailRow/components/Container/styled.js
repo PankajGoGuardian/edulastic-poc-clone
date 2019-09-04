@@ -10,6 +10,7 @@ export const Content = styled(Paper)`
   padding: ${props => (props.padding ? props.padding : "0px")};
   overflow: hidden;
   position: relative;
+  display: ${props => (props.hide ? "none" : "initial")};
   @media (max-width: ${mobileWidth}) {
     padding: 33px 30px;
   }

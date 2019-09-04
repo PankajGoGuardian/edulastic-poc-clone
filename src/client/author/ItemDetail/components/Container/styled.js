@@ -57,7 +57,7 @@ export const ItemDetailWrapper = styled.div`
   padding: ${props => (props.padding ? props.padding : "0px 30px 40px")};
   flex-wrap: nowrap;
   width: 100%;
-
+  justify-content: space-between;
   @media (max-width: ${mobileWidth}) {
     margin-top: 0;
     padding: 0px 25px 25px;

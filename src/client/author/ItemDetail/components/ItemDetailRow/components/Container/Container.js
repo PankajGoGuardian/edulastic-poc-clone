@@ -150,7 +150,6 @@ class Container extends Component {
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex);
     // adding first part?
     const isAddFirstPart = row.widgets && row.widgets.length === 0;
-    console.log(hideColumn, "===hideColumn", row);
     return (
       <Content
         value={tabIndex}
@@ -183,10 +182,7 @@ class Container extends Component {
         {dragging && row.widgets.filter(w => w.tabIndex === tabIndex).length === 0 && (
           <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={tabIndex} />
         )}
-        {/* {left && <CollapseBtn className="fa fa-arrow-left" onClick={() => handleCollapse("left")} />} */}
         {this.renderWidgets()}
-        {/* {right && <CollapseBtn className="fa fa-arrow-right" onClick={() => handleCollapse("right")} />} */}
-
         {enableAnotherPart && !isPassageQuestion && (
           <AddButtonContainer justifyContent="center">
             <AddNew isAddFirstPart={isAddFirstPart} onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />

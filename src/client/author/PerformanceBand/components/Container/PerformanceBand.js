@@ -58,7 +58,10 @@ function ProfileRow({
         onCancel={() => setConfirmVisible(false)}
         textAlign="left"
         footer={[
-          <Button ghost onClick={() => setConfirmVisible(false)}>
+          <Button ghost onClick={() => {
+              setConfirmVisible(false);
+              setDeleteText("");
+            }}>
             NO, CANCEL
           </Button>,
           <Button disabled={deleteText.toUpperCase() != "DELETE"} loading={loading} onClick={() => remove(_id)}>
@@ -130,6 +133,11 @@ export function PerformanceBandAlt(props) {
     const name = profileName;
 
     if (name) {
+      // needed for unicode aware length
+      if ([...name].length > 150) {
+        message.error("Sorry! Maximum length of Profile Name is 150 characters");
+        return;
+      }
       if (profiles.find(p => (p.name || "").toLowerCase() === name.toLocaleLowerCase())) {
         message.error(`Profile with name "${name}" already exists. Please try with a different name`);
         return;

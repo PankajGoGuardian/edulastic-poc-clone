@@ -21,7 +21,12 @@ const Header = ({ onTabChange, currentTab, tabs, title, status, onSave, onPublis
     <TestPageNav onChange={onTabChange} current={currentTab} buttons={tabs} />
     <SaveWrapper>
       <FlexContainer justifyContent="space-between" className="abcdTesting">
-        <EduButton data-cy="save" style={{ ...style, width: 42, padding: 0 }} size="large" onClick={onSave("draft")}>
+        <EduButton
+          data-cy="save"
+          style={{ ...style, width: 42, padding: 0 }}
+          size="large"
+          onClick={() => onSave("draft")}
+        >
           <IconDiskette color={themeColor} fill={themeColor} />
         </EduButton>
         <EduButton data-cy="assign" style={{ ...style, width: 120 }} size="large" onClick={onAssign}>

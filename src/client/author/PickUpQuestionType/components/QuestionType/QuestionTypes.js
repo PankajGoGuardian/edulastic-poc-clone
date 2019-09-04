@@ -7,6 +7,7 @@ import styled from "styled-components";
 import { Dump } from "../../components";
 import Card from "../Card/Card";
 import { getCards } from "./constants";
+import { largeDesktopWidth, mobileWidth } from "@edulastic/colors";
 
 const PickUpQuestionTypes = ({ onSelectQuestionType, questionType, isPassageItem }) => (
   <FlexContainer>
@@ -23,12 +24,15 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType, isPassageItem
 );
 
 const FlexContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  align-content: baseline;
-  margin: 0px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 0.9rem;
+  @media only screen and (max-width: ${largeDesktopWidth}) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media only screen and (max-width: ${mobileWidth}) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 PickUpQuestionTypes.propTypes = {

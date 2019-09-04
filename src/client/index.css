@@ -2080,3 +2080,17 @@ span.token.active-word {
 .ant-modal .ant-switch-checked {
   background-color: #00ad50;
 }
+
+iframe {
+  display: block;
+  min-width: 855px;
+  min-height: 455px;
+  background: #fff;
+}
+
+@media (min-width: 1281px) {
+  iframe {
+    max-width: 700px;
+    max-height: 383px;
+  }
+}

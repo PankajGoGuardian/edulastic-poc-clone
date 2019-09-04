@@ -26,6 +26,12 @@ import EditTestModal from "../../../src/components/common/EditTestModal";
 import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
 import { publishForRegradeAction } from "../../ducks";
 
+const statusConstants = {
+  DRAFT: "draft",
+  ARCHIVED: "archived",
+  PUBLISHED: "published"
+};
+
 export const navButtonsTest = [
   {
     icon: <IconDescription color={white} width={16} height={16} />,
@@ -119,7 +125,7 @@ const TestPageHeader = ({
   };
 
   const handlePublish = () => {
-    if (isUsed && updated) {
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
       setCurrentAction("publish");
       return setShowRegradePopup(true);
     }
@@ -127,7 +133,7 @@ const TestPageHeader = ({
   };
 
   const handleAssign = () => {
-    if (isUsed && updated) {
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
       setCurrentAction("assign");
       return setShowRegradePopup(true);
     }

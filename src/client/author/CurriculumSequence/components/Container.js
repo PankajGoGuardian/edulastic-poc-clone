@@ -5,6 +5,8 @@ import { compose } from "redux";
 import { message } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { test } from "@edulastic/constants";
+
 import CurriculumSequence from "./CurriculumSequence";
 import {
   getAllCurriculumSequencesAction,
@@ -72,11 +74,7 @@ import ShareModal from "../../src/components/common/ShareModal";
  */
 
 /** @extends Component<CurriculumProps> */
-const statusConstants = {
-  DRAFT: "draft",
-  ARCHIVED: "archived",
-  PUBLISHED: "published"
-};
+const { statusConstants } = test;
 
 class CurriculumContainer extends Component {
   state = {

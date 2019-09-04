@@ -110,5 +110,10 @@ module.exports = {
     { text: "District Library", value: "DISTRICT" },
     { text: "Public Library", value: "PUBLIC" },
     { text: "Edulastic Certified", value: "edulastic_certified" }
-  ]
+  ],
+  statusConstants: {
+    DRAFT: "draft",
+    ARCHIVED: "archived",
+    PUBLISHED: "published"
+  }
 };

@@ -74,6 +74,7 @@ const buttonsList = [
 ];
 
 const Tools = ({
+  isWorksheet,
   onToolChange,
   activeMode,
   onFillColorChange,
@@ -97,7 +98,7 @@ const Tools = ({
   const activeTool = buttonsList.find(button => button.mode === activeMode);
 
   return (
-    <ToolBox activeMode={activeMode} justifyContent="center">
+    <ToolBox activeMode={activeMode} isWorksheet={isWorksheet} justifyContent="center">
       {activeMode === "" && (
         <FlexContainer childMarginRight={0} justifyContent="flex-end" flexDirection="column">
           {buttonsList.map((button, i) => (
@@ -194,7 +195,7 @@ export default Tools;
 const ToolBox = styled(FlexContainer)`
   width: 50px;
   position: fixed;
-  top: 60px;
+  top: ${props => (props.isWorksheet ? "120px" : "60px")};
   background: ${props => props.theme.default.sideToolbarBgColor};
   z-index: 100001;
   border-radius: 4px;

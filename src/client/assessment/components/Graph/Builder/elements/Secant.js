@@ -5,7 +5,7 @@ import { getLabelParameters } from "../settings";
 
 const jxgType = 92;
 
-export const defaultConfig = {
+const defaultConfig = {
   fixed: false,
   strokeWidth: 2,
   highlightStrokeWidth: 2

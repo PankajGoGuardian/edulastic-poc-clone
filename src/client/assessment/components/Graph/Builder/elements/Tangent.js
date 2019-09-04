@@ -3,7 +3,7 @@ import { CONSTANT } from "../config";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
-export const jxgType = 91;
+const jxgType = 91;
 
 const defaultConfig = {
   fixed: false,

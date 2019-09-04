@@ -1090,24 +1090,7 @@ class Board {
         );
 
       case Equation.jxgType:
-        return Equation.create(
-          this,
-          object,
-          object.points
-            ? object.points.map(point =>
-                Point.create(this, point, {
-                  pointIsVisible: !checkPointVisibility || (showPoints && point.pointIsVisible),
-                  labelIsVisible: !checkLabelVisibility || (showPoints && point.labelIsVisible),
-                  fixed,
-                  snapToGrid: false
-                })
-              )
-            : null,
-          {
-            labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed
-          }
-        );
+        return Equation.create(this, object);
 
       case Area.jxgType:
         return Area.renderElement(this, object);

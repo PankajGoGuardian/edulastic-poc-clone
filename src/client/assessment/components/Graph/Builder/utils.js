@@ -327,7 +327,6 @@ export function flatConfig(config, accArg = {}, isSub = false) {
     if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.AREA || type === CONSTANT.TOOLS.DRAG_DROP) {
       if (!acc[id]) {
         acc[id] = element;
-        acc[id].priorityColor = element.priorityColor || null;
       }
       if (isSub) {
         acc[id].subElement = true;

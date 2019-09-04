@@ -2,16 +2,8 @@ import JXG from "jsxgraph";
 import { isEqual } from "lodash";
 import { parse } from "mathjs";
 import { Colors, CONSTANT } from "../config";
-import { getLabelParameters } from "../settings";
 import { fixLatex, isInPolygon, calcLineLatex } from "../utils";
-import { jxgType as exponentJxgType } from "./Exponent";
-import { jxgType as hyperbolaJxgType } from "./Hyperbola";
-import { jxgType as logarithmJxgType } from "./Logarithm";
-import { jxgType as parabolaJxgType } from "./Parabola";
-import { jxgType as polynomJxgType } from "./Polynom";
-import { jxgType as sinJxgType } from "./Sin";
-import { jxgType as tangentJxgType } from "./Tangent";
-import { jxgType as equationJxgType } from "./Equation";
+import { Equation, Exponent, Hyperbola, Logarithm, Parabola, Polynom, Secant, Sin, Tangent } from ".";
 
 const jxgType = 100;
 
@@ -221,11 +213,10 @@ function getAreaByPoint({ usrX, usrY }, [xMin, yMax, xMax, yMin], funcs) {
   return resultAreaPoints;
 }
 
-function renderElement(board, el, attrs = {}) {
+function renderElement(board, el) {
   const newElement = board.$board.create("polygon", el.points.map(p => [p.x, p.y]), {
     ...Colors.default[CONSTANT.TOOLS.AREA],
-    ...attrs,
-    label: getLabelParameters(jxgType),
+    highlightFillOpacity: 0.3,
     hasInnerPoints: false,
     highlighted: false,
     withLines: false,
@@ -254,14 +245,15 @@ function onHandler() {
       JXG.OBJECT_TYPE_CONIC,
       JXG.OBJECT_TYPE_LINE,
       JXG.OBJECT_TYPE_POLYGON,
-      exponentJxgType,
-      hyperbolaJxgType,
-      logarithmJxgType,
-      parabolaJxgType,
-      polynomJxgType,
-      sinJxgType,
-      tangentJxgType,
-      equationJxgType
+      Exponent.jxgType,
+      Hyperbola.jxgType,
+      Logarithm.jxgType,
+      Parabola.jxgType,
+      Polynom.jxgType,
+      Secant.jxgType,
+      Sin.jxgType,
+      Tangent.jxgType,
+      Equation.jxgType
     ];
 
     const funcs = board.elements
@@ -290,19 +282,21 @@ function onHandler() {
             const vertices = Object.values(item.ancestors).map(anc => ({ x: anc.X(), y: anc.Y() }));
             return (x, y) => isInPolygon({ x, y }, vertices);
           }
-          case exponentJxgType:
+          case Exponent.jxgType:
             return () => true;
-          case hyperbolaJxgType:
+          case Hyperbola.jxgType:
             return () => true;
-          case logarithmJxgType:
+          case Logarithm.jxgType:
             return () => true;
-          case parabolaJxgType:
+          case Parabola.jxgType:
             return () => true;
-          case polynomJxgType:
+          case Polynom.jxgType:
             return () => true;
-          case sinJxgType:
+          case Secant.jxgType:
             return () => true;
-          case tangentJxgType:
+          case Sin.jxgType:
+            return () => true;
+          case Tangent.jxgType:
             return () => true;
           default:
             return () => true;
@@ -326,10 +320,9 @@ function getConfig(area) {
 }
 
 function setAreasForEquations(board) {
-  // console.log('start calc');
   // find inequalities
   const inequalities = board.elements.filter(
-    el => el.type === equationJxgType && !el.latexIsBroken && el.fixedLatex.compSign !== "="
+    el => el.type === Equation.jxgType && !el.latexIsBroken && el.fixedLatex.compSign !== "="
   );
   if (inequalities.length === 0) {
     return;
@@ -373,13 +366,12 @@ function setAreasForEquations(board) {
     }
   }
 
-  // console.log('start rendering');
   const areaElements = areas.map(points => renderElement(board, { points }));
   inequalities[0].addParents(areaElements);
-  // console.log('end rendering');
 }
 
 export default {
+  jxgType,
   onHandler,
   getConfig,
   renderElement,

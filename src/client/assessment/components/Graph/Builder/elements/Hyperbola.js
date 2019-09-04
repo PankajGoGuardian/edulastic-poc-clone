@@ -4,7 +4,7 @@ import { CONSTANT } from "../config";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
-export const jxgType = 90;
+const jxgType = 90;
 
 const defaultConfig = {
   fixed: false,

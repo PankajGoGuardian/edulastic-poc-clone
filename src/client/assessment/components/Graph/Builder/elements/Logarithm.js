@@ -3,9 +3,9 @@ import { CONSTANT } from "../config";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
 import { getLabelParameters } from "../settings";
 
-export const jxgType = 94;
+const jxgType = 94;
 
-export const defaultConfig = {
+const defaultConfig = {
   fixed: false,
   strokeWidth: 2,
   highlightStrokeWidth: 2

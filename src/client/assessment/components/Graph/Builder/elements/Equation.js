@@ -1,14 +1,22 @@
 import { CONSTANT } from "../config";
-import { getLabelParameters } from "../settings";
 import { fixApiLatex } from "../utils";
 
-export const jxgType = 98;
+const jxgType = 98;
 
 const defaultConfig = {
   fixed: true,
   strokeWidth: 2,
   highlightStrokeWidth: 2
 };
+
+function getColorParams(color) {
+  return {
+    fillColor: "transparent",
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: "transparent"
+  };
+}
 
 const EMPTY = 0;
 const FINISHED = -1;
@@ -577,8 +585,9 @@ class CanvasPlotter {
   };
 }
 
-function renderElement(board, element, params) {
-  const { latex, id, label, apiLatex } = element;
+function create(board, object) {
+  const { latex, id, label, apiLatex } = object;
+
   const elementWithErrorLatex = {
     type: jxgType,
     id,
@@ -603,7 +612,11 @@ function renderElement(board, element, params) {
   }
 
   try {
-    const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, { ...params, dash });
+    const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, {
+      ...defaultConfig,
+      ...getColorParams("#00b2ff"),
+      dash
+    });
     cv.update();
     line = cv.result;
   } catch (ex) {
@@ -642,15 +655,8 @@ function getConfig(equation) {
   };
 }
 
-function parseConfig() {
-  return {
-    ...defaultConfig,
-    label: getLabelParameters(jxgType)
-  };
-}
-
 export default {
+  jxgType,
   getConfig,
-  parseConfig,
-  renderElement
+  create
 };

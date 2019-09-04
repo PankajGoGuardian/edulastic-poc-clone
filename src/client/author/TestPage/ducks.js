@@ -73,6 +73,7 @@ export const SET_ALL_TAGS = "[test] set all tags";
 export const ADD_NEW_TAG = "[test] add new tag";
 export const RECEIVE_DEFAULT_TEST_SETTINGS = "[tests] receive default test settings";
 export const SET_DEFAULT_TEST_TYPE_PROFILES = "[tests] set default test type profiles";
+export const PUBLISH_FOR_REGRADE = "[tests] publish test for regrade";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
@@ -84,6 +85,7 @@ export const setAndSavePassageItemsAction = createAction(SET_AND_SAVE_PASSAGE_IT
 export const getAllTagsAction = createAction(GET_ALL_TAGS_IN_DISTRICT);
 export const setAllTagsAction = createAction(SET_ALL_TAGS);
 export const getDefaultTestSettingsAction = createAction(RECEIVE_DEFAULT_TEST_SETTINGS);
+export const publishForRegradeAction = createAction(PUBLISH_FOR_REGRADE);
 
 export const receiveTestByIdAction = (id, requestLatest, editAssigned) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -585,8 +587,8 @@ function* updateTestSaga({ payload }) {
     if (oldId != newId && newId) {
       if (!payload.assignFlow) {
         yield call(message.success, "Test versioned");
+        yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
       }
-      yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
     } else {
       if (!payload.assignFlow) {
         yield call(message.success, "Test saved as Draft");
@@ -607,6 +609,7 @@ function* updateRegradeDataSaga({ payload }) {
   try {
     yield call(assignmentApi.regrade, payload);
     yield call(message.success, "Success update");
+    yield put(push(`/author/regrade/${payload.newTestId}/success`));
   } catch (e) {
     const errorMessage = "Update test is failing";
     yield call(message.error, errorMessage);
@@ -627,7 +630,6 @@ function* shareTestSaga({ payload }) {
 function* publishTestSaga({ payload }) {
   try {
     let { _id: id, test, assignFlow } = payload;
-    const { isUsed } = test;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
     yield call(updateTestSaga, { payload: { id, data: test, assignFlow: true } });
@@ -636,20 +638,30 @@ function* publishTestSaga({ payload }) {
     if (!assignFlow) {
       yield call(message.success, "Successfully published");
     }
-    const oldId = yield select(state => state.tests.regradeTestId);
     if (assignFlow) {
       yield put(push(`/author/assignments/${id}`));
     } else {
-      if (oldId || isUsed) {
-        yield put(push(`/author/assignments/regrade/new/${id}/old/${test.origTestId}`));
-        yield put(setRegradeOldIdAction(undefined));
-      } else {
-        yield put(push(`/author/tests/${id}/publish`));
-      }
+      yield put(push(`/author/tests/${id}/publish`));
     }
   } catch (e) {
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
+  }
+}
+
+/**
+ *
+ * @param {*} payload should be test ID
+ */
+function* publishForRegrade({ payload }) {
+  try {
+    const test = yield select(getTestSelector);
+    yield call(updateTestSaga, { payload: { id: payload, data: test, assignFlow: true } });
+    const newTestId = yield select(getTestIdSelector);
+    yield call(testsApi.publishTest, newTestId);
+    yield put(push(`/author/assignments/regrade/new/${newTestId}/old/${test.previousTestId}`));
+  } catch (e) {
+    yield call(message.error, "publish failed");
   }
 }
 
@@ -834,16 +846,16 @@ function* showAnswerSaga({ payload }) {
 
     const evaluation = yield createShowAnswerData(questions, answers);
     yield put({
-      type: ADD_ITEM_EVALUATION,
+      type: CHANGE_PREVIEW,
       payload: {
-        ...evaluation
+        view: "show"
       }
     });
 
     yield put({
-      type: CHANGE_PREVIEW,
+      type: ADD_ITEM_EVALUATION,
       payload: {
-        view: "show"
+        ...evaluation
       }
     });
   } catch (e) {
@@ -905,7 +917,8 @@ export function* watcherSaga() {
     yield takeEvery(PREVIEW_CHECK_ANSWER, checkAnswerSaga),
     yield takeEvery(GET_ALL_TAGS_IN_DISTRICT, getAllTagsSaga),
     yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga),
-    yield takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga)
+    yield takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
+    yield takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade)
   ]);
   while (true) {
     const { payload } = yield take(requestChan);

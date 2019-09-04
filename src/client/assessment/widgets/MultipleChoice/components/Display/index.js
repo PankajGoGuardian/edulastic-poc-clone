@@ -1,4 +1,5 @@
 import React from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import { InstructorStimulus, Stimulus, QuestionNumberLabel } from "@edulastic/common";
 
@@ -26,7 +27,7 @@ const Display = ({
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumberLabel>{qLabel}:</QuestionNumberLabel>}
-          <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
+          <StyledStimulus dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
       </>
     )}
@@ -84,5 +85,10 @@ Display.defaultProps = {
   styleType: "default",
   multipleResponses: false
 };
+
+const StyledStimulus = styled(Stimulus)`
+  word-break: break-all;
+  overflow: hidden;
+`;
 
 export default Display;

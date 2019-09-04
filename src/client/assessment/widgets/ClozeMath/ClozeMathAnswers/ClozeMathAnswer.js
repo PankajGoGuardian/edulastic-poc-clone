@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Collapse, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { white, darkGrey1, inputBorder } from "@edulastic/colors";
+import { response as defaultResponse } from "@edulastic/constants";
 
 import MathFormulaAnswerMethod from "../../MathFormula/components/MathFormulaAnswerMethod";
 
@@ -87,7 +88,7 @@ class ClozeMathAnswer extends Component {
           {answers.map(answer => {
             const response = responseContainers.find(cont => cont.index === answer.index);
             const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.minWidth}px` || "auto";
-            const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+            const height = response && response.heightpx ? `${response.heightpx}px` : `${defaultResponse.minHeight}px`;
             return (
               <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.index}`}>
                 {answer.value.map((method, methodIndex) => (

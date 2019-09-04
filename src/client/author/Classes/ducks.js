@@ -256,6 +256,7 @@ function* deleteClassSaga({ payload }) {
     yield call(groupApi.deleteGroup, payload.data);
     yield put(deleteClassSuccessAction(payload));
     yield put(receiveClassListAction(payload.searchQuery));
+    yield call(message.success, "Selected class(es) have been archived");
   } catch (err) {
     const errorMessage = "Delete Class is failing";
     yield call(message.error, errorMessage);

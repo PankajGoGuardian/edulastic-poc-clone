@@ -31,7 +31,8 @@ import {
   getClassQuestionSelector,
   getStudentResponseSelector,
   getDynamicVariablesSetIdForViewResponse,
-  getTestItemsOrderSelector
+  getTestItemsOrderSelector,
+  getCurrentTestActivityIdSelector
 } from "../ClassBoard/ducks";
 import { AnswerContext } from "@edulastic/common";
 
@@ -84,7 +85,13 @@ class StudentViewContainer extends Component {
   feedbackRef = React.createRef();
 
   static getDerivedStateFromProps(nextProps, preState) {
-    const { selectedStudent, loadStudentResponses, studentItems, assignmentIdClassId: { classId } = {} } = nextProps;
+    const {
+      selectedStudent,
+      loadStudentResponses,
+      studentItems,
+      assignmentIdClassId: { classId } = {},
+      currentTestActivityId = ""
+    } = nextProps;
     const { selectedStudent: _selectedStudent } = preState || {};
 
     if (selectedStudent !== _selectedStudent) {
@@ -93,8 +100,8 @@ class StudentViewContainer extends Component {
         index = findIndex(studentItems, student => student.studentId === selectedStudent);
       }
       const { testActivityId } = studentItems[index];
-      if (!isUndefined(testActivityId) && !isUndefined(classId)) {
-        loadStudentResponses({ testActivityId, groupId: classId });
+      if (!isUndefined(currentTestActivityId || testActivityId) && !isUndefined(classId)) {
+        loadStudentResponses({ testActivityId: currentTestActivityId || testActivityId, groupId: classId });
       }
     }
     return {
@@ -234,7 +241,7 @@ class StudentViewContainer extends Component {
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             <ClassQuestions
               currentStudent={currentStudent || {}}
-              questionActivities={studentResponse.questionActivities}
+              questionActivities={studentResponse.questionActivities || []}
               classResponse={classResponseProcessed}
               testItemsOrder={testItemsOrder}
               studentViewFilter={filter}
@@ -255,6 +262,7 @@ const enhance = compose(
       studentResponse: getStudentResponseSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
+      currentTestActivityId: getCurrentTestActivityIdSelector(state),
       variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       testItemIds: get(state, "author_classboard_testActivity.data.test.testItems", []),

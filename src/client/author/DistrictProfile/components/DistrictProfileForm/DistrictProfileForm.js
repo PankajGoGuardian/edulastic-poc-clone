@@ -83,7 +83,8 @@ class DistrictProfileForm extends React.Component {
     } else return { districtProfile: nextProps.districtProfile };
   }
 
-  handleSubmit = () => {
+  handleSubmit = event => {
+    event.preventDefault();
     if (this.state.editing) return;
     const { districtProfile } = { ...this.state };
     const { updateDistrictProfile, createDistrictProfile, userOrgId } = this.props;
@@ -102,7 +103,6 @@ class DistrictProfileForm extends React.Component {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         if (!enableSave) return;
-
         const saveDistrictData = {
           orgType: "district",
           orgId: userOrgId,
@@ -110,11 +110,14 @@ class DistrictProfileForm extends React.Component {
           pageBackground: districtProfile.pageBackground ? districtProfile.pageBackground : undefined,
           name: districtProfile.name,
           shortName: districtProfile.shortName ? districtProfile.shortName : undefined,
-          city: districtProfile.city ? districtProfile.city : undefined,
-          state: districtProfile.state ? districtProfile.state : undefined,
-          zip: districtProfile.zip ? districtProfile.zip : undefined,
-          nces: districtProfile.nces ? districtProfile.nces : undefined,
-          announcement: districtProfile.announcement ? districtProfile.announcement : undefined
+          city: districtProfile.city || districtProfile.city === "" ? districtProfile.city : undefined,
+          state: districtProfile.state || districtProfile.state === "" ? districtProfile.state : undefined,
+          zip: districtProfile.zip || districtProfile.zip === "" ? districtProfile.zip : undefined,
+          nces: districtProfile.nces || districtProfile.nces === "" ? districtProfile.nces : undefined,
+          announcement:
+            districtProfile.announcement || districtProfile.announcement === ""
+              ? districtProfile.announcement
+              : undefined
         };
 
         if (districtProfile._id === undefined) {
@@ -199,7 +202,7 @@ class DistrictProfileForm extends React.Component {
     );
     return (
       <StyledFormDiv>
-        <Form>
+        <Form onSubmit={this.handleSubmit}>
           <StyledDivBg>
             <ImageUpload
               imgSrc={districtProfile.pageBackground}
@@ -210,6 +213,7 @@ class DistrictProfileForm extends React.Component {
               labelStr={"page background"}
               ref={this.childRefArr[6].component}
               requiredStatus={false}
+              form={this.props.form}
             />
           </StyledDivBg>
           <StyledDivMain>
@@ -220,6 +224,7 @@ class DistrictProfileForm extends React.Component {
                 updateEditing={this.setEditing}
                 requiredStatus={true}
                 ref={this.childRefArr[0].component}
+                form={this.props.form}
               />
             </StyledRow>
             <StyledRow>
@@ -227,12 +232,13 @@ class DistrictProfileForm extends React.Component {
                 value={districtProfile.shortName}
                 valueName={"District Short Name"}
                 maxLength={10}
-                requiredStatus={false}
+                requiredStatus={true}
                 setProfileValue={this.updateProfileValue}
                 updateEditing={this.setEditing}
                 type={"text"}
                 ref={this.childRefArr[1].component}
                 isSpaceEnable={false}
+                form={this.props.form}
               />
               <Popover
                 trigger="click"
@@ -256,6 +262,7 @@ class DistrictProfileForm extends React.Component {
                 type={"text"}
                 ref={this.childRefArr[2].component}
                 isSpaceEnable={true}
+                form={this.props.form}
               />
             </StyledRow>
             <StyledRow>
@@ -269,6 +276,7 @@ class DistrictProfileForm extends React.Component {
                 type={"text"}
                 ref={this.childRefArr[3].component}
                 isSpaceEnable={true}
+                form={this.props.form}
               />
             </StyledRow>
             <StyledRow>
@@ -282,6 +290,7 @@ class DistrictProfileForm extends React.Component {
                 type={"text"}
                 ref={this.childRefArr[4].component}
                 isSpaceEnable={true}
+                form={this.props.form}
               />
             </StyledRow>
             <StyledRow>
@@ -295,6 +304,7 @@ class DistrictProfileForm extends React.Component {
                 type={"text"}
                 ref={this.childRefArr[5].component}
                 isSpaceEnable={true}
+                form={this.props.form}
               />
             </StyledRow>
             <StyledRowLogo>
@@ -308,6 +318,7 @@ class DistrictProfileForm extends React.Component {
                 labelStr={"logo image"}
                 ref={this.childRefArr[7].component}
                 requiredStatus={false}
+                form={this.props.form}
               />
             </StyledRowLogo>
             <StyledRowAnn>
@@ -320,7 +331,7 @@ class DistrictProfileForm extends React.Component {
               </FormItem>
             </StyledRowAnn>
             <StyledRow>
-              <SaveButton type="primary" onClick={this.handleSubmit} disabled={editing}>
+              <SaveButton type="primary" htmlType="submit">
                 {btnTitle}
               </SaveButton>
             </StyledRow>

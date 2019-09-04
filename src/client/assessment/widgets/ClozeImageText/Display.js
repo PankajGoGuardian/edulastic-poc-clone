@@ -155,7 +155,8 @@ class Display extends Component {
       showQuestionNumber,
       disableResponse,
       imageOptions,
-      isReviewTab
+      isReviewTab,
+      isExpressGrader
     } = this.props;
     const cAnswers = get(item, "validation.validResponse.value", []);
     const showDropItemBorder = get(item, "responseLayout.showborder", false);
@@ -292,7 +293,7 @@ class Display extends Component {
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const altResponses = validation.altResponses || [];
-    const correctAnswerBoxLayout = showAnswer ? (
+    const correctAnswerBoxLayout = (
       <React.Fragment>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
@@ -310,10 +311,8 @@ class Display extends Component {
           />
         ))}
       </React.Fragment>
-    ) : (
-      <div />
     );
-    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+    const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize}>
         <QuestionTitleWrapper>
@@ -350,6 +349,7 @@ Display.propTypes = {
   theme: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
+  isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   changePreviewTab: PropTypes.func,
   imageOptions: PropTypes.object
@@ -381,6 +381,7 @@ Display.defaultProps = {
   },
   showQuestionNumber: false,
   imageOptions: {},
+  isExpressGrader: false,
   isReviewTab: false
 };
 

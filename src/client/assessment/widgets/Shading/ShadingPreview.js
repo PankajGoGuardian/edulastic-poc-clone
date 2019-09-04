@@ -184,13 +184,7 @@ const ShadingPreview = ({
             checkAnswers={isCheck}
             correctAnswers={correctAnswers}
             onCellClick={disableResponse ? () => {} : handleCellClick}
-            shaded={
-              disableResponse
-                ? validation.validResponse && validation.validResponse.value && validation.validResponse.value.value
-                : Array.isArray(userAnswer)
-                ? userAnswer
-                : []
-            }
+            shaded={Array.isArray(userAnswer) ? userAnswer : []}
             lockedCells={read_only_author_cells ? shaded : undefined}
           />
         )}

@@ -108,16 +108,18 @@ class LoginContainer extends React.Component {
             <Col xs={24} sm={18} md={14} lg={9} xl={9}>
               <FormWrapper>
                 <FormHead>
-                  {isSignupUsingDaURL & generalSettings && generalSettings.logo ? (
+                  {isSignupUsingDaURL && generalSettings && generalSettings.logo ? (
                     <DistrictLogo src={generalSettings.logo} />
                   ) : null}
-                  <h3 align="center">
-                    {Partners.boxTitle === "Login" ? (
-                      <b>{Partners.boxTitle}</b>
-                    ) : (
-                      <PartnerBoxTitle src={Partners.boxTitle} alt={Partners.name} />
-                    )}
-                  </h3>
+                  {!isSignupUsingDaURL ? (
+                    <h3 align="center">
+                      {Partners.boxTitle === "Login" ? (
+                        <b>{Partners.boxTitle}</b>
+                      ) : (
+                        <PartnerBoxTitle src={Partners.boxTitle} alt={Partners.name} />
+                      )}
+                    </h3>
+                  ) : null}
                   {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") ||
                   !isSignupUsingDaURL ? (
                     <ThirdPartyLoginBtn

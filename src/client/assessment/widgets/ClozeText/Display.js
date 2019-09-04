@@ -147,6 +147,7 @@ class ClozeTextDisplay extends Component {
       changePreviewTab,
       responseIds,
       isReviewTab,
+      isExpressGrader,
       view
     } = this.props;
 
@@ -171,6 +172,7 @@ class ClozeTextDisplay extends Component {
       changePreviewTab,
       responseIds,
       isReviewTab,
+      stemNumeration,
       userSelections,
       disableResponse,
       style: btnStyle,
@@ -179,7 +181,6 @@ class ClozeTextDisplay extends Component {
       userAnswers: userSelections,
       onChange: this._changeInput,
       responsecontainerindividuals,
-      stemNumeration: stemNumeration,
       placeholder: btnStyle.placeholder,
       cAnswers: get(item, "validation.validResponse.value", [])
     };
@@ -196,28 +197,29 @@ class ClozeTextDisplay extends Component {
       />
     );
 
-    const answerBox = showAnswer ? (
-      <>
-        <CorrectAnswerBoxLayout
-          fontSize={fontSize}
-          groupResponses={options}
-          userAnswers={validation.validResponse && validation.validResponse.value}
-          responseIds={responseIds}
-          stemNumeration={stemNumeration}
-        />
-        {!isEmpty(item.validation.altResponses) && (
+    const answerBox =
+      showAnswer || isExpressGrader ? (
+        <>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
-            altAnswers={item.validation.altResponses}
-            responseIds={item.responseIds}
+            userAnswers={validation.validResponse && validation.validResponse.value}
+            responseIds={responseIds}
             stemNumeration={stemNumeration}
           />
-        )}
-      </>
-    ) : (
-      <div />
-    );
+          {!isEmpty(item.validation.altResponses) && (
+            <CorrectAnswerBoxLayout
+              fontSize={fontSize}
+              groupResponses={options}
+              altAnswers={item.validation.altResponses}
+              responseIds={item.responseIds}
+              stemNumeration={stemNumeration}
+            />
+          )}
+        </>
+      ) : (
+        <div />
+      );
 
     return (
       <div style={{ fontSize }}>
@@ -254,6 +256,7 @@ ClozeTextDisplay.propTypes = {
   item: PropTypes.object,
   disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
+  isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   qIndex: PropTypes.number,
   view: PropTypes.string.isRequired,
@@ -286,6 +289,7 @@ ClozeTextDisplay.defaultProps = {
   template: "",
   showQuestionNumber: false,
   disableResponse: false,
+  isExpressGrader: false,
   isReviewTab: false,
   qIndex: null
 };

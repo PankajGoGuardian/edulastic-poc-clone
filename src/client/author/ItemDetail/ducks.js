@@ -697,7 +697,7 @@ export function* updateItemSaga({ payload }) {
       draft.map((q, index) => {
         if (index === 0) return q;
         else {
-          q.scoringDisabled = itemLevelScoring ? true : undefined;
+          q.scoringDisabled = itemLevelScoring ? true : false;
           return q;
         }
       });
@@ -813,8 +813,20 @@ function* saveTestItemSaga() {
   const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
   const data = yield select(getItemDetailSelector);
   const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
-  const questions = widgets.filter(item => !resourceTypes.includes(item.type));
+  let questions = widgets.filter(item => !resourceTypes.includes(item.type));
   const resources = widgets.filter(item => resourceTypes.includes(item.type));
+  questions = produce(questions, draft => {
+    for (let [ind, q] of questions.entries()) {
+      if (ind === 0) {
+        continue;
+      }
+      if (data.itemLevelScoring) {
+        q.scoringDisabled = true;
+      } else {
+        q.scoringDisabled = false;
+      }
+    }
+  });
 
   data.data = {
     questions,
@@ -864,7 +876,7 @@ function* publishTestItemSaga({ payload }) {
     }
     yield call(message.success, "Item created successfully");
   } catch (e) {
-    console.log("publish error", e);
+    console.warn("publish error", e);
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
   }
@@ -974,19 +986,33 @@ function* savePassage({ payload }) {
     if (!isEdit) widgetIds.push(widget.reference);
 
     let passageData = Object.values(allWidgets).filter(i => widgetIds.includes(i.id));
+    let currentItemId = currentItem._id;
+    if (currentItem._id === "new") {
+      const item = yield call(testItemsApi.create, _omit(currentItem, "_id"));
+      yield put({
+        type: RECEIVE_ITEM_DETAIL_SUCCESS,
+        payload: { item }
+      });
+      currentItemId = item._id;
+    }
+
     const modifiedPassage = produce(passage, draft => {
       if (!isEdit) draft.structure.widgets.push(widget);
       draft.data = passageData;
-      draft.testItems = uniq([...draft.testItems, currentItem._id]);
+      draft.testItems = uniq([...draft.testItems, currentItemId]);
     });
 
     yield put(updatePassageStructureAction(modifiedPassage));
 
+    // only update the item if its not new, since new item already has the passageId added while creating.
     yield all([
       call(passageApi.update, _omit(modifiedPassage, ["__v"])),
-      call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId)
+      currentItem._id !== "new" ? call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId) : null
     ]);
-    yield put(push(backUrl));
+
+    // if there is new, replace it with current Item's id.
+    let url = backUrl.replace("new", currentItemId);
+    yield put(push(url));
   } catch (e) {
     console.log("error: ", e);
     yield call(message.error, "error saving passage");

@@ -48,6 +48,9 @@ export const MathInputStyles = styled.div`
 
     .mq-root-block {
       font-size: ${({ fontSize }) => `${fontSize || "inherit"}`};
+      * {
+        font-style: unset;
+      }
     }
   }
 

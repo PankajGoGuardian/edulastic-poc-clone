@@ -2,7 +2,7 @@ import MCQStandardPage from "./mcqStandardPage";
 import EditItemPage from "../../itemDetail/editPage";
 import { questionType, questionGroup } from "../../../../constants/questionTypes";
 import Helpers from "../../../../util/Helpers";
-import { CypressHelper } from "../../../../util/cypressHelpers";
+import CypressHelper from "../../../../util/cypressHelpers";
 
 class MCQMultiplePage extends MCQStandardPage {
   // default question
@@ -46,10 +46,10 @@ class MCQMultiplePage extends MCQStandardPage {
           .find("input:checked")
           .click({ force: true });
 
-        /*  this.getPoints()
-          .clear()
-          .type(points);
-        */
+        this.getPoints()
+          .clear({ force: true })
+          .type(`{selectAll}${points}`);
+
         correct.forEach(choice => {
           this.getAllAnsChoicesLabel()
             .contains(choice)
@@ -59,14 +59,15 @@ class MCQMultiplePage extends MCQStandardPage {
         this.clickOnAdvancedOptions();
         // set evaluation type
         if (evaluation) {
+          cy.get('[data-cy="scoringType"]').scrollIntoView();
           // this.getEnableAutoScoring().click({ force: true });
           CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
         }
 
         this.header.save();
-
+        /* 
         item.updateItemLevelScore(points);
-        item.header.save(true);
+        item.header.save(true); */
       }
     });
   }

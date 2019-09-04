@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { get } from "lodash";
+import { message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question } from "@edulastic/constants";
 import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
@@ -59,7 +60,8 @@ class Item extends Component {
   };
 
   static defaultProps = {
-    selectedToCart: false
+    selectedToCart: false,
+    gotoSummary: () => {}
   };
 
   state = {
@@ -168,8 +170,8 @@ class Item extends Component {
   };
 
   handleSelection = async row => {
-    const { setTestItems, setDataAndSave, selectedRows, test, gotoSummary, setPassageItems, item } = this.props;
-    if (!test.title) {
+    const { setTestItems, setDataAndSave, selectedRows, test, gotoSummary, setPassageItems, item, page } = this.props;
+    if (!test.title.trim().length && page !== "itemList") {
       gotoSummary();
       return message.error("Name field cannot be empty");
     }
@@ -231,7 +233,8 @@ class Item extends Component {
       checkAnswer,
       showAnswer,
       page,
-      passageItemsCount
+      passageItemsCount,
+      gotoSummary
     } = this.props;
     const { isOpenedDetails, isShowPreviewModal = false, selectedId, passageConfirmModalVisible } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
@@ -250,6 +253,7 @@ class Item extends Component {
             owner={owner}
             checkAnswer={() => checkAnswer({ ...item, isItem: true })}
             showAnswer={() => showAnswer(item)}
+            gotoSummary={gotoSummary}
           />
         )}
         {passageConfirmModalVisible && (
@@ -279,6 +283,7 @@ class Item extends Component {
               </ViewButton>
             ) : (
               <StyledButton
+                data-cy={item._id}
                 loading={selectedId === item._id}
                 onClick={() => this.handleSelection(item)}
                 style={{

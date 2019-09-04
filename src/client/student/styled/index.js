@@ -36,8 +36,7 @@ export const Wrapper = styled.div`
   }
 
   @media screen and (max-width: ${mobileWidthMax}) {
-    padding: 5px 20px;
-    margin: 16px 26px;
+    padding: 0px;
     min-height: ${props => (props.minHeight ? props.minHeight : "75vh")};
     display: block;
   }

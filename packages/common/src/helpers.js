@@ -291,7 +291,7 @@ const getPoints = item => {
 const getQuestionLevelScore = (questions, totalMaxScore, newMaxScore) => {
   let questionScore = {};
   if (!newMaxScore) {
-    questions.forEach(o => (questionScore[o.id] = o.itemScore));
+    questions.forEach(o => (questionScore[o.id] = o.itemScore || get(o, ["validation", "validResponse", "score"], 0)));
     return questionScore;
   }
   let currScore = 0;

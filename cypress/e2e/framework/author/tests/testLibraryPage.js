@@ -1,3 +1,4 @@
+/* eslint-disable cypress/no-unnecessary-waiting */
 import promisify from "cypress-promise";
 import ItemListPage from "../itemList/itemListPage";
 import TeacherSideBar from "../SideBarPage";
@@ -41,9 +42,11 @@ export default class TestLibrary {
     return cy.fixture("testAuthoring").then(testData => {
       const test = testData[key];
       test.itemKeys.forEach(async (itemKey, index) => {
-        itemListPage.createItem(itemKey, index);
-        const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
-        this.items.push(itemId);
+        const _id = await promisify(itemListPage.createItem(itemKey, index));
+        // .then(_id => {
+        // const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
+        this.items.push(_id);
+        // });
       });
 
       // create new test
@@ -66,12 +69,19 @@ export default class TestLibrary {
       // add items
       testSummary.header.clickOnAddItems();
       this.searchFilters.clearAll();
+      cy.route("POST", "**api/test").as("createTest");
       testAddItem.authoredByMe().then(() => {
-        this.items.forEach(itemKey => {
+        this.items.forEach((itemKey, index) => {
           testAddItem.addItemById(itemKey);
+          if (index === 0) cy.wait("@createTest");
+          cy.wait(500);
         });
       });
 
+      // store gets updated with some delay, if no wait then published test doesn't consist all selected questions
+      cy.wait(1000);
+      // review
+      testSummary.header.clickOnReview();
       // save
       testSummary.header.clickOnSaveButton(true);
       // publish
@@ -98,6 +108,10 @@ export default class TestLibrary {
         cy.wait("@testload");
         cy.wait("@testload");
       });
+  };
+
+  clickOnAssign = () => {
+    cy.contains("ASSIGN").click({ force: true });
   };
 
   verifyVersionedURL = (oldTestId, newTestId) =>

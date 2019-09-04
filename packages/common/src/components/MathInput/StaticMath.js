@@ -20,7 +20,6 @@ const StaticMath = ({
 }) => {
   const [mathField, setMathField] = useState(null);
   const [currentInnerField, setCurrentInnerField] = useState(null);
-  const [innerFields, setInnerFields] = useState([]);
   const [showKeyboard, setShowKeyboard] = useState(false);
 
   const containerRef = useRef(null);
@@ -100,8 +99,6 @@ const StaticMath = ({
     if (!mathField) return;
     mathField.latex(sanitizeLatex(newLatex));
 
-    setInnerFields(mathField.innerFields);
-
     for (let i = 0; i < mathField.innerFields.length; i++) {
       mathField.innerFields[i].el().id = `inner-${i}`;
       mathField.innerFields[i].el().addEventListener("click", () => {
@@ -119,18 +116,19 @@ const StaticMath = ({
 
   const setInnerFieldValues = values => {
     if (!mathField || !mathField.innerFields) return;
-    for (let i = 0; i < innerFields.length; i++) {
-      if (!innerFields[i]) continue;
-      innerFields[i].latex("");
+    for (let i = 0; i < mathField.innerFields.length; i++) {
+      if (!mathField.innerFields[i]) continue;
+      mathField.innerFields[i].latex("");
       if (!values[i]) continue;
-      innerFields[i].write(values[i]);
+      mathField.innerFields[i].write(values[i]);
     }
   };
 
   const onInputKeyboard = (key, command = "cmd") => {
     if (!currentInnerField) return;
-
-    if (key === "left_move") {
+    if (key === "in") {
+      currentInnerField.write("in");
+    } else if (key === "left_move") {
       currentInnerField.keystroke("Left");
     } else if (key === "right_move") {
       currentInnerField.keystroke("Right");

@@ -1,10 +1,12 @@
-import React, { Component } from "react";
-import { Table, Input, Form, Icon, Checkbox, Button, message } from "antd";
+import React from "react";
+import { Table, Input, Form, Icon, Checkbox, message, Slider, Row, Col } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 import produce from "immer";
-import ColorPicker from "../Container/ColorPicker";
+import styled from "styled-components";
+import { themeColor, white } from "@edulastic/colors";
+import ColorPicker, { colors as colorsList } from "../Container/ColorPicker";
 
 import {
   receivePerformanceBandAction,
@@ -19,15 +21,14 @@ import { getUserOrgId } from "../../../src/selectors/user";
 import {
   StyledTableContainer,
   StyledColFromTo,
-  StyledButton,
-  StyledProP,
-  StyledIcon,
   StyledBottomDiv,
   StyledSaveButton,
   StyledDivCenter,
   StyledEnableContainer,
-  SaveAlert
+  SaveAlert,
+  PercentText
 } from "./styled";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -39,6 +40,41 @@ const EditableRow = ({ form, index, ...props }) => (
 );
 
 const EditableFormRow = Form.create()(EditableRow);
+
+const StyledSlider = styled(Slider)`
+  margin: 0px;
+  min-height: 20px;
+  .ant-slider-rail,
+  .ant-slider-track,
+  .ant-slider-step {
+    height: 10px;
+    border-radius: 32px;
+  }
+  .ant-slider-rail {
+    background-color: #e5e5e5;
+  }
+  .ant-slider-track,
+  &:hover .ant-slider-track {
+    background-color: #4e95f3;
+  }
+  .ant-slider-handle {
+    height: 16px;
+    width: 16px;
+    margin-top: -3px;
+    margin-left: -7px;
+    border-color: #4e95f3;
+  }
+`;
+
+const StyledAddBandButton = styled(ThemeButton)`
+  border-radius: 4px;
+  color: ${white};
+  height: 34px;
+  width: 159px;
+  text-align: center;
+  line-height: 34px;
+  font-size: 11px;
+`;
 
 class EditableCell extends React.Component {
   state = {
@@ -187,25 +223,22 @@ export class PerformanceBandTable extends React.Component {
     super(props);
     this.columns = [
       {
-        title: "",
+        title: "Band Name",
         dataIndex: "name",
-        width: "20%",
+        width: "15%",
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <React.Fragment>
+              <ColorPicker
+                disabled={this.props.readOnly}
+                value={record.color}
+                onChange={c => this.changeColor(c, record.key)}
+              />{" "}
               {record.name}&nbsp;
-              {this.props.readOnly ? null : <Icon type="edit" theme="twoTone" />}
             </React.Fragment>
           );
         }
-      },
-      {
-        title: "color",
-        dataIndex: "color",
-        render: (color, record) => (
-          <ColorPicker disabled={this.props.readOnly} value={color} onChange={c => this.changeColor(c, record.key)} />
-        )
       },
       {
         title: "Above or At Standard",
@@ -227,11 +260,26 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "From",
         dataIndex: "from",
-        width: "20%",
+        width: "25%",
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              <StyledProP>{record.from}%</StyledProP>
+              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
+                <PercentText>{record.from}%</PercentText>
+                <Col style={{ flex: "1 1 auto" }}>
+                  <StyledSlider
+                    disabled={this.props.readOnly}
+                    onChange={v => {
+                      const delta = v - record.from;
+                      this.onClickFromTo(v, record.key, "from", delta);
+                    }}
+                    value={parseInt(record.from)}
+                    max={100}
+                    step={1}
+                    min={0}
+                  />
+                </Col>
+              </Row>
             </StyledColFromTo>
           );
         }
@@ -239,35 +287,40 @@ export class PerformanceBandTable extends React.Component {
       {
         title: "To",
         dataIndex: "to",
-        width: "20%",
+        width: "25%",
         editable: !this.props.readOnly,
         render: (text, record) => {
           return (
             <StyledColFromTo>
-              {!this.props.readOnly ? (
-                <StyledButton onClick={e => this.onClickFromTo(e, record.key, "to", -1)}>
-                  <StyledIcon type="minus" />
-                </StyledButton>
-              ) : null}
-              <StyledProP>{record.to}%</StyledProP>
-              {!this.props.readOnly ? (
-                <StyledButton disabled={this.props.readOnly} onClick={e => this.onClickFromTo(e, record.key, "to", 1)}>
-                  <StyledIcon type="plus" />
-                </StyledButton>
-              ) : null}
+              <Row type="flex" align="center" style={{ flex: "1 1 auto" }}>
+                <PercentText>{record.to}%</PercentText>
+                <Col style={{ flex: "1 1 auto" }}>
+                  <StyledSlider
+                    disabled={this.props.readOnly}
+                    onChange={v => {
+                      const delta = v - record.to;
+                      this.onClickFromTo(v, record.key, "to", delta);
+                    }}
+                    value={parseInt(record.to)}
+                    max={100}
+                    step={1}
+                    min={0}
+                  />
+                </Col>
+              </Row>
             </StyledColFromTo>
           );
         }
       },
       {
-        title: "",
+        title: this.props.readOnly ? "" : <StyledAddBandButton onClick={this.handleAdd}>ADD BAND</StyledAddBandButton>,
         dataIndex: "operation",
+        width: "15%",
         render: (text, record) =>
-          this.state.dataSource.length >= 1 && !this.props.readOnly ? (
+          this.state.dataSource.length >= 3 && !this.props.readOnly ? (
             <StyledDivCenter>
               <a href="javascript:;" onClick={e => this.handleDelete(e, record.key)}>
-                <Icon type="delete" theme="twoTone" />
-                &nbsp;Delete
+                <Icon type="delete" theme="filled" twoToneColor={themeColor} />
               </a>
             </StyledDivCenter>
           ) : null
@@ -293,28 +346,31 @@ export class PerformanceBandTable extends React.Component {
 
   onClickFromTo = (e, key, keyName, value) => {
     const dataSource = [...this.state.dataSource];
-
     if (key == 0 && keyName === "from") return;
     if (key == dataSource.length - 1 && keyName === "to") return;
 
     if (keyName === "from") {
       if (
-        dataSource[key].from + value == dataSource[key].to ||
-        dataSource[key].from + value == dataSource[key - 1].from
+        parseInt(dataSource[key].from) + value <= parseInt(dataSource[key].to) ||
+        parseInt(dataSource[key].from) + value >= parseInt(dataSource[key - 1].from)
       ) {
         return;
       } else {
-        dataSource[key].from += value;
-        dataSource[key - 1].to += value;
+        dataSource[key].from = parseInt(dataSource[key].from) + value;
+        dataSource[key - 1].to = parseInt(dataSource[key - 1].to) + value;
       }
     }
 
     if (keyName === "to") {
-      if (dataSource[key].to + value == dataSource[key].from || dataSource[key].to + value == dataSource[key + 1].to) {
+      if (
+        parseInt(dataSource[key].to) + value >= parseInt(dataSource[key].from) ||
+        parseInt(dataSource[key].to) + value <= parseInt(dataSource[key + 1].to)
+      ) {
+        console.warn("return early", { value, to: dataSource[key].to, from: dataSource[key].from, key });
         return;
       } else {
-        dataSource[key].to += value;
-        dataSource[key + 1].from += value;
+        dataSource[key].to = parseInt(dataSource[key].to) + value;
+        dataSource[key + 1].from = parseInt(dataSource[key + 1].from) + value;
       }
     }
 
@@ -333,12 +389,25 @@ export class PerformanceBandTable extends React.Component {
 
   changeColor = (color, key) => {
     const index = this.state.dataSource.findIndex(x => x.key === key);
+    const colorExists = this.state.dataSource
+      .filter((x, ind) => ind != index)
+      .map(x => x.color)
+      .includes(color);
 
+    if (colorExists) {
+      message.error("Please select a different color. The selected color is already used for different Band");
+      return;
+    }
     const data = produce(this.state.dataSource, ds => {
       ds[index].color = color;
     });
     this.setState({ isChangeState: true, dataSource: data });
     this.props.setPerformanceBandData(data);
+  };
+
+  getUnusedColor = () => {
+    const existingColors = this.state.dataSource.map(x => x.color);
+    return colorsList.find(x => !existingColors.includes(x));
   };
 
   handleDelete = (e, key) => {
@@ -366,7 +435,7 @@ export class PerformanceBandTable extends React.Component {
       key: Math.max(...keyArray) + 1,
       name: "Performance Band" + (Math.max(...keyArray) + 1),
       aboveOrAtStandard: true,
-      color: "#576BA9",
+      color: this.getUnusedColor() || "#fff",
       from: 0,
       to: 0
     };
@@ -468,6 +537,7 @@ export class PerformanceBandTable extends React.Component {
           dataSource={dataSource}
           pagination={false}
           columns={columns}
+          bordered={false}
         />
         <StyledBottomDiv>
           {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
@@ -485,16 +555,6 @@ export class PerformanceBandTable extends React.Component {
               Save
             </StyledSaveButton>
           )}
-
-          <Button
-            type="primary"
-            shape="round"
-            onClick={this.handleAdd}
-            ghost
-            disabled={isAddDisable || this.props.readOnly}
-          >
-            + Add Band
-          </Button>
         </StyledBottomDiv>
       </StyledTableContainer>
     );

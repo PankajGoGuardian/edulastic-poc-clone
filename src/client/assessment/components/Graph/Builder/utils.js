@@ -324,14 +324,10 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
     const { id, type, points, latex, subType, apiLatex } = element;
-    if (
-      type === CONSTANT.TOOLS.POINT ||
-      type === CONSTANT.TOOLS.ANNOTATION ||
-      type === CONSTANT.TOOLS.AREA ||
-      type === CONSTANT.TOOLS.DRAG_DROP
-    ) {
+    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.AREA || type === CONSTANT.TOOLS.DRAG_DROP) {
       if (!acc[id]) {
         acc[id] = element;
+        acc[id].priorityColor = element.priorityColor || null;
       }
       if (isSub) {
         acc[id].subElement = true;
@@ -344,6 +340,8 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       id: element.id,
       label: element.label,
       labelIsVisible: element.labelIsVisible,
+      baseColor: element.baseColor,
+      priorityColor: element.priorityColor || null,
       text: element.text
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
@@ -395,9 +393,10 @@ export function flat2nestedConfig(config) {
           id,
           type,
           _type: element._type,
-          colors: element.colors || null,
+          priorityColor: element.priorityColor || null,
           label: element.label,
           labelIsVisible: element.labelIsVisible,
+          baseColor: element.baseColor,
           latex,
           subType,
           text,
@@ -405,16 +404,14 @@ export function flat2nestedConfig(config) {
         };
         if (type === CONSTANT.TOOLS.AREA) {
           acc[id].points = points;
-        } else if (
-          type === CONSTANT.TOOLS.POINT ||
-          type === CONSTANT.TOOLS.ANNOTATION ||
-          type === CONSTANT.TOOLS.DRAG_DROP
-        ) {
+        } else if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.DRAG_DROP) {
           acc[id].x = element.x;
           acc[id].y = element.y;
+          acc[id].priorityColor = element.priorityColor || null;
           if (type === CONSTANT.TOOLS.POINT) {
             acc[id].pointIsVisible = element.pointIsVisible;
             acc[id].labelIsVisible = element.labelIsVisible;
+            acc[id].baseColor = element.baseColor;
           }
         } else {
           acc[id].points = getPointsFromFlatConfig(type, element.subElementsIds, config);
@@ -695,4 +692,30 @@ export function setLabel(element, label) {
   element.label.rendNode.innerHTML = content;
 
   element.labelHTML = label;
+}
+
+export function colorGenerator(index) {
+  const colorPool = [
+    "#595e98",
+    "#0b7e50",
+    "#0becdd",
+    "#99723b",
+    "#96c3b3",
+    "#ae1084",
+    "#753d96",
+    "#9a1d04",
+    "#67d0da",
+    "#aa878e",
+    "#50d070",
+    "#e07354",
+    "#1e9301",
+    "#9198f4",
+    "#f0496b",
+    "#9c39f2",
+    "#a5d4d8",
+    "#0cf073",
+    "#de2bc3"
+  ];
+
+  return colorPool[index % colorPool.length];
 }

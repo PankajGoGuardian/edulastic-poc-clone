@@ -299,31 +299,30 @@ class ClozeText extends Component {
         )}
         {view === "preview" && (
           <Wrapper>
-            {(isCheckAnswer || isClearAnswer || isShowAnswer) && (
-              <Display
-                checkAnswer={previewTab === "check"}
-                configureOptions={{
-                  shuffleOptions
-                }}
-                smallSize={smallSize}
-                options={previewDisplayOptions}
-                stimulus={previewStimulus}
-                uiStyle={uiStyle}
-                userSelections={userAnswer}
-                onChange={this.handleAddAnswer}
-                evaluation={evaluation}
-                instructorStimulus={itemForPreview.instructorStimulus}
-                item={itemForPreview}
-                responseIds={item.responseIds}
-                view={view}
-                previewTab={previewTab}
-                showAnswer={previewTab === "show"}
-                validation={itemForPreview.validation}
-                preview={previewTab === "clear"}
-                key={previewDisplayOptions && previewStimulus && uiStyle}
-                {...restProps}
-              />
-            )}
+            <Display
+              checkAnswer={isCheckAnswer}
+              showAnswer={isShowAnswer}
+              preview={isClearAnswer}
+              configureOptions={{
+                shuffleOptions
+              }}
+              smallSize={smallSize}
+              options={previewDisplayOptions}
+              stimulus={previewStimulus}
+              userSelections={userAnswer}
+              uiStyle={uiStyle}
+              onChange={this.handleAddAnswer}
+              evaluation={evaluation}
+              instructorStimulus={itemForPreview.instructorStimulus}
+              item={itemForPreview}
+              responseIds={item.responseIds}
+              view={view}
+              previewTab={previewTab}
+              validation={itemForPreview.validation}
+              key={previewDisplayOptions && previewStimulus && uiStyle}
+              isExpressGrader={expressGrader && previewTab === "show"}
+              {...restProps}
+            />
           </Wrapper>
         )}
       </WithResources>

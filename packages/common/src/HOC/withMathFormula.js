@@ -19,6 +19,9 @@ export const withMathFormula = WrappedComponent => {
         return;
       }
       setNewInnerHtml(replaceLatexesWithMathHtml(dangerouslySetInnerHTML.__html));
+      if (!!newInnerHtml && newInnerHtml.includes("iframe")) {
+        setNewInnerHtml(newInnerHtml.replace("<iframe", '<iframe style="display:none" '));
+      }
     }, [dangerouslySetInnerHTML, loaded]);
 
     return (

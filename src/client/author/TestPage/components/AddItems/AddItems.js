@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { debounce } from "lodash";
 import { Pagination, Spin, message } from "antd";
 
-import { Paper, withWindowSizes } from "@edulastic/common";
+import { Paper, withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconPlusCircle, IconFilter } from "@edulastic/icons";
 import { themeColor } from "@edulastic/colors";
@@ -305,7 +305,8 @@ class AddItems extends PureComponent {
       testItemsList,
       setDataAndSave,
       setTestItems,
-      selectedRows
+      selectedRows,
+      gotoSummary
     } = this.props;
     const { search } = this.state;
     if (items.length < 1) {
@@ -336,13 +337,23 @@ class AddItems extends PureComponent {
         setDataAndSave={setDataAndSave}
         setTestItems={setTestItems}
         selectedRows={selectedRows}
+        gotoSummary={gotoSummary}
         page={"addItems"}
       />
     ));
   };
 
   render() {
-    const { windowWidth, curriculums, getCurriculumStandards, curriculumStandards, loading, t, count } = this.props;
+    const {
+      windowWidth,
+      curriculums,
+      getCurriculumStandards,
+      curriculumStandards,
+      loading,
+      t,
+      count,
+      test
+    } = this.props;
 
     const { search, isShowFilter } = this.state;
     return (
@@ -380,15 +391,18 @@ class AddItems extends PureComponent {
                 </SpinContainer>
                 <ItemsMenu>
                   <QuestionsFound>{count} questions found</QuestionsFound>
-                  <StyledButton
-                    data-cy="createNewItem"
-                    type="secondary"
-                    size="large"
-                    onClick={this.handleCreateNewItem}
-                  >
-                    <IconPlusCircle color={themeColor} width={15} height={15} />
-                    <span>Create new Item</span>
-                  </StyledButton>
+                  <FlexContainer alignItems="center" justifyContent="space-between">
+                    <span style={{ fontSize: "12px" }}>{test.testItems.length} SELECTED</span>
+                    <StyledButton
+                      data-cy="createNewItem"
+                      type="secondary"
+                      size="large"
+                      onClick={this.handleCreateNewItem}
+                    >
+                      <IconPlusCircle color={themeColor} width={15} height={15} />
+                      <span>Create new Item</span>
+                    </StyledButton>
+                  </FlexContainer>
                 </ItemsMenu>
                 <PerfectScrollbar
                   ref={e => {

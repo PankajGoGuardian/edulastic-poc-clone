@@ -64,51 +64,54 @@ const Display = ({
         )}
       </FlexContainer>
       <FlexContainer
-        style={{ overflow: "auto", position: "relative", height: "425px", width: "700px" }}
+        style={{ overflow: "auto", position: "relative", minHeight: "425px", width: "700px" }}
         flexWrap="wrap"
         justifyContent="flex-start"
+        alignItems="flex-start"
+        padding="16px"
       >
-        {Array(count)
-          .fill()
-          .map((_, index) => {
-            return fractionType === "circles" ? (
-              <Circles
-                fractionNumber={index}
-                sectors={fractionProperties.sectors}
-                selected={selected}
-                sectorClick={index => handleSelect(index)}
-                previewTab={previewTab}
-                isExpressGrader={answerContext.expressGrader}
-                isAnswerModifiable={answerContext.isAnswerModifiable}
-                evaluation={evaluation}
-                isReviewTab={isReviewTab}
-              />
-            ) : (
-              <Rectangles
-                fractionNumber={index}
-                rows={fractionProperties.rows}
-                columns={fractionProperties.columns}
-                selected={selected}
-                onSelect={index => handleSelect(index)}
-                previewTab={previewTab}
-                isExpressGrader={answerContext.expressGrader}
-                isAnswerModifiable={answerContext.isAnswerModifiable}
-                evaluation={evaluation}
-                isReviewTab={isReviewTab}
-              />
-            );
-          })}
-        {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
-      </FlexContainer>
-
-      {previewTab === SHOW && (
-        <CorrectAnswerBox
-          fractionProperties={fractionProperties}
-          selected={Array(get(item, "validation.validResponse.value", 1))
+        <FlexContainer alignItems="flex-start" flexDirection="column" style={{ width: "100%" }} flexWrap="wrap">
+          {Array(count)
             .fill()
-            .map((_, i) => i + 1)}
-        />
-      )}
+            .map((_, index) => {
+              return fractionType === "circles" ? (
+                <Circles
+                  fractionNumber={index}
+                  sectors={fractionProperties.sectors}
+                  selected={selected}
+                  sectorClick={index => handleSelect(index)}
+                  previewTab={previewTab}
+                  isExpressGrader={answerContext.expressGrader}
+                  isAnswerModifiable={answerContext.isAnswerModifiable}
+                  evaluation={evaluation}
+                  isReviewTab={isReviewTab}
+                />
+              ) : (
+                <Rectangles
+                  fractionNumber={index}
+                  rows={fractionProperties.rows}
+                  columns={fractionProperties.columns}
+                  selected={selected}
+                  onSelect={index => handleSelect(index)}
+                  previewTab={previewTab}
+                  isExpressGrader={answerContext.expressGrader}
+                  isAnswerModifiable={answerContext.isAnswerModifiable}
+                  evaluation={evaluation}
+                  isReviewTab={isReviewTab}
+                />
+              );
+            })}
+        </FlexContainer>
+        {showAnnotations && <AnnotationRnd question={item} setQuestionData={() => {}} disableDragging />}
+        {previewTab === SHOW && (
+          <CorrectAnswerBox
+            fractionProperties={fractionProperties}
+            selected={Array(get(item, "validation.validResponse.value", 1))
+              .fill()
+              .map((_, i) => i + 1)}
+          />
+        )}
+      </FlexContainer>
     </FlexContainer>
   );
 };

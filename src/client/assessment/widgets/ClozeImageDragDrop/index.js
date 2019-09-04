@@ -316,6 +316,7 @@ class ClozeImageDragDrop extends Component {
               backgroundColor={item.background}
               smallSize={smallSize}
               previewTab={previewTab}
+              isExpressGrader={expressGrader && previewTab === "show"}
               {...restProps}
             />
           </Wrapper>

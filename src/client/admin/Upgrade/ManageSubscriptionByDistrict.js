@@ -27,8 +27,7 @@ const ManageDistrictSearchForm = Form.create({ name: "manageDistrictSearchForm" 
       validateFields((err, { districtSearchOption, districtSearchValue }) => {
         if (!err) {
           getDistrictDataAction({
-            [districtSearchOption]:
-              districtSearchOption === "name" ? encodeURIComponent(districtSearchValue) : districtSearchValue
+            [districtSearchOption]: districtSearchValue
           });
         }
       });
@@ -50,6 +49,7 @@ const ManageDistrictSearchForm = Form.create({ name: "manageDistrictSearchForm" 
         onSelect={onDistrictSelect}
         dataSource={dataSource}
         loading={loading}
+        filterOption={false}
       />
     );
   }

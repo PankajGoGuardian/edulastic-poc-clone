@@ -15,6 +15,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
     evaluation,
     showAnswer,
+    style,
     uiStyle = {},
     responseBtnStyle,
     fontSize,
@@ -48,98 +49,88 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = btnStyle.heightpx;
   }
 
-  const response = find(responsecontainerindividuals, resp => resp.index === index);
+  const responseStyle = find(responsecontainerindividuals, resp => resp.id === id);
   if (uiStyle.globalSettings) {
-    btnStyle.width = (response && response.previewWidth) || uiStyle.widthpx;
-    btnStyle.height = uiStyle.heightpx;
+    btnStyle.width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+    btnStyle.height = style.height || "auto";
   } else {
-    btnStyle.width = (response && response.widthpx) || uiStyle.widthpx || "auto";
-    btnStyle.height = (response && response.heightpx) || uiStyle.heightpx || "auto";
-  }
-
-  if (responsecontainerindividuals && responsecontainerindividuals[index]) {
-    const { widthpx: widthpx1, heightpx: heightpx1 } = responsecontainerindividuals[index];
-    btnStyle.width = widthpx1;
-    btnStyle.height = heightpx1;
-    btnStyle.widthpx = widthpx1;
-    btnStyle.heightpx = heightpx1;
+    btnStyle.width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
+    btnStyle.height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
   }
 
   const handleClick = () => previewTab !== CLEAR && changePreviewTab(CLEAR);
 
   return (
-    <>
-      <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>
-        {showAnswer && (
-          <span
-            className={`
+    <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden", margin: "0px 4px" }}>
+      {showAnswer && (
+        <span
+          className={`
                     response-btn 
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-            style={{ ...btnStyle, height: "auto", width: "max-content" }}
-            title={userSelections[index] && userSelections[index].value}
-            onClick={handleClick}
-          >
-            <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
-              {indexStr}
-            </span>
-            <span
-              className="text"
-              style={{
-                width: btnStyle.width,
-                height: btnStyle.height,
-                display: "block",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden"
-              }}
-            >
-              {userSelections[index] && userSelections[index].value}&nbsp;
-            </span>
-            <IconWrapper>
-              {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
-              {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
-            </IconWrapper>
+          style={{ ...btnStyle, height: "auto", minWidth: btnStyle.widthpx, margin: 0 }}
+          title={userSelections[index] && userSelections[index].value}
+          onClick={handleClick}
+        >
+          <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+            {indexStr}
           </span>
-        )}
-        {!showAnswer && (
           <span
-            className={`response-btn 
+            className="text"
+            style={{
+              width: btnStyle.width,
+              height: btnStyle.height,
+              display: "block",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+              overflow: "hidden"
+            }}
+          >
+            {userSelections[index] && userSelections[index].value}&nbsp;
+          </span>
+          <IconWrapper>
+            {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
+            {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
+          </IconWrapper>
+        </span>
+      )}
+      {!showAnswer && (
+        <span
+          className={`response-btn 
                 ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                 ${status}`}
-            style={{ ...btnStyle, height: "auto", width: "max-content" }}
-            title={userSelections[index] && userSelections[index].value}
-            onClick={handleClick}
+          style={{ ...btnStyle, height: "auto", minWidth: btnStyle.widthpx, margin: 0 }}
+          title={userSelections[index] && userSelections[index].value}
+          onClick={handleClick}
+        >
+          {showAnswer && (
+            <Fragment>
+              <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+                {indexStr}
+              </span>
+            </Fragment>
+          )}
+          <span
+            style={{
+              width: btnStyle.width,
+              height: btnStyle.height,
+              display: "block",
+              whiteSpace: "nowrap",
+              textOverflow: "ellipsis",
+              overflow: "hidden"
+            }}
+            className="text"
           >
-            {showAnswer && (
-              <Fragment>
-                <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
-                  {indexStr}
-                </span>
-              </Fragment>
-            )}
-            <span
-              style={{
-                width: btnStyle.width,
-                height: btnStyle.height,
-                display: "block",
-                whiteSpace: "nowrap",
-                textOverflow: "ellipsis",
-                overflow: "hidden"
-              }}
-              className="text"
-            >
-              {userSelections[index] && userSelections[index].value}&nbsp;
-            </span>
-            <IconWrapper>
-              {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
-              {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
-            </IconWrapper>
+            {userSelections[index] && userSelections[index].value}&nbsp;
           </span>
-        )}
-      </span>
-    </>
+          <IconWrapper>
+            {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
+            {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
+          </IconWrapper>
+        </span>
+      )}
+    </span>
   );
 };
 

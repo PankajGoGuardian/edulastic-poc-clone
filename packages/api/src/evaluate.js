@@ -1,12 +1,12 @@
 import API from "./utils/API";
 
-const api = new API(`https://edulastic-poc.snapwiz.net/math-api`);
+const api = new API(`${process.env.POI_APP_API_URI}`);
 
-const evaluate = data =>
+const evaluate = (data, type) =>
   api
     .callApi({
       method: "post",
-      url: "/evaluate",
+      url: `/evaluate/${type}`,
       data
     })
     .then(result => result.data);

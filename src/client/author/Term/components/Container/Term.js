@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { get } from "lodash";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
 import TermTable from "../TermTable/TermTable";
 
 import { TermDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
@@ -30,6 +31,7 @@ class Term extends Component {
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
+            <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />

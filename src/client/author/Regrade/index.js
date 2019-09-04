@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { connect } from "react-redux";
 import { message } from "antd";
+import { withRouter } from "react-router-dom";
 
 import { fetchAssignmentsAction } from "../TestPage/components/Assign/ducks";
 import { setRegradeSettingsDataAction } from "../TestPage/ducks";
@@ -10,21 +11,20 @@ import { get } from "lodash";
 
 const RegradeTypes = {
   ALL: "All your assignments",
-  SCHOOL_YEAR: "Your assignments this school year",
+  THIS_SCHOOL_YEAR: "Your assignments this school year",
   SPECIFIC: "Pick specific assignments to apply to"
 };
-const RegradeKeys = ["ALL", "SCHOOL_YEAR", "SPECIFIC"];
+const RegradeKeys = ["ALL", "THIS_SCHOOL_YEAR", "SPECIFIC"];
 
-const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSettings, districtId }) => {
-  useEffect(() => {
-    const oldTestId = match.params.oldTestId;
-    getAssignmentsByTestId(oldTestId);
-  }, []);
+const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSettings, districtId, history }) => {
+  const { oldTestId, newTestId } = match.params;
 
   const settings = {
-    newTestId: match.params.newTestId,
+    newTestId: newTestId,
+    oldTestId: oldTestId,
     assignmentList: [],
     districtId,
+    applyChangesChoice: RegradeKeys[0],
     options: {
       removedQuestion: "DISCARD",
       addedQuestion: "SKIP",
@@ -32,9 +32,12 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
       choicesChanged: "SKIP"
     }
   };
-
   const [regradeSettings, regradeSettingsChange] = useState(settings);
-  const [assigmentOptions, setAssignmentOptions] = useState(RegradeKeys[0]);
+  const [assignmentOptions, setAssignmentOptions] = useState(RegradeKeys[0]);
+
+  useEffect(() => {
+    getAssignmentsByTestId(oldTestId);
+  }, []);
 
   const onUpdateSettings = (key, value) => {
     const newState = {
@@ -56,15 +59,19 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
   };
 
   const onApplySettings = () => {
-    if (regradeSettings.assignmentList.length > 0) {
-      setRegradeSettings(regradeSettings);
-    } else {
-      message.error("Assignment must contain at least 1 items");
+    if (regradeSettings.applyChangesChoice === "SPECIFIC" && !regradeSettings.assignmentList.length) {
+      return message.error("Assignment must contain at least 1 items");
     }
+    setRegradeSettings(regradeSettings);
   };
+
+  const onCancelRegrade = () => {
+    history.push(`/author/tests/${newTestId}/publish`);
+  };
+
   return (
     <Fragment>
-      <Header onApplySettings={onApplySettings} />
+      <Header onApplySettings={onApplySettings} onCancelRegrade={onCancelRegrade} />
       <MainContent
         assignments={assignments}
         RegradeTypes={RegradeTypes}
@@ -73,20 +80,22 @@ const Regrade = ({ assignments, getAssignmentsByTestId, match, setRegradeSetting
         regradeSettings={regradeSettings}
         handleSettingsChange={handleSettingsChange}
         setAssignmentOptions={setAssignmentOptions}
-        assigmentOptions={assigmentOptions}
+        assigmentOptions={assignmentOptions}
         regradeSettingsChange={regradeSettingsChange}
       />
     </Fragment>
   );
 };
 
-export default connect(
-  state => ({
-    assignments: state.authorTestAssignments.assignments,
-    districtId: get(state, ["user", "user", "orgData", "districtId"])
-  }),
-  {
-    getAssignmentsByTestId: fetchAssignmentsAction,
-    setRegradeSettings: setRegradeSettingsDataAction
-  }
-)(Regrade);
+export default withRouter(
+  connect(
+    state => ({
+      assignments: state.authorTestAssignments.assignments,
+      districtId: get(state, ["user", "user", "orgData", "districtId"])
+    }),
+    {
+      getAssignmentsByTestId: fetchAssignmentsAction,
+      setRegradeSettings: setRegradeSettingsDataAction
+    }
+  )(Regrade)
+);

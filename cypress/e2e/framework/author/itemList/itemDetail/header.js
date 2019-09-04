@@ -39,8 +39,13 @@ class Header {
   }
 
   clickOnPublishItem = () => {
+    cy.route("PUT", "**/publish").as("publish");
     cy.get('[data-cy="publishItem"]').click();
     cy.wait("@saveItem").then(xhr => expect(xhr.status).to.eq(200));
+    return cy.wait("@publish").then(xhr => {
+      expect(xhr.status).to.eq(200);
+      return xhr.url.split("/").reverse()[1];
+    });
   };
 
   clickOnEditItem = () => cy.get('[data-cy="editItem"]').click();

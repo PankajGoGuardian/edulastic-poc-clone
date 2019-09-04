@@ -1,12 +1,14 @@
 import React, { Fragment, useState } from "react";
+import ColorPicker from "rc-color-picker";
 import PropTypes from "prop-types";
 import { Checkbox, Paper, Button, FroalaEditor } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import { Row } from "../../../../styled/WidgetOptions/Row";
+import utils from "../../common/utils";
 
-export const ElementSettingsMenu = ({ element, handleClose, advancedElementSettings }) => {
+export const ElementSettingsMenu = ({ element, handleClose, advancedElementSettings, showColorPicker }) => {
   if (!element) {
     return null;
   }
@@ -14,8 +16,7 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
   const [labelText, handleLabelTextChange] = useState(element.label || "");
   const [labelIsVisible, handleLabelVisibility] = useState(element.labelIsVisible);
   const [pointIsVisible, handlePointVisibility] = useState(element.pointIsVisible);
-
-  const capitalizeFirstLetter = string => string.charAt(0).toUpperCase() + string.slice(1);
+  const [elementColor, handleColorChange] = useState(element.baseColor);
 
   return (
     <Fragment>
@@ -24,10 +25,10 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
         style={{ position: "absolute", top: "125px", right: "61px", left: "21px", zIndex: "10", padding: "20px 10px" }}
       >
         <Row style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", marginBottom: "20px" }}>
-          <Subtitle style={{ margin: 0 }}>{capitalizeFirstLetter(element.type)} settings</Subtitle>
+          <Subtitle style={{ margin: 0 }}>{utils.capitalizeFirstLetter(element.type)} settings</Subtitle>
           <IconClose
             style={{ cursor: "pointer", marginLeft: "auto" }}
-            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible)}
+            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible, elementColor, true)}
           />
         </Row>
         <Row style={{ marginBottom: "20px" }}>
@@ -61,10 +62,15 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
             )}
           </Fragment>
         )}
+        {showColorPicker && (
+          <div style={{ marginBottom: "20px" }}>
+            <ColorPicker onChange={value => handleColorChange(value.color)} animation="slide-up" color={elementColor} />
+          </div>
+        )}
         <Row>
           <Button
             style={{ minWidth: 227, minHeight: 40, marginRight: "0.7em", borderRadius: "4px" }}
-            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible)}
+            onClick={() => handleClose(labelText, labelIsVisible, pointIsVisible, elementColor)}
             color="primary"
             outlined
           >
@@ -79,5 +85,6 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
 ElementSettingsMenu.propTypes = {
   element: PropTypes.object.isRequired,
   handleClose: PropTypes.func.isRequired,
-  advancedElementSettings: PropTypes.bool.isRequired
+  advancedElementSettings: PropTypes.bool.isRequired,
+  showColorPicker: PropTypes.bool.isRequired
 };

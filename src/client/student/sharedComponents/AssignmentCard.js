@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { extraDesktopWidth, mobileWidthMax } from "@edulastic/colors";
+import { extraDesktopWidth, mobileWidthMax, smallDesktopWidth, lightGreySecondary } from "@edulastic/colors";
 import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
@@ -122,7 +122,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   const attemptCount = newReports && newReports.length;
   const totalQuestions = correct + wrong + skipped || 0;
   const scorePercentage = (score / maxScore) * 100 || 0;
-  const arrow = showAttempts ? "\u2193" : "\u2191";
+  const arrow = showAttempts ? "\u2191" : "\u2193";
 
   const startTest = () => {
     if (endDate < Date.now()) {
@@ -311,6 +311,10 @@ const CardWrapper = styled(Row)`
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
     padding: 24px 0;
+    border: 1px solid
+      ${props => (props.theme.assignment && props.theme.assignment.attemptsReviewRowBgColor) || lightGreySecondary};
+    border-radius: 10px;
+    margin-top: 20px;
   }
 `;
 
@@ -333,6 +337,9 @@ const AttemptDetails = styled(Col)`
     width: 100%;
     justify-content: center;
   }
+  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
+    flex: 1;
+  }
 `;
 
 const AnswerAndScore = styled.div`
@@ -344,6 +351,9 @@ const AnswerAndScore = styled.div`
     font-size: ${props => props.theme.assignment.cardAnswerAndScoreTextSize};
     font-weight: bold;
     color: ${props => props.theme.assignment.cardAnswerAndScoreTextColor};
+  }
+  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${extraDesktopWidth}) {
+    width: 33%;
   }
   @media screen and (max-width: 767px) {
     width: 33%;

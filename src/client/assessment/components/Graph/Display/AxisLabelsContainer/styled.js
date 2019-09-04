@@ -16,3 +16,16 @@ export const JSXBox = styled.div`
   border-radius: 0;
   margin: ${props => (props.margin ? props.margin : 0)}px;
 `;
+export const ContainerWithResponses = styled.div`
+  display: flex;
+  flex-direction: ${({ responseBoxPosition }) =>
+    responseBoxPosition === "top"
+      ? "column"
+      : responseBoxPosition === "bottom"
+      ? "column-reverse"
+      : responseBoxPosition === "left"
+      ? "row"
+      : "row-reverse"};
+  justify-content: ${({ responseBoxPosition }) =>
+    responseBoxPosition === "top" || responseBoxPosition === "left" ? "flex-start" : "flex-end"};
+`;

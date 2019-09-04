@@ -7,7 +7,7 @@ import { tabletWidth, largeDesktopWidth, mobileWidthMax, white, extraDesktopWidt
 import { Affix, Layout, Row, Col } from "antd";
 import { toggleSideBarAction } from "../../Sidebar/ducks";
 
-const HeaderWrapper = ({ children, isSidebarCollapsed, toggleSideBar }) => (
+const HeaderWrapper = ({ children, isSidebarCollapsed, toggleSideBar, borderBottom }) => (
   <HeaderContainer>
     <FixedHeader iscollapsed={isSidebarCollapsed}>
       <MenuIcon className="hamburger" onClick={() => toggleSideBar()} />
@@ -69,7 +69,7 @@ const FixedHeader = styled(Affix)`
 `;
 
 const AssignmentsHeader = styled(Layout.Header)`
-  border-bottom: 2px solid ${props => props.theme.headerBorderColor};
+  border-bottom: ${props => (props.borderBottom ? props.borderBottom : `2px solid ${props.theme.headerBorderColor}`)};
   background-color: ${props => props.theme.headerBgColor || "#00AD50"};
   color: ${props => props.theme.headerTitleTextColor};
   display: flex;

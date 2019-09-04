@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import { white, themeColor } from "@edulastic/colors";
 import { compose } from "redux";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { FlexContainer, EduButton } from "@edulastic/common";
+import { test } from "@edulastic/constants";
 import {
   IconAddItems,
   IconReview,
@@ -22,6 +24,9 @@ import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 import EditTestModal from "../../../src/components/common/EditTestModal";
+import ConfirmRegradeModal from "../../../src/components/common/ConfirmRegradeModal";
+import { publishForRegradeAction } from "../../ducks";
+const { statusConstants } = test;
 
 export const navButtonsTest = [
   {
@@ -72,6 +77,7 @@ const TestPageHeader = ({
   onChangeNav,
   current,
   onSave,
+  buttons,
   title,
   creating,
   onShare,
@@ -88,15 +94,53 @@ const TestPageHeader = ({
   onShowSource,
   isPlaylist,
   owner,
-  onAssign
+  onAssign,
+  history,
+  publishForRegrade,
+  test,
+  updated
 }) => {
-  let navButtons = isPlaylist ? [...playlistNavButtons] : [...navButtonsTest];
+  let navButtons = buttons || (isPlaylist ? [...playlistNavButtons] : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);
+  const [showRegradePopup, setShowRegradePopup] = useState(false);
+  const [currentAction, setCurrentAction] = useState("");
+  const onRegradeConfirm = () => {
+    publishForRegrade(test._id);
+  };
+
+  const onCancelRegrade = () => {
+    setShowRegradePopup(false);
+    switch (currentAction) {
+      case "assign":
+        onAssign();
+        break;
+      case "publish":
+        onPublish();
+      default:
+    }
+  };
+
+  const handlePublish = () => {
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
+      setCurrentAction("publish");
+      return setShowRegradePopup(true);
+    }
+    onPublish();
+  };
+
+  const handleAssign = () => {
+    if (isUsed && (updated || test.status !== statusConstants.PUBLISHED)) {
+      setCurrentAction("assign");
+      return setShowRegradePopup(true);
+    }
+    onAssign();
+  };
+
   if (!owner) {
     navButtons = navButtons.slice(2);
   }
-  return windowWidth > 993 ? (
-    <HeaderWrapper>
+  return (
+    <>
       <EditTestModal
         visible={openEditPopup}
         isUsed={isUsed}
@@ -106,112 +150,120 @@ const TestPageHeader = ({
           setOpenEditPopup(false);
         }}
       />
-      <TitleWrapper>
-        <Title title={title}>{title || "Untitled Test"} </Title>
-        <TestStatus className={isPlaylist || editEnable ? "draft" : testStatus}>
-          {isPlaylist || editEnable ? "DRAFT" : testStatus}
-        </TestStatus>
-      </TitleWrapper>
-
-      <TestPageNav
-        onChange={onChangeNav}
-        current={current}
-        buttons={navButtons}
-        owner={owner}
-        showPublishButton={!showShareButton || showPublishButton}
+      <ConfirmRegradeModal
+        visible={showRegradePopup}
+        onCancel={() => setShowRegradePopup(false)}
+        onOk={onRegradeConfirm}
+        onCancelRegrade={onCancelRegrade}
       />
+      {windowWidth > 993 ? (
+        <HeaderWrapper>
+          <TitleWrapper>
+            <Title title={title}>{title || "Untitled Test"} </Title>
+            <TestStatus className={isPlaylist || editEnable ? "draft" : testStatus}>
+              {isPlaylist || editEnable ? "DRAFT" : testStatus}
+            </TestStatus>
+          </TitleWrapper>
 
-      <FlexContainer childMarginRight="5" justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
-        {showShareButton && false && (
-          <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
-            <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />
-          </EduButton>
-        )}
-        {showShareButton && owner && (
-          <EduButton title="Share" data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
-            <IconShare color={themeColor} />
-          </EduButton>
-        )}
-        {showShareButton && owner && showPublishButton && (
-          <EduButton
-            title="Save as Draft"
-            data-cy="save"
-            style={{ width: 42, padding: 0 }}
-            size="large"
-            onClick={onSave}
-          >
-            <IconDiskette color={themeColor} />
-          </EduButton>
-        )}
-        {showShareButton && owner && showPublishButton && (
-          <EduButton
-            title="Publish Test"
-            data-cy="publish"
-            style={{ width: 42, padding: 0 }}
-            size="large"
-            onClick={() => {
-              onPublish();
-            }}
-          >
-            <IconSend color={themeColor} stroke={themeColor} />
-          </EduButton>
-        )}
-        {showShareButton && showEditButton && (
-          <EduButton
-            title="Edit Test"
-            disabled={editEnable}
-            data-cy="edit"
-            style={{ width: 42 }}
-            size="large"
-            onClick={() => setOpenEditPopup(true)}
-          >
-            <IconPencilEdit color={themeColor} />
-          </EduButton>
-        )}
-        {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
-          <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={onAssign}>
-            Assign
-          </EduButton>
-        )}
-      </FlexContainer>
-    </HeaderWrapper>
-  ) : (
-    <Container>
-      <FlexContainer
-        flexDirection="column"
-        style={{
-          width: "100%",
-          justifyContent: "space-between"
-        }}
-      >
-        <FlexContainer
-          style={{
-            width: "100%",
-            justifyContent: "space-between",
-            padding: "0 25px"
-          }}
-        >
-          {" "}
-          <MenuIconWrapper>
-            <MenuIcon type="bars" onClick={toggleSideBar} />
-            <Title>{title}</Title>
-          </MenuIconWrapper>
-          <FlexContainer justifyContent="space-between">
-            {owner && (
-              <EduButton size="large" onClick={onShare}>
-                <ShareIcon />
+          <TestPageNav
+            onChange={onChangeNav}
+            current={current}
+            buttons={navButtons}
+            owner={owner}
+            showPublishButton={!showShareButton || showPublishButton}
+          />
+
+          <FlexContainer childMarginRight="5" justifyContent="flex-end" style={{ "flex-basis": "400px" }}>
+            {showShareButton && false && (
+              <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
+                <IconSource color={themeColor} style={{ stroke: themeColor, strokeWidth: 1 }} />
               </EduButton>
             )}
-            {owner && (
-              <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
-                {creating ? "Saving..." : "Save"}
+            {showShareButton && owner && (
+              <EduButton title="Share" data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
+                <IconShare color={themeColor} />
+              </EduButton>
+            )}
+            {showShareButton && owner && showPublishButton && (
+              <EduButton
+                title="Save as Draft"
+                data-cy="save"
+                style={{ width: 42, padding: 0 }}
+                size="large"
+                onClick={onSave}
+              >
+                <IconDiskette color={themeColor} />
+              </EduButton>
+            )}
+            {showShareButton && owner && showPublishButton && (
+              <EduButton
+                title="Publish Test"
+                data-cy="publish"
+                style={{ width: 42, padding: 0 }}
+                size="large"
+                onClick={handlePublish}
+              >
+                <IconSend color={themeColor} stroke={themeColor} />
+              </EduButton>
+            )}
+            {showShareButton && showEditButton && (
+              <EduButton
+                title="Edit Test"
+                disabled={editEnable}
+                data-cy="edit"
+                style={{ width: 42 }}
+                size="large"
+                onClick={() => setOpenEditPopup(true)}
+              >
+                <IconPencilEdit color={themeColor} />
+              </EduButton>
+            )}
+            {showShareButton && (owner || testStatus === "published") && !isPlaylist && (
+              <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={handleAssign}>
+                Assign
               </EduButton>
             )}
           </FlexContainer>
-        </FlexContainer>
-        <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />
-      </FlexContainer>
-    </Container>
+        </HeaderWrapper>
+      ) : (
+        <Container>
+          <FlexContainer
+            flexDirection="column"
+            style={{
+              width: "100%",
+              justifyContent: "space-between"
+            }}
+          >
+            <FlexContainer
+              style={{
+                width: "100%",
+                justifyContent: "space-between",
+                padding: "0 25px"
+              }}
+            >
+              {" "}
+              <MenuIconWrapper>
+                <MenuIcon type="bars" onClick={toggleSideBar} />
+                <Title>{title}</Title>
+              </MenuIconWrapper>
+              <FlexContainer justifyContent="space-between">
+                {owner && (
+                  <EduButton size="large" onClick={onShare}>
+                    <ShareIcon />
+                  </EduButton>
+                )}
+                {owner && (
+                  <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
+                    {creating ? "Saving..." : "Save"}
+                  </EduButton>
+                )}
+              </FlexContainer>
+            </FlexContainer>
+            <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />
+          </FlexContainer>
+        </Container>
+      )}
+    </>
   );
 };
 
@@ -233,9 +285,12 @@ TestPageHeader.propTypes = {
 
 const enhance = compose(
   memo,
+  withRouter,
   connect(
-    null,
-    { toggleSideBar: toggleSideBarAction }
+    state => ({
+      test: state.tests.entity
+    }),
+    { toggleSideBar: toggleSideBarAction, publishForRegrade: publishForRegradeAction }
   )
 );
 export default enhance(TestPageHeader);

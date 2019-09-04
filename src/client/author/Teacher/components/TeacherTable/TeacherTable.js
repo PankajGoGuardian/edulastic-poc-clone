@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { get, isEmpty } from "lodash";
 
@@ -136,7 +137,25 @@ class TeacherTable extends Component {
       {
         title: "Classes",
         dataIndex: "classCount",
-        width: 50
+        width: 50,
+        render: (classCount, record) => {
+          const username = get(record, "_source.username", "");
+          return (
+            <Link
+              to={{
+                pathname: "/author/Class-Enrollment",
+                state: {
+                  filtersColumn: "username",
+                  filtersValue: "eq",
+                  filterStr: username,
+                  filterAdded: true
+                }
+              }}
+            >
+              {classCount}
+            </Link>
+          );
+        }
       },
       {
         dataIndex: "_id",
@@ -156,7 +175,12 @@ class TeacherTable extends Component {
   }
 
   componentDidMount() {
-    this.loadFilteredList();
+    const { dataPassedWithRoute } = this.props;
+    if (!isEmpty(dataPassedWithRoute)) {
+      this.setState({ filtersData: [{ ...dataPassedWithRoute }] }, this.loadFilteredList);
+    } else {
+      this.loadFilteredList();
+    }
   }
 
   static getDerivedStateFromProps(nextProps, state) {
@@ -416,7 +440,7 @@ class TeacherTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
-    const { showActive } = this.state;
+    let { showActive } = this.state;
     let search = {};
     for (let [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item;

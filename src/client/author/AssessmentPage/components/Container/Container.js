@@ -15,7 +15,9 @@ import {
   getTestsLoadingSelector,
   setTestDataAction,
   updateTestAction,
-  publishTestAction
+  publishTestAction,
+  getDefaultTestSettingsAction,
+  getTestsCreatingSelector
 } from "../../../TestPage/ducks";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
 import { getItemDetailByIdAction, updateItemDetailByIdAction } from "../../../src/actions/itemDetail";
@@ -25,6 +27,11 @@ import { getViewSelector } from "../../../src/selectors/view";
 import Header from "../Header/Header";
 import Worksheet from "../Worksheet/Worksheet";
 import Description from "../Description/Description";
+import Setting from "../../../TestPage/components/Setting";
+import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
+import { statusConstants } from "../../../TestPage/components/Container/Container";
+import { withWindowSizes } from "@edulastic/common";
+import ShareModal from "../../../src/components/common/ShareModal";
 
 const tabs = {
   DESCRIPTION: "description",
@@ -79,16 +86,19 @@ class Container extends React.Component {
     changeView: PropTypes.func.isRequired,
     currentTab: PropTypes.string.isRequired
   };
-
+  sebPasswordRef = React.createRef();
   state = {
     saved: false,
+    editEnable: false,
+    showShareModal: false,
     published: false
   };
 
   componentDidMount() {
-    const { match, receiveTestById } = this.props;
+    const { match, receiveTestById, getDefaultTestSettings } = this.props;
 
     receiveTestById(match.params.assessmentId);
+    getDefaultTestSettings();
   }
 
   componentWillReceiveProps(next) {
@@ -106,7 +116,7 @@ class Container extends React.Component {
     changeView(tab);
   };
 
-  handleSave = (status = "draft") => () => {
+  handleSave = (status = "draft") => {
     const {
       questions: assessmentQuestions,
       assessment,
@@ -155,9 +165,20 @@ class Container extends React.Component {
     this.setState({ saved: true, published: false });
   };
 
-  validateTest = assessment => {
-    const { subjects, grades } = assessment;
-
+  validateTest = test => {
+    const {
+      title,
+      subjects,
+      grades,
+      requirePassword = false,
+      assignmentPassword = "",
+      safeBrowser,
+      sebPassword
+    } = test;
+    if (!title) {
+      message.error("Name field cannot be empty");
+      return false;
+    }
     if (isEmpty(grades)) {
       message.error("Grade field cannot be empty");
       return false;
@@ -166,18 +187,29 @@ class Container extends React.Component {
       message.error("Subject field cannot be empty");
       return false;
     }
+    if (requirePassword) {
+      if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
+        message.error("Please add a valid password.");
+        return false;
+      }
+    }
+    if (safeBrowser && !sebPassword) {
+      if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
+        this.sebPasswordRef.current.input.focus();
+      }
+      message.error("Please add a valid password.");
+      return false;
+    }
+
     return true;
   };
 
-  handlePublish = async () => {
-    const { saved } = this.state;
-    if (saved) {
-      const {
-        assessment: { _id: id },
-        publishTest
-      } = this.props;
-      await publishTest({ _id: id });
-      this.setState({ saved: false, published: true });
+  handlePublishTest = (assignFlow = false) => {
+    const { publishTest, assessment, match } = this.props;
+    const { _id } = assessment;
+    if (this.validateTest(assessment)) {
+      publishTest({ _id, oldId: match.params.oldId, test: assessment, assignFlow });
+      this.setState({ editEnable: false, saved: false, published: true });
     }
   };
 
@@ -190,6 +222,12 @@ class Container extends React.Component {
         history.push(`/author/assignments/${assessmentId}`);
       }
     }
+  };
+
+  onShareModalChange = () => {
+    this.setState({
+      showShareModal: !this.state.showShareModal
+    });
   };
 
   validateQuestions = questions => {
@@ -216,10 +254,19 @@ class Container extends React.Component {
     return true;
   };
 
-  renderContent() {
-    const { currentTab, assessment, questions, questionsById, setTestData } = this.props;
+  onEnableEdit = () => {
+    this.setState({ editEnable: true });
+  };
 
+  renderContent() {
+    const { currentTab, assessment, questions, match, questionsById, userId, setTestData } = this.props;
+
+    const { params = {} } = match;
     const { docUrl, annotations, pageStructure } = assessment;
+    const { editEnable } = this.state;
+    const { authors, status } = assessment;
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    const isEditable = owner && (editEnable || status === statusConstants.DRAFT);
 
     const props = {
       docUrl,
@@ -236,6 +283,16 @@ class Container extends React.Component {
         return <Worksheet key="worksheet" {...props} />;
       case tabs.REVIEW:
         return <Worksheet key="review" review {...props} />;
+      case tabs.SETTINGS:
+        return (
+          <Setting
+            current={currentTab}
+            isEditable={isEditable}
+            // onShowSource={this.handleNavChange("source")}
+            sebPasswordRef={this.sebPasswordRef}
+            owner={owner}
+          />
+        );
       default:
         return null;
     }
@@ -244,9 +301,22 @@ class Container extends React.Component {
   render() {
     const {
       loading,
-      assessment: { title, status },
+      assessment: { _id: testId, authors, grades, subjects, testItems, title, status, isUsed },
+      userId,
+      windowWidth,
+      updated,
+      creating,
       currentTab
     } = this.props;
+    const { editEnable, showShareModal } = this.state;
+    const owner = (authors && authors.some(x => x._id === userId)) || !testId;
+    const showPublishButton = (status && status !== statusConstants.PUBLISHED && testId && owner) || editEnable;
+    const showShareButton = !!testId;
+    const showEditButton =
+      authors && authors.some(x => x._id === userId) && status && status === statusConstants.PUBLISHED && !editEnable;
+
+    const hasPremiumQuestion = testItems.some(x => !!x.collectionName);
+    const gradeSubject = { grades, subjects };
 
     if (loading) {
       return <Spin />;
@@ -254,15 +324,35 @@ class Container extends React.Component {
 
     return (
       <>
-        <Header
-          onTabChange={this.handleChangeCurrentTab}
-          currentTab={currentTab}
-          tabs={buttons}
+        <ShareModal
+          isVisible={showShareModal}
+          testId={testId}
+          hasPremiumQuestion={hasPremiumQuestion}
+          isPublished={status === statusConstants.PUBLISHED}
+          onClose={this.onShareModalChange}
+          gradeSubject={gradeSubject}
+        />
+        <TestPageHeader
+          onChangeNav={this.handleChangeCurrentTab}
+          current={currentTab}
+          onSave={() => this.handleSave("draft")}
+          onShare={this.onShareModalChange}
+          onPublish={this.handlePublishTest}
           title={title}
-          status={status}
-          onSave={this.handleSave}
-          onPublish={this.handlePublish}
+          buttons={buttons}
+          creating={creating}
+          showEditButton={showEditButton}
+          owner={owner}
+          isUsed={isUsed}
+          windowWidth={windowWidth}
+          showPublishButton={showPublishButton}
+          testStatus={status}
+          showShareButton={showShareButton}
+          editEnable={editEnable}
+          onEnableEdit={this.onEnableEdit}
+          // onShowSource={this.handleNavChange("source")}
           onAssign={this.handleAssign}
+          updated={updated}
         />
         {this.renderContent()}
       </>
@@ -272,13 +362,16 @@ class Container extends React.Component {
 
 const enhance = compose(
   withRouter,
+  withWindowSizes,
   connect(
     state => {
       console.log("state in container", state);
       return {
         assessment: getTestEntitySelector(state),
+        userId: get(state, "user.user._id", ""),
         loading: getTestsLoadingSelector(state),
         questions: getQuestionsArraySelector(state),
+        creating: getTestsCreatingSelector(state),
         questionsById: getQuestionsSelector(state),
         currentTestItem: getItemDetailSelector(state),
         currentTab: getViewSelector(state)
@@ -289,6 +382,7 @@ const enhance = compose(
       receiveItemDetailById: getItemDetailByIdAction,
       updateItemDetailById: updateItemDetailByIdAction,
       setTestData: setTestDataAction,
+      getDefaultTestSettings: getDefaultTestSettingsAction,
       updateTest: updateTestAction,
       changeView: changeViewAction,
       publishTest: publishTestAction

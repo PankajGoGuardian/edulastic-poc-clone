@@ -127,6 +127,7 @@ class Display extends Component {
       showQuestionNumber,
       disableResponse,
       imageOptions,
+      isExpressGrader,
       isReviewTab
     } = this.props;
 
@@ -285,7 +286,7 @@ class Display extends Component {
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
-    const correctAnswerBoxLayout = showAnswer ? (
+    const correctAnswerBoxLayout = (
       <React.Fragment>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
@@ -303,10 +304,9 @@ class Display extends Component {
           />
         )}
       </React.Fragment>
-    ) : (
-      <div />
     );
-    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+
+    const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
         <QuestionTitleWrapper>
@@ -346,6 +346,7 @@ Display.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
+  isExpressGrader: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   imageOptions: PropTypes.object,
   isReviewTab: PropTypes.bool
@@ -378,6 +379,7 @@ Display.defaultProps = {
   },
   showQuestionNumber: false,
   imageOptions: {},
+  isExpressGrader: false,
   isReviewTab: false
 };
 

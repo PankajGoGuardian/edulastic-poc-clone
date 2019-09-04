@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { get, groupBy } from "lodash";
+import { get, groupBy, isEmpty } from "lodash";
 import { ticks } from "d3-array";
 import {
   white,
@@ -16,7 +16,7 @@ import {
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import { MainDiv, StyledCustomTooltip } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
-import { getAggregateByQuestion } from "../../ducks";
+import { getAggregateByQuestion, getItemSummary } from "../../ducks";
 import memoizeOne from "memoize-one";
 import { scrollTo } from "@edulastic/common";
 
@@ -81,13 +81,17 @@ export default class BarGraph extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { gradebook, studentview, studentId, testActivity } = props;
+    const { gradebook, studentview, studentId, testActivity, studentResponse } = props;
 
     let { itemsSummary } = gradebook;
     if (studentview && studentId) {
       const filtered = _getAggregateByQuestion(testActivity, studentId);
       if (filtered) {
-        itemsSummary = filtered.itemsSummary;
+        if (isEmpty(studentResponse)) {
+          itemsSummary = filtered.itemsSummary;
+        } else {
+          itemsSummary = getItemSummary([studentResponse], filtered.questionsOrder, itemsSummary);
+        }
       }
     }
 

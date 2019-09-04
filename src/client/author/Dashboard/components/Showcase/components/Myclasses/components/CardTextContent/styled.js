@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { fadedGreen, lightBlue, green, greenThird } from "@edulastic/colors";
 import { Row, Col, Icon } from "antd";
+
 export const IconWrapper = styled.div`
-  width: 43px;
-  height: 43px;
+  width: 45px;
+  height: 45px;
   background: ${fadedGreen};
   border-radius: 50%;
   position: relative;
@@ -27,6 +28,26 @@ export const RowWrapper = styled(Row)`
   margin-bottom: 0.5rem;
   cursor: pointer;
 `;
+
+export const LeftCol = styled(Col)`
+  width: ${({ width }) => width || "45px"};
+  height: ${({ height }) => height || "45px"};
+  margin-right: 15px;
+`;
+
+export const CenterCol = styled(Col)`
+  width: calc(100% - 105px);
+`;
+
+export const RightCol = styled(Col)`
+  width: ${({ width }) => width || "30px"};
+  height: ${({ height }) => height || "45px"};
+  margin-left: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const RowWrapper1 = styled(Row)`
   cursor: pointer;
   display: flex;
@@ -37,8 +58,8 @@ export const CardText = styled.div`
   margin-top: 1rem;
 `;
 export const Image = styled.img`
-  width: 51.33px;
-  height: 31px;
+  width: 45px;
+  height: 30px;
   border-radius: 5px;
 `;
 

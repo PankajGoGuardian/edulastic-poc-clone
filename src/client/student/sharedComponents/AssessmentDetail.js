@@ -2,7 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Col, Icon } from "antd";
-import { white, testTypeColor, extraDesktopWidth, largeDesktopWidth, mobileWidthMax } from "@edulastic/colors";
+import {
+  white,
+  testTypeColor,
+  extraDesktopWidth,
+  largeDesktopWidth,
+  mobileWidthMax,
+  smallDesktopWidth,
+  mediumDesktopWidth
+} from "@edulastic/colors";
 import { test, testActivity as testActivityConstants } from "@edulastic/constants";
 import { formatTime } from "../utils";
 
@@ -175,7 +183,7 @@ const Thumbnail = styled.img`
   
   @media(max-width: ${mobileWidthMax}) {
     width: calc(100% - 14px);
-    height: 20vw;
+    height: 90.5px;
     display: block;
     margin: 0 auto;
   }	 
@@ -185,6 +193,18 @@ const Thumbnail = styled.img`
 const CardDetails = styled(Col)`
   @media (max-width: ${extraDesktopWidth}) {
     width: 35vw;
+  }
+
+  @media (max-width: ${extraDesktopWidth}) {
+    width: 35vw;
+  }
+
+  @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${extraDesktopWidth}) {
+    width: 30vw;
+  }
+
+  @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${smallDesktopWidth}) {
+    width: 20vw;
   }
 
   @media (max-width: ${mobileWidthMax}) {
@@ -224,6 +244,7 @@ const CardTitle = styled.div`
 
   @media (max-width: ${mobileWidthMax}) {
     font-size: 16px;
+    text-align: center;
   }
 `;
 
@@ -260,6 +281,7 @@ const CardDate = styled.div`
   @media (max-width: ${mobileWidthMax}) {
     font-size: 13px;
     padding-bottom: 13px;
+    padding-top: 10px;
   }
 `;
 

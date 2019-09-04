@@ -85,7 +85,6 @@ const ClozeTextInput = ({ resprops, id }) => {
     responseIds,
     isReviewTab,
     cAnswers,
-    view,
     responsecontainerindividuals,
     uiStyle
   } = resprops;
@@ -135,23 +134,12 @@ const ClozeTextInput = ({ resprops, id }) => {
   let width = style.width || "auto";
   let height = style.height || "auto";
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
-  if (view === "edit") {
-    if (view === "edit" && uiStyle.globalSettings) {
-      width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
-      height = style.height || "auto";
-    } else {
-      width = (responseStyle && responseStyle.widthpx) || (style.widthpx || "auto");
-      height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
-    }
+  if (uiStyle.globalSettings) {
+    width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+    height = style.height || "auto";
   } else {
-    // eslint-disable-next-line no-lonely-if
-    if (uiStyle.globalSettings) {
-      width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
-      height = style.height || "auto";
-    } else {
-      width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
-      height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
-    }
+    width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
+    height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
   }
 
   return (
@@ -217,19 +205,4 @@ const CustomInput = styled.div`
   .ant-input {
     border-radius: 0px 4px 4px 0px;
   }
-`;
-
-const IndexBox = styled.div`
-  padding: 3px 10px;
-  width: 40px;
-  justify-content: center;
-  color: white;
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
-  background: #878282;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  align-self: stretch;
-  height: auto;
 `;

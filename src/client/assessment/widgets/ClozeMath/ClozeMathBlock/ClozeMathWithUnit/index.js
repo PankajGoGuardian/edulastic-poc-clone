@@ -15,12 +15,7 @@ class ClozeMathWithUnit extends React.Component {
   };
 
   state = {
-    latex: "",
-    showKeyboard: false,
-    currentMathQuill: null,
-    keyboardStyles: {
-      top: -1000
-    }
+    showKeyboard: false
   };
 
   constructor(props) {
@@ -117,56 +112,9 @@ class ClozeMathWithUnit extends React.Component {
     if (!mathRef.current) {
       return;
     }
-    this.setState({ showKeyboard: true }, this.calcKeyPosition);
+    this.setState({ showKeyboard: true });
     mathRef.current.focus();
   };
-
-  calcKeyPosition() {
-    if (!this.mathKeyboardRef.current || !this.mathRef.current) {
-      this.setState({
-        keyboardStyles: {
-          top: "unset",
-          position: "absolute"
-        }
-      });
-      return;
-    }
-    const keyboardStyles = {};
-    const winH = window.innerHeight;
-    const winW = window.innerWidth;
-    const keyboardRect = this.mathKeyboardRef.current.getBoundingClientRect();
-    const mathInputRect = this.mathRef.current.getBoundingClientRect();
-
-    const keyboardH = keyboardRect.height;
-    const keyboardW = keyboardRect.width;
-
-    const mathBottom = mathInputRect.bottom;
-
-    const mathT = mathInputRect.top;
-    const mathR = mathInputRect.right;
-    const mathH = mathInputRect.height;
-    const mathW = mathInputRect.width;
-
-    const left = mathR - mathW / 2 - keyboardW / 2;
-    const hDiff = keyboardW + left - winW;
-    if (left < 100) {
-      keyboardStyles.left = 110; // 110 is left meny width
-    } else if (hDiff > 0) {
-      keyboardStyles.left = left - hDiff - 20; // 20 is scrollbar width if there is scrollbar
-    } else {
-      keyboardStyles.left = left;
-    }
-
-    const vDiff = winH - mathBottom;
-    if (vDiff < keyboardH) {
-      keyboardStyles.top = "unset";
-      keyboardStyles.bottom = vDiff + mathH;
-    } else {
-      keyboardStyles.top = mathT + mathH;
-    }
-
-    this.setState({ keyboardStyles });
-  }
 
   closeMathBoard = () => {
     this.setState({ showKeyboard: false });
@@ -238,7 +186,7 @@ class ClozeMathWithUnit extends React.Component {
       btnStyle.fontSize = uiStyles.fontSize;
     }
     if (uiStyles.width) {
-      btnStyle.width = uiStyles.width;
+      btnStyle.minWidth = uiStyles.width;
     }
     return uiStyles;
   };
@@ -264,7 +212,7 @@ class ClozeMathWithUnit extends React.Component {
     const { resprops = {}, id } = this.props;
     const { responseContainers, item, uiStyles = {} } = resprops;
     const { keypadMode, customUnits } = find(item.responseIds.mathUnits, res => res.id === id) || {};
-    const { showKeyboard, keyboardStyles } = this.state;
+    const { showKeyboard } = this.state;
     const { unit = "" } = this.userAnswer || {};
 
     // styling response box based on settings.
@@ -275,7 +223,7 @@ class ClozeMathWithUnit extends React.Component {
     const customKeys = get(item, "customKeys", []);
 
     return (
-      <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>
+      <div ref={this.wrappedRef} style={{ margin: "0 4px", display: "inline-block" }}>
         <span
           ref={this.mathRef}
           onClick={this.showKeyboardModal}
@@ -300,7 +248,7 @@ class ClozeMathWithUnit extends React.Component {
           height={height || "auto"}
         />
         {showKeyboard && (
-          <KeyboardWrapper innerRef={this.mathKeyboardRef} style={keyboardStyles}>
+          <KeyboardWrapper innerRef={this.mathKeyboardRef}>
             <MathKeyboard
               onInput={this.onInput}
               onClose={() => {}}
@@ -312,7 +260,7 @@ class ClozeMathWithUnit extends React.Component {
             />
           </KeyboardWrapper>
         )}
-      </span>
+      </div>
     );
   }
 }
@@ -351,6 +299,6 @@ export default MathWithUnit;
 
 const KeyboardWrapper = styled.div`
   width: 40%;
-  position: fixed;
+  position: absolute;
   z-index: 100;
 `;

@@ -32,7 +32,6 @@ export const GET_USER_DATA = "[auth] get user data from sso response";
 export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
 export const SINGUP_SUCCESS = "[auth] signup success";
-export const SIGNUP_SET_POLICY_VIOLATION = "[auth] signup set policy violation";
 export const FETCH_USER = "[auth] fetch user";
 export const FETCH_V1_REDIRECT = "[v1 redirect] fetch";
 export const LOGOUT = "[auth] logout";
@@ -54,8 +53,6 @@ export const RESET_PASSWORD_REQUEST = "[auth] reset password request";
 export const RESET_PASSWORD_FAILED = "[auth] reset password failed";
 export const RESET_PASSWORD_SUCCESS = "[auth] reset password success";
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST = "[auth] student signup check classcode request";
-export const STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS = "[auth] student signup check classcode success";
-export const STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED = "[auth] student signup check classcode failed";
 export const UPDATE_DEFAULT_GRADES = "[user] update default grades";
 export const UPDATE_DEFAULT_SUBJECT = "[user] update default subject";
 export const GET_INVITE_DETAILS_REQUEST = "[auth] get invite details request";
@@ -75,8 +72,12 @@ export const UPDATE_INTERESTED_CURRICULUMS_FAILED = "[user] update interested cu
 export const REMOVE_SCHOOL_REQUEST = "[user] remove school request";
 export const REMOVE_SCHOOL_SUCCESS = "[user] remove school success";
 export const REMOVE_SCHOOL_FAILED = "[user] remove school failed";
+export const REMOVE_INTERESTED_CURRICULUMS_REQUEST = "[user] remove interested curriculums request";
+
+export const SET_SETTINGS_SA_SCHOOL = "[user] set sa settings school";
 
 // actions
+export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL);
 export const loginAction = createAction(LOGIN);
 export const googleLoginAction = createAction(GOOGLE_LOGIN);
 export const cleverLoginAction = createAction(CLEVER_LOGIN);
@@ -88,7 +89,6 @@ export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN);
 export const setUserAction = createAction(SET_USER);
 export const signupAction = createAction(SIGNUP);
 export const signupSuccessAction = createAction(SINGUP_SUCCESS);
-export const signupSetPolicyViolationAction = createAction(SIGNUP_SET_POLICY_VIOLATION);
 export const fetchUserAction = createAction(FETCH_USER);
 export const fetchV1RedirectAction = createAction(FETCH_V1_REDIRECT);
 export const logoutAction = createAction(LOGOUT);
@@ -110,6 +110,7 @@ export const updateUserDetailsAction = createAction(UPDATE_USER_DETAILS_REQUEST)
 export const deleteAccountAction = createAction(DELETE_ACCOUNT_REQUEST);
 export const updateInterestedCurriculumsAction = createAction(UPDATE_INTERESTED_CURRICULUMS_REQUEST);
 export const removeSchoolAction = createAction(REMOVE_SCHOOL_REQUEST);
+export const removeInterestedCurriculumsAction = createAction(REMOVE_INTERESTED_CURRICULUMS_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -133,6 +134,10 @@ const setUser = (state, { payload }) => {
   set(state.user, "orgData.defaultClass", defaultClass);
   set(state.user, "orgData.selectedGrades", defaultGrades);
   set(state.user, "orgData.selectedSubject", defaultSubject);
+  if (payload.role === "school-admin" && get(payload, "orgData.schools[0]._id")) {
+    //setting first school as default on initial load
+    state.saSettingsSchool = get(payload, "orgData.schools[0]._id");
+  }
   state.isAuthenticated = true;
   state.authenticating = false;
   state.signupStatus = payload.currentSignUpState;
@@ -157,6 +162,9 @@ const getCurrentPath = () => {
 
 export default createReducer(initialState, {
   [SET_USER]: setUser,
+  [SET_SETTINGS_SA_SCHOOL]: (state, { payload }) => {
+    state.saSettingsSchool = payload;
+  },
   [CHANGE_CLASS]: (state, { payload }) => {
     if (!(state.user && state.user.orgData)) {
       return state;
@@ -180,22 +188,7 @@ export default createReducer(initialState, {
   [SET_USER_GOOGLE_LOGGED_IN]: (state, { payload }) => {
     state.user.isUserGoogleLoggedIn = payload;
   },
-  [SIGNUP]: state => {
-    state.signupPolicyViolation = "";
-  },
   [SINGUP_SUCCESS]: setUser,
-  [SIGNUP_SET_POLICY_VIOLATION]: (state, { payload }) => {
-    state.signupPolicyViolation = payload;
-  },
-  [STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST]: (state, { payload }) => {
-    state.signupPolicyViolation = "";
-  },
-  [STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS]: (state, { payload }) => {
-    state.signupPolicyViolation = "";
-  },
-  [STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED]: (state, { payload }) => {
-    state.signupPolicyViolation = payload;
-  },
   [REQUEST_NEW_PASSWORD_REQUEST]: state => {
     state.requestingNewPassword = true;
     state.requestNewPasswordSuccess = false;
@@ -283,6 +276,12 @@ export default createReducer(initialState, {
   },
   [REMOVE_SCHOOL_FAILED]: state => {
     state.removingSchool = undefined;
+  },
+  [REMOVE_INTERESTED_CURRICULUMS_REQUEST]: (state, { payload }) => {
+    const updatedCurriculums = state.user.orgData.interestedCurriculums.filter(
+      curriculum => curriculum._id !== payload
+    );
+    state.user.orgData.interestedCurriculums = updatedCurriculums;
   }
 });
 
@@ -463,7 +462,12 @@ function* signup({ payload }) {
     const { message: _responseMsg, result } = response;
 
     if (_responseMsg && !result) {
-      yield call(message.error, _responseMsg);
+      const { errorCallback } = payload;
+      if (errorCallback) {
+        errorCallback(_responseMsg);
+      } else {
+        yield call(message.error, _responseMsg);
+      }
     } else {
       const user = pick(result, userPickFields);
 
@@ -486,8 +490,10 @@ function* signup({ payload }) {
     const msg1 = get(err, "data.message", "");
     const msg2 = get(err, "message", "");
     const msg = msg1 || msg2 || errorMessage;
-    if (msg === "Please provide a valid class code.") {
-      yield put(signupSetPolicyViolationAction(msg));
+
+    const { errorCallback } = payload;
+    if (errorCallback) {
+      errorCallback(msg);
     } else {
       yield call(message.error, msg);
     }
@@ -953,16 +959,13 @@ function* removeSchoolSaga({ payload }) {
 
 function* studentSignupCheckClasscodeSaga({ payload }) {
   try {
-    const result = yield call(authApi.validateClassCode, payload);
-    yield put({
-      type: STUDENT_SIGNUP_CHECK_CLASSCODE_SUCCESS
-    });
+    const result = yield call(authApi.validateClassCode, payload.reqData);
   } catch (e) {
-    console.log(e);
-    yield put({
-      type: STUDENT_SIGNUP_CHECK_CLASSCODE_FAILED,
-      payload: e.data.message
-    });
+    if (payload.errorCallback) {
+      payload.errorCallback(e.data.message);
+    } else {
+      yield call(message.error, e.data.message);
+    }
   }
 }
 

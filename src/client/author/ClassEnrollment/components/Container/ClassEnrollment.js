@@ -31,9 +31,11 @@ class ClassEnrollment extends Component {
       fetchClassDetailsUsingCode,
       validatedClassDetails,
       resetClassDetails,
-      receiveClassEnrollmentList
+      receiveClassEnrollmentList,
+      location
     } = this.props;
     const showSpin = loading || updating || deleting || creating;
+    const { state: dataPassedWithRoute } = location;
     return (
       <ClassEnrollmentDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
@@ -49,6 +51,7 @@ class ClassEnrollment extends Component {
               validatedClassDetails={validatedClassDetails}
               resetClassDetails={resetClassDetails}
               receiveClassEnrollmentList={receiveClassEnrollmentList}
+              dataPassedWithRoute={dataPassedWithRoute}
             />
           </StyledLayout>
         </StyledContent>

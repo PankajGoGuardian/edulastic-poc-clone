@@ -2,13 +2,13 @@
 
 #### Description:
 
-<!-- Add a brief description of how it was fixed or implemented-->
+<!-- Add a brief description of what needs to be done, or what was the causing the issue-->
 
 #### How it was added or fixed:
 
 <!-- Add a brief description of how it was fixed or implemented -->
 
-#### Impact score: MEDIUM
+#### Impact: MEDIUM
 
 <!-- Could be LOW, MEDIUM, HIGH, etc based on how much it can impact or break existing other features. This would be really helpful while PR -->
 

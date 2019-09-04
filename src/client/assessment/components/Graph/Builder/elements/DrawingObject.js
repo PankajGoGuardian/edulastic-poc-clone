@@ -14,7 +14,6 @@ import {
   Sin,
   Tangent
 } from ".";
-import { setLabel } from "../utils";
 
 function onHandler(board, event) {
   const {
@@ -33,14 +32,16 @@ function onHandler(board, event) {
   const deltaY = +snapSizeY;
   let newElement = null;
 
-  if (drawingObject.type === CONSTANT.TOOLS.POINT) {
-    newElement = Point.onHandler(board, event, drawingObject.id);
+  const { id, label, baseColor, type, pointLabels } = drawingObject;
+
+  if (type === CONSTANT.TOOLS.POINT) {
+    newElement = Point.onHandler(board, event, id);
   } else {
     const points = [];
     const offsets = [[0, 0], [1, 1], [2, 0]];
 
-    drawingObject.pointLabels.forEach((label, i) => {
-      if (i > 2 && (drawingObject.type === CONSTANT.TOOLS.ELLIPSE || drawingObject.type === CONSTANT.TOOLS.HYPERBOLA)) {
+    pointLabels.forEach((subPoint, i) => {
+      if (i > 2 && (type === CONSTANT.TOOLS.ELLIPSE || type === CONSTANT.TOOLS.HYPERBOLA)) {
         return;
       }
 
@@ -53,57 +54,62 @@ function onHandler(board, event) {
         x = coords.usrCoords[1] + i * deltaX;
         y = coords.usrCoords[2] - (i - 2) * deltaY;
       }
-      const point = Point.create(board, [x, y]);
-      setLabel(point, label);
+
+      const object = {
+        x,
+        y,
+        label: subPoint.label,
+        baseColor: subPoint.baseColor
+      };
+      const point = Point.create(board, object);
       points.push(point);
     });
 
-    switch (drawingObject.type) {
+    switch (type) {
       case CONSTANT.TOOLS.LINE:
       case CONSTANT.TOOLS.RAY:
       case CONSTANT.TOOLS.SEGMENT:
       case CONSTANT.TOOLS.VECTOR:
-        newElement = Line.create(board, points, drawingObject.type, drawingObject.id);
+        newElement = Line.create(board, { id, label, baseColor }, points, type);
         break;
       case CONSTANT.TOOLS.CIRCLE:
-        newElement = Circle.create(board, points, drawingObject.id);
+        newElement = Circle.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.SIN:
-        newElement = Sin.create(board, points, drawingObject.id);
+        newElement = Sin.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.TANGENT:
-        newElement = Tangent.create(board, points, drawingObject.id);
+        newElement = Tangent.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.SECANT:
-        newElement = Secant.create(board, points, drawingObject.id);
+        newElement = Secant.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.PARABOLA:
-        newElement = Parabola.create(board, points, drawingObject.id);
+        newElement = Parabola.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.ELLIPSE:
-        newElement = Ellipse.create(board, points, drawingObject.id);
+        newElement = Ellipse.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.EXPONENT:
-        newElement = Exponent.create(board, points, drawingObject.id);
+        newElement = Exponent.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.LOGARITHM:
-        newElement = Logarithm.create(board, points, drawingObject.id);
+        newElement = Logarithm.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.HYPERBOLA:
-        newElement = Hyperbola.create(board, points, drawingObject.id);
+        newElement = Hyperbola.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.POLYGON:
-        newElement = Polygon.create(board, points, drawingObject.id);
+        newElement = Polygon.create(board, { id, label, baseColor }, points);
         break;
       case CONSTANT.TOOLS.POLYNOM:
-        newElement = Polynom.create(board, points, drawingObject.id);
+        newElement = Polynom.create(board, { id, label, baseColor }, points);
         break;
       default:
         return;
     }
   }
 
-  setLabel(newElement, drawingObject.label);
   return newElement;
 }
 

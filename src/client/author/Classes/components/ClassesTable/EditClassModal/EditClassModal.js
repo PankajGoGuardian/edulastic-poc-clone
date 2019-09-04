@@ -103,7 +103,7 @@ class EditClassModal extends Component {
     const { modalVisible, selClassData, schoolsData, teacherList, coursesForDistrictList, allTagsData } = this.props;
     const { searchValue } = this.state;
     const {
-      _source: { owners = [], name, subject, institutionId, institutionName, grades, tags, endDate } = {}
+      _source: { owners = [], name, subject, institutionId, institutionName, grades, tags, endDate, course } = {}
     } = selClassData;
     const ownersData = owners.map(row => row.id);
     const schoolsOptions = [];
@@ -196,7 +196,9 @@ class EditClassModal extends Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Course">
-              {getFieldDecorator("courseId")(
+              {getFieldDecorator("courseId", {
+                initialValue: course && course.id
+              })(
                 <Select
                   showSearch
                   placeholder="Please enter 1 or more characters"

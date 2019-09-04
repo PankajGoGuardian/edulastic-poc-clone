@@ -9,18 +9,27 @@ const RECEIVE_CLASSENROLLMENT_LIST_REQUEST = "[class enrollment] receive list re
 const RECEIVE_CLASSENROLLMENT_LIST_SUCCESS = "[class enrollment] receive list success";
 const RECEIVE_CLASSENROLLMENT_LIST_ERROR = "[class enrollment] receive list error";
 
+const SET_PAGE_NO = "[class enrollment] set page number";
+
 export const receiveClassEnrollmentListAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_REQUEST);
 export const receiveClassEnrollmentListSuccessAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_SUCCESS);
 export const receiveClassEnrollmentListErrorAction = createAction(RECEIVE_CLASSENROLLMENT_LIST_ERROR);
+
+export const setPageNoAction = createAction(SET_PAGE_NO);
 
 const classEnrollmentSelector = state => state.classEnrollmentReducer;
 export const getClassEnrollmentUsersSelector = createSelector(
   classEnrollmentSelector,
   state => state.data
 );
+export const getClassEnrollmentUsersCountSelector = createSelector(
+  classEnrollmentSelector,
+  state => state.totalUsers
+);
 // reducers
 const initialState = {
   data: [],
+  totalUsers: 0,
   error: null,
   loading: false,
   updating: false,
@@ -34,7 +43,8 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_CLASSENROLLMENT_LIST_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    state.data = payload;
+    state.data = payload.activeUsers;
+    state.totalUsers = payload.total;
   },
   [RECEIVE_CLASSENROLLMENT_LIST_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -46,8 +56,9 @@ export const reducer = createReducer(initialState, {
 function* receiveClassEnrollmentListSaga({ payload }) {
   try {
     const data = yield call(enrollmentApi.fetchClassEnrollmentUsers, payload);
-    const activeUsersData = data.filter(item => item.status === "1" || item.status == 1);
-    yield put(receiveClassEnrollmentListSuccessAction(activeUsersData));
+    const { total, result } = data;
+    const activeUsers = result.filter(o => o.status === "1" || o.status == 1);
+    yield put(receiveClassEnrollmentListSuccessAction({ activeUsers, total }));
   } catch (err) {
     const errorMessage = "Receive Enrollment Classes is failing!";
     yield call(message.error, errorMessage);

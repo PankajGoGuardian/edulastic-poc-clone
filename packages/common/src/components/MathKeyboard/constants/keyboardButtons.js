@@ -430,12 +430,14 @@ export const KEYBOARD_BUTTONS_ALL = [
     types: ["all", "sets"],
     command: "cmd"
   },
-  {
-    handler: "\\in",
-    label: "in",
-    types: ["all", "sets"],
-    command: "cmd"
-  },
+  // {
+  // commenting because it is wrongly mapped , `in` is already present
+  // shows `in` as label but renders ∈, used in sets
+  //   handler: "\\in",
+  //   label: "in",
+  //   types: ["all", "sets"],
+  //   command: "cmd"
+  // },
   {
     handler: "\\notin",
     label: <CustomImage src={Group2266} role="presentation" />,
@@ -589,7 +591,7 @@ export const KEYBOARD_BUTTONS_ALL = [
   },
   // Units (US)
   {
-    handler: "\\text{feet}",
+    handler: "feet",
     label: "feet",
     types: ["all", "units_us"],
     command: "cmd"
@@ -1253,7 +1255,7 @@ export const KEYBOARD_BUTTONS = [
     command: "cmd"
   },
   {
-    handler: "\\text{feet}",
+    handler: "feet",
     label: "feet",
     types: ["all", "units_us"],
     command: "cmd"

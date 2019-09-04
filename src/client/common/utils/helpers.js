@@ -137,7 +137,7 @@ export const isEmailValid = (rule, value, callback, checks, message) => {
 };
 
 export const getFullNameFromAsString = obj => {
-  return obj.firstName + " " + (obj.middleName ? obj.middleName + " " : "") + obj.lastName;
+  return obj.firstName + " " + (obj.middleName ? obj.middleName + " " : "") + (obj.lastName ? obj.lastName : "");
 };
 
 export const getFullNameFromString = name => {
@@ -166,6 +166,10 @@ export const getFullNameFromString = name => {
     middleName,
     lastName
   };
+};
+
+export const getInitialsFromName = obj => {
+  return obj.firstName[0] + (obj.lastName ? obj.lastName[0] : "");
 };
 
 export const getDistrictSignOutUrl = generalSettings => {

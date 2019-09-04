@@ -1,14 +1,11 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { get } from "lodash";
+import { get, isNull } from "lodash";
 
-import { MathSpan } from "@edulastic/common";
-
-import striptags from "striptags";
 import { response } from "@edulastic/constants";
 import DropContainer from "../DropContainer";
-import DragItem from "../DragItem";
+import TextContainer from "./TextContainer";
 
 import { Pointer } from "../../../../styled/Pointer";
 import { Point } from "../../../../styled/Point";
@@ -20,13 +17,11 @@ import { WrongIcon } from "./styled/WrongIcon";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-const CheckboxTemplateBoxLayout = ({
+const CheckboxTemplateBox = ({
+  index,
   showAnswer,
   checkAnswer,
-  responseContainers,
-  annotations,
-  image,
-  snapItems,
+  responseContainer,
   responsecontainerindividuals,
   responseBtnStyle,
   userSelections,
@@ -37,153 +32,150 @@ const CheckboxTemplateBoxLayout = ({
   theme,
   showBorder,
   disableResponse,
-  isSnapFitValues,
-  showDropItemBorder
-}) => (
-  <>
-    {annotations}
-    {image}
-    {snapItems}
-    {responseContainers.map((responseContainer, index) => {
-      if (!isSnapFitValues && checkAnswer && !showDropItemBorder) {
-        return null;
-      }
-      const dropTargetIndex = index;
-      const btnStyle = {
-        widthpx: responseContainer.width,
-        width: responseContainer.width,
-        top: responseContainer.top,
-        left: responseContainer.left,
-        height: responseContainer.height,
-        position: "absolute",
-        borderRadius: 5
-      };
+  isSnapFitValues
+}) => {
+  const [hideIndexBox, updateVisibility] = useState(null);
 
-      if (responseBtnStyle && responseBtnStyle) {
-        btnStyle.width = responseBtnStyle.widthpx;
-      } else {
-        btnStyle.width = btnStyle.widthpx;
-      }
+  const updateIndexBoxVisibility = visibility => {
+    if (isNull(hideIndexBox)) {
+      updateVisibility(visibility);
+    }
+  };
 
-      if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-        const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-        btnStyle.width = widthpx;
-        btnStyle.widthpx = widthpx;
-      }
+  const status = evaluation[index] ? "right" : "wrong";
+  const isChecked =
+    get(userSelections, `[${index}].responseBoxID`, false) && !!get(userSelections, `[${index}].value`, []).length;
 
-      let indexStr = "";
-      switch (stemNumeration) {
-        case "lowercase": {
-          indexStr = ALPHABET[dropTargetIndex];
-          break;
+  const btnStyle = {
+    widthpx: responseContainer.width,
+    width: responseContainer.width,
+    top: responseContainer.top,
+    left: responseContainer.left,
+    height: responseContainer.height,
+    position: "absolute",
+    borderRadius: 5,
+    visibility: isNull(hideIndexBox) && isChecked ? "collapse" : "visible"
+  };
+
+  if (responseBtnStyle && responseBtnStyle) {
+    btnStyle.width = responseBtnStyle.widthpx;
+  } else {
+    btnStyle.width = btnStyle.widthpx;
+  }
+
+  if (responsecontainerindividuals && responsecontainerindividuals[index]) {
+    const { widthpx } = responsecontainerindividuals[index];
+    btnStyle.width = widthpx;
+    btnStyle.widthpx = widthpx;
+  }
+
+  let indexStr = "";
+  switch (stemNumeration) {
+    case "lowercase": {
+      indexStr = ALPHABET[index];
+      break;
+    }
+    case "uppercase": {
+      indexStr = ALPHABET[index].toUpperCase();
+      break;
+    }
+    default:
+      indexStr = index + 1;
+  }
+
+  const dragItemStyle = {
+    border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
+    padding: 5,
+    display: "inline-flex",
+    alignItems: "center",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    width: "max-content",
+    minWidth: response.minWidth,
+    maxWidth: response.maxWidth,
+    overflow: "hidden"
+  };
+
+  const dropContainerStyle = {
+    ...btnStyle,
+    minWidth: response.minWidth,
+    maxWidth: response.maxWidth,
+    background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
+  };
+
+  let containerClassName = `imagelabeldragdrop-droppable active ${isChecked ? "check-answer" : "noAnswer"} ${status}`;
+  containerClassName = showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
+
+  const icons = !hideIndexBox && (
+    <>
+      <IconWrapper>
+        {isChecked && status === "right" && <RightIcon />}
+        {isChecked && status === "wrong" && <WrongIcon />}
+      </IconWrapper>
+      <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+        <Point />
+        <Triangle />
+      </Pointer>
+    </>
+  );
+
+  const indexBoxRef = useRef();
+
+  const responseBoxIndex = !hideIndexBox && showAnswer && (
+    <div style={{ alignSelf: "stretch", height: "auto" }} className="index index-box" ref={indexBoxRef}>
+      {indexStr}
+    </div>
+  );
+
+  return (
+    <DropContainer
+      index={index}
+      style={dropContainerStyle}
+      className={containerClassName}
+      drop={drop}
+      disableResponse={disableResponse}
+    >
+      {!isSnapFitValues ? ((isChecked && status === "right") || showAnswer) && responseBoxIndex : responseBoxIndex}
+      <TextContainer
+        dropTargetIndex={index}
+        userSelections={userSelections}
+        isSnapFitValues={isSnapFitValues}
+        showAnswer={showAnswer}
+        checkAnswer={checkAnswer}
+        dragItemStyle={dragItemStyle}
+        onDropHandler={onDropHandler}
+        disableResponse={disableResponse}
+        dropContainerWidth={dropContainerStyle.width}
+        indexBoxRef={indexBoxRef}
+        onHideIndexBox={updateIndexBoxVisibility}
+        style={hideIndexBox || checkAnswer ? { borderRadius: 5, justifyContent: hideIndexBox && "center" } : {}}
+      />
+      {isSnapFitValues && icons}
+    </DropContainer>
+  );
+};
+
+const CheckboxTemplateBoxLayout = props => {
+  const { checkAnswer, responseContainers, annotations, image, snapItems, isSnapFitValues, showDropItemBorder } = props;
+  return (
+    <>
+      {annotations}
+      {image}
+      {snapItems}
+      {responseContainers.map((responseContainer, index) => {
+        if (!isSnapFitValues && checkAnswer && !showDropItemBorder) {
+          return null;
         }
-        case "uppercase": {
-          indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-          break;
-        }
-        default:
-          indexStr = dropTargetIndex + 1;
-      }
-      const status = evaluation[dropTargetIndex] ? "right" : "wrong";
-      const isChecked =
-        get(userSelections, `[${dropTargetIndex}].responseBoxID`, false) &&
-        !!get(userSelections, `[${dropTargetIndex}].value`, []).length;
+        return <CheckboxTemplateBox key={index} index={index} responseContainer={responseContainer} {...props} />;
+      })}
+    </>
+  );
+};
 
-      const dragItemStyle = {
-        border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
-        margin: 5,
-        padding: 5,
-        display: "inline-block",
-        whiteSpace: "nowrap",
-        textOverflow: "ellipsis",
-        width: "max-content",
-        minWidth: response.minWidth,
-        maxWidth: response.maxWidth,
-        overflow: "hidden"
-      };
-
-      const dropContainerStyle = {
-        ...btnStyle,
-        width: responseContainer.width || "max-content",
-        height: responseContainer.height,
-        minWidth: response.minWidth,
-        maxWidth: response.maxWidth,
-        background: !isChecked && !isSnapFitValues && (checkAnswer || showAnswer) ? "lightgray" : null
-      };
-
-      let containerClassName = `imagelabeldragdrop-droppable active ${
-        isChecked ? "check-answer" : "noAnswer"
-      } ${status}`;
-      containerClassName = showAnswer || checkAnswer ? `${containerClassName} show-answer` : containerClassName;
-
-      const icons = (
-        <>
-          <IconWrapper>
-            {isChecked && status === "right" && <RightIcon />}
-            {isChecked && status === "wrong" && <WrongIcon />}
-          </IconWrapper>
-          <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-            <Point />
-            <Triangle />
-          </Pointer>
-        </>
-      );
-
-      const responseBoxIndex = showAnswer && (
-        <div style={{ alignSelf: "stretch", height: "auto" }} className="index index-box">
-          {indexStr}
-        </div>
-      );
-
-      return (
-        <React.Fragment key={index}>
-          <DropContainer
-            index={index}
-            style={dropContainerStyle}
-            className={containerClassName}
-            drop={drop}
-            disableResponse={disableResponse}
-          >
-            {!isSnapFitValues
-              ? ((isChecked && status === "right") || showAnswer) && responseBoxIndex
-              : responseBoxIndex}
-            <div className="text container" style={showAnswer || checkAnswer ? { padding: "0px" } : {}}>
-              {userSelections[dropTargetIndex] &&
-                userSelections[dropTargetIndex].value.map((answer, user_select_index) => {
-                  const title = striptags(answer) || null;
-                  const userAnswer =
-                    userSelections[dropTargetIndex].responseBoxID && isSnapFitValues
-                      ? answer.replace("<p>", "<p class='clipText'>") || ""
-                      : "";
-                  return (
-                    <DragItem
-                      key={user_select_index}
-                      index={user_select_index}
-                      data={`${answer}_${dropTargetIndex}_${user_select_index}`}
-                      style={dragItemStyle}
-                      item={answer}
-                      onDrop={onDropHandler}
-                      disable={!isSnapFitValues}
-                      disableResponse={disableResponse}
-                    >
-                      <div title={title}>
-                        <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
-                      </div>
-                    </DragItem>
-                  );
-                })}
-            </div>
-            {isSnapFitValues && icons}
-          </DropContainer>
-        </React.Fragment>
-      );
-    })}
-  </>
-);
-
-CheckboxTemplateBoxLayout.propTypes = {
+CheckboxTemplateBox.propTypes = {
+  index: PropTypes.number.isRequired,
+  responseContainer: PropTypes.object.isRequired,
   responsecontainerindividuals: PropTypes.array.isRequired,
-  responseContainers: PropTypes.array.isRequired,
   responseBtnStyle: PropTypes.object.isRequired,
   userSelections: PropTypes.array.isRequired,
   stemNumeration: PropTypes.string.isRequired,
@@ -191,13 +183,19 @@ CheckboxTemplateBoxLayout.propTypes = {
   showAnswer: PropTypes.bool.isRequired,
   checkAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
-  annotations: PropTypes.any.isRequired,
-  image: PropTypes.any.isRequired,
-  snapItems: PropTypes.any.isRequired,
   drop: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool.isRequired,
   showBorder: PropTypes.bool.isRequired,
+  isSnapFitValues: PropTypes.bool.isRequired
+};
+
+CheckboxTemplateBoxLayout.propTypes = {
+  responseContainers: PropTypes.array.isRequired,
+  checkAnswer: PropTypes.bool.isRequired,
+  annotations: PropTypes.any.isRequired,
+  image: PropTypes.any.isRequired,
+  snapItems: PropTypes.any.isRequired,
   isSnapFitValues: PropTypes.bool.isRequired,
   showDropItemBorder: PropTypes.bool.isRequired
 };

@@ -21,24 +21,20 @@ const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }
     </span>
   );
 
-  const valid = x => x.testActivityId && !x.redirect && x.status != "absent";
+  const valid = x => !!x.testActivityId;
 
   const selected =
     find(students, student => student.studentId === selectedStudent && valid(student)) || students.filter(valid)[0];
-  console.log("selected", selected, "selectedStudent", selectedStudent);
-  const user = isPresentationMode ? studentIcon(selected) : selected && selected.studentName;
-
+  const user = isPresentationMode ? studentIcon(selected) : selected && selected.testActivityId;
   return (
     <Fragment>
       {students && students.filter(valid).length !== 0 && (
         <FlexContainer justifyContent="flex-end">
           <Container>
-            <StyledSelect value={user} onChange={onSortChange}>
+            <StyledSelect style={{ width: "160px" }} value={user} onChange={onSortChange}>
               {students.map((student, index) => {
-                const testActivityId = student.testActivityId ? student.testActivityId : null;
-                const isActive = testActivityId === null;
                 return (
-                  <Select.Option key={index} value={testActivityId} disabled={isActive}>
+                  <Select.Option key={index} value={student.testActivityId || null} disabled={!valid(student)}>
                     {isPresentationMode ? studentIcon(student) : student.studentName}
                   </Select.Option>
                 );

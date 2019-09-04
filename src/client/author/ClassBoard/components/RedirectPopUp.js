@@ -1,10 +1,21 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { Button, Row, Radio, Select, DatePicker, message } from "antd";
+import { Button, Row, Radio, Select, DatePicker, message, Col } from "antd";
 import moment from "moment";
 import { assignmentApi } from "@edulastic/api";
 import { getUserName } from "../utils";
 import { ConfirmationModal } from "../../src/components/common/ConfirmationModal";
 import { BodyContainer } from "./styled";
+
+const QuestionDelivery = {
+  ALL: "All",
+  SKIPPED_WRONG: "Skipped and Wrong"
+};
+
+const ShowPreviousAttempt = {
+  SCORE_AND_FEEDBACK: "Score & Feedback",
+  STUDENT_RESPONSE_AND_FEEDBACK: "Student Response & Feedback",
+  FEEDBACK_ONLY: "Feedback only"
+};
 
 const RadioGroup = Radio.Group;
 const Option = Select.Option;
@@ -43,7 +54,8 @@ const RedirectPopUp = ({
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("specificStudents");
   const [studentsToRedirect, setStudentsToRedirect] = useState(selectedStudents);
-
+  const [qDeliveryState, setQDeliveryState] = useState("ALL");
+  const [showPrevAttempt, setshowPrevAttempt] = useState("FEEDBACK_ONLY");
   useEffect(() => {
     let setRedirectStudents = {};
     if (type === "absentStudents") {
@@ -80,12 +92,14 @@ const RedirectPopUp = ({
         _id: groupId,
         specificStudents: type === "entire" ? false : true,
         students: type === "entire" ? [] : selected,
+        showPreviousAttempt: showPrevAttempt,
+        // QuestionDelivery: qDeliveryState,
         endDate: +dueDate
       });
       closePopup();
     }
     setLoading(false);
-  }, [studentsToRedirect, assignmentId, dueDate, groupId]);
+  }, [studentsToRedirect, assignmentId, dueDate, groupId, showPrevAttempt, qDeliveryState]);
 
   const disabledEndDate = endDate => {
     if (!endDate) {
@@ -160,23 +174,53 @@ const RedirectPopUp = ({
           </Select>
         </Row>
 
-        <h4>Close Date</h4>
-        <Row>
-          <DatePicker
-            allowClear={false}
-            disabledDate={disabledEndDate}
-            style={{ width: "100%", cursor: "pointer" }}
-            value={dueDate}
-            showTime
-            showToday={false}
-            onChange={v => {
-              if (!v) {
-                setDueDate(moment().add(1, "day"));
-              } else {
-                setDueDate(v);
-              }
-            }}
-          />
+        <Row gutter={24}>
+          <Col span={12}>
+            <h4>Questions delivery</h4>
+            <Row>
+              <Select defaultValue={qDeliveryState} onChange={val => setQDeliveryState(val)} style={{ width: "100%" }}>
+                {Object.keys(QuestionDelivery).map(item => (
+                  <Option key="1" value={item}>
+                    {QuestionDelivery[item]}
+                  </Option>
+                ))}
+              </Select>
+            </Row>
+          </Col>
+          <Col span={12}>
+            <h4>Close Date</h4>
+            <Row>
+              <DatePicker
+                allowClear={false}
+                disabledDate={disabledEndDate}
+                style={{ width: "100%", cursor: "pointer" }}
+                value={dueDate}
+                showTime
+                showToday={false}
+                onChange={v => {
+                  if (!v) {
+                    setDueDate(moment().add(1, "day"));
+                  } else {
+                    setDueDate(v);
+                  }
+                }}
+              />
+            </Row>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={12}>
+            <h4>Show Previous attempt</h4>
+            <Row>
+              <Select value={showPrevAttempt} onChange={val => setshowPrevAttempt(val)} style={{ width: "100%" }}>
+                {Object.keys(ShowPreviousAttempt).map((item, index) => (
+                  <Option key={index} value={item}>
+                    {ShowPreviousAttempt[item]}
+                  </Option>
+                ))}
+              </Select>
+            </Row>
+          </Col>
         </Row>
       </BodyContainer>
     </ConfirmationModal>

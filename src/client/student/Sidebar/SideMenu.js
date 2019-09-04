@@ -22,7 +22,14 @@ import {
   IconSettings
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
-import { white, tabletWidth, largeDesktopWidth, extraDesktopWidthMax, mainTextColor } from "@edulastic/colors";
+import {
+  white,
+  tabletWidth,
+  largeDesktopWidth,
+  mobileWidth,
+  extraDesktopWidthMax,
+  mainTextColor
+} from "@edulastic/colors";
 import { toggleSideBarAction, setSettingsModalVisibilityAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
 
@@ -258,12 +265,12 @@ class SideMenu extends Component {
                     >
                       <div>
                         {profileThumbnail ? <img src={profileThumbnail} alt="Profile" /> : <PseudoDiv />}
-                        <Tooltip title={userName}>
+                        <StyledTooltip title={userName}>
                           <div style={{ paddingLeft: 11 }}>
                             {!isSidebarCollapsed && <UserName>{userName || "Zack Oliver"}</UserName>}
                             {!isSidebarCollapsed && <UserType>{t("common.userRoleStudent")}</UserType>}
                           </div>
-                        </Tooltip>
+                        </StyledTooltip>
 
                         {!isSidebarCollapsed && !isMobile && (
                           <IconDropdown
@@ -319,6 +326,12 @@ const enhance = compose(
 );
 
 export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
+
+const StyledTooltip = styled(Tooltip)`
+  @media (max-width: ${tabletWidth}) {
+    display: none;
+  }
+`;
 
 const FixedSidebar = styled.div`
   position: fixed;
@@ -421,13 +434,6 @@ const SideBar = styled(Layout.Sider)`
   }
   .ant-select {
     width: 125px;
-  }
-
-  @media (min-width: ${tabletWidth}) and (max-width: ${largeDesktopWidth}) {
-    flex: 0 0 90px !important;
-    max-width: 90px !important;
-    min-width: 90px !important;
-    width: 90px !important;
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -545,6 +551,7 @@ const Menu = styled(AntMenu)`
     
     @media (max-width: ${tabletWidth}) {
       height: auto;
+      margin-top: 30px;
     }
   }
   &.ant-menu-inline .ant-menu-item {
@@ -562,6 +569,10 @@ const Menu = styled(AntMenu)`
     height: 38px;
     padding: 10px 39px !important;
     max-width: 100%;
+
+    @media(max-width: ${tabletWidth}) {
+      height: 60px;
+    }
     
   }
   &.ant-menu-inline-collapsed {
@@ -645,6 +656,8 @@ const MenuFooter = styled.div`
 
   @media (max-width: ${tabletWidth}) {
     display: flex;
+    justify-content: space-between;
+    padding: 15px;
   }
 `;
 
@@ -676,7 +689,7 @@ const QuestionButton = styled.div`
   }
   @media (max-width: ${tabletWidth}) {
     width: 60px;
-    margin: 0 auto 0 18px;
+    margin: 0px;
 
     &.active {
       opacity: 0;
@@ -787,8 +800,8 @@ const UserInfoButton = styled.div`
       box-shadow: none;
     }
 
-    @media (max-width: ${largeDesktopWidth}) {
-      width: 47px;
+    @media (max-width: ${tabletWidth}) {
+      width: 60px;
     }
   }
 
@@ -800,9 +813,9 @@ const UserInfoButton = styled.div`
     border-radius: 50%;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 
-    @media (max-width: ${largeDesktopWidth}) {
-      height: 47px;
-      width: 47px;
+    @media (max-width: ${tabletWidth}) {
+      height: 60px;
+      width: 60px;
     }
   }
 
@@ -815,10 +828,9 @@ const UserInfoButton = styled.div`
   @media (max-width: ${tabletWidth}) {
     width: 60px;
     padding: 0;
-    margin: 0 18px 0 auto;
+    margin: 0px;
     background: ${props => (props.isVisible ? white : "transparent")};
     border-radius: ${props => (props.isVisible ? "0 0 15px 15px" : "50%")};
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 
     &.active {
       opacity: 0;
@@ -827,8 +839,8 @@ const UserInfoButton = styled.div`
     }
   }
 
-  @media (max-width: ${largeDesktopWidth}) {
-    width: 47px;
+  @media (max-width: ${tabletWidth}) {
+    width: 60px;
   }
 `;
 
@@ -871,8 +883,11 @@ const DropdownBtn = styled(Dropdown)`
     }
   }
 
-  @media (max-width: ${largeDesktopWidth}) {
-    height: 47px;
+  @media (max-width: ${tabletWidth}) {
+    width: 60px;
+    padding: 0px;
+    margin: 0px;
+    max-height: 60px;
   }
 `;
 

@@ -49,7 +49,7 @@ import { themeColor } from "@edulastic/colors";
 
 const { getDefaultImage } = testsApi;
 
-const statusConstants = {
+export const statusConstants = {
   DRAFT: "draft",
   ARCHIVED: "archived",
   PUBLISHED: "published"

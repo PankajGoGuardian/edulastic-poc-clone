@@ -384,6 +384,7 @@ class Worksheet extends React.Component {
               top={0}
             />
             <Tools
+              isWorksheet={true}
               onFillColorChange={this.onFillColorChange}
               fillColor={fillColor}
               deleteMode={deleteMode}

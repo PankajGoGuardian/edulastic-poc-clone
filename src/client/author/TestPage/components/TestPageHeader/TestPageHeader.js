@@ -75,6 +75,7 @@ const TestPageHeader = ({
   onChangeNav,
   current,
   onSave,
+  buttons,
   title,
   creating,
   onShare,
@@ -97,7 +98,7 @@ const TestPageHeader = ({
   test,
   updated
 }) => {
-  let navButtons = isPlaylist ? [...playlistNavButtons] : [...navButtonsTest];
+  let navButtons = buttons || (isPlaylist ? [...playlistNavButtons] : [...navButtonsTest]);
   const [openEditPopup, setOpenEditPopup] = useState(false);
   const [showRegradePopup, setShowRegradePopup] = useState(false);
   const [currentAction, setCurrentAction] = useState("");

@@ -1,4 +1,3 @@
-import JXG from "jsxgraph";
 import { Point } from ".";
 import { CONSTANT } from "../config";
 import { handleSnap, colorGenerator, setLabel } from "../utils";
@@ -12,6 +11,35 @@ const defaultConfig = {
   highlightStrokeWidth: 2
 };
 
+const direction = (p1, p2) => {
+  if (p2.Y() - p1.Y() > 0 && p2.X() - p1.X() > 0) {
+    return 1;
+  }
+  if (p2.Y() - p1.Y() < 0 && p2.X() - p1.X() > 0) {
+    return 2;
+  }
+  if (p2.Y() - p1.Y() < 0 && p2.X() - p1.X() < 0) {
+    return 3;
+  }
+  return 4;
+};
+
+const makeCallbackX = (p1, p2) => x => {
+  if ([2, 4].includes(direction(p1, p2))) {
+    const a = (1 / (p2.Y() - p1.Y()) ** 2) * (p2.X() - p1.X());
+    return a * (x - p1.Y()) ** 2 + p1.X();
+  }
+  return x;
+};
+
+const makeCallbackY = (p1, p2) => y => {
+  if ([1, 3].includes(direction(p1, p2))) {
+    const a = (1 / (p2.X() - p1.X()) ** 2) * (p2.Y() - p1.Y());
+    return a * (y - p1.X()) ** 2 + p1.Y();
+  }
+  return y;
+};
+
 let tempToolPoints = [];
 
 function getColorParams(color) {
@@ -22,33 +50,6 @@ function getColorParams(color) {
     highlightFillColor: "transparent"
   };
 }
-
-const getBuildElementsCoords = points => {
-  const coords = {
-    dirPoint1: [points[0].X(), points[0].Y()],
-    dirPoint2: [points[0].X(), points[0].Y()],
-    focus: [points[0].X(), points[0].Y()]
-  };
-
-  const dY = points[1].Y() - points[0].Y();
-  const dX = points[1].X() - points[0].X();
-
-  if (dY * dX > 0) {
-    // vertical parabola
-    const p = dX ** 2 / (2 * dY);
-    coords.dirPoint1 = [points[0].X() - 1, points[0].Y() - p / 2];
-    coords.dirPoint2 = [points[0].X() + 1, points[0].Y() - p / 2];
-    coords.focus = [points[0].X(), points[0].Y() + p / 2];
-  } else if (dY * dX < 0) {
-    // horizontal parabola
-    const p = dY ** 2 / (2 * dX);
-    coords.dirPoint1 = [points[0].X() - p / 2, points[0].Y() - 1];
-    coords.dirPoint2 = [points[0].X() - p / 2, points[0].Y() + 1];
-    coords.focus = [points[0].X() + p / 2, points[0].Y()];
-  }
-
-  return coords;
-};
 
 function create(board, object, parabolaPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
@@ -67,35 +68,25 @@ function create(board, object, parabolaPoints, settings = {}) {
     id
   };
 
-  const coords = getBuildElementsCoords(parabolaPoints);
-  const dirPoint1 = board.$board.create("point", coords.dirPoint1, { visible: false });
-  const dirPoint2 = board.$board.create("point", coords.dirPoint2, { visible: false });
-  const directrix = board.$board.create("line", [dirPoint1, dirPoint2], { visible: false });
-  const focus = board.$board.create("point", coords.focus, { visible: false });
-  const newLine = board.$board.create("parabola", [focus, directrix], params);
-
-  function updateCoords() {
-    const newCoords = getBuildElementsCoords(parabolaPoints);
-    dirPoint1.setPositionDirectly(JXG.COORDS_BY_USER, newCoords.dirPoint1);
-    dirPoint2.setPositionDirectly(JXG.COORDS_BY_USER, newCoords.dirPoint2);
-    focus.setPositionDirectly(JXG.COORDS_BY_USER, newCoords.focus);
-  }
+  const newLine = board.$board.create(
+    "curve",
+    [makeCallbackX(...parabolaPoints), makeCallbackY(...parabolaPoints)],
+    params
+  );
 
   newLine.type = jxgType;
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
   newLine.dashed = object.dashed;
 
-  newLine.addParents(...parabolaPoints, focus, dirPoint1, dirPoint2);
+  newLine.addParents(parabolaPoints);
   newLine.ancestors = {
     [parabolaPoints[0].id]: parabolaPoints[0],
     [parabolaPoints[1].id]: parabolaPoints[1]
   };
 
   if (!fixed) {
-    handleSnap(newLine, Object.values(newLine.ancestors), board, updateCoords);
-    parabolaPoints[0].on("drag", updateCoords);
-    parabolaPoints[1].on("drag", updateCoords);
+    handleSnap(newLine, Object.values(newLine.ancestors), board);
     board.handleStackedElementsMouseEvents(newLine);
   }
 

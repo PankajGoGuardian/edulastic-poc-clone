@@ -8,7 +8,7 @@ import { isEmpty, get } from "lodash";
 
 import { white } from "@edulastic/colors";
 import { IconSelected, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
-import { questionType } from "@edulastic/constants";
+import { questionType, test } from "@edulastic/constants";
 import {
   receiveTestByIdAction,
   getTestEntitySelector,
@@ -24,14 +24,14 @@ import { getItemDetailByIdAction, updateItemDetailByIdAction } from "../../../sr
 import { changeViewAction } from "../../../src/actions/view";
 import { getItemDetailSelector } from "../../../src/selectors/itemDetail";
 import { getViewSelector } from "../../../src/selectors/view";
-import Header from "../Header/Header";
 import Worksheet from "../Worksheet/Worksheet";
 import Description from "../Description/Description";
 import Setting from "../../../TestPage/components/Setting";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
-import { statusConstants } from "../../../TestPage/components/Container/Container";
 import { withWindowSizes } from "@edulastic/common";
 import ShareModal from "../../../src/components/common/ShareModal";
+
+const { statusConstants } = test;
 
 const tabs = {
   DESCRIPTION: "description",

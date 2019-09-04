@@ -18,6 +18,9 @@ const CREATE_DISTRICT_POLICY_ERROR = "[district policy] create data error";
 const CHANGE_DISTRICT_POLICY_ACTION = "[district policy] save changed data";
 
 export const receiveDistrictPolicyAction = createAction(RECEIVE_DISTRICT_POLICY_REQUEST);
+export const receiveSchoolPolicyAction = schoolId => {
+  return receiveDistrictPolicyAction({ orgType: "institution", orgId: schoolId });
+};
 export const receiveDistrictPolicySuccessAction = createAction(RECEIVE_DISTRICT_POLICY_SUCCESS);
 export const receiveDistrictPolicyErrorAction = createAction(RECEIVE_DISTRICT_POLICY_ERROR);
 export const updateDistrictPolicyAction = createAction(UPDATE_DISTRICT_POLICY_REQUEST);
@@ -45,9 +48,10 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_DISTRICT_POLICY_REQUEST]: state => {
     state.loading = true;
   },
-  [RECEIVE_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
+  [RECEIVE_DISTRICT_POLICY_SUCCESS]: (state, { payload: _payload }) => {
+    const { schoolLevel, ...payload } = _payload;
     state.loading = false;
-    state.data = {
+    state[schoolLevel ? "schoolData" : "data"] = {
       ...payload,
       allowedDomainForStudents: get(payload, ["allowedDomainForStudents"], "").toString(),
       allowedDomainForTeachers: get(payload, ["allowedDomainForTeachers"], "").toString(),
@@ -98,8 +102,9 @@ export const reducer = createReducer(initialState, {
 // saga
 function* receiveDistrictPolicySaga({ payload }) {
   try {
+    const schoolLevel = payload.orgType === "school";
     const districtPolicy = yield call(settingsApi.getDistrictPolicy, payload);
-    yield put(receiveDistrictPolicySuccessAction(districtPolicy));
+    yield put(receiveDistrictPolicySuccessAction({ ...districtPolicy, schoolLevel }));
   } catch (err) {
     const errorMessage = "Receive District Policy is failing";
     yield call(message.error, errorMessage);

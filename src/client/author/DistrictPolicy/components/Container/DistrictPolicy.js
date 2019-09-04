@@ -4,7 +4,11 @@ import { compose } from "redux";
 import { get } from "lodash";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+
+import SaSchoolSelect from "../../../src/components/common/SaSchoolSelect";
+
 import AdminSubHeader from "../../../src/components/common/AdminSubHeader/SettingSubHeader";
+
 import DistrictPolicyForm from "../DistrictPolicyForm/DistrictPolicyForm";
 import { DistrictPolicyDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 
@@ -30,6 +34,7 @@ class DistrictPolicy extends Component {
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
+            <SaSchoolSelect />
             <DistrictPolicyForm />
           </StyledLayout>
         </StyledContent>

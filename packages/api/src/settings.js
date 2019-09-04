@@ -75,10 +75,10 @@ const deleteTerm = ({ body }) =>
     .then(result => result.data.result);
 
 // Test Setting Apis
-const getTestSetting = ({ orgId }) =>
+const getTestSetting = ({ orgId, orgType = "district" }) =>
   api
     .callApi({
-      url: `${prefix}/test/${orgId}?orgType=district`,
+      url: `${prefix}/test/${orgId}?orgType=${orgType}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -102,10 +102,10 @@ const createTestSetting = data =>
     .then(result => result.data.result);
 
 // District Policy
-const getDistrictPolicy = ({ orgId }) =>
+const getDistrictPolicy = ({ orgId, orgType = "district" }) =>
   api
     .callApi({
-      url: `${prefix}/district-policy/${orgId}?orgType=district`,
+      url: `${prefix}/district-policy/${orgId}?orgType=${orgType}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -201,10 +201,10 @@ const deletePerformanceBand = (_id, districtId) =>
     .then(result => result.data);
 
 // interested standards
-const getInterestedStandards = ({ orgId }) =>
+const getInterestedStandards = ({ orgId, orgType = "district" }) =>
   api
     .callApi({
-      url: `${prefix}/intrested-standards/${orgId}?orgType=district`,
+      url: `${prefix}/intrested-standards/${orgId}?orgType=${orgType}`,
       method: "get"
     })
     .then(result => result.data.result);

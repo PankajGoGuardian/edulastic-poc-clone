@@ -214,9 +214,10 @@ class Item extends Component {
   }
 
   handleResponse = value => {
-    const { setAndSavePassageItems } = this.props;
+    const { setAndSavePassageItems, passageItems, setTestItems, selectedRows = [] } = this.props;
     this.setState({ passageConfirmModalVisible: false });
     if (value) {
+      setTestItems([...selectedRows, ...passageItems.map(item => item._id)]);
       return setAndSavePassageItems();
     }
     this.setState({ isShowPreviewModal: true });
@@ -354,7 +355,8 @@ const enhance = compose(
   withNamespaces("author"),
   connect(
     state => ({
-      passageItemsCount: getPassageItemsCountSelector(state)
+      passageItemsCount: getPassageItemsCountSelector(state),
+      passageItems: state.tests.passageItems
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

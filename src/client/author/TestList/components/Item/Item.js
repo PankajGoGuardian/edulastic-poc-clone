@@ -169,7 +169,9 @@ class Item extends Component {
                   </Button>
                 )}
               </ButtonWrapper>
-              {collectionName === "edulastic_certified" && <EdulasticVerified width={30} height={30} />}
+              {(collectionName === "edulastic_certified" || collectionName === "engage_ny") && (
+                <EdulasticVerified width={30} height={30} />
+              )}
             </Header>
           }
         >

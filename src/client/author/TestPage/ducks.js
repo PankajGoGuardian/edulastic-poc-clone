@@ -657,7 +657,9 @@ function* publishForRegrade({ payload }) {
   try {
     const test = yield select(getTestSelector);
     yield call(updateTestSaga, { payload: { id: payload, data: test, assignFlow: true } });
-    yield call(testsApi.publishTest, payload);
+    const newTestId = yield select(getTestIdSelector);
+    yield call(testsApi.publishTest, newTestId);
+    yield put(push(`/author/assignments/regrade/new/${newTestId}/old/${test.previousTestId}`));
   } catch (e) {
     yield call(message.error, "publish failed");
   }

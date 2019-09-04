@@ -15,16 +15,6 @@ export const RoundDiv = styled.div`
   transition: all 0.3s ease;
   min-height: 230px;
 
-  @media (min-width: 1201px) {
-    width: calc((100% - 30px) / 3);
-  }
-  @media only screen and (max-width: ${largeDesktopWidth}) {
-    width: calc((100% - 20px) / 2);
-  }
-  @media only screen and (max-width: ${mobileWidth}) {
-    width: 100%;
-  }
-
   &:hover {
     background-color: ${themeColor};
 

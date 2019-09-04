@@ -165,7 +165,7 @@ class Display extends Component {
     const userAnswers = isReviewTab ? cAnswers : _uAnswers;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { height, wordwrap, stemNumeration, responsecontainerindividuals } = uiStyle;
+    const { height, wordwrap, stemNumeration, responsecontainerindividuals = [] } = uiStyle;
 
     const responseBtnStyle = {
       width: uiStyle.width !== 0 ? uiStyle.width : "auto",

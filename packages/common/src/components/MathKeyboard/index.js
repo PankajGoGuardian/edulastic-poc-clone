@@ -79,7 +79,7 @@ class MathKeyboard extends React.PureComponent {
   };
 
   get keyboardButtons() {
-    const { restrictKeys, customKeys, allowNumericOnly } = this.props;
+    const { restrictKeys, customKeys } = this.props;
     const { type } = this.state;
 
     const restrictButtons = restrictKeys.map(key => ({
@@ -89,16 +89,14 @@ class MathKeyboard extends React.PureComponent {
       command: "write"
     }));
 
-    const allBtns = allowNumericOnly
-      ? [KEYBOARD_BUTTONS.find(el => el.label === "±")]
-      : customKeys
-          .map(key => ({
-            handler: key,
-            label: key,
-            types: [isObject(type) ? type.label : type],
-            command: "write"
-          }))
-          .concat(type === "all" ? KEYBOARD_BUTTONS_ALL : KEYBOARD_BUTTONS);
+    const allBtns = customKeys
+      .map(key => ({
+        handler: key,
+        label: key,
+        types: [isObject(type) ? type.label : type],
+        command: "write"
+      }))
+      .concat(type === "all" ? KEYBOARD_BUTTONS_ALL : KEYBOARD_BUTTONS);
 
     const availables = isObject(type)
       ? compact(type.value.map(handler => allBtns.find(btn => btn.handler === handler)))

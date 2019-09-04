@@ -7,7 +7,7 @@ export const ThumbnailsWrapper = styled.div`
   position: relative;
   width: ${({ review }) => (review ? "243px" : "213px")};
   height: calc(100vh - 62px);
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 30px 28px;
   padding-right: ${({ review }) => (review ? "64px" : "28px")};
   padding-bottom: 0;

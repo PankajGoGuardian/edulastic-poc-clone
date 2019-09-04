@@ -41,7 +41,7 @@ class Extras extends Component {
           {!isSection && <Subtitle>{t("component.options.solution")}</Subtitle>}
 
           <Row gutter={60}>
-            <Col md={12}>
+            <Col md={17}>
               <Label data-cy="instructor_stimulus">{t("component.options.overallDistractorRationale")}</Label>
 
               <WidgetFRInput>
@@ -57,7 +57,7 @@ class Extras extends Component {
           </Row>
 
           <Row gutter={60}>
-            <Col md={12}>
+            <Col md={17}>
               <Label data-cy="sample_answer">{t("component.options.explanation")}</Label>
 
               <WidgetFRInput>

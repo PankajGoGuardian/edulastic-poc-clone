@@ -165,9 +165,20 @@ class Container extends React.Component {
     this.setState({ saved: true, published: false });
   };
 
-  validateTest = assessment => {
-    const { subjects, grades } = assessment;
-
+  validateTest = test => {
+    const {
+      title,
+      subjects,
+      grades,
+      requirePassword = false,
+      assignmentPassword = "",
+      safeBrowser,
+      sebPassword
+    } = test;
+    if (!title) {
+      message.error("Name field cannot be empty");
+      return false;
+    }
     if (isEmpty(grades)) {
       message.error("Grade field cannot be empty");
       return false;
@@ -176,18 +187,29 @@ class Container extends React.Component {
       message.error("Subject field cannot be empty");
       return false;
     }
+    if (requirePassword) {
+      if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
+        message.error("Please add a valid password.");
+        return false;
+      }
+    }
+    if (safeBrowser && !sebPassword) {
+      if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
+        this.sebPasswordRef.current.input.focus();
+      }
+      message.error("Please add a valid password.");
+      return false;
+    }
+
     return true;
   };
 
-  handlePublish = async () => {
-    const { saved } = this.state;
-    if (saved) {
-      const {
-        assessment: { _id: id },
-        publishTest
-      } = this.props;
-      await publishTest({ _id: id });
-      this.setState({ saved: false, published: true });
+  handlePublishTest = (assignFlow = false) => {
+    const { publishTest, assessment, match } = this.props;
+    const { _id } = assessment;
+    if (this.validateTest(assessment)) {
+      publishTest({ _id, oldId: match.params.oldId, test: assessment, assignFlow });
+      this.setState({ editEnable: false, saved: false, published: true });
     }
   };
 
@@ -315,7 +337,7 @@ class Container extends React.Component {
           current={currentTab}
           onSave={() => this.handleSave("draft")}
           onShare={this.onShareModalChange}
-          onPublish={this.handlePublish}
+          onPublish={this.handlePublishTest}
           title={title}
           buttons={buttons}
           creating={creating}

@@ -33,7 +33,7 @@ function getColorParams(color) {
 function create(board, object, tangentPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newLine = board.$board.create("functiongraph", [makeCallback(...tangentPoints)], {
     ...defaultConfig,
@@ -42,12 +42,14 @@ function create(board, object, tangentPoints, settings = {}) {
       ...getLabelParameters(jxgType),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newLine.type = jxgType;
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   newLine.addParents(tangentPoints);
   newLine.ancestors = {
@@ -102,6 +104,7 @@ function getConfig(tangent) {
     id: tangent.id,
     label: tangent.labelHTML || false,
     baseColor: tangent.baseColor,
+    dashed: tangent.dashed,
     labelIsVisible: tangent.labelIsVisible,
     points: Object.keys(tangent.ancestors)
       .sort()

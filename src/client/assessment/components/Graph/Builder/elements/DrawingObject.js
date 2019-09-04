@@ -32,7 +32,7 @@ function onHandler(board, event) {
   const deltaY = +snapSizeY;
   let newElement = null;
 
-  const { id, label, baseColor, type, pointLabels } = drawingObject;
+  const { id, label, baseColor, type, pointLabels, dashed } = drawingObject;
 
   if (type === CONSTANT.TOOLS.POINT) {
     newElement = Point.onHandler(board, event, id);
@@ -70,40 +70,40 @@ function onHandler(board, event) {
       case CONSTANT.TOOLS.RAY:
       case CONSTANT.TOOLS.SEGMENT:
       case CONSTANT.TOOLS.VECTOR:
-        newElement = Line.create(board, { id, label, baseColor }, points, type);
+        newElement = Line.create(board, { id, label, baseColor, dashed }, points, type);
         break;
       case CONSTANT.TOOLS.CIRCLE:
-        newElement = Circle.create(board, { id, label, baseColor }, points);
+        newElement = Circle.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.SIN:
-        newElement = Sin.create(board, { id, label, baseColor }, points);
+        newElement = Sin.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.TANGENT:
-        newElement = Tangent.create(board, { id, label, baseColor }, points);
+        newElement = Tangent.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.SECANT:
-        newElement = Secant.create(board, { id, label, baseColor }, points);
+        newElement = Secant.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.PARABOLA:
-        newElement = Parabola.create(board, { id, label, baseColor }, points);
+        newElement = Parabola.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.ELLIPSE:
-        newElement = Ellipse.create(board, { id, label, baseColor }, points);
+        newElement = Ellipse.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.EXPONENT:
-        newElement = Exponent.create(board, { id, label, baseColor }, points);
+        newElement = Exponent.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.LOGARITHM:
-        newElement = Logarithm.create(board, { id, label, baseColor }, points);
+        newElement = Logarithm.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.HYPERBOLA:
-        newElement = Hyperbola.create(board, { id, label, baseColor }, points);
+        newElement = Hyperbola.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.POLYGON:
-        newElement = Polygon.create(board, { id, label, baseColor }, points);
+        newElement = Polygon.create(board, { id, label, baseColor, dashed }, points);
         break;
       case CONSTANT.TOOLS.POLYNOM:
-        newElement = Polynom.create(board, { id, label, baseColor }, points);
+        newElement = Polynom.create(board, { id, label, baseColor, dashed }, points);
         break;
       default:
         return;

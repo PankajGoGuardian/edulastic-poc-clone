@@ -586,7 +586,7 @@ class CanvasPlotter {
 }
 
 function create(board, object) {
-  const { latex, id, label, apiLatex } = object;
+  const { latex, id, label, apiLatex, priorityColor } = object;
 
   const elementWithErrorLatex = {
     type: jxgType,
@@ -614,7 +614,7 @@ function create(board, object) {
   try {
     const cv = new CanvasPlotter(board.$board, fixedLatex.latexFunc, {
       ...defaultConfig,
-      ...getColorParams("#00b2ff"),
+      ...getColorParams(priorityColor || "#00b2ff"),
       dash
     });
     cv.update();

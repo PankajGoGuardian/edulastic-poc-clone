@@ -33,7 +33,7 @@ function getColorParams(color) {
 function create(board, object, sinPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newLine = board.$board.create("functiongraph", [makeCallback(...sinPoints)], {
     ...defaultConfig,
@@ -42,12 +42,14 @@ function create(board, object, sinPoints, settings = {}) {
       ...getLabelParameters(jxgType),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newLine.type = jxgType;
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   newLine.addParents(sinPoints);
   newLine.ancestors = {
@@ -102,6 +104,7 @@ function getConfig(sine) {
     id: sine.id,
     label: sine.labelHTML || false,
     baseColor: sine.baseColor,
+    dashed: sine.dashed,
     labelIsVisible: sine.labelIsVisible,
     points: Object.keys(sine.ancestors)
       .sort()

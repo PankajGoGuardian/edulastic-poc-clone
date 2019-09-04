@@ -53,7 +53,7 @@ const getBuildElementsCoords = points => {
 function create(board, object, parabolaPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const params = {
     ...defaultConfig,
@@ -62,6 +62,7 @@ function create(board, object, parabolaPoints, settings = {}) {
       ...getLabelParameters(jxgType),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   };
@@ -83,6 +84,7 @@ function create(board, object, parabolaPoints, settings = {}) {
   newLine.type = jxgType;
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   newLine.addParents(...parabolaPoints, focus, dirPoint1, dirPoint2);
   newLine.ancestors = {
@@ -140,6 +142,7 @@ function getConfig(parabola) {
     label: parabola.labelHTML || false,
     labelIsVisible: parabola.labelIsVisible,
     baseColor: parabola.baseColor,
+    dashed: parabola.dashed,
     points: Object.keys(parabola.ancestors)
       .sort()
       .map(n => Point.getConfig(parabola.ancestors[n]))

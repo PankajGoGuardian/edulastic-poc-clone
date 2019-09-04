@@ -51,7 +51,7 @@ function flatConfigPoints(pointsConfig) {
 function create(board, object, polynomPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newPolynom = board.$board.create("functiongraph", [makeCallback(...polynomPoints)], {
     ...defaultConfig,
@@ -60,12 +60,14 @@ function create(board, object, polynomPoints, settings = {}) {
       ...getLabelParameters(jxgType),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newPolynom.type = jxgType;
   newPolynom.labelIsVisible = object.labelIsVisible;
   newPolynom.baseColor = object.baseColor;
+  newPolynom.dashed = object.dashed;
 
   newPolynom.addParents(polynomPoints);
   newPolynom.ancestors = flatConfigPoints(polynomPoints);
@@ -128,6 +130,7 @@ function getConfig(polynom) {
     id: polynom.id,
     label: polynom.labelHTML || false,
     baseColor: polynom.baseColor,
+    dashed: polynom.dashed,
     labelIsVisible: polynom.labelIsVisible,
     points: Object.keys(polynom.ancestors)
       .sort()

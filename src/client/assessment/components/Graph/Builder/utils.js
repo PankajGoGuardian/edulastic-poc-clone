@@ -341,7 +341,8 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       labelIsVisible: element.labelIsVisible,
       baseColor: element.baseColor,
       priorityColor: element.priorityColor || null,
-      text: element.text
+      text: element.text,
+      dashed: element.dashed
     };
     if (type === CONSTANT.TOOLS.EQUATION) {
       acc[id].latex = latex;
@@ -384,7 +385,8 @@ export function flat2nestedConfig(config) {
         subType = null,
         points,
         text = null,
-        apiLatex = null
+        apiLatex = null,
+        dashed = false
       } = element;
 
       if (!acc[id] && !subElement) {
@@ -399,7 +401,8 @@ export function flat2nestedConfig(config) {
           latex,
           subType,
           text,
-          apiLatex
+          apiLatex,
+          dashed
         };
         if (type === CONSTANT.TOOLS.AREA) {
           acc[id].points = points;

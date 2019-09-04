@@ -33,7 +33,7 @@ function getColorParams(color) {
 function create(board, object, secantPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newLine = board.$board.create("functiongraph", [makeCallback(...secantPoints)], {
     ...defaultConfig,
@@ -42,12 +42,14 @@ function create(board, object, secantPoints, settings = {}) {
       ...getLabelParameters(jxgType),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newLine.type = jxgType;
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   newLine.addParents(secantPoints);
   newLine.ancestors = {
@@ -103,6 +105,7 @@ function getConfig(secant) {
     label: secant.labelHTML || false,
     labelIsVisible: secant.labelIsVisible,
     baseColor: secant.baseColor,
+    dashed: secant.dashed,
     points: Object.keys(secant.ancestors)
       .sort()
       .map(n => Point.getConfig(secant.ancestors[n]))

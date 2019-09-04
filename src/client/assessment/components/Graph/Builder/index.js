@@ -24,7 +24,8 @@ import {
   Secant,
   Sin,
   Tangent,
-  Title
+  Title,
+  Dashed
 } from "./elements";
 import {
   fillConfigDefaultParameters,
@@ -240,6 +241,9 @@ class Board {
         break;
       case CONSTANT.TOOLS.AREA:
         this.creatingHandler = Area.onHandler();
+        return;
+      case CONSTANT.TOOLS.DASHED:
+        this.creatingHandler = Dashed.onHandler();
         return;
       case CONSTANT.TOOLS.SEGMENTS_POINT:
         this.creatingHandler = NumberlinePoint.onHandler;

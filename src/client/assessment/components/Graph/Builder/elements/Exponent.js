@@ -33,7 +33,7 @@ function getColorParams(color) {
 function create(board, object, expPoints, settings = {}) {
   const { labelIsVisible = true, fixed = false } = settings;
 
-  const { id = null, label, baseColor, priorityColor } = object;
+  const { id = null, label, baseColor, priorityColor, dashed = false } = object;
 
   const newLine = board.$board.create("functiongraph", [makeCallback(...expPoints)], {
     ...defaultConfig,
@@ -42,12 +42,14 @@ function create(board, object, expPoints, settings = {}) {
       ...getLabelParameters(jxgType),
       visible: labelIsVisible
     },
+    dash: dashed ? 2 : 0,
     fixed,
     id
   });
   newLine.type = jxgType;
   newLine.labelIsVisible = object.labelIsVisible;
   newLine.baseColor = object.baseColor;
+  newLine.dashed = object.dashed;
 
   newLine.addParents(expPoints);
   newLine.ancestors = {
@@ -103,6 +105,7 @@ function getConfig(exponent) {
     label: exponent.labelHTML || false,
     labelIsVisible: exponent.labelIsVisible,
     baseColor: exponent.baseColor,
+    dashed: exponent.dashed,
     points: Object.keys(exponent.ancestors)
       .sort()
       .map(n => Point.getConfig(exponent.ancestors[n]))

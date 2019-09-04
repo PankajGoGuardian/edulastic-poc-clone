@@ -640,17 +640,8 @@ class GraphContainer extends PureComponent {
         return <IconSine {...newOptions} />;
       },
       polygon: () => <IconPolygon {...options} />,
-      mark: () => <IconLabel {...options} />,
-      label: () => {
-        const newOptions = {
-          ...options,
-          width: width + 10,
-          height: height - 2
-        };
-
-        return <IconLabel {...newOptions} />;
-      },
-      area: () => "area"
+      area: () => "area",
+      dashed: () => "dashed"
     };
 
     return iconsByToolName[toolName]();
@@ -682,7 +673,8 @@ class GraphContainer extends PureComponent {
     "hyperbola",
     "polygon",
     "parabola",
-    "area"
+    "area",
+    "dashed"
   ];
 
   allControls = ["undo", "redo", "reset", "delete"];

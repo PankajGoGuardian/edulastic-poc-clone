@@ -25,3 +25,4 @@ export { default as Area } from "./Area";
 export { default as DrawingObject } from "./DrawingObject";
 export { default as EditButton } from "./EditButton";
 export { default as DragDrop } from "./DragDrop";
+export { default as Dashed } from "./Dashed";

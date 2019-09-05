@@ -21,6 +21,7 @@ export default MoveLink;
 
 const Link = styled.a`
   font-size: 15px;
+  padding-right: 20px;
   font-weight: 700;
   line-height: 20px;
   font-weight: bold;
@@ -41,7 +42,6 @@ const Link = styled.a`
 
   span {
     font-weight: 500;
-    max-width: 470px;
   }
   img {
     display: block;

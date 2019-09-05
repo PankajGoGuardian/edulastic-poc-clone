@@ -29,19 +29,21 @@ const withGrid = WrappedComponent => {
         <FlexContainer style={{ transform: "rotate(-90deg)", width: 40, whiteSpace: "nowrap", marginTop: margin }}>
           {yAxisLabel}
         </FlexContainer>
-        <div style={{ position: "relative" }}>
-          <AnnotationRnd
-            style={{
-              backgroundColor: "transparent",
-              boxShadow: "none",
-              border: view === EDIT ? "1px solid lightgray" : "none"
-            }}
-            question={item}
-            setQuestionData={setQuestionData}
-            disableDragging={view !== EDIT}
-            isAbove={view === EDIT ? !barIsDragging : false}
-            onDoubleClick={() => toggleBarDragging(!barIsDragging)}
-          />
+        <div className="chart-parent" style={{ position: "relative" }}>
+          {item.type !== "linePlot" && item.type !== "dots" && (
+            <AnnotationRnd
+              style={{
+                backgroundColor: "transparent",
+                boxShadow: "none",
+                border: view === EDIT ? "1px solid lightgray" : "none"
+              }}
+              question={item}
+              setQuestionData={setQuestionData}
+              disableDragging={view !== EDIT}
+              isAbove={view === EDIT ? !barIsDragging : false}
+              onDoubleClick={() => toggleBarDragging(!barIsDragging)}
+            />
+          )}
           <FlexContainer style={{ width, marginBottom: 20 }} justifyContent="center">
             {name}
           </FlexContainer>
@@ -49,6 +51,30 @@ const withGrid = WrappedComponent => {
           <FlexContainer style={{ width, marginTop: 10, marginLeft: padding / 2 }} justifyContent="center">
             {xAxisLabel}
           </FlexContainer>
+          {(item.type === "linePlot" || item.type === "dots") && (
+            <div
+              style={{
+                height: "204px",
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }}
+            >
+              <AnnotationRnd
+                style={{
+                  backgroundColor: "transparent",
+                  boxShadow: "none",
+                  border: view === EDIT ? "1px solid lightgray" : "none"
+                }}
+                question={item}
+                setQuestionData={setQuestionData}
+                disableDragging={view !== EDIT}
+                isAbove={view === EDIT ? !barIsDragging : false}
+                onDoubleClick={() => toggleBarDragging(!barIsDragging)}
+              />
+            </div>
+          )}
         </div>
       </FlexContainer>
     );

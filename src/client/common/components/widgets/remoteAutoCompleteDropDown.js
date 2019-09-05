@@ -259,6 +259,7 @@ const RemoteAutocompleteDropDown = ({
         disabled={disabled}
       >
         <Input
+          data-cy={selected.title ? selected.title : placeholder}
           suffix={
             <Icon
               type={isLoading ? "loading" : iconType}

@@ -90,6 +90,7 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
               ) : null}
               {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") || !isSignupUsingDaURL ? (
                 <TeacherSignupBox
+                  data-cy="teacher"
                   to={
                     isSignupUsingDaURL
                       ? getDistrictTeacherSignupUrl(districtShortName)
@@ -102,7 +103,7 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
                 </TeacherSignupBox>
               ) : null}
               {!isSignupUsingDaURL ? (
-                <AdminSignupBox to={getPartnerDASignupUrl(partner)} xs={24} sm={8}>
+                <AdminSignupBox data-cy="admin" to={getPartnerDASignupUrl(partner)} xs={24} sm={8}>
                   <span>{t("component.signup.getstarted.imadmin")}</span>
                 </AdminSignupBox>
               ) : null}

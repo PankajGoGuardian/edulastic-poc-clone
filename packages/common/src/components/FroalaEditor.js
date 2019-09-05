@@ -20,7 +20,6 @@ import headings from "./FroalaPlugins/headings";
 import MathModal from "./MathModal";
 
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
-import { getFontSize } from "../../../../src/client/assessment/utils/helpers";
 
 // register custom math buttton
 FroalaEditor.DefineIconTemplate(
@@ -148,7 +147,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
   position: relative;
   width: 100%;
   display: block;
-  font-size: ${props => getFontSize(props.theme.fontSize || "normal", true)};
+  font-size: ${props => props.fontSize || props.theme.fontSize};
   .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
   }
@@ -273,6 +272,7 @@ const CustomEditor = ({
   centerContent,
   imageDefaultWidth,
   placeholder,
+  fontSize,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -802,6 +802,7 @@ const CustomEditor = ({
         centerContent={centerContent}
         border={border}
         theme={theme}
+        fontSize={fontSize}
       >
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
 

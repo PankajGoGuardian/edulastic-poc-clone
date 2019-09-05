@@ -131,7 +131,7 @@ class ClozeDropDownDisplay extends Component {
       responses = this.shuffleGroup(responses);
     }
     // Layout Options
-    const fontSize = getFontSize(theme.fontSize || "normal", true);
+    const fontSize = theme.fontSize || getFontSize("normal", true);
     const { placeholder, responsecontainerindividuals, stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 

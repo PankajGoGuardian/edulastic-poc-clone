@@ -139,7 +139,7 @@ class Display extends Component {
       newOptions = options;
     }
     // Layout Options
-    const fontSize = getFontSize(uiStyle.fontsize);
+    const fontSize = theme.fontsize;
     const { heightpx, wordwrap, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const responseBtnStyle = {

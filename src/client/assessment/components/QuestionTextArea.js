@@ -13,7 +13,8 @@ const QuestionTextArea = ({
   border,
   readOnly,
   centerContent = false,
-  imageDefaultWidth
+  imageDefaultWidth,
+  fontSize
 }) => (
   <FroalaEditor
     placeholder={placeholder}
@@ -27,6 +28,7 @@ const QuestionTextArea = ({
     border={border}
     readOnly={readOnly}
     imageDefaultWidth={imageDefaultWidth}
+    fontSize={fontSize}
   />
 );
 

@@ -101,6 +101,7 @@ class GraphAxisLabels extends Component {
             value={stimulus}
             firstFocus={firstMount}
             border="border"
+            fontSize={graphData.numberlineAxis.fontSize + "px"}
           />
         </Question>
 

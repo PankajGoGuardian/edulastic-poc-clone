@@ -8,7 +8,7 @@ export const GraphWrapper = styled.div`
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
 `;
 
-export const OldColor = styled.div`
+export const PrevColor = styled.div`
   height: 40px;
   width: 40px;
   border-radius: 4px;

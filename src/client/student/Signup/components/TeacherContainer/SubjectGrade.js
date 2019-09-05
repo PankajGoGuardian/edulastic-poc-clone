@@ -6,7 +6,7 @@ import { isEmpty, filter, map, pick, find, mapKeys, get } from "lodash";
 import { Row, Col, Select, Form, Button } from "antd";
 import styled from "styled-components";
 import { IconHeader } from "@edulastic/icons";
-import { themeColor, white, title, fadedGrey } from "@edulastic/colors";
+import { themeColor, white, title, fadedGrey, mobileWidthMax } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import selectsData from "../../../../author/TestPage/components/common/selectsData";
 // actions
@@ -98,7 +98,7 @@ class SubjectGrade extends React.Component {
 
   render() {
     const { subjects } = this.state;
-    const { interestedCurriculums, curriculums, form, saveSubjectGradeloading } = this.props;
+    const { interestedCurriculums, curriculums, form, saveSubjectGradeloading, t } = this.props;
     const { showAllStandards } = get(this, "props.userInfo.orgData", {});
     const formattedCurriculums = isEmpty(subjects)
       ? []
@@ -121,16 +121,16 @@ class SubjectGrade extends React.Component {
     return (
       <>
         <SubjectGradeBody>
-          <Col xs={18} offset={3}>
-            <Row type="flex" align="middle">
-              <BannerText md={12}>
+          <Col xs={{ span: 20, offset: 2 }} lg={{ span: 18, offset: 3 }}>
+            <FlexWrapper type="flex" align="middle">
+              <BannerText xs={24} sm={18} md={12}>
                 <SchoolIcon src={schoolIcon} alt="" />
                 <h3>
-                  Choose your subject <br /> and grade
+                  {t("component.signup.teacher.choosesubject")} <br /> {t("component.signup.teacher.choosegrade")}
                 </h3>
-                <div>So you can get relevant content</div>
+                <h5>{t("component.signup.teacher.gsinfotext")}</h5>
               </BannerText>
-              <Col md={12}>
+              <Col xs={24} sm={18} md={12}>
                 <SelectForm onSubmit={this.handleSubmit}>
                   <Form.Item label="Grade">
                     {getFieldDecorator("grade", {
@@ -201,7 +201,7 @@ class SubjectGrade extends React.Component {
                   </ProceedBtn>
                 </SelectForm>
               </Col>
-            </Row>
+            </FlexWrapper>
           </Col>
         </SubjectGradeBody>
       </>
@@ -212,7 +212,7 @@ class SubjectGrade extends React.Component {
 const SubjectGradeForm = Form.create()(SubjectGrade);
 
 const enhance = compose(
-  withNamespaces("choose_subject_grade"),
+  withNamespaces("login"),
   connect(
     state => ({
       curriculums: getCurriculumsListSelector(state),
@@ -229,9 +229,16 @@ const enhance = compose(
 export default enhance(SubjectGradeForm);
 
 const SubjectGradeBody = styled(Row)`
-  padding-top: 50px;
+  padding: 60px 0px;
   background: ${white};
-  height: calc(100vh - 93px);
+  min-height: calc(100vh - 93px);
+`;
+
+const FlexWrapper = styled(Row)`
+  @media (max-width: ${mobileWidthMax}) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const BannerText = styled(Col)`
@@ -245,11 +252,20 @@ const BannerText = styled(Col)`
     margin-bottom: 15px;
     color: ${title};
   }
-
-  div {
+  h5 {
     font-size: 13px;
     margin-top: 10px;
     color: ${title};
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    margin-bottom: 30px;
+    h3 {
+      font-weight: 400;
+    }
+    h5 {
+      font-size: 16px;
+    }
   }
 `;
 

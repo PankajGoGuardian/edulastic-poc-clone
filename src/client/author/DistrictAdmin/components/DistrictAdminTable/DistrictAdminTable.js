@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
+import { get, isEmpty } from "lodash";
 import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 import { TypeToConfirmModal } from "@edulastic/common";
 
@@ -87,11 +87,15 @@ class DistrictAdminTable extends Component {
     this.columns = [
       {
         title: "Name",
-        render: (_, { _source: { firstName, lastName } = {} }) => (
-          <span>
-            {firstName} {lastName}
-          </span>
-        ),
+        render: (_, { _source }) => {
+          const firstName = get(_source, "firstName", "");
+          const lastName = get(_source, "lastName", "");
+          return (
+            <span>
+              {firstName === "Anonymous" || isEmpty(firstName) ? "-" : firstName} {lastName}
+            </span>
+          );
+        },
         sortDirections: ["descend", "ascend"],
         sorter: (a, b) => {
           const prev = get(a, "_source.firstName", "");
@@ -113,7 +117,7 @@ class DistrictAdminTable extends Component {
       },
       {
         title: "SSO",
-        dataIndex: "_source.sso",
+        dataIndex: "_source.lastSigninSSO",
         render: (sso = "N/A") => sso,
         width: 200
       }
@@ -367,7 +371,7 @@ class DistrictAdminTable extends Component {
   getSearchQuery = () => {
     const { userOrgId } = this.props;
     const { filtersData, searchByName, currentPage } = this.state;
-    let showActive = this.state.showActive ? 1 : 0;
+    let { showActive } = this.state;
 
     let search = {};
     for (let [index, item] of filtersData.entries()) {
@@ -388,17 +392,20 @@ class DistrictAdminTable extends Component {
       search["name"] = searchByName;
     }
 
-    return {
+    const queryObj = {
       search,
       districtId: userOrgId,
       role: "district-admin",
       limit: 25,
-      page: currentPage,
+      page: currentPage
       // uncomment after elastic search is fixed
-      status: showActive
       // sortField,
       // order
     };
+    if (showActive) {
+      queryObj["status"] = 1;
+    }
+    return queryObj;
   };
 
   loadFilteredList = () => {

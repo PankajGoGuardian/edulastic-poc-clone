@@ -8,7 +8,9 @@ export const FroalaInput = styled.div`
   height: ${({ isRnd }) => (!isRnd ? "auto" : "100%")};
   min-height: ${({ isRnd }) => (!isRnd ? "40px" : "0")};
   display: flex;
-  align-items: center;
+  // align-items: center;
+  justify-content: center;
+  text-align: center;
   box-shadow: ${({ isRnd }) => (isRnd ? "none" : "0 2px 5px 0 rgba(0, 0, 0, 0.07)")};
   padding-left: 8px;
   background: ${({ isRnd }) => (isRnd ? "transparent" : "#fff")};

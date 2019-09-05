@@ -1,6 +1,6 @@
 import { createSelector } from "reselect";
 import uuid from "uuid/v4";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull, uniqBy, uniq, isEmpty } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, flatten, pull, uniqBy, uniq, isEmpty } from "lodash";
 import { testItemsApi, passageApi, itemsApi } from "@edulastic/api";
 import { questionType } from "@edulastic/constants";
 import { helpers } from "@edulastic/common";
@@ -224,12 +224,14 @@ export const getPassageSelector = createSelector(
   state => state.passage
 );
 
+/**
+ * check if item has only a single question widget.
+ */
 export const isSingleQuestionViewSelector = createSelector(
   getItemDetailSelector,
   (item = {}) => {
-    const { resources = [], questions = [] } = item.data || {};
-
-    return resources.length === 0 && questions.length === 1;
+    let widgets = flatten(item.rows).reduce((widgets, row) => [...widgets, ...row.widgets], []);
+    return widgets.length === 1;
   }
 );
 
@@ -695,7 +697,7 @@ export function* updateItemSaga({ payload }) {
       draft.map((q, index) => {
         if (index === 0) return q;
         else {
-          q.scoringDisabled = itemLevelScoring ? true : undefined;
+          q.scoringDisabled = itemLevelScoring ? true : false;
           return q;
         }
       });
@@ -771,7 +773,7 @@ export function* updateItemSaga({ payload }) {
     if (addToTest) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
-      const nextTestItems = [...(testItems.data ? testItems.data : testItems), item._id];
+      const nextTestItems = [...testItems, item._id];
 
       yield put(setTestItemsAction(nextTestItems));
 
@@ -798,7 +800,7 @@ export function* updateItemSaga({ payload }) {
 export const hasStandards = question => {
   const alignments = get(question, "alignment", []);
   if (!alignments.length) return false;
-  const hasDomain = alignments.some(i => i.domains && i.domains.length);
+  const hasDomain = alignments.some(i => i.domains && i.domains.length && !i.isEquivalentStandard);
   return !!hasDomain;
 };
 
@@ -811,15 +813,31 @@ function* saveTestItemSaga() {
   const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
   const data = yield select(getItemDetailSelector);
   const widgets = Object.values(yield select(state => get(state, "authorQuestions.byId", {})));
-  const questions = widgets.filter(item => !resourceTypes.includes(item.type));
+  let questions = widgets.filter(item => !resourceTypes.includes(item.type));
   const resources = widgets.filter(item => resourceTypes.includes(item.type));
+  questions = produce(questions, draft => {
+    for (let [ind, q] of questions.entries()) {
+      if (ind === 0) {
+        continue;
+      }
+      if (data.itemLevelScoring) {
+        q.scoringDisabled = true;
+      } else {
+        q.scoringDisabled = false;
+      }
+    }
+  });
 
   data.data = {
     questions,
     resources
   };
   const redirectTestId = yield select(getRedirectTestSelector);
-  const newTestItem = yield call(testItemsApi.updateById, data._id, data, redirectTestId);
+
+  const newTestItem =
+    data._id === "new"
+      ? yield call(testItemsApi.create, _omit(data, "_id"))
+      : yield call(testItemsApi.updateById, data._id, data, redirectTestId);
   yield put({
     type: UPDATE_ITEM_DETAIL_SUCCESS,
     payload: { item: newTestItem }
@@ -862,7 +880,7 @@ function* publishTestItemSaga({ payload }) {
     }
     yield call(message.success, "Item created successfully");
   } catch (e) {
-    console.log("publish error", e);
+    console.warn("publish error", e);
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
   }
@@ -879,12 +897,15 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex } }) {
 
 function* convertToMultipartSaga({ payload }) {
   try {
-    const { isTestFlow = false, itemId, testId } = payload;
+    const { isTestFlow = false, testId } = payload;
 
     yield saveTestItemSaga();
+    // here item id could be "new", hence get it from the store
+    // which is updated after saving the item.
+    const item = yield select(getItemDetailSelector);
     const nextPageUrl = isTestFlow
-      ? `/author/tests/${testId}/createItem/${itemId}`
-      : `/author/items/${itemId}/item-detail`;
+      ? `/author/tests/${testId}/createItem/${item._id}`
+      : `/author/items/${item._id}/item-detail`;
     yield put(setQuestionCategory("multiple-choice"));
     yield put(push(nextPageUrl));
   } catch (e) {
@@ -907,15 +928,9 @@ function* convertToPassageWithQuestions({ payload }) {
         content: ""
       }
     });
-    const { _id: passageId } = passage;
 
     yield put(addPassageAction(passage));
-    yield put({
-      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
-      payload: {
-        canAddMultipleItems: canAddMultipleItems
-      }
-    });
+
     yield put(
       addQuestionAction({
         id: uuid(),
@@ -934,6 +949,7 @@ function* convertToPassageWithQuestions({ payload }) {
         pathname: "/author/questions/create",
         state: {
           isPassageWithQuestions: true,
+          canAddMultipleItems: !!canAddMultipleItems,
           backUrl,
           tabIndex: 0
         }
@@ -947,8 +963,15 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
-    const { backUrl, tabIndex } = yield select(state => get(state, "router.location.state"), {});
+    const { backUrl, tabIndex, canAddMultipleItems } = yield select(state => get(state, "router.location.state"), {});
     const pathname = yield select(state => get(state, "router.location.pathname"), {});
+
+    yield put({
+      type: UPDATE_ITEM_TO_PASSAGE_TYPE,
+      payload: {
+        canAddMultipleItems: canAddMultipleItems
+      }
+    });
 
     const isEdit = pathname.includes("edit");
     const passage = yield select(getPassageSelector);
@@ -970,19 +993,33 @@ function* savePassage({ payload }) {
     if (!isEdit) widgetIds.push(widget.reference);
 
     let passageData = Object.values(allWidgets).filter(i => widgetIds.includes(i.id));
+    let currentItemId = currentItem._id;
+    if (currentItem._id === "new") {
+      const item = yield call(testItemsApi.create, _omit(currentItem, "_id"));
+      yield put({
+        type: RECEIVE_ITEM_DETAIL_SUCCESS,
+        payload: { item }
+      });
+      currentItemId = item._id;
+    }
+
     const modifiedPassage = produce(passage, draft => {
       if (!isEdit) draft.structure.widgets.push(widget);
       draft.data = passageData;
-      draft.testItems = uniq([...draft.testItems, currentItem._id]);
+      draft.testItems = uniq([...draft.testItems, currentItemId]);
     });
 
     yield put(updatePassageStructureAction(modifiedPassage));
 
+    // only update the item if its not new, since new item already has the passageId added while creating.
     yield all([
       call(passageApi.update, _omit(modifiedPassage, ["__v"])),
-      call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId)
+      currentItem._id !== "new" ? call(testItemsApi.updateById, currentItem._id, currentItem, payload.testId) : null
     ]);
-    yield put(push(backUrl));
+
+    // if there is new, replace it with current Item's id.
+    let url = backUrl.replace("new", currentItemId);
+    yield put(push(url));
   } catch (e) {
     console.log("error: ", e);
     yield call(message.error, "error saving passage");

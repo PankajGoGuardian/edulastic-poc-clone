@@ -39,8 +39,9 @@ export default class TestHeader {
 
   clickOnPublishButton = () => {
     cy.server();
-    cy.route("PUT", "**/test/**").as("published");
+    cy.route("PUT", "**/test/**/publish").as("published");
     cy.get('[data-cy="publish"]').click();
+    cy.wait("@saveTest");
     return cy.wait("@published").then(xhr => {
       expect(xhr.status).to.eq(200);
       return JSON.stringify(xhr.request)

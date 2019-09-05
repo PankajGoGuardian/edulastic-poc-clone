@@ -43,13 +43,15 @@ class Scoring extends Component {
       if (!newData.validation) {
         newData.validation = {};
       }
-
       if (
         (param === "maxScore" || param === "penalty" || param === "minScoreIfAttempted" || param === "") &&
         value < 0
       ) {
         newData.validation[param] = 0;
       } else {
+        if (param === "automarkable" && !value) {
+          newData.validation.scoringType = evaluationType.EXACT_MATCH;
+        }
         newData.validation[param] = value;
       }
 
@@ -95,7 +97,7 @@ class Scoring extends Component {
 
         {isAutomarkChecked && (
           <Row gutter={60} center>
-            <Col md={12}>
+            <Col md={11}>
               <Checkbox
                 data-cy="unscoredChk"
                 checked={questionData.validation.unscored}
@@ -105,7 +107,7 @@ class Scoring extends Component {
                 {t("component.options.unscored")}
               </Checkbox>
             </Col>
-            <Col md={12}>
+            <Col md={13}>
               <FormGroup center>
                 <Input
                   type="number"
@@ -121,59 +123,29 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {isAutomarkChecked && !showSelect && (
-          <Row gutter={60} center>
-            <Col md={12}>
-              <FormGroup center>
-                <Input
-                  data-cy="minscore"
-                  type="number"
-                  disabled={questionData.validation.unscored}
-                  value={questionData.validation.minScoreIfAttempted}
-                  onChange={e => handleChangeValidation("minScoreIfAttempted", +e.target.value)}
-                  size="large"
-                  style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                />
-                <Label>{t("component.options.minScore")}</Label>
-              </FormGroup>
-            </Col>
-          </Row>
-        )}
-
         {isAutomarkChecked && showSelect && (
           <Row gutter={60}>
-            <Col md={24} style={{ margin: 0 }}>
-              <Label>{t("component.options.scoringType")}</Label>
-            </Col>
-            <Col md={12}>
-              <SelectWrapper
-                size="large"
-                data-cy="scoringType"
-                value={questionData.validation.scoringType}
-                onChange={value => handleChangeValidation("scoringType", value)}
-              >
-                {scoringTypes.map(({ value: val, label }) => (
-                  <Select.Option data-cy={val} key={val} value={val}>
-                    {label}
-                  </Select.Option>
-                ))}
-              </SelectWrapper>
-            </Col>
-
-            <Col md={12}>
-              <FormGroup center>
-                <Input
-                  data-cy="minscore"
-                  type="number"
-                  disabled={questionData.validation.unscored}
-                  value={questionData.validation.minScoreIfAttempted}
-                  onChange={e => handleChangeValidation("minScoreIfAttempted", +e.target.value)}
-                  size="large"
-                  style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                />
-                <Label>{t("component.options.minScore")}</Label>
-              </FormGroup>
-            </Col>
+            {scoringTypes.length > 1 && (
+              <React.Fragment>
+                <Col md={24} style={{ margin: 0 }}>
+                  <Label>{t("component.options.scoringType")}</Label>
+                </Col>
+                <Col md={12}>
+                  <SelectWrapper
+                    size="large"
+                    data-cy="scoringType"
+                    value={questionData.validation.scoringType}
+                    onChange={value => handleChangeValidation("scoringType", value)}
+                  >
+                    {scoringTypes.map(({ value: val, label }) => (
+                      <Select.Option data-cy={val} key={val} value={val}>
+                        {label}
+                      </Select.Option>
+                    ))}
+                  </SelectWrapper>
+                </Col>
+              </React.Fragment>
+            )}
 
             {questionData.validation.scoringType === evaluationType.PARTIAL_MATCH && (
               <Col md={12}>

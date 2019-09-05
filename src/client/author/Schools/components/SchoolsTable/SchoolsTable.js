@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
+import { Link } from "react-router-dom";
 
 import { Form, Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
@@ -601,6 +602,24 @@ class SchoolsTable extends React.Component {
               this.onHeaderCell("teachersCount");
             }
           };
+        },
+        render: (teachersCount, { name } = {}) => {
+          return (
+            <Link
+              to={{
+                pathname: "/author/users/teacher"
+                // uncomment after school filter is implemented in backend
+                // state: {
+                //   filtersColumn: "institutionNames",
+                //   filtersValue: "eq",
+                //   filterStr: name,
+                //   filterAdded: true
+                // }
+              }}
+            >
+              {teachersCount}
+            </Link>
+          );
         }
       },
       {
@@ -628,6 +647,24 @@ class SchoolsTable extends React.Component {
               this.onHeaderCell("studentsCount");
             }
           };
+        },
+        render: (studentsCount, { name } = {}) => {
+          return (
+            <Link
+              to={{
+                pathname: "/author/users/student"
+                // uncomment after school filter is implemented in backend
+                // state: {
+                //   filtersColumn: "institutionNames",
+                //   filtersValue: "eq",
+                //   filterStr: name,
+                //   filterAdded: true
+                // }
+              }}
+            >
+              {studentsCount}
+            </Link>
+          );
         }
       },
       {
@@ -655,6 +692,23 @@ class SchoolsTable extends React.Component {
               this.onHeaderCell("sectionsCount");
             }
           };
+        },
+        render: (sectionsCount, { name } = {}) => {
+          return (
+            <Link
+              to={{
+                pathname: "/author/Classes",
+                state: {
+                  filtersColumn: "institutionNames",
+                  filtersValue: "eq",
+                  filterStr: name,
+                  filterAdded: true
+                }
+              }}
+            >
+              {sectionsCount}
+            </Link>
+          );
         }
       },
       {
@@ -666,9 +720,11 @@ class SchoolsTable extends React.Component {
               <StyledTableButton onClick={() => this.onEditSchool(record.key)} title="Edit">
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
-                <Icon type="delete" theme="twoTone" />
-              </StyledTableButton>
+              {role === roleuser.DISTRICT_ADMIN && (
+                <StyledTableButton onClick={() => this.handleDelete(record.key)} title="Deactivate">
+                  <Icon type="delete" theme="twoTone" />
+                </StyledTableButton>
+              )}
             </React.Fragment>
           );
         }

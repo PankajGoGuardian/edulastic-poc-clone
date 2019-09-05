@@ -73,8 +73,8 @@ export const SimplePieChart = props => {
           onMouseEnter={onLegendMouseEnter}
           onMouseLeave={onLegendMouseLeave}
           layout="vertical"
-          align="left"
-          verticalAlign="middle"
+          align="center"
+          verticalAlign="bottom"
         />
         <Tooltip cursor={false} content={<StyledCustomChartTooltip getJSX={getTooltipJSX} />} />
         <Pie name={"name"} data={chartData} labelLine={false} dataKey="bandPerf" label={renderCustomizedLabel} />

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Collapse, Icon } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { white, darkGrey1, inputBorder } from "@edulastic/colors";
+import { response as defaultResponse } from "@edulastic/constants";
 
 import MathFormulaAnswerMethod from "../../MathFormula/components/MathFormulaAnswerMethod";
 
@@ -35,9 +36,18 @@ class ClozeMathAnswer extends Component {
   };
 
   render() {
-    const { answers, onChange, onAdd, onDelete, item, onChangeKeypad, onChangeAllowedOptions } = this.props;
+    const {
+      answers,
+      onChange,
+      onAdd,
+      onDelete,
+      item,
+      onChangeKeypad,
+      onChangeAllowedOptions,
+      toggleAdditional
+    } = this.props;
     const { showAdditionals } = this.state;
-    const { responseContainers: responseContainers = [], uiStyle: uiStyle, allowedVariables = {} } = item;
+    const { responseContainers: responseContainers = [], uiStyle } = item;
     const _changeMethod = (methodId, methodIndex) => (prop, val) => {
       onChange({ methodId, methodIndex, prop, value: val });
     };
@@ -78,7 +88,7 @@ class ClozeMathAnswer extends Component {
           {answers.map(answer => {
             const response = responseContainers.find(cont => cont.index === answer.index);
             const width = response && response.widthpx ? `${response.widthpx}px` : `${uiStyle.minWidth}px` || "auto";
-            const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
+            const height = response && response.heightpx ? `${response.heightpx}px` : `${defaultResponse.minHeight}px`;
             return (
               <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.index}`}>
                 {answer.value.map((method, methodIndex) => (
@@ -98,7 +108,9 @@ class ClozeMathAnswer extends Component {
                     style={{ width, height }}
                     onChangeKeypad={onChangeKeypad}
                     onChangeAllowedOptions={onChangeAllowedOptions}
-                    allowedVariables={allowedVariables[answer.index] || ""}
+                    allowNumericOnly={answer.allowNumericOnly}
+                    allowedVariables={answer.allowedVariables}
+                    toggleAdditional={toggleAdditional}
                     {...method}
                   />
                 ))}
@@ -117,6 +129,7 @@ ClozeMathAnswer.propTypes = {
   onAdd: PropTypes.func.isRequired,
   onChangeKeypad: PropTypes.func.isRequired,
   onChangeAllowedOptions: PropTypes.func.isRequired,
+  toggleAdditional: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired

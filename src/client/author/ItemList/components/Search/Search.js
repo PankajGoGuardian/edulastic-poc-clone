@@ -203,7 +203,7 @@ class Search extends Component {
             <ItemHeader>Collections</ItemHeader>
             <ItemBody>
               <Select
-                data-cy="selectCollection"
+                data-cy="Collections"
                 size="large"
                 onSelect={onSearchFieldChange("collectionName")}
                 value={collectionName}

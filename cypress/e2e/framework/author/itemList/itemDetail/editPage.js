@@ -82,12 +82,9 @@ class EditItemPage {
     return this;
   }
 
-  chooseQuestion(qGroup, qType) {
-    cy.get("body")
-      .contains(qGroup)
-      .should("be.visible")
-      .click();
-    cy.get("body")
+  selectQue = qType =>
+    cy
+      .get("body")
       .contains("select a question type")
       .parent()
       .parent()
@@ -97,6 +94,14 @@ class EditItemPage {
       .contains(qType)
       .should("be.visible")
       .click();
+
+  chooseQuestion(qGroup, qType) {
+    cy.get("body")
+      .contains(qGroup)
+      .should("be.visible")
+      .click();
+
+    this.selectQue(qType);
   }
 
   getSource() {

@@ -5,9 +5,8 @@ import { themeColorLight, boxShadowDefault, black, dashBorderColor } from "@edul
 export const TLOList = styled.div`
   max-height: 40vh;
   overflow-y: scroll;
-  padding-right: 27px;
+  padding-right: 15px;
   width: calc(100% + 15px);
-  box-sizing: content-box;
   .tlo-list-item {
     &.active {
       border-left: 5px solid ${themeColorLight};

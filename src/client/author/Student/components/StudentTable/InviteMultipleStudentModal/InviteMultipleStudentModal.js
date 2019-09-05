@@ -17,6 +17,7 @@ import {
 } from "./styled";
 import FeaturesSwitch from "../../../../../features/components/FeaturesSwitch";
 import { isFeatureAccessible } from "../../../../../features/components/FeaturesSwitch";
+import { ModalFormItem } from "../AddStudentModal/styled";
 
 const { TabPane } = Tabs;
 const Search = Input.Search;
@@ -68,6 +69,7 @@ class InviteMultipleStudentModal extends Component {
         }
         this.props.inviteStudents({
           userDetails: studentsList,
+          institutionId: row.institutionId,
           provider: curSel
         });
       }
@@ -208,7 +210,7 @@ class InviteMultipleStudentModal extends Component {
       role
     } = this.props;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll } = this.state;
-    const { classList = [], searchAndAddStudents = false } = orgData || {};
+    const { classList = [], searchAndAddStudents = false, schools = [] } = orgData || {};
     const isPremium = isFeatureAccessible({
       features,
       inputFeatures: "searchAndAddStudent",
@@ -280,7 +282,7 @@ class InviteMultipleStudentModal extends Component {
         </PlaceHolderText>
       );
     }
-
+    const defaultSchoolId = schools.length ? schools[0]._id : "";
     return (
       <>
         <Modal
@@ -337,6 +339,31 @@ class InviteMultipleStudentModal extends Component {
                     : `'edulastic' will be used as default password for these students, please ask the students to change
                   their password once they login to their account.`}
                 </p>
+              ) : null}
+              {role === roleuser.SCHOOL_ADMIN ? (
+                <Row>
+                  <Col span={24}>
+                    <ModalFormItem label="Select School">
+                      {getFieldDecorator("institutionId", {
+                        rules: [
+                          {
+                            required: true,
+                            message: "Please select school"
+                          }
+                        ],
+                        initialValue: defaultSchoolId
+                      })(
+                        <Select placeholder="Select school">
+                          {schools.map(school => (
+                            <Option key={school._id} value={school._id}>
+                              {school.name}
+                            </Option>
+                          ))}
+                        </Select>
+                      )}
+                    </ModalFormItem>
+                  </Col>
+                </Row>
               ) : null}
               <Row type="flex" justify="end">
                 <Col>
@@ -412,6 +439,7 @@ class InviteMultipleStudentModal extends Component {
 
 const ConnectedInviteMultipleStudentModal = connect(
   state => ({
+    orgData: get(state, "user.user.orgData", {}),
     role: get(state, "user.user.role", null)
   }),
   {}

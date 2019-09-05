@@ -10,7 +10,7 @@ import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
 import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
-import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
+import { getItemsSubjectAndGradeSelector, setTestItemsAction } from "../../../AddItems/ducks";
 import { getStandardsSelector } from "../../ducks";
 import {
   setTestDataAction,
@@ -29,7 +29,7 @@ import { clearDictAlignmentAction } from "../../../../../src/actions/dictionarie
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 
-const getTotalScore = ({ testItems, scoring }) =>
+const getTotalScore = ({ testItems = [], scoring = {} }) =>
   testItems.map(item => scoring[item._id] || helpers.getPoints(item)).reduce((total, s) => total + s, 0);
 
 const getStandardWiseSummary = (question, point) => {
@@ -151,7 +151,7 @@ class Review extends PureComponent {
   };
 
   handleRemoveSelected = () => {
-    const { test, setData } = this.props;
+    const { test, setData, setTestItems } = this.props;
     const newData = cloneDeep(test);
     const itemsSelected = test.testItems.find(item => item.selected);
     if (!itemsSelected) {
@@ -164,6 +164,7 @@ class Review extends PureComponent {
       return !(foundItem && foundItem.selected);
     });
     newData.summary = createSummaryData(newData.testItems, newData.scoring);
+    setTestItems(newData.testItems.map(item => item._id));
     this.setSelected([]);
     setData(newData);
     message.success("Selected item(s) removed successfully");
@@ -478,7 +479,8 @@ const enhance = compose(
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
-      clearAnswer: clearAnswersAction
+      clearAnswer: clearAnswersAction,
+      setTestItems: setTestItemsAction
     }
   )
 );

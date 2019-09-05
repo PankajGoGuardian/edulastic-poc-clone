@@ -3,8 +3,10 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get, isEmpty } from "lodash";
 
-import { Row, Col, Button, Modal, Table } from "antd";
+import { Row, Col, Modal, Table } from "antd";
+import { themeColor } from "@edulastic/colors";
 import { StyledStatusIcon, StatusDiv } from "./styled";
+import { ThemeButton } from "../../../../src/components/common/ThemeButton";
 
 class StudentsDetailsModal extends React.Component {
   constructor(props) {
@@ -37,7 +39,7 @@ class StudentsDetailsModal extends React.Component {
           if (status === "SUCCESS") {
             statusText = (
               <StatusDiv>
-                <StyledStatusIcon type="check" iconColor="#1890ff" />
+                <StyledStatusIcon type="check" iconColor={themeColor} />
                 New User Created
               </StatusDiv>
             );
@@ -85,9 +87,9 @@ class StudentsDetailsModal extends React.Component {
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
-          <Button type="primary" key="back" onClick={this.onCloseModal}>
+          <ThemeButton type="primary" key="back" onClick={this.onCloseModal}>
             Done
-          </Button>
+          </ThemeButton>
         ]}
         width="60%"
       >

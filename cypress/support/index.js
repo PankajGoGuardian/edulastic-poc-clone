@@ -27,15 +27,21 @@ if (Cypress.env().configFile === "visual-regression") {
 // FixMe : adding block to ignore uncaught error from the app
 Cypress.on("uncaught:exception", () => false);
 
-// attach screenshot diff for visual tests
+// attach screenshots in report for all failed tests
 Cypress.on("test:after:run", (test, runnable) => {
-  if (Cypress.env("configFile") === "visual-regression" && test.state === "failed") {
-    let screenshotFileName = `${test.title}.diff.png`;
+  if (test.state === "failed") {
+    const imgError = test.err.stack.includes("different from saved snapshot");
+    let screenshotFileName = imgError ? `${test.title}.diff.png` : `${test.title} (failed).png`;
     let currentTestContext = runnable;
+
     while (currentTestContext.parent && currentTestContext.parent.title.length > 0) {
       screenshotFileName = `${currentTestContext.parent.title} -- ${screenshotFileName}`;
       currentTestContext = currentTestContext.parent;
     }
-    addContext({ test }, `../snapshots/${Cypress.spec.name}/__diff_output__/${screenshotFileName}`);
+
+    const imgPath = imgError
+      ? `../snapshots/${Cypress.spec.name}/__diff_output__/${screenshotFileName}`
+      : `../screenshots/${Cypress.spec.name}/${screenshotFileName}`;
+    addContext({ test }, imgPath);
   }
 });

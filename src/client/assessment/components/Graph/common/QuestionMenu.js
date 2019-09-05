@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { throttle } from "lodash";
-import { themeColor, desktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { themeColor, desktopWidth, extraDesktopWidthMax, mediumDesktopWidth } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { withWindowSizes } from "@edulastic/common";
 
@@ -165,6 +165,10 @@ const Menu = styled.div`
     width: 300px;
     padding-left: 43px;
     padding-top: 46px;
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    top: 110px;
   }
 
   @media (max-width: ${desktopWidth}) {

@@ -1,5 +1,7 @@
 import React from "react";
-import { Modal, Table, Button } from "antd";
+import { Modal, Table } from "antd";
+import { ThemeButton } from "../../../src/components/common/ThemeButton";
+
 const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, infoModalData, setInfoModalData }) => {
   const handleCancel = () => {
     setinfoModelVisible(false);
@@ -39,9 +41,9 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
       onCancel={handleCancel}
       width={700}
       footer={
-        <Button type="primary" onClick={handleCancel}>
+        <ThemeButton type="primary" onClick={handleCancel}>
           Done
-        </Button>
+        </ThemeButton>
       }
     >
       <Table dataSource={newInfoModalData} columns={columns} pagination={false} />

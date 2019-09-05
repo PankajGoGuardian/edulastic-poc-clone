@@ -1,12 +1,24 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { Row, Col, Tooltip } from "antd";
 import { compose } from "redux";
-import { withRouter } from "react-router-dom";
 import { IconPlusCircle } from "@edulastic/icons";
-import { lightBlue3 } from "@edulastic/colors";
-import { CardText, Image, IconWrapper, OverlayText, RowWrapper, RowWrapper1, TextDiv, IconRightArrow } from "./styled";
+import { themeColorLight, titleColor, cardTitleColor } from "@edulastic/colors";
+import {
+  CardText,
+  Image,
+  IconWrapper,
+  OverlayText,
+  RowWrapper,
+  RowWrapper1,
+  TextDiv,
+  IconRightArrow,
+  LeftCol,
+  CenterCol,
+  RightCol
+} from "./styled";
 import { TextWrapper } from "../../../../../styledComponents";
+
 export const CardTextContent = ({ data, history }) => {
   const { totalAssignment, asgnStatus, asgnTitle, asgnId, _id, asgnThumbnail } = data;
 
@@ -17,69 +29,59 @@ export const CardTextContent = ({ data, history }) => {
   return (
     <CardText>
       <RowWrapper>
-        <Col span={6}>
-          <Link to={"/author/assignments"}>
+        <LeftCol>
+          <Link to="/author/assignments">
             <IconWrapper>
               <OverlayText>{totalAssignment || 0}</OverlayText>
             </IconWrapper>
           </Link>
-        </Col>
+        </LeftCol>
 
-        <Col span={15}>
-          <Link to={"/author/assignments"}>
-            <TextWrapper color="#30404F" size="14px">
+        <CenterCol>
+          <Link to="/author/assignments">
+            <TextWrapper color={titleColor} size="14px">
               {totalAssignment > 1 ? "Assessments" : "Assessment"}
             </TextWrapper>
           </Link>
-        </Col>
+        </CenterCol>
 
         {(!totalAssignment || totalAssignment === 0) && (
-          <Col span={3}>
-            <Link to={"/author/assignments/select"}>
-              <IconPlusCircle color={lightBlue3} width={25} height={25} />
+          <RightCol>
+            <Link to="/author/assignments/select">
+              <IconPlusCircle color={themeColorLight} width={25} height={25} />
             </Link>
-          </Col>
+          </RightCol>
         )}
       </RowWrapper>
-      <TextWrapper color="#30404F" size="10px">
+      <TextWrapper color={titleColor} size="10px">
         RECENT:
       </TextWrapper>
       <RowWrapper1 onClick={() => gotoAssignedAssessment()}>
         {asgnTitle ? (
           <>
-            <Col span={5}>
+            <LeftCol height="auto">
               <Image src={asgnThumbnail} />
-            </Col>
-            <Col
-              span={16}
-              style={{
-                marginLeft: "0.5rem"
-              }}
-            >
+            </LeftCol>
+            <CenterCol>
               <Row>
                 <Tooltip title={asgnTitle} placement="topLeft">
                   <TextDiv>{asgnTitle}</TextDiv>
                 </Tooltip>
               </Row>
               <Row>
-                <TextWrapper color="#AAAFB5" size="11px" fw="bold">
+                <TextWrapper color={cardTitleColor} size="11px" fw="bold">
                   {asgnStatus}
                 </TextWrapper>
               </Row>
-            </Col>
-            <Col span={2}>
+            </CenterCol>
+            <RightCol height="auto">
               <IconRightArrow type="right" />
-            </Col>
+            </RightCol>
           </>
         ) : (
-          <Col
-            span={16}
-            style={{
-              cursor: "default"
-            }}
-          >
+          <Col span={16} style={{ cursor: "default" }}>
             <Row>
-              <TextWrapper color="#AAAFB5" size="12px" mb="22px">
+              <TextWrapper color={cardTitleColor} size="12px" mb="22px">
                 No Recent Assignments
               </TextWrapper>
             </Row>

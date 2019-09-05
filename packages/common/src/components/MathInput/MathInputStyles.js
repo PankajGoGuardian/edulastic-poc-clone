@@ -48,6 +48,9 @@ export const MathInputStyles = styled.div`
 
     .mq-root-block {
       font-size: ${({ fontSize }) => `${fontSize || "inherit"}`};
+      * {
+        font-style: unset;
+      }
     }
   }
 
@@ -111,6 +114,12 @@ export const MathInputStyles = styled.div`
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
+  }
+
+  .mq-math-mode var,
+  .mq-math-mode i,
+  .mq-math-mode i.mq-font {
+    font-style: ${props => props.fontStyle};
   }
 
   @media (max-width: ${mobileWidth}) {

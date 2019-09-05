@@ -1,7 +1,10 @@
 import React, { Component } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { IconPlus, IconEye, IconDown, IconVolumeUp, IconNoVolume } from "@edulastic/icons";
 import { get } from "lodash";
+import { message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { question } from "@edulastic/constants";
 import { MoveLink, MathFormulaDisplay, PremiumTag, helpers } from "@edulastic/common";
@@ -32,6 +35,15 @@ import {
   Details
 } from "./styled";
 import PreviewModal from "../../../src/components/common/PreviewModal";
+import { StyledButton } from "../../../TestPage/components/AddItems/styled";
+import { themeColor } from "@edulastic/colors";
+import { testItemsApi } from "@edulastic/api";
+import {
+  setAndSavePassageItemsAction,
+  getPassageItemsCountSelector,
+  setPassageItemsAction
+} from "../../../TestPage/ducks";
+import PassageConfirmationModal from "../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal";
 
 // render single item
 class Item extends Component {
@@ -43,16 +55,20 @@ class Item extends Component {
     showAnser: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
     onToggleToCart: PropTypes.func.isRequired,
-    selectedToCart: PropTypes.bool
+    selectedToCart: PropTypes.bool,
+    page: PropTypes.string
   };
 
   static defaultProps = {
-    selectedToCart: false
+    selectedToCart: false,
+    gotoSummary: () => {}
   };
 
   state = {
     isShowPreviewModal: false,
-    isOpenedDetails: false
+    isOpenedDetails: false,
+    passageConfirmModalVisible: false,
+    selectedId: ""
   };
 
   moveToItem = () => {
@@ -153,9 +169,75 @@ class Item extends Component {
     });
   };
 
+  handleSelection = async row => {
+    const { setTestItems, setDataAndSave, selectedRows, test, gotoSummary, setPassageItems, item, page } = this.props;
+    if (!test.title.trim().length && page !== "itemList") {
+      gotoSummary();
+      return message.error("Name field cannot be empty");
+    }
+
+    let keys = [];
+    if (test.safeBrowser && !test.sebPassword) {
+      return message.error("Please add a valid password");
+    }
+
+    this.setState({ selectedId: item._id });
+    if (selectedRows !== undefined) {
+      (selectedRows || []).forEach((selectedRow, index) => {
+        keys[index] = selectedRow;
+      });
+    }
+    if (!keys.includes(row._id)) {
+      keys[keys.length] = row._id;
+      if (item.passageId) {
+        const passageItems = await testItemsApi.getPassageItems(item.passageId);
+        setPassageItems(passageItems);
+        if (passageItems.length > 1) {
+          return this.setState({ selectedId: "", passageConfirmModalVisible: true });
+        }
+      }
+      setDataAndSave({ addToTest: true, item });
+    } else {
+      keys = keys.filter(item => item !== row._id);
+      setDataAndSave({ addToTest: false, item: { _id: row._id } });
+    }
+    setTestItems(keys);
+    this.setState({ selectedId: "" });
+  };
+
+  get isAddOrRemove() {
+    const { item, selectedRows } = this.props;
+    if (selectedRows && selectedRows.length) {
+      return !selectedRows.includes(item._id);
+    }
+    return true;
+  }
+
+  handleResponse = value => {
+    const { setAndSavePassageItems, passageItems, setTestItems, selectedRows = [] } = this.props;
+    this.setState({ passageConfirmModalVisible: false });
+    if (value) {
+      setTestItems([...selectedRows, ...passageItems.map(item => item._id)]);
+      return setAndSavePassageItems();
+    }
+    this.setState({ isShowPreviewModal: true });
+  };
+
   render() {
-    const { item, t, windowWidth, selectedToCart, search, userId, checkAnswer, showAnswer } = this.props;
-    const { isOpenedDetails, isShowPreviewModal = false } = this.state;
+    const {
+      item,
+      t,
+      windowWidth,
+      selectedToCart,
+      search,
+      userId,
+      checkAnswer,
+      showAnswer,
+      page,
+      passageItemsCount,
+      gotoSummary
+    } = this.props;
+    const { isOpenedDetails, isShowPreviewModal = false, selectedId, passageConfirmModalVisible } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
     const isEditable = owner;
     const itemType = getQuestionType(item);
@@ -164,7 +246,7 @@ class Item extends Component {
         {isShowPreviewModal && (
           <PreviewModal
             isVisible={isShowPreviewModal}
-            page="addItems"
+            page={page}
             showEvaluationButtons
             onClose={this.closeModal}
             data={{ ...item, id: item._id }}
@@ -172,6 +254,17 @@ class Item extends Component {
             owner={owner}
             checkAnswer={() => checkAnswer({ ...item, isItem: true })}
             showAnswer={() => showAnswer(item)}
+            gotoSummary={gotoSummary}
+          />
+        )}
+        {passageConfirmModalVisible && (
+          <PassageConfirmationModal
+            visible={passageConfirmModalVisible}
+            togglePassageConfirmationModal={() =>
+              this.setState(prev => ({ passageConfirmModalVisible: !prev.passageConfirmModalVisible }))
+            }
+            itemsCount={passageItemsCount}
+            handleResponse={this.handleResponse}
           />
         )}
         <Question>
@@ -179,16 +272,32 @@ class Item extends Component {
             <MoveLink onClick={this.previewItem}>{this.itemStimulus}</MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
-          {windowWidth > MAX_TAB_WIDTH && (
-            <ViewButton>
-              <ViewButtonStyled onClick={this.previewItem}>
-                <IconEye /> {t("component.item.view")}
-              </ViewButtonStyled>
-              <AddButtonStyled onClick={this.handleToggleItemToCart(item)}>
-                {selectedToCart ? "Remove" : <IconPlus />}
-              </AddButtonStyled>
-            </ViewButton>
-          )}
+          {windowWidth > MAX_TAB_WIDTH &&
+            (page === "itemList" ? (
+              <ViewButton>
+                <ViewButtonStyled onClick={this.previewItem}>
+                  <IconEye /> {t("component.item.view")}
+                </ViewButtonStyled>
+                <AddButtonStyled selectedToCart={selectedToCart} onClick={this.handleToggleItemToCart(item)}>
+                  {selectedToCart ? "Remove" : <IconPlus />}
+                </AddButtonStyled>
+              </ViewButton>
+            ) : (
+              <StyledButton
+                data-cy={item._id}
+                loading={selectedId === item._id}
+                onClick={() => this.handleSelection(item)}
+                style={{
+                  border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+                  color: this.isAddOrRemove ? themeColor : "#ff0099",
+                  marginTop: 15,
+                  justifyContent: "center",
+                  width: "120px"
+                }}
+              >
+                {this.isAddOrRemove ? "ADD" : "REMOVE"}
+              </StyledButton>
+            ))}
         </Question>
         <Detail>
           <TypeCategory>
@@ -203,20 +312,34 @@ class Item extends Component {
           </TypeCategory>
           {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}
         </Detail>
-        {windowWidth < MAX_TAB_WIDTH && (
-          <ViewButton>
-            <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
-              <IconDown />
-            </MoreInfo>
-            <ViewButtonStyled onClick={this.moveToItem}>
-              {t("component.item.view")}
-              <IconEye />
-            </ViewButtonStyled>
-            <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
-              {selectedToCart ? "Remove" : <IconPlus />}
-            </AddButtonStyled>
-          </ViewButton>
-        )}
+        {windowWidth < MAX_TAB_WIDTH &&
+          (page === "itemList" ? (
+            <ViewButton>
+              <MoreInfo onClick={this.toggleDetails} isOpenedDetails={isOpenedDetails}>
+                <IconDown />
+              </MoreInfo>
+              <ViewButtonStyled onClick={this.moveToItem}>
+                {t("component.item.view")}
+                <IconEye />
+              </ViewButtonStyled>
+              <AddButtonStyled onClick={this.handleToggleItemToCart(item._id)}>
+                {selectedToCart ? "Remove" : <IconPlus />}
+              </AddButtonStyled>
+            </ViewButton>
+          ) : (
+            <StyledButton
+              loading={selectedId === item._id}
+              onClick={() => this.handleSelection(item)}
+              style={{
+                border: this.isAddOrRemove ? `1px solid ${themeColor}` : "1px solid #ff0099",
+                color: this.isAddOrRemove ? themeColor : "#ff0099",
+                marginTop: 15,
+                width: "100%"
+              }}
+            >
+              {this.isAddOrRemove ? "ADD" : "REMOVE"}
+            </StyledButton>
+          ))}
         {windowWidth < MAX_TAB_WIDTH && (
           <Details isOpenedDetails={isOpenedDetails}>
             {<Standards item={item} search={search} />}
@@ -228,4 +351,18 @@ class Item extends Component {
   }
 }
 
-export default withNamespaces("author")(Item);
+const enhance = compose(
+  withNamespaces("author"),
+  connect(
+    state => ({
+      passageItemsCount: getPassageItemsCountSelector(state),
+      passageItems: state.tests.passageItems
+    }),
+    {
+      setAndSavePassageItems: setAndSavePassageItemsAction,
+      setPassageItems: setPassageItemsAction
+    }
+  )
+);
+
+export default enhance(Item);

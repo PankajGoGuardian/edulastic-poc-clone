@@ -24,7 +24,7 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
   if (testItemPreview && testItemPreview.data) {
     return get(state, "testItemPreview.item");
   }
-  if (page === "addItems") {
+  if (page === "addItems" || page === "itemList") {
     testItems = get(state, "testsAddItems.items", []);
   } else if (page === "review") {
     testItems = get(state, "tests.entity.testItems", []);

@@ -759,14 +759,13 @@ input[type="checkbox"] {
 } */
 
 .response-btn.check-answer {
-  min-height: 35px;
+  min-height: 36px;
   display: inline-flex;
   position: relative;
   top: 0;
-  min-width: 130px;
+  min-width: 150px;
   margin: 5px;
   font-weight: 700;
-  font-size: 13px;
   padding: 0 !important;
   overflow: hidden;
 }
@@ -778,17 +777,18 @@ input[type="checkbox"] {
 .check-answer .index {
   color: white;
   align-items: center;
-  width: 30px;
+  width: 40px;
   justify-content: center;
 }
 
 .check-answer .text {
   display: inline-flex;
   flex: 1;
-  text-align: center;
+  text-align: left;
   color: #878282;
   align-items: center;
-  padding: 8px 20px 8px 7px;
+  height: 100%;
+  padding: 8px 20px 8px 10px;
 }
 
 .check-answer.wrong .index {
@@ -799,7 +799,7 @@ input[type="checkbox"] {
 .check-answer.wrong .text {
   background: #fce0e8;
   color: #878282;
-  padding: 8px 20px 8px 7px;
+  padding: 8px 20px 8px 10px;
   width: calc(100% - 30px);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -817,7 +817,7 @@ input[type="checkbox"] {
 .check-answer.right .text {
   background: #d3fea6;
   color: #878282;
-  padding: 8px 20px 8px 7px;
+  padding: 8px 20px 8px 10px;
   width: calc(100% - 30px);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -834,8 +834,8 @@ input[type="checkbox"] {
 .check-answer.showanswer .text {
   background: #fff;
   color: #878282;
-  padding: 8px;
-  min-height: 32px;
+  padding: 8px 20px 8px 10px;
+  min-height: 36px;
 }
 
 .correctanswer-box {
@@ -894,6 +894,7 @@ input[type="checkbox"] {
 
 .response-btn,
 mathinput,
+mathunit,
 textdropdown,
 textinput {
   padding: 0 10px 0 0;
@@ -911,6 +912,7 @@ textinput {
   min-height: 35px;
   white-space: nowrap;
 }
+
 paragraphnumber {
   padding: 0 5px;
   margin-right: 10px;
@@ -922,13 +924,14 @@ paragraphnumber {
   position: relative;
   min-width: 20px;
 }
+
 response {
   min-width: 120px;
   min-height: 30px;
   display: inline-flex;
   align-items: center;
   padding: 4px 8px;
-  margin: 2px 2px;
+  margin: 2px;
   border-radius: 10px;
   overflow: hidden;
   border: 2px black dotted;
@@ -943,6 +946,10 @@ mathinput::after {
   content: "Math Input";
 }
 
+mathunit::after {
+  content: "Math w/ unit";
+}
+
 textdropdown::after {
   content: "Text Dropdown";
 }
@@ -952,6 +959,7 @@ textinput::after {
 }
 
 mathinput::before,
+mathunit::before,
 textdropdown::before,
 textinput::before {
   content: attr(responseIndex);
@@ -1066,7 +1074,7 @@ textinput::before {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   /* min-height: 35px; 5043*/
 }
 
@@ -1256,9 +1264,8 @@ p {
 span.token,
 span.token > *,
 span.token.answer {
-  padding: 1px;
   line-height: 28px;
-  margin: 0 2px;
+  margin-left: 1px;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, 0);
 }
@@ -1903,7 +1910,6 @@ span.token.active-word {
 .katex .mfrac .frac-line {
   min-height: 1vh !important;
 }
-
 @media (max-width: 992px) {
   .jsx-parser p {
     font-size: 14px;
@@ -1954,9 +1960,9 @@ span.token.active-word {
 }
 
 .fr-toolbar .fr-command.fr-btn[data-cmd="response"],
-.fr-toolbar .fr-command.fr-btn[data-cmd="textinput"],
 .fr-toolbar .fr-command.fr-btn[data-cmd="responseBoxes"],
-.fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"] {
+.fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"],
+.fr-toolbar .fr-command.fr-btn[data-cmd="textinput"] {
   border: 1px #000 dotted;
   height: 34px;
   padding: 0 4px;
@@ -2012,24 +2018,24 @@ span.token.active-word {
 }
 
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled),
-.ant-select-focused .ant-select-selection,
-.ant-select-selection:focus,
-.ant-select-selection:hover,
-.ant-select-selection:active,
+.ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled),
 .ant-input:hover,
-.ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled) {
+.ant-select-focused .ant-select-selection,
+.ant-select-selection:active,
+.ant-select-selection:focus,
+.ant-select-selection:hover {
   border-color: #00ad50;
 }
 
 .ant-btn-background-ghost.ant-btn-primary,
-.ant-btn-background-ghost.ant-btn-primary:hover,
-.ant-btn-background-ghost.ant-btn-primary:focus {
+.ant-btn-background-ghost.ant-btn-primary:focus,
+.ant-btn-background-ghost.ant-btn-primary:hover {
   color: #00ad50;
   border-color: #00ad50;
 }
 
-.ant-btn:hover,
-.ant-btn:focus {
+.ant-btn:focus,
+.ant-btn:hover {
   border-color: #00ad50;
 }
 
@@ -2042,15 +2048,19 @@ span.token.active-word {
   background-color: #00ad50;
 }
 
-.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on,
-.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on {
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-down.on,
+.ant-table-thead > tr > th .ant-table-column-sorter .ant-table-column-sorter-inner .ant-table-column-sorter-up.on {
+  color: #00ad50;
+}
+
+.ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
   color: #00ad50;
 }
 
 .ant-select-focused .ant-select-selection,
-.ant-select-selection:focus,
-.ant-select-selection:active {
-  box-shadow: 0px 0px 1px 1px #5eb50066;
+.ant-select-selection:active,
+.ant-select-selection:focus {
+  box-shadow: 0 0 1px 1px #5eb50066;
 }
 
 .ant-modal-wrap.test-preview-modal {
@@ -2065,4 +2075,22 @@ span.token.active-word {
 
 .sortableHelper {
   z-index: 10000;
+}
+
+.ant-modal .ant-switch-checked {
+  background-color: #00ad50;
+}
+
+iframe {
+  display: block;
+  min-width: 855px;
+  min-height: 455px;
+  background: #fff;
+}
+
+@media (min-width: 1281px) {
+  iframe {
+    max-width: 700px;
+    max-height: 383px;
+  }
 }

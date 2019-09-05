@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep } from "lodash";
 import produce from "immer";
 
 import { Checkbox, Paper, AnswerContext } from "@edulastic/common";
@@ -153,8 +152,7 @@ class ClozeImageDropDown extends Component {
 
   handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
-    const newAnswer = cloneDeep(userAnswer);
-    saveAnswer(newAnswer);
+    saveAnswer(userAnswer);
   };
 
   render() {
@@ -297,6 +295,7 @@ class ClozeImageDropDown extends Component {
               onChange={this.handleAddAnswer}
               qIndex={qIndex}
               imageOptions={item.imageOptions}
+              isExpressGrader={answerContextConfig.expressGrader && previewTab === "show"}
               {...restProps}
             />
           </Wrapper>

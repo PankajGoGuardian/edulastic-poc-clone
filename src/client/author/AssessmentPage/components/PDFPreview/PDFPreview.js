@@ -6,6 +6,7 @@ import { Droppable } from "react-drag-and-drop";
 import { QuestionNumber } from "../QuestionItem/styled";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview } from "./styled";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
   const {
@@ -49,28 +50,30 @@ const PDFPreview = ({
 
   return (
     <PDFPreviewWrapper>
-      <Droppable types={["question"]} onDrop={handleDrop(currentPage, onDropAnnotation)}>
-        <Preview onClick={handleRemoveHighlight}>
-          {page.URL !== "blank" && (
-            <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
-              <Page pageNumber={page.pageNo} renderTextLayer={false} />
-            </Document>
-          )}
-        </Preview>
-      </Droppable>
-      {annotations
-        .filter(item => item.toolbarMode === "question" && item.page === currentPage)
-        .map(({ uuid, qIndex, x, y, questionId }) => (
-          <div key={uuid} onClick={handleHighlight(questionId)} style={getNumberStyles(x, y)}>
-            <QuestionItem
-              key={questionId}
-              index={qIndex}
-              data={questionsById[questionId]}
-              answer={answersById[questionId]}
-              viewMode="review"
-            />
-          </div>
-        ))}
+      <PerfectScrollbar>
+        <Droppable types={["question"]} onDrop={handleDrop(currentPage, onDropAnnotation)}>
+          <Preview onClick={handleRemoveHighlight}>
+            {page.URL !== "blank" && (
+              <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
+                <Page pageNumber={page.pageNo} renderTextLayer={false} />
+              </Document>
+            )}
+          </Preview>
+        </Droppable>
+        {annotations
+          .filter(item => item.toolbarMode === "question" && item.page === currentPage)
+          .map(({ uuid, qIndex, x, y, questionId }) => (
+            <div key={uuid} onClick={handleHighlight(questionId)} style={getNumberStyles(x, y)}>
+              <QuestionItem
+                key={questionId}
+                index={qIndex}
+                data={questionsById[questionId]}
+                answer={answersById[questionId]}
+                viewMode="review"
+              />
+            </div>
+          ))}
+      </PerfectScrollbar>
     </PDFPreviewWrapper>
   );
 };

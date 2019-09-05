@@ -16,7 +16,7 @@ const StyledSpan = styled.span`
 
 const ClozeInputAnswerDisplay = ({ resprops, id }) => {
   const { answers = {}, uiStyles } = resprops;
-  const { inputs: _userAnwers } = answers;
+  const { inputs: _userAnwers = [] } = answers;
   const val = _userAnwers[id] ? _userAnwers[id].value : "";
   return (
     <StyledSpan height={uiStyles.height} width={uiStyles.width}>

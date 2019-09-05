@@ -8,13 +8,19 @@ export const Container = styled.div`
   align-items: flex-start;
   width: calc(100% + 52px);
   overflow: hidden;
-  padding-bottom: 63px;
+  padding-bottom: 40px;
   margin-left: -26px;
+`;
+
+export const ContentWrapper = styled.div`
+  max-width: 100%;
 `;
 
 export const MobilePaginationWrapper = styled.div`
   display: flex;
   justify-content: center;
+  width: 100%;
+  margin: 20px 0px;
 `;
 
 export const MobilePagination = styled(Pagination)`

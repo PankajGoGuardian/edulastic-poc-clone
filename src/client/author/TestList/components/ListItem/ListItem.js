@@ -28,7 +28,8 @@ import {
   Footer,
   ButtonWrapper,
   AddButton,
-  TestStatus
+  TestStatus,
+  EdulasticVerified
 } from "./styled";
 import ViewModal from "../ViewModal";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
@@ -95,7 +96,17 @@ class ListItem extends Component {
 
   render() {
     const {
-      item: { title, analytics, tags = [], _source, _id: testId, status: testStatus, description, thumbnail },
+      item: {
+        title,
+        analytics,
+        tags = [],
+        _source,
+        _id: testId,
+        status: testStatus,
+        description,
+        thumbnail,
+        collectionName
+      },
       item,
       authorName,
       owner = false,
@@ -215,6 +226,9 @@ class ListItem extends Component {
                       {testStatus}
                     </TestStatus>
                   </>
+                )}
+                {(collectionName === "edulastic_certified" || collectionName === "engage_ny") && (
+                  <EdulasticVerified bottom width={30} height={30} />
                 )}
               </TagsWrapper>
 

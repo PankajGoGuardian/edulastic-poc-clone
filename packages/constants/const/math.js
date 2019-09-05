@@ -8,7 +8,8 @@ const methods = {
   IS_RATIONALIZED: "isRationalized",
   STRING_MATCH: "stringMatch",
   EQUIV_SYNTAX: "equivSyntax",
-  SET_EVALUATION: "setEvaluation"
+  SET_EVALUATION: "setEvaluation",
+  CHECK_IF_TRUE: "isTrue"
 };
 
 const fields = {
@@ -41,6 +42,8 @@ const mathInputTypes = {
   WRONG: "wrong",
   SUCCESS: "success"
 };
+
+const units = [{ value: "units_us", label: "Units (US)" }, { value: "units_si", label: "Units (SI)" }];
 
 const symbols = [
   { value: "basic", label: "Basic" },
@@ -143,7 +146,8 @@ const methodOptions = {
   [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
   [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"],
-  [methods.IS_RATIONALIZED]: []
+  [methods.IS_RATIONALIZED]: [],
+  [methods.CHECK_IF_TRUE]: ["noExpeced"]
 };
 
 module.exports = {
@@ -153,6 +157,7 @@ module.exports = {
   decimalSeparators,
   syntaxes,
   mathInputTypes,
+  units,
   symbols,
   symbolsAll,
   modes,

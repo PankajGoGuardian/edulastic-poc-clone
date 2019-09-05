@@ -137,7 +137,7 @@ export const isEmailValid = (rule, value, callback, checks, message) => {
 };
 
 export const getFullNameFromAsString = obj => {
-  return obj.firstName + " " + (obj.middleName ? obj.middleName + " " : "") + obj.lastName;
+  return obj.firstName + " " + (obj.middleName ? obj.middleName + " " : "") + (obj.lastName ? obj.lastName : "");
 };
 
 export const getFullNameFromString = name => {
@@ -166,4 +166,24 @@ export const getFullNameFromString = name => {
     middleName,
     lastName
   };
+};
+
+export const getInitialsFromName = obj => {
+  return obj.firstName[0] + (obj.lastName ? obj.lastName[0] : "");
+};
+
+export const getDistrictSignOutUrl = generalSettings => {
+  return `/district/${generalSettings.shortName}`;
+};
+
+export const setSignOutUrl = url => {
+  sessionStorage.setItem("signOutUrl", url);
+};
+
+export const getSignOutUrl = url => {
+  return sessionStorage.getItem("signOutUrl") || "/login";
+};
+
+export const removeSignOutUrl = () => {
+  return sessionStorage.removeItem("signOutUrl");
 };

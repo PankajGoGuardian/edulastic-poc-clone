@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
+import { desktopWidth, mediumDesktopWidth } from "@edulastic/colors";
 
 export const Subtitle = styled.div`
   font-size: ${({ fontSize, theme }) => fontSize || theme.common.subtitleFontSize};
@@ -11,12 +11,11 @@ export const Subtitle = styled.div`
   text-align: left;
   color: ${({ color, theme }) => color || theme.common.subtitleColor};
   padding: 0;
-  margin: ${props => (props.margin ? props.margin : "0 0 29px")};
+  margin: ${props => (props.margin ? props.margin : "0 0 25px")};
 
-  @media screen {
-    padding: 0;
+  @media (max-width: ${mediumDesktopWidth}) {
+    font-size: 16px;
   }
-
   @media (max-width: ${desktopWidth}) {
     margin-bottom: 20px;
   }

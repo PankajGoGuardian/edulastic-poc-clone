@@ -149,7 +149,7 @@ const ClozeMath = ({
             uiStyle={item.uiStyle}
             item={item}
             responseContainers={item.responseContainers}
-            textBlocks={item.textBlocks}
+            customKeys={item.customKeys}
             stimulusReview={item.stimulusReview}
             instructorStimulus={item.instructorStimulus}
             metadata={item.metadata}
@@ -167,6 +167,7 @@ const ClozeMath = ({
 ClozeMath.propTypes = {
   view: PropTypes.string.isRequired,
   setQuestionData: PropTypes.func.isRequired,
+  t: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
@@ -176,6 +177,7 @@ ClozeMath.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
+  instructorStimulus: PropTypes.string.isRequired,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool

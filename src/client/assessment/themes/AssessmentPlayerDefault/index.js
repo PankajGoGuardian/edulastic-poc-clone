@@ -36,6 +36,7 @@ import TestItemPreview from "../../components/TestItemPreview";
 import DragScrollContainer from "../../components/DragScrollContainer";
 import {
   LARGE_DESKTOP_WIDTH,
+  SMALL_DESKTOP_WIDTH,
   MEDIUM_DESKTOP_WIDTH,
   IPAD_PORTRAIT_WIDTH,
   MAX_MOBILE_WIDTH
@@ -48,6 +49,7 @@ import { saveScratchPadAction } from "../../actions/userWork";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
 import { getCurrentGroupWithAllClasses } from "../../../student/Login/ducks";
 import FeaturesSwitch from "../../../features/components/FeaturesSwitch";
+import { setUserAnswerAction } from "../../actions/answers.js";
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -95,7 +97,8 @@ class AssessmentPlayerDefault extends React.Component {
     answerChecksUsedForItem: PropTypes.number.isRequired,
     previewPlayer: PropTypes.bool.isRequired,
     saveScratchPad: PropTypes.func.isRequired,
-    LCBPreviewModal: PropTypes.any.isRequired
+    LCBPreviewModal: PropTypes.any.isRequired,
+    setUserAnswer: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -186,12 +189,13 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   saveHistory = data => {
-    const { saveScratchPad, items, currentItem } = this.props;
+    const { saveScratchPad, items, currentItem, setUserAnswer } = this.props;
     this.setState(({ history }) => ({ history: history + 1 }));
 
     saveScratchPad({
       [items[currentItem]._id]: data
     });
+    setUserAnswer(items[currentItem].data.questions[0].id, { answered: true });
   };
 
   handleUndo = () => {
@@ -397,7 +401,7 @@ class AssessmentPlayerDefault extends React.Component {
                         isBookmarked={isBookmarked}
                       />
                     )}
-                    {windowWidth >= LARGE_DESKTOP_WIDTH && (
+                    {windowWidth >= SMALL_DESKTOP_WIDTH && (
                       <ToolBar
                         changeMode={this.handleModeChange}
                         changeCaculateMode={this.handleModeCaculate}
@@ -481,7 +485,8 @@ const enhance = compose(
       undoScratchPad: ActionCreators.undo,
       redoScratchPad: ActionCreators.redo,
       toggleBookmark: toggleBookmarkAction,
-      checkAnswer: checkAnswerEvaluation
+      checkAnswer: checkAnswerEvaluation,
+      setUserAnswer: setUserAnswerAction
     }
   )
 );

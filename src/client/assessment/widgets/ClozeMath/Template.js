@@ -23,18 +23,29 @@ const initialMethod = {
   id: ""
 };
 
+const initialMathUnit = {
+  method: methods.EQUIV_SYMBOLIC,
+  options: {
+    inverseResult: false
+  },
+  value: "",
+  id: ""
+};
+
 const initResponseId = {
   inputs: [],
   maths: [],
-  dropDowns: []
+  dropDowns: [],
+  mathUnits: []
 };
 
 class Template extends Component {
   render() {
     const { t, item, setQuestionData, fillSections, cleanSections } = this.props;
 
-    const _reduceResponseIds = tmpl => {
+    const _reduceResponseIds = (tmpl, prevIds = {}) => {
       const newResponseId = cloneDeep(initResponseId);
+      const { mathUnits = [], maths = [] } = prevIds;
       if (!window.$) {
         return newResponseId;
       }
@@ -47,14 +58,22 @@ class Template extends Component {
         if (tagName === "textinput") {
           newResponseId.inputs.push({ index, id });
         } else if (tagName === "mathinput") {
-          newResponseId.maths.push({ index, id });
+          const { allowNumericOnly, allowedVariables } = maths.find(box => box.id === id) || {};
+          newResponseId.maths.push({ index, id, allowNumericOnly: allowNumericOnly, allowedVariables });
+        } else if (tagName === "mathunit") {
+          const prev = mathUnits.find(m => m.id === id);
+          if (prev) {
+            newResponseId.mathUnits.push({ ...prev, index });
+          } else {
+            newResponseId.mathUnits.push({ index, id, keypadMode: math.units[0].value });
+          }
         } else if (tagName === "textdropdown") {
           newResponseId.dropDowns.push({ index, id });
         }
       }
 
       $(parsedHTML)
-        .find("textinput, mathinput, textdropdown")
+        .find("textinput, mathinput, textdropdown, mathunit")
         .each(findResponseIndexes);
 
       Object.keys(newResponseId).map(key => {
@@ -80,6 +99,19 @@ class Template extends Component {
           const isExist = find(_allIds, res => res.id === val[0].id);
           if (!isExist) {
             _validation.validResponse.value.splice(index, 1);
+          }
+        });
+      }
+
+      // remove correct answer (math unit) by delted response box id
+      if (_validation.validResponse.mathUnits) {
+        _validation.validResponse.mathUnits.value.map((val, index) => {
+          if (!val.id) {
+            _validation.validResponse.mathUnits.value.splice(index, 1);
+          }
+          const isExist = find(_allIds, res => res.id === val.id);
+          if (!isExist) {
+            _validation.validResponse.mathUnits.value.splice(index, 1);
           }
         });
       }
@@ -150,6 +182,18 @@ class Template extends Component {
               });
             }
           }
+          if (responsekey === "mathUnits") {
+            if (!_validation.validResponse.mathUnits) {
+              _validation.validResponse.mathUnits = { value: [] };
+            }
+            const isExist = find(_validation.validResponse.mathUnits.value, valid => valid.id === res.id);
+            if (!isExist) {
+              _validation.validResponse.mathUnits.value.push({
+                ...initialMathUnit,
+                id: res.id
+              });
+            }
+          }
         });
       });
 
@@ -193,7 +237,21 @@ class Template extends Component {
             alt_res.dropdown.value.map((altAnswer, index) => {
               const isExist = find(_allIds, res => res.id === (altAnswer || "").id);
               if (!isExist) {
-                alt_res.textinput.value.splice(index, 1);
+                alt_res.dropdown.value.splice(index, 1);
+              }
+            });
+          });
+        }
+        // Math Unit alternate responses
+        if (_validation.validResponse.mathUnits) {
+          _validation.altResponses.map(alt_res => {
+            if (_validation.validResponse.mathUnits.value.length > alt_res.mathUnits.value.length) {
+              alt_res.mathUnits.value.push(last(_validation.validResponse.mathUnits.value));
+            }
+            alt_res.mathUnits.value.map((altAnswer, index) => {
+              const isExist = find(_allIds, res => res.id === (altAnswer || "").id);
+              if (!isExist) {
+                alt_res.mathUnits.value.splice(index, 1);
               }
             });
           });
@@ -206,6 +264,9 @@ class Template extends Component {
             value: []
           },
           dropdown: {
+            value: []
+          },
+          mathUnits: {
             value: []
           }
         };
@@ -221,6 +282,11 @@ class Template extends Component {
         });
         newAltValues.dropdown.value = cloneDeep(_validation.validResponse.dropdown.value || []);
         newAltValues.dropdown.value.map(answer => {
+          answer.value = "";
+          return answer;
+        });
+        newAltValues.mathUnits.value = cloneDeep(_validation.validResponse.mathUnits.value || []);
+        newAltValues.mathUnits.value.map(answer => {
           answer.value = "";
           return answer;
         });
@@ -255,6 +321,13 @@ class Template extends Component {
           return alt_res;
         });
       }
+      if (_validation.validResponse.mathUnits && isEmpty(_validation.validResponse.mathUnits.value)) {
+        delete _validation.validResponse.mathUnits;
+        _validation.altResponses = _validation.altResponses.map(alt_res => {
+          delete alt_res.mathUnits;
+          return alt_res;
+        });
+      }
 
       return _validation;
     };
@@ -277,7 +350,7 @@ class Template extends Component {
       const newItem = produce(item, draft => {
         draft.stimulus = val;
 
-        draft.responseIds = _reduceResponseIds(draft.stimulus);
+        draft.responseIds = _reduceResponseIds(draft.stimulus, draft.responseIds);
 
         draft.validation = _reduceValidation(draft.responseIds, draft.validation);
 

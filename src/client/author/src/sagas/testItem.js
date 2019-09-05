@@ -24,11 +24,34 @@ import { removeUserAnswerAction } from "../../../assessment/actions/answers";
 import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
 
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
-import { SET_ANSWER } from "../../../assessment/constants/actions";
 
-function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
+function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem = false } }) {
   try {
-    const item = yield call(testItemsApi.create, data);
+    // create a empty item and put it in store.
+    let item = {
+      _id: "new",
+      rows: [{ tabs: [], dimension: "100%", widgets: [], flowLayout: false, content: "" }],
+      columns: [],
+      tags: [],
+      status: "draft",
+      createdBy: {},
+      maxScore: 0,
+      active: 1,
+      grades: [],
+      subjects: [],
+      standards: [],
+      curriculums: [],
+      itemLevelScoring: true,
+      multipartItem: false,
+      isPassageWithQuestions: false,
+      canAddMultipleItems: false
+    };
+
+    // if its a being added from passage, create new.
+    if (newPassageItem) {
+      item = yield call(testItemsApi.create, data);
+    }
+
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: item
@@ -41,8 +64,7 @@ function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
     }
   } catch (err) {
     console.error(err);
-    const errorMessage = "Create item is failed";
-    yield call(message.error, errorMessage);
+    yield call(message.error, "create item failed");
     yield put({
       type: CREATE_TEST_ITEM_ERROR,
       payload: { error: errorMessage }
@@ -84,23 +106,9 @@ function* evaluateAnswers({ payload }) {
       const currentQuestionId = yield select(state => _get(state, "authorQuestions.current", ""));
 
       const answers = yield select(state => _get(state, "answers", []));
-      const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
-
-      // Add questions that have not been answered
-      const answeredAndUnanswered = Object.keys(allQuestions)
-        .filter(questionId => questionId === currentQuestionId)
-        .reduce((acc, questionId) => {
-          if (answers[questionId]) {
-            acc[questionId] = answers[questionId];
-          } else {
-            acc[questionId] = [];
-          }
-
-          return acc;
-        }, {});
 
       const questions = yield select(getQuestionsSelector);
-      const { evaluation, score, maxScore } = yield evaluateItem(answeredAndUnanswered, questions);
+      const { evaluation, score, maxScore } = yield evaluateItem(answers, questions);
       yield put({
         type: ADD_ITEM_EVALUATION,
         payload: {

@@ -18,7 +18,6 @@ export const TOOLS = {
   HYPERBOLA: "hyperbola",
   ELLIPSE: "ellipse",
   LABEL: "label",
-  ANNOTATION: "annotation",
   SEGMENTS_POINT: "segments_point",
   SEGMENT_BOTH_POINT_INCLUDED: "segment_both_point_included",
   SEGMENT_LEFT_POINT_HOLLOW: "segment_left_point_hollow",
@@ -66,6 +65,3 @@ export const FRACTIONS_FORMAT = {
   NORMALIZED: "normalized-fractions",
   IMPROPER: "improper-fractions"
 };
-
-export const AUTO_VALUE = "auto";
-export const AUTO_HEIGHT_VALUE = 250;

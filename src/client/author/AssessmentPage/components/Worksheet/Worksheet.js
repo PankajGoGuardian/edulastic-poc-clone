@@ -361,16 +361,30 @@ class Worksheet extends React.Component {
         }
         {
           <Fragment>
-            <PDFPreview
-              page={selectedPage}
-              currentPage={currentPage + 1}
-              annotations={annotations}
-              onDropAnnotation={this.handleAddAnnotation}
-              onHighlightQuestion={this.handleHighlightQuestion}
-              questions={questions}
-              questionsById={questionsById}
-              answersById={answersById}
-            />
+            <div style={{ display: "flex", width: "calc(100% - 513px)" }}>
+              <PDFPreview
+                page={selectedPage}
+                currentPage={currentPage + 1}
+                annotations={annotations}
+                onDropAnnotation={this.handleAddAnnotation}
+                onHighlightQuestion={this.handleHighlightQuestion}
+                questions={questions}
+                questionsById={questionsById}
+                answersById={answersById}
+              />
+              <Tools
+                isWorksheet={true}
+                onFillColorChange={this.onFillColorChange}
+                fillColor={fillColor}
+                deleteMode={deleteMode}
+                currentColor={currentColor}
+                onToolChange={this.handleToolChange}
+                activeMode={activeMode}
+                undo={this.handleUndo}
+                redo={this.handleRedo}
+                onColorChange={this.handleColorChange}
+              />
+            </div>
             <SvgDraw
               activeMode={activeMode}
               scratchPadMode={true}
@@ -382,17 +396,6 @@ class Worksheet extends React.Component {
               history={scratchPad}
               height={560}
               top={0}
-            />
-            <Tools
-              onFillColorChange={this.onFillColorChange}
-              fillColor={fillColor}
-              deleteMode={deleteMode}
-              currentColor={currentColor}
-              onToolChange={this.handleToolChange}
-              activeMode={activeMode}
-              undo={this.handleUndo}
-              redo={this.handleRedo}
-              onColorChange={this.handleColorChange}
             />
           </Fragment>
         }

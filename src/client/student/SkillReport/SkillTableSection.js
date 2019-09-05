@@ -4,9 +4,11 @@ import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Progress, Row, Col } from "antd";
 import styled from "styled-components";
-import { greenDark } from "@edulastic/colors";
+import { greenDark, title, extraDesktopWidth, mediumDesktopWidth, largeDesktopWidth } from "@edulastic/colors";
 import StyledTable from "../styled/Table";
 import * as S from "./styled";
+
+import { Wrapper } from "../styled";
 
 const computeColumns = t => [
   {
@@ -60,6 +62,7 @@ class DomainDetail extends Component {
     let maxScore = 1;
     if (summary) {
       const getStandardsScoreDetails = id =>
+        skillReport.reports.reportData.standardLevel &&
         skillReport.reports.reportData.standardLevel.filter(item => item.standard_id === id);
       sumData = summary.standards.map(standard => {
         const standardsData = getStandardsScoreDetails(standard._id)[0] || {};
@@ -77,14 +80,18 @@ class DomainDetail extends Component {
     const skillPercentage = Number(((score / maxScore) * 100).toFixed(1));
 
     return (
-      <S.AssignmentContentWrap>
+      <WrapperContent>
         <S.Title onClick={this.handlerTable}>
           <S.RelationTitle>{summary.domain}</S.RelationTitle>
           {!isNaN(skillPercentage) && <StyledScoreProgress percent={skillPercentage} />}
           {isShow ? <S.IconClose /> : <S.IconOpen color={greenDark} />}
         </S.Title>
-        {isShow && <StyledTable columns={columns} dataSource={sumData} pagination={false} />}
-      </S.AssignmentContentWrap>
+        {isShow && (
+          <StyledTableWrapper>
+            <StyledTable columns={columns} dataSource={sumData} pagination={false} />
+          </StyledTableWrapper>
+        )}
+      </WrapperContent>
     );
   }
 }
@@ -100,12 +107,57 @@ const enhance = compose(withNamespaces("reports"));
 export default enhance(DomainDetail);
 
 export const StyledScoreProgress = styled(Progress)`
-  width: 220px;
+  width: 319px;
   margin-right: 40px;
+  height: 20px;
+
+  .ant-progress-inner {
+    height: 20px;
+    background-color: #fff;
+    border: 1px solid #e6e6e6;
+  }
+
+  .ant-progress-outer {
+    margin-right: calc(-2em - 32px);
+    padding-right: calc(2em + 31px);
+  }
+
+  .ant-progress-bg {
+    height: 20px !important;
+    background: ${props =>
+      props.percent >= 50
+        ? props.theme.skillReport.greenColor
+        : props.percent >= 30
+        ? props.theme.skillReport.yellowColor
+        : props.theme.skillReport.redColor};
+  }
+
+  .ant-progress-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: ${title};
+    margin-left: 19px;
+    margin-top: 1px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    width: 195px;
+    height: 16px;
+
+    .ant-progress-text {
+      font-size: 12px;
+      margin-left: 16px;
+    }
+  }
+`;
+
+export const StyledProgress = styled(Progress)`
   height: 16px;
+
   .ant-progress-inner {
     height: 16px;
   }
+
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
@@ -117,18 +169,38 @@ export const StyledScoreProgress = styled(Progress)`
   }
 `;
 
-export const StyledProgress = styled(Progress)`
-  height: 16px;
-  .ant-progress-inner {
-    height: 16px;
+export const StyledTableWrapper = styled.div`
+  margin-top: 10px;
+
+  .ant-table-tbody > tr {
+    > td {
+      &:not(:first-child) {
+        font-size: 14px;
+        font-weight: 400;
+        text-align: left;
+        color: ${title};
+
+        @media (max-width: ${extraDesktopWidth}) {
+          font-size: 12px;
+        }
+
+        @media (max-width: ${largeDesktopWidth}) {
+          font-size: 11px;
+        }
+      }
+    }
   }
-  .ant-progress-bg {
-    height: 16px !important;
-    background: ${props =>
-      props.percent >= 50
-        ? props.theme.skillReport.greenColor
-        : props.percent >= 30
-        ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor};
+`;
+
+const WrapperContent = styled(Wrapper)`
+  padding: 39px 39px;
+  min-height: 0;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    padding: 27px 23px;
+  }
+
+  @media (max-width: ${mediumDesktopWidth}) {
+    padding: 26px 22px;
   }
 `;

@@ -391,8 +391,18 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     });
 
     const redirectTestId = yield select(redirectTestIdSelector);
-    const { testId, ...item } = yield call(testItemsApi.updateById, itemDetail._id, data, redirectTestId);
-    if (testId) {
+    let item;
+
+    // if its a new testItem, create testItem, else update it.
+    // TODO: do we need redirect testId here?!
+    if (itemDetail._id === "new") {
+      const reqData = omit(data, "_id");
+      item = yield call(testItemsApi.create, reqData);
+    } else {
+      item = yield call(testItemsApi.updateById, itemDetail._id, data, redirectTestId);
+    }
+
+    if (item.testId) {
       yield put(setRedirectTestAction(testId));
     }
     yield put({
@@ -412,7 +422,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
     if (isTestFlow) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
-      const nextTestItems = [...(testItems.data ? testItems.data : testItems), itemDetail._id];
+      const nextTestItems = [...testItems, itemDetail._id];
 
       yield put(setTestItemsAction(nextTestItems));
 

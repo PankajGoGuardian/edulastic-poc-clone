@@ -1,8 +1,10 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { createSelector } from "reselect";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
+import { getUserOrgId } from "../src/selectors/user";
+import { get, omit } from "lodash";
 
 const RECEIVE_PERFORMANCE_BAND_REQUEST = "[Performance Band] receive data request";
 const RECEIVE_PERFORMANCE_BAND_SUCCESS = "[Performance Band] receive data success";
@@ -13,9 +15,13 @@ const UPDATE_PERFORMANCE_BAND_ERROR = "[Performance Band] update data error";
 const CREATE_PERFORMANCE_BAND_REQUEST = "[Performance Band] create data request";
 const CREATE_PERFORMANCE_BAND_SUCCESS = "[Performance Band] create data success";
 const CREATE_PERFORMANCE_BAND_ERROR = "[Performance Band] create data error";
+const SET_LOADING = "[Performance Band] set loading";
+const DELETE_PERFORMANCE_BAND_REQUEST = "[Performance Band] delete request";
 
 const SET_PERFORMANCE_BAND_CHANGES = "[Performance Band] set data changes";
+const SET_PERFORMANCE_BAND_DATA_LOCAL = "[Performance Band] set data local";
 
+export const setPerformanceBandLocalAction = createAction(SET_PERFORMANCE_BAND_DATA_LOCAL);
 export const receivePerformanceBandAction = createAction(RECEIVE_PERFORMANCE_BAND_REQUEST);
 export const receivePerformanceBandSuccessAction = createAction(RECEIVE_PERFORMANCE_BAND_SUCCESS);
 export const receivePerformanceBandErrorAction = createAction(RECEIVE_PERFORMANCE_BAND_ERROR);
@@ -27,6 +33,9 @@ export const createPerformanceBandSuccessAction = createAction(CREATE_PERFORMANC
 export const createPerformanceBandErrorAction = createAction(CREATE_PERFORMANCE_BAND_ERROR);
 
 export const setPerformanceBandChangesAction = createAction(SET_PERFORMANCE_BAND_CHANGES);
+
+const setLoadingAction = createAction(SET_LOADING);
+export const deletePerformanceBandAction = createAction(DELETE_PERFORMANCE_BAND_REQUEST);
 
 const statePerformanceBandSelector = state => state.performanceBandReducer;
 export const getPerformanceBandList = createSelector(
@@ -49,6 +58,7 @@ export const getPerformanceBandList = createSelector(
 // reducers
 const initialState = {
   data: {},
+  profiles: [],
   error: null,
   loading: false,
   updating: false,
@@ -61,14 +71,18 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_PERFORMANCE_BAND_REQUEST]: state => {
     state.loading = true;
   },
+  [SET_LOADING]: (state, { payload }) => {
+    state.loading = payload;
+  },
   [RECEIVE_PERFORMANCE_BAND_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    if (payload != null && Object.keys(payload).length >= 0) {
-      payload.performanceBand.map((row, index) => {
-        row.key = index;
-      });
+    if (payload != null && payload.length >= 0) {
+      payload = payload.map(profile => ({
+        ...profile,
+        performanceBand: profile.performanceBand.map((row, index) => ({ ...row, key: index }))
+      }));
     }
-    state.data = payload;
+    state.profiles = payload;
   },
   [RECEIVE_PERFORMANCE_BAND_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -102,13 +116,21 @@ export const reducer = createReducer(initialState, {
     const performanceData = { ...state.data };
     performanceData.performanceBand = [...payload];
     state.data = { ...performanceData };
+  },
+  [SET_PERFORMANCE_BAND_DATA_LOCAL]: (state, { payload }) => {
+    const { _id, data } = payload;
+    const ind = state.profiles.findIndex(x => x._id === _id);
+    state.profiles[ind].performanceBand = data;
   }
 });
 
 // sagas
 function* receivePerformanceBandSaga({ payload }) {
+  const defaultOrgId = yield select(getUserOrgId);
+  payload = payload || { orgId: defaultOrgId };
   try {
     const performanceBand = yield call(settingsApi.getPerformanceBand, payload);
+    performanceBand.sort((el1, el2) => (el1._id > el2._id ? -1 : 1));
     yield put(receivePerformanceBandSuccessAction(performanceBand));
   } catch (err) {
     const errorMessage = "Receive PerformanceBand is failing";
@@ -117,11 +139,22 @@ function* receivePerformanceBandSaga({ payload }) {
   }
 }
 
-function* updatePerformanceBandSaga({ payload }) {
+function* updatePerformanceBandSaga({ payload: _id }) {
   try {
-    const updatePerformanceBand = yield call(settingsApi.updatePerformanceBand, payload);
+    const profile = yield select(state => get(state, "performanceBandReducer.profiles", []).find(x => x._id === _id));
+    const data = {
+      ...omit(profile, ["institutionIds", "createdBy", "createdAt", "updatedAt", "__v"]),
+      performanceBand: profile.performanceBand.map(({ key, ...band }) => band)
+    };
+    // if (!payload) {
+    //   console.warn("no profiles with such _id", _id);
+    //   return;
+    // }
+    const updatePerformanceBand = yield call(settingsApi.updatePerformanceBand, data);
     yield put(updatePerformanceBandSuccessAction(updatePerformanceBand));
+    //yield put(receivePerformanceBandAction());
   } catch (err) {
+    console.error(err);
     const errorMessage = "Update PerformanceBand is failing";
     yield call(message.error, errorMessage);
     yield put(updatePerformanceBandErrorAction({ error: errorMessage }));
@@ -132,8 +165,23 @@ function* createPerformanceBandSaga({ payload }) {
   try {
     const createPerformanceBand = yield call(settingsApi.createPerformanceBand, payload);
     yield put(createPerformanceBandSuccessAction(createPerformanceBand));
+    yield put(receivePerformanceBandAction());
   } catch (err) {
     const errorMessage = "Create PerformanceBand is failing";
+    yield call(message.error, errorMessage);
+    yield put(createPerformanceBandErrorAction({ error: errorMessage }));
+  }
+}
+
+function* deletePerformanceBandSaga({ payload }) {
+  yield put(setLoadingAction(true));
+  const districtId = yield select(getUserOrgId);
+  try {
+    const createPerformanceBand = yield call(settingsApi.deletePerformanceBand, payload, districtId);
+    yield put(setLoadingAction(false));
+    yield put(receivePerformanceBandAction());
+  } catch (err) {
+    const errorMessage = "deleting PerformanceBand is failing";
     yield call(message.error, errorMessage);
     yield put(createPerformanceBandErrorAction({ error: errorMessage }));
   }
@@ -143,4 +191,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_PERFORMANCE_BAND_REQUEST, receivePerformanceBandSaga)]);
   yield all([yield takeEvery(UPDATE_PERFORMANCE_BAND_REQUEST, updatePerformanceBandSaga)]);
   yield all([yield takeEvery(CREATE_PERFORMANCE_BAND_REQUEST, createPerformanceBandSaga)]);
+  yield all([yield takeEvery(DELETE_PERFORMANCE_BAND_REQUEST, deletePerformanceBandSaga)]);
 }

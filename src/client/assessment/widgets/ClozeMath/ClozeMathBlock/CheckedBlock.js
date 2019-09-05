@@ -10,7 +10,6 @@ import { CheckBox } from "./styled/CheckBox";
 
 const CheckBoxedMathBox = ({ value, style }) => {
   const filedRef = useRef();
-
   const replaceWithMathQuill = () => {
     if (!window.MathQuill || !filedRef.current) {
       return;
@@ -27,10 +26,18 @@ const CheckBoxedMathBox = ({ value, style }) => {
   return <span className="value" ref={filedRef} style={style} />;
 };
 
-const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick }) => {
+CheckBoxedMathBox.propTypes = {
+  value: PropTypes.string.isRequired,
+  style: PropTypes.object.isRequired
+};
+
+const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, height, onInnerClick, showIndex }) => {
   const { responseIds } = item;
   const { index } = find(responseIds[type], res => res.id === id);
-
+  let { unit = "" } = userAnswer || {};
+  if (unit.search("f") !== -1) {
+    unit = `\\text{${unit}}`;
+  }
   let checkBoxClass = "";
 
   if (userAnswer && evaluation[id] !== undefined) {
@@ -38,19 +45,40 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, h
   }
 
   return (
-    <Tooltip placement="bottomLeft" title={isMath ? <CheckBoxedMathBox value={userAnswer.value} /> : userAnswer.value}>
+    <Tooltip
+      placement="bottomLeft"
+      title={
+        isMath ? (
+          <CheckBoxedMathBox
+            value={
+              userAnswer && userAnswer.value.search("=") === -1
+                ? `${userAnswer.value}\\ ${unit}`
+                : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
+            }
+          />
+        ) : (
+          userAnswer && userAnswer.value
+        )
+      }
+    >
       <CheckBox className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick} style={{ height }}>
-        <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
-          {index + 1}
-        </span>
+        {showIndex && (
+          <span className="index" style={{ alignSelf: "stretch", height: "auto" }}>
+            {index + 1}
+          </span>
+        )}
         <span className="value" style={{ width, alignItems: "center" }}>
           {isMath ? (
             <CheckBoxedMathBox
-              value={userAnswer.value}
+              value={
+                userAnswer && userAnswer.value.search("=") === -1
+                  ? `${userAnswer.value}\\ ${unit}`
+                  : userAnswer && userAnswer.value.replace(/=/gm, `\\ ${unit}=`)
+              }
               style={{ height, width, minWidth: "unset", display: "block" }}
             />
           ) : (
-            userAnswer.value
+            userAnswer && userAnswer.value
           )}
         </span>
         {userAnswer && !isUndefined(evaluation[id]) && (
@@ -67,6 +95,7 @@ CheckedBlock.propTypes = {
   item: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
+  showIndex: PropTypes.bool,
   isMath: PropTypes.bool,
   onInnerClick: PropTypes.func,
   width: PropTypes.string,
@@ -75,6 +104,7 @@ CheckedBlock.propTypes = {
 
 CheckedBlock.defaultProps = {
   isMath: false,
+  showIndex: false,
   userAnswer: "",
   onInnerClick: () => {},
   width: 120,

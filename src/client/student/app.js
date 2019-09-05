@@ -20,10 +20,10 @@ import SkillReportContainer from "./SkillReport";
 import DeepLink from "./DeeplinkAssessment";
 import StartAssignment from "./StartAssignment";
 
-const StudentApp = ({ match, isSidebarCollapsed }) => (
-  <ThemeProvider theme={themes.default}>
+const StudentApp = ({ match, isSidebarCollapsed, selectedTheme, zoomLevel }) => (
+  <ThemeProvider theme={themes[selectedTheme] || themes.default}>
     <Layout>
-      <MainContainer isCollapsed={isSidebarCollapsed}>
+      <MainContainer className={`zoom${zoomLevel}`} isCollapsed={isSidebarCollapsed}>
         <Sidebar />
         <Wrapper>
           <Switch>
@@ -54,17 +54,44 @@ const StudentApp = ({ match, isSidebarCollapsed }) => (
 );
 
 export default connect(({ ui }) => ({
-  isSidebarCollapsed: ui.isSidebarCollapsed
+  isSidebarCollapsed: ui.isSidebarCollapsed,
+  selectedTheme: ui.selectedTheme,
+  zoomLevel: ui.zoomLevel
 }))(StudentApp);
 
 StudentApp.propTypes = {
   match: PropTypes.object.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  selectedTheme: PropTypes.string.isRequired
 };
 
 const MainContainer = styled.div`
   padding-left: 100px;
   width: 100%;
+
+  &.zoom1 {
+    -moz-transform: scale(1.2, 1.2);
+    zoom: 1.2;
+    zoom: 120%;
+  }
+
+  &.zoom2 {
+    -moz-transform: scale(1.4, 1.4);
+    zoom: 1.4;
+    zoom: 140%;
+  }
+
+  &.zoom3 {
+    -moz-transform: scale(1.65, 1.65);
+    zoom: 1.65;
+    zoom: 165%;
+  }
+
+  &.zoom4 {
+    -moz-transform: scale(2, 2);
+    zoom: 2;
+    zoom: 200%;
+  }
 
   .fixed-header {
     position: fixed;
@@ -90,4 +117,5 @@ const MainContainer = styled.div`
 
 const Wrapper = styled.div`
   position: relative;
+  margin-bottom: 15vh;
 `;

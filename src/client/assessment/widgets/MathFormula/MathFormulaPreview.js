@@ -9,7 +9,8 @@ import {
   MathFormulaDisplay,
   MathDisplay,
   FlexContainer,
-  QuestionNumberLabel
+  QuestionNumberLabel,
+  getInnerValuesForStatic
 } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 
@@ -37,6 +38,7 @@ class MathFormulaPreview extends Component {
     userAnswer: PropTypes.any,
     disableResponse: PropTypes.bool.isRequired,
     testItem: PropTypes.bool,
+    answerContextConfig: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     showQuestionNumber: PropTypes.bool
   };
@@ -47,8 +49,6 @@ class MathFormulaPreview extends Component {
     testItem: false,
     showQuestionNumber: false
   };
-
-  studentRef = React.createRef();
 
   state = {
     innerValues: []
@@ -66,10 +66,22 @@ class MathFormulaPreview extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { studentTemplate, type: previewType } = this.props;
-    const { studentTemplate: prevStudentTemplate, type: prevPreviewType } = prevProps;
+    const {
+      studentTemplate,
+      type: previewType,
+      answerContextConfig: { expressGrader, isAnswerModifiable }
+    } = this.props;
+    const {
+      studentTemplate: prevStudentTemplate,
+      type: prevPreviewType,
+      answerContextConfig: { isAnswerModifiable: prevIsAnswerModifiable }
+    } = prevProps;
 
-    if ((previewType !== prevPreviewType && previewType === CLEAR) || studentTemplate !== prevStudentTemplate) {
+    if (
+      (previewType !== prevPreviewType && previewType === CLEAR) ||
+      studentTemplate !== prevStudentTemplate ||
+      (expressGrader && isAnswerModifiable && isAnswerModifiable !== prevIsAnswerModifiable)
+    ) {
       this.updateStaticMathFromUserAnswer();
     }
   }
@@ -113,20 +125,8 @@ class MathFormulaPreview extends Component {
 
     if (!this.isStatic()) return;
 
-    const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const regexTemplate = new RegExp(
-      escapeRegExp(studentTemplate).replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
-      "g"
-    );
-
-    if (userAnswer && userAnswer.length > 0) {
-      const userInnerValues = regexTemplate.exec(userAnswer);
-      if (userInnerValues && userInnerValues.length > 0) {
-        this.setState({ innerValues: userInnerValues.slice(1) });
-      }
-    } else {
-      this.setState({ innerValues: [] });
-    }
+    const innerValues = getInnerValuesForStatic(studentTemplate, userAnswer);
+    this.setState({ innerValues });
   }
 
   onUserResponse(latexv) {
@@ -215,8 +215,11 @@ class MathFormulaPreview extends Component {
       studentTemplate,
       testItem,
       theme,
-      disableResponse
+      userAnswer,
+      disableResponse,
+      answerContextConfig
     } = this.props;
+    const { expressGrader, isAnswerModifiable } = answerContextConfig;
     const { innerValues } = this.state;
 
     const { minWidth, minHeight } = response;
@@ -249,6 +252,9 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectBorderColor
       };
     }
+    if (expressGrader && isAnswerModifiable) {
+      statusColor = theme.widgets.mathFormula.inputColor;
+    }
     cssStyles.width = cssStyles.width || minWidth;
     cssStyles.height = cssStyles.height || minHeight;
 
@@ -256,15 +262,19 @@ class MathFormulaPreview extends Component {
       ? item.validation.validResponse.value.map(validResponse => validResponse.value)
       : [];
 
-    const customKeys = get(item, "custom_keys", []);
+    const customKeys = get(item, "customKeys", []);
     const allowNumericOnly = get(item, "allowNumericOnly", false);
 
     // in Units type, this need when the show dropdown option is true
     const correctUnit = get(item, "validation.validResponse.value[0].options.unit", "");
 
-    const statusIcon = latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+    let statusIcon = latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
       <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
     );
+
+    if (expressGrader && isAnswerModifiable) {
+      statusIcon = null;
+    }
 
     return (
       <div>
@@ -299,7 +309,7 @@ class MathFormulaPreview extends Component {
             style={item.isUnits && item.showDropdown ? answerContainerStyle : {}}
           >
             <MathInputWrapper width={cssStyles.width}>
-              {this.isStatic() && (
+              {this.isStatic() && !disableResponse && (
                 <StaticMath
                   symbols={item.symbols}
                   restrictKeys={this.restrictKeys}
@@ -307,7 +317,6 @@ class MathFormulaPreview extends Component {
                   customKeys={customKeys}
                   numberPad={item.numberPad}
                   hideKeypad={item.isUnits && item.showDropdown}
-                  ref={this.studentRef}
                   onInput={latexv => this.onUserResponse(latexv)}
                   onBlur={latexv => this.onBlur(latexv)}
                   style={{ background: statusColor, ...cssStyles }}
@@ -315,6 +324,11 @@ class MathFormulaPreview extends Component {
                   innerValues={innerValues}
                   onInnerFieldClick={() => this.onInnerFieldClick()}
                 />
+              )}
+              {this.isStatic() && disableResponse && (
+                <MathInputSpan style={{ background: statusColor }}>
+                  <MathSpanWrapper latex={userAnswer || ""} />
+                </MathInputSpan>
               )}
               {!this.isStatic() && !disableResponse && (
                 <MathInput

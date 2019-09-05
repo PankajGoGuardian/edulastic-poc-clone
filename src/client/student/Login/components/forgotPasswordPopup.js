@@ -7,11 +7,7 @@ import { get, trim } from "lodash";
 import { white, greenDark, orange } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { isEmailValid } from "../../../common/utils/helpers";
-import {
-  requestNewPasswordAction,
-  resetPasswordRequestStateAction,
-  requestNewPasswordResetControlAction
-} from "./../ducks";
+import { requestNewPasswordAction, requestNewPasswordResetControlAction } from "./../ducks";
 
 const ForgotPasswordPopup = props => {
   const {
@@ -23,13 +19,12 @@ const ForgotPasswordPopup = props => {
     requestNewPassword,
     user,
     districtPolicy,
-    resetPasswordRequestState,
     requestNewPasswordResetControl
   } = props;
   const { requestingNewPassword, requestNewPasswordSuccess } = user;
 
   useEffect(() => {
-    resetPasswordRequestState();
+    requestNewPasswordResetControl();
   }, []);
 
   const onCancelForgotPassword = () => {
@@ -114,7 +109,9 @@ const ForgotPasswordForm = props => {
     event.preventDefault();
     const { form } = props;
     form.validateFieldsAndScroll((err, { email }) => {
-      _onSubmit(email);
+      if (!err) {
+        _onSubmit(email);
+      }
     });
   };
 
@@ -130,24 +127,19 @@ const ForgotPasswordForm = props => {
             },
             {
               required: true,
-              message: t("component.signup.teacher.validemail")
+              message: t("common.forgotpassworderror")
             },
             {
               type: "string",
-              message: t("component.signup.teacher.validemail")
+              message: t("common.forgotpassworderror")
             },
             {
               validator: (rule, value, callback) =>
-                isEmailValid(rule, value, callback, "both", t("component.signup.teacher.validemail"))
+                isEmailValid(rule, value, callback, "both", t("common.forgotpassworderror"))
             }
           ]
         })(
-          <Input
-            className="email-input"
-            type="email"
-            placeholder="Enter Registered Username or Email"
-            autoComplete="new-password"
-          />
+          <Input className="email-input" placeholder="Enter Registered Username or Email" autoComplete="new-password" />
         )}
       </Form.Item>
       <div className="model-buttons">
@@ -295,7 +287,6 @@ const enhance = compose(
     }),
     {
       requestNewPassword: requestNewPasswordAction,
-      resetPasswordRequestState: resetPasswordRequestStateAction,
       requestNewPasswordResetControl: requestNewPasswordResetControlAction
     }
   )

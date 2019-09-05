@@ -1,5 +1,6 @@
 import React from "react";
-import { Input, Row, Col, Select, Modal } from "antd";
+import get from "lodash/get";
+import { Input, Row, Col, Select, Modal, Checkbox } from "antd";
 import { FlexContainer } from "@edulastic/common";
 
 import Question from "../../../components/Question/index";

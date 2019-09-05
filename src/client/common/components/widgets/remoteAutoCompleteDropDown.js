@@ -293,12 +293,11 @@ const StyledDiv = styled.div`
 
 const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
   .ant-select-dropdown-menu {
-    display: flex;
-    flex-direction: column;
-
     .ant-select-dropdown-menu-item {
+      padding: 10px;
       min-height: ${props => (props.minHeight ? props.minHeight : "30px")};
-      &-active {
+      &-active,
+      &:hover {
         background-color: ${themeColor}33;
       }
     }

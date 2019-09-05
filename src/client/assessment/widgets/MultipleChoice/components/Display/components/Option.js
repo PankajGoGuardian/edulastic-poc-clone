@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { isEmpty, flatten } from "lodash";
 
@@ -7,11 +7,12 @@ import { PaddingDiv, FlexContainer, MathFormulaDisplay } from "@edulastic/common
 import { ALPHABET } from "../../../constants/alphabet";
 import { CheckboxContainer } from "../styled/CheckboxContainer";
 import { MultiChoiceContent } from "../styled/MultiChoiceContent";
-import { Label } from "../styled/Label";
+import { Label, OptionsLabel } from "../styled/Label";
 import { IconWrapper } from "../styled/IconWrapper";
 import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
 import { getFontSize } from "../../../../../utils/helpers";
+import { AnswerContext } from "@edulastic/common";
 
 const Option = props => {
   const {
@@ -28,8 +29,10 @@ const Option = props => {
     styleType,
     multipleResponses,
     isReviewTab,
-    testItem
+    testItem,
+    maxWidth
   } = props;
+  const answerContext = useContext(AnswerContext);
   let className = "";
   let correctAnswers = [];
   if (!isEmpty(validation)) {
@@ -52,7 +55,7 @@ const Option = props => {
       validAnswers = [validation.validResponse, ...validation.altResponses];
     }
 
-    if (flatten(validAnswers.map(v => v.value)).includes(item.value)) {
+    if (flatten(validAnswers.map(v => v.value)).includes(item.value) && !answerContext.isAnswerModifiable) {
       className = "right";
     } else if (isSelected) {
       if (validAnswers.some(ans => ans.value.includes(item.value))) {
@@ -85,31 +88,45 @@ const Option = props => {
         default:
           return inx + 1;
       }
+    } else if (uiStyle.type === "standard") {
+      switch (uiStyle.stemNumeration) {
+        case "number":
+          return `(${inx + 1})`;
+        case "upper-alpha":
+          return `(${ALPHABET[inx].toUpperCase()})`;
+        case "lower-alpha":
+          return `(${ALPHABET[inx].toLowerCase()})`;
+        default:
+          return null;
+      }
     } else {
       return ALPHABET[inx].toUpperCase();
     }
   };
 
   const container = (
-    <CheckboxContainer
-      smallSize={smallSize}
-      uiStyle={uiStyle}
-      styleType={styleType}
-      multipleResponses={multipleResponses}
-    >
-      <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
-      <span
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: multipleResponses ? "0" : "50%"
-        }}
+    <>
+      <OptionsLabel>{getLabel(index)}</OptionsLabel>
+      <CheckboxContainer
+        smallSize={smallSize}
+        uiStyle={uiStyle}
+        styleType={styleType}
+        multipleResponses={multipleResponses}
       >
-        {getLabel(index)}
-      </span>
-      <div />
-    </CheckboxContainer>
+        <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
+        <span
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            borderRadius: multipleResponses ? "0" : "50%"
+          }}
+        >
+          {getLabel(index)}
+        </span>
+        <div />
+      </CheckboxContainer>
+    </>
   );
 
   const renderCheckbox = () => {
@@ -150,6 +167,7 @@ const Option = props => {
     // <Label width={width} smallSize={smallSize} className={className} showAnswer>
     // TODO setup label background color for each option
     <Label
+      maxWidth={maxWidth}
       smallSize={smallSize}
       className={className}
       showAnswer={showAnswer}

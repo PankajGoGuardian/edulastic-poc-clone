@@ -31,13 +31,12 @@ const MainContent = ({
 }) => {
   const onAssignmentSettingsChange = () => {
     const value = event.target.value;
-    if (value !== "SPECIFIC") {
-      const newSettings = {
-        ...regradeSettings,
-        assignmentList: []
-      };
-      regradeSettingsChange(newSettings);
-    }
+    const newSettings = {
+      ...regradeSettings,
+      applyChangesChoice: value,
+      assignmentList: value !== "SPECIFIC" ? [] : regradeSettings.assignmentList
+    };
+    regradeSettingsChange(newSettings);
     setAssignmentOptions(value);
   };
 

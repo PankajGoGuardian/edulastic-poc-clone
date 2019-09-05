@@ -10,12 +10,14 @@ const AnswerBox = ({
   mathAnswers,
   dropdownAnswers,
   textInputAnswers,
+  mathUnitAnswers,
   altMathAnswers,
   altDropDowns,
   altInputs,
+  altMathUnitAnswers,
   responseIds
 }) => {
-  const { inputs, maths, dropDowns } = responseIds;
+  const { inputs, maths, dropDowns, mathUnits } = responseIds;
   let validAnswers = [];
 
   mathAnswers.map(answer => {
@@ -44,6 +46,20 @@ const AnswerBox = ({
       isMath: false
     });
   });
+
+  mathUnitAnswers.map(ans => {
+    const { index } = find(mathUnits, d => d.id === ans.id) || { index: 0 };
+    let { unit = "" } = ans.options;
+    if (unit.search("f") !== -1) {
+      unit = `\\text{${unit}}`;
+    }
+    return validAnswers.push({
+      index,
+      value: ans.value.search("=") === -1 ? `${ans.value}\\ ${unit}` : ans.value.replace(/=/gm, `\\ ${unit}=`),
+      isMath: true
+    });
+  });
+
   validAnswers = validAnswers.sort((a, b) => a.index - b.index);
 
   const maxAltLen = Math.max(altMathAnswers.length, altDropDowns.length, altInputs.length);
@@ -83,6 +99,26 @@ const AnswerBox = ({
             index,
             value: answer.value,
             isMath: false
+          });
+        }
+      });
+    }
+
+    if (altMathUnitAnswers[altIndex]) {
+      altMathUnitAnswers[altIndex].map(answer => {
+        const { index } = find(mathUnits, d => d.id === answer.id) || { index: 0 };
+        let { unit = "" } = answer.options;
+        if (unit.search("f") !== -1) {
+          unit = `\\text{${unit}}`;
+        }
+        if (answer.value) {
+          return _altAnswers.push({
+            index,
+            value:
+              answer.value.search("=") === -1
+                ? `${answer.value}\\ ${unit}`
+                : answer.value.replace(/=/gm, `\\ ${unit}=`),
+            isMath: true
           });
         }
       });
@@ -138,6 +174,8 @@ AnswerBox.propTypes = {
   altDropDowns: PropTypes.array.isRequired,
   textInputAnswers: PropTypes.array.isRequired,
   altInputs: PropTypes.array.isRequired,
+  mathUnitAnswers: PropTypes.array.isRequired,
+  altMathUnitAnswers: PropTypes.array.isRequired,
   responseIds: PropTypes.object
 };
 

@@ -1,9 +1,9 @@
 import React from "react";
 import { Input, message } from "antd";
-import { get } from "lodash";
+import get from "lodash/get";
 import PropTypes from "prop-types";
 import produce from "immer";
-
+import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 import Question from "../../../components/Question/index";
 import { Subtitle } from "../../../styled/Subtitle";
@@ -11,12 +11,12 @@ import Circles from "./Circles";
 import Rectangles from "./Rectangles";
 import Divider from "../styled/Divider";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
+import { CorrectAnswerHeader } from "../styled/CorrectAnswerHeader";
 
 const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item }) => {
   const { fractionProperties = {} } = item;
   const { selected, sectors = 7, fractionType, rows, columns, count } = fractionProperties;
   const totalSelections = fractionType === "circles" ? count * sectors : count * (rows * columns);
-
   const handleCorrectAnswerChange = e => {
     const value = +e.target.value;
     if (value > 0) {
@@ -66,15 +66,15 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
       cleanSections={cleanSections}
     >
       <Subtitle>{t("common.correctAnswers.setCorrectAnswers")}</Subtitle>
-      <FlexContainer justifyContent="flex-start" marginBottom="1em">
+      <CorrectAnswerHeader>
         <Input
           type="number"
           value={get(item, "validation.validResponse.score", 1)}
           onChange={handleCorrectAnswerPointsChange}
-          style={{ width: "190px", marginRight: "5px" }}
+          style={{ width: "140px", marginRight: "25px", background: "#F8F8FB" }}
         />
-        POINTS
-      </FlexContainer>
+        <span>{t("component.correctanswers.points")}</span>
+      </CorrectAnswerHeader>
       <FlexContainer justifyContent="flex-start">
         <FlexContainer flexDirection="column">
           <Input
@@ -95,7 +95,11 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
             disabled
           />
         </FlexContainer>
-        <FlexContainer style={{ overflow: "scroll", position: "relative" }} justifyContent="flex-start" flexWrap="wrap">
+        <FlexContainer
+          style={{ overflow: "auto", position: "relative", height: "425px", width: "700px" }}
+          justifyContent="flex-start"
+          flexWrap="wrap"
+        >
           {Array(count)
             .fill()
             .map((el, index) => {
@@ -111,7 +115,7 @@ const CorrectAnswers = ({ setQuestionData, fillSections, cleanSections, t, item 
                 />
               );
             })}
-          <AnnotationRnd question={item} setQuestionData={setQuestionData} disableDragging={false} />
+          <AnnotationRnd bounds={"window"} question={item} setQuestionData={setQuestionData} disableDragging={false} />
         </FlexContainer>
       </FlexContainer>
     </Question>
@@ -132,4 +136,4 @@ CorrectAnswers.defaultProps = {
   cleanSections: () => {}
 };
 
-export default CorrectAnswers;
+export default withNamespaces("assessment")(CorrectAnswers);

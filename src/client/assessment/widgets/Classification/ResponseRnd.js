@@ -93,6 +93,7 @@ const ResponseRnd = props => {
       onResize={handleResponseResize}
       cancel=".drag-item"
       minHeight={minHeight}
+      className="answer-draggable-wrapper"
     >
       {React.Children.map(children, child => (child ? React.cloneElement(child) : null))}
     </Rnd>

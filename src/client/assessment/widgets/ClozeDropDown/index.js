@@ -104,8 +104,7 @@ class ClozeDropDown extends Component {
 
   handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
-    const newAnswer = cloneDeep(userAnswer);
-    saveAnswer(newAnswer);
+    saveAnswer(userAnswer);
   };
 
   render() {
@@ -228,6 +227,7 @@ class ClozeDropDown extends Component {
               onChange={this.handleAddAnswer}
               evaluation={evaluation}
               instructorStimulus={instructorStimulus}
+              isExpressGrader={answerContextConfig.expressGrader && previewTab === "show"}
               {...restProps}
             />
           </Wrapper>

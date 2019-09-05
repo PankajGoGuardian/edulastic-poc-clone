@@ -75,10 +75,10 @@ const deleteTerm = ({ body }) =>
     .then(result => result.data.result);
 
 // Test Setting Apis
-const getTestSetting = ({ orgId }) =>
+const getTestSetting = ({ orgId, orgType = "district" }) =>
   api
     .callApi({
-      url: `${prefix}/test/${orgId}?orgType=district`,
+      url: `${prefix}/test/${orgId}?orgType=${orgType}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -102,10 +102,10 @@ const createTestSetting = data =>
     .then(result => result.data.result);
 
 // District Policy
-const getDistrictPolicy = ({ orgId }) =>
+const getDistrictPolicy = ({ orgId, orgType = "district" }) =>
   api
     .callApi({
-      url: `${prefix}/district-policy/${orgId}?orgType=district`,
+      url: `${prefix}/district-policy/${orgId}?orgType=${orgType}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -146,12 +146,21 @@ const createStandardsProficiency = data =>
     })
     .then(result => result.data.result);
 
-const updateStandardsProficiency = data =>
+const updateStandardsProficiency = ({ _id, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/standards-proficiency/`,
+      url: `${prefix}/standards-proficiency/${_id}`,
       method: "put",
       data
+    })
+    .then(result => result.data.result);
+
+const deleteStandardsProficiency = (_id, districtId) =>
+  api
+    .callApi({
+      url: `${prefix}/standards-proficiency/${_id}`,
+      params: { districtId: districtId },
+      method: "delete"
     })
     .then(result => result.data.result);
 
@@ -173,20 +182,29 @@ const createPerformanceBand = data =>
     })
     .then(result => result.data.result);
 
-const updatePerformanceBand = data =>
+const updatePerformanceBand = ({ _id, ...data }) =>
   api
     .callApi({
-      url: `${prefix}/performance-band/`,
+      url: `${prefix}/performance-band/${_id}`,
       method: "put",
       data
     })
     .then(result => result.data.result);
 
-// interested standards
-const getInterestedStandards = ({ orgId }) =>
+const deletePerformanceBand = (_id, districtId) =>
   api
     .callApi({
-      url: `${prefix}/intrested-standards/${orgId}?orgType=district`,
+      url: `${prefix}/performance-band/${_id}`,
+      params: { districtId: districtId },
+      method: "delete"
+    })
+    .then(result => result.data);
+
+// interested standards
+const getInterestedStandards = ({ orgId, orgType = "district" }) =>
+  api
+    .callApi({
+      url: `${prefix}/intrested-standards/${orgId}?orgType=${orgType}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -226,8 +244,10 @@ export default {
   getStandardsProficiency,
   createStandardsProficiency,
   updateStandardsProficiency,
+  deleteStandardsProficiency,
   getPerformanceBand,
   createPerformanceBand,
+  deletePerformanceBand,
   updatePerformanceBand,
   getInterestedStandards,
   saveInterestedStandards,

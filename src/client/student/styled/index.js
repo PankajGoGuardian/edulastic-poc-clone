@@ -36,8 +36,7 @@ export const Wrapper = styled.div`
   }
 
   @media screen and (max-width: ${mobileWidthMax}) {
-    padding: 5px 20px;
-    margin: 16px 26px;
+    padding: 0px;
     min-height: ${props => (props.minHeight ? props.minHeight : "75vh")};
     display: block;
   }
@@ -182,7 +181,7 @@ export const Title = styled.h3`
   font-size: 18px;
   font-weight: bold;
   line-height: 24px;
-  color: ${title};
+  color: ${props => props.theme.headerTitleSecondaryTextColor || title};
   display: block;
   margin-top: 28px;
   margin-left: 12px;

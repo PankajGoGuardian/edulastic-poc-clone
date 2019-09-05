@@ -1,8 +1,8 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import PropTypes from "prop-types";
 import styled, { ThemeProvider } from "styled-components";
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 import { connect } from "react-redux";
 import { Progress } from "@edulastic/common";
 import { tabletWidth, mainBgColor } from "@edulastic/colors";
@@ -11,6 +11,9 @@ import { themes } from "../../assessment/themes";
 import Sidebar from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 import { MainContainer } from "./MainStyle";
+import { get } from "lodash";
+import { getUserOrgId, getUserRole } from "./selectors/user";
+import { receiveDistrictPolicyAction } from "../DistrictPolicy/ducks";
 /* lazy load routes */
 
 const Dashboard = lazy(() => import("../Dashboard"));
@@ -46,7 +49,8 @@ const ClassEdit = lazy(() => import("../ManageClass/components/ClassEdit"));
 const ClassCreate = lazy(() => import("../ManageClass/components/ClassCreate"));
 const PrintPreviewClass = lazy(() => import("../ManageClass/components/PrintPreview"));
 
-const Profile = lazy(() => import("../DistrictProfile"));
+const Profile = lazy(() => import("../DistrictProfile/components/Container/Profile"));
+const DistrictProfile = lazy(() => import("../DistrictProfile"));
 const TestSetting = lazy(() => import("../TestSetting"));
 const Term = lazy(() => import("../Term"));
 const DistrictPolicy = lazy(() => import("../DistrictPolicy"));
@@ -65,7 +69,12 @@ const PlaylistPage = lazy(() => import("../PlaylistPage"));
 const ClassEnrollment = lazy(() => import("../ClassEnrollment"));
 
 // eslint-disable-next-line react/prop-types
-const Author = ({ match, history, isSidebarCollapsed }) => {
+const Author = ({ match, history, isSidebarCollapsed, role, orgId, districtProfileLoading, loadDistrictPolicy }) => {
+  useEffect(() => {
+    if (orgId && ["school-admin", "district-admin"].includes(role)) {
+      loadDistrictPolicy({ orgId });
+    }
+  }, [orgId]);
   const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
   const isCollapsed = isPickQuestion || isSidebarCollapsed;
   const isPrintPreview = history.location.pathname.includes("printpreview");
@@ -74,6 +83,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
       <ScrollContext.Provider value={{ getScrollElement: () => window }}>
         <StyledLayout>
           <MainContainer isCollapsed={isCollapsed} isPrintPreview={isPrintPreview}>
+            <Spin spinning={districtProfileLoading} />
             <SidebarCompnent isPrintPreview={isPrintPreview} />
             <Wrapper>
               <Suspense fallback={<Progress />}>
@@ -95,6 +105,15 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                     exact
                     path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
                     component={Regrade}
+                  />
+                  <Route
+                    exact
+                    path="/author/regrade/:id/success"
+                    render={props => (
+                      <Suspense fallback={<Progress />}>
+                        <SuccessPage {...props} isRegradeSuccess />
+                      </Suspense>
+                    )}
                   />
                   <Route
                     exact
@@ -368,6 +387,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   <Route exact path="/author/questions/edit" component={QuestionEditor} />
                   <Route path="/author/reports/:reportType?" component={Reports} />
                   <Route exact path="/author/profile" component={Profile} />
+                  <Route exact path="/author/districtprofile" component={DistrictProfile} />
                   <Route exact path="/author/settings/testsettings" component={TestSetting} />
                   <Route exact path="/author/settings/term" component={Term} />
                   <Route exact path="/author/settings/districtpolicies" component={DistrictPolicy} />
@@ -392,9 +412,18 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
   );
 };
 
-export default connect(({ authorUi }) => ({
-  isSidebarCollapsed: authorUi.isSidebarCollapsed
-}))(Author);
+export default connect(
+  ({ authorUi, ...state }) => ({
+    isSidebarCollapsed: authorUi.isSidebarCollapsed,
+    orgId: getUserOrgId(state),
+    role: getUserRole(state),
+    districtProfile: get(state, ["districtProfileReducer", "data"], {}),
+    districtProfileLoading: get(state, ["districtProfileReducer", "loading"], false)
+  }),
+  {
+    loadDistrictPolicy: receiveDistrictPolicyAction
+  }
+)(Author);
 
 Author.propTypes = {
   match: PropTypes.object.isRequired

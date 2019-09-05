@@ -5,7 +5,6 @@ export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 20px;
 
   .ant-table-wrapper {
     width: 100%;
@@ -20,7 +19,7 @@ export const StyledTable = styled(Table)`
   .ant-table-row {
     &: hover {
       button#onHoverVisible {
-        opacity: 100;
+        opacity: ${props => (props.role === "school-admin" ? "0" : "100")};
       }
     }
   }

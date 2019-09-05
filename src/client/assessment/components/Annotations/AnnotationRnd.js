@@ -3,9 +3,8 @@ import PropTypes from "prop-types";
 import { Rnd } from "react-rnd";
 import produce from "immer";
 
-import { FroalaEditor } from "@edulastic/common";
-
 import { FroalaInput } from "./styled/styled_components";
+import { ValueWrapper } from "./styled/ValueWrapper";
 
 const resizeDisable = {
   bottom: false,
@@ -94,7 +93,7 @@ class AnnotationsRnd extends Component {
     );
   };
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     const { question } = this.props;
     // Resize annotation box to accomodate content (by changing its height)
     if (question && question.annotations) {
@@ -102,29 +101,32 @@ class AnnotationsRnd extends Component {
 
       annotations
         .filter(a => a.value)
-        .forEach(annotation => {
-          const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
-          const { value } = annotation;
+        .forEach((annotation, i) => {
+          if (
+            prevProps.question.annotations[i].size.width !== annotation.size.width &&
+            prevProps.question.annotation[i].size.height !== annotation.size.height
+          ) {
+            const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
+            const { value } = annotation;
 
-          const minCharArea = value.length * 14;
-          const currentCharArea = (width * height) / 14;
-          let hc = height;
-          if (minCharArea > currentCharArea) {
-            hc = height * (minCharArea / currentCharArea) - height;
-            const delta = { width: 0, height: hc };
-            this.handleAnnotationSize(delta, annotation.id);
+            const minCharArea = value.length * 14;
+            const currentCharArea = (width * height) / 14;
+            let hc = height;
+            if (minCharArea > currentCharArea) {
+              hc = height * (minCharArea / currentCharArea) - height;
+              const delta = { width: 0, height: hc };
+              this.handleAnnotationSize(delta, annotation.id);
+            }
           }
         });
     }
   }
 
   render() {
-    const { question, disableDragging, isAbove } = this.props;
+    const { question, disableDragging, isAbove, bounds } = this.props;
     if (!question || !question.annotations) return null;
 
-    const { updateAnnotation } = this;
     const annotations = question.annotations || [];
-
     return (
       <Fragment>
         {annotations
@@ -154,18 +156,11 @@ class AnnotationsRnd extends Component {
                 }}
                 enableResizing={disableDragging ? resizeDisable : resizeEnable}
                 disableDragging={disableDragging}
-                bounds={"parent"}
+                bounds={bounds || "parent"}
                 className="annotation"
               >
                 <FroalaInput {...this.props} isRnd>
-                  <FroalaEditor
-                    value={value}
-                    onChange={val => updateAnnotation(val, annotation.id)}
-                    toolbarInline
-                    toolbarVisibleWithoutSelection
-                    imageEditButtons={[]}
-                    readOnly
-                  />
+                  <ValueWrapper dangerouslySetInnerHTML={{ __html: value }} />
                 </FroalaInput>
               </Rnd>
             );

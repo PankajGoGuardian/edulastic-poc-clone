@@ -53,7 +53,7 @@ const Item = ({ valid, preview, theme, dragHandle, renderIndex, item }) => (
     {dragHandle && <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />}
     {preview && valid !== undefined && (
       <IndexBox preview={preview} valid={valid}>
-        {renderIndex + 1}
+        {renderIndex}
       </IndexBox>
     )}
     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
@@ -63,11 +63,11 @@ const Item = ({ valid, preview, theme, dragHandle, renderIndex, item }) => (
 
 Item.propTypes = {
   valid: PropTypes.bool.isRequired,
-  preview: PropTypes.string.isRequired,
+  preview: PropTypes.bool.isRequired,
   theme: PropTypes.object.isRequired,
   dragHandle: PropTypes.bool.isRequired,
   renderIndex: PropTypes.number.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.string.isRequired
 };
 
 const DragItemContainer = ({
@@ -151,21 +151,20 @@ const DragItemContainer = ({
 
 DragItemContainer.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired,
+  item: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
   isDragging: PropTypes.bool.isRequired,
-  possibilityListPosition: PropTypes.string.isRequired,
-  preview: PropTypes.string.isRequired,
+  preview: PropTypes.bool.isRequired,
   renderIndex: PropTypes.number.isRequired,
-  isTransparent: PropTypes.bool.isRequired,
-  dragHandle: PropTypes.bool.isRequired,
+  possibilityListPosition: PropTypes.string,
+  isTransparent: PropTypes.bool,
+  dragHandle: PropTypes.bool,
   valid: PropTypes.bool,
   isResetOffset: PropTypes.bool
 };
 
 DragItemContainer.defaultProps = {
-  isResetOffset: false,
-  valid: false
+  isResetOffset: false
 };
 
 const InnerWrapper = styled.div`

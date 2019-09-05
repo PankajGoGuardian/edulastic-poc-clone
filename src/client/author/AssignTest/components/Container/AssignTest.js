@@ -6,7 +6,7 @@ import * as moment from "moment";
 import { message } from "antd";
 import { fetchGroupMembersAction, getStudentsSelector } from "../../../sharedDucks/groups";
 
-import { receiveTestByIdAction, getTestSelector } from "../../../TestPage/ducks";
+import { receiveTestByIdAction, getTestSelector, getDefaultTestSettingsAction } from "../../../TestPage/ducks";
 
 import {
   fetchAssignmentsAction,
@@ -70,18 +70,16 @@ class AssignTest extends React.Component {
       fetchTestByID,
       loadClassList,
       fetchAssignments,
-
       assignments,
       match,
-
       userOrgId,
       isPlaylist,
       fetchPlaylistById,
-
-      userRole
+      userRole,
+      getDefaultTestSettings
     } = this.props;
     const { testId } = match.params;
-
+    getDefaultTestSettings();
     loadClassList({
       districtId: userOrgId,
       search: {
@@ -126,7 +124,8 @@ class AssignTest extends React.Component {
 
   handleAssign = () => {
     const { assignment } = this.state;
-    const { saveAssignment } = this.props;
+    const { saveAssignment, isAssigning } = this.props;
+    if (isAssigning) return;
     if (assignment.requirePassword === false) {
       delete assignment.assignmentPassword;
     } else if (
@@ -149,7 +148,14 @@ class AssignTest extends React.Component {
   };
 
   renderHeaderButton = () => (
-    <AssignButton data-cy="assignButton" onClick={this.handleAssign} color="secondary" variant="create" shadow="none">
+    <AssignButton
+      data-cy="assignButton"
+      onClick={this.handleAssign}
+      color="secondary"
+      variant="create"
+      shadow="none"
+      disabled={this.props.isAssigning}
+    >
       ASSIGN
     </AssignButton>
   );
@@ -259,7 +265,8 @@ export default connect(
     userOrgId: getUserOrgId(state),
     playlist: getPlaylistSelector(state),
     testItem: getTestSelector(state),
-    userRole: getUserRole(state)
+    userRole: getUserRole(state),
+    isAssigning: state.authorTestAssignments.isAssigning
   }),
   {
     loadClassList: receiveClassListAction,
@@ -267,7 +274,8 @@ export default connect(
     fetchAssignments: fetchAssignmentsAction,
     saveAssignment: saveAssignmentAction,
     fetchPlaylistById: receivePlaylistByIdAction,
-    fetchTestByID: receiveTestByIdAction
+    fetchTestByID: receiveTestByIdAction,
+    getDefaultTestSettings: getDefaultTestSettingsAction
   }
 )(AssignTest);
 

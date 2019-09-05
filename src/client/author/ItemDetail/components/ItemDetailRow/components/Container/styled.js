@@ -10,6 +10,7 @@ export const Content = styled(Paper)`
   padding: ${props => (props.padding ? props.padding : "0px")};
   overflow: hidden;
   position: relative;
+  display: ${props => (props.hide ? "none" : "initial")};
   @media (max-width: ${mobileWidth}) {
     padding: 33px 30px;
   }
@@ -29,6 +30,27 @@ export const AddPassageBtnContainer = styled.div`
   justify-content: center;
   button {
     margin-right: 10px;
+    background-color: ${themeColor};
+    color: #fff;
+    height: 45px;
+    width: 170px;
+    font-size: 11px;
+    &:hover {
+      color: ${themeColor};
+    }
+
+    &:focus > span:first-child,
+    &:active > span:first-child {
+      position: absolute;
+    }
+    &:last-child {
+      background-color: #fff;
+      color: ${themeColor};
+      &:focus > span,
+      &:active > span {
+        position: relative;
+      }
+    }
   }
 `;
 
@@ -71,4 +93,20 @@ export const CollapseBtn = styled.i`
   &.fa-arrow-right {
     left: 1px;
   }
+`;
+
+export const PlusIcon = styled.span`
+  position: absolute;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 1px solid ${themeColor};
+  color: ${themeColor};
+  left: 10px;
+  top: 12px;
+  font-size: 18px;
+  line-height: 1;
 `;

@@ -73,6 +73,8 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
         ...questions.map(x => ({
           id: x.id,
           weight: 1,
+          maxScore: get(x, ["validation", "validResponse", "score"], 0),
+          testItemId,
           qids: [x.id],
           qLabel: x.qLabel,
           barLabel: x.barLabel
@@ -282,7 +284,7 @@ export const transformGradeBookResponse = ({
         const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
         const submitted = testActivity.status == testActivityStatus.SUBMITTED;
         const absent = testActivity.status === testActivityStatus.ABSENT;
-        const redirected = testActivity.redirected;
+        const redirected = testActivity.previouslyRedirected;
         const testActivityId = testActivity._id;
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId];

@@ -4,5 +4,7 @@ export default {
     size: 5
   },
   straightfirst: false,
-  straightlast: false
+  straightlast: false,
+  strokewidth: 2,
+  highlightstrokewidth: 2
 };

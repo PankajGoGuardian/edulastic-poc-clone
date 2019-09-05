@@ -26,8 +26,12 @@ const BasicFields = ({
   modalClose,
   showClassCodeField,
   fetchClassDetailsUsingCode,
+  resetClassDetails,
+  validatedClassDetails,
   ...restProps
 }) => {
+  const _className = get(validatedClassDetails, "groupInfo.name", "");
+
   if (!isEmpty(stds[0])) {
     var { email, firstName, lastName, username, googleId, canvasId, cliId, cleverId } = stds[0];
   }
@@ -112,10 +116,18 @@ const BasicFields = ({
             })(
               <Input
                 prefix={<img src={hashIcon} alt="" />}
-                onBlur={evt => fetchClassDetailsUsingCode(evt.target.value)}
+                onBlur={evt => {
+                  const classCode = evt.target.value.trim();
+                  if (classCode.length) fetchClassDetailsUsingCode(classCode);
+                }}
+                onChange={evt => {
+                  const classCode = evt.target.value.trim();
+                  if (!classCode.length) resetClassDetails();
+                }}
                 placeholder="Enter Class Code"
               />
             )}
+            {!isEmpty(_className) && `Class Name : ${_className}`}
           </Form.Item>
         </Field>
       )}

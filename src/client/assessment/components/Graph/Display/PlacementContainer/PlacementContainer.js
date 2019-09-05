@@ -9,7 +9,7 @@ import { CHECK, CLEAR, EDIT, SHOW } from "../../../../constants/constantsForQues
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
 import { makeBorder } from "../../Builder";
-import { CONSTANT, Colors } from "../../Builder/config";
+import { CONSTANT } from "../../Builder/config";
 import {
   defaultGraphParameters,
   defaultPointParameters,
@@ -33,6 +33,11 @@ import {
 import Tools from "../../common/Tools";
 import DragDropValues from "./DragDropValues";
 
+const trueColor = "#1fe3a1";
+const errorColor = "#ee1658";
+const defaultColor = "#00b2ff";
+const bgColor = "#ccc";
+
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
@@ -46,14 +51,14 @@ const getColoredElems = (elements, compareResult) => {
 
         if (detail && detail.result) {
           newEl = {
-            colors: Colors.green[el.type],
-            ...el
+            ...el,
+            priorityColor: trueColor
           };
           result = true;
         } else {
           newEl = {
-            colors: Colors.red[el.type],
-            ...el
+            ...el,
+            priorityColor: errorColor
           };
         }
 
@@ -76,13 +81,13 @@ const getColoredElems = (elements, compareResult) => {
         let newEl = {};
         if (detail && detail.result) {
           newEl = {
-            colors: Colors.green[el.type],
-            ...el
+            ...el,
+            priorityColor: trueColor
           };
         } else {
           newEl = {
-            colors: Colors.red[el.type],
-            ...el
+            ...el,
+            priorityColor: errorColor
           };
         }
         return newEl;
@@ -97,8 +102,8 @@ const getColoredElems = (elements, compareResult) => {
 const getCorrectAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
-      colors: Colors.green[el.type],
-      ...el
+      ...el,
+      priorityColor: trueColor
     }));
   }
   return answerArr;
@@ -163,7 +168,7 @@ class PlacementContainer extends PureComponent {
 
     if (this._graph) {
       if (!disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen, true);
       }
 
       this._graph.setDisableResponse(disableResponse);
@@ -192,10 +197,15 @@ class PlacementContainer extends PureComponent {
       });
       this._graph.setBgImage(bgImgOptions);
       if (resourcesLoaded) {
-        this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+        const bgShapeValues = backgroundShapes.values.map(el => ({
+          ...el,
+          priorityColor: bgColor
+        }));
+        this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
       }
 
       this._graph.setDragDropDeleteHandler();
+      this._graph.setPriorityColor(defaultColor);
 
       this.setElementsToGraph();
     }
@@ -225,7 +235,7 @@ class PlacementContainer extends PureComponent {
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
       if (prevProps.disableResponse && !disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen);
+        this._graph.createEditButton(this.handleElementSettingsMenuOpen, true);
       }
 
       if (
@@ -316,7 +326,11 @@ class PlacementContainer extends PureComponent {
       ) {
         this._graph.resetBg();
         if (resourcesLoaded) {
-          this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+          const bgShapeValues = backgroundShapes.values.map(el => ({
+            ...el,
+            priorityColor: bgColor
+          }));
+          this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
         }
       }
 
@@ -449,8 +463,13 @@ class PlacementContainer extends PureComponent {
       return;
     }
     this.setState({ resourcesLoaded: true });
+
+    const bgShapeValues = backgroundShapes.values.map(el => ({
+      ...el,
+      priorityColor: bgColor
+    }));
     this._graph.resetBg();
-    this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
+    this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints);
     this.setElementsToGraph();
   };
 

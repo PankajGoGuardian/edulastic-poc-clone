@@ -7,7 +7,7 @@ import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 import Display from "./Display";
-
+import { selectColor } from "@edulastic/colors";
 class CorrectAnswer extends Component {
   static propTypes = {
     response: PropTypes.object.isRequired,
@@ -65,6 +65,9 @@ class CorrectAnswer extends Component {
               disabled={false}
               min={0}
               step={0.5}
+              height="40px"
+              width="auto"
+              style={{ "font-size": "12px", "font-weight": "600", color: selectColor }}
             />
             <span>{t("component.correctanswers.points")}</span>
           </CorrectAnswerHeader>

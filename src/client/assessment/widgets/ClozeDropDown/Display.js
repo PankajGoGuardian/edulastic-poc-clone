@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
+import produce from "immer";
 import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash";
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
@@ -30,19 +31,24 @@ class ClozeDropDownDisplay extends Component {
   }
 
   selectChange = (value, index, id) => {
-    const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
-    const changedIndex = findIndex(newAnswers, answer => (answer ? answer.id : "") === id);
-    if (changedIndex !== -1) {
-      newAnswers[changedIndex] = { value, index, id };
-      changeAnswers(newAnswers);
-    } else {
-      const {
-        item: { responseIds }
-      } = this.props;
-      const response = find(responseIds, res => res.id === id);
-      newAnswers[response.index] = { value, index, id };
-      changeAnswers(newAnswers);
-    }
+    const {
+      onChange: changeAnswers,
+      userSelections,
+      item: { responseIds }
+    } = this.props;
+
+    changeAnswers(
+      produce(userSelections, draft => {
+        const changedIndex = findIndex(draft, (answer = {}) => answer.id === id);
+        draft[index] = value;
+        if (changedIndex !== -1) {
+          draft[changedIndex] = { value, index, id };
+        } else {
+          const response = find(responseIds, res => res.id === id);
+          draft[response.index] = { value, index, id };
+        }
+      })
+    );
   };
 
   shuffle = arr => {
@@ -114,6 +120,7 @@ class ClozeDropDownDisplay extends Component {
       showQuestionNumber,
       userSelections,
       isReviewTab,
+      isExpressGrader,
       theme,
       previewTab,
       changePreviewTab
@@ -126,7 +133,7 @@ class ClozeDropDownDisplay extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(theme.fontSize || "normal", true);
-    const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { placeholder, responsecontainerindividuals, stemNumeration } = uiStyle;
     const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
     let maxLineHeight = smallSize ? 50 : 40;
@@ -134,26 +141,29 @@ class ClozeDropDownDisplay extends Component {
 
     const hasAltAnswers = item.validation && item.validation.altResponses && item.validation.altResponses.length > 0;
 
-    const answerBox = showAnswer ? (
-      <React.Fragment>
-        <CorrectAnswerBoxLayout
-          fontSize={fontSize}
-          groupResponses={options}
-          userAnswers={item.validation.validResponse && item.validation.validResponse.value}
-          responseIds={item.responseIds}
-        />
-        {hasAltAnswers && (
+    const answerBox =
+      showAnswer || isExpressGrader ? (
+        <React.Fragment>
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
-            altResponses={item.validation.altResponses}
+            userAnswers={item.validation.validResponse && item.validation.validResponse.value}
             responseIds={item.responseIds}
+            stemNumeration={stemNumeration}
           />
-        )}
-      </React.Fragment>
-    ) : (
-      <div />
-    );
+          {hasAltAnswers && (
+            <CorrectAnswerBoxLayout
+              fontSize={fontSize}
+              groupResponses={options}
+              altResponses={item.validation.altResponses}
+              responseIds={item.responseIds}
+              stemNumeration={stemNumeration}
+            />
+          )}
+        </React.Fragment>
+      ) : (
+        <div />
+      );
     const resProps = {
       item,
       qIndex,
@@ -167,11 +177,11 @@ class ClozeDropDownDisplay extends Component {
       options: responses,
       onChange: this.selectChange,
       responsecontainerindividuals,
-      stemNumeration: stemnumeration,
+      stemNumeration,
       previewTab,
       changePreviewTab,
       userAnswers: userSelections || [],
-      showIndex: showAnswer || checkAnswer,
+      showIndex: showAnswer,
       cAnswers: get(item, "validation.validResponse.value", []),
       userSelections: item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
       evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
@@ -224,6 +234,7 @@ ClozeDropDownDisplay.propTypes = {
   item: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
+  isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   theme: PropTypes.object
@@ -246,7 +257,7 @@ ClozeDropDownDisplay.defaultProps = {
   },
   uiStyle: {
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     placeholder: null,
@@ -254,6 +265,7 @@ ClozeDropDownDisplay.defaultProps = {
   },
   showQuestionNumber: false,
   isReviewTab: false,
+  isExpressGrader: false,
   qIndex: null
 };
 

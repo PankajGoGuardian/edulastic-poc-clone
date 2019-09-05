@@ -1,14 +1,11 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { isUndefined, find } from "lodash";
-
-import ChoicesBox from "../../ChoicesBox";
+import { getStemNumeration } from "../../../../utils/helpers";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CLEAR } from "../../../../constants/constantsForQuestions";
-
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (!id) {
@@ -34,8 +31,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const { index, id: answerId } = find(responseIds, response => response.id === id);
   const userSelection = find(userSelections, selection => (selection ? selection.id : "") === id);
 
-  // eslint-disable-next-line no-unused-vars
-  let indexStr;
+  const indexStr = getStemNumeration(stemNumeration, index);
   const status = userSelections && evaluation ? (evaluation[answerId] ? "right" : "wrong") : "wrong";
   const choiceAttempted = userSelections.length > 0 ? !!userSelections[index] : null;
   let btnStyle = responsecontainerindividuals && responsecontainerindividuals[index];
@@ -45,22 +41,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       changePreviewTab(CLEAR);
     }
   };
-
-  switch (stemNumeration) {
-    case "lowercase": {
-      indexStr = ALPHABET[index];
-      break;
-    }
-    case "uppercase": {
-      indexStr = ALPHABET[index].toUpperCase();
-      break;
-    }
-    case "numerical": {
-      indexStr = index + 1;
-      break;
-    }
-    default:
-  }
 
   if (btnStyle === undefined) {
     btnStyle = responseBtnStyle;
@@ -91,7 +71,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             }}
             onClick={handleClick}
           >
-            <span className="index">{index + 1}</span>
+            <span className="index">{indexStr}</span>
             <span className="text">{userSelection && userSelection.value}</span>
 
             <IconWrapper>
@@ -113,7 +93,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             }}
             onClick={handleClick}
           >
-            <span className="index">{index + 1}</span>
+            <span className="index">{indexStr}</span>
             <span className="text">{userSelection && userSelection.value}</span>
 
             <IconWrapper>
@@ -140,7 +120,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                 minWidth: `${btnStyle.widthpx}px`
               }}
             >
-              {showIndex && <span className="index">{index + 1}</span>}
+              {showIndex && <span className="index">{indexStr}</span>}
               <span className="text">{userSelection && userSelection.value}</span>
 
               <IconWrapper>
@@ -160,7 +140,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                 minWidth: `${btnStyle.widthpx}px`
               }}
             >
-              {showIndex && <span className="index">{index + 1}</span>}
+              {showIndex && <span className="index">{indexStr}</span>}
               <span className="text">{userSelection && userSelection.value}</span>
 
               <IconWrapper>

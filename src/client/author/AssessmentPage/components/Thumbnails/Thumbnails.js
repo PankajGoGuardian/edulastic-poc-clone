@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Dropdown, Menu } from "antd";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { IconGraphRightArrow } from "@edulastic/icons";
 
@@ -39,37 +40,39 @@ const Thumbnails = ({
 
   return (
     <ThumbnailsWrapper review={review} minimized={minimized}>
-      {review && (
-        <MinimizeButton onClick={toggleMinimized} minimized={minimized}>
-          <IconGraphRightArrow />
-        </MinimizeButton>
-      )}
-      <ThumbnailsList>
-        {list.map((item, key) => (
-          <ThumbnailsItem
-            key={key}
-            index={key}
-            page={item.pageNo}
-            onClick={onChangePage(key)}
-            onDelete={onDeletePage(key)}
-            onMoveUp={onMovePageUp(key)}
-            onMoveDown={onMovePageDown(key)}
-            onInsertBlankPage={onInsertBlankPage(key)}
-            onRotate={onRotate(key)}
-            url={item.URL !== "blank" && item.URL}
-            current={currentPage}
-            total={list.length}
-            rotate={item.rotate}
-          />
-        ))}
-      </ThumbnailsList>
-      {!review && (
-        <ReuploadButtonWrapper>
-          <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage)}>
-            <ReuploadButton>Manage document</ReuploadButton>
-          </Dropdown>
-        </ReuploadButtonWrapper>
-      )}
+      <PerfectScrollbar>
+        {review && (
+          <MinimizeButton onClick={toggleMinimized} minimized={minimized}>
+            <IconGraphRightArrow />
+          </MinimizeButton>
+        )}
+        <ThumbnailsList>
+          {list.map((item, key) => (
+            <ThumbnailsItem
+              key={key}
+              index={key}
+              page={item.pageNo}
+              onClick={onChangePage(key)}
+              onDelete={onDeletePage(key)}
+              onMoveUp={onMovePageUp(key)}
+              onMoveDown={onMovePageDown(key)}
+              onInsertBlankPage={onInsertBlankPage(key)}
+              onRotate={onRotate(key)}
+              url={item.URL !== "blank" && item.URL}
+              current={currentPage}
+              total={list.length}
+              rotate={item.rotate}
+            />
+          ))}
+        </ThumbnailsList>
+        {!review && (
+          <ReuploadButtonWrapper>
+            <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage)}>
+              <ReuploadButton>Manage document</ReuploadButton>
+            </Dropdown>
+          </ReuploadButtonWrapper>
+        )}
+      </PerfectScrollbar>
     </ThumbnailsWrapper>
   );
 };

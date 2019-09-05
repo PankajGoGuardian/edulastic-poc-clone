@@ -39,3 +39,19 @@ export const replaceMathHtmlWithLatexes = val => {
   });
   return Helpers.sanitizeSelfClosingTags(jqueryEl.html());
 };
+
+export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
+  const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/&amp;/g, "&");
+  const regexTemplate = new RegExp(
+    escapeRegExp(studentTemplate || "").replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
+    "g"
+  );
+
+  if (userAnswer && userAnswer.length > 0) {
+    const userInnerValues = regexTemplate.exec(userAnswer);
+    if (userInnerValues && userInnerValues.length > 0) {
+      return userInnerValues.slice(1);
+    }
+  }
+  return [];
+};

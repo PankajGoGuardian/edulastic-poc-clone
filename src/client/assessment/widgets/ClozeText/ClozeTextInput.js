@@ -80,13 +80,11 @@ const ClozeTextInput = ({ resprops, id }) => {
     style,
     placeholder,
     type = "text",
-    showIndex = true,
     userAnswers,
     disableResponse,
     responseIds,
     isReviewTab,
     cAnswers,
-    view,
     responsecontainerindividuals,
     uiStyle
   } = resprops;
@@ -136,23 +134,12 @@ const ClozeTextInput = ({ resprops, id }) => {
   let width = style.width || "auto";
   let height = style.height || "auto";
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
-  if (view === "edit") {
-    if (view === "edit" && uiStyle.globalSettings) {
-      width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
-      height = style.height || "auto";
-    } else {
-      width = (responseStyle && responseStyle.widthpx) || (style.widthpx || "auto");
-      height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
-    }
+  if (uiStyle.globalSettings) {
+    width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+    height = style.height || "auto";
   } else {
-    // eslint-disable-next-line no-lonely-if
-    if (uiStyle.globalSettings) {
-      width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
-      height = style.height || "auto";
-    } else {
-      width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
-      height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
-    }
+    width = (responseStyle && responseStyle.widthpx) || style.widthpx || "auto";
+    height = (responseStyle && responseStyle.heightpx) || style.height || "auto";
   }
 
   return (
@@ -161,7 +148,6 @@ const ClozeTextInput = ({ resprops, id }) => {
       style={{ ...style, width: "max-content", height: "auto" }}
       title={value.length ? value : null}
     >
-      {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
         type={type}
@@ -215,17 +201,8 @@ const CustomInput = styled.div`
   margin: 0px 4px;
   position: relative;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-`;
 
-const IndexBox = styled.div`
-  padding: 3px 10px;
-  color: white;
-  display: inline-flex;
-  align-items: center;
-  height: 100%;
-  background: #878282;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  align-self: stretch;
-  height: auto;
+  .ant-input {
+    border-radius: 0px 4px 4px 0px;
+  }
 `;

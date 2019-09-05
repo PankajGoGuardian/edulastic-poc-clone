@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { updateVariables } from "../../utils/variables";
+import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 
 import { Subtitle } from "../../styled/Subtitle";
 import Question from "../../components/Question";
@@ -19,6 +20,7 @@ import { latexKeys } from "./constants";
 class Template extends Component {
   render() {
     const { item, setQuestionData, t, fillSections, cleanSections } = this.props;
+    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle);
 
     const handleUpdateTemplate = val => {
       setQuestionData(
@@ -56,6 +58,7 @@ class Template extends Component {
           numberPad={item.numberPad}
           value={item.template}
           onChangeKeypad={handleChangeKeypad}
+          style={{ ...cssStyles, width: "fit-content" }}
           onInput={latex => {
             handleUpdateTemplate(latex);
           }}

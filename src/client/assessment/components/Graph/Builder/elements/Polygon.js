@@ -1,13 +1,27 @@
 import JXG from "jsxgraph";
-import { Point } from ".";
-import segmentConfig from "./Segment";
-import { CONSTANT, Colors } from "../config";
+import { Point, Line } from ".";
+import { CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
-import { handleSnap } from "../utils";
+import { handleSnap, colorGenerator, setLabel } from "../utils";
 
-export const defaultConfig = {
+const defaultConfig = {
+  highlightFillOpacity: 0.3,
   hasInnerPoints: true
 };
+
+const bordersDefaultConfig = {
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
+};
+
+function getColorParams(color) {
+  return {
+    fillColor: color,
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: color
+  };
+}
 
 function isStart(startPointCoords, testPointCoords) {
   return startPointCoords[1] === testPointCoords[1] && startPointCoords[2] === testPointCoords[2];
@@ -16,32 +30,51 @@ function isStart(startPointCoords, testPointCoords) {
 let points = [];
 let lines = [];
 
-function create(board, polygonPoints, id = null) {
+function create(board, object, polygonPoints, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor, priorityColor } = object;
+
   const newPolygon = board.$board.create("polygon", polygonPoints, {
     ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.POLYGON],
-    label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON),
+    ...getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(JXG.OBJECT_TYPE_POLYGON),
+      visible: labelIsVisible
+    },
+    borders: {
+      ...bordersDefaultConfig,
+      ...getColorParams(priorityColor || board.priorityColor || baseColor)
+    },
+    fixed,
     id
   });
-  newPolygon.labelIsVisible = true;
-  handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
-  newPolygon.borders.forEach(border => {
-    border.on("up", () => {
-      if (border.dragged) {
-        border.dragged = false;
-        board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
-      }
-    });
-    border.on("drag", e => {
-      if (e.movementX === 0 && e.movementY === 0) {
-        return;
-      }
-      border.dragged = true;
-      board.dragged = true;
-    });
-  });
+  newPolygon.labelIsVisible = object.labelIsVisible;
+  newPolygon.baseColor = object.baseColor;
 
-  board.handleStackedElementsMouseEvents(newPolygon);
+  if (!fixed) {
+    handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
+    newPolygon.borders.forEach(border => {
+      border.on("up", () => {
+        if (border.dragged) {
+          border.dragged = false;
+          board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+        }
+      });
+      border.on("drag", e => {
+        if (e.movementX === 0 && e.movementY === 0) {
+          return;
+        }
+        border.dragged = true;
+        board.dragged = true;
+      });
+    });
+    board.handleStackedElementsMouseEvents(newPolygon);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newPolygon, label);
+  }
 
   return newPolygon;
 }
@@ -51,7 +84,7 @@ function onHandler() {
     const newPoint = Point.onHandler(board, event);
     newPoint.isTemp = true;
     if (!points.length) {
-      newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
+      newPoint.setAttribute(Point.getColorParams("#000"));
       points.push(newPoint);
       return;
     }
@@ -62,11 +95,18 @@ function onHandler() {
       if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
         board.$board.removeObject(newPoint);
         lines.map(board.$board.removeObject.bind(board.$board));
-        points[0].setAttribute(Colors.default[CONSTANT.TOOLS.POINT]);
+
+        const baseColor = colorGenerator(board.elements.length);
+        points[0].setAttribute(Point.getColorParams(board.priorityColor || baseColor));
         points.forEach(point => {
           point.isTemp = false;
         });
-        const newPolygon = create(board, points);
+        const object = {
+          label: false,
+          labelIsVisible: true,
+          baseColor
+        };
+        const newPolygon = create(board, object, points);
         points = [];
         lines = [];
         return newPolygon;
@@ -74,10 +114,19 @@ function onHandler() {
     }
     if (points.length > 0) {
       lines.push(
-        board.$board.create("line", [points[points.length - 1], newPoint], {
-          ...segmentConfig,
-          ...Colors.default[CONSTANT.TOOLS.LINE]
-        })
+        Line.create(
+          board,
+          {
+            label: false,
+            labelIsVisible: true,
+            baseColor: colorGenerator(board.elements.length)
+          },
+          [points[points.length - 1], newPoint],
+          CONSTANT.TOOLS.SEGMENT,
+          {
+            fixed: true
+          }
+        )
       );
     }
     points.push(newPoint);
@@ -98,6 +147,7 @@ function getConfig(polygon) {
     type: CONSTANT.TOOLS.POLYGON,
     id: polygon.id,
     label: polygon.labelHTML || false,
+    baseColor: polygon.baseColor,
     labelIsVisible: polygon.labelIsVisible,
     points: Object.keys(polygon.ancestors)
       .sort()
@@ -112,25 +162,15 @@ function flatConfigPoints(pointsConfig) {
   }, {});
 }
 
-function parseConfig() {
-  return {
-    highlightFillOpacity: 0.3,
-    ...defaultConfig,
-    ...Colors.default[CONSTANT.TOOLS.POLYGON],
-    label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON)
-  };
-}
-
-function getPoints() {
+function getTempPoints() {
   return points;
 }
 
 export default {
   onHandler,
   getConfig,
-  parseConfig,
   clean,
   flatConfigPoints,
-  getPoints,
+  getTempPoints,
   create
 };

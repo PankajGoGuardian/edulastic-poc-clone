@@ -1,15 +1,25 @@
 import JXG from "jsxgraph";
 import { parse, derivative } from "mathjs";
-import { CONSTANT, Colors } from "../config";
+import { CONSTANT } from "../config";
 import { defaultPointParameters, getLabelParameters } from "../settings";
-import { Point } from ".";
-import { fixLatex, getPropsByLineType, handleSnap } from "../utils";
+import { Point, Line, Parabola } from ".";
+import { colorGenerator, fixLatex, getPropsByLineType, handleSnap, setLabel } from "../utils";
 
 const jxgType = 98;
 
 const defaultConfig = {
-  fixed: null
+  strokeWidth: 2,
+  highlightStrokeWidth: 2
 };
+
+function getColorParams(color) {
+  return {
+    fillColor: "transparent",
+    strokeColor: color,
+    highlightStrokeColor: color,
+    highlightFillColor: "transparent"
+  };
+}
 
 function isLine(xMin, xMax, equationLeft, equationRight) {
   // check vertical line
@@ -94,57 +104,87 @@ function calculateNewParabolaLatex(line, points) {
   };
 }
 
-function createPoint(board, coords, params) {
+function createPoint(board, coords, object) {
+  const { baseColor = colorGenerator(board.elements.length) } = object;
+
   const point = board.$board.create("point", coords, {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
-    ...Colors.default[CONSTANT.TOOLS.POINT],
-    ...params,
-    fillColor: params.strokeColor,
-    highlightFillColor: params.highlightStrokeColor,
-    label: getLabelParameters(JXG.OBJECT_TYPE_POINT),
-    fixed: params.fixed === null ? false : params.fixed,
+    ...Point.getColorParams(board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(JXG.OBJECT_TYPE_POINT)
+    },
+    fixed: false,
     snapToGrid: false
   });
   point.labelIsVisible = true;
   point.pointIsVisible = true;
+  point.baseColor = baseColor;
+
   point.on("mouseover", event => board.handleElementMouseOver(point, event));
   point.on("mouseout", () => board.handleElementMouseOut(point));
 
   return point;
 }
 
-function createLine(board, points, params) {
+function createLine(board, points, object, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor = colorGenerator(board.elements.length), priorityColor } = object;
+
   const newLine = board.$board.create("line", points, {
     ...getPropsByLineType(CONSTANT.TOOLS.LINE),
-    ...Colors.default[CONSTANT.TOOLS.EQUATION],
-    ...params,
-    label: getLabelParameters(JXG.OBJECT_TYPE_LINE),
-    fixed: params.fixed === null ? false : params.fixed
+    ...Line.getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(JXG.OBJECT_TYPE_LINE),
+      visible: labelIsVisible
+    },
+    fixed,
+    id
   });
 
-  handleSnap(
-    newLine,
-    Object.values(newLine.ancestors),
-    board,
-    calculateNewLineLatex(newLine, Object.values(newLine.ancestors)),
-    true
-  );
+  newLine.labelIsVisible = object.labelIsVisible;
+  newLine.baseColor = object.baseColor;
+
+  if (!fixed) {
+    handleSnap(
+      newLine,
+      Object.values(newLine.ancestors),
+      board,
+      calculateNewLineLatex(newLine, Object.values(newLine.ancestors)),
+      true
+    );
+    board.handleStackedElementsMouseEvents(newLine);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newLine, label);
+  }
 
   return newLine;
 }
 
-function createParabola(board, points, params) {
+function createParabola(board, points, object, settings = {}) {
+  const { labelIsVisible = true, fixed = false } = settings;
+
+  const { id = null, label, baseColor = colorGenerator(board.elements.length), priorityColor } = object;
+
   const makeCallback = (p1, p2) => x => {
     const a = (1 / (p2.X() - p1.X()) ** 2) * (p2.Y() - p1.Y());
     return a * (x - p1.X()) ** 2 + p1.Y();
   };
 
   const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
-    ...Colors.default[CONSTANT.TOOLS.EQUATION],
-    ...params,
-    label: getLabelParameters(97),
-    fixed: params.fixed === null ? false : params.fixed
+    ...defaultConfig,
+    ...Parabola.getColorParams(priorityColor || board.priorityColor || baseColor),
+    label: {
+      ...getLabelParameters(Parabola.jxgType),
+      visible: labelIsVisible
+    },
+    fixed,
+    id
   });
+  newLine.labelIsVisible = object.labelIsVisible;
+  newLine.baseColor = object.baseColor;
 
   newLine.addParents(points);
   newLine.ancestors = {
@@ -152,13 +192,20 @@ function createParabola(board, points, params) {
     [points[1].id]: points[1]
   };
 
-  handleSnap(
-    newLine,
-    Object.values(newLine.ancestors),
-    board,
-    calculateNewParabolaLatex(newLine, Object.values(newLine.ancestors)),
-    true
-  );
+  if (!fixed) {
+    handleSnap(
+      newLine,
+      Object.values(newLine.ancestors),
+      board,
+      calculateNewParabolaLatex(newLine, Object.values(newLine.ancestors)),
+      true
+    );
+    board.handleStackedElementsMouseEvents(newLine);
+  }
+
+  if (labelIsVisible) {
+    setLabel(newLine, label);
+  }
 
   return newLine;
 }
@@ -261,15 +308,18 @@ function getGridParams(board) {
   return { xMin, xMax, yMin, yMax, stepX, stepY };
 }
 
-function renderElement(board, element, points, params) {
-  const { latex } = element;
-  let { subType } = element;
+function create(board, object, points, settings = {}) {
+  const { labelIsVisible = true } = settings;
+
+  const { id = null, label, baseColor = colorGenerator(board.elements.length), priorityColor, latex } = object;
+
+  let { subType } = object;
 
   const elementWithErrorLatex = {
     type: jxgType,
-    id: element.id,
-    latex: element.latex,
-    labelHTML: element.label,
+    id,
+    latex,
+    labelHTML: label,
     subType: null,
     latexIsBroken: true
   };
@@ -293,10 +343,10 @@ function renderElement(board, element, points, params) {
   if (points) {
     switch (subType) {
       case CONSTANT.TOOLS.LINE:
-        line = createLine(board, points, params);
+        line = createLine(board, points, object, settings);
         break;
       case CONSTANT.TOOLS.PARABOLA:
-        line = createParabola(board, points, params);
+        line = createParabola(board, points, object, settings);
         break;
       default:
         break;
@@ -313,9 +363,9 @@ function renderElement(board, element, points, params) {
         // find anchor points and create parabola by this points
         const coords = findParabolaPointsCoords(gridParams, equationRight);
         if (coords.length === 2) {
-          const point1 = createPoint(board, coords[0], params);
-          const point2 = createPoint(board, coords[1], params);
-          line = createParabola(board, [point1, point2], params);
+          const point1 = createPoint(board, coords[0], object);
+          const point2 = createPoint(board, coords[1], object);
+          line = createParabola(board, [point1, point2], object);
           subType = CONSTANT.TOOLS.PARABOLA;
         }
         // if equation is line
@@ -323,10 +373,10 @@ function renderElement(board, element, points, params) {
         // find anchor points and create line by this points
         const coords = findLinePointsCoords(gridParams, equationLeft, equationRight);
         if (coords.length === 2) {
-          const point1 = createPoint(board, coords[0], params);
-          const point2 = createPoint(board, coords[1], params);
+          const point1 = createPoint(board, coords[0], object);
+          const point2 = createPoint(board, coords[1], object);
 
-          line = createLine(board, [point1, point2], params);
+          line = createLine(board, [point1, point2], object);
           subType = CONSTANT.TOOLS.LINE;
         }
       }
@@ -339,8 +389,12 @@ function renderElement(board, element, points, params) {
   if (!line) {
     try {
       line = board.$board.create("functiongraph", [equationRight], {
-        ...Colors.default[CONSTANT.TOOLS.EQUATION],
-        ...params,
+        ...defaultConfig,
+        ...getColorParams(priorityColor || board.priorityColor || baseColor),
+        label: {
+          ...getLabelParameters(jxgType),
+          visible: labelIsVisible
+        },
         fixed: true
       });
       subType = null;
@@ -352,9 +406,11 @@ function renderElement(board, element, points, params) {
   // if jsxgraph object built successfully, we return it
   // otherwise we believe that latex with an error
   if (line) {
-    line.latex = element.latex;
+    line.latex = latex;
     line.type = jxgType;
     line.subType = subType;
+    line.labelIsVisible = object.labelIsVisible;
+    line.baseColor = baseColor;
     return line;
   }
 
@@ -380,15 +436,8 @@ function getConfig(equation) {
   };
 }
 
-function parseConfig() {
-  return {
-    ...defaultConfig,
-    label: getLabelParameters(jxgType)
-  };
-}
-
 export default {
+  jxgType,
   getConfig,
-  parseConfig,
-  renderElement
+  create
 };

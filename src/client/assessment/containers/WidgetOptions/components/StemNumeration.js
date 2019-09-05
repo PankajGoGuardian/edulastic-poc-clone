@@ -30,7 +30,7 @@ StemNumeration.propTypes = {
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array,
   size: PropTypes.oneOf(["default", "large", "small"]),
-  value: PropTypes.oneOf(["numerical", "upper-alpha", "lower-alpha"])
+  value: PropTypes.oneOf(["numerical", "uppercase", "lowercase"])
 };
 
 StemNumeration.defaultProps = {
@@ -38,8 +38,8 @@ StemNumeration.defaultProps = {
   size: "large",
   options: [
     { value: "numerical", label: i18n.t("assessment:component.options.numerical") },
-    { value: "upper-alpha", label: i18n.t("assessment:component.options.uppercasealphabet") },
-    { value: "lower-alpha", label: i18n.t("assessment:component.options.lowercasealphabet") }
+    { value: "uppercase", label: i18n.t("assessment:component.options.uppercasealphabet") },
+    { value: "lowercase", label: i18n.t("assessment:component.options.lowercasealphabet") }
   ]
 };
 

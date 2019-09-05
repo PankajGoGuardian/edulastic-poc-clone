@@ -1,5 +1,7 @@
 import { groupBy, difference, isEmpty } from "lodash";
 
+const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
+
 export const getFontSize = (fontSize, withRem = false) => {
   switch (fontSize) {
     case "small":
@@ -277,4 +279,24 @@ export const mathValidateVariables = (val, options) => {
   }
 
   return newVal;
+};
+
+export const getStemNumeration = (stemNumeration, index) => {
+  let indexStr = index + 1;
+  switch (stemNumeration) {
+    case "lowercase": {
+      indexStr = ALPHABET[index];
+      break;
+    }
+    case "uppercase": {
+      indexStr = ALPHABET[index].toUpperCase();
+      break;
+    }
+    case "numerical": {
+      indexStr = index + 1;
+      break;
+    }
+    default:
+  }
+  return indexStr;
 };

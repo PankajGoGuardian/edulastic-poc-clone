@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isNull } from "lodash";
 
 import { math } from "@edulastic/constants";
+import { MathKeyboard } from "@edulastic/common";
 
 import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
@@ -83,7 +84,8 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
             methods.IS_FACTORISED,
             methods.IS_EXPANDED,
             methods.IS_TRUE,
-            methods.EQUIV_SYNTAX
+            methods.EQUIV_SYNTAX,
+            methods.CHECK_IF_TRUE
           ].includes(draft.validation.validResponse.value[index].method)
         ) {
           delete draft.validation.validResponse.value[index].value;
@@ -159,11 +161,62 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
     );
   };
 
-  const handleShowDropdown = v => {
+  const handleShowDropdown = answerIndex => v => {
+    const isAlt = !isNull(answerIndex);
     setQuestionData(
       produce(item, draft => {
         draft.showDropdown = v;
+        draft.allowNumericOnly = v;
+        if (!isAlt) {
+          draft.validation.validResponse.value.forEach(value => {
+            if (!value.options) {
+              value.options = {};
+            }
+            if (!v) {
+              value.method = methods.EQUIV_SYMBOLIC;
+              delete value.options.unit;
+            } else {
+              value.method = methods.EQUIV_VALUE;
+              value.options.unit = "feet";
+            }
+          });
+        } else {
+          draft.validation.altResponses[answerIndex].value.forEach(value => {
+            if (!value.options) {
+              value.options = {};
+            }
+            if (!v) {
+              value.method = methods.EQUIV_SYMBOLIC;
+              delete value.options.unit;
+            } else {
+              value.method = methods.EQUIV_VALUE;
+              value.options.unit = "feet";
+            }
+          });
+        }
+        // change keypade mode and custom keys
+        if (v) {
+          if (!draft.symbols) {
+            draft.symbols = [];
+          }
+          draft.symbols[0] = "units_us";
+
+          draft.customKeys = MathKeyboard.KEYBOARD_BUTTONS.filter(btn => btn.types.includes(draft.symbols[0])).map(
+            btn => btn.label
+          );
+        } else {
+          draft.customKeys = [];
+        }
+
         updateVariables(draft, latexKeys);
+      })
+    );
+  };
+
+  const toggleAdditional = val => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.showAdditional = val;
       })
     );
   };
@@ -184,14 +237,16 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
             item={item}
             onChange={handleChangeCorrectMethod}
             onChangeAllowedOptions={handleAllowedOptions}
-            onChangeShowDropdown={handleShowDropdown}
+            onChangeShowDropdown={handleShowDropdown(null)}
             onAdd={handleAddCorrectMethod}
             onDelete={handleDeleteCorrectMethod}
             answer={item.validation.validResponse.value}
             points={item.validation.validResponse.score}
             onChangePoints={points => handleChangeCorrectPoints(points)}
+            setQuestionData={setQuestionData}
             onChangeKeypad={handleKeypadMode}
             keypadOffset={keypadOffset}
+            toggleAdditional={toggleAdditional}
           />
         )}
         {item.validation.altResponses &&
@@ -204,14 +259,16 @@ const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections
                   item={item}
                   onChange={handleChangeAltMethod(i)}
                   onChangeAllowedOptions={handleAllowedOptions}
-                  onChangeShowDropdown={handleShowDropdown}
+                  onChangeShowDropdown={handleShowDropdown(i)}
                   onAdd={handleAddAltMethod(i)}
                   onDelete={handleDeleteAltMethod(i)}
                   answer={alter.value}
                   points={alter.score}
                   onChangePoints={points => handleChangeAltPoints(points, i)}
+                  setQuestionData={setQuestionData}
                   onChangeKeypad={handleKeypadMode}
                   keypadOffset={keypadOffset}
+                  toggleAdditional={toggleAdditional}
                 />
               );
             }

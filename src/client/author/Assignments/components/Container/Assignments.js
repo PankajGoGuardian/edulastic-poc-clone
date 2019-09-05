@@ -20,6 +20,7 @@ import {
   toggleAssignmentViewAction,
   setAssignmentFiltersAction
 } from "../../../src/actions/assignments";
+import { releaseScoreAction } from "../../../src/actions/classBoard";
 import { receiveFolderAction } from "../../../src/actions/folder";
 import TestPreviewModal from "./TestPreviewModal";
 import {
@@ -131,17 +132,14 @@ class Assignments extends Component {
   onOpenReleaseScoreSettings = (testId, assignmentId) => {
     const { loadAssignmentById } = this.props;
     loadAssignmentById({ testId, assignmentId });
+    this.setState({ currentTestId: testId });
   };
 
   onUpdateReleaseScoreSettings = releaseScore => {
-    const { updateReleaseScoreSettings, currentAssignment = { class: [{}] }, toggleReleaseGradePopUp } = this.props;
-    if (releaseScore !== releaseGradeLabels.DONT_RELEASE) {
-      const { startDate, endDate } = currentAssignment.class[0];
-      const updateReleaseScore = { ...currentAssignment, releaseScore, startDate, endDate };
-      updateReleaseScoreSettings(updateReleaseScore);
-    } else {
-      toggleReleaseGradePopUp(false);
-    }
+    const { currentTestId, filterState } = this.state;
+    const { setReleaseScore, toggleReleaseGradePopUp } = this.props;
+    setReleaseScore(undefined, undefined, releaseScore, currentTestId, filterState);
+    toggleReleaseGradePopUp(false);
   };
 
   SwitchView = () => {
@@ -189,12 +187,10 @@ class Assignments extends Component {
       assignmentsSummary,
       districtId,
       error,
-      isAdvancedView,
-      currentAssignment
+      isAdvancedView
     } = this.props;
     const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId, openEditPopup } = this.state;
     const tabletWidth = 768;
-    const { releaseScore } = currentAssignment;
     return (
       <div>
         <EditTestModal
@@ -220,7 +216,7 @@ class Assignments extends Component {
         <Container>
           <FlexContainer>
             <Main>
-              {window.innerWidth >= tabletWidth && (
+              {window.innerWidth >= tabletWidth ? (
                 <>
                   {showFilter && (
                     <LeftWrapper>
@@ -269,8 +265,7 @@ class Assignments extends Component {
                     </StyledCard>
                   </TableWrapper>
                 </>
-              )}
-              {window.innerWidth < tabletWidth && (
+              ) : (
                 <MobileTableList
                   assignmentsByTestId={assignmentsByTestId}
                   tests={tests}
@@ -284,7 +279,6 @@ class Assignments extends Component {
           showReleaseGradeSettings={isShowReleaseSettingsPopup}
           onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
           updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}
-          releaseScore={releaseScore}
         />
       </div>
     );
@@ -340,6 +334,7 @@ const enhance = compose(
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,
       loadAssignmentById: receiveAssignmentByIdAction,
       updateReleaseScoreSettings: updateReleaseScoreSettingsAction,
+      setReleaseScore: releaseScoreAction,
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
       setAssignmentFilters: setAssignmentFiltersAction,
       toggleAssignmentView: toggleAssignmentViewAction

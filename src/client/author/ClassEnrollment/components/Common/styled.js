@@ -62,6 +62,11 @@ export const Field = styled.fieldset`
 export const Form = styled(AntdForm)`
   background: ${white};
   padding: 20px;
+  .ant-input-affix-wrapper {
+    .ant-input-prefix {
+      width: 15px;
+    }
+  }
 `;
 
 export const PanelHeader = styled.div`

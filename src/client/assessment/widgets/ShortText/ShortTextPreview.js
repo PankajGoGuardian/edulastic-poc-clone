@@ -131,9 +131,21 @@ const ShortTextPreview = ({
       </InputWrapper>
 
       {previewTab === SHOW && (
-        <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
-          {item.validation.validResponse.value}
-        </CorrectAnswersContainer>
+        <>
+          <CorrectAnswersContainer title={t("component.shortText.correctAnswers")}>
+            {item.validation.validResponse.value}
+          </CorrectAnswersContainer>
+          <CorrectAnswersContainer title={t("component.shortText.alternateAnswers")}>
+            {item.validation.altResponses.map((altAnswer, i) => {
+              return (
+                <div key={i}>
+                  <span>Alternate Answer {i + 1} : </span>
+                  {altAnswer.value}
+                </div>
+              );
+            })}
+          </CorrectAnswersContainer>
+        </>
       )}
     </Paper>
   );

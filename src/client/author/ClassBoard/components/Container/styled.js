@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Card, Checkbox, Button, Menu } from "antd";
+import { Card, Checkbox, Button, Menu, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
 import {
@@ -9,8 +9,14 @@ import {
   white,
   linkColor,
   tabGrey,
+  grey,
   mainTextColor,
-  title
+  title,
+  green,
+  red,
+  greyishDarker2,
+  black,
+  cardTitleColor
 } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 
@@ -32,10 +38,11 @@ export const AnchorLink = styled(Link)`
   color: ${linkColor};
 `;
 
-export const PaginationInfo = styled.span`
+export const PaginationInfo = styled(Col)`
   font-weight: 600;
   display: flex;
-  max-width: 50vw;
+  align-items: center;
+  max-width: 100%;
   font-size: 11px;
   color: ${linkColor};
   @media (max-width: ${mobileWidth}) {
@@ -99,7 +106,11 @@ export const StyledCard = styled(Card)`
   }
 `;
 
-export const StudentButtonDiv = styled.div`
+export const StudentButtonDiv = styled(Col)`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+
   .ant-btn-primary {
     background-color: #0e93dc;
   }
@@ -277,4 +288,22 @@ export const StyledAnc = styled(Button)`
     border: none;
     outline: none;
   }
+`;
+
+export const ScoreHeader = styled.div`
+  font-size: 11px;
+  margin-bottom: 5px;
+  color: ${cardTitleColor};
+  font-weight: 800;
+`;
+
+export const ScoreChangeWrapper = styled.div`
+  color: ${props => (props.scoreChange > 0 ? green : props.scoreChange < 0 ? red : cardTitleColor)};
+  font-size: 30px;
+  font-weight: 800;
+`;
+
+export const ScoreWrapper = styled.div`
+  font-size: 30px;
+  color: ${black};
 `;

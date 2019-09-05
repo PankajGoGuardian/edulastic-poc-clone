@@ -269,7 +269,6 @@ ButtonBar.propTypes = {
   renderExtra: PropTypes.func,
   renderRightSide: PropTypes.func,
   withLabels: PropTypes.bool,
-  savedWindowScrollTop: PropTypes.number.isRequired,
   onSaveScrollTop: PropTypes.func.isRequired
 };
 
@@ -278,7 +277,7 @@ ButtonBar.defaultProps = {
   renderRightSide: () => {},
   onEnableEdit: () => {},
   renderExtra: () => null,
-
+  isTestFlow: false,
   withLabels: false
   // saving: false,
 };

@@ -383,6 +383,7 @@ class Display extends Component {
       imageOptions,
       showBorder,
       isReviewTab,
+      isExpressGrader,
       setQuestionData
     } = this.props;
 
@@ -402,7 +403,7 @@ class Display extends Component {
     }
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
-    const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
+    const { heightpx, wordwrap, responsecontainerposition, responsecontainerindividuals, stemNumeration } = uiStyle;
 
     const responseBtnStyle = {
       widthpx: uiStyle.widthpx !== 0 ? `${uiStyle.widthpx}px` : null,
@@ -660,7 +661,7 @@ class Display extends Component {
             annotations={renderAnnotations()}
             image={renderImage()}
             snapItems={renderSnapItems()}
-            stemnumeration={stemnumeration}
+            stemNumeration={stemNumeration}
             showAnswer={showAnswer}
             checkAnswer={checkAnswer}
             userSelections={userAnswers}
@@ -692,21 +693,17 @@ class Display extends Component {
     const altAnswers = get(item, "validation.altResponses", []).map(alt => get(alt, "value", []).map(res => res));
     const allAnswers = [validAnswers, ...altAnswers];
 
-    const correctAnswerBoxLayout = showAnswer ? (
-      allAnswers.map((answers, answersIndex) => (
-        <CorrectAnswerBoxLayout
-          fontSize={fontSize}
-          groupResponses={options}
-          userAnswers={answers}
-          title={answersIndex === 0 ? "Correct Answer" : "Alternate Answer"}
-        />
-      ))
-    ) : (
-      <div />
-    );
+    const correctAnswerBoxLayout = allAnswers.map((answers, answersIndex) => (
+      <CorrectAnswerBoxLayout
+        fontSize={fontSize}
+        groupResponses={options}
+        userAnswers={answers}
+        title={answersIndex === 0 ? "Correct Answer" : "Alternate Answer"}
+      />
+    ));
 
     const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout;
-    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+    const answerBox = showAnswer || isExpressGrader ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? "right" : responsecontainerposition;
 
@@ -753,7 +750,7 @@ class Display extends Component {
               }}
               ref={this.responseBoxContainerRef}
             >
-              <RelativeContainer containerWidth={responseBoxContainerWidth}>{responseBoxLayout}</RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
             <div
               style={{
@@ -798,7 +795,7 @@ class Display extends Component {
               }}
               ref={this.responseBoxContainerRef}
             >
-              <RelativeContainer containerWidth={responseBoxContainerWidth}>{responseBoxLayout}</RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
           </div>
         )}
@@ -835,6 +832,7 @@ Display.propTypes = {
   showQuestionNumber: PropTypes.bool,
   item: PropTypes.object,
   showBorder: PropTypes.bool,
+  isExpressGrader: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   previewTab: PropTypes.string.isRequired
 };
@@ -865,7 +863,7 @@ Display.defaultProps = {
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",
-    stemnumeration: "numerical",
+    stemNumeration: "numerical",
     widthpx: 0,
     heightpx: 0,
     wordwrap: false,
@@ -876,6 +874,7 @@ Display.defaultProps = {
   showBorder: false,
   showQuestionNumber: false,
   item: {},
+  isExpressGrader: false,
   isReviewTab: false
 };
 

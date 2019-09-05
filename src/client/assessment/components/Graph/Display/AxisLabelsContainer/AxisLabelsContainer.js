@@ -15,12 +15,13 @@ import {
   defaultPointParameters
 } from "../../Builder/settings";
 import { makeBorder } from "../../Builder";
-import { AUTO_HEIGHT_VALUE, AUTO_VALUE } from "../../Builder/config/constants";
+import { CONSTANT } from "../../Builder/config";
 
 import AnnotationRnd from "../../../Annotations/AnnotationRnd";
 
 import Tools from "../../common/Tools";
-import { GraphWrapper, JSXBox } from "./styled";
+import ResponseBox from "./ResponseBox";
+import { GraphWrapper, JSXBox, ContainerWithResponses } from "./styled";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -91,6 +92,8 @@ class AxisLabelsContainer extends PureComponent {
     this.state = {
       resourcesLoaded: false
     };
+
+    this.updateValues = this.updateValues.bind(this);
   }
 
   componentDidMount() {
@@ -104,7 +107,6 @@ class AxisLabelsContainer extends PureComponent {
       gridParams,
       graphData,
       setElementsStash,
-      setCalculatedHeight,
       disableResponse,
       view
     } = this.props;
@@ -113,13 +115,7 @@ class AxisLabelsContainer extends PureComponent {
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse);
 
-      let { height } = layout;
-      if (height === AUTO_VALUE) {
-        height = layout.autoCalcHeight || AUTO_HEIGHT_VALUE;
-      } else if (Number.isNaN(Number.parseFloat(height))) {
-        height = 0;
-      }
-      this._graph.resizeContainer(layout.width, height);
+      this._graph.resizeContainer(layout.width, layout.height);
 
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
@@ -147,12 +143,13 @@ class AxisLabelsContainer extends PureComponent {
         ...numberlineAxis,
         shuffleAnswerChoices: view !== EDIT && numberlineAxis.shuffleAnswerChoices
       };
-      this._graph.updateNumberlineSettings(canvas, _numberlineAxis, layout, true, this.setMarks, setCalculatedHeight);
+      this._graph.updateNumberlineSettings(canvas, _numberlineAxis, layout);
 
       this._graph.setMarksDeleteHandler();
 
       this.setElementsToGraph();
 
+      this.setGraphUpdateEventHandler();
       setElementsStash(this._graph.getMarks(), this.getStashId());
     }
   }
@@ -162,9 +159,6 @@ class AxisLabelsContainer extends PureComponent {
       canvas,
       numberlineAxis,
       layout,
-      list,
-      setValue,
-      setCalculatedHeight,
       disableResponse,
       previewTab,
       changePreviewTab,
@@ -184,22 +178,10 @@ class AxisLabelsContainer extends PureComponent {
           ...numberlineAxis,
           shuffleAnswerChoices: view !== EDIT && numberlineAxis.shuffleAnswerChoices
         };
-        this._graph.updateNumberlineSettings(
-          canvas,
-          _numberlineAxis,
-          layout,
-          false,
-          this.setMarks,
-          setCalculatedHeight
-        );
+        this._graph.updateNumberlineSettings(canvas, _numberlineAxis, layout);
       }
 
       this.setElementsToGraph(prevProps);
-
-      if (!isEqual(prevProps.list, list) && !this.elementsIsEmpty()) {
-        const conf = this._graph.getMarks();
-        setValue(conf);
-      }
     }
 
     const { disableResponse: prevDisableResponse } = prevProps;
@@ -213,11 +195,22 @@ class AxisLabelsContainer extends PureComponent {
     }
   }
 
-  setMarks = () => {
+  updateValues() {
     const conf = this._graph.getMarks();
     const { setValue, setElementsStash } = this.props;
     setValue(conf);
     setElementsStash(conf, this.getStashId());
+  }
+
+  graphUpdateHandler = () => {
+    this.updateValues();
+  };
+
+  setGraphUpdateEventHandler = () => {
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, this.graphUpdateHandler);
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, this.graphUpdateHandler);
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_UPDATE, this.graphUpdateHandler);
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
   };
 
   setElementsToGraph = (prevProps = {}) => {
@@ -226,56 +219,41 @@ class AxisLabelsContainer extends PureComponent {
       return;
     }
 
-    const { elements, evaluation, list, disableResponse, elementsIsCorrect, previewTab } = this.props;
+    const { elements, evaluation, disableResponse, elementsIsCorrect, previewTab } = this.props;
 
     // correct answers blocks
     if (elementsIsCorrect) {
       this._graph.removeMarksAnswers();
-      this._graph.loadMarksAnswers(list, getCorrectAnswer(elements));
+      this._graph.loadMarksAnswers(getCorrectAnswer(elements));
       return;
     }
 
     if (disableResponse) {
+      const compareResult = getCompareResult(evaluation);
+      const coloredElements = getColoredElems(elements, compareResult);
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
-      if (!this.elementsIsEmpty()) {
-        const compareResult = getCompareResult(evaluation);
-        const coloredElements = getColoredElems(elements, compareResult);
-        this._graph.loadMarksAnswers(list, coloredElements);
-      } else {
-        this._graph.loadMarksAnswers(list, []);
-      }
+      this._graph.loadMarksAnswers(coloredElements);
       return;
     }
 
     if (previewTab === CHECK || previewTab === SHOW) {
+      const compareResult = getCompareResult(evaluation);
+      const coloredElements = getColoredElems(elements, compareResult);
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
-      if (!this.elementsIsEmpty()) {
-        const compareResult = getCompareResult(evaluation);
-        const coloredElements = getColoredElems(elements, compareResult);
-        this._graph.renderMarks(list, coloredElements);
-      } else {
-        this._graph.renderMarks(list, []);
-      }
+      this._graph.renderMarks(coloredElements);
       return;
     }
 
     if (
       !isEqual(elements, this._graph.getMarks()) ||
-      this.elementsIsEmpty() ||
-      !isEqual(prevProps.list, list) ||
       (previewTab === CLEAR && (prevProps.previewTab === CHECK || prevProps.previewTab === SHOW))
     ) {
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
-      this._graph.renderMarks(list, elements);
+      this._graph.renderMarks(elements);
     }
-  };
-
-  elementsIsEmpty = () => {
-    const { elements } = this.props;
-    return !elements || elements.length === 0;
   };
 
   controls = ["undo", "redo"];
@@ -324,8 +302,27 @@ class AxisLabelsContainer extends PureComponent {
     this.setElementsToGraph();
   };
 
+  onAddMark = (mark, x, y) => {
+    if (this._graph.addMark(mark, x, y)) {
+      this.updateValues();
+    }
+  };
+
+  getMarkValues = () => {
+    const { list, elements } = this.props;
+    return list.filter(elem => !elements.some(el => elem.id === el.id));
+  };
+
   render() {
-    const { layout, numberlineAxis, disableResponse, view, graphData, setQuestionData } = this.props;
+    const {
+      layout,
+      numberlineAxis: { fontSize, responseBoxPosition, separationDistanceX, separationDistanceY },
+      disableResponse,
+      view,
+      graphData,
+      setQuestionData,
+      list
+    } = this.props;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
@@ -346,13 +343,27 @@ class AxisLabelsContainer extends PureComponent {
               getIconByToolName={() => ""}
               getHandlerByControlName={this.getHandlerByControlName}
               onSelect={() => {}}
-              fontSize={numberlineAxis.fontSize}
+              fontSize={fontSize}
             />
           )}
-          <div style={{ position: "relative" }}>
-            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-            <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
-          </div>
+          <ContainerWithResponses className="jsxbox-with-response-box" responseBoxPosition={responseBoxPosition}>
+            {!disableResponse && (
+              <ResponseBox
+                values={this.getMarkValues()}
+                onAddMark={this.onAddMark}
+                markCount={(list || []).length}
+                separationDistanceX={separationDistanceX}
+                separationDistanceY={separationDistanceY}
+                position={responseBoxPosition}
+                minWidth={layout.width}
+                minHeight={layout.height}
+              />
+            )}
+            <div style={{ position: "relative" }}>
+              <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+              <AnnotationRnd question={graphData} setQuestionData={setQuestionData} disableDragging={view !== EDIT} />
+            </div>
+          </ContainerWithResponses>
         </GraphWrapper>
       </div>
     );
@@ -379,7 +390,6 @@ AxisLabelsContainer.propTypes = {
   graphData: PropTypes.string.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   altAnswerId: PropTypes.string,
-  setCalculatedHeight: PropTypes.func.isRequired,
   disableResponse: PropTypes.bool,
   previewTab: PropTypes.string,
   changePreviewTab: PropTypes.func,

@@ -14,12 +14,16 @@
     "forgotpasswordtext": "Forgot Password?",
     "signinbtn": "SIGN IN",
     "copyright": "Edulastic @ 2018 - All rights reserved.",
+    "community": "community",
+    "district": "District",
+    "proceed": "Proceed",
+    "policyviolation": "Enrollment for your school district is restricted. Please contact your administrator for assistance.",
+    "forgotpassworderror": "Please provide registered Username or Email.",
     "validation": {
       "emptyemailid": "Please input your Email!",
       "validemail": "The input is not valid Email!",
       "emptypassword": "Please input your password!"
-    },
-    "policyviolation": "Enrollment for your school district is restricted. Please contact your administrator for assistance."
+    }
   },
   "component": {
     "signup": {
@@ -46,7 +50,15 @@
         "validinputname": "Please provide your full name.",
         "validpassword": "Please provide a valid password.",
         "shortpassword": "Password is too short - must be at least 4 characters.",
-        "validemail": "Please provide a valid Email id."
+        "validemail": "Please provide a valid Email id.",
+        "joinschool": "Join your school",
+        "collaboratetext": "Collaborate with your colleagues and more",
+        "searchschool": "Search school by Zip, name or City",
+        "requestnewschool": "Request a new School",
+        "infotext": "Please fill the details to add a new school, Edualstic Support will create the school after verifying the data",
+        "choosesubject": "Choose your subject",
+        "choosegrade": "and grade",
+        "gsinfotext": "So you can get relevant content"
       },
       "admin": {
         "signupnamelabel": "Administrator Name",

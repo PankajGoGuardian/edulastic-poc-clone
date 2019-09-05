@@ -104,7 +104,6 @@ export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 140px;
   .ant-table-wrapper {
     width: 100%;
   }
@@ -199,7 +198,7 @@ export const StyledFilterInput = styled(Search)`
 `;
 export const StyledSchoolSearch = styled(Search)`
   margin-left: 20px;
-  width: 465px;
+  width: 350px;
 `;
 export const StyledActionDropDown = styled(Dropdown)`
   margin-left: auto;

@@ -8,6 +8,7 @@ import { get } from "lodash";
 import { TeacherDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
+import AdminSubHeader from "../../../src/components/common/AdminSubHeader/UserSubHeader";
 
 import TeacherTable from "../TeacherTable/TeacherTable";
 
@@ -16,7 +17,8 @@ const menuActive = { mainMenu: "Users", subMenu: "Teacher" };
 
 class Teacher extends Component {
   render() {
-    const { loading, creating, updating, deleting, history, routeKey } = this.props;
+    const { loading, creating, updating, deleting, history, routeKey, location } = this.props;
+    const { state: dataPassedWithRoute } = location;
     const showSpin = loading || updating || deleting || creating;
 
     // issue : click on current active tab , doesn't re-renders page, because there is no state/route change //
@@ -29,12 +31,13 @@ class Teacher extends Component {
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
+            <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <TeacherTable />
+            <TeacherTable dataPassedWithRoute={dataPassedWithRoute} />
           </StyledLayout>
         </StyledContent>
       </TeacherDiv>

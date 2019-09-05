@@ -1,26 +1,22 @@
 import styled from "styled-components";
 import { Progress } from "antd";
+import { extraDesktopWidth, largeDesktopWidth } from "@edulastic/colors";
 import { IconPlus } from "@edulastic/icons";
-import AssignmentContentWrapper from "../styled/assignmentContentWrapper";
-
-export const AssignmentContentWrap = styled(AssignmentContentWrapper)`
-  padding-top: 32px;
-  padding-bottom: 32px;
-`;
-
-export const SkillReportContainer = styled.div`
-  padding: 30px 50px;
-  @media screen and (max-width: 767px) {
-    padding: 16px 26px;
-  }
-`;
 
 export const SummaryTitle = styled.div`
   font-size: ${props => props.theme.skillReport.skillReportTitleFontSize};
-  font-weight: 600;
+  font-weight: 700;
   color: ${props => props.theme.skillReport.skillReportTitleColor};
-  letter-spacing: 0.3px;
-  margin-bottom: 24px;
+  margin-bottom: 8px;
+
+  @media (max-width: ${extraDesktopWidth}) {
+    font-size: 18px;
+  }
+
+  @media (max-width: ${largeDesktopWidth}) {
+    font-size: 16px;
+    margin-bottom: 0;
+  }
 `;
 
 export const Circle = styled.div`
@@ -44,16 +40,21 @@ export const Title = styled.div`
 export const RelationTitle = styled.div`
   flex: 1;
   font-size: ${props => props.theme.skillReport.RelationTitleFontSize};
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.3px;
   color: ${props => props.theme.skillReport.RelationTitleColor};
-  margin-bottom: 24px;
+
+  @media (max-width: ${largeDesktopWidth}) {
+    font-size: 14px;
+  }
+
   @media screen and (max-width: 767px) {
     width: 90%;
   }
 `;
 
 export const GradeTag = styled.div`
+  max-width: 81px;
   background: ${props => props.theme.skillReport.gradeColumnTagBgColor};
   height: 23.5px;
   color: ${props => props.theme.skillReport.gradeColumnTagColor};
@@ -102,11 +103,11 @@ export const StyledScoreProgress = styled(Progress)`
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
-    (props.percent >= 50
-      ? props.theme.skillReport.greenColor
-      : props.percent >= 30
+      props.percent >= 50
+        ? props.theme.skillReport.greenColor
+        : props.percent >= 30
         ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor)};
+        : props.theme.skillReport.redColor};
   }
 `;
 
@@ -118,10 +119,10 @@ export const StyledProgress = styled(Progress)`
   .ant-progress-bg {
     height: 16px !important;
     background: ${props =>
-    (props.percent >= 50
-      ? props.theme.skillReport.greenColor
-      : props.percent >= 30
+      props.percent >= 50
+        ? props.theme.skillReport.greenColor
+        : props.percent >= 30
         ? props.theme.skillReport.yellowColor
-        : props.theme.skillReport.redColor)};
+        : props.theme.skillReport.redColor};
   }
 `;

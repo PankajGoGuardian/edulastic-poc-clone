@@ -52,13 +52,9 @@ const StartAssignButton = styled(Button)`
   }
 
   @media screen and (max-width: 768px) {
-    max-width: 80%;
-    margin: 10px 0 0;
-  }
-
-  @media screen and (max-width: ${mobileWidthMax}) {
-    max-width: 100%;
-    margin: 26px 0 0;
+    margin: 20px auto 0px auto
+    width: 70%;
+    float: none;
   }
 `;
 

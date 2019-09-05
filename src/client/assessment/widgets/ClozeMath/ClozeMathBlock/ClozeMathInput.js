@@ -16,10 +16,7 @@ class ClozeMathInput extends React.Component {
   state = {
     latex: "",
     showKeyboard: false,
-    currentMathQuill: null,
-    keyboardStyles: {
-      top: -1000
-    }
+    currentMathQuill: null
   };
 
   constructor(props) {
@@ -82,6 +79,18 @@ class ClozeMathInput extends React.Component {
 
   handleKeypress = e => {
     const { restrictKeys } = this;
+    const { resprops = {}, id } = this.props;
+    const { item } = resprops;
+    const {
+      responseIds: { maths = [] }
+    } = item;
+    const { allowNumericOnly } = find(maths, res => res.id === id) || {};
+    if (allowNumericOnly) {
+      if (!e.key.match(/[0-9+-./%^]/g)) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g));
       const isArrowOrShift = (e.keyCode >= 37 && e.keyCode <= 40) || e.keyCode === 16 || e.keyCode === 8;
@@ -111,56 +120,9 @@ class ClozeMathInput extends React.Component {
     if (!mathRef.current) {
       return;
     }
-    this.setState({ showKeyboard: true }, this.calcKeyPosition);
+    this.setState({ showKeyboard: true });
     mathRef.current.focus();
   };
-
-  calcKeyPosition() {
-    if (!this.mathKeyboardRef.current || !this.mathRef.current) {
-      this.setState({
-        keyboardStyles: {
-          top: "unset",
-          position: "absolute"
-        }
-      });
-      return;
-    }
-    const keyboardStyles = {};
-    const winH = window.innerHeight;
-    const winW = window.innerWidth;
-    const keyboardRect = this.mathKeyboardRef.current.getBoundingClientRect();
-    const mathInputRect = this.mathRef.current.getBoundingClientRect();
-
-    const keyboardH = keyboardRect.height;
-    const keyboardW = keyboardRect.width;
-
-    const mathBottom = mathInputRect.bottom;
-
-    const mathT = mathInputRect.top;
-    const mathR = mathInputRect.right;
-    const mathH = mathInputRect.height;
-    const mathW = mathInputRect.width;
-
-    const left = mathR - mathW / 2 - keyboardW / 2;
-    const hDiff = keyboardW + left - winW;
-    if (left < 100) {
-      keyboardStyles.left = 110; // 110 is left meny width
-    } else if (hDiff > 0) {
-      keyboardStyles.left = left - hDiff - 20; // 20 is scrollbar width if there is scrollbar
-    } else {
-      keyboardStyles.left = left;
-    }
-
-    const vDiff = winH - mathBottom;
-    if (vDiff < keyboardH) {
-      keyboardStyles.top = "unset";
-      keyboardStyles.bottom = vDiff + mathH;
-    } else {
-      keyboardStyles.top = mathT + mathH;
-    }
-
-    this.setState({ keyboardStyles });
-  }
 
   closeMathBoard = () => {
     this.setState({ showKeyboard: false });
@@ -227,56 +189,57 @@ class ClozeMathInput extends React.Component {
   get restrictKeys() {
     const { resprops = {}, id } = this.props;
     const { item } = resprops;
-    const { allowedVariables = {} } = item;
     const {
       responseIds: { maths }
     } = item;
-    const { index } = find(maths, res => res.id === id) || {};
-    return allowedVariables[index] ? allowedVariables[index].split(",").map(segment => segment.trim()) : [];
+    const { allowedVariables = "" } = find(maths, res => res.id === id) || {};
+    return allowedVariables ? allowedVariables.split(",").map(segment => segment.trim()) : [];
   }
 
   render() {
     const { resprops = {}, id } = this.props;
     const { responseContainers, item, uiStyles = {} } = resprops;
-    const { showKeyboard, keyboardStyles } = this.state;
+    const { showKeyboard } = this.state;
     const response = find(responseContainers, cont => cont.id === id);
     const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
     const height = response && response.heightpx ? `${response.heightpx}px` : "auto";
     const btnStyle = this.getStyles(uiStyles);
-    const customKeys = get(item, "custom_keys", []);
+    const customKeys = get(item, "customKeys", []);
 
     return (
-      <span ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px" }}>
-        <span
-          ref={this.mathRef}
-          onClick={this.showKeyboardModal}
-          style={{
-            ...btnStyle,
-            width: width || "auto",
-            height: height || "auto",
-            padding: "5px 11px 4px"
-          }}
-        />
-        {showKeyboard && (
-          <KeyboardWrapper innerRef={this.mathKeyboardRef} style={keyboardStyles}>
-            <MathKeyboard
-              onInput={this.onInput}
-              onClose={() => {}}
-              symbols={item.symbols}
-              numberPad={item.numberPad}
-              restrictKeys={this.restrictKeys}
-              customKeys={customKeys}
-              showResponse={false}
-            />
-          </KeyboardWrapper>
-        )}
-      </span>
+      <div ref={this.wrappedRef} style={{ ...btnStyle, margin: "0 4px", display: "inline-block" }}>
+        <Wrapper>
+          <span
+            ref={this.mathRef}
+            onClick={this.showKeyboardModal}
+            style={{
+              ...btnStyle,
+              width: width || "auto",
+              height: height || "auto",
+              padding: "5px 11px 4px"
+            }}
+          />
+          {showKeyboard && (
+            <KeyboardWrapper innerRef={this.mathKeyboardRef}>
+              <MathKeyboard
+                onInput={this.onInput}
+                onClose={() => {}}
+                symbols={item.symbols}
+                numberPad={item.numberPad}
+                restrictKeys={this.restrictKeys}
+                customKeys={customKeys}
+                showResponse={false}
+              />
+            </KeyboardWrapper>
+          )}
+        </Wrapper>
+      </div>
     );
   }
 }
 
 const MathInput = ({ resprops = {}, id }) => {
-  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { responseContainers, item, answers = {}, evaluation = [], checked, onInnerClick, showIndex } = resprops;
   const { maths: _mathAnswers = [] } = answers;
   const response = find(responseContainers, cont => cont.id === id);
   const width = response && response.widthpx ? `${response.widthpx}px` : `${item.uiStyle.minWidth}px` || "auto";
@@ -287,6 +250,7 @@ const MathInput = ({ resprops = {}, id }) => {
       width={width}
       height={height}
       evaluation={evaluation}
+      showIndex={showIndex}
       userAnswer={_mathAnswers[id]}
       item={item}
       id={id}
@@ -308,6 +272,17 @@ export default MathInput;
 
 const KeyboardWrapper = styled.div`
   width: 40%;
-  position: fixed;
+  position: absolute;
   z-index: 100;
+`;
+
+const Wrapper = styled.div`
+  span {
+    font-weight: 600;
+    font-style: unset;
+    var {
+      font-weight: 600;
+      font-style: unset;
+    }
+  }
 `;

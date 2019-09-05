@@ -21,7 +21,6 @@ export { default as Tangent } from "./Tangent";
 export { default as Title } from "./Title";
 export { default as Vector } from "./Vector";
 export { default as Equation } from "./Equation";
-export { default as Annotation } from "./Annotation";
 export { default as Area } from "./Area";
 export { default as DrawingObject } from "./DrawingObject";
 export { default as EditButton } from "./EditButton";

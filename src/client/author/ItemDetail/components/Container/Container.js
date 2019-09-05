@@ -386,7 +386,7 @@ class Container extends Component {
   };
 
   addItemToPassage = () => {
-    const { passage } = this.props;
+    const { passage, isTestFlow, testId } = this.props;
     /**
      * assuming this method is going to be called only when type is passageWithQuestions
      */
@@ -398,7 +398,7 @@ class Container extends Component {
       draft.multipartItem = true;
       draft.passageId = passage._id;
     });
-    this.props.createItem(item);
+    this.props.createItem(item, isTestFlow, testId, true);
   };
 
   handleRemoveItemRequest = () => {

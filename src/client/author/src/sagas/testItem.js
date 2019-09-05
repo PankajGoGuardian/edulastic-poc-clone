@@ -25,10 +25,10 @@ import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsFo
 
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
 
-function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
+function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem = false } }) {
   try {
     // create a empty item and put it in store.
-    const item = {
+    let item = {
       _id: "new",
       rows: [{ tabs: [], dimension: "100%", widgets: [], flowLayout: false, content: "" }],
       columns: [],
@@ -46,6 +46,11 @@ function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
       isPassageWithQuestions: false,
       canAddMultipleItems: false
     };
+
+    // if its a being added from passage, create new.
+    if (newPassageItem) {
+      item = yield call(testItemsApi.create, data);
+    }
 
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,

@@ -301,6 +301,7 @@ class Signup extends React.Component {
                                 ]
                               })(
                                 <Input
+                                  data-cy="name"
                                   prefix={<img src={userIcon} alt="" />}
                                   placeholder="Enter your full name"
                                   autoComplete="new-password"
@@ -341,6 +342,7 @@ class Signup extends React.Component {
                                 ]
                               })(
                                 <Input
+                                  data-cy="email"
                                   prefix={<img src={mailIcon} alt="" />}
                                   placeholder="Enter your school email"
                                   type="email"
@@ -365,6 +367,7 @@ class Signup extends React.Component {
                                 ]
                               })(
                                 <Input
+                                  data-cy="password"
                                   prefix={<img src={keyIcon} alt="" />}
                                   type="password"
                                   placeholder="Enter your password"
@@ -373,7 +376,7 @@ class Signup extends React.Component {
                               )}
                             </FormItem>
                             <FormItem>
-                              <RegisterButton type="primary" htmlType="submit">
+                              <RegisterButton data-cy="signup" type="primary" htmlType="submit">
                                 {t("component.signup.teacher.signupteacher")}
                               </RegisterButton>
                             </FormItem>

@@ -135,7 +135,7 @@ class RequestSchool extends React.Component {
     );
 
     const footer = (
-      <ActionButton onClick={this.handleSubmit} type="primary" htmlType="submit">
+      <ActionButton data-cy="reqNewSchoolBtn" onClick={this.handleSubmit} type="primary" htmlType="submit">
         {t("component.signup.teacher.requestnewschool")}
       </ActionButton>
     );
@@ -173,7 +173,7 @@ class RequestSchool extends React.Component {
                 { transform: this.transformInput },
                 { required: true, message: "Please provide a valid school name." }
               ]
-            })(<Input placeholder="Enter your school name" />)}
+            })(<Input data-cy="school" placeholder="Enter your school name" />)}
           </Form.Item>
           <Form.Item label="District">
             {getFieldDecorator("districtId", {
@@ -207,12 +207,12 @@ class RequestSchool extends React.Component {
           <Form.Item label="Address">
             {getFieldDecorator("address", {
               rules: [{ required: false, message: "Please provide a valid school address." }]
-            })(<Input placeholder="Enter your school address" />)}
+            })(<Input data-cy="address" placeholder="Enter your school address" />)}
           </Form.Item>
           <Form.Item label="City">
             {getFieldDecorator("city", {
               rules: [{ required: false, message: "Please provide a valid city." }]
-            })(<Input placeholder="Enter your school city" />)}
+            })(<Input data-cy="city" placeholder="Enter your school city" />)}
           </Form.Item>
           <FlexItems type="flex" align="middle">
             <Col xs={24} sm={4}>
@@ -225,7 +225,7 @@ class RequestSchool extends React.Component {
                   { transform: this.transformInput },
                   { required: true, message: "Please provide a valid zip code." }
                 ]
-              })(<Input placeholder="Enter Zip Code" />)}
+              })(<Input data-cy="zip" placeholder="Enter Zip Code" />)}
             </Col>
             <Col xs={24} sm={4}>
               <Label>State:</Label>
@@ -240,7 +240,7 @@ class RequestSchool extends React.Component {
                     {stateOptions}
                   </Select>
                 ) : (
-                  <Input placeholder="Enter state" />
+                  <Input data-cy="state" placeholder="Enter state" />
                 )
               )}
             </Col>
@@ -252,6 +252,7 @@ class RequestSchool extends React.Component {
               initialValue: "United States"
             })(
               <Select
+                data-cy="country"
                 showSearch
                 placeholder="Select a country"
                 optionFilterProp="children"

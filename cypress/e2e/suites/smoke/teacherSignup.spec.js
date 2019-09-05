@@ -29,8 +29,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
   beforeEach(() => {
     cy.clearToken();
     cy.server();
+    cy.route("POST", "**/schools").as("schoolSearch");
+    cy.route("POST", "**/school/").as("schoolCreate");
     cy.route("POST", "**courses").as("courses");
-    cy.route("POST", "**school**").as("school");
     cy.route("POST", "**districts").as("district");
     cy.route("GET", "**curriculum").as("curriculam");
     cy.route("PUT", "**/user/**").as("user");
@@ -68,13 +69,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
       `${Helpers.getRamdomString(Helpers.stringTypes().ALPHA, 8)}.${email}`,
       password
     );
-
-    cy.wait("@school");
     // request new school
     signupPage.clickOnRequestNewSchoolLink();
     signupPage.fillSchoolDetails(`${schoolName}-${random}`, district, address, zip, city, state, country);
     signupPage.clickOnReqNewSchool();
-    cy.wait("@school").then(xhr => expect(xhr.status).to.eq(200));
+    cy.wait("@schoolCreate").then(xhr => expect(xhr.status).to.eq(200));
     cy.wait("@curriculam");
     signupPage.selectGrade(grade);
     signupPage.selectSubject(subject);
@@ -94,7 +93,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
       `${Helpers.getRamdomString(Helpers.stringTypes().ALPHA, 8)}.${email}`,
       password
     );
-    cy.wait("@school");
     // request new school and district
 
     signupPage.clickOnRequestNewSchoolLink();
@@ -109,7 +107,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Signup`, () =>
     );
 
     signupPage.clickOnReqNewSchool();
-    cy.wait("@school").then(xhr => expect(xhr.status).to.eq(200));
+    cy.wait("@schoolCreate").then(xhr => expect(xhr.status).to.eq(200));
     cy.wait("@curriculam");
     signupPage.selectGrade(grade);
     signupPage.selectSubject(subject);

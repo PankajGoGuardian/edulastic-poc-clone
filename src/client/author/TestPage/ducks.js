@@ -686,7 +686,9 @@ function* publishTestSaga({ payload }) {
     let { _id: id, test, assignFlow } = payload;
     const defaultThumbnail = yield select(getDefaultThumbnailSelector);
     test.thumbnail = test.thumbnail === defaultImage ? defaultThumbnail : test.thumbnail;
-    yield call(updateTestSaga, { payload: { id, data: test, assignFlow: true } });
+    yield call(test.isDocBased ? updateTestDocBasedSaga : updateTestSaga, {
+      payload: { id, data: test, assignFlow: true }
+    });
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     if (!assignFlow) {

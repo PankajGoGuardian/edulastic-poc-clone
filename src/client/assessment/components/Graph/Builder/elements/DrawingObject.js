@@ -35,7 +35,13 @@ function onHandler(board, event) {
   const { id, label, baseColor, type, pointLabels } = drawingObject;
 
   if (type === CONSTANT.TOOLS.POINT) {
-    newElement = Point.onHandler(board, event, id);
+    newElement = Point.create(board, {
+      id,
+      label,
+      baseColor,
+      x: coords.usrCoords[1],
+      y: coords.usrCoords[2]
+    });
   } else {
     const points = [];
     const offsets = [[0, 0], [1, 1], [2, 0]];

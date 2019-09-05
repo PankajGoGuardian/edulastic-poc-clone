@@ -14,15 +14,14 @@ import {
   getTestEntitySelector,
   getTestsLoadingSelector,
   setTestDataAction,
-  updateTestAction,
   publishTestAction,
   getDefaultTestSettingsAction,
-  getTestsCreatingSelector
+  getTestsCreatingSelector,
+  updateDocBasedTestAction
 } from "../../../TestPage/ducks";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
 import { getItemDetailByIdAction } from "../../../src/actions/itemDetail";
 import { changeViewAction } from "../../../src/actions/view";
-import { getItemDetailSelector } from "../../../src/selectors/itemDetail";
 import { getViewSelector } from "../../../src/selectors/view";
 import Worksheet from "../Worksheet/Worksheet";
 import Description from "../Description/Description";
@@ -30,7 +29,6 @@ import Setting from "../../../TestPage/components/Setting";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import { withWindowSizes } from "@edulastic/common";
 import ShareModal from "../../../src/components/common/ShareModal";
-import { updateItemsDocBasedByIdAction } from "../../../ItemDetail/ducks";
 
 const { statusConstants } = test;
 
@@ -64,13 +62,29 @@ const buttons = [
   }
 ];
 
-export const createWidget = ({ id, type, title }) => ({
-  widgetType: type === "sectionLabel" ? "resource" : "question",
-  type,
-  title,
-  reference: id,
-  tabIndex: 0
-});
+export const validateQuestions = questions => {
+  if (!questions.length) {
+    message.warning("At least one question has to be created before saving assessment");
+    return false;
+  }
+
+  const correctAnswerPicked = questions
+    .filter(question => question.type !== "sectionLabel")
+    .every(question => {
+      const validationValue = get(question, "validation.validResponse.value");
+      if (question.type === "math") {
+        return validationValue.every(value => !isEmpty(value.value));
+      }
+      return !isEmpty(validationValue);
+    });
+
+  if (!correctAnswerPicked) {
+    message.warning("Correct answers have to be chosen for every question");
+    return false;
+  }
+
+  return true;
+};
 
 class Container extends React.Component {
   static propTypes = {
@@ -96,7 +110,6 @@ class Container extends React.Component {
 
   componentDidMount() {
     const { match, receiveTestById, getDefaultTestSettings } = this.props;
-
     receiveTestById(match.params.assessmentId);
     getDefaultTestSettings();
   }
@@ -107,46 +120,11 @@ class Container extends React.Component {
   };
 
   handleSave = async () => {
-    const { questions: assessmentQuestions, assessment, updateItemsDocBasedById, updateTest } = this.props;
-
-    if (!this.validateQuestions(assessmentQuestions)) {
+    const { questions: assessmentQuestions, assessment, updateDocBasedTest } = this.props;
+    if (!validateQuestions(assessmentQuestions)) {
       return;
     }
-
-    const [testItem] = assessment.testItems;
-    const testItemId = typeof testItem === "object" ? testItem._id : testItem;
-    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
-
-    const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
-    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
-    const updatedTestItem = {
-      ...testItem,
-      public: undefined,
-      authors: undefined,
-      version: testItem.version,
-      isDocBased: true,
-      data: {
-        questions,
-        resources
-      },
-      rows: [
-        {
-          tabs: [],
-          dimension: "100%",
-          widgets: assessmentQuestions.map(createWidget)
-        }
-      ],
-      itemLevelScoring: false
-    };
-
-    const newAssessment = {
-      ...assessment,
-      testItems: [{ _id: testItemId, ...updatedTestItem }],
-      status
-    };
-
-    await updateItemsDocBasedById(testItemId, updatedTestItem, true, false);
-    updateTest(assessment._id, newAssessment, true);
+    updateDocBasedTest(assessment._id, assessment, true);
     this.setState({ saved: true, published: false });
   };
 
@@ -217,30 +195,6 @@ class Container extends React.Component {
     this.setState({
       showShareModal: !this.state.showShareModal
     });
-  };
-
-  validateQuestions = questions => {
-    if (!questions.length) {
-      message.warning("At least one question has to be created before saving assessment");
-      return false;
-    }
-
-    const correctAnswerPicked = questions
-      .filter(question => question.type !== "sectionLabel")
-      .every(question => {
-        const validationValue = get(question, "validation.validResponse.value");
-        if (question.type === "math") {
-          return validationValue.every(value => !isEmpty(value.value));
-        }
-        return !isEmpty(validationValue);
-      });
-
-    if (!correctAnswerPicked) {
-      message.warning("Correct answers have to be chosen for every question");
-      return false;
-    }
-
-    return true;
   };
 
   onEnableEdit = () => {
@@ -368,10 +322,9 @@ const enhance = compose(
     {
       receiveTestById: receiveTestByIdAction,
       receiveItemDetailById: getItemDetailByIdAction,
-      updateItemsDocBasedById: updateItemsDocBasedByIdAction,
       setTestData: setTestDataAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
-      updateTest: updateTestAction,
+      updateDocBasedTest: updateDocBasedTestAction,
       changeView: changeViewAction,
       publishTest: publishTestAction
     }

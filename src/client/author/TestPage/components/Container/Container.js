@@ -27,7 +27,8 @@ import {
   getTestStatusSelector,
   setRegradeOldIdAction,
   getTestCreatedItemsSelector,
-  getDefaultTestSettingsAction
+  getDefaultTestSettingsAction,
+  updateDocBasedTestAction
 } from "../../ducks";
 import {
   clearSelectedItemsAction,
@@ -50,7 +51,7 @@ import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
-import { createWidget } from "../../../AssessmentPage/components/Container/Container";
+import { validateQuestions } from "../../../AssessmentPage/components/Container/Container";
 
 const { getDefaultImage } = testsApi;
 const { statusConstants } = test;
@@ -387,70 +388,13 @@ class Container extends PureComponent {
     }
   };
 
-  validateQuestions = questions => {
-    if (!questions.length) {
-      message.warning("At least one question has to be created before saving assessment");
-      return false;
-    }
-
-    const correctAnswerPicked = questions
-      .filter(question => question.type !== "sectionLabel")
-      .every(question => {
-        const validationValue = get(question, "validation.validResponse.value");
-        if (question.type === "math") {
-          return validationValue.every(value => !isEmpty(value.value));
-        }
-        return !isEmpty(validationValue);
-      });
-
-    if (!correctAnswerPicked) {
-      message.warning("Correct answers have to be chosen for every question");
-      return false;
-    }
-
-    return true;
-  };
-
   handleDocBasedSave = async () => {
-    const { questions: assessmentQuestions, test: assessment, updateItemsDocBasedById, updateTest } = this.props;
+    const { questions: assessmentQuestions, test, updateDocBasedTest } = this.props;
 
-    if (!this.validateQuestions(assessmentQuestions)) {
+    if (!validateQuestions(assessmentQuestions)) {
       return;
     }
-
-    const [testItem] = assessment.testItems;
-    const testItemId = typeof testItem === "object" ? testItem._id : testItem;
-    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
-
-    const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
-    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
-    const updatedTestItem = {
-      ...testItem,
-      public: undefined,
-      authors: undefined,
-      version: testItem.version,
-      isDocBased: true,
-      data: {
-        questions,
-        resources
-      },
-      rows: [
-        {
-          tabs: [],
-          dimension: "100%",
-          widgets: assessmentQuestions.map(createWidget)
-        }
-      ],
-      itemLevelScoring: false
-    };
-
-    const newAssessment = {
-      ...assessment,
-      testItems: [{ _id: testItemId, ...updatedTestItem }]
-    };
-
-    await updateItemsDocBasedById(testItemId, updatedTestItem, true, false);
-    updateTest(assessment._id, newAssessment, true);
+    updateDocBasedTest(test._id, test, true);
   };
 
   validateTest = test => {
@@ -622,6 +566,7 @@ const enhance = compose(
     {
       createTest: createTestAction,
       updateTest: updateTestAction,
+      updateDocBasedTest: updateDocBasedTestAction,
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,
       updateDefaultThumbnail: updateDefaultThumbnailAction,

@@ -7,6 +7,7 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import utils from "../../common/utils";
+import { OldColor } from "./styled.js";
 
 export const ElementSettingsMenu = ({ element, handleClose, advancedElementSettings, showColorPicker }) => {
   if (!element) {
@@ -17,6 +18,7 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
   const [labelIsVisible, handleLabelVisibility] = useState(element.labelIsVisible);
   const [pointIsVisible, handlePointVisibility] = useState(element.pointIsVisible);
   const [elementColor, handleColorChange] = useState(element.baseColor);
+  const [oldColor] = useState(element.baseColor);
 
   return (
     <Fragment>
@@ -63,8 +65,9 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
           </Fragment>
         )}
         {showColorPicker && (
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ display: "flex", marginBottom: "20px" }}>
             <ColorPicker onChange={value => handleColorChange(value.color)} animation="slide-up" color={elementColor} />
+            <OldColor color={oldColor} />
           </div>
         )}
         <Row>

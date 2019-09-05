@@ -8,6 +8,14 @@ export const GraphWrapper = styled.div`
   border: ${props => (props.border ? 1 : 0)}px solid ${props => props.borderColor};
 `;
 
+export const OldColor = styled.div`
+  height: 40px;
+  width: 40px;
+  border-radius: 4px;
+  background-color: ${props => props.color || "transparent"};
+  margin-left: 10px;
+`;
+
 export const JSXBox = styled.div`
   background-color: ${white};
   position: relative;

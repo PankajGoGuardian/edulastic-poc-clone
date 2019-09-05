@@ -21,9 +21,12 @@ export const getSentencesArray = initialArr => {
       .match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
   )
     .map(el => {
-      if (mathArray && el.indexOf("<span></span>") !== -1) {
-        el = el.replace("<span></span>", mathArray[i]);
-        i++;
+      const _maths = el.match(/<span><\/span>/g);
+      for (let j = 0; j < _maths.length; j++) {
+        if (mathArray && el.indexOf("<span></span>") !== -1) {
+          el = el.replace("<span></span>", mathArray[i]);
+          i++;
+        }
       }
       return { value: `${el}`, active: true };
     })

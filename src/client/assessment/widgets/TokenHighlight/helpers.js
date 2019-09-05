@@ -22,8 +22,8 @@ export const getSentencesArray = initialArr => {
   )
     .map(el => {
       const _maths = el.match(/<span><\/span>/g);
-      for (let j = 0; j < _maths.length; j++) {
-        if (mathArray && el.indexOf("<span></span>") !== -1) {
+      if (mathArray && _maths) {
+        for (let j = 0; j < _maths.length; j++) {
           el = el.replace("<span></span>", mathArray[i]);
           i++;
         }
@@ -69,9 +69,12 @@ export const getWordsArray = initialArr => {
       .match(/(.*?)(([\s]+([.]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
   )
     .map(el => {
-      if (mathArray && el.indexOf("<span></span>") !== -1) {
-        el = el.replace("<span></span>", mathArray[i]);
-        i++;
+      const _maths = el.match(/<span><\/span>/g);
+      if (mathArray && _maths) {
+        for (let k = 0; k < _maths.length; k++) {
+          el = el.replace("<span></span>", mathArray[i]);
+          i++;
+        }
       }
       if (stylesArray && el.indexOf("<style></style>") !== -1) {
         el = el.replace("<style></style>", stylesArray[j]);

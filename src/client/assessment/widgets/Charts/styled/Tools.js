@@ -81,7 +81,6 @@ export const ToolbarRight = styled.ul`
   display: flex;
   align-items: center;
   min-width: 93px;
-  height: 100%;
   margin: 0;
   margin-left: auto;
   padding: 0;

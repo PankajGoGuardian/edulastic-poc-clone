@@ -154,7 +154,7 @@ class AnnotationsRnd extends Component {
                 }}
                 enableResizing={disableDragging ? resizeDisable : resizeEnable}
                 disableDragging={disableDragging}
-                bounds={".chart-parent"}
+                bounds={"parent"}
                 className="annotation"
               >
                 <FroalaInput {...this.props} isRnd>

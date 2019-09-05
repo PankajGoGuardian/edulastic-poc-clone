@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
 import { FlexContainer } from "@edulastic/common";
+import { DOT_PLOT, LINE_PLOT } from "@edulastic/constants/const/questionType";
 
 import { getYAxis, getPadding } from "../helpers";
 import { EDIT } from "../../../constants/constantsForQuestions";
 import AnnotationRnd from "../../../components/Annotations/AnnotationRnd";
+import { Spacing } from "../styled/Spacing";
 
 const withGrid = WrappedComponent => {
   const hocComponent = props => {
@@ -29,21 +31,14 @@ const withGrid = WrappedComponent => {
         <FlexContainer style={{ transform: "rotate(-90deg)", width: 40, whiteSpace: "nowrap", marginTop: margin }}>
           {yAxisLabel}
         </FlexContainer>
-        <div className="chart-parent" style={{ position: "relative" }}>
-          {item.type !== "linePlot" && item.type !== "dots" && (
-            <AnnotationRnd
-              style={{
-                backgroundColor: "transparent",
-                boxShadow: "none",
-                border: view === EDIT ? "1px solid lightgray" : "none"
-              }}
-              question={item}
-              setQuestionData={setQuestionData}
-              disableDragging={view !== EDIT}
-              isAbove={view === EDIT ? !barIsDragging : false}
-              onDoubleClick={() => toggleBarDragging(!barIsDragging)}
-            />
-          )}
+        <div style={{ position: "relative" }}>
+          <AnnotationRnd
+            question={item}
+            setQuestionData={setQuestionData}
+            disableDragging={view !== EDIT}
+            isAbove={view === EDIT ? !barIsDragging : false}
+            onDoubleClick={() => toggleBarDragging(!barIsDragging)}
+          />
           <FlexContainer style={{ width, marginBottom: 20 }} justifyContent="center">
             {name}
           </FlexContainer>
@@ -51,30 +46,7 @@ const withGrid = WrappedComponent => {
           <FlexContainer style={{ width, marginTop: 10, marginLeft: padding / 2 }} justifyContent="center">
             {xAxisLabel}
           </FlexContainer>
-          {(item.type === "linePlot" || item.type === "dots") && (
-            <div
-              style={{
-                height: "204px",
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center"
-              }}
-            >
-              <AnnotationRnd
-                style={{
-                  backgroundColor: "transparent",
-                  boxShadow: "none",
-                  border: view === EDIT ? "1px solid lightgray" : "none"
-                }}
-                question={item}
-                setQuestionData={setQuestionData}
-                disableDragging={view !== EDIT}
-                isAbove={view === EDIT ? !barIsDragging : false}
-                onDoubleClick={() => toggleBarDragging(!barIsDragging)}
-              />
-            </div>
-          )}
+          {(item.type === LINE_PLOT || item.type === DOT_PLOT) && <Spacing />}
         </div>
       </FlexContainer>
     );

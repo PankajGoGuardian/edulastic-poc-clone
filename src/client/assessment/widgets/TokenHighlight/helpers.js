@@ -11,10 +11,27 @@ export const getParagraphsArray = initialArr =>
     active: true
   }));
 
-export const getSentencesArray = initialArr =>
-  (initialArr.join("").match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g) || [])
-    .map(el => ({ value: `${el}`, active: true }))
+export const getSentencesArray = initialArr => {
+  const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
+  let i = 0;
+  return (
+    initialArr
+      .join("")
+      .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
+      .match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
+  )
+    .map(el => {
+      const _maths = el.match(/<span><\/span>/g);
+      if (mathArray && _maths) {
+        for (let j = 0; j < _maths.length; j++) {
+          el = el.replace("<span></span>", mathArray[i]);
+          i++;
+        }
+      }
+      return { value: `${el}`, active: true };
+    })
     .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
+};
 
 export const getWordsArray = initialArr => {
   const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
@@ -52,9 +69,12 @@ export const getWordsArray = initialArr => {
       .match(/(.*?)(([\s]+([.]*(<br\/>)*))|([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
   )
     .map(el => {
-      if (mathArray && el.indexOf("<span></span>") !== -1) {
-        el = el.replace("<span></span>", mathArray[i]);
-        i++;
+      const _maths = el.match(/<span><\/span>/g);
+      if (mathArray && _maths) {
+        for (let k = 0; k < _maths.length; k++) {
+          el = el.replace("<span></span>", mathArray[i]);
+          i++;
+        }
       }
       if (stylesArray && el.indexOf("<style></style>") !== -1) {
         el = el.replace("<style></style>", stylesArray[j]);
@@ -65,23 +85,8 @@ export const getWordsArray = initialArr => {
     .map(el => ({ value: `${el}`, active: true }));
 };
 
-export const getCustomArray = initialArr => {
-  const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
-  let i = 0;
-  return [
-    initialArr
-      .join("")
-      .replace("&nbsp;", " ")
-      .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
-      .replace(/<br>/g, "")
-  ].map(el => {
-    if (mathArray && el.indexOf("<span></span>") !== -1) {
-      el = el.replace("<span></span>", mathArray[i]);
-      i++;
-    }
-    return { value: `${el}`, active: false };
-  });
-};
+export const getCustomArray = initialArr =>
+  [initialArr.join("").replace("&nbsp;", " ")].map(el => ({ value: `${el}`, active: false }));
 
 export const getCustomTokenTemplate = tokens => {
   const template = tokens.map((token, index) => {

@@ -29,7 +29,7 @@ const FlexContainer = styled.div`
   }
 
   @media (max-width: ${mobileWidthMax}) {
-    flex-wrap: wrap;
+    flex-wrap: ${({ flexWrap }) => flexWrap || "wrap"};
   }
 `;
 

@@ -37,14 +37,6 @@ import produce from "immer";
 
 const { ASSESSMENT, COMMON } = testConst;
 
-const initAssignment = {
-  startDate: moment(),
-  openPolicy: "Automatically on Start Date",
-  closePolicy: "Automatically on Due Date",
-  class: [],
-  testType: ASSESSMENT
-};
-
 const setTime = userRole => {
   const addDate = userRole !== "teacher" ? 28 : 7;
   return moment()
@@ -58,7 +50,11 @@ class AssignTest extends React.Component {
     this.state = {
       isAdvancedView: props.userRole !== "teacher" ? true : false,
       assignment: {
-        ...initAssignment,
+        startDate: moment(),
+        openPolicy: "Automatically on Start Date",
+        closePolicy: "Automatically on Due Date",
+        class: [],
+        testType: ASSESSMENT,
         endDate: setTime(props.userRole)
       },
       specificStudents: false

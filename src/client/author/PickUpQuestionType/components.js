@@ -6,7 +6,6 @@ export const RoundDiv = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 0px 0px 15px;
   background-color: ${cardBg};
   border: 1px solid ${cardBorder};
   border-radius: 10px;

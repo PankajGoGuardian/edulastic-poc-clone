@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import React, { Component } from "react";
 import { cloneDeep, get } from "lodash";
 import { withTheme } from "styled-components";
@@ -433,14 +434,14 @@ class ClozeDragDropDisplay extends Component {
     );
 
     return (
-      <div style={{ fontSize }}>
+      <TextWrappedDiv style={{ fontSize }}>
         <QuestionTitleWrapper>
           {showQuestionNumber && !flowLayout ? <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel> : null}
           {!question && questionContent}
         </QuestionTitleWrapper>
         {question && questionContent}
         {answerBox}
-      </div>
+      </TextWrappedDiv>
     );
   }
 }
@@ -512,3 +513,7 @@ ClozeDragDropDisplay.defaultProps = {
 };
 
 export default withTheme(ClozeDragDropDisplay);
+
+const TextWrappedDiv = styled.div`
+  word-break: break-all;
+`;

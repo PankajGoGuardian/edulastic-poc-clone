@@ -19,6 +19,7 @@ import QuestionItem from "../QuestionItem/QuestionItem";
 import QuestionEditModal from "../QuestionEditModal/QuestionEditModal";
 import Section from "../Section/Section";
 import { QuestionsWrapper, AnswerActionsWrapper, AnswerAction } from "./styled";
+import { clearAnswersAction } from "../../../src/actions/answers";
 
 const defaultQuestionValue = {
   [MULTIPLE_CHOICE]: [],
@@ -318,6 +319,13 @@ class Questions extends React.Component {
     checkAnswer("edit");
   };
 
+  handleClear = () => {
+    const { changePreview, removeUserAnswer } = this.props;
+
+    changePreview("clear");
+    removeUserAnswer();
+  };
+
   get currentQuestion() {
     const { currentEditQuestionIndex } = this.state;
     return this.questionList[currentEditQuestionIndex];
@@ -390,6 +398,9 @@ class Questions extends React.Component {
               <AnswerAction active={previewMode === "show"} onClick={this.handleShowAnswer}>
                 Show Answer
               </AnswerAction>
+              <AnswerAction active={previewMode === "clear"} onClick={this.handleClear}>
+                Clear
+              </AnswerAction>
             </AnswerActionsWrapper>
           )}
         </QuestionsWrapper>
@@ -419,7 +430,8 @@ const enhance = compose(
       updateQuestion: updateQuestionAction,
       deleteQuestion: deleteQuestionAction,
       checkAnswer: checkAnswerAction,
-      changePreview: changePreviewAction
+      changePreview: changePreviewAction,
+      removeUserAnswer: clearAnswersAction
     }
   )
 );

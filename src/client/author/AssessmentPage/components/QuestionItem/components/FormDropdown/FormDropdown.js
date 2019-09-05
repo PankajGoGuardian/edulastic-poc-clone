@@ -18,20 +18,9 @@ export default class FormDropdown extends React.Component {
     answer: ""
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentValue: props.answer
-    };
-  }
-
   handleChange = value => {
     const { saveAnswer } = this.props;
-
-    this.setState({ currentValue: value }, () => {
-      saveAnswer([value]);
-    });
+    saveAnswer([value]);
   };
 
   renderView = () => {
@@ -51,13 +40,13 @@ export default class FormDropdown extends React.Component {
   };
 
   renderForm = () => {
-    const { currentValue } = this.state;
     const {
-      question: { options }
+      question: { options },
+      answer
     } = this.props;
 
     return (
-      <Dropdown value={currentValue} onChange={this.handleChange}>
+      <Dropdown value={answer} onChange={this.handleChange}>
         {options[0].map((option, key) => (
           <Select.Option key={`dropdown-form-${option}-${key}`} value={option}>
             {option}

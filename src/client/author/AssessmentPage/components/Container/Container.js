@@ -64,7 +64,7 @@ const buttons = [
   }
 ];
 
-const createWidget = ({ id, type, title }) => ({
+export const createWidget = ({ id, type, title }) => ({
   widgetType: type === "sectionLabel" ? "resource" : "question",
   type,
   title,
@@ -82,7 +82,6 @@ class Container extends React.Component {
     questions: PropTypes.array.isRequired,
     questionsById: PropTypes.object.isRequired,
     updateItemDetailById: PropTypes.func.isRequired,
-    currentTestItem: PropTypes.object.isRequired,
     updateTest: PropTypes.func.isRequired,
     changeView: PropTypes.func.isRequired,
     currentTab: PropTypes.string.isRequired
@@ -107,14 +106,8 @@ class Container extends React.Component {
     changeView(tab);
   };
 
-  handleSave = async (status = "draft") => {
-    const {
-      questions: assessmentQuestions,
-      assessment,
-      currentTestItem,
-      updateItemsDocBasedById,
-      updateTest
-    } = this.props;
+  handleSave = async () => {
+    const { questions: assessmentQuestions, assessment, updateItemsDocBasedById, updateTest } = this.props;
 
     if (!this.validateQuestions(assessmentQuestions)) {
       return;
@@ -127,7 +120,9 @@ class Container extends React.Component {
     const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
     const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
     const updatedTestItem = {
-      ...currentTestItem,
+      ...testItem,
+      public: undefined,
+      authors: undefined,
       version: testItem.version,
       isDocBased: true,
       data: {
@@ -204,12 +199,16 @@ class Container extends React.Component {
   };
 
   handleAssign = () => {
-    const { assessment, history, match } = this.props;
-    const { published } = this.state;
-    if (published && this.validateTest(assessment)) {
-      const { assessmentId } = match.params;
-      if (assessmentId) {
-        history.push(`/author/assignments/${assessmentId}`);
+    const { assessment, history, match, updated } = this.props;
+    const { status } = assessment;
+    if (this.validateTest(test)) {
+      if (status !== statusConstants.PUBLISHED || updated) {
+        this.handlePublishTest(true);
+      } else {
+        const { id } = match.params;
+        if (id) {
+          history.push(`/author/assignments/${id}`);
+        }
       }
     }
   };
@@ -363,7 +362,6 @@ const enhance = compose(
         questions: getQuestionsArraySelector(state),
         creating: getTestsCreatingSelector(state),
         questionsById: getQuestionsSelector(state),
-        currentTestItem: getItemDetailSelector(state),
         currentTab: getViewSelector(state)
       };
     },

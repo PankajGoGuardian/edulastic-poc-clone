@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty, get, without } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
-import { test } from "@edulastic/constants";
+import { test, questionType } from "@edulastic/constants";
 
 import { Content } from "./styled";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
@@ -35,7 +35,7 @@ import {
   getItemsSubjectAndGradeSelector
 } from "../AddItems/ducks";
 import { loadAssignmentsAction } from "../Assign/ducks";
-import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
+import { saveCurrentEditingTestIdAction, updateItemsDocBasedByIdAction } from "../../../ItemDetail/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
@@ -50,6 +50,7 @@ import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
+import { createWidget } from "../../../AssessmentPage/components/Container/Container";
 
 const { getDefaultImage } = testsApi;
 const { statusConstants } = test;
@@ -386,6 +387,72 @@ class Container extends PureComponent {
     }
   };
 
+  validateQuestions = questions => {
+    if (!questions.length) {
+      message.warning("At least one question has to be created before saving assessment");
+      return false;
+    }
+
+    const correctAnswerPicked = questions
+      .filter(question => question.type !== "sectionLabel")
+      .every(question => {
+        const validationValue = get(question, "validation.validResponse.value");
+        if (question.type === "math") {
+          return validationValue.every(value => !isEmpty(value.value));
+        }
+        return !isEmpty(validationValue);
+      });
+
+    if (!correctAnswerPicked) {
+      message.warning("Correct answers have to be chosen for every question");
+      return false;
+    }
+
+    return true;
+  };
+
+  handleDocBasedSave = async () => {
+    const { questions: assessmentQuestions, test: assessment, updateItemsDocBasedById, updateTest } = this.props;
+
+    if (!this.validateQuestions(assessmentQuestions)) {
+      return;
+    }
+
+    const [testItem] = assessment.testItems;
+    const testItemId = typeof testItem === "object" ? testItem._id : testItem;
+    const resourceTypes = [questionType.VIDEO, questionType.PASSAGE];
+
+    const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
+    const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
+    const updatedTestItem = {
+      ...testItem,
+      public: undefined,
+      authors: undefined,
+      version: testItem.version,
+      isDocBased: true,
+      data: {
+        questions,
+        resources
+      },
+      rows: [
+        {
+          tabs: [],
+          dimension: "100%",
+          widgets: assessmentQuestions.map(createWidget)
+        }
+      ],
+      itemLevelScoring: false
+    };
+
+    const newAssessment = {
+      ...assessment,
+      testItems: [{ _id: testItemId, ...updatedTestItem }]
+    };
+
+    await updateItemsDocBasedById(testItemId, updatedTestItem, true, false);
+    updateTest(assessment._id, newAssessment, true);
+  };
+
   validateTest = test => {
     const {
       title,
@@ -508,7 +575,7 @@ class Container extends PureComponent {
           onChangeNav={this.handleNavChange}
           current={current}
           isDocBased={isDocBased}
-          onSave={this.handleSave}
+          onSave={isDocBased ? this.handleDocBasedSave : this.handleSave}
           onShare={this.onShareModalChange}
           onPublish={this.handlePublishTest}
           title={test.title}
@@ -560,6 +627,7 @@ const enhance = compose(
       updateDefaultThumbnail: updateDefaultThumbnailAction,
       setDefaultData: setDefaultTestDataAction,
       publishTest: publishTestAction,
+      updateItemsDocBasedById: updateItemsDocBasedByIdAction,
       clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,

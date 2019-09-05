@@ -146,7 +146,6 @@ class StudentViewContainer extends Component {
       }
       return studentId === userId;
     });
-    console.log("act", currentStudent.questionActivities);
 
     // show the total count.
     const totalNumber = currentStudent.questionActivities.length;

@@ -55,6 +55,8 @@ export const getChecks = answer => {
         acc += options.argument === undefined ? fieldVal : `${fieldVal}=${options.argument}`;
       } else if (key === "field") {
         acc += `${fieldVal}`;
+      } else if (key === "tolerance") {
+        acc += `${key}=${fieldVal}`;
       } else {
         acc += `${key}`;
       }

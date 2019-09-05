@@ -198,7 +198,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
 
 export const ToolbarContainer = styled.div.attrs({
   className: "froala-toolbar-container",
-  toolbarId: props => props.toolbarId
+  toolbarid: props => props.toolbarId
 })`
   position: absolute;
   bottom: 105%;

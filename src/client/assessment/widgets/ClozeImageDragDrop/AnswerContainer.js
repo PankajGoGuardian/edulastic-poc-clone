@@ -85,8 +85,8 @@ const AnswerContainer = ({ answer, height, width, isWrapText }) => {
 AnswerContainer.propTypes = {
   answer: PropTypes.string.isRequired,
   isWrapText: PropTypes.bool.isRequired,
-  height: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired,
-  width: PropTypes.oneOfType(PropTypes.string, PropTypes.number).isRequired
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 export default AnswerContainer;

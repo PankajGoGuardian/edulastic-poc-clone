@@ -1,5 +1,14 @@
 import styled from "styled-components";
-import { mobileWidth, desktopWidth, mediumDesktopWidth, themeColor, textColor } from "@edulastic/colors";
+import {
+  mobileWidth,
+  desktopWidth,
+  mediumDesktopWidth,
+  mobileWidthLarge,
+  themeColor,
+  textColor,
+  boxShadowDefault,
+  white
+} from "@edulastic/colors";
 import Modal from "react-responsive-modal";
 import { Link } from "react-router-dom";
 import { Menu, Affix } from "antd";
@@ -11,20 +20,6 @@ export const Content = styled.div`
   @media (max-width: ${mobileWidth}) {
     display: flex;
     flex-wrap: wrap;
-
-    & > div {
-      &: nth-child(2) {
-        transition: 0.3s;
-        position: fixed;
-        z-index: 999;
-        min-width: 100vw;
-        transform: ${props => (!props.showMobileView ? "translateX(-100vw)" : "translateX(0px)")};
-      }
-      &:last-child {
-        min-width: 100vw;
-        height: 100vh;
-      }
-    }
   }
 `;
 
@@ -182,6 +177,10 @@ export const MenuTitle = styled.div`
   text-transform: uppercase;
   margin-bottom: 15px;
   position: fixed;
+
+  @media (max-width: ${desktopWidth}) {
+    position: relative;
+  }
 `;
 
 export const StyledModal = styled(Modal)``;
@@ -247,6 +246,18 @@ export const StyledModalContainer = styled.div`
   .ant-menu-inline .ant-menu-item:not(:last-child) {
     margin-bottom: 26px;
   }
+
+  @media (max-width: ${desktopWidth}) {
+    padding: 0px;
+    .ant-menu-inline {
+      .ant-menu-item-selected {
+        max-width: 100%;
+      }
+      svg {
+        margin-right: 10px;
+      }
+    }
+  }
 `;
 
 export const MobileButtons = styled.div`
@@ -267,16 +278,21 @@ export const SelectWidget = styled.div`
   font-weight: 600;
   cursor: pointer;
   background: ${themeColor};
-  color: #fff;
+  color: ${white};
   text-transform: uppercase;
   margin-left: auto;
   border-radius: 3px;
   min-width: 170px;
   text-align: center;
+
+  @media (max-width: ${mobileWidthLarge}) {
+    min-width: auto;
+    padding: 0 15px
+  }
 `;
 
 export const BackLink = styled(Link)`
-  background: #fff;
+  background: ${white};
   border-radius: 3px;
   height: 28px;
   font-size: 11px;
@@ -285,6 +301,10 @@ export const BackLink = styled(Link)`
   padding: 0 20px;
   color: ${themeColor};
   text-transform: uppercase;
-  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
+  box-shadow: ${boxShadowDefault};
   cursor: pointer;
+
+  @media (max-width: ${mobileWidthLarge}) {
+    padding: 0 15px;
+  }
 `;

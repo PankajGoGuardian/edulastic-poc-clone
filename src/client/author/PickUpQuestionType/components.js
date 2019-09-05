@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { themeColor, cardBg, cardBorder, largeDesktopWidth, mediumDesktopWidth, mobileWidth } from "@edulastic/colors";
+import { themeColor, cardBg, cardBorder, mediumDesktopWidth } from "@edulastic/colors";
 
 export const RoundDiv = styled.div`
   display: flex;

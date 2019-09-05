@@ -51,7 +51,7 @@ import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
 import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
 import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
-import { validateQuestions } from "../../../AssessmentPage/components/Container/Container";
+import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 
 const { getDefaultImage } = testsApi;
 const { statusConstants } = test;
@@ -391,7 +391,7 @@ class Container extends PureComponent {
   handleDocBasedSave = async () => {
     const { questions: assessmentQuestions, test, updateDocBasedTest } = this.props;
 
-    if (!validateQuestions(assessmentQuestions)) {
+    if (!validateQuestionsForDocBased(assessmentQuestions)) {
       return;
     }
     updateDocBasedTest(test._id, test, true);

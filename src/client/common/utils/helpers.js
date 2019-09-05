@@ -187,3 +187,27 @@ export const getSignOutUrl = url => {
 export const removeSignOutUrl = () => {
   return sessionStorage.removeItem("signOutUrl");
 };
+
+export const validateQuestionsForDocBased = questions => {
+  if (!questions.length) {
+    message.warning("At least one question has to be created before saving assessment");
+    return false;
+  }
+
+  const correctAnswerPicked = questions
+    .filter(question => question.type !== "sectionLabel")
+    .every(question => {
+      const validationValue = get(question, "validation.validResponse.value");
+      if (question.type === "math") {
+        return validationValue.every(value => !isEmpty(value.value));
+      }
+      return !isEmpty(validationValue);
+    });
+
+  if (!correctAnswerPicked) {
+    message.warning("Correct answers have to be chosen for every question");
+    return false;
+  }
+
+  return true;
+};

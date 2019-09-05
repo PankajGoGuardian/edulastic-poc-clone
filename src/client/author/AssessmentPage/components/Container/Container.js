@@ -29,6 +29,7 @@ import Setting from "../../../TestPage/components/Setting";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import { withWindowSizes } from "@edulastic/common";
 import ShareModal from "../../../src/components/common/ShareModal";
+import { validateQuestionsForDocBased } from "../../../../common/utils/helpers";
 
 const { statusConstants } = test;
 
@@ -61,30 +62,6 @@ const buttons = [
     text: "Settings"
   }
 ];
-
-export const validateQuestions = questions => {
-  if (!questions.length) {
-    message.warning("At least one question has to be created before saving assessment");
-    return false;
-  }
-
-  const correctAnswerPicked = questions
-    .filter(question => question.type !== "sectionLabel")
-    .every(question => {
-      const validationValue = get(question, "validation.validResponse.value");
-      if (question.type === "math") {
-        return validationValue.every(value => !isEmpty(value.value));
-      }
-      return !isEmpty(validationValue);
-    });
-
-  if (!correctAnswerPicked) {
-    message.warning("Correct answers have to be chosen for every question");
-    return false;
-  }
-
-  return true;
-};
 
 class Container extends React.Component {
   static propTypes = {
@@ -121,7 +98,7 @@ class Container extends React.Component {
 
   handleSave = async () => {
     const { questions: assessmentQuestions, assessment, updateDocBasedTest } = this.props;
-    if (!validateQuestions(assessmentQuestions)) {
+    if (!validateQuestionsForDocBased(assessmentQuestions)) {
       return;
     }
     updateDocBasedTest(assessment._id, assessment, true);
@@ -308,7 +285,6 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => {
-      // console.log("state in container", state);
       return {
         assessment: getTestEntitySelector(state),
         userId: get(state, "user.user._id", ""),

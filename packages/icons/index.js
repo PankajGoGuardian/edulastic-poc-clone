@@ -173,3 +173,4 @@ export { default as IconArrowLeft } from "./src/IconArrowLeft";
 export { default as IconArrowRight } from "./src/IconArrowRight";
 export { default as IconELogo } from "./src/IconELogo";
 export { default as IconInfo } from "./src/IconInfo";
+export { default as IconDownEmptyArrow } from "./src/IconDownEmptyArrow";

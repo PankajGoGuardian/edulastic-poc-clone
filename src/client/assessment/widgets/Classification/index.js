@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
+import { WithResources } from "@edulastic/common";
+
 import { EDIT, PREVIEW, CLEAR } from "../../constants/constantsForQuestions";
 import { replaceVariables } from "../../utils/variables";
 
@@ -16,14 +18,18 @@ const Classification = props => {
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
-    <Fragment>
+    <WithResources
+      resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
+      fallBack={<span />}
+      onLoaded={() => {}}
+    >
       {view === EDIT && (
         <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
           <EditClassification {...props} />
         </ContentArea>
       )}
       {view === PREVIEW && <ClassificationPreview {...props} item={itemForPreview} />}
-    </Fragment>
+    </WithResources>
   );
 };
 

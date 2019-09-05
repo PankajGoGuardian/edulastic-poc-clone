@@ -70,7 +70,7 @@ export default class MobileAssignment extends React.Component {
     const { assignment, onOpenReleaseScoreSettings } = this.props;
     const [defaultAssignment] = assignment;
 
-    const { testName, className, type, assigned, status, submitted, graded } = defaultAssignment;
+    const { title, thumbnail, className, type, assigned, status, submitted, graded } = defaultAssignment;
 
     const submittedValue = `${submitted || 0} of ${assignment.length}`;
     const expandedRowsProps = {
@@ -80,8 +80,8 @@ export default class MobileAssignment extends React.Component {
 
     return (
       <AssignmentWrapper>
-        <AssignmentThumbnail />
-        <AssignmentTitle>{testName}</AssignmentTitle>
+        <AssignmentThumbnail thumbnail={thumbnail} />
+        <AssignmentTitle>{title}</AssignmentTitle>
         <AssignmentDetailsWrapper>
           <AssignmentDetails title="Class" value={className || "1"} />
           <AssignmentDetails title="Type" value={type || "Assessment"} />

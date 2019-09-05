@@ -64,7 +64,7 @@ export const augmentTestData = (metricInfo = [], testData = []) => {
 
   const groupedByTest = groupBy(testData, "testId");
 
-  return map(metricInfo, metric => {
+  const mappedTests = map(metricInfo, metric => {
     return next(metric, draftMetric => {
       const selectedTestRecords = groupedByTest[metric.testId];
       const selectedTest = head(selectedTestRecords);
@@ -78,6 +78,8 @@ export const augmentTestData = (metricInfo = [], testData = []) => {
       }
     });
   });
+
+  return mappedTests.sort((firstMetric, secondMetric) => firstMetric.assessmentDate - secondMetric.assessmentDate);
 };
 
 export const parseData = (rawData = {}) => {

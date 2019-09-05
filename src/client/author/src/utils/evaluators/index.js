@@ -1,4 +1,5 @@
 import { questionType } from "@edulastic/constants";
+import { evaluateApi } from "@edulastic/api";
 
 import {
   multipleChoice,
@@ -23,6 +24,11 @@ import {
   fractionEditor
 } from "@edulastic/evaluators";
 
+const mathEvaluate = async (data, type) => {
+  // getting evaluation from backend (EV-7432)
+  return await evaluateApi.evaluate(data, type);
+};
+
 // clozeDropDown and ClozeText shares same logic
 const evaluators = {
   [questionType.MULTIPLE_CHOICE]: multipleChoice,
@@ -32,10 +38,9 @@ const evaluators = {
   [questionType.CLOZE_IMAGE_DRAG_DROP]: clozeImageDragDrop,
   [questionType.CLOZE_IMAGE_DROP_DOWN]: clozeImageDropDown,
   [questionType.CLOZE_IMAGE_TEXT]: clozeImageText,
-  // evaluation will handled at the backend
-  // [questionType.MATH]: math,
-  // [questionType.CLOZE_MATH]: clozeMath,
-  // [questionType.EXPRESSION_MULTIPART]: clozeMath,
+  [questionType.MATH]: mathEvaluate,
+  [questionType.CLOZE_MATH]: mathEvaluate,
+  [questionType.EXPRESSION_MULTIPART]: mathEvaluate,
   [questionType.CLOZE_DRAG_DROP]: clozeDragDrop,
   [questionType.HIGHLIGHT_IMAGE]: essayRichText,
   [questionType.SHORT_TEXT]: shortText,

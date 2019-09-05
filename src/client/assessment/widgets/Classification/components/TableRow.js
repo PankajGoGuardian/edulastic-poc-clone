@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable */
+import React, { useLayoutEffect, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { Rnd } from "react-rnd";
@@ -14,6 +15,8 @@ import { ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 import { EDIT } from "../../../constants/constantsForQuestions";
+
+const dropContainerHeightList = [];
 
 const TableRow = ({
   startIndex,
@@ -39,6 +42,8 @@ const TableRow = ({
   setQuestionData,
   rowHeader
 }) => {
+  const wrapperRef = useRef();
+
   const handleRowTitleDragStop = (event, data) => {
     if (setQuestionData) {
       setQuestionData(
@@ -57,6 +62,20 @@ const TableRow = ({
         })
       );
     }
+  };
+
+  const changeWrapperH = () => {
+    const { responseOptions = [] } = item;
+    let maxH = 0;
+    for (let i = 0; i < dropContainerHeightList.length; i += 1) {
+      const { y = 0, height: _h = 0 } = responseOptions[i] || {};
+      const _containerH = y + (_h || dropContainerHeightList[i]);
+      if (maxH < _containerH) {
+        maxH = _containerH;
+      }
+    }
+    const h = maxH > 600 ? maxH : 600;
+    wrapperRef.current.style.height = `${h}px`;
   };
 
   const styles = {
@@ -206,7 +225,31 @@ const TableRow = ({
     );
   }
 
-  return <div style={{ position: "relative", width: "100%", height: "100%", overflowX: "auto" }}>{cols}</div>;
+  useLayoutEffect(() => {
+    if (window.$ && wrapperRef.current) {
+      $(".answer-draggable-wrapper").each(function(index) {
+        const wraperElem = this;
+        const observer = new MutationObserver(function() {
+          setTimeout(() => {
+            dropContainerHeightList[index] = wraperElem.clientHeight;
+            changeWrapperH();
+          });
+        });
+        const config = { childList: true, subtree: true };
+        observer.observe(this, config);
+      });
+    }
+  });
+
+  useEffect(() => {
+    changeWrapperH();
+  }, [item.responseOptions]);
+
+  return (
+    <div ref={wrapperRef} style={{ position: "relative" }}>
+      {cols}
+    </div>
+  );
 };
 
 TableRow.propTypes = {

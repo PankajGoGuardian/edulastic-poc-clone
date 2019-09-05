@@ -410,7 +410,7 @@ Container.propTypes = {
   question: PropTypes.object,
   saveQuestion: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  testItemId: PropTypes.func.isRequired,
+  testItemId: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
   modalItemId: PropTypes.string,
   onModalClose: PropTypes.func,
@@ -420,11 +420,11 @@ Container.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   location: PropTypes.object.isRequired,
   testName: PropTypes.string.isRequired,
-  testId: PropTypes.string.isRequired,
-  toggleModalAction: PropTypes.string.isRequired,
-  savedWindowScrollTop: PropTypes.number.isRequired,
+  toggleModalAction: PropTypes.func.isRequired,
   onSaveScrollTop: PropTypes.func.isRequired,
-  authorQuestions: PropTypes.object
+  savedWindowScrollTop: PropTypes.number,
+  authorQuestions: PropTypes.object,
+  testId: PropTypes.string
 };
 
 Container.defaultProps = {
@@ -434,7 +434,9 @@ Container.defaultProps = {
   navigateToItemDetail: () => {},
   onCompleteItemCreation: () => {},
   onModalClose: () => {},
-  authorQuestions: {}
+  authorQuestions: {},
+  savedWindowScrollTop: 0,
+  testId: ""
 };
 
 const enhance = compose(

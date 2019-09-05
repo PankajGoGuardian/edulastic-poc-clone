@@ -73,6 +73,8 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
         ...questions.map(x => ({
           id: x.id,
           weight: 1,
+          maxScore: get(x, ["validation", "validResponse", "score"], 0),
+          testItemId,
           qids: [x.id],
           qLabel: x.qLabel,
           barLabel: x.barLabel

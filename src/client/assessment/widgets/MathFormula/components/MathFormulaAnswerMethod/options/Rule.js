@@ -77,9 +77,10 @@ const RulePure = ({ syntax, argument, onChange, t }) => {
           <Input
             size="large"
             type="number"
-            value={argument}
+            value={argument || 0}
             onChange={e => onChange("argument", +e.target.value)}
             data-cy="answer-rule-argument-input"
+            min={0}
           />
         </Col>
       )}

@@ -94,7 +94,6 @@ function* evaluateAnswers({ payload }) {
   try {
     // clear previous evaluation
 
-    console.log("evaluatior iss called herE", payload);
     yield put({
       type: CLEAR_ITEM_EVALUATION
     });

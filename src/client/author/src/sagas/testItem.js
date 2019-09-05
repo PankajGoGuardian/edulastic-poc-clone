@@ -23,7 +23,7 @@ import {
 import { removeUserAnswerAction } from "../../../assessment/actions/answers";
 import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
 
-import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
+import { getQuestionsSelector, CHANGE_CURRENT_QUESTION, getCurrentQuestionSelector } from "../../sharedDucks/questions";
 
 function* createTestItemSaga({ payload: { data, testFlow, testId, newPassageItem = false } }) {
   try {
@@ -103,12 +103,11 @@ function* evaluateAnswers({ payload }) {
 
     // User is at the question level
     if (payload === "question") {
-      const currentQuestionId = yield select(state => _get(state, "authorQuestions.current", ""));
-
       const answers = yield select(state => _get(state, "answers", []));
 
-      const questions = yield select(getQuestionsSelector);
-      const { evaluation, score, maxScore } = yield evaluateItem(answers, questions);
+      const question = yield select(getCurrentQuestionSelector);
+
+      const { evaluation, score, maxScore } = yield evaluateItem(answers, { [question.id]: question });
       yield put({
         type: ADD_ITEM_EVALUATION,
         payload: {
@@ -123,10 +122,7 @@ function* evaluateAnswers({ payload }) {
       if (previewMode === CHECK) {
         message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
       }
-    }
-
-    // User is at the item level
-    else {
+    } else {
       const answers = yield select(state => _get(state, "answers", {}));
       const { itemLevelScore, itemLevelScoring = false } = yield select(state => state.itemDetail.item);
       const questions = yield select(getQuestionsSelector);

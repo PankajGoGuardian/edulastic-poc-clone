@@ -305,6 +305,7 @@ const JoinSchool = ({
                   <>
                     {schoolTeachers.length > 0 ? <TeacherCarousel teachers={schoolTeachers} /> : null}
                     <ProceedBtn
+                      data-cy="proceed"
                       onClick={handleSubmit}
                       disabled={createSchoolRequestPending || updateUserWithSchoolLoading}
                     >

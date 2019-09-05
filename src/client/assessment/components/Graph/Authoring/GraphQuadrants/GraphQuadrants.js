@@ -163,7 +163,7 @@ class GraphQuadrants extends Component {
   };
 
   render() {
-    const { t, graphData, fillSections, cleanSections } = this.props;
+    const { t, graphData, fillSections, cleanSections, fontSize } = this.props;
     const { canvas } = graphData;
 
     return (
@@ -183,6 +183,7 @@ class GraphQuadrants extends Component {
             firstFocus={graphData.firstMount}
             placeholder={t("component.graphing.question.enteryourquestion")}
             border="border"
+            fontSize={fontSize}
           />
         </Question>
         <Question

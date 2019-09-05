@@ -181,6 +181,7 @@ export const StyledDragHandle = styled.div`
 `;
 
 export const QuestionTitleWrapper = styled.div`
+  font-size: ${props => props.theme.fontSize};
   display: flex;
 `;
 

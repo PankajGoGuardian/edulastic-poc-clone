@@ -18,20 +18,9 @@ export default class FormMath extends React.Component {
     answer: ""
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentValue: props.answer
-    };
-  }
-
   handleChange = value => {
     const { saveAnswer } = this.props;
-
-    this.setState({ currentValue: value }, () => {
-      saveAnswer(value);
-    });
+    saveAnswer(value);
   };
 
   renderView = () => {
@@ -52,20 +41,14 @@ export default class FormMath extends React.Component {
   };
 
   renderForm = () => {
-    const { currentValue } = this.state;
     const {
-      question: { numberPad, symbols }
+      question: { numberPad, symbols },
+      answer
     } = this.props;
 
     return (
       <ThemeProvider theme={themes.default}>
-        <MathAnswer
-          onInput={this.handleChange}
-          numberPad={numberPad}
-          symbols={symbols}
-          value={currentValue}
-          fullWidth
-        />
+        <MathAnswer onInput={this.handleChange} numberPad={numberPad} symbols={symbols} value={answer} fullWidth />
       </ThemeProvider>
     );
   };

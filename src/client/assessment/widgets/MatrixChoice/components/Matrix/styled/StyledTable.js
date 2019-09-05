@@ -6,7 +6,7 @@ import { fonts } from "@edulastic/constants";
 export const StyledTable = styled(Table)`
   table {
     width: 100%;
-    font-size: ${fonts.previewFontSize || (props => props.fontSize)};
+    font-size: ${props => props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
     border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
 

@@ -45,7 +45,6 @@ export const CheckboxContainer = styled.div`
       align-self: flex-start;
       
       + div {
-        font-size: ${fonts.previewFontSize};
         font-weight: ${fonts.previewFontWeight || params.fontWeight};
         color: ${secondaryTextColor};
 

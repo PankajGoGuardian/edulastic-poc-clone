@@ -240,7 +240,7 @@ class Item extends Component {
     const { isOpenedDetails, isShowPreviewModal = false, selectedId, passageConfirmModalVisible } = this.state;
     const owner = item.authors && item.authors.some(x => x._id === userId);
     const isEditable = owner;
-    const itemType = getQuestionType(item);
+    const itemTypes = getQuestionType(item);
     return (
       <Container className="fr-view">
         {isShowPreviewModal && (
@@ -303,11 +303,11 @@ class Item extends Component {
           <TypeCategory>
             {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
             <CategoryContent>
-              {itemType && (
+              {itemTypes.map(itemType => (
                 <Label>
                   <LabelText>{itemType}</LabelText>
                 </Label>
-              )}
+              ))}
             </CategoryContent>
           </TypeCategory>
           {windowWidth > MAX_TAB_WIDTH && <Categories>{this.renderDetails()}</Categories>}

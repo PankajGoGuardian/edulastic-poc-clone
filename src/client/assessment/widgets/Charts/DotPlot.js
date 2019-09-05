@@ -20,7 +20,7 @@ const DotPlot = ({
   toggleBarDragging,
   deleteMode
 }) => {
-  const { width, height, margin } = gridParams;
+  const { width, height, margin, yAxisMax, yAxisMin, stepSize } = gridParams;
 
   const { step } = getGridVariables(data, gridParams, true);
 
@@ -40,7 +40,16 @@ const DotPlot = ({
 
   const getPolylinePoints = () =>
     localData
-      .map((dot, index) => `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, gridParams) + 20}`)
+      .map(
+        (dot, index) =>
+          `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, {
+            height: height / 2,
+            margin,
+            yAxisMax,
+            yAxisMin,
+            stepSize
+          }) + 20}`
+      )
       .join(" ");
 
   const getActivePoint = index =>
@@ -100,7 +109,7 @@ const DotPlot = ({
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
+      <Line x1={0} y1={height / 2 - margin + 20} x2={width - margin} y2={height / 2 - margin + 20} strokeWidth={1} />
 
       <Circles
         saveAnswer={active => saveAnswer(localData, active)}

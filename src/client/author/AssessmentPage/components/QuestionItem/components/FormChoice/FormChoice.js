@@ -20,18 +20,10 @@ export default class FormChoice extends React.Component {
     answer: []
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentValue: props.answer
-    };
-  }
-
   handleSelect = nextValue => () => {
-    const { currentValue } = this.state;
     const {
-      question: { multipleResponses: multipleResponses }
+      question: { multipleResponses: multipleResponses },
+      answer
     } = this.props;
 
     if (!multipleResponses) {
@@ -39,8 +31,8 @@ export default class FormChoice extends React.Component {
       return;
     }
 
-    const valueIndex = currentValue.findIndex(v => v === nextValue);
-    const toggledValue = [...currentValue];
+    const valueIndex = answer.findIndex(v => v === nextValue);
+    const toggledValue = [...answer];
 
     if (valueIndex > -1) {
       toggledValue.splice(valueIndex, 1);
@@ -54,10 +46,7 @@ export default class FormChoice extends React.Component {
 
   saveValue = currentValue => {
     const { saveAnswer } = this.props;
-
-    this.setState({ currentValue }, () => {
-      saveAnswer(currentValue);
-    });
+    saveAnswer(currentValue);
   };
 
   renderView = () => {
@@ -81,19 +70,19 @@ export default class FormChoice extends React.Component {
   };
 
   renderForm = () => {
-    const { currentValue } = this.state;
     const {
       question: { options, multipleResponses: multipleResponses },
       evaluation,
-      view
+      view,
+      answer
     } = this.props;
 
     const getCorrect = value => {
       if (!multipleResponses) {
-        return currentValue.includes(value) && evaluation[0];
+        return answer.includes(value) && evaluation[0];
       }
 
-      const valueIndex = currentValue.findIndex(item => item === value);
+      const valueIndex = answer.findIndex(item => item === value);
 
       if (valueIndex > -1) {
         return evaluation[valueIndex];
@@ -102,13 +91,12 @@ export default class FormChoice extends React.Component {
       return false;
     };
     const optionChunks = chunk(options, 4);
-
     return optionChunks.map((items, chunkKey) => (
       <QuestionChunk key={`form-choice-chunk-${chunkKey}`}>
         {items.map(({ label, value }, key) => (
           <QuestionOption
             key={`form-${label}-${key}`}
-            selected={currentValue.includes(value)}
+            selected={answer.includes(value)}
             correct={evaluation && getCorrect(value)}
             checked={!isUndefined(evaluation) && view !== "clear"}
             onClick={this.handleSelect(value)}

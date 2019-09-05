@@ -420,7 +420,8 @@ const enhance = compose(
         scratchPad: state["itemDetail"]["item"]
           ? state.userWork.present[state["itemDetail"]["item"]["_id"]] || null
           : null,
-        itemDetail: state["itemDetail"]
+        itemDetail: state["itemDetail"],
+        answersById: state.answers
       };
     },
     {

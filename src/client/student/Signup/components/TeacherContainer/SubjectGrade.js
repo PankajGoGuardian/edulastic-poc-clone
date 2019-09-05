@@ -137,6 +137,7 @@ class SubjectGrade extends React.Component {
                       rules: [{ required: true, message: "Grade is not selected" }]
                     })(
                       <GradeSelect
+                        data-cy="grade"
                         optionFilterProp="children"
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -161,6 +162,7 @@ class SubjectGrade extends React.Component {
                       rules: [{ required: true, message: "Subject Area is not selected" }]
                     })(
                       <GradeSelect
+                        data-cy="subject"
                         mode="multiple"
                         size="large"
                         placeholder="Select a subject"
@@ -180,6 +182,7 @@ class SubjectGrade extends React.Component {
                       rules: [{ required: false, message: "Standard Area is not selected" }]
                     })(
                       <GradeSelect
+                        data-cy="standardSet"
                         optionFilterProp="children"
                         filterOption
                         size="large"
@@ -196,7 +199,7 @@ class SubjectGrade extends React.Component {
                     )}
                   </Form.Item>
 
-                  <ProceedBtn type="primary" htmlType="submit" disabled={saveSubjectGradeloading}>
+                  <ProceedBtn data-cy="getStarted" type="primary" htmlType="submit" disabled={saveSubjectGradeloading}>
                     Get Started
                   </ProceedBtn>
                 </SelectForm>

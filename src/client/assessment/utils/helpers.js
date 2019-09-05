@@ -2,7 +2,7 @@ import { groupBy, difference, isEmpty } from "lodash";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-export const getFontSize = (fontSize, withRem = false) => {
+export const getFontSize = (fontSize, withRem = true) => {
   switch (fontSize) {
     case "small":
       return withRem ? "0.8rem" : "11px";

@@ -53,6 +53,7 @@ import AudioControls from "../AudioControls";
 import StudentReportFeedback from "../../student/TestAcitivityReport/components/StudentReportFeedback";
 
 import ItemDetailContext, { COMPACT, DEFAULT } from "@edulastic/common/src/contexts/ItemDetailContext";
+import { getFontSize } from "../utils/helpers";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -337,7 +338,7 @@ class QuestionWrapper extends Component {
         ]}
         fallBack={<span />}
       >
-        <ThemeProvider theme={{ ...themes.default, fontSize: get(data, "uiStyle.fontsize", "normal") }}>
+        <ThemeProvider theme={{ ...themes.default, fontSize: getFontSize(get(data, "uiStyle.fontsize", "normal")) }}>
           <>
             {canShowPlayer ? (
               <AudioControls

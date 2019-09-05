@@ -7,6 +7,7 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import utils from "../../common/utils";
+import { PrevColor } from "./styled";
 
 export const ElementSettingsMenu = ({ element, handleClose, advancedElementSettings, showColorPicker }) => {
   if (!element) {
@@ -63,8 +64,9 @@ export const ElementSettingsMenu = ({ element, handleClose, advancedElementSetti
           </Fragment>
         )}
         {showColorPicker && (
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ display: "flex", marginBottom: "20px" }}>
             <ColorPicker onChange={value => handleColorChange(value.color)} animation="slide-up" color={elementColor} />
+            <PrevColor color={element.baseColor} />
           </div>
         )}
         <Row>

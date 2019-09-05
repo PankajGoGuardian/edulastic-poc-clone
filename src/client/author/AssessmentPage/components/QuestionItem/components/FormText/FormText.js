@@ -17,20 +17,9 @@ export default class FormText extends React.Component {
     answer: ""
   };
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentValue: props.answer
-    };
-  }
-
   handleChange = ({ target: { value } }) => {
     const { saveAnswer } = this.props;
-
-    this.setState({ currentValue: value }, () => {
-      saveAnswer(value);
-    });
+    saveAnswer(value);
   };
 
   renderView = () => {
@@ -50,8 +39,8 @@ export default class FormText extends React.Component {
   };
 
   renderForm = () => {
-    const { currentValue } = this.state;
-    return <Input size="large" value={currentValue} onChange={this.handleChange} />;
+    const { answer } = this.props;
+    return <Input size="large" value={answer} onChange={this.handleChange} />;
   };
 
   renderAnswerCreateForm = () => {

@@ -69,6 +69,7 @@ class AxisSegments extends Component {
             value={stimulus}
             firstFocus={firstMount}
             border="border"
+            fontSize={graphData.numberlineAxis.fontSize + "px"}
           />
         </Question>
 

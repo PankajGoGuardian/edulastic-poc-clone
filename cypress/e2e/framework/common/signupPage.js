@@ -51,7 +51,15 @@ class SignupPage {
       .clear()
       .type(password);
 
-  clickOnSignupButton = () => cy.get(`[data-cy=signup]`).click();
+  clickOnSignupButton = () => {
+    cy.route("POST", "**/signup").as("signup");
+    cy.get(`[data-cy=signup]`).click();
+    cy.wait("@signup").then(xhr => {
+      const { _id, role, email } = xhr.response.body.result;
+      console.log("user created with _id : ", _id);
+      cy.saveUserDetailToDelete({ role, email, _id });
+    });
+  };
 
   fillStudentSignupForm(code, name, email, password) {
     this.setCode(code);
@@ -66,12 +74,10 @@ class SignupPage {
     this.setEmail(email);
     this.setPassword(password);
     this.clickOnSignupButton();
+    cy.wait("@schoolSearch");
   };
 
   searchAndSelectSchool = school => {
-    cy.server();
-    cy.route("POST", "**schools").as("schoolSearch");
-    cy.wait("@schoolSearch");
     cy.get('[placeholder="Search school by Zip, name or City"]').type(school);
     cy.wait("@schoolSearch");
     cy.get(".ant-select-dropdown-menu-item")

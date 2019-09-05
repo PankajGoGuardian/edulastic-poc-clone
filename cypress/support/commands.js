@@ -81,7 +81,10 @@ Cypress.Commands.add("scrollPageAndMatchImageSnapshots", scrollOffset => {
   });
 });
 
-Cypress.Commands.add("clearToken", () => window.localStorage.clear());
+Cypress.Commands.add("clearToken", () => {
+  window.localStorage.clear();
+  window.sessionStorage.clear();
+});
 
 Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username, password = "snapwiz") => {
   const user = {
@@ -90,6 +93,7 @@ Cypress.Commands.add("setToken", (email = DEFAULT_USERS.teacher.username, passwo
 
   user.username = email;
   window.localStorage.clear();
+  window.sessionStorage.clear();
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
@@ -113,7 +117,7 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   const postData = {};
   postData.username = !email ? (role === "teacher" ? DEFAULT_USERS.teacher.email : DEFAULT_USERS.student.email) : email;
   postData.password = password;
-  window.localStorage.clear();
+  cy.clearToken();
   /* cy.request({
           url: `${BASE_URL}/auth/login`,
           method: 'POST',

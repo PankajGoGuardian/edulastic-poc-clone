@@ -6,6 +6,7 @@ import { getAccessToken } from "../../packages/api/src/utils/Storage";
 const BASE_URL = Cypress.config("API_URL");
 const fixtureFolderPath = "cypress/fixtures";
 const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData.json`;
+const daCredential = { username: "da.automation@snapwiz.com", password: "automation" };
 
 Cypress.Commands.add("createTestData", () => {
   let studentsAttemptJson;
@@ -192,10 +193,52 @@ Cypress.Commands.add("deleteTestData", () => {
         });
         delete testData.tests;
       }
+
+      cy.setToken(daCredential.username, daCredential.password).then(() => {
+        // archive users
+        if (testData.users) {
+          Object.keys(testData.users).forEach(userType => {
+            const deleteBody = {};
+            deleteBody.role = userType;
+            deleteBody.userIds = testData.users[userType];
+            cy.deleteUsers({ authToken: getAccessToken(), deleteBody });
+          });
+          delete testData.users;
+        }
+      });
       // TODO : add other collections API
     } else testData = {};
     cy.writeFile(deleteTestDataFile, testData).then(json => {
       expect(Object.keys(json).length).to.equal(0);
     });
+  });
+});
+
+Cypress.Commands.add("saveUserDetailToDelete", userJson => {
+  if (userJson) {
+    cy.readFile(`${deleteTestDataFile}`).then(json => {
+      if (!json.users) json.users = {};
+      if (!json.users[userJson.role]) json.users[userJson.role] = [];
+      json.users[userJson.role].push(userJson._id);
+      cy.writeFile(`${deleteTestDataFile}`, json);
+    });
+  }
+});
+
+Cypress.Commands.add("deleteUsers", users => {
+  cy.request({
+    url: `${BASE_URL}/user`,
+    method: "DELETE",
+    headers: {
+      Authorization: users.authToken,
+      "Content-Type": "application/json"
+    },
+    body: users.deleteBody,
+    failOnStatusCode: false
+  }).then(({ status }) => {
+    if (status !== 403) {
+      expect(status).to.eq(200);
+      console.log("users deleted with _id :", users.deleteBody.userIds);
+    } else console.log("API forbidden , for users ", JSON.stringify(users));
   });
 });

@@ -48,6 +48,8 @@ import Setting from "../Setting";
 
 import { testsApi } from "@edulastic/api";
 import { themeColor } from "@edulastic/colors";
+import Worksheet from "../../../AssessmentPage/components/Worksheet/Worksheet";
+import { getQuestionsSelector, getQuestionsArraySelector } from "../../../sharedDucks/questions";
 
 const { getDefaultImage } = testsApi;
 const { statusConstants } = test;
@@ -260,15 +262,23 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { test, setData, rows, isTestLoading, userId, match = {}, testStatus } = this.props;
+    const { test, setData, rows, isTestLoading, userId, match = {}, testStatus, questions, questionsById } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
     const { params = {} } = match;
     const { current, editEnable } = this.state;
-    const { authors } = test;
+    const { authors, isDocBased, docUrl, annotations, pageStructure } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     const isEditable = owner && (editEnable || testStatus === statusConstants.DRAFT);
+
+    const props = {
+      docUrl,
+      annotations,
+      questions,
+      questionsById,
+      pageStructure
+    };
 
     switch (current) {
       case "addItems":
@@ -296,7 +306,9 @@ class Container extends PureComponent {
           />
         );
       case "review":
-        return (
+        return isDocBased ? (
+          <Worksheet key="review" review {...props} />
+        ) : (
           <Review
             test={test}
             rows={rows}
@@ -318,6 +330,8 @@ class Container extends PureComponent {
             owner={owner}
           />
         );
+      case "worksheet":
+        return <Worksheet key="worksheet" {...props} />;
       case "assign":
         return <Assign test={test} setData={setData} current={current} />;
       default:
@@ -466,7 +480,7 @@ class Container extends PureComponent {
   render() {
     const { creating, windowWidth, test, testStatus, userId, updated } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status, authors, grades, subjects, testItems } = test;
+    const { _id: testId, status, authors, grades, subjects, testItems, isDocBased } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
@@ -493,6 +507,7 @@ class Container extends PureComponent {
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}
+          isDocBased={isDocBased}
           onSave={this.handleSave}
           onShare={this.onShareModalChange}
           onPublish={this.handlePublishTest}
@@ -526,6 +541,8 @@ const enhance = compose(
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       user: getUserSelector(state),
+      questions: getQuestionsArraySelector(state),
+      questionsById: getQuestionsSelector(state),
       createdItems: getTestCreatedItemsSelector(state),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),

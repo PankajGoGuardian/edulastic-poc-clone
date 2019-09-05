@@ -86,7 +86,7 @@ const multipleChoiceData = {
 const createQuestion = (type, index) => ({
   id: uuid(),
   qIndex: index,
-  title: `${type} - standart`,
+  title: `${type} - standard`,
   type,
   options: defaultQuestionOptions[type],
   validation: {

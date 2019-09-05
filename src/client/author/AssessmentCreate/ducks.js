@@ -167,6 +167,7 @@ function* createAssessmentSaga({ payload }) {
           id: user._id,
           name
         },
+        isDocBased: true,
         testItems: [item],
         docUrl: fileURI,
         releaseScore: "DONT_RELEASE",

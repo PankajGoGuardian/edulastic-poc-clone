@@ -198,6 +198,7 @@ export const createBlankTest = () => ({
   maxAnswerChecks: 0,
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
+  isDocBased: false,
   status: "draft",
   thumbnail: defaultImage,
   createdBy: {
@@ -593,10 +594,6 @@ function* updateTestSaga({ payload }) {
       if (!payload.assignFlow) {
         yield call(message.success, "Test saved as Draft");
       }
-    }
-
-    if (payload.updateLocal) {
-      yield put(setTestDataAction(payload.data));
     }
   } catch (err) {
     const errorMessage = "Update test is failing";

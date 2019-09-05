@@ -20,7 +20,7 @@ import {
   getTestsCreatingSelector
 } from "../../../TestPage/ducks";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
-import { getItemDetailByIdAction, updateItemDetailByIdAction } from "../../../src/actions/itemDetail";
+import { getItemDetailByIdAction } from "../../../src/actions/itemDetail";
 import { changeViewAction } from "../../../src/actions/view";
 import { getItemDetailSelector } from "../../../src/selectors/itemDetail";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -30,6 +30,7 @@ import Setting from "../../../TestPage/components/Setting";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import { withWindowSizes } from "@edulastic/common";
 import ShareModal from "../../../src/components/common/ShareModal";
+import { updateItemsDocBasedByIdAction } from "../../../ItemDetail/ducks";
 
 const { statusConstants } = test;
 
@@ -101,27 +102,17 @@ class Container extends React.Component {
     getDefaultTestSettings();
   }
 
-  componentWillReceiveProps(next) {
-    const { receiveItemDetailById, assessment } = this.props;
-
-    if (!assessment._id && next.assessment._id) {
-      const [testItem] = next.assessment.testItems;
-      const testItemId = typeof testItem === "object" ? testItem._id : testItem;
-      receiveItemDetailById(testItemId);
-    }
-  }
-
   handleChangeCurrentTab = tab => () => {
     const { changeView } = this.props;
     changeView(tab);
   };
 
-  handleSave = (status = "draft") => {
+  handleSave = async (status = "draft") => {
     const {
       questions: assessmentQuestions,
       assessment,
       currentTestItem,
-      updateItemDetailById,
+      updateItemsDocBasedById,
       updateTest
     } = this.props;
 
@@ -135,13 +126,11 @@ class Container extends React.Component {
 
     const resources = assessmentQuestions.filter(q => resourceTypes.includes(q.type));
     const questions = assessmentQuestions.filter(q => !resourceTypes.includes(q.type));
-
     const updatedTestItem = {
       ...currentTestItem,
-      authors: undefined,
-      public: undefined,
+      version: testItem.version,
+      isDocBased: true,
       data: {
-        ...currentTestItem.data,
         questions,
         resources
       },
@@ -157,11 +146,12 @@ class Container extends React.Component {
 
     const newAssessment = {
       ...assessment,
+      testItems: [{ _id: testItemId, ...updatedTestItem }],
       status
     };
 
+    await updateItemsDocBasedById(testItemId, updatedTestItem, true, false);
     updateTest(assessment._id, newAssessment, true);
-    updateItemDetailById(testItemId, updatedTestItem, true, false);
     this.setState({ saved: true, published: false });
   };
 
@@ -365,7 +355,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => {
-      console.log("state in container", state);
+      // console.log("state in container", state);
       return {
         assessment: getTestEntitySelector(state),
         userId: get(state, "user.user._id", ""),
@@ -380,7 +370,7 @@ const enhance = compose(
     {
       receiveTestById: receiveTestByIdAction,
       receiveItemDetailById: getItemDetailByIdAction,
-      updateItemDetailById: updateItemDetailByIdAction,
+      updateItemsDocBasedById: updateItemsDocBasedByIdAction,
       setTestData: setTestDataAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
       updateTest: updateTestAction,

@@ -11,10 +11,24 @@ export const getParagraphsArray = initialArr =>
     active: true
   }));
 
-export const getSentencesArray = initialArr =>
-  (initialArr.join("").match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g) || [])
-    .map(el => ({ value: `${el}`, active: true }))
+export const getSentencesArray = initialArr => {
+  const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
+  let i = 0;
+  return (
+    initialArr
+      .join("")
+      .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
+      .match(/(.*?)(([.]+(<br\/>)*)|((<br\/>)+))+/g) || []
+  )
+    .map(el => {
+      if (mathArray && el.indexOf("<span></span>") !== -1) {
+        el = el.replace("<span></span>", mathArray[i]);
+        i++;
+      }
+      return { value: `${el}`, active: true };
+    })
     .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
+};
 
 export const getWordsArray = initialArr => {
   const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);

@@ -216,7 +216,7 @@ class Assignments extends Component {
         <Container>
           <FlexContainer>
             <Main>
-              {window.innerWidth >= tabletWidth && (
+              {window.innerWidth >= tabletWidth ? (
                 <>
                   {showFilter && (
                     <LeftWrapper>
@@ -265,8 +265,7 @@ class Assignments extends Component {
                     </StyledCard>
                   </TableWrapper>
                 </>
-              )}
-              {window.innerWidth < tabletWidth && (
+              ) : (
                 <MobileTableList
                   assignmentsByTestId={assignmentsByTestId}
                   tests={tests}

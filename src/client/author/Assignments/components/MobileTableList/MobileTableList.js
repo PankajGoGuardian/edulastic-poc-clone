@@ -4,16 +4,16 @@ import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 
 import MobileAssignment from "./components/MobileAssignment/MobileAssignment";
-import { Container, MobilePagination, MobilePaginationWrapper } from "./styled";
+import { Container, MobilePagination, MobilePaginationWrapper, ContentWrapper } from "./styled";
 
 class MobileTableList extends Component {
   static propTypes = {
-    assignments: PropTypes.array,
+    tests: PropTypes.array,
     onOpenReleaseScoreSettings: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    assignments: []
+    tests: []
   };
 
   state = {
@@ -29,8 +29,8 @@ class MobileTableList extends Component {
   }
 
   get totalAssignments() {
-    const { assignments } = this.props;
-    return assignments.length;
+    const { tests } = this.props;
+    return tests.length;
   }
 
   handleSetContainerRef = ref => {
@@ -115,32 +115,39 @@ class MobileTableList extends Component {
   };
 
   renderItem = (item, key) => {
-    const { onOpenReleaseScoreSettings } = this.props;
-    return <MobileAssignment key={key} assignment={item} onOpenReleaseScoreSettings={onOpenReleaseScoreSettings} />;
+    const { onOpenReleaseScoreSettings, assignmentsByTestId } = this.props;
+    return (
+      <MobileAssignment
+        key={key}
+        assignment={assignmentsByTestId[item._id]}
+        onOpenReleaseScoreSettings={onOpenReleaseScoreSettings}
+      />
+    );
   };
 
   render() {
     const { currentItem } = this.state;
-    const { assignments } = this.props;
+    const { tests } = this.props;
 
     const amountOfVisibleItems = 3;
     const startItemIndex = currentItem === 0 ? currentItem : currentItem - 1;
 
     // render only `amountOfVisibleItems` assignments simultaneously
     // in order to prevent performance issues when there are hundreds of items
-    const currentAssignments = assignments.slice(0, startItemIndex + amountOfVisibleItems);
     const currentPage = currentItem + 1;
 
     return (
-      <div>
-        <Container
-          onTouchStart={this.handleTouchStart}
-          onTouchMove={this.handleTouchMove}
-          onTouchEnd={this.handleTouchEnd}
-          innerRef={this.handleSetContainerRef}
-        >
-          {currentAssignments.map(this.renderItem)}
-        </Container>
+      <ContentWrapper>
+        <div>
+          <Container
+            onTouchStart={this.handleTouchStart}
+            onTouchMove={this.handleTouchMove}
+            onTouchEnd={this.handleTouchEnd}
+            innerRef={this.handleSetContainerRef}
+          >
+            {tests.map(this.renderItem)}
+          </Container>
+        </div>
         <MobilePaginationWrapper>
           <MobilePagination
             defaultPageSize={1}
@@ -152,7 +159,7 @@ class MobileTableList extends Component {
             hideOnSinglePage
           />
         </MobilePaginationWrapper>
-      </div>
+      </ContentWrapper>
     );
   }
 }

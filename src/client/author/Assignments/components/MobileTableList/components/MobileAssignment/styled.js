@@ -7,28 +7,23 @@ import { BtnAction } from "../../../TableList/styled";
 
 export const AssignmentThumbnail = styled.div`
   width: calc(100vw - 42px - 82px);
-  height: 48px;
-  background: ${themeColor};
+  height: 50px;
+  background: ${({ thumbnail }) => `url(${thumbnail})` || themeColor};
+  background-size: cover;
+  background-position: center left;
   border-radius: 5px;
-  margin-bottom: 19px;
+  margin-bottom: 20px;
   text-align: center;
   display: inline-block;
 `;
 
 export const AssignmentWrapper = styled(Card)`
-  padding: 16px 21px 25px 21px;
+  padding: 20px;
   text-align: center;
-
-  &:first-child {
-    margin-left: 20px;
-  }
+  margin-left: 20px;
 
   &:last-child {
     margin-right: 26px;
-  }
-
-  &:not(:first-child) {
-    margin-left: 20px;
   }
 
   .ant-card-body {
@@ -60,7 +55,7 @@ export const ExpandedRow = styled.div`
 `;
 
 export const ExpandRowWrapper = styled.div`
-  display: flex;
+  display: ${props => (props.expanded ? "flex" : "none")};
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -69,7 +64,6 @@ export const ExpandRowWrapper = styled.div`
   overflow: hidden;
   height: ${props =>
     props.animationEnabled ? (props.expanded ? (props.doubleRow ? "83px" : "49px") : "15px") : "15px"};
-  opacity: ${props => (props.expanded ? "1" : "0")};
   pointer-events: ${props => (props.expanded ? "all" : "none")};
   transition: all 200ms ease-out;
 
@@ -105,7 +99,8 @@ export const ExpandButton = styled.p`
 
   svg {
     width: 12px;
-    transform: ${props => (props.expanded ? "rotate(90deg)" : "rotate(-90deg)")};
+    fill: ${themeColor};
+    transform: ${props => (props.expanded ? "rotate(180deg)" : "rotate(0deg)")};
   }
 `;
 

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Table, Button } from "antd";
 import { testActivity } from "@edulastic/constants";
+import { IconDownEmptyArrow } from "@edulastic/icons";
 import {
   mobileWidth,
   mediumDesktopWidth,
@@ -346,6 +347,6 @@ export const ExpandedTable = styled(Table)`
   }
 `;
 
-export const IconExpand = styled.div`
+export const IconExpand = styled(IconDownEmptyArrow)`
   cursor: pointer;
 `;

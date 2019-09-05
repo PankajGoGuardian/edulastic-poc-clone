@@ -146,9 +146,10 @@ class StudentViewContainer extends Component {
       }
       return studentId === userId;
     });
-    const totalNumber = currentStudent.questionActivities.filter(
-      x => !x.scoringDisabled && !x.disabled && (!x.notStarted && !(x.skipped && !x.score))
-    ).length;
+    console.log("act", currentStudent.questionActivities);
+
+    // show the total count.
+    const totalNumber = currentStudent.questionActivities.length;
 
     const correctNumber = currentStudent.questionActivities.filter(x => x.score === x.maxScore && x.score > 0).length;
 

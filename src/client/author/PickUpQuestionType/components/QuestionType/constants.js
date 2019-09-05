@@ -65,6 +65,7 @@ import GRGraphing from "../../../src/assets/graphing/graphing.svg";
 import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant.svg";
 import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.svg";
 import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
+import GRFractionEditor from "../../../src/assets/graphing/fraction-editor.svg";
 
 // Charts
 import LinePlot from "../../../src/assets/charts/line-plot.svg";
@@ -2132,7 +2133,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: "graphing",
-      cardImage: GRGraphing,
+      cardImage: GRFractionEditor,
       stimulus: "",
       data: {
         title: "Fraction Editor",

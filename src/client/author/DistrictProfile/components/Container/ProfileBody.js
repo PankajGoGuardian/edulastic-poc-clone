@@ -2,6 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import produce from "immer";
+import { omit, map } from "lodash";
 import { Layout, Form, Input, Button, Icon, Select, Tag } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -163,10 +165,13 @@ class ProfileBody extends React.Component {
 
   handleSaveStandardSets = () => {
     const { updateInterestedCurriculums, user } = this.props;
+
+    const updatedInterestedCurriculums = map(user.orgData.interestedCurriculums, obj => omit(obj, ["orgType"]));
+
     const standardsData = {
       orgId: user._id,
       orgType: "teacher",
-      curriculums: user.orgData.interestedCurriculums
+      curriculums: updatedInterestedCurriculums
     };
     updateInterestedCurriculums(standardsData);
     this.setState({ showSaveStandSetsBtn: false });

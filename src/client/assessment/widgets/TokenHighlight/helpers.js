@@ -79,23 +79,8 @@ export const getWordsArray = initialArr => {
     .map(el => ({ value: `${el}`, active: true }));
 };
 
-export const getCustomArray = initialArr => {
-  const mathArray = initialArr.join("").match(/<span(.*?)class="input__math"(.*?)>/g);
-  let i = 0;
-  return [
-    initialArr
-      .join("")
-      .replace("&nbsp;", " ")
-      .replace(/<span(.*?)class="input__math"(.*?)>/g, "<span></span>")
-      .replace(/<br>/g, "")
-  ].map(el => {
-    if (mathArray && el.indexOf("<span></span>") !== -1) {
-      el = el.replace("<span></span>", mathArray[i]);
-      i++;
-    }
-    return { value: `${el}`, active: false };
-  });
-};
+export const getCustomArray = initialArr =>
+  [initialArr.join("").replace("&nbsp;", " ")].map(el => ({ value: `${el}`, active: false }));
 
 export const getCustomTokenTemplate = tokens => {
   const template = tokens.map((token, index) => {

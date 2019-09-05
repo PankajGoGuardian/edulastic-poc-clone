@@ -183,6 +183,9 @@ class ClassQuestions extends Component {
             return { ...question, ...label };
           })
           .filter(x => x);
+        if (!questions.length) {
+          return false;
+        }
         const resources = data.resources || [];
         questions = [...questions, ...resources];
         return { ...others, rows, data: { questions } };

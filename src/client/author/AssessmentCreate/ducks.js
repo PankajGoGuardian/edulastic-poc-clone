@@ -16,14 +16,17 @@ import { getUserSelector } from "../src/selectors/user";
 export const CREATE_ASSESSMENT_REQUEST = "[assessmentPage] create assessment request";
 export const CREATE_ASSESSMENT_SUCCESS = "[assessmentPage] create assessment success";
 export const CREATE_ASSESSMENT_ERROR = "[assessmentPage] create assessment error";
+export const SET_PERCENT_LOADED = "[assessmentPage] set assessment uploaded";
 
 export const createAssessmentRequestAction = createAction(CREATE_ASSESSMENT_REQUEST);
 export const createAssessmentSuccessAction = createAction(CREATE_ASSESSMENT_SUCCESS);
 export const createAssessmentErrorAction = createAction(CREATE_ASSESSMENT_ERROR);
+export const setPercentUploadedAction = createAction(SET_PERCENT_LOADED);
 
 const initialState = {
   creating: false,
-  error: undefined
+  error: undefined,
+  percentageUpload: 0
 };
 
 const initialTestState = createBlankTest();
@@ -45,10 +48,15 @@ const createAssessmentError = (state, { payload: { error } }) => ({
   error
 });
 
+const setPercentageLoaded = (state, { payload }) => {
+  state.percentageUpload = payload;
+};
+
 export const reducer = createReducer(initialState, {
   [CREATE_ASSESSMENT_REQUEST]: createAssessmentRequest,
   [CREATE_ASSESSMENT_SUCCESS]: createAssessmentSuccess,
-  [CREATE_ASSESSMENT_ERROR]: createAssessmentError
+  [CREATE_ASSESSMENT_ERROR]: createAssessmentError,
+  [SET_PERCENT_LOADED]: setPercentageLoaded
 });
 
 const defaultTestItem = {
@@ -78,18 +86,21 @@ function* createAssessmentSaga({ payload }) {
   let testItem;
   let amountOfPDFPages = 0;
   let pageStructure = [];
+  //TODO find a better way to show the progress
+  yield put(setPercentUploadedAction(0));
   try {
     if (payload.file) {
+      yield put(setPercentUploadedAction(20));
       fileURI = yield call(uploadToS3, payload.file, aws.s3Folders.DOCS);
     }
   } catch (error) {
     const errorMessage = "Upload PDF is failing";
-
+    yield put(setPercentUploadedAction(0));
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
     return;
   }
-
+  yield put(setPercentUploadedAction(70));
   try {
     if (!payload.assessmentId) {
       testItem = yield call(testItemsApi.create, defaultTestItem);
@@ -99,10 +110,12 @@ function* createAssessmentSaga({ payload }) {
 
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
+    yield put(setPercentUploadedAction(0));
     return;
   }
 
   try {
+    yield put(setPercentUploadedAction(90));
     if (fileURI) {
       const pdfLoadingTask = pdfjs.getDocument(fileURI);
 
@@ -119,6 +132,7 @@ function* createAssessmentSaga({ payload }) {
         }));
     }
 
+    yield put(setPercentUploadedAction(100));
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);
 
@@ -178,13 +192,13 @@ function* createAssessmentSaga({ payload }) {
         delete newAssessment.assignmentPassword;
       }
       const assessment = yield call(testsApi.create, newAssessment);
-
       yield put(createAssessmentSuccessAction());
       yield put(push(`/author/assessments/${assessment._id}`));
     }
+    yield put(setPercentUploadedAction(0));
   } catch (error) {
     const errorMessage = "Create assessment is failing";
-
+    yield put(setPercentUploadedAction(0));
     yield call(message.error, errorMessage);
     yield put(createAssessmentErrorAction({ error: errorMessage }));
   }
@@ -204,4 +218,9 @@ export const getAssessmentCreatingSelector = createSelector(
 export const getAssessmentErrorSelector = createSelector(
   getStateSelector,
   state => state.error
+);
+
+export const percentageUploadedSelector = createSelector(
+  getStateSelector,
+  state => state.percentageUpload
 );

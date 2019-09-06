@@ -29,7 +29,6 @@ class LayoutComponent extends Component {
       changeItem,
       changeUIStyle,
       setQuestionData,
-      saveAnswer,
       advancedAreOpen,
       fillSections,
       cleanSections
@@ -90,9 +89,9 @@ class LayoutComponent extends Component {
               <MaxSelectionOption
                 onChange={val => {
                   changeItem("maxSelection", +val);
-                  saveAnswer([]);
                 }}
                 value={item.maxSelection}
+                shadedCellsCount={item.validation.validResponse.value.value.length}
               />
             </Col>
           </Row>
@@ -119,7 +118,6 @@ LayoutComponent.propTypes = {
   changeItem: PropTypes.func.isRequired,
   changeUIStyle: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  saveAnswer: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
